@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.backend.lists.Users;
@@ -68,6 +70,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
     private EngineException twException;
     private final WeakReference<UserFragment> callback;
     private final TwitterEngine mTwitter;
+    private Twitter mTwitter2;
 
     private final Type type;
     private final String search;
@@ -78,6 +81,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback.getContext());
+        mTwitter2 = Twitter.get(callback.getContext());
         this.type = type;
         this.search = search;
         this.id = id;
@@ -96,10 +100,10 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
                     return mTwitter.getFollowing(id, cursor);
 
                 case RETWEET:
-                    return mTwitter.getRetweeter(id, cursor);
+                    return mTwitter2.getRetweetingUsers(id);
 
                 case FAVORIT:
-                    return mTwitter.getFavoriter(id, cursor);
+                    return mTwitter2.getLikingUsers(id);
 
                 case SEARCH:
                     return mTwitter.searchUsers(search, cursor);
@@ -119,6 +123,8 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
             }
         } catch (EngineException twException) {
             this.twException = twException;
+        } catch (TwitterException err) {
+
         }
         return null;
     }

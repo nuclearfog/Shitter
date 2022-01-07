@@ -55,9 +55,15 @@ class AccountDB implements Account {
     }
 
     @Override
-    public String[] getKeys() {
-        return new String[]{key1, key2};
+    public String getAccessToken() {
+        return key1;
     }
+
+    @Override
+    public String getTokenSecret() {
+        return key2;
+    }
+
 
     @NonNull
     @Override

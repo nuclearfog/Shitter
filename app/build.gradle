@@ -67,7 +67,6 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
-    implementation 'com.github.takke:twitter4j-v2:1.0.3'
     //noinspection GradleDependency
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.larswerkman:LicenseView:1.1'

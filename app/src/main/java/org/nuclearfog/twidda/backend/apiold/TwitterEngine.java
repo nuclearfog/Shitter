@@ -15,7 +15,6 @@ import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.ProxySetup;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
-import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
@@ -42,7 +41,6 @@ import twitter4j.DirectMessage;
 import twitter4j.DirectMessageList;
 import twitter4j.GeoLocation;
 import twitter4j.IDs;
-import twitter4j.LikesExKt;
 import twitter4j.PagableResponseList;
 import twitter4j.Paging;
 import twitter4j.Query;
@@ -53,10 +51,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.UploadedMedia;
-import twitter4j.User2;
-import twitter4j.UsersResponse;
 import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
@@ -68,10 +63,7 @@ public class TwitterEngine {
 
     private static final TwitterEngine mTwitter = new TwitterEngine();
 
-    @Nullable
-    private RequestToken reqToken;
     private GlobalSettings settings;
-    private AccountDatabase accountDB;
     private ExcludeDatabase excludeDB;
     private Tokens tokens;
     private Twitter twitter;
@@ -123,13 +115,13 @@ public class TwitterEngine {
             // initialize database and settings
             mTwitter.settings = GlobalSettings.getInstance(context);
             mTwitter.tokens = Tokens.getInstance(context);
-            mTwitter.accountDB = new AccountDatabase(context);
             mTwitter.excludeDB = new ExcludeDatabase(context);
             // check if already logged in
             if (mTwitter.settings.isLoggedIn()) {
                 // init login access
-                String[] keys = mTwitter.settings.getCurrentUserAccessToken();
-                AccessToken token = new AccessToken(keys[0], keys[1]);
+                String accessToken = mTwitter.settings.getAccessToken();
+                String tokenSecret = mTwitter.settings.getTokenSecret();
+                AccessToken token = new AccessToken(accessToken, tokenSecret);
                 mTwitter.initTwitter(token);
             } else {
                 // init empty session
@@ -140,73 +132,10 @@ public class TwitterEngine {
     }
 
     /**
-     * get singleton instance with empty session
-     *
-     * @return TwitterEngine Instance
-     */
-    public static TwitterEngine getEmptyInstance(Context context) {
-        // initialize storage
-        mTwitter.settings = GlobalSettings.getInstance(context);
-        mTwitter.accountDB = new AccountDatabase(context);
-        // init empty session
-        mTwitter.isInitialized = false;
-        mTwitter.initTwitter(null);
-        return mTwitter;
-    }
-
-    /**
      * reset Twitter state
      */
     public static void resetTwitter() {
         mTwitter.isInitialized = false;
-    }
-
-    /**
-     * Request Registration Website
-     *
-     * @return Link to App Registration
-     * @throws EngineException if internet connection is unavailable
-     */
-    public String request() throws EngineException {
-        try {
-            if (reqToken == null) {
-                // request token without redirecting to the callback url
-                reqToken = twitter.getOAuthRequestToken("oob");
-            }
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-        return reqToken.getAuthenticationURL();
-    }
-
-    /**
-     * Get account access keys, store them and initialize Twitter login
-     *
-     * @param twitterPin PIN from the twitter login page, after successful login
-     * @throws EngineException if pin is false or request token is null
-     */
-    public void initialize(String twitterPin) throws EngineException {
-        try {
-            // check if corresponding request key is valid
-            if (reqToken != null) {
-                // get login keys
-                AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
-                String key1 = accessToken.getToken();
-                String key2 = accessToken.getTokenSecret();
-                // init twitter login
-                initTwitter(new AccessToken(key1, key2));
-                // save login to storage and database
-                settings.setConnection(key1, key2, twitter.getId());
-                accountDB.setLogin(twitter.getId(), key1, key2);
-                // request token is not needed anymore
-                reqToken = null;
-            } else {
-                // request token does not exist, open login page first
-                throw new EngineException(EngineException.InternalErrorType.TOKENNOTSET);
-            }
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
     }
 
     /**
@@ -837,54 +766,6 @@ public class TwitterEngine {
             twitter.destroyStatus(tweetId);
             return tweet;
         } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * Get User who retweeted a Tweet
-     *
-     * @param tweetID Tweet ID
-     * @return List of users
-     * @throws EngineException if Access is unavailable
-     */
-    public Users getRetweeter(long tweetID, long cursor) throws EngineException {
-        try {
-            int load = settings.getListSize();
-            IDs userIDs = twitter.getRetweeterIds(tweetID, load, cursor);
-            long[] ids = userIDs.getIDs();
-            long prevCursor = cursor > 0 ? cursor : 0;
-            long nextCursor = userIDs.getNextCursor(); // fixme next cursor always zero
-            Users result = new Users(prevCursor, nextCursor);
-            if (ids.length > 0) {
-                result.addAll(convertUserList(twitter.lookupUsers(ids)));
-            }
-            return result;
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get user who liked a tweet
-     *
-     * @param tweetId Tweet ID
-     * @return list of users liking a tweet
-     * @throws EngineException if Access is unavailable
-     */
-    public Users getFavoriter(long tweetId, long cursor) throws EngineException {
-        try {
-            UsersResponse response = LikesExKt.getLikingUsers(twitter, tweetId, null, null, null);
-            List<User2> users = response.getUsers();
-            long[] ids = new long[users.size()];
-            for (int i = 0 ; i < ids.length ; i++)
-                ids[i] = users.get(i).getId();
-            // lookup users with Twitter4J for maximum compability
-            Users result = new Users(cursor, 0);
-            result.addAll(convertUserList(twitter.lookupUsers(ids)));
-            return result;
-        } catch (TwitterException err) {
             throw new EngineException(err);
         }
     }

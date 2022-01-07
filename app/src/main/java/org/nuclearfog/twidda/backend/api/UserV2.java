@@ -7,13 +7,18 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
- * API 1.1 implementation of User
+ * implementation of User accessed by API 2.0
  *
  * @author nuclearfog
  */
-class UserV1 implements User {
+class UserV2 implements User {
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+    /**
+     * extra parameters required to fetch additional data
+     */
+    public static final String PARAMS = "user.fields=profile_image_url";
+    // ISO8601 time format used by twitter
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
     private long userID;
     private long created;
@@ -30,41 +35,32 @@ class UserV1 implements User {
     private int favorCount;
     private boolean isCurrentUser;
     private boolean isVerified;
-    private boolean isLocked;
+    private boolean isProtected;
     private boolean followReqSent;
     private boolean defaultImage;
 
 
-    UserV1(JSONObject json, long twitterId) {
-        this(json);
-        isCurrentUser = twitterId == userID;
-    }
-
-
-    UserV1(JSONObject json) {
-        String bannerLink = json.optString("profile_banner_url");
-        description = json.optString("description");
-        username = json.optString("name");
-        screenName = '@' + json.optString("screen_name");
-        profileImageUrl = json.optString("profile_image_url_https");
-        location = json.optString("location");
+    UserV2(JSONObject json, long twitterId) {
         userID = json.optLong("id");
+        username = json.optString("name");
+        screenName = json.optString("username"); // username -> screenname
+        isProtected = json.optBoolean("protected");
+        location = json.optString("location");
+        profileUrl = json.optString("profile_image_url");
+        description = json.optString("description");
         isVerified = json.optBoolean("verified");
-        isLocked = json.optBoolean("protected");
-        following = json.optInt("friends_count");
-        follower = json.optInt("followers_count");
-        tweetCount = json.optInt("statuses_count");
-        favorCount = json.optInt("favourites_count");
-        followReqSent = json.optBoolean("follow_request_sent");
-        defaultImage = json.optBoolean("default_profile_image");
-        profileUrl = json.optString("profile_image_url_https");
+        profileImageUrl = json.optString("profile_image_url");
+        following = json.optInt("public_metrics.following_count");
+        follower = json.optInt("public_metrics.followers_count");
+        tweetCount = json.optInt("public_metrics.tweet_count");
+        isCurrentUser = userID == twitterId;
         setDate(json.optString("created_at"));
-        isCurrentUser = true;
-        if (bannerLink.length() > 4) {
-            profileBannerUrl = bannerLink.substring(0, bannerLink.length() - 4);
-        }
+        // not defined jet in V2
+        profileBannerUrl = "";
+        favorCount = 0;
+        followReqSent = false;
+        defaultImage = true;
     }
-
 
     @Override
     public long getId() {
@@ -118,7 +114,7 @@ class UserV1 implements User {
 
     @Override
     public boolean isProtected() {
-        return isLocked;
+        return isProtected;
     }
 
     @Override

@@ -847,16 +847,58 @@ public class GlobalSettings {
         return loggedIn;
     }
 
+
     /**
-     * get Access tokens
+     * set app login status
      *
-     * @return access tokens
+     * @param login true if current user is logged in successfully
      */
-    public String[] getCurrentUserAccessToken() {
-        String[] out = new String[2];
-        out[0] = auth_key1;
-        out[1] = auth_key2;
-        return out;
+    public void setogin(boolean login) {
+        loggedIn = login;
+        Editor e = settings.edit();
+        e.putBoolean(LOGGED_IN, login);
+        e.apply();
+    }
+
+    /**
+     * return access token of the current user
+     *
+     * @return first access token
+     */
+    public String getAccessToken() {
+        return auth_key1;
+    }
+
+    /**
+     * set access token of the current user
+     *
+     * @param token first access token
+     */
+    public void setAccessToken(String token) {
+        this.auth_key1 = token;
+        Editor e = settings.edit();
+        e.putString(CURRENT_AUTH_KEY1, token);
+        e.apply();
+    }
+
+    /**
+     * return second access token of the current user
+     * @return first access token
+     */
+    public String getTokenSecret() {
+        return auth_key2;
+    }
+
+    /**
+     * set second access token of the current user
+     *
+     * @param token first access token
+     */
+    public void setTokenSecret(String token) {
+        this.auth_key2 = token;
+        Editor e = settings.edit();
+        e.putString(CURRENT_AUTH_KEY2, token);
+        e.apply();
     }
 
     /**
@@ -887,28 +929,10 @@ public class GlobalSettings {
     }
 
     /**
-     * Set Access tokens and user ID
+     * set current user ID
      *
-     * @param key1   1st access token
-     * @param key2   2nd access token
-     * @param userId User ID
+     * @param userId current user ID
      */
-    public void setConnection(String key1, String key2, long userId) {
-        setConnection(key1, key2);
-        setUserId(userId);
-    }
-
-    public void setConnection(String key1, String key2) {
-        this.auth_key1 = key1;
-        this.auth_key2 = key2;
-        loggedIn = true;
-        Editor e = settings.edit();
-        e.putString(CURRENT_AUTH_KEY1, key1);
-        e.putString(CURRENT_AUTH_KEY2, key2);
-        e.putBoolean(LOGGED_IN, true);
-        e.apply();
-    }
-
     public void setUserId(long userId) {
         this.userId = userId;
         Editor e = settings.edit();

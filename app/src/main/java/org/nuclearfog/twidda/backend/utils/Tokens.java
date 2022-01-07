@@ -26,7 +26,6 @@ public class Tokens {
 
     private static Tokens instance;
     private GlobalSettings settings;
-    private String token, tokenSec;
 
 
     private Tokens(Context context) {
@@ -65,34 +64,5 @@ public class Tokens {
         if (settings.isCustomApiSet())
             return settings.getConsumerSecret();
         return API_SECRET;
-    }
-
-    /**
-     * set oauth tokens
-     *
-     * @param tokens oauth tokens (single or pair)
-     */
-    public void setTokens(String... tokens) {
-        if (tokens.length == 2) {
-            token = tokens[0];
-            tokenSec = tokens[1];
-            settings.setConnection(token, tokenSec);
-        } else if (tokens.length == 1) {
-            token = tokens[0];
-        }
-    }
-
-    /**
-     * @return first oauth token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * @return second secret oauth token
-     */
-    public String getTokenSec() {
-        return tokenSec;
     }
 }

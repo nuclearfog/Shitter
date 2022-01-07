@@ -3,9 +3,11 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.LoginActivity;
-import org.nuclearfog.twidda.backend.api.TwitterImpl;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.database.AccountDatabase;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
 
@@ -19,7 +21,8 @@ public class Registration extends AsyncTask<String, Void, String> {
 
     private WeakReference<LoginActivity> callback;
     private AccountDatabase accountDB;
-    private TwitterImpl twitter;
+    private AppDatabase database;
+    private Twitter twitter;
     private GlobalSettings settings;
 
     /**
@@ -32,8 +35,9 @@ public class Registration extends AsyncTask<String, Void, String> {
         this.callback = new WeakReference<>(activity);
         // init database and storage
         accountDB = new AccountDatabase(activity);
+        database = new AppDatabase(activity);
         settings = GlobalSettings.getInstance(activity);
-        twitter = TwitterImpl.get(activity);
+        twitter = Twitter.get(activity);
     }
 
 
@@ -42,15 +46,15 @@ public class Registration extends AsyncTask<String, Void, String> {
         try {
             // check if we need to backup current session
             if (settings.isLoggedIn() && !accountDB.exists(settings.getCurrentUserId())) {
-                String[] tokens = settings.getCurrentUserAccessToken();
-                accountDB.setLogin(settings.getCurrentUserId(), tokens[0], tokens[1]);
+                accountDB.setLogin(settings.getCurrentUserId(), settings.getAccessToken(), settings.getTokenSecret());
             }
             // no PIN means we need to request a token to login
             if (param.length == 0) {
-                return twitter.getRequestURL();
+                return twitter.getRequestToken();
             }
             // login with pin
-            twitter.login(param[0]);
+            User user = twitter.login(param[0], param[1]);
+            database.storeUser(user);
             return "";
         } catch (Exception err) {
             err.printStackTrace();

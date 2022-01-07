@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -53,6 +54,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     private EditText pinInput;
     private ViewGroup root;
+
+    private String requestToken;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -156,7 +159,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                 Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
                 String twitterPin = pinInput.getText().toString();
                 registerAsync = new Registration(this);
-                registerAsync.execute(twitterPin);
+                registerAsync.execute(requestToken, twitterPin);
             } else {
                 Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
             }
@@ -166,9 +169,11 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     /**
      * Called when a twitter login link was created
      *
-     * @param link Link to twitter login page
+     * @param requestToken temporary request token
      */
-    public void connect(String link) {
+    public void connect(String requestToken) {
+        this.requestToken = requestToken;
+        String link = Twitter.REQUEST_URL + requestToken;
         Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
         try {
             startActivity(loginIntent);

@@ -26,7 +26,12 @@ public interface Account {
     User getUser();
 
     /**
-     * @return oauth keys
+     * @return first access token of the user
      */
-    String[] getKeys();
+    String getAccessToken();
+
+    /**
+     * @return second access token of the user
+     */
+    String getTokenSecret();
 }

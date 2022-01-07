@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.backend.utils;
 
-import static org.nuclearfog.twidda.backend.api.TwitterImpl.HASH;
+import static org.nuclearfog.twidda.backend.api.Twitter.SIGNATURE_ALG;
 
 import android.util.Base64;
 
@@ -161,28 +161,16 @@ public final class StringTools {
     }
 
     /**
-     * sign GET API request
+     * generate signature for oauth
      *
-     * @param endpoint API endpoint
-     * @param param API parameter to sign
+     * @param method method e.g. POST,GET or PUT
+     * @param endpoint endpoint URL
+     * @param param parameter
      * @param keyString key used to sign
-     * @return sign string
+     * @return key signature
      */
-    public static String signGet(String endpoint, String param, String keyString) {
-        String input = "GET&" + encode(endpoint) + "&" + encode(param);
-        return encode(computeSignature(input, keyString));
-    }
-
-    /**
-     * sign POST API request
-     *
-     * @param endpoint API endpoint
-     * @param param API parameter to sign
-     * @param keyString key used to sign
-     * @return sign string
-     */
-    public static String signPost(String endpoint, String param, String keyString) {
-        String input = "POST&" + encode(endpoint) + "&" + encode(param);
+    public static String sign(String method, String endpoint, String param, String keyString) {
+        String input = method + "&" + encode(endpoint) + "&" + encode(param);
         return encode(computeSignature(input, keyString));
     }
 
@@ -195,8 +183,8 @@ public final class StringTools {
      */
     private static String computeSignature(String baseString, String keyString) {
         try {
-            SecretKey secretKey = new SecretKeySpec(keyString.getBytes(), HASH);
-            Mac mac = Mac.getInstance(HASH);
+            SecretKey secretKey = new SecretKeySpec(keyString.getBytes(), SIGNATURE_ALG);
+            Mac mac = Mac.getInstance(SIGNATURE_ALG);
             mac.init(secretKey);
             return new String(Base64.encode(mac.doFinal(baseString.getBytes()), Base64.DEFAULT)).trim();
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {

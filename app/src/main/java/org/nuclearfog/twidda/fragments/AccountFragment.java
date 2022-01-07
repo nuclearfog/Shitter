@@ -85,8 +85,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
     @Override
     public void onAccountClick(Account account) {
         // set new account
-        String[] token = account.getKeys();
-        settings.setConnection(token[0], token[1], account.getId());
+        settings.setAccessToken(account.getAccessToken());
+        settings.setTokenSecret(account.getTokenSecret());
+        settings.setUserId(account.getId());
         // finish activity and return to parent activity
         requireActivity().setResult(RET_ACCOUNT_CHANGE);
         requireActivity().finish();
