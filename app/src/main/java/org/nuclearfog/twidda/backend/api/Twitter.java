@@ -41,6 +41,7 @@ public class Twitter {
     private static final String REQUEST_TOKEN = API + "oauth/request_token";
     private static final String OAUTH_VERIFIER = API + "oauth/access_token";
     private static final String CREDENTIALS = API + "1.1/account/verify_credentials.json";
+    private static final String USER_LOOKUP = API + "1.1/users/show.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
     public static final String SIGNATURE_ALG = "HMAC-SHA256";
 
@@ -126,6 +127,30 @@ public class Twitter {
             }
         } catch (IOException e) {
             throw new TwitterException(e);
+        }
+    }
+
+    /**
+     * lookup single user
+     *
+     * @param id ID of the user
+     * @return user information
+     */
+    public User showUser(long id) throws TwitterException {
+        try {
+            String param = "user_id=" + id;
+            String extra = "include_entities=true";
+            Response response = get(USER_LOOKUP, param, extra);
+            if (response.code() == 200 && response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                return new UserV1(json, settings.getCurrentUserId());
+            } else {
+                throw new TwitterException(response.code());
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
         }
     }
 
