@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.model.User;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -16,8 +17,11 @@ class UserV2 implements User {
     /**
      * extra parameters required to fetch additional data
      */
-    public static final String PARAMS = "user.fields=profile_image_url";
-    // ISO8601 time format used by twitter
+    public static final String PARAMS = "user.fields=profile_image_url%2Cpublic_metrics%2Cverified%2Cprotected";
+
+    /**
+     * date time formatter for ISO 8601
+     */
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
     private long userID;
@@ -46,20 +50,24 @@ class UserV2 implements User {
         screenName = json.optString("username"); // username -> screenname
         isProtected = json.optBoolean("protected");
         location = json.optString("location");
-        profileUrl = json.optString("profile_image_url");
+        profileUrl = json.optString("url");
         description = json.optString("description");
         isVerified = json.optBoolean("verified");
         profileImageUrl = json.optString("profile_image_url");
-        following = json.optInt("public_metrics.following_count");
-        follower = json.optInt("public_metrics.followers_count");
-        tweetCount = json.optInt("public_metrics.tweet_count");
+        profileBannerUrl = json.optString("profile_banner_url");
+
+        JSONObject metrics = json.optJSONObject("public_metrics");
+        if (metrics != null) {
+            following = metrics.optInt("following_count");
+            follower = metrics.optInt("followers_count");
+            tweetCount = metrics.optInt("tweet_count");
+        }
         isCurrentUser = userID == twitterId;
         setDate(json.optString("created_at"));
-        // not defined jet in V2
-        profileBannerUrl = "";
+
         favorCount = 0;
         followReqSent = false;
-        defaultImage = true;
+        defaultImage = false;
     }
 
     @Override
@@ -159,9 +167,10 @@ class UserV2 implements User {
      */
     private void setDate(String dateStr) {
         try {
-            created = sdf.parse(dateStr).getTime();
+            Date date = sdf.parse(dateStr);
+            if (date != null)
+                created = date.getTime();
         } catch (Exception e) {
-            // make date invalid so it will be not shown
             e.printStackTrace();
         }
     }
