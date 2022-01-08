@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend.apiold;
 
-import static org.nuclearfog.twidda.backend.apiold.EngineException.ErrorType.RESOURCE_NOT_FOUND;
-import static org.nuclearfog.twidda.backend.apiold.EngineException.ErrorType.USER_NOT_FOUND;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 
 import twitter4j.TwitterException;
 
@@ -10,9 +9,9 @@ import twitter4j.TwitterException;
  *
  * @author nuclearfog
  */
-public class EngineException extends Exception {
+public class EngineException extends Exception implements TwitterError {
 
-    private final ErrorType errorType;
+    private int errorType;
     private String msg;
     private int retryAfter;
 
@@ -30,7 +29,7 @@ public class EngineException extends Exception {
                 case 88:
                 case 420:   //
                 case 429:   // Rate limit exceeded!
-                    errorType = ErrorType.RATE_LIMIT_EX;
+                    errorType = RATE_LIMIT_EX;
                     retryAfter = error.getRetryAfter();
                     break;
 
@@ -38,81 +37,81 @@ public class EngineException extends Exception {
                 case 50:    // USER not found
                 case 63:    // USER suspended
                 case 108:
-                    errorType = ErrorType.USER_NOT_FOUND;
+                    errorType = USER_NOT_FOUND;
                     break;
 
                 case 32:
-                    errorType = ErrorType.ACCESS_TOKEN_DEAD;
+                    errorType = ACCESS_TOKEN_DEAD;
                     break;
 
                 case 416:
-                    errorType = ErrorType.APP_SUSPENDED;
+                    errorType = APP_SUSPENDED;
                     break;
 
                 case 34:    //
                 case 144:   // TWEET not found
-                    errorType = ErrorType.RESOURCE_NOT_FOUND;
+                    errorType = RESOURCE_NOT_FOUND;
                     break;
 
                 case 150:
-                    errorType = ErrorType.CANT_SEND_DM;
+                    errorType = CANT_SEND_DM;
                     break;
 
                 case 120:
-                    errorType = ErrorType.ACCOUNT_UPDATE_FAILED;
+                    errorType = ACCOUNT_UPDATE_FAILED;
                     break;
 
                 case 136:
                 case 179:
-                    errorType = ErrorType.NOT_AUTHORIZED;
+                    errorType = NOT_AUTHORIZED;
                     break;
 
                 case 186:
-                    errorType = ErrorType.TWEET_TOO_LONG;
+                    errorType = TWEET_TOO_LONG;
                     break;
 
                 case 187:
-                    errorType = ErrorType.DUPLICATE_TWEET;
+                    errorType = DUPLICATE_TWEET;
                     break;
 
                 case 349:
-                    errorType = ErrorType.NO_DM_TO_USER;
+                    errorType = NO_DM_TO_USER;
                     break;
 
                 case 215: // Invalid API keys
                 case 261:
-                    errorType = ErrorType.ERROR_API_ACCESS_DENIED;
+                    errorType = ERROR_API_ACCESS_DENIED;
                     break;
 
                 case 354:
-                    errorType = ErrorType.DM_TOO_LONG;
+                    errorType = DM_TOO_LONG;
                     break;
 
                 case 89:
-                    errorType = ErrorType.TOKEN_EXPIRED;
+                    errorType = TOKEN_EXPIRED;
                     break;
 
                 case 385: // replying tweet that is not visible or deleted
-                    errorType = ErrorType.TWEET_CANT_REPLY;
+                    errorType = TWEET_CANT_REPLY;
                     break;
 
                 default:
                     if (error.getStatusCode() == 401) {
-                        errorType = ErrorType.NOT_AUTHORIZED;
+                        errorType = NOT_AUTHORIZED;
                     } else if (error.getStatusCode() == 403) {
-                        errorType = ErrorType.REQUEST_FORBIDDEN;
+                        errorType = REQUEST_FORBIDDEN;
                     } else if (error.getStatusCode() == 408) {
-                        errorType = ErrorType.REQUEST_CANCELLED;
+                        errorType = REQUEST_CANCELLED;
                     } else if (error.isCausedByNetworkIssue()) {
-                        errorType = ErrorType.NO_CONNECTION;
+                        errorType = NO_CONNECTION;
                     } else {
-                        errorType = ErrorType.ERROR_NOT_DEFINED;
+                        errorType = ERROR_NOT_DEFINED;
                         msg = error.getErrorMessage();
                     }
                     break;
             }
         } else {
-            errorType = ErrorType.ERROR_NOT_DEFINED;
+            errorType = ERROR_NOT_DEFINED;
             msg = exception.getMessage();
         }
     }
@@ -122,22 +121,22 @@ public class EngineException extends Exception {
      *
      * @param errorCode custom error code
      */
-    EngineException(InternalErrorType errorCode) {
+    EngineException(int errorCode) {
         switch (errorCode) {
             case FILENOTFOUND:
-                errorType = ErrorType.NO_MEDIA_FOUND;
+                errorType = NO_MEDIA_FOUND;
                 break;
 
             case TOKENNOTSET:
-                errorType = ErrorType.NO_LINK_DEFINED;
+                errorType = NO_LINK_DEFINED;
                 break;
 
             case BITMAP_FAILURE:
-                errorType = ErrorType.IMAGE_NOT_LOADED;
+                errorType = IMAGE_NOT_LOADED;
                 break;
 
             default:
-                errorType = ErrorType.ERROR_NOT_DEFINED;
+                errorType = ERROR_NOT_DEFINED;
                 break;
         }
     }
@@ -153,9 +152,9 @@ public class EngineException extends Exception {
     /**
      * get type of error defined by twitter API
      *
-     * @return type of error {@link ErrorType}
+     * @return error code
      */
-    public ErrorType getErrorType() {
+    public int getErrorType() {
         return errorType;
     }
 
@@ -175,42 +174,5 @@ public class EngineException extends Exception {
      */
     public int getTimeToWait() {
         return retryAfter;
-    }
-
-    /**
-     * enum of error types used by this class
-     */
-    public enum ErrorType {
-        RATE_LIMIT_EX,
-        USER_NOT_FOUND,
-        APP_SUSPENDED,
-        ACCESS_TOKEN_DEAD,
-        TWEET_CANT_REPLY,
-        RESOURCE_NOT_FOUND,
-        CANT_SEND_DM,
-        NOT_AUTHORIZED,
-        TWEET_TOO_LONG,
-        DUPLICATE_TWEET,
-        NO_DM_TO_USER,
-        DM_TOO_LONG,
-        TOKEN_EXPIRED,
-        NO_MEDIA_FOUND,
-        NO_LINK_DEFINED,
-        NO_CONNECTION,
-        IMAGE_NOT_LOADED,
-        REQUEST_CANCELLED,
-        REQUEST_FORBIDDEN,
-        ACCOUNT_UPDATE_FAILED,
-        ERROR_API_ACCESS_DENIED,
-        ERROR_NOT_DEFINED
-    }
-
-    /**
-     * error types only accessible by {@link TwitterEngine}
-     */
-    enum InternalErrorType {
-        FILENOTFOUND,
-        TOKENNOTSET,
-        BITMAP_FAILURE
     }
 }

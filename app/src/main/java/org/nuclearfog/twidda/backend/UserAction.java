@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.UserProfile;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.model.Relation;
@@ -61,20 +62,22 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     private EngineException twException;
     private WeakReference<UserProfile> callback;
     private TwitterEngine mTwitter;
+    private Twitter twitter2;
     private ExcludeDatabase exclDB;
     private AppDatabase appDB;
     private long userId;
 
     /**
-     * @param callback Callback to return the result
+     * @param activity Callback to return the result
      * @param userId   ID of the twitter user
      */
-    public UserAction(UserProfile callback, long userId) {
+    public UserAction(UserProfile activity, long userId) {
         super();
-        this.callback = new WeakReference<>(callback);
-        mTwitter = TwitterEngine.getInstance(callback);
-        exclDB = new ExcludeDatabase(callback);
-        appDB = new AppDatabase(callback);
+        this.callback = new WeakReference<>(activity);
+        mTwitter = TwitterEngine.getInstance(activity);
+        twitter2 = Twitter.get(activity);
+        exclDB = new ExcludeDatabase(activity);
+        appDB = new AppDatabase(activity);
         this.userId = userId;
     }
 
@@ -95,7 +98,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
 
                 case PROFILE_lOAD:
                     // load user information from twitter
-                    user = mTwitter.getUser(userId);
+                    user = twitter2.showUser(userId);
                     publishProgress(user);
                     appDB.storeUser(user);
                     // load user relations from twitter

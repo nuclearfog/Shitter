@@ -23,9 +23,9 @@ import androidx.appcompat.widget.Toolbar;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.Intent.ACTION_VIEW;
@@ -195,7 +195,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      *
      * @param error Twitter exception
      */
-    public void onError(EngineException error) {
+    public void onError(TwitterError error) {
         ErrorHandler.handleFailure(this, error);
     }
 }

@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.activities.TweetActivity;
 import org.nuclearfog.twidda.activities.TweetEditor;
 import org.nuclearfog.twidda.activities.UserLists;
 import org.nuclearfog.twidda.activities.UserProfile;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
@@ -42,12 +42,12 @@ public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {
     private static final Pattern LIST_PATH = Pattern.compile("[\\w]+/lists");
 
     private WeakReference<MainActivity> callback;
-    private TwitterEngine mTwitter;
+    private Twitter mTwitter;
 
-    public LinkLoader(MainActivity callback) {
+    public LinkLoader(MainActivity activity) {
         super();
-        this.callback = new WeakReference<>(callback);
-        mTwitter = TwitterEngine.getInstance(callback);
+        this.callback = new WeakReference<>(activity);
+        mTwitter = Twitter.get(activity);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {
                     int end = path.indexOf('/');
                     if (end > 0)
                         path = path.substring(0, end);
-                    User user = mTwitter.getUser(path);
+                    User user = mTwitter.showUser(path);
                     data.putSerializable(KEY_PROFILE_DATA, user);
                     data.putBoolean(KEY_PROFILE_DISABLE_RELOAD, true);
                     dataHolder = new DataHolder(data, UserProfile.class);

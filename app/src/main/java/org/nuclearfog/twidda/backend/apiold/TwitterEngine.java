@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
-import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.ProxySetup;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
@@ -240,37 +239,6 @@ public class TwitterEngine {
     }
 
     /**
-     * Get User search result
-     *
-     * @param search Search String
-     * @return List of Users
-     * @throws EngineException if access is unavailable
-     */
-    public Users searchUsers(String search, long cursor) throws EngineException {
-        try {
-            List<User> users;
-            int currentPage = 1;
-            if (cursor > 0)
-                currentPage = (int) cursor;
-            long prevPage = currentPage - 1;
-            long nextPage = currentPage + 1;
-            if (settings.filterResults()) {
-                users = convertUserListFiltered(twitter.searchUsers(search, currentPage));
-            } else {
-                users = convertUserList(twitter.searchUsers(search, currentPage));
-            }
-            if (users.size() < 20) {
-                nextPage = 0;
-            }
-            Users result = new Users(prevPage, nextPage);
-            result.addAll(users);
-            return result;
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
      * Get User Tweets
      *
      * @param userId  User ID
@@ -352,21 +320,6 @@ public class TwitterEngine {
     public User getUser(long userId) throws EngineException {
         try {
             return new UserV1(twitter.showUser(userId), twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Get User
-     *
-     * @param username screen name of the user
-     * @return User Object
-     * @throws EngineException if Access is unavailable
-     */
-    public User getUser(String username) throws EngineException {
-        try {
-            return new UserV1(twitter.showUser(username), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -512,70 +465,6 @@ public class TwitterEngine {
         try {
             twitter4j.User user = twitter.destroyMute(UserID);
             return new UserV1(user, twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get Following User List
-     *
-     * @param userId User ID
-     * @return List of Following User with cursors
-     * @throws EngineException if Access is unavailable
-     */
-    public Users getFollowing(long userId, long cursor) throws EngineException {
-        try {
-            PagableResponseList<twitter4j.User> list = twitter.getFriendsList(userId, cursor);
-            return createUserList(list, cursor);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get Follower
-     *
-     * @param userId User ID
-     * @return List of Follower with cursors attached
-     * @throws EngineException if Access is unavailable
-     */
-    public Users getFollower(long userId, long cursor) throws EngineException {
-        try {
-            PagableResponseList<twitter4j.User> list = twitter.getFollowersList(userId, cursor);
-            return createUserList(list, cursor);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get a list of blocked users
-     *
-     * @param cursor list cursor
-     * @return user list
-     * @throws EngineException if twitter service is unavailable
-     */
-    public Users getBlockedUsers(long cursor) throws EngineException {
-        try {
-            PagableResponseList<twitter4j.User> list = twitter.getBlocksList(cursor);
-            return createUserList(list, cursor);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get a list of muted users
-     *
-     * @param cursor list cursor
-     * @return user list
-     * @throws EngineException if twitter service is unavailable
-     */
-    public Users getMutedUsers(long cursor) throws EngineException {
-        try {
-            PagableResponseList<twitter4j.User> list = twitter.getMutesList(cursor);
-            return createUserList(list, cursor);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -992,38 +881,6 @@ public class TwitterEngine {
     }
 
     /**
-     * Get subscriber of a user list
-     *
-     * @param listId ID of the list
-     * @return list of users following the list
-     * @throws EngineException if access is unavailable
-     */
-    public Users getListFollower(long listId, long cursor) throws EngineException {
-        try {
-            PagableResponseList<twitter4j.User> users = twitter.getUserListSubscribers(listId, cursor);
-            return createUserList(users, cursor);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Get member of a list
-     *
-     * @param listId ID of the list
-     * @return list of users
-     * @throws EngineException if access is unavailable
-     */
-    public Users getListMember(long listId, long cursor) throws EngineException {
-        try {
-            PagableResponseList<twitter4j.User> users = twitter.getUserListMembers(listId, cursor);
-            return createUserList(users, cursor);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
      * get tweets of a lists
      *
      * @param listId  ID of the list
@@ -1055,7 +912,7 @@ public class TwitterEngine {
             InputStream stream = url.openConnection().getInputStream();
             return BitmapFactory.decodeStream(stream);
         } catch (IOException err) {
-            throw new EngineException(EngineException.InternalErrorType.BITMAP_FAILURE);
+            throw new EngineException(EngineException.BITMAP_FAILURE);
         }
     }
 
@@ -1071,7 +928,7 @@ public class TwitterEngine {
             UploadedMedia media = twitter.uploadMedia("", new FileInputStream(path));
             return media.getMediaId();
         } catch (FileNotFoundException err) {
-            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
+            throw new EngineException(EngineException.FILENOTFOUND);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1089,7 +946,7 @@ public class TwitterEngine {
             UploadedMedia media = twitter.uploadMediaChunked("", new FileInputStream(path));
             return media.getMediaId();
         } catch (FileNotFoundException err) {
-            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
+            throw new EngineException(EngineException.FILENOTFOUND);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1143,58 +1000,6 @@ public class TwitterEngine {
         } catch (Exception err) {
             throw new EngineException(err);
         }
-    }
-
-    /**
-     * create user list from {@link PagableResponseList}
-     *
-     * @param list   user list
-     * @param cursor prev cursor of the list
-     * @return user list
-     * @throws TwitterException if access is unavailable
-     */
-    private Users createUserList(PagableResponseList<twitter4j.User> list, long cursor) throws TwitterException {
-        long prevCursor = cursor > 0 ? cursor : 0;
-        long nextCursor = list.getNextCursor();
-        Users result = new Users(prevCursor, nextCursor);
-        if (!list.isEmpty()) {
-            result.addAll(convertUserList(list));
-        }
-        return result;
-    }
-
-    /**
-     * convert {@link twitter4j.User} to User List
-     *
-     * @param users Twitter4J user List
-     * @return User
-     */
-    private List<User> convertUserList(List<twitter4j.User> users) throws TwitterException {
-        long id = twitter.getId();
-        ArrayList<User> result = new ArrayList<>();
-        result.ensureCapacity(users.size());
-        for (twitter4j.User user : users) {
-            result.add(new UserV1(user, id));
-        }
-        return result;
-    }
-
-    /**
-     * convert {@link twitter4j.User} list to User List and filter excluded users
-     *
-     * @param users Twitter4J user List
-     * @return User
-     */
-    private List<User> convertUserListFiltered(List<twitter4j.User> users) throws TwitterException {
-        long id = twitter.getId();
-        Set<Long> exclude = excludeDB.getExcludeSet();
-        List<User> result = new LinkedList<>();
-        for (twitter4j.User user : users) {
-            if (!exclude.contains(user.getId())) {
-                result.add(new UserV1(user, id));
-            }
-        }
-        return result;
     }
 
     /**

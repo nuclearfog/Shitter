@@ -27,7 +27,7 @@ public final class ErrorHandler {
      * @param context current activity context
      * @param error   Error exception thrown by TwitterEngine
      */
-    public static void handleFailure(@NonNull Context context, @Nullable EngineException error) {
+    public static void handleFailure(@NonNull Context context, @Nullable TwitterError error) {
         String message = getErrorMessage(context, error);
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
@@ -39,10 +39,10 @@ public final class ErrorHandler {
      * @param error   Twitter error
      * @return message string
      */
-    public static String getErrorMessage(Context context, @Nullable EngineException error) {
+    public static String getErrorMessage(Context context, @Nullable TwitterError error) {
         if (error != null) {
             switch (error.getErrorType()) {
-                case RATE_LIMIT_EX:
+                case TwitterError.RATE_LIMIT_EX:
                     if (error.getTimeToWait() > 0) {
                         String errMsg = context.getString(R.string.error_limit_exceeded);
                         if (error.getTimeToWait() >= 60)
@@ -52,68 +52,68 @@ public final class ErrorHandler {
                     }
                     return context.getString(R.string.error_rate_limit);
 
-                case USER_NOT_FOUND:
+                case TwitterError.USER_NOT_FOUND:
                     return context.getString(R.string.error_user_not_found);
 
-                case RESOURCE_NOT_FOUND:
+                case TwitterError.RESOURCE_NOT_FOUND:
                     return context.getString(R.string.error_not_found);
 
-                case CANT_SEND_DM:
+                case TwitterError.CANT_SEND_DM:
                     return context.getString(R.string.error_send_dm_to_user);
 
-                case NOT_AUTHORIZED:
+                case TwitterError.NOT_AUTHORIZED:
                     return context.getString(R.string.error_not_authorized);
 
-                case TWEET_TOO_LONG:
+                case TwitterError.TWEET_TOO_LONG:
                     return context.getString(R.string.error_status_length);
 
-                case DUPLICATE_TWEET:
+                case TwitterError.DUPLICATE_TWEET:
                     return context.getString(R.string.error_duplicate_status);
 
-                case NO_DM_TO_USER:
+                case TwitterError.NO_DM_TO_USER:
                     return context.getString(R.string.error_dm_send);
 
-                case DM_TOO_LONG:
+                case TwitterError.DM_TOO_LONG:
                     return context.getString(R.string.error_dm_length);
 
-                case TOKEN_EXPIRED:
+                case TwitterError.TOKEN_EXPIRED:
                     return context.getString(R.string.error_accesstoken);
 
-                case NO_MEDIA_FOUND:
+                case TwitterError.NO_MEDIA_FOUND:
                     return context.getString(R.string.error_file_not_found);
 
-                case NO_LINK_DEFINED:
+                case TwitterError.NO_LINK_DEFINED:
                     return context.getString(R.string.error_token_not_set);
 
-                case NO_CONNECTION:
+                case TwitterError.NO_CONNECTION:
                     return context.getString(R.string.error_connection_failed);
 
-                case IMAGE_NOT_LOADED:
+                case TwitterError.IMAGE_NOT_LOADED:
                     return context.getString(R.string.error_image_loading);
 
-                case ACCESS_TOKEN_DEAD:
+                case TwitterError.ACCESS_TOKEN_DEAD:
                     return context.getString(R.string.error_corrupt_api_key);
 
-                case TWEET_CANT_REPLY:
+                case TwitterError.TWEET_CANT_REPLY:
                     return context.getString(R.string.error_cant_reply_to_tweet);
 
-                case ACCOUNT_UPDATE_FAILED:
+                case TwitterError.ACCOUNT_UPDATE_FAILED:
                     return context.getString(R.string.error_acc_update);
 
-                case REQUEST_CANCELLED:
+                case TwitterError.REQUEST_CANCELLED:
                     return context.getString(R.string.error_result_cancelled);
 
-                case REQUEST_FORBIDDEN:
+                case TwitterError.REQUEST_FORBIDDEN:
                     return context.getString(R.string.error_forbidden_api_access);
 
-                case APP_SUSPENDED:
-                case ERROR_API_ACCESS_DENIED:
+                case TwitterError.APP_SUSPENDED:
+                case TwitterError.ERROR_API_ACCESS_DENIED:
                     GlobalSettings settings = GlobalSettings.getInstance(context);
                     if (settings.isCustomApiSet())
                         return context.getString(R.string.error_api_access_denied);
                     return context.getString(R.string.error_api_key_expired);
 
-                case ERROR_NOT_DEFINED:
+                case TwitterError.ERROR_NOT_DEFINED:
                     return error.getMessage();
 
                 default:
@@ -122,5 +122,40 @@ public final class ErrorHandler {
         } else {
             return context.getString(R.string.error_not_defined);
         }
+    }
+
+    public interface TwitterError {
+
+        int ERROR_NOT_DEFINED = -1;
+        int RATE_LIMIT_EX = 0;
+        int USER_NOT_FOUND = 1;
+        int RESOURCE_NOT_FOUND = 2;
+        int CANT_SEND_DM = 3;
+        int NOT_AUTHORIZED = 4;
+        int TWEET_TOO_LONG = 5;
+        int DUPLICATE_TWEET = 6;
+        int NO_DM_TO_USER = 7;
+        int DM_TOO_LONG = 8;
+        int TOKEN_EXPIRED = 9;
+        int NO_MEDIA_FOUND = 10;
+        int NO_LINK_DEFINED = 11;
+        int NO_CONNECTION = 12;
+        int IMAGE_NOT_LOADED = 13;
+        int ACCESS_TOKEN_DEAD = 14;
+        int TWEET_CANT_REPLY = 15;
+        int ACCOUNT_UPDATE_FAILED = 16;
+        int REQUEST_CANCELLED = 17;
+        int REQUEST_FORBIDDEN = 18;
+        int APP_SUSPENDED = 19;
+        int ERROR_API_ACCESS_DENIED = 20;
+        int FILENOTFOUND = 23;
+        int TOKENNOTSET = 22;
+        int BITMAP_FAILURE = 21;
+
+        int getErrorType();
+
+        int getTimeToWait();
+
+        String getMessage();
     }
 }

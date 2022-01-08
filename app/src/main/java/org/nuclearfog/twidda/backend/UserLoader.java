@@ -6,8 +6,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.fragments.UserFragment;
 
@@ -67,10 +65,9 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
     }
 
     @Nullable
-    private EngineException twException;
+    private TwitterException twException;
     private final WeakReference<UserFragment> callback;
-    private final TwitterEngine mTwitter;
-    private Twitter mTwitter2;
+    private Twitter mTwitter;
 
     private final Type type;
     private final String search;
@@ -80,8 +77,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
     public UserLoader(UserFragment callback, Type type, long id, String search) {
         super();
         this.callback = new WeakReference<>(callback);
-        mTwitter = TwitterEngine.getInstance(callback.getContext());
-        mTwitter2 = Twitter.get(callback.getContext());
+        mTwitter = Twitter.get(callback.getContext());
         this.type = type;
         this.search = search;
         this.id = id;
@@ -100,16 +96,16 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
                     return mTwitter.getFollowing(id, cursor);
 
                 case RETWEET:
-                    return mTwitter2.getRetweetingUsers(id);
+                    return mTwitter.getRetweetingUsers(id);
 
                 case FAVORIT:
-                    return mTwitter2.getLikingUsers(id);
+                    return mTwitter.getLikingUsers(id);
 
                 case SEARCH:
                     return mTwitter.searchUsers(search, cursor);
 
                 case SUBSCRIBER:
-                    return mTwitter.getListFollower(id, cursor);
+                    return mTwitter.getListSubscriber(id, cursor);
 
                 case LISTMEMBER:
                     return mTwitter.getListMember(id, cursor);
@@ -121,10 +117,8 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
                     return mTwitter.getMutedUsers(cursor);
 
             }
-        } catch (EngineException twException) {
+        } catch (TwitterException twException) {
             this.twException = twException;
-        } catch (TwitterException err) {
-
         }
         return null;
     }

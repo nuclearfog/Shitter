@@ -2,8 +2,11 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.activities.LoginActivity;
 import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -19,6 +22,8 @@ import java.lang.ref.WeakReference;
  */
 public class Registration extends AsyncTask<String, Void, String> {
 
+    @Nullable
+    private TwitterException exception;
     private WeakReference<LoginActivity> callback;
     private AccountDatabase accountDB;
     private AppDatabase database;
@@ -56,8 +61,8 @@ public class Registration extends AsyncTask<String, Void, String> {
             User user = twitter.login(param[0], param[1]);
             database.storeUser(user);
             return "";
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException exception) {
+            this.exception = exception;
         }
         return null;
     }
@@ -65,12 +70,15 @@ public class Registration extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String redirectionURL) {
-        if (callback.get() != null) {
+        LoginActivity activity = callback.get();
+        if (activity != null) {
             if (redirectionURL != null) {
                 if (!redirectionURL.isEmpty()) {
-                    callback.get().connect(redirectionURL);
+                    activity.connect(redirectionURL);
+                } else if (exception != null) {
+                    activity.onError(exception);
                 } else {
-                    callback.get().onSuccess();
+                    activity.onSuccess();
                 }
             }
         }

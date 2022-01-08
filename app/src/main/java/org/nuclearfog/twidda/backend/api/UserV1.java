@@ -181,6 +181,12 @@ class UserV1 implements User {
         return isCurrentUser;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return username + " " + screenName;
+    }
+
     /**
      * set time of account creation
      *

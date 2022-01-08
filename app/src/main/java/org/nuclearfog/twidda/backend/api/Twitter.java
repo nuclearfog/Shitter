@@ -11,12 +11,14 @@ import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
+import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.IOException;
 import java.security.KeyStore;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.net.ssl.TrustManagerFactory;
@@ -36,19 +38,31 @@ import okhttp3.Response;
 public class Twitter {
 
     private static final String OAUTH = "1.0";
+    public static final String SIGNATURE_ALG = "HMAC-SHA256";
+
     private static final String API = "https://api.twitter.com/";
     private static final String AUTHENTICATE = API + "oauth/authenticate";
     private static final String REQUEST_TOKEN = API + "oauth/request_token";
     private static final String OAUTH_VERIFIER = API + "oauth/access_token";
     private static final String CREDENTIALS = API + "1.1/account/verify_credentials.json";
     private static final String USER_LOOKUP = API + "1.1/users/show.json";
+    private static final String USER_FOLLOWING = API + "1.1/friends/list.json";
+    private static final String USER_FOLLOWER = API + "1.1/followers/list.json";
+    private static final String USER_SEARCH = API + "1.1/users/search.json";
+    private static final String USER_LIST_MEMBER = API + "1.1/lists/members.json";
+    private static final String USER_LIST_SUBSCRIBER = API + "1.1/lists/subscribers.json";
+    private static final String BLOCK_LIST = API + "1.1/blocks/list.json";
+    private static final String MUTES_LIST = API + "1.1/mutes/users/list.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
-    public static final String SIGNATURE_ALG = "HMAC-SHA256";
+
+
+    private static final String SKIP_STAT = "skip_status=true";
 
     private static Twitter instance;
 
     private OkHttpClient client;
     private GlobalSettings settings;
+    private ExcludeDatabase filterList;
     private Tokens tokens;
 
 
@@ -65,8 +79,9 @@ public class Twitter {
         } else {
             client = new OkHttpClient().newBuilder().build();
         }
-        settings = GlobalSettings.getInstance(context);
         tokens = Tokens.getInstance(context);
+        settings = GlobalSettings.getInstance(context);
+        filterList = new ExcludeDatabase(context);
     }
 
     /**
@@ -94,7 +109,7 @@ public class Twitter {
                 Uri uri = Uri.parse(AUTHENTICATE + "?" + res);
                 return uri.getQueryParameter("oauth_token");
             } else {
-                throw new TwitterException(response.code());
+                throw new TwitterException(response);
             }
         } catch (IOException e) {
             throw new TwitterException(e);
@@ -108,8 +123,6 @@ public class Twitter {
      */
     public User login(String oauth_token, String pin) throws TwitterException {
         try {
-            if (oauth_token == null)
-                throw new TwitterException(TwitterException.TOKEN_NOT_SET);
             String paramPin = "oauth_verifier=" + pin;
             String paramToken = "oauth_token=" + oauth_token;
             Response response = post(OAUTH_VERIFIER, paramPin, paramToken);
@@ -123,34 +136,10 @@ public class Twitter {
                 settings.setogin(true);
                 return getCredentials();
             } else {
-                throw new TwitterException(response.code());
+                throw new TwitterException(response);
             }
         } catch (IOException e) {
             throw new TwitterException(e);
-        }
-    }
-
-    /**
-     * lookup single user
-     *
-     * @param id ID of the user
-     * @return user information
-     */
-    public User showUser(long id) throws TwitterException {
-        try {
-            String param = "user_id=" + id;
-            String extra = "include_entities=true";
-            Response response = get(USER_LOOKUP, param, extra);
-            if (response.code() == 200 && response.body() != null) {
-                JSONObject json = new JSONObject(response.body().string());
-                return new UserV1(json, settings.getCurrentUserId());
-            } else {
-                throw new TwitterException(response.code());
-            }
-        } catch (IOException err) {
-            throw new TwitterException(err);
-        } catch (JSONException err) {
-            throw new TwitterException(err);
         }
     }
 
@@ -162,17 +151,123 @@ public class Twitter {
     public User getCredentials() throws TwitterException {
         try {
             Response response = get(CREDENTIALS);
-            if (response.code() == 200 && response.body() != null) {
+            if (response.body() != null) {
                 JSONObject json = new JSONObject(response.body().string());
-                return new UserV1(json);
+                if (response.code() == 200) {
+                    return new UserV1(json);
+                } else {
+                    throw new TwitterException(json);
+                }
             } else {
-                throw new TwitterException(response.code());
+                throw new TwitterException(response);
             }
         } catch (IOException err) {
             throw new TwitterException(err);
         } catch (JSONException err) {
             throw new TwitterException(err);
         }
+    }
+
+    /**
+     * lookup user and return user information
+     *
+     * @param id ID of the user
+     * @return user information
+     */
+    public User showUser(long id) throws  TwitterException {
+        String param = "user_id=" + id;
+        String extra = "include_entities=true";
+        return showUser(param, extra);
+    }
+
+    /**
+     * lookup user and return user information
+     *
+     * @param name screen name of the user
+     * @return user information
+     */
+    public User showUser(String name) throws TwitterException {
+        String param = "screen_name=" + name;
+        String extra = "include_entities=true";
+        return showUser(param, extra);
+    }
+
+    /**
+     * create a list of users a specified user is following
+     *
+     * @param userId ID of the user
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getFollowing(long userId, long cursor) throws TwitterException {
+        String paramId = "user_id=" + userId;
+        String paramCsr = "cursor=" + cursor;
+        String paramCnt = "count=" + settings.getListSize();
+        return getUsers1(USER_FOLLOWING, paramId, paramCsr, paramCnt, SKIP_STAT);
+    }
+
+    /**
+     * create a list of users following a specified user
+     *
+     * @param userId ID of the user
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getFollower(long userId, long cursor) throws TwitterException {
+        String paramId = "user_id=" + userId;
+        String paramCsr = "cursor=" + cursor;
+        String paramCnt = "count=" + settings.getListSize();
+        return getUsers1(USER_FOLLOWER, paramId, paramCsr, paramCnt, SKIP_STAT);
+    }
+
+    /**
+     * create a list of user list members
+     *
+     * @param listId ID of the list
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getListMember(long listId, long cursor) throws TwitterException {
+        String paramId = "list_id=" + listId;
+        String paramCsr = "cursor=" + cursor;
+        String paramCnt = "count=" + settings.getListSize();
+        return getUsers1(USER_LIST_MEMBER, paramId, paramCsr, paramCnt, SKIP_STAT);
+    }
+
+    /**
+     * create a list of user list subscriber
+     *
+     * @param listId ID of the list
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getListSubscriber(long listId, long cursor) throws TwitterException {
+        String paramId = "list_id=" + listId;
+        String paramCsr = "cursor=" + cursor;
+        String paramCnt = "count=" + settings.getListSize();
+        return getUsers1(USER_LIST_SUBSCRIBER, paramId, paramCsr, paramCnt, SKIP_STAT);
+    }
+
+    /**
+     * get block list of the current user
+     *
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getBlockedUsers(long cursor) throws TwitterException {
+        String paramCsr = "cursor=" + cursor;
+        return getUsers1(BLOCK_LIST, paramCsr, SKIP_STAT);
+    }
+
+    /**
+     * get mute list of the current user
+     *
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getMutedUsers(long cursor) throws TwitterException {
+        String paramCsr = "cursor=" + cursor;
+        return getUsers1(MUTES_LIST, paramCsr, SKIP_STAT);
     }
 
     /**
@@ -183,7 +278,7 @@ public class Twitter {
      */
     public Users getRetweetingUsers(long tweetId) throws TwitterException {
         String endpoint = API + "2/tweets/" + tweetId + "/retweeted_by";
-        return getUsers(endpoint);
+        return getUsers2(endpoint);
     }
 
     /**
@@ -194,29 +289,144 @@ public class Twitter {
      */
     public Users getLikingUsers(long tweetId) throws TwitterException {
         String endpoint = API + "2/tweets/" + tweetId + "/liking_users";
-        return getUsers(endpoint);
+        return getUsers2(endpoint);
     }
 
     /**
-     * get a list of twitter users
+     * search for users matching a search string
+     *
+     * @param search search string
+     * @param page page of the search results
+     * @return list of users
+     */
+    public Users searchUsers(String search, long page) throws TwitterException {
+        // search endpoint only supports pages parameter
+        long currentPage = page > 0 ? page : 1;
+        long nextPage = currentPage + 1;
+        String paramQuery = "q=" + search;
+        String paramPage = "page=" + currentPage;
+        String paramCnt = "count=" + settings.getListSize();
+
+        try {
+            Response response = get(USER_SEARCH, paramQuery, paramPage, paramCnt);
+            if (response.body() != null) {
+                JSONArray array = new JSONArray(response.body().string());
+                if (response.code() == 200) {
+                    if (array.length() < 20)
+                        nextPage = 0;
+                    Users users = new Users(currentPage - 1, nextPage);
+                    long homeId = settings.getCurrentUserId();
+                    // filter results if enabled
+                    if (settings.filterResults()) {
+                        Set<Long> exclude = filterList.getExcludeSet();
+                        for (int i = 0; i < array.length(); i++) {
+                            User user = new UserV1(array.getJSONObject(i), homeId);
+                            if (!exclude.contains(user.getId())) {
+                                users.add(user);
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < array.length(); i++) {
+                            User user = new UserV1(array.getJSONObject(i), homeId);
+                            users.add(user);
+                        }
+                    }
+                    return users;
+                }
+            }
+            throw new TwitterException(response);
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * lookup single user
+     *
+     * @param params additional parameter added to request
+     * @return user information
+     */
+    public User showUser(String... params) throws TwitterException {
+        try {
+            Response response = get(USER_LOOKUP, params);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    return new UserV1(json, settings.getCurrentUserId());
+                } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * create a list of users using API v 1.1
+     *
+     * @param endpoint endpoint url to get the user data from
+     * @param params   additional parameters
+     * @return user list
+     */
+    private Users getUsers1(String endpoint, String... params) throws TwitterException {
+        try {
+            Response response = get(endpoint, params);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    JSONArray array = json.getJSONArray("users");
+                    long prevCursor = json.getLong("previous_cursor");
+                    long nextCursor = json.getLong("next_cursor");
+                    Users users = new Users(prevCursor, nextCursor);
+                    long homeId = settings.getCurrentUserId();
+                    for (int i = 0; i < array.length(); i++) {
+                        users.add(new UserV1(array.getJSONObject(i), homeId));
+                    }
+                    return users;
+                } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * create a list of users using API v 2
      *
      * @param endpoint endpoint url to get the user data from
      * @return user list
      */
-    private Users getUsers(String endpoint) throws TwitterException {
+    private Users getUsers2(String endpoint) throws TwitterException {
         try {
             Response response = get(endpoint, UserV2.PARAMS);
-            if (response.code() == 200 && response.body() != null) {
+            if (response.body() != null) {
                 JSONObject json = new JSONObject(response.body().string());
-                JSONArray array = json.getJSONArray("data");
-                Users users = new Users();
-                long homeId = settings.getCurrentUserId();
-                for (int i = 0 ; i < array.length() ; i++) {
-                    users.add(new UserV2(array.getJSONObject(i), homeId));
+                if (response.code() == 200) {
+                    JSONArray array = json.getJSONArray("data");
+                    Users users = new Users();
+                    long homeId = settings.getCurrentUserId();
+                    for (int i = 0; i < array.length(); i++) {
+                        users.add(new UserV2(array.getJSONObject(i), homeId));
+                    }
+                    return users;
+                } else {
+                    throw new TwitterException(json);
                 }
-                return users;
             } else {
-                throw new TwitterException(response.code());
+                throw new TwitterException(response);
             }
         } catch (IOException err) {
             throw new TwitterException(err);
