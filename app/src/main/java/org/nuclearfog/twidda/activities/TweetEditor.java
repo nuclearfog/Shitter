@@ -311,6 +311,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      * called after sending tweet
      */
     public void onSuccess() {
+        loadingCircle.dismiss();
         Toast.makeText(this, R.string.info_tweet_sent, LENGTH_LONG).show();
         finish();
     }

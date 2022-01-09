@@ -15,6 +15,9 @@ import org.nuclearfog.twidda.model.User;
  */
 class UserV1 implements User {
 
+    static final String SKIP_STAT = "skip_status=true";
+    static final String INCLUDE_ENTITIES = "include_entities=true";
+
     private long userID;
     private long created;
     private String username;

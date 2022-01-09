@@ -147,7 +147,7 @@ public final class StringTools {
      */
     public static int calculateIndexOffset(String text, int limit) {
         int offset = 0;
-        for (int c = 0; c < limit - 1; c++) {
+        for (int c = 0; c < limit - 1 && c < text.length(); c++) {
             // determine if a pair of chars represent an emoji
             if (Character.isSurrogatePair(text.charAt(c), text.charAt(c + 1))) {
                 offset++;

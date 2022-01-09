@@ -552,18 +552,27 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         } else {
             sensitive_media.setVisibility(GONE);
         }
-        if (tweetUpdate.getMediaType().equals(Tweet.MIME_NONE)) {
-            mediaButton.setVisibility(GONE);
-        } else {
-            mediaButton.setVisibility(VISIBLE);
-            if (tweetUpdate.getMediaType().equals(Tweet.MIME_PHOTO)) {
+        AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
+        switch(tweetUpdate.getMediaType()) {
+            case Tweet.MIME_PHOTO:
+                mediaButton.setVisibility(VISIBLE);
                 mediaButton.setImageResource(R.drawable.image);
-            } else if (tweetUpdate.getMediaType().equals(Tweet.MIME_VIDEO)) {
+                break;
+
+            case Tweet.MIME_VIDEO:
+                mediaButton.setVisibility(VISIBLE);
                 mediaButton.setImageResource(R.drawable.video);
-            } else {
+                break;
+
+            case Tweet.MIME_ANGIF:
+                mediaButton.setVisibility(VISIBLE);
                 mediaButton.setImageResource(R.drawable.gif);
-            }
-            AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
+                break;
+
+            default:
+                mediaButton.setVisibility(GONE);
+                mediaButton.setImageResource(0);
+                break;
         }
         if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
             String pbLink = author.getImageUrl();

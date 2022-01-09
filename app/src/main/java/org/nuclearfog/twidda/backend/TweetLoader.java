@@ -4,8 +4,11 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragments.TweetFragment;
@@ -64,28 +67,31 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
     }
 
     @Nullable
-    private EngineException twException;
-    private final WeakReference<TweetFragment> callback;
-    private final TwitterEngine mTwitter;
-    private final AppDatabase db;
+    private TwitterError twException;
+    private WeakReference<TweetFragment> callback;
+    private TwitterEngine mTwitter;
+    private Twitter twitter;
+    private AppDatabase db;
 
-    private final ListType listType;
-    private final String search;
-    private final long id;
+    private ListType listType;
+    private String search;
+    private long id;
     private int pos;
 
     /**
-     * @param callback callback to update tweet data
+     * @param fragment callback to update tweet data
      * @param listType type of tweet list to load
      * @param id       ID, depending on what list type should be loaded
      * @param search   search string if any
      * @param pos      index of the list where tweets should be inserted
      */
-    public TweetLoader(TweetFragment callback, ListType listType, long id, String search, int pos) {
+    public TweetLoader(TweetFragment fragment, ListType listType, long id, String search, int pos) {
         super();
-        this.callback = new WeakReference<>(callback);
-        db = new AppDatabase(callback.getContext());
-        mTwitter = TwitterEngine.getInstance(callback.getContext());
+        this.callback = new WeakReference<>(fragment);
+        db = new AppDatabase(fragment.getContext());
+        mTwitter = TwitterEngine.getInstance(fragment.getContext());
+        twitter = Twitter.get(fragment.getContext());
+
         this.listType = listType;
         this.search = search;
         this.id = id;
@@ -104,14 +110,14 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     if (sinceId == 0 && maxId == 0) {
                         tweets = db.getHomeTimeline();
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getHome(sinceId, maxId);
+                            tweets = twitter.getHomeTimeline(sinceId, maxId);
                             db.storeHomeTimeline(tweets);
                         }
                     } else if (sinceId > 0) {
-                        tweets = mTwitter.getHome(sinceId, maxId);
+                        tweets = twitter.getHomeTimeline(sinceId, maxId);
                         db.storeHomeTimeline(tweets);
                     } else if (maxId > 1) {
-                        tweets = mTwitter.getHome(sinceId, maxId);
+                        tweets = twitter.getHomeTimeline(sinceId, maxId);
                     }
                     break;
 
@@ -119,14 +125,14 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     if (sinceId == 0 && maxId == 0) {
                         tweets = db.getMentions();
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getMention(sinceId, maxId);
+                            tweets = twitter.getMentionTimeline(sinceId, maxId);
                             db.storeMentions(tweets);
                         }
                     } else if (sinceId > 0) {
-                        tweets = mTwitter.getMention(sinceId, maxId);
+                        tweets = twitter.getMentionTimeline(sinceId, maxId);
                         db.storeMentions(tweets);
                     } else if (maxId > 1) {
-                        tweets = mTwitter.getMention(sinceId, maxId);
+                        tweets = twitter.getMentionTimeline(sinceId, maxId);
                     }
                     break;
 
@@ -135,17 +141,17 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                         if (sinceId == 0 && maxId == 0) {
                             tweets = db.getUserTweets(id);
                             if (tweets.isEmpty()) {
-                                tweets = mTwitter.getUserTweets(id, 0, maxId);
+                                tweets = twitter.getUserTimeline(id, 0, maxId);
                                 db.storeUserTweets(tweets);
                             }
                         } else if (sinceId > 0) {
-                            tweets = mTwitter.getUserTweets(id, sinceId, maxId);
+                            tweets = twitter.getUserTimeline(id, sinceId, maxId);
                             db.storeUserTweets(tweets);
                         } else if (maxId > 1) {
-                            tweets = mTwitter.getUserTweets(id, sinceId, maxId);
+                            tweets = twitter.getUserTimeline(id, sinceId, maxId);
                         }
                     } else if (search != null) {
-                        tweets = mTwitter.getUserTweets(search, sinceId, maxId);
+                        tweets = twitter.getUserTimeline(search, sinceId, maxId);
                     }
                     break;
 
@@ -154,18 +160,18 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                         if (sinceId == 0 && maxId == 0) {
                             tweets = db.getUserFavorites(id);
                             if (tweets.isEmpty()) {
-                                tweets = mTwitter.getUserFavs(id, 0, maxId);
+                                tweets = twitter.getUserFavorits(id, 0, maxId);
                                 db.storeUserFavs(tweets, id);
                             }
                         } else if (sinceId > 0) {
-                            tweets = mTwitter.getUserFavs(id, 0, maxId);
+                            tweets = twitter.getUserFavorits(id, 0, maxId);
                             db.storeUserFavs(tweets, id);
                             pos = CLEAR_LIST; // set flag to clear previous data
                         } else if (maxId > 1) {
-                            tweets = mTwitter.getUserFavs(id, sinceId, maxId);
+                            tweets = twitter.getUserFavorits(id, sinceId, maxId);
                         }
                     } else if (search != null) {
-                        tweets = mTwitter.getUserFavs(search, sinceId, maxId);
+                        tweets = twitter.getUserFavorits(search, sinceId, maxId);
                     }
                     break;
 
@@ -200,8 +206,10 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     tweets = mTwitter.getListTweets(id, sinceId, maxId);
                     break;
             }
-        } catch (EngineException twException) {
-            this.twException = twException;
+        } catch (TwitterException e) {
+            this.twException = e;
+        } catch (EngineException e) {
+            this.twException = e;
         } catch (Exception err) {
             err.printStackTrace();
         }

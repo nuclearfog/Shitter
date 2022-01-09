@@ -33,53 +33,55 @@ class TweetV1 implements Tweet {
     private long timestamp;
     private String source;
     private Tweet embeddedTweet;
-    private String replyName;
     private long replyUserId;
     private long replyId;
     private long retweetId;
     private int retweetCount;
     private int favoriteCount;
-    private String[] mediaUrls;
-    private String userMentions;
-    private String mediaType;
     private boolean isSensitive;
     private boolean isRetweeted;
     private boolean isFavorited;
-    private String location;
-    private String coordinates;
+    private String userMentions = "";
+    private String location = "";
+    private String replyName = "";
+    private String coordinates = "";
+    private String[] mediaUrls = {};
+    private String mediaType = "";
 
 
     TweetV1(JSONObject json, long twitterId) throws JSONException{
         id = json.optLong("id");
         text = json.optString("full_text");
-        timestamp = StringTools.getTime(json.optString("created_at"));
         replyId = json.optLong("in_reply_to_status_id", -1);
         replyUserId = json.optLong("in_reply_to_status_id", -1);
-        location = json.optString("place");
-        replyName = '@' + json.optString("in_reply_to_screen_name");
         retweetCount = json.optInt("retweet_count");
         favoriteCount = json.optInt("favorite_count");
         isFavorited = json.optBoolean("favorited");
         isRetweeted = json.optBoolean("retweeted");
         isSensitive = json.optBoolean("possibly_sensitive");
+        timestamp = StringTools.getTime(json.optString("created_at"));
         source = StringTools.getSource(json.optString("source"));
+        String location = json.optString("place");
+        String replyName = json.optString("in_reply_to_screen_name");
 
-        JSONObject userJson = json.getJSONObject("user");
-        JSONObject tweetJson = json.optJSONObject("quoted_status");
-        JSONObject retweetJson = json.optJSONObject("current_user_retweet");
+        JSONObject user = json.getJSONObject("user");
+        JSONObject quoted_tweet = json.optJSONObject("quoted_status");
+        JSONObject user_retweet = json.optJSONObject("current_user_retweet");
         JSONObject entities = json.optJSONObject("entities");
         JSONObject extEntities = json.optJSONObject("extended_entities");
         JSONObject geo = json.optJSONObject("geo");
 
-        author = new UserV1(userJson, twitterId);
-        if (location.equals("null"))
-            location = "";
+        author = new UserV1(user, twitterId);
+        if (!location.equals("null"))
+            this.location = location;
+        if (!replyName.equals("null"))
+            this.replyName = replyName;
         if (geo != null)
             coordinates = geo.optString("coordinates");
-        if (retweetJson != null)
-            retweetId = retweetJson.optLong("id");
-        if (tweetJson != null)
-            embeddedTweet = new TweetV1(tweetJson, twitterId);
+        if (user_retweet != null)
+            retweetId = user_retweet.optLong("id");
+        if (quoted_tweet != null)
+            embeddedTweet = new TweetV1(quoted_tweet, twitterId);
         if (entities != null)
             addURLs(entities);
         if (extEntities != null) {
@@ -261,7 +263,7 @@ class TweetV1 implements Tweet {
     /**
      * expand URLs int the tweet text
      *
-     * @param entities json object with url information
+     * @param entities json object with tweet entities
      */
     private void addURLs(@NonNull JSONObject entities) {
         try {
@@ -285,18 +287,24 @@ class TweetV1 implements Tweet {
 
     /**
      * get mentioned user's screen name
+     *
+     * @param extEntities JSON object with extended entities
      */
-    private void addUserMentions(JSONObject json) {
+    private void addUserMentions(JSONObject extEntities) {
         StringBuilder buf = new StringBuilder();
         if (!replyName.isEmpty()) {
             buf.append(replyName).append(' ');
         }
-        JSONArray mentions = json.optJSONArray("user_mentions");
+        JSONArray mentions = extEntities.optJSONArray("user_mentions");
         if (mentions != null && mentions.length() > 0) {
             for (int pos = 0 ; pos < mentions.length() ; pos++){
                 JSONObject mention = mentions.optJSONObject(pos);
                 if (mention != null) {
-                    buf.append('@').append(mention.optString("screen_name")).append(' ');
+                    long mentionedUserId = mention.optLong("id");
+                    String mentionedUsername = mention.optString("screen_name");
+                    if (mentionedUserId != author.getId() && !mentionedUsername.isEmpty()) {
+                        buf.append('@').append(mentionedUsername).append(' ');
+                    }
                 }
             }
         }
