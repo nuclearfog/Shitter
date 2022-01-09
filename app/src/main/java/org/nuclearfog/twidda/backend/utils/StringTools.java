@@ -10,6 +10,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.crypto.Mac;
@@ -22,6 +23,9 @@ import javax.crypto.spec.SecretKeySpec;
  * @author nuclearfog
  */
 public final class StringTools {
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+    private static final long DEFAULT_TIME = 0x61D99F64;
 
     private StringTools() {
     }
@@ -100,6 +104,56 @@ public final class StringTools {
             }
         }
         return result;
+    }
+
+    /**
+     * convert Twitter ISO 8601 date time to long format
+     *
+     * @param timeStr Twitter time string
+     * @return date time
+     */
+    public static long getTime(String timeStr) {
+        try {
+            Date date = sdf.parse(timeStr);
+            if (date != null)
+                return date.getTime();
+        } catch (Exception e) {
+            // make date invalid so it will be not shown
+            e.printStackTrace();
+        }
+        return DEFAULT_TIME;
+    }
+
+    /**
+     * extract API name from Twitter href string
+     *
+     * @param srcHref twitter API href
+     * @return API name
+     */
+    public static String getSource(String srcHref) {
+        int start = srcHref.indexOf('>') + 1;
+        int end = srcHref.lastIndexOf('<');
+        if (start > 0 && end > start)
+            return srcHref.substring(start, end);
+        return srcHref;
+    }
+
+    /**
+     * calculate index offset caused by emojies
+     *
+     * @param text twitter test
+     * @param limit maximum char index
+     * @return offset value
+     */
+    public static int calculateIndexOffset(String text, int limit) {
+        int offset = 0;
+        for (int c = 0; c < limit - 1; c++) {
+            // determine if a pair of chars represent an emoji
+            if (Character.isSurrogatePair(text.charAt(c), text.charAt(c + 1))) {
+                offset++;
+            }
+        }
+        return offset;
     }
 
     /**

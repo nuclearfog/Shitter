@@ -47,7 +47,7 @@ class UserV2 implements User {
     UserV2(JSONObject json, long twitterId) {
         userID = json.optLong("id");
         username = json.optString("name");
-        screenName = json.optString("username"); // username -> screenname
+        screenName = '@' + json.optString("username"); // username -> screenname
         isProtected = json.optBoolean("protected");
         location = json.optString("location");
         profileUrl = json.optString("url");

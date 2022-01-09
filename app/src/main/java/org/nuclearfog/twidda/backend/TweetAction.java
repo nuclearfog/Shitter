@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activities.TweetActivity;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.model.Tweet;
@@ -58,20 +59,21 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     @Nullable
     private EngineException twException;
     private TwitterEngine mTwitter;
+    private Twitter twitter;
     private WeakReference<TweetActivity> callback;
     private AppDatabase db;
     private long tweetId;
 
 
     /**
-     * @param callback Callback to return tweet information
      * @param tweetId  ID of the tweet
      */
-    public TweetAction(TweetActivity callback, long tweetId) {
+    public TweetAction(TweetActivity activity, long tweetId) {
         super();
-        db = new AppDatabase(callback);
-        mTwitter = TwitterEngine.getInstance(callback);
-        this.callback = new WeakReference<>(callback);
+        db = new AppDatabase(activity);
+        mTwitter = TwitterEngine.getInstance(activity);
+        twitter = Twitter.get(activity);
+        this.callback = new WeakReference<>(activity);
         this.tweetId = tweetId;
     }
 
@@ -87,7 +89,8 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     }
 
                 case LOAD:
-                    tweet = mTwitter.getStatus(tweetId);
+                    tweet = twitter.showTweet(tweetId);
+                    //tweet = mTwitter.getStatus(tweetId);
                     publishProgress(tweet);
                     if (db.containStatus(tweetId)) {
                         // update tweet if there is a database entry

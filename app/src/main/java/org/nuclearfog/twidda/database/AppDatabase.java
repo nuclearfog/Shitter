@@ -723,7 +723,7 @@ public class AppDatabase {
      * @param db             SQLite database
      */
     private void storeStatus(Tweet tweet, int statusRegister, SQLiteDatabase db) {
-        User user = tweet.getUser();
+        User user = tweet.getAuthor();
         Tweet rtStat = tweet.getEmbeddedTweet();
         long rtId = -1L;
         if (rtStat != null) {
@@ -746,19 +746,19 @@ public class AppDatabase {
         } else {
             statusRegister &= ~MEDIA_SENS_MASK;
         }
-        if (tweet.getMediaType() == Tweet.IMAGE) {
+        if (Tweet.MIME_PHOTO.equals(tweet.getMediaType())) {
             statusRegister |= MEDIA_IMAGE_MASK;
-        } else if (tweet.getMediaType() == Tweet.VIDEO) {
+        } else if (Tweet.MIME_VIDEO.equals(tweet.getMediaType())) {
             statusRegister |= MEDIA_VIDEO_MASK;
-        } else if (tweet.getMediaType() == Tweet.GIF) {
+        } else if (Tweet.MIME_ANGIF.equals(tweet.getMediaType())) {
             statusRegister |= MEDIA_ANGIF_MASK;
         }
         ContentValues status = new ContentValues(16);
         status.put(TweetTable.MEDIA, getMediaLinks(tweet));
         status.put(TweetTable.ID, tweet.getId());
         status.put(TweetTable.USER, user.getId());
-        status.put(TweetTable.SINCE, tweet.getTime());
-        status.put(TweetTable.TWEET, tweet.getTweet());
+        status.put(TweetTable.SINCE, tweet.getTimestamp());
+        status.put(TweetTable.TWEET, tweet.getText());
         status.put(TweetTable.EMBEDDED, rtId);
         status.put(TweetTable.SOURCE, tweet.getSource());
         status.put(TweetTable.REPLYTWEET, tweet.getReplyId());
@@ -785,9 +785,9 @@ public class AppDatabase {
      */
     private void updateStatus(Tweet tweet, SQLiteDatabase db) {
         String[] tweetIdArg = {Long.toString(tweet.getId())};
-        String[] userIdArg = {Long.toString(tweet.getUser().getId())};
+        String[] userIdArg = {Long.toString(tweet.getAuthor().getId())};
 
-        User user = tweet.getUser();
+        User user = tweet.getAuthor();
         int register = getTweetRegister(db, tweet.getId());
         if (tweet.isRetweeted())
             register |= RTW_MASK;
@@ -799,7 +799,7 @@ public class AppDatabase {
             register &= ~FAV_MASK;
 
         ContentValues tweetColumn = new ContentValues(6);
-        tweetColumn.put(TweetTable.TWEET, tweet.getTweet());
+        tweetColumn.put(TweetTable.TWEET, tweet.getText());
         tweetColumn.put(TweetTable.RETWEET, tweet.getRetweetCount());
         tweetColumn.put(TweetTable.FAVORITE, tweet.getFavoriteCount());
         tweetColumn.put(TweetTable.RETWEETUSER, tweet.getMyRetweetId());

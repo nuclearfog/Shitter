@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.apiold;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 
@@ -18,9 +19,9 @@ import twitter4j.UserMentionEntity;
  */
 class TweetV1 implements Tweet {
 
-    private static final String MIME_PHOTO = "photo";
-    private static final String MIME_VIDEO = "video";
-    private static final String MIME_ANGIF = "animated_gif";
+    /**
+     * twitter video format
+     */
     private static final String MIME_V_MP4 = "video/mp4";
 
     private long tweetID;
@@ -33,7 +34,7 @@ class TweetV1 implements Tweet {
     private long myRetweetId;
     private int retweetCount;
     private int favoriteCount;
-    private int mediaType;
+    private String mediaType;
     private String[] mediaLinks = {};
     private String userMentions = "";
     private String locationName = "";
@@ -91,17 +92,17 @@ class TweetV1 implements Tweet {
     }
 
     @Override
-    public String getTweet() {
+    public String getText() {
         return tweet;
     }
 
     @Override
-    public User getUser() {
+    public User getAuthor() {
         return user;
     }
 
     @Override
-    public long getTime() {
+    public long getTimestamp() {
         return time;
     }
 
@@ -152,12 +153,12 @@ class TweetV1 implements Tweet {
     }
 
     @Override
-    public String getMentionedUsers() {
+    public String getUserMentions() {
         return userMentions;
     }
 
     @Override
-    public int getMediaType() {
+    public String getMediaType() {
         return mediaType;
     }
 
@@ -249,10 +250,7 @@ class TweetV1 implements Tweet {
         // remove xml tag from source string
         String source = status.getSource();
         if (source != null) {
-            int start = source.indexOf('>') + 1;
-            int end = source.lastIndexOf('<');
-            if (start > 0 && end > start)
-                this.source = source.substring(start, end);
+            this.source = StringTools.getSource(source);
         }
         // add reply mention
         StringBuilder userMentions = new StringBuilder(17 /*max screen name length*/);
@@ -281,18 +279,18 @@ class TweetV1 implements Tweet {
     private void getMedia(MediaEntity[] mediaEntities) {
         mediaLinks = new String[mediaEntities.length];
         if (mediaLinks.length == 0) {
-            mediaType = NONE;
+            mediaType = MIME_NONE;
         } else {
             switch (mediaEntities[0].getType()) {
                 case MIME_PHOTO:
-                    mediaType = IMAGE;
+                    mediaType = MIME_PHOTO;
                     for (int i = 0; i < mediaEntities.length; i++) {
                         mediaLinks[i] = mediaEntities[i].getMediaURLHttps();
                     }
                     break;
 
                 case MIME_VIDEO:
-                    mediaType = VIDEO;
+                    mediaType = MIME_VIDEO;
                     for (MediaEntity.Variant type : mediaEntities[0].getVideoVariants()) {
                         if (type.getContentType().equals(MIME_V_MP4)) {
                             // get link with selected video format
@@ -303,12 +301,12 @@ class TweetV1 implements Tweet {
                     break;
 
                 case MIME_ANGIF:
-                    mediaType = GIF;
+                    mediaType = MIME_ANGIF;
                     mediaLinks[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
                     break;
 
                 default:
-                    mediaType = NONE;
+                    mediaType = MIME_NONE;
                     break;
             }
         }

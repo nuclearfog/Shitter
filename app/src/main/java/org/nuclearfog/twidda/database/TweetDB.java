@@ -33,13 +33,13 @@ class TweetDB implements Tweet {
 
     private int retweetCount;
     private int favoriteCount;
-    private int mediaType;
     private long myRetweetId;
     private boolean retweeted;
     private boolean favorited;
     private boolean sensitive;
 
     private String[] mediaLinks;
+    private String mediaType;
     private String locationName;
     private String locationCoordinates;
     private String replyName;
@@ -69,13 +69,13 @@ class TweetDB implements Tweet {
         mediaLinks = SEPARATOR.split(links);
         // get media type
         if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK)
-            mediaType = GIF;
+            mediaType = MIME_ANGIF;
         else if ((tweetRegister & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK)
-            mediaType = IMAGE;
+            mediaType = MIME_PHOTO;
         else if ((tweetRegister & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK)
-            mediaType = VIDEO;
+            mediaType = MIME_VIDEO;
         else
-            mediaType = NONE;
+            mediaType = MIME_NONE;
         this.user = new UserDB(cursor, currentUserId);
     }
 
@@ -85,17 +85,17 @@ class TweetDB implements Tweet {
     }
 
     @Override
-    public String getTweet() {
+    public String getText() {
         return tweet;
     }
 
     @Override
-    public User getUser() {
+    public User getAuthor() {
         return user;
     }
 
     @Override
-    public long getTime() {
+    public long getTimestamp() {
         return time;
     }
 
@@ -146,12 +146,12 @@ class TweetDB implements Tweet {
     }
 
     @Override
-    public String getMentionedUsers() {
+    public String getUserMentions() {
         return replyName;
     }
 
     @Override
-    public int getMediaType() {
+    public String getMediaType() {
         return mediaType;
     }
 

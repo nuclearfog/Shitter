@@ -515,22 +515,6 @@ public class TwitterEngine {
     }
 
     /**
-     * Get Tweet
-     *
-     * @param tweetId Tweet ID
-     * @return Tweet Object
-     * @throws EngineException if Access is unavailable
-     */
-    public Tweet getStatus(long tweetId) throws EngineException {
-        try {
-            Status tweet = twitter.showStatus(tweetId);
-            return new TweetV1(tweet, twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
      * Get replies to a specific tweet
      *
      * @param name    screen name of receiver

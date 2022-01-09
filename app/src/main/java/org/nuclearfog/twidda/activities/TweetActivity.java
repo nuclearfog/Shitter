@@ -156,10 +156,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             tweet = (Tweet) data;
             Tweet embedded = tweet.getEmbeddedTweet();
             if (embedded != null) {
-                username = embedded.getUser().getScreenname();
+                username = embedded.getAuthor().getScreenname();
                 tweetId = embedded.getId();
             } else {
-                username = tweet.getUser().getScreenname();
+                username = tweet.getAuthor().getScreenname();
                 tweetId = tweet.getId();
             }
         } else {
@@ -266,7 +266,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             if (tweet.getEmbeddedTweet() != null)
                 currentTweet = tweet.getEmbeddedTweet();
             // enable delete option only if current user owns tweets
-            m.findItem(R.id.delete_tweet).setVisible(currentTweet.getUser().isCurrentUser());
+            m.findItem(R.id.delete_tweet).setVisible(currentTweet.getAuthor().isCurrentUser());
         }
         return super.onPrepareOptionsMenu(m);
     }
@@ -278,7 +278,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             Tweet clickedTweet = tweet;
             if (tweet.getEmbeddedTweet() != null)
                 clickedTweet = tweet.getEmbeddedTweet();
-            User author = clickedTweet.getUser();
+            User author = clickedTweet.getAuthor();
             // Delete tweet option
             if (item.getItemId() == R.id.delete_tweet) {
                 if (!deleteDialog.isShowing()) {
@@ -322,7 +322,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 clickedTweet = tweet.getEmbeddedTweet();
             // answer to the tweet
             if (v.getId() == R.id.tweet_answer) {
-                String tweetPrefix = clickedTweet.getMentionedUsers();
+                String tweetPrefix = clickedTweet.getUserMentions();
                 Intent tweetPopup = new Intent(this, TweetEditor.class);
                 tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, clickedTweet.getId());
                 if (!tweetPrefix.isEmpty())
@@ -346,7 +346,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // open profile of the tweet author
             else if (v.getId() == R.id.tweet_profile) {
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                profile.putExtra(UserProfile.KEY_PROFILE_DATA, clickedTweet.getUser());
+                profile.putExtra(UserProfile.KEY_PROFILE_DATA, clickedTweet.getAuthor());
                 startActivity(profile);
             }
             // open replied tweet
@@ -371,15 +371,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 Intent mediaIntent = new Intent(this, MediaViewer.class);
                 mediaIntent.putExtra(KEY_MEDIA_LINK, clickedTweet.getMediaLinks());
                 switch (clickedTweet.getMediaType()) {
-                    case Tweet.IMAGE:
+                    case Tweet.MIME_PHOTO:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                         break;
 
-                    case Tweet.VIDEO:
+                    case Tweet.MIME_VIDEO:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
                         break;
 
-                    case Tweet.GIF:
+                    case Tweet.MIME_ANGIF:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
                         break;
                 }
@@ -388,7 +388,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // go to user retweeting this tweet
             else if (v.getId() == R.id.tweet_retweeter_reference) {
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
+                profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getAuthor());
                 startActivity(profile);
             }
         }
@@ -495,12 +495,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweet = tweetUpdate;
         if (tweetUpdate.getEmbeddedTweet() != null) {
             tweetUpdate = tweetUpdate.getEmbeddedTweet();
-            retweeter.setText(tweet.getUser().getScreenname());
+            retweeter.setText(tweet.getAuthor().getScreenname());
             retweeter.setVisibility(VISIBLE);
         } else {
             retweeter.setVisibility(GONE);
         }
-        User author = tweetUpdate.getUser();
+        User author = tweetUpdate.getAuthor();
         invalidateOptionsMenu();
 
         NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
@@ -528,14 +528,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         }
         usrName.setText(author.getUsername());
         scrName.setText(author.getScreenname());
-        tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweetUpdate.getTime()));
+        tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweetUpdate.getTimestamp()));
         favButton.setText(buttonNumber.format(tweetUpdate.getFavoriteCount()));
         rtwButton.setText(buttonNumber.format(tweetUpdate.getRetweetCount()));
         tweet_api.setText(R.string.tweet_sent_from);
         tweet_api.append(tweetUpdate.getSource());
 
-        if (!tweetUpdate.getTweet().isEmpty()) {
-            Spannable sTweet = Tagger.makeTextWithLinks(tweetUpdate.getTweet(), settings.getHighlightColor(), this);
+        if (!tweetUpdate.getText().isEmpty()) {
+            Spannable sTweet = Tagger.makeTextWithLinks(tweetUpdate.getText(), settings.getHighlightColor(), this);
             tweetText.setVisibility(VISIBLE);
             tweetText.setText(sTweet);
         } else {
@@ -552,13 +552,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         } else {
             sensitive_media.setVisibility(GONE);
         }
-        if (tweetUpdate.getMediaType() == Tweet.NONE) {
+        if (tweetUpdate.getMediaType().equals(Tweet.MIME_NONE)) {
             mediaButton.setVisibility(GONE);
         } else {
             mediaButton.setVisibility(VISIBLE);
-            if (tweetUpdate.getMediaType() == Tweet.IMAGE) {
+            if (tweetUpdate.getMediaType().equals(Tweet.MIME_PHOTO)) {
                 mediaButton.setImageResource(R.drawable.image);
-            } else if (tweetUpdate.getMediaType() == Tweet.VIDEO) {
+            } else if (tweetUpdate.getMediaType().equals(Tweet.MIME_VIDEO)) {
                 mediaButton.setImageResource(R.drawable.video);
             } else {
                 mediaButton.setImageResource(R.drawable.gif);

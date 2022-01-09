@@ -5,11 +5,8 @@ import androidx.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * API 1.1 implementation of User
@@ -17,8 +14,6 @@ import java.util.Locale;
  * @author nuclearfog
  */
 class UserV1 implements User {
-
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
 
     private long userID;
     private long created;
@@ -40,13 +35,13 @@ class UserV1 implements User {
     private boolean isCurrentUser = true;
 
 
-    UserV1(JSONObject json, long twitterId) throws JSONException {
+    UserV1(JSONObject json, long twitterId) {
         this(json);
         isCurrentUser = twitterId == userID;
     }
 
 
-    UserV1(JSONObject json) throws JSONException {
+    UserV1(JSONObject json) {
         String bannerLink = json.optString("profile_banner_url");
         description = json.optString("description");
         username = json.optString("name");
@@ -63,7 +58,7 @@ class UserV1 implements User {
         followReqSent = json.optBoolean("follow_request_sent");
         defaultImage = json.optBoolean("default_profile_image");
         profileUrl = json.optString("profile_image_url_https");
-        setDate(json.optString("created_at"));
+        created = StringTools.getTime(json.optString("created_at"));
 
         // remove link suffix from banner URL
         if (bannerLink.length() > 4) {
@@ -188,45 +183,26 @@ class UserV1 implements User {
     }
 
     /**
-     * set time of account creation
-     *
-     * @param dateStr date string from twitter
-     */
-    private void setDate(String dateStr) {
-        try {
-            Date date = sdf.parse(dateStr);
-            if (date != null)
-                created = date.getTime();
-        } catch (Exception e) {
-            // make date invalid so it will be not shown
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * expand URLs in the user description
      *
      * @param urls json object with url information
      */
-    private void expandDescriptionUrls(@NonNull JSONArray urls) throws JSONException {
-        StringBuilder builder = new StringBuilder(description);
-        // twitter counts emojis twice so the indices have an offset
-        int offset = 0;
-        for (int c = 0 ; c < description.length() - 1 ; c++) {
-            // determine if a pair of chars represent an emoji
-            if (Character.isSurrogatePair(description.charAt(c), description.charAt(c + 1))) {
-                offset++;
+    private void expandDescriptionUrls(@NonNull JSONArray urls) {
+        try {
+            // replace new line symbol with new line character
+            StringBuilder builder = new StringBuilder(description);
+            for (int i = urls.length() - 1; i >= 0; i--) {
+                JSONObject entry = urls.getJSONObject(i);
+                String link = entry.getString("expanded_url");
+                JSONArray indices = entry.getJSONArray("indices");
+                int start = indices.getInt(0);
+                int end = indices.getInt(1);
+                int offset = StringTools.calculateIndexOffset(description, start);
+                builder.replace(start + offset, end + offset, link);
             }
+            this.description = builder.toString();
+        } catch (JSONException e) {
+            // use default description
         }
-        // replace new line symbol with new line character
-        for (int i = urls.length() - 1; i >= 0; i--) {
-            JSONObject entry = urls.getJSONObject(i);
-            String link = entry.getString("expanded_url");
-            JSONArray indices = entry.getJSONArray("indices");
-            int start = indices.getInt(0) + offset;
-            int end = indices.getInt(1) + offset;
-            builder.replace(start, end, link);
-        }
-        this.description = builder.toString();
     }
 }

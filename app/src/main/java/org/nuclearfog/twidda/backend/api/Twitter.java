@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
+import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -53,6 +54,7 @@ public class Twitter {
     private static final String USER_LIST_SUBSCRIBER = API + "1.1/lists/subscribers.json";
     private static final String BLOCK_LIST = API + "1.1/blocks/list.json";
     private static final String MUTES_LIST = API + "1.1/mutes/users/list.json";
+    private static final String SHOW_TWEET = API + "1.1/statuses/show.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
 
@@ -343,12 +345,38 @@ public class Twitter {
     }
 
     /**
+     * lookup tweet by ID
+     * @param id tweet ID
+     * @return tweet information
+     */
+    public Tweet showTweet(long id) throws TwitterException {
+        try {
+            String paramId = "id=" + id;
+            Response response = get(SHOW_TWEET, paramId, TweetV1.EXT_MODE);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    return new TweetV1(json, settings.getCurrentUserId());
+                } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
      * lookup single user
      *
      * @param params additional parameter added to request
      * @return user information
      */
-    public User showUser(String... params) throws TwitterException {
+    private User showUser(String... params) throws TwitterException {
         try {
             Response response = get(USER_LOOKUP, params);
             if (response.body() != null) {

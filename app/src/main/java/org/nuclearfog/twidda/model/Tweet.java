@@ -12,25 +12,21 @@ import java.io.Serializable;
 public interface Tweet extends Serializable {
 
     /**
-     * tweet contains one or more images
+     * twitter MIME type for a photo
      */
-    int IMAGE = 0xe4150646;
+    String MIME_PHOTO = "photo";
 
     /**
-     * tweet contains a video
+     * twitter MIME type for a video
      */
-    int VIDEO = 0x45c010d4;
+    String MIME_VIDEO = "video";
 
     /**
-     * tweet contains an animated image
+     * twitter MIME type for a gif
      */
-    int GIF = 0xe43c15a1;
+    String MIME_ANGIF = "animated_gif";
 
-    /**
-     * tweet contains no media
-     */
-    int NONE = 0x2bb3fc2d;
-
+    String MIME_NONE = "*/*";
     /**
      * @return tweet ID
      */
@@ -39,17 +35,17 @@ public interface Tweet extends Serializable {
     /**
      * @return tweet text
      */
-    String getTweet();
+    String getText();
 
     /**
      * @return tweet author
      */
-    User getUser();
+    User getAuthor();
 
     /**
      * @return time when the tweet was published
      */
-    long getTime();
+    long getTimestamp();
 
     /**
      * @return API name from where the weet was published
@@ -100,12 +96,12 @@ public interface Tweet extends Serializable {
     /**
      * @return mentioned user names in the tweet text
      */
-    String getMentionedUsers();
+    String getUserMentions();
 
     /**
-     * @return type of media attached to the tweet {@link #IMAGE}, {@link #VIDEO}, {@link #GIF} or {@link #NONE}
+     * @return MIME type of media attached to the tweet
      */
-    int getMediaType();
+    String getMediaType();
 
     /**
      * @return true if tweet contains sensitive media
