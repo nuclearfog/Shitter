@@ -19,6 +19,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -60,6 +61,8 @@ public class Twitter {
     private static final String SHOW_MENTIONS = API + "1.1/statuses/mentions_timeline.json";
     private static final String SHOW_USER_TL = API + "1.1/statuses/user_timeline.json";
     private static final String SHOW_USER_FAV = API + "1.1/favorites/list.json";
+    private static final String SHOW_LIST_TWEETS = API + "1.1/lists/statuses.json";
+    private static final String SEARCH_TWEETS = API + "1.1/search/tweets.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
     private static Twitter instance;
@@ -300,6 +303,28 @@ public class Twitter {
     }
 
     /**
+     * search tweets matching a search string
+     *
+     * @param search search string
+     * @param minId get tweets with ID above the min ID
+     * @param maxId get tweets with ID under the max ID
+     * @return list of tweets matching the search string
+     */
+    public List<Tweet> searchTweets(String search, long minId, long maxId) throws TwitterException {
+        List<String> params = new ArrayList<>(7);
+        if (minId > 0)
+            params.add("since_id=" + minId);
+        if (maxId > 1)
+            params.add("max_id=" + maxId);
+        params.add("q=" + StringTools.encode(search+ " +exclude:retweets"));
+        params.add("result_type=recent");
+        List<Tweet> result = getTweets1(SEARCH_TWEETS, params);
+        if (settings.filterResults())
+            filterTweets(result);
+        return result;
+    }
+
+    /**
      * search for users matching a search string
      *
      * @param search search string
@@ -312,46 +337,17 @@ public class Twitter {
         long nextPage = currentPage + 1;
 
         List<String> params = new ArrayList<>(4);
-        params.add("q=" + search);
+        params.add("q=" + StringTools.encode(search));
         params.add("page=" + currentPage);
-        params.add("count=" + settings.getListSize());
-        try {
-            Response response = get(USER_SEARCH, params);
-            if (response.body() != null) {
-                if (response.code() == 200) {
-                    JSONArray array = new JSONArray(response.body().string());
-                    if (array.length() < 20)
-                        nextPage = 0;
-                    Users users = new Users(currentPage - 1, nextPage);
-                    long homeId = settings.getCurrentUserId();
-                    // filter results if enabled
-                    if (settings.filterResults()) {
-                        Set<Long> exclude = filterList.getExcludeSet();
-                        for (int i = 0; i < array.length(); i++) {
-                            User user = new UserV1(array.getJSONObject(i), homeId);
-                            if (!exclude.contains(user.getId())) {
-                                users.add(user);
-                            }
-                        }
-                    } else {
-                        for (int i = 0; i < array.length(); i++) {
-                            User user = new UserV1(array.getJSONObject(i), homeId);
-                            users.add(user);
-                        }
-                    }
-                    return users;
-                } else {
-                    JSONObject result = new JSONObject(response.body().string());
-                    throw new TwitterException(result);
-                }
-            } else {
-                throw new TwitterException(response);
-            }
-        } catch (IOException err) {
-            throw new TwitterException(err);
-        } catch (JSONException err) {
-            throw new TwitterException(err);
-        }
+        Users result = getUsers1(USER_SEARCH, params);
+        // notice that there are no more results
+        // if result size is less than the requested size
+        if (result.size() < settings.getListSize())
+            nextPage = 0;
+        if (settings.filterResults())
+            filterUsers(result);
+        result.setCursors(currentPage - 1, nextPage);
+        return result;
     }
 
     /**
@@ -459,6 +455,55 @@ public class Twitter {
     }
 
     /**
+     * return tweets from an user list
+     *
+     * @param listId ID of the list
+     * @param minId get tweets with ID above the min ID
+     * @param maxId get tweets with ID under the max ID
+     * @return list of tweets
+     */
+    public List<Tweet> getUserlistTweets(long listId, long minId, long maxId) throws TwitterException {
+        List<String> params = new ArrayList<>(6);
+        if (minId > 0)
+            params.add("since_id=" + minId);
+        if (maxId > 1)
+            params.add("max_id=" + maxId);
+        params.add("list_id=" + listId);
+        return getTweets1(SHOW_LIST_TWEETS, params);
+    }
+
+    /**
+     * get replies of a tweet
+     *
+     * @param name screen name of the tweet author
+     * @param tweetId Id of the tweet
+     * @param minId get tweets with ID above the min ID
+     * @param maxId get tweets with ID under the max ID
+     * @return list of tweets
+     */
+    public List<Tweet> getTweetReplies(String name, long tweetId, long minId, long maxId) throws TwitterException {
+        List<String> params = new ArrayList<>(7);
+        if (minId > 0)
+            params.add("since_id=" + minId);
+        else
+            params.add("since_id=" + tweetId);
+        if (maxId > 1)
+            params.add("max_id=" + maxId);
+        params.add("result_type=recent");
+        params.add("q=" + StringTools.encode("to:" + name + " +exclude:retweets"));
+        List<Tweet> result = getTweets1(SEARCH_TWEETS, params);
+        List<Tweet> replies = new LinkedList<>();
+        for (Tweet reply : result) {
+            if (reply.getReplyId() == tweetId) {
+                replies.add(reply);
+            }
+        }
+        if (settings.filterResults())
+            filterTweets(replies);
+        return replies;
+    }
+
+    /**
      * lookup tweet by ID
      * @param id tweet ID
      * @return tweet information
@@ -526,15 +571,20 @@ public class Twitter {
             params.add("count=" + settings.getListSize());
             Response response = get(endpoint, params);
             if (response.body() != null) {
+                String body = response.body().string();
                 if (response.code() == 200) {
-                    JSONArray array = new JSONArray(response.body().string());
+                    JSONArray array;
+                    if (body.startsWith("{")) // twitter search uses another structure
+                        array = new JSONObject(body).getJSONArray("statuses");
+                    else
+                        array = new JSONArray(body);
                     long homeId = settings.getCurrentUserId();
                     List<Tweet> tweets = new ArrayList<>(array.length() + 1);
                     for (int i = 0; i < array.length(); i++)
                         tweets.add(new TweetV1(array.getJSONObject(i), homeId));
                     return tweets;
                 } else {
-                    JSONObject json = new JSONObject(response.body().string());
+                    JSONObject json = new JSONObject(body);
                     throw new TwitterException(json);
                 }
             } else {
@@ -560,12 +610,16 @@ public class Twitter {
             params.add(UserV1.SKIP_STAT);
             Response response = get(endpoint, params);
             if (response.body() != null) {
-                JSONObject json = new JSONObject(response.body().string());
+                String jsonResult = response.body().string();
+                // convert to JSON object if array
+                if (jsonResult.startsWith("[")) // twitter search uses another structure
+                    jsonResult = "{\"users\":" + jsonResult + '}';
+                JSONObject json = new JSONObject(jsonResult);
                 if (response.code() == 200) {
                     if (json.has("users")) {
                         JSONArray array = json.getJSONArray("users");
-                        long prevCursor = json.getLong("previous_cursor");
-                        long nextCursor = json.getLong("next_cursor");
+                        long prevCursor = json.optLong("previous_cursor", -1);
+                        long nextCursor = json.optLong("next_cursor", -1);
                         Users users = new Users(prevCursor, nextCursor);
                         long homeId = settings.getCurrentUserId();
                         for (int i = 0; i < array.length(); i++) {
@@ -625,6 +679,30 @@ public class Twitter {
             throw new TwitterException(err);
         } catch (JSONException err) {
             throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * filter tweets from blocked users
+     */
+    private void filterTweets(List<Tweet> tweets) {
+        Set<Long> exclude = filterList.getExcludeSet();
+        for (int pos = tweets.size() - 1 ; pos >= 0 ; pos--) {
+            if (exclude.contains(tweets.get(pos).getAuthor().getId())) {
+                tweets.remove(pos);
+            }
+        }
+    }
+
+    /**
+     * remove blocked users from list
+     */
+    private void filterUsers(List<User> users) {
+        Set<Long> exclude = filterList.getExcludeSet();
+        for (int pos = users.size() - 1 ; pos >= 0 ; pos--) {
+            if (exclude.contains(users.get(pos).getId())) {
+                users.remove(pos);
+            }
         }
     }
 

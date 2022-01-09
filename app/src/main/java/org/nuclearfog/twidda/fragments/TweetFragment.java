@@ -12,7 +12,6 @@ import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
 import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.ListType;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Tweet;
 

@@ -6,8 +6,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -69,7 +67,6 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
     @Nullable
     private TwitterError twException;
     private WeakReference<TweetFragment> callback;
-    private TwitterEngine mTwitter;
     private Twitter twitter;
     private AppDatabase db;
 
@@ -89,7 +86,6 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
         super();
         this.callback = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
-        mTwitter = TwitterEngine.getInstance(fragment.getContext());
         twitter = Twitter.get(fragment.getContext());
 
         this.listType = listType;
@@ -183,32 +179,30 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     if (sinceId == 0 && maxId == 0) {
                         tweets = db.getAnswers(id);
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getReplies(search, id, sinceId, maxId);
+                            tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
                             if (!tweets.isEmpty() && db.containStatus(id)) {
                                 db.storeReplies(tweets);
                             }
                         }
                     } else if (sinceId > 0) {
-                        tweets = mTwitter.getReplies(search, id, sinceId, maxId);
+                        tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
                         if (!tweets.isEmpty() && db.containStatus(id)) {
                             db.storeReplies(tweets);
                         }
                     } else if (maxId > 1) {
-                        tweets = mTwitter.getReplies(search, id, sinceId, maxId);
+                        tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
                     }
                     break;
 
                 case TWEET_SEARCH:
-                    tweets = mTwitter.searchTweets(search, sinceId, maxId);
+                    tweets = twitter.searchTweets(search, sinceId, maxId);
                     break;
 
                 case USERLIST:
-                    tweets = mTwitter.getListTweets(id, sinceId, maxId);
+                    tweets = twitter.getUserlistTweets(id, sinceId, maxId);
                     break;
             }
         } catch (TwitterException e) {
-            this.twException = e;
-        } catch (EngineException e) {
             this.twException = e;
         } catch (Exception err) {
             err.printStackTrace();

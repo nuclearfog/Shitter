@@ -176,7 +176,7 @@ public final class StringTools {
     }
 
     /**
-     * convert to percentage string
+     * convert to percentage string (RFC 3986)
      *
      * @param value string to convert
      * @return percentage string
@@ -199,7 +199,11 @@ public final class StringTools {
                     buffer.append("%20");
                     break;
 
-                case '%':
+                case ' ':
+                    buffer.append('+');
+                    break;
+
+                case '%': // replace %7E with '~'
                     if ((i + 1) < value.length() && value.charAt(i + 1) == '7' && value.charAt(i + 2) == 'E') {
                         buffer.append('~');
                         i += 2;
