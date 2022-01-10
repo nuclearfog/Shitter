@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.fragments.UserListFragment;
 
@@ -37,24 +37,23 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
     }
 
     @Nullable
-    private EngineException twException;
-    private final WeakReference<UserListFragment> callback;
-    private final TwitterEngine mTwitter;
-    private final Type listType;
-
-    private final long userId;
-    private final String ownerName;
+    private TwitterException twException;
+    private WeakReference<UserListFragment> callback;
+    private Twitter twitter;
+    private Type listType;
+    private long userId;
+    private String ownerName;
 
     /**
-     * @param callback  callback to update information
+     * @param fragment  callback to update information
      * @param listType  type of list to load
      * @param userId    ID of the userlist
      * @param ownerName alternative if user id is not defined
      */
-    public ListLoader(UserListFragment callback, Type listType, long userId, String ownerName) {
+    public ListLoader(UserListFragment fragment, Type listType, long userId, String ownerName) {
         super();
-        mTwitter = TwitterEngine.getInstance(callback.getContext());
-        this.callback = new WeakReference<>(callback);
+        twitter = Twitter.get(fragment.getContext());
+        callback = new WeakReference<>(fragment);
         this.listType = listType;
         this.userId = userId;
         this.ownerName = ownerName;
@@ -65,12 +64,12 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
     protected UserLists doInBackground(Long[] param) {
         try {
             if (listType == Type.LOAD_USERLISTS) {
-                return mTwitter.getUserList(userId, ownerName, param[0]);
+                return twitter.getUserListOwnerships(userId, ownerName, param[0]);
             }
             if (listType == Type.LOAD_MEMBERSHIPS) {
-                return mTwitter.getUserListMemberships(userId, ownerName, param[0]);
+                return twitter.getUserListMemberships(userId, ownerName, param[0]);
             }
-        } catch (EngineException twException) {
+        } catch (TwitterException twException) {
             this.twException = twException;
         } catch (Exception err) {
             err.printStackTrace();

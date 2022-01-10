@@ -16,9 +16,7 @@ import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Relation;
-import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -31,7 +29,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -132,44 +129,6 @@ public class TwitterEngine {
      */
     public static void resetTwitter() {
         mTwitter.isInitialized = false;
-    }
-
-    /**
-     * Get Trending Hashtags
-     *
-     * @param woeId Yahoo World ID
-     * @return Trend Resource
-     * @throws EngineException if access is unavailable
-     */
-    public List<Trend> getTrends(int woeId) throws EngineException {
-        try {
-            int index = 1;
-            List<Trend> result = new LinkedList<>();
-            twitter4j.Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
-            for (twitter4j.Trend trend : trends)
-                result.add(new TrendV1(trend, index++));
-            return result;
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get available locations
-     *
-     * @return list of locations
-     * @throws EngineException if access is unavailable
-     */
-    public List<Location> getLocations() throws EngineException {
-        try {
-            List<Location> result = new LinkedList<>();
-            List<twitter4j.Location> locations = twitter.getAvailableTrends();
-            for (twitter4j.Location location : locations)
-                result.add(new LocationV1(location));
-            return result;
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
     }
 
     /**
@@ -575,60 +534,6 @@ public class TwitterEngine {
                 twitter.updateProfileBanner(new File(bannerImg));
             twitter4j.User user = twitter.updateProfile(name, url, loc, bio);
             return new UserV1(user, twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get user list
-     *
-     * @param userId id of the list owner
-     * @param cursor list cursor to set the start point
-     * @return list information
-     * @throws EngineException if access is unavailable
-     */
-    public UserLists getUserList(long userId, String username, long cursor) throws EngineException {
-        try {
-            List<twitter4j.UserList> lists;
-            if (userId > 0)
-                lists = twitter.getUserLists(userId);
-            else
-                lists = twitter.getUserLists(username);
-            long prevCursor = cursor > 0 ? cursor : 0;
-            long nextCursor = 0;
-            UserLists result = new UserLists(prevCursor, nextCursor); // todo add paging system
-            for (twitter4j.UserList list : lists)
-                result.add(new UserListV1(list, twitter.getId()));
-            return result;
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * get the lists the user has been added to
-     *
-     * @param userId   ID of the user
-     * @param username alternative to userId if id is '0'
-     * @param cursor   list cursor
-     * @return a list of user lists
-     * @throws EngineException if access is unavailable
-     */
-    public UserLists getUserListMemberships(long userId, String username, long cursor) throws EngineException {
-        try {
-            int count = settings.getListSize();
-            PagableResponseList<twitter4j.UserList> lists;
-            if (userId > 0)
-                lists = twitter.getUserListMemberships(userId, count, cursor);
-            else
-                lists = twitter.getUserListMemberships(username, count, cursor);
-            long prevCursor = cursor > 0 ? cursor : 0;
-            long nextCursor = lists.getNextCursor();
-            UserLists result = new UserLists(prevCursor, nextCursor);
-            for (twitter4j.UserList list : lists)
-                result.add(new UserListV1(list, twitter.getId()));
-            return result;
         } catch (Exception err) {
             throw new EngineException(err);
         }

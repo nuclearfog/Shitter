@@ -640,7 +640,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
      *
      * @param err exception from twitter
      */
-    public void onError(EngineException err) {
+    public void onError(ErrorHandler.TwitterError err) {
         ErrorHandler.handleFailure(this, err);
     }
 

@@ -67,6 +67,12 @@ public class UserLists extends LinkedList<UserList> {
         return nextCursor;
     }
 
+
+    public void setCursors(long prevCursor, long nextCursor) {
+        this.prevCursor = prevCursor;
+        this.nextCursor = nextCursor;
+    }
+
     /**
      * replace whole list including cursors
      *

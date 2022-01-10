@@ -211,7 +211,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.textViews[1].setText(item.getDescription());
                 vh.textViews[2].setText(owner.getUsername());
                 vh.textViews[3].setText(owner.getScreenname());
-                vh.textViews[4].setText(formatCreationTime(item.getCreatedAt()));
+                vh.textViews[4].setText(formatCreationTime(item.getTimestamp()));
                 vh.textViews[5].setText(NUM_FORMAT.format(item.getMemberCount()));
                 vh.textViews[6].setText(NUM_FORMAT.format(item.getSubscriberCount()));
                 if (settings.imagesEnabled() && !owner.getImageUrl().isEmpty()) {

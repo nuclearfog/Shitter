@@ -4,15 +4,14 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragments.TrendFragment;
 import org.nuclearfog.twidda.model.Trend;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
 
 /**
  * Background task to load a list of location specific trends
@@ -23,21 +22,21 @@ import java.util.List;
 public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 
     @Nullable
-    private EngineException twException;
+    private TwitterException twException;
     private final WeakReference<TrendFragment> callback;
-    private final TwitterEngine mTwitter;
+    private final Twitter twitter;
     private final AppDatabase db;
     private final boolean isEmpty;
 
     /**
-     * @param callback callback to update data
+     * @param fragment callback to update data
      */
-    public TrendLoader(TrendFragment callback) {
+    public TrendLoader(TrendFragment fragment) {
         super();
-        this.callback = new WeakReference<>(callback);
-        db = new AppDatabase(callback.getContext());
-        mTwitter = TwitterEngine.getInstance(callback.getContext());
-        isEmpty = callback.isEmpty();
+        callback = new WeakReference<>(fragment);
+        db = new AppDatabase(fragment.getContext());
+        twitter = Twitter.get(fragment.getContext());
+        isEmpty = fragment.isEmpty();
     }
 
 
@@ -49,15 +48,15 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
             if (isEmpty) {
                 trends = db.getTrends(woeId);
                 if (trends.isEmpty()) {
-                    trends = mTwitter.getTrends(woeId);
+                    trends = twitter.getTrends(woeId);
                     db.storeTrends(trends, woeId);
                 }
             } else {
-                trends = mTwitter.getTrends(woeId);
+                trends = twitter.getTrends(woeId);
                 db.storeTrends(trends, woeId);
             }
             return trends;
-        } catch (EngineException twException) {
+        } catch (TwitterException twException) {
             this.twException = twException;
         } catch (Exception err) {
             err.printStackTrace();

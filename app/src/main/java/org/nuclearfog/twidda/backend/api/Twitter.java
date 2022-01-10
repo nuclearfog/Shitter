@@ -7,11 +7,14 @@ import android.os.Build;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
+import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -59,10 +62,14 @@ public class Twitter {
     private static final String SHOW_TWEET = API + "1.1/statuses/show.json";
     private static final String SHOW_HOME = API + "1.1/statuses/home_timeline.json";
     private static final String SHOW_MENTIONS = API + "1.1/statuses/mentions_timeline.json";
-    private static final String SHOW_USER_TL = API + "1.1/statuses/user_timeline.json";
-    private static final String SHOW_USER_FAV = API + "1.1/favorites/list.json";
-    private static final String SHOW_LIST_TWEETS = API + "1.1/lists/statuses.json";
-    private static final String SEARCH_TWEETS = API + "1.1/search/tweets.json";
+    private static final String USER_TIMELINE = API + "1.1/statuses/user_timeline.json";
+    private static final String USER_FAVORITS = API + "1.1/favorites/list.json";
+    private static final String LIST_TWEETS = API + "1.1/lists/statuses.json";
+    private static final String TWEET_SEARCH = API + "1.1/search/tweets.json";
+    private static final String TRENDS = API + "1.1/trends/place.json";
+    private static final String LOCATIONS = API + "1.1/trends/available.json";
+    private static final String USER_LIST_OWNERSHIP = API + "1.1/lists/list.json";
+    private static final String USER_LIST_MEMBERSHIP = API + "1.1/lists/memberships.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
     private static Twitter instance;
@@ -318,7 +325,7 @@ public class Twitter {
             params.add("max_id=" + maxId);
         params.add("q=" + StringTools.encode(search+ " +exclude:retweets"));
         params.add("result_type=recent");
-        List<Tweet> result = getTweets1(SEARCH_TWEETS, params);
+        List<Tweet> result = getTweets1(TWEET_SEARCH, params);
         if (settings.filterResults())
             filterTweets(result);
         return result;
@@ -348,6 +355,73 @@ public class Twitter {
             filterUsers(result);
         result.setCursors(currentPage - 1, nextPage);
         return result;
+    }
+
+    /**
+     * get location trends
+     *
+     * @param id world ID
+     * @return trend list
+     */
+    public List<Trend> getTrends(int id) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("id=" + id);
+        try {
+            Response response = get(TRENDS, params);
+            if (response.body() != null) {
+                if (response.code() == 200) {
+                    JSONArray json = new JSONArray(response.body().string());
+                    JSONArray trends = json.getJSONObject(0).getJSONArray("trends");
+                    List<Trend> result = new ArrayList<>(trends.length() + 1);
+                    for (int pos = 0 ; pos < trends.length() ; pos++) {
+                        JSONObject trend = trends.getJSONObject(pos);
+                        result.add(new TrendV1(trend, pos + 1));
+                    }
+                    return result;
+                } else {
+                    JSONObject json = new JSONObject(response.body().string());
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * get available locations for trends
+     *
+     * @return list of locations
+     */
+    public List<Location> getLocations() throws TwitterException {
+        //SHOW_LOCATIONS
+        try {
+            Response response = get(LOCATIONS, new ArrayList<>(0));
+            if (response.body() != null) {
+                if (response.code() == 200) {
+                    JSONArray locations = new JSONArray(response.body().string());
+                    List<Location> result = new ArrayList<>(locations.length() + 1);
+                    for (int pos = 0 ; pos < locations.length() ; pos++) {
+                        JSONObject location = locations.getJSONObject(pos);
+                        result.add(new LocationV1(location));
+                    }
+                    return result;
+                } else {
+                    JSONObject json = new JSONObject(response.body().string());
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
     }
 
     /**
@@ -397,7 +471,7 @@ public class Twitter {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("user_id=" + userId);
-        return getTweets1(SHOW_USER_TL, params);
+        return getTweets1(USER_TIMELINE, params);
     }
 
     /**
@@ -415,7 +489,7 @@ public class Twitter {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("screen_name=" + screen_name);
-        return getTweets1(SHOW_USER_TL, params);
+        return getTweets1(USER_TIMELINE, params);
     }
 
     /**
@@ -433,7 +507,7 @@ public class Twitter {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("user_id=" + userId);
-        return getTweets1(SHOW_USER_FAV, params);
+        return getTweets1(USER_FAVORITS, params);
     }
 
     /**
@@ -451,7 +525,7 @@ public class Twitter {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("screen_name=" + screen_name);
-        return getTweets1(SHOW_USER_FAV, params);
+        return getTweets1(USER_FAVORITS, params);
     }
 
     /**
@@ -469,7 +543,7 @@ public class Twitter {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("list_id=" + listId);
-        return getTweets1(SHOW_LIST_TWEETS, params);
+        return getTweets1(LIST_TWEETS, params);
     }
 
     /**
@@ -491,7 +565,7 @@ public class Twitter {
             params.add("max_id=" + maxId);
         params.add("result_type=recent");
         params.add("q=" + StringTools.encode("to:" + name + " +exclude:retweets"));
-        List<Tweet> result = getTweets1(SEARCH_TWEETS, params);
+        List<Tweet> result = getTweets1(TWEET_SEARCH, params);
         List<Tweet> replies = new LinkedList<>();
         for (Tweet reply : result) {
             if (reply.getReplyId() == tweetId) {
@@ -529,6 +603,44 @@ public class Twitter {
         } catch (JSONException err) {
             throw new TwitterException(err);
         }
+    }
+
+    /**
+     * return userlists an user is owning or following
+     *
+     * @param userId ID of the user
+     * @param screen_name screen name of the user (without '@')
+     * @param cursor list cursor
+     * @return list of userlists
+     */
+    public UserLists getUserListOwnerships(long userId, String screen_name, long cursor) throws TwitterException {
+        List<String> params = new ArrayList<>(3);
+        if (userId > 0)
+            params.add("user_id=" + userId);
+        else
+            params.add("screen_name=" + screen_name);
+        UserLists result = getUserlists(USER_LIST_OWNERSHIP, params);
+        result.setCursors(cursor, -1); // this endpoint doesn't support cursors
+        return result;
+    }
+
+    /**
+     * return userlists an user is added to
+     *
+     * @param userId ID of the user
+     * @param screen_name screen name of the user (without '@')
+     * @param cursor list cursor
+     * @return list of userlists
+     */
+    public UserLists getUserListMemberships(long userId, String screen_name, long cursor) throws TwitterException {
+        List<String> params = new ArrayList<>(5);
+        if (userId > 0)
+            params.add("user_id=" + userId);
+        else
+            params.add("screen_name=" + screen_name);
+        params.add("count=" + settings.getListSize());
+        params.add("cursor=" + cursor);
+        return getUserlists(USER_LIST_MEMBERSHIP, params);
     }
 
     /**
@@ -670,6 +782,51 @@ public class Twitter {
                         return new Users();
                     }
                 } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * get a list of userlists
+     * @param endpoint endpoint to get the userlists from
+     * @param params additional parameter
+     * @return list of userlists
+     */
+    private UserLists getUserlists(String endpoint, List<String> params) throws TwitterException {
+        params.add(UserV1.INCLUDE_ENTITIES);
+        try {
+            Response response = get(endpoint, params);
+            if (response.body() != null) {
+                if (response.code() == 200) {
+                    JSONArray array;
+                    UserLists result = new UserLists();
+                    String body = response.body().string();
+                    // add cursors if available
+                    if (body.startsWith("{")) {
+                        JSONObject json = new JSONObject(body);
+                        array = json.getJSONArray("lists");
+                        long prevCursor = json.optLong("previous_cursor");
+                        long nextCursor = json.optLong("next_cursor");
+                        result.setCursors(prevCursor, nextCursor);
+                    } else {
+                        array = new JSONArray(body);
+                    }
+                    long currentId = settings.getCurrentUserId();
+                    for (int pos = 0 ; pos < array.length() ; pos++) {
+                        JSONObject item = array.getJSONObject(pos);
+                        result.add(new UserListV1(item, currentId));
+                    }
+                    return result;
+                } else {
+                    JSONObject json = new JSONObject(response.body().string());
                     throw new TwitterException(json);
                 }
             } else {

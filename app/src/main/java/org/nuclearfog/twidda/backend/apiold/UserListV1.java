@@ -60,7 +60,7 @@ class UserListV1 implements UserList {
      * @return date long format
      */
     @Override
-    public long getCreatedAt() {
+    public long getTimestamp() {
         return createdAt;
     }
 

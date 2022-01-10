@@ -17,7 +17,7 @@ public interface UserList extends Serializable {
     /**
      * @return date of creation
      */
-    long getCreatedAt();
+    long getTimestamp();
 
     /**
      * @return title of the list
