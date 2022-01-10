@@ -6,6 +6,11 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
+/**
+ * User list implementation of API 1.1
+ *
+ * @author nuclearfog
+ */
 class UserListV1 implements UserList {
 
     private long id;
@@ -21,7 +26,7 @@ class UserListV1 implements UserList {
 
 
     UserListV1(JSONObject json, long currentId) throws JSONException {
-        id = json.optInt("id");
+        id = json.optLong("id");
         title = json.optString("name");
         description = json.optString("description");
         memberCount = json.optInt("member_count");

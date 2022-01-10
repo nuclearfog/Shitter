@@ -3,8 +3,8 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.ListEditor;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -19,24 +19,26 @@ import java.lang.ref.WeakReference;
 public class ListUpdater extends AsyncTask<ListHolder, Void, UserList> {
 
 
-    private EngineException err;
-    private final TwitterEngine mTwitter;
-    private final WeakReference<ListEditor> callback;
+    private TwitterException err;
+    private Twitter twitter;
+    private WeakReference<ListEditor> callback;
 
 
     public ListUpdater(ListEditor activity) {
         super();
         callback = new WeakReference<>(activity);
-        mTwitter = TwitterEngine.getInstance(activity);
+        twitter = Twitter.get(activity);
     }
 
 
     @Override
     protected UserList doInBackground(ListHolder... listHolders) {
         try {
-            ListHolder mList = listHolders[0];
-            return mTwitter.updateUserList(mList);
-        } catch (EngineException err) {
+            ListHolder list = listHolders[0];
+            if (list.exists())
+                return twitter.updateUserlist(list.getId(), list.isPublic(), list.getTitle(), list.getDescription());
+            return twitter.createUserlist(list.isPublic(), list.getTitle(), list.getDescription());
+        } catch (TwitterException err) {
             this.err = err;
         } catch (Exception err) {
             err.printStackTrace();

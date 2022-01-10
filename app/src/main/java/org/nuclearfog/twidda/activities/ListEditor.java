@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ListUpdater;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -154,6 +153,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
             Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();
             setResult(RET_LIST_CREATED);
         }
+        loadingCircle.dismiss();
         finish();
     }
 
@@ -162,7 +162,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
      *
      * @param err twitter exception
      */
-    public void onError(@Nullable EngineException err) {
+    public void onError(@Nullable ErrorHandler.TwitterError err) {
         if (!errorDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, err);
             errorDialog.setMessage(message);

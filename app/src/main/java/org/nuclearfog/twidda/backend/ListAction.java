@@ -3,8 +3,8 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.ListDetail;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.model.UserList;
 
 import java.lang.ref.WeakReference;
@@ -39,20 +39,20 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
     }
 
     private WeakReference<ListDetail> callback;
-    private TwitterEngine mTwitter;
-    private EngineException err;
+    private Twitter twitter;
+    private TwitterException err;
     private Action action;
 
     private long missingListId;
 
     /**
-     * @param callback Callback to update list information
+     * @param activity Callback to update list information
      * @param action   what action should be performed
      */
-    public ListAction(ListDetail callback, Action action) {
+    public ListAction(ListDetail activity, Action action) {
         super();
-        mTwitter = TwitterEngine.getInstance(callback.getApplicationContext());
-        this.callback = new WeakReference<>(callback);
+        callback = new WeakReference<>(activity);
+        twitter = Twitter.get(activity);
         this.action = action;
     }
 
@@ -63,22 +63,20 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
             long listId = ids[0];
             switch (action) {
                 case LOAD:
-                    return mTwitter.loadUserList(listId);
+                    return twitter.getUserlist(listId);
 
                 case FOLLOW:
-                    return mTwitter.followUserList(listId, true);
+                    return twitter.followUserlist(listId);
 
                 case UNFOLLOW:
-                    return mTwitter.followUserList(listId, false);
+                    return twitter.unfollowUserlist(listId);
 
                 case DELETE:
-                    return mTwitter.deleteUserList(listId);
+                    return twitter.destroyUserlist(listId);
             }
-        } catch (EngineException err) {
+        } catch (TwitterException err) {
             this.err = err;
             missingListId = ids[0];
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }

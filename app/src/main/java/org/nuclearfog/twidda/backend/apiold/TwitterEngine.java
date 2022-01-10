@@ -7,10 +7,8 @@ import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
-import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.ProxySetup;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
@@ -19,7 +17,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
-import org.nuclearfog.twidda.model.UserList;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +34,6 @@ import twitter4j.DirectMessage;
 import twitter4j.DirectMessageList;
 import twitter4j.GeoLocation;
 import twitter4j.IDs;
-import twitter4j.PagableResponseList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -540,58 +536,6 @@ public class TwitterEngine {
     }
 
     /**
-     * load user list information
-     *
-     * @param listId ID of the userlist
-     * @return list information
-     * @throws EngineException if access is unavailable
-     */
-    public UserList loadUserList(long listId) throws EngineException {
-        try {
-            return new UserListV1(twitter.showUserList(listId), twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Follow action for twitter list
-     *
-     * @param listId ID of the list
-     * @param follow ID of the list
-     * @return List information
-     * @throws EngineException if access is unavailable
-     */
-    public UserList followUserList(long listId, boolean follow) throws EngineException {
-        try {
-            twitter4j.UserList list;
-            if (follow) {
-                list = twitter.createUserListSubscription(listId);
-            } else {
-                list = twitter.destroyUserListSubscription(listId);
-            }
-            return new UserListV1(list, twitter.getId(), follow);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Delete User list
-     *
-     * @param listId ID of the list
-     * @return List information
-     * @throws EngineException if access is unavailable
-     */
-    public UserList deleteUserList(long listId) throws EngineException {
-        try {
-            return new UserListV1(twitter.destroyUserList(listId), twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
      * download image from Twitter
      *
      * @param link link of the image
@@ -640,26 +584,6 @@ public class TwitterEngine {
             return media.getMediaId();
         } catch (FileNotFoundException err) {
             throw new EngineException(EngineException.FILENOTFOUND);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * creates an user list
-     *
-     * @param list holder for list information
-     * @throws EngineException if access is unavailable
-     */
-    public UserListV1 updateUserList(ListHolder list) throws EngineException {
-        try {
-            twitter4j.UserList result;
-            if (list.exists()) {
-                result = twitter.updateUserList(list.getId(), list.getTitle(), list.isPublic(), list.getDescription());
-            } else {
-                result = twitter.createUserList(list.getTitle(), list.isPublic(), list.getDescription());
-            }
-            return new UserListV1(result, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }

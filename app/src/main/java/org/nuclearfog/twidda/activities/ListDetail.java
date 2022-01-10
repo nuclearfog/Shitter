@@ -369,9 +369,9 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      * @param err    error information
      * @param listId ID of the list where an error occurred
      */
-    public void onFailure(@Nullable EngineException err, long listId) {
+    public void onFailure(@Nullable ErrorHandler.TwitterError err, long listId) {
         ErrorHandler.handleFailure(this, err);
-        if (err != null && err.resourceNotFound()) {
+        if (err != null && err.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
             // List does not exist
             Intent result = new Intent();
             result.putExtra(RESULT_REMOVED_LIST_ID, listId);

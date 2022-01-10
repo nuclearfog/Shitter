@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.UserList;
 
 import java.io.IOException;
 import java.security.KeyStore;
@@ -68,6 +69,12 @@ public class Twitter {
     private static final String TWEET_SEARCH = API + "1.1/search/tweets.json";
     private static final String TRENDS = API + "1.1/trends/place.json";
     private static final String LOCATIONS = API + "1.1/trends/available.json";
+    private static final String USERLIST_SHOW = API + "1.1/lists/show.json";
+    private static final String USERLIST_FOLLOW = API + "1.1/lists/subscribers/create.json";
+    private static final String USERLIST_UNFOLLOW = API + "1.1/lists/subscribers/destroy.json";
+    private static final String USERLIST_CREATE = API + "1.1/lists/create.json";
+    private static final String USERLIST_UPDATE = API + "1.1/lists/update.json";
+    private static final String USERLIST_DESTROY = API + "1.1/lists/destroy.json";
     private static final String USER_LIST_OWNERSHIP = API + "1.1/lists/list.json";
     private static final String USER_LIST_MEMBERSHIP = API + "1.1/lists/memberships.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
@@ -579,6 +586,7 @@ public class Twitter {
 
     /**
      * lookup tweet by ID
+     *
      * @param id tweet ID
      * @return tweet information
      */
@@ -603,6 +611,79 @@ public class Twitter {
         } catch (JSONException err) {
             throw new TwitterException(err);
         }
+    }
+
+    /**
+     * create userlist
+     *
+     * @param isPublic true if list should be public
+     * @param title title of the list
+     * @param description description of the list
+     * @return updated user list
+     */
+    public UserList createUserlist(boolean isPublic, String title, String description) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("name=" + StringTools.encode(title));
+        params.add("description=" + StringTools.encode(description));
+        if (isPublic)
+            params.add("mode=public");
+        else
+            params.add("mode=private");
+        return getUserlist(USERLIST_CREATE, params);
+    }
+
+    /**
+     * update existing userlist
+     *
+     * @param id ID of the list
+     * @param isPublic true if list should be public
+     * @param title title of the list
+     * @param description description of the list
+     * @return updated user list
+     */
+    public UserList updateUserlist(long id, boolean isPublic, String title, String description) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("list_id=" + id);
+        params.add("name=" + StringTools.encode(title));
+        params.add("description=" + StringTools.encode(description));
+        if (isPublic)
+            params.add("mode=public");
+        else
+            params.add("mode=private");
+        return getUserlist(USERLIST_UPDATE, params);
+    }
+
+    /**
+     * return userlist information
+     *
+     * @param listId ID of the list
+     * @return userlist information
+     */
+    public UserList getUserlist(long listId) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("list_id=" + listId);
+        return getUserlist(USERLIST_SHOW, params);
+    }
+
+
+    public UserList followUserlist(long listId) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("list_id=" + listId);
+        return getUserlist(USERLIST_FOLLOW, params);
+    }
+
+
+    public UserList unfollowUserlist(long listId) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("list_id=" + listId);
+        return getUserlist(USERLIST_UNFOLLOW, params);
+    }
+
+
+    public UserList destroyUserlist(long listId) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("list_id=" + listId);
+        return getUserlist(USERLIST_DESTROY, params);
     }
 
     /**
@@ -781,6 +862,38 @@ public class Twitter {
                         // return empty list
                         return new Users();
                     }
+                } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * execute userlist action and return userlist information
+     *
+     * @param endpoint userlist endpoint to use
+     * @param params additional parameters
+     * @return userlist information
+     */
+    private UserList getUserlist(String endpoint, List<String> params) throws TwitterException {
+        try {
+            Response response;
+            if (endpoint.equals(USERLIST_SHOW))
+                response = get(endpoint, params);
+            else
+                response = post(endpoint, params);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    long currentId = settings.getCurrentUserId();
+                    return new UserListV1(json, currentId);
                 } else {
                     throw new TwitterException(json);
                 }
