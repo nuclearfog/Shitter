@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -86,5 +88,11 @@ class UserListV1 implements UserList {
     @Override
     public boolean isListOwner() {
         return isOwner;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return title + " / " + description;
     }
 }

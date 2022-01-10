@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Trend;
 
@@ -33,5 +35,11 @@ class TrendV1 implements Trend {
     @Override
     public int getPopularity() {
         return popularity;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return rank + ": " + name;
     }
 }

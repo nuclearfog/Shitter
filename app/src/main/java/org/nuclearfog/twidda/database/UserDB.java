@@ -4,6 +4,8 @@ import static org.nuclearfog.twidda.database.AppDatabase.*;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.model.User;
 
 class UserDB implements User {
@@ -148,5 +150,16 @@ class UserDB implements User {
     @Override
     public boolean isCurrentUser() {
         return isCurrentUser;
+    }
+
+    @Override
+    public int compareTo(User user) {
+        return Long.compare(user.getId(), userID);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return username + " " + screenName;
     }
 }

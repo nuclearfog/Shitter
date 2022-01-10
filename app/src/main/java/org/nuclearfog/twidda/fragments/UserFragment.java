@@ -23,7 +23,6 @@ import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Type;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -242,7 +241,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    public void onFailure(@Nullable EngineException err) {
+    public void onFailure(@Nullable ErrorHandler.TwitterError err) {
         ErrorHandler.handleFailure(requireContext(), err);
     }
 

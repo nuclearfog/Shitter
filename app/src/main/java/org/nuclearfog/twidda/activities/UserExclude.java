@@ -179,7 +179,7 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
     /**
      * called from {@link UserExcludeLoader} if an error occurs
      */
-    public void onError(EngineException err) {
+    public void onError(ErrorHandler.TwitterError err) {
         ErrorHandler.handleFailure(this, err);
     }
 }

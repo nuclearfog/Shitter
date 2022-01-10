@@ -7,6 +7,7 @@ import android.os.Build;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -14,6 +15,7 @@ import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
@@ -25,7 +27,9 @@ import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.net.ssl.TrustManagerFactory;
@@ -65,6 +69,12 @@ public class Twitter {
     private static final String SHOW_MENTIONS = API + "1.1/statuses/mentions_timeline.json";
     private static final String USER_TIMELINE = API + "1.1/statuses/user_timeline.json";
     private static final String USER_FAVORITS = API + "1.1/favorites/list.json";
+    private static final String USER_FOLLOW = API + "1.1/friendships/create.json";
+    private static final String USER_UNFOLLOW = API + "1.1/friendships/destroy.json";
+    private static final String USER_BLOCK = API + "1.1/blocks/create.json";
+    private static final String USER_UNBLOCK = API + "1.1/blocks/destroy.json";
+    private static final String USER_MUTE = API + "1.1/mutes/users/create.json";
+    private static final String USER_UNMUTE = API + "1.1/mutes/users/destroy.json";
     private static final String LIST_TWEETS = API + "1.1/lists/statuses.json";
     private static final String TWEET_SEARCH = API + "1.1/search/tweets.json";
     private static final String TRENDS = API + "1.1/trends/place.json";
@@ -75,8 +85,12 @@ public class Twitter {
     private static final String USERLIST_CREATE = API + "1.1/lists/create.json";
     private static final String USERLIST_UPDATE = API + "1.1/lists/update.json";
     private static final String USERLIST_DESTROY = API + "1.1/lists/destroy.json";
-    private static final String USER_LIST_OWNERSHIP = API + "1.1/lists/list.json";
-    private static final String USER_LIST_MEMBERSHIP = API + "1.1/lists/memberships.json";
+    private static final String USERLIST_OWNERSHIP = API + "1.1/lists/list.json";
+    private static final String USERLIST_MEMBERSHIP = API + "1.1/lists/memberships.json";
+    private static final String USERLIST_ADD_USER = API + "1.1/lists/members/create.json";
+    private static final String USERLIST_DEL_USER = API + "1.1/lists/members/destroy.json";
+    private static final String RELATION = API + "1.1/friendships/show.json";
+    private static final String DIRECTMESSAGE = API + "1.1/direct_messages/events/list.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
     private static Twitter instance;
@@ -270,6 +284,56 @@ public class Twitter {
         return getUsers1(USER_LIST_SUBSCRIBER, params);
     }
 
+
+    public Relation getRelationToUser(long userId) throws TwitterException {
+        List<String> params = new ArrayList<>(5);
+        params.add("source_id=" + settings.getCurrentUserId());
+        params.add("target_id=" + userId);
+        try {
+            Response response = get(RELATION, params);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    JSONObject source = json.getJSONObject("relationship").getJSONObject("source");
+                    long currentId = settings.getCurrentUserId();
+                    return new RelationV1(source, currentId);
+                } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * follow a specific user
+     *
+     * @param userId ID of the user
+     * @return updated user information
+     */
+    public User followUser(long userId) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        params.add("user_id=" + userId);
+        return getUser1(USER_FOLLOW, params);
+    }
+
+    /**
+     * unfollow a specific user
+     *
+     * @param userId ID of the user
+     * @return updated user information
+     */
+    public User unfollowUser(long userId) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        params.add("user_id=" + userId);
+        return getUser1(USER_UNFOLLOW, params);
+    }
+
     /**
      * get block list of the current user
      *
@@ -283,6 +347,44 @@ public class Twitter {
     }
 
     /**
+     * block specific user
+     *
+     * @param userId ID of the user
+     * @return updated user information
+     */
+    public User blockUser(long userId) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        params.add("user_id=" + userId);
+        return getUser1(USER_BLOCK, params); // todo add to exclude list
+    }
+
+    /**
+     * block specific user
+     *
+     * @param screen_name screen name of the user
+     * @return updated user information
+     */
+    public User blockUser(String screen_name) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        if (screen_name.startsWith("@"))
+            screen_name = screen_name.substring(1);
+        params.add("screen_name=" + screen_name);
+        return getUser1(USER_BLOCK, params);
+    }
+
+    /**
+     * unclock specific user
+     *
+     * @param userId ID of the user
+     * @return updated user information
+     */
+    public User unblockUser(long userId) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        params.add("user_id=" + userId);
+        return getUser1(USER_UNBLOCK, params);
+    }
+
+    /**
      * get mute list of the current user
      *
      * @param cursor cursor value used to parse the list
@@ -292,6 +394,44 @@ public class Twitter {
         List<String> params = new ArrayList<>(4);
         params.add("cursor=" + cursor);
         return getUsers1(MUTES_LIST, params);
+    }
+
+    /**
+     * mute specific user
+     *
+     * @param userId ID of the user
+     * @return updated user information
+     */
+    public User muteUser(long userId) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        params.add("user_id=" + userId);
+        return getUser1(USER_MUTE, params);
+    }
+
+    /**
+     * mute specific user
+     *
+     * @param screen_name screen name of the user
+     * @return updated user information
+     */
+    public User muteUser(String screen_name) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        if (screen_name.startsWith("@"))
+            screen_name = screen_name.substring(1);
+        params.add("screen_name=" + screen_name);
+        return getUser1(USER_MUTE, params);
+    }
+
+    /**
+     * mute specific user
+     *
+     * @param userId ID of the user
+     * @return updated user information
+     */
+    public User unmuteUser(long userId) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
+        params.add("user_id=" + userId);
+        return getUser1(USER_UNMUTE, params);
     }
 
     /**
@@ -665,21 +805,36 @@ public class Twitter {
         return getUserlist(USERLIST_SHOW, params);
     }
 
-
+    /**
+     * follow an userlist
+     *
+     * @param listId ID of the list
+     * @return userlist information
+     */
     public UserList followUserlist(long listId) throws TwitterException {
         List<String> params = new ArrayList<>(2);
         params.add("list_id=" + listId);
         return getUserlist(USERLIST_FOLLOW, params);
     }
 
-
+    /**
+     * unfollow an userlist
+     *
+     * @param listId ID of the list
+     * @return userlist information
+     */
     public UserList unfollowUserlist(long listId) throws TwitterException {
         List<String> params = new ArrayList<>(2);
         params.add("list_id=" + listId);
         return getUserlist(USERLIST_UNFOLLOW, params);
     }
 
-
+    /**
+     * delete an userlist
+     *
+     * @param listId ID of the list
+     * @return removed userlist
+     */
     public UserList destroyUserlist(long listId) throws TwitterException {
         List<String> params = new ArrayList<>(2);
         params.add("list_id=" + listId);
@@ -700,7 +855,7 @@ public class Twitter {
             params.add("user_id=" + userId);
         else
             params.add("screen_name=" + screen_name);
-        UserLists result = getUserlists(USER_LIST_OWNERSHIP, params);
+        UserLists result = getUserlists(USERLIST_OWNERSHIP, params);
         result.setCursors(cursor, -1); // this endpoint doesn't support cursors
         return result;
     }
@@ -721,7 +876,94 @@ public class Twitter {
             params.add("screen_name=" + screen_name);
         params.add("count=" + settings.getListSize());
         params.add("cursor=" + cursor);
-        return getUserlists(USER_LIST_MEMBERSHIP, params);
+        return getUserlists(USERLIST_MEMBERSHIP, params);
+    }
+
+    /**
+     * add user to existing userlist
+     *
+     * @param listId ID of the list
+     * @param screen_name screen name
+     */
+    public void addUserToUserlist(long listId, String screen_name) throws TwitterException {
+        List<String> params = new ArrayList<>(3);
+        if (screen_name.startsWith("@"))
+            screen_name = screen_name.substring(1);
+        params.add("list_id=" + listId);
+        params.add("screen_name=" + StringTools.encode(screen_name));
+        sendPost(USERLIST_ADD_USER, params);
+    }
+
+    /**
+     * remove user from existing userlist
+     *
+     * @param listId ID of the list
+     * @param screen_name screen name
+     */
+    public void removeUserFromUserlist(long listId, String screen_name) throws TwitterException {
+        List<String> params = new ArrayList<>(3);
+        if (screen_name.startsWith("@"))
+            screen_name = screen_name.substring(1);
+        params.add("list_id=" + listId);
+        params.add("screen_name=" + screen_name);
+        sendPost(USERLIST_DEL_USER, params);
+    }
+
+    /**
+     *get current user's direct messages
+     *
+     * @param cursor list cursor
+     * @return list of direct messages
+     */
+    public Directmessages getDirectmessages(String cursor) throws TwitterException {
+        List<String> params = new ArrayList<>(3);
+        params.add("count=" + settings.getListSize());
+        if (!cursor.isEmpty())
+            params.add("cursor=" + cursor);
+        try {
+            Response response = get(DIRECTMESSAGE, params);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                String nextCursor = json.optString("next_cursor");
+                JSONArray array = json.getJSONArray("events");
+                Directmessages result = new Directmessages(cursor, nextCursor);
+                if (response.code() == 200) {
+                    // init user cache to re-use instances
+                    Map<Long, User> userCache = new TreeMap<>();
+                    for (int pos = 0 ; pos < array.length() ; pos++) {
+                        JSONObject item = array.getJSONObject(pos);
+                        DirectmessageV1 message = new DirectmessageV1(item);
+                        long senderId = message.getSenderId();
+                        long receiverId = message.getReceiverId();
+                        // cache user instances to reduce API calls
+                        if (userCache.containsKey(senderId)) {
+                            message.addSender(userCache.get(senderId));
+                        } else {
+                            User user = showUser(senderId);
+                            userCache.put(senderId, user);
+                            message.addSender(user);
+                        }
+                        if (userCache.containsKey(receiverId)) {
+                            message.addReceiver(userCache.get(receiverId));
+                        } else {
+                            User user = showUser(receiverId);
+                            userCache.put(receiverId, user);
+                            message.addReceiver(user);
+                        }
+                        result.add(message);
+                    }
+                    return result;
+                } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
     }
 
     /**
@@ -876,6 +1118,34 @@ public class Twitter {
     }
 
     /**
+     * send POST request and return updated user information
+     *
+     * @param endpoint POST endpoint
+     * @param params additional parameters
+     * @return user information
+     */
+    private User getUser1(String endpoint, List<String> params) throws TwitterException {
+        try {
+            Response response = post(endpoint, params);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    long currentId = settings.getCurrentUserId();
+                    return new UserV1(json, currentId);
+                } else {
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
      * execute userlist action and return userlist information
      *
      * @param endpoint userlist endpoint to use
@@ -947,6 +1217,30 @@ public class Twitter {
             }
         } catch (IOException err) {
             throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * send post without return value
+     *
+     * @param endpoint endpoint to use
+     * @param params endpoint parameters
+     */
+    private void sendPost(String endpoint, List<String> params) throws TwitterException {
+        try {
+            Response response = post(endpoint, params);
+            if (response.code() != 200) {
+                if (response.body() != null) {
+                    JSONObject json = new JSONObject(response.body().string());
+                    throw new TwitterException(json);
+                } else {
+                    throw new TwitterException(response);
+                }
+            }
+        } catch (IOException e) {
+            throw new TwitterException(e);
         } catch (JSONException err) {
             throw new TwitterException(err);
         }

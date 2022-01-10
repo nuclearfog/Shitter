@@ -8,13 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
-import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.ProxySetup;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
-import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 
@@ -25,13 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import twitter4j.DirectMessage;
-import twitter4j.DirectMessageList;
 import twitter4j.GeoLocation;
 import twitter4j.IDs;
 import twitter4j.Status;
@@ -53,7 +47,6 @@ public class TwitterEngine {
     private static final TwitterEngine mTwitter = new TwitterEngine();
 
     private GlobalSettings settings;
-    private ExcludeDatabase excludeDB;
     private Tokens tokens;
     private Twitter twitter;
 
@@ -104,7 +97,6 @@ public class TwitterEngine {
             // initialize database and settings
             mTwitter.settings = GlobalSettings.getInstance(context);
             mTwitter.tokens = Tokens.getInstance(context);
-            mTwitter.excludeDB = new ExcludeDatabase(context);
             // check if already logged in
             if (mTwitter.settings.isLoggedIn()) {
                 // init login access
@@ -125,166 +117,6 @@ public class TwitterEngine {
      */
     public static void resetTwitter() {
         mTwitter.isInitialized = false;
-    }
-
-    /**
-     * Get User
-     *
-     * @param userId User ID
-     * @return User Object
-     * @throws EngineException if Access is unavailable
-     */
-    public User getUser(long userId) throws EngineException {
-        try {
-            return new UserV1(twitter.showUser(userId), twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Efficient Access of Connection Information
-     *
-     * @param userId User ID compared with Home ID
-     * @return User Properties
-     * @throws EngineException if Connection is unavailable
-     */
-    public Relation getConnection(long userId) throws EngineException {
-        try {
-            return new RelationV1(twitter.showFriendship(twitter.getId(), userId));
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Follow Twitter user
-     *
-     * @param userID User ID
-     * @return Twitter User
-     * @throws EngineException if Access is unavailable
-     */
-    public User followUser(long userID) throws EngineException {
-        try {
-            return new UserV1(twitter.createFriendship(userID), twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Unfollow Twitter user
-     *
-     * @param userID User ID
-     * @return Twitter User
-     * @throws EngineException if Access is unavailable
-     */
-    public User unfollowUser(long userID) throws EngineException {
-        try {
-            return new UserV1(twitter.destroyFriendship(userID), twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * block twitter user by screen name
-     *
-     * @param name screen name
-     * @throws EngineException if twitter service is unavailable
-     */
-    public void blockUser(String name) throws EngineException {
-        try {
-            if (!name.startsWith("@"))
-                name = '@' + name;
-            twitter4j.User user = twitter.createBlock(name);
-            excludeDB.addUser(user.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Block Twitter user
-     *
-     * @param UserID User ID
-     * @return Twitter User
-     * @throws EngineException if Access is unavailable
-     */
-    public User blockUser(long UserID) throws EngineException {
-        try {
-            twitter4j.User user = twitter.createBlock(UserID);
-            excludeDB.addUser(UserID);
-            return new UserV1(user, twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Unblock Twitter user
-     *
-     * @param UserID User ID
-     * @return Twitter User
-     * @throws EngineException if Access is unavailable
-     */
-    public User unblockUser(long UserID) throws EngineException {
-        try {
-            twitter4j.User user = twitter.destroyBlock(UserID);
-            return new UserV1(user, twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * mute twitter user by screen name
-     *
-     * @param name screen name of the user
-     * @throws EngineException if twitter service is unavailable
-     */
-    public void muteUser(String name) throws EngineException {
-        try {
-            if (!name.startsWith("@"))
-                name = '@' + name;
-            twitter4j.User user = twitter.createMute(name);
-            excludeDB.addUser(user.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Mute Twitter user
-     *
-     * @param UserID User ID
-     * @return Twitter User
-     * @throws EngineException if Access is unavailable
-     */
-    public User muteUser(long UserID) throws EngineException {
-        try {
-            twitter4j.User user = twitter.createMute(UserID);
-            excludeDB.addUser(user.getId());
-            return new UserV1(user, twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Un-mute Twitter user
-     *
-     * @param UserID User ID
-     * @return Twitter User
-     * @throws EngineException if Access is unavailable
-     */
-    public User unmuteUser(long UserID) throws EngineException {
-        try {
-            twitter4j.User user = twitter.destroyMute(UserID);
-            return new UserV1(user, twitter.getId());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
     }
 
     /**
@@ -421,61 +253,6 @@ public class TwitterEngine {
     }
 
     /**
-     * get list of Direct Messages
-     *
-     * @param cursor list cursor
-     * @return list of messages
-     * @throws EngineException if access is unavailable
-     */
-    public Directmessages getMessages(@Nullable String cursor) throws EngineException {
-        try {
-            DirectMessageList dmList;
-            int load = settings.getListSize();
-            if (cursor != null) {
-                dmList = twitter.getDirectMessages(load, cursor);
-            } else {
-                dmList = twitter.getDirectMessages(load);
-            }
-            Directmessages result = new Directmessages(cursor, dmList.getNextCursor());
-            HashMap<Long, User> userMap = new HashMap<>();
-
-            for (DirectMessage dm : dmList) {
-                try {
-                    // get sender of the message
-                    User sender;
-                    if (userMap.containsKey(dm.getSenderId())) {
-                        // recycle user information
-                        sender = userMap.get(dm.getSenderId());
-                    } else {
-                        // download new user information
-                        sender = getUser(dm.getSenderId());
-                        userMap.put(dm.getSenderId(), sender);
-
-                    }
-                    // get receiver of the message
-                    User receiver;
-                    if (userMap.containsKey(dm.getRecipientId())) {
-                        // recycle user information
-                        receiver = userMap.get(dm.getRecipientId());
-                    } else {
-                        // download new user information
-                        receiver = getUser(dm.getRecipientId());
-                        userMap.put(dm.getRecipientId(), receiver);
-                    }
-                    // build message and add to list
-                    DirectMessageV1 message = new DirectMessageV1(dm, sender, receiver);
-                    result.add(message);
-                } catch (EngineException err) {
-                    // ignore messages from suspended/deleted users
-                }
-            }
-            return result;
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
      * send direct message to an user
      *
      * @param username screen name of the user
@@ -584,36 +361,6 @@ public class TwitterEngine {
             return media.getMediaId();
         } catch (FileNotFoundException err) {
             throw new EngineException(EngineException.FILENOTFOUND);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * adds user  to an user list
-     *
-     * @param listId    I of the list
-     * @param usernames screen names of the users
-     * @throws EngineException if access is unavailable
-     */
-    public void addUserToList(long listId, String[] usernames) throws EngineException {
-        try {
-            twitter.createUserListMembers(listId, usernames);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * removes an user from user list
-     *
-     * @param listId   I of the list
-     * @param username screen names of an user
-     * @throws EngineException if access is unavailable
-     */
-    public void delUserFromList(long listId, String username) throws EngineException {
-        try {
-            twitter.destroyUserListMember(listId, username);
         } catch (Exception err) {
             throw new EngineException(err);
         }

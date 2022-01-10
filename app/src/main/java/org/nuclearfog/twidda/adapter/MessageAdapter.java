@@ -204,7 +204,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 holder.textViews[0].setText(sender.getUsername());
                 holder.textViews[1].setText(sender.getScreenname());
                 holder.textViews[2].setText(message.getReceiver().getScreenname());
-                holder.textViews[3].setText(formatCreationTime(message.getTime()));
+                holder.textViews[3].setText(formatCreationTime(message.getTimestamp()));
                 holder.textViews[4].setText(text);
                 if (sender.isVerified()) {
                     holder.verifiedIcon.setVisibility(VISIBLE);

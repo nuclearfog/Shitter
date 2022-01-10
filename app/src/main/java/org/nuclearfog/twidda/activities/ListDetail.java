@@ -39,7 +39,6 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.ListAction;
 import org.nuclearfog.twidda.backend.ListManager;
 import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -325,7 +324,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
-    public void onFailure(@Nullable EngineException err) {
+    public void onFailure(@Nullable ErrorHandler.TwitterError err) {
         ErrorHandler.handleFailure(this, err);
     }
 

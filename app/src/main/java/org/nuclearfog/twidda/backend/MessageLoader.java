@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
@@ -41,23 +42,25 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
 
     @Nullable
     private EngineException twException;
-    private final WeakReference<MessageFragment> callback;
-    private final TwitterEngine mTwitter;
-    private final AppDatabase db;
-    private final Action action;
+    private WeakReference<MessageFragment> callback;
+    private TwitterEngine mTwitter;
+    private Twitter twitter;
+    private AppDatabase db;
+    private Action action;
 
     private String cursor;
     private long removeMsgId = -1;
 
     /**
-     * @param callback Callback to update data
+     * @param fragment Callback to update data
      * @param action   what action should be performed
      */
-    public MessageLoader(MessageFragment callback, Action action, String cursor) {
+    public MessageLoader(MessageFragment fragment, Action action, String cursor) {
         super();
-        this.callback = new WeakReference<>(callback);
-        db = new AppDatabase(callback.getContext());
-        mTwitter = TwitterEngine.getInstance(callback.getContext());
+        callback = new WeakReference<>(fragment);
+        db = new AppDatabase(fragment.getContext());
+        mTwitter = TwitterEngine.getInstance(fragment.getContext());
+        twitter = Twitter.get(fragment.getContext());
         this.action = action;
         this.cursor = cursor;
     }
@@ -72,13 +75,13 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
                     // TODO store cursor in the preferences
                     Directmessages messages = db.getMessages();
                     if (messages.isEmpty()) {
-                        messages = mTwitter.getMessages(null);
+                        messages = twitter.getDirectmessages("");
                         db.storeMessage(messages);
                     }
                     return messages;
 
                 case LOAD:
-                    messages = mTwitter.getMessages(cursor);
+                    messages = twitter.getDirectmessages(cursor);
                     db.storeMessage(messages);
                     return messages;
 

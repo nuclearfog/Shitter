@@ -5,9 +5,12 @@ import android.os.AsyncTask;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activities.UserExclude;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
+import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -27,18 +30,22 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     }
 
     @Nullable
-    private EngineException err;
+    private TwitterException err;
     private WeakReference<UserExclude> callback;
     private ExcludeDatabase excludeDatabase;
+    private AppDatabase appDatabase;
     private TwitterEngine mTwitter;
+    private Twitter twitter;
     private Mode mode;
 
 
-    public UserExcludeLoader(UserExclude callback, Mode mode) {
+    public UserExcludeLoader(UserExclude activity, Mode mode) {
         super();
-        mTwitter = TwitterEngine.getInstance(callback);
-        excludeDatabase = new ExcludeDatabase(callback);
-        this.callback = new WeakReference<>(callback);
+        twitter = Twitter.get(activity);
+        mTwitter = TwitterEngine.getInstance(activity);
+        appDatabase = new AppDatabase(activity);
+        excludeDatabase = new ExcludeDatabase(activity);
+        callback = new WeakReference<>(activity);
         this.mode = mode;
     }
 
@@ -50,12 +57,16 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
                 List<Long> ids = mTwitter.getExcludedUserIDs();
                 excludeDatabase.setExcludeList(ids);
             } else if (mode == Mode.MUTE_USER) {
-                mTwitter.muteUser(names[0]);
+                User user = twitter.muteUser(names[0]);
+                appDatabase.storeUser(user);
             } else if (mode == Mode.BLOCK_USER) {
-                mTwitter.blockUser(names[0]);
+                User user = twitter.blockUser(names[0]);
+                appDatabase.storeUser(user);
             }
-        } catch (EngineException err) {
+        } catch (TwitterException err) {
             this.err = err;
+        } catch (Exception err) {
+            // ignore
         }
         return null;
     }

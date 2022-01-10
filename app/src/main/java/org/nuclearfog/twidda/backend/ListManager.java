@@ -5,8 +5,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -32,12 +33,12 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
         DEL_USER
     }
 
-    private EngineException err;
-    private final TwitterEngine mTwitter;
-    private final WeakReference<ListManagerCallback> callback;
+    private TwitterException err;
+    private Twitter twitter;
+    private WeakReference<ListManagerCallback> callback;
 
-    private final long listId;
-    private final Action action;
+    private long listId;
+    private Action action;
 
     /**
      * @param listId   ID of the user list
@@ -47,9 +48,9 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
      */
     public ListManager(long listId, Action action, Context c, ListManagerCallback callback) {
         super();
+        twitter = Twitter.get(c);
         this.listId = listId;
         this.action = action;
-        mTwitter = TwitterEngine.getInstance(c);
         this.callback = new WeakReference<>(callback);
     }
 
@@ -57,20 +58,19 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
     @Override
     protected String[] doInBackground(String... strings) {
         try {
+            String screen_name = strings[0];
             switch (action) {
                 case ADD_USER:
-                    mTwitter.addUserToList(listId, strings);
+                    twitter.addUserToUserlist(listId, screen_name);
                     break;
 
                 case DEL_USER:
-                    mTwitter.delUserFromList(listId, strings[0]);
+                    twitter.removeUserFromUserlist(listId, screen_name);
                     break;
             }
             return strings;
-        } catch (EngineException err) {
+        } catch (TwitterException err) {
             this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }
@@ -104,6 +104,6 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
          *
          * @param err Engine exception thrown by backend
          */
-        void onFailure(@Nullable EngineException err);
+        void onFailure(@Nullable ErrorHandler.TwitterError err);
     }
 }

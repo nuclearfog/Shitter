@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.apiold;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.model.User;
 
 import twitter4j.URLEntity;
@@ -157,5 +159,16 @@ class UserV1 implements User {
     @Override
     public boolean isCurrentUser() {
         return isCurrentUser;
+    }
+
+    @Override
+    public int compareTo(User user) {
+        return Long.compare(user.getId(), userID);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return username + " " + screenName;
     }
 }

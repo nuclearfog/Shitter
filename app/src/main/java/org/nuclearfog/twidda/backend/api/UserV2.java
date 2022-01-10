@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.User;
 
@@ -158,6 +160,17 @@ class UserV2 implements User {
     @Override
     public boolean isCurrentUser() {
         return isCurrentUser;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return screenName + ":" + username;
+    }
+
+    @Override
+    public int compareTo(User user) {
+        return Long.compare(user.getId(), userID);
     }
 
     /**

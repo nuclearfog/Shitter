@@ -44,7 +44,12 @@ class DirectMessageDB implements DirectMessage {
     }
 
     @Override
-    public long getTime() {
+    public long getTimestamp() {
         return time;
+    }
+
+    @Override
+    public String getMedia() {
+        return "";
     }
 }

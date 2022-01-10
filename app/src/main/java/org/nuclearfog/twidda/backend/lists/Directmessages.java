@@ -87,7 +87,7 @@ public class Directmessages extends LinkedList<DirectMessage> {
      * @return true if list has a previous cursor
      */
     public boolean hasPrev() {
-        return prevCursor != null;
+        return prevCursor != null && !prevCursor.isEmpty();
     }
 
     /**
@@ -96,7 +96,7 @@ public class Directmessages extends LinkedList<DirectMessage> {
      * @return true if list has a next cursor
      */
     public boolean hasNext() {
-        return nextCursor != null;
+        return nextCursor != null && !nextCursor.isEmpty();
     }
 
 

@@ -4,8 +4,7 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -59,10 +58,9 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
         ACTION_UNMUTE
     }
 
-    private EngineException twException;
+    private TwitterException twException;
     private WeakReference<UserProfile> callback;
-    private TwitterEngine mTwitter;
-    private Twitter twitter2;
+    private Twitter twitter;
     private ExcludeDatabase exclDB;
     private AppDatabase appDB;
     private long userId;
@@ -74,8 +72,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     public UserAction(UserProfile activity, long userId) {
         super();
         this.callback = new WeakReference<>(activity);
-        mTwitter = TwitterEngine.getInstance(activity);
-        twitter2 = Twitter.get(activity);
+        twitter = Twitter.get(activity);
         exclDB = new ExcludeDatabase(activity);
         appDB = new AppDatabase(activity);
         this.userId = userId;
@@ -98,11 +95,11 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
 
                 case PROFILE_lOAD:
                     // load user information from twitter
-                    user = twitter2.showUser(userId);
+                    user = twitter.showUser(userId);
                     publishProgress(user);
                     appDB.storeUser(user);
                     // load user relations from twitter
-                    Relation relation = mTwitter.getConnection(userId);
+                    Relation relation = twitter.getRelationToUser(userId);
                     if (!relation.isHome()) {
                         boolean muteUser = relation.isBlocked() || relation.isMuted();
                         appDB.muteUser(userId, muteUser);
@@ -110,26 +107,26 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     return relation;
 
                 case ACTION_FOLLOW:
-                    user = mTwitter.followUser(userId);
+                    user = twitter.followUser(userId);
                     publishProgress(user);
                     break;
 
                 case ACTION_UNFOLLOW:
-                    user = mTwitter.unfollowUser(userId);
+                    user = twitter.unfollowUser(userId);
                     publishProgress(user);
                     break;
 
                 case ACTION_BLOCK:
-                    user = mTwitter.blockUser(userId);
+                    user = twitter.blockUser(userId);
                     publishProgress(user);
                     appDB.muteUser(userId, true);
                     break;
 
                 case ACTION_UNBLOCK:
-                    user = mTwitter.unblockUser(userId);
+                    user = twitter.unblockUser(userId);
                     publishProgress(user);
                     // remove from exclude list only if user is not muted
-                    relation = mTwitter.getConnection(userId);
+                    relation = twitter.getRelationToUser(userId);
                     if (!relation.isMuted()) {
                         appDB.muteUser(userId, false);
                         exclDB.removeUser(userId);
@@ -137,27 +134,25 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     return relation;
 
                 case ACTION_MUTE:
-                    user = mTwitter.muteUser(userId);
+                    user = twitter.muteUser(userId);
                     publishProgress(user);
                     appDB.muteUser(userId, true);
                     break;
 
                 case ACTION_UNMUTE:
-                    user = mTwitter.unmuteUser(userId);
+                    user = twitter.unmuteUser(userId);
                     publishProgress(user);
                     // remove from exclude list only if user is not blocked
-                    relation = mTwitter.getConnection(userId);
+                    relation = twitter.getRelationToUser(userId);
                     if (!relation.isBlocked()) {
                         appDB.muteUser(userId, false);
                         exclDB.removeUser(userId);
                     }
                     return relation;
             }
-            return mTwitter.getConnection(userId);
-        } catch (EngineException twException) {
+            return twitter.getRelationToUser(userId);
+        } catch (TwitterException twException) {
             this.twException = twException;
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }

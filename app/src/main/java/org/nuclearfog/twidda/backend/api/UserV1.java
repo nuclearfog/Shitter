@@ -88,7 +88,6 @@ class UserV1 implements User {
         }
     }
 
-
     @Override
     public long getId() {
         return userID;
@@ -179,10 +178,15 @@ class UserV1 implements User {
         return isCurrentUser;
     }
 
+    @Override
+    public int compareTo(User user) {
+        return Long.compare(user.getId(), userID);
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return username + " " + screenName;
+        return screenName + ":" + username;
     }
 
     /**

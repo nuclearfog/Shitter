@@ -30,5 +30,10 @@ public interface DirectMessage {
     /**
      * @return date of creation
      */
-    long getTime();
+    long getTimestamp();
+
+    /**
+     * @return get attached media link
+     */
+    String getMedia();
 }

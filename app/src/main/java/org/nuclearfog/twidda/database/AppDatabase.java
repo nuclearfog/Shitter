@@ -857,7 +857,7 @@ public class AppDatabase {
         // store message information
         ContentValues messageColumn = new ContentValues(5);
         messageColumn.put(MessageTable.ID, message.getId());
-        messageColumn.put(MessageTable.SINCE, message.getTime());
+        messageColumn.put(MessageTable.SINCE, message.getTimestamp());
         messageColumn.put(MessageTable.FROM, message.getSender().getId());
         messageColumn.put(MessageTable.TO, message.getReceiver().getId());
         messageColumn.put(MessageTable.MESSAGE, message.getText());
