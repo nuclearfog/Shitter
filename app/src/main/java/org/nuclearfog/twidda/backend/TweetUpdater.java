@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.TweetEditor;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
@@ -19,20 +20,21 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
 
 
     private EngineException twException;
-    private final TwitterEngine mTwitter;
-
-    private final WeakReference<TweetEditor> callback;
+    private TwitterEngine mTwitter;
+    private Twitter twitter;
+    private WeakReference<TweetEditor> callback;
     private TweetHolder tweet;
 
     /**
      * initialize task
      *
-     * @param callback Activity context
+     * @param activity Activity context
      */
-    public TweetUpdater(TweetEditor callback, TweetHolder tweet) {
+    public TweetUpdater(TweetEditor activity, TweetHolder tweet) {
         super();
-        mTwitter = TwitterEngine.getInstance(callback);
-        this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(activity);
+        twitter = Twitter.get(activity);
+        callback = new WeakReference<>(activity);
         this.tweet = tweet;
     }
 
@@ -61,7 +63,10 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
             }
             // upload tweet
             if (!isCancelled()) {
-                mTwitter.uploadStatus(tweet, mediaIds);
+                double[] coordinates = null;
+                if (tweet.hasLocation())
+                    coordinates = new double[] {tweet.getLongitude(), tweet.getLatitude()};
+                twitter.uploadTweet(tweet.getText(), tweet.getReplyId(), mediaIds, coordinates);
             }
             return true;
         } catch (EngineException twException) {

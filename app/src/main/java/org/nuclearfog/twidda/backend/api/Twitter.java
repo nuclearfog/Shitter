@@ -75,8 +75,14 @@ public class Twitter {
     private static final String USER_UNBLOCK = API + "1.1/blocks/destroy.json";
     private static final String USER_MUTE = API + "1.1/mutes/users/create.json";
     private static final String USER_UNMUTE = API + "1.1/mutes/users/destroy.json";
-    private static final String LIST_TWEETS = API + "1.1/lists/statuses.json";
+    private static final String TWEETS_LIST = API + "1.1/lists/statuses.json";
     private static final String TWEET_SEARCH = API + "1.1/search/tweets.json";
+    private static final String TWEET_FAVORITE = API + "1.1/favorites/create.json";
+    private static final String TWEET_UNFAVORITE = API + "1.1/favorites/destroy.json";
+    private static final String TWEET_RETWEET = API + "1.1/statuses/retweet/";
+    private static final String TWEET_UNRETWEET = API + "1.1/statuses/unretweet/";
+    private static final String TWEET_UPLOAD = API + "1.1/statuses/update.json";
+    private static final String TWEET_DELETE = API + "1.1/statuses/destroy/";
     private static final String TRENDS = API + "1.1/trends/place.json";
     private static final String LOCATIONS = API + "1.1/trends/available.json";
     private static final String USERLIST_SHOW = API + "1.1/lists/show.json";
@@ -91,6 +97,8 @@ public class Twitter {
     private static final String USERLIST_DEL_USER = API + "1.1/lists/members/destroy.json";
     private static final String RELATION = API + "1.1/friendships/show.json";
     private static final String DIRECTMESSAGE = API + "1.1/direct_messages/events/list.json";
+    private static final String DIRECTMESSAGE_CREATE = API + "1.1/direct_messages/events/new.json";
+    private static final String DIRECTMESSAGE_DELETE = API + "1.1/direct_messages/events/destroy.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
     private static Twitter instance;
@@ -690,7 +698,7 @@ public class Twitter {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("list_id=" + listId);
-        return getTweets1(LIST_TWEETS, params);
+        return getTweets1(TWEETS_LIST, params);
     }
 
     /**
@@ -727,30 +735,97 @@ public class Twitter {
     /**
      * lookup tweet by ID
      *
-     * @param id tweet ID
+     * @param tweetId tweet ID
      * @return tweet information
      */
-    public Tweet showTweet(long id) throws TwitterException {
+    public Tweet showTweet(long tweetId) throws TwitterException {
         List<String> params = new ArrayList<>(3);
-        params.add("id=" + id);
-        params.add(TweetV1.EXT_MODE);
-        try {
-            Response response = get(SHOW_TWEET, params);
-            if (response.body() != null) {
-                JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    return new TweetV1(json, settings.getCurrentUserId());
-                } else {
-                    throw new TwitterException(json);
-                }
-            } else {
-                throw new TwitterException(response);
-            }
-        } catch (IOException err) {
-            throw new TwitterException(err);
-        } catch (JSONException err) {
-            throw new TwitterException(err);
+        params.add("id=" + tweetId);
+        return getTweet(SHOW_TWEET, params);
+    }
+
+    /**
+     * favorite specific tweet
+     *
+     * @param tweetId Tweet ID
+     * @return updated tweet
+     */
+    public Tweet favoriteTweet(long tweetId) throws TwitterException {
+        List<String> params = new ArrayList<>(3);
+        params.add("id=" + tweetId);
+        return getTweet(TWEET_FAVORITE, params);
+    }
+
+    /**
+     * remove tweet from favorits
+     *
+     * @param tweetId Tweet ID
+     * @return updated tweet
+     */
+    public Tweet unfavoriteTweet(long tweetId) throws TwitterException {
+        List<String> params = new ArrayList<>(3);
+        params.add("id=" + tweetId);
+        return getTweet(TWEET_UNFAVORITE, params);
+    }
+
+    /**
+     * retweet specific tweet
+     *
+     * @param tweetId Tweet ID
+     * @return updated tweet
+     */
+    public Tweet retweetTweet(long tweetId) throws TwitterException {
+        return getTweet(TWEET_RETWEET + tweetId + ".json", new ArrayList<>(2));
+    }
+
+    /**
+     * remove retweet
+     *
+     * @param tweetId ID of the retweeted tweet
+     * @return updated tweet
+     */
+    public Tweet unretweetTweet(long tweetId) throws TwitterException {
+        return getTweet(TWEET_UNRETWEET + tweetId + ".json", new ArrayList<>(2));
+    }
+
+    /**
+     * remove tweet of the authenticating user
+     *
+     * @param tweetId tweet ID
+     * @return tweet information
+     */
+    public Tweet deleteTweet(long tweetId) throws TwitterException {
+        return getTweet(TWEET_DELETE + tweetId + ".json", new ArrayList<>(2));
+    }
+
+    /**
+     * upload tweet with additional attachment
+     *
+     * @param text tweet text
+     * @param replyId ID of the tweet to reply or -1 if none
+     * @param mediaIds array of media IDs
+     * @param coordinates array of longitude/latitude coordinates
+     * @return information of the uploaded tweet
+     */
+    public Tweet uploadTweet(String text, long replyId, long[] mediaIds, double[] coordinates) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("status=" + StringTools.encode(text));
+        if (replyId > 0)
+            params.add("in_reply_to_status_id=" + replyId);
+        if (mediaIds != null && mediaIds.length > 0) {
+            StringBuilder buf = new StringBuilder();
+            for (long id : mediaIds)
+                buf.append(id).append("%2C");
+            String idStr = buf.substring(0, buf.lastIndexOf("%2C"));
+            params.add("media_ids=" + idStr);
         }
+        if (coordinates != null) { // fixme not working with coordinates
+            String lat = Double.toString(coordinates[0]);
+            String lon = Double.toString(coordinates[1]);
+            params.add("lat=" + StringTools.encode(lat));
+            params.add("long=" + StringTools.encode(lon));
+        }
+        return getTweet(TWEET_UPLOAD, params);
     }
 
     /**
@@ -910,6 +985,64 @@ public class Twitter {
     }
 
     /**
+     * send directmessage to user
+     *
+     * @param userId ID of the user
+     * @param message message text
+     * @param mediaId ID of uploaded media files or -1 if none
+     */
+    public void sendDirectmessage(long userId, String message, long mediaId) throws TwitterException {
+        try {
+            JSONObject data = new JSONObject();
+            JSONObject root = new JSONObject();
+            JSONObject target = new JSONObject();
+            JSONObject msg_create = new JSONObject();
+            JSONObject event = new JSONObject();
+            target.put("recipient_id", Long.toString(userId));
+            msg_create.put("target", target);
+            msg_create.put("message_data", data);
+            event.put("type", "message_create");
+            event.put("message_create", msg_create);
+            root.put("event", event);
+            data.put("text", message);
+            if (mediaId > 0) {
+                JSONObject attachment = new JSONObject();
+                JSONObject media = new JSONObject();
+                attachment.put("type", "media");
+                attachment.put("media", media);
+                media.put("id", Long.toString(mediaId));
+                data.put("attachment", attachment);
+            }
+            Response response = post(DIRECTMESSAGE_CREATE, new ArrayList<>(0), root);
+            if (response.code() != 200) {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * delete directmessage
+     *
+     * @param messageId ID of the message to delete
+     */
+    public void deleteDirectmessage(long messageId) throws TwitterException {
+        List<String> params = new ArrayList<>(2);
+        params.add("id=" + messageId);
+        try {
+            Response response = delete(DIRECTMESSAGE_DELETE, params);
+            if (response.code() != 200) {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
      *get current user's direct messages
      *
      * @param cursor list cursor
@@ -1020,6 +1153,39 @@ public class Twitter {
                     return tweets;
                 } else {
                     JSONObject json = new JSONObject(body);
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * return tweet from endpoint
+     *
+     * @param endpoint to use
+     * @param params additional parameter
+     */
+    private Tweet getTweet(String endpoint, List<String> params) throws TwitterException {
+        try {
+            params.add(TweetV1.EXT_MODE);
+            Response response;
+            if (endpoint.equals(SHOW_TWEET)) {
+                response = get(endpoint, params);
+            } else {
+                response = post(endpoint, params);
+            }
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    long currentId = settings.getCurrentUserId();
+                    return new TweetV1(json, currentId);
+                } else {
                     throw new TwitterException(json);
                 }
             } else {
@@ -1285,6 +1451,20 @@ public class Twitter {
     }
 
     /**
+     * create and call POST endpoint
+     *
+     * @param endpoint endpoint url
+     * @return http resonse
+     */
+    private Response post(String endpoint, List<String> params, JSONObject json) throws IOException {
+        String authHeader = buildHeader("POST", endpoint, params);
+        String url = appendParams(endpoint, params);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).post(body).build();
+        return client.newCall(request).execute();
+    }
+
+    /**
      * create and call GET endpoint
      *
      * @param endpoint endpoint url
@@ -1294,6 +1474,19 @@ public class Twitter {
         String authHeader = buildHeader("GET", endpoint, params);
         String url = appendParams(endpoint, params);
         Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).get().build();
+        return client.newCall(request).execute();
+    }
+
+    /**
+     * create and call GET endpoint
+     *
+     * @param endpoint endpoint url
+     * @return http response
+     */
+    private Response delete(String endpoint, List<String> params) throws IOException {
+        String authHeader = buildHeader("DELETE", endpoint, params);
+        String url = appendParams(endpoint, params);
+        Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).delete().build();
         return client.newCall(request).execute();
     }
 

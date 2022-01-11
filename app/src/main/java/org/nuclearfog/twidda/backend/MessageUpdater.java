@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.activities.MessageEditor;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 
@@ -21,23 +22,27 @@ public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
     private EngineException twException;
     private WeakReference<MessageEditor> callback;
     private TwitterEngine mTwitter;
+    private Twitter twitter;
 
     /**
      * send direct message
      *
-     * @param callback Activity context
+     * @param activity Activity context
      */
-    public MessageUpdater(@NonNull MessageEditor callback) {
+    public MessageUpdater(@NonNull MessageEditor activity) {
         super();
-        mTwitter = TwitterEngine.getInstance(callback);
-        this.callback = new WeakReference<>(callback);
+        twitter = Twitter.get(activity);
+        mTwitter = TwitterEngine.getInstance(activity);
+        callback = new WeakReference<>(activity);
     }
 
 
     @Override
     protected Boolean doInBackground(String[] param) {
         try {
-            // upload media first if any
+            // first check if user exists
+            long id = twitter.showUser(param[0]).getId();
+            // upload media if any
             long mediaId = -1;
             String mediaPath = param[2];
             if (mediaPath != null && !mediaPath.isEmpty()) {
@@ -45,7 +50,7 @@ public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
             }
             // upload message and media ID if defined
             if (!isCancelled()) {
-                mTwitter.sendDirectMessage(param[0], param[1], mediaId);
+                twitter.sendDirectmessage(id, param[1], mediaId);
             }
             return true;
         } catch (EngineException twException) {

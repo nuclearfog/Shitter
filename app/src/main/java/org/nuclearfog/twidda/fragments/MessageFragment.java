@@ -19,7 +19,6 @@ import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
@@ -197,7 +196,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
      *
      * @param error Twitter exception
      */
-    public void onError(@NonNull EngineException error) {
+    public void onError(@NonNull ErrorHandler.TwitterError error) {
         ErrorHandler.handleFailure(requireContext(), error);
         setRefresh(false);
     }

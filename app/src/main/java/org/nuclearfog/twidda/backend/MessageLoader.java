@@ -5,14 +5,13 @@ import android.os.AsyncTask;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragments.MessageFragment;
 
 import java.lang.ref.WeakReference;
-
 
 /**
  * task to download a direct message list from twitter and handle message actions
@@ -41,9 +40,8 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
     }
 
     @Nullable
-    private EngineException twException;
+    private TwitterException twException;
     private WeakReference<MessageFragment> callback;
-    private TwitterEngine mTwitter;
     private Twitter twitter;
     private AppDatabase db;
     private Action action;
@@ -59,7 +57,6 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
         super();
         callback = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
-        mTwitter = TwitterEngine.getInstance(fragment.getContext());
         twitter = Twitter.get(fragment.getContext());
         this.action = action;
         this.cursor = cursor;
@@ -87,14 +84,14 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
 
                 case DEL:
                     messageId = param[0];
-                    mTwitter.deleteMessage(messageId);
+                    twitter.deleteDirectmessage(messageId);
                     db.deleteMessage(messageId);
                     removeMsgId = messageId;
                     break;
             }
-        } catch (EngineException twException) {
+        } catch (TwitterException twException) {
             this.twException = twException;
-            if (twException.resourceNotFound()) {
+            if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
                 db.deleteMessage(messageId);
                 removeMsgId = messageId;
             }

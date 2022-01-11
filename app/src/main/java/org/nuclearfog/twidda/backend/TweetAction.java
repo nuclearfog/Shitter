@@ -6,13 +6,12 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activities.TweetActivity;
 import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
-
 
 /**
  * Background task to download tweet informations and to take actions
@@ -57,8 +56,7 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     }
 
     @Nullable
-    private EngineException twException;
-    private TwitterEngine mTwitter;
+    private TwitterException twException;
     private Twitter twitter;
     private WeakReference<TweetActivity> callback;
     private AppDatabase db;
@@ -71,7 +69,6 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     public TweetAction(TweetActivity activity, long tweetId) {
         super();
         db = new AppDatabase(activity);
-        mTwitter = TwitterEngine.getInstance(activity);
         twitter = Twitter.get(activity);
         this.callback = new WeakReference<>(activity);
         this.tweetId = tweetId;
@@ -98,8 +95,8 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     }
                     break;
 
-                case DELETE:
-                    tweet = mTwitter.deleteTweet(tweetId);
+                case DELETE: //fixme tweet updates may be buggy because of the API
+                    tweet = twitter.deleteTweet(tweetId);
                     db.removeStatus(tweetId);
                     // removing retweet reference to this tweet
                     if (tweet.getMyRetweetId() > 0)
@@ -107,13 +104,13 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     break;
 
                 case RETWEET:
-                    tweet = mTwitter.retweet(tweetId, true);
+                    tweet = twitter.retweetTweet(tweetId);
                     publishProgress(tweet);
                     db.updateStatus(tweet);
                     break;
 
                 case UNRETWEET:
-                    tweet = mTwitter.retweet(tweetId, false);
+                    tweet = twitter.unretweetTweet(tweetId);
                     publishProgress(tweet);
                     db.updateStatus(tweet);
                     // removing retweet reference to this tweet
@@ -122,21 +119,21 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     break;
 
                 case FAVORITE:
-                    tweet = mTwitter.favorite(tweetId, true);
+                    tweet = twitter.favoriteTweet(tweetId);
                     publishProgress(tweet);
                     db.storeFavorite(tweet);
                     break;
 
                 case UNFAVORITE:
-                    tweet = mTwitter.favorite(tweetId, false);
+                    tweet = twitter.unfavoriteTweet(tweetId);
                     publishProgress(tweet);
                     db.removeFavorite(tweet);
                     break;
             }
             return action[0];
-        } catch (EngineException twException) {
+        } catch (TwitterException twException) {
             this.twException = twException;
-            if (twException.resourceNotFound()) {
+            if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
                 db.removeStatus(tweetId);
             }
         } catch (Exception err) {

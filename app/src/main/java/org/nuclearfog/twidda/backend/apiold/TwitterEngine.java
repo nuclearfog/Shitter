@@ -7,12 +7,10 @@ import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.ProxySetup;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 
 import java.io.File;
@@ -26,10 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import twitter4j.GeoLocation;
 import twitter4j.IDs;
-import twitter4j.Status;
-import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -138,151 +133,6 @@ public class TwitterEngine {
             }
             return new ArrayList<>(idSet);
         } catch (TwitterException err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * send tweet
-     *
-     * @param tweet Tweet holder
-     * @throws EngineException if twitter service is unavailable
-     */
-    public void uploadStatus(TweetHolder tweet, long[] mediaIds) throws EngineException {
-        try {
-            StatusUpdate mStatus = new StatusUpdate(tweet.getText());
-            if (tweet.isReply())
-                mStatus.setInReplyToStatusId(tweet.getReplyId());
-            if (tweet.hasLocation())
-                mStatus.setLocation(new GeoLocation(tweet.getLatitude(), tweet.getLongitude()));
-            if (mediaIds.length > 0)
-                mStatus.setMediaIds(mediaIds);
-            twitter.updateStatus(mStatus);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Retweet Type
-     *
-     * @param tweetId Tweet ID
-     * @param retweet true to retweet this tweet
-     * @return updated tweet
-     * @throws EngineException if Access is unavailable
-     */
-    public Tweet retweet(long tweetId, boolean retweet) throws EngineException {
-        try {
-            Status tweet = twitter.showStatus(tweetId);
-            Status embedded = tweet.getRetweetedStatus();
-            int retweetCount = tweet.getRetweetCount();
-            int favoriteCount = tweet.getFavoriteCount();
-            if (embedded != null) {
-                tweetId = embedded.getId();
-                retweetCount = embedded.getRetweetCount();
-                favoriteCount = embedded.getFavoriteCount();
-            }
-            if (retweet) {
-                twitter.retweetStatus(tweetId);
-                retweetCount++;
-            } else {
-                twitter.unRetweetStatus(tweetId);
-                if (retweetCount > 0)
-                    retweetCount--;
-            }
-            return new TweetV1(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(), retweetCount,
-                    retweet, favoriteCount, tweet.isFavorited());
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * favorite Tweet
-     *
-     * @param tweetId  Tweet ID
-     * @param favorite true to favorite this tweet
-     * @return updated tweet
-     * @throws EngineException if Access is unavailable
-     */
-    public Tweet favorite(long tweetId, boolean favorite) throws EngineException {
-        try {
-            Status tweet = twitter.showStatus(tweetId);
-            Status embedded = tweet.getRetweetedStatus();
-            int retweetCount = tweet.getRetweetCount();
-            int favoriteCount = tweet.getFavoriteCount();
-            if (embedded != null) {
-                tweetId = embedded.getId();
-                retweetCount = embedded.getRetweetCount();
-                favoriteCount = embedded.getFavoriteCount();
-            }
-            if (favorite) {
-                twitter.createFavorite(tweetId);
-                favoriteCount++;
-            } else {
-                twitter.destroyFavorite(tweetId);
-                if (favoriteCount > 0)
-                    favoriteCount--;
-            }
-            return new TweetV1(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(),
-                    retweetCount, tweet.isRetweeted(), favoriteCount, favorite);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * delete tweet
-     *
-     * @param tweetId Tweet ID
-     * @return removed tweet
-     * @throws EngineException if Access is unavailable
-     */
-    public Tweet deleteTweet(long tweetId) throws EngineException {
-        try {
-            // Twitter API returns removed tweet with false information
-            // so get the tweet first before delete
-            TweetV1 tweet = new TweetV1(twitter.showStatus(tweetId), twitter.getId());
-            twitter.destroyStatus(tweetId);
-            return tweet;
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * send direct message to an user
-     *
-     * @param username screen name of the user
-     * @param message  message text
-     * @param mediaId  media ID referenced by Twitter
-     * @throws EngineException if access is unavailable
-     */
-    public void sendDirectMessage(String username, String message, long mediaId) throws EngineException {
-        try {
-            if (mediaId > 0) {
-                long userId = twitter.showUser(username).getId();
-                twitter.sendDirectMessage(userId, message, mediaId);
-            } else {
-                twitter.sendDirectMessage(username, message);
-            }
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-    /**
-     * Delete Direct Message
-     *
-     * @param id Message ID
-     * @throws EngineException if Access is unavailable or message not found
-     */
-    public void deleteMessage(long id) throws EngineException {
-        try {
-            twitter.destroyDirectMessage(id);
-        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
