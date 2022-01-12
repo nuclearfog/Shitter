@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUpdater;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -237,55 +236,52 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
     @Override
     protected void onMediaFetched(int resultType, @NonNull String path) {
-        String extension = path.substring(path.lastIndexOf('.') + 1).toLowerCase();
-        switch (extension) {
-            case "jpg":
-            case "jpeg":
-            case "webp":
-            case "png":
-                if (selectedFormat == MediaType.NONE)
-                    selectedFormat = MediaType.IMAGE;
-                if (selectedFormat == MediaType.IMAGE) {
-                    if (mediaPath.size() < MAX_IMAGES) {
-                        mediaPath.add(path);
-                        previewBtn.setVisibility(VISIBLE);
-                        if (mediaPath.size() == MAX_IMAGES) {
-                            mediaBtn.setVisibility(GONE);
-                        }
+        String mime = StringTools.getMimeType(path);
+        // check if file is a gif image
+        if (mime.equals("image/gif")) {
+            if (selectedFormat == MediaType.NONE) {
+                selectedFormat = MediaType.GIF;
+                previewBtn.setImageResource(R.drawable.gif);
+                AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
+                previewBtn.setVisibility(VISIBLE);
+                mediaBtn.setVisibility(GONE);
+                mediaPath.add(path);
+            } else {
+                Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
+            }
+        }
+        // check if file is an image with supported extension
+        else if (mime.startsWith("image")) {
+            if (selectedFormat == MediaType.NONE)
+                selectedFormat = MediaType.IMAGE;
+            if (selectedFormat == MediaType.IMAGE) {
+                // add up to 4 images
+                if (mediaPath.size() < MAX_IMAGES) {
+                    mediaPath.add(path);
+                    previewBtn.setVisibility(VISIBLE);
+                    // if limit reached, remove mediaselect button
+                    if (mediaPath.size() == MAX_IMAGES) {
+                        mediaBtn.setVisibility(GONE);
                     }
-                } else {
-                    Toast.makeText(this, R.string.info_cant_add_gif, LENGTH_SHORT).show();
                 }
-                break;
-
-            case "gif":
-                if (selectedFormat == MediaType.NONE) {
-                    selectedFormat = MediaType.GIF;
-                    previewBtn.setImageResource(R.drawable.gif);
-                    AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
-                    previewBtn.setVisibility(VISIBLE);
-                    mediaBtn.setVisibility(GONE);
-                    mediaPath.add(path);
-                } else {
-                    Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
-                }
-                break;
-
-            case "mp4":
-            case "3gp":
-                if (selectedFormat == MediaType.NONE) {
-                    selectedFormat = MediaType.VIDEO;
-                    previewBtn.setImageResource(R.drawable.video);
-                    AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
-                    previewBtn.setVisibility(VISIBLE);
-                    mediaBtn.setVisibility(GONE);
-                    mediaPath.add(path);
-                }
-                break;
-
-            default:
-                Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
-                break;
+            } else {
+                Toast.makeText(this, R.string.info_cant_add_gif, LENGTH_SHORT).show();
+            }
+        }
+        // check if file is a video with supported extension
+        else if (mime.startsWith("video")) {
+            if (selectedFormat == MediaType.NONE) {
+                selectedFormat = MediaType.VIDEO;
+                previewBtn.setImageResource(R.drawable.video);
+                AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
+                previewBtn.setVisibility(VISIBLE);
+                mediaBtn.setVisibility(GONE);
+                mediaPath.add(path);
+            }
+        }
+        // file type is not supported
+        else  {
+            Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
         }
     }
 
@@ -319,7 +315,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     /**
      * Show confirmation dialog if an error occurs while sending tweet
      */
-    public void onError(@Nullable EngineException error) {
+    public void onError(@Nullable ErrorHandler.TwitterError error) {
         if (!errorDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, error);
             errorDialog.setMessage(message);

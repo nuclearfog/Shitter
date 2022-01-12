@@ -7,11 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * This class handles {@link EngineException} from {@link org.nuclearfog.twidda.backend.apiold.TwitterEngine}
+ * This class handles {@link TwitterError}
  * and prints Toast messages to current activity
  *
  * @author nuclearfog

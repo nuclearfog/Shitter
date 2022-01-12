@@ -70,7 +70,6 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.UserAction;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -715,10 +714,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
      *
      * @param err Engine Exception
      */
-    public void onError(@Nullable EngineException err) {
-        ErrorHandler.handleFailure(this, err);
-        if (user == null || (err != null && err.resourceNotFound())) {
-            finish();
-        }
+    public void onError(@Nullable ErrorHandler.TwitterError err) {
+        ErrorHandler.handleFailure(this, err); // fixme
+        //if (user == null || (err != null && err.resourceNotFound())) {
+        //    finish();
+        //}
     }
 }

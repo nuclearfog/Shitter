@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.activities.MessageEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -19,9 +19,8 @@ import java.lang.ref.WeakReference;
  */
 public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
 
-    private EngineException twException;
+    private ErrorHandler.TwitterError twException;
     private WeakReference<MessageEditor> callback;
-    private TwitterEngine mTwitter;
     private Twitter twitter;
 
     /**
@@ -32,7 +31,6 @@ public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
     public MessageUpdater(@NonNull MessageEditor activity) {
         super();
         twitter = Twitter.get(activity);
-        mTwitter = TwitterEngine.getInstance(activity);
         callback = new WeakReference<>(activity);
     }
 
@@ -46,14 +44,14 @@ public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
             long mediaId = -1;
             String mediaPath = param[2];
             if (mediaPath != null && !mediaPath.isEmpty()) {
-                mediaId = mTwitter.uploadImage(param[2]);
+                mediaId = twitter.uploadImage(param[2]);
             }
             // upload message and media ID if defined
             if (!isCancelled()) {
                 twitter.sendDirectmessage(id, param[1], mediaId);
             }
             return true;
-        } catch (EngineException twException) {
+        } catch (TwitterException twException) {
             this.twException = twException;
         } catch (Exception err) {
             err.printStackTrace();

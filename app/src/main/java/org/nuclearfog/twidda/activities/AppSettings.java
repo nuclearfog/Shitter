@@ -49,8 +49,6 @@ import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
 import org.nuclearfog.twidda.adapter.ScaleAdapter;
 import org.nuclearfog.twidda.backend.LocationLoader;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -270,8 +268,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onBackPressed() {
-        if (saveConnectionSettings()) {
-            TwitterEngine.resetTwitter();
+        if (saveConnectionSettings()) { // fixme
+            //TwitterEngine.resetTwitter();
             super.onBackPressed();
         } else {
             if (!connectDialog.isShowing()) {
@@ -315,9 +313,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onConfirm(DialogType type) {
         // confirm log out
-        if (type == DialogType.APP_LOG_OUT) {
+        if (type == DialogType.APP_LOG_OUT) { // fixme
             // reset twitter singleton
-            TwitterEngine.resetTwitter();
+            // TwitterEngine.resetTwitter();
             // remove account from database
             AccountDatabase accountDB = new AccountDatabase(this);
             accountDB.removeLogin(settings.getCurrentUserId());

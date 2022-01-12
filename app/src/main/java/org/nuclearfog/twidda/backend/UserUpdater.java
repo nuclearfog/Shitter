@@ -5,8 +5,9 @@ import android.os.AsyncTask;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activities.ProfileEditor;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 
@@ -21,17 +22,17 @@ import java.lang.ref.WeakReference;
 public class UserUpdater extends AsyncTask<String, Void, User> {
 
     @Nullable
-    private EngineException twException;
+    private ErrorHandler.TwitterError twException;
     private WeakReference<ProfileEditor> callback;
-    private TwitterEngine mTwitter;
+    private Twitter twitter;
     private AppDatabase db;
 
 
-    public UserUpdater(ProfileEditor callback) {
+    public UserUpdater(ProfileEditor activity) {
         super();
-        this.callback = new WeakReference<>(callback);
-        mTwitter = TwitterEngine.getInstance(callback);
-        db = new AppDatabase(callback);
+        callback = new WeakReference<>(activity);
+        twitter = Twitter.get(activity);
+        db = new AppDatabase(activity);
     }
 
 
@@ -43,13 +44,13 @@ public class UserUpdater extends AsyncTask<String, Void, User> {
             String location = param[2];
             String bio = param[3];
             String profileImg = param[4];
-            String bannerImg = param[5];
-            User user = mTwitter.updateProfile(name, link, location, bio, profileImg, bannerImg);
-            db.storeUser(user);
-            return user;
-        } catch (EngineException twException) {
+            String bannerImg = param[5];// fixme
+            //User user = mTwitter.updateProfile(name, link, location, bio, profileImg, bannerImg);
+            //db.storeUser(user);
+            //return user;
+        } /*catch (TwitterException twException) {
             this.twException = twException;
-        } catch (Exception err) {
+        }*/ catch (Exception err) {
             err.printStackTrace();
         }
         return null;

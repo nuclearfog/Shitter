@@ -26,7 +26,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
@@ -183,7 +182,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
      *
      * @param error Engine Exception
      */
-    public void onError(@Nullable EngineException error) {
+    public void onError(@Nullable ErrorHandler.TwitterError error) {
         if (!errorDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, error);
             errorDialog.setMessage(message);

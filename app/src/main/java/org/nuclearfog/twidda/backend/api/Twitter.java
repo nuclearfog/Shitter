@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -31,11 +32,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -52,6 +55,7 @@ public class Twitter {
     public static final String SIGNATURE_ALG = "HMAC-SHA256";
 
     private static final String API = "https://api.twitter.com/";
+    private static final String UPLOAD = "https://upload.twitter.com/";
     private static final String AUTHENTICATE = API + "oauth/authenticate";
     private static final String REQUEST_TOKEN = API + "oauth/request_token";
     private static final String OAUTH_VERIFIER = API + "oauth/access_token";
@@ -99,6 +103,7 @@ public class Twitter {
     private static final String DIRECTMESSAGE = API + "1.1/direct_messages/events/list.json";
     private static final String DIRECTMESSAGE_CREATE = API + "1.1/direct_messages/events/new.json";
     private static final String DIRECTMESSAGE_DELETE = API + "1.1/direct_messages/events/destroy.json";
+    private static final String MEDIA_UPLOAD = UPLOAD + "1.1/media/upload.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
     private static Twitter instance;
@@ -110,18 +115,21 @@ public class Twitter {
 
 
     private Twitter(Context context) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.writeTimeout(60, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).connectTimeout(60, TimeUnit.SECONDS);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             try {
+                // use experimental TLS 1.2 support for pre-Lollipop devices
                 TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 factory.init((KeyStore) null);
                 X509TrustManager manager = (X509TrustManager) factory.getTrustManagers()[0];
-                client = new OkHttpClient().newBuilder().sslSocketFactory(new TLSSocketFactory(), manager).build();
+                builder.sslSocketFactory(new TLSSocketFactory(), manager);
             } catch (Exception e) {
-                client = new OkHttpClient().newBuilder().build();
+                // ignore, user default setting
             }
-        } else {
-            client = new OkHttpClient().newBuilder().build();
         }
+        // todo add proxy settings
+        client = builder.build();
         tokens = Tokens.getInstance(context);
         settings = GlobalSettings.getInstance(context);
         filterList = new ExcludeDatabase(context);
@@ -1100,6 +1108,52 @@ public class Twitter {
     }
 
     /**
+     * upload image file to twitter and generate a media ID
+     *
+     * @param filePath path to the local file
+     * @return media ID
+     */
+    public long uploadImage(String filePath) throws TwitterException {
+        File file = new File(filePath);
+        String mime = StringTools.getMimeType(filePath);
+        try {
+            // step 1 INIT
+            List<String> params = new ArrayList<>();
+            params.add("command=INIT");
+            params.add("media_type=" + mime);
+            params.add("total_bytes=" + file.length());
+            Response response = post(MEDIA_UPLOAD, params);
+            if (response.code() < 200 || response.code() >= 300 || response.body() == null)
+                throw new TwitterException(response);
+            JSONObject respone = new JSONObject(response.body().string());
+            long mediaId = respone.getLong("media_id");
+
+            // step 2 APPEND
+            params.clear();
+            params.add("command=APPEND");
+            params.add("segment_index=0");
+            params.add("media_id=" + mediaId);
+            response = post(MEDIA_UPLOAD, params, file, "media");
+            if (response.code() < 200 || response.code() >= 300)
+                throw new TwitterException(response);
+
+            // step 3 FINALIZE
+            params.clear();
+            params.add("command=FINALIZE");
+            params.add("media_id=" + mediaId);
+            response = post(MEDIA_UPLOAD, params);
+            if (response.code() < 200 || response.code() >= 300)
+                throw new TwitterException(response);
+            return mediaId;
+        } catch (IOException err) {
+            err.printStackTrace();
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
      * lookup single user
      *
      * @param params additional parameter added to request
@@ -1437,29 +1491,54 @@ public class Twitter {
     }
 
     /**
-     * create and call POST endpoint
+     * send POST request with empty body and create response
      *
      * @param endpoint endpoint url
+     * @param params additional http parameters
      * @return http resonse
      */
     private Response post(String endpoint, List<String> params) throws IOException {
-        String authHeader = buildHeader("POST", endpoint, params);
-        String url = appendParams(endpoint, params);
         RequestBody body = RequestBody.create(MediaType.parse("text/plain"), "");
-        Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).post(body).build();
-        return client.newCall(request).execute();
+        return post(endpoint, params, body);
     }
 
     /**
-     * create and call POST endpoint
+     * send POST request with JSON object and create response
      *
      * @param endpoint endpoint url
+     * @param params additional http parameters
      * @return http resonse
      */
     private Response post(String endpoint, List<String> params, JSONObject json) throws IOException {
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        return post(endpoint, params, body);
+    }
+
+    /**
+     * send POST request with file and create response
+     *
+     * @param endpoint endpoint url
+     * @param params additional http parameters
+     * @return http resonse
+     */
+    private Response post(String endpoint, List<String> params, File file, String addToKey) throws IOException {
+        RequestBody data = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart(addToKey, file.getName(), data).build();
+        return post(endpoint, params, body);
+    }
+
+    /**
+     * send POST request with request body
+     *
+     * @param endpoint endpoint url
+     * @param params additional http parameters
+     * @param body custom body
+     * @return http response
+     */
+    private Response post(String endpoint, List<String> params, RequestBody body) throws IOException {
         String authHeader = buildHeader("POST", endpoint, params);
         String url = appendParams(endpoint, params);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
         Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).post(body).build();
         return client.newCall(request).execute();
     }

@@ -11,7 +11,6 @@ import org.nuclearfog.twidda.activities.SearchPage;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendLoader;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Trend;
 

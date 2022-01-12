@@ -75,7 +75,7 @@ class TweetV1 implements Tweet {
         if (!location.equals("null"))
             this.location = location;
         if (!replyName.equals("null"))
-            this.replyName = replyName;
+            this.replyName = '@' + replyName;
         if (geo != null)
             coordinates = geo.optString("coordinates");
         if (user_retweet != null)
@@ -292,7 +292,7 @@ class TweetV1 implements Tweet {
      */
     private void addUserMentions(JSONObject extEntities) {
         StringBuilder buf = new StringBuilder();
-        if (!replyName.isEmpty()) {
+        if (!replyName.isEmpty() && replyName.equals(author.getScreenname())) {
             buf.append(replyName).append(' ');
         }
         JSONArray mentions = extEntities.optJSONArray("user_mentions");

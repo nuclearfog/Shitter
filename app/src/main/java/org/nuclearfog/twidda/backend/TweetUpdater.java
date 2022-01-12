@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.TweetEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -19,8 +19,7 @@ import java.lang.ref.WeakReference;
 public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
 
 
-    private EngineException twException;
-    private TwitterEngine mTwitter;
+    private ErrorHandler.TwitterError twException;
     private Twitter twitter;
     private WeakReference<TweetEditor> callback;
     private TweetHolder tweet;
@@ -32,7 +31,6 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
      */
     public TweetUpdater(TweetEditor activity, TweetHolder tweet) {
         super();
-        mTwitter = TwitterEngine.getInstance(activity);
         twitter = Twitter.get(activity);
         callback = new WeakReference<>(activity);
         this.tweet = tweet;
@@ -50,15 +48,15 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
                 // upload image
                 if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
                     for (int i = 0; i < mediaLinks.length; i++) {
-                        mediaIds[i] = mTwitter.uploadImage(mediaLinks[i]);
+                        mediaIds[i] = twitter.uploadImage(mediaLinks[i]);
                         if (isCancelled()) {
                             break;
                         }
                     }
                 }
                 // upload video file
-                else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {
-                    mediaIds[0] = mTwitter.uploadVideo(mediaLinks[0]);
+                else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {// fixme
+                    //mediaIds[0] = mTwitter.uploadVideo(mediaLinks[0]);
                 }
             }
             // upload tweet
@@ -69,7 +67,7 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
                 twitter.uploadTweet(tweet.getText(), tweet.getReplyId(), mediaIds, coordinates);
             }
             return true;
-        } catch (EngineException twException) {
+        } catch (TwitterException twException) {
             this.twException = twException;
         } catch (Exception err) {
             err.printStackTrace();

@@ -8,9 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activities.MediaViewer;
-import org.nuclearfog.twidda.backend.apiold.EngineException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -23,20 +23,20 @@ import java.lang.ref.WeakReference;
 public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
 
     @Nullable
-    private EngineException err;
-    private TwitterEngine mTwitter;
+    private ErrorHandler.TwitterError err;
+    private Twitter twitter;
     private WeakReference<MediaViewer> callback;
 
 
     /**
      * initialize image loader
      *
-     * @param callback Activity context
+     * @param activity Activity context
      */
-    public ImageLoader(@NonNull MediaViewer callback) {
+    public ImageLoader(@NonNull MediaViewer activity) {
         super();
-        this.callback = new WeakReference<>(callback);
-        mTwitter = TwitterEngine.getInstance(callback);
+        callback = new WeakReference<>(activity);
+        twitter = Twitter.get(activity);
     }
 
 
@@ -44,9 +44,9 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
     protected Boolean doInBackground(String[] links) {
         try {
             for (String link : links) {
-                Bitmap image;
-                if (link.startsWith("https://")) {
-                    image = mTwitter.getImage(link);
+                Bitmap image = null;
+                if (link.startsWith("https://")) { // fixme
+                    //image = mTwitter.getImage(link);
                 } else {
                     image = BitmapFactory.decodeFile(link);
                 }
@@ -56,9 +56,9 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
                 }
             }
             return true;
-        } catch (EngineException err) {
+        } /*catch (EngineException err) {
             this.err = err;
-        } catch (Exception exception) {
+        }*/ catch (Exception exception) {
             exception.printStackTrace();
         }
         return false;

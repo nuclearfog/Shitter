@@ -7,13 +7,11 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activities.UserExclude;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 /**
  * Backend of {@link UserExclude}
@@ -34,7 +32,6 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     private WeakReference<UserExclude> callback;
     private ExcludeDatabase excludeDatabase;
     private AppDatabase appDatabase;
-    private TwitterEngine mTwitter;
     private Twitter twitter;
     private Mode mode;
 
@@ -42,7 +39,6 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     public UserExcludeLoader(UserExclude activity, Mode mode) {
         super();
         twitter = Twitter.get(activity);
-        mTwitter = TwitterEngine.getInstance(activity);
         appDatabase = new AppDatabase(activity);
         excludeDatabase = new ExcludeDatabase(activity);
         callback = new WeakReference<>(activity);
@@ -53,9 +49,9 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String[] names) {
         try {
-            if (mode == Mode.REFRESH) {
-                List<Long> ids = mTwitter.getExcludedUserIDs();
-                excludeDatabase.setExcludeList(ids);
+            if (mode == Mode.REFRESH) { // fixme
+                //List<Long> ids = mTwitter.getExcludedUserIDs();
+                //excludeDatabase.setExcludeList(ids);
             } else if (mode == Mode.MUTE_USER) {
                 User user = twitter.muteUser(names[0]);
                 appDatabase.storeUser(user);

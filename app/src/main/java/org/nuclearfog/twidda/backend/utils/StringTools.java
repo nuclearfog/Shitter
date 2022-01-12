@@ -24,6 +24,8 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class StringTools {
 
+    public static final String MIME_ALL = "*/*";
+
     private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
     private static final long DEFAULT_TIME = 0x61D99F64;
 
@@ -104,6 +106,36 @@ public final class StringTools {
             }
         }
         return result;
+    }
+
+    /**
+     * get MIME type of a media file
+     * if file type is not supported, return {@link #MIME_ALL}
+     *
+     * @param filename file name or path with extension
+     * @return MIME type
+     */
+    public static String getMimeType(String filename) {
+        int end = filename.lastIndexOf('.');
+        if (end < 0)
+            return MIME_ALL;
+
+        String extension = filename.substring(end + 1).toLowerCase();
+        switch (extension) {
+            case "jpg":
+            case "jpeg":
+            case "webp":
+            case "png":
+            case "gif":
+                return "image/" + extension;
+
+            case "mp4":
+            case "3gp":
+                return "video/" + extension;
+
+            default:
+                return MIME_ALL;
+        }
     }
 
     /**
@@ -239,7 +271,7 @@ public final class StringTools {
      * @param keyString key used for sign
      * @return sign string
      */
-    private static String computeSignature(String baseString, String keyString) {
+    public static String computeSignature(String baseString, String keyString) {
         try {
             SecretKey secretKey = new SecretKeySpec(keyString.getBytes(), SIGNATURE_ALG);
             Mac mac = Mac.getInstance(SIGNATURE_ALG);
