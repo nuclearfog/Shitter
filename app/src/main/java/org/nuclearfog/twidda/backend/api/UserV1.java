@@ -15,9 +15,6 @@ import org.nuclearfog.twidda.model.User;
  */
 class UserV1 implements User {
 
-    static final String SKIP_STAT = "skip_status=true";
-    static final String INCLUDE_ENTITIES = "include_entities=true";
-
     private long userID;
     private long created;
     private String username;
@@ -45,7 +42,7 @@ class UserV1 implements User {
 
 
     UserV1(JSONObject json) {
-        String bannerLink = json.optString("profile_banner_url");
+        profileBannerUrl = json.optString("profile_banner_url");
         description = json.optString("description");
         username = json.optString("name");
         screenName = '@' + json.optString("screen_name");
@@ -62,11 +59,6 @@ class UserV1 implements User {
         defaultImage = json.optBoolean("default_profile_image");
         profileUrl = json.optString("profile_image_url_https");
         created = StringTools.getTime(json.optString("created_at"));
-
-        // remove link suffix from banner URL
-        if (bannerLink.length() > 4) {
-            profileBannerUrl = bannerLink.substring(0, bannerLink.length() - 4);
-        }
 
         // expand URLs
         JSONObject entities = json.optJSONObject("entities");

@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activities.MediaViewer;
 import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
@@ -16,6 +17,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * Background task to load images from twitter and storage
+ * todo: cache files to prevent out of memory error
  *
  * @author nuclearfog
  * @see MediaViewer
@@ -44,9 +46,9 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
     protected Boolean doInBackground(String[] links) {
         try {
             for (String link : links) {
-                Bitmap image = null;
-                if (link.startsWith("https://")) { // fixme
-                    //image = mTwitter.getImage(link);
+                Bitmap image;
+                if (link.startsWith("https://")) {
+                    image = twitter.downloadImage(link);
                 } else {
                     image = BitmapFactory.decodeFile(link);
                 }
@@ -56,9 +58,9 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
                 }
             }
             return true;
-        } /*catch (EngineException err) {
+        } catch (TwitterException err) {
             this.err = err;
-        }*/ catch (Exception exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
         return false;

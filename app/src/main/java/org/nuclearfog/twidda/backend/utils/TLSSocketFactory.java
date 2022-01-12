@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.backend.utils;
 
-import android.os.Build;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -36,25 +34,22 @@ public class TLSSocketFactory extends SSLSocketFactory {
     /**
      * check if TLS 1.2 is enabled and enable experimental TLS 1.2 support on Pre-Lollipop devices
      */
-    public static void getSupportTLSifNeeded() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            // check for TLS 1.2 support and activate it
-            try {
-                boolean tlsEnabled = false;
-                SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
-                String[] protocols = param.getProtocols();
-                for (String protocol : protocols) {
-                    if (protocol.equals(TLS_1_2) || protocol.equals(TLS_1_3)) {
-                        tlsEnabled = true;
-                        break;
-                    }
+    public static void setSupportTLS() {
+        try {
+            boolean tlsEnabled = false;
+            SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
+            String[] protocols = param.getProtocols();
+            for (String protocol : protocols) {
+                if (protocol.equals(TLS_1_2) || protocol.equals(TLS_1_3)) {
+                    tlsEnabled = true;
+                    break;
                 }
-                if (!tlsEnabled) {
-                    HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
-                }
-            } catch (Exception err) {
-                err.printStackTrace();
             }
+            if (!tlsEnabled) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+            }
+        } catch (Exception err) {
+            err.printStackTrace();
         }
     }
 

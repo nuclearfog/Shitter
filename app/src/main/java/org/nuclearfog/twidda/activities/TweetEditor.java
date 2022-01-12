@@ -125,7 +125,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
             tweetText.append(prefix);
         }
         previewBtn.setImageResource(R.drawable.image);
-        mediaBtn.setImageResource(R.drawable.image_add);
+        mediaBtn.setImageResource(R.drawable.attachment);
         locationBtn.setImageResource(R.drawable.location);
         tweetButton.setImageResource(R.drawable.tweet);
         closeButton.setImageResource(R.drawable.cross);

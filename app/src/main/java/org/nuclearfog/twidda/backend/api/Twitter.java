@@ -1,6 +1,8 @@
 package org.nuclearfog.twidda.backend.api;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 
@@ -24,6 +26,8 @@ import org.nuclearfog.twidda.model.UserList;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -104,6 +108,9 @@ public class Twitter {
     private static final String DIRECTMESSAGE_CREATE = API + "1.1/direct_messages/events/new.json";
     private static final String DIRECTMESSAGE_DELETE = API + "1.1/direct_messages/events/destroy.json";
     private static final String MEDIA_UPLOAD = UPLOAD + "1.1/media/upload.json";
+    private static final String PROFILE_UPDATE = API + "1.1/account/update_profile.json";
+    private static final String PROFILE_UPDATE_IMAGE = API + "1.1/account/update_profile_image.json";
+    private static final String PROFILE_UPDATE_BANNER = API + "1.1/account/update_profile_banner.json";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
     private static Twitter instance;
@@ -118,6 +125,8 @@ public class Twitter {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.writeTimeout(60, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).connectTimeout(60, TimeUnit.SECONDS);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // set TLS 1.2 support for default connections
+            TLSSocketFactory.setSupportTLS();
             try {
                 // use experimental TLS 1.2 support for pre-Lollipop devices
                 TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -229,7 +238,7 @@ public class Twitter {
     public User showUser(long id) throws  TwitterException {
         List<String> params = new ArrayList<>(3);
         params.add("user_id=" + id);
-        return showUser(params);
+        return getUser1(USER_LOOKUP, params);
     }
 
     /**
@@ -241,7 +250,7 @@ public class Twitter {
     public User showUser(String name) throws TwitterException {
         List<String> params = new ArrayList<>(3);
         params.add("screen_name=" + name);
-        return showUser(params);
+        return getUser1(USER_LOOKUP, params);
     }
 
     /**
@@ -1059,7 +1068,7 @@ public class Twitter {
     public Directmessages getDirectmessages(String cursor) throws TwitterException {
         List<String> params = new ArrayList<>(3);
         params.add("count=" + settings.getListSize());
-        if (!cursor.isEmpty())
+        if (cursor != null && !cursor.isEmpty())
             params.add("cursor=" + cursor);
         try {
             Response response = get(DIRECTMESSAGE, params);
@@ -1154,30 +1163,68 @@ public class Twitter {
     }
 
     /**
-     * lookup single user
+     * download image from twitter
      *
-     * @param params additional parameter added to request
-     * @return user information
+     * @param link link to the image
+     * @return image bitmap
      */
-    private User showUser(List<String> params) throws TwitterException {
+    public Bitmap downloadImage(String link) throws TwitterException {
         try {
-            params.add(UserV1.INCLUDE_ENTITIES);
-            Response response = get(USER_LOOKUP, params);
-            if (response.body() != null) {
-                JSONObject json = new JSONObject(response.body().string());
+            // this type of link requires authentication
+            if (link.startsWith("https://ton.twitter.com/")) {
+                Response response = get(link, new ArrayList<>(0));
                 if (response.code() == 200) {
-                    return new UserV1(json, settings.getCurrentUserId());
+                    byte[] data = response.body().bytes();
+                    return BitmapFactory.decodeByteArray(data, 0, 0);
                 } else {
-                    throw new TwitterException(json);
+                    throw new TwitterException(response);
                 }
-            } else {
-                throw new TwitterException(response);
             }
-        } catch (IOException err) {
-            throw new TwitterException(err);
-        } catch (JSONException err) {
-            throw new TwitterException(err);
+            // public link, no authentication required
+            else {
+                URL imageUrl = new URL(link);
+                InputStream is = imageUrl.openConnection().getInputStream();
+                return BitmapFactory.decodeStream(is);
+            }
+        } catch (IOException e) {
+            throw new TwitterException(e);
         }
+    }
+
+    /**
+     * updates current user's profile
+     *
+     * @param username new username
+     * @param url new profile URL
+     * @param location new location name
+     * @param description new description
+     * @return updated user information
+     */
+    public User updateProfile(String username, String url, String location, String description) throws TwitterException {
+        List<String> params = new ArrayList<>(7);
+        params.add("name=" + StringTools.encode(username));
+        params.add("url=" + StringTools.encode(url));
+        params.add("location=" + StringTools.encode(location));
+        params.add("description=" + StringTools.encode(description));
+        return getUser1(PROFILE_UPDATE, params);
+    }
+
+    /**
+     * update current user's profile image
+     *
+     * @param path local path to the image
+     */
+    public void updateProfileImage(String path) throws TwitterException {
+        updateImage(PROFILE_UPDATE_IMAGE, path, "image");
+    }
+
+    /**
+     * update current user's profile banner image
+     *
+     * @param path local path to the image
+     */
+    public void updateProfileBanner(String path) throws TwitterException {
+        updateImage(PROFILE_UPDATE_BANNER, path, "banner");
     }
 
     /**
@@ -1262,7 +1309,7 @@ public class Twitter {
     private Users getUsers1(String endpoint, List<String> params) throws TwitterException {
         try {
             params.add("count=" + settings.getListSize());
-            params.add(UserV1.SKIP_STAT);
+            params.add("skip_status=true");
             Response response = get(endpoint, params);
             if (response.body() != null) {
                 String jsonResult = response.body().string();
@@ -1346,7 +1393,13 @@ public class Twitter {
      */
     private User getUser1(String endpoint, List<String> params) throws TwitterException {
         try {
-            Response response = post(endpoint, params);
+            params.add("skip_status=true");
+            params.add("include_entities=true");
+            Response response;
+            if (endpoint.equals(USER_LOOKUP))
+                response = get(endpoint, params);
+            else
+                response = post(endpoint, params);
             if (response.body() != null) {
                 JSONObject json = new JSONObject(response.body().string());
                 if (response.code() == 200) {
@@ -1404,7 +1457,7 @@ public class Twitter {
      * @return list of userlists
      */
     private UserLists getUserlists(String endpoint, List<String> params) throws TwitterException {
-        params.add(UserV1.INCLUDE_ENTITIES);
+        params.add("include_entities=true");
         try {
             Response response = get(endpoint, params);
             if (response.body() != null) {
@@ -1430,6 +1483,34 @@ public class Twitter {
                     return result;
                 } else {
                     JSONObject json = new JSONObject(response.body().string());
+                    throw new TwitterException(json);
+                }
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+    /**
+     * update profile images
+     *
+     * @param endpoint endpoint to use
+     * @param imagePath path to the local image
+     * @param key key name used to identify the type of image
+     */
+    private void updateImage(String endpoint, String imagePath, String key) throws TwitterException {
+        try {
+            List<String> params = new ArrayList<>(3);
+            params.add("skip_status=true");
+            params.add("include_entities=false");
+            Response response = post(endpoint, params, new File(imagePath), key);
+            if (response.body() != null) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (response.code() != 200)  {
                     throw new TwitterException(json);
                 }
             } else {

@@ -44,14 +44,14 @@ public class UserUpdater extends AsyncTask<String, Void, User> {
             String location = param[2];
             String bio = param[3];
             String profileImg = param[4];
-            String bannerImg = param[5];// fixme
-            //User user = mTwitter.updateProfile(name, link, location, bio, profileImg, bannerImg);
-            //db.storeUser(user);
-            //return user;
-        } /*catch (TwitterException twException) {
+            String bannerImg = param[5];
+            twitter.updateProfileImage(profileImg);
+            twitter.updateProfileBanner(bannerImg);
+            User user = twitter.updateProfile(name, link, location, bio);
+            db.storeUser(user);
+            return user;
+        } catch (TwitterException twException) {
             this.twException = twException;
-        }*/ catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }

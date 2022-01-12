@@ -82,7 +82,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
             receiver.append(prefix);
         }
         send.setImageResource(R.drawable.right);
-        media.setImageResource(R.drawable.image_add);
+        media.setImageResource(R.drawable.attachment);
         preview.setImageResource(R.drawable.image);
         preview.setVisibility(GONE);
         AppStyles.setEditorTheme(root, background);
