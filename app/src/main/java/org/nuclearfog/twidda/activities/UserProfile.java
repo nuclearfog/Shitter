@@ -715,9 +715,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
      * @param err Engine Exception
      */
     public void onError(@Nullable ErrorHandler.TwitterError err) {
-        ErrorHandler.handleFailure(this, err); // fixme
-        //if (user == null || (err != null && err.resourceNotFound())) {
-        //    finish();
-        //}
+        ErrorHandler.handleFailure(this, err);
+        if (user == null || (err != null
+                && (err.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND
+                || err.getErrorType() == ErrorHandler.TwitterError.USER_NOT_FOUND))) {
+            finish();
+        }
     }
 }

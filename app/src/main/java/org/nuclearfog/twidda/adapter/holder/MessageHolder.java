@@ -4,6 +4,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ public class MessageHolder extends ViewHolder {
     public final TextView[] textViews = new TextView[5];
     public final Button[] buttons = new Button[2];
     public final ImageView profile_img, verifiedIcon, lockedIcon;
+    public final ImageButton mediaButton;
 
     /**
      * @param parent Parent view from adapter
@@ -39,6 +41,7 @@ public class MessageHolder extends ViewHolder {
         profile_img = itemView.findViewById(R.id.dm_profile_img);
         verifiedIcon = itemView.findViewById(R.id.dm_user_verified);
         lockedIcon = itemView.findViewById(R.id.dm_user_locked);
+        mediaButton = itemView.findViewById(R.id.dm_media);
         textViews[0] = itemView.findViewById(R.id.dm_username);
         textViews[1] = itemView.findViewById(R.id.dm_screenname);
         textViews[2] = itemView.findViewById(R.id.dm_receiver);
@@ -50,6 +53,7 @@ public class MessageHolder extends ViewHolder {
         receiver_icon.setImageResource(R.drawable.right);
         verifiedIcon.setImageResource(R.drawable.verify);
         lockedIcon.setImageResource(R.drawable.lock);
+        mediaButton.setImageResource(R.drawable.image);
         // theme views
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
@@ -62,6 +66,7 @@ public class MessageHolder extends ViewHolder {
         }
         verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
         lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+        mediaButton.setColorFilter(settings.getIconColor(), SRC_IN);
         receiver_icon.setColorFilter(settings.getIconColor(), SRC_IN);
         background.setCardBackgroundColor(settings.getCardColor());
         // make links clickable

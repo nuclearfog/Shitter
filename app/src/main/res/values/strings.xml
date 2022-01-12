@@ -38,6 +38,7 @@
     <string name="confirm_delete_database">clear app data?</string>
     <string name="tweet_sent_from">"sent from: "</string>
     <string name="directmessage">Directmessage</string>
+    <string name="directmessage_media_button">media attachment</string>
     <string name="username">Username</string>
     <string name="dm_message">Message</string>
     <string name="confirm_cancel_message">discard message?</string>

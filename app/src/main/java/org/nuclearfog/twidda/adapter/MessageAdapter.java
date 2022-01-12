@@ -171,6 +171,15 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                     }
                 }
             });
+            vh.mediaButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        itemClickListener.onClick(data.get(position), OnItemSelected.Action.MEDIA);
+                    }
+                }
+            });
             return vh;
         } else {
             final Footer footer = new Footer(parent, settings, false);
@@ -216,6 +225,11 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 } else {
                     holder.lockedIcon.setVisibility(GONE);
                 }
+                if (message.getMedia() != null && !message.getMedia().isEmpty()) {
+                    holder.mediaButton.setVisibility(VISIBLE);
+                } else {
+                    holder.mediaButton.setVisibility(GONE);
+                }
                 if (settings.imagesEnabled() && !sender.getImageUrl().isEmpty()) {
                     String pbLink = sender.getImageUrl();
                     if (!sender.hasDefaultProfileImage())
@@ -255,6 +269,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             ANSWER,
             DELETE,
             PROFILE,
+            MEDIA
         }
 
         /**

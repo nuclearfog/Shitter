@@ -12,6 +12,9 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
+import org.nuclearfog.twidda.backend.proxy.ProxySetup;
+import org.nuclearfog.twidda.backend.proxy.UserProxy;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
@@ -27,6 +30,7 @@ import org.nuclearfog.twidda.model.UserList;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Proxy;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -122,8 +126,17 @@ public class Twitter {
 
 
     private Twitter(Context context) {
+        settings = GlobalSettings.getInstance(context);
+        tokens = Tokens.getInstance(context);
+        filterList = new ExcludeDatabase(context);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.writeTimeout(60, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).connectTimeout(60, TimeUnit.SECONDS);
+        // setup proxy settings
+        builder.proxy(UserProxy.get(settings));
+        builder.proxyAuthenticator(new ProxyAuthenticator(settings));
+        // apply global proxy settings
+        ProxySetup.setConnection(settings);
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             // set TLS 1.2 support for default connections
             TLSSocketFactory.setSupportTLS();
@@ -134,14 +147,10 @@ public class Twitter {
                 X509TrustManager manager = (X509TrustManager) factory.getTrustManagers()[0];
                 builder.sslSocketFactory(new TLSSocketFactory(), manager);
             } catch (Exception e) {
-                // ignore, user default setting
+                // ignore, use default setting
             }
         }
-        // todo add proxy settings
         client = builder.build();
-        tokens = Tokens.getInstance(context);
-        settings = GlobalSettings.getInstance(context);
-        filterList = new ExcludeDatabase(context);
     }
 
     /**
@@ -604,7 +613,7 @@ public class Twitter {
      * @return list of tweets
      */
     public List<Tweet> getHomeTimeline(long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>(7);
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 0)
@@ -620,7 +629,7 @@ public class Twitter {
      * @return list of tweets
      */
     public List<Tweet> getMentionTimeline(long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>(7);
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -637,7 +646,7 @@ public class Twitter {
      * @return list of tweets
      */
     public List<Tweet> getUserTimeline(long userId, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(6);
+        List<String> params = new ArrayList<>(8);
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -655,7 +664,7 @@ public class Twitter {
      * @return list of tweets
      */
     public List<Tweet> getUserTimeline(String screen_name, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(6);
+        List<String> params = new ArrayList<>(8);
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -673,7 +682,7 @@ public class Twitter {
      * @return list of tweets
      */
     public List<Tweet> getUserFavorits(long userId, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(6);
+        List<String> params = new ArrayList<>(8);
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -691,7 +700,7 @@ public class Twitter {
      * @return list of tweets
      */
     public List<Tweet> getUserFavorits(String screen_name, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(6);
+        List<String> params = new ArrayList<>(8);
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -709,7 +718,7 @@ public class Twitter {
      * @return list of tweets
      */
     public List<Tweet> getUserlistTweets(long listId, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(6);
+        List<String> params = new ArrayList<>(8);
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -1174,8 +1183,8 @@ public class Twitter {
             if (link.startsWith("https://ton.twitter.com/")) {
                 Response response = get(link, new ArrayList<>(0));
                 if (response.code() == 200) {
-                    byte[] data = response.body().bytes();
-                    return BitmapFactory.decodeByteArray(data, 0, 0);
+                    InputStream is = response.body().byteStream();
+                    return BitmapFactory.decodeStream(is);
                 } else {
                     throw new TwitterException(response);
                 }
@@ -1237,6 +1246,8 @@ public class Twitter {
     private List<Tweet> getTweets1(String endpoint, List<String> params) throws TwitterException {
         try {
             params.add(TweetV1.EXT_MODE);
+            params.add(TweetV1.INCL_RT_ID);
+            params.add(TweetV1.INCL_ENTITIES);
             params.add("count=" + settings.getListSize());
             Response response = get(endpoint, params);
             if (response.body() != null) {
@@ -1275,6 +1286,8 @@ public class Twitter {
     private Tweet getTweet(String endpoint, List<String> params) throws TwitterException {
         try {
             params.add(TweetV1.EXT_MODE);
+            params.add(TweetV1.INCL_RT_ID);
+            params.add(TweetV1.INCL_ENTITIES);
             Response response;
             if (endpoint.equals(SHOW_TWEET)) {
                 response = get(endpoint, params);

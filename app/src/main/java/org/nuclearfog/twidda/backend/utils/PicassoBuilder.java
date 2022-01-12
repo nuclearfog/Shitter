@@ -6,6 +6,10 @@ import android.os.Build;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
+import org.nuclearfog.twidda.backend.proxy.UserProxy;
+import org.nuclearfog.twidda.database.GlobalSettings;
+
 import java.security.KeyStore;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
@@ -29,24 +33,37 @@ public class PicassoBuilder {
      */
     public static Picasso get(Context context) {
         if (downloader == null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                try {
-                    // try to enable TLS 1.2 support for picasso
-                    TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-                    factory.init((KeyStore) null);
-                    X509TrustManager manager = (X509TrustManager) factory.getTrustManagers()[0];
-                    OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                    builder.sslSocketFactory(new TLSSocketFactory(), manager);
-                    downloader = new OkHttp3Downloader(builder.build());
-                } catch (Exception e) {
-                    // fallback to default downloader
-                    downloader = new OkHttp3Downloader(context);
-                }
-            } else {
-                // use default downloader
-                downloader = new OkHttp3Downloader(context);
-            }
+            GlobalSettings settings = GlobalSettings.getInstance(context);
+            init(settings);
         }
         return new Picasso.Builder(context).downloader(downloader).build();
+    }
+
+
+    private static void init(GlobalSettings settings) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        // setup proxy
+        if (settings.isProxyEnabled()) {
+            builder.proxy(UserProxy.get(settings));
+            if (settings.isProxyAuthSet()) {
+                builder.proxyAuthenticator(new ProxyAuthenticator(settings));
+            }
+        }
+
+        // setup TLS 1.2 support if needed
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                factory.init((KeyStore) null);
+                X509TrustManager manager = (X509TrustManager) factory.getTrustManagers()[0];
+                builder.sslSocketFactory(new TLSSocketFactory(), manager);
+                downloader = new OkHttp3Downloader(builder.build());
+                return;
+            } catch (Exception e) {
+                // ignore, try without TLS 1.2 support
+            }
+        }
+        downloader = new OkHttp3Downloader(builder.build());
     }
 }

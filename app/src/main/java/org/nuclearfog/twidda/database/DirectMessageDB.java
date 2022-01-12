@@ -11,6 +11,7 @@ class DirectMessageDB implements DirectMessage {
     private long id;
     private long time;
     private String text;
+    private String media = "";
     private User sender;
     private User receiver;
 
@@ -50,6 +51,6 @@ class DirectMessageDB implements DirectMessage {
 
     @Override
     public String getMedia() {
-        return "";
+        return media;
     }
 }

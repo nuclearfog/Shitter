@@ -147,9 +147,6 @@ public final class ErrorHandler {
         int REQUEST_FORBIDDEN = 18;
         int APP_SUSPENDED = 19;
         int ERROR_API_ACCESS_DENIED = 20;
-        int FILENOTFOUND = 23;
-        int TOKENNOTSET = 22;
-        int BITMAP_FAILURE = 21;
 
         int getErrorType();
 

@@ -23,6 +23,13 @@ class TweetV1 implements Tweet {
     static final String EXT_MODE = "tweet_mode=extended";
 
     /**
+     * include ID of the reteet if available
+     */
+    static final String INCL_RT_ID = "include_my_retweet=true";
+
+    static final String INCL_ENTITIES = "include_entities=true";
+
+    /**
      * twitter video/gif MIME
      */
     private static final String MIME_V_MP4 = "video/mp4";
@@ -65,7 +72,7 @@ class TweetV1 implements Tweet {
         String replyName = json.optString("in_reply_to_screen_name");
 
         JSONObject user = json.getJSONObject("user");
-        JSONObject quoted_tweet = json.optJSONObject("quoted_status");
+        JSONObject quoted_tweet = json.optJSONObject("retweeted_status");
         JSONObject user_retweet = json.optJSONObject("current_user_retweet");
         JSONObject entities = json.optJSONObject("entities");
         JSONObject extEntities = json.optJSONObject("extended_entities");

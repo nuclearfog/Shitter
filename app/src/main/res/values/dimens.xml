@@ -119,6 +119,8 @@
     <dimen name="dmitem_button_margin">5dp</dimen>
     <dimen name="dmitem_margin_layout">5dp</dimen>
     <dimen name="dmitem_icon_size">16sp</dimen>
+    <dimen name="dmitem_button_media_width">48dp</dimen>
+    <dimen name="dmitem_button_media_height">30dp</dimen>
 
     <!--dimens of page_login.xml-->
     <dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>

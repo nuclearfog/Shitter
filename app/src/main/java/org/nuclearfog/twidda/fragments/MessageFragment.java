@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activities.MediaViewer;
 import org.nuclearfog.twidda.activities.MessageEditor;
 import org.nuclearfog.twidda.activities.SearchPage;
 import org.nuclearfog.twidda.activities.TweetActivity;
@@ -28,6 +29,9 @@ import org.nuclearfog.twidda.model.DirectMessage;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
@@ -148,6 +152,13 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
                     Intent profile = new Intent(requireContext(), UserProfile.class);
                     profile.putExtra(KEY_PROFILE_DATA, message.getSender());
                     startActivity(profile);
+                    break;
+
+                case MEDIA:
+                    Intent mediaIntent = new Intent(requireContext(), MediaViewer.class);
+                    mediaIntent.putExtra(KEY_MEDIA_LINK, new String[]{message.getMedia()});
+                    mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                    startActivity(mediaIntent);
                     break;
             }
         }
