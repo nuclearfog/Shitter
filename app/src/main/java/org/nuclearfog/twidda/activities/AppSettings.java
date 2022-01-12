@@ -268,7 +268,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onBackPressed() {
-        if (saveConnectionSettings()) { // fixme
+        if (saveConnectionSettings()) {
+            // todo reset proxy settings
             //TwitterEngine.resetTwitter();
             super.onBackPressed();
         } else {

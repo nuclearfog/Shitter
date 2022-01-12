@@ -68,23 +68,32 @@ class TweetV1 implements Tweet {
         isSensitive = json.optBoolean("possibly_sensitive");
         timestamp = StringTools.getTime(json.optString("created_at"));
         source = StringTools.getSource(json.optString("source"));
-        String location = json.optString("place");
         String replyName = json.optString("in_reply_to_screen_name");
 
+        JSONObject locationJson = json.optJSONObject("place");
+        JSONObject coordinateJson = json.optJSONObject("coordinates");
         JSONObject user = json.getJSONObject("user");
         JSONObject quoted_tweet = json.optJSONObject("retweeted_status");
         JSONObject user_retweet = json.optJSONObject("current_user_retweet");
         JSONObject entities = json.optJSONObject("entities");
         JSONObject extEntities = json.optJSONObject("extended_entities");
-        JSONObject geo = json.optJSONObject("geo");
 
         author = new UserV1(user, twitterId);
-        if (!location.equals("null"))
-            this.location = location;
+        if (locationJson != null) {
+            location = locationJson.optString("full_name");
+        }
+        if (coordinateJson != null) {
+            if (coordinateJson.optString("type").equals("Point")) {
+                JSONArray coordinateArray = coordinateJson.optJSONArray("coordinates");
+                if (coordinateArray != null && coordinateArray.length() == 2) {
+                    double lon = coordinateArray.getDouble(0);
+                    double lat = coordinateArray.getDouble(1);
+                    coordinates = lon + "," + lat;
+                }
+            }
+        }
         if (!replyName.equals("null"))
             this.replyName = '@' + replyName;
-        if (geo != null)
-            coordinates = geo.optString("coordinates");
         if (user_retweet != null)
             retweetId = user_retweet.optLong("id");
         if (quoted_tweet != null)

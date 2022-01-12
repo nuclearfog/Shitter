@@ -92,7 +92,7 @@ public class AccountDatabase {
                 String key1 = cursor.getString(1);
                 String key2 = cursor.getString(2);
                 long date = cursor.getLong(3);
-                AccountDB account = new AccountDB(id, date, key1, key2);
+                AccountImpl account = new AccountImpl(id, date, key1, key2);
                 account.addUser(database.getUser(id));
                 result.add(account);
             } while (cursor.moveToNext());

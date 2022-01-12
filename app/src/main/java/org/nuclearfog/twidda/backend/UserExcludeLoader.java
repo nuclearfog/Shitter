@@ -12,10 +12,12 @@ import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Backend of {@link UserExclude}
- * performs user mute or block actions and exports block list to database
+ * performs user mute or block actions and stores a list of IDs with blocked/muted users
+ * This list is used to filter search results
  *
  * @author nuclearfog
  */
@@ -49,9 +51,9 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String[] names) {
         try {
-            if (mode == Mode.REFRESH) { // fixme
-                //List<Long> ids = mTwitter.getExcludedUserIDs();
-                //excludeDatabase.setExcludeList(ids);
+            if (mode == Mode.REFRESH) {
+                List<Long> ids = twitter.getIdBlocklist();
+                excludeDatabase.setExcludeList(ids);
             } else if (mode == Mode.MUTE_USER) {
                 User user = twitter.muteUser(names[0]);
                 appDatabase.storeUser(user);

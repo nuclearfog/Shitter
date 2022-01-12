@@ -30,7 +30,6 @@ import org.nuclearfog.twidda.model.UserList;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Proxy;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
@@ -75,6 +74,7 @@ public class Twitter {
     private static final String USER_LIST_MEMBER = API + "1.1/lists/members.json";
     private static final String USER_LIST_SUBSCRIBER = API + "1.1/lists/subscribers.json";
     private static final String BLOCK_LIST = API + "1.1/blocks/list.json";
+    private static final String BLOCK_ID_LIST = API + "1.1/blocks/ids.json";
     private static final String MUTES_LIST = API + "1.1/mutes/users/list.json";
     private static final String SHOW_TWEET = API + "1.1/statuses/show.json";
     private static final String SHOW_HOME = API + "1.1/statuses/home_timeline.json";
@@ -389,7 +389,9 @@ public class Twitter {
     public User blockUser(long userId) throws TwitterException {
         List<String> params = new ArrayList<>(4);
         params.add("user_id=" + userId);
-        return getUser1(USER_BLOCK, params); // todo add to exclude list
+        User user = getUser1(USER_BLOCK, params);
+        filterList.addUser(userId);
+        return user;
     }
 
     /**
@@ -403,7 +405,9 @@ public class Twitter {
         if (screen_name.startsWith("@"))
             screen_name = screen_name.substring(1);
         params.add("screen_name=" + screen_name);
-        return getUser1(USER_BLOCK, params);
+        User user = getUser1(USER_BLOCK, params);
+        filterList.addUser(user.getId());
+        return user;
     }
 
     /**
@@ -845,9 +849,9 @@ public class Twitter {
             String idStr = buf.substring(0, buf.lastIndexOf("%2C"));
             params.add("media_ids=" + idStr);
         }
-        if (coordinates != null) { // fixme not working with coordinates
-            String lat = Double.toString(coordinates[0]);
-            String lon = Double.toString(coordinates[1]);
+        if (coordinates != null) {
+            String lon = Double.toString(coordinates[0]);
+            String lat = Double.toString(coordinates[1]);
             params.add("lat=" + StringTools.encode(lat));
             params.add("long=" + StringTools.encode(lon));
         }
@@ -1234,6 +1238,42 @@ public class Twitter {
      */
     public void updateProfileBanner(String path) throws TwitterException {
         updateImage(PROFILE_UPDATE_BANNER, path, "banner");
+    }
+
+    /**
+     * returns a list of blocked user IDs
+     *
+     * @return list of IDs
+     */
+    public List<Long> getIdBlocklist() throws TwitterException {
+        try {
+            long cursor = -1;
+            List<Long> result = new ArrayList<>(100);
+            // the API returns up to 5000 blocked user IDs
+            // but for bigger lists, we have to parse the whole list
+            for (int i = 0 ; i < 10 && cursor != 0 ; i++) {
+                List<String> params = new ArrayList<>(2);
+                params.add("cursor=" + cursor);
+                Response response = get(BLOCK_ID_LIST, params);
+                if (response.body() != null) {
+                    JSONObject json = new JSONObject(response.body().string());
+                    if (response.code() == 200) {
+                        JSONArray idArray = json.getJSONArray("ids");
+                        cursor = json.optLong("next_cursor");
+                        for (int pos = 0; pos < idArray.length(); pos++) {
+                            result.add(idArray.getLong(pos));
+                        }
+                    } else {
+                        throw new TwitterException(json);
+                    }
+                }
+            }
+            return result;
+        }  catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        }
     }
 
     /**

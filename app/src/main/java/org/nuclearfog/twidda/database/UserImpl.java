@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.User;
 
-class UserDB implements User {
+class UserImpl implements User {
 
     private long userID;
     private long created;
@@ -35,11 +35,11 @@ class UserDB implements User {
     private String profileImg;
     private String bannerImg;
 
-    UserDB(Cursor cursor, long currentUserId) {
+    UserImpl(Cursor cursor, long currentUserId) {
         this(cursor, "", currentUserId);
     }
 
-    UserDB(Cursor cursor, String prefix, long currentUserId) {
+    UserImpl(Cursor cursor, String prefix, long currentUserId) {
         userID = cursor.getLong(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.ID));
         username = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.USERNAME));
         screenName = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.SCREENNAME));

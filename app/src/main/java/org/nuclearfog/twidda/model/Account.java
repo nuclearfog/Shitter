@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 /**
  * interface of account implementations
+ * An account class collects information about a saved login.
  *
  * @author nuclearfog
  */

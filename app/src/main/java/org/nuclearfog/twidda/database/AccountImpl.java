@@ -7,11 +7,11 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
 /**
- * container class for user login information
+ * database implementation of account
  *
  * @author nuclearfog
  */
-class AccountDB implements Account {
+class AccountImpl implements Account {
 
     /**
      * id of the user
@@ -31,7 +31,7 @@ class AccountDB implements Account {
     private User user;
 
 
-    AccountDB(long userId, long loginDate, String key1, String key2) {
+    AccountImpl(long userId, long loginDate, String key1, String key2) {
         this.userId = userId;
         this.loginDate = loginDate;
         this.key1 = key1;

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-class TweetDB implements Tweet {
+class TweetImpl implements Tweet {
 
     private static final Pattern SEPARATOR = Pattern.compile(";");
 
@@ -47,7 +47,7 @@ class TweetDB implements Tweet {
     private String source;
 
 
-    TweetDB(Cursor cursor, long currentUserId) {
+    TweetImpl(Cursor cursor, long currentUserId) {
         time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.SINCE));
         tweet = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.TWEET));
         retweetCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.RETWEET));
@@ -76,7 +76,7 @@ class TweetDB implements Tweet {
             mediaType = MIME_VIDEO;
         else
             mediaType = MIME_NONE;
-        this.user = new UserDB(cursor, currentUserId);
+        this.user = new UserImpl(cursor, currentUserId);
     }
 
     @Override

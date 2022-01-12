@@ -580,7 +580,7 @@ public class AppDatabase {
         List<Trend> trends = new LinkedList<>();
         if (cursor.moveToFirst()) {
             do {
-                trends.add(new TrendDB(cursor));
+                trends.add(new TrendImpl(cursor));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -600,7 +600,7 @@ public class AppDatabase {
         Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                result.add(new DirectMessageDB(cursor, homeId));
+                result.add(new DirectMessageImpl(cursor, homeId));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -643,7 +643,7 @@ public class AppDatabase {
      * @return tweet instance
      */
     private Tweet getStatus(Cursor cursor) {
-        TweetDB result = new TweetDB(cursor, homeId);
+        TweetImpl result = new TweetImpl(cursor, homeId);
         // check if there is an embedded tweet
         if (result.getEmbeddedTweetId() > 1)
             result.addEmbeddedTweet(getStatus(result.getEmbeddedTweetId()));
@@ -664,7 +664,7 @@ public class AppDatabase {
 
         User user = null;
         if (cursor.moveToFirst())
-            user = new UserDB(cursor, homeId);
+            user = new UserImpl(cursor, homeId);
         cursor.close();
         return user;
     }

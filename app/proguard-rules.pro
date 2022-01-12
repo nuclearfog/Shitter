@@ -4,13 +4,6 @@
 -packageobfuscationdictionary dict/package-dictionary.txt
 
 # keep these libraries but allow obfuscating
--dontwarn twitter4j.**
--keep,allowobfuscation,allowoptimization class twitter4j.** {*;}
--adaptclassstrings twitter4j.**
-
--dontwarn javax.management.DynamicMBean
--keep,allowobfuscation class javax.management.DynamicMBean {*;}
--adaptclassstrings javax.management.DynamicMBean
 
 -dontwarn org.conscrypt.Conscrypt
 -keep,allowobfuscation class org.conscrypt.Conscrypt {*;}

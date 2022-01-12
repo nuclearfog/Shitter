@@ -1024,7 +1024,7 @@ public class GlobalSettings {
         proxyPass = settings.getString(PROXY_PASS, "");
         String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
         int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_ID);
-        location = new LocationDB(place, woeId);
+        location = new LocationImpl(place, woeId);
 
         api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
         api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");

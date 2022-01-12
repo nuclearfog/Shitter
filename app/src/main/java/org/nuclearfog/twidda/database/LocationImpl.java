@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.database;
 
 import org.nuclearfog.twidda.model.Location;
 
-class LocationDB implements Location {
+class LocationImpl implements Location {
 
     private String placeName;
     private int worldId;
@@ -13,7 +13,7 @@ class LocationDB implements Location {
      * @param placeName name of locale
      * @param worldId   woe id
      */
-    LocationDB(String placeName, int worldId) {
+    LocationImpl(String placeName, int worldId) {
         this.placeName = placeName;
         this.worldId = worldId;
     }
