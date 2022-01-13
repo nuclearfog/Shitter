@@ -40,14 +40,18 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void[] v) {
         try {
+            long[] mediaIds = {};
             String[] mimeTypes = tweet.getMimeTypes();
             InputStream[] mediaStreams = tweet.getMediaStreams();
-
-            // upload media first
-            long[] mediaIds = new long[mediaStreams.length];
-            for (int pos = 0 ; pos < mediaStreams.length ; pos++) {
-                mediaIds[pos] = twitter.uploadMedia(mediaStreams[pos], mimeTypes[pos]);
-                mediaStreams[pos].close();
+            if (mimeTypes != null && mediaStreams !=null) {
+                // upload media first
+                mediaIds = new long[mediaStreams.length];
+                for (int pos = 0; pos < mediaStreams.length; pos++) {
+                    // upload media file and save media ID
+                    mediaIds[pos] = twitter.uploadMedia(mediaStreams[pos], mimeTypes[pos]);
+                    // close stream after upload
+                    mediaStreams[pos].close();
+                }
             }
 
             // upload tweet
