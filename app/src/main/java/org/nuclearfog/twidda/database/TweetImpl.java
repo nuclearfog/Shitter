@@ -55,13 +55,13 @@ class TweetImpl implements Tweet {
         tweetId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.ID));
         replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYNAME));
         replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYTWEET));
-        myRetweetId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.RETWEETUSER));
         source = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.SOURCE));
         String links = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.MEDIA));
         locationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.PLACE));
         locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.COORDINATE));
         replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYUSER));
         embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.EMBEDDED));
+        myRetweetId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetRegisterTable.RETWEETUSER));
         int tweetRegister = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetRegisterTable.REGISTER));
         favorited = (tweetRegister & FAV_MASK) != 0;
         retweeted = (tweetRegister & RTW_MASK) != 0;

@@ -19,7 +19,7 @@ public class DatabaseAdapter {
     /**
      * database version number
      */
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     /**
      * database file name
@@ -54,7 +54,6 @@ public class DatabaseAdapter {
             + TweetTable.USER + " INTEGER,"
             + TweetTable.EMBEDDED + " INTEGER,"
             + TweetTable.REPLYTWEET + " INTEGER,"
-            + TweetTable.RETWEETUSER + " INTEGER,"
             + TweetTable.REPLYNAME + " TEXT,"
             + TweetTable.REPLYUSER + " INTEGER,"
             + TweetTable.SINCE + " INTEGER,"
@@ -184,6 +183,15 @@ public class DatabaseAdapter {
             + " ADD COLUMN " + TrendTable.VOL + " INTEGER";
 
     /**
+     * update for the directmessage table to add a media link
+     */
+    private static final String TABLE_MESSAGE_ADD_MEDIA = "ALTER TABLE " + MessageTable.NAME
+            + " ADD COLUMN " + MessageTable.MEDIA + " TEXT";
+
+    private static final String TABLE_TWEETREGISTER_ADD_RETWEETER_ID = "ALTER TABLE " + TweetRegisterTable.NAME
+            + " ADD COLUMN " + TweetRegisterTable.RETWEETUSER + " INTEGER";
+
+    /**
      * singleton instance
      */
     private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
@@ -268,6 +276,11 @@ public class DatabaseAdapter {
             db.execSQL(TABLE_TWEET_REGISTER);
             db.execSQL(TABLE_USER_REGISTER);
             db.setVersion(4);
+        }
+        if (db.getVersion() < 5) {
+            db.execSQL(TABLE_MESSAGE_ADD_MEDIA);
+            db.execSQL(TABLE_TWEETREGISTER_ADD_RETWEETER_ID);
+            db.setVersion(5);
         }
     }
 
@@ -460,11 +473,6 @@ public class DatabaseAdapter {
          * ID of the embedded (retweeted) status
          */
         String EMBEDDED = "retweetID";
-
-        /**
-         * ID of the
-         */
-        String RETWEETUSER = "retweeterID";
     }
 
     /**
@@ -549,6 +557,11 @@ public class DatabaseAdapter {
          * message text
          */
         String MESSAGE = "message";
+
+        /**
+         * media links
+         */
+        String MEDIA = "media";
     }
 
     /**
@@ -611,6 +624,11 @@ public class DatabaseAdapter {
          * Register with status bits
          */
         String REGISTER = "tweetRegister";
+
+        /**
+         *
+         */
+        String RETWEETUSER = "retweeterID";
     }
 
     /**

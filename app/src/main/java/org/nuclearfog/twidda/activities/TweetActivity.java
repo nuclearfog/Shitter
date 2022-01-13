@@ -537,7 +537,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         } else {
             sensitive_media.setVisibility(GONE);
         }
-        AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
         switch(tweetUpdate.getMediaType()) {
             case Tweet.MIME_PHOTO:
                 mediaButton.setVisibility(VISIBLE);
@@ -559,6 +558,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 mediaButton.setImageResource(0);
                 break;
         }
+        AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
         if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
             String pbLink = author.getImageUrl();
             if (!author.hasDefaultProfileImage())

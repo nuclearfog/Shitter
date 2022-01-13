@@ -64,6 +64,7 @@ public class MessageHolder extends ViewHolder {
             button.setTypeface(settings.getTypeFace());
             AppStyles.setButtonColor(button, settings.getFontColor());
         }
+        AppStyles.setButtonColor(mediaButton, settings.getFontColor());
         verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
         lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
         mediaButton.setColorFilter(settings.getIconColor(), SRC_IN);

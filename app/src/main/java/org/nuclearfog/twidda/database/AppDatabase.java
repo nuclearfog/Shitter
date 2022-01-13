@@ -538,18 +538,17 @@ public class AppDatabase {
      * @param tweet Tweet to remove from the favorites
      */
     public void removeFavorite(Tweet tweet) {
-        long tweetId = tweet.getId();
-        String[] delArgs = {Long.toString(tweetId), Long.toString(homeId)};
+        String[] delArgs = {Long.toString(tweet.getId()), Long.toString(homeId)};
 
         if (tweet.getEmbeddedTweet() != null) {
-            tweetId = tweet.getEmbeddedTweet().getId();
+            tweet = tweet.getEmbeddedTweet();
         }
         SQLiteDatabase db = getDbWrite();
         // get tweet register
-        int register = getTweetRegister(db, tweetId);
+        int register = getTweetRegister(db, tweet.getId());
         register &= ~FAV_MASK; // unset favorite flag
         // update database
-        setTweetRegister(db, tweetId, register);
+        setTweetRegister(db, tweet, register);
         db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
         commit(db);
     }
@@ -764,7 +763,6 @@ public class AppDatabase {
         status.put(TweetTable.REPLYTWEET, tweet.getReplyId());
         status.put(TweetTable.RETWEET, tweet.getRetweetCount());
         status.put(TweetTable.FAVORITE, tweet.getFavoriteCount());
-        status.put(TweetTable.RETWEETUSER, tweet.getMyRetweetId());
         status.put(TweetTable.REPLYUSER, tweet.getReplyUserId());
         status.put(TweetTable.PLACE, tweet.getLocationName());
         status.put(TweetTable.COORDINATE, tweet.getLocationCoordinates());
@@ -774,7 +772,7 @@ public class AppDatabase {
         db.insertWithOnConflict(TweetTable.NAME, null, status, CONFLICT_REPLACE);
 
         storeUser(user, db, CONFLICT_IGNORE);
-        setTweetRegister(db, tweet.getId(), statusRegister);
+        setTweetRegister(db, tweet, statusRegister);
     }
 
     /**
@@ -802,7 +800,6 @@ public class AppDatabase {
         tweetColumn.put(TweetTable.TWEET, tweet.getText());
         tweetColumn.put(TweetTable.RETWEET, tweet.getRetweetCount());
         tweetColumn.put(TweetTable.FAVORITE, tweet.getFavoriteCount());
-        tweetColumn.put(TweetTable.RETWEETUSER, tweet.getMyRetweetId());
         tweetColumn.put(TweetTable.REPLYNAME, tweet.getReplyName());
         tweetColumn.put(TweetTable.MEDIA, getMediaLinks(tweet));
 
@@ -819,7 +816,7 @@ public class AppDatabase {
 
         db.update(TweetTable.NAME, tweetColumn, TWEET_SELECT, tweetIdArg);
         db.update(UserTable.NAME, userColumn, USER_SELECT, userIdArg);
-        setTweetRegister(db, tweet.getId(), register);
+        setTweetRegister(db, tweet, register);
     }
 
     /**
@@ -861,6 +858,7 @@ public class AppDatabase {
         messageColumn.put(MessageTable.FROM, message.getSender().getId());
         messageColumn.put(MessageTable.TO, message.getReceiver().getId());
         messageColumn.put(MessageTable.MESSAGE, message.getText());
+        messageColumn.put(MessageTable.MEDIA, message.getMedia());
         db.insertWithOnConflict(MessageTable.NAME, null, messageColumn, CONFLICT_IGNORE);
         // store user information
         storeUser(message.getSender(), db, CONFLICT_IGNORE);
@@ -889,16 +887,17 @@ public class AppDatabase {
      * set status register of a tweet. if an entry exists, update it
      *
      * @param db       database instance
-     * @param id       Tweet ID
+     * @param tweet    Tweet
      * @param register tweet register
      */
-    public void setTweetRegister(SQLiteDatabase db, long id, int register) {
-        String[] args = {Long.toString(id), Long.toString(homeId)};
+    public void setTweetRegister(SQLiteDatabase db, Tweet tweet, int register) {
+        String[] args = {Long.toString(tweet.getId()), Long.toString(homeId)};
 
         ContentValues values = new ContentValues(3);
-        values.put(TweetRegisterTable.ID, id);
+        values.put(TweetRegisterTable.ID, tweet.getId());
         values.put(TweetRegisterTable.OWNER, homeId);
         values.put(TweetRegisterTable.REGISTER, register);
+        values.put(TweetRegisterTable.RETWEETUSER, tweet.getMyRetweetId());
 
         int cnt = db.update(TweetRegisterTable.NAME, values, TWEET_REG_SELECT, args);
         if (cnt == 0) {

@@ -24,8 +24,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class StringTools {
 
-    public static final String MIME_ALL = "*/*";
-
     private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
     private static final long DEFAULT_TIME = 0x61D99F64;
 

@@ -42,11 +42,11 @@ class UserV1 implements User {
 
 
     UserV1(JSONObject json) {
+        String profileImage = json.optString("profile_image_url_https");
         profileBannerUrl = json.optString("profile_banner_url");
         description = json.optString("description");
         username = json.optString("name");
         screenName = '@' + json.optString("screen_name");
-        profileImageUrl = json.optString("profile_image_url_https");
         location = json.optString("location");
         userID = json.optLong("id");
         isVerified = json.optBoolean("verified");
@@ -77,6 +77,14 @@ class UserV1 implements User {
                     expandDescriptionUrls(urls);
                 }
             }
+        }
+        // set profile image url
+        int start = profileImage.lastIndexOf('_');
+        int end = profileImage.lastIndexOf('.');
+        if (!defaultImage && start > 0 && end > 0) {
+            profileImageUrl = profileImage.substring(0, start) + profileImage.substring(end);
+        } else {
+            profileImageUrl = profileImage;
         }
     }
 

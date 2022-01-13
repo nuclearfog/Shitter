@@ -13,8 +13,8 @@ import java.net.SocketAddress;
  */
 public class UserProxy extends Proxy {
 
-    private UserProxy(Type type, SocketAddress sa) {
-        super(type, sa);
+    private UserProxy(SocketAddress sa) {
+        super(Type.HTTP, sa);
     }
 
     /**
@@ -27,7 +27,7 @@ public class UserProxy extends Proxy {
             String proxyHost = settings.getProxyHost();
             int proxyPort = settings.getProxyPortNumber();
             InetSocketAddress addr = new InetSocketAddress(proxyHost, proxyPort);
-            return new UserProxy(Type.HTTP, addr);
+            return new UserProxy(addr);
         }
         return Proxy.NO_PROXY;
     }
