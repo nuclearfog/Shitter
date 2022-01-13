@@ -31,6 +31,8 @@
         android:importantForAutofill="no"
         android:inputType="text"
         android:singleLine="true"
+        android:digits="abcdefghijklmnopqrstuvwxyz_0123456789@"
+        android:maxLength="16"
         app:layout_constraintStart_toStartOf="@id/dm_background"
         app:layout_constraintTop_toTopOf="@id/dm_background"
         app:layout_constraintBottom_toBottomOf="@id/dm_send"

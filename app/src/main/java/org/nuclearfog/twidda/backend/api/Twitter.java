@@ -1066,9 +1066,13 @@ public class Twitter {
         try {
             Response response = delete(DIRECTMESSAGE_DELETE, params);
             if (response.code() >= 300) {
+                if (response.body() != null)
+                    throw new TwitterException(new JSONObject(response.body().string()));
                 throw new TwitterException(response);
             }
         } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
             throw new TwitterException(err);
         }
     }
