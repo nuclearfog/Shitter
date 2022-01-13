@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import org.nuclearfog.twidda.activities.MessageEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.holder.DirectmessageHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
@@ -17,38 +18,41 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MessageEditor
  */
-public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
+public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
     private ErrorHandler.TwitterError twException;
     private WeakReference<MessageEditor> callback;
     private Twitter twitter;
+
+    private DirectmessageHolder message;
 
     /**
      * send direct message
      *
      * @param activity Activity context
      */
-    public MessageUpdater(@NonNull MessageEditor activity) {
+    public MessageUpdater(@NonNull MessageEditor activity, DirectmessageHolder message) {
         super();
         twitter = Twitter.get(activity);
         callback = new WeakReference<>(activity);
+        this.message = message;
     }
 
 
     @Override
-    protected Boolean doInBackground(String[] param) {
+    protected Boolean doInBackground(Void[] v) {
         try {
             // first check if user exists
-            long id = twitter.showUser(param[0]).getId();
+            long id = twitter.showUser(message.getReceiver()).getId();
             // upload media if any
             long mediaId = -1;
-            String mediaPath = param[2];
-            if (mediaPath != null && !mediaPath.isEmpty()) {
-                mediaId = twitter.uploadImage(param[2]);
+            if (message.getMediaStream() != null) {
+                mediaId = twitter.uploadMedia(message.getMediaStream(), message.getMimeType());
+                message.getMediaStream().close();
             }
             // upload message and media ID if defined
             if (!isCancelled()) {
-                twitter.sendDirectmessage(id, param[1], mediaId);
+                twitter.sendDirectmessage(id, message.getText(), mediaId);
             }
             return true;
         } catch (TwitterException twException) {

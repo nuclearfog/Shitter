@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.backend.api;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 
@@ -27,7 +25,6 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -50,6 +47,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.BufferedSink;
+import okio.Okio;
 
 /**
  * new API implementation to replace twitter4j and add version 2.0 support
@@ -258,6 +257,8 @@ public class Twitter {
      */
     public User showUser(String name) throws TwitterException {
         List<String> params = new ArrayList<>(3);
+        if (name.startsWith("@"))
+            name = name.substring(1);
         params.add("screen_name=" + name);
         return getUser1(USER_LOOKUP, params);
     }
@@ -940,7 +941,7 @@ public class Twitter {
      * @param listId ID of the list
      * @return removed userlist
      */
-    public UserList destroyUserlist(long listId) throws TwitterException {
+    public UserList deleteUserlist(long listId) throws TwitterException {
         List<String> params = new ArrayList<>(2);
         params.add("list_id=" + listId);
         return getUserlist(USERLIST_DESTROY, params);
@@ -1064,7 +1065,7 @@ public class Twitter {
         params.add("id=" + messageId);
         try {
             Response response = delete(DIRECTMESSAGE_DELETE, params);
-            if (response.code() != 200) {
+            if (response.code() >= 300) {
                 throw new TwitterException(response);
             }
         } catch (IOException err) {
@@ -1130,20 +1131,18 @@ public class Twitter {
     }
 
     /**
-     * upload image file to twitter and generate a media ID
+     * upload medida file to twitter and generate a media ID
      *
-     * @param filePath path to the local file
+     * @param uploadStream path to the local file
      * @return media ID
      */
-    public long uploadImage(String filePath) throws TwitterException {
-        File file = new File(filePath);
-        String mime = StringTools.getMimeType(filePath);
+    public long uploadMedia(InputStream uploadStream, String mime) throws TwitterException {
+        List<String> params = new ArrayList<>(4);
         try {
             // step 1 INIT
-            List<String> params = new ArrayList<>();
             params.add("command=INIT");
             params.add("media_type=" + mime);
-            params.add("total_bytes=" + file.length());
+            params.add("total_bytes=" + uploadStream.available());
             Response response = post(MEDIA_UPLOAD, params);
             if (response.code() < 200 || response.code() >= 300 || response.body() == null)
                 throw new TwitterException(response);
@@ -1155,7 +1154,7 @@ public class Twitter {
             params.add("command=APPEND");
             params.add("segment_index=0");
             params.add("media_id=" + mediaId);
-            response = post(MEDIA_UPLOAD, params, file, "media");
+            response = post(MEDIA_UPLOAD, params, uploadStream, "media");
             if (response.code() < 200 || response.code() >= 300)
                 throw new TwitterException(response);
 
@@ -1181,14 +1180,13 @@ public class Twitter {
      * @param link link to the image
      * @return image bitmap
      */
-    public Bitmap downloadImage(String link) throws TwitterException {
+    public InputStream downloadImage(String link) throws TwitterException {
         try {
             // this type of link requires authentication
             if (link.startsWith("https://ton.twitter.com/")) {
                 Response response = get(link, new ArrayList<>(0));
                 if (response.code() == 200) {
-                    InputStream is = response.body().byteStream();
-                    return BitmapFactory.decodeStream(is);
+                    return response.body().byteStream();
                 } else {
                     throw new TwitterException(response);
                 }
@@ -1196,8 +1194,7 @@ public class Twitter {
             // public link, no authentication required
             else {
                 URL imageUrl = new URL(link);
-                InputStream is = imageUrl.openConnection().getInputStream();
-                return BitmapFactory.decodeStream(is);
+                return imageUrl.openConnection().getInputStream();
             }
         } catch (IOException e) {
             throw new TwitterException(e);
@@ -1225,19 +1222,19 @@ public class Twitter {
     /**
      * update current user's profile image
      *
-     * @param path local path to the image
+     * @param inputStream inputstream of the local image file
      */
-    public void updateProfileImage(String path) throws TwitterException {
-        updateImage(PROFILE_UPDATE_IMAGE, path, "image");
+    public void updateProfileImage(InputStream inputStream) throws TwitterException {
+        updateImage(PROFILE_UPDATE_IMAGE, inputStream, "image");
     }
 
     /**
      * update current user's profile banner image
      *
-     * @param path local path to the image
+     * @param inputStream inputstream of the local image file
      */
-    public void updateProfileBanner(String path) throws TwitterException {
-        updateImage(PROFILE_UPDATE_BANNER, path, "banner");
+    public void updateProfileBanner(InputStream inputStream) throws TwitterException {
+        updateImage(PROFILE_UPDATE_BANNER, inputStream, "banner");
     }
 
     /**
@@ -1552,15 +1549,15 @@ public class Twitter {
      * update profile images
      *
      * @param endpoint endpoint to use
-     * @param imagePath path to the local image
+     * @param input    inputstream of the image file
      * @param key key name used to identify the type of image
      */
-    private void updateImage(String endpoint, String imagePath, String key) throws TwitterException {
+    private void updateImage(String endpoint, InputStream input, String key) throws TwitterException {
         try {
             List<String> params = new ArrayList<>(3);
             params.add("skip_status=true");
             params.add("include_entities=false");
-            Response response = post(endpoint, params, new File(imagePath), key);
+            Response response = post(endpoint, params, input, key);
             if (response.body() != null) {
                 JSONObject json = new JSONObject(response.body().string());
                 if (response.code() != 200)  {
@@ -1655,10 +1652,20 @@ public class Twitter {
      * @param params additional http parameters
      * @return http resonse
      */
-    private Response post(String endpoint, List<String> params, File file, String addToKey) throws IOException {
-        RequestBody data = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+    private Response post(String endpoint, List<String> params, InputStream is, String addToKey) throws IOException {
+        RequestBody data = new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return MediaType.parse("application/octet-stream");
+            }
+
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                sink.writeAll(Okio.buffer(Okio.source(is)));
+            }
+        };
         RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart(addToKey, file.getName(), data).build();
+                .addFormDataPart(addToKey, "", data).build();
         return post(endpoint, params, body);
     }
 

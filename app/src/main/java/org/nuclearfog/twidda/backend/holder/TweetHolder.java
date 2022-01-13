@@ -1,8 +1,15 @@
 package org.nuclearfog.twidda.backend.holder;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.location.Location;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TweetHolder keeps information about a written tweet such as text, media files and location
@@ -11,19 +18,13 @@ import androidx.annotation.NonNull;
  */
 public class TweetHolder {
 
-    public enum MediaType {
-        IMAGE,
-        VIDEO,
-        NONE
-    }
-
     private final String text;
     private final long replyId;
-    private String[] mediaPaths;
     private double longitude;
     private double latitude;
+    private InputStream[] mediaStreams;
 
-    private MediaType mType = MediaType.NONE;
+    private String[] mimeTypes = {};
     private boolean hasLocation = false;
 
 
@@ -41,12 +42,25 @@ public class TweetHolder {
     /**
      * Add media paths to the holder
      *
-     * @param mediaLinks array of media paths from storage
-     * @param mType      type of media
+     * @param context context to resolve Uri links
+     * @param mediaUri array of media paths from storage
      */
-    public void addMedia(String[] mediaLinks, MediaType mType) {
-        this.mediaPaths = mediaLinks;
-        this.mType = mType;
+    public void addMedia(Context context, List<Uri> mediaUri) {
+        if (!mediaUri.isEmpty()) {
+            List<InputStream> iss = new ArrayList<>();
+            List<String> mimeTypes = new ArrayList<>();
+            ContentResolver resolver = context.getContentResolver();
+            try {
+                for (Uri uri : mediaUri) {
+                    iss.add(resolver.openInputStream(uri));
+                    mimeTypes.add(resolver.getType(uri));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            this.mediaStreams = iss.toArray(new InputStream[0]);
+            this.mimeTypes = mimeTypes.toArray(new String[0]);
+        }
     }
 
     /**
@@ -83,8 +97,8 @@ public class TweetHolder {
      *
      * @return media type
      */
-    public MediaType getMediaType() {
-        return mType;
+    public String[] getMimeTypes() {
+        return mimeTypes;
     }
 
     /**
@@ -92,8 +106,8 @@ public class TweetHolder {
      *
      * @return array of media paths
      */
-    public String[] getMediaPaths() {
-        return mediaPaths;
+    public InputStream[] getMediaStreams() {
+        return mediaStreams;
     }
 
     /**
@@ -121,15 +135,6 @@ public class TweetHolder {
      */
     public boolean hasLocation() {
         return hasLocation;
-    }
-
-    /**
-     * return if tweet is a reply
-     *
-     * @return true if tweet is a reply
-     */
-    public boolean isReply() {
-        return replyId > 0;
     }
 
     @NonNull

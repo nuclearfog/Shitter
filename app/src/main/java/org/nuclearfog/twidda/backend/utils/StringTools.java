@@ -109,36 +109,6 @@ public final class StringTools {
     }
 
     /**
-     * get MIME type of a media file
-     * if file type is not supported, return {@link #MIME_ALL}
-     *
-     * @param filename file name or path with extension
-     * @return MIME type
-     */
-    public static String getMimeType(String filename) {
-        int end = filename.lastIndexOf('.');
-        if (end < 0)
-            return MIME_ALL;
-
-        String extension = filename.substring(end + 1).toLowerCase();
-        switch (extension) {
-            case "jpg":
-            case "jpeg":
-            case "webp":
-            case "png":
-            case "gif":
-                return "image/" + extension;
-
-            case "mp4":
-            case "3gp":
-                return "video/" + extension;
-
-            default:
-                return MIME_ALL;
-        }
-    }
-
-    /**
      * convert Twitter ISO 8601 date time to long format
      *
      * @param timeStr Twitter time string

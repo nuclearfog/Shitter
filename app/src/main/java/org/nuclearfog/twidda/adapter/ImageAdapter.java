@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Bitmap;
+import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -12,14 +13,16 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ImageItem;
-import org.nuclearfog.twidda.backend.holder.ImageHolder;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * Adapter class for image previews
@@ -42,29 +45,32 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 
     private GlobalSettings settings;
 
-    private List<ImageHolder> images = new LinkedList<>();
+    private Picasso picasso;
+
+    private List<Uri> imageUri = new ArrayList<>(5);
     private boolean loading = false;
     private boolean saveImg = true;
 
     /**
      * @param itemClickListener click listener
      */
-    public ImageAdapter(GlobalSettings settings, OnImageClickListener itemClickListener) {
+    public ImageAdapter(Context context, OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        this.settings = settings;
+        this.settings = GlobalSettings.getInstance(context);
+        picasso = PicassoBuilder.get(context);
     }
 
     /**
      * add new image at the last position
      *
-     * @param imageItem image to add
+     * @param uri Uri of the image
      */
     @MainThread
-    public void addLast(@NonNull ImageHolder imageItem) {
-        int imagePos = images.size();
+    public void addLast(@NonNull Uri uri) {
+        int imagePos = imageUri.size();
         if (imagePos == 0)
             loading = true;
-        images.add(imageItem);
+        imageUri.add(uri);
         notifyItemInserted(imagePos);
     }
 
@@ -74,7 +80,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     @MainThread
     public void disableLoading() {
         loading = false;
-        int circlePos = images.size();
+        int circlePos = imageUri.size();
         notifyItemRemoved(circlePos);
     }
 
@@ -91,13 +97,13 @@ public class ImageAdapter extends Adapter<ViewHolder> {
      * @return true if there isn't any image
      */
     public boolean isEmpty() {
-        return images.isEmpty();
+        return imageUri.isEmpty();
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        if (loading && position == images.size())
+        if (loading && position == imageUri.size())
             return LOADING;
         return PICTURE;
     }
@@ -106,8 +112,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     @Override
     public int getItemCount() {
         if (loading)
-            return images.size() + 1;
-        return images.size();
+            return imageUri.size() + 1;
+        return imageUri.size();
     }
 
 
@@ -121,8 +127,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int pos = item.getLayoutPosition();
                     if (pos != NO_POSITION) {
-                        Bitmap img = images.get(pos).reducedImage;
-                        itemClickListener.onImageClick(img);
+                        itemClickListener.onImageClick(imageUri.get(pos));
                     }
                 }
             });
@@ -133,8 +138,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                     public void onClick(View v) {
                         int pos = item.getLayoutPosition();
                         if (pos != NO_POSITION) {
-                            Bitmap img = images.get(pos).fullImage;
-                            itemClickListener.onImageSave(img, pos);
+                            itemClickListener.onImageSave(imageUri.get(pos));
                         }
                     }
                 });
@@ -150,8 +154,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         if (vh instanceof ImageItem) {
             ImageItem item = (ImageItem) vh;
-            Bitmap image = images.get(index).preview;
-            item.preview.setImageBitmap(image);
+            Uri uri = imageUri.get(index);
+            picasso.load(uri).into(item.preview);
         }
     }
 
@@ -163,16 +167,13 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         /**
          * called to select an image
          *
-         * @param image selected image bitmap
+         * @param uri selected image uri
          */
-        void onImageClick(Bitmap image);
+        void onImageClick(Uri uri);
 
         /**
          * called to save image to storage
-         *
-         * @param image selected image bitmap
-         * @param index current image index
          */
-        void onImageSave(Bitmap image, int index);
+        void onImageSave(Uri uri);
     }
 }

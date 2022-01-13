@@ -5,7 +5,11 @@ import android.database.Cursor;
 import org.nuclearfog.twidda.model.DirectMessage;
 import org.nuclearfog.twidda.model.User;
 
-
+/**
+ * database implementation of a directmessage
+ *
+ * @author nuclearfog
+ */
 class DirectMessageImpl implements DirectMessage {
 
     private long id;

@@ -1,20 +1,17 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
+import static android.view.View.*;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activities.MediaViewer.*;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -26,6 +23,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
+import org.nuclearfog.twidda.backend.holder.DirectmessageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
@@ -53,7 +51,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     private Dialog loadingCircle;
     private ConfirmDialog errorDialog, leaveDialog;
     @Nullable
-    private String mediaPath;
+    private Uri mediaUri;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -95,7 +93,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
     @Override
     public void onBackPressed() {
-        if (receiver.getText().length() == 0 && message.getText().length() == 0 && mediaPath == null) {
+        if (receiver.getText().length() == 0 && message.getText().length() == 0 && mediaUri == null) {
             super.onBackPressed();
         } else if (!leaveDialog.isShowing()) {
             leaveDialog.show();
@@ -117,11 +115,11 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 
     @Override
-    protected void onMediaFetched(int resultType, @NonNull String path) {
+    protected void onMediaFetched(int resultType, @NonNull Uri uri) {
         if (resultType == REQUEST_IMAGE) {
             preview.setVisibility(VISIBLE);
             media.setVisibility(GONE);
-            mediaPath = path;
+            mediaUri = uri;
         }
     }
 
@@ -140,9 +138,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         }
         // open media
         else if (v.getId() == R.id.dm_preview) {
-            String[] link = {mediaPath};
             Intent image = new Intent(this, MediaViewer.class);
-            image.putExtra(KEY_MEDIA_LINK, link);
+            image.putExtra(KEY_MEDIA_URI, new Uri[]{mediaUri});
             image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
             startActivity(image);
         }
@@ -199,9 +196,12 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     private void sendMessage() {
         String username = receiver.getText().toString();
         String message = this.message.getText().toString();
-        if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
-            messageAsync = new MessageUpdater(this);
-            messageAsync.execute(username, message, mediaPath);
+        if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaUri != null)) {
+            DirectmessageHolder holder = new DirectmessageHolder(username, message);
+            if (mediaUri != null)
+                holder.addMedia(getApplicationContext(), mediaUri);
+            messageAsync = new MessageUpdater(this, holder);
+            messageAsync.execute();
             if (!loadingCircle.isShowing()) {
                 loadingCircle.show();
             }

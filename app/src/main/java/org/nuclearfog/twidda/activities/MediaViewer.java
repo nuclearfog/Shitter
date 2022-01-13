@@ -3,21 +3,14 @@ package org.nuclearfog.twidda.activities;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.location.Location;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.OnInfoListener;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -37,25 +30,20 @@ import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.twidda.backend.SeekbarUpdater;
-import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
-import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
-import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
+import static android.media.MediaPlayer.*;
+import static android.os.AsyncTask.Status.*;
+import static android.view.MotionEvent.*;
+import static android.view.View.*;
+import static android.widget.Toast.*;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
+
+import java.io.File;
 
 /**
  * Media viewer activity for images and videos
@@ -66,15 +54,25 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener {
 
     /**
-     * Key for the media URL, local or online, required
+     * Key for online media files
      */
     public static final String KEY_MEDIA_LINK = "media_link";
+
+    /**
+     * key for local media files
+     */
+    public static final String KEY_MEDIA_URI = "media_uri";
 
     /**
      * Key for the media type, required
      * {@link #MEDIAVIEWER_IMAGE}, {@link #MEDIAVIEWER_VIDEO} or {@link #MEDIAVIEWER_ANGIF}
      */
     public static final String KEY_MEDIA_TYPE = "media_type";
+
+    /**
+     * cache folder name
+     */
+    public static final String CACHE_FOLDER = "imagecache";
     /**
      * setup media viewer for images from twitter
      */
@@ -124,10 +122,11 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     private ZoomView zoomImage;
     private ViewGroup controlPanel;
 
-    private String[] mediaLinks;
+    private Uri[] mediaLinks;
     private int type;
 
     private PlayStat playStat = PlayStat.IDLE;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -163,43 +162,55 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
         AppStyles.setTheme(controlPanel, settings.getBackgroundColor());
-        adapter = new ImageAdapter(settings, this);
+        adapter = new ImageAdapter(getApplicationContext(), this);
 
-        // get intent data and type
-        mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);
+        // check if link is a local file
+        Parcelable[] links =  getIntent().getParcelableArrayExtra(KEY_MEDIA_URI);
+        if (links != null) {
+            mediaLinks = new Uri[links.length];
+            for (int i = 0; i < mediaLinks.length ; i++) {
+                mediaLinks[i] = (Uri) links[i];
+            }
+        }
+        // check if links are http:// links
+        else {
+            String[] strLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);
+            mediaLinks = new Uri[strLinks.length];
+            for (int i = 0; i < mediaLinks.length ; i++) {
+                mediaLinks[i] = Uri.parse(strLinks[i]);
+            }
+        }
+
         type = getIntent().getIntExtra(KEY_MEDIA_TYPE, 0);
-
-        if (mediaLinks != null && mediaLinks.length > 0) {
-            switch (type) {
-                case MEDIAVIEWER_IMAGE:
-                    zoomImage.setVisibility(VISIBLE);
-                    imageListContainer.setVisibility(VISIBLE);
-                    if (!mediaLinks[0].startsWith("http"))
-                        adapter.disableSaveButton();
-                    imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                    imageList.setAdapter(adapter);
+        switch (type) {
+            case MEDIAVIEWER_IMAGE:
+                zoomImage.setVisibility(VISIBLE);
+                imageListContainer.setVisibility(VISIBLE);
+                if (!mediaLinks[0].getScheme().startsWith("http")) {
+                    adapter.disableSaveButton();
+                    for (Uri uri : mediaLinks)
+                        setImage(uri);
+                    adapter.disableLoading();
+                } else {
                     imageAsync = new ImageLoader(this);
                     imageAsync.execute(mediaLinks);
-                    break;
+                }
+                imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+                imageList.setAdapter(adapter);
+                break;
 
-                case MEDIAVIEWER_VIDEO:
-                    controlPanel.setVisibility(VISIBLE);
-                    if (mediaLinks[0].startsWith("/"))
-                        share.setVisibility(GONE); // local image
-                    else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && mediaLinks[0].startsWith("https://")) {
-                        // for any reason VideoView ignores TLS 1.2 setup, so we have to use http:// instead
-                        // todo find a solution to add TLS 1.2 support for pre lollipop devices
-                        mediaLinks[0] = "http://" + mediaLinks[0].substring(8);
-                    }
-                    seekUpdate = new SeekbarUpdater(this, PROGRESS_UPDATE);
-                    // fall through
-                case MEDIAVIEWER_ANGIF:
-                    videoView.setVisibility(VISIBLE);
-                    videoView.setZOrderMediaOverlay(true); // disable black background
-                    videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-                    videoView.setVideoURI(Uri.parse(mediaLinks[0]));
-                    break;
-            }
+            case MEDIAVIEWER_VIDEO:
+                controlPanel.setVisibility(VISIBLE);
+                if (mediaLinks[0].getScheme().startsWith("http"))
+                    share.setVisibility(GONE); // local image
+                seekUpdate = new SeekbarUpdater(this, PROGRESS_UPDATE);
+                // fall through
+            case MEDIAVIEWER_ANGIF:
+                videoView.setVisibility(VISIBLE);
+                videoView.setZOrderMediaOverlay(true); // disable black background
+                videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+                videoView.setVideoURI(mediaLinks[0]);
+                break;
         }
         share.setOnClickListener(this);
         play.setOnClickListener(this);
@@ -231,6 +242,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             imageAsync.cancel(true);
         if (seekUpdate != null)
             seekUpdate.shutdown();
+        clearCache();
         super.onDestroy();
     }
 
@@ -254,7 +266,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         // open link with another app
         else if (v.getId() == R.id.controller_share) {
             if (mediaLinks != null && mediaLinks.length > 0) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mediaLinks[0]));
+                Intent intent = new Intent(Intent.ACTION_VIEW, mediaLinks[0]);
                 try {
                     startActivity(intent);
                 } catch (ActivityNotFoundException err) {
@@ -320,24 +332,20 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
 
     @Override
-    protected void onMediaFetched(int resultType, @NonNull String path) {
+    protected void onMediaFetched(int resultType, @NonNull Uri uri) {
     }
 
 
     @Override
-    public void onImageClick(Bitmap image) {
+    public void onImageClick(Uri uri) {
         zoomImage.reset();
-        zoomImage.setImageBitmap(image);
+        zoomImage.setImageURI(uri);
     }
 
 
     @Override
-    public void onImageSave(Bitmap image, int pos) {
-        if (mediaLinks != null && pos < mediaLinks.length && mediaLinks[pos] != null) {
-            String link = mediaLinks[pos];
-            String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
-            storeImage(image, name);
-        }
+    public void onImageSave(Uri uri) {
+        storeImage(uri);
     }
 
 
@@ -439,15 +447,15 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     /**
      * set downloaded image into preview list
      *
-     * @param image Image container
+     * @param imageUri Image Uri
      */
-    public void setImage(ImageHolder image) {
+    public void setImage(Uri imageUri) {
         if (adapter.isEmpty()) {
             zoomImage.reset();
-            zoomImage.setImageBitmap(image.reducedImage);
+            zoomImage.setImageURI(imageUri);
             loadingCircle.setVisibility(INVISIBLE);
         }
-        adapter.addLast(image);
+        adapter.addLast(imageUri);
     }
 
     /**
@@ -488,6 +496,17 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                 videoView.seekTo(videoPos);
                 video_progress.setProgress(videoPos);
                 break;
+        }
+    }
+
+    /**
+     * clear the image cache
+     */
+    private void clearCache() {
+        File cacheFolder = new File(getExternalCacheDir(), CACHE_FOLDER);
+        File[] files = cacheFolder.listFiles();
+        for (File file : files) {
+            file.delete();
         }
     }
 }

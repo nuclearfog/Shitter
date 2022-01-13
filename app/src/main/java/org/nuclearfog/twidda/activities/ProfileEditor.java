@@ -12,10 +12,9 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,6 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
+import org.nuclearfog.twidda.backend.holder.ProfileHolder;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -48,8 +48,6 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
-
-import java.io.File;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -76,7 +74,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     private ConfirmDialog errorDialog, closeDialog;
 
     private User user;
-    private String profileLink, bannerLink;
+    private Uri profileLink, bannerLink;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -182,22 +181,20 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 
     @Override
-    protected void onMediaFetched(int resultType, @NonNull String path) {
+    protected void onMediaFetched(int resultType, @NonNull Uri uri) {
         // Add image as profile image
         if (resultType == REQUEST_PROFILE) {
-            Bitmap image = BitmapFactory.decodeFile(path);
-            profile_image.setImageBitmap(image);
-            profileLink = path;
+            profile_image.setImageURI(uri);
+            profileLink = uri;
         }
         // Add image as banner image
         else if (resultType == REQUEST_BANNER) {
-            File img = new File(path);
             Point displaySize = new Point();
             getWindowManager().getDefaultDisplay().getSize(displaySize);
-            picasso.load(img).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
+            picasso.load(uri).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);
-            bannerLink = path;
+            bannerLink = uri;
         }
     }
 
@@ -289,8 +286,13 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
                 String errMsg = getString(R.string.error_invalid_link);
                 link.setError(errMsg);
             } else if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
-                editorAsync = new UserUpdater(this);
-                editorAsync.execute(username, userLink, userLoc, userBio, profileLink, bannerLink);
+                ProfileHolder holder = new ProfileHolder(username, userLink, userBio, userLoc);
+                if (profileLink != null)
+                    holder.addImageUri(getApplicationContext(), profileLink);
+                if (bannerLink != null)
+                    holder.addBannerUri(getApplicationContext(), bannerLink);
+                editorAsync = new UserUpdater(this, holder);
+                editorAsync.execute();
                 if (!loadingCircle.isShowing()) {
                     loadingCircle.show();
                 }

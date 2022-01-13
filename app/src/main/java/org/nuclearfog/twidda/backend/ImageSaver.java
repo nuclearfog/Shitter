@@ -1,10 +1,10 @@
 package org.nuclearfog.twidda.backend;
 
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.MediaActivity;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
@@ -16,10 +16,6 @@ import java.lang.ref.WeakReference;
  */
 public class ImageSaver extends AsyncTask<Object, Void, Boolean> {
 
-    /**
-     * Quality of the saved jpeg images
-     */
-    private static final int JPEG_QUALITY = 90;
 
     private WeakReference<MediaActivity> callback;
 
@@ -34,12 +30,19 @@ public class ImageSaver extends AsyncTask<Object, Void, Boolean> {
     protected Boolean doInBackground(Object... data) {
         try {
             if (data != null && data.length == 2) {
-                if (data[0] instanceof Bitmap && data[1] instanceof OutputStream) {
-                    Bitmap image = (Bitmap) data[0];
-                    OutputStream fileStream = (OutputStream) data[1];
-                    boolean imageSaved = image.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileStream);
-                    fileStream.close();
-                    return imageSaved;
+                if (data[0] instanceof InputStream && data[1] instanceof OutputStream) {
+                    InputStream source = (InputStream) data[0];
+                    OutputStream destiny = (OutputStream) data[1];
+
+                    // copy file from cache to the destiny folder
+                    int length;
+                    byte[] buffer = new byte[4096];
+                    while ((length = source.read(buffer)) > 0) {
+                        destiny.write(buffer, 0, length);
+                    }
+                    source.close();
+                    destiny.close();
+                    return true;
                 }
             }
         } catch (Exception err) {

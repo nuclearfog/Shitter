@@ -72,7 +72,7 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
                     return twitter.unfollowUserlist(listId);
 
                 case DELETE:
-                    return twitter.destroyUserlist(listId);
+                    return twitter.deleteUserlist(listId);
             }
         } catch (TwitterException err) {
             this.err = err;

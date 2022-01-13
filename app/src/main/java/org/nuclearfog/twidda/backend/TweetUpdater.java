@@ -8,6 +8,7 @@ import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 /**
@@ -18,9 +19,8 @@ import java.lang.ref.WeakReference;
  */
 public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
 
-
-    private ErrorHandler.TwitterError twException;
     private Twitter twitter;
+    private ErrorHandler.TwitterError twException;
     private WeakReference<TweetEditor> callback;
     private TweetHolder tweet;
 
@@ -40,25 +40,16 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void[] v) {
         try {
-            long[] mediaIds = {};
-            String[] mediaLinks = tweet.getMediaPaths();
-            if (mediaLinks != null && mediaLinks.length > 0) {
-                mediaIds = new long[mediaLinks.length];
+            String[] mimeTypes = tweet.getMimeTypes();
+            InputStream[] mediaStreams = tweet.getMediaStreams();
 
-                // upload image
-                if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
-                    for (int i = 0; i < mediaLinks.length; i++) {
-                        mediaIds[i] = twitter.uploadImage(mediaLinks[i]);
-                        if (isCancelled()) {
-                            break;
-                        }
-                    }
-                }
-                // upload video file
-                else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {// fixme
-                    //mediaIds[0] = mTwitter.uploadVideo(mediaLinks[0]);
-                }
+            // upload media first
+            long[] mediaIds = new long[mediaStreams.length];
+            for (int pos = 0 ; pos < mediaStreams.length ; pos++) {
+                mediaIds[pos] = twitter.uploadMedia(mediaStreams[pos], mimeTypes[pos]);
+                mediaStreams[pos].close();
             }
+
             // upload tweet
             if (!isCancelled()) {
                 double[] coordinates = null;

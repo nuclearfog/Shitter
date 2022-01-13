@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend.proxy;
 
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.io.IOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 

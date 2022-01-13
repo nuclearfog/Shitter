@@ -21,8 +21,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -31,7 +29,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +41,7 @@ import org.nuclearfog.twidda.backend.ImageSaver;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -71,11 +69,6 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
      * mime types for videos and images
      */
     private static final String[] TYPE_ALL = {MIME_IMAGE_READ, MIME_VIDEO_READ};
-
-    /**
-     * Cursor mode to get the full path to the image
-     */
-    private static final String[] GET_MEDIA = {MediaStore.MediaColumns.DATA};
 
     /**
      * request code to check permissions
@@ -109,9 +102,9 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     @Nullable
     private ImageSaver imageTask;
-    private Bitmap image;
-    private String filename;
     private boolean locationPending = false;
+    private Uri selectedImage;
+    private String imageName;
 
 
     @Override
@@ -153,17 +146,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     protected final void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
         if (returnCode == RESULT_OK && intent != null && intent.getData() != null) {
-            Cursor cursor = getContentResolver().query(intent.getData(), GET_MEDIA, null, null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    String path = cursor.getString(0);
-                    if (path != null) {
-                        onMediaFetched(reqCode, path);
-                        // todo add error handling if no media returned
-                    }
-                }
-                cursor.close();
-            }
+            onMediaFetched(reqCode, intent.getData());
         }
     }
 
@@ -200,22 +183,23 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     // store images directly
                     File imageFolder = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
-                    File imageFile = new File(imageFolder, filename);
-                    OutputStream fileStream = new FileOutputStream(imageFile);
+                    File imageFile = new File(imageFolder, imageName);
+                    InputStream src = getContentResolver().openInputStream(selectedImage);
+                    OutputStream dest = new FileOutputStream(imageFile);
                     imageTask = new ImageSaver(this);
-                    imageTask.execute(image, fileStream);
+                    imageTask.execute(src, dest);
                 } else {
                     // use scoped storage
                     ContentValues values = new ContentValues();
-                    values.put(DISPLAY_NAME, filename);
+                    values.put(DISPLAY_NAME, imageName);
                     values.put(DATE_TAKEN, System.currentTimeMillis());
                     values.put(RELATIVE_PATH, DIRECTORY_PICTURES);
                     values.put(MIME_TYPE, MIME_IMAGE_WRITE);
                     Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
                     if (imageUri != null) {
-                        OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
+                        OutputStream dest = getContentResolver().openOutputStream(imageUri);
                         imageTask = new ImageSaver(this);
-                        imageTask.execute(image, fileStream);
+                        imageTask.execute(selectedImage, dest);
                     }
                 }
             }
@@ -231,8 +215,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
         Toast.makeText(this, R.string.info_image_saved, LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             // start media scanner to scan for new image
-            String[] fileName = {filename};
-            MediaScannerConnection.scanFile(this, fileName, null, null);
+            MediaScannerConnection.scanFile(this, new String[]{imageName}, null, null);
         }
     }
 
@@ -283,15 +266,11 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     /**
      * store image bitmap into storage
      *
-     * @param filename name of the file
-     * @param image    image bitmap to store
+     * @param uri Uri of the image
      */
-    protected void storeImage(Bitmap image, String filename) {
-        this.image = image;
-        this.filename = filename;
-        if (!filename.endsWith(".jpg")) {
-            this.filename += ".jpg";
-        }
+    protected void storeImage(Uri uri) {
+        selectedImage = uri;
+        imageName = "shitter_" + uri.getLastPathSegment() + "jpg";
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 || checkSelfPermission(PERMISSIONS[2][0]) == PERMISSION_GRANTED) {
             saveImage();
@@ -352,9 +331,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     /**
      * called when a media file path was successfully fetched
-     *
-     * @param resultType type of media call
-     * @param path       local path to the media file
+     *  @param resultType type of media call
+     * @param uri         Uri of the file
      */
-    protected abstract void onMediaFetched(int resultType, @NonNull String path);
+    protected abstract void onMediaFetched(int resultType, @NonNull Uri uri);
 }

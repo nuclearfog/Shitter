@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
@@ -10,25 +9,27 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activities.MediaViewer;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 /**
- * Background task to load images from twitter and storage
- * todo: cache files to prevent out of memory error
+ * background async to download images to a cache folder
  *
  * @author nuclearfog
  * @see MediaViewer
  */
-public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
+public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
     @Nullable
     private ErrorHandler.TwitterError err;
     private Twitter twitter;
     private WeakReference<MediaViewer> callback;
-
+    private File cache;
 
     /**
      * initialize image loader
@@ -39,23 +40,32 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
         super();
         callback = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
+        cache = new File(activity.getExternalCacheDir(), MediaViewer.CACHE_FOLDER);
+        cache.mkdirs();
     }
 
 
     @Override
-    protected Boolean doInBackground(String[] links) {
+    protected Boolean doInBackground(Uri[] links) {
         try {
-            for (String link : links) {
-                Bitmap image;
-                if (link.startsWith("https://")) {
-                    image = twitter.downloadImage(link);
-                } else {
-                    image = BitmapFactory.decodeFile(link);
+            // create cache folder if not exists
+            // download imaged to a local cache folder
+            for (Uri link : links) {
+                File file = new File(cache, StringTools.getRandomString());
+                file.createNewFile();
+                FileOutputStream os = new FileOutputStream(file);
+                InputStream input = twitter.downloadImage(link.toString());
+
+                // copy image to cache folder
+                int length;
+                byte[] buffer = new byte[4096];
+                while ((length = input.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
                 }
-                if (image != null) {
-                    ImageHolder images = new ImageHolder(image);
-                    publishProgress(images);
-                }
+                input.close();
+                os.close();
+                // create a new uri
+                publishProgress(Uri.fromFile(file));
             }
             return true;
         } catch (TwitterException err) {
@@ -68,9 +78,9 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
 
 
     @Override
-    protected void onProgressUpdate(ImageHolder[] images) {
+    protected void onProgressUpdate(Uri[] uris) {
         if (callback.get() != null) {
-            callback.get().setImage(images[0]);
+            callback.get().setImage(uris[0]);
         }
     }
 

@@ -6,15 +6,13 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_VIDEO;
+import static org.nuclearfog.twidda.activities.MediaViewer.*;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,6 +68,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      */
     public static final String KEY_TWEETPOPUP_TEXT = "tweet_text";
 
+    private static final String MIME_GIF = "image/gif";
+    private static final String MIME_IMAGE_ALL = "image/";
+    private static final String MIME_VIDEO_ALL = "video/";
+
     /**
      * max amount of images (limited to 4 by twitter)
      */
@@ -90,7 +92,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     private View locationPending;
 
     private Location location;
-    private List<String> mediaPath = new LinkedList<>();
+    private List<Uri> mediaPath = new LinkedList<>();
     private MediaType selectedFormat = MediaType.NONE;
 
     @Override
@@ -203,7 +205,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         // open media preview
         else if (v.getId() == R.id.tweet_prev_media) {
             Intent image = new Intent(this, MediaViewer.class);
-            image.putExtra(KEY_MEDIA_LINK, mediaPath.toArray(new String[0]));
+            Uri[] uris = mediaPath.toArray(new Uri[0]);
+            image.putExtra(KEY_MEDIA_URI, uris);
             if (selectedFormat == MediaType.VIDEO) {
                 image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
                 startActivity(image);
@@ -235,29 +238,32 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 
     @Override
-    protected void onMediaFetched(int resultType, @NonNull String path) {
-        String mime = StringTools.getMimeType(path);
+    protected void onMediaFetched(int resultType, @NonNull Uri uri) {
+        String mime = getContentResolver().getType(uri);
+        if (mime == null) {
+            Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
+        }
         // check if file is a gif image
-        if (mime.equals("image/gif")) {
+        else if (mime.equals(MIME_GIF)) {
             if (selectedFormat == MediaType.NONE) {
                 selectedFormat = MediaType.GIF;
                 previewBtn.setImageResource(R.drawable.gif);
                 AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
                 previewBtn.setVisibility(VISIBLE);
                 mediaBtn.setVisibility(GONE);
-                mediaPath.add(path);
+                mediaPath.add(uri);
             } else {
                 Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
             }
         }
         // check if file is an image with supported extension
-        else if (mime.startsWith("image")) {
+        else if (mime.startsWith(MIME_IMAGE_ALL)) {
             if (selectedFormat == MediaType.NONE)
                 selectedFormat = MediaType.IMAGE;
             if (selectedFormat == MediaType.IMAGE) {
                 // add up to 4 images
                 if (mediaPath.size() < MAX_IMAGES) {
-                    mediaPath.add(path);
+                    mediaPath.add(uri);
                     previewBtn.setVisibility(VISIBLE);
                     // if limit reached, remove mediaselect button
                     if (mediaPath.size() == MAX_IMAGES) {
@@ -269,14 +275,14 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
             }
         }
         // check if file is a video with supported extension
-        else if (mime.startsWith("video")) {
+        else if (mime.startsWith(MIME_VIDEO_ALL)) {
             if (selectedFormat == MediaType.NONE) {
                 selectedFormat = MediaType.VIDEO;
                 previewBtn.setImageResource(R.drawable.video);
                 AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
                 previewBtn.setVisibility(VISIBLE);
                 mediaBtn.setVisibility(GONE);
-                mediaPath.add(path);
+                mediaPath.add(uri);
             }
         }
         // file type is not supported
@@ -349,9 +355,9 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
         // add media
         if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
-            tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.IMAGE);
+            tweet.addMedia(getApplicationContext(), mediaPath);
         else if (selectedFormat == MediaType.VIDEO)
-            tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.VIDEO);
+            tweet.addMedia(getApplicationContext(), mediaPath);
         // add location
         if (location != null)
             tweet.addLocation(location);

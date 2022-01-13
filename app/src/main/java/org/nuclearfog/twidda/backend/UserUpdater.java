@@ -7,10 +7,12 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activities.ProfileEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.holder.ProfileHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -19,7 +21,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see ProfileEditor
  */
-public class UserUpdater extends AsyncTask<String, Void, User> {
+public class UserUpdater extends AsyncTask<Void, Void, User> {
 
     @Nullable
     private ErrorHandler.TwitterError twException;
@@ -27,31 +29,36 @@ public class UserUpdater extends AsyncTask<String, Void, User> {
     private Twitter twitter;
     private AppDatabase db;
 
+    private ProfileHolder profile;
 
-    public UserUpdater(ProfileEditor activity) {
+
+    public UserUpdater(ProfileEditor activity, ProfileHolder profile) {
         super();
         callback = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
         db = new AppDatabase(activity);
+        this.profile = profile;
     }
 
 
     @Override
-    protected User doInBackground(String[] param) {
+    protected User doInBackground(Void[] v) {
         try {
-            String name = param[0];
-            String link = param[1];
-            String location = param[2];
-            String bio = param[3];
-            String profileImg = param[4];
-            String bannerImg = param[5];
-            twitter.updateProfileImage(profileImg);
-            twitter.updateProfileBanner(bannerImg);
-            User user = twitter.updateProfile(name, link, location, bio);
+            if (profile.getProfileImageStream() != null) {
+                twitter.updateProfileImage(profile.getProfileImageStream());
+                profile.getProfileImageStream().close();
+            }
+            if (profile.getBannerImageStream() != null) {
+                twitter.updateProfileBanner(profile.getBannerImageStream());
+                profile.getBannerImageStream().close();
+            }
+            User user = twitter.updateProfile(profile.getName(), profile.getUrl(), profile.getLocation(), profile.getDescription());
             db.storeUser(user);
             return user;
         } catch (TwitterException twException) {
             this.twException = twException;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
