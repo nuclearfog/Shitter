@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ListUpdater;
-import org.nuclearfog.twidda.backend.holder.ListHolder;
+import org.nuclearfog.twidda.backend.api.holder.ListHolder;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;

@@ -7,6 +7,7 @@ import android.os.Build;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.api.holder.MediaStream;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
@@ -1137,16 +1138,16 @@ public class Twitter {
     /**
      * upload medida file to twitter and generate a media ID
      *
-     * @param uploadStream path to the local file
+     * @param mediaStream inputstream with MIME type of the media
      * @return media ID
      */
-    public long uploadMedia(InputStream uploadStream, String mime) throws TwitterException {
+    public long uploadMedia(MediaStream mediaStream) throws TwitterException {
         List<String> params = new ArrayList<>(4);
         try {
             // step 1 INIT
             params.add("command=INIT");
-            params.add("media_type=" + mime);
-            params.add("total_bytes=" + uploadStream.available());
+            params.add("media_type=" + mediaStream.getMimeType());
+            params.add("total_bytes=" + mediaStream.available());
             Response response = post(MEDIA_UPLOAD, params);
             if (response.code() < 200 || response.code() >= 300 || response.body() == null)
                 throw new TwitterException(response);
@@ -1158,7 +1159,7 @@ public class Twitter {
             params.add("command=APPEND");
             params.add("segment_index=0");
             params.add("media_id=" + mediaId);
-            response = post(MEDIA_UPLOAD, params, uploadStream, "media");
+            response = post(MEDIA_UPLOAD, params, mediaStream.getStream(), "media");
             if (response.code() < 200 || response.code() >= 300)
                 throw new TwitterException(response);
 

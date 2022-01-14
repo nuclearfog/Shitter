@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
-import org.nuclearfog.twidda.backend.holder.DirectmessageHolder;
+import org.nuclearfog.twidda.backend.api.holder.DirectmessageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;

@@ -11,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
+import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -26,6 +26,8 @@ public final class StringTools {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
     private static final long DEFAULT_TIME = 0x61D99F64;
+
+    private static Random rand = new Random();
 
     private StringTools() {
     }
@@ -171,8 +173,9 @@ public final class StringTools {
      * @return random percentaged string
      */
     public static String getRandomString() {
-        String rand = UUID.randomUUID().toString();
-        return new String(Base64.encode(rand.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP));
+        byte[] randomBytes = new byte[16];
+        rand.nextBytes(randomBytes);
+        return new String(Base64.encode(randomBytes, Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
     }
 
     /**

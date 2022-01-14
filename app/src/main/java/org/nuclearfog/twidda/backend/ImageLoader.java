@@ -18,7 +18,8 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 /**
- * background async to download images to a cache folder
+ * This AsyncTask class downloads images to a local cache folder
+ * and creates Uri of the images.
  *
  * @author nuclearfog
  * @see MediaViewer
@@ -40,6 +41,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
         super();
         callback = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
+        // create cache folder if not exists
         cache = new File(activity.getExternalCacheDir(), MediaViewer.CACHE_FOLDER);
         cache.mkdirs();
     }
@@ -48,10 +50,12 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
     @Override
     protected Boolean doInBackground(Uri[] links) {
         try {
-            // create cache folder if not exists
             // download imaged to a local cache folder
             for (Uri link : links) {
-                File file = new File(cache, StringTools.getRandomString());
+                // create temp file for the image
+                String end = link.getLastPathSegment();
+                String ext = end.substring(end.indexOf('.'));
+                File file = new File(cache, StringTools.getRandomString() + ext);
                 file.createNewFile();
                 FileOutputStream os = new FileOutputStream(file);
                 InputStream input = twitter.downloadImage(link.toString());

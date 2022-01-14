@@ -43,6 +43,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 
 /**
  * This activity is a superclass to all activities who need permission to take actions
@@ -63,7 +64,6 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     private static final String MIME_ALL_READ = "*/*";
     private static final String MIME_IMAGE_READ = "image/*";
     private static final String MIME_VIDEO_READ = "video/*";
-    private static final String MIME_IMAGE_WRITE = "image/jpeg";
 
     /**
      * mime types for videos and images
@@ -190,21 +190,26 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                     imageTask.execute(src, dest);
                 } else {
                     // use scoped storage
+                    String ext = selectedImage.getLastPathSegment();
+                    ext = ext.substring(ext.indexOf('.') + 1).toLowerCase(Locale.ENGLISH);
+                    String mime = "image/" + ext;
                     ContentValues values = new ContentValues();
                     values.put(DISPLAY_NAME, imageName);
                     values.put(DATE_TAKEN, System.currentTimeMillis());
                     values.put(RELATIVE_PATH, DIRECTORY_PICTURES);
-                    values.put(MIME_TYPE, MIME_IMAGE_WRITE);
+                    values.put(MIME_TYPE, mime);
                     Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
                     if (imageUri != null) {
+                        InputStream source = getContentResolver().openInputStream(selectedImage);
                         OutputStream dest = getContentResolver().openOutputStream(imageUri);
                         imageTask = new ImageSaver(this);
-                        imageTask.execute(selectedImage, dest);
+                        imageTask.execute(source, dest);
                     }
                 }
             }
-        } catch (FileNotFoundException err) {
+        } catch (Exception err) {
             err.printStackTrace();
+            onError();
         }
     }
 

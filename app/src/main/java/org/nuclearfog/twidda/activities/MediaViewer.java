@@ -54,12 +54,12 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener {
 
     /**
-     * Key for online media files
+     * Key for a string array with http links
      */
     public static final String KEY_MEDIA_LINK = "media_link";
 
     /**
-     * key for local media files
+     * key for an Uri array with local links
      */
     public static final String KEY_MEDIA_URI = "media_uri";
 
@@ -73,28 +73,29 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
      * cache folder name
      */
     public static final String CACHE_FOLDER = "imagecache";
+
     /**
-     * setup media viewer for images from twitter
+     * value for {@link #KEY_MEDIA_TYPE} to show images
      */
     public static final int MEDIAVIEWER_IMAGE = 0x997BCDCE;
 
     /**
-     * setup media viewer for videos
+     * value for {@link #KEY_MEDIA_TYPE} to show a video
      */
     public static final int MEDIAVIEWER_VIDEO = 0x500C9A42;
 
     /**
-     * setup media viewer for GIF animation
+     * value for {@link #KEY_MEDIA_TYPE} to show an animated image
      */
     public static final int MEDIAVIEWER_ANGIF = 0x6500EDB0;
 
     /**
-     * refresh time for video progress update
+     * refresh time for video progress updatein milliseconds
      */
     private static final int PROGRESS_UPDATE = 1000;
 
     /**
-     * speed factor for fast forward or backward
+     * speed factor for fast forward or fast backward
      */
     private static final int SPEED_FACTOR = 6;
 
@@ -505,8 +506,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     private void clearCache() {
         File cacheFolder = new File(getExternalCacheDir(), CACHE_FOLDER);
         File[] files = cacheFolder.listFiles();
-        for (File file : files) {
-            file.delete();
+        if (files != null && files.length > 0) {
+            for (File file : files) {
+                file.delete();
+            }
         }
     }
 }

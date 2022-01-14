@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import org.nuclearfog.twidda.activities.ListEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.holder.ListHolder;
+import org.nuclearfog.twidda.backend.api.holder.ListHolder;
 import org.nuclearfog.twidda.model.UserList;
 
 import java.lang.ref.WeakReference;

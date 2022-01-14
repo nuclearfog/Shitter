@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.holder;
+package org.nuclearfog.twidda.backend.api.holder;
 
 /**
  * This class stores information about an user list
@@ -80,6 +80,6 @@ public class ListHolder {
      * @return true if list exists
      */
     public boolean exists() {
-        return listId != -1;
+        return listId != NEW_LIST;
     }
 }

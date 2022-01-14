@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 /**
- * background task to save an image to the external storage
+ * This AsyncTask class moves a cached image to the destiny folder
  *
  * @author nuclearfog
  * @see MediaActivity

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.holder;
+package org.nuclearfog.twidda.backend.api.holder;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.location.Location;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -97,6 +98,7 @@ public class TweetHolder {
      *
      * @return media type
      */
+    @Nullable
     public String[] getMimeTypes() {
         return mimeTypes;
     }
@@ -106,6 +108,7 @@ public class TweetHolder {
      *
      * @return array of media paths
      */
+    @Nullable
     public InputStream[] getMediaStreams() {
         return mediaStreams;
     }

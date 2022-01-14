@@ -1,10 +1,11 @@
-package org.nuclearfog.twidda.backend.holder;
+package org.nuclearfog.twidda.backend.api.holder;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +19,7 @@ public class DirectmessageHolder {
 
     private String name;
     private String text;
-    private String mimeType = "";
-    private InputStream fileStream;
+    private MediaStream mediaStream;
 
 
     public DirectmessageHolder(String name, String text) {
@@ -36,8 +36,9 @@ public class DirectmessageHolder {
     public void addMedia(Context context, @NonNull Uri uri) {
         ContentResolver resolver = context.getContentResolver();
         try {
-            fileStream = resolver.openInputStream(uri);
-            mimeType = resolver.getType(uri);
+            String mimeType = resolver.getType(uri);
+            InputStream fileStream = resolver.openInputStream(uri);
+            mediaStream = new MediaStream(fileStream, mimeType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,21 +62,14 @@ public class DirectmessageHolder {
         return text;
     }
 
+
     /**
      * get inputstream of the media file
      *
      * @return input stream
      */
-    public InputStream getMediaStream() {
-        return fileStream;
-    }
-
-    /**
-     * get MIME type of the media file
-     *
-     * @return mime type string
-     */
-    public String getMimeType() {
-        return mimeType;
+    @Nullable
+    public MediaStream getMediaStream() {
+        return mediaStream;
     }
 }

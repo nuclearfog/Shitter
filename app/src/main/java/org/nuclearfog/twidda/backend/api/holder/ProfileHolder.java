@@ -1,8 +1,9 @@
-package org.nuclearfog.twidda.backend.holder;
+package org.nuclearfog.twidda.backend.api.holder;
 
 import android.content.Context;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class ProfileHolder {
      * @param context context used to resolve Uri
      * @param profileImgUri Uri of the local image file
      */
-    public void addImageUri(Context context, @Nullable Uri profileImgUri) {
+    public void addImageUri(Context context, @NonNull Uri profileImgUri) {
         try {
             profileImgStream = context.getContentResolver().openInputStream(profileImgUri);
         } catch (IOException e) {
@@ -51,7 +52,7 @@ public class ProfileHolder {
      * @param context context used to resolve Uri
      * @param bannerImgUri Uri of the local image file
      */
-    public void addBannerUri(Context context, @Nullable Uri bannerImgUri) {
+    public void addBannerUri(Context context, @NonNull Uri bannerImgUri) {
         try {
             bannerImgStream = context.getContentResolver().openInputStream(bannerImgUri);
         } catch (IOException e) {
@@ -90,6 +91,7 @@ public class ProfileHolder {
     /**
      * @return filestream of the profile image
      */
+    @Nullable
     public InputStream getProfileImageStream() {
         return profileImgStream;
     }
@@ -97,6 +99,7 @@ public class ProfileHolder {
     /**
      * @return filestream of the banner image
      */
+    @Nullable
     public InputStream getBannerImageStream() {
         return bannerImgStream;
     }

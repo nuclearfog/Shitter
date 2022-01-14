@@ -37,7 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
-import org.nuclearfog.twidda.backend.holder.ProfileHolder;
+import org.nuclearfog.twidda.backend.api.holder.ProfileHolder;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
