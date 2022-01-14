@@ -1,5 +1,12 @@
 package org.nuclearfog.twidda.fragments;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activities.ListDetail.KEY_LIST_DATA;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.backend.ListLoader.NO_CURSOR;
+import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_MEMBERSHIPS;
+import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_USERLISTS;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,16 +20,9 @@ import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.ListLoader;
 import org.nuclearfog.twidda.backend.lists.UserLists;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.ListDetail.KEY_LIST_DATA;
-import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
-import static org.nuclearfog.twidda.backend.ListLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_MEMBERSHIPS;
-import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_USERLISTS;
 
 /**
  * Fragment class for user lists

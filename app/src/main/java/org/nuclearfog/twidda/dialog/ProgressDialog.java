@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.dialog;
 
+import static android.view.View.VISIBLE;
+import static android.view.Window.FEATURE_NO_TITLE;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
@@ -12,9 +15,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static android.view.View.VISIBLE;
-import static android.view.Window.FEATURE_NO_TITLE;
 
 /**
  * dialog to show a rotating circle with a cross button inside

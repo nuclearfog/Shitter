@@ -1,6 +1,9 @@
 package org.nuclearfog.twidda.database;
 
-import static org.nuclearfog.twidda.database.AppDatabase.*;
+import static org.nuclearfog.twidda.database.AppDatabase.DEF_IMG;
+import static org.nuclearfog.twidda.database.AppDatabase.FRQ_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.LCK_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.VER_MASK;
 
 import android.database.Cursor;
 

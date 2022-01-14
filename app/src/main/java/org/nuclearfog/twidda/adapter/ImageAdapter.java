@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.adapter;
 
+import static android.view.View.VISIBLE;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 import android.content.Context;
 import android.net.Uri;
 import android.view.View;
@@ -11,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.squareup.picasso.Picasso;
+
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ImageItem;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -18,11 +23,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
-import com.squareup.picasso.Picasso;
 
 /**
  * Adapter class for image previews

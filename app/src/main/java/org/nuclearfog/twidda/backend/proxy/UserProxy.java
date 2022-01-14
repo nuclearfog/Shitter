@@ -19,6 +19,7 @@ public class UserProxy extends Proxy {
 
     /**
      * return proxy instance with custom settings
+     *
      * @param settings app settings
      * @return proxy instance
      */

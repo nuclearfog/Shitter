@@ -22,11 +22,6 @@ public class ProxySetup {
      * @param settings App settings
      */
     public static void setConnection(GlobalSettings settings) {
-        init(settings);
-    }
-
-
-    private static void init(GlobalSettings settings) {
         AppProxySelector proxyConnection = new AppProxySelector(settings);
         ProxyAuthenticator proxyLogin = new ProxyAuthenticator(settings);
         try {

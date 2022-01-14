@@ -1,5 +1,38 @@
 package org.nuclearfog.twidda.activities;
 
+import static android.content.Intent.ACTION_VIEW;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.OnClickListener;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activities.ProfileEditor.KEY_USER_DATA;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FOLLOWER;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FRIENDS;
+import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_ID;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_BLOCK;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_FOLLOW;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNBLOCK;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNFOLLOW;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_DB;
+import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
+import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_USER_UPDATE;
+import static org.nuclearfog.twidda.fragments.UserFragment.RETURN_USER_UPDATED;
+
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -37,8 +70,6 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.UserAction;
-import org.nuclearfog.twidda.model.Relation;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -46,27 +77,13 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.User;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static android.content.Intent.ACTION_VIEW;
-import static android.os.AsyncTask.Status.*;
-import static android.view.View.*;
-import static android.widget.Toast.*;
-import static org.nuclearfog.twidda.activities.MediaViewer.*;
-import static org.nuclearfog.twidda.activities.MessageEditor.*;
-import static org.nuclearfog.twidda.activities.ProfileEditor.*;
-import static org.nuclearfog.twidda.activities.SearchPage.*;
-import static org.nuclearfog.twidda.activities.TweetActivity.*;
-import static org.nuclearfog.twidda.activities.TweetEditor.*;
-import static org.nuclearfog.twidda.activities.UserDetail.*;
-import static org.nuclearfog.twidda.activities.UserLists.*;
-import static org.nuclearfog.twidda.backend.UserAction.Action.*;
-import static org.nuclearfog.twidda.database.GlobalSettings.*;
-import static org.nuclearfog.twidda.fragments.UserFragment.*;
 
 /**
  * Activity class for user profile page

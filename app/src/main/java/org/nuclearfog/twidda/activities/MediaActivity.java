@@ -335,8 +335,9 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     /**
      * called when a media file path was successfully fetched
-     *  @param resultType type of media call
-     * @param uri         Uri of the file
+     *
+     * @param resultType type of media call
+     * @param uri        Uri of the file
      */
     protected abstract void onMediaFetched(int resultType, @NonNull Uri uri);
 }

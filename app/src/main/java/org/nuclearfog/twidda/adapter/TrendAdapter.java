@@ -1,5 +1,9 @@
 package org.nuclearfog.twidda.adapter;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 import android.content.res.Resources;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,10 +22,6 @@ import org.nuclearfog.twidda.model.Trend;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 /**
  * Adapter class for Trend list

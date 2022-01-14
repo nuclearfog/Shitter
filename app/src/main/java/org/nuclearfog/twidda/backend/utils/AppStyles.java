@@ -1,5 +1,11 @@
 package org.nuclearfog.twidda.backend.utils;
 
+import static android.graphics.Bitmap.Config.ARGB_8888;
+import static android.graphics.PorterDuff.Mode.SRC_IN;
+import static android.view.View.GONE;
+import static jp.wasabeef.picasso.transformations.CropTransformation.GravityHorizontal.CENTER;
+import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical.TOP;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -45,12 +51,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import jp.wasabeef.picasso.transformations.CropTransformation;
 
-import static android.graphics.Bitmap.Config.ARGB_8888;
-import static android.graphics.PorterDuff.Mode.SRC_IN;
-import static android.view.View.GONE;
-import static jp.wasabeef.picasso.transformations.CropTransformation.GravityHorizontal.CENTER;
-import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical.TOP;
-
 /**
  * Theme class provides methods to set view styles and colors
  *
@@ -66,6 +66,7 @@ public final class AppStyles {
     private GlobalSettings settings;
 
     /**
+     *
      */
     private AppStyles(Context context) {
         this.settings = GlobalSettings.getInstance(context);

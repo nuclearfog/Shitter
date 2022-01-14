@@ -6,7 +6,10 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.*;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_VIDEO;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -287,7 +290,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
             }
         }
         // file type is not supported
-        else  {
+        else {
             Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
         }
     }

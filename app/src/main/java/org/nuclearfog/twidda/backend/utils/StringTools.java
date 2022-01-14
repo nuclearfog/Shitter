@@ -143,7 +143,7 @@ public final class StringTools {
     /**
      * calculate index offset caused by emojies
      *
-     * @param text twitter test
+     * @param text  twitter test
      * @param limit maximum char index
      * @return offset value
      */
@@ -193,7 +193,7 @@ public final class StringTools {
         StringBuilder buffer = new StringBuilder(value.length());
         for (int i = 0; i < value.length(); i++) {
             char focus = value.charAt(i);
-            switch(focus) {
+            switch (focus) {
                 case '*':
                     buffer.append("%2A");
                     break;
@@ -224,9 +224,9 @@ public final class StringTools {
     /**
      * generate signature for oauth
      *
-     * @param method method e.g. POST,GET or PUT
-     * @param endpoint endpoint URL
-     * @param param parameter
+     * @param method    method e.g. POST,GET or PUT
+     * @param endpoint  endpoint URL
+     * @param param     parameter
      * @param keyString key used to sign
      * @return key signature
      */
@@ -239,7 +239,7 @@ public final class StringTools {
      * calculate sign string
      *
      * @param baseString string to sign
-     * @param keyString key used for sign
+     * @param keyString  key used for sign
      * @return sign string
      */
     public static String computeSignature(String baseString, String keyString) {

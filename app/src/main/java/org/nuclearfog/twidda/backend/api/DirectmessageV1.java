@@ -144,7 +144,7 @@ class DirectmessageV1 implements DirectMessage {
         if (entities != null) {
             try {
                 JSONArray urls = entities.getJSONArray("urls");
-                for (int pos = urls.length() - 1 ; pos >= 0 ; pos--) {
+                for (int pos = urls.length() - 1; pos >= 0; pos--) {
                     JSONObject url = urls.getJSONObject(pos);
                     String displayUrl = url.getString("display_url");
                     String expandedUrl = url.getString("expanded_url");

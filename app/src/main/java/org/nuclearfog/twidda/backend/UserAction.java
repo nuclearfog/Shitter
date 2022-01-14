@@ -6,10 +6,10 @@ import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.model.Relation;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
+import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
 

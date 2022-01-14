@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.adapter;
 
+import static org.nuclearfog.twidda.database.GlobalSettings.SCALES;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +10,6 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static org.nuclearfog.twidda.database.GlobalSettings.*;
 
 import java.util.Locale;
 
@@ -52,7 +52,7 @@ public class ScaleAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.item_dropdown, parent, false);
         }
         textItem = view.findViewById(R.id.dropdown_textitem);
-        textItem.setText(String.format(Locale.getDefault(),"%.1f X",SCALES[pos]));
+        textItem.setText(String.format(Locale.getDefault(), "%.1f X", SCALES[pos]));
         textItem.setTypeface(settings.getTypeFace());
         textItem.setTextColor(settings.getFontColor());
         textItem.setBackgroundColor(settings.getCardColor());

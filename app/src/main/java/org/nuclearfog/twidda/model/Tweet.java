@@ -30,6 +30,7 @@ public interface Tweet extends Serializable {
     String MIME_ANGIF = "animated_gif";
 
     String MIME_NONE = "*/*";
+
     /**
      * @return tweet ID
      */

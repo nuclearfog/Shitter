@@ -1,5 +1,9 @@
 package org.nuclearfog.twidda.activities;
 
+import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_ID;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +33,6 @@ import org.nuclearfog.twidda.backend.LinkLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
-
-import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
-import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_ID;
 
 /**
  * Main Activity of the App

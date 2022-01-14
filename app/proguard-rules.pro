@@ -3,14 +3,15 @@
 -classobfuscationdictionary dict/class-dictionary.txt
 -packageobfuscationdictionary dict/package-dictionary.txt
 
-# keep these libraries but allow obfuscating
+-optimizationpasses 5
 
+# keep these libraries but allow obfuscating
 -dontwarn org.conscrypt.Conscrypt
--keep,allowobfuscation class org.conscrypt.Conscrypt {*;}
+-keep,allowobfuscation, allowoptimization class org.conscrypt.Conscrypt {*;}
 -adaptclassstrings org.conscrypt.Conscrypt
 
 -dontwarn org.conscrypt.OpenSSLProvider
--keep,allowobfuscation class org.conscrypt.OpenSSLProvider {*;}
+-keep,allowobfuscation, allowoptimization class org.conscrypt.OpenSSLProvider {*;}
 -adaptclassstrings org.conscrypt.OpenSSLProvider
 
 -dontwarn javax.annotation.Nullable

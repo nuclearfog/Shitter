@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.fragments;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_DATA;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,9 +19,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Tweet;
 
 import java.util.List;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_DATA;
 
 /**
  * #Fragment class for a list of tweets
@@ -200,9 +200,9 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
 
     @Override
-    public boolean onHolderClick(long sinceId, long maxId, int pos) {
+    public boolean onPlaceholderClick(long minId, long maxId, int pos) {
         if (tweetTask != null && tweetTask.getStatus() != RUNNING) {
-            load(sinceId, maxId, pos);
+            load(minId, maxId, pos);
             return true;
         }
         return false;

@@ -31,7 +31,7 @@ public class DirectmessageUpdate {
      * add media uri and create input stream
      *
      * @param context context used to create inputstream and mime type
-     * @param uri uri of a local media file
+     * @param uri     uri of a local media file
      */
     public void addMedia(Context context, @NonNull Uri uri) {
         ContentResolver resolver = context.getContentResolver();

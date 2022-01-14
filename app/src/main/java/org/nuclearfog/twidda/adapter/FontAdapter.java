@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.adapter;
 
+import static org.nuclearfog.twidda.database.GlobalSettings.FONTS;
+import static org.nuclearfog.twidda.database.GlobalSettings.FONT_NAMES;
+
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +12,6 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static org.nuclearfog.twidda.database.GlobalSettings.*;
 
 /**
  * Spinner Adapter for font settings

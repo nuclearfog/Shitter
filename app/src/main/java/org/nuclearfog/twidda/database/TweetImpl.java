@@ -1,6 +1,11 @@
 package org.nuclearfog.twidda.database;
 
-import static org.nuclearfog.twidda.database.AppDatabase.*;
+import static org.nuclearfog.twidda.database.AppDatabase.FAV_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_ANGIF_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_IMAGE_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_SENS_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_VIDEO_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.RTW_MASK;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -144,7 +149,7 @@ class TweetImpl implements Tweet {
     @Override
     public Uri[] getMediaLinks() {
         Uri[] result = new Uri[mediaLinks.length];
-        for (int i = 0 ; i < result.length ; i++)
+        for (int i = 0; i < result.length; i++)
             result[i] = Uri.parse(mediaLinks[i]);
         return result;
     }

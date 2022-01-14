@@ -44,7 +44,7 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
             long[] mediaIds = {};
             String[] mimeTypes = tweet.getMimeTypes();
             InputStream[] mediaStreams = tweet.getMediaStreams();
-            if (mimeTypes != null && mediaStreams !=null) {
+            if (mimeTypes != null && mediaStreams != null) {
                 // upload media first
                 mediaIds = new long[mediaStreams.length];
                 for (int pos = 0; pos < mediaStreams.length; pos++) {

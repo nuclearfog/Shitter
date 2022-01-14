@@ -24,11 +24,11 @@ import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Type;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.lists.Users;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.model.User;
 
 /**
  * Fragment class for lists a list of users

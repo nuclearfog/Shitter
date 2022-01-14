@@ -1,5 +1,13 @@
 package org.nuclearfog.twidda.backend;
 
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_NAME;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,14 +28,6 @@ import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
-
-import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_NAME;
-import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
-import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
 
 /**
  * This class handles deep links and starts activities to show the content

@@ -49,7 +49,6 @@ import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
 import org.nuclearfog.twidda.adapter.ScaleAdapter;
 import org.nuclearfog.twidda.backend.LocationLoader;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AccountDatabase;
@@ -59,6 +58,7 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.InfoDialog;
 import org.nuclearfog.twidda.dialog.LicenseDialog;
+import org.nuclearfog.twidda.model.Location;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -101,7 +101,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private ViewGroup root;
     private Button[] colorButtons = new Button[COLOR_COUNT];
 
-    @IntRange(from=0,to=COLOR_COUNT - 1)
+    @IntRange(from = 0, to = COLOR_COUNT - 1)
     private int mode = 0;
     private int color = 0;
 

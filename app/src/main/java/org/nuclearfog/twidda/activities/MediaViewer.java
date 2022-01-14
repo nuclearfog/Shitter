@@ -1,5 +1,24 @@
 package org.nuclearfog.twidda.activities;
 
+import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
+import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
+import static android.media.MediaPlayer.OnCompletionListener;
+import static android.media.MediaPlayer.OnErrorListener;
+import static android.media.MediaPlayer.OnInfoListener;
+import static android.media.MediaPlayer.OnPreparedListener;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.OnClickListener;
+import static android.view.View.OnTouchListener;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -35,13 +54,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
-
-import static android.media.MediaPlayer.*;
-import static android.os.AsyncTask.Status.*;
-import static android.view.MotionEvent.*;
-import static android.view.View.*;
-import static android.widget.Toast.*;
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 import java.io.File;
 
@@ -162,12 +174,12 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
         // get extras
         type = getIntent().getIntExtra(KEY_MEDIA_TYPE, 0);
-        Parcelable[] links =  getIntent().getParcelableArrayExtra(KEY_MEDIA_URI);
+        Parcelable[] links = getIntent().getParcelableArrayExtra(KEY_MEDIA_URI);
 
         // init media view
         if (links != null) {
             mediaLinks = new Uri[links.length];
-            for (int i = 0; i < mediaLinks.length ; i++) {
+            for (int i = 0; i < mediaLinks.length; i++) {
                 mediaLinks[i] = (Uri) links[i];
             }
             switch (type) {

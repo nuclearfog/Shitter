@@ -64,7 +64,7 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
     protected UserLists doInBackground(Long[] param) {
         try {
             if (listType == Type.LOAD_USERLISTS) {
-                return twitter.getUserListOwnerships(userId, ownerName, param[0]);
+                return twitter.getUserListOwnerships(userId, ownerName);
             }
             if (listType == Type.LOAD_MEMBERSHIPS) {
                 return twitter.getUserListMemberships(userId, ownerName, param[0]);

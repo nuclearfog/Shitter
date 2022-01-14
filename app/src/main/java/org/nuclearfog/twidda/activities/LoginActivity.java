@@ -1,5 +1,13 @@
 package org.nuclearfog.twidda.activities;
 
+import static android.content.Intent.ACTION_VIEW;
+import static android.os.AsyncTask.Status.FINISHED;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activities.AccountActivity.KEY_DISABLE_SELECTOR;
+import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -27,14 +35,6 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static android.content.Intent.ACTION_VIEW;
-import static android.os.AsyncTask.Status.FINISHED;
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.AccountActivity.KEY_DISABLE_SELECTOR;
-import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
 
 /**
  * Account Activity of the App

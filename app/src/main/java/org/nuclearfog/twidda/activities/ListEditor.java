@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ListUpdater;
 import org.nuclearfog.twidda.backend.api.holder.UserlistUpdate;
-import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
@@ -33,6 +32,7 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
+import org.nuclearfog.twidda.model.UserList;
 
 /**
  * Activity for the list editor

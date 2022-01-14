@@ -25,10 +25,10 @@ public class ProfileUpdate {
     private InputStream bannerImgStream;
 
     /**
-     * @param name new name of the profile
-     * @param url new profile url
+     * @param name        new name of the profile
+     * @param url         new profile url
      * @param description new description (bio)
-     * @param location new location name
+     * @param location    new location name
      */
     public ProfileUpdate(String name, String url, String description, String location) {
         this.name = name;
@@ -40,7 +40,7 @@ public class ProfileUpdate {
     /**
      * add profile image Uri
      *
-     * @param context context used to resolve Uri
+     * @param context       context used to resolve Uri
      * @param profileImgUri Uri of the local image file
      */
     public void addImageUri(Context context, @NonNull Uri profileImgUri) {
@@ -54,7 +54,7 @@ public class ProfileUpdate {
     /**
      * add banner image Uri
      *
-     * @param context context used to resolve Uri
+     * @param context      context used to resolve Uri
      * @param bannerImgUri Uri of the local image file
      */
     public void addBannerUri(Context context, @NonNull Uri bannerImgUri) {

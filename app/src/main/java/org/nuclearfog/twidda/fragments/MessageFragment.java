@@ -1,5 +1,17 @@
 package org.nuclearfog.twidda.fragments;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
+
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -26,14 +38,6 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.model.DirectMessage;
-
-import static android.os.AsyncTask.Status.*;
-import static android.widget.Toast.*;
-import static org.nuclearfog.twidda.activities.MediaViewer.*;
-import static org.nuclearfog.twidda.activities.MessageEditor.*;
-import static org.nuclearfog.twidda.activities.SearchPage.*;
-import static org.nuclearfog.twidda.activities.TweetActivity.*;
-import static org.nuclearfog.twidda.activities.UserProfile.*;
 
 /**
  * Fragment class for direct message lists

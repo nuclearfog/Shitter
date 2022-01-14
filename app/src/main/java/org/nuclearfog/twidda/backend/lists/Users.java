@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-
 import org.nuclearfog.twidda.model.User;
 
 import java.util.LinkedList;
@@ -65,7 +64,7 @@ public class Users extends LinkedList<User> {
      * @return true if list is linked
      */
     public boolean hasPrevious() {
-        return prevCursor != 0;
+        return prevCursor > 0;
     }
 
     /**
@@ -74,7 +73,7 @@ public class Users extends LinkedList<User> {
      * @return true if list has a successor
      */
     public boolean hasNext() {
-        return nextCursor != 0;
+        return nextCursor > 0;
     }
 
     /**

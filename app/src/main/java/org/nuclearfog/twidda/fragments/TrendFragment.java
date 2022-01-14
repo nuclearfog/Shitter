@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.fragments;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,9 +18,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Trend;
 
 import java.util.List;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
 
 /**
  * Fragment class for trend lists

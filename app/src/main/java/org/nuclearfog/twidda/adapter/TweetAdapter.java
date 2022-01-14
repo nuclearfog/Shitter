@@ -1,5 +1,13 @@
 package org.nuclearfog.twidda.adapter;
 
+import static android.graphics.PorterDuff.Mode.SRC_IN;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static androidx.recyclerview.widget.RecyclerView.NO_ID;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
+
 import android.content.Context;
 import android.text.Spanned;
 import android.view.View;
@@ -17,24 +25,16 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.TweetHolder;
-import org.nuclearfog.twidda.model.Tweet;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.User;
 
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static android.graphics.PorterDuff.Mode.SRC_IN;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_ID;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 /**
  * Adapter class for tweet list
@@ -244,12 +244,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                         if (position == 0) {
                             sinceId = tweets.get(position + 1).getId();
                         } else if (position == tweets.size() - 1) {
-                            maxId = tweets.get(position - 1).getId();
+                            maxId = tweets.get(position - 1).getId() - 1;
                         } else {
                             sinceId = tweets.get(position + 1).getId();
-                            maxId = tweets.get(position - 1).getId();
+                            maxId = tweets.get(position - 1).getId() - 1;
                         }
-                        boolean success = itemClickListener.onHolderClick(sinceId, maxId, position);
+                        boolean success = itemClickListener.onPlaceholderClick(sinceId, maxId, position);
                         if (success) {
                             footer.setLoading(true);
                             loadingIndex = position;
@@ -334,13 +334,13 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         void onTweetClick(Tweet tweet);
 
         /**
-         * called on placeholder click
+         * called then the user clcks on the placeholder
          *
-         * @param sinceId the tweet ID of the tweet below the holder
-         * @param maxId   the tweet ID of the tweet over the holder
-         * @param pos     position of the holder
-         * @return true if click was handled
+         * @param minId  the highest tweet ID below the placeholder or '0' if there is none
+         * @param maxId  the lowest tweet ID above the placeholder or '0' if there is none
+         * @param pos    position of the placeholder
+         * @return true  if click was handled
          */
-        boolean onHolderClick(long sinceId, long maxId, int pos);
+        boolean onPlaceholderClick(long minId, long maxId, int pos);
     }
 }

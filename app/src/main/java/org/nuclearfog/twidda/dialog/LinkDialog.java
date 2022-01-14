@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.dialog;
 
+import static android.widget.Toast.LENGTH_SHORT;
+import static com.squareup.picasso.NetworkPolicy.NO_STORE;
+
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -23,9 +26,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static android.widget.Toast.LENGTH_SHORT;
-import static com.squareup.picasso.NetworkPolicy.NO_STORE;
 
 /**
  * dialog class to show link preview

@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;

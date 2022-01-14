@@ -38,7 +38,6 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
 import org.nuclearfog.twidda.backend.api.holder.ProfileUpdate;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -48,6 +47,7 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
+import org.nuclearfog.twidda.model.User;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 

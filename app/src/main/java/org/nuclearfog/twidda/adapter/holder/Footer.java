@@ -1,5 +1,10 @@
 package org.nuclearfog.twidda.adapter.holder;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,11 +16,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * ViewHolder class for a footer/placeholder view

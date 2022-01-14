@@ -63,7 +63,7 @@ class TweetV1 implements Tweet {
     private String mediaType = "";
 
 
-    TweetV1(JSONObject json, long twitterId) throws JSONException{
+    TweetV1(JSONObject json, long twitterId) throws JSONException {
         id = json.optLong("id");
         text = json.optString("full_text");
         replyId = json.optLong("in_reply_to_status_id", -1);
@@ -327,7 +327,7 @@ class TweetV1 implements Tweet {
         }
         JSONArray mentions = extEntities.optJSONArray("user_mentions");
         if (mentions != null && mentions.length() > 0) {
-            for (int pos = 0 ; pos < mentions.length() ; pos++){
+            for (int pos = 0; pos < mentions.length(); pos++) {
                 JSONObject mention = mentions.optJSONObject(pos);
                 if (mention != null) {
                     long mentionedUserId = mention.optLong("id");

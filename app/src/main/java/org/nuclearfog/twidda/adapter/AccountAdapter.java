@@ -1,5 +1,10 @@
 package org.nuclearfog.twidda.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_CREATED;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_SCR_NAME;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_USERNAME;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +17,17 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.LoginHolder;
-import org.nuclearfog.twidda.model.Account;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragments.AccountFragment;
+import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_CREATED;
-import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_SCR_NAME;
-import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_USERNAME;
 
 /**
  * adapter for {@link AccountFragment}

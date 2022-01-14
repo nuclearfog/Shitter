@@ -11,6 +11,7 @@ import org.nuclearfog.twidda.backend.proxy.UserProxy;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.security.KeyStore;
+
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 

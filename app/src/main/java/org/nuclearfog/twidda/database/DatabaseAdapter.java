@@ -207,6 +207,7 @@ public class DatabaseAdapter {
     private SQLiteDatabase db;
 
     /**
+     *
      */
     private DatabaseAdapter() {
     }

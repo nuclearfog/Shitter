@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.adapter.holder;
 
+import static android.graphics.PorterDuff.Mode.SRC_IN;
+
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -14,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static android.graphics.PorterDuff.Mode.SRC_IN;
 
 /**
  * Holder class for a message view

@@ -145,7 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="top"
-            app:constraint_referenced_ids="dm_answer,dm_delete"/>
+            app:constraint_referenced_ids="dm_answer,dm_delete" />
 
         <Button
             android:id="@+id/dm_answer"

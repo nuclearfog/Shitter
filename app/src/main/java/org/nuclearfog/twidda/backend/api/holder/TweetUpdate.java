@@ -43,7 +43,7 @@ public class TweetUpdate {
     /**
      * Add media paths to the holder
      *
-     * @param context context to resolve Uri links
+     * @param context  context to resolve Uri links
      * @param mediaUri array of media paths from storage
      */
     public void addMedia(Context context, List<Uri> mediaUri) {

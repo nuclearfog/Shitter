@@ -8,14 +8,14 @@ import java.io.InputStream;
  *
  * @author nuclearfog
  */
-public class MediaStream  {
+public class MediaStream {
 
     private InputStream inputStream;
     private String mimeType;
 
     /**
      * @param inputStream stream of the media (local or online)
-     * @param mimeType MIME type e.g. image/jpeg
+     * @param mimeType    MIME type e.g. image/jpeg
      */
     public MediaStream(InputStream inputStream, String mimeType) {
         this.inputStream = inputStream;

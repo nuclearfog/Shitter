@@ -1,5 +1,10 @@
 package org.nuclearfog.twidda.adapter;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
+
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,20 +21,15 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ListHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragments.UserListFragment;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
 import java.text.NumberFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 /**
  * Adapter class for user lists

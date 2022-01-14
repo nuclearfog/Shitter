@@ -622,8 +622,9 @@ public class GlobalSettings {
 
     /**
      * get current index of the selected scale value
-     * @see #SCALES
+     *
      * @return current index
+     * @see #SCALES
      */
     public int getScaleIndex() {
         return indexScale;
@@ -722,18 +723,18 @@ public class GlobalSettings {
     public void clearProxyServer() {
         isProxyEnabled = false;
         isProxyAuthSet = false;
-        this.proxyHost = "";
-        this.proxyPort = "";
-        this.proxyUser = "";
-        this.proxyPass = "";
+        proxyHost = "";
+        proxyPort = "";
+        proxyUser = "";
+        proxyPass = "";
 
         Editor edit = settings.edit();
-        edit.putBoolean(PROXY_SET, false);
-        edit.putBoolean(AUTH_SET, false);
-        edit.putString(PROXY_ADDR, "");
-        edit.putString(PROXY_PORT, "");
-        edit.putString(PROXY_USER, "");
-        edit.putString(PROXY_PASS, "");
+        edit.remove(PROXY_SET);
+        edit.remove(AUTH_SET);
+        edit.remove(PROXY_ADDR);
+        edit.remove(PROXY_PORT);
+        edit.remove(PROXY_USER);
+        edit.remove(PROXY_PASS);
         edit.apply();
     }
 
@@ -883,6 +884,7 @@ public class GlobalSettings {
 
     /**
      * return second access token of the current user
+     *
      * @return first access token
      */
     public String getTokenSecret() {
