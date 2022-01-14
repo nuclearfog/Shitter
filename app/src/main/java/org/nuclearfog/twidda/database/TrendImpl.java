@@ -4,11 +4,17 @@ import android.database.Cursor;
 
 import org.nuclearfog.twidda.model.Trend;
 
+/**
+ * database implementation for a trend
+ *
+ * @author nuclearfog
+ */
 class TrendImpl implements Trend {
 
     private String name;
     private int range;
     private int rank;
+
 
     TrendImpl(Cursor cursor) {
         name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.TREND));

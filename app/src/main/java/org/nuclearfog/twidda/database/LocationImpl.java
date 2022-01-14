@@ -2,6 +2,11 @@ package org.nuclearfog.twidda.database;
 
 import org.nuclearfog.twidda.model.Location;
 
+/**
+ * database implementation of a location
+ *
+ * @author nuclearfog
+ */
 class LocationImpl implements Location {
 
     private String placeName;

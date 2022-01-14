@@ -8,36 +8,39 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.User;
 
+/**
+ * database implementation of an user
+ *
+ * @author nuclearfog
+ */
 class UserImpl implements User {
+
+    private static final long serialVersionUID = 2367055336838212570L;
 
     private long userID;
     private long created;
-
+    private int following;
+    private int follower;
+    private int tweetCount;
+    private int favorCount;
+    private String username;
+    private String screenName;
+    private String bio;
+    private String location;
+    private String link;
+    private String profileImg;
+    private String bannerImg;
     private boolean isCurrentUser;
     private boolean isVerified;
     private boolean isLocked;
     private boolean followReqSent;
     private boolean defaultImage;
 
-    private int following;
-    private int follower;
-
-    private int tweetCount;
-    private int favorCount;
-
-    private String username;
-    private String screenName;
-
-    private String bio;
-    private String location;
-    private String link;
-
-    private String profileImg;
-    private String bannerImg;
 
     UserImpl(Cursor cursor, long currentUserId) {
         this(cursor, "", currentUserId);
     }
+
 
     UserImpl(Cursor cursor, String prefix, long currentUserId) {
         userID = cursor.getLong(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.ID));

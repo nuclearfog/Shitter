@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activities.ProfileEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.api.holder.ProfileHolder;
+import org.nuclearfog.twidda.backend.api.holder.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -29,10 +29,10 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
     private Twitter twitter;
     private AppDatabase db;
 
-    private ProfileHolder profile;
+    private ProfileUpdate profile;
 
 
-    public UserUpdater(ProfileEditor activity, ProfileHolder profile) {
+    public UserUpdater(ProfileEditor activity, ProfileUpdate profile) {
         super();
         callback = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
@@ -52,7 +52,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
                 twitter.updateProfileBanner(profile.getBannerImageStream());
                 profile.getBannerImageStream().close();
             }
-            User user = twitter.updateProfile(profile.getName(), profile.getUrl(), profile.getLocation(), profile.getDescription());
+            User user = twitter.updateProfile(profile);
             db.storeUser(user);
             return user;
         } catch (TwitterException twException) {

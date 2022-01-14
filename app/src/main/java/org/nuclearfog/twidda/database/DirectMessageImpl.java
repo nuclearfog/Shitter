@@ -1,6 +1,9 @@
 package org.nuclearfog.twidda.database;
 
 import android.database.Cursor;
+import android.net.Uri;
+
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
@@ -17,9 +20,9 @@ class DirectMessageImpl implements DirectMessage {
     private long id;
     private long time;
     private String text;
-    private String media = "";
     private User sender;
     private User receiver;
+    private String media;
 
 
     DirectMessageImpl(Cursor cursor, long currentId) {
@@ -56,8 +59,11 @@ class DirectMessageImpl implements DirectMessage {
         return time;
     }
 
+    @Nullable
     @Override
-    public String getMedia() {
-        return media;
+    public Uri getMedia() {
+        if (media != null)
+            return Uri.parse(media);
+        return null;
     }
 }

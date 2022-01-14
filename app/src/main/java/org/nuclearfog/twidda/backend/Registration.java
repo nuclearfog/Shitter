@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activities.LoginActivity;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -23,7 +24,7 @@ import java.lang.ref.WeakReference;
 public class Registration extends AsyncTask<String, Void, String> {
 
     @Nullable
-    private TwitterException exception;
+    private ErrorHandler.TwitterError exception;
     private WeakReference<LoginActivity> callback;
     private AccountDatabase accountDB;
     private AppDatabase database;

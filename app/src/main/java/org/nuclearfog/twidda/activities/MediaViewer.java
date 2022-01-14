@@ -54,11 +54,6 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener {
 
     /**
-     * Key for a string array with http links
-     */
-    public static final String KEY_MEDIA_LINK = "media_link";
-
-    /**
      * key for an Uri array with local links
      */
     public static final String KEY_MEDIA_URI = "media_uri";
@@ -165,54 +160,48 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         AppStyles.setTheme(controlPanel, settings.getBackgroundColor());
         adapter = new ImageAdapter(getApplicationContext(), this);
 
-        // check if link is a local file
+        // get extras
+        type = getIntent().getIntExtra(KEY_MEDIA_TYPE, 0);
         Parcelable[] links =  getIntent().getParcelableArrayExtra(KEY_MEDIA_URI);
+
+        // init media view
         if (links != null) {
             mediaLinks = new Uri[links.length];
             for (int i = 0; i < mediaLinks.length ; i++) {
                 mediaLinks[i] = (Uri) links[i];
             }
-        }
-        // check if links are http:// links
-        else {
-            String[] strLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);
-            mediaLinks = new Uri[strLinks.length];
-            for (int i = 0; i < mediaLinks.length ; i++) {
-                mediaLinks[i] = Uri.parse(strLinks[i]);
+            switch (type) {
+                case MEDIAVIEWER_IMAGE:
+                    zoomImage.setVisibility(VISIBLE);
+                    imageListContainer.setVisibility(VISIBLE);
+                    if (!mediaLinks[0].getScheme().startsWith("http")) {
+                        adapter.disableSaveButton();
+                        for (Uri uri : mediaLinks)
+                            setImage(uri);
+                        adapter.disableLoading();
+                    } else {
+                        imageAsync = new ImageLoader(this);
+                        imageAsync.execute(mediaLinks);
+                    }
+                    imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+                    imageList.setAdapter(adapter);
+                    break;
+
+                case MEDIAVIEWER_VIDEO:
+                    controlPanel.setVisibility(VISIBLE);
+                    if (!mediaLinks[0].getScheme().startsWith("http"))
+                        share.setVisibility(GONE); // local image
+                    seekUpdate = new SeekbarUpdater(this, PROGRESS_UPDATE);
+                    // fall through
+                case MEDIAVIEWER_ANGIF:
+                    videoView.setVisibility(VISIBLE);
+                    videoView.setZOrderMediaOverlay(true); // disable black background
+                    videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+                    videoView.setVideoURI(mediaLinks[0]);
+                    break;
             }
         }
 
-        type = getIntent().getIntExtra(KEY_MEDIA_TYPE, 0);
-        switch (type) {
-            case MEDIAVIEWER_IMAGE:
-                zoomImage.setVisibility(VISIBLE);
-                imageListContainer.setVisibility(VISIBLE);
-                if (!mediaLinks[0].getScheme().startsWith("http")) {
-                    adapter.disableSaveButton();
-                    for (Uri uri : mediaLinks)
-                        setImage(uri);
-                    adapter.disableLoading();
-                } else {
-                    imageAsync = new ImageLoader(this);
-                    imageAsync.execute(mediaLinks);
-                }
-                imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                imageList.setAdapter(adapter);
-                break;
-
-            case MEDIAVIEWER_VIDEO:
-                controlPanel.setVisibility(VISIBLE);
-                if (mediaLinks[0].getScheme().startsWith("http"))
-                    share.setVisibility(GONE); // local image
-                seekUpdate = new SeekbarUpdater(this, PROGRESS_UPDATE);
-                // fall through
-            case MEDIAVIEWER_ANGIF:
-                videoView.setVisibility(VISIBLE);
-                videoView.setZOrderMediaOverlay(true); // disable black background
-                videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-                videoView.setVideoURI(mediaLinks[0]);
-                break;
-        }
         share.setOnClickListener(this);
         play.setOnClickListener(this);
         pause.setOnClickListener(this);

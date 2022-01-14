@@ -11,18 +11,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * this class holds information about a directmessage
+ * This class is used to upload a directmessage
  *
  * @author nuclearfog
  */
-public class DirectmessageHolder {
+public class DirectmessageUpdate {
 
     private String name;
     private String text;
     private MediaStream mediaStream;
 
 
-    public DirectmessageHolder(String name, String text) {
+    public DirectmessageUpdate(String name, String text) {
         this.name = name;
         this.text = text;
     }

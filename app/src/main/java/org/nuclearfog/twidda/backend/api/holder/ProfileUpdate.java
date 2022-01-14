@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * holder class for profile update information
+ * This class is used to upload profile information
  *
  * @author nuclearfog
  */
-public class ProfileHolder {
+public class ProfileUpdate {
 
     private String name;
     private String url;
@@ -24,8 +24,13 @@ public class ProfileHolder {
     private InputStream profileImgStream;
     private InputStream bannerImgStream;
 
-
-    public ProfileHolder(String name, String url, String description, String location) {
+    /**
+     * @param name new name of the profile
+     * @param url new profile url
+     * @param description new description (bio)
+     * @param location new location name
+     */
+    public ProfileUpdate(String name, String url, String description, String location) {
         this.name = name;
         this.url = url;
         this.description = description;

@@ -14,6 +14,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
@@ -136,14 +137,14 @@ public class AppDatabase {
             + " ORDER BY " + TweetTable.ID + " DESC LIMIT ?";
 
     static final String MESSAGE_QUERY = "SELECT * FROM " + MessageTable.NAME
-            + " JOIN " + UserTable.NAME + " " + UserTable.ALIAS_1
+            + " LEFT JOIN " + UserTable.NAME + " " + UserTable.ALIAS_1
             + " ON " + UserTable.ALIAS_1 + "." + UserTable.ID + "=" + MessageTable.NAME + "." + MessageTable.FROM
-            + " JOIN " + UserTable.NAME + " " + UserTable.ALIAS_2
+            + " LEFT JOIN " + UserTable.NAME + " " + UserTable.ALIAS_2
             + " ON " + UserTable.ALIAS_2 + "." + UserTable.ID + "=" + MessageTable.NAME + "." + MessageTable.TO
-            + " JOIN " + UserRegisterTable.NAME + " " + UserRegisterTable.ALIAS_1
-            + " ON " + UserRegisterTable.ALIAS_1 + "." + UserRegisterTable.ID + "=" + UserTable.ALIAS_1 + "." + UserTable.ID
-            + " JOIN " + UserRegisterTable.NAME + " " + UserRegisterTable.ALIAS_2
-            + " ON " + UserRegisterTable.ALIAS_2 + "." + UserRegisterTable.ID + "=" + UserTable.ALIAS_2 + "." + UserTable.ID
+            + " LEFT JOIN " + UserRegisterTable.NAME + " " + UserRegisterTable.ALIAS_1
+            + " ON " + UserRegisterTable.ALIAS_1 + "." + UserRegisterTable.ID + "=" + MessageTable.NAME + "." + MessageTable.FROM
+            + " LEFT JOIN " + UserRegisterTable.NAME + " " + UserRegisterTable.ALIAS_2
+            + " ON " + UserRegisterTable.ALIAS_2 + "." + UserRegisterTable.ID + "=" + MessageTable.NAME + "." + MessageTable.TO
             + " WHERE " + MessageTable.FROM + "=? OR " + MessageTable.TO + "=?"
             + " ORDER BY " + MessageTable.SINCE + " DESC LIMIT ?";
 
@@ -593,7 +594,6 @@ public class AppDatabase {
      */
     public Directmessages getMessages() {
         String[] args = {Long.toString(homeId), Long.toString(homeId), Integer.toString(limit)};
-        // TODO get next cursor from database
         Directmessages result = new Directmessages(null, null);
         SQLiteDatabase db = getDbRead();
         Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
@@ -858,7 +858,8 @@ public class AppDatabase {
         messageColumn.put(MessageTable.FROM, message.getSender().getId());
         messageColumn.put(MessageTable.TO, message.getReceiver().getId());
         messageColumn.put(MessageTable.MESSAGE, message.getText());
-        messageColumn.put(MessageTable.MEDIA, message.getMedia());
+        if (message.getMedia() != null)
+            messageColumn.put(MessageTable.MEDIA, message.getMedia().toString());
         db.insertWithOnConflict(MessageTable.NAME, null, messageColumn, CONFLICT_IGNORE);
         // store user information
         storeUser(message.getSender(), db, CONFLICT_IGNORE);
@@ -1000,8 +1001,8 @@ public class AppDatabase {
      */
     private String getMediaLinks(Tweet tweet) {
         StringBuilder media = new StringBuilder();
-        for (String link : tweet.getMediaLinks())
-            media.append(link).append(";");
+        for (Uri link : tweet.getMediaLinks())
+            media.append(link.toString()).append(";");
         return media.toString();
     }
 }

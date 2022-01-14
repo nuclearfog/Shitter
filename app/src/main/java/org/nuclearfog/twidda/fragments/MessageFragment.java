@@ -27,17 +27,13 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.model.DirectMessage;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
+import static android.os.AsyncTask.Status.*;
+import static android.widget.Toast.*;
+import static org.nuclearfog.twidda.activities.MediaViewer.*;
+import static org.nuclearfog.twidda.activities.MessageEditor.*;
+import static org.nuclearfog.twidda.activities.SearchPage.*;
+import static org.nuclearfog.twidda.activities.TweetActivity.*;
+import static org.nuclearfog.twidda.activities.UserProfile.*;
 
 /**
  * Fragment class for direct message lists
@@ -142,10 +138,10 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
                     break;
 
                 case DELETE:
+                    deleteId = message.getId();
                     if (!deleteDialog.isShowing()) {
                         deleteDialog.show();
                     }
-                    deleteId = message.getId();
                     break;
 
                 case PROFILE:
@@ -155,10 +151,12 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
                     break;
 
                 case MEDIA:
-                    Intent mediaIntent = new Intent(requireContext(), MediaViewer.class);
-                    mediaIntent.putExtra(KEY_MEDIA_LINK, new String[]{message.getMedia()});
-                    mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                    startActivity(mediaIntent);
+                    if (message.getMedia() != null) {
+                        Intent mediaIntent = new Intent(requireContext(), MediaViewer.class);
+                        mediaIntent.putExtra(KEY_MEDIA_URI, message.getMedia());
+                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                        startActivity(mediaIntent);
+                    }
                     break;
             }
         }

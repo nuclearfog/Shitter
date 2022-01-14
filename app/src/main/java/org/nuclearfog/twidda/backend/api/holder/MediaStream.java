@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * this class collects information about a media file to upload
+ * This class is used to upload and download media files
  *
  * @author nuclearfog
  */
@@ -13,6 +13,10 @@ public class MediaStream  {
     private InputStream inputStream;
     private String mimeType;
 
+    /**
+     * @param inputStream stream of the media (local or online)
+     * @param mimeType MIME type e.g. image/jpeg
+     */
     public MediaStream(InputStream inputStream, String mimeType) {
         this.inputStream = inputStream;
         this.mimeType = mimeType;

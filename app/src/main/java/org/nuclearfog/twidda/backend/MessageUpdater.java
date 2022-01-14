@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import org.nuclearfog.twidda.activities.MessageEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.api.holder.DirectmessageHolder;
+import org.nuclearfog.twidda.backend.api.holder.DirectmessageUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
@@ -24,14 +24,14 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
     private WeakReference<MessageEditor> callback;
     private Twitter twitter;
 
-    private DirectmessageHolder message;
+    private DirectmessageUpdate message;
 
     /**
      * send direct message
      *
      * @param activity Activity context
      */
-    public MessageUpdater(@NonNull MessageEditor activity, DirectmessageHolder message) {
+    public MessageUpdater(@NonNull MessageEditor activity, DirectmessageUpdate message) {
         super();
         twitter = Twitter.get(activity);
         callback = new WeakReference<>(activity);
@@ -48,6 +48,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
             long mediaId = -1;
             if (message.getMediaStream() != null) {
                 mediaId = twitter.uploadMedia(message.getMediaStream());
+                message.getMediaStream().close();
             }
             // upload message and media ID if defined
             if (!isCancelled()) {
@@ -58,8 +59,6 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
             this.twException = twException;
         } catch (Exception err) {
             err.printStackTrace();
-        } finally {
-            message.getMediaStream().close();
         }
         return false;
     }

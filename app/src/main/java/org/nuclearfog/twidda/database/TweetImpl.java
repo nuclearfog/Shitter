@@ -3,7 +3,9 @@ package org.nuclearfog.twidda.database;
 import static org.nuclearfog.twidda.database.AppDatabase.*;
 
 import android.database.Cursor;
+import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.model.Tweet;
@@ -18,33 +20,31 @@ import java.util.regex.Pattern;
  */
 class TweetImpl implements Tweet {
 
+    private static final long serialVersionUID = -5957556706939766801L;
+
     private static final Pattern SEPARATOR = Pattern.compile(";");
 
     private long tweetId;
     private long time;
     private long embeddedId;
-
-    private User user;
-    @Nullable
-    private Tweet embedded;
-
     private long replyID;
     private long replyUserId;
-
+    private long myRetweetId;
+    @Nullable
+    private Tweet embedded;
+    private User user;
     private int retweetCount;
     private int favoriteCount;
-    private long myRetweetId;
-    private boolean retweeted;
-    private boolean favorited;
-    private boolean sensitive;
-
-    private String[] mediaLinks;
     private String mediaType;
     private String locationName;
     private String locationCoordinates;
     private String replyName;
     private String tweet;
     private String source;
+    private String[] mediaLinks;
+    private boolean retweeted;
+    private boolean favorited;
+    private boolean sensitive;
 
 
     TweetImpl(Cursor cursor, long currentUserId) {
@@ -56,7 +56,7 @@ class TweetImpl implements Tweet {
         replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYNAME));
         replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYTWEET));
         source = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.SOURCE));
-        String links = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.MEDIA));
+        String linkStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.MEDIA));
         locationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.PLACE));
         locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.COORDINATE));
         replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYUSER));
@@ -66,7 +66,7 @@ class TweetImpl implements Tweet {
         favorited = (tweetRegister & FAV_MASK) != 0;
         retweeted = (tweetRegister & RTW_MASK) != 0;
         sensitive = (tweetRegister & MEDIA_SENS_MASK) != 0;
-        mediaLinks = SEPARATOR.split(links);
+        mediaLinks = SEPARATOR.split(linkStr);
         // get media type
         if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK)
             mediaType = MIME_ANGIF;
@@ -140,9 +140,13 @@ class TweetImpl implements Tweet {
         return favoriteCount;
     }
 
+    @NonNull
     @Override
-    public String[] getMediaLinks() {
-        return mediaLinks;
+    public Uri[] getMediaLinks() {
+        Uri[] result = new Uri[mediaLinks.length];
+        for (int i = 0 ; i < result.length ; i++)
+            result[i] = Uri.parse(mediaLinks[i]);
+        return result;
     }
 
     @Override

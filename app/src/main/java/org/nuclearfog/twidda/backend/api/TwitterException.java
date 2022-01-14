@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
@@ -9,10 +11,13 @@ import java.io.IOException;
 import okhttp3.Response;
 
 /**
+ * custom exception implementation containing additional information like http status code and API error code
  *
  * @author nuclearfog
  */
 public class TwitterException extends Exception implements TwitterError {
+
+    private static final long serialVersionUID = -7760582201674916919L;
 
     private int httpCode = -1;
     private int errorCode = -1;
@@ -124,5 +129,11 @@ public class TwitterException extends Exception implements TwitterError {
     @Override
     public String getMessage() {
         return message;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "http:" + httpCode + " errorcode:" + errorCode + " message:" + message;
     }
 }

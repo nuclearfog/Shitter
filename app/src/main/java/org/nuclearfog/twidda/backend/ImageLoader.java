@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activities.MediaViewer;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.api.holder.MediaStream;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 
@@ -52,22 +53,25 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
         try {
             // download imaged to a local cache folder
             for (Uri link : links) {
-                // create temp file for the image
-                String end = link.getLastPathSegment();
-                String ext = end.substring(end.indexOf('.'));
+                // get input stream
+                MediaStream input = twitter.downloadImage(link.toString());
+                InputStream stream = input.getStream();
+                String mimeType = input.getMimeType();
+
+                // create file
+                String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
                 File file = new File(cache, StringTools.getRandomString() + ext);
                 file.createNewFile();
-                FileOutputStream os = new FileOutputStream(file);
-                InputStream input = twitter.downloadImage(link.toString());
 
                 // copy image to cache folder
+                FileOutputStream os = new FileOutputStream(file);
                 int length;
                 byte[] buffer = new byte[4096];
-                while ((length = input.read(buffer)) > 0) {
+                while ((length = stream.read(buffer)) > 0)
                     os.write(buffer, 0, length);
-                }
                 input.close();
                 os.close();
+
                 // create a new uri
                 publishProgress(Uri.fromFile(file));
             }

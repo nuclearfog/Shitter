@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TweetHolder keeps information about a written tweet such as text, media files and location
+ * This class is used to upload tweet information
  *
  * @author nuclearfog
  */
-public class TweetHolder {
+public class TweetUpdate {
 
     private final String text;
     private final long replyId;
@@ -35,7 +35,7 @@ public class TweetHolder {
      * @param text    Tweet message
      * @param replyId ID of the tweet to reply or 0 if this tweet is not a reply
      */
-    public TweetHolder(String text, long replyId) {
+    public TweetUpdate(String text, long replyId) {
         this.text = text;
         this.replyId = replyId;
     }

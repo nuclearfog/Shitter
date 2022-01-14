@@ -37,7 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
-import org.nuclearfog.twidda.backend.api.holder.ProfileHolder;
+import org.nuclearfog.twidda.backend.api.holder.ProfileUpdate;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -134,6 +134,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
     @Override
     protected void onDestroy() {
+        loadingCircle.dismiss();
         if (editorAsync != null && editorAsync.getStatus() == RUNNING)
             editorAsync.cancel(true);
         super.onDestroy();
@@ -265,9 +266,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
             errorDialog.setMessage(message);
             errorDialog.show();
         }
-        if (loadingCircle.isShowing()) {
-            loadingCircle.dismiss();
-        }
+        loadingCircle.dismiss();
     }
 
     /**
@@ -286,7 +285,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
                 String errMsg = getString(R.string.error_invalid_link);
                 link.setError(errMsg);
             } else if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
-                ProfileHolder holder = new ProfileHolder(username, userLink, userBio, userLoc);
+                ProfileUpdate holder = new ProfileUpdate(username, userLink, userBio, userLoc);
                 if (profileLink != null)
                     holder.addImageUri(getApplicationContext(), profileLink);
                 if (bannerLink != null)
@@ -305,14 +304,14 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
      */
     private void setUser() {
         if (!user.getImageUrl().isEmpty()) {
-            String pbLink = user.getImageUrl();
+            String imageLink = user.getImageUrl();
             if (!user.hasDefaultProfileImage())
-                pbLink += PROFILE_IMG_HIGH_RES;
-            picasso.load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
+                imageLink += PROFILE_IMG_HIGH_RES;
+            picasso.load(imageLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
         }
         if (!user.getBannerUrl().isEmpty()) {
-            String bnLink = user.getBannerUrl() + BANNER_IMG_MID_RES;
-            picasso.load(bnLink).into(profile_banner, this);
+            String bannerLink = user.getBannerUrl() + BANNER_IMG_MID_RES;
+            picasso.load(bannerLink).into(profile_banner, this);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);
         } else {

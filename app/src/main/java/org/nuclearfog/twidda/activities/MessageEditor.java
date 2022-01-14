@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
-import org.nuclearfog.twidda.backend.api.holder.DirectmessageHolder;
+import org.nuclearfog.twidda.backend.api.holder.DirectmessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
@@ -105,6 +105,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     protected void onDestroy() {
         if (messageAsync != null && messageAsync.getStatus() == RUNNING)
             messageAsync.cancel(true);
+        loadingCircle.dismiss();
         super.onDestroy();
     }
 
@@ -197,7 +198,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         String username = receiver.getText().toString();
         String message = this.message.getText().toString();
         if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaUri != null)) {
-            DirectmessageHolder holder = new DirectmessageHolder(username, message);
+            DirectmessageUpdate holder = new DirectmessageUpdate(username, message);
             if (mediaUri != null)
                 holder.addMedia(getApplicationContext(), mediaUri);
             messageAsync = new MessageUpdater(this, holder);

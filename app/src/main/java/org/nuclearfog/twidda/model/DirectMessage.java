@@ -1,5 +1,9 @@
 package org.nuclearfog.twidda.model;
 
+import android.net.Uri;
+
+import androidx.annotation.Nullable;
+
 /**
  * interface class for directmessage implementations
  *
@@ -35,5 +39,6 @@ public interface DirectMessage {
     /**
      * @return get attached media link
      */
-    String getMedia();
+    @Nullable
+    Uri getMedia();
 }

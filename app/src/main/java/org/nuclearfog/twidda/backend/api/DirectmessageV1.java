@@ -1,21 +1,32 @@
 package org.nuclearfog.twidda.backend.api;
 
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.DirectMessage;
 import org.nuclearfog.twidda.model.User;
 
+/**
+ * API 1.1 implementation of a directmessage
+ *
+ * @author nuclearfog
+ */
 class DirectmessageV1 implements DirectMessage {
 
     private long id;
     private long timestamp;
     private long sender_id;
     private long receiver_id;
-    private String text = "";
-    private String mediaLink = "";
     private User sender;
     private User receiver;
+    private String text;
+    private String mediaLink;
+
 
     DirectmessageV1(JSONObject json) throws JSONException {
         id = Long.parseLong(json.getString("id"));
@@ -24,12 +35,9 @@ class DirectmessageV1 implements DirectMessage {
         JSONObject target = message.getJSONObject("target");
         sender_id = Long.parseLong(message.getString("sender_id"));
         receiver_id = Long.parseLong(target.getString("recipient_id"));
-        JSONObject data = message.optJSONObject("message_data");
-
-        if (data != null) {
-            setText(data);
-            setMedia(data);
-        }
+        JSONObject data = message.getJSONObject("message_data");
+        text = setText(data);
+        setMedia(data);
     }
 
     @Override
@@ -57,23 +65,52 @@ class DirectmessageV1 implements DirectMessage {
         return timestamp;
     }
 
+    @Nullable
     @Override
-    public String getMedia() {
-        return mediaLink;
+    public Uri getMedia() {
+        if (mediaLink != null)
+            return Uri.parse(mediaLink);
+        return null;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "from:" + sender + " to:" + receiver + " message:" + text;
+    }
+
+    /**
+     * get ID of the sender
+     *
+     * @return user ID
+     */
     long getSenderId() {
         return sender_id;
     }
 
+    /**
+     * get ID of the receiver
+     *
+     * @return user ID
+     */
     long getReceiverId() {
         return receiver_id;
     }
 
+    /**
+     * add sender information
+     *
+     * @param sender user information
+     */
     void addSender(User sender) {
         this.sender = sender;
     }
 
+    /**
+     * add receiver information
+     *
+     * @param receiver user information
+     */
     void addReceiver(User receiver) {
         this.receiver = receiver;
     }
@@ -100,7 +137,7 @@ class DirectmessageV1 implements DirectMessage {
      *
      * @param data message data
      */
-    private void setText(JSONObject data) {
+    private String setText(JSONObject data) {
         String text = data.optString("text");
         StringBuilder buf = new StringBuilder(text);
         JSONObject entities = data.optJSONObject("entities");
@@ -126,6 +163,6 @@ class DirectmessageV1 implements DirectMessage {
                 // ignore, set default text
             }
         }
-        this.text = buf.toString();
+        return buf.toString();
     }
 }

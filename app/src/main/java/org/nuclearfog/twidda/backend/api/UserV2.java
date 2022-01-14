@@ -16,6 +16,8 @@ import java.util.Locale;
  */
 class UserV2 implements User {
 
+    private static final long serialVersionUID = 1136243062864162774L;
+
     /**
      * extra parameters required to fetch additional data
      */
@@ -25,6 +27,7 @@ class UserV2 implements User {
      * date time formatter for ISO 8601
      */
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+
 
     private long userID;
     private long created;

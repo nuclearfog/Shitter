@@ -225,7 +225,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 } else {
                     holder.lockedIcon.setVisibility(GONE);
                 }
-                if (message.getMedia() != null && !message.getMedia().isEmpty()) {
+                if (message.getMedia() != null) {
                     holder.mediaButton.setVisibility(VISIBLE);
                 } else {
                     holder.mediaButton.setVisibility(GONE);

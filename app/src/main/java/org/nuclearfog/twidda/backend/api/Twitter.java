@@ -8,6 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.holder.MediaStream;
+import org.nuclearfog.twidda.backend.api.holder.ProfileUpdate;
+import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
+import org.nuclearfog.twidda.backend.api.holder.UserlistUpdate;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
@@ -28,7 +31,6 @@ import org.nuclearfog.twidda.model.UserList;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -52,7 +54,7 @@ import okio.BufferedSink;
 import okio.Okio;
 
 /**
- * new API implementation to replace twitter4j and add version 2.0 support
+ * Twitter API 1.1/2.0 implementation
  *
  * @author nuclearfog
  */
@@ -833,17 +835,14 @@ public class Twitter {
     /**
      * upload tweet with additional attachment
      *
-     * @param text tweet text
-     * @param replyId ID of the tweet to reply or -1 if none
-     * @param mediaIds array of media IDs
-     * @param coordinates array of longitude/latitude coordinates
+     * @param update tweet update information
      * @return information of the uploaded tweet
      */
-    public Tweet uploadTweet(String text, long replyId, long[] mediaIds, double[] coordinates) throws TwitterException {
+    public Tweet uploadTweet(TweetUpdate update, long[] mediaIds) throws TwitterException {
         List<String> params = new ArrayList<>(2);
-        params.add("status=" + StringTools.encode(text));
-        if (replyId > 0)
-            params.add("in_reply_to_status_id=" + replyId);
+        params.add("status=" + StringTools.encode(update.getText()));
+        if (update.getReplyId() > 0)
+            params.add("in_reply_to_status_id=" + update.getReplyId());
         if (mediaIds != null && mediaIds.length > 0) {
             StringBuilder buf = new StringBuilder();
             for (long id : mediaIds)
@@ -851,9 +850,9 @@ public class Twitter {
             String idStr = buf.substring(0, buf.lastIndexOf("%2C"));
             params.add("media_ids=" + idStr);
         }
-        if (coordinates != null) {
-            String lon = Double.toString(coordinates[0]);
-            String lat = Double.toString(coordinates[1]);
+        if (update.hasLocation()) {
+            String lat = Double.toString(update.getLatitude());
+            String lon = Double.toString(update.getLongitude());
             params.add("lat=" + StringTools.encode(lat));
             params.add("long=" + StringTools.encode(lon));
         }
@@ -863,16 +862,14 @@ public class Twitter {
     /**
      * create userlist
      *
-     * @param isPublic true if list should be public
-     * @param title title of the list
-     * @param description description of the list
+     * @param update Userlist information
      * @return updated user list
      */
-    public UserList createUserlist(boolean isPublic, String title, String description) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
-        params.add("name=" + StringTools.encode(title));
-        params.add("description=" + StringTools.encode(description));
-        if (isPublic)
+    public UserList createUserlist(UserlistUpdate update) throws TwitterException {
+        List<String> params = new ArrayList<>(5);
+        params.add("name=" + StringTools.encode(update.getTitle()));
+        params.add("description=" + StringTools.encode(update.getDescription()));
+        if (update.isPublic())
             params.add("mode=public");
         else
             params.add("mode=private");
@@ -882,18 +879,15 @@ public class Twitter {
     /**
      * update existing userlist
      *
-     * @param id ID of the list
-     * @param isPublic true if list should be public
-     * @param title title of the list
-     * @param description description of the list
+     * @param update Userlist update
      * @return updated user list
      */
-    public UserList updateUserlist(long id, boolean isPublic, String title, String description) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
-        params.add("list_id=" + id);
-        params.add("name=" + StringTools.encode(title));
-        params.add("description=" + StringTools.encode(description));
-        if (isPublic)
+    public UserList updateUserlist(UserlistUpdate update) throws TwitterException {
+        List<String> params = new ArrayList<>(6);
+        params.add("list_id=" + update.getId());
+        params.add("name=" + StringTools.encode(update.getTitle()));
+        params.add("description=" + StringTools.encode(update.getDescription()));
+        if (update.isPublic())
             params.add("mode=public");
         else
             params.add("mode=private");
@@ -1036,7 +1030,8 @@ public class Twitter {
             event.put("type", "message_create");
             event.put("message_create", msg_create);
             root.put("event", event);
-            data.put("text", message);
+            if (!message.isEmpty())
+                data.put("text", message);
             if (mediaId > 0) {
                 JSONObject attachment = new JSONObject();
                 JSONObject media = new JSONObject();
@@ -1093,12 +1088,12 @@ public class Twitter {
             Response response = get(DIRECTMESSAGE, params);
             if (response.body() != null) {
                 JSONObject json = new JSONObject(response.body().string());
-                String nextCursor = json.optString("next_cursor");
-                JSONArray array = json.getJSONArray("events");
-                Directmessages result = new Directmessages(cursor, nextCursor);
                 if (response.code() == 200) {
                     // init user cache to re-use instances
                     Map<Long, User> userCache = new TreeMap<>();
+                    String nextCursor = json.optString("next_cursor");
+                    JSONArray array = json.getJSONArray("events");
+                    Directmessages result = new Directmessages(cursor, nextCursor);
                     for (int pos = 0 ; pos < array.length() ; pos++) {
                         JSONObject item = array.getJSONObject(pos);
                         DirectmessageV1 message = new DirectmessageV1(item);
@@ -1122,12 +1117,10 @@ public class Twitter {
                         result.add(message);
                     }
                     return result;
-                } else {
-                    throw new TwitterException(json);
                 }
-            } else {
-                throw new TwitterException(response);
+                throw new TwitterException(json);
             }
+            throw new TwitterException(response);
         } catch (IOException err) {
             throw new TwitterException(err);
         } catch (JSONException err) {
@@ -1185,21 +1178,30 @@ public class Twitter {
      * @param link link to the image
      * @return image bitmap
      */
-    public InputStream downloadImage(String link) throws TwitterException {
+    public MediaStream downloadImage(String link) throws TwitterException {
         try {
             // this type of link requires authentication
             if (link.startsWith("https://ton.twitter.com/")) {
                 Response response = get(link, new ArrayList<>(0));
-                if (response.code() == 200) {
-                    return response.body().byteStream();
+                if (response.code() == 200 && response.body() != null) {
+                    String mime = response.body().contentType().toString();
+                    InputStream stream = response.body().byteStream();
+                    return new MediaStream(stream, mime);
                 } else {
                     throw new TwitterException(response);
                 }
             }
             // public link, no authentication required
             else {
-                URL imageUrl = new URL(link);
-                return imageUrl.openConnection().getInputStream();
+                Request request = new Request.Builder().url(link).get().build();
+                Response response = client.newCall(request).execute();
+                if (response.code() == 200 && response.body() != null) {
+                    String mime = response.body().contentType().toString();
+                    InputStream stream = response.body().byteStream();
+                    return new MediaStream(stream, mime);
+                } else {
+                    throw new TwitterException(response);
+                }
             }
         } catch (IOException e) {
             throw new TwitterException(e);
@@ -1209,18 +1211,15 @@ public class Twitter {
     /**
      * updates current user's profile
      *
-     * @param username new username
-     * @param url new profile URL
-     * @param location new location name
-     * @param description new description
+     * @param update profile update information
      * @return updated user information
      */
-    public User updateProfile(String username, String url, String location, String description) throws TwitterException {
+    public User updateProfile(ProfileUpdate update) throws TwitterException {
         List<String> params = new ArrayList<>(7);
-        params.add("name=" + StringTools.encode(username));
-        params.add("url=" + StringTools.encode(url));
-        params.add("location=" + StringTools.encode(location));
-        params.add("description=" + StringTools.encode(description));
+        params.add("name=" + StringTools.encode(update.getName()));
+        params.add("url=" + StringTools.encode(update.getUrl()));
+        params.add("location=" + StringTools.encode(update.getLocation()));
+        params.add("description=" + StringTools.encode(update.getDescription()));
         return getUser1(PROFILE_UPDATE, params);
     }
 
@@ -1563,13 +1562,9 @@ public class Twitter {
             params.add("skip_status=true");
             params.add("include_entities=false");
             Response response = post(endpoint, params, input, key);
-            if (response.body() != null) {
+            if (response.code() < 200 || response.code() >= 300) {
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() != 200)  {
-                    throw new TwitterException(json);
-                }
-            } else {
-                throw new TwitterException(response);
+                throw new TwitterException(json);
             }
         } catch (IOException err) {
             throw new TwitterException(err);
@@ -1587,13 +1582,12 @@ public class Twitter {
     private void sendPost(String endpoint, List<String> params) throws TwitterException {
         try {
             Response response = post(endpoint, params);
-            if (response.code() != 200) {
+            if (response.code() < 200 || response.code() >= 300) {
                 if (response.body() != null) {
                     JSONObject json = new JSONObject(response.body().string());
                     throw new TwitterException(json);
-                } else {
-                    throw new TwitterException(response);
                 }
+                throw new TwitterException(response);
             }
         } catch (IOException e) {
             throw new TwitterException(e);

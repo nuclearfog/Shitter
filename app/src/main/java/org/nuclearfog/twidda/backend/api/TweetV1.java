@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,22 +13,27 @@ import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 
 /**
- * new tweet implementation for API v1.1
+ * API v 1.1 implementation of a tweet
  *
  * @author nuclearfog
  */
 class TweetV1 implements Tweet {
 
+    private static final long serialVersionUID = 70666106496232760L;
+
     /**
-     * query to enable extended mode to show tweets with more than 140 characters
+     * query parameter to enable extended mode to show tweets with more than 140 characters
      */
     static final String EXT_MODE = "tweet_mode=extended";
 
     /**
-     * include ID of the reteet if available
+     * query parameter to include ID of the reteet if available
      */
     static final String INCL_RT_ID = "include_my_retweet=true";
 
+    /**
+     * query parameter to include entities like urls, media or user mentions
+     */
     static final String INCL_ENTITIES = "include_entities=true";
 
     /**
@@ -52,7 +59,7 @@ class TweetV1 implements Tweet {
     private String location = "";
     private String replyName = "";
     private String coordinates = "";
-    private String[] mediaUrls = {};
+    private String[] mediaLinks;
     private String mediaType = "";
 
 
@@ -167,9 +174,16 @@ class TweetV1 implements Tweet {
         return favoriteCount;
     }
 
+    @NonNull
     @Override
-    public String[] getMediaLinks() {
-        return mediaUrls;
+    public Uri[] getMediaLinks() {
+        if (mediaLinks != null) {
+            Uri[] result = new Uri[mediaLinks.length];
+            for (int i = 0; i < result.length; i++)
+                result[i] = Uri.parse(mediaLinks[i]);
+            return result;
+        }
+        return new Uri[0];
     }
 
     @Override
@@ -223,16 +237,16 @@ class TweetV1 implements Tweet {
             if (media.length() > 0) {
                 // determine MIME type
                 JSONObject mediaItem = media.getJSONObject(0);
-                mediaUrls = new String[media.length()];
+                mediaLinks = new String[media.length()];
                 String mime = mediaItem.getString("type");
                 switch (mime) {
                     case MIME_PHOTO:
                         mediaType = MIME_PHOTO;
                         // get media URLs
-                        for (int pos = 0; pos < mediaUrls.length; pos++) {
+                        for (int pos = 0; pos < mediaLinks.length; pos++) {
                             JSONObject item = media.getJSONObject(pos);
                             if (item != null) {
-                                mediaUrls[pos] = item.getString("media_url_https");
+                                mediaLinks[pos] = item.getString("media_url_https");
                             }
                         }
                         break;
@@ -244,7 +258,7 @@ class TweetV1 implements Tweet {
                         for (int pos = 0; pos < videoVariants.length(); pos++) {
                             JSONObject variant = videoVariants.getJSONObject(pos);
                             if (MIME_V_MP4.equals(variant.getString("content_type"))) {
-                                mediaUrls[0] = variant.getString("url");
+                                mediaLinks[0] = variant.getString("url");
                                 break;
                             }
                         }
@@ -255,7 +269,7 @@ class TweetV1 implements Tweet {
                         JSONObject gif = mediaItem.getJSONObject("video_info");
                         JSONObject gifVariant = gif.getJSONArray("variants").getJSONObject(0);
                         if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
-                            mediaUrls[0] = gifVariant.getString("url");
+                            mediaLinks[0] = gifVariant.getString("url");
                             break;
                         }
                         break;

@@ -12,8 +12,8 @@ android {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 31
-        versionCode 51
-        versionName '1.10.6'
+        versionCode 52
+        versionName '2.0'
         // limiting language support for smaller APK size
         resConfigs 'en', 'de-rDE', 'zh-rCN'
         vectorDrawables.useSupportLibrary true
@@ -21,15 +21,14 @@ android {
 
     buildTypes {
         release {
-            debuggable false
-            multiDexEnabled false
             minifyEnabled true
             shrinkResources true
+            debuggable false
+            multiDexEnabled false
             proguardFile 'proguard-rules.pro'
         }
         debug {
             multiDexEnabled false
-            //minifyEnabled true
             proguardFile 'proguard-debug.pro'
             applicationIdSuffix '.debug'
             versionNameSuffix '.DEBUG'
@@ -37,7 +36,6 @@ android {
     }
 
     packagingOptions {
-        exclude '**/twitter4j.properties.template'
         exclude '/META-INF/CHANGES'
         exclude '/META-INF/DEPENDENCIES'
         exclude '/META-INF/README.md'

@@ -88,7 +88,6 @@
     <string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
     <string name="settings_look">Look</string>
     <string name="settings_toggle_link_preview">enable link preview</string>
-    <string name="badge_twitter4j" translatable="false">Twitter4J Badge</string>
     <string name="item_load_more">load more</string>
     <string name="item_image_save">save image</string>
     <string name="settings_enable_proxy">enable proxy</string>

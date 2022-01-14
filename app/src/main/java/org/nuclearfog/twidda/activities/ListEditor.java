@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ListUpdater;
-import org.nuclearfog.twidda.backend.api.holder.ListHolder;
+import org.nuclearfog.twidda.backend.api.holder.UserlistUpdate;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -110,6 +110,13 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
 
 
     @Override
+    protected void onDestroy() {
+        loadingCircle.dismiss();
+        super.onDestroy();
+    }
+
+
+    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.userlist_create_list) {
             if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
@@ -153,7 +160,6 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
             Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();
             setResult(RET_LIST_CREATED);
         }
-        loadingCircle.dismiss();
         finish();
     }
 
@@ -183,16 +189,16 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         if (titleStr.trim().isEmpty()) {
             Toast.makeText(this, R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
         } else {
-            ListHolder mHolder;
+            UserlistUpdate mHolder;
             if (userList != null) {
                 // update existing list
-                mHolder = new ListHolder(titleStr, descrStr, isPublic, userList.getId());
+                mHolder = new UserlistUpdate(titleStr, descrStr, isPublic, userList.getId());
             } else {
                 // create new one
-                mHolder = new ListHolder(titleStr, descrStr, isPublic);
+                mHolder = new UserlistUpdate(titleStr, descrStr, isPublic);
             }
-            updaterAsync = new ListUpdater(this);
-            updaterAsync.execute(mHolder);
+            updaterAsync = new ListUpdater(this, mHolder);
+            updaterAsync.execute();
             loadingCircle.show();
         }
     }

@@ -1,10 +1,12 @@
 package org.nuclearfog.twidda.backend.api;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Relation;
 
 /**
- * implementaton of user relation
+ * API v 1.1 implementation of an user relation
  *
  * @author nuclearfog
  */
@@ -17,8 +19,9 @@ class RelationV1 implements Relation {
     private boolean isMuted;
     private boolean canDm;
 
+
     RelationV1(JSONObject json, long currentId) {
-        isHome = json.optLong("id") == currentId;
+        isHome = json.optLong("target_id") == currentId;
         isFollowing = json.optBoolean("following");
         isFollower = json.optBoolean("followed_by");
         isBlocked = json.optBoolean("blocking");
@@ -54,5 +57,12 @@ class RelationV1 implements Relation {
     @Override
     public boolean canDm() {
         return canDm;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "following:" + isFollowing + " follower:" + isFollower +
+                " blocked:" + isBlocked + " muted:" + isMuted + " dm open:" + canDm;
     }
 }

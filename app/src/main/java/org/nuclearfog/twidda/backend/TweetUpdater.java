@@ -6,7 +6,7 @@ import org.nuclearfog.twidda.activities.TweetEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.api.holder.MediaStream;
-import org.nuclearfog.twidda.backend.api.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.io.InputStream;
@@ -23,14 +23,14 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
     private Twitter twitter;
     private ErrorHandler.TwitterError twException;
     private WeakReference<TweetEditor> callback;
-    private TweetHolder tweet;
+    private TweetUpdate tweet;
 
     /**
      * initialize task
      *
      * @param activity Activity context
      */
-    public TweetUpdater(TweetEditor activity, TweetHolder tweet) {
+    public TweetUpdater(TweetEditor activity, TweetUpdate tweet) {
         super();
         twitter = Twitter.get(activity);
         callback = new WeakReference<>(activity);
@@ -57,10 +57,7 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
             }
             // upload tweet
             if (!isCancelled()) {
-                double[] coordinates = null;
-                if (tweet.hasLocation())
-                    coordinates = new double[] {tweet.getLongitude(), tweet.getLatitude()};
-                twitter.uploadTweet(tweet.getText(), tweet.getReplyId(), mediaIds, coordinates);
+                twitter.uploadTweet(tweet, mediaIds);
             }
             return true;
         } catch (TwitterException twException) {

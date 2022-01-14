@@ -353,8 +353,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // open tweet media
             else if (v.getId() == R.id.tweet_media_attach) {
+                // convert links to uri
+                Uri[] links = clickedTweet.getMediaLinks();
                 Intent mediaIntent = new Intent(this, MediaViewer.class);
-                mediaIntent.putExtra(KEY_MEDIA_LINK, clickedTweet.getMediaLinks());
+                mediaIntent.putExtra(KEY_MEDIA_URI, links);
                 switch (clickedTweet.getMediaType()) {
                     case Tweet.MIME_PHOTO:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);

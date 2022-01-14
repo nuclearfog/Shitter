@@ -14,6 +14,8 @@ import java.util.LinkedList;
  */
 public class Directmessages extends LinkedList<DirectMessage> {
 
+    private static final long serialVersionUID = 7877548659917419256L;
+
     private String prevCursor, nextCursor;
 
     /**

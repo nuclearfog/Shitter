@@ -9,11 +9,13 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
 /**
- * User list implementation of API 1.1
+ * API v 1.1 user list implementation
  *
  * @author nuclearfog
  */
 class UserListV1 implements UserList {
+
+    private static final long serialVersionUID = 4121925943880606236L;
 
     private long id;
     private long time;

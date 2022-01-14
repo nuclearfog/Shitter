@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     private ViewPager pager;
     private ViewGroup root;
 
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(AppStyles.setFontScale(newBase));
@@ -117,14 +118,21 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
     @Override
+    protected void onDestroy() {
+        loadingCircle.dismiss();
+        super.onDestroy();
+    }
+
+
+    @Override
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         switch (reqCode) {
             case REQUEST_APP_LOGIN:
                 AppStyles.setTheme(root, settings.getBackgroundColor());
                 if (returnCode == RESULT_CANCELED) {
                     finish();
-                } else if (returnCode == RET_ACCOUNT_CHANGE) { // fixme
-                    //TwitterEngine.resetTwitter();
+                } else if (returnCode == RET_ACCOUNT_CHANGE) {
+                    // todo reset to apply proxy settings
                     adapter.notifySettingsChanged();
                 } else {
                     adapter.notifySettingsChanged();

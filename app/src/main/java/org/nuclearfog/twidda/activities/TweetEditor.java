@@ -27,7 +27,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUpdater;
-import org.nuclearfog.twidda.backend.api.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -156,6 +156,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
     @Override
     protected void onDestroy() {
+        loadingCircle.dismiss();
         if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
             uploaderAsync.cancel(true);
         super.onDestroy();
@@ -313,7 +314,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      * called after sending tweet
      */
     public void onSuccess() {
-        loadingCircle.dismiss();
         Toast.makeText(this, R.string.info_tweet_sent, LENGTH_LONG).show();
         finish();
     }
@@ -352,7 +352,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         Intent data = getIntent();
         long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
         String tweetStr = tweetText.getText().toString();
-        TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
+        TweetUpdate tweet = new TweetUpdate(tweetStr, inReplyId);
         // add media
         if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
             tweet.addMedia(getApplicationContext(), mediaPath);

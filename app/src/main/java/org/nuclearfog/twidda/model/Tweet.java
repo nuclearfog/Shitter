@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.model;
 
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
@@ -91,7 +94,8 @@ public interface Tweet extends Serializable {
     /**
      * @return media links (up to 4) to images and videos
      */
-    String[] getMediaLinks();
+    @NonNull
+    Uri[] getMediaLinks();
 
     /**
      * @return mentioned user names in the tweet text
