@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.User;
@@ -29,7 +30,7 @@ class UserV2 implements User {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
 
-    private long userID;
+    private long id;
     private long created;
     private String username;
     private String screenName;
@@ -50,7 +51,7 @@ class UserV2 implements User {
 
 
     UserV2(JSONObject json, long twitterId) {
-        userID = json.optLong("id");
+        id = json.optLong("id");
         username = json.optString("name");
         screenName = '@' + json.optString("username"); // username -> screenname
         isProtected = json.optBoolean("protected");
@@ -67,7 +68,7 @@ class UserV2 implements User {
             follower = metrics.optInt("followers_count");
             tweetCount = metrics.optInt("tweet_count");
         }
-        isCurrentUser = userID == twitterId;
+        isCurrentUser = id == twitterId;
         setDate(json.optString("created_at"));
 
         favorCount = 0;
@@ -77,7 +78,7 @@ class UserV2 implements User {
 
     @Override
     public long getId() {
-        return userID;
+        return id;
     }
 
     @Override
@@ -165,15 +166,17 @@ class UserV2 implements User {
         return isCurrentUser;
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof User))
+            return false;
+        return ((User) obj).getId() == id;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return screenName + ":" + username;
-    }
-
-    @Override
-    public int compareTo(User user) {
-        return Long.compare(user.getId(), userID);
     }
 
     /**

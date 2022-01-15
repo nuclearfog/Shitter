@@ -215,10 +215,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.textViews[5].setText(NUM_FORMAT.format(item.getMemberCount()));
                 vh.textViews[6].setText(NUM_FORMAT.format(item.getSubscriberCount()));
                 if (settings.imagesEnabled() && !owner.getImageUrl().isEmpty()) {
-                    String pbLink = owner.getImageUrl();
+                    String profileImageUrl = owner.getImageUrl();
                     if (!owner.hasDefaultProfileImage())
-                        pbLink += settings.getImageSuffix();
-                    picasso.load(pbLink).transform(new RoundedCornersTransformation(3, 0))
+                        profileImageUrl += settings.getImageSuffix();
+                    picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(3, 0))
                             .error(R.drawable.no_image).into(vh.profile_img);
                 } else {
                     vh.profile_img.setImageResource(0);

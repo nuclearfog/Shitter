@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,9 +93,25 @@ class UserListV1 implements UserList {
         return isOwner;
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof UserList))
+            return false;
+        return ((UserList) obj).getId() == id;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return title + " / " + description;
+    }
+
+    /**
+     * set manually follow status
+     *
+     * @param following following status
+     */
+    void setFollowing(boolean following) {
+        this.following = following;
     }
 }

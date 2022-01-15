@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface User extends Serializable, Comparable<User> {
+public interface User extends Serializable {
 
     /**
      * @return ID of the user

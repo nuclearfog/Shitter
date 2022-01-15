@@ -63,7 +63,7 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
             long listId = ids[0];
             switch (action) {
                 case LOAD:
-                    return twitter.getUserlist(listId);
+                    return twitter.getUserlist1(listId);
 
                 case FOLLOW:
                     return twitter.followUserlist(listId);

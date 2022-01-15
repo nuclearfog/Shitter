@@ -55,7 +55,7 @@ class TweetV1 implements Tweet {
     private boolean isSensitive;
     private boolean isRetweeted;
     private boolean isFavorited;
-    private String userMentions = "";
+    private String userMentions;
     private String location = "";
     private String replyName = "";
     private String coordinates = "";
@@ -99,18 +99,25 @@ class TweetV1 implements Tweet {
                 }
             }
         }
-        if (!replyName.equals("null"))
+        if (!replyName.equals("null")) {
             this.replyName = '@' + replyName;
+            userMentions = author.getScreenname() + " @" + replyName + ' ' + StringTools.getUserMentions(text);
+        } else {
+            userMentions = author.getScreenname() + ' ' + StringTools.getUserMentions(text);
+        }
         if (user_retweet != null)
             retweetId = user_retweet.optLong("id");
-        if (quoted_tweet != null)
+        if (quoted_tweet != null) {
             embeddedTweet = new TweetV1(quoted_tweet, twitterId);
+            isRetweeted = embeddedTweet.isRetweeted();
+            isFavorited = embeddedTweet.isFavorited();
+        }
         if (entities != null)
             addURLs(entities);
         if (extEntities != null) {
             addMedia(extEntities);
-            addUserMentions(extEntities);
         }
+
     }
 
     @Override
@@ -221,12 +228,52 @@ class TweetV1 implements Tweet {
         return coordinates;
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof Tweet))
+            return false;
+        return ((Tweet) obj).getId() == id;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return "from:" + author.getScreenname() + " text:" + text;
     }
 
+    /**
+     * enable/disable retweet status and count
+     *
+     * @param isRetweeted true if this tweet should be retweeted
+     */
+    void setRetweet(boolean isRetweeted) {
+        this.isRetweeted = isRetweeted;
+        if (isRetweeted) {
+            retweetCount++;
+        } else if (retweetCount > 0) {
+            retweetCount--;
+        }
+        if (embeddedTweet instanceof TweetV1) {
+            ((TweetV1) embeddedTweet).setRetweet(isRetweeted);
+        }
+    }
+
+    /**
+     * enable/disable favorite status and count
+     *
+     * @param isFavorited true if this tweet should be favorited
+     */
+    void setFavorite(boolean isFavorited) {
+        this.isFavorited = isFavorited;
+        if (isFavorited) {
+            favoriteCount++;
+        } else if (favoriteCount > 0) {
+            favoriteCount--;
+        }
+        if (embeddedTweet instanceof TweetV1) {
+            ((TweetV1) embeddedTweet).setFavorite(isFavorited);
+        }
+    }
 
     /**
      * add media links to tweet if any
@@ -313,31 +360,5 @@ class TweetV1 implements Tweet {
         } catch (JSONException e) {
             // use default description
         }
-    }
-
-    /**
-     * get mentioned user's screen name
-     *
-     * @param extEntities JSON object with extended entities
-     */
-    private void addUserMentions(JSONObject extEntities) {
-        StringBuilder buf = new StringBuilder();
-        if (!replyName.isEmpty() && replyName.equals(author.getScreenname())) {
-            buf.append(replyName).append(' ');
-        }
-        JSONArray mentions = extEntities.optJSONArray("user_mentions");
-        if (mentions != null && mentions.length() > 0) {
-            for (int pos = 0; pos < mentions.length(); pos++) {
-                JSONObject mention = mentions.optJSONObject(pos);
-                if (mention != null) {
-                    long mentionedUserId = mention.optLong("id");
-                    String mentionedUsername = mention.optString("screen_name");
-                    if (mentionedUserId != author.getId() && !mentionedUsername.isEmpty()) {
-                        buf.append('@').append(mentionedUsername).append(' ');
-                    }
-                }
-            }
-        }
-        userMentions = buf.toString();
     }
 }

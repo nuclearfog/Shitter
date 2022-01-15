@@ -91,11 +91,11 @@ public class AccountAdapter extends Adapter<LoginHolder> {
             holder.text[IDX_SCR_NAME].setText(user.getScreenname());
             // set profile image
             if (settings.imagesEnabled()) {
-                String pbLink = user.getImageUrl();
+                String imageLink = user.getImageUrl();
                 if (!user.hasDefaultProfileImage()) {
-                    pbLink += settings.getImageSuffix();
+                    imageLink += settings.getImageSuffix();
                 }
-                picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                picasso.load(imageLink).transform(new RoundedCornersTransformation(2, 0))
                         .error(R.drawable.no_image).into(holder.profile);
             }
         } else {

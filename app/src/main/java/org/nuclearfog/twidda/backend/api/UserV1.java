@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +18,7 @@ class UserV1 implements User {
 
     private static final long serialVersionUID = 7893496988800499358L;
 
-    private long userID;
+    private long id;
     private long created;
     private String username;
     private String screenName;
@@ -39,7 +40,7 @@ class UserV1 implements User {
 
     UserV1(JSONObject json, long twitterId) {
         this(json);
-        isCurrentUser = twitterId == userID;
+        isCurrentUser = twitterId == id;
     }
 
 
@@ -50,7 +51,7 @@ class UserV1 implements User {
         username = json.optString("name");
         screenName = '@' + json.optString("screen_name");
         location = json.optString("location");
-        userID = json.optLong("id");
+        id = json.optLong("id");
         isVerified = json.optBoolean("verified");
         isLocked = json.optBoolean("protected");
         following = json.optInt("friends_count");
@@ -92,7 +93,7 @@ class UserV1 implements User {
 
     @Override
     public long getId() {
-        return userID;
+        return id;
     }
 
     @Override
@@ -181,8 +182,10 @@ class UserV1 implements User {
     }
 
     @Override
-    public int compareTo(User user) {
-        return Long.compare(user.getId(), userID);
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof User))
+            return false;
+        return ((User) obj).getId() == id;
     }
 
     @NonNull

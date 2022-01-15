@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.database;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.model.Trend;
 
 /**
@@ -35,5 +37,11 @@ class TrendImpl implements Trend {
     @Override
     public int getPopularity() {
         return range;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return rank + ": " + name;
     }
 }

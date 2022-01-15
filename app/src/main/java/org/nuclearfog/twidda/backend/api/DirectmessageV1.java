@@ -73,6 +73,13 @@ class DirectmessageV1 implements DirectMessage {
         return null;
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof DirectMessage))
+            return false;
+        return ((DirectMessage)obj).getId() == id;
+    }
+
     @NonNull
     @Override
     public String toString() {

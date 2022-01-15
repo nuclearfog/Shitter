@@ -13,6 +13,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 
@@ -29,7 +30,7 @@ class TweetImpl implements Tweet {
 
     private static final Pattern SEPARATOR = Pattern.compile(";");
 
-    private long tweetId;
+    private long id;
     private long time;
     private long embeddedId;
     private long replyID;
@@ -37,15 +38,16 @@ class TweetImpl implements Tweet {
     private long myRetweetId;
     @Nullable
     private Tweet embedded;
-    private User user;
+    private User author;
     private int retweetCount;
     private int favoriteCount;
     private String mediaType;
     private String locationName;
     private String locationCoordinates;
     private String replyName;
-    private String tweet;
+    private String text;
     private String source;
+    private String userMentions;
     private String[] mediaLinks;
     private boolean retweeted;
     private boolean favorited;
@@ -53,11 +55,12 @@ class TweetImpl implements Tweet {
 
 
     TweetImpl(Cursor cursor, long currentUserId) {
+        author = new UserImpl(cursor, currentUserId);
         time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.SINCE));
-        tweet = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.TWEET));
+        text = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.TWEET));
         retweetCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.RETWEET));
         favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.FAVORITE));
-        tweetId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.ID));
+        id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.ID));
         replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYNAME));
         replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYTWEET));
         source = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.SOURCE));
@@ -73,30 +76,35 @@ class TweetImpl implements Tweet {
         sensitive = (tweetRegister & MEDIA_SENS_MASK) != 0;
         mediaLinks = SEPARATOR.split(linkStr);
         // get media type
-        if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK)
+        if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
             mediaType = MIME_ANGIF;
-        else if ((tweetRegister & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK)
+        } else if ((tweetRegister & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK) {
             mediaType = MIME_PHOTO;
-        else if ((tweetRegister & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK)
+        } else if ((tweetRegister & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK) {
             mediaType = MIME_VIDEO;
-        else
+        } else {
             mediaType = MIME_NONE;
-        this.user = new UserImpl(cursor, currentUserId);
+        }
+        if (!replyName.isEmpty()) {
+            userMentions = author.getScreenname() + ' ' + replyName + ' ' + StringTools.getUserMentions(text);
+        } else {
+            userMentions = author.getScreenname() + ' ' + StringTools.getUserMentions(text);
+        }
     }
 
     @Override
     public long getId() {
-        return tweetId;
+        return id;
     }
 
     @Override
     public String getText() {
-        return tweet;
+        return text;
     }
 
     @Override
     public User getAuthor() {
-        return user;
+        return author;
     }
 
     @Override
@@ -156,7 +164,7 @@ class TweetImpl implements Tweet {
 
     @Override
     public String getUserMentions() {
-        return replyName;
+        return userMentions;
     }
 
     @Override
@@ -187,6 +195,19 @@ class TweetImpl implements Tweet {
     @Override
     public String getLocationCoordinates() {
         return locationCoordinates;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof Tweet))
+            return false;
+        return ((Tweet) obj).getId() == id;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "from:" + author.getScreenname() + " text:" + text;
     }
 
     /**

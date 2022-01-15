@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.database;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.model.Location;
 
 /**
@@ -9,8 +12,9 @@ import org.nuclearfog.twidda.model.Location;
  */
 class LocationImpl implements Location {
 
-    private String placeName;
-    private int worldId;
+
+    private int id;
+    private String name;
 
     /**
      * construct location object from local
@@ -19,17 +23,30 @@ class LocationImpl implements Location {
      * @param worldId   woe id
      */
     LocationImpl(String placeName, int worldId) {
-        this.placeName = placeName;
-        this.worldId = worldId;
+        this.name = placeName;
+        this.id = worldId;
     }
 
     @Override
     public String getName() {
-        return placeName;
+        return name;
     }
 
     @Override
     public int getId() {
-        return worldId;
+        return id;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof Location))
+            return false;
+        return ((Location) obj).getId() == id;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return id + ":" + name;
     }
 }

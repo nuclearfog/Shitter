@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -24,6 +26,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class StringTools {
 
+    private static final Pattern MENTION = Pattern.compile("[@][\\w_]+");
     private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
     private static final long DEFAULT_TIME = 0x61D99F64;
 
@@ -87,6 +90,23 @@ public final class StringTools {
         result += seconds;
 
         return result;
+    }
+
+    /**
+     * append user mentions in a text to a string
+     *
+     * @param text text with user mentions (e.g. tweet)
+     * @return mentioned usernames in one string
+     */
+    public static String getUserMentions(String text) {
+        StringBuilder buf = new StringBuilder();
+        Matcher m = MENTION.matcher(text);
+        while (m.find()) {
+            int start = m.start();
+            int end = m.end();
+            buf.append(text.substring(start, end)).append(' ');
+        }
+        return buf.toString();
     }
 
     /**

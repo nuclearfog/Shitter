@@ -231,10 +231,10 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                     holder.mediaButton.setVisibility(GONE);
                 }
                 if (settings.imagesEnabled() && !sender.getImageUrl().isEmpty()) {
-                    String pbLink = sender.getImageUrl();
+                    String profileImageUrl = sender.getImageUrl();
                     if (!sender.hasDefaultProfileImage())
-                        pbLink += settings.getImageSuffix();
-                    picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                        profileImageUrl += settings.getImageSuffix();
+                    picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
                             .error(R.drawable.no_image).into(holder.profile_img);
                 } else {
                     holder.profile_img.setImageResource(0);

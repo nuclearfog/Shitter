@@ -13,7 +13,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 31
         versionCode 52
-        versionName '2.0'
+        versionName '2.0b'
         // limiting language support for smaller APK size
         resConfigs 'en', 'de-rDE', 'zh-rCN'
         vectorDrawables.useSupportLibrary true

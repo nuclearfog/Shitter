@@ -230,10 +230,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 userholder.lockedIcon.setVisibility(GONE);
             }
             if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
-                String pbLink = user.getImageUrl();
+                String profileImageUrl = user.getImageUrl();
                 if (!user.hasDefaultProfileImage())
-                    pbLink += settings.getImageSuffix();
-                picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                    profileImageUrl += settings.getImageSuffix();
+                picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
                         .error(R.drawable.no_image).into(userholder.profileImg);
             } else {
                 userholder.profileImg.setImageResource(0);

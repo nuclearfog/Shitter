@@ -219,14 +219,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (statusAsync == null) {
             // print Tweet object and get and update it
             if (tweet != null) {
-                statusAsync = new TweetAction(this, tweet.getId());
+                statusAsync = new TweetAction(this, tweet.getId(), -1L);
                 statusAsync.execute(Action.LOAD);
                 setTweet(tweet);
             }
             // Load Tweet from database first if no tweet is defined
             else {
                 long tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
-                statusAsync = new TweetAction(this, tweetId);
+                statusAsync = new TweetAction(this, tweetId, -1L);
                 statusAsync.execute(Action.LD_DB);
             }
         }
@@ -400,7 +400,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onLongClick(View v) {
         if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
-            statusAsync = new TweetAction(this, tweet.getId());
+            statusAsync = new TweetAction(this, tweet.getId(), tweet.getMyRetweetId());
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
                 if (tweet.isRetweeted())
@@ -431,7 +431,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 long tweetId = tweet.getId();
                 if (tweet.getEmbeddedTweet() != null)
                     tweetId = tweet.getEmbeddedTweet().getId();
-                statusAsync = new TweetAction(this, tweetId);
+                statusAsync = new TweetAction(this, tweetId, tweet.getMyRetweetId());
                 statusAsync.execute(Action.DELETE);
             }
         }
@@ -577,10 +577,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         }
         AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
         if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
-            String pbLink = author.getImageUrl();
+            String profileImageUrl = author.getImageUrl();
             if (!author.hasDefaultProfileImage())
-                pbLink += settings.getImageSuffix();
-            picasso.load(pbLink).transform(new RoundedCornersTransformation(4, 0))
+                profileImageUrl += settings.getImageSuffix();
+            picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(4, 0))
                     .error(R.drawable.no_image).into(profile_img);
         } else {
             profile_img.setImageResource(0);

@@ -60,17 +60,18 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     private Twitter twitter;
     private WeakReference<TweetActivity> callback;
     private AppDatabase db;
-    private long tweetId;
+    private long tweetId, retweetId;
 
 
     /**
      * @param tweetId ID of the tweet
      */
-    public TweetAction(TweetActivity activity, long tweetId) {
+    public TweetAction(TweetActivity activity, long tweetId, long retweetId) {
         super();
         db = new AppDatabase(activity);
         twitter = Twitter.get(activity);
-        this.callback = new WeakReference<>(activity);
+        callback = new WeakReference<>(activity);
+        this.retweetId = retweetId;
         this.tweetId = tweetId;
     }
 
@@ -95,12 +96,12 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     }
                     break;
 
-                case DELETE: //fixme tweet updates may be buggy because of the API
-                    tweet = twitter.deleteTweet(tweetId);
+                case DELETE:
+                    twitter.deleteTweet(tweetId);
                     db.removeStatus(tweetId);
                     // removing retweet reference to this tweet
-                    if (tweet.getMyRetweetId() > 0)
-                        db.removeStatus(tweet.getMyRetweetId());
+                    if (retweetId > 0)
+                        db.removeStatus(retweetId);
                     break;
 
                 case RETWEET:
@@ -115,7 +116,7 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     db.updateStatus(tweet);
                     // removing retweet reference to this tweet
                     if (tweet.getMyRetweetId() > 0)
-                        db.removeStatus(tweet.getMyRetweetId());
+                        db.removeStatus(retweetId);
                     break;
 
                 case FAVORITE:

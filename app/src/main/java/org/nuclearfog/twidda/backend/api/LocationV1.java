@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Location;
@@ -34,6 +35,13 @@ class LocationV1 implements Location {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof Location))
+            return false;
+        return ((Location) obj).getId() == id;
     }
 
     @NonNull

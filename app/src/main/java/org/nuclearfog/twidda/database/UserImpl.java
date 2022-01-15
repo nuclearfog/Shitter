@@ -8,6 +8,7 @@ import static org.nuclearfog.twidda.database.AppDatabase.VER_MASK;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.model.User;
 
@@ -20,7 +21,7 @@ class UserImpl implements User {
 
     private static final long serialVersionUID = 2367055336838212570L;
 
-    private long userID;
+    private long id;
     private long created;
     private int following;
     private int follower;
@@ -46,7 +47,7 @@ class UserImpl implements User {
 
 
     UserImpl(Cursor cursor, String prefix, long currentUserId) {
-        userID = cursor.getLong(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.ID));
+        id = cursor.getLong(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.ID));
         username = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.USERNAME));
         screenName = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.SCREENNAME));
         profileImg = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.IMAGE));
@@ -64,13 +65,13 @@ class UserImpl implements User {
         isLocked = (register & LCK_MASK) != 0;
         followReqSent = (register & FRQ_MASK) != 0;
         defaultImage = (register & DEF_IMG) != 0;
-        isCurrentUser = currentUserId == userID;
+        isCurrentUser = currentUserId == id;
     }
 
 
     @Override
     public long getId() {
-        return userID;
+        return id;
     }
 
     @Override
@@ -159,8 +160,10 @@ class UserImpl implements User {
     }
 
     @Override
-    public int compareTo(User user) {
-        return Long.compare(user.getId(), userID);
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof User))
+            return false;
+        return ((User) obj).getId() == id;
     }
 
     @NonNull
