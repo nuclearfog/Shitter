@@ -165,33 +165,6 @@ public class DatabaseAdapter {
             + " ON " + UserRegisterTable.NAME + "(" + UserRegisterTable.OWNER + "," + UserRegisterTable.ID + ");";
 
     /**
-     * update for the tweet table
-     */
-    private static final String TABLE_TWEET_ADD_PLACE = "ALTER TABLE " + TweetTable.NAME
-            + " ADD COLUMN " + TweetTable.PLACE + " TEXT";
-
-    /**
-     * update for the tweet table
-     */
-    private static final String TABLE_TWEET_ADD_GEO = "ALTER TABLE " + TweetTable.NAME
-            + " ADD COLUMN " + TweetTable.COORDINATE + " TEXT";
-
-    /**
-     * update for the trend table
-     */
-    private static final String TABLE_TREND_ADD_VOL = "ALTER TABLE " + TrendTable.NAME
-            + " ADD COLUMN " + TrendTable.VOL + " INTEGER";
-
-    /**
-     * update for the directmessage table to add a media link
-     */
-    private static final String TABLE_MESSAGE_ADD_MEDIA = "ALTER TABLE " + MessageTable.NAME
-            + " ADD COLUMN " + MessageTable.MEDIA + " TEXT";
-
-    private static final String TABLE_TWEETREGISTER_ADD_RETWEETER_ID = "ALTER TABLE " + TweetRegisterTable.NAME
-            + " ADD COLUMN " + TweetRegisterTable.RETWEETUSER + " INTEGER";
-
-    /**
      * singleton instance
      */
     private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
@@ -261,28 +234,6 @@ public class DatabaseAdapter {
      * update old table versions if necessary
      */
     private void updateTable() {
-        if (db.getVersion() < 2) {
-            db.execSQL(TABLE_TWEET_ADD_PLACE);
-            db.execSQL(TABLE_TWEET_ADD_GEO);
-            db.setVersion(2);
-        }
-        if (db.getVersion() < 3) {
-            db.execSQL(TABLE_TREND_ADD_VOL);
-            db.setVersion(3);
-        }
-        if (db.getVersion() < 4) {
-            // fix database bug
-            db.execSQL("DROP TABLE '" + TweetRegisterTable.NAME + "'");
-            db.execSQL("DROP TABLE '" + UserRegisterTable.NAME + "'");
-            db.execSQL(TABLE_TWEET_REGISTER);
-            db.execSQL(TABLE_USER_REGISTER);
-            db.setVersion(4);
-        }
-        if (db.getVersion() < 5) {
-            db.execSQL(TABLE_MESSAGE_ADD_MEDIA);
-            db.execSQL(TABLE_TWEETREGISTER_ADD_RETWEETER_ID);
-            db.setVersion(5);
-        }
     }
 
     /**
@@ -304,16 +255,9 @@ public class DatabaseAdapter {
         db.execSQL(INDX_TREND);
         db.execSQL(INDX_TWEET_REG);
         db.execSQL(INDX_USER_REG);
-        /// Database just created? set current version
         if (db.getVersion() == 0) {
             db.setVersion(DB_VERSION);
         }
-    }
-
-    @Override
-    @NonNull
-    public String toString() {
-        return databasePath.toString() + ":" + db.getVersion();
     }
 
     /**
