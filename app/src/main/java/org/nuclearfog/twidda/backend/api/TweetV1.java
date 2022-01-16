@@ -59,7 +59,7 @@ class TweetV1 implements Tweet {
     private String location = "";
     private String replyName = "";
     private String coordinates = "";
-    private String[] mediaLinks;
+    private String[] mediaLinks = {};
     private String mediaType = "";
 
 
@@ -76,6 +76,7 @@ class TweetV1 implements Tweet {
         timestamp = StringTools.getTime(json.optString("created_at"));
         source = StringTools.getSource(json.optString("source"));
         String replyName = json.optString("in_reply_to_screen_name");
+        String userMentions = StringTools.getUserMentions(text);
 
         JSONObject locationJson = json.optJSONObject("place");
         JSONObject coordinateJson = json.optJSONObject("coordinates");
@@ -101,9 +102,11 @@ class TweetV1 implements Tweet {
         }
         if (!replyName.equals("null")) {
             this.replyName = '@' + replyName;
-            userMentions = author.getScreenname() + " @" + replyName + ' ' + StringTools.getUserMentions(text);
+        }
+        if (author.isCurrentUser()) {
+            this.userMentions = userMentions;
         } else {
-            userMentions = author.getScreenname() + ' ' + StringTools.getUserMentions(text);
+            this.userMentions = author.getScreenname() + ' ' + userMentions;
         }
         if (user_retweet != null)
             retweetId = user_retweet.optLong("id");
@@ -184,13 +187,10 @@ class TweetV1 implements Tweet {
     @NonNull
     @Override
     public Uri[] getMediaLinks() {
-        if (mediaLinks != null) {
-            Uri[] result = new Uri[mediaLinks.length];
-            for (int i = 0; i < result.length; i++)
-                result[i] = Uri.parse(mediaLinks[i]);
-            return result;
-        }
-        return new Uri[0];
+        Uri[] result = new Uri[mediaLinks.length];
+        for (int i = 0; i < result.length; i++)
+            result[i] = Uri.parse(mediaLinks[i]);
+        return result;
     }
 
     @Override
