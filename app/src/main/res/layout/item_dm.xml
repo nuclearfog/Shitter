@@ -135,6 +135,7 @@
             android:layout_height="@dimen/dmitem_button_media_height"
             android:visibility="gone"
             android:contentDescription="@string/directmessage_media_button"
+            android:layout_margin="@dimen/dmitem_button_media_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/dm_button_barrier"
             app:layout_constraintEnd_toEndOf="parent"

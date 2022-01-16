@@ -157,7 +157,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
                 case MEDIA:
                     if (message.getMedia() != null) {
                         Intent mediaIntent = new Intent(requireContext(), MediaViewer.class);
-                        mediaIntent.putExtra(KEY_MEDIA_URI, message.getMedia());
+                        mediaIntent.putExtra(KEY_MEDIA_URI, new Uri[]{message.getMedia()});
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                         startActivity(mediaIntent);
                     }

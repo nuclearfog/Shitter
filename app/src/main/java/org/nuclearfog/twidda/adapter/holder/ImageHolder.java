@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.adapter.ImageAdapter
  */
-public class ImageItem extends ViewHolder {
+public class ImageHolder extends ViewHolder {
 
     public final ImageView preview;
     public final ImageButton saveButton;
@@ -26,7 +26,7 @@ public class ImageItem extends ViewHolder {
     /**
      * @param parent Parent view from adapter
      */
-    public ImageItem(ViewGroup parent, GlobalSettings settings) {
+    public ImageHolder(ViewGroup parent, GlobalSettings settings) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false));
         // get views
         CardView cardBackground = (CardView) itemView;

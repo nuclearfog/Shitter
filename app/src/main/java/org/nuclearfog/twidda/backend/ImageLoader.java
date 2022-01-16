@@ -15,6 +15,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
@@ -78,7 +79,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
             return true;
         } catch (TwitterException err) {
             this.err = err;
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
         return false;

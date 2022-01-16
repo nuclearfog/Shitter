@@ -14,11 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.twidda.adapter.holder.Footer;
-import org.nuclearfog.twidda.adapter.holder.ImageItem;
-import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.adapter.holder.ImageHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -42,14 +39,12 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     private static final int LOADING = 1;
 
     private OnImageClickListener itemClickListener;
-
     private GlobalSettings settings;
 
-    private Picasso picasso;
 
     private List<Uri> imageUri = new ArrayList<>(5);
     private boolean loading = false;
-    private boolean saveImg = true;
+    private boolean enableSaveButton = true;
 
     /**
      * @param itemClickListener click listener
@@ -57,7 +52,6 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     public ImageAdapter(Context context, OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         this.settings = GlobalSettings.getInstance(context);
-        picasso = PicassoBuilder.get(context);
     }
 
     /**
@@ -88,7 +82,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
      * disable save button on images
      */
     public void disableSaveButton() {
-        saveImg = false;
+        enableSaveButton = false;
     }
 
     /**
@@ -121,7 +115,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         if (viewType == PICTURE) {
-            final ImageItem item = new ImageItem(parent, settings);
+            final ImageHolder item = new ImageHolder(parent, settings);
             item.preview.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -131,7 +125,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                     }
                 }
             });
-            if (saveImg) {
+            if (enableSaveButton) {
                 item.saveButton.setVisibility(VISIBLE);
                 item.saveButton.setOnClickListener(new OnClickListener() {
                     @Override
@@ -152,10 +146,10 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
-        if (vh instanceof ImageItem) {
-            ImageItem item = (ImageItem) vh;
+        if (vh instanceof ImageHolder) {
+            ImageHolder item = (ImageHolder) vh;
             Uri uri = imageUri.get(index);
-            picasso.load(uri).into(item.preview);
+            item.preview.setImageURI(uri);
         }
     }
 
