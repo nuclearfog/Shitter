@@ -63,8 +63,6 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
             }
         } catch (TwitterException err) {
             this.err = err;
-        } catch (Exception err) {
-            // ignore
         }
         return null;
     }

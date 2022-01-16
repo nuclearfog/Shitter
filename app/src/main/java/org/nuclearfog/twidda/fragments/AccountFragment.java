@@ -6,10 +6,12 @@ import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.AccountLoader;
@@ -110,12 +112,19 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
     }
 
     /**
-     * called from {@link AccountLoader}
+     * called from {@link AccountLoader} to set login information
      *
      * @param result login information
      */
     public void onSuccess(List<Account> result) {
         adapter.setData(result);
         setRefresh(false);
+    }
+
+    /**
+     * called from {@link AccountLoader} when an error occurs
+     */
+    public void onError() {
+        Toast.makeText(requireContext(), R.string.error_login_information, Toast.LENGTH_SHORT).show();
     }
 }

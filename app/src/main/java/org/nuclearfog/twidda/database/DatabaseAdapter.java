@@ -98,7 +98,8 @@ public class DatabaseAdapter {
             + MessageTable.SINCE + " INTEGER,"
             + MessageTable.FROM + " INTEGER,"
             + MessageTable.TO + " INTEGER,"
-            + MessageTable.MESSAGE + " TEXT);";
+            + MessageTable.MESSAGE + " TEXT,"
+            + MessageTable.MEDIA + " TEXT);";
 
     /**
      * table for tweet register
@@ -108,6 +109,7 @@ public class DatabaseAdapter {
             + TweetRegisterTable.OWNER + " INTEGER,"
             + TweetRegisterTable.ID + " INTEGER,"
             + TweetRegisterTable.REGISTER + " INTEGER,"
+            + TweetRegisterTable.RETWEETUSER + " INTEGER,"
             + "FOREIGN KEY(" + TweetRegisterTable.ID + ")"
             + "REFERENCES " + TweetTable.NAME + "(" + TweetTable.ID + "));";
 
@@ -145,12 +147,6 @@ public class DatabaseAdapter {
      */
     private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet"
             + " ON " + TweetTable.NAME + "(" + TweetTable.USER + ");";
-
-    /**
-     * table index for trend table
-     */
-    private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend"
-            + " ON " + TrendTable.NAME + "(" + TrendTable.ID + ");";
 
     /**
      * table index for tweet register
@@ -252,7 +248,6 @@ public class DatabaseAdapter {
         db.execSQL(TABLE_USER_REGISTER);
         // create index
         db.execSQL(INDX_TWEET);
-        db.execSQL(INDX_TREND);
         db.execSQL(INDX_TWEET_REG);
         db.execSQL(INDX_USER_REG);
         if (db.getVersion() == 0) {

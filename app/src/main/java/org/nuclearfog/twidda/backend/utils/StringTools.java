@@ -4,10 +4,9 @@ import static org.nuclearfog.twidda.backend.api.Twitter.SIGNATURE_ALG;
 
 import android.util.Base64;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -250,7 +249,7 @@ public final class StringTools {
      * @param keyString key used to sign
      * @return key signature
      */
-    public static String sign(String method, String endpoint, String param, String keyString) {
+    public static String sign(String method, String endpoint, String param, String keyString) throws IOException {
         String input = method + "&" + encode(endpoint) + "&" + encode(param);
         return encode(computeSignature(input, keyString));
     }
@@ -262,15 +261,14 @@ public final class StringTools {
      * @param keyString  key used for sign
      * @return sign string
      */
-    public static String computeSignature(String baseString, String keyString) {
+    public static String computeSignature(String baseString, String keyString) throws IOException {
         try {
             SecretKey secretKey = new SecretKeySpec(keyString.getBytes(), SIGNATURE_ALG);
             Mac mac = Mac.getInstance(SIGNATURE_ALG);
             mac.init(secretKey);
             return new String(Base64.encode(mac.doFinal(baseString.getBytes()), Base64.DEFAULT)).trim();
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new IOException("error generating signature!");
         }
-        return "";
     }
 }

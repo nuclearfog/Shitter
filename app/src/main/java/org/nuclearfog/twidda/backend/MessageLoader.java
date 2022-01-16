@@ -95,8 +95,6 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
                 db.deleteMessage(messageId);
                 removeMsgId = messageId;
             }
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }

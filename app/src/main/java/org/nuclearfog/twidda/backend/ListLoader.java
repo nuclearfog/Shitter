@@ -71,8 +71,6 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
             }
         } catch (TwitterException twException) {
             this.twException = twException;
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }

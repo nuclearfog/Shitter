@@ -226,4 +226,5 @@
     <string name="toolbar_tweet_favoriter">Tweet favorisiert von</string>
     <string name="toolbar_tweet_liker">Tweet gelikt von</string>
     <string name="error_forbidden_api_access">Diese API unterstützt nicht diese Aktion!</string>
+    <string name="error_login_information">Login Informationen konnten nicht geladen werden!</string>
 </resources>

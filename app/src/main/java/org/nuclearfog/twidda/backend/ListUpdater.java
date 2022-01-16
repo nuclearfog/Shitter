@@ -42,8 +42,6 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
             return twitter.createUserlist(update);
         } catch (TwitterException err) {
             this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }

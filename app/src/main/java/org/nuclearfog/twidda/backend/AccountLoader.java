@@ -52,6 +52,8 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
         if (fragment != null) {
             if (accounts != null) {
                 fragment.onSuccess(accounts);
+            } else {
+                fragment.onError();
             }
         }
     }

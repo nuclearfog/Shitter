@@ -209,6 +209,7 @@
     <string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
     <string name="error_not_defined">Not specified error!</string>
     <string name="error_forbidden_api_access">API does not support this operation!</string>
+    <string name="error_login_information">could not load login information!</string>
 
     <!-- menu icon strings -->
     <string name="menu_tweet">write Tweet</string>

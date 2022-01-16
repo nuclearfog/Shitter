@@ -1714,7 +1714,7 @@ public class Twitter {
      * @param params   parameter to add to signature
      * @return header string
      */
-    private String buildHeader(String method, String endpoint, List<String> params) {
+    private String buildHeader(String method, String endpoint, List<String> params) throws IOException {
         String timeStamp = StringTools.getTimestamp();
         String random = StringTools.getRandomString();
         String signkey = tokens.getConsumerSec() + "&";

@@ -9,6 +9,7 @@ import org.nuclearfog.twidda.backend.api.holder.MediaStream;
 import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
@@ -62,7 +63,7 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
             return true;
         } catch (TwitterException twException) {
             this.twException = twException;
-        } catch (Exception err) {
+        } catch (IOException err) {
             err.printStackTrace();
         }
         return false;

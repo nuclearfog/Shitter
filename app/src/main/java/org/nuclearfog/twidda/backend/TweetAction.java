@@ -137,8 +137,6 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
             if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
                 db.removeStatus(tweetId);
             }
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         return null;
     }
