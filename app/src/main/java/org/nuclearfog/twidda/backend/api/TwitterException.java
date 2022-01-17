@@ -19,35 +19,43 @@ public class TwitterException extends Exception implements TwitterError {
 
     private static final long serialVersionUID = -7760582201674916919L;
 
-    private int httpCode = -1;
+    private String message;
+    private int httpCode;
     private int errorCode = -1;
     private int retryAfter = -1;
-    private String message = "";
 
 
     TwitterException(Exception e) {
         super(e);
         httpCode = -1;
+        message = e.getMessage();
     }
 
 
     TwitterException(Response response) {
+        // basic information
         this.httpCode = response.code();
         this.message = response.message();
-    }
 
-
-    TwitterException(JSONObject json) {
-        JSONArray errors = json.optJSONArray("errors");
-        if (errors != null) {
-            JSONObject error = errors.optJSONObject(0);
-            if (error != null) {
-                message = error.optString("message");
-                errorCode = error.optInt("code");
-                retryAfter = error.optInt("x-rate-limit-remaining", -1);
+        // get extra information
+        if (response.body() != null) {
+            try {
+                JSONObject json = new JSONObject(response.body().string());
+                JSONArray errors = json.optJSONArray("errors");
+                if (errors != null) {
+                    JSONObject error = errors.optJSONObject(0);
+                    if (error != null) {
+                        message = error.optString("message");
+                        errorCode = error.optInt("code");
+                        retryAfter = error.optInt("x-rate-limit-remaining", -1);
+                    }
+                }
+            } catch (Exception e) {
+                // ignore extra information
             }
         }
     }
+
 
     @Override
     public int getErrorType() {
@@ -56,7 +64,6 @@ public class TwitterException extends Exception implements TwitterError {
             case 420:   //
             case 429:   // Rate limit exceeded!
                 return RATE_LIMIT_EX;
-
 
             case 17:
             case 50:    // USER not found
@@ -113,7 +120,7 @@ public class TwitterException extends Exception implements TwitterError {
                     return REQUEST_FORBIDDEN;
                 } else if (httpCode == 408) {
                     return REQUEST_CANCELLED;
-                } else if (this.getCause() instanceof IOException) {
+                } else if (getCause() instanceof IOException) {
                     return NO_CONNECTION;
                 } else {
                     return ERROR_NOT_DEFINED;

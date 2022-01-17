@@ -60,12 +60,12 @@ import okio.Okio;
  */
 public class Twitter {
 
-    private static final String OAUTH = "1.0";
     public static final String SIGNATURE_ALG = "HMAC-SHA256";
-
+    private static final String OAUTH = "1.0";
     private static final String API = "https://api.twitter.com/";
     private static final String UPLOAD = "https://upload.twitter.com/";
     private static final String AUTHENTICATE = API + "oauth/authenticate";
+    public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
     private static final String REQUEST_TOKEN = API + "oauth/request_token";
     private static final String OAUTH_VERIFIER = API + "oauth/access_token";
     private static final String CREDENTIALS = API + "1.1/account/verify_credentials.json";
@@ -117,7 +117,6 @@ public class Twitter {
     private static final String PROFILE_UPDATE = API + "1.1/account/update_profile.json";
     private static final String PROFILE_UPDATE_IMAGE = API + "1.1/account/update_profile_image.json";
     private static final String PROFILE_UPDATE_BANNER = API + "1.1/account/update_profile_banner.json";
-    public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
 
     private static Twitter instance;
 
@@ -226,12 +225,9 @@ public class Twitter {
     public User getCredentials() throws TwitterException {
         try {
             Response response = get(CREDENTIALS, new ArrayList<>(1));
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    return new UserV1(json);
-                }
-                throw new TwitterException(json);
+                return new UserV1(json);
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -335,12 +331,9 @@ public class Twitter {
         params.add("target_id=" + userId);
         try {
             Response response = get(RELATION, params);
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    return new RelationV1(json);
-                }
-                throw new TwitterException(json);
+                return new RelationV1(json);
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -559,19 +552,15 @@ public class Twitter {
         params.add("id=" + id);
         try {
             Response response = get(TRENDS, params);
-            if (response.body() != null) {
-                if (response.code() == 200) {
-                    JSONArray json = new JSONArray(response.body().string());
-                    JSONArray trends = json.getJSONObject(0).getJSONArray("trends");
-                    List<Trend> result = new ArrayList<>(trends.length() + 1);
-                    for (int pos = 0; pos < trends.length(); pos++) {
-                        JSONObject trend = trends.getJSONObject(pos);
-                        result.add(new TrendV1(trend, pos + 1));
-                    }
-                    return result;
+            if (response.body() != null && response.code() == 200) {
+                JSONArray json = new JSONArray(response.body().string());
+                JSONArray trends = json.getJSONObject(0).getJSONArray("trends");
+                List<Trend> result = new ArrayList<>(trends.length() + 1);
+                for (int pos = 0; pos < trends.length(); pos++) {
+                    JSONObject trend = trends.getJSONObject(pos);
+                    result.add(new TrendV1(trend, pos + 1));
                 }
-                JSONObject json = new JSONObject(response.body().string());
-                throw new TwitterException(json);
+                return result;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -589,18 +578,14 @@ public class Twitter {
     public List<Location> getLocations() throws TwitterException {
         try {
             Response response = get(LOCATIONS, new ArrayList<>(0));
-            if (response.body() != null) {
-                if (response.code() == 200) {
-                    JSONArray locations = new JSONArray(response.body().string());
-                    List<Location> result = new ArrayList<>(locations.length() + 1);
-                    for (int pos = 0; pos < locations.length(); pos++) {
-                        JSONObject location = locations.getJSONObject(pos);
-                        result.add(new LocationV1(location));
-                    }
-                    return result;
+            if (response.body() != null && response.code() == 200) {
+                JSONArray locations = new JSONArray(response.body().string());
+                List<Location> result = new ArrayList<>(locations.length() + 1);
+                for (int pos = 0; pos < locations.length(); pos++) {
+                    JSONObject location = locations.getJSONObject(pos);
+                    result.add(new LocationV1(location));
                 }
-                JSONObject json = new JSONObject(response.body().string());
-                throw new TwitterException(json);
+                return result;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1071,13 +1056,9 @@ public class Twitter {
         try {
             Response response = delete(DIRECTMESSAGE_DELETE, params);
             if (response.code() < 200 || response.code() >= 300) {
-                if (response.body() != null)
-                    throw new TwitterException(new JSONObject(response.body().string()));
                 throw new TwitterException(response);
             }
         } catch (IOException err) {
-            throw new TwitterException(err);
-        } catch (JSONException err) {
             throw new TwitterException(err);
         }
     }
@@ -1095,39 +1076,36 @@ public class Twitter {
             params.add("cursor=" + cursor);
         try {
             Response response = get(DIRECTMESSAGE, params);
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
+                // init user cache to re-use instances
+                Map<Long, User> userCache = new TreeMap<>();
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    // init user cache to re-use instances
-                    Map<Long, User> userCache = new TreeMap<>();
-                    String nextCursor = json.optString("next_cursor");
-                    JSONArray array = json.getJSONArray("events");
-                    Directmessages result = new Directmessages(cursor, nextCursor);
-                    for (int pos = 0; pos < array.length(); pos++) {
-                        JSONObject item = array.getJSONObject(pos);
-                        DirectmessageV1 message = new DirectmessageV1(item);
-                        long senderId = message.getSenderId();
-                        long receiverId = message.getReceiverId();
-                        // cache user instances to reduce API calls
-                        if (userCache.containsKey(senderId)) {
-                            message.addSender(userCache.get(senderId));
-                        } else {
-                            User user = showUser(senderId);
-                            userCache.put(senderId, user);
-                            message.addSender(user);
-                        }
-                        if (userCache.containsKey(receiverId)) {
-                            message.addReceiver(userCache.get(receiverId));
-                        } else {
-                            User user = showUser(receiverId);
-                            userCache.put(receiverId, user);
-                            message.addReceiver(user);
-                        }
-                        result.add(message);
+                String nextCursor = json.optString("next_cursor");
+                JSONArray array = json.getJSONArray("events");
+                Directmessages result = new Directmessages(cursor, nextCursor);
+                for (int pos = 0; pos < array.length(); pos++) {
+                    JSONObject item = array.getJSONObject(pos);
+                    DirectmessageV1 message = new DirectmessageV1(item);
+                    long senderId = message.getSenderId();
+                    long receiverId = message.getReceiverId();
+                    // cache user instances to reduce API calls
+                    if (userCache.containsKey(senderId)) {
+                        message.addSender(userCache.get(senderId));
+                    } else {
+                        User user = showUser(senderId);
+                        userCache.put(senderId, user);
+                        message.addSender(user);
                     }
-                    return result;
+                    if (userCache.containsKey(receiverId)) {
+                        message.addReceiver(userCache.get(receiverId));
+                    } else {
+                        User user = showUser(receiverId);
+                        userCache.put(receiverId, user);
+                        message.addReceiver(user);
+                    }
+                    result.add(message);
                 }
-                throw new TwitterException(json);
+                return result;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1269,17 +1247,15 @@ public class Twitter {
                 List<String> params = new ArrayList<>(2);
                 params.add("cursor=" + cursor);
                 Response response = get(BLOCK_ID_LIST, params);
-                if (response.body() != null) {
+                if (response.body() != null && response.code() == 200) {
                     JSONObject json = new JSONObject(response.body().string());
-                    if (response.code() == 200) {
-                        JSONArray idArray = json.getJSONArray("ids");
-                        cursor = json.optLong("next_cursor");
-                        for (int pos = 0; pos < idArray.length(); pos++) {
-                            result.add(idArray.getLong(pos));
-                        }
-                    } else {
-                        throw new TwitterException(json);
+                    JSONArray idArray = json.getJSONArray("ids");
+                    cursor = json.optLong("next_cursor");
+                    for (int pos = 0; pos < idArray.length(); pos++) {
+                        result.add(idArray.getLong(pos));
                     }
+                } else {
+                    throw new TwitterException(response);
                 }
             }
             return result;
@@ -1304,21 +1280,18 @@ public class Twitter {
             params.add(TweetV1.INCL_ENTITIES);
             params.add("count=" + settings.getListSize());
             Response response = get(endpoint, params);
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
+                JSONArray array;
                 String body = response.body().string();
-                if (response.code() == 200) {
-                    JSONArray array;
-                    if (body.startsWith("{")) // twitter search uses another structure
-                        array = new JSONObject(body).getJSONArray("statuses");
-                    else
-                        array = new JSONArray(body);
-                    long homeId = settings.getCurrentUserId();
-                    List<Tweet> tweets = new ArrayList<>(array.length() + 1);
-                    for (int i = 0; i < array.length(); i++)
-                        tweets.add(new TweetV1(array.getJSONObject(i), homeId));
-                    return tweets;
-                }
-                throw new TwitterException(new JSONObject(body));
+                if (endpoint.equals(TWEET_SEARCH)) // twitter search uses another structure
+                    array = new JSONObject(body).getJSONArray("statuses");
+                else
+                    array = new JSONArray(body);
+                long homeId = settings.getCurrentUserId();
+                List<Tweet> tweets = new ArrayList<>(array.length() + 1);
+                for (int i = 0; i < array.length(); i++)
+                    tweets.add(new TweetV1(array.getJSONObject(i), homeId));
+                return tweets;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1345,13 +1318,10 @@ public class Twitter {
             } else {
                 response = post(endpoint, params);
             }
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    long currentId = settings.getCurrentUserId();
-                    return new TweetV1(json, currentId);
-                }
-                throw new TwitterException(json);
+                long currentId = settings.getCurrentUserId();
+                return new TweetV1(json, currentId);
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1373,24 +1343,20 @@ public class Twitter {
             params.add("count=" + settings.getListSize());
             params.add("skip_status=true");
             Response response = get(endpoint, params);
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
                 String jsonResult = response.body().string();
-                // convert to JSON object if array
-                if (jsonResult.startsWith("[")) // twitter search uses another structure
+                if (endpoint.equals(USER_SEARCH)) // convert to JSON object
                     jsonResult = "{\"users\":" + jsonResult + '}';
                 JSONObject json = new JSONObject(jsonResult);
-                if (response.code() == 200) {
-                    JSONArray array = json.getJSONArray("users");
-                    long prevCursor = json.optLong("previous_cursor", -1);
-                    long nextCursor = json.optLong("next_cursor", -1);
-                    Users users = new Users(prevCursor, nextCursor);
-                    long homeId = settings.getCurrentUserId();
-                    for (int i = 0; i < array.length(); i++) {
-                        users.add(new UserV1(array.getJSONObject(i), homeId));
-                    }
-                    return users;
+                JSONArray array = json.getJSONArray("users");
+                long prevCursor = json.optLong("previous_cursor", -1);
+                long nextCursor = json.optLong("next_cursor", -1);
+                Users users = new Users(prevCursor, nextCursor);
+                long homeId = settings.getCurrentUserId();
+                for (int i = 0; i < array.length(); i++) {
+                    users.add(new UserV1(array.getJSONObject(i), homeId));
                 }
-                throw new TwitterException(json);
+                return users;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1411,21 +1377,18 @@ public class Twitter {
             List<String> params = new ArrayList<>(2);
             params.add(UserV2.PARAMS);
             Response response = get(endpoint, params);
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    Users users = new Users();
-                    // check if result is not empty
-                    if (json.has("data")) {
-                        JSONArray array = json.getJSONArray("data");
-                        long homeId = settings.getCurrentUserId();
-                        for (int i = 0; i < array.length(); i++) {
-                            users.add(new UserV2(array.getJSONObject(i), homeId));
-                        }
+                Users users = new Users();
+                // check if result is not empty
+                if (json.has("data")) {
+                    JSONArray array = json.getJSONArray("data");
+                    long homeId = settings.getCurrentUserId();
+                    for (int i = 0; i < array.length(); i++) {
+                        users.add(new UserV2(array.getJSONObject(i), homeId));
                     }
-                    return users;
                 }
-                throw new TwitterException(json);
+                return users;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1451,13 +1414,10 @@ public class Twitter {
                 response = get(endpoint, params);
             else
                 response = post(endpoint, params);
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    long currentId = settings.getCurrentUserId();
-                    return new UserV1(json, currentId);
-                }
-                throw new TwitterException(json);
+                long currentId = settings.getCurrentUserId();
+                return new UserV1(json, currentId);
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1481,13 +1441,10 @@ public class Twitter {
                 response = get(endpoint, params);
             else
                 response = post(endpoint, params);
-            if (response.body() != null) {
+            if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
-                if (response.code() == 200) {
-                    long currentId = settings.getCurrentUserId();
-                    return new UserListV1(json, currentId);
-                }
-                throw new TwitterException(json);
+                long currentId = settings.getCurrentUserId();
+                return new UserListV1(json, currentId);
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1508,30 +1465,26 @@ public class Twitter {
         params.add("include_entities=true");
         try {
             Response response = get(endpoint, params);
-            if (response.body() != null) {
-                if (response.code() == 200) {
-                    JSONArray array;
-                    UserLists result = new UserLists();
-                    String body = response.body().string();
-                    // add cursors if available
-                    if (body.startsWith("{")) {
-                        JSONObject json = new JSONObject(body);
-                        array = json.getJSONArray("lists");
-                        long prevCursor = json.optLong("previous_cursor");
-                        long nextCursor = json.optLong("next_cursor");
-                        result.setCursors(prevCursor, nextCursor);
-                    } else {
-                        array = new JSONArray(body);
-                    }
-                    long currentId = settings.getCurrentUserId();
-                    for (int pos = 0; pos < array.length(); pos++) {
-                        JSONObject item = array.getJSONObject(pos);
-                        result.add(new UserListV1(item, currentId));
-                    }
-                    return result;
+            if (response.body() != null && response.code() == 200) {
+                JSONArray array;
+                UserLists result = new UserLists();
+                String body = response.body().string();
+                // add cursors if available
+                if (body.startsWith("{")) {
+                    JSONObject json = new JSONObject(body);
+                    array = json.getJSONArray("lists");
+                    long prevCursor = json.optLong("previous_cursor");
+                    long nextCursor = json.optLong("next_cursor");
+                    result.setCursors(prevCursor, nextCursor);
+                } else {
+                    array = new JSONArray(body);
                 }
-                JSONObject json = new JSONObject(response.body().string());
-                throw new TwitterException(json);
+                long currentId = settings.getCurrentUserId();
+                for (int pos = 0; pos < array.length(); pos++) {
+                    JSONObject item = array.getJSONObject(pos);
+                    result.add(new UserListV1(item, currentId));
+                }
+                return result;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1555,15 +1508,9 @@ public class Twitter {
             params.add("include_entities=false");
             Response response = post(endpoint, params, input, key);
             if (response.code() < 200 || response.code() >= 300) {
-                if (response.body() != null) {
-                    JSONObject json = new JSONObject(response.body().string());
-                    throw new TwitterException(json);
-                }
                 throw new TwitterException(response);
             }
         } catch (IOException err) {
-            throw new TwitterException(err);
-        } catch (JSONException err) {
             throw new TwitterException(err);
         }
     }
@@ -1578,16 +1525,10 @@ public class Twitter {
         try {
             Response response = post(endpoint, params);
             if (response.code() < 200 || response.code() >= 300) {
-                if (response.body() != null) {
-                    JSONObject json = new JSONObject(response.body().string());
-                    throw new TwitterException(json);
-                }
                 throw new TwitterException(response);
             }
         } catch (IOException e) {
             throw new TwitterException(e);
-        } catch (JSONException err) {
-            throw new TwitterException(err);
         }
     }
 
@@ -1757,7 +1698,7 @@ public class Twitter {
     }
 
     /**
-     * build url with param
+     * build url with parameters
      *
      * @param url    url without parameters
      * @param params parameters

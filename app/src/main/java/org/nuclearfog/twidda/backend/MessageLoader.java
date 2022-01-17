@@ -73,14 +73,17 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
                     Directmessages messages = db.getMessages();
                     if (messages.isEmpty()) {
                         messages = twitter.getDirectmessages("");
+                        // merge online messages with offline messages
                         db.storeMessage(messages);
+                        messages = db.getMessages();
                     }
                     return messages;
 
                 case LOAD:
                     messages = twitter.getDirectmessages(cursor);
+                    // merge online messages with offline messages
                     db.storeMessage(messages);
-                    return messages;
+                    return db.getMessages();
 
                 case DEL:
                     messageId = param[0];
