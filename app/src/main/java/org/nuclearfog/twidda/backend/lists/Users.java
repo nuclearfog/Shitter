@@ -64,7 +64,7 @@ public class Users extends LinkedList<User> {
      * @return true if list is linked
      */
     public boolean hasPrevious() {
-        return prevCursor > 0;
+        return prevCursor != 0;
     }
 
     /**
@@ -73,7 +73,7 @@ public class Users extends LinkedList<User> {
      * @return true if list has a successor
      */
     public boolean hasNext() {
-        return nextCursor > 0;
+        return nextCursor != 0;
     }
 
     /**

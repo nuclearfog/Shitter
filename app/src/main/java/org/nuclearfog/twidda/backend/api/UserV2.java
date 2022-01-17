@@ -3,12 +3,11 @@ package org.nuclearfog.twidda.backend.api;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * implementation of User accessed by API 2.0
@@ -22,13 +21,8 @@ class UserV2 implements User {
     /**
      * extra parameters required to fetch additional data
      */
-    public static final String PARAMS = "user.fields=profile_image_url%2Cpublic_metrics%2Cverified%2Cprotected";
-
-    /**
-     * date time formatter for ISO 8601
-     */
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-
+    public static final String PARAMS = "user.fields=profile_image_url%2Cpublic_metrics%2Cverified" +
+            "%2Cprotected%2Cdescription%2Ccreated_at%2Curl%2Centities";
 
     private long id;
     private long created;
@@ -36,7 +30,7 @@ class UserV2 implements User {
     private String screenName;
     private String description;
     private String location;
-    private String profileUrl;
+    private String url;
     private String profileImageUrl;
     private String profileBannerUrl;
     private int following;
@@ -51,16 +45,18 @@ class UserV2 implements User {
 
 
     UserV2(JSONObject json, long twitterId) {
-        id = json.optLong("id");
+        id = Long.parseLong(json.optString("id", "-1"));
         username = json.optString("name");
-        screenName = '@' + json.optString("username"); // username -> screenname
+        screenName = '@' + json.optString("username");
         isProtected = json.optBoolean("protected");
         location = json.optString("location");
-        profileUrl = json.optString("url");
-        description = json.optString("description");
         isVerified = json.optBoolean("verified");
         profileImageUrl = json.optString("profile_image_url");
         profileBannerUrl = json.optString("profile_banner_url");
+        created = StringTools.getTime2(json.optString("created_at"));
+        description = getDescription(json);
+        url = getUrl(json);
+        isCurrentUser = id == twitterId;
 
         JSONObject metrics = json.optJSONObject("public_metrics");
         if (metrics != null) {
@@ -68,9 +64,8 @@ class UserV2 implements User {
             follower = metrics.optInt("followers_count");
             tweetCount = metrics.optInt("tweet_count");
         }
-        isCurrentUser = id == twitterId;
-        setDate(json.optString("created_at"));
 
+        // not yet implemented in API 2.0
         favorCount = 0;
         followReqSent = false;
         defaultImage = false;
@@ -118,7 +113,7 @@ class UserV2 implements User {
 
     @Override
     public String getProfileUrl() {
-        return profileUrl;
+        return url;
     }
 
     @Override
@@ -180,17 +175,57 @@ class UserV2 implements User {
     }
 
     /**
-     * set time of account creation
+     * expand URLs of the user description
      *
-     * @param dateStr date string from twitter
+     * @param json root json object of user v1
+     * @return user description
      */
-    private void setDate(String dateStr) {
-        try {
-            Date date = sdf.parse(dateStr);
-            if (date != null)
-                created = date.getTime();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private String getDescription(JSONObject json) {
+        String description = json.optString("description");
+        JSONObject entities = json.optJSONObject("entities");
+        if (entities != null) {
+            try {
+                JSONObject descrEntities = entities.getJSONObject("description");
+                JSONArray urls = descrEntities.getJSONArray("urls");
+                // expand shortened urls
+                StringBuilder builder = new StringBuilder(description);
+                for (int i = urls.length() - 1; i >= 0; i--) {
+                    JSONObject entry = urls.getJSONObject(i);
+                    String link = entry.getString("expanded_url");
+                    int start = entry.getInt("start");
+                    int end = entry.getInt("end");
+                    int offset = StringTools.calculateIndexOffset(description, start);
+                    builder.replace(start + offset, end + offset, link);
+                }
+                return builder.toString();
+            } catch (JSONException e) {
+                // ignore, use default description
+            }
         }
+        return description;
+    }
+
+    /**
+     * get expanded profile url
+     *
+     * @param json root json object of user v1
+     * @return expanded url
+     */
+    private String getUrl(JSONObject json) {
+        JSONObject entities = json.optJSONObject("entities");
+        if (entities != null) {
+            JSONObject urlJson = entities.optJSONObject("url");
+            if (urlJson != null) {
+                try {
+                    JSONArray urls = urlJson.getJSONArray("urls");
+                    if (urls.length() > 0) {
+                        return urls.getJSONObject(0).getString("display_url");
+                    }
+                } catch (JSONException e) {
+                    // ignore
+                }
+            }
+        }
+        return "";
     }
 }

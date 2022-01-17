@@ -338,9 +338,7 @@ public class Twitter {
             if (response.body() != null) {
                 JSONObject json = new JSONObject(response.body().string());
                 if (response.code() == 200) {
-                    JSONObject source = json.getJSONObject("relationship").getJSONObject("source");
-                    long currentId = settings.getCurrentUserId();
-                    return new RelationV1(source, currentId);
+                    return new RelationV1(json);
                 }
                 throw new TwitterException(json);
             }

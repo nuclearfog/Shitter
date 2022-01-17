@@ -31,14 +31,14 @@ class UserListV1 implements UserList {
 
 
     UserListV1(JSONObject json, long currentId) throws JSONException {
-        id = json.optLong("id");
+        id = Long.parseLong(json.optString("id_str", "-1"));
         title = json.optString("name");
         description = json.optString("description");
         memberCount = json.optInt("member_count");
         subscriberCount = json.optInt("subscriber_count");
         isPrivate = json.optString("mode").equals("private");
         following = json.optBoolean("following");
-        time = StringTools.getTime(json.optString("created_at"));
+        time = StringTools.getTime1(json.optString("created_at"));
         owner = new UserV1(json.getJSONObject("user"));
         isOwner = currentId == owner.getId();
     }

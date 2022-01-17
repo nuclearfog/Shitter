@@ -25,10 +25,31 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class StringTools {
 
+    /**
+     * regex pattern used to get user mentions
+     */
     private static final Pattern MENTION = Pattern.compile("[@][\\w_]+");
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+
+    /**
+     * date format used by API 1.1
+     * e.g. "Mon Jan 17 13:00:12 +0000 2022"
+     */
+    private static final SimpleDateFormat dateFormat1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+
+    /**
+     * date format used by API 2.0
+     * e.g. "2008-08-15T13:51:34.000Z"
+     */
+    private static final SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+
+    /**
+     * fallback date if parsing failed
+     */
     private static final long DEFAULT_TIME = 0x61D99F64;
 
+    /**
+     * random generator used to generate random strings
+     */
     private static Random rand = new Random();
 
     private StringTools() {
@@ -116,26 +137,40 @@ public final class StringTools {
      */
     public static int countMentions(String text) {
         int result = 0;
-        for (int i = 0; i < text.length() - 1; i++) {
-            if (text.charAt(i) == '@') {
-                char next = text.charAt(i + 1);
-                if ((next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z') || (next >= '0' && next <= '9') || next == '_') {
-                    result++;
-                }
-            }
+        Matcher m = MENTION.matcher(text);
+        while (m.find()) {
+            result++;
         }
         return result;
     }
 
     /**
-     * convert Twitter ISO 8601 date time to long format
+     * convert Twitter API 1.1 date time to long format
      *
      * @param timeStr Twitter time string
      * @return date time
      */
-    public static long getTime(String timeStr) {
+    public static long getTime1(String timeStr) {
         try {
-            Date date = sdf.parse(timeStr);
+            Date date = dateFormat1.parse(timeStr);
+            if (date != null)
+                return date.getTime();
+        } catch (Exception e) {
+            // make date invalid so it will be not shown
+            e.printStackTrace();
+        }
+        return DEFAULT_TIME;
+    }
+
+    /**
+     * convert Twitter API 2 date time to long format
+     *
+     * @param timeStr Twitter time string
+     * @return date time
+     */
+    public static long getTime2(String timeStr) {
+        try {
+            Date date = dateFormat2.parse(timeStr);
             if (date != null)
                 return date.getTime();
         } catch (Exception e) {
@@ -168,7 +203,7 @@ public final class StringTools {
      */
     public static int calculateIndexOffset(String text, int limit) {
         int offset = 0;
-        for (int c = 0; c < limit - 1 && c < text.length(); c++) {
+        for (int c = 0; c < limit - 1 && c < text.length() - 1; c++) {
             // determine if a pair of chars represent an emoji
             if (Character.isSurrogatePair(text.charAt(c), text.charAt(c + 1))) {
                 offset++;

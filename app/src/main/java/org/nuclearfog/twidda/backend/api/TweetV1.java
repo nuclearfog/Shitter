@@ -64,8 +64,8 @@ class TweetV1 implements Tweet {
 
 
     TweetV1(JSONObject json, long twitterId) throws JSONException {
-        id = json.optLong("id");
-        text = json.optString("full_text");
+        author = new UserV1(json.getJSONObject("user"), twitterId);
+        id = Long.parseLong(json.optString("id_str", "-1"));
         replyId = json.optLong("in_reply_to_status_id", -1);
         replyUserId = json.optLong("in_reply_to_status_id", -1);
         retweetCount = json.optInt("retweet_count");
@@ -73,23 +73,19 @@ class TweetV1 implements Tweet {
         isFavorited = json.optBoolean("favorited");
         isRetweeted = json.optBoolean("retweeted");
         isSensitive = json.optBoolean("possibly_sensitive");
-        timestamp = StringTools.getTime(json.optString("created_at"));
+        timestamp = StringTools.getTime1(json.optString("created_at"));
         source = StringTools.getSource(json.optString("source"));
+        text = createText(json);
+
         String replyName = json.optString("in_reply_to_screen_name");
         String userMentions = StringTools.getUserMentions(text);
 
         JSONObject locationJson = json.optJSONObject("place");
         JSONObject coordinateJson = json.optJSONObject("coordinates");
-        JSONObject user = json.getJSONObject("user");
         JSONObject quoted_tweet = json.optJSONObject("retweeted_status");
         JSONObject user_retweet = json.optJSONObject("current_user_retweet");
-        JSONObject entities = json.optJSONObject("entities");
         JSONObject extEntities = json.optJSONObject("extended_entities");
 
-        author = new UserV1(user, twitterId);
-        if (locationJson != null) {
-            location = locationJson.optString("full_name");
-        }
         if (coordinateJson != null) {
             if (coordinateJson.optString("type").equals("Point")) {
                 JSONArray coordinateArray = coordinateJson.optJSONArray("coordinates");
@@ -99,6 +95,9 @@ class TweetV1 implements Tweet {
                     coordinates = lon + "," + lat;
                 }
             }
+        }
+        if (locationJson != null) {
+            location = locationJson.optString("full_name");
         }
         if (!replyName.equals("null")) {
             this.replyName = '@' + replyName;
@@ -115,8 +114,6 @@ class TweetV1 implements Tweet {
             isRetweeted = embeddedTweet.isRetweeted();
             isFavorited = embeddedTweet.isFavorited();
         }
-        if (entities != null)
-            addURLs(entities);
         if (extEntities != null) {
             addMedia(extEntities);
         }
@@ -338,15 +335,16 @@ class TweetV1 implements Tweet {
     }
 
     /**
-     * expand URLs int the tweet text
-     *
-     * @param entities json object with tweet entities
+     * read tweet and expand urls
      */
-    private void addURLs(@NonNull JSONObject entities) {
+    private String createText(@NonNull JSONObject json) {
+        String text = json.optString("full_text");
+        StringBuilder builder = new StringBuilder(text);
+
+        // check for shortened urls and replace them with full urls
         try {
+            JSONObject entities = json.getJSONObject("entities");
             JSONArray urls = entities.getJSONArray("urls");
-            // replace new line symbol with new line character
-            StringBuilder builder = new StringBuilder(text);
             for (int i = urls.length() - 1; i >= 0; i--) {
                 JSONObject entry = urls.getJSONObject(i);
                 String link = entry.getString("expanded_url");
@@ -356,9 +354,17 @@ class TweetV1 implements Tweet {
                 int offset = StringTools.calculateIndexOffset(text, start);
                 builder.replace(start + offset, end + offset, link);
             }
-            this.text = builder.toString();
         } catch (JSONException e) {
-            // use default description
+            // use default tweet text
+            builder = new StringBuilder(text);
         }
+
+        // replace "&amp;" string
+        int index = builder.lastIndexOf("&amp;");
+        while (index >= 0) {
+            builder.replace(index, index + 5, "&");
+            index = builder.lastIndexOf("&amp;");
+        }
+        return builder.toString();
     }
 }

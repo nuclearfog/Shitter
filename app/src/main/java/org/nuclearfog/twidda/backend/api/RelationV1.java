@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.api;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Relation;
 
@@ -20,13 +21,19 @@ class RelationV1 implements Relation {
     private boolean canDm;
 
 
-    RelationV1(JSONObject json, long currentId) {
-        isHome = json.optLong("target_id") == currentId;
-        isFollowing = json.optBoolean("following");
-        isFollower = json.optBoolean("followed_by");
-        isBlocked = json.optBoolean("blocking");
-        isMuted = json.optBoolean("muting");
-        canDm = json.optBoolean("can_dm");
+    RelationV1(JSONObject json) throws JSONException {
+        JSONObject relationship = json.getJSONObject("relationship");
+        JSONObject source = relationship.getJSONObject("source");
+        JSONObject target = relationship.getJSONObject("target");
+
+        long sourceId = Long.parseLong(source.getString("id_str"));
+        long targetId = Long.parseLong(target.getString("id_str"));
+        isHome = sourceId == targetId;
+        isFollowing = source.optBoolean("following");
+        isFollower = source.optBoolean("followed_by");
+        isBlocked = source.optBoolean("blocking");
+        isMuted = source.optBoolean("muting");
+        canDm = source.optBoolean("can_dm");
     }
 
     @Override
