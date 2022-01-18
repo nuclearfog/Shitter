@@ -66,7 +66,7 @@ class UserV2 implements User {
         }
 
         // not yet implemented in API 2.0
-        favorCount = 0;
+        favorCount = -1;
         followReqSent = false;
         defaultImage = false;
     }

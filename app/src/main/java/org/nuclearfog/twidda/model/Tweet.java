@@ -8,28 +8,31 @@ import androidx.annotation.Nullable;
 import java.io.Serializable;
 
 /**
- * Interface class for all tweet implementations
+ * Interface class used for all tweet implementations
  *
  * @author nuclearfog
  */
 public interface Tweet extends Serializable {
 
     /**
-     * twitter MIME type for a photo
+     * returned when the tweet contains one or more images
      */
-    String MIME_PHOTO = "photo";
+    String MEDIA_PHOTO = "photo";
 
     /**
-     * twitter MIME type for a video
+     * returned when the tweet contains a video
      */
-    String MIME_VIDEO = "video";
+    String MEDIA_VIDEO = "video";
 
     /**
-     * twitter MIME type for a gif
+     * returned when the tweet contains an animated gif
      */
-    String MIME_ANGIF = "animated_gif";
+    String MEDIA_GIF = "animated_gif";
 
-    String MIME_NONE = "*/*";
+    /**
+     * returned when the tweet doesn't contain any media
+     */
+    String MEDIA_NONE = "*/*";
 
     /**
      * @return tweet ID

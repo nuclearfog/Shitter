@@ -372,15 +372,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 Intent mediaIntent = new Intent(this, MediaViewer.class);
                 mediaIntent.putExtra(KEY_MEDIA_URI, clickedTweet.getMediaLinks());
                 switch (clickedTweet.getMediaType()) {
-                    case Tweet.MIME_PHOTO:
+                    case Tweet.MEDIA_PHOTO:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                         break;
 
-                    case Tweet.MIME_VIDEO:
+                    case Tweet.MEDIA_VIDEO:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
                         break;
 
-                    case Tweet.MIME_ANGIF:
+                    case Tweet.MEDIA_GIF:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
                         break;
                 }
@@ -554,17 +554,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             sensitive_media.setVisibility(GONE);
         }
         switch (tweetUpdate.getMediaType()) {
-            case Tweet.MIME_PHOTO:
+            case Tweet.MEDIA_PHOTO:
                 mediaButton.setVisibility(VISIBLE);
                 mediaButton.setImageResource(R.drawable.image);
                 break;
 
-            case Tweet.MIME_VIDEO:
+            case Tweet.MEDIA_VIDEO:
                 mediaButton.setVisibility(VISIBLE);
                 mediaButton.setImageResource(R.drawable.video);
                 break;
 
-            case Tweet.MIME_ANGIF:
+            case Tweet.MEDIA_GIF:
                 mediaButton.setVisibility(VISIBLE);
                 mediaButton.setImageResource(R.drawable.gif);
                 break;
@@ -592,7 +592,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             tweetLocName.setVisibility(GONE);
         }
         String location = tweetUpdate.getLocationCoordinates();
-        if (location != null && !location.isEmpty()) {
+        if (!location.isEmpty()) {
             tweetLocGPS.setVisibility(VISIBLE);
             tweetLocGPS.setText(location);
         } else {

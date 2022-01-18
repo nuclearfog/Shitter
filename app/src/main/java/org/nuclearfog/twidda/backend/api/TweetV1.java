@@ -12,6 +12,8 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 
+import java.util.Locale;
+
 /**
  * API v 1.1 implementation of a tweet
  *
@@ -42,10 +44,8 @@ class TweetV1 implements Tweet {
     private static final String MIME_V_MP4 = "video/mp4";
 
     private long id;
-    private String text;
-    private User author;
     private long timestamp;
-    private String source;
+    private User author;
     private Tweet embeddedTweet;
     private long replyUserId;
     private long replyId;
@@ -55,12 +55,14 @@ class TweetV1 implements Tweet {
     private boolean isSensitive;
     private boolean isRetweeted;
     private boolean isFavorited;
+    private String[] mediaLinks;
     private String userMentions;
+    private String coordinates;
+    private String text;
+    private String source;
     private String location = "";
     private String replyName = "";
-    private String coordinates = "";
-    private String[] mediaLinks = {};
-    private String mediaType = "";
+    private String mediaType = MEDIA_NONE;
 
 
     TweetV1(JSONObject json, long twitterId) throws JSONException {
@@ -75,27 +77,15 @@ class TweetV1 implements Tweet {
         isSensitive = json.optBoolean("possibly_sensitive");
         timestamp = StringTools.getTime1(json.optString("created_at"));
         source = StringTools.getSource(json.optString("source"));
+        coordinates = getLocation(json);
+        mediaLinks = addMedia(json);
         text = createText(json);
 
         String replyName = json.optString("in_reply_to_screen_name");
-        String userMentions = StringTools.getUserMentions(text);
-
         JSONObject locationJson = json.optJSONObject("place");
-        JSONObject coordinateJson = json.optJSONObject("coordinates");
         JSONObject quoted_tweet = json.optJSONObject("retweeted_status");
         JSONObject user_retweet = json.optJSONObject("current_user_retweet");
-        JSONObject extEntities = json.optJSONObject("extended_entities");
 
-        if (coordinateJson != null) {
-            if (coordinateJson.optString("type").equals("Point")) {
-                JSONArray coordinateArray = coordinateJson.optJSONArray("coordinates");
-                if (coordinateArray != null && coordinateArray.length() == 2) {
-                    double lon = coordinateArray.getDouble(0);
-                    double lat = coordinateArray.getDouble(1);
-                    coordinates = lon + "," + lat;
-                }
-            }
-        }
         if (locationJson != null) {
             location = locationJson.optString("full_name");
         }
@@ -103,9 +93,9 @@ class TweetV1 implements Tweet {
             this.replyName = '@' + replyName;
         }
         if (author.isCurrentUser()) {
-            this.userMentions = userMentions;
+            this.userMentions = StringTools.getUserMentions(text);
         } else {
-            this.userMentions = author.getScreenname() + ' ' + userMentions;
+            this.userMentions = author.getScreenname() + ' ' + StringTools.getUserMentions(text);
         }
         if (user_retweet != null)
             retweetId = user_retweet.optLong("id");
@@ -114,10 +104,11 @@ class TweetV1 implements Tweet {
             isRetweeted = embeddedTweet.isRetweeted();
             isFavorited = embeddedTweet.isFavorited();
         }
-        if (extEntities != null) {
-            addMedia(extEntities);
+        // remove short media link
+        int linkPos = text.lastIndexOf("https://t.co/");
+        if (linkPos >= 0) {
+            text = text.substring(0, linkPos);
         }
-
     }
 
     @Override
@@ -275,63 +266,58 @@ class TweetV1 implements Tweet {
     /**
      * add media links to tweet if any
      */
-    private void addMedia(JSONObject json) {
+    private String[] addMedia(JSONObject json) {
         try {
-            JSONArray media = json.getJSONArray("media");
+            JSONObject extEntities = json.getJSONObject("extended_entities");
+            JSONArray media = extEntities.getJSONArray("media");
             if (media.length() > 0) {
                 // determine MIME type
                 JSONObject mediaItem = media.getJSONObject(0);
-                mediaLinks = new String[media.length()];
+                String[] links = new String[media.length()];
                 String mime = mediaItem.getString("type");
                 switch (mime) {
-                    case MIME_PHOTO:
-                        mediaType = MIME_PHOTO;
+                    case MEDIA_PHOTO:
+                        mediaType = MEDIA_PHOTO;
                         // get media URLs
-                        for (int pos = 0; pos < mediaLinks.length; pos++) {
+                        for (int pos = 0; pos < links.length; pos++) {
                             JSONObject item = media.getJSONObject(pos);
                             if (item != null) {
-                                mediaLinks[pos] = item.getString("media_url_https");
+                                links[pos] = item.getString("media_url_https");
                             }
                         }
-                        break;
+                        return links;
 
-                    case MIME_VIDEO:
-                        mediaType = MIME_VIDEO;
+                    case MEDIA_VIDEO:
+                        mediaType = MEDIA_VIDEO;
                         JSONObject video = mediaItem.getJSONObject("video_info");
                         JSONArray videoVariants = video.getJSONArray("variants");
                         for (int pos = 0; pos < videoVariants.length(); pos++) {
                             JSONObject variant = videoVariants.getJSONObject(pos);
                             if (MIME_V_MP4.equals(variant.getString("content_type"))) {
-                                mediaLinks[0] = variant.getString("url");
+                                links[0] = variant.getString("url");
                                 break;
                             }
                         }
-                        break;
+                        return links;
 
-                    case MIME_ANGIF:
-                        mediaType = MIME_ANGIF;
+                    case MEDIA_GIF:
+                        mediaType = MEDIA_GIF;
                         JSONObject gif = mediaItem.getJSONObject("video_info");
                         JSONObject gifVariant = gif.getJSONArray("variants").getJSONObject(0);
                         if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
-                            mediaLinks[0] = gifVariant.getString("url");
-                            break;
+                            links[0] = gifVariant.getString("url");
                         }
-                        break;
+                        return links;
 
                     default:
-                        mediaType = MIME_NONE;
+                        mediaType = MEDIA_NONE;
                         break;
                 }
-                // remove short media link
-                int linkPos = text.lastIndexOf("https://t.co/");
-                if (linkPos >= 0) {
-                    text = text.substring(0, linkPos);
-                }
-
             }
         } catch (JSONException e) {
-            // ignore
+            // ignore, return empty array
         }
+        return new String[0];
     }
 
     /**
@@ -366,5 +352,30 @@ class TweetV1 implements Tweet {
             index = builder.lastIndexOf("&amp;");
         }
         return builder.toString();
+    }
+
+    /**
+     * create location coordinate string to use for uri link
+     *
+     * @param json root tweet json
+     * @return location uri scheme or empty string if tweet has no location information
+     */
+    private String getLocation(JSONObject json) {
+        try {
+            JSONObject coordinateJson = json.optJSONObject("coordinates");
+            if (coordinateJson != null) {
+                if (coordinateJson.optString("type").equals("Point")) {
+                    JSONArray coordinateArray = coordinateJson.optJSONArray("coordinates");
+                    if (coordinateArray != null && coordinateArray.length() == 2) {
+                        double lon = coordinateArray.getDouble(0);
+                        double lat = coordinateArray.getDouble(1);
+                        return String.format(Locale.US, "%.6f,%.6f", lat, lon);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            // ignore, use empty string
+        }
+        return "";
     }
 }

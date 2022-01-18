@@ -745,11 +745,11 @@ public class AppDatabase {
         } else {
             statusRegister &= ~MEDIA_SENS_MASK;
         }
-        if (Tweet.MIME_PHOTO.equals(tweet.getMediaType())) {
+        if (Tweet.MEDIA_PHOTO.equals(tweet.getMediaType())) {
             statusRegister |= MEDIA_IMAGE_MASK;
-        } else if (Tweet.MIME_VIDEO.equals(tweet.getMediaType())) {
+        } else if (Tweet.MEDIA_VIDEO.equals(tweet.getMediaType())) {
             statusRegister |= MEDIA_VIDEO_MASK;
-        } else if (Tweet.MIME_ANGIF.equals(tweet.getMediaType())) {
+        } else if (Tweet.MEDIA_GIF.equals(tweet.getMediaType())) {
             statusRegister |= MEDIA_ANGIF_MASK;
         }
         ContentValues status = new ContentValues(16);

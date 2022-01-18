@@ -223,13 +223,6 @@ public class DatabaseAdapter {
         databasePath = c.getDatabasePath(DB_NAME);
         db = c.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
         initTables();
-        updateTable();
-    }
-
-    /**
-     * update old table versions if necessary
-     */
-    private void updateTable() {
     }
 
     /**

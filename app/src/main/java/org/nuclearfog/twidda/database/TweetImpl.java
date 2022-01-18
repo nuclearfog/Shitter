@@ -78,13 +78,13 @@ class TweetImpl implements Tweet {
         String userMentions = StringTools.getUserMentions(text);
         // get media type
         if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
-            mediaType = MIME_ANGIF;
+            mediaType = MEDIA_GIF;
         } else if ((tweetRegister & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK) {
-            mediaType = MIME_PHOTO;
+            mediaType = MEDIA_PHOTO;
         } else if ((tweetRegister & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK) {
-            mediaType = MIME_VIDEO;
+            mediaType = MEDIA_VIDEO;
         } else {
-            mediaType = MIME_NONE;
+            mediaType = MEDIA_NONE;
         }
         if (author.isCurrentUser()) {
             this.userMentions = userMentions;

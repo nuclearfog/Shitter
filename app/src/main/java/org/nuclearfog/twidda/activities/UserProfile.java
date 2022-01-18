@@ -603,13 +603,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         NumberFormat formatter = NumberFormat.getIntegerInstance();
         Spanned bio = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
 
-        tabTweetCount[0].setText(formatter.format(user.getTweetCount()));
-        tabTweetCount[1].setText(formatter.format(user.getFavoriteCount()));
         following.setText(formatter.format(user.getFollowing()));
         follower.setText(formatter.format(user.getFollower()));
         username.setText(user.getUsername());
         screenName.setText(user.getScreenname());
-
+        if (user.getTweetCount() >= 0)
+            tabTweetCount[0].setText(formatter.format(user.getTweetCount()));
+        else
+            tabTweetCount[0].setText("");
+        if (user.getFavoriteCount() >= 0)
+            tabTweetCount[1].setText(formatter.format(user.getFavoriteCount()));
+        else
+            tabTweetCount[1].setText("");
         if (user_createdAt.getVisibility() != VISIBLE) {
             String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
             user_createdAt.setVisibility(VISIBLE);
