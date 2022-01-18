@@ -75,6 +75,7 @@ class TweetImpl implements Tweet {
         retweeted = (tweetRegister & RTW_MASK) != 0;
         sensitive = (tweetRegister & MEDIA_SENS_MASK) != 0;
         mediaLinks = SEPARATOR.split(linkStr);
+        String userMentions = StringTools.getUserMentions(text);
         // get media type
         if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
             mediaType = MIME_ANGIF;
@@ -85,10 +86,10 @@ class TweetImpl implements Tweet {
         } else {
             mediaType = MIME_NONE;
         }
-        if (!replyName.isEmpty()) {
-            userMentions = author.getScreenname() + ' ' + replyName + ' ' + StringTools.getUserMentions(text);
+        if (author.isCurrentUser()) {
+            this.userMentions = userMentions;
         } else {
-            userMentions = author.getScreenname() + ' ' + StringTools.getUserMentions(text);
+            this.userMentions = author.getScreenname() + ' ' + userMentions;
         }
     }
 

@@ -33,11 +33,11 @@ class DirectmessageV1 implements DirectMessage {
         timestamp = Long.parseLong(json.getString("created_timestamp"));
         JSONObject message = json.getJSONObject("message_create");
         JSONObject target = message.getJSONObject("target");
+        JSONObject data = message.getJSONObject("message_data");
         sender_id = Long.parseLong(message.getString("sender_id"));
         receiver_id = Long.parseLong(target.getString("recipient_id"));
-        JSONObject data = message.getJSONObject("message_data");
+        mediaLink = setMedia(data);
         text = setText(data);
-        setMedia(data);
     }
 
     @Override
@@ -68,7 +68,7 @@ class DirectmessageV1 implements DirectMessage {
     @Nullable
     @Override
     public Uri getMedia() {
-        if (mediaLink != null)
+        if (!mediaLink.isEmpty())
             return Uri.parse(mediaLink);
         return null;
     }
@@ -127,16 +127,17 @@ class DirectmessageV1 implements DirectMessage {
      *
      * @param data message data
      */
-    private void setMedia(JSONObject data) {
+    private String setMedia(JSONObject data) {
         JSONObject attachment = data.optJSONObject("attachment");
         if (attachment != null) {
             try {
                 JSONObject urls = attachment.getJSONObject("media");
-                mediaLink = urls.getString("media_url_https");
+                return urls.getString("media_url_https");
             } catch (JSONException e) {
                 // ignore
             }
         }
+        return "";
     }
 
     /**

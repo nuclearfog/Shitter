@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -41,25 +42,12 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Tweet editor activity. Media files and location can be attached to a tweet.
  *
  * @author nuclearfog
  */
 public class TweetEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener {
-
-    /**
-     * type of media attached to the tweet
-     */
-    private enum MediaType {
-        NONE,
-        GIF,
-        IMAGE,
-        VIDEO
-    }
 
     /**
      * key for the replied tweet if any
@@ -76,14 +64,29 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     private static final String MIME_VIDEO_ALL = "video/";
 
     /**
-     * max amount of images (limited to 4 by twitter)
+     * image limit of a tweet
      */
     private static final int MAX_IMAGES = 4;
 
     /**
-     * max amount of mentions in a tweet
+     * video limit of a tweet
+     */
+    private static final int MAX_VIDEOS = 1;
+
+    /**
+     * gif limit of a tweet
+     */
+    private static final int MAX_GIF = 1;
+
+    /**
+     * mention limit of a tweet
      */
     private static final int MAX_MENTIONS = 10;
+
+    private static final int MEDIA_NONE = 0;
+    private static final int MEDIA_IMAGE = 1;
+    private static final int MEDIA_VIDEO = 2;
+    private static final int MEDIA_GIF = 3;
 
     private TweetUpdater uploaderAsync;
     private GlobalSettings settings;
@@ -94,9 +97,9 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     private EditText tweetText;
     private View locationPending;
 
-    private Location location;
-    private List<Uri> mediaPath = new LinkedList<>();
-    private MediaType selectedFormat = MediaType.NONE;
+    private TweetUpdate tweetUpdate;
+    private int selectedFormat = MEDIA_NONE;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -121,15 +124,17 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         loadingCircle = new ProgressDialog(this, this);
         errorDialog = new ConfirmDialog(this, DialogType.TWEET_EDITOR_ERROR, this);
         closingDialog = new ConfirmDialog(this, DialogType.TWEET_EDITOR_LEAVE, this);
-
         settings = GlobalSettings.getInstance(this);
 
         Intent data = getIntent();
+        long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
         String prefix = data.getStringExtra(KEY_TWEETPOPUP_TEXT);
+
+        tweetUpdate = new TweetUpdate(inReplyId);
         if (prefix != null) {
             tweetText.append(prefix);
         }
-        previewBtn.setImageResource(R.drawable.image);
+
         mediaBtn.setImageResource(R.drawable.attachment);
         locationBtn.setImageResource(R.drawable.location);
         tweetButton.setImageResource(R.drawable.tweet);
@@ -178,11 +183,11 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         if (v.getId() == R.id.tweet_send) {
             String tweetStr = tweetText.getText().toString();
             // check if tweet is empty
-            if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
+            if (tweetStr.trim().isEmpty() && tweetUpdate.mediaCount() == 0) {
                 Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
             }
             // check if mentions exceed the limit
-            else if (!settings.isCustomApiSet() && StringTools.countMentions(tweetStr) > MAX_MENTIONS) {
+            else if (StringTools.countMentions(tweetStr) > MAX_MENTIONS) {
                 Toast.makeText(this, R.string.error_mention_exceed, LENGTH_SHORT).show();
             }
             // check if GPS location is pending
@@ -200,24 +205,30 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         }
         // Add media to the tweet
         else if (v.getId() == R.id.tweet_add_media) {
-            if (selectedFormat == MediaType.IMAGE) {
-                getMedia(REQUEST_IMAGE);
-            } else {
+            if (selectedFormat == MEDIA_NONE) {
+                // request images/videos
                 getMedia(REQUEST_IMG_VID);
+            } else {
+                // request images only
+                getMedia(REQUEST_IMAGE);
             }
         }
         // open media preview
         else if (v.getId() == R.id.tweet_prev_media) {
-            Intent image = new Intent(this, MediaViewer.class);
-            Uri[] uris = mediaPath.toArray(new Uri[0]);
-            image.putExtra(KEY_MEDIA_URI, uris);
-            if (selectedFormat == MediaType.VIDEO) {
-                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
-                startActivity(image);
-            } else if (selectedFormat != MediaType.NONE) {
-                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                startActivity(image);
+            Intent mediaViewer = new Intent(this, MediaViewer.class);
+            Uri[] uris = tweetUpdate.getMediaUris();
+            mediaViewer.putExtra(KEY_MEDIA_URI, uris);
+            if (selectedFormat == MEDIA_VIDEO) {
+                mediaViewer.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
+            } else if (selectedFormat == MEDIA_IMAGE) {
+                mediaViewer.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+            } else if (selectedFormat == MEDIA_GIF) {
+                // todo add support for local gif animation
+                mediaViewer.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+            } else {
+                return;
             }
+            startActivity(mediaViewer);
         }
         // add location to the tweet
         else if (v.getId() == R.id.tweet_add_location) {
@@ -231,67 +242,53 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     @Override
     protected void onAttachLocation(@Nullable Location location) {
         if (location != null) {
+            tweetUpdate.addLocation(location);
             Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
         } else {
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
         }
         locationPending.setVisibility(INVISIBLE);
         locationBtn.setVisibility(VISIBLE);
-        this.location = location;
     }
 
 
     @Override
     protected void onMediaFetched(int resultType, @NonNull Uri uri) {
+        int mediaCount = 0;
         String mime = getContentResolver().getType(uri);
         if (mime == null) {
             Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
         }
-        // check if file is a gif image
+        // check if file is a 'gif' image
         else if (mime.equals(MIME_GIF)) {
-            if (selectedFormat == MediaType.NONE) {
-                selectedFormat = MediaType.GIF;
-                previewBtn.setImageResource(R.drawable.gif);
-                AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
-                previewBtn.setVisibility(VISIBLE);
-                mediaBtn.setVisibility(GONE);
-                mediaPath.add(uri);
-            } else {
-                Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
-            }
-        }
-        // check if file is an image with supported extension
-        else if (mime.startsWith(MIME_IMAGE_ALL)) {
-            if (selectedFormat == MediaType.NONE)
-                selectedFormat = MediaType.IMAGE;
-            if (selectedFormat == MediaType.IMAGE) {
-                // add up to 4 images
-                if (mediaPath.size() < MAX_IMAGES) {
-                    mediaPath.add(uri);
-                    previewBtn.setVisibility(VISIBLE);
-                    // if limit reached, remove mediaselect button
-                    if (mediaPath.size() == MAX_IMAGES) {
-                        mediaBtn.setVisibility(GONE);
-                    }
+            if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_GIF) {
+                mediaCount = addTweetMedia(uri, R.drawable.gif, MAX_GIF);
+                if (mediaCount > 0) {
+                    selectedFormat = MEDIA_GIF;
                 }
-            } else {
-                Toast.makeText(this, R.string.info_cant_add_gif, LENGTH_SHORT).show();
             }
         }
-        // check if file is a video with supported extension
+        // check if file is an image
+        else if (mime.startsWith(MIME_IMAGE_ALL)) {
+            if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_IMAGE) {
+                mediaCount = addTweetMedia(uri, R.drawable.image, MAX_IMAGES);
+                if (mediaCount > 0) {
+                    selectedFormat = MEDIA_IMAGE;
+                }
+            }
+        }
+        // check if file is a video
         else if (mime.startsWith(MIME_VIDEO_ALL)) {
-            if (selectedFormat == MediaType.NONE) {
-                selectedFormat = MediaType.VIDEO;
-                previewBtn.setImageResource(R.drawable.video);
-                AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
-                previewBtn.setVisibility(VISIBLE);
-                mediaBtn.setVisibility(GONE);
-                mediaPath.add(uri);
+            if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_VIDEO) {
+                mediaCount = addTweetMedia(uri, R.drawable.video, MAX_VIDEOS);
+                if (mediaCount > 0) {
+                    selectedFormat = MEDIA_VIDEO;
+                }
             }
         }
-        // file type is not supported
-        else {
-            Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
+        // check if media was successfully added
+        if (mediaCount <= 0) {
+            Toast.makeText(this, R.string.error_adding_media, LENGTH_SHORT).show();
         }
     }
 
@@ -339,7 +336,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      * show confirmation dialog when closing edited tweet
      */
     private void showClosingMsg() {
-        if (tweetText.length() > 0 || !mediaPath.isEmpty()) {
+        if (tweetText.length() > 0 || tweetUpdate.mediaCount() > 0 || tweetUpdate.hasLocation()) {
             if (!closingDialog.isShowing()) {
                 closingDialog.show();
             }
@@ -349,24 +346,36 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     }
 
     /**
+     * attach media to the tweet
+     *
+     * @param uri Uri link of the media
+     * @param icon icon of the preview button
+     * @param limit limit of the media count
+     * @return media count or -1 if adding failed
+     */
+    private int addTweetMedia(Uri uri, @DrawableRes int icon, int limit) {
+        previewBtn.setImageResource(icon);
+        AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
+        int mediaCount = tweetUpdate.addMedia(this, uri);
+        if (mediaCount > 0)
+            previewBtn.setVisibility(VISIBLE);
+        // if limit reached, remove mediaselect button
+        if (mediaCount == limit) {
+            mediaBtn.setVisibility(GONE);
+        }
+        return mediaCount;
+    }
+
+    /**
      * update tweet information
      */
     private void updateTweet() {
-        Intent data = getIntent();
-        long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
         String tweetStr = tweetText.getText().toString();
-        TweetUpdate tweet = new TweetUpdate(tweetStr, inReplyId);
         // add media
-        if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
-            tweet.addMedia(getApplicationContext(), mediaPath);
-        else if (selectedFormat == MediaType.VIDEO)
-            tweet.addMedia(getApplicationContext(), mediaPath);
-        // add location
-        if (location != null)
-            tweet.addLocation(location);
+        tweetUpdate.addText(tweetStr);
         // send tweet
-        uploaderAsync = new TweetUpdater(this, tweet);
-        uploaderAsync.execute();
+        uploaderAsync = new TweetUpdater(this);
+        uploaderAsync.execute(tweetUpdate);
         if (!loadingCircle.isShowing()) {
             loadingCircle.show();
         }

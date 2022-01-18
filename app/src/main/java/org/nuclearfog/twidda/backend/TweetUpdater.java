@@ -9,9 +9,8 @@ import org.nuclearfog.twidda.backend.api.holder.MediaStream;
 import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Background task for uploading tweet
@@ -19,52 +18,43 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see TweetEditor
  */
-public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
+public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
 
     private Twitter twitter;
     private ErrorHandler.TwitterError twException;
     private WeakReference<TweetEditor> callback;
-    private TweetUpdate tweet;
 
     /**
      * initialize task
      *
      * @param activity Activity context
      */
-    public TweetUpdater(TweetEditor activity, TweetUpdate tweet) {
+    public TweetUpdater(TweetEditor activity) {
         super();
         twitter = Twitter.get(activity);
         callback = new WeakReference<>(activity);
-        this.tweet = tweet;
     }
 
 
     @Override
-    protected Boolean doInBackground(Void[] v) {
+    protected Boolean doInBackground(TweetUpdate... tweets) {
         try {
-            long[] mediaIds = {};
-            String[] mimeTypes = tweet.getMimeTypes();
-            InputStream[] mediaStreams = tweet.getMediaStreams();
-            if (mimeTypes != null && mediaStreams != null) {
-                // upload media first
-                mediaIds = new long[mediaStreams.length];
-                for (int pos = 0; pos < mediaStreams.length; pos++) {
-                    // upload media file and save media ID
-                    MediaStream mediaStream = new MediaStream(mediaStreams[pos], mimeTypes[pos]);
-                    mediaIds[pos] = twitter.uploadMedia(mediaStream);
-                    // close stream after upload
-                    mediaStreams[pos].close();
-                }
+            // upload media first
+            List<MediaStream> mediaStreams = tweets[0].getMediaStreams();
+            long[] mediaIds = new long[mediaStreams.size()];
+            for (int pos = 0; pos < mediaStreams.size(); pos++) {
+                // upload media file and save media ID
+                mediaIds[pos] = twitter.uploadMedia(mediaStreams.get(pos));
+                // close stream after upload
+                mediaStreams.get(pos).close();
             }
             // upload tweet
             if (!isCancelled()) {
-                twitter.uploadTweet(tweet, mediaIds);
+                twitter.uploadTweet(tweets[0], mediaIds);
             }
             return true;
         } catch (TwitterException twException) {
             this.twException = twException;
-        } catch (IOException err) {
-            err.printStackTrace();
         }
         return false;
     }

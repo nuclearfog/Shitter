@@ -6,7 +6,6 @@ import android.location.Location;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,25 +18,31 @@ import java.util.List;
  */
 public class TweetUpdate {
 
-    private final String text;
-    private final long replyId;
+    private String text;
+    private long replyId;
     private double longitude;
     private double latitude;
-    private InputStream[] mediaStreams;
+    private List<MediaStream> mediaStreams;
+    private List<Uri> mediaUris;
 
-    private String[] mimeTypes = {};
     private boolean hasLocation = false;
-
 
     /**
      * create a tweet holder
      *
-     * @param text    Tweet message
      * @param replyId ID of the tweet to reply or 0 if this tweet is not a reply
      */
-    public TweetUpdate(String text, long replyId) {
-        this.text = text;
+    public TweetUpdate(long replyId) {
         this.replyId = replyId;
+        mediaStreams = new ArrayList<>(5);
+        mediaUris = new ArrayList<>(5);
+    }
+
+    /**
+     * add tweet text
+     */
+    public void addText(String text) {
+        this.text = text;
     }
 
     /**
@@ -45,23 +50,22 @@ public class TweetUpdate {
      *
      * @param context  context to resolve Uri links
      * @param mediaUri array of media paths from storage
+     * @return number of media added or -1 if an error occurs
      */
-    public void addMedia(Context context, List<Uri> mediaUri) {
-        if (!mediaUri.isEmpty()) {
-            List<InputStream> iss = new ArrayList<>();
-            List<String> mimeTypes = new ArrayList<>();
-            ContentResolver resolver = context.getContentResolver();
-            try {
-                for (Uri uri : mediaUri) {
-                    iss.add(resolver.openInputStream(uri));
-                    mimeTypes.add(resolver.getType(uri));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+    public int addMedia(Context context, Uri mediaUri) {
+        ContentResolver resolver = context.getContentResolver();
+        try {
+            InputStream is = resolver.openInputStream(mediaUri);
+            String mime = resolver.getType(mediaUri);
+            if (is != null && mime != null && is.available() > 0) {
+                mediaStreams.add(new MediaStream(is, mime));
+                mediaUris.add(mediaUri);
+                return mediaStreams.size();
             }
-            this.mediaStreams = iss.toArray(new InputStream[0]);
-            this.mimeTypes = mimeTypes.toArray(new String[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return -1;
     }
 
     /**
@@ -69,7 +73,7 @@ public class TweetUpdate {
      *
      * @param location location information
      */
-    public void addLocation(Location location) {
+    public void addLocation(@NonNull Location location) {
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
         hasLocation = true;
@@ -94,23 +98,22 @@ public class TweetUpdate {
     }
 
     /**
-     * get type of attached media if any
+     * get information about media attached to the tweet
      *
-     * @return media type
+     * @return list of mediastream instances
      */
-    @Nullable
-    public String[] getMimeTypes() {
-        return mimeTypes;
+    @NonNull
+    public List<MediaStream> getMediaStreams() {
+        return mediaStreams;
     }
 
     /**
-     * get paths of local media files
+     * get media links
      *
-     * @return array of media paths
+     * @return media uri array
      */
-    @Nullable
-    public InputStream[] getMediaStreams() {
-        return mediaStreams;
+    public Uri[] getMediaUris() {
+        return mediaUris.toArray(new Uri[0]);
     }
 
     /**
@@ -132,12 +135,21 @@ public class TweetUpdate {
     }
 
     /**
-     * return if holder has location information attached
+     * check if location informaton is attached
      *
      * @return true if location is attached
      */
     public boolean hasLocation() {
         return hasLocation;
+    }
+
+    /**
+     * check if media information is attached
+     *
+     * @return true if media is attached
+     */
+    public int mediaCount() {
+        return mediaStreams.size();
     }
 
     @NonNull

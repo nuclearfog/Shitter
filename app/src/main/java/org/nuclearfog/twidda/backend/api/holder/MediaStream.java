@@ -39,7 +39,7 @@ public class MediaStream {
     /**
      * @return remaining bytes of the stream
      */
-    public int available() throws IOException {
+    public long available() throws IOException {
         return inputStream.available();
     }
 
