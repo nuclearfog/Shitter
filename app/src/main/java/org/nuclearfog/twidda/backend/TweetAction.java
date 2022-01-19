@@ -115,8 +115,10 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     publishProgress(tweet);
                     db.updateStatus(tweet);
                     // removing retweet reference to this tweet
-                    if (tweet.getMyRetweetId() > 0)
+                    if (retweetId > 0)
                         db.removeStatus(retweetId);
+                    else
+                        db.removeStatus(tweetId);
                     break;
 
                 case FAVORITE:

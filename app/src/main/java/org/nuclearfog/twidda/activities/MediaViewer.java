@@ -505,12 +505,16 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
      * clear the image cache
      */
     private void clearCache() {
-        File cacheFolder = new File(getExternalCacheDir(), CACHE_FOLDER);
-        File[] files = cacheFolder.listFiles();
-        if (files != null && files.length > 0) {
-            for (File file : files) {
-                file.delete();
+        try {
+            File cacheFolder = new File(getExternalCacheDir(), CACHE_FOLDER);
+            File[] files = cacheFolder.listFiles();
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    file.delete();
+                }
             }
+        } catch (SecurityException e) {
+            e.printStackTrace();
         }
     }
 }

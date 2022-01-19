@@ -180,8 +180,10 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
     @Override
     public void onConfirm(DialogType type) {
         if (type == DialogType.MESSAGE_DELETE) {
-            messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null);
-            messageTask.execute(deleteId);
+            if (messageTask != null && messageTask.getStatus() != RUNNING) {
+                messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null);
+                messageTask.execute(deleteId);
+            }
         }
     }
 

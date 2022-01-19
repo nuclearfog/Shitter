@@ -142,10 +142,15 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     public void onClick(View v) {
         // get login request link
         if (v.getId() == R.id.login_get_link) {
-            if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
-                Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
-                registerAsync = new Registration(this);
-                registerAsync.execute();
+            if (requestToken == null) {
+                if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
+                    Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
+                    registerAsync = new Registration(this);
+                    registerAsync.execute();
+                }
+            } else {
+                // re-use request token
+                connect();
             }
         }
         // verify user
@@ -167,22 +172,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     }
 
     /**
-     * Called when a twitter login link was created
-     *
-     * @param requestToken temporary request token
-     */
-    public void connect(String requestToken) {
-        this.requestToken = requestToken;
-        String link = Twitter.REQUEST_URL + requestToken;
-        Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
-        try {
-            startActivity(loginIntent);
-        } catch (ActivityNotFoundException err) {
-            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-        }
-    }
-
-    /**
      * Called when the app is registered successfully to twitter
      */
     public void onSuccess() {
@@ -197,5 +186,26 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      */
     public void onError(TwitterError error) {
         ErrorHandler.handleFailure(this, error);
+    }
+
+    /**
+     * Called when a twitter login link was created
+     *
+     * @param requestToken temporary request token
+     */
+    public void connect(String requestToken) {
+        this.requestToken = requestToken;
+        connect();
+    }
+
+
+    private void connect() {
+        String link = Twitter.REQUEST_URL + requestToken;
+        Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
+        try {
+            startActivity(loginIntent);
+        } catch (ActivityNotFoundException err) {
+            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+        }
     }
 }
