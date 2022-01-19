@@ -15,7 +15,6 @@ import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
-import org.nuclearfog.twidda.backend.proxy.ProxySetup;
 import org.nuclearfog.twidda.backend.proxy.UserProxy;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
@@ -58,7 +57,7 @@ import okio.Okio;
  *
  * @author nuclearfog
  */
-public class Twitter {
+public class Twitter implements GlobalSettings.SettingsListener {
 
     public static final String SIGNATURE_ALG = "HMAC-SHA256";
     private static final String OAUTH = "1.0";
@@ -119,6 +118,7 @@ public class Twitter {
     private static final String PROFILE_UPDATE_BANNER = API + "1.1/account/update_profile_banner.json";
 
     private static Twitter instance;
+    private static boolean notifySettingsChange = false;
 
     private OkHttpClient client;
     private GlobalSettings settings;
@@ -134,16 +134,13 @@ public class Twitter {
         settings = GlobalSettings.getInstance(context);
         tokens = Tokens.getInstance(context);
         filterList = new ExcludeDatabase(context);
+        settings.registerObserver(this);
+        // init okhttp
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.writeTimeout(60, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).connectTimeout(60, TimeUnit.SECONDS);
-
         // setup proxy
         builder.proxy(UserProxy.get(settings));
         builder.proxyAuthenticator(new ProxyAuthenticator(settings));
-
-        // apply global proxy settings
-        ProxySetup.setConnection(settings);
-
         // enable experimental TLS 1.2 support for old android versions
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             TLSSocketFactory.setSupportTLS();
@@ -157,6 +154,7 @@ public class Twitter {
             }
         }
         client = builder.build();
+        notifySettingsChange = false;
     }
 
     /**
@@ -165,10 +163,16 @@ public class Twitter {
      * @return instance of this class
      */
     public static Twitter get(Context context) {
-        if (instance == null) {
+        if (instance == null || notifySettingsChange) {
             instance = new Twitter(context);
         }
         return instance;
+    }
+
+
+    @Override
+    public void onSettingsChange() {
+        notifySettingsChange = true;
     }
 
     /**

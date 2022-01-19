@@ -7,7 +7,7 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,17 +17,18 @@ import java.util.List;
  */
 public class AppProxySelector extends ProxySelector {
 
-    private List<Proxy> proxyList;
+    private GlobalSettings settings;
 
 
     public AppProxySelector(GlobalSettings settings) {
-        Proxy httpsProxy = UserProxy.get(settings);
-        proxyList = new ArrayList<>(2);
-        proxyList.add(httpsProxy);
+        this.settings = settings;
     }
 
     @Override
     public List<Proxy> select(URI uri) {
+        // create proxy list from the settings
+        List<Proxy> proxyList = new LinkedList<>();
+        proxyList.add(UserProxy.get(settings));
         return proxyList;
     }
 

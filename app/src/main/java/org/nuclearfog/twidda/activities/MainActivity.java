@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 if (returnCode == RESULT_CANCELED) {
                     finish();
                 } else if (returnCode == RET_ACCOUNT_CHANGE) {
-                    // todo reset to apply proxy settings
                     adapter.notifySettingsChanged();
                 } else {
                     adapter.notifySettingsChanged();

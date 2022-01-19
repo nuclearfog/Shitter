@@ -22,28 +22,18 @@ import okhttp3.OkHttpClient;
  *
  * @author nuclearfog
  */
-public class PicassoBuilder {
+public class PicassoBuilder implements GlobalSettings.SettingsListener {
 
-    private static OkHttp3Downloader downloader;
+    private static PicassoBuilder instance;
+    private static boolean notifySettingsChange = false;
 
-    private PicassoBuilder() {
-    }
-
-    /**
-     * @return instance of Picasso with custom downloader
-     */
-    public static Picasso get(Context context) {
-        if (downloader == null) {
-            GlobalSettings settings = GlobalSettings.getInstance(context);
-            init(settings);
-        }
-        return new Picasso.Builder(context).downloader(downloader).build();
-    }
+    private OkHttp3Downloader downloader;
 
 
-    private static void init(GlobalSettings settings) {
+    private PicassoBuilder(Context context) {
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        settings.registerObserver(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-
         // setup proxy
         if (settings.isProxyEnabled()) {
             builder.proxy(UserProxy.get(settings));
@@ -51,7 +41,6 @@ public class PicassoBuilder {
                 builder.proxyAuthenticator(new ProxyAuthenticator(settings));
             }
         }
-
         // setup TLS 1.2 support if needed
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             try {
@@ -60,11 +49,27 @@ public class PicassoBuilder {
                 X509TrustManager manager = (X509TrustManager) factory.getTrustManagers()[0];
                 builder.sslSocketFactory(new TLSSocketFactory(), manager);
                 downloader = new OkHttp3Downloader(builder.build());
-                return;
             } catch (Exception e) {
                 // ignore, try without TLS 1.2 support
             }
         }
         downloader = new OkHttp3Downloader(builder.build());
+        notifySettingsChange = false;
+    }
+
+    /**
+     * @return instance of Picasso with custom downloader
+     */
+    public static Picasso get(Context context) {
+        if (instance == null || notifySettingsChange) {
+            instance = new PicassoBuilder(context);
+        }
+        return new Picasso.Builder(context).downloader(instance.downloader).build();
+    }
+
+
+    @Override
+    public void onSettingsChange() {
+        notifySettingsChange = true;
     }
 }

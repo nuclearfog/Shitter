@@ -2,35 +2,32 @@
 
 # Lightweight Twitter app for Android 4.1+
 
-<img src="/images/twitter4j.gif" width="138" height="30"/>
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](https://github.com/nuclearfog/Shitter/releases/latest/download/SH1TT3R.apk)
 ![](https://img.shields.io/github/downloads/nuclearfog/Shitter/total)
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/nuclearfog/Shitter/blob/master/LICENSE)
-
 
 ## Features
-- fast access to tweets and userprofiles
-- customizable colors
-- Image/Video preview & upload
-- Twitter trends and search
-- Userlist
-- Directmessage
-- Profile editor
+
+- fast access to tweets, userprofiles and trends
+- tweet, directmessage and userlist editor
+- customizable theme
+- image/video preview
 - GPS locale support
-- Proxy support
-- Custom API key support
-- Multi account support
+- proxy support
+- multi account support
+- custom API key support
 
 
 ## Screenshots
 
 <img src="/images/shitter_1.jpg" height="360"/> <img src="/images/shitter_2.jpg" height="360"/> <img src="/images/shitter_3.jpg" height="360"/> <img src="/images/shitter_4.jpg" height="360"/>
 
+
 ## How to build
 
 You can import this project with Android Studio. Add your API keys to this <a href="https://github.com/nuclearfog/Shitter/blob/master/app/src/main/java/org/nuclearfog/twidda/backend/utils/Tokens.java">file</a>.
+
 
 ## Information
 
@@ -40,7 +37,6 @@ If you have any questions, feel free to open a <a href="https://github.com/nucle
 
 
 ## 3rd party libraries and licenses
-- <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
 - <a href="https://github.com/square/picasso">picasso 2.8</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
 - <a href="https://github.com/MichaelRocks/paranoid">String obfuscation</a>
@@ -52,6 +48,7 @@ If you have any questions, feel free to open a <a href="https://github.com/nucle
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
+- Version 1.x: <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
 
 ## Graphics
 - SVG Icons from <a href="http://www.entypo.com">Entypo</a> & <a href="https://www.svgrepo.com">SVG Repo</a>

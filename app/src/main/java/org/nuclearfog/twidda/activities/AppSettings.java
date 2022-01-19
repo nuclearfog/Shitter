@@ -269,8 +269,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onBackPressed() {
         if (saveConnectionSettings()) {
-            // todo reset proxy settings
-            //TwitterEngine.resetTwitter();
             super.onBackPressed();
         } else {
             if (!connectDialog.isShowing()) {
@@ -314,13 +312,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onConfirm(DialogType type) {
         // confirm log out
-        if (type == DialogType.APP_LOG_OUT) { // fixme
-            // reset twitter singleton
-            // TwitterEngine.resetTwitter();
+        if (type == DialogType.APP_LOG_OUT) {
+            settings.logout();
             // remove account from database
             AccountDatabase accountDB = new AccountDatabase(this);
             accountDB.removeLogin(settings.getCurrentUserId());
-            settings.logout();
             setResult(RETURN_APP_LOGOUT);
             finish();
         }
@@ -712,7 +708,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         } else {
             settings.clearProxyServer();
         }
-        // check if API-keys are correct set
+        // check if API-keys are correctly set
         if (enableAPI.isChecked()) {
             if (api_key1.length() > 0 && api_key2.length() > 0) {
                 String key1 = api_key1.getText().toString();

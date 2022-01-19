@@ -17,6 +17,9 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.Location;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * This class manages app settings
  *
@@ -133,6 +136,8 @@ public class GlobalSettings {
     private Location location;
     private String api_key1, api_key2;
     private String auth_key1, auth_key2;
+    private String proxyHost, proxyPort;
+    private String proxyUser, proxyPass;
     private boolean loadImage;
     private boolean hqImages;
     private boolean loadAnswer;
@@ -159,8 +164,7 @@ public class GlobalSettings {
     private int listSize;
     private long userId;
 
-    private String proxyHost, proxyPort;
-    private String proxyUser, proxyPass;
+    private List<SettingsListener> settingsListeners = new LinkedList<>();
 
     private GlobalSettings() {
     }
@@ -715,6 +719,8 @@ public class GlobalSettings {
         edit.putString(PROXY_USER, proxyUser);
         edit.putString(PROXY_PASS, proxyPass);
         edit.apply();
+
+        notifySettingsChange();
     }
 
     /**
@@ -736,6 +742,8 @@ public class GlobalSettings {
         edit.remove(PROXY_USER);
         edit.remove(PROXY_PASS);
         edit.apply();
+
+        notifySettingsChange();
     }
 
     /**
@@ -988,14 +996,41 @@ public class GlobalSettings {
      * Remove all user content from Shared Preferences
      */
     public void logout() {
-        settings.edit().clear().apply();
-        initialize();
+        loggedIn = false;
+        auth_key1 = "";
+        auth_key2 = "";
+        userId = 0;
+        Editor e = settings.edit();
+        e.remove(LOGGED_IN);
+        e.remove(CURRENT_AUTH_KEY1);
+        e.remove(CURRENT_AUTH_KEY2);
+        e.remove(CURRENT_ID);
+        e.apply();
+        notifySettingsChange();
+    }
+
+    /**
+     * register settings listener
+     */
+    public void registerObserver(@NonNull SettingsListener listener) {
+        settingsListeners.add(listener);
+    }
+
+    /**
+     * notify listener when settings changes
+     */
+    private void notifySettingsChange() {
+        for (SettingsListener listener : settingsListeners) {
+            listener.onSettingsChange();
+        }
+        settingsListeners.clear();
     }
 
     /**
      * Init setting values
      */
     private void initialize() {
+        // app settings
         background_color = settings.getInt(BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
         highlight_color = settings.getInt(HIGHLIGHT_COLOR, DEFAULT_HIGHLIGHT_COLOR);
         font_color = settings.getInt(FONT_COLOR, DEFAULT_FONT_COLOR);
@@ -1024,14 +1059,26 @@ public class GlobalSettings {
         proxyPort = settings.getString(PROXY_PORT, "");
         proxyUser = settings.getString(PROXY_USER, "");
         proxyPass = settings.getString(PROXY_PASS, "");
+        api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
+        api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");
         String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
         int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_ID);
         location = new LocationImpl(place, woeId);
 
-        api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
-        api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");
+        // user specific settings
         auth_key1 = settings.getString(CURRENT_AUTH_KEY1, "");
         auth_key2 = settings.getString(CURRENT_AUTH_KEY2, "");
         userId = settings.getLong(CURRENT_ID, 0);
+    }
+
+    /**
+     * global listener for settings
+     */
+    public interface SettingsListener {
+
+        /**
+         * called when settings change
+         */
+        void onSettingsChange();
     }
 }
