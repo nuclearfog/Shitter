@@ -118,7 +118,6 @@
     <string name="error_invalid_link">Ungültiger Link!</string>
     <string name="settings_app_information">App Quellcode:</string>
     <string name="error_rate_limit">Zu viele Anfragen! Bitte 15 Minuten warten!</string>
-    <string name="info_cant_add_video">Video konnte nicht hinzugefügt werden!</string>
     <string name="error_file_not_found">Datei nicht gefunden!</string>
     <string name="item_load_more">Mehr laden</string>
     <string name="error_image_loading">Bild konnte nicht geladen werden!</string>
@@ -189,7 +188,6 @@
     <string name="button_forward">Vorspulen</string>
     <string name="button_play_pause">Pause/Abspielen</string>
     <string name="button_share">Videolink teilen</string>
-    <string name="info_cant_add_gif">GIF konnte nicht hinzugefügt werden!</string>
     <string name="settings_look">Aussehen</string>
     <string name="dialog_link_image_preview">Linkvorschau Bild</string>
     <string name="dialog_link_close">Linkvorschau schließen</string>

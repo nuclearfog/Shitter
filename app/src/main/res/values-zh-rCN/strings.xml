@@ -104,7 +104,6 @@
     <string name="info_fetching_link">正在重定向到 Twitter 登录页面</string>
     <string name="info_login_to_twitter">正在登录到 Twitter</string>
     <string name="error_wrong_connection_settings">连接设置错误！</string>
-    <string name="info_cant_add_video">无法添加视频</string>
     <string name="info_get_link">请先在浏览器中获取 PIN，然后点击第一个按钮！</string>
     <string name="info_gps_attached">GPS 位置已添加</string>
     <string name="info_tweet_retweeted">已转推</string>
