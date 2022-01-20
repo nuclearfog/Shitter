@@ -6,6 +6,7 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
     private OnItemSelected itemClickListener;
     private GlobalSettings settings;
+    private Resources resources;
     private Picasso picasso;
 
     private Directmessages data = new Directmessages(null, null);
@@ -67,6 +69,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         this.itemClickListener = itemClickListener;
         settings = GlobalSettings.getInstance(context);
         picasso = PicassoBuilder.get(context);
+        resources = context.getResources();
     }
 
     /**
@@ -213,7 +216,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 holder.textViews[0].setText(sender.getUsername());
                 holder.textViews[1].setText(sender.getScreenname());
                 holder.textViews[2].setText(message.getReceiver().getScreenname());
-                holder.textViews[3].setText(formatCreationTime(message.getTimestamp()));
+                holder.textViews[3].setText(formatCreationTime(resources, message.getTimestamp()));
                 holder.textViews[4].setText(text);
                 if (sender.isVerified()) {
                     holder.verifiedIcon.setVisibility(VISIBLE);

@@ -144,7 +144,7 @@
     <string name="menu_edit_list">Liste bearbeiten</string>
     <string name="update_list">aktualisieren</string>
     <string name="confirm_remove_user_from_list">Nutzer von der Liste entfernen?</string>
-    <string name="info_user_removed">Nutzer von der Liste entfernt!</string>
+    <string name="info_user_removed">\@%1$s von der Liste entfernt!</string>
     <string name="descr_remove_user">Nutzer von der Liste entfernen</string>
     <string name="menu_tweet">Tweet verfassen</string>
     <string name="menu_open_home_profile">öffne Profil</string>
@@ -152,6 +152,7 @@
     <string name="menu_open_settings">Einstellungen öffnen</string>
     <string name="menu_create_list">erstelle Nutzerliste</string>
     <string name="menu_write_message">Direktnachricht</string>
+    <string name="time_now">jetzt</string>
     <string name="menu_follow_user">folgen</string>
     <string name="menu_goto_lists">Nutzerlisten</string>
     <string name="list_following_indicator">Liste gefolgt</string>
@@ -164,7 +165,7 @@
     <string name="descr_add_profile_image">Profilbild ändern</string>
     <string name="settings_enable_hq_img">Bilder in hoher Auflösung</string>
     <string name="menu_app_info">Über</string>
-    <string name="info_user_added_to_list">wurde zur Liste hinzugefügt!</string>
+    <string name="info_user_added_to_list">\@%1$s wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
     <string name="error_not_defined">Undefinierter Fehler!</string>
     <string name="dialog_button_cancel">Abbrechen</string>

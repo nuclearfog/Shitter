@@ -313,11 +313,10 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
-    public void onSuccess(String[] names) {
-        String info = names[0];
-        if (!info.startsWith("@"))
-            info = '@' + info + ' ';
-        info += getString(R.string.info_user_added_to_list);
+    public void onSuccess(String name) {
+        if (name.startsWith("@"))
+            name = name.substring(1);
+        String info = getString(R.string.info_user_added_to_list, name);
         Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
         invalidateOptionsMenu();
     }

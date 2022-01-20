@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!--app name-->
     <string name="app_name" translatable="false">Shitter</string>
 
@@ -8,129 +8,13 @@
     <string name="app_info_twitter_link_2" translatable="false">https://help.twitter.com/rules-and-policies/twitter-api</string>
     <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
 
-    <string name="profile_image">Profile image</string>
-    <string name="login_pin">enter PIN</string>
-    <string name="login_verifier">login</string>
-    <string name="popup_tweet_hint" translatable="false">Tweet</string>
-    <string name="title_settings">Settings</string>
-    <string name="userlist_following" translatable="false">Following</string>
-    <string name="userlist_follower" translatable="false">Follower</string>
-    <string name="toolbar_userlist_retweet">Tweet retweeted by</string>
-    <string name="settings_color_settings">Color settings</string>
-    <string name="settings_background">Background</string>
-    <string name="settings_text">Text</string>
-    <string name="settings_button_popup">Window</string>
-    <string name="settings_color_card">Cards</string>
-    <string name="settings_icon_color">Icons</string>
-    <string name="settings_color_like">Like</string>
-    <string name="settings_color_fav">Favorite</string>
-    <string name="highlight">Highlight</string>
-    <string name="settings_api_info">• changing API Keys requires re-login</string>
-    <string name="settings_list_size">List size</string>
-    <string name="settings_enable_like">use \'Like\' instead of ’Favorite’</string>
-    <string name="confirm_retry_button">retry</string>
-    <string name="data_consumption">Data consumption</string>
-    <string name="trend_setting">Trend location</string>
-    <string name="register_link">get PIN</string>
-    <string name="settings_image">enable images</string>
-    <string name="settings_clear_data">clear app data</string>
-    <string name="confirm_delete_tweet">delete tweet?</string>
-    <string name="confirm_delete_database">clear app data?</string>
-    <string name="tweet_sent_from">"sent from: "</string>
-    <string name="directmessage">Directmessage</string>
-    <string name="directmessage_media_button">media attachment</string>
-    <string name="username">Username</string>
-    <string name="dm_message">Message</string>
-    <string name="confirm_cancel_message">discard message?</string>
-    <string name="settings_logout">log out</string>
-    <string name="dm_answer">answer</string>
-    <string name="delete_dm">delete</string>
-    <string name="confirm_unfollow">unfollow user?</string>
-    <string name="confirm_block">block user?</string>
-    <string name="confirm_log_lout">log out?</string>
-    <string name="confirm_cancel_tweet">discard tweet?</string>
-    <string name="image_preview">Image preview</string>
-    <string name="tweet_add_image">add new image</string>
-    <string name="send_tweet">share Tweet</string>
-    <string name="tweet_close">close editor</string>
-    <string name="profile_link">Link</string>
-    <string name="close_dm">close direct message</string>
-    <string name="profile_location">Location</string>
-    <string name="profile_bio">Bio</string>
-    <string name="confirm_discard">discard changes?</string>
-    <string name="user_data">User data</string>
-    <string name="follows_you">follows you</string>
-    <string name="settings_enable_ans_load">load Tweet replies automatically</string>
-    <string name="settings_connections">Connection settings</string>
-    <string name="settings_hint_proxy_ip">enter IP address</string>
-    <string name="proxy_port">Port</string>
-    <string name="edit_proxy_user">Username</string>
-    <string name="proxy_password">Password</string>
-    <string name="settings_key1_hint">Consumer key</string>
-    <string name="settings_key2_hint">Consumer secret</string>
-    <string name="confirm_mute">mute user?</string>
-    <string name="item_list_pb_desc">Profile of the list owner</string>
-    <string name="list_appbar">Lists</string>
-    <string name="edit_location_hint">enter location</string>
-    <string name="edit_hint_link">enter website link</string>
-    <string name="edit_description_hint">enter profile description</string>
-    <string name="page_profile_editor">edit profile</string>
-    <string name="delete_list">delete userlist</string>
-    <string name="confirm_delete_list">delete userlist?</string>
-    <string name="confirm_delete_message">delete message?</string>
-    <string name="confirm_unfollow_list">unfollow list?</string>
-    <string name="trend_range">Tweets</string>
-    <string name="enter_username">enter username</string>
-    <string name="profile_banner">Banner Image</string>
-    <string name="editprofile_add_banner">add banner</string>
-    <string name="settings_enable_hq_img">High resolution images</string>
-    <string name="settings_app_information">App source code:</string>
-    <string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
-    <string name="settings_look">Look</string>
-    <string name="settings_toggle_link_preview">enable link preview</string>
-    <string name="item_load_more">load more</string>
-    <string name="item_image_save">save image</string>
-    <string name="settings_enable_proxy">enable proxy</string>
-    <string name="settings_enable_proxy_auth">enable proxy authentication</string>
-    <string name="settings_setup_custom_keys">setup custom API keys</string>
-    <string name="confirm_back">back</string>
-    <string name="tweet_sensitive_media">sensitive content</string>
-    <string name="login_info">3 steps to login</string>
-    <string name="login_first_opt" translatable="false">1.</string>
-    <string name="login_sec_opt" translatable="false">2.</string>
-    <string name="login_trd_opt" translatable="false">3.</string>
-    <string name="userlist_public_sel">public</string>
-    <string name="userlist_enter_title">enter list title</string>
-    <string name="userlist_enter_description">enter list description</string>
-    <string name="userlist_create">create userlist</string>
-    <string name="userlist_create_new_list">create a new userlist</string>
-    <string name="update_list">update list</string>
-    <string name="confirm_remove_user_from_list">remove user from list?</string>
-    <string name="descr_remove_user">remove user from list</string>
-    <string name="list_following_indicator">following list</string>
+    <!-- toast messages to inform user -->
     <string name="info_list_removed">Userlist removed</string>
     <string name="info_list_followed">Userlist followed</string>
     <string name="info_list_unfollowed">Userlist unfollowed</string>
-    <string name="descr_add_profile_image">change profile image</string>
-    <string name="app_info_twitter_rules">The Twitter rules:</string>
-    <string name="button_backward">Rewind</string>
-    <string name="button_forward">Fast forward</string>
-    <string name="button_play_pause">Pause/Play</string>
-    <string name="button_share">share link</string>
-    <string name="settings_rt_icon_color">Retweet</string>
-    <string name="settings_follow_req_color">Follow request</string>
-    <string name="settings_follow_color">Following icon</string>
-    <string name="account_page" translatable="false">Accounts</string>
-    <string name="confirm_remove_account">remove account from list?</string>
-    <string name="account_user_id_prefix" translatable="false">User ID:</string>
-    <string name="account_user_unnamed">\'unnamed\'</string>
-    <string name="toolbar_tweet_favoriter">User favoriting this tweet</string>
-    <string name="toolbar_tweet_liker">User liking this tweet</string>
-
-    <!-- toast messages to inform user -->
-    <string name="info_user_removed">User removed from list</string>
     <string name="info_adding_user_to_list">adding user to list</string>
-    <string name="info_user_added_to_list">"added to List"</string>
+    <string name="info_user_added_to_list">\@%1$s added to List</string>
+    <string name="info_user_removed">\@%1$s removed from list</string>
     <string name="info_list_updated">Userlist updated</string>
     <string name="info_list_created">Userlist created</string>
     <string name="info_fetching_link">redirecting to Twitter login</string>
@@ -252,5 +136,122 @@
     <string name="dialog_link_close">close link preview</string>
     <string name="app_info_icons">svg icons from:</string>
     <string name="app_info_icons_links" translatable="false">www.svgrepo.com  www.entypo.com</string>
+
+    <string name="profile_image">Profile image</string>
+    <string name="login_pin">enter PIN</string>
+    <string name="login_verifier">login</string>
+    <string name="popup_tweet_hint" translatable="false">Tweet</string>
+    <string name="title_settings">Settings</string>
+    <string name="userlist_following" translatable="false">Following</string>
+    <string name="userlist_follower" translatable="false">Follower</string>
+    <string name="toolbar_userlist_retweet">Tweet retweeted by</string>
+    <string name="settings_color_settings">Color settings</string>
+    <string name="settings_background">Background</string>
+    <string name="settings_text">Text</string>
+    <string name="settings_button_popup">Window</string>
+    <string name="settings_color_card">Cards</string>
+    <string name="settings_icon_color">Icons</string>
+    <string name="settings_color_like">Like</string>
+    <string name="settings_color_fav">Favorite</string>
+    <string name="highlight">Highlight</string>
+    <string name="settings_api_info">• changing API Keys requires re-login</string>
+    <string name="settings_list_size">List size</string>
+    <string name="settings_enable_like">use \'Like\' instead of ’Favorite’</string>
+    <string name="confirm_retry_button">retry</string>
+    <string name="data_consumption">Data consumption</string>
+    <string name="trend_setting">Trend location</string>
+    <string name="register_link">get PIN</string>
+    <string name="settings_image">enable images</string>
+    <string name="settings_clear_data">clear app data</string>
+    <string name="confirm_delete_tweet">delete tweet?</string>
+    <string name="confirm_delete_database">clear app data?</string>
+    <string name="tweet_sent_from">"sent from: "</string>
+    <string name="directmessage">Directmessage</string>
+    <string name="directmessage_media_button">media attachment</string>
+    <string name="username">Username</string>
+    <string name="dm_message">Message</string>
+    <string name="confirm_cancel_message">discard message?</string>
+    <string name="settings_logout">log out</string>
+    <string name="dm_answer">answer</string>
+    <string name="delete_dm">delete</string>
+    <string name="confirm_unfollow">unfollow user?</string>
+    <string name="confirm_block">block user?</string>
+    <string name="confirm_log_lout">log out?</string>
+    <string name="confirm_cancel_tweet">discard tweet?</string>
+    <string name="image_preview">Image preview</string>
+    <string name="tweet_add_image">add new image</string>
+    <string name="send_tweet">share Tweet</string>
+    <string name="tweet_close">close editor</string>
+    <string name="profile_link">Link</string>
+    <string name="close_dm">close direct message</string>
+    <string name="profile_location">Location</string>
+    <string name="profile_bio">Bio</string>
+    <string name="confirm_discard">discard changes?</string>
+    <string name="user_data">User data</string>
+    <string name="follows_you">follows you</string>
+    <string name="settings_enable_ans_load">load Tweet replies automatically</string>
+    <string name="settings_connections">Connection settings</string>
+    <string name="settings_hint_proxy_ip">enter IP address</string>
+    <string name="proxy_port">Port</string>
+    <string name="edit_proxy_user">Username</string>
+    <string name="proxy_password">Password</string>
+    <string name="settings_key1_hint">Consumer key</string>
+    <string name="settings_key2_hint">Consumer secret</string>
+    <string name="confirm_mute">mute user?</string>
+    <string name="item_list_pb_desc">Profile of the list owner</string>
+    <string name="list_appbar">Lists</string>
+    <string name="edit_location_hint">enter location</string>
+    <string name="edit_hint_link">enter website link</string>
+    <string name="edit_description_hint">enter profile description</string>
+    <string name="page_profile_editor">edit profile</string>
+    <string name="delete_list">delete userlist</string>
+    <string name="confirm_delete_list">delete userlist?</string>
+    <string name="confirm_delete_message">delete message?</string>
+    <string name="confirm_unfollow_list">unfollow list?</string>
+    <string name="trend_range">Tweets</string>
+    <string name="enter_username">enter username</string>
+    <string name="profile_banner">Banner Image</string>
+    <string name="editprofile_add_banner">add banner</string>
+    <string name="settings_enable_hq_img">High resolution images</string>
+    <string name="settings_app_information">App source code:</string>
+    <string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
+    <string name="settings_look">Look</string>
+    <string name="settings_toggle_link_preview">enable link preview</string>
+    <string name="item_load_more">load more</string>
+    <string name="item_image_save">save image</string>
+    <string name="settings_enable_proxy">enable proxy</string>
+    <string name="settings_enable_proxy_auth">enable proxy authentication</string>
+    <string name="settings_setup_custom_keys">setup custom API keys</string>
+    <string name="confirm_back">back</string>
+    <string name="tweet_sensitive_media">sensitive content</string>
+    <string name="login_info">3 steps to login</string>
+    <string name="login_first_opt" translatable="false">1.</string>
+    <string name="login_sec_opt" translatable="false">2.</string>
+    <string name="login_trd_opt" translatable="false">3.</string>
+    <string name="userlist_public_sel">public</string>
+    <string name="userlist_enter_title">enter list title</string>
+    <string name="userlist_enter_description">enter list description</string>
+    <string name="userlist_create">create userlist</string>
+    <string name="userlist_create_new_list">create a new userlist</string>
+    <string name="update_list">update list</string>
+    <string name="confirm_remove_user_from_list">remove user from list?</string>
+    <string name="descr_remove_user">remove user from list</string>
+    <string name="list_following_indicator">following list</string>
+    <string name="descr_add_profile_image">change profile image</string>
+    <string name="app_info_twitter_rules">The Twitter rules:</string>
+    <string name="button_backward">Rewind</string>
+    <string name="button_forward">Fast forward</string>
+    <string name="button_play_pause">Pause/Play</string>
+    <string name="button_share">share link</string>
+    <string name="settings_rt_icon_color">Retweet</string>
+    <string name="settings_follow_req_color">Follow request</string>
+    <string name="settings_follow_color">Following icon</string>
+    <string name="account_page" translatable="false">Accounts</string>
+    <string name="confirm_remove_account">remove account from list?</string>
+    <string name="account_user_id_prefix" translatable="false">User ID:</string>
+    <string name="account_user_unnamed">\'unnamed\'</string>
+    <string name="toolbar_tweet_favoriter">User favoriting this tweet</string>
+    <string name="toolbar_tweet_liker">User liking this tweet</string>
+    <string name="time_now">now</string>
 
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <plurals name="n_seconds">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> second ago</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> seconds ago</item>
+    </plurals>
+
+    <plurals name="n_minutes">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> minute ago</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> minutes ago</item>
+    </plurals>
+
+    <plurals name="n_hours">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> hour ago</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> hours ago</item>
+    </plurals>
+
+    <plurals name="n_days">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> day ago</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> days ago</item>
+    </plurals>
+
+    <plurals name="n_weeks">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> week ago</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> weeks ago</item>
+    </plurals>
+
+</resources>

@@ -9,6 +9,7 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -72,6 +73,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     private TweetClickListener itemClickListener;
     private GlobalSettings settings;
+    private Resources resources;
     private Picasso picasso;
 
     private final List<Tweet> tweets = new LinkedList<>();
@@ -84,6 +86,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         this.itemClickListener = itemClickListener;
         settings = GlobalSettings.getInstance(context);
         picasso = PicassoBuilder.get(context);
+        resources = context.getResources();
     }
 
     /**
@@ -284,7 +287,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             tweetItem.textViews[1].setText(user.getScreenname());
             tweetItem.textViews[3].setText(NUM_FORMAT.format(tweet.getRetweetCount()));
             tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
-            tweetItem.textViews[6].setText(formatCreationTime(tweet.getTimestamp()));
+            tweetItem.textViews[6].setText(formatCreationTime(resources, tweet.getTimestamp()));
 
             if (tweet.isRetweeted()) {
                 tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);

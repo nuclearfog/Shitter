@@ -6,6 +6,7 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
 
     private ListClickListener listener;
     private GlobalSettings settings;
+    private Resources resources;
     private Picasso picasso;
 
     private UserLists data = new UserLists();
@@ -73,6 +75,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
         this.listener = listener;
         settings = GlobalSettings.getInstance(context);
         picasso = PicassoBuilder.get(context);
+        resources = context.getResources();
     }
 
     /**
@@ -211,7 +214,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.textViews[1].setText(item.getDescription());
                 vh.textViews[2].setText(owner.getUsername());
                 vh.textViews[3].setText(owner.getScreenname());
-                vh.textViews[4].setText(formatCreationTime(item.getTimestamp()));
+                vh.textViews[4].setText(formatCreationTime(resources, item.getTimestamp()));
                 vh.textViews[5].setText(NUM_FORMAT.format(item.getMemberCount()));
                 vh.textViews[6].setText(NUM_FORMAT.format(item.getSubscriberCount()));
                 if (settings.imagesEnabled() && !owner.getImageUrl().isEmpty()) {

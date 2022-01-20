@@ -2,7 +2,10 @@ package org.nuclearfog.twidda.backend.utils;
 
 import static org.nuclearfog.twidda.backend.api.Twitter.SIGNATURE_ALG;
 
+import android.content.res.Resources;
 import android.util.Base64;
+
+import org.nuclearfog.twidda.R;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -61,33 +64,32 @@ public final class StringTools {
      * @param time time value from which to create a difference
      * @return time string showing the time difference
      */
-    public static String formatCreationTime(long time) {
+    public static String formatCreationTime(Resources resources, long time) {
         long diff = new Date().getTime() - time;
-        long seconds = diff / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long days = hours / 24;
-        long weeks = days / 7;
-        if (weeks > 4) {
-            Date tweetDate = new Date(time);
-            return SimpleDateFormat.getDateInstance().format(tweetDate);
+        if (diff > 2419200000L) { // more than 4 weeks
+            return SimpleDateFormat.getDateInstance().format(time);
         }
-        if (weeks > 0) {
-            return weeks + " w";
+        if (diff > 604800000L) { // more than a week
+            int number = (int) (diff / 604800000L);
+            return resources.getQuantityString(R.plurals.n_weeks, number, number);
         }
-        if (days > 0) {
-            return days + " d";
+        if (diff > 86400000L) { // more than a day
+            int number = (int) (diff / 86400000L);
+            return resources.getQuantityString(R.plurals.n_days, number, number);
         }
-        if (hours > 0) {
-            return hours + " h";
+        if (diff > 3600000L) { // more than a hour
+            int number = (int) (diff / 3600000L);
+            return resources.getQuantityString(R.plurals.n_hours, number, number);
         }
-        if (minutes > 0) {
-            return minutes + " m";
+        if (diff / 60000L > 0) { // more than a minute
+            int number = (int) (diff / 60000L);
+            return resources.getQuantityString(R.plurals.n_minutes, number, number);
         }
-        if (seconds > 0) {
-            return seconds + " s";
+        if (diff / 1000L > 0) {
+            int number = (int) (diff / 1000L);
+            return resources.getQuantityString(R.plurals.n_seconds, number, number);
         }
-        return "0 s";
+        return resources.getString(R.string.time_now);
     }
 
     /**

@@ -50,7 +50,7 @@ public class Users extends LinkedList<User> {
     public int removeItem(String name) {
         for (int index = 0; index < size(); index++) {
             User item = get(index);
-            if (item != null && item.getScreenname().equals(name)) {
+            if (item != null && item.getScreenname().contains(name)) {
                 remove(index);
                 return index;
             }

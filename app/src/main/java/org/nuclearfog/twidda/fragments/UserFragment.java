@@ -234,9 +234,12 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    public void onSuccess(String[] names) {
-        Toast.makeText(requireContext(), R.string.info_user_removed, Toast.LENGTH_SHORT).show();
-        adapter.removeUser(names[0]);
+    public void onSuccess(String name) {
+        if (name.startsWith("@"))
+            name = name.substring(1);
+        String info = getString(R.string.info_user_removed, name);
+        Toast.makeText(requireContext(), info, Toast.LENGTH_SHORT).show();
+        adapter.removeUser(name);
     }
 
 

@@ -6,6 +6,7 @@ import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_SCR_NAME;
 import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_USERNAME;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,6 +40,7 @@ public class AccountAdapter extends Adapter<LoginHolder> {
     private List<Account> data = new ArrayList<>();
     private GlobalSettings settings;
     private OnAccountClickListener listener;
+    private Resources resources;
     private Picasso picasso;
 
     /**
@@ -48,6 +50,7 @@ public class AccountAdapter extends Adapter<LoginHolder> {
         this.listener = listener;
         picasso = PicassoBuilder.get(context);
         settings = GlobalSettings.getInstance(context);
+        resources = context.getResources();
     }
 
 
@@ -83,7 +86,7 @@ public class AccountAdapter extends Adapter<LoginHolder> {
     public void onBindViewHolder(@NonNull LoginHolder holder, int position) {
         Account account = data.get(position);
         User user = account.getUser();
-        String date = StringTools.formatCreationTime(account.getLoginDate());
+        String date = StringTools.formatCreationTime(resources, account.getLoginDate());
         holder.text[IDX_CREATED].setText(date);
         if (user != null) {
             // set profile information

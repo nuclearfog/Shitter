@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListManager extends AsyncTask<String, Void, String[]> {
+public class ListManager extends AsyncTask<String, Void, String> {
 
     /**
      * actions to be taken
@@ -56,19 +56,18 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
 
 
     @Override
-    protected String[] doInBackground(String... strings) {
+    protected String doInBackground(String... strings) {
         try {
-            String screen_name = strings[0];
             switch (action) {
                 case ADD_USER:
-                    twitter.addUserToUserlist(listId, screen_name);
+                    twitter.addUserToUserlist(listId, strings[0]);
                     break;
 
                 case DEL_USER:
-                    twitter.removeUserFromUserlist(listId, screen_name);
+                    twitter.removeUserFromUserlist(listId, strings[0]);
                     break;
             }
-            return strings;
+            return strings[0];
         } catch (TwitterException err) {
             this.err = err;
         }
@@ -77,7 +76,7 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
 
 
     @Override
-    protected void onPostExecute(String[] names) {
+    protected void onPostExecute(String names) {
         if (callback.get() != null) {
             if (names != null) {
                 callback.get().onSuccess(names);
@@ -97,7 +96,7 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
          *
          * @param names the names of the users added or removed from list
          */
-        void onSuccess(String[] names);
+        void onSuccess(String names);
 
         /**
          * called when an error occurs
