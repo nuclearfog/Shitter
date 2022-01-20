@@ -1,16 +1,9 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.ListEditor.KEY_LIST_EDITOR_DATA;
-import static org.nuclearfog.twidda.backend.ListAction.Action.DELETE;
-import static org.nuclearfog.twidda.backend.ListAction.Action.FOLLOW;
-import static org.nuclearfog.twidda.backend.ListAction.Action.LOAD;
-import static org.nuclearfog.twidda.backend.ListAction.Action.UNFOLLOW;
+import static org.nuclearfog.twidda.activities.UserlistEditor.KEY_LIST_EDITOR_DATA;
 import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
-import static org.nuclearfog.twidda.fragments.UserListFragment.RESULT_REMOVED_LIST_ID;
-import static org.nuclearfog.twidda.fragments.UserListFragment.RESULT_UPDATE_LIST;
-import static org.nuclearfog.twidda.fragments.UserListFragment.RETURN_LIST_REMOVED;
-import static org.nuclearfog.twidda.fragments.UserListFragment.RETURN_LIST_UPDATED;
+import static org.nuclearfog.twidda.fragments.UserListFragment.*;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -51,22 +44,17 @@ import java.util.regex.Pattern;
 
 /**
  * This activity shows content of an user list
- * like tweets, list member and follower
+ * like tweets, list member and subscriber
  *
  * @author nuclearfog
  */
-public class ListDetail extends AppCompatActivity implements OnTabSelectedListener,
+public class UserlistActivity extends AppCompatActivity implements OnTabSelectedListener,
         OnQueryTextListener, ListManagerCallback, OnConfirmListener {
 
     /**
      * Key to get user list object
      */
     public static final String KEY_LIST_DATA = "list_data";
-
-    /**
-     * return updated userlist information
-     */
-    public static final String RET_LIST_DATA = "list-data";
 
     /**
      * Request code for list editing
@@ -95,7 +83,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Nullable
     private UserList userList;
-    private long listId = -1;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -112,8 +100,6 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
 
-        settings = GlobalSettings.getInstance(this);
-
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
@@ -126,13 +112,13 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
         if (data instanceof UserList) {
             userList = (UserList) data;
-            listId = userList.getId();
             toolbar.setTitle(userList.getTitle());
             toolbar.setSubtitle(userList.getDescription());
             adapter.setupListContentPage(userList.getId(), userList.isListOwner());
         }
 
         setSupportActionBar(toolbar);
+        settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(root, settings.getBackgroundColor());
         AppStyles.setTabIcons(tablayout, settings, R.array.list_tab_icons);
     }
@@ -141,8 +127,10 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (listLoaderTask == null) {
-            loadList();
+        if (listLoaderTask == null && userList != null) {
+            // update list information
+            listLoaderTask = new ListAction(this, userList.getId(), ListAction.LOAD);
+            listLoaderTask.execute();
         }
     }
 
@@ -198,7 +186,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         if (userList != null && (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING)) {
             // open user list editor
             if (item.getItemId() == R.id.menu_list_edit) {
-                Intent editList = new Intent(this, ListEditor.class);
+                Intent editList = new Intent(this, UserlistEditor.class);
                 editList.putExtra(KEY_LIST_EDITOR_DATA, userList);
                 startActivityForResult(editList, REQ_LIST_CHANGE);
             }
@@ -215,8 +203,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
                         unfollowDialog.show();
                     }
                 } else {
-                    listLoaderTask = new ListAction(this, FOLLOW);
-                    listLoaderTask.execute(userList.getId());
+                    listLoaderTask = new ListAction(this, userList.getId(), ListAction.FOLLOW);
+                    listLoaderTask.execute();
                 }
             }
             // theme expanded search view
@@ -246,7 +234,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent result) {
         if (result != null && reqCode == REQ_LIST_CHANGE) {
             if (returnCode == RET_LIST_CHANGED) {
-                Object data = result.getSerializableExtra(RET_LIST_DATA);
+                Object data = result.getSerializableExtra(KEY_LIST_DATA);
                 if (data instanceof UserList) {
                     userList = (UserList) data;
                     toolbar.setTitle(userList.getTitle());
@@ -261,15 +249,17 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onConfirm(DialogType type) {
+        if (userList == null)
+            return;
         // delete user list
         if (type == DialogType.LIST_DELETE) {
-            listLoaderTask = new ListAction(this, DELETE);
-            listLoaderTask.execute(listId);
+            listLoaderTask = new ListAction(this, userList.getId(), ListAction.DELETE);
+            listLoaderTask.execute();
         }
         // unfollow user list
         else if (type == DialogType.LIST_UNFOLLOW) {
-            listLoaderTask = new ListAction(this, UNFOLLOW);
-            listLoaderTask.execute(listId);
+            listLoaderTask = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
+            listLoaderTask.execute();
         }
     }
 
@@ -298,10 +288,12 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        if (userList == null)
+            return false;
         if (USERNAME_PATTERN.matcher(query).matches()) {
             if (userListManager == null || userListManager.getStatus() != RUNNING) {
                 Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-                userListManager = new ListManager(listId, ADD_USER, this, this);
+                userListManager = new ListManager(userList.getId(), ADD_USER, this, this);
                 userListManager.execute(query);
                 return true;
             }
@@ -332,26 +324,26 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      *
      * @param userList TwitterList information
      */
-    public void onSuccess(UserList userList, ListAction.Action action) {
+    public void onSuccess(UserList userList, int action) {
         this.userList = userList;
         switch (action) {
-            case LOAD:
+            case ListAction.LOAD:
                 toolbar.setTitle(userList.getTitle());
                 toolbar.setSubtitle(userList.getDescription());
                 invalidateOptionsMenu();
                 break;
 
-            case FOLLOW:
+            case ListAction.FOLLOW:
                 Toast.makeText(this, R.string.info_list_followed, Toast.LENGTH_SHORT).show();
                 invalidateOptionsMenu();
                 break;
 
-            case UNFOLLOW:
+            case ListAction.UNFOLLOW:
                 Toast.makeText(this, R.string.info_list_unfollowed, Toast.LENGTH_SHORT).show();
                 invalidateOptionsMenu();
                 break;
 
-            case DELETE:
+            case ListAction.DELETE:
                 Intent result = new Intent();
                 result.putExtra(RESULT_REMOVED_LIST_ID, userList.getId());
                 setResult(RETURN_LIST_REMOVED, result);
@@ -376,13 +368,5 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             setResult(RETURN_LIST_REMOVED, result);
             finish();
         }
-    }
-
-    /**
-     * load list information
-     */
-    private void loadList() {
-        listLoaderTask = new ListAction(this, LOAD);
-        listLoaderTask.execute(listId);
     }
 }

@@ -993,7 +993,7 @@ public class GlobalSettings {
     }
 
     /**
-     * Remove all user content from Shared Preferences
+     * clear user specific settings
      */
     public void logout() {
         loggedIn = false;
@@ -1011,13 +1011,17 @@ public class GlobalSettings {
 
     /**
      * register settings listener
+     * changes like new proxy settings requires re initialization
+     * registered instances can be notified if these setting change
+     *
+     * @param listener listener called when some settings change
      */
-    public void registerObserver(@NonNull SettingsListener listener) {
+    public void addSettingsChangeListener(@NonNull SettingsListener listener) {
         settingsListeners.add(listener);
     }
 
     /**
-     * notify listener when settings changes
+     * notify listener when settings changes and clear old instances
      */
     private void notifySettingsChange() {
         for (SettingsListener listener : settingsListeners) {

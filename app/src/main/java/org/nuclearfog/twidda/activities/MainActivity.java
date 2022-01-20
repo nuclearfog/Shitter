@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +30,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.LinkLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 
@@ -40,6 +40,11 @@ import org.nuclearfog.twidda.dialog.ProgressDialog;
  * @author nuclearfog
  */
 public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
+
+    /**
+     * bundle key used to set the page
+     */
+    public static final String KEY_TAB_PAGE = "tab_pos";
 
     /**
      * Code returned from {@link AppSettings} when user clears the database
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
             if (getIntent().getData() != null) {
                 LinkLoader linkLoader = new LinkLoader(this);
                 linkLoader.execute(getIntent().getData());
+                loadingCircle.show();
             }
         }
     }
@@ -282,29 +288,27 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     }
 
     /**
-     * called from {@link LinkLoader} to set progress circle
+     * called from {@link LinkLoader} when link information were successfully loaded
+     *
+     * @param holder holder with activity information and extras
      */
-    public void setLoading(boolean enable) {
-        if (enable) {
-            loadingCircle.show();
+    public void onSuccess(LinkLoader.DataHolder holder) {
+        loadingCircle.dismiss();
+        if (holder.activity == MainActivity.class) {
+            int page = holder.data.getInt(KEY_TAB_PAGE, 0);
+            pager.setCurrentItem(page);
         } else {
-            loadingCircle.dismiss();
+            Intent intent = new Intent(this, holder.activity);
+            intent.putExtras(holder.data);
+            startActivity(intent);
         }
     }
 
     /**
      * called from {@link LinkLoader} when an error occurs
      */
-    public void onError() {
-        Toast.makeText(this, R.string.error_open_link, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * set current tab
-     *
-     * @param page page number
-     */
-    public void setTab(@IntRange(from = 0, to = 2) int page) {
-        pager.setCurrentItem(page);
+    public void onError(ErrorHandler.TwitterError error) {
+        ErrorHandler.handleFailure(this, error);
+        loadingCircle.dismiss();
     }
 }

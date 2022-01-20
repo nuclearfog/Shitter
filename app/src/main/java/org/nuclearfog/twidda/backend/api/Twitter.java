@@ -134,7 +134,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         settings = GlobalSettings.getInstance(context);
         tokens = Tokens.getInstance(context);
         filterList = new ExcludeDatabase(context);
-        settings.registerObserver(this);
+        settings.addSettingsChangeListener(this);
         // init okhttp
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.writeTimeout(60, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).connectTimeout(60, TimeUnit.SECONDS);

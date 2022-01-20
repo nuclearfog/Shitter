@@ -5,7 +5,7 @@
     android:id="@+id/list_popup_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ListEditor">
+    tools:context=".activities.UserlistEditor">
 
     <ImageView
         android:id="@+id/userlist_popup_background"

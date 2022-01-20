@@ -12,15 +12,16 @@ import java.util.List;
 
 /**
  * This class hosts {@link UserProxy} and provides the proxy settings on demand
+ * Some classes like MediaPlayer doesn't support proxy settings.
  *
  * @author nuclearfog
  */
-public class AppProxySelector extends ProxySelector {
+public class GlobalProxySelector extends ProxySelector {
 
     private GlobalSettings settings;
 
 
-    public AppProxySelector(GlobalSettings settings) {
+    public GlobalProxySelector(GlobalSettings settings) {
         this.settings = settings;
     }
 

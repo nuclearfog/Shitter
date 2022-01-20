@@ -67,15 +67,6 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * removes all items from adapter
-     */
-    @MainThread
-    public void clear() {
-        trends.clear();
-        notifyDataSetChanged();
-    }
-
-    /**
      * check if adapter is empty
      *
      * @return true if adapter is empty

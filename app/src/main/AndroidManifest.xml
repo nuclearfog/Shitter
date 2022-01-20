@@ -120,12 +120,12 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.ListDetail"
+            android:name=".activities.UserlistActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.ListEditor"
+            android:name=".activities.UserlistEditor"
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 

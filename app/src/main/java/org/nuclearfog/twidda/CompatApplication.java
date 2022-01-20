@@ -5,7 +5,7 @@ import android.os.Build;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
-import org.nuclearfog.twidda.backend.proxy.AppProxySelector;
+import org.nuclearfog.twidda.backend.proxy.GlobalProxySelector;
 import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -28,7 +28,7 @@ public class CompatApplication extends Application {
         }
         // setup proxy settings
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppProxySelector proxyConnection = new AppProxySelector(settings);
+        GlobalProxySelector proxyConnection = new GlobalProxySelector(settings);
         ProxyAuthenticator proxyLogin = new ProxyAuthenticator(settings);
         try {
             ProxySelector.setDefault(proxyConnection);

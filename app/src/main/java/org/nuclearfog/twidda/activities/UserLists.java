@@ -38,12 +38,12 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
     /**
-     * request code for {@link ListEditor} OnTabSelectedListener
+     * request code for {@link UserlistEditor} OnTabSelectedListener
      */
     private static final int REQ_CREATE_LIST = 0x9D8E;
 
     /**
-     * return code for {@link ListEditor} if list was created
+     * return code for {@link UserlistEditor} if list was created
      */
     public static final int RET_LIST_CREATED = 0xE8715442;
 
@@ -123,7 +123,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.list_create) {
-            Intent createList = new Intent(this, ListEditor.class);
+            Intent createList = new Intent(this, UserlistEditor.class);
             startActivityForResult(createList, REQ_CREATE_LIST);
         }
         return super.onOptionsItemSelected(item);

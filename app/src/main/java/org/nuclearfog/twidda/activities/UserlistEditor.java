@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.ListDetail.RET_LIST_CHANGED;
-import static org.nuclearfog.twidda.activities.ListDetail.RET_LIST_DATA;
+import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_DATA;
+import static org.nuclearfog.twidda.activities.UserlistActivity.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activities.UserLists.RET_LIST_CREATED;
 
 import android.app.Dialog;
@@ -39,7 +39,7 @@ import org.nuclearfog.twidda.model.UserList;
  *
  * @author nuclearfog
  */
-public class ListEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
+public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
 
     /**
      * Key for the list ID of the list if an existing list should be updated
@@ -153,7 +153,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         if (userList != null) {
             Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
             Intent data = new Intent();
-            data.putExtra(RET_LIST_DATA, result);
+            data.putExtra(KEY_LIST_DATA, result);
             setResult(RET_LIST_CHANGED, data);
         } else {
             // it's a new list, if no list is defined

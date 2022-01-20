@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.activities.ListDetail;
+import org.nuclearfog.twidda.activities.UserlistActivity;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.model.UserList;
@@ -14,53 +14,52 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListAction extends AsyncTask<Long, Void, UserList> {
+public class ListAction extends AsyncTask<Void, Void, UserList> {
 
     /**
-     * Actions to perform
+     * load userlist information
      */
-    public enum Action {
-        /**
-         * load userlist information
-         */
-        LOAD,
-        /**
-         * follow user list
-         */
-        FOLLOW,
-        /**
-         * unfollow user list
-         */
-        UNFOLLOW,
-        /**
-         * delete user list
-         */
-        DELETE,
-    }
+    public static final int LOAD = 1;
 
-    private WeakReference<ListDetail> callback;
+    /**
+     * unfollow user list
+     */
+    public static final int FOLLOW = 2;
+
+    /**
+     * unfollow user list
+     */
+    public static final int UNFOLLOW = 3;
+
+    /**
+     * delete user list
+     */
+    public static final int DELETE = 4;
+
+
+    private WeakReference<UserlistActivity> callback;
     private Twitter twitter;
     private TwitterException err;
-    private Action action;
 
-    private long missingListId;
+    private long listId;
+    private int action;
 
     /**
      * @param activity Callback to update list information
      * @param action   what action should be performed
      */
-    public ListAction(ListDetail activity, Action action) {
+    public ListAction(UserlistActivity activity, long listId, int action) {
         super();
         callback = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
+        this.listId = listId;
         this.action = action;
     }
 
 
     @Override
-    protected UserList doInBackground(Long... ids) {
+    protected UserList doInBackground(Void... v) {
         try {
-            long listId = ids[0];
             switch (action) {
                 case LOAD:
                     return twitter.getUserlist1(listId);
@@ -76,7 +75,6 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            missingListId = ids[0];
         }
         return null;
     }
@@ -84,12 +82,12 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
 
     @Override
     protected void onPostExecute(UserList userList) {
-        ListDetail callback = this.callback.get();
+        UserlistActivity callback = this.callback.get();
         if (callback != null) {
             if (userList != null) {
                 callback.onSuccess(userList, action);
             } else {
-                callback.onFailure(err, missingListId);
+                callback.onFailure(err, listId);
             }
         }
     }

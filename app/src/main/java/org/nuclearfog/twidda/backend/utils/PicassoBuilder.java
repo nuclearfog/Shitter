@@ -18,7 +18,7 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.OkHttpClient;
 
 /**
- * Create Picasso instance with TLS 1.2 support for pre Lollipo devices
+ * Create Picasso instance with proxy connection and TLS 1.2 support for pre Lollipo devices
  *
  * @author nuclearfog
  */
@@ -32,7 +32,7 @@ public class PicassoBuilder implements GlobalSettings.SettingsListener {
 
     private PicassoBuilder(Context context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        settings.registerObserver(this);
+        settings.addSettingsChangeListener(this);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         // setup proxy
         if (settings.isProxyEnabled()) {

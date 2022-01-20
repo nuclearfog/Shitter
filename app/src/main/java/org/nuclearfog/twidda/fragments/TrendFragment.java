@@ -50,9 +50,8 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
     @Override
     protected void onReset() {
-        if (adapter != null) {
-            adapter.clear();
-        }
+        adapter = new TrendAdapter(settings, this);
+        setAdapter(adapter);
         load();
         setRefresh(true);
     }
