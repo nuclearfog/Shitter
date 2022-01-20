@@ -113,6 +113,27 @@ public final class StringTools {
     }
 
     /**
+     * unescapte html based text
+     *
+     * @param text text containing html escapes
+     * @return unescaped text
+     */
+    public static String unescapeString(String text) {
+        StringBuilder result = new StringBuilder(text);
+        for (int i = result.length() - 1 ; i >= 0 ; i--) {
+            if (result.charAt(i) == '&') {
+                if (result.substring(i).startsWith("&amp;"))
+                    result.replace(i, i + 5, "&");
+                else if (result.substring(i).startsWith("&lt;"))
+                    result.replace(i, i + 4, "<");
+                else if (result.substring(i).startsWith("&gt;"))
+                    result.replace(i, i + 4, ">");
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * append user mentions in a text to a string
      *
      * @param text text with user mentions (e.g. tweet)

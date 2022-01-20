@@ -344,14 +344,8 @@ class TweetV1 implements Tweet {
             // use default tweet text
             builder = new StringBuilder(text);
         }
-
-        // replace "&amp;" string
-        int index = builder.lastIndexOf("&amp;");
-        while (index >= 0) {
-            builder.replace(index, index + 5, "&");
-            index = builder.lastIndexOf("&amp;");
-        }
-        return builder.toString();
+        // remove html escape strings
+        return StringTools.unescapeString(builder.toString());
     }
 
     /**
