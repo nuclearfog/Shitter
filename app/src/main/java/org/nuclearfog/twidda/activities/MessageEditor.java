@@ -1,13 +1,8 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.OnClickListener;
-import static android.view.View.VISIBLE;
+import static android.view.View.*;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -143,9 +138,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         }
         // open media
         else if (v.getId() == R.id.dm_preview) {
-            Intent image = new Intent(this, MediaViewer.class);
-            image.putExtra(KEY_MEDIA_URI, new Uri[]{mediaUri});
-            image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+            Intent image = new Intent(this, ImageViewer.class);
+            image.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{mediaUri});
+            image.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
             startActivity(image);
         }
     }

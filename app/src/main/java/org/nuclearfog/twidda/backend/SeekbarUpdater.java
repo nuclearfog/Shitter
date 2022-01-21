@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
-import org.nuclearfog.twidda.activities.MediaViewer;
+import org.nuclearfog.twidda.activities.VideoViewer;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Executors;
@@ -8,18 +8,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class updates {@link MediaViewer}'s Seekbar while playing a video
+ * This class updates {@link VideoViewer}'s Seekbar while playing a video
  *
  * @author nuclearfog
  */
 public class SeekbarUpdater implements Runnable {
 
     private ScheduledExecutorService updater;
-    private WeakReference<MediaViewer> callback;
+    private WeakReference<VideoViewer> callback;
 
     private Runnable seekUpdate = new Runnable() {
         public void run() {
-            MediaViewer mediaViewer = callback.get();
+            VideoViewer mediaViewer = callback.get();
             if (mediaViewer != null) {
                 mediaViewer.updateSeekBar();
             }
@@ -27,7 +27,7 @@ public class SeekbarUpdater implements Runnable {
     };
 
 
-    public SeekbarUpdater(MediaViewer callback, int milliseconds) {
+    public SeekbarUpdater(VideoViewer callback, int milliseconds) {
         this.callback = new WeakReference<>(callback);
         updater = Executors.newScheduledThreadPool(1);
         updater.scheduleWithFixedDelay(this, milliseconds, milliseconds, TimeUnit.MILLISECONDS);
@@ -36,7 +36,7 @@ public class SeekbarUpdater implements Runnable {
 
     @Override
     public void run() {
-        MediaViewer mediaViewer = callback.get();
+        VideoViewer mediaViewer = callback.get();
         if (mediaViewer != null) {
             mediaViewer.runOnUiThread(seekUpdate);
         }

@@ -1,15 +1,8 @@
 package org.nuclearfog.twidda.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_VIDEO;
+import static android.os.AsyncTask.Status.*;
+import static android.view.View.*;
+import static android.widget.Toast.*;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -215,20 +208,29 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         }
         // open media preview
         else if (v.getId() == R.id.tweet_prev_media) {
-            Intent mediaViewer = new Intent(this, MediaViewer.class);
             Uri[] uris = tweetUpdate.getMediaUris();
-            mediaViewer.putExtra(KEY_MEDIA_URI, uris);
+            //
             if (selectedFormat == MEDIA_VIDEO) {
-                mediaViewer.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
-            } else if (selectedFormat == MEDIA_IMAGE) {
-                mediaViewer.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-            } else if (selectedFormat == MEDIA_GIF) {
-                // todo add support for local gif animation
-                mediaViewer.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-            } else {
-                return;
+                Intent mediaViewer = new Intent(this, VideoViewer.class);
+                mediaViewer.putExtra(VideoViewer.VIDEO_URI, uris[0]);
+                mediaViewer.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+                startActivity(mediaViewer);
             }
-            startActivity(mediaViewer);
+            //
+            else if (selectedFormat == MEDIA_IMAGE) {
+                Intent mediaViewer = new Intent(this, ImageViewer.class);
+                mediaViewer.putExtra(ImageViewer.IMAGE_URIS, uris);
+                mediaViewer.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
+                startActivity(mediaViewer);
+            }
+            //
+            else if (selectedFormat == MEDIA_GIF) {
+                // todo add support for local gif animation
+                Intent mediaViewer = new Intent(this, ImageViewer.class);
+                mediaViewer.putExtra(ImageViewer.IMAGE_URIS, uris);
+                mediaViewer.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
+                startActivity(mediaViewer);
+            }
         }
         // add location to the tweet
         else if (v.getId() == R.id.tweet_add_location) {

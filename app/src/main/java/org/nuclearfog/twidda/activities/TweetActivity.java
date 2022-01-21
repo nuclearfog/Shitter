@@ -1,29 +1,12 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
+import static android.view.View.*;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_ANGIF;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_VIDEO;
-import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_REPLYID;
-import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FAVORIT;
-import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.fragments.TweetFragment.INTENT_TWEET_REMOVED_ID;
-import static org.nuclearfog.twidda.fragments.TweetFragment.INTENT_TWEET_UPDATE_DATA;
-import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
-import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
-import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragments.TweetFragment.RETURN_TWEET_NOT_FOUND;
-import static org.nuclearfog.twidda.fragments.TweetFragment.RETURN_TWEET_UPDATE;
-import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_ANSWER;
+import static org.nuclearfog.twidda.activities.SearchPage.*;
+import static org.nuclearfog.twidda.activities.TweetEditor.*;
+import static org.nuclearfog.twidda.activities.UserDetail.*;
+import static org.nuclearfog.twidda.fragments.TweetFragment.*;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -368,23 +351,28 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // open tweet media
             else if (v.getId() == R.id.tweet_media_attach) {
-                // convert links to uri
-                Intent mediaIntent = new Intent(this, MediaViewer.class);
-                mediaIntent.putExtra(KEY_MEDIA_URI, clickedTweet.getMediaLinks());
-                switch (clickedTweet.getMediaType()) {
-                    case Tweet.MEDIA_PHOTO:
-                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                        break;
-
-                    case Tweet.MEDIA_VIDEO:
-                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
-                        break;
-
-                    case Tweet.MEDIA_GIF:
-                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
-                        break;
+                if (clickedTweet.getMediaType().equals(Tweet.MEDIA_PHOTO)) {
+                    Intent mediaIntent = new Intent(this, ImageViewer.class);
+                    mediaIntent.putExtra(ImageViewer.IMAGE_URIS, clickedTweet.getMediaLinks());
+                    mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+                    startActivity(mediaIntent);
                 }
-                startActivity(mediaIntent);
+                //
+                else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_VIDEO)) {
+                    Uri link = clickedTweet.getMediaLinks()[0];
+                    Intent mediaIntent = new Intent(this, VideoViewer.class);
+                    mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
+                    mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+                    startActivity(mediaIntent);
+                }
+                //
+                else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_GIF)) {
+                    Uri link = clickedTweet.getMediaLinks()[0];
+                    Intent mediaIntent = new Intent(this, VideoViewer.class);
+                    mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
+                    mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+                    startActivity(mediaIntent);
+                }
             }
             // go to user retweeting this tweet
             else if (v.getId() == R.id.tweet_retweeter_reference) {

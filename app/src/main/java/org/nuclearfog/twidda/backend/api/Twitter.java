@@ -143,7 +143,6 @@ public class Twitter implements GlobalSettings.SettingsListener {
         builder.proxyAuthenticator(new ProxyAuthenticator(settings));
         // enable experimental TLS 1.2 support for old android versions
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            TLSSocketFactory.setSupportTLS();
             try {
                 TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 factory.init((KeyStore) null);

@@ -5,46 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/half_transparent"
-    tools:context=".activities.MediaViewer">
-
-    <org.nuclearfog.zoomview.ZoomView
-        android:id="@+id/image_full"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:enable_move="true"
-        app:max_zoom_in="10.0"
-        app:max_zoom_out="0.5" />
-
-    <LinearLayout
-        android:id="@+id/image_preview_list"
-        android:orientation="horizontal"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        android:layout_margin="@dimen/mediapage_preview_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/image_list"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:scrollbars="horizontal" />
-
-    </LinearLayout>
+    tools:context=".activities.VideoViewer">
 
     <VideoView
         android:id="@+id/video_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

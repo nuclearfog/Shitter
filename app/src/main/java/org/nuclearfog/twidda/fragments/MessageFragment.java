@@ -2,15 +2,10 @@ package org.nuclearfog.twidda.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.activities.MessageEditor.*;
+import static org.nuclearfog.twidda.activities.SearchPage.*;
+import static org.nuclearfog.twidda.activities.TweetActivity.*;
+import static org.nuclearfog.twidda.activities.UserProfile.*;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -24,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.activities.MediaViewer;
+import org.nuclearfog.twidda.activities.ImageViewer;
 import org.nuclearfog.twidda.activities.MessageEditor;
 import org.nuclearfog.twidda.activities.SearchPage;
 import org.nuclearfog.twidda.activities.TweetActivity;
@@ -156,10 +151,10 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
 
                 case MEDIA:
                     if (message.getMedia() != null) {
-                        Intent mediaIntent = new Intent(requireContext(), MediaViewer.class);
-                        mediaIntent.putExtra(KEY_MEDIA_URI, new Uri[]{message.getMedia()});
-                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                        startActivity(mediaIntent);
+                        Intent imageIntent = new Intent(requireContext(), ImageViewer.class);
+                        imageIntent.putExtra(ImageViewer.IMAGE_URIS, message.getMedia());
+                        imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+                        startActivity(imageIntent);
                     }
                     break;
             }

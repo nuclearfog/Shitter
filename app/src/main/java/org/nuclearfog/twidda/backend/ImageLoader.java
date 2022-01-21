@@ -3,10 +3,9 @@ package org.nuclearfog.twidda.backend;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activities.MediaViewer;
+import org.nuclearfog.twidda.activities.ImageViewer;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.api.holder.MediaStream;
@@ -24,14 +23,14 @@ import java.lang.ref.WeakReference;
  * and creates Uri of the images.
  *
  * @author nuclearfog
- * @see MediaViewer
+ * @see ImageViewer
  */
 public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
     @Nullable
     private ErrorHandler.TwitterError err;
     private Twitter twitter;
-    private WeakReference<MediaViewer> callback;
+    private WeakReference<ImageViewer> callback;
     private File cache;
 
     /**
@@ -39,13 +38,12 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
      *
      * @param activity Activity context
      */
-    public ImageLoader(@NonNull MediaViewer activity) {
+    public ImageLoader(ImageViewer activity, File cache) {
         super();
         callback = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
         // create cache folder if not exists
-        cache = new File(activity.getExternalCacheDir(), MediaViewer.CACHE_FOLDER);
-        cache.mkdirs();
+        this.cache = cache;
     }
 
 

@@ -2,36 +2,18 @@ package org.nuclearfog.twidda.activities;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.OnClickListener;
-import static android.view.View.VISIBLE;
+import static android.view.View.*;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_URI;
-import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activities.ProfileEditor.KEY_USER_DATA;
 import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.activities.TweetActivity.*;
 import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FOLLOWER;
-import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FRIENDS;
+import static org.nuclearfog.twidda.activities.UserDetail.*;
 import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_ID;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_BLOCK;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_FOLLOW;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNBLOCK;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNFOLLOW;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
-import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_DB;
-import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
+import static org.nuclearfog.twidda.backend.UserAction.Action.*;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
-import static org.nuclearfog.twidda.fragments.UserFragment.KEY_USER_UPDATE;
-import static org.nuclearfog.twidda.fragments.UserFragment.RETURN_USER_UPDATED;
+import static org.nuclearfog.twidda.fragments.UserFragment.*;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -522,21 +504,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         // open profile image
         else if (v.getId() == R.id.profile_img) {
             if (user != null && !user.getImageUrl().isEmpty()) {
-                Uri[] link = {Uri.parse(user.getImageUrl())};
-                Intent mediaImage = new Intent(this, MediaViewer.class);
-                mediaImage.putExtra(KEY_MEDIA_URI, link);
-                mediaImage.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                startActivity(mediaImage);
+                Uri[] uris = {Uri.parse(user.getImageUrl())};
+                Intent imageIntent = new Intent(this, ImageViewer.class);
+                imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
+                imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+                startActivity(imageIntent);
             }
         }
         // open banner image
         else if (v.getId() == R.id.profile_banner) {
             if (user != null && !user.getBannerUrl().isEmpty()) {
-                Uri[] link = {Uri.parse(user.getBannerUrl())};
-                Intent mediaBanner = new Intent(this, MediaViewer.class);
-                mediaBanner.putExtra(KEY_MEDIA_URI, link);
-                mediaBanner.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                startActivity(mediaBanner);
+                Uri[] uris = {Uri.parse(user.getBannerUrl())};
+                Intent imageIntent = new Intent(this, ImageViewer.class);
+                imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
+                imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+                startActivity(imageIntent);
             }
         }
     }

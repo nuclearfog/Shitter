@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import org.nuclearfog.twidda.backend.proxy.GlobalProxySelector;
 import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
+import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.net.Authenticator;
@@ -26,6 +27,8 @@ public class CompatApplication extends Application {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         }
+        // enable TLS 1.2 support
+        TLSSocketFactory.setSupportTLS();
         // setup proxy settings
         GlobalSettings settings = GlobalSettings.getInstance(this);
         GlobalProxySelector proxyConnection = new GlobalProxySelector(settings);

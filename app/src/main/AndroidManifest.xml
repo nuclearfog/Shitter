@@ -104,7 +104,12 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.MediaViewer"
+            android:name=".activities.VideoViewer"
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparency" />
+
+        <activity
+            android:name=".activities.ImageViewer"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 

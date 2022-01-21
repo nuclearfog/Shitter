@@ -19,6 +19,7 @@ import org.nuclearfog.twidda.adapter.holder.ImageHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,6 +53,13 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     public ImageAdapter(Context context, OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         this.settings = GlobalSettings.getInstance(context);
+    }
+
+
+    public void addAll(Uri[] uris) {
+        imageUri.clear();
+        imageUri.addAll(Arrays.asList(uris));
+        notifyDataSetChanged();
     }
 
     /**

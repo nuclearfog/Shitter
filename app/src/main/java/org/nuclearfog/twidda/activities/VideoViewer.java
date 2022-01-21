@@ -8,7 +8,6 @@ import static android.media.MediaPlayer.OnCompletionListener;
 import static android.media.MediaPlayer.OnErrorListener;
 import static android.media.MediaPlayer.OnInfoListener;
 import static android.media.MediaPlayer.OnPreparedListener;
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.GONE;
@@ -17,7 +16,6 @@ import static android.view.View.OnClickListener;
 import static android.view.View.OnTouchListener;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -27,7 +25,6 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,60 +38,55 @@ import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.ImageAdapter;
-import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
-import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.twidda.backend.SeekbarUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.zoomview.ZoomView;
-
-import java.io.File;
 
 /**
  * Media viewer activity for images and videos
  *
  * @author nuclearfog
  */
-public class MediaViewer extends MediaActivity implements OnImageClickListener, OnSeekBarChangeListener, OnCompletionListener,
+public class VideoViewer extends MediaActivity implements OnSeekBarChangeListener, OnCompletionListener,
         OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener {
 
     /**
      * key for an Uri array with local links
      */
-    public static final String KEY_MEDIA_URI = "media_uri";
+    public static final String VIDEO_URI = "media_uri";
 
     /**
-     * Key for the media type, required
-     * {@link #MEDIAVIEWER_IMAGE}, {@link #MEDIAVIEWER_VIDEO} or {@link #MEDIAVIEWER_ANGIF}
+     * Key to enable extra layouts for a video
      */
-    public static final String KEY_MEDIA_TYPE = "media_type";
+    public static final String ENABLE_VIDEO_CONTROLS = "enable_controls";
 
     /**
-     * cache folder name
+     * playback status marks that the player isn't initialized yet
      */
-    public static final String CACHE_FOLDER = "imagecache";
+    private static final int IDLE = -1;
 
     /**
-     * value for {@link #KEY_MEDIA_TYPE} to show images
+     * playback status marks that the player currently plays a video
      */
-    public static final int MEDIAVIEWER_IMAGE = 0x997BCDCE;
+    private static final int PLAY = 1;
 
     /**
-     * value for {@link #KEY_MEDIA_TYPE} to show a video
+     * playback status marks that the player has been paused
      */
-    public static final int MEDIAVIEWER_VIDEO = 0x500C9A42;
+    private static final int PAUSE = 2;
 
     /**
-     * value for {@link #KEY_MEDIA_TYPE} to show an animated image
+     * playback status marks that the player is fast forwarding
      */
-    public static final int MEDIAVIEWER_ANGIF = 0x6500EDB0;
+    private static final int FORWARD = 3;
+
+    /**
+     * playback status marks that the player is fast backwarding
+     */
+    private static final int BACKWARD = 4;
 
     /**
      * refresh time for video progress updatein milliseconds
@@ -106,34 +98,18 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
      */
     private static final int SPEED_FACTOR = 6;
 
-    /**
-     * video play status
-     */
-    private enum PlayStat {
-        PLAY,
-        PAUSE,
-        FORWARD,
-        BACKWARD,
-        IDLE
-    }
-
     @Nullable
-    private ImageLoader imageAsync;
     private SeekbarUpdater seekUpdate;
 
     private TextView duration, position;
     private ProgressBar loadingCircle;
     private SeekBar video_progress;
     private ImageButton play, pause;
-    private ImageAdapter adapter;
     private VideoView videoView;
-    private ZoomView zoomImage;
     private ViewGroup controlPanel;
 
-    private Uri[] mediaLinks;
-    private int type;
-
-    private PlayStat playStat = PlayStat.IDLE;
+    private boolean enableVideoExtras;
+    private int playstatus = IDLE;
 
 
     @Override
@@ -145,12 +121,9 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.page_media);
-        RecyclerView imageList = findViewById(R.id.image_list);
-        View imageListContainer = findViewById(R.id.image_preview_list);
+        setContentView(R.layout.page_video);
         controlPanel = findViewById(R.id.media_controlpanel);
         loadingCircle = findViewById(R.id.media_progress);
-        zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
         video_progress = controlPanel.findViewById(R.id.controller_progress);
         play = controlPanel.findViewById(R.id.controller_play);
@@ -170,50 +143,27 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
         AppStyles.setTheme(controlPanel, settings.getBackgroundColor());
-        adapter = new ImageAdapter(getApplicationContext(), this);
+        videoView.setZOrderMediaOverlay(true); // disable black background
+        videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
 
         // get extras
-        type = getIntent().getIntExtra(KEY_MEDIA_TYPE, 0);
-        Parcelable[] links = getIntent().getParcelableArrayExtra(KEY_MEDIA_URI);
+        enableVideoExtras = getIntent().getBooleanExtra(ENABLE_VIDEO_CONTROLS, false);
+        Uri link = getIntent().getParcelableExtra(VIDEO_URI);
 
-        // init media view
-        if (links != null) {
-            mediaLinks = new Uri[links.length];
-            for (int i = 0; i < mediaLinks.length; i++) {
-                mediaLinks[i] = (Uri) links[i];
+        if (link != null) {
+            // enable control bar if set
+            if (enableVideoExtras) {
+                controlPanel.setVisibility(VISIBLE);
+                if (link.getScheme().startsWith("http")) {
+                    // attach link to share button
+                    share.setTag(link);
+                } else {
+                    share.setVisibility(GONE);
+                }
+                seekUpdate = new SeekbarUpdater(this, PROGRESS_UPDATE);
             }
-            switch (type) {
-                case MEDIAVIEWER_IMAGE:
-                    zoomImage.setVisibility(VISIBLE);
-                    imageListContainer.setVisibility(VISIBLE);
-                    if (!mediaLinks[0].getScheme().startsWith("http")) {
-                        adapter.disableSaveButton();
-                        for (Uri uri : mediaLinks)
-                            setImage(uri);
-                        adapter.disableLoading();
-                    } else {
-                        imageAsync = new ImageLoader(this);
-                        imageAsync.execute(mediaLinks);
-                    }
-                    imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                    imageList.setAdapter(adapter);
-                    break;
-
-                case MEDIAVIEWER_VIDEO:
-                    controlPanel.setVisibility(VISIBLE);
-                    if (!mediaLinks[0].getScheme().startsWith("http"))
-                        share.setVisibility(GONE); // local image
-                    seekUpdate = new SeekbarUpdater(this, PROGRESS_UPDATE);
-                    // fall through
-                case MEDIAVIEWER_ANGIF:
-                    videoView.setVisibility(VISIBLE);
-                    videoView.setZOrderMediaOverlay(true); // disable black background
-                    videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-                    videoView.setVideoURI(mediaLinks[0]);
-                    break;
-            }
+            videoView.setVideoURI(link);
         }
-
         share.setOnClickListener(this);
         play.setOnClickListener(this);
         pause.setOnClickListener(this);
@@ -230,8 +180,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     @Override
     protected void onStop() {
         super.onStop();
-        if (type == MEDIAVIEWER_VIDEO) {
-            playStat = PlayStat.PAUSE;
+        if (enableVideoExtras) {
+            playstatus = PAUSE;
             setPlayPauseButton();
             videoView.pause();
         }
@@ -240,11 +190,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     protected void onDestroy() {
-        if (imageAsync != null && imageAsync.getStatus() == RUNNING)
-            imageAsync.cancel(true);
         if (seekUpdate != null)
             seekUpdate.shutdown();
-        clearCache();
         super.onDestroy();
     }
 
@@ -255,20 +202,20 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         if (v.getId() == R.id.controller_play) {
             if (!videoView.isPlaying())
                 videoView.start();
-            playStat = PlayStat.PLAY;
+            playstatus = PLAY;
             setPlayPauseButton();
         }
         // pause video
         if (v.getId() == R.id.controller_pause) {
             if (videoView.isPlaying())
                 videoView.pause();
-            playStat = PlayStat.PAUSE;
+            playstatus = PAUSE;
             setPlayPauseButton();
         }
         // open link with another app
         else if (v.getId() == R.id.controller_share) {
-            if (mediaLinks != null && mediaLinks.length > 0) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, mediaLinks[0]);
+            if (v.getTag() instanceof Uri) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, (Uri) v.getTag());
                 try {
                     startActivity(intent);
                 } catch (ActivityNotFoundException err) {
@@ -283,30 +230,30 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     public boolean onTouch(View v, MotionEvent event) {
         // fast backward
         if (v.getId() == R.id.controller_backward) {
-            if (playStat == PlayStat.PAUSE)
+            if (playstatus == PAUSE)
                 return false;
             if (event.getAction() == ACTION_DOWN) {
-                playStat = PlayStat.BACKWARD;
+                playstatus = BACKWARD;
                 videoView.pause();
                 return true;
             }
             if (event.getAction() == ACTION_UP) {
-                playStat = PlayStat.PLAY;
+                playstatus = PLAY;
                 videoView.start();
                 return true;
             }
         }
         // fast forward
         else if (v.getId() == R.id.controller_forward) {
-            if (playStat == PlayStat.PAUSE)
+            if (playstatus == PAUSE)
                 return false;
             if (event.getAction() == ACTION_DOWN) {
-                playStat = PlayStat.FORWARD;
+                playstatus = FORWARD;
                 videoView.pause();
                 return true;
             }
             if (event.getAction() == ACTION_UP) {
-                playStat = PlayStat.PLAY;
+                playstatus = PLAY;
                 videoView.start();
                 return true;
             }
@@ -314,7 +261,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         // show/hide control panel
         else if (v.getId() == R.id.video_view) {
             if (event.getAction() == ACTION_DOWN) {
-                if (type == MEDIAVIEWER_VIDEO) {
+                if (enableVideoExtras) {
                     if (controlPanel.getVisibility() == VISIBLE) {
                         controlPanel.setVisibility(INVISIBLE);
                     } else {
@@ -339,39 +286,26 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
 
     @Override
-    public void onImageClick(Uri uri) {
-        zoomImage.reset();
-        zoomImage.setImageURI(uri);
-    }
-
-
-    @Override
-    public void onImageSave(Uri uri) {
-        storeImage(uri);
-    }
-
-
-    @Override
     public void onPrepared(MediaPlayer mp) {
-        // configure to play GIF
-        if (type == MEDIAVIEWER_ANGIF) {
-            loadingCircle.setVisibility(INVISIBLE);
-            mp.setLooping(true);
-            mp.start();
-        }
-        // configure to play video
-        else if (type == MEDIAVIEWER_VIDEO) {
-            if (playStat == PlayStat.IDLE) {
-                playStat = PlayStat.PLAY;
+        // enable controls for video
+        if (enableVideoExtras) {
+            if (playstatus == IDLE) {
+                playstatus = PLAY;
                 video_progress.setMax(mp.getDuration());
                 duration.setText(StringTools.formatMediaTime(mp.getDuration()));
                 mp.setOnInfoListener(this);
             }
-            if (playStat == PlayStat.PLAY) {
+            if (playstatus == PLAY) {
                 int videoPos = video_progress.getProgress();
                 mp.seekTo(videoPos);
                 mp.start();
             }
+        }
+        // setup video looping for gif
+        else {
+            loadingCircle.setVisibility(INVISIBLE);
+            mp.setLooping(true);
+            mp.start();
         }
     }
 
@@ -405,7 +339,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        playStat = PlayStat.PAUSE;
+        playstatus = PAUSE;
         setPlayPauseButton();
         video_progress.setProgress(0);
     }
@@ -430,41 +364,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     }
 
     /**
-     * Called from {@link ImageLoader} when all images are downloaded successfully
-     */
-    public void onSuccess() {
-        adapter.disableLoading();
-    }
-
-    /**
-     * Called from {@link ImageLoader} when an error occurs
-     *
-     * @param err Exception caught by {@link ImageLoader}
-     */
-    public void onError(ErrorHandler.TwitterError err) {
-        ErrorHandler.handleFailure(getApplicationContext(), err);
-        finish();
-    }
-
-    /**
-     * set downloaded image into preview list
-     *
-     * @param imageUri Image Uri
-     */
-    public void setImage(Uri imageUri) {
-        if (adapter.isEmpty()) {
-            zoomImage.reset();
-            zoomImage.setImageURI(imageUri);
-            loadingCircle.setVisibility(INVISIBLE);
-        }
-        adapter.addLast(imageUri);
-    }
-
-    /**
      * set play pause button
      */
     private void setPlayPauseButton() {
-        if (playStat == PlayStat.PAUSE || playStat == PlayStat.IDLE) {
+        if (playstatus == PAUSE || playstatus == IDLE) {
             play.setVisibility(VISIBLE);
             pause.setVisibility(INVISIBLE);
         } else {
@@ -478,7 +381,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
      */
     public void updateSeekBar() {
         int videoPos = video_progress.getProgress();
-        switch (playStat) {
+        switch (playstatus) {
             case PLAY:
                 video_progress.setProgress(videoView.getCurrentPosition());
                 break;
@@ -498,23 +401,6 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                 videoView.seekTo(videoPos);
                 video_progress.setProgress(videoPos);
                 break;
-        }
-    }
-
-    /**
-     * clear the image cache
-     */
-    private void clearCache() {
-        try {
-            File cacheFolder = new File(getExternalCacheDir(), CACHE_FOLDER);
-            File[] files = cacheFolder.listFiles();
-            if (files != null && files.length > 0) {
-                for (File file : files) {
-                    file.delete();
-                }
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
         }
     }
 }
