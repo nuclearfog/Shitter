@@ -7,6 +7,7 @@ import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_NAME;
 import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
+import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_ID;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import org.nuclearfog.twidda.activities.TweetActivity;
 import org.nuclearfog.twidda.activities.TweetEditor;
 import org.nuclearfog.twidda.activities.UserLists;
 import org.nuclearfog.twidda.activities.UserProfile;
+import org.nuclearfog.twidda.activities.UserlistActivity;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.model.User;
@@ -42,7 +44,8 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 
     private static final Pattern TWEET_PATH = Pattern.compile("[\\w]+/status/\\d+");
     private static final Pattern USER_PATH = Pattern.compile("[\\w]+/?(\\bwith_replies\\b|\\bmedia\\b|\\blikes\\b)?");
-    private static final Pattern LIST_PATH = Pattern.compile("[\\w]+/lists");
+    private static final Pattern USERLISTS_PATH = Pattern.compile("[\\w]+/lists");
+    private static final Pattern USERLIST_PATH = Pattern.compile("i/lists/\\d+");
 
     private WeakReference<MainActivity> callback;
     private TwitterException exception;
@@ -117,6 +120,12 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
                     data.putString(KEY_SEARCH_QUERY, search);
                     dataHolder = new DataHolder(data, SearchPage.class);
                 }
+                // open an userlist
+                else if (USERLIST_PATH.matcher(path).matches()) {
+                    long listId = Long.parseLong(path.substring(8));
+                    data.putLong(KEY_LIST_ID, listId);
+                    dataHolder = new DataHolder(data, UserlistActivity.class);
+                }
                 // show user profile
                 else if (USER_PATH.matcher(path).matches()) {
                     int end = path.indexOf('/');
@@ -136,7 +145,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
                         dataHolder = new DataHolder(data, TweetActivity.class);
                     }
                     // show userlists
-                    else if (LIST_PATH.matcher(path).matches()) {
+                    else if (USERLISTS_PATH.matcher(path).matches()) {
                         data.putString(KEY_USERLIST_OWNER_NAME, username);
                         dataHolder = new DataHolder(data, UserLists.class);
                     }
@@ -155,10 +164,10 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
     protected void onPostExecute(DataHolder result) {
         MainActivity activity = callback.get();
         if (activity != null) {
-            if (result != null) {
-                activity.onSuccess(result);
-            } else if (exception != null) {
+            if (exception != null) {
                 activity.onError(exception);
+            } else {
+                activity.onSuccess(result);
             }
         }
     }

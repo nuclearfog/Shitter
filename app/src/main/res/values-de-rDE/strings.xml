@@ -227,4 +227,5 @@
     <string name="error_forbidden_api_access">Diese API unterstützt nicht diese Aktion!</string>
     <string name="error_login_information">Login Informationen konnten nicht geladen werden!</string>
     <string name="error_adding_media">Fehler, Mediendatei konnte nicht hinzugefügt werden!</string>
+    <string name="info_link_open_failed">Link konnte nicht geöffnet werden!</string>
 </resources>

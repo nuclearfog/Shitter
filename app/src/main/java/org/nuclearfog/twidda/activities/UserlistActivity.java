@@ -52,9 +52,14 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
         OnQueryTextListener, ListManagerCallback, OnConfirmListener {
 
     /**
-     * Key to get user list object
+     * key to add list information
      */
     public static final String KEY_LIST_DATA = "list_data";
+
+    /**
+     * alternative key to {@link #KEY_LIST_DATA} to download list information
+     */
+    public static final String KEY_LIST_ID = "list_id";
 
     /**
      * Request code for list editing
@@ -115,8 +120,11 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
             toolbar.setTitle(userList.getTitle());
             toolbar.setSubtitle(userList.getDescription());
             adapter.setupListContentPage(userList.getId(), userList.isListOwner());
+        } else {
+            toolbar.setTitle("");
+            long id = getIntent().getLongExtra(KEY_LIST_ID, 0);
+            adapter.setupListContentPage(id, false);
         }
-
         setSupportActionBar(toolbar);
         settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(root, settings.getBackgroundColor());
@@ -127,9 +135,15 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
     @Override
     protected void onStart() {
         super.onStart();
-        if (listLoaderTask == null && userList != null) {
-            // update list information
-            listLoaderTask = new ListAction(this, userList.getId(), ListAction.LOAD);
+        if (listLoaderTask == null) {
+            if (userList != null) {
+                // update list information
+                listLoaderTask = new ListAction(this, userList.getId(), ListAction.LOAD);
+            } else {
+                // load list information
+                long id = getIntent().getLongExtra(KEY_LIST_ID, 0);
+                listLoaderTask = new ListAction(this, id, ListAction.LOAD);
+            }
             listLoaderTask.execute();
         }
     }

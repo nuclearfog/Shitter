@@ -253,5 +253,6 @@
     <string name="toolbar_tweet_favoriter">User favoriting this tweet</string>
     <string name="toolbar_tweet_liker">User liking this tweet</string>
     <string name="time_now">now</string>
+    <string name="info_link_open_failed">could not open link!</string>
 
 </resources>

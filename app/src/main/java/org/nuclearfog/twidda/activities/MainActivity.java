@@ -292,15 +292,19 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
      *
      * @param holder holder with activity information and extras
      */
-    public void onSuccess(LinkLoader.DataHolder holder) {
+    public void onSuccess(@Nullable LinkLoader.DataHolder holder) {
         loadingCircle.dismiss();
-        if (holder.activity == MainActivity.class) {
-            int page = holder.data.getInt(KEY_TAB_PAGE, 0);
-            pager.setCurrentItem(page);
+        if (holder != null) {
+            if (holder.activity == MainActivity.class) {
+                int page = holder.data.getInt(KEY_TAB_PAGE, 0);
+                pager.setCurrentItem(page);
+            } else {
+                Intent intent = new Intent(this, holder.activity);
+                intent.putExtras(holder.data);
+                startActivity(intent);
+            }
         } else {
-            Intent intent = new Intent(this, holder.activity);
-            intent.putExtras(holder.data);
-            startActivity(intent);
+            Toast.makeText(this, R.string.info_link_open_failed, Toast.LENGTH_SHORT).show();
         }
     }
 

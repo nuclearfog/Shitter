@@ -230,9 +230,11 @@ public final class AppStyles {
      * @param array     set of icons
      */
     public static void setTabIcons(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
-        TextView[] tv = setTabIconsWithText(tabLayout, settings, array);
-        for (TextView textView : tv) {
-            textView.setVisibility(GONE);
+        TextView[] textViews = setTabIconsWithText(tabLayout, settings, array);
+        for (TextView textView : textViews) {
+            if (textView != null) {
+                textView.setVisibility(GONE);
+            }
         }
     }
 
