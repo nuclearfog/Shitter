@@ -4,14 +4,12 @@ import static android.os.AsyncTask.Status.*;
 import static android.view.View.*;
 import static android.widget.Toast.*;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -84,9 +82,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     private TweetUpdater uploaderAsync;
     private GlobalSettings settings;
 
+    private ConfirmDialog confirmDialog;
+    private ProgressDialog loadingCircle;
+
     private ImageButton mediaBtn, previewBtn, locationBtn;
-    private ConfirmDialog errorDialog, closingDialog;
-    private Dialog loadingCircle;
     private EditText tweetText;
     private View locationPending;
 
@@ -114,10 +113,9 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         tweetText = findViewById(R.id.tweet_input);
         locationPending = findViewById(R.id.location_progress);
 
-        loadingCircle = new ProgressDialog(this, this);
-        errorDialog = new ConfirmDialog(this, DialogType.TWEET_EDITOR_ERROR, this);
-        closingDialog = new ConfirmDialog(this, DialogType.TWEET_EDITOR_LEAVE, this);
         settings = GlobalSettings.getInstance(this);
+        loadingCircle = new ProgressDialog(this);
+        confirmDialog = new ConfirmDialog(this);
 
         Intent data = getIntent();
         long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
@@ -139,6 +137,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         mediaBtn.setOnClickListener(this);
         previewBtn.setOnClickListener(this);
         locationBtn.setOnClickListener(this);
+        confirmDialog.setConfirmListener(this);
+        loadingCircle.addOnProgressStopListener(this);
     }
 
 
@@ -305,9 +305,12 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
     @Override
     public void onConfirm(DialogType type) {
+        // retry uploading tweet
         if (type == DialogType.TWEET_EDITOR_ERROR) {
             updateTweet();
-        } else if (type == DialogType.TWEET_EDITOR_LEAVE) {
+        }
+        // leave editor
+        else if (type == DialogType.TWEET_EDITOR_LEAVE) {
             finish();
         }
     }
@@ -324,10 +327,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      * Show confirmation dialog if an error occurs while sending tweet
      */
     public void onError(@Nullable ErrorHandler.TwitterError error) {
-        if (!errorDialog.isShowing()) {
+        if (!confirmDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, error);
-            errorDialog.setMessage(message);
-            errorDialog.show();
+            confirmDialog.setMessage(message);
+            confirmDialog.show(DialogType.TWEET_EDITOR_ERROR);
         }
         if (loadingCircle.isShowing()) {
             loadingCircle.dismiss();
@@ -339,9 +342,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      */
     private void showClosingMsg() {
         if (tweetText.length() > 0 || tweetUpdate.mediaCount() > 0 || tweetUpdate.hasLocation()) {
-            if (!closingDialog.isShowing()) {
-                closingDialog.show();
-            }
+            confirmDialog.show(DialogType.TWEET_EDITOR_LEAVE);
         } else {
             finish();
         }
@@ -350,8 +351,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     /**
      * attach media to the tweet
      *
-     * @param uri Uri link of the media
-     * @param icon icon of the preview button
+     * @param uri   Uri link of the media
+     * @param icon  icon of the preview button
      * @param limit limit of the media count
      * @return media count or -1 if adding failed
      */

@@ -1,24 +1,13 @@
 package org.nuclearfog.twidda.activities;
 
-import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
-import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
-import static android.media.MediaPlayer.OnCompletionListener;
-import static android.media.MediaPlayer.OnErrorListener;
-import static android.media.MediaPlayer.OnInfoListener;
-import static android.media.MediaPlayer.OnPreparedListener;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.OnClickListener;
-import static android.view.View.OnTouchListener;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
+import static android.media.MediaPlayer.*;
+import static android.view.MotionEvent.*;
+import static android.view.View.*;
+import static android.widget.Toast.*;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.location.Location;
@@ -44,14 +33,16 @@ import org.nuclearfog.twidda.backend.SeekbarUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.*;
 
 /**
  * Media viewer activity for images and videos
  *
  * @author nuclearfog
  */
-public class VideoViewer extends MediaActivity implements OnSeekBarChangeListener, OnCompletionListener,
-        OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener {
+public class VideoViewer extends MediaActivity implements OnSeekBarChangeListener, OnCompletionListener, DialogInterface.OnDismissListener,
+        OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener, OnConfirmListener {
 
     /**
      * key for an Uri array with local links
@@ -101,6 +92,8 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
     @Nullable
     private SeekbarUpdater seekUpdate;
 
+    private ConfirmDialog confirmDialog;
+
     private TextView duration, position;
     private ProgressBar loadingCircle;
     private SeekBar video_progress;
@@ -133,6 +126,8 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
         ImageButton forward = controlPanel.findViewById(R.id.controller_forward);
         ImageButton backward = controlPanel.findViewById(R.id.controller_backward);
         ImageButton share = controlPanel.findViewById(R.id.controller_share);
+
+        confirmDialog = new ConfirmDialog(this);
 
         share.setImageResource(R.drawable.share);
         forward.setImageResource(R.drawable.forward);
@@ -174,6 +169,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
         videoView.setOnCompletionListener(this);
         videoView.setOnErrorListener(this);
         video_progress.setOnSeekBarChangeListener(this);
+        confirmDialog.setOnDismissListener(this);
     }
 
 
@@ -329,8 +325,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         if (what == MEDIA_ERROR_UNKNOWN) {
-            Toast.makeText(this, R.string.error_cant_load_video, Toast.LENGTH_SHORT).show();
-            finish();
+            confirmDialog.show(DialogType.VIDEO_ERROR);
             return true;
         }
         return false;
@@ -361,6 +356,31 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
     public void onStopTrackingTouch(SeekBar seekBar) {
         videoView.seekTo(seekBar.getProgress());
         videoView.start();
+    }
+
+
+    @Override
+    public void onConfirm(ConfirmDialog.DialogType type) {
+        if (type == DialogType.VIDEO_ERROR) {
+            Uri link = getIntent().getParcelableExtra(VIDEO_URI);
+            if (link != null) {
+                // open link in a browser
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(link);
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException err) {
+                    Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        finish();
     }
 
     /**

@@ -5,7 +5,6 @@ import static org.nuclearfog.twidda.activities.UserlistEditor.KEY_LIST_EDITOR_DA
 import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
 import static org.nuclearfog.twidda.fragments.UserListFragment.*;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -81,10 +80,11 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
     private ListManager userListManager;
     private GlobalSettings settings;
 
+    private ConfirmDialog confirmDialog;
+
     private TabLayout tablayout;
     private ViewPager pager;
     private Toolbar toolbar;
-    private Dialog unfollowDialog, deleteDialog;
 
     @Nullable
     private UserList userList;
@@ -105,14 +105,12 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
         tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
 
+        confirmDialog = new ConfirmDialog(this);
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         tablayout.setupWithViewPager(pager);
         tablayout.addOnTabSelectedListener(this);
-
-        deleteDialog = new ConfirmDialog(this, DialogType.LIST_DELETE, this);
-        unfollowDialog = new ConfirmDialog(this, DialogType.LIST_UNFOLLOW, this);
 
         Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
         if (data instanceof UserList) {
@@ -125,10 +123,13 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
             long id = getIntent().getLongExtra(KEY_LIST_ID, 0);
             adapter.setupListContentPage(id, false);
         }
+
         setSupportActionBar(toolbar);
         settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(root, settings.getBackgroundColor());
         AppStyles.setTabIcons(tablayout, settings, R.array.list_tab_icons);
+
+        confirmDialog.setConfirmListener(this);
     }
 
 
@@ -206,16 +207,12 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
             }
             // delete user list
             else if (item.getItemId() == R.id.menu_delete_list) {
-                if (!deleteDialog.isShowing()) {
-                    deleteDialog.show();
-                }
+                confirmDialog.show(DialogType.LIST_DELETE);
             }
             // follow user list
             else if (item.getItemId() == R.id.menu_follow_list) {
                 if (userList.isFollowing()) {
-                    if (!unfollowDialog.isShowing()) {
-                        unfollowDialog.show();
-                    }
+                    confirmDialog.show(DialogType.LIST_UNFOLLOW);
                 } else {
                     listLoaderTask = new ListAction(this, userList.getId(), ListAction.FOLLOW);
                     listLoaderTask.execute();
@@ -263,17 +260,19 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
     @Override
     public void onConfirm(DialogType type) {
-        if (userList == null)
-            return;
         // delete user list
         if (type == DialogType.LIST_DELETE) {
-            listLoaderTask = new ListAction(this, userList.getId(), ListAction.DELETE);
-            listLoaderTask.execute();
+            if (userList != null) {
+                listLoaderTask = new ListAction(this, userList.getId(), ListAction.DELETE);
+                listLoaderTask.execute();
+            }
         }
         // unfollow user list
         else if (type == DialogType.LIST_UNFOLLOW) {
-            listLoaderTask = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
-            listLoaderTask.execute();
+            if (userList != null) {
+                listLoaderTask = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
+                listLoaderTask.execute();
+            }
         }
     }
 

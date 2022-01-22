@@ -5,7 +5,6 @@ import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
 import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -121,7 +120,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     private UserLoader userTask;
     private ListManager listTask;
 
-    private Dialog deleteDialog;
+    private ConfirmDialog confirmDialog;
     private UserAdapter adapter;
 
     private String deleteUserName = "";
@@ -141,7 +140,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
             search = param.getString(KEY_FRAG_USER_SEARCH, "");
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
-        deleteDialog = new ConfirmDialog(requireContext(), DialogType.LIST_REMOVE_USER, this);
+        confirmDialog = new ConfirmDialog(requireContext());
         adapter = new UserAdapter(requireContext(), this);
         adapter.enableDeleteButton(delUser);
         setAdapter(adapter);
@@ -215,9 +214,9 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
     @Override
     public void onDelete(String name) {
-        deleteUserName = name;
-        if (!deleteDialog.isShowing()) {
-            deleteDialog.show();
+        if (!confirmDialog.isShowing()) {
+            deleteUserName = name;
+            confirmDialog.show(DialogType.LIST_REMOVE_USER);
         }
     }
 

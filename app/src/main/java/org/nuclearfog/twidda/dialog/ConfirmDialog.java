@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -27,6 +29,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
         DEL_DATABASE,
         APP_LOG_OUT,
         REMOVE_ACCOUNT,
+        VIDEO_ERROR,
         TWEET_DELETE,
         TWEET_EDITOR_LEAVE,
         TWEET_EDITOR_ERROR,
@@ -48,14 +51,13 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
     private TextView txtTitle, txtMessage;
     private Button confirm, cancel;
 
-    private DialogType type;
+    @Nullable
     private OnConfirmListener listener;
 
     /**
-     * @param type     Type of the Dialog {@link DialogType}
-     * @param listener listener for the confirmation button
+     *
      */
-    public ConfirmDialog(Context context, DialogType type, OnConfirmListener listener) {
+    public ConfirmDialog(Context context) {
         super(context, R.style.ConfirmDialog);
         setContentView(R.layout.dialog_confirm);
         ViewGroup root = findViewById(R.id.confirm_rootview);
@@ -71,36 +73,17 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
         confirm.setOnClickListener(this);
         cancel.setOnClickListener(this);
-
-        this.type = type;
-        this.listener = listener;
-        build();
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.confirm_yes) {
-            listener.onConfirm(type);
-            dismiss();
-        } else if (v.getId() == R.id.confirm_no) {
-            dismiss();
-        }
-    }
-
-    /**
-     * set message text
-     *
-     * @param message message text
-     */
-    public void setMessage(String message) {
-        txtMessage.setText(message);
     }
 
     /**
      * creates an alert dialog
+     *
+     * @param type Type of dialog to show
      */
-    private void build() {
+    public void show(DialogType type) {
+        if (isShowing())
+            return;
+        confirm.setTag(type);
         switch (type) {
             case MESSAGE_DELETE:
                 txtTitle.setVisibility(View.GONE);
@@ -122,6 +105,13 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
             case APP_LOG_OUT:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_log_lout);
+                break;
+
+            case VIDEO_ERROR:
+                txtTitle.setText(R.string.error_cant_load_video);
+                confirm.setText(R.string.confirm_open_link);
+                confirm.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                cancel.setVisibility(View.GONE);
                 break;
 
             case LIST_EDITOR_LEAVE:
@@ -193,6 +183,38 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
                 txtTitle.setVisibility(View.GONE);
                 break;
         }
+        super.show();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.confirm_yes) {
+            Object tag = v.getTag();
+            if (listener != null && tag instanceof DialogType) {
+                DialogType type = (DialogType) tag;
+                listener.onConfirm(type);
+            }
+            dismiss();
+        } else if (v.getId() == R.id.confirm_no) {
+            dismiss();
+        }
+    }
+
+    /**
+     * add confirm listener
+     */
+    public void setConfirmListener(OnConfirmListener listener) {
+        this.listener = listener;
+    }
+
+    /**
+     * set message text
+     *
+     * @param message message text
+     */
+    public void setMessage(String message) {
+        txtMessage.setText(message);
     }
 
     /**

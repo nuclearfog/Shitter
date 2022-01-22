@@ -156,7 +156,7 @@ class TweetImpl implements Tweet {
 
     @NonNull
     @Override
-    public Uri[] getMediaLinks() {
+    public Uri[] getMediaUris() {
         Uri[] result = new Uri[mediaLinks.length];
         for (int i = 0; i < result.length; i++)
             result[i] = Uri.parse(mediaLinks[i]);

@@ -7,7 +7,6 @@ import static org.nuclearfog.twidda.activities.SearchPage.*;
 import static org.nuclearfog.twidda.activities.TweetActivity.*;
 import static org.nuclearfog.twidda.activities.UserProfile.*;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -43,7 +42,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
 
     private MessageLoader messageTask;
     private MessageAdapter adapter;
-    private Dialog deleteDialog;
+    private ConfirmDialog confirmDialog;
 
     private long deleteId;
 
@@ -51,9 +50,11 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        deleteDialog = new ConfirmDialog(requireContext(), DialogType.MESSAGE_DELETE, this);
+        confirmDialog = new ConfirmDialog(requireContext());
         adapter = new MessageAdapter(requireContext(), this);
         setAdapter(adapter);
+
+        confirmDialog.setConfirmListener(this);
     }
 
 
@@ -137,9 +138,9 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
                     break;
 
                 case DELETE:
-                    deleteId = message.getId();
-                    if (!deleteDialog.isShowing()) {
-                        deleteDialog.show();
+                    if (!confirmDialog.isShowing()) {
+                        deleteId = message.getId();
+                        confirmDialog.show(DialogType.MESSAGE_DELETE);
                     }
                     break;
 
@@ -152,7 +153,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
                 case MEDIA:
                     if (message.getMedia() != null) {
                         Intent imageIntent = new Intent(requireContext(), ImageViewer.class);
-                        imageIntent.putExtra(ImageViewer.IMAGE_URIS, message.getMedia());
+                        imageIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{message.getMedia()});
                         imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
                         startActivity(imageIntent);
                     }

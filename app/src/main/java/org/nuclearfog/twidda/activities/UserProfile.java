@@ -15,7 +15,6 @@ import static org.nuclearfog.twidda.backend.UserAction.Action.*;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.fragments.UserFragment.*;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -120,6 +119,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private UserAction profileAsync;
     private Picasso picasso;
 
+    private ConfirmDialog confirmDialog;
+
     private TextView[] tabTweetCount;
     private TextView user_location, user_createdAt, user_website, user_bio, follow_back, username, screenName;
     private ImageView profileImage, bannerImage, toolbarBackground;
@@ -127,7 +128,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private ViewPager tabPages;
     private TabLayout tabLayout;
     private Toolbar toolbar;
-    private Dialog unfollowConfirm, blockConfirm, muteConfirm;
 
     @Nullable
     private Relation relation;
@@ -192,10 +192,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         tabPages.setAdapter(adapter);
         tabPages.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(tabPages);
-
-        unfollowConfirm = new ConfirmDialog(this, DialogType.PROFILE_UNFOLLOW, this);
-        blockConfirm = new ConfirmDialog(this, DialogType.PROFILE_BLOCK, this);
-        muteConfirm = new ConfirmDialog(this, DialogType.PROFILE_MUTE, this);
+        confirmDialog = new ConfirmDialog(this);
 
         Intent i = getIntent();
         Object o = i.getSerializableExtra(KEY_PROFILE_DATA);
@@ -206,16 +203,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
             adapter.setupProfilePage(userId);
         }
-        if (settings.likeEnabled())
+        if (settings.likeEnabled()) {
             tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
-        else
+        } else {
             tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
+        }
         tabLayout.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
         profileImage.setOnClickListener(this);
         bannerImage.setOnClickListener(this);
         user_website.setOnClickListener(this);
+        confirmDialog.setConfirmListener(this);
     }
 
 
@@ -349,8 +348,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                     if (!relation.isFollowing()) {
                         profileAsync = new UserAction(this, user.getId());
                         profileAsync.execute(ACTION_FOLLOW);
-                    } else if (!unfollowConfirm.isShowing()) {
-                        unfollowConfirm.show();
+                    } else {
+                        confirmDialog.show(DialogType.PROFILE_UNFOLLOW);
                     }
                 }
             }
@@ -360,8 +359,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                     if (relation.isMuted()) {
                         profileAsync = new UserAction(this, user.getId());
                         profileAsync.execute(ACTION_UNMUTE);
-                    } else if (!muteConfirm.isShowing()) {
-                        muteConfirm.show();
+                    } else {
+                        confirmDialog.show(DialogType.PROFILE_MUTE);
                     }
                 }
             }
@@ -371,8 +370,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                     if (relation.isBlocked()) {
                         profileAsync = new UserAction(this, user.getId());
                         profileAsync.execute(ACTION_UNBLOCK);
-                    } else if (!blockConfirm.isShowing()) {
-                        blockConfirm.show();
+                    } else {
+                        confirmDialog.show(DialogType.PROFILE_BLOCK);
                     }
                 }
             }

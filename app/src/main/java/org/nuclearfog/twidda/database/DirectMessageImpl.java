@@ -73,7 +73,7 @@ class DirectMessageImpl implements DirectMessage {
     public boolean equals(@Nullable Object obj) {
         if (!(obj instanceof DirectMessage))
             return false;
-        return ((DirectMessage)obj).getId() == id;
+        return ((DirectMessage) obj).getId() == id;
     }
 
     @NonNull

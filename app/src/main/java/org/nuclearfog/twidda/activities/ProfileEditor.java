@@ -9,7 +9,6 @@ import static org.nuclearfog.twidda.activities.UserProfile.TOOLBAR_TRANSPARENCY;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -67,11 +66,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     private GlobalSettings settings;
     private Picasso picasso;
 
+    private ProgressDialog loadingCircle;
+    private ConfirmDialog confirmDialog;
+
     private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
     private EditText name, link, loc, bio;
     private Button addBannerBtn;
-    private Dialog loadingCircle;
-    private ConfirmDialog errorDialog, closeDialog;
 
     private User user;
     private Uri profileLink, bannerLink;
@@ -100,9 +100,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         loc = findViewById(R.id.edit_location);
         bio = findViewById(R.id.edit_bio);
 
-        loadingCircle = new ProgressDialog(this, this);
-        closeDialog = new ConfirmDialog(this, DialogType.PROFILE_EDITOR_LEAVE, this);
-        errorDialog = new ConfirmDialog(this, DialogType.PROFILE_EDITOR_ERROR, this);
+        loadingCircle = new ProgressDialog(this);
+        confirmDialog = new ConfirmDialog(this);
+
         toolbar.setTitle(R.string.page_profile_editor);
         setSupportActionBar(toolbar);
 
@@ -129,6 +129,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         profile_image.setOnClickListener(this);
         profile_banner.setOnClickListener(this);
         addBannerBtn.setOnClickListener(this);
+        loadingCircle.addOnProgressStopListener(this);
+        confirmDialog.setConfirmListener(this);
     }
 
 
@@ -153,8 +155,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
             finish();
         } else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
             finish();
-        } else if (!closeDialog.isShowing()) {
-            closeDialog.show();
+        } else {
+            confirmDialog.show(DialogType.PROFILE_EDITOR_LEAVE);
         }
     }
 
@@ -223,9 +225,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
     @Override
     public void onConfirm(DialogType type) {
+        // leave without settings
         if (type == DialogType.PROFILE_EDITOR_LEAVE) {
             finish();
-        } else if (type == DialogType.PROFILE_EDITOR_ERROR) {
+        }
+        // retry
+        else if (type == DialogType.PROFILE_EDITOR_ERROR) {
             updateUser();
         }
     }
@@ -261,10 +266,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
      * @param err Engine Exception
      */
     public void onError(ErrorHandler.TwitterError err) {
-        if (!errorDialog.isShowing()) {
+        if (!confirmDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, err);
-            errorDialog.setMessage(message);
-            errorDialog.show();
+            confirmDialog.setMessage(message);
+            confirmDialog.show(DialogType.PROFILE_EDITOR_ERROR);
         }
         loadingCircle.dismiss();
     }

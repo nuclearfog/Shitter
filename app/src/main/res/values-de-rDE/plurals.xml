@@ -18,7 +18,7 @@
 
     <plurals name="n_days">
         <item quantity="one">vor <xliff:g id="count">%d</xliff:g> Tag</item>
-        <item quantity="other">vor <xliff:g id="count">%d</xliff:g> Tage</item>
+        <item quantity="other">vor <xliff:g id="count">%d</xliff:g> Tagen</item>
     </plurals>
 
     <plurals name="n_weeks">

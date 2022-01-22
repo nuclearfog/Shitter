@@ -23,12 +23,15 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class ProgressDialog extends Dialog implements OnClickListener {
 
-    private OnProgressStopListener l;
+    @Nullable
+    private OnProgressStopListener listener;
+
+    private ImageView cancel;
 
     /**
      *
      */
-    public ProgressDialog(Context context, @Nullable OnProgressStopListener l) {
+    public ProgressDialog(Context context) {
         super(context, R.style.LoadingDialog);
         // setup dialog
         requestWindowFeature(FEATURE_NO_TITLE);
@@ -36,28 +39,31 @@ public class ProgressDialog extends Dialog implements OnClickListener {
         setCancelable(false);
 
         setContentView(R.layout.item_load);
-        ImageView cancel = findViewById(R.id.kill_button);
+        cancel = findViewById(R.id.kill_button);
         ProgressBar circle = findViewById(R.id.progress_item);
 
         GlobalSettings settings = GlobalSettings.getInstance(context);
         AppStyles.setProgressColor(circle, settings.getHighlightColor());
         AppStyles.setDrawableColor(cancel, settings.getIconColor());
-
-        if (l != null) {
-            cancel.setVisibility(VISIBLE);
-            cancel.setImageResource(R.drawable.cross);
-            cancel.setOnClickListener(this);
-            this.l = l;
-        }
     }
 
 
     @Override
     public void onClick(View v) {
-        if (l != null) {
-            l.stopProgress();
+        if (listener != null) {
+            listener.stopProgress();
             dismiss();
         }
+    }
+
+    /**
+     * enables cancel button and adds a listener
+     */
+    public void addOnProgressStopListener(OnProgressStopListener listener) {
+        this.listener = listener;
+        cancel.setVisibility(VISIBLE);
+        cancel.setImageResource(R.drawable.cross);
+        cancel.setOnClickListener(this);
     }
 
     /**

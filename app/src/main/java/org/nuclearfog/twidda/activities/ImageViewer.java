@@ -79,7 +79,7 @@ public class ImageViewer extends MediaActivity implements ImageAdapter.OnImageCl
         Uri[] uris = {null};
         if (links != null) {
             uris = new Uri[links.length];
-            for (int i = 0 ; i < uris.length ; i++) {
+            for (int i = 0; i < uris.length; i++) {
                 uris[i] = (Uri) links[i];
             }
         }

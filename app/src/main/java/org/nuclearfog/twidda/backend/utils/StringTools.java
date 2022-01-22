@@ -122,7 +122,7 @@ public final class StringTools {
      */
     public static String unescapeString(String text) {
         StringBuilder result = new StringBuilder(text);
-        for (int i = result.length() - 1 ; i >= 0 ; i--) {
+        for (int i = result.length() - 1; i >= 0; i--) {
             if (result.charAt(i) == '&') {
                 if (result.substring(i).startsWith("&amp;"))
                     result.replace(i, i + 5, "&");

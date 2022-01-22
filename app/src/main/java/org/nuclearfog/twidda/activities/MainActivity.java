@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         pager = findViewById(R.id.home_pager);
         tabLayout = findViewById(R.id.home_tab);
         root = findViewById(R.id.main_layout);
-        loadingCircle = new ProgressDialog(this, null);
+        loadingCircle = new ProgressDialog(this);
 
         settings = GlobalSettings.getInstance(this);
         tabLayout.setupWithViewPager(pager);
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 startActivity(intent);
             }
         } else {
-            Toast.makeText(this, R.string.info_link_open_failed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_open_link, Toast.LENGTH_SHORT).show();
         }
     }
 

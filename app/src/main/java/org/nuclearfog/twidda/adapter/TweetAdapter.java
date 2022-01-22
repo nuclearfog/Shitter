@@ -330,9 +330,9 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         /**
          * called then the user clcks on the placeholder
          *
-         * @param minId  the highest tweet ID below the placeholder or '0' if there is none
-         * @param maxId  the lowest tweet ID above the placeholder or '0' if there is none
-         * @param pos    position of the placeholder
+         * @param minId the highest tweet ID below the placeholder or '0' if there is none
+         * @param maxId the lowest tweet ID above the placeholder or '0' if there is none
+         * @param pos   position of the placeholder
          * @return true  if click was handled
          */
         boolean onPlaceholderClick(long minId, long maxId, int pos);

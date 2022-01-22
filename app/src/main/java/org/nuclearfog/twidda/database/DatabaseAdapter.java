@@ -258,10 +258,6 @@ public class DatabaseAdapter {
          */
         String NAME = "user";
 
-        String ALIAS_1 = "user1";
-
-        String ALIAS_2 = "user2";
-
         /**
          * ID of the user
          */
@@ -572,10 +568,6 @@ public class DatabaseAdapter {
          * SQL table name
          */
         String NAME = "userFlags";
-
-        String ALIAS_1 = "userFlags1";
-
-        String ALIAS_2 = "userFlags2";
 
         /**
          * ID of the user this register references to

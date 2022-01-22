@@ -5,7 +5,6 @@ import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_DATA;
 import static org.nuclearfog.twidda.activities.UserlistActivity.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activities.UserLists.RET_LIST_CREATED;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,13 +45,15 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
      */
     public static final String KEY_LIST_EDITOR_DATA = "list_edit_data";
 
+    private ProgressDialog loadingCircle;
+    private ConfirmDialog confirmDialog;
+
     private ListUpdater updaterAsync;
     private EditText titleInput, subTitleInput;
     private CompoundButton visibility;
-    private Dialog leaveDialog, loadingCircle;
-    private ConfirmDialog errorDialog;
     @Nullable
     private UserList userList;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -72,9 +73,8 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
         subTitleInput = findViewById(R.id.list_edit_descr);
         visibility = findViewById(R.id.list_edit_public_sw);
 
-        loadingCircle = new ProgressDialog(this, this);
-        leaveDialog = new ConfirmDialog(this, DialogType.LIST_EDITOR_LEAVE, this);
-        errorDialog = new ConfirmDialog(this, DialogType.LIST_EDITOR_ERROR, this);
+        loadingCircle = new ProgressDialog(this);
+        confirmDialog = new ConfirmDialog(this);
 
         AppStyles.setEditorTheme(root, background);
 
@@ -87,7 +87,10 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
             popupTitle.setText(R.string.menu_edit_list);
             updateButton.setText(R.string.update_list);
         }
+
         updateButton.setOnClickListener(this);
+        loadingCircle.addOnProgressStopListener(this);
+        confirmDialog.setConfirmListener(this);
     }
 
 
@@ -102,9 +105,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
         } else if (title.isEmpty() && descr.isEmpty()) {
             super.onBackPressed();
         } else {
-            if (!leaveDialog.isShowing()) {
-                leaveDialog.show();
-            }
+            confirmDialog.show(DialogType.LIST_EDITOR_LEAVE);
         }
     }
 
@@ -169,10 +170,10 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
      * @param err twitter exception
      */
     public void onError(@Nullable ErrorHandler.TwitterError err) {
-        if (!errorDialog.isShowing()) {
+        if (!confirmDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, err);
-            errorDialog.setMessage(message);
-            errorDialog.show();
+            confirmDialog.setMessage(message);
+            confirmDialog.show(DialogType.LIST_EDITOR_ERROR);
         }
         if (loadingCircle.isShowing()) {
             loadingCircle.dismiss();

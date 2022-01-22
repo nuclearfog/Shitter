@@ -99,7 +99,7 @@ public interface Tweet extends Serializable {
      * @return media links (up to 4) to images and videos
      */
     @NonNull
-    Uri[] getMediaLinks();
+    Uri[] getMediaUris();
 
     /**
      * @return mentioned user names in the tweet text

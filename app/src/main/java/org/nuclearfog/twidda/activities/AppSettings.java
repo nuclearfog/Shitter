@@ -88,11 +88,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private static final int COLOR_FOLLOWING = 9;
 
     private GlobalSettings settings;
+
     private LocationLoader locationAsync;
     private LocationAdapter locationAdapter;
     private BaseAdapter fontAdapter, scaleAdapter;
 
-    private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo, license;
+    private Dialog color_dialog_selector, appInfo, license;
+    private ConfirmDialog confirmDialog;
+
     private View hqImageText, enableAuthTxt, api_info;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private SwitchButton enableProxy, enableAuth, hqImage, enableAPI;
@@ -181,10 +184,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         AppStyles.setTheme(root, settings.getBackgroundColor());
         AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
-        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
-        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
-        databaseDialog = new ConfirmDialog(this, DialogType.DEL_DATABASE, this);
-        logoutDialog = new ConfirmDialog(this, DialogType.APP_LOG_OUT, this);
+        confirmDialog = new ConfirmDialog(this);
         appInfo = new InfoDialog(this);
         license = new LicenseDialog(this);
 
@@ -253,6 +253,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSelector.setOnItemSelectedListener(this);
         scaleSelector.setOnItemSelectedListener(this);
         listSizeSelector.setOnSeekBarChangeListener(this);
+        confirmDialog.setConfirmListener(this);
     }
 
 
@@ -271,9 +272,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (saveConnectionSettings()) {
             super.onBackPressed();
         } else {
-            if (!connectDialog.isShowing()) {
-                connectDialog.show();
-            }
+            confirmDialog.show(DialogType.WRONG_PROXY);
         }
     }
 
@@ -337,15 +336,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onClick(View v) {
         // delete database
         if (v.getId() == R.id.delete_db) {
-            if (!databaseDialog.isShowing()) {
-                databaseDialog.show();
-            }
+            confirmDialog.show(DialogType.DEL_DATABASE);
         }
         // logout from twitter
         else if (v.getId() == R.id.logout) {
-            if (!logoutDialog.isShowing()) {
-                logoutDialog.show();
-            }
+            confirmDialog.show(DialogType.APP_LOG_OUT);
         }
         // set background color
         else if (v.getId() == R.id.color_background) {

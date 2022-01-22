@@ -208,7 +208,7 @@ class UserV1 implements User {
             JSONObject entities = json.getJSONObject("entities");
             JSONObject urlJson = entities.getJSONObject("url");
             JSONArray urls = urlJson.getJSONArray("urls");
-            if ( urls.length() > 0) {
+            if (urls.length() > 0) {
                 return urls.getJSONObject(0).getString("display_url");
             }
         } catch (JSONException e) {

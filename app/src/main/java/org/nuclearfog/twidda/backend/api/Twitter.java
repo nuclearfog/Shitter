@@ -162,7 +162,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return instance of this class
      */
     public static Twitter get(Context context) {
-        if (instance == null || notifySettingsChange) {
+        if (notifySettingsChange || instance == null) {
             instance = new Twitter(context);
         }
         return instance;

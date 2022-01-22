@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/image_preview"
         android:scaleType="fitStart"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true" />
 
     <ImageButton
         android:id="@+id/item_image_save"

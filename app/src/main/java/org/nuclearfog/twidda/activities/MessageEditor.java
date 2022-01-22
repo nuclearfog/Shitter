@@ -4,7 +4,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.*;
 import static android.widget.Toast.LENGTH_SHORT;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -45,10 +44,12 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
     private MessageUpdater messageAsync;
 
+    private ProgressDialog loadingCircle;
+    private ConfirmDialog confirmDialog;
+
     private EditText receiver, message;
     private ImageButton media, preview;
-    private Dialog loadingCircle;
-    private ConfirmDialog errorDialog, leaveDialog;
+
     @Nullable
     private Uri mediaUri;
 
@@ -70,9 +71,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         receiver = findViewById(R.id.dm_receiver);
         message = findViewById(R.id.dm_text);
 
-        loadingCircle = new ProgressDialog(this, this);
-        leaveDialog = new ConfirmDialog(this, DialogType.MESSAGE_EDITOR_LEAVE, this);
-        errorDialog = new ConfirmDialog(this, DialogType.MESSAGE_EDITOR_ERROR, this);
+        loadingCircle = new ProgressDialog(this);
+        confirmDialog = new ConfirmDialog(this);
 
         String prefix = getIntent().getStringExtra(KEY_DM_PREFIX);
         if (prefix != null) {
@@ -87,6 +87,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         send.setOnClickListener(this);
         media.setOnClickListener(this);
         preview.setOnClickListener(this);
+        loadingCircle.addOnProgressStopListener(this);
+        confirmDialog.setConfirmListener(this);
     }
 
 
@@ -94,8 +96,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     public void onBackPressed() {
         if (receiver.getText().length() == 0 && message.getText().length() == 0 && mediaUri == null) {
             super.onBackPressed();
-        } else if (!leaveDialog.isShowing()) {
-            leaveDialog.show();
+        } else {
+            confirmDialog.show(DialogType.MESSAGE_EDITOR_LEAVE);
         }
     }
 
@@ -180,14 +182,12 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
      * @param error Engine Exception
      */
     public void onError(@Nullable ErrorHandler.TwitterError error) {
-        if (!errorDialog.isShowing()) {
+        if (!confirmDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, error);
-            errorDialog.setMessage(message);
-            errorDialog.show();
+            confirmDialog.setMessage(message);
+            confirmDialog.show(DialogType.MESSAGE_EDITOR_ERROR);
         }
-        if (loadingCircle.isShowing()) {
-            loadingCircle.dismiss();
-        }
+        loadingCircle.dismiss();
     }
 
     /**

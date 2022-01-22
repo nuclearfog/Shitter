@@ -8,7 +8,6 @@ import static org.nuclearfog.twidda.activities.TweetEditor.*;
 import static org.nuclearfog.twidda.activities.UserDetail.*;
 import static org.nuclearfog.twidda.fragments.TweetFragment.*;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -20,8 +19,6 @@ import android.text.Spannable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -89,16 +86,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      */
     public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
+    private GlobalSettings settings;
+    private TweetAction statusAsync;
+    private Picasso picasso;
+
+    private LinkDialog linkPreview;
+    private ConfirmDialog deleteDialog;
+
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, sensitive_media;
     private Button ansButton, rtwButton, favButton, replyName, tweetLocGPS, retweeter;
     private ImageView profile_img, mediaButton;
     private Toolbar toolbar;
-    private LinkDialog linkPreview;
-    private Dialog deleteDialog;
-
-    private GlobalSettings settings;
-    private TweetAction statusAsync;
-    private Picasso picasso;
 
     @Nullable
     private Tweet tweet;
@@ -180,9 +178,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         AppStyles.setTheme(root, settings.getBackgroundColor());
         picasso = PicassoBuilder.get(this);
 
-        deleteDialog = new ConfirmDialog(this, DialogType.TWEET_DELETE, this);
         linkPreview = new LinkDialog(this);
+        deleteDialog = new ConfirmDialog(this);
 
+        deleteDialog.setConfirmListener(this);
         retweeter.setOnClickListener(this);
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
@@ -264,9 +263,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             User author = clickedTweet.getAuthor();
             // Delete tweet option
             if (item.getItemId() == R.id.delete_tweet) {
-                if (!deleteDialog.isShowing()) {
-                    deleteDialog.show();
-                }
+                deleteDialog.show(DialogType.TWEET_DELETE);
             }
             // get tweet link
             else if (item.getItemId() == R.id.tweet_link) {
@@ -351,23 +348,24 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // open tweet media
             else if (v.getId() == R.id.tweet_media_attach) {
+                // open embedded image links
                 if (clickedTweet.getMediaType().equals(Tweet.MEDIA_PHOTO)) {
                     Intent mediaIntent = new Intent(this, ImageViewer.class);
-                    mediaIntent.putExtra(ImageViewer.IMAGE_URIS, clickedTweet.getMediaLinks());
+                    mediaIntent.putExtra(ImageViewer.IMAGE_URIS, clickedTweet.getMediaUris());
                     mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
                     startActivity(mediaIntent);
                 }
-                //
+                // open embedded video link
                 else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_VIDEO)) {
-                    Uri link = clickedTweet.getMediaLinks()[0];
+                    Uri link = clickedTweet.getMediaUris()[0];
                     Intent mediaIntent = new Intent(this, VideoViewer.class);
                     mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
                     mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
                     startActivity(mediaIntent);
                 }
-                //
+                // open embedded gif link
                 else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_GIF)) {
-                    Uri link = clickedTweet.getMediaLinks()[0];
+                    Uri link = clickedTweet.getMediaUris()[0];
                     Intent mediaIntent = new Intent(this, VideoViewer.class);
                     mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
                     mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);

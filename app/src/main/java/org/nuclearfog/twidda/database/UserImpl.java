@@ -49,7 +49,7 @@ class UserImpl implements User {
         bio = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.DESCRIPTION));
         link = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.LINK));
         location = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.LOCATION));
-        bannerImg = cursor.getString(cursor.getColumnIndexOrThrow( DatabaseAdapter.UserTable.BANNER));
+        bannerImg = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.BANNER));
         created = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.SINCE));
         following = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FRIENDS));
         follower = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FOLLOWER));

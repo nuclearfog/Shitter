@@ -41,10 +41,12 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dialog = new ConfirmDialog(requireContext(), DialogType.REMOVE_ACCOUNT, this);
+        dialog = new ConfirmDialog(requireContext());
         settings = GlobalSettings.getInstance(requireContext());
         adapter = new AccountAdapter(requireContext(), this);
+
         setAdapter(adapter);
+        dialog.setConfirmListener(this);
     }
 
 
@@ -100,15 +102,17 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
     public void onAccountRemove(Account account) {
         if (!dialog.isShowing()) {
             selection = account;
-            dialog.show();
+            dialog.show(DialogType.REMOVE_ACCOUNT);
         }
     }
 
 
     @Override
     public void onConfirm(DialogType type) {
-        loginTask = new AccountLoader(this);
-        loginTask.execute(selection);
+        if (type == DialogType.REMOVE_ACCOUNT) {
+            loginTask = new AccountLoader(this);
+            loginTask.execute(selection);
+        }
     }
 
     /**

@@ -1018,7 +1018,7 @@ public class AppDatabase {
      */
     private String getMediaLinks(Tweet tweet) {
         StringBuilder media = new StringBuilder();
-        for (Uri link : tweet.getMediaLinks())
+        for (Uri link : tweet.getMediaUris())
             media.append(link.toString()).append(";");
         return media.toString();
     }
