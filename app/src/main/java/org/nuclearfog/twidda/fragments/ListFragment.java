@@ -25,16 +25,9 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public abstract class ListFragment extends Fragment implements OnRefreshListener {
 
-    /**
-     * delay to enable swipe view in milliseconds
-     */
-    private static final int REFRESH_DELAY = 500;
-
     private RecyclerView list;
     private SwipeRefreshLayout reload;
     protected GlobalSettings settings;
-
-    private boolean refreshLock = false;
 
 
     @Override
@@ -45,6 +38,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
         reload = new SwipeRefreshLayout(requireContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        reload.setColorSchemeColors(settings.getIconColor());
         reload.setOnRefreshListener(this);
         reload.addView(list);
         return reload;
@@ -53,7 +47,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
     @Override
     public final void onRefresh() {
-        refreshLock = true;
         onReload();
     }
 
@@ -63,19 +56,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      * @param enable true to enable swipe view delayed, false to stop immediately
      */
     protected void setRefresh(boolean enable) {
-        refreshLock = !enable;
-        if (enable) {
-            reload.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!reload.isRefreshing() && !refreshLock) {
-                        reload.setRefreshing(true);
-                    }
-                }
-            }, REFRESH_DELAY);
-        } else {
-            reload.setRefreshing(false);
-        }
+        reload.setRefreshing(enable);
     }
 
     /**

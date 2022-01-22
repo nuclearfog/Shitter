@@ -726,7 +726,7 @@ public class AppDatabase {
         userColumn.put(UserTable.TWEETS, user.getTweetCount());
         userColumn.put(UserTable.FAVORS, user.getFavoriteCount());
 
-        db.insertWithOnConflict(UserTable.NAME, null, userColumn, mode);
+        db.insertWithOnConflict(UserTable.NAME, "", userColumn, mode);
         setUserRegister(db, user.getId(), register);
     }
 
@@ -786,7 +786,7 @@ public class AppDatabase {
         status.put(TweetTable.REPLYUSER, tweet.getReplyUserId());
         status.put(TweetTable.REPLYNAME, tweet.getReplyName());
 
-        db.insertWithOnConflict(TweetTable.NAME, null, status, CONFLICT_REPLACE);
+        db.insertWithOnConflict(TweetTable.NAME, "", status, CONFLICT_REPLACE);
 
         storeUser(user, db, CONFLICT_IGNORE);
         setTweetRegister(db, tweet, statusRegister);
@@ -847,7 +847,7 @@ public class AppDatabase {
         ContentValues favTable = new ContentValues(2);
         favTable.put(FavoriteTable.TWEETID, tweetId);
         favTable.put(FavoriteTable.FAVORITEDBY, ownerId);
-        db.insertWithOnConflict(FavoriteTable.NAME, null, favTable, CONFLICT_REPLACE);
+        db.insertWithOnConflict(FavoriteTable.NAME, "", favTable, CONFLICT_REPLACE);
     }
 
     /**
@@ -877,7 +877,7 @@ public class AppDatabase {
         messageColumn.put(MessageTable.MESSAGE, message.getText());
         if (message.getMedia() != null)
             messageColumn.put(MessageTable.MEDIA, message.getMedia().toString());
-        db.insertWithOnConflict(MessageTable.NAME, null, messageColumn, CONFLICT_IGNORE);
+        db.insertWithOnConflict(MessageTable.NAME, "", messageColumn, CONFLICT_IGNORE);
         // store user information
         storeUser(message.getSender(), db, CONFLICT_IGNORE);
         storeUser(message.getReceiver(), db, CONFLICT_IGNORE);
