@@ -26,6 +26,8 @@ import org.nuclearfog.twidda.model.User;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * SQLite database class to store and load tweets, messages, trends and user information
@@ -136,15 +138,10 @@ public class AppDatabase {
             + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCL_USR + " IS 0"
             + " ORDER BY " + TweetTable.ID + " DESC LIMIT ?";
 
+    /**
+     * SQL query to get current user's messages
+     */
     static final String MESSAGE_QUERY = "SELECT * FROM " + MessageTable.NAME
-            + " LEFT JOIN " + UserTable.NAME + " " + UserTable.ALIAS_1
-            + " ON " + UserTable.ALIAS_1 + "." + UserTable.ID + "=" + MessageTable.NAME + "." + MessageTable.FROM
-            + " LEFT JOIN " + UserTable.NAME + " " + UserTable.ALIAS_2
-            + " ON " + UserTable.ALIAS_2 + "." + UserTable.ID + "=" + MessageTable.NAME + "." + MessageTable.TO
-            + " LEFT JOIN " + UserRegisterTable.NAME + " " + UserRegisterTable.ALIAS_1
-            + " ON " + UserRegisterTable.ALIAS_1 + "." + UserRegisterTable.ID + "=" + MessageTable.NAME + "." + MessageTable.FROM
-            + " LEFT JOIN " + UserRegisterTable.NAME + " " + UserRegisterTable.ALIAS_2
-            + " ON " + UserRegisterTable.ALIAS_2 + "." + UserRegisterTable.ID + "=" + MessageTable.NAME + "." + MessageTable.TO
             + " WHERE " + MessageTable.FROM + "=? OR " + MessageTable.TO + "=?"
             + " ORDER BY " + MessageTable.SINCE + " DESC LIMIT ?";
 
@@ -593,13 +590,33 @@ public class AppDatabase {
      * @return list of direct messages
      */
     public Directmessages getMessages() {
-        String[] args = {Long.toString(homeId), Long.toString(homeId), Integer.toString(limit)};
+        String homeIdStr = Long.toString(homeId);
+        String[] args = {homeIdStr, homeIdStr, Integer.toString(limit)};
         Directmessages result = new Directmessages(null, null);
         SQLiteDatabase db = getDbRead();
+        Map<Long, User> userCache = new TreeMap<>();
         Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                result.add(new DirectMessageImpl(cursor, homeId));
+                User sender, receiver;
+                DirectMessageImpl message = new DirectMessageImpl(cursor);
+                if (userCache.containsKey(message.getSenderId())) {
+                    sender = userCache.get(message.getSenderId());
+                } else {
+                    sender = getUser(message.getSenderId());
+                    userCache.put(message.getSenderId(), sender);
+                }
+                if (userCache.containsKey(message.getReceiverId())) {
+                    receiver = userCache.get(message.getReceiverId());
+                } else {
+                    receiver = getUser(message.getReceiverId());
+                    userCache.put(message.getReceiverId(), receiver);
+                }
+                if (sender != null && receiver != null) {
+                    message.setSender(sender);
+                    message.setReceiver(receiver);
+                    result.add(message);
+                }
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -852,7 +869,7 @@ public class AppDatabase {
      */
     private void storeMessage(DirectMessage message, SQLiteDatabase db) {
         // store message information
-        ContentValues messageColumn = new ContentValues(5);
+        ContentValues messageColumn = new ContentValues(6);
         messageColumn.put(MessageTable.ID, message.getId());
         messageColumn.put(MessageTable.SINCE, message.getTimestamp());
         messageColumn.put(MessageTable.FROM, message.getSender().getId());

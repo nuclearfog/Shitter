@@ -42,25 +42,20 @@ class UserImpl implements User {
 
 
     UserImpl(Cursor cursor, long currentUserId) {
-        this(cursor, "", currentUserId);
-    }
-
-
-    UserImpl(Cursor cursor, String prefix, long currentUserId) {
-        id = cursor.getLong(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.ID));
-        username = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.USERNAME));
-        screenName = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.SCREENNAME));
-        profileImg = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.IMAGE));
-        bio = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.DESCRIPTION));
-        link = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.LINK));
-        location = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.LOCATION));
-        bannerImg = cursor.getString(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.BANNER));
-        created = cursor.getLong(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.SINCE));
-        following = cursor.getInt(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.FRIENDS));
-        follower = cursor.getInt(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.FOLLOWER));
-        tweetCount = cursor.getInt(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.TWEETS));
-        favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserTable.FAVORS));
-        int register = cursor.getInt(cursor.getColumnIndexOrThrow(prefix + DatabaseAdapter.UserRegisterTable.REGISTER));
+        id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.ID));
+        username = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.USERNAME));
+        screenName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.SCREENNAME));
+        profileImg = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.IMAGE));
+        bio = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.DESCRIPTION));
+        link = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.LINK));
+        location = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.LOCATION));
+        bannerImg = cursor.getString(cursor.getColumnIndexOrThrow( DatabaseAdapter.UserTable.BANNER));
+        created = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.SINCE));
+        following = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FRIENDS));
+        follower = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FOLLOWER));
+        tweetCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.TWEETS));
+        favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FAVORS));
+        int register = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserRegisterTable.REGISTER));
         isVerified = (register & VER_MASK) != 0;
         isLocked = (register & LCK_MASK) != 0;
         followReqSent = (register & FRQ_MASK) != 0;

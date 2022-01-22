@@ -66,8 +66,8 @@ public class PicassoBuilder implements GlobalSettings.SettingsListener {
                 TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 factory.init((KeyStore) null);
                 X509TrustManager manager = (X509TrustManager) factory.getTrustManagers()[0];
-                builder.sslSocketFactory(new TLSSocketFactory(), manager);
-                downloader = new OkHttp3Downloader(builder.build());
+                TLSSocketFactory socket = new TLSSocketFactory();
+                builder.sslSocketFactory(socket, manager);
             } catch (Exception e) {
                 // ignore, try without TLS 1.2 support
             }
