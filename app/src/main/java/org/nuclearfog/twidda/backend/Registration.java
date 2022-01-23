@@ -50,37 +50,42 @@ public class Registration extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... param) {
         try {
-            // check if we need to backup current session
-            if (settings.isLoggedIn() && !accountDB.exists(settings.getCurrentUserId())) {
-                accountDB.setLogin(settings.getCurrentUserId(), settings.getAccessToken(), settings.getTokenSecret());
-            }
             // no PIN means we need to request a token to login
             if (param.length == 0) {
+                // backup current login if exist
+                if (settings.isLoggedIn() && !accountDB.exists(settings.getCurrentUserId())) {
+                    accountDB.setLogin(settings.getCurrentUserId(), settings.getAccessToken(), settings.getTokenSecret());
+                }
                 return twitter.getRequestToken();
             }
-            // login with pin
+            // login with pin and access token
             User user = twitter.login(param[0], param[1]);
+            // save new user information
             database.storeUser(user);
+            accountDB.setLogin(user.getId(), settings.getAccessToken(), settings.getTokenSecret());
             return "";
         } catch (TwitterException exception) {
             this.exception = exception;
+            return null;
         }
-        return null;
     }
 
 
     @Override
-    protected void onPostExecute(String redirectionURL) {
+    protected void onPostExecute(String result) {
         LoginActivity activity = callback.get();
         if (activity != null) {
-            if (redirectionURL != null) {
-                if (!redirectionURL.isEmpty()) {
-                    activity.connect(redirectionURL);
-                } else if (exception != null) {
-                    activity.onError(exception);
-                } else {
+            // redirect to Twitter login page
+            if (result != null) {
+                if (result.isEmpty()) {
                     activity.onSuccess();
+                } else {
+                    activity.connect(result);
                 }
+            }
+            // notify when an error occured
+            else {
+                activity.onError(exception);
             }
         }
     }

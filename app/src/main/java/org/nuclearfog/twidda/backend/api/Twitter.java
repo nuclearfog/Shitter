@@ -184,6 +184,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             Response response = post(REQUEST_TOKEN, new ArrayList<>(1));
             if (response.code() == 200 && response.body() != null) {
                 String res = response.body().string();
+                // extrect oauth_token from url
                 Uri uri = Uri.parse(AUTHENTICATE + "?" + res);
                 return uri.getQueryParameter("oauth_token");
             }

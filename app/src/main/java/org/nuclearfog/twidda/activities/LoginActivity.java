@@ -187,7 +187,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      *
      * @param error Twitter exception
      */
-    public void onError(TwitterError error) {
+    public void onError(@Nullable TwitterError error) {
         ErrorHandler.handleFailure(this, error);
     }
 
