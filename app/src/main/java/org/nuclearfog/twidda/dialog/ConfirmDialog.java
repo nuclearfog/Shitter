@@ -84,33 +84,45 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
         if (isShowing())
             return;
         confirm.setTag(type);
+        // reset modifications
+        if (cancel.getVisibility() != View.VISIBLE)
+            cancel.setVisibility(View.VISIBLE);
+        if (confirm.getCompoundDrawables()[0] == null)
+            confirm.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check, 0, 0, 0);
+        // setup buttons and message
         switch (type) {
             case MESSAGE_DELETE:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_delete_message);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case WRONG_PROXY:
                 txtTitle.setText(R.string.info_error);
                 txtMessage.setText(R.string.error_wrong_connection_settings);
-                confirm.setText(R.string.dialog_button_cancel);
-                cancel.setText(R.string.confirm_back);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case DELETE_APP_DATA:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_delete_database);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case APP_LOG_OUT:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_log_lout);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case VIDEO_ERROR:
                 txtTitle.setText(R.string.error_cant_load_video);
-                confirm.setText(R.string.confirm_open_link);
                 confirm.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                confirm.setText(R.string.confirm_open_link);
                 cancel.setVisibility(View.GONE);
                 break;
 
@@ -118,11 +130,22 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
             case PROFILE_EDITOR_LEAVE:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_discard);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case TWEET_EDITOR_LEAVE:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_cancel_tweet);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
+                break;
+
+            case MESSAGE_EDITOR_LEAVE:
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_cancel_message);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case LIST_EDITOR_ERROR:
@@ -131,56 +154,63 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
             case PROFILE_EDITOR_ERROR:
                 txtTitle.setText(R.string.info_error);
                 confirm.setText(R.string.confirm_retry_button);
-                cancel.setText(R.string.dialog_button_cancel);
-                break;
-
-            case MESSAGE_EDITOR_LEAVE:
-                txtTitle.setVisibility(View.GONE);
-                txtMessage.setText(R.string.confirm_cancel_message);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case TWEET_DELETE:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_delete_tweet);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case PROFILE_UNFOLLOW:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_unfollow);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case PROFILE_BLOCK:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_block);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case PROFILE_MUTE:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_mute);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case LIST_REMOVE_USER:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_remove_user_from_list);
-                confirm.setText(R.string.dialog_button_ok);
-                cancel.setText(R.string.dialog_button_cancel);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case LIST_UNFOLLOW:
                 txtMessage.setText(R.string.confirm_unfollow_list);
                 txtTitle.setVisibility(View.GONE);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case LIST_DELETE:
                 txtMessage.setText(R.string.confirm_delete_list);
                 txtTitle.setVisibility(View.GONE);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
 
             case REMOVE_ACCOUNT:
                 txtMessage.setText(R.string.confirm_remove_account);
-                confirm.setText(R.string.dialog_button_ok);
-                cancel.setText(R.string.dialog_button_cancel);
                 txtTitle.setVisibility(View.GONE);
+                confirm.setText(android.R.string.ok);
+                cancel.setText(android.R.string.cancel);
                 break;
         }
         super.show();

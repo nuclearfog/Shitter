@@ -133,14 +133,22 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         super.onActivityResult(reqCode, returnCode, intent);
         switch (reqCode) {
             case REQUEST_APP_LOGIN:
-                AppStyles.setTheme(root, settings.getBackgroundColor());
                 // check if app login cancelled
                 if (returnCode == RESULT_CANCELED) {
                     finish();
                 }
                 // check if account changed
-                else if (returnCode == LoginActivity.REQURN_LOGIN_SUCCESSFUL) {
+                else if (returnCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
                     adapter.setupForHomePage();
+                    AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
+                    AppStyles.setTheme(root, settings.getBackgroundColor());
+                }
+                break;
+
+            case REQUEST_ACCOUNT_CHANGE:
+                // check if account changed
+                if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
+                    adapter.notifySettingsChanged();
                 }
                 break;
 
@@ -150,18 +158,12 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
                 // check if an account was removed
                 if (returnCode == AppSettings.RETURN_APP_LOGOUT) {
+                    // clear old login fragments
                     adapter.clear();
                     pager.setAdapter(adapter);
                 }
                 // check if app data were cleared
                 else if (returnCode == AppSettings.RETURN_DATA_CLEARED) {
-                    adapter.notifySettingsChanged();
-                }
-                break;
-
-            case REQUEST_ACCOUNT_CHANGE:
-                // check if account changed
-                if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
                     adapter.notifySettingsChanged();
                 }
                 break;

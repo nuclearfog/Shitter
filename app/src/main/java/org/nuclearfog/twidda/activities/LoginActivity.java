@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     /**
      * return code to recognize the parent activity that a login process finished successful
      */
-    public static final int REQURN_LOGIN_SUCCESSFUL = 0x145;
+    public static final int RETURN_LOGIN_SUCCESSFUL = 0x145;
 
     private Registration registerAsync;
     private GlobalSettings settings;
@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      * Called when the app is registered successfully to twitter
      */
     public void onSuccess() {
-        setResult(REQURN_LOGIN_SUCCESSFUL);
+        setResult(RETURN_LOGIN_SUCCESSFUL);
         finish();
     }
 

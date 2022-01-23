@@ -125,7 +125,7 @@
     <string name="error_cant_load_video">Video kann nicht abgespielt werden!</string>
     <string name="settings_enable_proxy">Proxy aktivieren</string>
     <string name="settings_enable_proxy_auth">Proxy Authentifizierung aktivieren</string>
-    <string name="error_wrong_connection_settings">Falsche Verbindung angegeben!</string>
+    <string name="error_wrong_connection_settings">Falsche Proxykonfiguration! Änderung verwerfen?</string>
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
     <string name="tweet_sensitive_media">Sensible Inhalte</string>
     <string name="login_info">3 Schritte zum Login</string>

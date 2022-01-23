@@ -19,7 +19,7 @@
     <string name="info_list_created">Userlist created</string>
     <string name="info_fetching_link">redirecting to Twitter login</string>
     <string name="info_login_to_twitter">login to Twitter</string>
-    <string name="error_wrong_connection_settings">wrong connection settings!</string>
+    <string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
     <string name="info_get_link">please open twitter login page first to get the PIN</string>
     <string name="info_gps_attached">GPS position added</string>
     <string name="info_tweet_retweeted">retweeted</string>

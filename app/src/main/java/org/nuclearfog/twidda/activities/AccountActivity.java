@@ -98,7 +98,7 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LOGIN && resultCode == LoginActivity.REQURN_LOGIN_SUCCESSFUL) {
+        if (requestCode == REQUEST_LOGIN && resultCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
             setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
             // new account registered, reload fragment
             fragment.reset();
