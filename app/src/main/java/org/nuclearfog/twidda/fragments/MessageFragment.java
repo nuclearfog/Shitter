@@ -138,7 +138,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
                     break;
 
                 case DELETE:
-                    if (!confirmDialog.isShowing()) {
+                    if (!confirmDialog.isShowing() && messageTask != null && messageTask.getStatus() != RUNNING) {
                         deleteId = message.getId();
                         confirmDialog.show(DialogType.MESSAGE_DELETE);
                     }
