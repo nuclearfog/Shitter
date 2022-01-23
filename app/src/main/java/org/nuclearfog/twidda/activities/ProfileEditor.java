@@ -3,8 +3,6 @@ package org.nuclearfog.twidda.activities;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.activities.UserProfile.RETURN_PROFILE_CHANGED;
-import static org.nuclearfog.twidda.activities.UserProfile.RETURN_PROFILE_DATA;
 import static org.nuclearfog.twidda.activities.UserProfile.TOOLBAR_TRANSPARENCY;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
@@ -60,7 +58,17 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     /**
      * key to preload user data
      */
-    public static final String KEY_USER_DATA = "profile-editor-data";
+    public static final String KEY_PROFILE_DATA = "profile-editor-data";
+
+    /**
+     * key to update profile information
+     */
+    public static final String KEY_UPDATED_PROFILE = "profile-update";
+
+    /**
+     * return code if {@link ProfileEditor} changed profile information
+     */
+    public static final int RETURN_PROFILE_CHANGED = 0xF5C0E570;
 
     private UserUpdater editorAsync;
     private GlobalSettings settings;
@@ -121,7 +129,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         AppStyles.setTheme(root, settings.getBackgroundColor());
         picasso = PicassoBuilder.get(this);
 
-        Object data = getIntent().getSerializableExtra(KEY_USER_DATA);
+        Object data = getIntent().getSerializableExtra(KEY_PROFILE_DATA);
         if (data instanceof User) {
             user = (User) data;
             setUser();
@@ -254,7 +262,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
      */
     public void onSuccess(User user) {
         Intent data = new Intent();
-        data.putExtra(RETURN_PROFILE_DATA, user);
+        data.putExtra(KEY_UPDATED_PROFILE, user);
         Toast.makeText(this, R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
         setResult(RETURN_PROFILE_CHANGED, data);
         finish();

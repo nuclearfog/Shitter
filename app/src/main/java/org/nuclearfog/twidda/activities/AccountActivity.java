@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragments.AccountFragment;
 import org.nuclearfog.twidda.fragments.ListFragment;
 
-
 /**
  * account manager activity
  *
@@ -31,12 +29,12 @@ public class AccountActivity extends AppCompatActivity {
     /**
      * request login page
      */
-    private static final int REQ_LOGIN = 0xDF14;
+    private static final int REQUEST_LOGIN = 0xDF14;
 
     /**
-     * result code when an account was selected
+     * return code to notify that a new account was selected
      */
-    public static final int RET_ACCOUNT_CHANGE = 0x0456;
+    public static final int RETURN_ACCOUNT_CHANGED = 0x3660;
 
     /**
      * key to disable account selector option from menu
@@ -74,13 +72,6 @@ public class AccountActivity extends AppCompatActivity {
 
 
     @Override
-    public void onBackPressed() {
-        setResult(RESULT_OK);
-        super.onBackPressed();
-    }
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.accounts, m);
         // disable account selector icon if this activity started from LoginActivity
@@ -97,7 +88,7 @@ public class AccountActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_add_account) {
             // open login page to add new account
             Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivityForResult(loginIntent, REQ_LOGIN);
+            startActivityForResult(loginIntent, REQUEST_LOGIN);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -107,7 +98,8 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_LOGIN && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_LOGIN && resultCode == LoginActivity.REQURN_LOGIN_SUCCESSFUL) {
+            setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
             // new account registered, reload fragment
             fragment.reset();
         }

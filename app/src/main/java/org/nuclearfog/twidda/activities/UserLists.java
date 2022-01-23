@@ -40,12 +40,8 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     /**
      * request code for {@link UserlistEditor} OnTabSelectedListener
      */
-    private static final int REQ_CREATE_LIST = 0x9D8E;
+    private static final int REQUEST_CREATE_LIST = 0x9D8E;
 
-    /**
-     * return code for {@link UserlistEditor} if list was created
-     */
-    public static final int RET_LIST_CREATED = 0xE8715442;
 
     private FragmentAdapter adapter;
     private GlobalSettings settings;
@@ -53,6 +49,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     private TabLayout tabLayout;
 
     private boolean isHome = false;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -95,7 +92,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     @Override
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
-        if (reqCode == REQ_CREATE_LIST && returnCode == RET_LIST_CREATED) {
+        if (reqCode == REQUEST_CREATE_LIST && returnCode == UserlistEditor.RETURN_LIST_CREATED) {
             adapter.notifySettingsChanged();
         }
     }
@@ -124,7 +121,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.list_create) {
             Intent createList = new Intent(this, UserlistEditor.class);
-            startActivityForResult(createList, REQ_CREATE_LIST);
+            startActivityForResult(createList, REQUEST_CREATE_LIST);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -58,11 +58,6 @@ public class UserFragment extends ListFragment implements UserClickListener,
     public static final String KEY_FRAG_DEL_USER = "user_en_del";
 
     /**
-     * key to send updated user data
-     */
-    public static final String KEY_USER_UPDATE = "user_update";
-
-    /**
      * configuration for a list of users following the specified user
      */
     public static final int USER_FRAG_FOLLOWS = 0xE45DD2;
@@ -111,11 +106,6 @@ public class UserFragment extends ListFragment implements UserClickListener,
      * Request code to update user information
      */
     private static final int REQ_USER_UPDATE = 0x3F29;
-
-    /**
-     * Return code to update user information
-     */
-    public static final int RETURN_USER_UPDATED = 0x9996498C;
 
     private UserLoader userTask;
     private ListManager listTask;
@@ -174,8 +164,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_USER_UPDATE && resultCode == RETURN_USER_UPDATED && data != null) {
-            Object result = data.getSerializableExtra(KEY_USER_UPDATE);
+        if (requestCode == REQ_USER_UPDATE && resultCode == UserProfile.RETURN_USER_UPDATED && data != null) {
+            Object result = data.getSerializableExtra(UserProfile.KEY_USER_UPDATE);
             if (result instanceof User) {
                 User update = (User) result;
                 adapter.updateUser(update);

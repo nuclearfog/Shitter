@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.activities;
 
-import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
 import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_ID;
 
@@ -42,27 +41,22 @@ import org.nuclearfog.twidda.dialog.ProgressDialog;
 public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
     /**
-     * bundle key used to set the page
+     * bundle key used to set the tab page
      */
     public static final String KEY_TAB_PAGE = "tab_pos";
 
     /**
-     * Code returned from {@link AppSettings} when user clears the database
-     */
-    public static final int RETURN_DB_CLEARED = 0x95BEA792;
-
-    /**
-     * Code returned from {@link AppSettings} when user logs out from Twitter
-     */
-    public static final int RETURN_APP_LOGOUT = 0x4029DFEE;
-
-    /**
-     * Request code for {@link LoginActivity}
+     * request code to start {@link LoginActivity}
      */
     private static final int REQUEST_APP_LOGIN = 0x6A89;
 
     /**
-     * Request code for {@link AppSettings}
+     * Request code to start {@link AccountActivity}
+     */
+    private static final int REQUEST_ACCOUNT_CHANGE = 0x345;
+
+    /**
+     * Request code to start {@link AppSettings}
      */
     private static final int REQUEST_APP_SETTINGS = 0x54AD;
 
@@ -108,12 +102,16 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     @Override
     protected void onStart() {
         super.onStart();
+        // open login page if there isn't any account selected
         if (!settings.isLoggedIn()) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
-        } else if (adapter.isEmpty()) {
+        }
+        // initialize lists
+        else if (adapter.isEmpty()) {
             adapter.setupForHomePage();
             AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
+            // check if there is a Twitter link
             if (getIntent().getData() != null) {
                 LinkLoader linkLoader = new LinkLoader(this);
                 linkLoader.execute(getIntent().getData());
@@ -132,30 +130,42 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
+        super.onActivityResult(reqCode, returnCode, intent);
         switch (reqCode) {
             case REQUEST_APP_LOGIN:
                 AppStyles.setTheme(root, settings.getBackgroundColor());
+                // check if app login cancelled
                 if (returnCode == RESULT_CANCELED) {
                     finish();
-                } else if (returnCode == RET_ACCOUNT_CHANGE) {
-                    adapter.notifySettingsChanged();
-                } else {
-                    adapter.notifySettingsChanged();
+                }
+                // check if account changed
+                else if (returnCode == LoginActivity.REQURN_LOGIN_SUCCESSFUL) {
+                    adapter.setupForHomePage();
                 }
                 break;
 
             case REQUEST_APP_SETTINGS:
+                // set new theme
                 AppStyles.setTheme(root, settings.getBackgroundColor());
                 AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
-                if (returnCode == RETURN_APP_LOGOUT) {
+                // check if an account was removed
+                if (returnCode == AppSettings.RETURN_APP_LOGOUT) {
                     adapter.clear();
                     pager.setAdapter(adapter);
-                } else {
+                }
+                // check if app data were cleared
+                else if (returnCode == AppSettings.RETURN_DATA_CLEARED) {
+                    adapter.notifySettingsChanged();
+                }
+                break;
+
+            case REQUEST_ACCOUNT_CHANGE:
+                // check if account changed
+                if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
                     adapter.notifySettingsChanged();
                 }
                 break;
         }
-        super.onActivityResult(reqCode, returnCode, intent);
     }
 
 
@@ -235,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         // open account manager
         else if (item.getItemId() == R.id.action_account) {
             Intent accountManager = new Intent(this, AccountActivity.class);
-            startActivityForResult(accountManager, REQUEST_APP_LOGIN);
+            startActivityForResult(accountManager, REQUEST_ACCOUNT_CHANGE);
         }
         return super.onOptionsItemSelected(item);
     }

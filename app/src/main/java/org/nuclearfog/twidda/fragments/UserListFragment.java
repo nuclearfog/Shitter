@@ -62,27 +62,6 @@ public class UserListFragment extends ListFragment implements ListClickListener 
      */
     public static final int REQUEST_OPEN_LIST = 0x9541;
 
-    /**
-     * return code for {@link #REQUEST_OPEN_LIST} when an user list was deleted
-     */
-    public static final int RETURN_LIST_REMOVED = 0xDAD518B4;
-
-    /**
-     * return code for {@link #REQUEST_OPEN_LIST} when an user list was deleted
-     */
-    public static final int RETURN_LIST_UPDATED = 0x5D0F5E8D;
-
-    /**
-     * activity result key to return the ID of a removed list
-     * called with {@link #RETURN_LIST_REMOVED}
-     */
-    public static final String RESULT_REMOVED_LIST_ID = "removed-list-id";
-
-    /**
-     * result key to update an user list
-     */
-    public static final String RESULT_UPDATE_LIST = "update-user-list";
-
     private ListLoader listTask;
     private ListAdapter adapter;
 
@@ -134,11 +113,14 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && requestCode == REQUEST_OPEN_LIST) {
-            if (resultCode == RETURN_LIST_REMOVED) {
-                long removedListId = data.getLongExtra(RESULT_REMOVED_LIST_ID, 0);
+            // check if userlist was removed
+            if (resultCode == UserlistActivity.RETURN_LIST_REMOVED) {
+                long removedListId = data.getLongExtra(UserlistActivity.RESULT_REMOVED_LIST_ID, 0);
                 adapter.removeItem(removedListId);
-            } else if (resultCode == RETURN_LIST_UPDATED) {
-                Object result = data.getSerializableExtra(RESULT_UPDATE_LIST);
+            }
+            // check if userlist was updated
+            else if (resultCode == UserlistActivity.RETURN_LIST_UPDATED) {
+                Object result = data.getSerializableExtra(UserlistActivity.RESULT_UPDATE_LIST);
                 if (result instanceof UserList) {
                     UserList update = (UserList) result;
                     adapter.updateItem(update);

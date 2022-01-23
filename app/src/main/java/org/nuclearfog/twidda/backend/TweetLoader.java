@@ -51,7 +51,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
         /**
          * tweet replies from database
          */
-        DB_ANS,
+        REPLIES_OFFLINE,
         /**
          * tweets from twitter search
          */
@@ -170,7 +170,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     }
                     break;
 
-                case DB_ANS:
+                case REPLIES_OFFLINE:
                     tweets = db.getAnswers(id);
                     break;
 

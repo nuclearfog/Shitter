@@ -1,9 +1,6 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_DATA;
-import static org.nuclearfog.twidda.activities.UserlistActivity.RET_LIST_CHANGED;
-import static org.nuclearfog.twidda.activities.UserLists.RET_LIST_CREATED;
 
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +41,21 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
      * Key for the list ID of the list if an existing list should be updated
      */
     public static final String KEY_LIST_EDITOR_DATA = "list_edit_data";
+
+    /**
+     * Key for updated list information
+     */
+    public static final String KEY_UPDATED_USERLIST = "userlist-update";
+
+    /**
+     * Return code used when an existing userlist was changed
+     */
+    public static final int RETURN_LIST_CHANGED = 0x1A5518E1;
+
+    /**
+     * Return code used then a new userlist was created
+     */
+    public static final int RETURN_LIST_CREATED = 0xE8715442;
 
     private ProgressDialog loadingCircle;
     private ConfirmDialog confirmDialog;
@@ -154,12 +166,12 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
         if (userList != null) {
             Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
             Intent data = new Intent();
-            data.putExtra(KEY_LIST_DATA, result);
-            setResult(RET_LIST_CHANGED, data);
+            data.putExtra(KEY_UPDATED_USERLIST, result);
+            setResult(RETURN_LIST_CHANGED, data);
         } else {
             // it's a new list, if no list is defined
             Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();
-            setResult(RET_LIST_CREATED);
+            setResult(RETURN_LIST_CREATED);
         }
         finish();
     }

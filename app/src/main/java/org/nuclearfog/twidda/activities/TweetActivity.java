@@ -67,6 +67,16 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         OnLongClickListener, OnTagClickListener, OnConfirmListener {
 
     /**
+     * return code if a tweet was not found
+     */
+    public static final int RETURN_TWEET_UPDATE = 0x789CD38B;
+
+    /**
+     * return code if a tweet was not found
+     */
+    public static final int RETURN_TWEET_NOT_FOUND = 0x8B03DB84;
+
+    /**
      * ID of the tweet to open. required
      */
     public static final String KEY_TWEET_ID = "tweet_tweet_id";
@@ -80,6 +90,16 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      * key for a tweet object
      */
     public static final String KEY_TWEET_DATA = "tweet_data";
+
+    /**
+     * Key to return an ID of a removed tweet
+     */
+    public static final String INTENT_TWEET_UPDATE_DATA = "tweet_update_data";
+
+    /**
+     * Key to return an ID of a removed tweet
+     */
+    public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
 
     /**
      * regex pattern of a tweet URL

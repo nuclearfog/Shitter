@@ -6,9 +6,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activities.AccountActivity.KEY_DISABLE_SELECTOR;
-import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -45,9 +43,14 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 public class LoginActivity extends AppCompatActivity implements OnClickListener {
 
     /**
-     * request code to open account manager
+     * request code to open {@link AccountActivity}
      */
     private static final int REQUEST_ACCOUNT_SELECT = 0x384F;
+
+    /**
+     * return code to recognize the parent activity that a login process finished successful
+     */
+    public static final int REQURN_LOGIN_SUCCESSFUL = 0x145;
 
     private Registration registerAsync;
     private GlobalSettings settings;
@@ -131,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ACCOUNT_SELECT && resultCode == RET_ACCOUNT_CHANGE) {
+        if (requestCode == REQUEST_ACCOUNT_SELECT && resultCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
             // account selected, return to MainActivity
             onSuccess();
         }
@@ -175,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      * Called when the app is registered successfully to twitter
      */
     public void onSuccess() {
-        setResult(Activity.RESULT_OK);
+        setResult(REQURN_LOGIN_SUCCESSFUL);
         finish();
     }
 

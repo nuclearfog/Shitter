@@ -17,6 +17,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import java.lang.ref.WeakReference;
+
 /**
  * this fragment class hosts a list view inside a swipe view
  * superclass for all list fragments
@@ -25,9 +27,16 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public abstract class ListFragment extends Fragment implements OnRefreshListener {
 
+    /**
+     * delay to enable SwipeRefreshLayout
+     */
+    private static final int REFRESH_DELAY_MS = 1000;
+
     private RecyclerView list;
     private SwipeRefreshLayout reload;
     protected GlobalSettings settings;
+
+    private boolean isRefreshing = false;
 
 
     @Override
@@ -56,7 +65,12 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      * @param enable true to enable swipe view delayed, false to stop immediately
      */
     protected void setRefresh(boolean enable) {
-        reload.setRefreshing(enable);
+        isRefreshing = enable;
+        if (enable) {
+            reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
+        } else {
+            reload.setRefreshing(false);
+        }
     }
 
     /**
@@ -65,7 +79,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      * @return true if swipe view is active
      */
     protected boolean isRefreshing() {
-        return reload.isRefreshing();
+        return isRefreshing;
     }
 
     /**
@@ -109,4 +123,24 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      * called to reset all data
      */
     protected abstract void onReset();
+
+    /**
+     * runnable class to delay swiperefreshlayout
+     */
+    private static class RefreshDelay  implements Runnable {
+
+        private WeakReference<ListFragment> callback;
+
+        private RefreshDelay(ListFragment fragment) {
+            callback = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void run() {
+            ListFragment fragment = callback.get();
+            if (fragment != null && fragment.isRefreshing && !fragment.reload.isRefreshing()) {
+                fragment.reload.setRefreshing(true);
+            }
+        }
+    }
 }

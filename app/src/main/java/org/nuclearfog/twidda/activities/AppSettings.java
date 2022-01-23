@@ -1,10 +1,7 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.activities.MainActivity.RETURN_APP_LOGOUT;
-import static org.nuclearfog.twidda.activities.MainActivity.RETURN_DB_CLEARED;
+import static android.view.View.*;
 import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 import android.app.Dialog;
@@ -70,6 +67,16 @@ import java.util.regex.Matcher;
  */
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
         OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener {
+
+    /**
+     * return code to recognize {@link MainActivity} that the current account was removed from login
+     */
+    public static final int RETURN_APP_LOGOUT = 0x530;
+
+    /**
+     * return code to recognize {@link MainActivity} that the database was removed
+     */
+    public static final int RETURN_DATA_CLEARED = 0x955;
 
     /**
      * total count of all colors defined
@@ -319,10 +326,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             setResult(RETURN_APP_LOGOUT);
             finish();
         }
-        // confirm delete database
-        else if (type == DialogType.DEL_DATABASE) {
+        // confirm delete app data and cache
+        else if (type == DialogType.DELETE_APP_DATA) {
             DatabaseAdapter.deleteDatabase(this);
-            setResult(RETURN_DB_CLEARED);
+            setResult(RETURN_DATA_CLEARED);
         }
         // confirm leaving without saving proxy changes
         else if (type == DialogType.WRONG_PROXY) {
@@ -336,7 +343,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onClick(View v) {
         // delete database
         if (v.getId() == R.id.delete_db) {
-            confirmDialog.show(DialogType.DEL_DATABASE);
+            confirmDialog.show(DialogType.DELETE_APP_DATA);
         }
         // logout from twitter
         else if (v.getId() == R.id.logout) {

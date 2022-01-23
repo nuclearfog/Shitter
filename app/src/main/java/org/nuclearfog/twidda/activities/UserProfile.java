@@ -5,7 +5,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.*;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.activities.ProfileEditor.KEY_USER_DATA;
 import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activities.TweetActivity.*;
 import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
@@ -13,7 +12,6 @@ import static org.nuclearfog.twidda.activities.UserDetail.*;
 import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.backend.UserAction.Action.*;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
-import static org.nuclearfog.twidda.fragments.UserFragment.*;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -90,9 +88,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_PROFILE_DISABLE_RELOAD = "profile_no_reload";
 
     /**
-     * key when profile data changes
+     * key to send updated user data
      */
-    public static final String RETURN_PROFILE_DATA = "profile-update";
+    public static final String KEY_USER_UPDATE = "user_update";
 
     /**
      * request code for {@link ProfileEditor}
@@ -100,9 +98,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public static final int REQUEST_PROFILE_CHANGED = 0x322F;
 
     /**
-     * return code if {@link ProfileEditor} changed profile information
+     * Return code to update user information
      */
-    public static final int RETURN_PROFILE_CHANGED = 0xF5C0E570;
+    public static final int RETURN_USER_UPDATED = 0x9996498C;
 
     /**
      * background color transparency mask for TextView backgrounds
@@ -248,9 +246,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent i) {
+        super.onActivityResult(reqCode, returnCode, i);
         if (i != null && reqCode == REQUEST_PROFILE_CHANGED) {
-            if (returnCode == RETURN_PROFILE_CHANGED) {
-                Object data = i.getSerializableExtra(RETURN_PROFILE_DATA);
+            if (returnCode == ProfileEditor.RETURN_PROFILE_CHANGED) {
+                Object data = i.getSerializableExtra(ProfileEditor.KEY_UPDATED_PROFILE);
                 if (data instanceof User) {
                     // remove blur background
                     toolbarBackground.setImageResource(0);
@@ -260,7 +259,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 }
             }
         }
-        super.onActivityResult(reqCode, returnCode, i);
     }
 
 
@@ -378,7 +376,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             // open profile editor
             else if (item.getItemId() == R.id.profile_settings) {
                 Intent editProfile = new Intent(this, ProfileEditor.class);
-                editProfile.putExtra(KEY_USER_DATA, user);
+                editProfile.putExtra(ProfileEditor.KEY_PROFILE_DATA, user);
                 startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
             }
             // open direct message

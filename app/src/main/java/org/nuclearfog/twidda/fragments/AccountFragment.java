@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
 import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activities.AccountActivity;
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.AccountLoader;
@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.model.Account;
 import java.util.List;
 
 /**
- * fragment class of the {@link org.nuclearfog.twidda.activities.AccountActivity}
+ * fragment class of the {@link AccountActivity}
  * all registered user accounts are listed here
  *
  * @author nuclearfog
@@ -93,7 +93,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
         settings.setTokenSecret(account.getTokenSecret());
         settings.setUserId(account.getId());
         // finish activity and return to parent activity
-        requireActivity().setResult(RET_ACCOUNT_CHANGE);
+        requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
         requireActivity().finish();
     }
 

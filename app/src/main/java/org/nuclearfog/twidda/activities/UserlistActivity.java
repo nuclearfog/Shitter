@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.activities;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activities.UserlistEditor.KEY_LIST_EDITOR_DATA;
 import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
-import static org.nuclearfog.twidda.fragments.UserListFragment.*;
 
 import android.content.Context;
 import android.content.Intent;
@@ -61,14 +60,29 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
     public static final String KEY_LIST_ID = "list_id";
 
     /**
-     * Request code for list editing
+     * activity result key to return the ID of a removed list
      */
-    private static final int REQ_LIST_CHANGE = 0x7518;
+    public static final String RESULT_REMOVED_LIST_ID = "removed-list-id";
 
     /**
-     * Return code when this list was successfully changed
+     * result key to update an user list
      */
-    public static final int RET_LIST_CHANGED = 0x1A5518E1;
+    public static final String RESULT_UPDATE_LIST = "update-user-list";
+
+    /**
+     * Request code for {@link UserlistEditor}
+     */
+    private static final int REQUEST_LIST_UPDATED = 0x7518;
+
+    /**
+     * return code when an user list was deleted
+     */
+    public static final int RETURN_LIST_REMOVED = 0xDAD518B4;
+
+    /**
+     * return code when an user list was deleted
+     */
+    public static final int RETURN_LIST_UPDATED = 0x5D0F5E8D;
 
     /**
      * regex pattern to validate username
@@ -203,7 +217,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
             if (item.getItemId() == R.id.menu_list_edit) {
                 Intent editList = new Intent(this, UserlistEditor.class);
                 editList.putExtra(KEY_LIST_EDITOR_DATA, userList);
-                startActivityForResult(editList, REQ_LIST_CHANGE);
+                startActivityForResult(editList, REQUEST_LIST_UPDATED);
             }
             // delete user list
             else if (item.getItemId() == R.id.menu_delete_list) {
@@ -243,9 +257,10 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent result) {
-        if (result != null && reqCode == REQ_LIST_CHANGE) {
-            if (returnCode == RET_LIST_CHANGED) {
-                Object data = result.getSerializableExtra(KEY_LIST_DATA);
+        super.onActivityResult(reqCode, returnCode, result);
+        if (reqCode == REQUEST_LIST_UPDATED && result != null) {
+            if (returnCode == UserlistEditor.RETURN_LIST_CHANGED) {
+                Object data = result.getSerializableExtra(UserlistEditor.KEY_UPDATED_USERLIST);
                 if (data instanceof UserList) {
                     userList = (UserList) data;
                     toolbar.setTitle(userList.getTitle());
@@ -254,7 +269,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
                 }
             }
         }
-        super.onActivityResult(reqCode, returnCode, result);
     }
 
 

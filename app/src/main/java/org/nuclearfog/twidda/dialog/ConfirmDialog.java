@@ -26,7 +26,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
      */
     public enum DialogType {
         WRONG_PROXY,
-        DEL_DATABASE,
+        DELETE_APP_DATA,
         APP_LOG_OUT,
         REMOVE_ACCOUNT,
         VIDEO_ERROR,
@@ -97,7 +97,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
                 cancel.setText(R.string.confirm_back);
                 break;
 
-            case DEL_DATABASE:
+            case DELETE_APP_DATA:
                 txtTitle.setVisibility(View.GONE);
                 txtMessage.setText(R.string.confirm_delete_database);
                 break;
