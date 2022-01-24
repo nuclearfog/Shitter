@@ -134,6 +134,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
         adapter = new UserAdapter(requireContext(), this);
         adapter.enableDeleteButton(delUser);
         setAdapter(adapter);
+
+        confirmDialog.setConfirmListener(this);
     }
 
 

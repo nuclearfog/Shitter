@@ -45,14 +45,14 @@ import java.io.OutputStream;
 import java.util.Locale;
 
 /**
- * This activity is a superclass to all activities who need permission to take actions
+ * This activity provides all methods to gather media files or location.
  *
  * @author nuclearfog
  */
 public abstract class MediaActivity extends AppCompatActivity implements LocationListener {
 
     /**
-     * permission set
+     * permissions used by the app
      */
     private static final String[][] PERMISSIONS = {
             {READ_EXTERNAL_STORAGE},
@@ -63,6 +63,11 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     private static final String MIME_ALL_READ = "*/*";
     private static final String MIME_IMAGE_READ = "image/*";
     private static final String MIME_VIDEO_READ = "video/*";
+
+    /**
+     * image name prefix used to save images
+     */
+    private static final String IMAGE_PREFIX = "twitter_";
 
     /**
      * mime types for videos and images
@@ -274,7 +279,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
      */
     protected void storeImage(Uri uri) {
         selectedImage = uri;
-        imageName = "shitter_" + uri.getLastPathSegment() + "jpg";
+        imageName = IMAGE_PREFIX + uri.getLastPathSegment();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 || checkSelfPermission(PERMISSIONS[2][0]) == PERMISSION_GRANTED) {
             saveImage();

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
+import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -30,7 +31,7 @@ import java.io.File;
  *
  * @author nuclearfog
  */
-public class ImageViewer extends MediaActivity implements ImageAdapter.OnImageClickListener {
+public class ImageViewer extends MediaActivity implements OnImageClickListener {
 
     /**
      * key to add URI of the image (online or local)
@@ -90,6 +91,7 @@ public class ImageViewer extends MediaActivity implements ImageAdapter.OnImageCl
             adapter.addAll(uris);
             adapter.disableSaveButton();
             zoomImage.setImageURI(uris[0]);
+            zoomImage.reset();
             loadingCircle.setVisibility(INVISIBLE);
         }
     }

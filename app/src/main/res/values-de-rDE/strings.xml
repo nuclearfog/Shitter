@@ -39,6 +39,7 @@
     <string name="username">Username</string>
     <string name="dm_message">Nachricht</string>
     <string name="info_dm_send">Direktnachricht gesendet!</string>
+    <string name="info_dm_removed">Direktnachricht gelöscht!</string>
     <string name="error_dm">Nutzername oder Nachricht eingeben!</string>
     <string name="confirm_cancel_message">Nachricht verwerfen?</string>
     <string name="error_empty_tweet">Tweet leer!</string>

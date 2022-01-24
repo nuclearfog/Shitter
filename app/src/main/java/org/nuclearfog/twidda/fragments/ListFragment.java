@@ -99,8 +99,11 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     public void reset() {
         // check if fragment is initialized
         if (reload != null && list != null) {
+            // reset colors
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-            list.setAdapter(list.getAdapter()); // force redrawing list to apply colors
+            reload.setColorSchemeColors(settings.getIconColor());
+            // force redrawing list to apply colors
+            list.setAdapter(list.getAdapter());
             onReset();
         }
     }

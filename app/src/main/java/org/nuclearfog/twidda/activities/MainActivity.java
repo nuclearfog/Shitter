@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                     adapter.clear();
                     pager.setAdapter(adapter);
                 }
-                // check if app data were cleared
-                else if (returnCode == AppSettings.RETURN_DATA_CLEARED) {
+                // reset fragments to apply changes
+                else {
                     adapter.notifySettingsChanged();
                 }
                 break;

@@ -169,6 +169,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
         videoView.setOnCompletionListener(this);
         videoView.setOnErrorListener(this);
         video_progress.setOnSeekBarChangeListener(this);
+        confirmDialog.setConfirmListener(this);
         confirmDialog.setOnDismissListener(this);
     }
 

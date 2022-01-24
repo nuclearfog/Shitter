@@ -199,6 +199,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
      * @param id ID of the item
      */
     public void removeItem(long id) {
+        Toast.makeText(requireContext(), R.string.info_dm_removed, LENGTH_SHORT).show();
         adapter.remove(id);
     }
 
