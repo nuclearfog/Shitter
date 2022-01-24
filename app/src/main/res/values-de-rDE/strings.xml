@@ -169,8 +169,6 @@
     <string name="info_user_added_to_list">\@%1$s wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
     <string name="error_not_defined">Undefinierter Fehler!</string>
-    <string name="dialog_button_cancel">Abbrechen</string>
-    <string name="dialog_button_ok">OK</string>
     <string name="error_cant_reply_to_tweet">Tweet ist nicht für Antworten freigegeben!</string>
     <string name="error_corrupt_api_key">Fehler, API Schlüssel ist fehlerhaft!</string>
     <string name="error_acc_update">Account Informationen konnten nicht aktualisiert werden! Bitte Eingaben überprüfen.</string>
@@ -180,7 +178,6 @@
     <string name="settings_key2_hint">Consumer Secret</string>
     <string name="settings_setup_custom_keys">Eigene API Schlüssel verwenden</string>
     <string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt! Bitte API Schlüssel überprüfen!</string>
-    <string name="confirm_back">Zurück</string>
     <string name="error_mention_exceed">Zu viele Nutzer Erwähnungen!</string>
     <string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
     <string name="info_location_pending">Ortung läuft, bitte warten.</string>

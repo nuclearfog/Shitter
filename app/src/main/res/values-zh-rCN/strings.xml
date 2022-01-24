@@ -73,7 +73,6 @@
     <string name="settings_enable_proxy">启用代理</string>
     <string name="settings_enable_proxy_auth">使用代理认证</string>
     <string name="settings_setup_custom_keys">设置自定义API密钥</string>
-    <string name="confirm_back">返回</string>
     <string name="tweet_sensitive_media">敏感内容</string>
     <string name="login_info">只需三步即可登录</string>
     <string name="userlist_public_sel">公开</string>
@@ -191,6 +190,4 @@
     <string name="menu_user_unfollow">取消关注</string>
     <string name="menu_user_unblock">取消屏蔽</string>
 
-    <string name="dialog_button_cancel">取消</string>
-    <string name="dialog_button_ok">好的</string>
 </resources>
