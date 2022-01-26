@@ -117,6 +117,17 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private static final String PROFILE_UPDATE_IMAGE = API + "1.1/account/update_profile_image.json";
     private static final String PROFILE_UPDATE_BANNER = API + "1.1/account/update_profile_banner.json";
 
+    /**
+     * type of the media upload used by okHttp
+     */
+    private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
+
+    /**
+     * To upload big files like videos, files must be chunked in segments.
+     * Twitter can handle up to 1000 segments with max 5MB.
+     */
+    private static final int CHUNK_MAX_BYTES = 1024 * 128;
+
     private static Twitter instance;
     private static boolean notifySettingsChange = false;
 
@@ -1139,13 +1150,17 @@ public class Twitter implements GlobalSettings.SettingsListener {
             long mediaId = respone.getLong("media_id");
 
             // step 2 APPEND
-            params.clear();
-            params.add("command=APPEND");
-            params.add("segment_index=0");
-            params.add("media_id=" + mediaId);
-            response = post(MEDIA_UPLOAD, params, mediaStream.getStream(), "media");
-            if (response.code() < 200 || response.code() >= 300)
-                throw new TwitterException(response);
+            int segmentIndex = 0;
+            InputStream stream = mediaStream.getStream();
+            while (stream.available() > 0) {
+                params.clear();
+                params.add("command=APPEND");
+                params.add("segment_index=" + segmentIndex++);
+                params.add("media_id=" + mediaId);
+                response = post(MEDIA_UPLOAD, params, stream, "media", true);
+                if (response.code() < 200 || response.code() >= 300)
+                    throw new TwitterException(response);
+            }
 
             // step 3 FINALIZE
             params.clear();
@@ -1510,7 +1525,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             List<String> params = new ArrayList<>(3);
             params.add("skip_status=true");
             params.add("include_entities=false");
-            Response response = post(endpoint, params, input, key);
+            Response response = post(endpoint, params, input, key, false);
             if (response.code() < 200 || response.code() >= 300) {
                 throw new TwitterException(response);
             }
@@ -1587,24 +1602,28 @@ public class Twitter implements GlobalSettings.SettingsListener {
     /**
      * send POST request with file and create response
      *
-     * @param endpoint endpoint url
-     * @param params   additional http parameters
+     * @param endpoint      endpoint url
+     * @param params        additional http parameters
+     * @param enableChunk   true to enable file chunk
      * @return http resonse
      */
-    private Response post(String endpoint, List<String> params, InputStream is, String addToKey) throws IOException {
+    private Response post(String endpoint, List<String> params, InputStream is, String addToKey, boolean enableChunk) throws IOException {
         RequestBody data = new RequestBody() {
             @Override
             public MediaType contentType() {
-                return MediaType.parse("application/octet-stream");
+                return TYPE_STREAM;
             }
 
             @Override
             public void writeTo(BufferedSink sink) throws IOException {
-                sink.writeAll(Okio.buffer(Okio.source(is)));
+                if (enableChunk && is.available() > CHUNK_MAX_BYTES) {
+                    sink.write(Okio.buffer(Okio.source(is)), CHUNK_MAX_BYTES);
+                } else {
+                    sink.writeAll(Okio.buffer(Okio.source(is)));
+                }
             }
         };
-        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                .addFormDataPart(addToKey, "", data).build();
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, "", data).build();
         return post(endpoint, params, body);
     }
 

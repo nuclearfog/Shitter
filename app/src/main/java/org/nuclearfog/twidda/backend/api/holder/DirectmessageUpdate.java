@@ -72,4 +72,13 @@ public class DirectmessageUpdate {
     public MediaStream getMediaStream() {
         return mediaStream;
     }
+
+    /**
+     * close inputstream of media file
+     */
+    public void closeMediaStream() {
+        if (mediaStream != null) {
+            mediaStream.close();
+        }
+    }
 }

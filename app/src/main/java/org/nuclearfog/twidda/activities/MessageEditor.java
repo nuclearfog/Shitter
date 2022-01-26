@@ -43,6 +43,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     public static final String KEY_DM_PREFIX = "dm_prefix";
 
     private MessageUpdater messageAsync;
+    private DirectmessageUpdate holder;
 
     private ProgressDialog loadingCircle;
     private ConfirmDialog confirmDialog;
@@ -107,6 +108,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         if (messageAsync != null && messageAsync.getStatus() == RUNNING)
             messageAsync.cancel(true);
         loadingCircle.dismiss();
+        if (holder != null) {
+            holder.closeMediaStream();
+        }
         super.onDestroy();
     }
 
@@ -197,7 +201,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         String username = receiver.getText().toString();
         String message = this.message.getText().toString();
         if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaUri != null)) {
-            DirectmessageUpdate holder = new DirectmessageUpdate(username, message);
+            holder = new DirectmessageUpdate(username, message);
             if (mediaUri != null)
                 holder.addMedia(getApplicationContext(), mediaUri);
             messageAsync = new MessageUpdater(this, holder);

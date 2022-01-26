@@ -10,7 +10,6 @@ import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 /**
  * Background task for uploading tweet
@@ -40,17 +39,19 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
     protected Boolean doInBackground(TweetUpdate... tweets) {
         try {
             // upload media first
-            List<MediaStream> mediaStreams = tweets[0].getMediaStreams();
-            long[] mediaIds = new long[mediaStreams.size()];
-            for (int pos = 0; pos < mediaStreams.size(); pos++) {
+            MediaStream[] mediaStreams = tweets[0].getMediaStreams();
+            long[] mediaIds = new long[mediaStreams.length];
+            for (int pos = 0; pos < mediaStreams.length; pos++) {
                 // upload media file and save media ID
-                mediaIds[pos] = twitter.uploadMedia(mediaStreams.get(pos));
-                // close stream after upload
-                mediaStreams.get(pos).close();
+                mediaIds[pos] = twitter.uploadMedia(mediaStreams[pos]);
             }
             // upload tweet
             if (!isCancelled()) {
                 twitter.uploadTweet(tweets[0], mediaIds);
+            }
+            // close all mediastreams
+            for (MediaStream mediaStream : mediaStreams) {
+                mediaStream.close();
             }
             return true;
         } catch (TwitterException twException) {

@@ -370,17 +370,22 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     }
 
     /**
-     * update tweet information
+     * start uploading tweet and media files
      */
     private void updateTweet() {
-        String tweetStr = tweetText.getText().toString();
-        // add media
-        tweetUpdate.addText(tweetStr);
-        // send tweet
-        uploaderAsync = new TweetUpdater(this);
-        uploaderAsync.execute(tweetUpdate);
-        if (!loadingCircle.isShowing()) {
-            loadingCircle.show();
+        // first initialize filestreams of the media files
+        if (tweetUpdate.initMedia(getContentResolver())) {
+            String tweetStr = tweetText.getText().toString();
+            // add media
+            tweetUpdate.addText(tweetStr);
+            // send tweet
+            uploaderAsync = new TweetUpdater(this);
+            uploaderAsync.execute(tweetUpdate);
+            if (!loadingCircle.isShowing()) {
+                loadingCircle.show();
+            }
+        } else {
+            Toast.makeText(this, R.string.error_media_init, LENGTH_SHORT).show();
         }
     }
 }

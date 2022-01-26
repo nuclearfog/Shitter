@@ -48,12 +48,13 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
             long mediaId = -1;
             if (message.getMediaStream() != null) {
                 mediaId = twitter.uploadMedia(message.getMediaStream());
-                message.getMediaStream().close();
             }
             // upload message and media ID
             if (!isCancelled()) {
                 twitter.sendDirectmessage(id, message.getText(), mediaId);
             }
+            // close mediastream
+            message.closeMediaStream();
             return true;
         } catch (TwitterException twException) {
             this.twException = twException;
