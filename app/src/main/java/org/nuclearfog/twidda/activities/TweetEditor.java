@@ -89,7 +89,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     private EditText tweetText;
     private View locationPending;
 
-    private TweetUpdate tweetUpdate;
+    private TweetUpdate tweetUpdate = new TweetUpdate();
     private int selectedFormat = MEDIA_NONE;
 
 
@@ -121,7 +121,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
         String prefix = data.getStringExtra(KEY_TWEETPOPUP_TEXT);
 
-        tweetUpdate = new TweetUpdate(inReplyId);
+        tweetUpdate.setReplyId(inReplyId);
         if (prefix != null) {
             tweetText.append(prefix);
         }
@@ -244,7 +244,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     @Override
     protected void onAttachLocation(@Nullable Location location) {
         if (location != null) {
-            tweetUpdate.addLocation(location);
+            tweetUpdate.setLocation(location);
             Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
         } else {
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
@@ -374,10 +374,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      */
     private void updateTweet() {
         // first initialize filestreams of the media files
-        if (tweetUpdate.initMedia(getContentResolver())) {
+        if (tweetUpdate.prepare(getContentResolver())) {
             String tweetStr = tweetText.getText().toString();
             // add media
-            tweetUpdate.addText(tweetStr);
+            tweetUpdate.setText(tweetStr);
             // send tweet
             uploaderAsync = new TweetUpdater(this);
             uploaderAsync.execute(tweetUpdate);

@@ -107,7 +107,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
             messageAsync.cancel(true);
         loadingCircle.dismiss();
         if (holder != null) {
-            holder.closeMediaStream();
+            holder.close();
         }
         super.onDestroy();
     }
@@ -204,9 +204,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         String username = receiver.getText().toString();
         String message = this.message.getText().toString();
         if (!username.trim().isEmpty() && (!message.trim().isEmpty() || holder.getMediaUri() != null)) {
-            if (holder.initMedia(getContentResolver())) {
-                holder.addName(username);
-                holder.addText(message);
+            if (holder.prepare(getContentResolver())) {
+                holder.setName(username);
+                holder.setText(message);
                 messageAsync = new MessageUpdater(this, holder);
                 messageAsync.execute();
                 if (!loadingCircle.isShowing()) {

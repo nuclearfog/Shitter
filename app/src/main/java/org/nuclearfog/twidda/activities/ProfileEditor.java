@@ -13,6 +13,7 @@ import android.graphics.Point;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -159,7 +160,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         String userLoc = loc.getText().toString();
         String userBio = bio.getText().toString();
         if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
-                && userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && holder.imageAdded()) {
+                && userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !holder.imageAdded()) {
             finish();
         } else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
             finish();
@@ -195,7 +196,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     protected void onMediaFetched(int resultType, @NonNull Uri uri) {
         // Add image as profile image
         if (resultType == REQUEST_PROFILE) {
-            if (holder.addImageUri(this, uri)) {
+            if (holder.setImage(this, uri)) {
                 profile_image.setImageURI(uri);
             } else {
                 Toast.makeText(this, R.string.error_adding_media, Toast.LENGTH_SHORT).show();
@@ -203,7 +204,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         }
         // Add image as banner image
         else if (resultType == REQUEST_BANNER) {
-            if (holder.addBannerUri(this, uri)) {
+            if (holder.setBanner(this, uri)) {
                 Point displaySize = new Point();
                 getWindowManager().getDefaultDisplay().getSize(displaySize);
                 picasso.load(uri).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
@@ -300,12 +301,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
             if (username.trim().isEmpty()) {
                 String errMsg = getString(R.string.error_empty_name);
                 name.setError(errMsg);
-            } else if (!userLink.isEmpty() && userLink.contains(" ")) {// todo add URL validator
+            } else if (!userLink.isEmpty() && !Patterns.WEB_URL.matcher(userLink).matches()) {
                 String errMsg = getString(R.string.error_invalid_link);
                 link.setError(errMsg);
             } else if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
-                holder.setProfileInformation(username, userLink, userBio, userLoc);
-                if (holder.initMedia(getContentResolver())) {
+                holder.setProfile(username, userLink, userBio, userLoc);
+                if (holder.prepare(getContentResolver())) {
                     editorAsync = new UserUpdater(this, holder);
                     editorAsync.execute();
                     if (!loadingCircle.isShowing()) {

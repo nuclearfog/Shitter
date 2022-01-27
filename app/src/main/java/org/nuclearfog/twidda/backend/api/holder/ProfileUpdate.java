@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api.holder;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +19,8 @@ import java.io.InputStream;
  */
 public class ProfileUpdate {
 
-    private Uri imageUrl, bannerUrl;
-    private InputStream profileImgStream, bannerImgStream;
+    private Uri[] imageUrls = new Uri[2];
+    private InputStream[] imageStreams = new InputStream[2];
 
     private String name = "";
     private String url = "";
@@ -27,21 +28,14 @@ public class ProfileUpdate {
     private String location = "";
 
     /**
-     * add profile image Uri
+     * setup profile information
      *
-     * @param context       context used to resolve Uri
-     * @param imageUrl Uri of the local image file
+     * @param name        username to update
+     * @param url         profile url
+     * @param description description of the profile
+     * @param location    location name
      */
-    public boolean addImageUri(Context context, @NonNull Uri imageUrl) {
-        DocumentFile file = DocumentFile.fromSingleUri(context, imageUrl);
-        if (file != null && file.exists() && file.canRead() && file.length() > 0) {
-            this.imageUrl = imageUrl;
-            return true;
-        }
-        return false;
-    }
-
-    public void setProfileInformation(String name, String url, String description, String location) {
+    public void setProfile(String name, String url, String description, String location) {
         this.name = name;
         this.url = url;
         this.description = description;
@@ -49,49 +43,43 @@ public class ProfileUpdate {
     }
 
     /**
-     * add banner image Uri
+     * add profile image Uri
      *
-     * @param context      context used to resolve Uri
-     * @param bannerUrl  Uri of the local image file
+     * @param context   context used to resolve Uri
+     * @param imageUrl  Uri of the local image file
      */
-    public boolean addBannerUri(Context context, @NonNull Uri bannerUrl) {
-        DocumentFile file = DocumentFile.fromSingleUri(context, bannerUrl);
-        if (file != null && file.exists() && file.canRead() && file.length() > 0) {
-            this.bannerUrl = bannerUrl;
+    public boolean setImage(Context context, @NonNull Uri imageUrl) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            DocumentFile file = DocumentFile.fromSingleUri(context, imageUrl);
+            if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+                imageUrls[0] = imageUrl;
+                return true;
+            }
+        } else {
+            imageUrls[0] = imageUrl;
             return true;
         }
         return false;
     }
 
     /**
-     * initialize inputstreams of the image files
+     * add banner image Uri
      *
-     * @return true if initialization succeded
+     * @param context    context used to resolve Uri
+     * @param bannerUrl  Uri of the local image file
      */
-    public boolean initMedia(ContentResolver resolver) {
-        try {
-            // open input streams
-            if (imageUrl != null) {
-                InputStream profileImgStream = resolver.openInputStream(imageUrl);
-                if (profileImgStream != null && profileImgStream.available() > 0) {
-                    this.profileImgStream = profileImgStream;
-                } else {
-                    return false;
-                }
+    public boolean setBanner(Context context, @NonNull Uri bannerUrl) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            DocumentFile file = DocumentFile.fromSingleUri(context, bannerUrl);
+            if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+                imageUrls[1] = bannerUrl;
+                return true;
             }
-            if (bannerUrl != null) {
-                InputStream bannerImgStream = resolver.openInputStream(bannerUrl);
-                if (bannerImgStream != null && bannerImgStream.available() > 0) {
-                    this.bannerImgStream = bannerImgStream;
-                } else {
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        } else {
+            imageUrls[1] = bannerUrl;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -126,7 +114,7 @@ public class ProfileUpdate {
      * @return true if any image is added
      */
     public boolean imageAdded() {
-        return imageUrl != null || bannerUrl != null;
+        return imageUrls[0] != null || imageUrls[1] != null;
     }
 
     /**
@@ -134,7 +122,7 @@ public class ProfileUpdate {
      */
     @Nullable
     public InputStream getProfileImageStream() {
-        return profileImgStream;
+        return imageStreams[0];
     }
 
     /**
@@ -142,18 +130,43 @@ public class ProfileUpdate {
      */
     @Nullable
     public InputStream getBannerImageStream() {
-        return bannerImgStream;
+        return imageStreams[1];
+    }
+
+    /**
+     * initialize inputstreams of the image files
+     *
+     * @return true if initialization succeded
+     */
+    public boolean prepare(ContentResolver resolver) {
+        try {
+            for (int i = 0 ; i < imageUrls.length ; i++) {
+                if (imageUrls[i] != null) {
+                    InputStream profileImgStream = resolver.openInputStream(imageUrls[i]);
+                    if (profileImgStream != null && profileImgStream.available() > 0) {
+                        this.imageStreams[i] = profileImgStream;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**
      * close all image streams
      */
-    public void closeStreams() {
+    public void close() {
         try {
-            if (profileImgStream != null)
-                profileImgStream.close();
-            if (bannerImgStream != null)
-                bannerImgStream.close();
+            for (InputStream imageStream : imageStreams) {
+                if (imageStream != null) {
+                    imageStream.close();
+                }
+            }
         } catch (IOException e) {
             // ignore
         }

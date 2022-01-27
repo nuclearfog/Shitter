@@ -53,7 +53,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
             // save new user information
             db.storeUser(user);
             // close image streams
-            profile.closeStreams();
+            profile.close();
             return user;
         } catch (TwitterException twException) {
             this.twException = twException;

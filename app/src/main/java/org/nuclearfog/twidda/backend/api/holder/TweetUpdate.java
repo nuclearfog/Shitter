@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
@@ -23,25 +24,24 @@ public class TweetUpdate {
     private long replyId;
     private double longitude;
     private double latitude;
-    private List<Uri> mediaUris;
-    private MediaStream[] mediaStreams = {};
 
+    private List<Uri> mediaUris = new ArrayList<>(5);
+    private MediaStream[] mediaStreams = {};
     private boolean hasLocation = false;
 
     /**
-     * create a tweet holder
+     * set ID of the replied tweet
      *
-     * @param replyId ID of the tweet to reply or 0 if this tweet is not a reply
+     * @param replyId Tweet ID
      */
-    public TweetUpdate(long replyId) {
+    public void setReplyId(long replyId) {
         this.replyId = replyId;
-        mediaUris = new ArrayList<>(5);
     }
 
     /**
      * add tweet text
      */
-    public void addText(String text) {
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -52,8 +52,13 @@ public class TweetUpdate {
      * @return number of media attached to this holder or -1 if file is invalid
      */
     public int addMedia(Context context, Uri mediaUri) {
-        DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
-        if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
+            if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+                mediaUris.add(mediaUri);
+                return mediaUris.size();
+            }
+        } else {
             mediaUris.add(mediaUri);
             return mediaUris.size();
         }
@@ -61,39 +66,11 @@ public class TweetUpdate {
     }
 
     /**
-     * prepare media streams if media Uri is added
-     *
-     * @return true if success, false if an error occurs
-     */
-    public boolean initMedia(ContentResolver resolver) {
-        if (mediaUris.isEmpty())
-            return true;
-        try {
-            // open input streams
-            mediaStreams = new MediaStream[mediaUris.size()];
-            for (int i = 0 ; i < mediaStreams.length ; i++) {
-                InputStream is = resolver.openInputStream(mediaUris.get(i));
-                String mime = resolver.getType(mediaUris.get(i));
-                // check if stream is valid
-                if (is != null && mime != null && is.available() > 0) {
-                    mediaStreams[i] = new MediaStream(is, mime);
-                } else {
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Add location to a tweet
      *
      * @param location location information
      */
-    public void addLocation(@NonNull Location location) {
+    public void setLocation(@NonNull Location location) {
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
         hasLocation = true;
@@ -169,6 +146,43 @@ public class TweetUpdate {
      */
     public int mediaCount() {
         return mediaUris.size();
+    }
+
+    /**
+     * prepare media streams if media Uri is added
+     *
+     * @return true if success, false if an error occurs
+     */
+    public boolean prepare(ContentResolver resolver) {
+        if (mediaUris.isEmpty())
+            return true;
+        try {
+            // open input streams
+            mediaStreams = new MediaStream[mediaUris.size()];
+            for (int i = 0 ; i < mediaStreams.length ; i++) {
+                InputStream is = resolver.openInputStream(mediaUris.get(i));
+                String mime = resolver.getType(mediaUris.get(i));
+                // check if stream is valid
+                if (is != null && mime != null && is.available() > 0) {
+                    mediaStreams[i] = new MediaStream(is, mime);
+                } else {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * close all open streams
+     */
+    public void close() {
+        for (MediaStream mediaStream : mediaStreams) {
+            mediaStream.close();
+        }
     }
 
     @NonNull

@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api.holder;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,22 +19,22 @@ import java.io.InputStream;
  */
 public class DirectmessageUpdate {
 
-    private String name;
-    private String text;
     private Uri uri;
     private MediaStream mediaStream;
+    private String name = "";
+    private String text = "";
 
     /**
      * @param name screen name of the user
      */
-    public void addName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @param text message text
      */
-    public void addText(String text) {
+    public void setText(String text) {
         this.text = text;
     }
 
@@ -80,8 +81,13 @@ public class DirectmessageUpdate {
      * @param uri     uri of a local media file
      */
     public boolean addMedia(Context context, @NonNull Uri uri) {
-        DocumentFile file = DocumentFile.fromSingleUri(context, uri);
-        if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            DocumentFile file = DocumentFile.fromSingleUri(context, uri);
+            if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+                this.uri = uri;
+                return true;
+            }
+        } else {
             this.uri = uri;
             return true;
         }
@@ -93,7 +99,7 @@ public class DirectmessageUpdate {
      *
      * @return true if initialization succeded
      */
-    public boolean initMedia(ContentResolver resolver) {
+    public boolean prepare(ContentResolver resolver) {
         if (uri == null)
             return true;
         try {
@@ -112,7 +118,7 @@ public class DirectmessageUpdate {
     /**
      * close inputstream of media file
      */
-    public void closeMediaStream() {
+    public void close() {
         if (mediaStream != null) {
             mediaStream.close();
         }

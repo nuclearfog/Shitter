@@ -54,7 +54,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
                 twitter.sendDirectmessage(id, message.getText(), mediaId);
             }
             // close mediastream
-            message.closeMediaStream();
+            message.close();
             return true;
         } catch (TwitterException twException) {
             this.twException = twException;

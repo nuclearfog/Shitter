@@ -38,8 +38,9 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
     @Override
     protected Boolean doInBackground(TweetUpdate... tweets) {
         try {
+            TweetUpdate update = tweets[0];
             // upload media first
-            MediaStream[] mediaStreams = tweets[0].getMediaStreams();
+            MediaStream[] mediaStreams = update.getMediaStreams();
             long[] mediaIds = new long[mediaStreams.length];
             for (int pos = 0; pos < mediaStreams.length; pos++) {
                 // upload media file and save media ID
@@ -47,12 +48,10 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
             }
             // upload tweet
             if (!isCancelled()) {
-                twitter.uploadTweet(tweets[0], mediaIds);
+                twitter.uploadTweet(update, mediaIds);
             }
-            // close all mediastreams
-            for (MediaStream mediaStream : mediaStreams) {
-                mediaStream.close();
-            }
+            // close inputstreams
+            update.close();
             return true;
         } catch (TwitterException twException) {
             this.twException = twException;

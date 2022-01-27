@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_username"
                 android:importantForAutofill="no"
-                android:inputType="text"
+                android:inputType="textNoSuggestions"
                 android:maxLength="@integer/editprofile_username_max_length"
                 android:singleLine="true"
                 style="@style/TextInput" />
@@ -146,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/edit_hint_link"
                 android:importantForAutofill="no"
-                android:inputType="text"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 style="@style/TextInput" />
 
