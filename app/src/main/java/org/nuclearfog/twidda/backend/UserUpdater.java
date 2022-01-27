@@ -12,7 +12,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.User;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -46,19 +45,18 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
         try {
             if (profile.getProfileImageStream() != null) {
                 twitter.updateProfileImage(profile.getProfileImageStream());
-                profile.getProfileImageStream().close();
             }
             if (profile.getBannerImageStream() != null) {
                 twitter.updateProfileBanner(profile.getBannerImageStream());
-                profile.getBannerImageStream().close();
             }
             User user = twitter.updateProfile(profile);
+            // save new user information
             db.storeUser(user);
+            // close image streams
+            profile.closeStreams();
             return user;
         } catch (TwitterException twException) {
             this.twException = twException;
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }

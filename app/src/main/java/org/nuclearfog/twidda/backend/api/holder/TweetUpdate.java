@@ -53,7 +53,7 @@ public class TweetUpdate {
      */
     public int addMedia(Context context, Uri mediaUri) {
         DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
-        if ( file != null && file.exists() && file.length() > 0) {
+        if (file != null && file.exists() && file.canRead() && file.length() > 0) {
             mediaUris.add(mediaUri);
             return mediaUris.size();
         }

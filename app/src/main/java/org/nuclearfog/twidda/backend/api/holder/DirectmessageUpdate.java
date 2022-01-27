@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,29 +20,21 @@ public class DirectmessageUpdate {
 
     private String name;
     private String text;
+    private Uri uri;
     private MediaStream mediaStream;
 
-
-    public DirectmessageUpdate(String name, String text) {
+    /**
+     * @param name screen name of the user
+     */
+    public void addName(String name) {
         this.name = name;
-        this.text = text;
     }
 
     /**
-     * add media uri and create input stream
-     *
-     * @param context context used to create inputstream and mime type
-     * @param uri     uri of a local media file
+     * @param text message text
      */
-    public void addMedia(Context context, @NonNull Uri uri) {
-        ContentResolver resolver = context.getContentResolver();
-        try {
-            String mimeType = resolver.getType(uri);
-            InputStream fileStream = resolver.openInputStream(uri);
-            mediaStream = new MediaStream(fileStream, mimeType);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void addText(String text) {
+        this.text = text;
     }
 
     /**
@@ -71,6 +64,49 @@ public class DirectmessageUpdate {
     @Nullable
     public MediaStream getMediaStream() {
         return mediaStream;
+    }
+
+    /**
+     */
+    @Nullable
+    public Uri getMediaUri() {
+        return uri;
+    }
+
+    /**
+     * add media uri and create input stream
+     *
+     * @param context context used to create inputstream and mime type
+     * @param uri     uri of a local media file
+     */
+    public boolean addMedia(Context context, @NonNull Uri uri) {
+        DocumentFile file = DocumentFile.fromSingleUri(context, uri);
+        if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+            this.uri = uri;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * initialize inputstream of the file to upload
+     *
+     * @return true if initialization succeded
+     */
+    public boolean initMedia(ContentResolver resolver) {
+        if (uri == null)
+            return true;
+        try {
+            String mimeType = resolver.getType(uri);
+            InputStream fileStream = resolver.openInputStream(uri);
+            if (fileStream != null && mimeType != null && fileStream.available() > 0) {
+                mediaStream = new MediaStream(fileStream, mimeType);
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**

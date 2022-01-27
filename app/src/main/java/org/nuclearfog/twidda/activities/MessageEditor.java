@@ -43,7 +43,6 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     public static final String KEY_DM_PREFIX = "dm_prefix";
 
     private MessageUpdater messageAsync;
-    private DirectmessageUpdate holder;
 
     private ProgressDialog loadingCircle;
     private ConfirmDialog confirmDialog;
@@ -51,8 +50,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     private EditText receiver, message;
     private ImageButton media, preview;
 
-    @Nullable
-    private Uri mediaUri;
+    private DirectmessageUpdate holder = new DirectmessageUpdate();
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -95,7 +93,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
     @Override
     public void onBackPressed() {
-        if (receiver.getText().length() == 0 && message.getText().length() == 0 && mediaUri == null) {
+        if (receiver.getText().length() == 0 && message.getText().length() == 0 && holder.getMediaUri() == null) {
             super.onBackPressed();
         } else {
             confirmDialog.show(DialogType.MESSAGE_EDITOR_LEAVE);
@@ -123,9 +121,12 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     @Override
     protected void onMediaFetched(int resultType, @NonNull Uri uri) {
         if (resultType == REQUEST_IMAGE) {
-            preview.setVisibility(VISIBLE);
-            media.setVisibility(GONE);
-            mediaUri = uri;
+            if (holder.addMedia(this, uri)) {
+                preview.setVisibility(VISIBLE);
+                media.setVisibility(GONE);
+            } else {
+                Toast.makeText(this, R.string.error_adding_media, LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -144,10 +145,12 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         }
         // open media
         else if (v.getId() == R.id.dm_preview) {
-            Intent image = new Intent(this, ImageViewer.class);
-            image.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{mediaUri});
-            image.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
-            startActivity(image);
+            if (holder.getMediaUri() != null) {
+                Intent image = new Intent(this, ImageViewer.class);
+                image.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{holder.getMediaUri()});
+                image.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
+                startActivity(image);
+            }
         }
     }
 
@@ -200,14 +203,17 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     private void sendMessage() {
         String username = receiver.getText().toString();
         String message = this.message.getText().toString();
-        if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaUri != null)) {
-            holder = new DirectmessageUpdate(username, message);
-            if (mediaUri != null)
-                holder.addMedia(getApplicationContext(), mediaUri);
-            messageAsync = new MessageUpdater(this, holder);
-            messageAsync.execute();
-            if (!loadingCircle.isShowing()) {
-                loadingCircle.show();
+        if (!username.trim().isEmpty() && (!message.trim().isEmpty() || holder.getMediaUri() != null)) {
+            if (holder.initMedia(getContentResolver())) {
+                holder.addName(username);
+                holder.addText(message);
+                messageAsync = new MessageUpdater(this, holder);
+                messageAsync.execute();
+                if (!loadingCircle.isShowing()) {
+                    loadingCircle.show();
+                }
+            } else {
+                Toast.makeText(this, R.string.error_media_init, LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();

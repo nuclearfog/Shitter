@@ -126,7 +126,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * To upload big files like videos, files must be chunked in segments.
      * Twitter can handle up to 1000 segments with max 5MB.
      */
-    private static final int CHUNK_MAX_BYTES = 1024 * 128;
+    private static final int CHUNK_MAX_BYTES = 1024 * 2048;
 
     private static Twitter instance;
     private static boolean notifySettingsChange = false;
@@ -1147,7 +1147,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             if (response.code() < 200 || response.code() >= 300 || response.body() == null)
                 throw new TwitterException(response);
             JSONObject respone = new JSONObject(response.body().string());
-            long mediaId = respone.getLong("media_id");
+            final long mediaId = Long.parseLong(respone.getString("media_id_string"));
 
             // step 2 APPEND
             int segmentIndex = 0;

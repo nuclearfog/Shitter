@@ -66,7 +66,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     public static final String KEY_UPDATED_PROFILE = "profile-update";
 
     /**
-     * return code if {@link ProfileEditor} changed profile information
+     * return code to inform calling activity that profile information has changed
      */
     public static final int RETURN_PROFILE_CHANGED = 0xF5C0E570;
 
@@ -82,7 +82,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     private Button addBannerBtn;
 
     private User user;
-    private Uri profileLink, bannerLink;
+
+    ProfileUpdate holder = new ProfileUpdate();
 
 
     @Override
@@ -158,8 +159,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         String userLoc = loc.getText().toString();
         String userBio = bio.getText().toString();
         if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
-                && userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription())
-                && profileLink == null && bannerLink == null) {
+                && userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && holder.imageAdded()) {
             finish();
         } else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
             finish();
@@ -195,17 +195,23 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     protected void onMediaFetched(int resultType, @NonNull Uri uri) {
         // Add image as profile image
         if (resultType == REQUEST_PROFILE) {
-            profile_image.setImageURI(uri);
-            profileLink = uri;
+            if (holder.addImageUri(this, uri)) {
+                profile_image.setImageURI(uri);
+            } else {
+                Toast.makeText(this, R.string.error_adding_media, Toast.LENGTH_SHORT).show();
+            }
         }
         // Add image as banner image
         else if (resultType == REQUEST_BANNER) {
-            Point displaySize = new Point();
-            getWindowManager().getDefaultDisplay().getSize(displaySize);
-            picasso.load(uri).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
-            addBannerBtn.setVisibility(INVISIBLE);
-            changeBannerBtn.setVisibility(VISIBLE);
-            bannerLink = uri;
+            if (holder.addBannerUri(this, uri)) {
+                Point displaySize = new Point();
+                getWindowManager().getDefaultDisplay().getSize(displaySize);
+                picasso.load(uri).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
+                addBannerBtn.setVisibility(INVISIBLE);
+                changeBannerBtn.setVisibility(VISIBLE);
+            } else {
+                Toast.makeText(this, R.string.error_adding_media, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -294,19 +300,19 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
             if (username.trim().isEmpty()) {
                 String errMsg = getString(R.string.error_empty_name);
                 name.setError(errMsg);
-            } else if (!userLink.isEmpty() && userLink.contains(" ")) {
+            } else if (!userLink.isEmpty() && userLink.contains(" ")) {// todo add URL validator
                 String errMsg = getString(R.string.error_invalid_link);
                 link.setError(errMsg);
             } else if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
-                ProfileUpdate holder = new ProfileUpdate(username, userLink, userBio, userLoc);
-                if (profileLink != null)
-                    holder.addImageUri(getApplicationContext(), profileLink);
-                if (bannerLink != null)
-                    holder.addBannerUri(getApplicationContext(), bannerLink);
-                editorAsync = new UserUpdater(this, holder);
-                editorAsync.execute();
-                if (!loadingCircle.isShowing()) {
-                    loadingCircle.show();
+                holder.setProfileInformation(username, userLink, userBio, userLoc);
+                if (holder.initMedia(getContentResolver())) {
+                    editorAsync = new UserUpdater(this, holder);
+                    editorAsync.execute();
+                    if (!loadingCircle.isShowing()) {
+                        loadingCircle.show();
+                    }
+                } else {
+                    Toast.makeText(this, R.string.error_media_init, Toast.LENGTH_SHORT).show();
                 }
             }
         }
