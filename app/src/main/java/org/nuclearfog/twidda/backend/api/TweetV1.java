@@ -80,6 +80,7 @@ class TweetV1 implements Tweet {
         coordinates = getLocation(json);
         mediaLinks = addMedia(json);
         text = createText(json);
+        userMentions = StringTools.getUserMentions(text, author.getScreenname());
 
         String replyName = json.optString("in_reply_to_screen_name");
         JSONObject locationJson = json.optJSONObject("place");
@@ -91,11 +92,6 @@ class TweetV1 implements Tweet {
         }
         if (!replyName.equals("null")) {
             this.replyName = '@' + replyName;
-        }
-        if (author.isCurrentUser()) {
-            this.userMentions = StringTools.getUserMentions(text);
-        } else {
-            this.userMentions = author.getScreenname() + ' ' + StringTools.getUserMentions(text);
         }
         if (user_retweet != null)
             retweetId = user_retweet.optLong("id");

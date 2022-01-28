@@ -43,7 +43,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void[] v) {
         try {
             // first check if user exists
-            long id = twitter.showUser(message.getReceiver()).getId();
+            long id = twitter.showUser(message.getName()).getId();
             // upload media if any
             long mediaId = -1;
             if (message.getMediaStream() != null) {

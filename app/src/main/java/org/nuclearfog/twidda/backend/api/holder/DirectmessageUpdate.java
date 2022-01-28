@@ -43,7 +43,7 @@ public class DirectmessageUpdate {
      *
      * @return screen name
      */
-    public String getReceiver() {
+    public String getName() {
         return name;
     }
 
@@ -79,15 +79,19 @@ public class DirectmessageUpdate {
      *
      * @param context context used to create inputstream and mime type
      * @param uri     uri of a local media file
+     * @return true if file is valid
      */
     public boolean addMedia(Context context, @NonNull Uri uri) {
+        // check if file is valid
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             DocumentFile file = DocumentFile.fromSingleUri(context, uri);
             if (file != null && file.exists() && file.canRead() && file.length() > 0) {
                 this.uri = uri;
                 return true;
             }
-        } else {
+        }
+        // skip validation for old android versions
+        else {
             this.uri = uri;
             return true;
         }

@@ -7,12 +7,15 @@ package org.nuclearfog.twidda.backend.api.holder;
  */
 public class UserlistUpdate {
 
+    /**
+     * this ID indicates that the list isn't created yet
+     */
     public static final long NEW_LIST = -1;
 
     private long listId;
-    private final String title;
-    private final String description;
-    private final boolean isPublic;
+    private String title;
+    private String description;
+    private boolean isPublic;
 
 
     /**
@@ -22,20 +25,10 @@ public class UserlistUpdate {
      * @param listId      ID of the list to update or {@link UserlistUpdate#NEW_LIST} to create a new list
      */
     public UserlistUpdate(String title, String description, boolean isPublic, long listId) {
-        this(title, description, isPublic);
-        this.listId = listId;
-    }
-
-    /**
-     * @param title       Title of the list
-     * @param description short description of the list
-     * @param isPublic    true if list should be public
-     */
-    public UserlistUpdate(String title, String description, boolean isPublic) {
         this.title = title;
         this.description = description;
         this.isPublic = isPublic;
-        this.listId = NEW_LIST;
+        this.listId = listId;
     }
 
     /**

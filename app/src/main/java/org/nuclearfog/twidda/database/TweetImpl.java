@@ -75,7 +75,7 @@ class TweetImpl implements Tweet {
         retweeted = (tweetRegister & RTW_MASK) != 0;
         sensitive = (tweetRegister & MEDIA_SENS_MASK) != 0;
         mediaLinks = SEPARATOR.split(linkStr);
-        String userMentions = StringTools.getUserMentions(text);
+        String userMentions = StringTools.getUserMentions(text, "");
         // get media type
         if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
             mediaType = MEDIA_GIF;

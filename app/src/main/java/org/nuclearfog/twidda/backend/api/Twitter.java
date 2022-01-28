@@ -63,6 +63,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private static final String OAUTH = "1.0";
     private static final String API = "https://api.twitter.com/";
     private static final String UPLOAD = "https://upload.twitter.com/";
+    private static final String DOWNLOAD = "https://ton.twitter.com/";
     private static final String AUTHENTICATE = API + "oauth/authenticate";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
     private static final String REQUEST_TOKEN = API + "oauth/request_token";
@@ -1187,7 +1188,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
     public MediaStream downloadImage(String link) throws TwitterException {
         try {
             // this type of link requires authentication
-            if (link.startsWith("https://ton.twitter.com/")) {
+            if (link.startsWith(DOWNLOAD)) {
                 Response response = get(link, new ArrayList<>(0));
                 if (response.code() == 200 && response.body() != null) {
                     MediaType type = response.body().contentType();

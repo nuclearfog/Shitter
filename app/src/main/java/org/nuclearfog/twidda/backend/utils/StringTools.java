@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -138,16 +140,26 @@ public final class StringTools {
     /**
      * append user mentions in a text to a string
      *
-     * @param text text with user mentions (e.g. tweet)
+     * @param text   text with user mentions (e.g. tweet)
+     * @param author additional text author name
      * @return mentioned usernames in one string
      */
-    public static String getUserMentions(String text) {
+    public static String getUserMentions(String text, String author) {
         StringBuilder buf = new StringBuilder();
-        Matcher m = MENTION.matcher(text);
-        while (m.find()) {
-            int start = m.start();
-            int end = m.end();
-            buf.append(text.substring(start, end)).append(' ');
+        Set<String> sorted = new TreeSet<>(String::compareToIgnoreCase);
+        Matcher matcher = MENTION.matcher(text);
+
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            sorted.add(text.substring(start, end));
+        }
+        if (!author.isEmpty()) {
+            buf.append(author).append(' ');
+            sorted.remove(author);
+        }
+        for (String item : sorted) {
+            buf.append(item).append(' ');
         }
         return buf.toString();
     }

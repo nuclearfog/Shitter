@@ -47,6 +47,7 @@ public class ProfileUpdate {
      *
      * @param context   context used to resolve Uri
      * @param imageUrl  Uri of the local image file
+     * @return true if file is valid, false otherwise
      */
     public boolean setImage(Context context, @NonNull Uri imageUrl) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -67,6 +68,7 @@ public class ProfileUpdate {
      *
      * @param context    context used to resolve Uri
      * @param bannerUrl  Uri of the local image file
+     * @return true if file is valid, false otherwise
      */
     public boolean setBanner(Context context, @NonNull Uri bannerUrl) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
