@@ -23,7 +23,7 @@ import java.lang.ref.WeakReference;
 public class UserUpdater extends AsyncTask<Void, Void, User> {
 
     @Nullable
-    private ErrorHandler.TwitterError twException;
+    private ErrorHandler.TwitterError exception;
     private WeakReference<ProfileEditor> callback;
     private Twitter twitter;
     private AppDatabase db;
@@ -47,16 +47,17 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
                 twitter.updateProfileImage(profile.getProfileImageStream());
             }
             if (profile.getBannerImageStream() != null) {
-                twitter.updateProfileBanner(profile.getBannerImageStream());
+                twitter.updateBannerImage(profile.getBannerImageStream());
             }
             User user = twitter.updateProfile(profile);
             // save new user information
             db.storeUser(user);
+            return user;
+        } catch (TwitterException exception) {
+            this.exception = exception;
+        } finally {
             // close image streams
             profile.close();
-            return user;
-        } catch (TwitterException twException) {
-            this.twException = twException;
         }
         return null;
     }
@@ -69,7 +70,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
             if (user != null) {
                 activity.onSuccess(user);
             } else {
-                activity.onError(twException);
+                activity.onError(exception);
             }
         }
     }

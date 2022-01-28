@@ -1248,7 +1248,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      *
      * @param inputStream inputstream of the local image file
      */
-    public void updateProfileBanner(InputStream inputStream) throws TwitterException {
+    public void updateBannerImage(InputStream inputStream) throws TwitterException {
         updateImage(PROFILE_UPDATE_BANNER, inputStream, "banner");
     }
 

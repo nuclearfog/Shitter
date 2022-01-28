@@ -91,7 +91,6 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
             adapter.addAll(uris);
             adapter.disableSaveButton();
             zoomImage.setImageURI(uris[0]);
-            zoomImage.reset();
             loadingCircle.setVisibility(INVISIBLE);
         }
     }

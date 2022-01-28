@@ -53,9 +53,9 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
             // download imaged to a local cache folder
             for (Uri link : links) {
                 // get input stream
-                MediaStream input = twitter.downloadImage(link.toString());
-                InputStream stream = input.getStream();
-                String mimeType = input.getMimeType();
+                MediaStream mediaStream = twitter.downloadImage(link.toString());
+                InputStream input = mediaStream.getStream();
+                String mimeType = mediaStream.getMimeType();
 
                 // create file
                 String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
@@ -63,13 +63,13 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
                 file.createNewFile();
 
                 // copy image to cache folder
-                FileOutputStream os = new FileOutputStream(file);
+                FileOutputStream output = new FileOutputStream(file);
                 int length;
                 byte[] buffer = new byte[4096];
-                while ((length = stream.read(buffer)) > 0)
-                    os.write(buffer, 0, length);
+                while ((length = input.read(buffer)) > 0)
+                    output.write(buffer, 0, length);
                 input.close();
-                os.close();
+                output.close();
 
                 // create a new uri
                 publishProgress(Uri.fromFile(file));

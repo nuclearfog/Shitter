@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
  */
 public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
-    private ErrorHandler.TwitterError twException;
+    private ErrorHandler.TwitterError exception;
     private WeakReference<MessageEditor> callback;
     private Twitter twitter;
 
@@ -53,11 +53,12 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
             if (!isCancelled()) {
                 twitter.sendDirectmessage(id, message.getText(), mediaId);
             }
+            return true;
+        } catch (TwitterException exception) {
+            this.exception = exception;
+        } finally {
             // close mediastream
             message.close();
-            return true;
-        } catch (TwitterException twException) {
-            this.twException = twException;
         }
         return false;
     }
@@ -69,7 +70,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
             if (success) {
                 callback.get().onSuccess();
             } else {
-                callback.get().onError(twException);
+                callback.get().onError(exception);
             }
         }
     }
