@@ -173,4 +173,18 @@ public class ProfileUpdate {
             // ignore
         }
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        String result = "name:\"" + name + "\"";
+        if (!description.isEmpty())
+            result += " bio:\"" + description + "\"";
+        if (!location.isEmpty())
+            result += " location:\"" + location + "\"";
+        if (!url.isEmpty())
+            result += " url:\"" + url + "\"";
+        result += " image:" + imageAdded();
+        return result;
+    }
 }

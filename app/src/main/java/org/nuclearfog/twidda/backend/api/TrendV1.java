@@ -40,6 +40,6 @@ class TrendV1 implements Trend {
     @NonNull
     @Override
     public String toString() {
-        return rank + ": " + name;
+        return "rank:" + rank + " name:\"" + name + "\"";
     }
 }

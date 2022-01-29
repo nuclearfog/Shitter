@@ -47,6 +47,6 @@ class LocationImpl implements Location {
     @NonNull
     @Override
     public String toString() {
-        return id + ":" + name;
+        return "id:" + id + " name:\"" + name + "\"";
     }
 }

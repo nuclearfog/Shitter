@@ -79,9 +79,8 @@ class DirectMessageImpl implements DirectMessage {
     @NonNull
     @Override
     public String toString() {
-        return "from:" + sender + " to:" + receiver + " message:" + text;
+        return "from:" + sender + " to:" + receiver + " message:\"" + text + "\"";
     }
-
 
     void setSender(User sender) {
         this.sender = sender;

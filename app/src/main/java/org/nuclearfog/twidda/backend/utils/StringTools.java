@@ -191,7 +191,6 @@ public final class StringTools {
             if (date != null)
                 return date.getTime();
         } catch (Exception e) {
-            // make date invalid so it will be not shown
             e.printStackTrace();
         }
         return DEFAULT_TIME;
@@ -209,7 +208,6 @@ public final class StringTools {
             if (date != null)
                 return date.getTime();
         } catch (Exception e) {
-            // make date invalid so it will be not shown
             e.printStackTrace();
         }
         return DEFAULT_TIME;

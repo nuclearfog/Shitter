@@ -103,7 +103,7 @@ class UserListV1 implements UserList {
     @NonNull
     @Override
     public String toString() {
-        return title + " / " + description;
+        return "title:\"" + title + "\" description:\"" + description + "\"";
     }
 
     /**

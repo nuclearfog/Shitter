@@ -127,4 +127,10 @@ public class DirectmessageUpdate {
             mediaStream.close();
         }
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "to:\"" + name + "\" text:\"" + text + "\" media:" + (mediaStream != null);
+    }
 }

@@ -188,6 +188,8 @@ public class TweetUpdate {
     @NonNull
     @Override
     public String toString() {
-        return "to=" + replyId + "\nTweet=" + text;
+        if (replyId > 0)
+            return "to=" + replyId + " tweet=\"" + text + "\"";
+        return "tweet=\"" + text + "\"";
     }
 }

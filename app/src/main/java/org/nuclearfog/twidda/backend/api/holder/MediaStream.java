@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.holder;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -39,8 +41,12 @@ public class MediaStream {
     /**
      * @return remaining bytes of the stream
      */
-    public long available() throws IOException {
-        return inputStream.available();
+    public long available() {
+        try {
+            return inputStream.available();
+        } catch (IOException e) {
+            return 0;
+        }
     }
 
     /**
@@ -52,5 +58,11 @@ public class MediaStream {
         } catch (IOException e) {
             // ignore
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "mime:\"" + mimeType + "\" size:" + available();
     }
 }

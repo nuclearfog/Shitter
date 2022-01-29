@@ -171,7 +171,7 @@ class UserV2 implements User {
     @NonNull
     @Override
     public String toString() {
-        return screenName + ":" + username;
+        return "name:\"" + screenName + "\"";
     }
 
     /**

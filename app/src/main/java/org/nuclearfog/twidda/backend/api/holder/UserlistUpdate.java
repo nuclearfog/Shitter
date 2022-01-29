@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.holder;
 
+import androidx.annotation.NonNull;
+
 /**
  * This class is used to upload list information
  *
@@ -74,5 +76,11 @@ public class UserlistUpdate {
      */
     public boolean exists() {
         return listId != NEW_LIST;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "id:" + listId + " title:\"" + title + "\"";
     }
 }

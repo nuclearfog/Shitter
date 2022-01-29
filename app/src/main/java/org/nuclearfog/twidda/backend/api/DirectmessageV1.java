@@ -83,7 +83,7 @@ class DirectmessageV1 implements DirectMessage {
     @NonNull
     @Override
     public String toString() {
-        return "from:" + sender + " to:" + receiver + " message:" + text;
+        return "from:" + sender + " to:" + receiver + " message:\"" + text + "\"";
     }
 
     /**
