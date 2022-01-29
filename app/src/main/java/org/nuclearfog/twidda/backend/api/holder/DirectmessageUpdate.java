@@ -85,7 +85,7 @@ public class DirectmessageUpdate {
         // check if file is valid
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             DocumentFile file = DocumentFile.fromSingleUri(context, uri);
-            if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+            if (file != null && file.length() > 0) {
                 this.uri = uri;
                 return true;
             }

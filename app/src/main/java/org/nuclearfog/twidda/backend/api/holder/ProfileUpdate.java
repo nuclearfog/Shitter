@@ -52,7 +52,7 @@ public class ProfileUpdate {
     public boolean setImage(Context context, @NonNull Uri imageUrl) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             DocumentFile file = DocumentFile.fromSingleUri(context, imageUrl);
-            if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+            if (file != null && file.length() > 0) {
                 imageUrls[0] = imageUrl;
                 return true;
             }
@@ -73,7 +73,7 @@ public class ProfileUpdate {
     public boolean setBanner(Context context, @NonNull Uri bannerUrl) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             DocumentFile file = DocumentFile.fromSingleUri(context, bannerUrl);
-            if (file != null && file.exists() && file.canRead() && file.length() > 0) {
+            if (file != null && file.length() > 0) {
                 imageUrls[1] = bannerUrl;
                 return true;
             }
