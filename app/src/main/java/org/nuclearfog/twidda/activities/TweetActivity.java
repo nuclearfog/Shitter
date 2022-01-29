@@ -359,7 +359,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // open tweet location coordinates
             else if (v.getId() == R.id.tweet_location_coordinate) {
                 Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-                locationIntent.setData(Uri.parse("geo:" + clickedTweet.getLocationCoordinates()));
+                locationIntent.setData(Uri.parse("geo:" + clickedTweet.getLocationCoordinates() + "?z=14"));
                 try {
                     startActivity(locationIntent);
                 } catch (ActivityNotFoundException err) {
