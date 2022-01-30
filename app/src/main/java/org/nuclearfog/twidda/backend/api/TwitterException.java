@@ -49,6 +49,8 @@ public class TwitterException extends Exception implements TwitterError {
                         errorCode = error.optInt("code");
                         retryAfter = error.optInt("x-rate-limit-remaining", -1);
                     }
+                } else {
+                    message = json.optString("error");
                 }
             } catch (Exception e) {
                 // ignore extra information
@@ -141,6 +143,6 @@ public class TwitterException extends Exception implements TwitterError {
     @NonNull
     @Override
     public String toString() {
-        return "http:" + httpCode + " errorcode:" + errorCode + " message:" + message;
+        return "http:" + httpCode + " errorcode:" + errorCode + " message:\"" + message + "\"";
     }
 }

@@ -127,7 +127,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * To upload big files like videos, files must be chunked in segments.
      * Twitter can handle up to 1000 segments with max 5MB.
      */
-    private static final int CHUNK_MAX_BYTES = 1024 * 2048;
+    private static final int CHUNK_MAX_BYTES = 1024 * 1024;
 
     private static Twitter instance;
     private static boolean notifySettingsChange = false;
@@ -1138,12 +1138,23 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return media ID
      */
     public long uploadMedia(MediaStream mediaStream) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
+        boolean enableChunk;
         try {
             // step 1 INIT
             params.add("command=INIT");
             params.add("media_type=" + mediaStream.getMimeType());
             params.add("total_bytes=" + mediaStream.available());
+            if (mediaStream.getMimeType().startsWith("video/")) {
+                params.add("media_category=tweet_video");
+                enableChunk = true;
+            } else if (mediaStream.getMimeType().startsWith("image/gif")) {
+                params.add("media_category=tweet_gif");
+                enableChunk = true;
+            } else {
+                // disable chunking for images
+                enableChunk = false;
+            }
             Response response = post(MEDIA_UPLOAD, params);
             if (response.code() < 200 || response.code() >= 300 || response.body() == null)
                 throw new TwitterException(response);
@@ -1152,13 +1163,12 @@ public class Twitter implements GlobalSettings.SettingsListener {
 
             // step 2 APPEND
             int segmentIndex = 0;
-            InputStream stream = mediaStream.getStream();
-            while (stream.available() > 0) {
+            while (mediaStream.available() > 0) {
                 params.clear();
                 params.add("command=APPEND");
                 params.add("segment_index=" + segmentIndex++);
                 params.add("media_id=" + mediaId);
-                response = post(MEDIA_UPLOAD, params, stream, "media", true);
+                response = post(MEDIA_UPLOAD, params, mediaStream.getStream(), "media", enableChunk);
                 if (response.code() < 200 || response.code() >= 300)
                     throw new TwitterException(response);
             }
