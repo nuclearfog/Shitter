@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_DATA;
 import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_DATA;
 import static org.nuclearfog.twidda.backend.ListLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_MEMBERSHIPS;
 import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_USERLISTS;
@@ -14,8 +14,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activities.UserlistActivity;
 import org.nuclearfog.twidda.activities.UserProfile;
+import org.nuclearfog.twidda.activities.UserlistActivity;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.ListLoader;

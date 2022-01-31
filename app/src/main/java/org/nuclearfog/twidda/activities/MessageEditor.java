@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.*;
+import static android.view.View.GONE;
+import static android.view.View.OnClickListener;
+import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Context;
@@ -189,11 +191,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
      * @param error Engine Exception
      */
     public void onError(@Nullable ErrorHandler.TwitterError error) {
-        if (!confirmDialog.isShowing()) {
-            String message = ErrorHandler.getErrorMessage(this, error);
-            confirmDialog.setMessage(message);
-            confirmDialog.show(DialogType.MESSAGE_EDITOR_ERROR);
-        }
+        String message = ErrorHandler.getErrorMessage(this, error);
+        confirmDialog.setMessage(message);
+        confirmDialog.show(DialogType.MESSAGE_EDITOR_ERROR);
         loadingCircle.dismiss();
     }
 
@@ -209,9 +209,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
                 holder.setText(message);
                 messageAsync = new MessageUpdater(this, holder);
                 messageAsync.execute();
-                if (!loadingCircle.isShowing()) {
-                    loadingCircle.show();
-                }
+                loadingCircle.show();
             } else {
                 Toast.makeText(this, R.string.error_media_init, LENGTH_SHORT).show();
             }

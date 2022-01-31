@@ -78,7 +78,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
         if (!isRefreshing()) {
             Intent intent = new Intent(requireContext(), SearchPage.class);
             String name = trend.getName();
-            if (!name.startsWith("\"") && !name.endsWith("\""))
+            if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\""))
                 name = "\"" + name + "\"";
             intent.putExtra(KEY_SEARCH_QUERY, name);
             startActivity(intent);

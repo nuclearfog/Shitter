@@ -182,14 +182,10 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
      * @param err twitter exception
      */
     public void onError(@Nullable ErrorHandler.TwitterError err) {
-        if (!confirmDialog.isShowing()) {
-            String message = ErrorHandler.getErrorMessage(this, err);
-            confirmDialog.setMessage(message);
-            confirmDialog.show(DialogType.LIST_EDITOR_ERROR);
-        }
-        if (loadingCircle.isShowing()) {
-            loadingCircle.dismiss();
-        }
+        String message = ErrorHandler.getErrorMessage(this, err);
+        confirmDialog.setMessage(message);
+        confirmDialog.show(DialogType.LIST_EDITOR_ERROR);
+        loadingCircle.dismiss();
     }
 
     /**

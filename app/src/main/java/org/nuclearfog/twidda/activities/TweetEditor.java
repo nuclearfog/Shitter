@@ -1,8 +1,12 @@
 package org.nuclearfog.twidda.activities;
 
-import static android.os.AsyncTask.Status.*;
-import static android.view.View.*;
-import static android.widget.Toast.*;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.OnClickListener;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Context;
 import android.content.Intent;
@@ -327,14 +331,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
      * Show confirmation dialog if an error occurs while sending tweet
      */
     public void onError(@Nullable ErrorHandler.TwitterError error) {
-        if (!confirmDialog.isShowing()) {
-            String message = ErrorHandler.getErrorMessage(this, error);
-            confirmDialog.setMessage(message);
-            confirmDialog.show(DialogType.TWEET_EDITOR_ERROR);
-        }
-        if (loadingCircle.isShowing()) {
-            loadingCircle.dismiss();
-        }
+        String message = ErrorHandler.getErrorMessage(this, error);
+        confirmDialog.setMessage(message);
+        confirmDialog.show(DialogType.TWEET_EDITOR_ERROR);
+        loadingCircle.dismiss();
     }
 
     /**
@@ -381,9 +381,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
             // send tweet
             uploaderAsync = new TweetUpdater(this);
             uploaderAsync.execute(tweetUpdate);
-            if (!loadingCircle.isShowing()) {
-                loadingCircle.show();
-            }
+            // show progress dialog
+            loadingCircle.show();
         } else {
             Toast.makeText(this, R.string.error_media_init, LENGTH_SHORT).show();
         }

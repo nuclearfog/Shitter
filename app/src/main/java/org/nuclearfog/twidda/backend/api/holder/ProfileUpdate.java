@@ -45,8 +45,8 @@ public class ProfileUpdate {
     /**
      * add profile image Uri
      *
-     * @param context   context used to resolve Uri
-     * @param imageUrl  Uri of the local image file
+     * @param context  context used to resolve Uri
+     * @param imageUrl Uri of the local image file
      * @return true if file is valid, false otherwise
      */
     public boolean setImage(Context context, @NonNull Uri imageUrl) {
@@ -66,8 +66,8 @@ public class ProfileUpdate {
     /**
      * add banner image Uri
      *
-     * @param context    context used to resolve Uri
-     * @param bannerUrl  Uri of the local image file
+     * @param context   context used to resolve Uri
+     * @param bannerUrl Uri of the local image file
      * @return true if file is valid, false otherwise
      */
     public boolean setBanner(Context context, @NonNull Uri bannerUrl) {
@@ -142,7 +142,7 @@ public class ProfileUpdate {
      */
     public boolean prepare(ContentResolver resolver) {
         try {
-            for (int i = 0 ; i < imageUrls.length ; i++) {
+            for (int i = 0; i < imageUrls.length; i++) {
                 if (imageUrls[i] != null) {
                     InputStream profileImgStream = resolver.openInputStream(imageUrls[i]);
                     if (profileImgStream != null && profileImgStream.available() > 0) {

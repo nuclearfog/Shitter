@@ -1613,9 +1613,9 @@ public class Twitter implements GlobalSettings.SettingsListener {
     /**
      * send POST request with file and create response
      *
-     * @param endpoint      endpoint url
-     * @param params        additional http parameters
-     * @param enableChunk   true to enable file chunk
+     * @param endpoint    endpoint url
+     * @param params      additional http parameters
+     * @param enableChunk true to enable file chunk
      * @return http resonse
      */
     private Response post(String endpoint, List<String> params, InputStream is, String addToKey, boolean enableChunk) throws IOException {

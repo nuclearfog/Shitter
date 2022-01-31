@@ -159,7 +159,7 @@ public class TweetUpdate {
         try {
             // open input streams
             mediaStreams = new MediaStream[mediaUris.size()];
-            for (int i = 0 ; i < mediaStreams.length ; i++) {
+            for (int i = 0; i < mediaStreams.length; i++) {
                 InputStream is = resolver.openInputStream(mediaUris.get(i));
                 String mime = resolver.getType(mediaUris.get(i));
                 // check if stream is valid

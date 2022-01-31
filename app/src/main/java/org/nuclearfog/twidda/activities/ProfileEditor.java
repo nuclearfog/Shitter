@@ -281,11 +281,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
      * @param err Engine Exception
      */
     public void onError(ErrorHandler.TwitterError err) {
-        if (!confirmDialog.isShowing()) {
-            String message = ErrorHandler.getErrorMessage(this, err);
-            confirmDialog.setMessage(message);
-            confirmDialog.show(DialogType.PROFILE_EDITOR_ERROR);
-        }
+        String message = ErrorHandler.getErrorMessage(this, err);
+        confirmDialog.setMessage(message);
+        confirmDialog.show(DialogType.PROFILE_EDITOR_ERROR);
         loadingCircle.dismiss();
     }
 
@@ -309,9 +307,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
                 if (holder.prepare(getContentResolver())) {
                     editorAsync = new UserUpdater(this, holder);
                     editorAsync.execute();
-                    if (!loadingCircle.isShowing()) {
-                        loadingCircle.show();
-                    }
+                    loadingCircle.show();
                 } else {
                     Toast.makeText(this, R.string.error_media_init, Toast.LENGTH_SHORT).show();
                 }

@@ -74,10 +74,12 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
      * @param url link url to show preview
      */
     public void show(String url) {
-        super.show();
-        // load preview
-        textCrawler.makePreview(this, url);
-        this.url = url;
+        if (!isShowing()) {
+            super.show();
+            // load preview
+            textCrawler.makePreview(this, url);
+            this.url = url;
+        }
     }
 
 

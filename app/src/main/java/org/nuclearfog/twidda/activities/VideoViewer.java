@@ -1,9 +1,21 @@
 package org.nuclearfog.twidda.activities;
 
-import static android.media.MediaPlayer.*;
-import static android.view.MotionEvent.*;
-import static android.view.View.*;
-import static android.widget.Toast.*;
+import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
+import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
+import static android.media.MediaPlayer.OnCompletionListener;
+import static android.media.MediaPlayer.OnErrorListener;
+import static android.media.MediaPlayer.OnInfoListener;
+import static android.media.MediaPlayer.OnPreparedListener;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.OnClickListener;
+import static android.view.View.OnTouchListener;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -34,7 +46,8 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
-import org.nuclearfog.twidda.dialog.ConfirmDialog.*;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 /**
  * Media viewer activity for images and videos

@@ -49,6 +49,14 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 
 
     @Override
+    public void show() {
+        if (!isShowing()) {
+            super.show();
+        }
+    }
+
+
+    @Override
     public void onClick(View v) {
         if (listener != null) {
             listener.stopProgress();

@@ -130,7 +130,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     /**
      * runnable class to delay swiperefreshlayout
      */
-    private static class RefreshDelay  implements Runnable {
+    private static class RefreshDelay implements Runnable {
 
         private WeakReference<ListFragment> callback;
 

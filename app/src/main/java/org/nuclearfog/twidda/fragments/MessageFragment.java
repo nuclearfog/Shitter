@@ -2,10 +2,12 @@ package org.nuclearfog.twidda.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.MessageEditor.*;
-import static org.nuclearfog.twidda.activities.SearchPage.*;
-import static org.nuclearfog.twidda.activities.TweetActivity.*;
-import static org.nuclearfog.twidda.activities.UserProfile.*;
+import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

@@ -68,6 +68,7 @@ public class DirectmessageUpdate {
     }
 
     /**
+     *
      */
     @Nullable
     public Uri getMediaUri() {

@@ -28,4 +28,12 @@ public class LicenseDialog extends Dialog {
             dismiss();
         }
     }
+
+
+    @Override
+    public void show() {
+        if (!isShowing()) {
+            super.show();
+        }
+    }
 }

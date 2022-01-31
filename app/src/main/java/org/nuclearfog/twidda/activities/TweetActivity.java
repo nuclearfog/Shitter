@@ -1,12 +1,22 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.*;
+import static android.view.View.GONE;
+import static android.view.View.OnClickListener;
+import static android.view.View.OnLongClickListener;
+import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activities.SearchPage.*;
-import static org.nuclearfog.twidda.activities.TweetEditor.*;
-import static org.nuclearfog.twidda.activities.UserDetail.*;
-import static org.nuclearfog.twidda.fragments.TweetFragment.*;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_REPLYID;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FAVORIT;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_ANSWER;
 
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;

@@ -25,4 +25,12 @@ public class InfoDialog extends Dialog {
         appInfo.append(" V");
         appInfo.append(BuildConfig.VERSION_NAME);
     }
+
+
+    @Override
+    public void show() {
+        if (!isShowing()) {
+            super.show();
+        }
+    }
 }

@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.*;
+import static android.view.View.GONE;
+import static android.view.View.OnClickListener;
+import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 import android.app.Dialog;
@@ -302,13 +304,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.settings_info) {
-            if (!appInfo.isShowing()) {
-                appInfo.show();
-            }
+            appInfo.show();
         } else if (item.getItemId() == R.id.settings_licenses) {
-            if (!license.isShowing()) {
-                license.show();
-            }
+            license.show();
         }
         return super.onOptionsItemSelected(item);
     }
