@@ -25,7 +25,7 @@ public class Registration extends AsyncTask<String, Void, String> {
 
     @Nullable
     private ErrorHandler.TwitterError exception;
-    private WeakReference<LoginActivity> callback;
+    private WeakReference<LoginActivity> weakRef;
     private AccountDatabase accountDB;
     private AppDatabase database;
     private Twitter twitter;
@@ -38,8 +38,7 @@ public class Registration extends AsyncTask<String, Void, String> {
      */
     public Registration(LoginActivity activity) {
         super();
-        this.callback = new WeakReference<>(activity);
-        // init database and storage
+        weakRef = new WeakReference<>(activity);
         accountDB = new AccountDatabase(activity);
         database = new AppDatabase(activity);
         settings = GlobalSettings.getInstance(activity);
@@ -73,7 +72,7 @@ public class Registration extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        LoginActivity activity = callback.get();
+        LoginActivity activity = weakRef.get();
         if (activity != null) {
             // redirect to Twitter login page
             if (result != null) {

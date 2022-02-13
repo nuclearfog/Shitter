@@ -15,11 +15,11 @@ import java.util.concurrent.TimeUnit;
 public class SeekbarUpdater implements Runnable {
 
     private ScheduledExecutorService updater;
-    private WeakReference<VideoViewer> callback;
+    private WeakReference<VideoViewer> weakRef;
 
     private Runnable seekUpdate = new Runnable() {
         public void run() {
-            VideoViewer mediaViewer = callback.get();
+            VideoViewer mediaViewer = weakRef.get();
             if (mediaViewer != null) {
                 mediaViewer.updateSeekBar();
             }
@@ -27,8 +27,8 @@ public class SeekbarUpdater implements Runnable {
     };
 
 
-    public SeekbarUpdater(VideoViewer callback, int milliseconds) {
-        this.callback = new WeakReference<>(callback);
+    public SeekbarUpdater(VideoViewer activity, int milliseconds) {
+        weakRef = new WeakReference<>(activity);
         updater = Executors.newScheduledThreadPool(1);
         updater.scheduleWithFixedDelay(this, milliseconds, milliseconds, TimeUnit.MILLISECONDS);
     }
@@ -36,7 +36,7 @@ public class SeekbarUpdater implements Runnable {
 
     @Override
     public void run() {
-        VideoViewer mediaViewer = callback.get();
+        VideoViewer mediaViewer = weakRef.get();
         if (mediaViewer != null) {
             mediaViewer.runOnUiThread(seekUpdate);
         }

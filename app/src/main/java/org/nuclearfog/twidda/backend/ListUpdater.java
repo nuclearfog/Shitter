@@ -19,16 +19,19 @@ import java.lang.ref.WeakReference;
 public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 
 
-    private WeakReference<UserlistEditor> callback;
+    private WeakReference<UserlistEditor> weakRef;
     private TwitterException err;
     private Twitter twitter;
 
     private UserlistUpdate update;
 
-
+    /**
+     * @param activity callback to {@link UserlistEditor}
+     * @param update   userlist to update
+     */
     public ListUpdater(UserlistEditor activity, UserlistUpdate update) {
         super();
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
         this.update = update;
     }
@@ -49,11 +52,12 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 
     @Override
     protected void onPostExecute(UserList result) {
-        if (callback.get() != null) {
+        UserlistEditor activity = weakRef.get();
+        if (activity != null) {
             if (result != null) {
-                callback.get().onSuccess(result);
+                activity.onSuccess(result);
             } else {
-                callback.get().onError(err);
+                activity.onError(err);
             }
         }
     }

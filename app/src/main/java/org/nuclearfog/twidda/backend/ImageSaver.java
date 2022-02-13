@@ -17,13 +17,12 @@ import java.lang.ref.WeakReference;
  */
 public class ImageSaver extends AsyncTask<Object, Void, Boolean> {
 
-
-    private WeakReference<MediaActivity> callback;
+    private WeakReference<MediaActivity> weakRef;
 
 
     public ImageSaver(MediaActivity activity) {
         super();
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
     }
 
 
@@ -55,11 +54,12 @@ public class ImageSaver extends AsyncTask<Object, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (callback.get() != null) {
+        MediaActivity activity = weakRef.get();
+        if (activity != null) {
             if (success) {
-                callback.get().onImageSaved();
+                activity.onImageSaved();
             } else {
-                callback.get().onError();
+                activity.onError();
             }
         }
     }

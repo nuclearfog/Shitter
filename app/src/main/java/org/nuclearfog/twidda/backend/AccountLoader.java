@@ -17,14 +17,14 @@ import java.util.List;
 public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
 
     private AccountDatabase accountDatabase;
-    private WeakReference<AccountFragment> callback;
+    private WeakReference<AccountFragment> weakRef;
 
     /**
      *
      */
     public AccountLoader(AccountFragment fragment) {
         super();
-        callback = new WeakReference<>(fragment);
+        weakRef = new WeakReference<>(fragment);
         accountDatabase = new AccountDatabase(fragment.requireContext());
     }
 
@@ -48,7 +48,7 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
 
     @Override
     protected void onPostExecute(List<Account> accounts) {
-        AccountFragment fragment = callback.get();
+        AccountFragment fragment = weakRef.get();
         if (fragment != null) {
             if (accounts != null) {
                 fragment.onSuccess(accounts);

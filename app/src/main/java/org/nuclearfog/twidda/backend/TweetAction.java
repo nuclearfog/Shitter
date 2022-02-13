@@ -58,7 +58,7 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     @Nullable
     private TwitterException twException;
     private Twitter twitter;
-    private WeakReference<TweetActivity> callback;
+    private WeakReference<TweetActivity> weakRef;
     private AppDatabase db;
     private long tweetId, retweetId;
 
@@ -70,7 +70,8 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
         super();
         db = new AppDatabase(activity);
         twitter = Twitter.get(activity);
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
+
         this.retweetId = retweetId;
         this.tweetId = tweetId;
     }
@@ -146,19 +147,19 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
 
     @Override
     protected void onProgressUpdate(Tweet[] tweets) {
-        if (callback.get() != null) {
-            callback.get().setTweet(tweets[0]);
+        if (weakRef.get() != null) {
+            weakRef.get().setTweet(tweets[0]);
         }
     }
 
 
     @Override
     protected void onPostExecute(Action action) {
-        if (callback.get() != null) {
+        if (weakRef.get() != null) {
             if (action != null) {
-                callback.get().onAction(action, tweetId);
+                weakRef.get().onAction(action, tweetId);
             } else {
-                callback.get().onError(twException, tweetId);
+                weakRef.get().onError(twException, tweetId);
             }
         }
     }

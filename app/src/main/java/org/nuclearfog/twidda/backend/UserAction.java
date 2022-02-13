@@ -60,7 +60,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     }
 
     private ErrorHandler.TwitterError twException;
-    private WeakReference<UserProfile> callback;
+    private WeakReference<UserProfile> weakRef;
     private Twitter twitter;
     private ExcludeDatabase exclDB;
     private AppDatabase appDB;
@@ -72,7 +72,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
      */
     public UserAction(UserProfile activity, long userId) {
         super();
-        this.callback = new WeakReference<>(activity);
+        this.weakRef = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
         exclDB = new ExcludeDatabase(activity);
         appDB = new AppDatabase(activity);
@@ -161,15 +161,15 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
 
     @Override
     protected void onProgressUpdate(User[] users) {
-        if (callback.get() != null) {
-            callback.get().setUser(users[0]);
+        if (weakRef.get() != null) {
+            weakRef.get().setUser(users[0]);
         }
     }
 
 
     @Override
     protected void onPostExecute(Relation relation) {
-        UserProfile activity = callback.get();
+        UserProfile activity = weakRef.get();
         if (activity != null) {
             if (relation != null) {
                 activity.onAction(relation);

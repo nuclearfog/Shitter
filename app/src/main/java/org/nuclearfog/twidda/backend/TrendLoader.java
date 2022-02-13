@@ -23,17 +23,17 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 
     @Nullable
     private TwitterException twException;
-    private final WeakReference<TrendFragment> callback;
-    private final Twitter twitter;
-    private final AppDatabase db;
-    private final boolean isEmpty;
+    private WeakReference<TrendFragment> weakRef;
+    private Twitter twitter;
+    private AppDatabase db;
+    private boolean isEmpty;
 
     /**
      * @param fragment callback to update data
      */
     public TrendLoader(TrendFragment fragment) {
         super();
-        callback = new WeakReference<>(fragment);
+        weakRef = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         twitter = Twitter.get(fragment.getContext());
         isEmpty = fragment.isEmpty();
@@ -65,11 +65,12 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 
     @Override
     protected void onPostExecute(List<Trend> trends) {
-        if (callback.get() != null) {
+        TrendFragment fragment = weakRef.get();
+        if (fragment != null) {
             if (trends != null) {
-                callback.get().setData(trends);
+                fragment.setData(trends);
             } else {
-                callback.get().onError(twException);
+                fragment.onError(twException);
             }
         }
     }

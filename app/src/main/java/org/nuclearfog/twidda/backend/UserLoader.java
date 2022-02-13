@@ -54,11 +54,11 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
          */
         LISTMEMBER,
         /**
-         *
+         * load a list of blocked users
          */
         BLOCK,
         /**
-         *
+         * load a list of muted users
          */
         MUTE,
         NONE
@@ -66,18 +66,24 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 
     @Nullable
     private TwitterException twException;
-    private final WeakReference<UserFragment> callback;
+    private final WeakReference<UserFragment> weakRef;
     private Twitter mTwitter;
 
     private final Type type;
     private final String search;
     private final long id;
 
-
-    public UserLoader(UserFragment callback, Type type, long id, String search) {
+    /**
+     * @param fragment reference to {@link UserFragment}
+     * @param type     type of list to load
+     * @param id       ID depending on what list to load (user ID, tweet ID, list ID)
+     * @param search   search string if type is {@link Type#SEARCH} or empty
+     */
+    public UserLoader(UserFragment fragment, Type type, long id, String search) {
         super();
-        this.callback = new WeakReference<>(callback);
-        mTwitter = Twitter.get(callback.getContext());
+        mTwitter = Twitter.get(fragment.getContext());
+        weakRef = new WeakReference<>(fragment);
+
         this.type = type;
         this.search = search;
         this.id = id;
@@ -126,11 +132,12 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 
     @Override
     protected void onPostExecute(Users users) {
-        if (callback.get() != null) {
+        UserFragment fragment = weakRef.get();
+        if (fragment != null) {
             if (users != null) {
-                callback.get().setData(users);
+                fragment.setData(users);
             } else {
-                callback.get().onError(twException);
+                fragment.onError(twException);
             }
         }
     }

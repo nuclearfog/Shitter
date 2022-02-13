@@ -30,7 +30,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
     @Nullable
     private ErrorHandler.TwitterError err;
     private Twitter twitter;
-    private WeakReference<ImageViewer> callback;
+    private WeakReference<ImageViewer> weakRef;
     private File cache;
 
     /**
@@ -40,7 +40,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
      */
     public ImageLoader(ImageViewer activity, File cache) {
         super();
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
         // create cache folder if not exists
         this.cache = cache;
@@ -86,19 +86,20 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
     @Override
     protected void onProgressUpdate(Uri[] uris) {
-        if (callback.get() != null) {
-            callback.get().setImage(uris[0]);
+        if (weakRef.get() != null) {
+            weakRef.get().setImage(uris[0]);
         }
     }
 
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (callback.get() != null) {
+        ImageViewer activity = weakRef.get();
+        if (activity != null) {
             if (success) {
-                callback.get().onSuccess();
+                activity.onSuccess();
             } else {
-                callback.get().onError(err);
+                activity.onError(err);
             }
         }
     }

@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference;
 public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
     private ErrorHandler.TwitterError exception;
-    private WeakReference<MessageEditor> callback;
+    private WeakReference<MessageEditor> weakRef;
     private Twitter twitter;
 
     private DirectmessageUpdate message;
@@ -34,7 +34,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
     public MessageUpdater(@NonNull MessageEditor activity, DirectmessageUpdate message) {
         super();
         twitter = Twitter.get(activity);
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
         this.message = message;
     }
 
@@ -66,11 +66,12 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (callback.get() != null) {
+        MessageEditor activity = weakRef.get();
+        if (activity != null) {
             if (success) {
-                callback.get().onSuccess();
+                activity.onSuccess();
             } else {
-                callback.get().onError(exception);
+                activity.onError(exception);
             }
         }
     }

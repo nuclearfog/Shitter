@@ -65,7 +65,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
     @Nullable
     private TwitterError twException;
-    private WeakReference<TweetFragment> callback;
+    private WeakReference<TweetFragment> weakRef;
     private Twitter twitter;
     private AppDatabase db;
 
@@ -83,9 +83,9 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
      */
     public TweetLoader(TweetFragment fragment, ListType listType, long id, String search, int pos) {
         super();
-        this.callback = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         twitter = Twitter.get(fragment.getContext());
+        weakRef = new WeakReference<>(fragment);
 
         this.listType = listType;
         this.search = search;
@@ -210,11 +210,12 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
     @Override
     protected void onPostExecute(List<Tweet> tweets) {
-        if (callback.get() != null) {
+        TweetFragment fragment = weakRef.get();
+        if (fragment != null) {
             if (tweets != null) {
-                callback.get().setData(tweets, pos);
+                fragment.setData(tweets, pos);
             } else {
-                callback.get().onError(twException);
+                fragment.onError(twException);
             }
         }
     }

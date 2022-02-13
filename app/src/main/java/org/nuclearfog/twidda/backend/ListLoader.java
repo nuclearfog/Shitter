@@ -11,7 +11,6 @@ import org.nuclearfog.twidda.fragments.UserListFragment;
 
 import java.lang.ref.WeakReference;
 
-
 /**
  * Background task for downloading twitter lists created by a user
  *
@@ -23,24 +22,22 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
     public static final long NO_CURSOR = -1;
 
     /**
-     * Type of list to be loaded
+     * load userlists of an user
      */
-    public enum Type {
-        /**
-         * load userlists of an user
-         */
-        LOAD_USERLISTS,
-        /**
-         * load userlists the specified user is on
-         */
-        LOAD_MEMBERSHIPS
-    }
+    public static final int LOAD_USERLISTS = 1;
+
+    /**
+     * load userlists the specified user is on
+     */
+    public static final int LOAD_MEMBERSHIPS = 2;
+
 
     @Nullable
     private TwitterException twException;
-    private WeakReference<UserListFragment> callback;
+    private WeakReference<UserListFragment> weakRef;
     private Twitter twitter;
-    private Type listType;
+
+    private int listType;
     private long userId;
     private String ownerName;
 
@@ -50,10 +47,11 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
      * @param userId    ID of the userlist
      * @param ownerName alternative if user id is not defined
      */
-    public ListLoader(UserListFragment fragment, Type listType, long userId, String ownerName) {
+    public ListLoader(UserListFragment fragment, int listType, long userId, String ownerName) {
         super();
         twitter = Twitter.get(fragment.getContext());
-        callback = new WeakReference<>(fragment);
+        weakRef = new WeakReference<>(fragment);
+
         this.listType = listType;
         this.userId = userId;
         this.ownerName = ownerName;
@@ -63,11 +61,12 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
     @Override
     protected UserLists doInBackground(Long[] param) {
         try {
-            if (listType == Type.LOAD_USERLISTS) {
-                return twitter.getUserListOwnerships(userId, ownerName);
-            }
-            if (listType == Type.LOAD_MEMBERSHIPS) {
-                return twitter.getUserListMemberships(userId, ownerName, param[0]);
+            switch(listType) {
+                case LOAD_USERLISTS:
+                    return twitter.getUserListOwnerships(userId, ownerName);
+
+                case LOAD_MEMBERSHIPS:
+                    return twitter.getUserListMemberships(userId, ownerName, param[0]);
             }
         } catch (TwitterException twException) {
             this.twException = twException;
@@ -78,11 +77,12 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 
     @Override
     protected void onPostExecute(UserLists result) {
-        if (callback.get() != null) {
+        UserListFragment fragment = weakRef.get();
+        if (fragment != null) {
             if (result != null) {
-                callback.get().setData(result);
+                fragment.setData(result);
             } else {
-                callback.get().onError(twException);
+                fragment.onError(twException);
             }
         }
     }

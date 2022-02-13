@@ -31,7 +31,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 
     @Nullable
     private TwitterException err;
-    private WeakReference<UserExclude> callback;
+    private WeakReference<UserExclude> weakRef;
     private ExcludeDatabase excludeDatabase;
     private AppDatabase appDatabase;
     private Twitter twitter;
@@ -43,7 +43,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
         twitter = Twitter.get(activity);
         appDatabase = new AppDatabase(activity);
         excludeDatabase = new ExcludeDatabase(activity);
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
         this.mode = mode;
     }
 
@@ -70,7 +70,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        UserExclude activity = callback.get();
+        UserExclude activity = weakRef.get();
         if (activity != null) {
             if (err == null) {
                 activity.onSuccess(mode);

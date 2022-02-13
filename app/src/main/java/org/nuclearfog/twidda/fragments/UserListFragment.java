@@ -4,8 +4,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_DATA;
 import static org.nuclearfog.twidda.backend.ListLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_MEMBERSHIPS;
-import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_USERLISTS;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -189,10 +187,10 @@ public class UserListFragment extends ListFragment implements ListClickListener 
      */
     private void load(long cursor) {
         if (type == LIST_USER_OWNS) {
-            listTask = new ListLoader(this, LOAD_USERLISTS, id, ownerName);
+            listTask = new ListLoader(this, ListLoader.LOAD_USERLISTS, id, ownerName);
             listTask.execute(cursor);
         } else if (type == LIST_USER_SUBSCR_TO) {
-            listTask = new ListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
+            listTask = new ListLoader(this, ListLoader.LOAD_MEMBERSHIPS, id, ownerName);
             listTask.execute(cursor);
         }
     }

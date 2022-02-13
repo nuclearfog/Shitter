@@ -21,7 +21,7 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
 
     private Twitter twitter;
     private ErrorHandler.TwitterError twException;
-    private WeakReference<TweetEditor> callback;
+    private WeakReference<TweetEditor> weakRef;
 
     /**
      * initialize task
@@ -31,7 +31,7 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
     public TweetUpdater(TweetEditor activity) {
         super();
         twitter = Twitter.get(activity);
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
     }
 
 
@@ -63,11 +63,12 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (callback.get() != null) {
+        TweetEditor activity = weakRef.get();
+        if (activity != null) {
             if (success) {
-                callback.get().onSuccess();
+                activity.onSuccess();
             } else {
-                callback.get().onError(twException);
+                activity.onError(twException);
             }
         }
     }

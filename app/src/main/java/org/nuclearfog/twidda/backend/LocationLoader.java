@@ -19,14 +19,14 @@ import java.util.List;
 public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 
     private TwitterException twException;
-    private WeakReference<AppSettings> callback;
+    private WeakReference<AppSettings> weakRef;
     private Twitter twitter;
 
 
-    public LocationLoader(AppSettings callback) {
+    public LocationLoader(AppSettings activity) {
         super();
-        this.callback = new WeakReference<>(callback);
-        twitter = Twitter.get(callback);
+        weakRef = new WeakReference<>(activity);
+        twitter = Twitter.get(activity);
     }
 
 
@@ -43,11 +43,12 @@ public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 
     @Override
     protected void onPostExecute(List<Location> locations) {
-        if (callback.get() != null) {
+        AppSettings activity = weakRef.get();
+        if (activity != null) {
             if (locations != null) {
-                callback.get().setLocationData(locations);
+                activity.setLocationData(locations);
             } else {
-                callback.get().onError(twException);
+                activity.onError(twException);
             }
         }
     }

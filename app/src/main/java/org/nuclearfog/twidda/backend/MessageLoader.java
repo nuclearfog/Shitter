@@ -41,7 +41,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
 
     @Nullable
     private TwitterException twException;
-    private WeakReference<MessageFragment> callback;
+    private WeakReference<MessageFragment> weakRef;
     private Twitter twitter;
     private AppDatabase db;
     private Action action;
@@ -55,7 +55,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
      */
     public MessageLoader(MessageFragment fragment, Action action, String cursor) {
         super();
-        callback = new WeakReference<>(fragment);
+        weakRef = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         twitter = Twitter.get(fragment.getContext());
         this.action = action;
@@ -105,15 +105,16 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
 
     @Override
     protected void onPostExecute(@Nullable Directmessages messages) {
-        if (callback.get() != null) {
+        MessageFragment fragment = weakRef.get();
+        if (fragment != null) {
             if (messages != null) {
-                callback.get().setData(messages);
+                fragment.setData(messages);
             } else {
                 if (removeMsgId > 0) {
-                    callback.get().removeItem(removeMsgId);
+                    fragment.removeItem(removeMsgId);
                 }
                 if (twException != null) {
-                    callback.get().onError(twException);
+                    fragment.onError(twException);
                 }
             }
         }

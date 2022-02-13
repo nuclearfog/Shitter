@@ -47,14 +47,14 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
     private static final Pattern USERLISTS_PATH = Pattern.compile("[\\w]+/lists");
     private static final Pattern USERLIST_PATH = Pattern.compile("i/lists/\\d+");
 
-    private WeakReference<MainActivity> callback;
+    private WeakReference<MainActivity> weakRef;
     private TwitterException exception;
     private Twitter mTwitter;
 
 
     public LinkLoader(MainActivity activity) {
         super();
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
         mTwitter = Twitter.get(activity);
     }
 
@@ -162,7 +162,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 
     @Override
     protected void onPostExecute(DataHolder result) {
-        MainActivity activity = callback.get();
+        MainActivity activity = weakRef.get();
         if (activity != null) {
             if (exception != null) {
                 activity.onError(exception);

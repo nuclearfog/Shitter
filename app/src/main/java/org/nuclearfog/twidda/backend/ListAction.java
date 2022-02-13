@@ -37,7 +37,7 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
     public static final int DELETE = 4;
 
 
-    private WeakReference<UserlistActivity> callback;
+    private WeakReference<UserlistActivity> weakRef;
     private Twitter twitter;
     private TwitterException err;
 
@@ -50,7 +50,7 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
      */
     public ListAction(UserlistActivity activity, long listId, int action) {
         super();
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
         this.listId = listId;
         this.action = action;
@@ -82,7 +82,7 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 
     @Override
     protected void onPostExecute(UserList userList) {
-        UserlistActivity callback = this.callback.get();
+        UserlistActivity callback = this.weakRef.get();
         if (callback != null) {
             if (userList != null) {
                 callback.onSuccess(userList, action);

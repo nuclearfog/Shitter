@@ -35,7 +35,7 @@ public class ListManager extends AsyncTask<String, Void, String> {
 
     private TwitterException err;
     private Twitter twitter;
-    private WeakReference<ListManagerCallback> callback;
+    private WeakReference<ListManagerCallback> weakRef;
 
     private long listId;
     private Action action;
@@ -48,10 +48,10 @@ public class ListManager extends AsyncTask<String, Void, String> {
      */
     public ListManager(long listId, Action action, Context c, ListManagerCallback callback) {
         super();
+        weakRef = new WeakReference<>(callback);
         twitter = Twitter.get(c);
         this.listId = listId;
         this.action = action;
-        this.callback = new WeakReference<>(callback);
     }
 
 
@@ -77,11 +77,12 @@ public class ListManager extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String names) {
-        if (callback.get() != null) {
+        ListManagerCallback callback = weakRef.get();
+        if (callback != null) {
             if (names != null) {
-                callback.get().onSuccess(names);
+                callback.onSuccess(names);
             } else {
-                callback.get().onFailure(err);
+                callback.onFailure(err);
             }
         }
     }

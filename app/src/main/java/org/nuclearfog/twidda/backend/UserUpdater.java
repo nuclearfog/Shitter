@@ -24,7 +24,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 
     @Nullable
     private ErrorHandler.TwitterError exception;
-    private WeakReference<ProfileEditor> callback;
+    private WeakReference<ProfileEditor> weakRef;
     private Twitter twitter;
     private AppDatabase db;
 
@@ -33,7 +33,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 
     public UserUpdater(ProfileEditor activity, ProfileUpdate profile) {
         super();
-        callback = new WeakReference<>(activity);
+        weakRef = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
         db = new AppDatabase(activity);
         this.profile = profile;
@@ -65,7 +65,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 
     @Override
     protected void onPostExecute(@Nullable User user) {
-        ProfileEditor activity = callback.get();
+        ProfileEditor activity = weakRef.get();
         if (activity != null) {
             if (user != null) {
                 activity.onSuccess(user);
