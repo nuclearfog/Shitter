@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * backend loader to get local accounts and user information
+ * backend loader to get login information of local accounts
  *
  * @author nuclearfog
  */
@@ -19,9 +19,7 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
     private AccountDatabase accountDatabase;
     private WeakReference<AccountFragment> weakRef;
 
-    /**
-     *
-     */
+
     public AccountLoader(AccountFragment fragment) {
         super();
         weakRef = new WeakReference<>(fragment);
@@ -34,7 +32,7 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
         List<Account> result = null;
         try {
             // remove account if parameter is set
-            if (param != null && param.length > 0) {
+            if (param.length > 0 && param[0] != null) {
                 accountDatabase.removeLogin(param[0].getId());
             }
             // get registered users

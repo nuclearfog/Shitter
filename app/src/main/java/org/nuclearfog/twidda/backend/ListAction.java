@@ -46,6 +46,7 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 
     /**
      * @param activity Callback to update list information
+     * @param listId   ID of the list to process
      * @param action   what action should be performed
      */
     public ListAction(UserlistActivity activity, long listId, int action) {

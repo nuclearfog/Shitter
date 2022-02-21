@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see TweetActivity
  */
-public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetAction.Action> {
+public class TweetAction extends AsyncTask<Void, Tweet, Void> {
 
     /**
      * actions for the tweet
@@ -60,27 +60,30 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     private Twitter twitter;
     private WeakReference<TweetActivity> weakRef;
     private AppDatabase db;
+
+    private Action action;
     private long tweetId, retweetId;
 
 
     /**
      * @param tweetId ID of the tweet
      */
-    public TweetAction(TweetActivity activity, long tweetId, long retweetId) {
+    public TweetAction(TweetActivity activity, Action action, long tweetId, long retweetId) {
         super();
         db = new AppDatabase(activity);
         twitter = Twitter.get(activity);
         weakRef = new WeakReference<>(activity);
 
+        this.action = action;
         this.retweetId = retweetId;
         this.tweetId = tweetId;
     }
 
 
     @Override
-    protected Action doInBackground(Action[] action) {
+    protected Void doInBackground(Void... v) {
         try {
-            switch (action[0]) {
+            switch (action) {
                 case LD_DB:
                     Tweet tweet = db.getStatus(tweetId);
                     if (tweet != null) {
@@ -134,7 +137,6 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     db.removeFavorite(tweet);
                     break;
             }
-            return action[0];
         } catch (TwitterException twException) {
             this.twException = twException;
             if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
@@ -146,20 +148,22 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
 
 
     @Override
-    protected void onProgressUpdate(Tweet[] tweets) {
-        if (weakRef.get() != null) {
-            weakRef.get().setTweet(tweets[0]);
+    protected void onProgressUpdate(Tweet... tweets) {
+        TweetActivity activity = weakRef.get();
+        if (activity != null && tweets.length > 0 && tweets[0] != null) {
+            activity.setTweet(tweets[0]);
         }
     }
 
 
     @Override
-    protected void onPostExecute(Action action) {
-        if (weakRef.get() != null) {
-            if (action != null) {
-                weakRef.get().onAction(action, tweetId);
+    protected void onPostExecute(Void v) {
+        TweetActivity activity = weakRef.get();
+        if (activity != null) {
+            if (twException == null) {
+                activity.onAction(action, tweetId);
             } else {
-                weakRef.get().onError(twException, tweetId);
+                activity.onError(twException, tweetId);
             }
         }
     }

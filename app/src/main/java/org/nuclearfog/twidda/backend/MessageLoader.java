@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MessageFragment
  */
-public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
+public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 
     /**
      * action to perform
@@ -47,25 +47,27 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
     private Action action;
 
     private String cursor;
-    private long removeMsgId = -1;
+    private long messageId;
 
     /**
-     * @param fragment Callback to update data
-     * @param action   what action should be performed
+     * @param fragment  Callback to update data
+     * @param action    what action should be performed
+     * @param cursor    list cursor provided by twitter
+     * @param messageId if {@link Action#DEL} is selected this ID is used to delete the message
      */
-    public MessageLoader(MessageFragment fragment, Action action, String cursor) {
+    public MessageLoader(MessageFragment fragment, Action action, String cursor, long messageId) {
         super();
         weakRef = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         twitter = Twitter.get(fragment.getContext());
         this.action = action;
         this.cursor = cursor;
+        this.messageId = messageId;
     }
 
 
     @Override
-    protected Directmessages doInBackground(Long[] param) {
-        long messageId = 0;
+    protected Directmessages doInBackground(Void... v) {
         try {
             switch (action) {
                 case DB:
@@ -86,17 +88,14 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
                     return db.getMessages();
 
                 case DEL:
-                    messageId = param[0];
                     twitter.deleteDirectmessage(messageId);
                     db.deleteMessage(messageId);
-                    removeMsgId = messageId;
                     break;
             }
         } catch (TwitterException twException) {
             this.twException = twException;
             if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
                 db.deleteMessage(messageId);
-                removeMsgId = messageId;
             }
         }
         return null;
@@ -110,8 +109,8 @@ public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
             if (messages != null) {
                 fragment.setData(messages);
             } else {
-                if (removeMsgId > 0) {
-                    fragment.removeItem(removeMsgId);
+                if (messageId > 0) {
+                    fragment.removeItem(messageId);
                 }
                 if (twException != null) {
                     fragment.onError(twException);

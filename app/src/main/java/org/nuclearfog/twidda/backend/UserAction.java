@@ -161,8 +161,9 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
 
     @Override
     protected void onProgressUpdate(User[] users) {
-        if (weakRef.get() != null) {
-            weakRef.get().setUser(users[0]);
+        UserProfile activity = weakRef.get();
+        if (activity != null) {
+            activity.setUser(users[0]);
         }
     }
 

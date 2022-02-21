@@ -179,8 +179,8 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
     public void onConfirm(DialogType type) {
         if (type == DialogType.MESSAGE_DELETE) {
             if (messageTask != null && messageTask.getStatus() != RUNNING) {
-                messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null);
-                messageTask.execute(deleteId);
+                messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null, deleteId);
+                messageTask.execute();
             }
         }
     }
@@ -221,7 +221,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
      * @param action mode for loading or removing messages
      */
     private void load(MessageLoader.Action action, String cursor) {
-        messageTask = new MessageLoader(this, action, cursor);
+        messageTask = new MessageLoader(this, action, cursor, -1L);
         messageTask.execute();
     }
 }

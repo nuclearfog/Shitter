@@ -24,8 +24,19 @@ import java.util.List;
 public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 
     public enum Mode {
+        /**
+         * refresh exclude list
+         */
         REFRESH,
+
+        /**
+         * mute specified user
+         */
         MUTE_USER,
+
+        /**
+         * block specified user
+         */
         BLOCK_USER
     }
 
@@ -51,15 +62,21 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String[] names) {
         try {
-            if (mode == Mode.REFRESH) {
-                List<Long> ids = twitter.getIdBlocklist();
-                excludeDatabase.setExcludeList(ids);
-            } else if (mode == Mode.MUTE_USER) {
-                User user = twitter.muteUser(names[0]);
-                appDatabase.storeUser(user);
-            } else if (mode == Mode.BLOCK_USER) {
-                User user = twitter.blockUser(names[0]);
-                appDatabase.storeUser(user);
+            switch (mode) {
+                case REFRESH:
+                    List<Long> ids = twitter.getIdBlocklist();
+                    excludeDatabase.setExcludeList(ids);
+                    break;
+
+                case MUTE_USER:
+                    User user = twitter.muteUser(names[0]);
+                    appDatabase.storeUser(user);
+                    break;
+
+                case BLOCK_USER:
+                    user = twitter.blockUser(names[0]);
+                    appDatabase.storeUser(user);
+                    break;
             }
         } catch (TwitterException err) {
             this.err = err;

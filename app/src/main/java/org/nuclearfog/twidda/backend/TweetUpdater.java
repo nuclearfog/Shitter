@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see TweetEditor
  */
-public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
+public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Void> {
 
     private Twitter twitter;
     private ErrorHandler.TwitterError twException;
@@ -36,7 +36,7 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(TweetUpdate... tweets) {
+    protected Void doInBackground(TweetUpdate... tweets) {
         TweetUpdate update = tweets[0];
         try {
             // upload media first
@@ -50,22 +50,21 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Boolean> {
             if (!isCancelled()) {
                 twitter.uploadTweet(update, mediaIds);
             }
-            return true;
         } catch (TwitterException twException) {
             this.twException = twException;
         } finally {
             // close inputstreams
             update.close();
         }
-        return false;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(Void v) {
         TweetEditor activity = weakRef.get();
         if (activity != null) {
-            if (success) {
+            if (twException == null) {
                 activity.onSuccess();
             } else {
                 activity.onError(twException);

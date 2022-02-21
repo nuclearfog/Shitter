@@ -217,8 +217,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
     public void onConfirm(DialogType type) {
         if (type == DialogType.LIST_REMOVE_USER) {
             if (listTask == null || listTask.getStatus() != RUNNING) {
-                listTask = new ListManager(id, DEL_USER, requireContext(), this);
-                listTask.execute(deleteUserName);
+                listTask = new ListManager(requireContext(), id, DEL_USER, deleteUserName, this);
+                listTask.execute();
             }
         }
     }
@@ -267,46 +267,52 @@ public class UserFragment extends ListFragment implements UserClickListener,
      * @param cursor cursor of the list or {@link UserLoader#NO_CURSOR} if there is none
      */
     private void load(long cursor) {
-        Type listType = Type.NONE;
         switch (mode) {
             case USER_FRAG_FOLLOWS:
-                listType = Type.FOLLOWS;
+                userTask = new UserLoader(this, Type.FOLLOWS, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_FRIENDS:
-                listType = UserLoader.Type.FRIENDS;
+                userTask = new UserLoader(this, Type.FRIENDS, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_RETWEET:
-                listType = Type.RETWEET;
+                userTask = new UserLoader(this, Type.RETWEET, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_FAVORIT:
-                listType = Type.FAVORIT;
+                userTask = new UserLoader(this, Type.FAVORIT, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_SEARCH:
-                listType = Type.SEARCH;
+                userTask = new UserLoader(this, Type.SEARCH, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_SUBSCR:
-                listType = Type.SUBSCRIBER;
+                userTask = new UserLoader(this, Type.SUBSCRIBER, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_LISTS:
-                listType = Type.LISTMEMBER;
+                userTask = new UserLoader(this, Type.LISTMEMBER, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_BLOCKS:
-                listType = Type.BLOCK;
+                userTask = new UserLoader(this, Type.BLOCK, id, search);
+                userTask.execute(cursor);
                 break;
 
             case USER_FRAG_MUTES:
-                listType = Type.MUTE;
+                userTask = new UserLoader(this, Type.MUTE, id, search);
+                userTask.execute(cursor);
                 break;
         }
-        userTask = new UserLoader(this, listType, id, search);
-        userTask.execute(cursor);
         if (cursor == NO_CURSOR) {
             setRefresh(true);
         }

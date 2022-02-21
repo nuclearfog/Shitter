@@ -15,40 +15,39 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MediaActivity
  */
-public class ImageSaver extends AsyncTask<Object, Void, Boolean> {
+public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<MediaActivity> weakRef;
+    private InputStream mediaStream;
+    private OutputStream fileStream;
 
-
-    public ImageSaver(MediaActivity activity) {
+    /**
+     * @param mediaStream inputstream of a cached image file
+     * @param fileStream destiny output stream of a file
+     */
+    public ImageSaver(MediaActivity activity, InputStream mediaStream, OutputStream fileStream) {
         super();
         weakRef = new WeakReference<>(activity);
+        this.mediaStream = mediaStream;
+        this.fileStream = fileStream;
     }
 
 
     @Override
-    protected Boolean doInBackground(Object... data) {
+    protected Boolean doInBackground(Void... v) {
         try {
-            if (data != null && data.length == 2) {
-                if (data[0] instanceof InputStream && data[1] instanceof OutputStream) {
-                    InputStream source = (InputStream) data[0];
-                    OutputStream destiny = (OutputStream) data[1];
-
-                    // copy file from cache to the destiny folder
-                    int length;
-                    byte[] buffer = new byte[4096];
-                    while ((length = source.read(buffer)) > 0) {
-                        destiny.write(buffer, 0, length);
-                    }
-                    source.close();
-                    destiny.close();
-                    return true;
-                }
+            int length;
+            byte[] buffer = new byte[4096];
+            while ((length = mediaStream.read(buffer)) > 0) {
+                fileStream.write(buffer, 0, length);
             }
+            mediaStream.close();
+            fileStream.close();
         } catch (IOException err) {
             err.printStackTrace();
+            return false;
         }
-        return false;
+        return true;
     }
 
 

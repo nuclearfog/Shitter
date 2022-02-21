@@ -16,4 +16,8 @@
 -keep,allowobfuscation, allowoptimization class org.conscrypt.OpenSSLProvider {*;}
 -adaptclassstrings org.conscrypt.OpenSSLProvider
 
+-dontwarn android.support.v8.renderscript.**
+-keep,allowobfuscation, allowoptimization class android.support.v8.renderscript.** {*;}
+-adaptclassstrings android.support.v8.renderscript.**
+
 -dontwarn javax.annotation.Nullable

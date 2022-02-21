@@ -45,7 +45,7 @@ import java.io.OutputStream;
 import java.util.Locale;
 
 /**
- * This activity provides all methods to gather media files or location.
+ * This activity provides methods to get media or location
  *
  * @author nuclearfog
  */
@@ -190,8 +190,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                     File imageFile = new File(imageFolder, imageName);
                     InputStream src = getContentResolver().openInputStream(selectedImage);
                     OutputStream dest = new FileOutputStream(imageFile);
-                    imageTask = new ImageSaver(this);
-                    imageTask.execute(src, dest);
+                    imageTask = new ImageSaver(this, src, dest);
+                    imageTask.execute();
                 } else {
                     // use scoped storage
                     String ext = selectedImage.getLastPathSegment();
@@ -204,10 +204,10 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                     values.put(MIME_TYPE, mime);
                     Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
                     if (imageUri != null) {
-                        InputStream source = getContentResolver().openInputStream(selectedImage);
+                        InputStream src = getContentResolver().openInputStream(selectedImage);
                         OutputStream dest = getContentResolver().openOutputStream(imageUri);
-                        imageTask = new ImageSaver(this);
-                        imageTask.execute(source, dest);
+                        imageTask = new ImageSaver(this, src, dest);
+                        imageTask.execute();
                     }
                 }
             }

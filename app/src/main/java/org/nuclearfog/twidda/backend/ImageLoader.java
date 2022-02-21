@@ -31,19 +31,17 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
     private ErrorHandler.TwitterError err;
     private Twitter twitter;
     private WeakReference<ImageViewer> weakRef;
-    private File cache;
+    private File cacheFolder;
 
     /**
-     * initialize image loader
-     *
-     * @param activity Activity context
+     * @param activity    Activity context
+     * @param cacheFolder cache folder where to store image files
      */
-    public ImageLoader(ImageViewer activity, File cache) {
+    public ImageLoader(ImageViewer activity, File cacheFolder) {
         super();
         weakRef = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
-        // create cache folder if not exists
-        this.cache = cache;
+        this.cacheFolder = cacheFolder;
     }
 
 
@@ -59,11 +57,11 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
                 // create file
                 String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
-                File file = new File(cache, StringTools.getRandomString() + ext);
-                file.createNewFile();
+                File imageFile = new File(cacheFolder, StringTools.getRandomString() + ext);
+                imageFile.createNewFile();
 
                 // copy image to cache folder
-                FileOutputStream output = new FileOutputStream(file);
+                FileOutputStream output = new FileOutputStream(imageFile);
                 int length;
                 byte[] buffer = new byte[4096];
                 while ((length = input.read(buffer)) > 0)
@@ -72,7 +70,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
                 output.close();
 
                 // create a new uri
-                publishProgress(Uri.fromFile(file));
+                publishProgress(Uri.fromFile(imageFile));
             }
             return true;
         } catch (TwitterException err) {
@@ -86,8 +84,9 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
     @Override
     protected void onProgressUpdate(Uri[] uris) {
-        if (weakRef.get() != null) {
-            weakRef.get().setImage(uris[0]);
+        ImageViewer activity = weakRef.get();
+        if (activity != null) {
+            activity.setImage(uris[0]);
         }
     }
 

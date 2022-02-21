@@ -231,16 +231,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (statusAsync == null) {
             // print Tweet object and get and update it
             if (tweet != null) {
-                statusAsync = new TweetAction(this, tweet.getId(), -1L);
-                statusAsync.execute(Action.LOAD);
+                statusAsync = new TweetAction(this, Action.LOAD, tweet.getId(), -1L);
                 setTweet(tweet);
             }
             // Load Tweet from database first if no tweet is defined
             else {
                 long tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
-                statusAsync = new TweetAction(this, tweetId, -1L);
-                statusAsync.execute(Action.LD_DB);
+                statusAsync = new TweetAction(this, Action.LD_DB, tweetId, -1L);
             }
+            statusAsync.execute();
         }
     }
 
@@ -415,22 +414,25 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onLongClick(View v) {
         if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
-            statusAsync = new TweetAction(this, tweet.getId(), tweet.getMyRetweetId());
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
-                if (tweet.isRetweeted())
-                    statusAsync.execute(Action.UNRETWEET);
-                else
-                    statusAsync.execute(Action.RETWEET);
+                if (tweet.isRetweeted()) {
+                    statusAsync = new TweetAction(this, Action.UNRETWEET, tweet.getId(), tweet.getMyRetweetId());
+                } else {
+                    statusAsync = new TweetAction(this, Action.RETWEET, tweet.getId(), tweet.getMyRetweetId());
+                }
+                statusAsync.execute();
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                 return true;
             }
             // favorite the tweet
             else if (v.getId() == R.id.tweet_favorite) {
-                if (tweet.isFavorited())
-                    statusAsync.execute(Action.UNFAVORITE);
-                else
-                    statusAsync.execute(Action.FAVORITE);
+                if (tweet.isFavorited()) {
+                    statusAsync = new TweetAction(this, Action.UNFAVORITE, tweet.getId(), tweet.getMyRetweetId());
+                } else {
+                    statusAsync = new TweetAction(this, Action.FAVORITE, tweet.getId(), tweet.getMyRetweetId());
+                }
+                statusAsync.execute();
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                 return true;
             }
@@ -446,8 +448,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 long tweetId = tweet.getId();
                 if (tweet.getEmbeddedTweet() != null)
                     tweetId = tweet.getEmbeddedTweet().getId();
-                statusAsync = new TweetAction(this, tweetId, tweet.getMyRetweetId());
-                statusAsync.execute(Action.DELETE);
+                statusAsync = new TweetAction(this, Action.DELETE, tweetId, tweet.getMyRetweetId());
+                statusAsync.execute();
             }
         }
     }

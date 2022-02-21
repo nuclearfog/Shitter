@@ -61,7 +61,6 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
          * load a list of muted users
          */
         MUTE,
-        NONE
     }
 
     @Nullable

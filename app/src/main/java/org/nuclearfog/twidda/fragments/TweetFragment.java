@@ -221,41 +221,44 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
      * @param index   index where tweet list should be added
      */
     private void load(long sinceId, long maxId, int index) {
-        ListType listType = ListType.NONE;
-
         switch (mode) {
             case TWEET_FRAG_HOME:
-                listType = ListType.TL_HOME;
+                tweetTask = new TweetLoader(this, ListType.TL_HOME, id, search, index);
+                tweetTask.execute(sinceId, maxId);
                 break;
 
             case TWEET_FRAG_MENT:
-                listType = ListType.TL_MENT;
+                tweetTask = new TweetLoader(this, ListType.TL_MENT, id, search, index);
+                tweetTask.execute(sinceId, maxId);
                 break;
 
             case TWEET_FRAG_TWEETS:
-                listType = ListType.USR_TWEETS;
+                tweetTask = new TweetLoader(this, ListType.USR_TWEETS, id, search, index);
+                tweetTask.execute(sinceId, maxId);
                 break;
 
             case TWEET_FRAG_FAVORS:
-                listType = ListType.USR_FAVORS;
+                tweetTask = new TweetLoader(this, ListType.USR_FAVORS, id, search, index);
+                tweetTask.execute(sinceId, maxId);
                 break;
 
             case TWEET_FRAG_ANSWER:
                 if (tweetTask != null || settings.replyLoadingEnabled())
-                    listType = ListType.REPLIES;
+                    tweetTask = new TweetLoader(this, ListType.REPLIES, id, search, index);
                 else
-                    listType = ListType.REPLIES_OFFLINE;
+                    tweetTask = new TweetLoader(this, ListType.REPLIES_OFFLINE, id, search, index);
+                tweetTask.execute(sinceId, maxId);
                 break;
 
             case TWEET_FRAG_SEARCH:
-                listType = ListType.TWEET_SEARCH;
+                tweetTask = new TweetLoader(this, ListType.TWEET_SEARCH, id, search, index);
+                tweetTask.execute(sinceId, maxId);
                 break;
 
             case TWEET_FRAG_LIST:
-                listType = ListType.USERLIST;
+                tweetTask = new TweetLoader(this, ListType.USERLIST, id, search, index);
+                tweetTask.execute(sinceId, maxId);
                 break;
         }
-        tweetTask = new TweetLoader(this, listType, id, search, index);
-        tweetTask.execute(sinceId, maxId);
     }
 }

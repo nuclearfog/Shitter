@@ -320,8 +320,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
         if (USERNAME_PATTERN.matcher(query).matches()) {
             if (userListManager == null || userListManager.getStatus() != RUNNING) {
                 Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-                userListManager = new ListManager(userList.getId(), ADD_USER, this, this);
-                userListManager.execute(query);
+                userListManager = new ListManager(this, userList.getId(), ADD_USER, query, this);
+                userListManager.execute();
                 return true;
             }
         } else {

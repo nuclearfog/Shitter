@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListManager extends AsyncTask<String, Void, String> {
+public class ListManager extends AsyncTask<Void, Void, Void> {
 
     /**
      * actions to be taken
@@ -38,36 +38,38 @@ public class ListManager extends AsyncTask<String, Void, String> {
     private WeakReference<ListManagerCallback> weakRef;
 
     private long listId;
+    private String username;
     private Action action;
 
     /**
+     * @param c        activity context
      * @param listId   ID of the user list
      * @param action   what action should be performed
-     * @param c        activity context
+     * @param username name of the user to add or remove
      * @param callback callback to update information
      */
-    public ListManager(long listId, Action action, Context c, ListManagerCallback callback) {
+    public ListManager(Context c, long listId, Action action, String username, ListManagerCallback callback) {
         super();
         weakRef = new WeakReference<>(callback);
         twitter = Twitter.get(c);
         this.listId = listId;
         this.action = action;
+        this.username = username;
     }
 
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected Void doInBackground(Void... v) {
         try {
             switch (action) {
                 case ADD_USER:
-                    twitter.addUserToUserlist(listId, strings[0]);
+                    twitter.addUserToUserlist(listId, username);
                     break;
 
                 case DEL_USER:
-                    twitter.removeUserFromUserlist(listId, strings[0]);
+                    twitter.removeUserFromUserlist(listId, username);
                     break;
             }
-            return strings[0];
         } catch (TwitterException err) {
             this.err = err;
         }
@@ -76,11 +78,11 @@ public class ListManager extends AsyncTask<String, Void, String> {
 
 
     @Override
-    protected void onPostExecute(String names) {
+    protected void onPostExecute(Void v) {
         ListManagerCallback callback = weakRef.get();
         if (callback != null) {
-            if (names != null) {
-                callback.onSuccess(names);
+            if (err == null) {
+                callback.onSuccess(username);
             } else {
                 callback.onFailure(err);
             }

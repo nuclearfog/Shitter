@@ -60,7 +60,6 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
          * tweets from an userlist
          */
         USERLIST,
-        NONE
     }
 
     @Nullable
