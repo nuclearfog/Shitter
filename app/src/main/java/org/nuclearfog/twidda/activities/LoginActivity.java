@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activities;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -143,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     @Override
     public void onClick(View v) {
-        // get login request link
+        // get login request token
         if (v.getId() == R.id.login_get_link) {
             if (requestToken == null) {
                 if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
@@ -156,20 +155,24 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                 connect();
             }
         }
-        // verify user
+        // verify login credentials
         else if (v.getId() == R.id.login_verifier) {
             // check if user clicked on PIN button
-            if (registerAsync == null || registerAsync.getStatus() != FINISHED) {
+            if (requestToken == null) {
                 Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
             }
             // check if PIN exists
-            else if (pinInput.getText() != null && pinInput.length() > 0) {
-                Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
-                String twitterPin = pinInput.getText().toString();
-                registerAsync = new Registration(this);
-                registerAsync.execute(requestToken, twitterPin);
-            } else {
+            else if (pinInput.length() == 0) {
                 Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
+            }
+            //
+            else if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
+                if (pinInput.getText() != null && pinInput.length() > 0) {
+                    Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
+                    String twitterPin = pinInput.getText().toString();
+                    registerAsync = new Registration(this);
+                    registerAsync.execute(requestToken, twitterPin);
+                }
             }
         }
     }
@@ -208,7 +211,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         try {
             startActivity(loginIntent);
         } catch (ActivityNotFoundException err) {
-            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_open_link, LENGTH_SHORT).show();
         }
     }
 }
