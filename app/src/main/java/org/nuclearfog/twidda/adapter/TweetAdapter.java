@@ -38,7 +38,7 @@ import java.util.List;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
- * Adapter class for tweet list
+ * custom {@link androidx.recyclerview.widget.RecyclerView} adapter to show tweets
  *
  * @author nuclearfog
  * @see org.nuclearfog.twidda.fragments.TweetFragment
@@ -219,9 +219,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
-                    Tweet tweet = tweets.get(position);
-                    if (position != NO_POSITION && tweet != null) {
-                        itemClickListener.onTweetClick(tweet);
+                    if (position != NO_POSITION) {
+                        Tweet tweet = tweets.get(position);
+                        if (tweet != null) {
+                            itemClickListener.onTweetClick(tweet);
+                        }
                     }
                 }
             });
@@ -236,12 +238,24 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                         long sinceId = 0;
                         long maxId = 0;
                         if (position == 0) {
-                            sinceId = tweets.get(position + 1).getId();
+                            Tweet tweet = tweets.get(position + 1);
+                            if (tweet != null) {
+                                sinceId = tweet.getId();
+                            }
                         } else if (position == tweets.size() - 1) {
-                            maxId = tweets.get(position - 1).getId() - 1;
+                            Tweet tweet = tweets.get(position - 1);
+                            if (tweet != null) {
+                                maxId = tweet.getId() - 1;
+                            }
                         } else {
-                            sinceId = tweets.get(position + 1).getId();
-                            maxId = tweets.get(position - 1).getId() - 1;
+                            Tweet tweet = tweets.get(position + 1);
+                            if (tweet != null) {
+                                sinceId = tweet.getId();
+                            }
+                            tweet = tweets.get(position - 1);
+                            if (tweet != null) {
+                                maxId = tweet.getId() - 1;
+                            }
                         }
                         boolean success = itemClickListener.onPlaceholderClick(sinceId, maxId, position);
                         if (success) {
@@ -258,56 +272,58 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
-        Tweet tweet = tweets.get(index);
-        if (holder instanceof TweetHolder && tweet != null) {
-            TweetHolder tweetItem = (TweetHolder) holder;
-            User user = tweet.getAuthor();
-            if (tweet.getEmbeddedTweet() != null) {
-                tweetItem.textViews[5].setText(user.getScreenname());
-                tweetItem.textViews[5].setVisibility(VISIBLE);
-                tweetItem.rtUser.setVisibility(VISIBLE);
-                tweet = tweet.getEmbeddedTweet();
-                user = tweet.getAuthor();
-            } else {
-                tweetItem.textViews[5].setVisibility(INVISIBLE);
-                tweetItem.rtUser.setVisibility(INVISIBLE);
-            }
-            Spanned text = Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor());
-            tweetItem.textViews[2].setText(text);
-            tweetItem.textViews[0].setText(user.getUsername());
-            tweetItem.textViews[1].setText(user.getScreenname());
-            tweetItem.textViews[3].setText(NUM_FORMAT.format(tweet.getRetweetCount()));
-            tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
-            tweetItem.textViews[6].setText(formatCreationTime(resources, tweet.getTimestamp()));
+        if (holder instanceof TweetHolder) {
+            Tweet tweet = tweets.get(index);
+            if (tweet != null) {
+                TweetHolder tweetItem = (TweetHolder) holder;
+                User user = tweet.getAuthor();
+                if (tweet.getEmbeddedTweet() != null) {
+                    tweetItem.textViews[5].setText(user.getScreenname());
+                    tweetItem.textViews[5].setVisibility(VISIBLE);
+                    tweetItem.rtUser.setVisibility(VISIBLE);
+                    tweet = tweet.getEmbeddedTweet();
+                    user = tweet.getAuthor();
+                } else {
+                    tweetItem.textViews[5].setVisibility(INVISIBLE);
+                    tweetItem.rtUser.setVisibility(INVISIBLE);
+                }
+                Spanned text = Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor());
+                tweetItem.textViews[2].setText(text);
+                tweetItem.textViews[0].setText(user.getUsername());
+                tweetItem.textViews[1].setText(user.getScreenname());
+                tweetItem.textViews[3].setText(NUM_FORMAT.format(tweet.getRetweetCount()));
+                tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
+                tweetItem.textViews[6].setText(formatCreationTime(resources, tweet.getTimestamp()));
 
-            if (tweet.isRetweeted()) {
-                tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);
-            } else {
-                tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            }
-            if (tweet.isFavorited()) {
-                tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor(), SRC_IN);
-            } else {
-                tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            }
-            if (user.isVerified()) {
-                tweetItem.verifiedIcon.setVisibility(VISIBLE);
-            } else {
-                tweetItem.verifiedIcon.setVisibility(GONE);
-            }
-            if (user.isProtected()) {
-                tweetItem.lockedIcon.setVisibility(VISIBLE);
-            } else {
-                tweetItem.lockedIcon.setVisibility(GONE);
-            }
-            if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
-                String profileImageUrl = user.getImageUrl();
-                if (!user.hasDefaultProfileImage())
-                    profileImageUrl += settings.getImageSuffix();
-                picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
-                        .error(R.drawable.no_image).into(tweetItem.profile);
-            } else {
-                tweetItem.profile.setImageResource(0);
+                if (tweet.isRetweeted()) {
+                    tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);
+                } else {
+                    tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+                }
+                if (tweet.isFavorited()) {
+                    tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor(), SRC_IN);
+                } else {
+                    tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+                }
+                if (user.isVerified()) {
+                    tweetItem.verifiedIcon.setVisibility(VISIBLE);
+                } else {
+                    tweetItem.verifiedIcon.setVisibility(GONE);
+                }
+                if (user.isProtected()) {
+                    tweetItem.lockedIcon.setVisibility(VISIBLE);
+                } else {
+                    tweetItem.lockedIcon.setVisibility(GONE);
+                }
+                if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
+                    String profileImageUrl = user.getImageUrl();
+                    if (!user.hasDefaultProfileImage())
+                        profileImageUrl += settings.getImageSuffix();
+                    picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
+                            .error(R.drawable.no_image).into(tweetItem.profile);
+                } else {
+                    tweetItem.profile.setImageResource(0);
+                }
             }
         } else if (holder instanceof Footer) {
             Footer footer = (Footer) holder;

@@ -23,9 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Adapter class for image previews
+ * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show image previews
  *
  * @author nuclearfog
+ * @see org.nuclearfog.twidda.activities.ImageViewer
  */
 public class ImageAdapter extends Adapter<ViewHolder> {
 

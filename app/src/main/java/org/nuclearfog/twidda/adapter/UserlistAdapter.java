@@ -24,7 +24,6 @@ import org.nuclearfog.twidda.adapter.holder.ListHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragments.UserListFragment;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -33,12 +32,12 @@ import java.text.NumberFormat;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
- * Adapter class for user lists
+ * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show userlists
  *
  * @author nuclearfog
- * @see UserListFragment
+ * @see org.nuclearfog.twidda.fragments.UserListFragment
  */
-public class ListAdapter extends Adapter<ViewHolder> {
+public class UserlistAdapter extends Adapter<ViewHolder> {
 
     /**
      * indicator if there is no footer
@@ -71,7 +70,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
     /**
      * @param listener item click listener
      */
-    public ListAdapter(Context context, ListClickListener listener) {
+    public UserlistAdapter(Context context, ListClickListener listener) {
         this.listener = listener;
         settings = GlobalSettings.getInstance(context);
         picasso = PicassoBuilder.get(context);
@@ -177,8 +176,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = itemHolder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        UserList list = data.get(position);
-                        listener.onListClick(list);
+                        UserList item = data.get(position);
+                        if (item != null) {
+                            listener.onListClick(item);
+                        }
                     }
                 }
             });

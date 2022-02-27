@@ -26,7 +26,7 @@ import org.nuclearfog.twidda.activities.SearchPage;
 import org.nuclearfog.twidda.activities.TweetActivity;
 import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
-import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
+import org.nuclearfog.twidda.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.backend.MessageLoader;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -40,7 +40,7 @@ import org.nuclearfog.twidda.model.DirectMessage;
  *
  * @author nuclearfog
  */
-public class MessageFragment extends ListFragment implements OnItemSelected, OnConfirmListener {
+public class MessageFragment extends ListFragment implements OnMessageClickListener, OnConfirmListener {
 
     private MessageLoader messageTask;
     private MessageAdapter adapter;

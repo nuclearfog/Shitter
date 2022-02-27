@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.model.User;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
- * Adapter class for direct messages list
+ * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show directmessages
  *
  * @author nuclearfog
  * @see org.nuclearfog.twidda.fragments.MessageFragment
@@ -54,7 +54,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
      */
     private static final int TYPE_FOOTER = 1;
 
-    private OnItemSelected itemClickListener;
+    private OnMessageClickListener itemClickListener;
     private GlobalSettings settings;
     private Resources resources;
     private Picasso picasso;
@@ -65,7 +65,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     /**
      * @param itemClickListener click listener
      */
-    public MessageAdapter(Context context, OnItemSelected itemClickListener) {
+    public MessageAdapter(Context context, OnMessageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         settings = GlobalSettings.getInstance(context);
         picasso = PicassoBuilder.get(context);
@@ -146,44 +146,56 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_MESSAGE) {
-            final MessageHolder vh = new MessageHolder(parent, settings);
-            vh.buttons[0].setOnClickListener(new View.OnClickListener() {
+            final MessageHolder holder = new MessageHolder(parent, settings);
+            holder.buttons[0].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = holder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        itemClickListener.onClick(data.get(position), OnItemSelected.Action.ANSWER);
+                        DirectMessage message = data.get(position);
+                        if (message != null) {
+                            itemClickListener.onClick(message, OnMessageClickListener.Action.ANSWER);
+                        }
                     }
                 }
             });
-            vh.buttons[1].setOnClickListener(new View.OnClickListener() {
+            holder.buttons[1].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = holder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        itemClickListener.onClick(data.get(position), OnItemSelected.Action.DELETE);
+                        DirectMessage message = data.get(position);
+                        if (message != null) {
+                            itemClickListener.onClick(message, OnMessageClickListener.Action.DELETE);
+                        }
                     }
                 }
             });
-            vh.profile_img.setOnClickListener(new View.OnClickListener() {
+            holder.profile_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = holder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        itemClickListener.onClick(data.get(position), OnItemSelected.Action.PROFILE);
+                        DirectMessage message = data.get(position);
+                        if (message != null) {
+                            itemClickListener.onClick(message, OnMessageClickListener.Action.PROFILE);
+                        }
                     }
                 }
             });
-            vh.mediaButton.setOnClickListener(new View.OnClickListener() {
+            holder.mediaButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = holder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        itemClickListener.onClick(data.get(position), OnItemSelected.Action.MEDIA);
+                        DirectMessage message = data.get(position);
+                        if (message != null) {
+                            itemClickListener.onClick(message, OnMessageClickListener.Action.MEDIA);
+                        }
                     }
                 }
             });
-            return vh;
+            return holder;
         } else {
             final Footer footer = new Footer(parent, settings, false);
             footer.loadBtn.setOnClickListener(new View.OnClickListener() {
@@ -261,9 +273,9 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * callback for the click listener
+     * listener for directmessage items
      */
-    public interface OnItemSelected extends OnTagClickListener {
+    public interface OnMessageClickListener extends OnTagClickListener {
 
         /**
          * Actions performed by clicking the buttons

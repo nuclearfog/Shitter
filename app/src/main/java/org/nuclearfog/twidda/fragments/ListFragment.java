@@ -79,7 +79,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      * @return true if swipe view is active
      */
     protected boolean isRefreshing() {
-        return isRefreshing;
+        return isRefreshing || reload.isRefreshing();
     }
 
     /**

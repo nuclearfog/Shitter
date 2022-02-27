@@ -30,7 +30,7 @@ import java.text.NumberFormat;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
- * Adapter class for user list
+ * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show users
  *
  * @author nuclearfog
  * @see org.nuclearfog.twidda.fragments.UserFragment
@@ -168,9 +168,11 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
-                    User user = data.get(position);
-                    if (position != NO_POSITION && user != null) {
-                        listener.onUserClick(user);
+                    if (position != NO_POSITION) {
+                        User user = data.get(position);
+                        if (user != null) {
+                            listener.onUserClick(user);
+                        }
                     }
                 }
             });
@@ -180,9 +182,11 @@ public class UserAdapter extends Adapter<ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         int position = vh.getLayoutPosition();
-                        User user = data.get(position);
-                        if (position != NO_POSITION && user != null) {
-                            listener.onDelete(user.getScreenname());
+                        if (position != NO_POSITION) {
+                            User user = data.get(position);
+                            if (user != null) {
+                                listener.onDelete(user.getScreenname());
+                            }
                         }
                     }
                 });
@@ -212,31 +216,33 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
-        User user = data.get(index);
-        if (holder instanceof UserHolder && user != null) {
-            UserHolder userholder = (UserHolder) holder;
-            userholder.textViews[0].setText(user.getUsername());
-            userholder.textViews[1].setText(user.getScreenname());
-            userholder.textViews[2].setText(NUM_FORMAT.format(user.getFollowing()));
-            userholder.textViews[3].setText(NUM_FORMAT.format(user.getFollower()));
-            if (user.isVerified()) {
-                userholder.verifyIcon.setVisibility(VISIBLE);
-            } else {
-                userholder.verifyIcon.setVisibility(GONE);
-            }
-            if (user.isProtected()) {
-                userholder.lockedIcon.setVisibility(VISIBLE);
-            } else {
-                userholder.lockedIcon.setVisibility(GONE);
-            }
-            if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
-                String profileImageUrl = user.getImageUrl();
-                if (!user.hasDefaultProfileImage())
-                    profileImageUrl += settings.getImageSuffix();
-                picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
-                        .error(R.drawable.no_image).into(userholder.profileImg);
-            } else {
-                userholder.profileImg.setImageResource(0);
+        if (holder instanceof UserHolder) {
+            User user = data.get(index);
+            if (user != null) {
+                UserHolder userholder = (UserHolder) holder;
+                userholder.textViews[0].setText(user.getUsername());
+                userholder.textViews[1].setText(user.getScreenname());
+                userholder.textViews[2].setText(NUM_FORMAT.format(user.getFollowing()));
+                userholder.textViews[3].setText(NUM_FORMAT.format(user.getFollower()));
+                if (user.isVerified()) {
+                    userholder.verifyIcon.setVisibility(VISIBLE);
+                } else {
+                    userholder.verifyIcon.setVisibility(GONE);
+                }
+                if (user.isProtected()) {
+                    userholder.lockedIcon.setVisibility(VISIBLE);
+                } else {
+                    userholder.lockedIcon.setVisibility(GONE);
+                }
+                if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
+                    String profileImageUrl = user.getImageUrl();
+                    if (!user.hasDefaultProfileImage())
+                        profileImageUrl += settings.getImageSuffix();
+                    picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
+                            .error(R.drawable.no_image).into(userholder.profileImg);
+                } else {
+                    userholder.profileImg.setImageResource(0);
+                }
             }
         } else if (holder instanceof Footer) {
             Footer footer = (Footer) holder;

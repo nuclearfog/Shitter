@@ -14,8 +14,8 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.activities.UserlistActivity;
-import org.nuclearfog.twidda.adapter.ListAdapter;
-import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
+import org.nuclearfog.twidda.adapter.UserlistAdapter;
+import org.nuclearfog.twidda.adapter.UserlistAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.ListLoader;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -61,7 +61,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     public static final int REQUEST_OPEN_LIST = 0x9541;
 
     private ListLoader listTask;
-    private ListAdapter adapter;
+    private UserlistAdapter adapter;
 
     private String ownerName = "";
     private long id = 0;
@@ -77,7 +77,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
             ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
             type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
         }
-        adapter = new ListAdapter(requireContext(), this);
+        adapter = new UserlistAdapter(requireContext(), this);
         setAdapter(adapter);
     }
 
