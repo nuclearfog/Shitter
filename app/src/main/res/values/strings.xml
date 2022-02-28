@@ -33,7 +33,7 @@
     <string name="info_dm_send">Directmessage sent</string>
     <string name="info_dm_removed">Directmessage removed</string>
     <string name="info_image_saved">Image saved</string>
-    <string name="info_clipboard">Link copied to clipboard</string>
+    <string name="info_tweet_link_copied">Link copied to clipboard</string>
     <string name="info_loading">loading..</string>
     <string name="info_profile_updated">Profile updated</string>
     <string name="info_followed">followed</string>
@@ -49,6 +49,8 @@
     <string name="info_permission_location">Location permission only needed to add location information to tweets.</string>
     <string name="info_permission_write">Write permission used to store images.</string>
     <string name="info_restart_app_on_change">restarting required to apply changes</string>
+    <string name="info_tweet_text_copied">Tweet text copied</string>
+    <string name="info_tweet_medialink_copied">Media link copied</string>
     <string name="info_error">Error</string>
 
     <!-- toast messages for error information -->
@@ -66,7 +68,6 @@
     <string name="error_no_media_app">No gallery app found!</string>
     <string name="error_connection_failed">Connection failed!</string>
     <string name="error_invalid_link">Invalid link!</string>
-    <string name="error_cant_copy_clipboard">can\'t copy link to clipboard!</string>
     <string name="error_gps">could not fetch location information!</string>
     <string name="error_token_not_set">Please open the twitter login page first to get the PIN!</string>
     <string name="error_dm_send">can\'t send directmessage to this user!</string>
@@ -110,14 +111,13 @@
     <string name="menu_block_user">block</string>
     <string name="menu_unmute_user">unmute</string>
     <string name="menu_follow_requested">follow requested</string>
-    <string name="menu_tweet_delete">delete Tweet</string>
+    <string name="menu_tweet_delete">delete</string>
     <string name="menu_tweet_open_browser">open in browser</string>
     <string name="menu_mute_user">mute</string>
     <string name="menu_edit_profile">edit profile</string>
     <string name="menu_edit_save">save</string>
     <string name="menu_add_user">add user to list</string>
     <string name="menu_edit_list">edit list</string>
-    <string name="menu_link_to_clipboard">copy Tweet link</string>
     <string name="menu_list_follow">follow list</string>
     <string name="menu_unfollow_list">unfollow list</string>
     <string name="menu_user_unfollow">unfollow</string>
@@ -130,6 +130,9 @@
     <string name="menu_refresh_exclude">refresh exclude list</string>
     <string name="menu_select_account">select account</string>
     <string name="menu_add_account">add account</string>
+    <string name="menu_tweet_copy_text">Text</string>
+    <string name="menu_media_link">Media link</string>
+    <string name="menu_tweet_copy_link">Tweet link</string>
 
     <!--dialog strings-->
     <string name="dialog_link_image_preview">Link preview image</string>

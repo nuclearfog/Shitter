@@ -20,7 +20,7 @@
     <string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrung nach:"</string>
     <string name="info_tweet_sent">Tweet gesendet</string>
     <string name="info_error">Fehler!</string>
-    <string name="menu_tweet_delete">Tweet löschen</string>
+    <string name="menu_tweet_delete">löschen</string>
     <string name="menu_tweet_open_browser">Im Browser öffnen</string>
     <string name="error_not_found">nicht gefunden!</string>
     <string name="menu_user_unfollow">entfolgen</string>
@@ -55,8 +55,7 @@
     <string name="send_tweet">Tweet senden</string>
     <string name="tweet_add_image">Bild hinzufügen</string>
     <string name="image_preview">Bildvorschau</string>
-    <string name="menu_link_to_clipboard">Tweet Link kopieren</string>
-    <string name="info_clipboard">Link in Zwischenablage kopiert!</string>
+    <string name="info_tweet_link_copied">Link in Zwischenablage kopiert!</string>
     <string name="profile_link">Link</string>
     <string name="close_dm">Direktnachricht schließen</string>
     <string name="error_user_not_found">Nutzer nicht gefunden!</string>
@@ -94,7 +93,6 @@
     <string name="proxy_password">Passwort</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
     <string name="confirm_mute">Nutzer stummschalten?</string>
-    <string name="error_cant_copy_clipboard">Link konnte nicht kopiert werden!</string>
     <string name="info_gps_attached">GPS Position hinzugefügt</string>
     <string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
     <string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
@@ -227,4 +225,9 @@
     <string name="error_adding_media">Fehler, Mediendatei konnte nicht hinzugefügt werden!</string>
     <string name="confirm_open_link">im Browser öffnen</string>
     <string name="error_media_init">Fehler beim Vorbreiten der Mediendateien!</string>
+    <string name="menu_tweet_copy_text">Text</string>
+    <string name="menu_tweet_copy_link">Tweetlink</string>
+    <string name="menu_media_link">Medienlink</string>
+    <string name="info_tweet_text_copied">Tweet Text kopiert</string>
+    <string name="info_tweet_medialink_copied">Medienlink kopiert</string>
 </resources>

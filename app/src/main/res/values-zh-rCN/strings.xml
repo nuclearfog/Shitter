@@ -113,7 +113,7 @@
     <string name="info_user_unmuted">已取消隐藏</string>
     <string name="info_dm_send">消息已发送</string>
     <string name="info_image_saved">图片已保存</string>
-    <string name="info_clipboard">链接已保存到剪贴板</string>
+    <string name="info_tweet_link_copied">链接已保存到剪贴板</string>
     <string name="info_loading">加载中……</string>
     <string name="info_profile_updated">个人资料已更新</string>
     <string name="info_followed">已关注</string>
@@ -140,7 +140,6 @@
     <string name="error_no_media_app">未发现相册应用！</string>
     <string name="error_connection_failed">连接失败！</string>
     <string name="error_invalid_link">无效的链接！</string>
-    <string name="error_cant_copy_clipboard">无法保存至剪贴板！</string>
     <string name="error_gps">无法取得 GPS 数据！</string>
     <string name="error_token_not_set">请先获取链接！</string>
     <string name="error_dm_send">无法给该用户发送消息！</string>
@@ -184,7 +183,6 @@
     <string name="menu_edit_save">保存</string>
     <string name="menu_add_user">添加用户</string>
     <string name="menu_edit_list">编辑列表</string>
-    <string name="menu_link_to_clipboard">复制推文链接</string>
     <string name="menu_list_follow">关注该列表</string>
     <string name="menu_unfollow_list">取消关注该列表</string>
     <string name="menu_user_unfollow">取消关注</string>

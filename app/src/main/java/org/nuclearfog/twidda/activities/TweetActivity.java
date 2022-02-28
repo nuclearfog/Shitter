@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -115,6 +116,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      * regex pattern of a tweet URL
      */
     public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
+
+    private static final int MENU_GROUP_COPY = 0x157426;
 
     private GlobalSettings settings;
     private TweetAction statusAsync;
@@ -272,54 +275,93 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        if (tweet != null) {
-            Tweet currentTweet = tweet;
-            if (tweet.getEmbeddedTweet() != null)
-                currentTweet = tweet.getEmbeddedTweet();
-            // enable delete option only if current user owns tweets
-            m.findItem(R.id.delete_tweet).setVisible(currentTweet.getAuthor().isCurrentUser());
+        if (tweet == null)
+            return super.onPrepareOptionsMenu(m);
+
+        MenuItem deleteItem = m.findItem(R.id.menu_tweet_delete);
+        MenuItem copyItem = m.findItem(R.id.menu_tweet_copy);
+        SubMenu copyMenu = copyItem.getSubMenu();
+
+        Tweet currentTweet = tweet;
+        if (tweet.getEmbeddedTweet() != null) {
+            currentTweet = tweet.getEmbeddedTweet();
         }
-        return super.onPrepareOptionsMenu(m);
+
+        // enable delete option only if current user owns tweets
+        deleteItem.setVisible(currentTweet.getAuthor().isCurrentUser());
+
+        // add media link items
+        // check if menu doesn't contain media links already
+        if (copyMenu.size() == 2) {
+            int mediaCount = tweet.getMediaUris().length;
+            for (int i = 0; i < mediaCount; i++) {
+                // create sub menu entry and use array index as item ID
+                String text = getString(R.string.menu_media_link) + ' ' + (i + 1);
+                copyMenu.add(MENU_GROUP_COPY, i, Menu.NONE, text);
+            }
+        }
+        return true;
     }
 
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (tweet != null) {
-            Tweet clickedTweet = tweet;
-            if (tweet.getEmbeddedTweet() != null)
-                clickedTweet = tweet.getEmbeddedTweet();
-            User author = clickedTweet.getAuthor();
-            // Delete tweet option
-            if (item.getItemId() == R.id.delete_tweet) {
-                deleteDialog.show(DialogType.TWEET_DELETE);
+        if (tweet == null)
+            return super.onOptionsItemSelected(item);
+
+        Tweet clickedTweet = tweet;
+        if (tweet.getEmbeddedTweet() != null)
+            clickedTweet = tweet.getEmbeddedTweet();
+        User author = clickedTweet.getAuthor();
+        // Delete tweet option
+        if (item.getItemId() == R.id.menu_tweet_delete) {
+            deleteDialog.show(DialogType.TWEET_DELETE);
+        }
+        // get tweet link
+        else if (item.getItemId() == R.id.menu_tweet_browser) {
+            String username = author.getScreenname().substring(1);
+            String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException err) {
+                Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
             }
-            // get tweet link
-            else if (item.getItemId() == R.id.tweet_link) {
-                String username = author.getScreenname().substring(1);
-                String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException err) {
-                    Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-                }
+        }
+        // copy tweet link to clipboard
+        else if (item.getItemId() == R.id.menu_tweet_copy_text) {
+            ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            if (clip != null) {
+                ClipData linkClip = ClipData.newPlainText("tweet text", tweet.getText());
+                clip.setPrimaryClip(linkClip);
+                Toast.makeText(this, R.string.info_tweet_text_copied, LENGTH_SHORT).show();
             }
-            // copy tweet link to clipboard
-            else if (item.getItemId() == R.id.link_copy) {
-                String username = author.getScreenname().substring(1);
-                String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
+        }
+        // copy tweet link to clipboard
+        else if (item.getItemId() == R.id.menu_tweet_copy_tweetlink) {
+            String username = author.getScreenname().substring(1);
+            String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
+            ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            if (clip != null) {
+                ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
+                clip.setPrimaryClip(linkClip);
+                Toast.makeText(this, R.string.info_tweet_link_copied, LENGTH_SHORT).show();
+            }
+        }
+        // copy media links
+        else if (item.getGroupId() == MENU_GROUP_COPY) {
+            int index = item.getItemId();
+            Uri[] mediaLinks = tweet.getMediaUris();
+            if (index >= 0 && index < mediaLinks.length) {
                 ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 if (clip != null) {
-                    ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
+                    ClipData linkClip = ClipData.newPlainText("media link", mediaLinks[index].toString());
                     clip.setPrimaryClip(linkClip);
-                    Toast.makeText(this, R.string.info_clipboard, LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, R.string.error_cant_copy_clipboard, LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.info_tweet_medialink_copied, LENGTH_SHORT).show();
                 }
             }
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
 
