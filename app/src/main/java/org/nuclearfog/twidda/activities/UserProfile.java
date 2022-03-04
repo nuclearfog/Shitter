@@ -16,7 +16,7 @@ import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FOLLOWER;
 import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FRIENDS;
-import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_ID;
+import static org.nuclearfog.twidda.activities.Userlists.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_BLOCK;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_FOLLOW;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
@@ -406,7 +406,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             }
             // open users list
             else if (item.getItemId() == R.id.profile_lists) {
-                Intent listPage = new Intent(this, UserLists.class);
+                Intent listPage = new Intent(this, Userlists.class);
                 listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
                 startActivity(listPage);
             }

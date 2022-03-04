@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class Userlists extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     /**
      * Key for the ID the list owner

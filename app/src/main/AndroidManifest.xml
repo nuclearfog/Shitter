@@ -120,7 +120,7 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".activities.UserLists"
+            android:name=".activities.Userlists"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

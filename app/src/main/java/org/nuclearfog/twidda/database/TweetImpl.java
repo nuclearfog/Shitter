@@ -48,7 +48,7 @@ class TweetImpl implements Tweet {
     private String text;
     private String source;
     private String userMentions;
-    private String[] mediaLinks;
+    private String[] mediaLinks = {};
     private boolean retweeted;
     private boolean favorited;
     private boolean sensitive;
@@ -74,8 +74,9 @@ class TweetImpl implements Tweet {
         favorited = (tweetRegister & FAV_MASK) != 0;
         retweeted = (tweetRegister & RTW_MASK) != 0;
         sensitive = (tweetRegister & MEDIA_SENS_MASK) != 0;
-        mediaLinks = SEPARATOR.split(linkStr);
-        userMentions = StringTools.getUserMentions(text, "");
+        if (!linkStr.isEmpty())
+            mediaLinks = SEPARATOR.split(linkStr);
+        userMentions = StringTools.getUserMentions(text, author.getScreenname());
         // get media type
         if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
             mediaType = MEDIA_GIF;

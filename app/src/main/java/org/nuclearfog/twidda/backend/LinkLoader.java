@@ -4,7 +4,7 @@ import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_NAME;
+import static org.nuclearfog.twidda.activities.Userlists.KEY_USERLIST_OWNER_NAME;
 import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
 import static org.nuclearfog.twidda.activities.UserlistActivity.KEY_LIST_ID;
@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.activities.MainActivity;
 import org.nuclearfog.twidda.activities.SearchPage;
 import org.nuclearfog.twidda.activities.TweetActivity;
 import org.nuclearfog.twidda.activities.TweetEditor;
-import org.nuclearfog.twidda.activities.UserLists;
+import org.nuclearfog.twidda.activities.Userlists;
 import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.activities.UserlistActivity;
 import org.nuclearfog.twidda.backend.api.Twitter;
@@ -147,7 +147,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
                     // show userlists
                     else if (USERLISTS_PATH.matcher(path).matches()) {
                         data.putString(KEY_USERLIST_OWNER_NAME, username);
-                        dataHolder = new DataHolder(data, UserLists.class);
+                        dataHolder = new DataHolder(data, Userlists.class);
                     }
                 }
             }
