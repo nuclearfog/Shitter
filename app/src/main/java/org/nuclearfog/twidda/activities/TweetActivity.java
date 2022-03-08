@@ -293,7 +293,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         // add media link items
         // check if menu doesn't contain media links already
         if (copyMenu.size() == 2) {
-            int mediaCount = tweet.getMediaUris().length;
+            int mediaCount = currentTweet.getMediaUris().length;
             for (int i = 0; i < mediaCount; i++) {
                 // create sub menu entry and use array index as item ID
                 String text = getString(R.string.menu_media_link) + ' ' + (i + 1);
