@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -160,6 +161,11 @@ public class Twitter implements GlobalSettings.SettingsListener {
                 factory.init((KeyStore) null);
                 X509TrustManager manager = (X509TrustManager) factory.getTrustManagers()[0];
                 builder.sslSocketFactory(new TLSSocketFactory(), manager);
+
+                // quick fix because of handshake error on pre lollipop devices
+                List<ConnectionSpec> supportTls = new ArrayList<>();
+                supportTls.add(new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).allEnabledTlsVersions().allEnabledCipherSuites().build());
+                builder.connectionSpecs(supportTls);
             } catch (Exception e) {
                 // ignore, try with default setting
             }
