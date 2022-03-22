@@ -14,7 +14,7 @@ import java.net.Authenticator;
 import java.net.ProxySelector;
 
 /**
- * custom application class
+ * custom application class to initialize support for old android versions and proxy settings
  *
  * @author nuclearfog
  */
@@ -24,12 +24,16 @@ public class CompatApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // enable support for vector drawables
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         }
-        // enable TLS 1.2 support
+
+        // check and enable TLS 1.2 support
         TLSSocketFactory.setSupportTLS();
-        // setup proxy settings
+
+        // setup global proxy
+        // Twitter API and picasso use their own proxy implementation
         GlobalSettings settings = GlobalSettings.getInstance(this);
         GlobalProxySelector proxyConnection = new GlobalProxySelector(settings);
         ProxyAuthenticator proxyLogin = new ProxyAuthenticator(settings);
