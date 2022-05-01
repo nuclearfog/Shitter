@@ -19,6 +19,10 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.database.impl.DirectMessageImpl;
+import org.nuclearfog.twidda.database.impl.TrendImpl;
+import org.nuclearfog.twidda.database.impl.TweetImpl;
+import org.nuclearfog.twidda.database.impl.UserImpl;
 import org.nuclearfog.twidda.model.DirectMessage;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.Tweet;
@@ -37,23 +41,23 @@ import java.util.TreeMap;
 public class AppDatabase {
 
     // Tweet status bits
-    static final int FAV_MASK = 1;          //  tweet is favored by user
-    static final int RTW_MASK = 1 << 1;     //  tweet is retweeted by user
-    static final int HOM_MASK = 1 << 2;     //  tweet is from home timeline
-    static final int MEN_MASK = 1 << 3;     //  tweet is from mention timeline
-    static final int UTW_MASK = 1 << 4;     //  tweet is from an users timeline
-    static final int RPL_MASK = 1 << 5;     //  tweet is from a reply timeline
-    static final int MEDIA_IMAGE_MASK = 1 << 6; // tweet contains images
-    static final int MEDIA_VIDEO_MASK = 2 << 6; // tweet contains a video
-    static final int MEDIA_ANGIF_MASK = 3 << 6; // tweet contains an animation
-    static final int MEDIA_SENS_MASK = 1 << 8;  // tweet contains sensitive media
+    public static final int FAV_MASK = 1;          //  tweet is favored by user
+    public static final int RTW_MASK = 1 << 1;     //  tweet is retweeted by user
+    public static final int HOM_MASK = 1 << 2;     //  tweet is from home timeline
+    public static final int MEN_MASK = 1 << 3;     //  tweet is from mention timeline
+    public static final int UTW_MASK = 1 << 4;     //  tweet is from an users timeline
+    public static final int RPL_MASK = 1 << 5;     //  tweet is from a reply timeline
+    public static final int MEDIA_IMAGE_MASK = 1 << 6; // tweet contains images
+    public static final int MEDIA_VIDEO_MASK = 2 << 6; // tweet contains a video
+    public static final int MEDIA_ANGIF_MASK = 3 << 6; // tweet contains an animation
+    public static final int MEDIA_SENS_MASK = 1 << 8;  // tweet contains sensitive media
 
     // user status bits
-    static final int VER_MASK = 1;          //  user is verified
-    static final int LCK_MASK = 1 << 1;     //  user is private
-    static final int FRQ_MASK = 1 << 2;     //  a follow request is pending
-    static final int EXCL_USR = 1 << 3;     //  user excluded from mention timeline
-    static final int DEF_IMG = 1 << 4;      //  user has a default profile image
+    public static final int VER_MASK = 1;          //  user is verified
+    public static final int LCK_MASK = 1 << 1;     //  user is private
+    public static final int FRQ_MASK = 1 << 2;     //  a follow request is pending
+    public static final int EXCL_USR = 1 << 3;     //  user excluded from mention timeline
+    public static final int DEF_IMG = 1 << 4;      //  user has a default profile image
 
     /**
      * query to create tweet table with user and register columns

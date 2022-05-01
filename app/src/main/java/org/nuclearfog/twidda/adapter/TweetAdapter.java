@@ -41,7 +41,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter to show tweets
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragments.TweetFragment
+ * @see org.nuclearfog.twidda.ui.fragments.TweetFragment
  */
 public class TweetAdapter extends Adapter<ViewHolder> {
 

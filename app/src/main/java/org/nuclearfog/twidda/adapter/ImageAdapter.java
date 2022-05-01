@@ -26,7 +26,7 @@ import java.util.List;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show image previews
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.activities.ImageViewer
+ * @see org.nuclearfog.twidda.ui.activities.ImageViewer
  */
 public class ImageAdapter extends Adapter<ViewHolder> {
 

@@ -31,7 +31,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter to show a list of accounts
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragments.AccountFragment
+ * @see org.nuclearfog.twidda.ui.fragments.AccountFragment
  */
 public class AccountAdapter extends Adapter<LoginHolder> {
 

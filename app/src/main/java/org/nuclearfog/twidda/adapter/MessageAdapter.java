@@ -35,7 +35,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show directmessages
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragments.MessageFragment
+ * @see org.nuclearfog.twidda.ui.fragments.MessageFragment
  */
 public class MessageAdapter extends Adapter<ViewHolder> {
 

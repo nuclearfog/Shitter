@@ -15,6 +15,7 @@ import android.graphics.Typeface;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.database.impl.LocationImpl;
 import org.nuclearfog.twidda.model.Location;
 
 import java.util.LinkedList;

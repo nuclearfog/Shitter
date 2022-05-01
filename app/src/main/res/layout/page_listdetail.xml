@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.UserlistActivity">
+    tools:context=".ui.activities.UserlistActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/listdetail_toolbar"

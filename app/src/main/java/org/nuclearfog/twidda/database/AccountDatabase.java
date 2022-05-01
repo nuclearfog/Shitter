@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
+import org.nuclearfog.twidda.database.impl.AccountImpl;
 import org.nuclearfog.twidda.model.Account;
 
 import java.util.ArrayList;

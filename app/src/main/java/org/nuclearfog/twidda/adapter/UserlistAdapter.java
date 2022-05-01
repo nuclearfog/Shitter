@@ -35,7 +35,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show userlists
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragments.UserListFragment
+ * @see org.nuclearfog.twidda.ui.fragments.UserListFragment
  */
 public class UserlistAdapter extends Adapter<ViewHolder> {
 

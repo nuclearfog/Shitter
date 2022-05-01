@@ -27,7 +27,7 @@
         tools:ignore="UnusedAttribute">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:exported="true">
@@ -57,93 +57,93 @@
         </activity>
 
         <activity
-            android:name=".activities.SearchPage"
+            android:name=".ui.activities.SearchPage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.UserProfile"
+            android:name=".ui.activities.UserProfile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.TweetEditor"
+            android:name=".ui.activities.TweetEditor"
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 
         <activity
-            android:name=".activities.MessageEditor"
+            android:name=".ui.activities.MessageEditor"
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 
         <activity
-            android:name=".activities.AppSettings"
+            android:name=".ui.activities.AppSettings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.TweetActivity"
+            android:name=".ui.activities.TweetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.UserDetail"
+            android:name=".ui.activities.UserDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".ui.activities.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.MediaActivity"
+            android:name=".ui.activities.MediaActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.DirectMessage"
+            android:name=".ui.activities.DirectMessage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.VideoViewer"
+            android:name=".ui.activities.VideoViewer"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 
         <activity
-            android:name=".activities.ImageViewer"
+            android:name=".ui.activities.ImageViewer"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 
         <activity
-            android:name=".activities.ProfileEditor"
+            android:name=".ui.activities.ProfileEditor"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".activities.Userlists"
+            android:name=".ui.activities.Userlists"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.UserlistActivity"
+            android:name=".ui.activities.UserlistActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.UserlistEditor"
+            android:name=".ui.activities.UserlistEditor"
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 
         <activity
-            android:name=".activities.AccountActivity"
+            android:name=".ui.activities.AccountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activities.UserExclude"
+            android:name=".ui.activities.UserExclude"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

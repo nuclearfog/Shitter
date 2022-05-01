@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/dialog_linkpreview_padding"
-    tools:context=".dialog.LinkDialog">
+    tools:context=".ui.dialogs.LinkDialog">
 
     <ImageView
         android:id="@+id/link_preview_image"

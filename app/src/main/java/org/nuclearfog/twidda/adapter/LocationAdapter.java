@@ -20,7 +20,7 @@ import java.util.List;
  * Adapter class for Location selection spinner
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.activities.AppSettings
+ * @see org.nuclearfog.twidda.ui.activities.AppSettings
  */
 public class LocationAdapter extends BaseAdapter {
 

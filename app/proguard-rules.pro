@@ -3,8 +3,6 @@
 -classobfuscationdictionary dict/class-dictionary.txt
 -packageobfuscationdictionary dict/package-dictionary.txt
 
--optimizationpasses 5
-
 # keep these libraries but allow obfuscating
 -dontwarn org.conscrypt.Conscrypt
 #noinspection ShrinkerUnresolvedReference

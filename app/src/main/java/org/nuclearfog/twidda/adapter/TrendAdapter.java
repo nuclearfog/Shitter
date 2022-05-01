@@ -27,7 +27,7 @@ import java.util.List;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show twitter trends
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragments.TrendFragment
+ * @see org.nuclearfog.twidda.ui.fragments.TrendFragment
  */
 public class TrendAdapter extends Adapter<ViewHolder> {
 

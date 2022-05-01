@@ -17,7 +17,7 @@ import java.util.Locale;
  * list adapter to show font scales
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.activities.AppSettings
+ * @see org.nuclearfog.twidda.ui.activities.AppSettings
  */
 public class ScaleAdapter extends BaseAdapter {
 

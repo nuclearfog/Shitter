@@ -33,7 +33,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show users
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragments.UserFragment
+ * @see org.nuclearfog.twidda.ui.fragments.UserFragment
  */
 public class UserAdapter extends Adapter<ViewHolder> {
 

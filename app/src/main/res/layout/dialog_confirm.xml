@@ -5,7 +5,7 @@
     android:id="@+id/confirm_rootview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".dialog.ConfirmDialog">
+    tools:context=".ui.dialogs.ConfirmDialog">
 
     <TextView
         android:id="@+id/confirm_title"

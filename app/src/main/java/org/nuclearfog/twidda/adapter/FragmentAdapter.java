@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.adapter;
 
-import static org.nuclearfog.twidda.fragments.TweetFragment.*;
-import static org.nuclearfog.twidda.fragments.UserFragment.*;
-import static org.nuclearfog.twidda.fragments.UserListFragment.*;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.*;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.*;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.*;
 
 import android.os.Bundle;
 
@@ -11,11 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import org.nuclearfog.twidda.fragments.ListFragment;
-import org.nuclearfog.twidda.fragments.TrendFragment;
-import org.nuclearfog.twidda.fragments.TweetFragment;
-import org.nuclearfog.twidda.fragments.UserFragment;
-import org.nuclearfog.twidda.fragments.UserListFragment;
+import org.nuclearfog.twidda.ui.fragments.ListFragment;
+import org.nuclearfog.twidda.ui.fragments.TrendFragment;
+import org.nuclearfog.twidda.ui.fragments.TweetFragment;
+import org.nuclearfog.twidda.ui.fragments.UserFragment;
+import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
 /**
  * custom adapter used for {@link androidx.viewpager.widget.ViewPager}
