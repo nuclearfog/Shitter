@@ -2,8 +2,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-
-import com.larswerkman.licenseview.LicenseView;
+import android.webkit.WebView;
 
 import org.nuclearfog.twidda.R;
 
@@ -14,19 +13,13 @@ import org.nuclearfog.twidda.R;
  */
 public class LicenseDialog extends Dialog {
 
-    /**
-     *
-     */
+
     public LicenseDialog(Context context) {
         super(context, R.style.LicenseDialog);
-        setContentView(R.layout.dialog_licenses);
-        LicenseView licenseView = findViewById(R.id.license_view);
-        try {
-            licenseView.setLicenses(R.xml.licenses);
-        } catch (Exception err) {
-            err.printStackTrace();
-            dismiss();
-        }
+        WebView htmlViewer = new WebView(context);
+        setContentView(htmlViewer);
+
+        htmlViewer.loadUrl("file:///android_asset/licenses.html");
     }
 
 
