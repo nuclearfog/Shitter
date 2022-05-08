@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.proxy.UserProxy;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.backend.utils.Tokens;
-import org.nuclearfog.twidda.database.ExcludeDatabase;
+import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Relation;
@@ -143,7 +143,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 
     private OkHttpClient client;
     private GlobalSettings settings;
-    private ExcludeDatabase filterList;
+    private FilterDatabase filterDatabase;
     private Tokens tokens;
 
     /**
@@ -154,7 +154,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private Twitter(Context context) {
         settings = GlobalSettings.getInstance(context);
         tokens = Tokens.getInstance(context);
-        filterList = new ExcludeDatabase(context);
+        filterDatabase = new FilterDatabase(context);
         settings.addSettingsChangeListener(this);
         // init okhttp
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -419,7 +419,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>(4);
         params.add("user_id=" + userId);
         User user = getUser1(USER_BLOCK, params);
-        filterList.addUser(userId);
+        filterDatabase.addUser(userId);
         return user;
     }
 
@@ -435,7 +435,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             screen_name = screen_name.substring(1);
         params.add("screen_name=" + StringTools.encode(screen_name));
         User user = getUser1(USER_BLOCK, params);
-        filterList.addUser(user.getId());
+        filterDatabase.addUser(user.getId());
         return user;
     }
 
@@ -1580,7 +1580,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * filter tweets from blocked users
      */
     private void filterTweets(List<Tweet> tweets) {
-        Set<Long> exclude = filterList.getExcludeSet();
+        Set<Long> exclude = filterDatabase.getExcludeSet();
         for (int pos = tweets.size() - 1; pos >= 0; pos--) {
             if (exclude.contains(tweets.get(pos).getAuthor().getId())) {
                 tweets.remove(pos);
@@ -1592,7 +1592,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * remove blocked users from list
      */
     private void filterUsers(List<User> users) {
-        Set<Long> exclude = filterList.getExcludeSet();
+        Set<Long> exclude = filterDatabase.getExcludeSet();
         for (int pos = users.size() - 1; pos >= 0; pos--) {
             if (exclude.contains(users.get(pos).getId())) {
                 users.remove(pos);

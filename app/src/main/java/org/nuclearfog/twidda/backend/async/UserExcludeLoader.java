@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.ui.activities.UserExclude;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.ExcludeDatabase;
+import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.User;
 
 import java.lang.ref.WeakReference;
@@ -43,7 +43,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     @Nullable
     private TwitterException err;
     private WeakReference<UserExclude> weakRef;
-    private ExcludeDatabase excludeDatabase;
+    private FilterDatabase filterDatabase;
     private AppDatabase appDatabase;
     private Twitter twitter;
     private Mode mode;
@@ -53,7 +53,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
         super();
         twitter = Twitter.get(activity);
         appDatabase = new AppDatabase(activity);
-        excludeDatabase = new ExcludeDatabase(activity);
+        filterDatabase = new FilterDatabase(activity);
         weakRef = new WeakReference<>(activity);
         this.mode = mode;
     }
@@ -65,7 +65,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
             switch (mode) {
                 case REFRESH:
                     List<Long> ids = twitter.getIdBlocklist();
-                    excludeDatabase.setExcludeList(ids);
+                    filterDatabase.setExcludeList(ids);
                     break;
 
                 case MUTE_USER:

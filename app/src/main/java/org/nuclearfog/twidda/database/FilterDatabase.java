@@ -12,11 +12,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Database class of the user exclude list
+ * This database class provides methods to load and store IDs of unwanted users.
+ * Blocked users and their tweets will be excluded from Twitter search if enabled.
  *
  * @author nuclearfog
  */
-public class ExcludeDatabase {
+public class FilterDatabase {
 
     /**
      * selection to get the exclude list of the current user
@@ -40,7 +41,7 @@ public class ExcludeDatabase {
     /**
      * @param context current context
      */
-    public ExcludeDatabase(Context context) {
+    public FilterDatabase(Context context) {
         dataHelper = DatabaseAdapter.getInstance(context);
         settings = GlobalSettings.getInstance(context);
     }

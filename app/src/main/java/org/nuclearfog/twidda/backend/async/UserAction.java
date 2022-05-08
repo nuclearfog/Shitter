@@ -7,7 +7,7 @@ import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.ExcludeDatabase;
+import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 
@@ -62,7 +62,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     private ErrorHandler.TwitterError twException;
     private WeakReference<UserProfile> weakRef;
     private Twitter twitter;
-    private ExcludeDatabase exclDB;
+    private FilterDatabase filterDatabase;
     private AppDatabase appDB;
     private long userId;
 
@@ -74,7 +74,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
         super();
         this.weakRef = new WeakReference<>(activity);
         twitter = Twitter.get(activity);
-        exclDB = new ExcludeDatabase(activity);
+        filterDatabase = new FilterDatabase(activity);
         appDB = new AppDatabase(activity);
         this.userId = userId;
     }
@@ -130,7 +130,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     relation = twitter.getRelationToUser(userId);
                     if (!relation.isMuted()) {
                         appDB.muteUser(userId, false);
-                        exclDB.removeUser(userId);
+                        filterDatabase.removeUser(userId);
                     }
                     return relation;
 
@@ -147,7 +147,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     relation = twitter.getRelationToUser(userId);
                     if (!relation.isBlocked()) {
                         appDB.muteUser(userId, false);
-                        exclDB.removeUser(userId);
+                        filterDatabase.removeUser(userId);
                     }
                     return relation;
             }
