@@ -781,13 +781,13 @@ public class AppDatabase {
         status.put(TweetTable.TWEET, tweet.getText());
         status.put(TweetTable.EMBEDDED, rtId);
         status.put(TweetTable.SOURCE, tweet.getSource());
-        status.put(TweetTable.REPLYTWEET, tweet.getReplyId());
+        status.put(TweetTable.REPLYTWEET, tweet.getRepliedTweetId());
         status.put(TweetTable.RETWEET, tweet.getRetweetCount());
         status.put(TweetTable.FAVORITE, tweet.getFavoriteCount());
-        status.put(TweetTable.REPLYUSER, tweet.getReplyUserId());
+        status.put(TweetTable.REPLYUSER, tweet.getRepliedUserId());
         status.put(TweetTable.PLACE, tweet.getLocationName());
         status.put(TweetTable.COORDINATE, tweet.getLocationCoordinates());
-        status.put(TweetTable.REPLYUSER, tweet.getReplyUserId());
+        status.put(TweetTable.REPLYUSER, tweet.getRepliedUserId());
         status.put(TweetTable.REPLYNAME, tweet.getReplyName());
 
         db.insertWithOnConflict(TweetTable.NAME, "", status, CONFLICT_REPLACE);

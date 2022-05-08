@@ -771,7 +771,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<Tweet> result = getTweets1(TWEET_SEARCH, params);
         List<Tweet> replies = new LinkedList<>();
         for (Tweet reply : result) {
-            if (reply.getReplyId() == tweetId) {
+            if (reply.getRepliedTweetId() == tweetId) {
                 replies.add(reply);
             }
         }

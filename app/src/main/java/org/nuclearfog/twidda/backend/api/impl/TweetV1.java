@@ -144,12 +144,12 @@ public class TweetV1 implements Tweet {
     }
 
     @Override
-    public long getReplyUserId() {
+    public long getRepliedUserId() {
         return replyUserId;
     }
 
     @Override
-    public long getReplyId() {
+    public long getRepliedTweetId() {
         return replyId;
     }
 

@@ -403,7 +403,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // open replied tweet
             else if (v.getId() == R.id.tweet_answer_reference) {
                 Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
-                answerIntent.putExtra(KEY_TWEET_ID, clickedTweet.getReplyId());
+                answerIntent.putExtra(KEY_TWEET_ID, clickedTweet.getRepliedTweetId());
                 answerIntent.putExtra(KEY_TWEET_NAME, clickedTweet.getReplyName());
                 startActivity(answerIntent);
             }
@@ -602,7 +602,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         } else {
             tweetText.setVisibility(GONE);
         }
-        if (tweetUpdate.getReplyId() > 0) {
+        if (tweetUpdate.getRepliedTweetId() > 0) {
             replyName.setText(tweetUpdate.getReplyName());
             replyName.setVisibility(VISIBLE);
         } else {

@@ -73,12 +73,12 @@ public interface Tweet extends Serializable {
     /**
      * @return ID of the replied tweet's author
      */
-    long getReplyUserId();
+    long getRepliedUserId();
 
     /**
      * @return ID of the replied tweet
      */
-    long getReplyId();
+    long getRepliedTweetId();
 
     /**
      * @return ID of the tweet retweeted by the current user
