@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.database.impl;
 
 import static org.nuclearfog.twidda.database.AppDatabase.FAV_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.HIDDEN_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_ANGIF_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_IMAGE_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_SENS_MASK;
@@ -21,7 +22,7 @@ import org.nuclearfog.twidda.model.User;
 import java.util.regex.Pattern;
 
 /**
- * Tweet implementation for database
+ *  Implementation of a database tweet
  *
  * @author nuclearfog
  */
@@ -53,6 +54,7 @@ public class TweetImpl implements Tweet {
     private boolean retweeted;
     private boolean favorited;
     private boolean sensitive;
+    private boolean isHidden;
 
 
     public TweetImpl(Cursor cursor, long currentUserId) {
@@ -75,6 +77,7 @@ public class TweetImpl implements Tweet {
         favorited = (tweetRegister & FAV_MASK) != 0;
         retweeted = (tweetRegister & RTW_MASK) != 0;
         sensitive = (tweetRegister & MEDIA_SENS_MASK) != 0;
+        isHidden = (tweetRegister & HIDDEN_MASK) != 0;
         if (!linkStr.isEmpty())
             mediaLinks = SEPARATOR.split(linkStr);
         userMentions = StringTools.getUserMentions(text, author.getScreenname());
@@ -193,6 +196,11 @@ public class TweetImpl implements Tweet {
     @Override
     public String getLocationCoordinates() {
         return locationCoordinates;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return isHidden;
     }
 
     @Override

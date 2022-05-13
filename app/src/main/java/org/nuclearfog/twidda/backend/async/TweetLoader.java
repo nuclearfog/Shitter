@@ -170,21 +170,21 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     break;
 
                 case REPLIES_OFFLINE:
-                    tweets = db.getAnswers(id);
+                    tweets = db.getTweetReplies(id);
                     break;
 
                 case REPLIES:
                     if (sinceId == 0 && maxId == 0) {
-                        tweets = db.getAnswers(id);
+                        tweets = db.getTweetReplies(id);
                         if (tweets.isEmpty()) {
                             tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
-                            if (!tweets.isEmpty() && db.containStatus(id)) {
+                            if (!tweets.isEmpty() && db.containsTweet(id)) {
                                 db.storeReplies(tweets);
                             }
                         }
                     } else if (sinceId > 0) {
                         tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
-                        if (!tweets.isEmpty() && db.containStatus(id)) {
+                        if (!tweets.isEmpty() && db.containsTweet(id)) {
                             db.storeReplies(tweets);
                         }
                     } else if (maxId > 1) {

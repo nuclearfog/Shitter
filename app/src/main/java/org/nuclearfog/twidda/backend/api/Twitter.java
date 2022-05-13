@@ -70,6 +70,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 
     public static final String SIGNATURE_ALG = "HMAC-SHA256";
     private static final String OAUTH = "1.0";
+    private static final String JSON = ".json";
     private static final String API = "https://api.twitter.com/";
     private static final String UPLOAD = "https://upload.twitter.com/";
     private static final String DOWNLOAD = "https://ton.twitter.com/";
@@ -106,6 +107,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private static final String TWEET_UNRETWEET = API + "1.1/statuses/unretweet/";
     private static final String TWEET_UPLOAD = API + "1.1/statuses/update.json";
     private static final String TWEET_DELETE = API + "1.1/statuses/destroy/";
+    private static final String TWEET_HIDE = API + "2/tweets/";
     private static final String TRENDS = API + "1.1/trends/place.json";
     private static final String LOCATIONS = API + "1.1/trends/available.json";
     private static final String USERLIST_SHOW = API + "1.1/lists/show.json";
@@ -827,7 +829,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated tweet
      */
     public Tweet retweetTweet(long tweetId) throws TwitterException {
-        TweetV1 result = getTweet1(TWEET_RETWEET + tweetId + ".json", new ArrayList<>(2));
+        TweetV1 result = getTweet1(TWEET_RETWEET + tweetId + JSON, new ArrayList<>(2));
         result.setRetweet(true);
         return result;
     }
@@ -839,9 +841,35 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated tweet
      */
     public Tweet unretweetTweet(long tweetId) throws TwitterException {
-        TweetV1 result = getTweet1(TWEET_UNRETWEET + tweetId + ".json", new ArrayList<>(2));
+        TweetV1 result = getTweet1(TWEET_UNRETWEET + tweetId + JSON, new ArrayList<>(2));
         result.setRetweet(false);
         return result;
+    }
+
+    /**
+     * hides reply of the own tweet
+     *
+     * @param tweetId   ID of the tweet
+     * @param hide      true to hide reply
+     */
+    public void hideReply(long tweetId, boolean hide) throws TwitterException {
+        try {
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, "{\"hidden\":" + hide + "}");
+            Response response = put(TWEET_HIDE + tweetId + "/hidden", new ArrayList<>(2), body);
+
+            if (response.body() != null && response.code() == 200) {
+                JSONObject json = new JSONObject(response.body().string());
+                if (json.getJSONObject("data").getBoolean("hidden") == hide) {
+                    return; // successfull if result equals request
+                }
+            }
+            throw new TwitterException(response);
+        } catch (IOException e) {
+            throw new TwitterException(e);
+        } catch (JSONException e) {
+            throw new TwitterException(e);
+        }
     }
 
     /**
@@ -850,7 +878,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param tweetId tweet ID
      */
     public void deleteTweet(long tweetId) throws TwitterException {
-        getTweet1(TWEET_DELETE + tweetId + ".json", new ArrayList<>(2));
+        getTweet1(TWEET_DELETE + tweetId + JSON, new ArrayList<>(2));
     }
 
     /**
@@ -1677,6 +1705,19 @@ public class Twitter implements GlobalSettings.SettingsListener {
         String authHeader = buildHeader("GET", endpoint, params);
         String url = appendParams(endpoint, params);
         Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).get().build();
+        return client.newCall(request).execute();
+    }
+
+    /**
+     * create and call PUT endpoint
+     *
+     * @param endpoint endpoint url
+     * @return http response
+     */
+    private Response put(String endpoint,  List<String> params, RequestBody body)throws IOException {
+        String authHeader = buildHeader("PUT", endpoint, params);
+        String url = appendParams(endpoint, params);
+        Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).put(body).build();
         return client.newCall(request).execute();
     }
 

@@ -133,6 +133,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Nullable
     private Tweet tweet;
+    private boolean hidden;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -175,6 +177,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             } else {
                 username = tweet.getAuthor().getScreenname();
                 tweetId = tweet.getId();
+                hidden = tweet.isHidden();
             }
         } else {
             username = getIntent().getStringExtra(KEY_TWEET_NAME);
@@ -278,17 +281,26 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (tweet == null)
             return super.onPrepareOptionsMenu(m);
 
-        MenuItem deleteItem = m.findItem(R.id.menu_tweet_delete);
-        MenuItem copyItem = m.findItem(R.id.menu_tweet_copy);
-        SubMenu copyMenu = copyItem.getSubMenu();
+        MenuItem optDelete = m.findItem(R.id.menu_tweet_delete);
+        MenuItem optHide = m.findItem(R.id.menu_tweet_hide);
+        MenuItem optCopy = m.findItem(R.id.menu_tweet_copy);
+        SubMenu copyMenu = optCopy.getSubMenu();
 
         Tweet currentTweet = tweet;
         if (tweet.getEmbeddedTweet() != null) {
             currentTweet = tweet.getEmbeddedTweet();
         }
-
+        if (currentTweet.getRepliedUserId() == settings.getCurrentUserId()
+            && currentTweet.getAuthor().getId() != settings.getCurrentUserId()) {
+            optHide.setVisible(true);
+            if (hidden) {
+                optHide.setTitle(R.string.menu_tweet_unhide);
+            } else {
+                optHide.setTitle(R.string.menu_tweet_hide);
+            }
+        }
         // enable delete option only if current user owns tweets
-        deleteItem.setVisible(currentTweet.getAuthor().isCurrentUser());
+        optDelete.setVisible(currentTweet.getAuthor().isCurrentUser());
 
         // add media link items
         // check if menu doesn't contain media links already
@@ -316,6 +328,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         // Delete tweet option
         if (item.getItemId() == R.id.menu_tweet_delete) {
             deleteDialog.show(DialogType.TWEET_DELETE);
+        }
+        // hide tweet
+        else if (item.getItemId() == R.id.menu_tweet_hide) {
+            if (hidden) {
+                statusAsync = new TweetAction(this, Action.UNHIDE, tweet.getId(), -1L);
+            } else {
+                statusAsync = new TweetAction(this, Action.HIDE, tweet.getId(), -1L);
+            }
+            statusAsync.execute();
         }
         // get tweet link
         else if (item.getItemId() == R.id.menu_tweet_browser) {
@@ -671,7 +692,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      * @param action  action type
      * @param tweetId ID of the tweet
      */
-    public void onAction(Action action, long tweetId) {
+    public void OnSuccess(Action action, long tweetId) {
         switch (action) {
             case RETWEET:
                 Toast.makeText(this, R.string.info_tweet_retweeted, LENGTH_SHORT).show();
@@ -693,6 +714,18 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                     Toast.makeText(this, R.string.info_tweet_unliked, LENGTH_SHORT).show();
                 else
                     Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+                break;
+
+            case HIDE:
+                hidden = true;
+                invalidateOptionsMenu();
+                Toast.makeText(this, R.string.info_reply_hidden, LENGTH_SHORT).show();
+                break;
+
+            case UNHIDE:
+                hidden = false;
+                invalidateOptionsMenu();
+                Toast.makeText(this, R.string.info_reply_unhidden, LENGTH_SHORT).show();
                 break;
 
             case DELETE:

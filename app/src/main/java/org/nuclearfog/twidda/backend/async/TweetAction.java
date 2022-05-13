@@ -50,6 +50,14 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
          */
         UNFAVORITE,
         /**
+         * hide reply
+         */
+        HIDE,
+        /**
+         * unhide reply
+         */
+        UNHIDE,
+        /**
          * delete own tweet
          */
         DELETE
@@ -85,7 +93,7 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
         try {
             switch (action) {
                 case LD_DB:
-                    Tweet tweet = db.getStatus(tweetId);
+                    Tweet tweet = db.getTweet(tweetId);
                     if (tweet != null) {
                         publishProgress(tweet);
                     }
@@ -94,35 +102,35 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
                     tweet = twitter.showTweet(tweetId);
                     //tweet = mTwitter.getStatus(tweetId);
                     publishProgress(tweet);
-                    if (db.containStatus(tweetId)) {
+                    if (db.containsTweet(tweetId)) {
                         // update tweet if there is a database entry
-                        db.updateStatus(tweet);
+                        db.updateTweet(tweet);
                     }
                     break;
 
                 case DELETE:
                     twitter.deleteTweet(tweetId);
-                    db.removeStatus(tweetId);
+                    db.removeTweet(tweetId);
                     // removing retweet reference to this tweet
                     if (retweetId > 0)
-                        db.removeStatus(retweetId);
+                        db.removeTweet(retweetId);
                     break;
 
                 case RETWEET:
                     tweet = twitter.retweetTweet(tweetId);
                     publishProgress(tweet);
-                    db.updateStatus(tweet);
+                    db.updateTweet(tweet);
                     break;
 
                 case UNRETWEET:
                     tweet = twitter.unretweetTweet(tweetId);
                     publishProgress(tweet);
-                    db.updateStatus(tweet);
+                    db.updateTweet(tweet);
                     // removing retweet reference to this tweet
                     if (retweetId > 0)
-                        db.removeStatus(retweetId);
+                        db.removeTweet(retweetId);
                     else
-                        db.removeStatus(tweetId);
+                        db.removeTweet(tweetId);
                     break;
 
                 case FAVORITE:
@@ -136,11 +144,21 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
                     publishProgress(tweet);
                     db.removeFavorite(tweet);
                     break;
+
+                case HIDE:
+                    twitter.hideReply(tweetId, true);
+                    db.hideReply(tweetId, true);
+                    break;
+
+                case UNHIDE:
+                    twitter.hideReply(tweetId, false);
+                    db.hideReply(tweetId, false);
+                    break;
             }
         } catch (TwitterException twException) {
             this.twException = twException;
             if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
-                db.removeStatus(tweetId);
+                db.removeTweet(tweetId);
             }
         }
         return null;
@@ -161,7 +179,7 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
         TweetActivity activity = weakRef.get();
         if (activity != null) {
             if (twException == null) {
-                activity.onAction(action, tweetId);
+                activity.OnSuccess(action, tweetId);
             } else {
                 activity.onError(twException, tweetId);
             }

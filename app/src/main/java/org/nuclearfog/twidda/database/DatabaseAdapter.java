@@ -555,7 +555,7 @@ public class DatabaseAdapter {
         String REGISTER = "tweetRegister";
 
         /**
-         *
+         * ID of the retweet of the current user (if exists)
          */
         String RETWEETUSER = "retweeterID";
     }

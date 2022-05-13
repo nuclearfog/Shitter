@@ -230,4 +230,8 @@
     <string name="menu_media_link">Medienlink</string>
     <string name="info_tweet_text_copied">Tweet Text kopiert</string>
     <string name="info_tweet_medialink_copied">Medienlink kopiert</string>
+    <string name="menu_tweet_hide">Antwort ausblenden</string>
+    <string name="menu_tweet_unhide">Antwort einblenden</string>
+    <string name="info_reply_hidden">Antwort wurde ausgeblendet</string>
+    <string name="info_reply_unhidden">Antwort wurde eingeblendet</string>
 </resources>

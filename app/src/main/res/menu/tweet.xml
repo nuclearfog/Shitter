@@ -24,6 +24,11 @@
     </item>
 
     <item
+        android:id="@+id/menu_tweet_hide"
+        android:title="@string/menu_tweet_hide"
+        android:visible="false" />
+
+    <item
         android:id="@+id/menu_tweet_delete"
         android:title="@string/menu_tweet_delete"
         android:visible="false" />

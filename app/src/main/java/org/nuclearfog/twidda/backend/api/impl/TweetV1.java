@@ -69,7 +69,7 @@ public class TweetV1 implements Tweet {
         author = new UserV1(json.getJSONObject("user"), twitterId);
         id = Long.parseLong(json.optString("id_str", "-1"));
         replyId = json.optLong("in_reply_to_status_id", -1);
-        replyUserId = json.optLong("in_reply_to_status_id", -1);
+        replyUserId = json.optLong("in_reply_to_user_id", -1);
         retweetCount = json.optInt("retweet_count");
         favoriteCount = json.optInt("favorite_count");
         isFavorited = json.optBoolean("favorited");
@@ -210,6 +210,11 @@ public class TweetV1 implements Tweet {
     @Override
     public String getLocationCoordinates() {
         return coordinates;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return false;
     }
 
     @Override

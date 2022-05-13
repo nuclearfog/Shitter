@@ -127,6 +127,11 @@ public interface Tweet extends Serializable {
     boolean isFavorited();
 
     /**
+     * @return true if tweet is hidden by current user
+     */
+    boolean isHidden();
+
+    /**
      * @return name of the location if attached
      */
     String getLocationName();

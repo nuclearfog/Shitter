@@ -51,6 +51,7 @@ public class AppDatabase {
     public static final int MEDIA_VIDEO_MASK = 2 << 6; // tweet contains a video
     public static final int MEDIA_ANGIF_MASK = 3 << 6; // tweet contains an animation
     public static final int MEDIA_SENS_MASK = 1 << 8;  // tweet contains sensitive media
+    public static final int HIDDEN_MASK = 1 << 9;      // tweet is hidden
 
     // user status bits
     public static final int VER_MASK = 1;          //  user is verified
@@ -134,11 +135,12 @@ public class AppDatabase {
     /**
      * SQL query to get replies of a tweet specified by a tweet ID
      */
-    static final String ANSWER_QUERY = "SELECT * FROM " + TWEET_TABLE
+    static final String REPLY_QUERY = "SELECT * FROM " + TWEET_TABLE
             + " WHERE " + TweetTable.NAME + "." + TweetTable.REPLYTWEET + "=?"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.OWNER + "=?"
             + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.REGISTER + "&" + RPL_MASK + " IS NOT 0"
+            + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.REGISTER + "&" + HIDDEN_MASK + " IS 0"
             + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCL_USR + " IS 0"
             + " ORDER BY " + TweetTable.ID + " DESC LIMIT ?";
 
@@ -259,7 +261,7 @@ public class AppDatabase {
     public void storeHomeTimeline(List<Tweet> home) {
         SQLiteDatabase db = getDbWrite();
         for (Tweet tweet : home)
-            storeStatus(tweet, HOM_MASK, db);
+            storeTweet(tweet, HOM_MASK, db);
         commit(db);
     }
 
@@ -271,7 +273,7 @@ public class AppDatabase {
     public void storeMentions(List<Tweet> mentions) {
         SQLiteDatabase db = getDbWrite();
         for (Tweet tweet : mentions)
-            storeStatus(tweet, MEN_MASK, db);
+            storeTweet(tweet, MEN_MASK, db);
         commit(db);
     }
 
@@ -283,7 +285,7 @@ public class AppDatabase {
     public void storeUserTweets(List<Tweet> stats) {
         SQLiteDatabase db = getDbWrite();
         for (Tweet tweet : stats)
-            storeStatus(tweet, UTW_MASK, db);
+            storeTweet(tweet, UTW_MASK, db);
         commit(db);
     }
 
@@ -297,7 +299,7 @@ public class AppDatabase {
         SQLiteDatabase db = getDbWrite();
         removeOldFavorites(db, ownerId);
         for (Tweet tweet : fav) {
-            storeStatus(tweet, 0, db);
+            storeTweet(tweet, 0, db);
             storeFavorite(tweet.getId(), ownerId, db);
         }
         commit(db);
@@ -311,7 +313,7 @@ public class AppDatabase {
     public void storeReplies(List<Tweet> replies) {
         SQLiteDatabase db = getDbWrite();
         for (Tweet tweet : replies)
-            storeStatus(tweet, RPL_MASK, db);
+            storeTweet(tweet, RPL_MASK, db);
         commit(db);
     }
 
@@ -345,7 +347,7 @@ public class AppDatabase {
         if (tweet.getEmbeddedTweet() != null)
             tweet = tweet.getEmbeddedTweet();
         SQLiteDatabase db = getDbWrite();
-        storeStatus(tweet, 0, db);
+        storeTweet(tweet, 0, db);
         storeFavorite(tweet.getId(), homeId, db);
         commit(db);
     }
@@ -376,7 +378,7 @@ public class AppDatabase {
         Cursor cursor = db.rawQuery(HOME_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                Tweet tweet = getStatus(cursor);
+                Tweet tweet = getTweet(cursor);
                 tweetList.add(tweet);
             } while (cursor.moveToNext());
         }
@@ -398,7 +400,7 @@ public class AppDatabase {
         Cursor cursor = db.rawQuery(MENTION_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                Tweet tweet = getStatus(cursor);
+                Tweet tweet = getTweet(cursor);
                 tweetList.add(tweet);
             } while (cursor.moveToNext());
         }
@@ -421,7 +423,7 @@ public class AppDatabase {
         Cursor cursor = db.rawQuery(USERTWEET_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                Tweet tweet = getStatus(cursor);
+                Tweet tweet = getTweet(cursor);
                 tweetList.add(tweet);
             } while (cursor.moveToNext());
         }
@@ -444,7 +446,7 @@ public class AppDatabase {
         Cursor cursor = db.rawQuery(USERFAVORIT_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                Tweet tweet = getStatus(cursor);
+                Tweet tweet = getTweet(cursor);
                 tweetList.add(tweet);
             } while (cursor.moveToNext());
         }
@@ -465,13 +467,13 @@ public class AppDatabase {
     }
 
     /**
-     * load status
+     * get tweet from database
      *
      * @param tweetId tweet ID
      * @return tweet or null if not found
      */
     @Nullable
-    public Tweet getStatus(long tweetId) {
+    public Tweet getTweet(long tweetId) {
         String homeStr = Long.toString(homeId);
         String[] args = {Long.toString(tweetId), homeStr, homeStr};
 
@@ -479,27 +481,27 @@ public class AppDatabase {
         Tweet result = null;
         Cursor cursor = db.rawQuery(SINGLE_TWEET_QUERY, args);
         if (cursor.moveToFirst())
-            result = getStatus(cursor);
+            result = getTweet(cursor);
         cursor.close();
         return result;
     }
 
     /**
-     * get tweet answers
+     * get tweet replies
      *
      * @param tweetId Tweet ID
-     * @return list of tweet answers
+     * @return list of tweets
      */
-    public List<Tweet> getAnswers(long tweetId) {
+    public List<Tweet> getTweetReplies(long tweetId) {
         String homeStr = Long.toString(homeId);
         String[] args = {Long.toString(tweetId), homeStr, homeStr, Integer.toString(limit)};
 
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
-        Cursor cursor = db.rawQuery(ANSWER_QUERY, args);
+        Cursor cursor = db.rawQuery(REPLY_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                Tweet tweet = getStatus(cursor);
+                Tweet tweet = getTweet(cursor);
                 tweetList.add(tweet);
             } while (cursor.moveToNext());
         }
@@ -508,24 +510,24 @@ public class AppDatabase {
     }
 
     /**
-     * update status and author information
+     * update tweet and author information
      *
      * @param tweet Tweet
      */
-    public void updateStatus(Tweet tweet) {
+    public void updateTweet(Tweet tweet) {
         SQLiteDatabase db = getDbWrite();
-        updateStatus(tweet, db);
+        updateTweet(tweet, db);
         if (tweet.getEmbeddedTweet() != null)
-            updateStatus(tweet.getEmbeddedTweet(), db);
+            updateTweet(tweet.getEmbeddedTweet(), db);
         commit(db);
     }
 
     /**
-     * remove status
+     * remove tweet from database
      *
      * @param tweetId Tweet ID
      */
-    public void removeStatus(long tweetId) {
+    public void removeTweet(long tweetId) {
         String[] args = {Long.toString(tweetId)};
 
         SQLiteDatabase db = getDbWrite();
@@ -535,7 +537,29 @@ public class AppDatabase {
     }
 
     /**
-     * remove status from favorites
+     * hide or unhide tweet reply
+     *
+     * @param replyId ID of the reply
+     * @param hide true to hide this tweet
+     */
+    public void hideReply(long replyId, boolean hide) {
+        String[] args = {Long.toString(replyId), Long.toString(homeId)};
+
+        SQLiteDatabase db = getDbWrite();
+        int register = getTweetRegister(db, replyId);
+        if (hide)
+            register |= HIDDEN_MASK;
+        else
+            register &= ~HIDDEN_MASK;
+
+        ContentValues values = new ContentValues(3);
+        values.put(TweetRegisterTable.REGISTER, register);
+        db.update(TweetRegisterTable.NAME, values, TWEET_REG_SELECT, args);
+        commit(db);
+    }
+
+    /**
+     * remove tweet from favorites
      *
      * @param tweet Tweet to remove from the favorites
      */
@@ -633,9 +657,9 @@ public class AppDatabase {
      * @param id Tweet ID
      * @return true if found
      */
-    public boolean containStatus(long id) {
+    public boolean containsTweet(long id) {
         SQLiteDatabase db = getDbRead();
-        return containStatus(id, db);
+        return tweetExists(id, db);
     }
 
     /**
@@ -662,11 +686,11 @@ public class AppDatabase {
      * @param cursor cursor containing tweet informations
      * @return tweet instance
      */
-    private Tweet getStatus(Cursor cursor) {
+    private Tweet getTweet(Cursor cursor) {
         TweetImpl result = new TweetImpl(cursor, homeId);
         // check if there is an embedded tweet
         if (result.getEmbeddedTweetId() > 1)
-            result.addEmbeddedTweet(getStatus(result.getEmbeddedTweetId()));
+            result.addEmbeddedTweet(getTweet(result.getEmbeddedTweetId()));
         return result;
     }
 
@@ -739,61 +763,61 @@ public class AppDatabase {
      * save tweet into database
      *
      * @param tweet          Tweet information
-     * @param statusRegister predefined status register or zero if there isn't one
+     * @param tweetFlags     predefined tweet status register or zero if there isn't one
      * @param db             SQLite database
      */
-    private void storeStatus(Tweet tweet, int statusRegister, SQLiteDatabase db) {
+    private void storeTweet(Tweet tweet, int tweetFlags, SQLiteDatabase db) {
         User user = tweet.getAuthor();
         Tweet rtStat = tweet.getEmbeddedTweet();
         long rtId = -1L;
         if (rtStat != null) {
-            storeStatus(rtStat, 0, db);
+            storeTweet(rtStat, 0, db);
             rtId = rtStat.getId();
         }
-        statusRegister |= getTweetRegister(db, tweet.getId());
+        tweetFlags |= getTweetRegister(db, tweet.getId());
         if (tweet.isFavorited()) {
-            statusRegister |= FAV_MASK;
+            tweetFlags |= FAV_MASK;
         } else {
-            statusRegister &= ~FAV_MASK;
+            tweetFlags &= ~FAV_MASK;
         }
         if (tweet.isRetweeted()) {
-            statusRegister |= RTW_MASK;
+            tweetFlags |= RTW_MASK;
         } else {
-            statusRegister &= ~RTW_MASK;
+            tweetFlags &= ~RTW_MASK;
         }
         if (tweet.isSensitive()) {
-            statusRegister |= MEDIA_SENS_MASK;
+            tweetFlags |= MEDIA_SENS_MASK;
         } else {
-            statusRegister &= ~MEDIA_SENS_MASK;
+            tweetFlags &= ~MEDIA_SENS_MASK;
         }
         if (Tweet.MEDIA_PHOTO.equals(tweet.getMediaType())) {
-            statusRegister |= MEDIA_IMAGE_MASK;
+            tweetFlags |= MEDIA_IMAGE_MASK;
         } else if (Tweet.MEDIA_VIDEO.equals(tweet.getMediaType())) {
-            statusRegister |= MEDIA_VIDEO_MASK;
+            tweetFlags |= MEDIA_VIDEO_MASK;
         } else if (Tweet.MEDIA_GIF.equals(tweet.getMediaType())) {
-            statusRegister |= MEDIA_ANGIF_MASK;
+            tweetFlags |= MEDIA_ANGIF_MASK;
         }
-        ContentValues status = new ContentValues(16);
-        status.put(TweetTable.MEDIA, getMediaLinks(tweet));
-        status.put(TweetTable.ID, tweet.getId());
-        status.put(TweetTable.USER, user.getId());
-        status.put(TweetTable.SINCE, tweet.getTimestamp());
-        status.put(TweetTable.TWEET, tweet.getText());
-        status.put(TweetTable.EMBEDDED, rtId);
-        status.put(TweetTable.SOURCE, tweet.getSource());
-        status.put(TweetTable.REPLYTWEET, tweet.getRepliedTweetId());
-        status.put(TweetTable.RETWEET, tweet.getRetweetCount());
-        status.put(TweetTable.FAVORITE, tweet.getFavoriteCount());
-        status.put(TweetTable.REPLYUSER, tweet.getRepliedUserId());
-        status.put(TweetTable.PLACE, tweet.getLocationName());
-        status.put(TweetTable.COORDINATE, tweet.getLocationCoordinates());
-        status.put(TweetTable.REPLYUSER, tweet.getRepliedUserId());
-        status.put(TweetTable.REPLYNAME, tweet.getReplyName());
+        ContentValues tweetUpdate = new ContentValues(16);
+        tweetUpdate.put(TweetTable.MEDIA, getMediaLinks(tweet));
+        tweetUpdate.put(TweetTable.ID, tweet.getId());
+        tweetUpdate.put(TweetTable.USER, user.getId());
+        tweetUpdate.put(TweetTable.SINCE, tweet.getTimestamp());
+        tweetUpdate.put(TweetTable.TWEET, tweet.getText());
+        tweetUpdate.put(TweetTable.EMBEDDED, rtId);
+        tweetUpdate.put(TweetTable.SOURCE, tweet.getSource());
+        tweetUpdate.put(TweetTable.REPLYTWEET, tweet.getRepliedTweetId());
+        tweetUpdate.put(TweetTable.RETWEET, tweet.getRetweetCount());
+        tweetUpdate.put(TweetTable.FAVORITE, tweet.getFavoriteCount());
+        tweetUpdate.put(TweetTable.REPLYUSER, tweet.getRepliedUserId());
+        tweetUpdate.put(TweetTable.PLACE, tweet.getLocationName());
+        tweetUpdate.put(TweetTable.COORDINATE, tweet.getLocationCoordinates());
+        tweetUpdate.put(TweetTable.REPLYUSER, tweet.getRepliedUserId());
+        tweetUpdate.put(TweetTable.REPLYNAME, tweet.getReplyName());
 
-        db.insertWithOnConflict(TweetTable.NAME, "", status, CONFLICT_REPLACE);
+        db.insertWithOnConflict(TweetTable.NAME, "", tweetUpdate, CONFLICT_REPLACE);
 
         storeUser(user, db, CONFLICT_IGNORE);
-        setTweetRegister(db, tweet, statusRegister);
+        setTweetRegister(db, tweet, tweetFlags);
     }
 
     /**
@@ -802,7 +826,7 @@ public class AppDatabase {
      * @param tweet update of the tweet
      * @param db    database instance
      */
-    private void updateStatus(Tweet tweet, SQLiteDatabase db) {
+    private void updateTweet(Tweet tweet, SQLiteDatabase db) {
         String[] tweetIdArg = {Long.toString(tweet.getId())};
         String[] userIdArg = {Long.toString(tweet.getAuthor().getId())};
 
@@ -888,7 +912,7 @@ public class AppDatabase {
     }
 
     /**
-     * get status register of a tweet or zero if tweet was not found
+     * get tweet register of a tweet or zero if tweet was not found
      *
      * @param db      database instance
      * @param tweetID ID of the tweet
@@ -906,7 +930,7 @@ public class AppDatabase {
     }
 
     /**
-     * set status register of a tweet. if an entry exists, update it
+     * set tweet register of a tweet. if an entry exists, update it
      *
      * @param db       database instance
      * @param tweet    Tweet
@@ -915,9 +939,7 @@ public class AppDatabase {
     public void setTweetRegister(SQLiteDatabase db, Tweet tweet, int register) {
         String[] args = {Long.toString(tweet.getId()), Long.toString(homeId)};
 
-        ContentValues values = new ContentValues(3);
-        values.put(TweetRegisterTable.ID, tweet.getId());
-        values.put(TweetRegisterTable.OWNER, homeId);
+        ContentValues values = new ContentValues(2);
         values.put(TweetRegisterTable.REGISTER, register);
         values.put(TweetRegisterTable.RETWEETUSER, tweet.getMyRetweetId());
 
@@ -975,7 +997,7 @@ public class AppDatabase {
      * @param db database instance
      * @return true if found
      */
-    private boolean containStatus(long id, SQLiteDatabase db) {
+    private boolean tweetExists(long id, SQLiteDatabase db) {
         String[] args = {Long.toString(id)};
 
         Cursor c = db.query(TweetTable.NAME, null, TWEET_SELECT, args, null, null, SINGLE_ITEM);
