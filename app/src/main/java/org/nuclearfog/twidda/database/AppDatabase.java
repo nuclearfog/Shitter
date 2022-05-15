@@ -41,7 +41,7 @@ import java.util.TreeMap;
 public class AppDatabase {
 
     // Tweet status bits
-    public static final int FAV_MASK = 1;          //  tweet is favored by user
+    public static final int FAV_MASK = 1;          //  tweet is favorited by user
     public static final int RTW_MASK = 1 << 1;     //  tweet is retweeted by user
     public static final int HOM_MASK = 1 << 2;     //  tweet is from home timeline
     public static final int MEN_MASK = 1 << 3;     //  tweet is from mention timeline
@@ -939,9 +939,11 @@ public class AppDatabase {
     public void setTweetRegister(SQLiteDatabase db, Tweet tweet, int register) {
         String[] args = {Long.toString(tweet.getId()), Long.toString(homeId)};
 
-        ContentValues values = new ContentValues(2);
+        ContentValues values = new ContentValues(4);
         values.put(TweetRegisterTable.REGISTER, register);
         values.put(TweetRegisterTable.RETWEETUSER, tweet.getMyRetweetId());
+        values.put(TweetRegisterTable.ID, tweet.getId());
+        values.put(TweetRegisterTable.OWNER, homeId);
 
         int cnt = db.update(TweetRegisterTable.NAME, values, TWEET_REG_SELECT, args);
         if (cnt == 0) {

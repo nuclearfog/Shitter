@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion '32.0.0'
 
     defaultConfig {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
-        targetSdkVersion 31
-        versionCode 58
-        versionName '2.0.5'
+        targetSdkVersion 32
+        versionCode 59
+        versionName '2.0.6'
         // limiting language support for smaller APK size
         resConfigs 'en', 'de-rDE', 'zh-rCN'
         vectorDrawables.useSupportLibrary true
