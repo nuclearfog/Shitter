@@ -341,7 +341,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         // get tweet link
         else if (item.getItemId() == R.id.menu_tweet_browser) {
             String username = author.getScreenname().substring(1);
-            String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
+            String tweetLink = settings.getTwitterHostname() + username + "/status/" + clickedTweet.getId();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
             try {
                 startActivity(intent);
@@ -361,7 +361,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         // copy tweet link to clipboard
         else if (item.getItemId() == R.id.menu_tweet_copy_tweetlink) {
             String username = author.getScreenname().substring(1);
-            String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
+            String tweetLink = settings.getTwitterHostname() + username + "/status/" + clickedTweet.getId();
             ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             if (clip != null) {
                 ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);

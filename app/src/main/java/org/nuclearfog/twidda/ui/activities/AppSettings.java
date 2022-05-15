@@ -138,6 +138,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
         SwitchButton enablePreview = findViewById(R.id.settings_enable_prev);
         SwitchButton enableLike = findViewById(R.id.enable_like);
+        SwitchButton enableTwitterAlt = findViewById(R.id.settings_enable_twitter_alt);
         SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
         Spinner fontSelector = findViewById(R.id.spinner_font);
         Spinner scaleSelector = findViewById(R.id.spinner_scale);
@@ -230,6 +231,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         enablePreview.setCheckedImmediately(settings.linkPreviewEnabled());
         toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
         enableLike.setCheckedImmediately(settings.likeEnabled());
+        enableTwitterAlt.setCheckedImmediately(settings.twitterAltSet());
         enableAPI.setCheckedImmediately(settings.isCustomApiSet());
         enableProxy.setCheckedImmediately(settings.isProxyEnabled());
         enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
@@ -253,6 +255,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         toggleAns.setOnCheckedChangeListener(this);
         enableAPI.setOnCheckedChangeListener(this);
         enableLike.setOnCheckedChangeListener(this);
+        enableTwitterAlt.setOnCheckedChangeListener(this);
         enablePreview.setOnCheckedChangeListener(this);
         enableProxy.setOnCheckedChangeListener(this);
         enableAuth.setOnCheckedChangeListener(this);
@@ -520,6 +523,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             } else {
                 colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_fav);
             }
+        }
+        // enable alternative Twitter service
+        else if (c.getId() == R.id.settings_enable_twitter_alt) {
+            settings.setTwitterAlt(checked);
         }
         // enable link preview
         else if (c.getId() == R.id.settings_enable_prev) {

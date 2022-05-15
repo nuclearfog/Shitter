@@ -49,6 +49,13 @@ public class GlobalSettings {
     public static final String BANNER_IMG_MID_RES = "/600x200";
 
     /**
+     * alternative Twitter service
+     */
+    private static final String TWITTER_ALT_HOST = "https://nitter.net/";
+
+    private static final String TWITTER_HOST = "https://twitter.com/";
+
+    /**
      * custom android font
      */
     private static final Typeface SANS_SERIF_THIN = Typeface.create("sans-serif-thin", NORMAL);
@@ -101,6 +108,7 @@ public class GlobalSettings {
     private static final String TREND_ID = "world_id";
     private static final String LINK_PREVIEW = "link_preview";
     private static final String ENABLE_LIKE = "like_enable";
+    private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
     private static final String FILTER_RESULTS = "filter_results";
     private static final String CUSTOM_CONSUMER_KEY_SET = "custom_api_keys";
     private static final String CUSTOM_CONSUMER_KEY_1 = "api_key1";
@@ -150,6 +158,7 @@ public class GlobalSettings {
     private boolean linkPreview;
     private boolean filterResults;
     private boolean enableLike;
+    private boolean twitterAlt;
     private int background_color;
     private int font_color;
     private int highlight_color;
@@ -703,6 +712,39 @@ public class GlobalSettings {
     }
 
     /**
+     * check if Twitter link alternative is set (e.G. nitter.net)
+     *
+     * @return true if link alternative is set
+     */
+    public boolean twitterAltSet() {
+        return twitterAlt;
+    }
+
+    /**
+     * set Twitter alternative link
+     *
+     * @param enable true to enable alternative link
+     */
+    public void setTwitterAlt(boolean enable) {
+        twitterAlt = enable;
+
+        Editor edit = settings.edit();
+        edit.putBoolean(ENABLE_TWITTER_ALT, enable);
+        edit.apply();
+    }
+
+    /**
+     * get hostname of the Twitter service to use
+     *
+     * @return custom host domain name if alternative is set, otherwise default Twitter host
+     */
+    public String getTwitterHostname() {
+        if (twitterAlt)
+            return TWITTER_ALT_HOST;
+        return TWITTER_HOST;
+    }
+
+    /**
      * set proxy address
      *
      * @param proxyHost address of proxy
@@ -1060,6 +1102,7 @@ public class GlobalSettings {
         filterResults = settings.getBoolean(FILTER_RESULTS, true);
         enableLike = settings.getBoolean(ENABLE_LIKE, false);
         customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
+        twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
         proxyHost = settings.getString(PROXY_ADDR, "");
         proxyPort = settings.getString(PROXY_PORT, "");
         proxyUser = settings.getString(PROXY_USER, "");

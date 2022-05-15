@@ -24,14 +24,20 @@ public class TwitterException extends Exception implements TwitterError {
     private int errorCode = -1;
     private int retryAfter = -1;
 
-
+    /**
+     * create exception caused by another exception
+     */
     TwitterException(Exception e) {
         super(e);
         httpCode = -1;
         message = e.getMessage();
     }
 
-
+    /**
+     * create exception caused by response error
+     *
+     * @param response response from API containing additional error information
+     */
     TwitterException(Response response) {
         // basic information
         this.httpCode = response.code();
@@ -143,6 +149,6 @@ public class TwitterException extends Exception implements TwitterError {
     @NonNull
     @Override
     public String toString() {
-        return "http:" + httpCode + " errorcode:" + errorCode + " message:\"" + message + "\"";
+        return "http=" + httpCode + " errorcode=" + errorCode + " message=\"" + message + "\"";
     }
 }

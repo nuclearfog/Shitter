@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
 
 /**
- * implementation of User accessed by API 2.0
+ * User implementation of API V2
  *
  * @author nuclearfog
  */
@@ -36,7 +36,7 @@ public class UserV2 implements User {
     private int following;
     private int follower;
     private int tweetCount;
-    private int favorCount;
+    private int likeCount;
     private boolean isCurrentUser;
     private boolean isVerified;
     private boolean isProtected;
@@ -66,7 +66,7 @@ public class UserV2 implements User {
         }
 
         // not yet implemented in API 2.0
-        favorCount = -1;
+        likeCount = -1;
         followReqSent = false;
         defaultImage = false;
     }
@@ -148,7 +148,7 @@ public class UserV2 implements User {
 
     @Override
     public int getFavoriteCount() {
-        return favorCount;
+        return likeCount;
     }
 
     @Override

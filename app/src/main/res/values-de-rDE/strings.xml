@@ -234,4 +234,5 @@
     <string name="menu_tweet_unhide">Antwort einblenden</string>
     <string name="info_reply_hidden">Antwort wurde ausgeblendet</string>
     <string name="info_reply_unhidden">Antwort wurde eingeblendet</string>
+    <string name="settings_description_enable_twitter_alt">nitter.net für Links benutzen</string>
 </resources>

@@ -30,7 +30,7 @@ public class UserV1 implements User {
     private int following;
     private int follower;
     private int tweetCount;
-    private int favorCount;
+    private int favoriteCount;
     private boolean isVerified;
     private boolean isLocked;
     private boolean followReqSent;
@@ -57,7 +57,7 @@ public class UserV1 implements User {
         following = json.optInt("friends_count");
         follower = json.optInt("followers_count");
         tweetCount = json.optInt("statuses_count");
-        favorCount = json.optInt("favourites_count");
+        favoriteCount = json.optInt("favourites_count");
         followReqSent = json.optBoolean("follow_request_sent");
         defaultImage = json.optBoolean("default_profile_image");
         created = StringTools.getTime1(json.optString("created_at"));
@@ -141,7 +141,7 @@ public class UserV1 implements User {
 
     @Override
     public int getFavoriteCount() {
-        return favorCount;
+        return favoriteCount;
     }
 
     @Override

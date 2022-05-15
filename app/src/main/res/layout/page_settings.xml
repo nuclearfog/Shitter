@@ -395,7 +395,7 @@
                         android:layout_marginEnd="@dimen/settings_switch_margin"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/toggleAns"
-                        app:layout_constraintBottom_toTopOf="@id/settings_list_seek"
+                        app:layout_constraintBottom_toTopOf="@id/settings_enable_twitter_alt"
                         app:layout_constraintEnd_toStartOf="@id/settings_enable_prev_descr" />
 
                     <TextView
@@ -408,6 +408,30 @@
                         app:layout_constraintStart_toEndOf="@id/settings_enable_prev"
                         app:layout_constraintTop_toTopOf="@id/settings_enable_prev"
                         app:layout_constraintBottom_toBottomOf="@id/settings_enable_prev"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.kyleduo.switchbutton.SwitchButton
+                        android:id="@+id/settings_enable_twitter_alt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
+                        android:layout_marginRight="@dimen/settings_switch_margin"
+                        android:layout_marginEnd="@dimen/settings_switch_margin"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/settings_enable_prev"
+                        app:layout_constraintBottom_toTopOf="@id/settings_list_seek"
+                        app:layout_constraintEnd_toStartOf="@id/settings_enable_twitter_alt_descr" />
+
+                    <TextView
+                        android:id="@+id/settings_enable_twitter_alt_descr"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:text="@string/settings_description_enable_twitter_alt"
+                        android:textSize="@dimen/settings_textsize_small"
+                        app:layout_constraintStart_toEndOf="@id/settings_enable_twitter_alt"
+                        app:layout_constraintTop_toTopOf="@id/settings_enable_twitter_alt"
+                        app:layout_constraintBottom_toBottomOf="@id/settings_enable_twitter_alt"
                         app:layout_constraintEnd_toEndOf="parent" />
 
                     <TextView
