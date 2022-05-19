@@ -61,7 +61,7 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
     @Override
     protected UserLists doInBackground(Long[] param) {
         try {
-            switch(listType) {
+            switch (listType) {
                 case LOAD_USERLISTS:
                     return twitter.getUserListOwnerships(userId, ownerName);
 

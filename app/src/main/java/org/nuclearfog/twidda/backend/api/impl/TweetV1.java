@@ -13,6 +13,7 @@ import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * API v 1.1 implementation of a tweet
@@ -21,7 +22,7 @@ import java.util.Locale;
  */
 public class TweetV1 implements Tweet {
 
-    private static final long serialVersionUID = 70666106496232760L;
+    public static final long serialVersionUID = 70666106496232760L;
 
     /**
      * query parameter to enable extended mode to show tweets with more than 140 characters
@@ -43,12 +44,13 @@ public class TweetV1 implements Tweet {
      */
     private static final String MIME_V_MP4 = "video/mp4";
 
+    private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
+
     private long id;
     private long timestamp;
     private User author;
     private Tweet embeddedTweet;
-    private long replyUserId;
-    private long replyId;
+
     private long retweetId;
     private int retweetCount;
     private int favoriteCount;
@@ -60,16 +62,20 @@ public class TweetV1 implements Tweet {
     private String coordinates;
     private String text;
     private String source;
+
+    private long replyUserId = -1L;
+    private long replyTweetId = -1L;
     private String location = "";
     private String replyName = "";
     private String mediaType = MEDIA_NONE;
 
-
+    /**
+     * @param json      JSON object of a single tweet
+     * @param twitterId ID of the current user
+     * @throws JSONException if values are missing
+     */
     public TweetV1(JSONObject json, long twitterId) throws JSONException {
         author = new UserV1(json.getJSONObject("user"), twitterId);
-        id = Long.parseLong(json.optString("id_str", "-1"));
-        replyId = json.optLong("in_reply_to_status_id", -1);
-        replyUserId = json.optLong("in_reply_to_user_id", -1);
         retweetCount = json.optInt("retweet_count");
         favoriteCount = json.optInt("favorite_count");
         isFavorited = json.optBoolean("favorited");
@@ -82,21 +88,43 @@ public class TweetV1 implements Tweet {
         text = createText(json);
         userMentions = StringTools.getUserMentions(text, author.getScreenname());
 
+        String idStr = json.optString("id_str");
         String replyName = json.optString("in_reply_to_screen_name");
+        String replyTweetIdStr = json.optString("in_reply_to_status_id_str");
+        String replyUsrIdStr = json.optString("in_reply_to_user_id_str");
         JSONObject locationJson = json.optJSONObject("place");
-        JSONObject quoted_tweet = json.optJSONObject("retweeted_status");
         JSONObject user_retweet = json.optJSONObject("current_user_retweet");
+        JSONObject quoted_tweet = json.optJSONObject("retweeted_status");
 
+        if (ID_PATTERN.matcher(idStr).matches()) {
+            id = Long.parseLong(idStr);
+        } else {
+            throw new JSONException("bad ID: " + idStr);
+        }
+        if (!replyName.isEmpty() && !replyName.equals("null")) {
+            this.replyName = '@' + replyName;
+        }
+        if (ID_PATTERN.matcher(replyTweetIdStr).matches()) {
+            replyTweetId = Long.parseLong(replyTweetIdStr);
+        }
+        if (ID_PATTERN.matcher(replyUsrIdStr).matches()) {
+            replyUserId = Long.parseLong(replyUsrIdStr);
+        }
         if (locationJson != null) {
             location = locationJson.optString("full_name");
         }
-        if (!replyName.equals("null")) {
-            this.replyName = '@' + replyName;
+        if (user_retweet != null) {
+            String retweetIdStr = user_retweet.optString("id_str");
+            if (ID_PATTERN.matcher(retweetIdStr).matches()) {
+                retweetId = Long.parseLong(retweetIdStr);
+            }
         }
-        if (user_retweet != null)
-            retweetId = user_retweet.optLong("id");
         if (quoted_tweet != null) {
             embeddedTweet = new TweetV1(quoted_tweet, twitterId);
+            // API 1.1 bug:
+            // values of the embedded tweet should match with the parent tweet
+            // retweeted/favorited values does not match with the values of the embedded tweet
+            // fix: override retweeted/favorited with the embedded tweets values
             isRetweeted = embeddedTweet.isRetweeted();
             isFavorited = embeddedTweet.isFavorited();
         }
@@ -150,11 +178,11 @@ public class TweetV1 implements Tweet {
 
     @Override
     public long getRepliedTweetId() {
-        return replyId;
+        return replyTweetId;
     }
 
     @Override
-    public long getMyRetweetId() {
+    public long getRetweetId() {
         return retweetId;
     }
 

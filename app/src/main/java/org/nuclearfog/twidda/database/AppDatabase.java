@@ -540,7 +540,7 @@ public class AppDatabase {
      * hide or unhide tweet reply
      *
      * @param replyId ID of the reply
-     * @param hide true to hide this tweet
+     * @param hide    true to hide this tweet
      */
     public void hideReply(long replyId, boolean hide) {
         String[] args = {Long.toString(replyId), Long.toString(homeId)};
@@ -762,9 +762,9 @@ public class AppDatabase {
     /**
      * save tweet into database
      *
-     * @param tweet          Tweet information
-     * @param tweetFlags     predefined tweet status register or zero if there isn't one
-     * @param db             SQLite database
+     * @param tweet      Tweet information
+     * @param tweetFlags predefined tweet status register or zero if there isn't one
+     * @param db         SQLite database
      */
     private void storeTweet(Tweet tweet, int tweetFlags, SQLiteDatabase db) {
         User user = tweet.getAuthor();
@@ -941,7 +941,7 @@ public class AppDatabase {
 
         ContentValues values = new ContentValues(4);
         values.put(TweetRegisterTable.REGISTER, register);
-        values.put(TweetRegisterTable.RETWEETUSER, tweet.getMyRetweetId());
+        values.put(TweetRegisterTable.RETWEETUSER, tweet.getRetweetId());
         values.put(TweetRegisterTable.ID, tweet.getId());
         values.put(TweetRegisterTable.OWNER, homeId);
 

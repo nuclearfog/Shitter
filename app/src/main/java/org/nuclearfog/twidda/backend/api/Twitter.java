@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -849,8 +850,8 @@ public class Twitter implements GlobalSettings.SettingsListener {
     /**
      * hides reply of the own tweet
      *
-     * @param tweetId   ID of the tweet
-     * @param hide      true to hide reply
+     * @param tweetId ID of the tweet
+     * @param hide    true to hide reply
      */
     public void hideReply(long tweetId, boolean hide) throws TwitterException {
         try {
@@ -1322,7 +1323,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
                 if (response.body() != null && response.code() == 200) {
                     JSONObject json = new JSONObject(response.body().string());
                     JSONArray idArray = json.getJSONArray("ids");
-                    cursor = json.optLong("next_cursor");
+                    cursor = Long.parseLong(json.optString("next_cursor_str", "0"));
                     for (int pos = 0; pos < idArray.length(); pos++) {
                         result.add(idArray.getLong(pos));
                     }
@@ -1334,6 +1335,8 @@ public class Twitter implements GlobalSettings.SettingsListener {
         } catch (IOException err) {
             throw new TwitterException(err);
         } catch (JSONException err) {
+            throw new TwitterException(err);
+        } catch (NumberFormatException err) {
             throw new TwitterException(err);
         }
     }
@@ -1361,8 +1364,13 @@ public class Twitter implements GlobalSettings.SettingsListener {
                     array = new JSONArray(body);
                 long homeId = settings.getCurrentUserId();
                 List<Tweet> tweets = new ArrayList<>(array.length() + 1);
-                for (int i = 0; i < array.length(); i++)
-                    tweets.add(new TweetV1(array.getJSONObject(i), homeId));
+                for (int i = 0; i < array.length(); i++) {
+                    try {
+                        tweets.add(new TweetV1(array.getJSONObject(i), homeId));
+                    } catch (JSONException e) {
+                        Log.w("tweet", e);
+                    }
+                }
                 return tweets;
             }
             throw new TwitterException(response);
@@ -1421,12 +1429,16 @@ public class Twitter implements GlobalSettings.SettingsListener {
                     jsonResult = "{\"users\":" + jsonResult + '}';
                 JSONObject json = new JSONObject(jsonResult);
                 JSONArray array = json.getJSONArray("users");
-                long prevCursor = json.optLong("previous_cursor", -1);
-                long nextCursor = json.optLong("next_cursor", -1);
+                long prevCursor = Long.parseLong(json.optString("previous_cursor_str", "0"));
+                long nextCursor = Long.parseLong(json.optString("next_cursor_str", "0"));
                 Users users = new Users(prevCursor, nextCursor);
                 long homeId = settings.getCurrentUserId();
                 for (int i = 0; i < array.length(); i++) {
-                    users.add(new UserV1(array.getJSONObject(i), homeId));
+                    try {
+                        users.add(new UserV1(array.getJSONObject(i), homeId));
+                    } catch (JSONException e) {
+                        Log.w("user", e);
+                    }
                 }
                 return users;
             }
@@ -1434,6 +1446,8 @@ public class Twitter implements GlobalSettings.SettingsListener {
         } catch (IOException err) {
             throw new TwitterException(err);
         } catch (JSONException err) {
+            throw new TwitterException(err);
+        } catch (NumberFormatException err) {
             throw new TwitterException(err);
         }
     }
@@ -1457,7 +1471,11 @@ public class Twitter implements GlobalSettings.SettingsListener {
                     JSONArray array = json.getJSONArray("data");
                     long homeId = settings.getCurrentUserId();
                     for (int i = 0; i < array.length(); i++) {
-                        users.add(new UserV2(array.getJSONObject(i), homeId));
+                        try {
+                            users.add(new UserV2(array.getJSONObject(i), homeId));
+                        } catch (JSONException err) {
+                            Log.w("user-v2", err);
+                        }
                     }
                 }
                 return users;
@@ -1545,16 +1563,19 @@ public class Twitter implements GlobalSettings.SettingsListener {
                 if (body.startsWith("{")) {
                     JSONObject json = new JSONObject(body);
                     array = json.getJSONArray("lists");
-                    long prevCursor = json.optLong("previous_cursor");
-                    long nextCursor = json.optLong("next_cursor");
+                    long prevCursor = Long.parseLong(json.optString("previous_cursor_str", "0"));
+                    long nextCursor = Long.parseLong(json.optString("next_cursor_str", "0"));
                     result.setCursors(prevCursor, nextCursor);
                 } else {
                     array = new JSONArray(body);
                 }
                 long currentId = settings.getCurrentUserId();
                 for (int pos = 0; pos < array.length(); pos++) {
-                    JSONObject item = array.getJSONObject(pos);
-                    result.add(new UserListV1(item, currentId));
+                    try {
+                        result.add(new UserListV1(array.getJSONObject(pos), currentId));
+                    } catch (JSONException e) {
+                        Log.w("userlist", e);
+                    }
                 }
                 return result;
             }
@@ -1562,6 +1583,8 @@ public class Twitter implements GlobalSettings.SettingsListener {
         } catch (IOException err) {
             throw new TwitterException(err);
         } catch (JSONException err) {
+            throw new TwitterException(err);
+        } catch (NumberFormatException err) {
             throw new TwitterException(err);
         }
     }
@@ -1714,7 +1737,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param endpoint endpoint url
      * @return http response
      */
-    private Response put(String endpoint,  List<String> params, RequestBody body)throws IOException {
+    private Response put(String endpoint, List<String> params, RequestBody body) throws IOException {
         String authHeader = buildHeader("PUT", endpoint, params);
         String url = appendParams(endpoint, params);
         Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).put(body).build();

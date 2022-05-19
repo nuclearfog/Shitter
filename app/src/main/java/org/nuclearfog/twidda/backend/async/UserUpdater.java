@@ -4,13 +4,13 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.ui.activities.ProfileEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.api.holder.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.activities.ProfileEditor;
 
 import java.lang.ref.WeakReference;
 

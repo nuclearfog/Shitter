@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.model.User;
 import java.util.regex.Pattern;
 
 /**
- *  Implementation of a database tweet
+ * Implementation of a database tweet
  *
  * @author nuclearfog
  */
@@ -140,7 +140,7 @@ public class TweetImpl implements Tweet {
     }
 
     @Override
-    public long getMyRetweetId() {
+    public long getRetweetId() {
         return myRetweetId;
     }
 

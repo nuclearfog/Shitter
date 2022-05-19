@@ -7,7 +7,7 @@
 
     <item
         android:id="@+id/menu_tweet_copy"
-        android:title="@android:string/copy" >
+        android:title="@android:string/copy">
 
         <menu>
 

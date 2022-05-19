@@ -3,8 +3,8 @@ package org.nuclearfog.twidda.backend.async;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.database.AccountDatabase;
-import org.nuclearfog.twidda.ui.fragments.AccountFragment;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.ui.fragments.AccountFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

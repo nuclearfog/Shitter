@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
 
+import java.util.regex.Pattern;
+
 /**
  * API 1.1 implementation of User
  *
@@ -16,7 +18,9 @@ import org.nuclearfog.twidda.model.User;
  */
 public class UserV1 implements User {
 
-    private static final long serialVersionUID = 7893496988800499358L;
+    public static final long serialVersionUID = 7893496988800499358L;
+
+    private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
     private long id;
     private long created;
@@ -37,15 +41,27 @@ public class UserV1 implements User {
     private boolean defaultImage;
     private boolean isCurrentUser = true;
 
-
-    public UserV1(JSONObject json, long twitterId) {
+    /**
+     * @param json      JSON object containing user information
+     * @param twitterId ID of the current user
+     * @throws JSONException if values are missing
+     */
+    public UserV1(JSONObject json, long twitterId) throws JSONException {
         this(json);
         isCurrentUser = twitterId == id;
     }
 
-
-    public UserV1(JSONObject json) {
-        id = Long.parseLong(json.optString("id_str", "-1"));
+    /**
+     * @param json JSON object containing user information
+     * @throws JSONException if values are missing
+     */
+    public UserV1(JSONObject json) throws JSONException {
+        String idStr = json.getString("id_str");
+        if (ID_PATTERN.matcher(idStr).matches()) {
+            id = Long.parseLong(idStr);
+        } else {
+            throw new JSONException("bad ID: " + idStr);
+        }
         username = json.optString("name");
         screenName = '@' + json.optString("screen_name");
         isVerified = json.optBoolean("verified");

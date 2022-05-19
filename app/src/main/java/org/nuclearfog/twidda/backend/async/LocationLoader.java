@@ -2,10 +2,10 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.ui.activities.AppSettings;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.ui.activities.AppSettings;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

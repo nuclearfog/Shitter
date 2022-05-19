@@ -2,11 +2,11 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.ui.activities.UserlistEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.api.holder.UserlistUpdate;
 import org.nuclearfog.twidda.model.UserList;
+import org.nuclearfog.twidda.ui.activities.UserlistEditor;
 
 import java.lang.ref.WeakReference;
 

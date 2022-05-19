@@ -5,12 +5,12 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.api.holder.MediaStream;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.ui.activities.ImageViewer;
 
 import java.io.File;
 import java.io.FileOutputStream;

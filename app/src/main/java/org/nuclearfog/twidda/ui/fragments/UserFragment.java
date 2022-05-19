@@ -1,9 +1,9 @@
 package org.nuclearfog.twidda.ui.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.async.ListManager.Action.DEL_USER;
 import static org.nuclearfog.twidda.backend.async.UserLoader.NO_CURSOR;
+import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DATA;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,20 +14,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.async.ListManager;
 import org.nuclearfog.twidda.backend.async.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.async.UserLoader;
 import org.nuclearfog.twidda.backend.async.UserLoader.Type;
-import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.model.User;
 
 /**
  * Fragment class for lists a list of users

@@ -83,7 +83,7 @@ public interface Tweet extends Serializable {
     /**
      * @return ID of the tweet retweeted by the current user
      */
-    long getMyRetweetId();
+    long getRetweetId();
 
     /**
      * @return number of retweets

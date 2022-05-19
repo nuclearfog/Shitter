@@ -4,12 +4,12 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.ui.activities.UserExclude;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.activities.UserExclude;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

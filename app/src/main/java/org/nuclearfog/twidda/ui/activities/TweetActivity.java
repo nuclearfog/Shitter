@@ -48,20 +48,20 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.async.TweetAction;
 import org.nuclearfog.twidda.backend.async.TweetAction.Action;
-import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.LinkDialog;
 import org.nuclearfog.twidda.ui.fragments.TweetFragment;
-import org.nuclearfog.twidda.model.Tweet;
-import org.nuclearfog.twidda.model.User;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -291,7 +291,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             currentTweet = tweet.getEmbeddedTweet();
         }
         if (currentTweet.getRepliedUserId() == settings.getCurrentUserId()
-            && currentTweet.getAuthor().getId() != settings.getCurrentUserId()) {
+                && currentTweet.getAuthor().getId() != settings.getCurrentUserId()) {
             optHide.setVisible(true);
             if (hidden) {
                 optHide.setTitle(R.string.menu_tweet_unhide);
@@ -480,9 +480,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
                 if (tweet.isRetweeted()) {
-                    statusAsync = new TweetAction(this, Action.UNRETWEET, tweet.getId(), tweet.getMyRetweetId());
+                    statusAsync = new TweetAction(this, Action.UNRETWEET, tweet.getId(), tweet.getRetweetId());
                 } else {
-                    statusAsync = new TweetAction(this, Action.RETWEET, tweet.getId(), tweet.getMyRetweetId());
+                    statusAsync = new TweetAction(this, Action.RETWEET, tweet.getId(), tweet.getRetweetId());
                 }
                 statusAsync.execute();
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
@@ -491,9 +491,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // favorite the tweet
             else if (v.getId() == R.id.tweet_favorite) {
                 if (tweet.isFavorited()) {
-                    statusAsync = new TweetAction(this, Action.UNFAVORITE, tweet.getId(), tweet.getMyRetweetId());
+                    statusAsync = new TweetAction(this, Action.UNFAVORITE, tweet.getId(), tweet.getRetweetId());
                 } else {
-                    statusAsync = new TweetAction(this, Action.FAVORITE, tweet.getId(), tweet.getMyRetweetId());
+                    statusAsync = new TweetAction(this, Action.FAVORITE, tweet.getId(), tweet.getRetweetId());
                 }
                 statusAsync.execute();
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
@@ -511,7 +511,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 long tweetId = tweet.getId();
                 if (tweet.getEmbeddedTweet() != null)
                     tweetId = tweet.getEmbeddedTweet().getId();
-                statusAsync = new TweetAction(this, Action.DELETE, tweetId, tweet.getMyRetweetId());
+                statusAsync = new TweetAction(this, Action.DELETE, tweetId, tweet.getRetweetId());
                 statusAsync.execute();
             }
         }

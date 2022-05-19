@@ -20,7 +20,10 @@ public class RelationV1 implements Relation {
     private boolean isMuted;
     private boolean canDm;
 
-
+    /**
+     * @param json JSON object containing relationship information
+     * @throws JSONException if values are missing
+     */
     public RelationV1(JSONObject json) throws JSONException {
         JSONObject relationship = json.getJSONObject("relationship");
         JSONObject source = relationship.getJSONObject("source");

@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.ui.activities.UserlistEditor.KEY_LIST_EDITOR_DATA;
 import static org.nuclearfog.twidda.backend.async.ListManager.Action.ADD_USER;
+import static org.nuclearfog.twidda.ui.activities.UserlistEditor.KEY_LIST_EDITOR_DATA;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,10 +33,10 @@ import org.nuclearfog.twidda.backend.async.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.model.UserList;
 
 import java.util.regex.Pattern;
 
@@ -131,7 +131,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
             userList = (UserList) data;
             toolbar.setTitle(userList.getTitle());
             toolbar.setSubtitle(userList.getDescription());
-            adapter.setupListContentPage(userList.getId(), userList.isListOwner());
+            adapter.setupListContentPage(userList.getId(), userList.getListOwner().isCurrentUser());
         } else {
             toolbar.setTitle("");
             long id = getIntent().getLongExtra(KEY_LIST_ID, 0);
@@ -191,7 +191,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
         SearchView searchUser = (SearchView) search.getActionView();
         AppStyles.setTheme(searchUser, Color.TRANSPARENT);
         if (userList != null) {
-            if (userList.isListOwner()) {
+            if (userList.getListOwner().isCurrentUser()) {
                 searchUser.setQueryHint(getString(R.string.menu_add_user));
                 searchUser.setOnQueryTextListener(this);
                 editList.setVisible(true);

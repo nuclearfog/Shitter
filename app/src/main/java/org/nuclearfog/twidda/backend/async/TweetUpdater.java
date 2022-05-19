@@ -2,12 +2,12 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.ui.activities.TweetEditor;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.api.holder.MediaStream;
 import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.ui.activities.TweetEditor;
 
 import java.lang.ref.WeakReference;
 

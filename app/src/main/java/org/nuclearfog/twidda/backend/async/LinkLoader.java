@@ -4,10 +4,10 @@ import static org.nuclearfog.twidda.ui.activities.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.ui.activities.Userlists.KEY_USERLIST_OWNER_NAME;
 import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
 import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_LIST_ID;
+import static org.nuclearfog.twidda.ui.activities.Userlists.KEY_USERLIST_OWNER_NAME;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -16,17 +16,17 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.backend.api.Twitter;
+import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.DirectMessage;
 import org.nuclearfog.twidda.ui.activities.MainActivity;
 import org.nuclearfog.twidda.ui.activities.SearchPage;
 import org.nuclearfog.twidda.ui.activities.TweetActivity;
 import org.nuclearfog.twidda.ui.activities.TweetEditor;
-import org.nuclearfog.twidda.ui.activities.Userlists;
 import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
-import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.activities.Userlists;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;

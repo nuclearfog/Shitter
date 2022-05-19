@@ -53,9 +53,4 @@ public interface UserList extends Serializable {
      * @return list subscriber count
      */
     int getSubscriberCount();
-
-    /**
-     * @return true if current user owns the list
-     */
-    boolean isListOwner();
 }

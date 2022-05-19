@@ -10,8 +10,8 @@ import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.ui.fragments.TweetFragment;
 import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.ui.fragments.TweetFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

@@ -23,7 +23,7 @@ public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
 
     /**
      * @param mediaStream inputstream of a cached image file
-     * @param fileStream destiny output stream of a file
+     * @param fileStream  destiny output stream of a file
      */
     public ImageSaver(MediaActivity activity, InputStream mediaStream, OutputStream fileStream) {
         super();

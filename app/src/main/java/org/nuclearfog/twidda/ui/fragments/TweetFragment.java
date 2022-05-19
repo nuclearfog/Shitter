@@ -10,13 +10,13 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.ui.activities.TweetActivity;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
 import org.nuclearfog.twidda.backend.async.TweetLoader;
 import org.nuclearfog.twidda.backend.async.TweetLoader.ListType;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.ui.activities.TweetActivity;
 
 import java.util.List;
 

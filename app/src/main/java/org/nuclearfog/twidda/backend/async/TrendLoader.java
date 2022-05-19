@@ -7,8 +7,8 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

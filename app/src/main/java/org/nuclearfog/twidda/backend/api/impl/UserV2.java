@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
 
+import java.util.regex.Pattern;
+
 /**
  * User implementation of API V2
  *
@@ -16,7 +18,9 @@ import org.nuclearfog.twidda.model.User;
  */
 public class UserV2 implements User {
 
-    private static final long serialVersionUID = 1136243062864162774L;
+    public static final long serialVersionUID = 1136243062864162774L;
+
+    private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
     /**
      * extra parameters required to fetch additional data
@@ -43,9 +47,17 @@ public class UserV2 implements User {
     private boolean followReqSent;
     private boolean defaultImage;
 
-
-    public UserV2(JSONObject json, long twitterId) {
-        id = Long.parseLong(json.optString("id", "-1"));
+    /**
+     * @param json      JSON object containing user data
+     * @param twitterId ID of the current user
+     */
+    public UserV2(JSONObject json, long twitterId) throws JSONException {
+        String idStr = json.getString("id");
+        if (ID_PATTERN.matcher(idStr).matches()) {
+            id = Long.parseLong(idStr);
+        } else {
+            throw new JSONException("bad ID: " + idStr);
+        }
         username = json.optString("name");
         screenName = '@' + json.optString("username");
         isProtected = json.optBoolean("protected");
@@ -66,6 +78,7 @@ public class UserV2 implements User {
         }
 
         // not yet implemented in API 2.0
+        // todo check if Twitter added these values
         likeCount = -1;
         followReqSent = false;
         defaultImage = false;

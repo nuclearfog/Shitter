@@ -20,20 +20,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ui.activities.ImageViewer;
-import org.nuclearfog.twidda.ui.activities.MessageEditor;
-import org.nuclearfog.twidda.ui.activities.SearchPage;
-import org.nuclearfog.twidda.ui.activities.TweetActivity;
-import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.ui.activities.ImageViewer;
+import org.nuclearfog.twidda.ui.activities.MessageEditor;
+import org.nuclearfog.twidda.ui.activities.SearchPage;
+import org.nuclearfog.twidda.ui.activities.TweetActivity;
+import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.model.DirectMessage;
 
 /**
  * Fragment class for direct message lists

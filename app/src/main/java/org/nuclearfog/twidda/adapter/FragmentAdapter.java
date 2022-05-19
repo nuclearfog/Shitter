@@ -1,8 +1,28 @@
 package org.nuclearfog.twidda.adapter;
 
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.*;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.*;
-import static org.nuclearfog.twidda.ui.fragments.UserListFragment.*;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_FAVORS;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_HOME;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_LIST;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_MENT;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_TWEETS;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_BLOCKS;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LISTS;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_MUTES;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SUBSCR;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_NAME;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_OWNS;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_SUBSCR_TO;
 
 import android.os.Bundle;
 

@@ -227,7 +227,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
                 } else {
                     vh.profile_img.setImageResource(0);
                 }
-                if (!item.isListOwner() && item.isFollowing()) {
+                if (!item.getListOwner().isCurrentUser() && item.isFollowing()) {
                     vh.icons[6].setVisibility(VISIBLE);
                     vh.textViews[7].setVisibility(VISIBLE);
                 } else {

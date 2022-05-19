@@ -10,7 +10,6 @@ import org.nuclearfog.twidda.model.User;
  * database implementation of account
  *
  * @author nuclearfog
- *
  */
 public class AccountImpl implements Account {
 

@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.adapter.holder.LoginHolder.*;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_CREATED;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_SCR_NAME;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_USERNAME;
 
 import android.content.Context;
 import android.content.res.Resources;
