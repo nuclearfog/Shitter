@@ -165,6 +165,6 @@ public class UserImpl implements User {
     @NonNull
     @Override
     public String toString() {
-        return "name:\"" + screenName + "\"";
+        return "name=\"" + screenName + "\"";
     }
 }

@@ -454,7 +454,7 @@
                         android:layout_marginBottom="@dimen/settings_column_margin"
                         android:max="9"
                         app:layout_constraintStart_toEndOf="@id/settings_list_seek_descr"
-                        app:layout_constraintTop_toBottomOf="@id/settings_enable_prev"
+                        app:layout_constraintTop_toBottomOf="@id/settings_enable_twitter_alt"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/settings_list_size" />
 

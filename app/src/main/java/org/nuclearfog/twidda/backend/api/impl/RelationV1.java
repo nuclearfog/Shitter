@@ -72,7 +72,7 @@ public class RelationV1 implements Relation {
     @NonNull
     @Override
     public String toString() {
-        return "following:" + isFollowing + " follower:" + isFollower +
-                " blocked:" + isBlocked + " muted:" + isMuted + " dm open:" + canDm;
+        return "following=" + isFollowing + " follower=" + isFollower +
+                " blocked=" + isBlocked + " muted=" + isMuted + " dm open=" + canDm;
     }
 }

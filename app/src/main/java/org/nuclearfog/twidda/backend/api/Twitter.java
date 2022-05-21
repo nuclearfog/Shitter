@@ -108,7 +108,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private static final String TWEET_UNRETWEET = API + "1.1/statuses/unretweet/";
     private static final String TWEET_UPLOAD = API + "1.1/statuses/update.json";
     private static final String TWEET_DELETE = API + "1.1/statuses/destroy/";
-    private static final String TWEET_HIDE = API + "2/tweets/";
+    private static final String TWEET_UNI = API + "2/tweets/";
     private static final String TRENDS = API + "1.1/trends/place.json";
     private static final String LOCATIONS = API + "1.1/trends/available.json";
     private static final String USERLIST_SHOW = API + "1.1/lists/show.json";
@@ -178,6 +178,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
                 supportTls.add(new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).allEnabledTlsVersions().allEnabledCipherSuites().build());
                 builder.connectionSpecs(supportTls);
             } catch (Exception e) {
+                e.printStackTrace();
                 // ignore, try with default setting
             }
         }
@@ -511,7 +512,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return user list
      */
     public Users getRetweetingUsers(long tweetId) throws TwitterException {
-        String endpoint = API + "2/tweets/" + tweetId + "/retweeted_by";
+        String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
         return getUsers2(endpoint);
     }
 
@@ -522,7 +523,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return user list
      */
     public Users getLikingUsers(long tweetId) throws TwitterException {
-        String endpoint = API + "2/tweets/" + tweetId + "/liking_users";
+        String endpoint = TWEET_UNI + tweetId + "/liking_users";
         return getUsers2(endpoint);
     }
 
@@ -857,7 +858,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         try {
             MediaType mediaType = MediaType.parse("application/json");
             RequestBody body = RequestBody.create(mediaType, "{\"hidden\":" + hide + "}");
-            Response response = put(TWEET_HIDE + tweetId + "/hidden", new ArrayList<>(2), body);
+            Response response = put(TWEET_UNI + tweetId + "/hidden", new ArrayList<>(2), body);
 
             if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());

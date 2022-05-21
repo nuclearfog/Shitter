@@ -180,7 +180,7 @@ public class UserV1 implements User {
     @NonNull
     @Override
     public String toString() {
-        return "name:\"" + screenName + "\"";
+        return "name=\"" + screenName + "\"";
     }
 
     /**

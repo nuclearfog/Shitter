@@ -44,6 +44,6 @@ public class TrendV1 implements Trend {
     @NonNull
     @Override
     public String toString() {
-        return "rank:" + rank + " name:\"" + name + "\"";
+        return "rank=" + rank + " name=\"" + name + "\"";
     }
 }

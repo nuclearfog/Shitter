@@ -213,7 +213,7 @@ public class TweetImpl implements Tweet {
     @NonNull
     @Override
     public String toString() {
-        return "from:\"" + author.getScreenname() + "\" text:\"" + text + "\"";
+        return "from=\"" + author.getScreenname() + "\" text=\"" + text + "\"";
     }
 
     /**

@@ -69,8 +69,8 @@ public class AccountImpl implements Account {
     @Override
     public String toString() {
         if (user != null)
-            return user + " date:" + loginDate;
-        return "id:" + userId + " date:" + loginDate;
+            return user + " date=" + loginDate;
+        return "id=" + userId + " date=" + loginDate;
     }
 
     /**
