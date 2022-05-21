@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,12 +71,14 @@ import okio.Okio;
  */
 public class Twitter implements GlobalSettings.SettingsListener {
 
-    public static final String SIGNATURE_ALG = "HMAC-SHA256";
     private static final String OAUTH = "1.0";
+    public static final String SIGNATURE_ALG = "HMAC-SHA256";
     private static final String JSON = ".json";
+
     private static final String API = "https://api.twitter.com/";
     private static final String UPLOAD = "https://upload.twitter.com/";
     private static final String DOWNLOAD = "https://ton.twitter.com/";
+
     private static final String AUTHENTICATE = API + "oauth/authenticate";
     public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
     private static final String REQUEST_TOKEN = API + "oauth/request_token";
@@ -130,10 +134,9 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private static final String PROFILE_UPDATE_IMAGE = API + "1.1/account/update_profile_image.json";
     private static final String PROFILE_UPDATE_BANNER = API + "1.1/account/update_profile_banner.json";
 
-    /**
-     * type of the media upload used by okHttp
-     */
     private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
+    private static final MediaType TYPE_JSON = MediaType.parse("application/json");
+    private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 
     /**
      * To upload big files like videos, files must be chunked in segments.
@@ -856,8 +859,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      */
     public void hideReply(long tweetId, boolean hide) throws TwitterException {
         try {
-            MediaType mediaType = MediaType.parse("application/json");
-            RequestBody body = RequestBody.create(mediaType, "{\"hidden\":" + hide + "}");
+            RequestBody body = RequestBody.create(TYPE_JSON, "{\"hidden\":" + hide + "}");
             Response response = put(TWEET_UNI + tweetId + "/hidden", new ArrayList<>(2), body);
 
             if (response.body() != null && response.code() == 200) {
@@ -1660,7 +1662,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return http resonse
      */
     private Response post(String endpoint, List<String> params) throws IOException {
-        RequestBody body = RequestBody.create(MediaType.parse("text/plain"), "");
+        RequestBody body = RequestBody.create(TYPE_TEXT, "");
         return post(endpoint, params, body);
     }
 
@@ -1672,7 +1674,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return http resonse
      */
     private Response post(String endpoint, List<String> params, JSONObject json) throws IOException {
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        RequestBody body = RequestBody.create(TYPE_JSON, json.toString());
         return post(endpoint, params, body);
     }
 
@@ -1692,7 +1694,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             }
 
             @Override
-            public void writeTo(BufferedSink sink) throws IOException {
+            public void writeTo(@NonNull BufferedSink sink) throws IOException {
                 if (enableChunk && is.available() > CHUNK_MAX_BYTES) {
                     sink.write(Okio.buffer(Okio.source(is)), CHUNK_MAX_BYTES);
                 } else {
