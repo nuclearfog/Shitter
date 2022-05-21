@@ -339,7 +339,10 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>(5);
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
-        return getUsers1(USER_LIST_MEMBER, params);
+        // fix API returns wrong cursor if end of the list is reached
+        Users result = getUsers1(USER_LIST_MEMBER, params);
+        result.setPrevCursor(cursor);
+        return result;
     }
 
     /**
@@ -353,7 +356,10 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>(5);
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
-        return getUsers1(USER_LIST_SUBSCRIBER, params);
+        // fix API returns wrong cursor if end of the list is reached
+        Users result = getUsers1(USER_LIST_SUBSCRIBER, params);
+        result.setPrevCursor(cursor);
+        return result;
     }
 
     /**

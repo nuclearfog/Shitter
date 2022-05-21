@@ -19,3 +19,7 @@
 -adaptclassstrings android.support.v8.renderscript.**
 
 -dontwarn javax.annotation.Nullable
+
+-keepclassmembers class * implements android.os.Parcelable {
+        public static final ** CREATOR;
+}

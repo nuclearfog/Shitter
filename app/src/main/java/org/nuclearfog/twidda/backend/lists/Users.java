@@ -102,6 +102,10 @@ public class Users extends LinkedList<User> {
         this.nextCursor = nextCursor;
     }
 
+    public void setPrevCursor(long prevCursor) {
+        this.prevCursor = prevCursor;
+    }
+
     /**
      * add a sublist at the bottom of this list including next cursor
      *
