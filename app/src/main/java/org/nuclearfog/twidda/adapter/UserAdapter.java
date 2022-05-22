@@ -61,7 +61,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private GlobalSettings settings;
     private Picasso picasso;
 
-    private Users data = new Users();
+    private Users data = new Users(0L, 0L);
     private int loadingIndex = NO_LOADING;
     private boolean userRemovable = false;
 
@@ -82,24 +82,29 @@ public class UserAdapter extends Adapter<ViewHolder> {
     @MainThread
     public void setData(@NonNull Users newData) {
         disableLoading();
+        // add empty list
         if (newData.isEmpty()) {
+            // remove page footer if there isn't a next page
             if (!data.isEmpty() && data.peekLast() == null) {
-                // remove footer
                 int end = data.size() - 1;
                 data.remove(end);
                 notifyItemRemoved(end);
             }
-        } else if (data.isEmpty() || !newData.hasPrevious()) {
+        }
+        // add items to the top of the list
+        else if (data.isEmpty() || !newData.hasPrevious()) {
             data.replace(newData);
+            // add page footer if there is a next page
             if (newData.hasNext()) {
-                // add footer
                 data.add(null);
             }
             notifyDataSetChanged();
-        } else {
+        }
+        // add items to the end of the list
+        else {
             int end = data.size() - 1;
+            // remove page footer if there isn't a next page
             if (!newData.hasNext()) {
-                // remove footer
                 data.remove(end);
                 notifyItemRemoved(end);
             }

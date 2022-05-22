@@ -339,9 +339,13 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>(5);
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
-        // fix API returns wrong cursor if end of the list is reached
         Users result = getUsers1(USER_LIST_MEMBER, params);
-        result.setPrevCursor(cursor);
+        // fix API returns zero previous_cursor when the end of the list is reached
+        // override previous cursor
+        if (cursor == -1L)
+            result.setPrevCursor(0);
+        else
+            result.setPrevCursor(cursor);
         return result;
     }
 
@@ -356,9 +360,13 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>(5);
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
-        // fix API returns wrong cursor if end of the list is reached
         Users result = getUsers1(USER_LIST_SUBSCRIBER, params);
-        result.setPrevCursor(cursor);
+        // fix API returns zero previous_cursor when the end of the list is reached
+        // override previous cursor
+        if (cursor == -1L)
+            result.setPrevCursor(0);
+        else
+            result.setPrevCursor(cursor);
         return result;
     }
 
@@ -580,7 +588,8 @@ public class Twitter implements GlobalSettings.SettingsListener {
             nextPage = 0;
         if (settings.filterResults())
             filterUsers(result);
-        result.setCursors(currentPage - 1, nextPage);
+        result.setPrevCursor(currentPage - 1);
+        result.setNextCursor(nextPage);
         return result;
     }
 
@@ -1017,9 +1026,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             params.add("user_id=" + userId);
         else
             params.add("screen_name=" + StringTools.encode(screen_name));
-        UserLists result = getUserlists(USERLIST_OWNERSHIP, params);
-        result.setCursors(0, 0); // this endpoint doesn't support cursors
-        return result;
+        return getUserlists(USERLIST_OWNERSHIP, params);
     }
 
     /**
@@ -1474,7 +1481,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             Response response = get(endpoint, params);
             if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
-                Users users = new Users();
+                Users users = new Users(0L, 0L);
                 // check if result is not empty
                 if (json.has("data")) {
                     JSONArray array = json.getJSONArray("data");
@@ -1566,7 +1573,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             Response response = get(endpoint, params);
             if (response.body() != null && response.code() == 200) {
                 JSONArray array;
-                UserLists result = new UserLists();
+                UserLists result;
                 String body = response.body().string();
                 // add cursors if available
                 if (body.startsWith("{")) {
@@ -1574,9 +1581,10 @@ public class Twitter implements GlobalSettings.SettingsListener {
                     array = json.getJSONArray("lists");
                     long prevCursor = Long.parseLong(json.optString("previous_cursor_str", "0"));
                     long nextCursor = Long.parseLong(json.optString("next_cursor_str", "0"));
-                    result.setCursors(prevCursor, nextCursor);
+                    result = new UserLists(prevCursor, nextCursor);
                 } else {
                     array = new JSONArray(body);
+                    result = new UserLists(0L, 0L);
                 }
                 long currentId = settings.getCurrentUserId();
                 for (int pos = 0; pos < array.length(); pos++) {

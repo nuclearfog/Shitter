@@ -64,7 +64,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
     private Resources resources;
     private Picasso picasso;
 
-    private UserLists data = new UserLists();
+    private UserLists data = new UserLists(0L, 0L);
     private int loadingIndex = NO_LOADING;
 
     /**

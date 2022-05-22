@@ -14,14 +14,10 @@ import java.util.LinkedList;
  */
 public class Users extends LinkedList<User> {
 
-    private static final long serialVersionUID = -1108521824070076679L;
+    public static final long serialVersionUID = -1108521824070076679L;
 
-    private long prevCursor = 0;
-    private long nextCursor = 0;
-
-    public Users() {
-        super();
-    }
+    private long prevCursor;
+    private long nextCursor;
 
     /**
      * creates an empty list with defined cursors
@@ -97,13 +93,22 @@ public class Users extends LinkedList<User> {
         nextCursor = list.nextCursor;
     }
 
-    public void setCursors(long prevCursor, long nextCursor) {
-        this.prevCursor = prevCursor;
-        this.nextCursor = nextCursor;
-    }
-
+    /**
+     * set previous cursor
+     *
+     * @param prevCursor cursor value
+     */
     public void setPrevCursor(long prevCursor) {
         this.prevCursor = prevCursor;
+    }
+
+    /**
+     * set next cursor
+     *
+     * @param nextCursor cursor value
+     */
+    public void setNextCursor(long nextCursor) {
+        this.nextCursor = nextCursor;
     }
 
     /**

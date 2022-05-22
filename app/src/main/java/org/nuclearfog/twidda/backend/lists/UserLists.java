@@ -14,16 +14,9 @@ import java.util.LinkedList;
  */
 public class UserLists extends LinkedList<UserList> {
 
-    private static final long serialVersionUID = -5947008315897774115L;
+    public static final long serialVersionUID = -5947008315897774115L;
 
     private long prevCursor, nextCursor;
-
-    /**
-     * create an empty list
-     */
-    public UserLists() {
-        this(0, 0);
-    }
 
     /**
      * @param prevCursor previous list cursor or 0 if list starts
@@ -67,12 +60,6 @@ public class UserLists extends LinkedList<UserList> {
      */
     public long getNext() {
         return nextCursor;
-    }
-
-
-    public void setCursors(long prevCursor, long nextCursor) {
-        this.prevCursor = prevCursor;
-        this.nextCursor = nextCursor;
     }
 
     /**
