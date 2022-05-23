@@ -214,7 +214,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    public void onConfirm(DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         if (type == DialogType.LIST_REMOVE_USER) {
             if (listTask == null || listTask.getStatus() != RUNNING) {
                 listTask = new ListManager(requireContext(), id, DEL_USER, deleteUserName, this);

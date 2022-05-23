@@ -235,4 +235,9 @@
     <string name="info_reply_hidden">Antwort wurde ausgeblendet</string>
     <string name="info_reply_unhidden">Antwort wurde eingeblendet</string>
     <string name="settings_description_enable_twitter_alt">nitter.net für Links benutzen</string>
+    <string name="dialog_confirm_warning">Warnung</string>
+    <string name="dialog_warning_videoview">Videoplayer unterstützt keine Proxy Verbindung! Fortsetzen ohne Proxy?</string>
+    <string name="confirm_unknown_error">Unbekannter Fehler!</string>
+    <string name="dialog_confirm_remember">merken</string>
+    <string name="directmessage_media_button">Medienanhang</string>
 </resources>

@@ -108,7 +108,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 
     @Override
-    public void onConfirm(DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         if (type == DialogType.REMOVE_ACCOUNT) {
             loginTask = new AccountLoader(this);
             loginTask.execute(selection);

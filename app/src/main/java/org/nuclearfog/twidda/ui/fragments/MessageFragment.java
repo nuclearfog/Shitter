@@ -176,7 +176,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
     @Override
-    public void onConfirm(DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         if (type == DialogType.MESSAGE_DELETE) {
             if (messageTask != null && messageTask.getStatus() != RUNNING) {
                 messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null, deleteId);

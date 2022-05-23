@@ -124,7 +124,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private Picasso picasso;
 
     private LinkDialog linkPreview;
-    private ConfirmDialog deleteDialog;
+    private ConfirmDialog confirmDialog;
 
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, sensitive_media;
     private Button ansButton, rtwButton, favButton, replyName, tweetLocGPS, retweeter;
@@ -215,9 +215,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         picasso = PicassoBuilder.get(this);
 
         linkPreview = new LinkDialog(this);
-        deleteDialog = new ConfirmDialog(this);
+        confirmDialog = new ConfirmDialog(this);
 
-        deleteDialog.setConfirmListener(this);
+        confirmDialog.setConfirmListener(this);
         retweeter.setOnClickListener(this);
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
@@ -327,7 +327,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         User author = clickedTweet.getAuthor();
         // Delete tweet option
         if (item.getItemId() == R.id.menu_tweet_delete) {
-            deleteDialog.show(DialogType.TWEET_DELETE);
+            confirmDialog.show(DialogType.TWEET_DELETE);
         }
         // hide tweet
         else if (item.getItemId() == R.id.menu_tweet_hide) {
@@ -449,11 +449,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 }
                 // open embedded video link
                 else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_VIDEO)) {
-                    Uri link = clickedTweet.getMediaUris()[0];
-                    Intent mediaIntent = new Intent(this, VideoViewer.class);
-                    mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
-                    mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-                    startActivity(mediaIntent);
+                    if (!settings.isProxyEnabled() || (settings.isProxyEnabled() && settings.ignoreProxyWarning())) {
+                        Uri link = clickedTweet.getMediaUris()[0];
+                        Intent mediaIntent = new Intent(this, VideoViewer.class);
+                        mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
+                        mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+                        startActivity(mediaIntent);
+                    } else {
+                        confirmDialog.show(DialogType.PROXY_CONFIRM);
+                    }
                 }
                 // open embedded gif link
                 else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_GIF)) {
@@ -505,14 +509,23 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onConfirm(DialogType type) {
-        if (type == DialogType.TWEET_DELETE) {
-            if (tweet != null) {
-                long tweetId = tweet.getId();
-                if (tweet.getEmbeddedTweet() != null)
-                    tweetId = tweet.getEmbeddedTweet().getId();
-                statusAsync = new TweetAction(this, Action.DELETE, tweetId, tweet.getRetweetId());
+    public void onConfirm(DialogType type, boolean rememberChoice) {
+        if (tweet != null) {
+            Tweet clickedTweet = tweet;
+            if (tweet.getEmbeddedTweet() != null) {
+                clickedTweet = tweet.getEmbeddedTweet();
+            }
+            if (type == DialogType.TWEET_DELETE) {
+                statusAsync = new TweetAction(this, Action.DELETE, clickedTweet.getId(), tweet.getRetweetId());
                 statusAsync.execute();
+            } else if (type == DialogType.PROXY_CONFIRM) {
+                settings.setIgnoreProxyWarning(rememberChoice);
+
+                Uri link = clickedTweet.getMediaUris()[0];
+                Intent mediaIntent = new Intent(this, VideoViewer.class);
+                mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
+                mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+                startActivity(mediaIntent);
             }
         }
     }

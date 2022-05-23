@@ -308,7 +308,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 
     @Override
-    public void onConfirm(DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         // retry uploading tweet
         if (type == DialogType.TWEET_EDITOR_ERROR) {
             updateTweet();

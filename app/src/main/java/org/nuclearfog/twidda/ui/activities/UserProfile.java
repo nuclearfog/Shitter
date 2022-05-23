@@ -536,7 +536,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public void onConfirm(DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         if (user != null) {
             profileAsync = new UserAction(this, user.getId());
             // confirmed unfollowing user

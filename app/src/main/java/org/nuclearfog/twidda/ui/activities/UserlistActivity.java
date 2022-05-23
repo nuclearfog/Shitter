@@ -273,7 +273,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 
     @Override
-    public void onConfirm(DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         // delete user list
         if (type == DialogType.LIST_DELETE) {
             if (userList != null) {

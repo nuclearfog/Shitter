@@ -316,7 +316,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public void onConfirm(DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         // confirm log out
         if (type == DialogType.APP_LOG_OUT) {
             settings.logout();
@@ -713,6 +713,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             }
         } else {
             settings.clearProxyServer();
+            settings.setIgnoreProxyWarning(false);
         }
         // check if API-keys are correctly set
         if (enableAPI.isChecked()) {

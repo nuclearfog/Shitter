@@ -104,6 +104,7 @@ public class GlobalSettings {
     private static final String PROXY_PORT = "proxy_port";
     private static final String PROXY_USER = "proxy_user";
     private static final String PROXY_PASS = "proxy_pass";
+    private static final String PROXY_IGNORE = "ignore_proxy_set";
     private static final String TREND_LOC = "location";
     private static final String TREND_ID = "world_id";
     private static final String LINK_PREVIEW = "link_preview";
@@ -153,6 +154,7 @@ public class GlobalSettings {
     private boolean loggedIn;
     private boolean isProxyEnabled;
     private boolean isProxyAuthSet;
+    private boolean ignoreProxyWarning;
     private boolean customAPIKey;
     private boolean toolbarOverlap;
     private boolean linkPreview;
@@ -882,12 +884,33 @@ public class GlobalSettings {
     }
 
     /**
-     * check kif proxy authentication is set
+     * check if proxy authentication is set
      *
      * @return true if user auth is set
      */
     public boolean isProxyAuthSet() {
         return isProxyAuthSet;
+    }
+
+    /**
+     * check if proxy warning should be ignored
+     *
+     * @return true if proxy warning should be ignored
+     */
+    public boolean ignoreProxyWarning() {
+        return ignoreProxyWarning;
+    }
+
+    /**
+     * enable/ignore proxy warning
+     *
+     * @param ignore true to ignore proxy warning
+     */
+    public void setIgnoreProxyWarning(boolean ignore) {
+        ignoreProxyWarning = ignore;
+        Editor e = settings.edit();
+        e.putBoolean(PROXY_IGNORE, ignore);
+        e.apply();
     }
 
     /**
@@ -1093,6 +1116,7 @@ public class GlobalSettings {
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
         isProxyEnabled = settings.getBoolean(PROXY_SET, false);
         isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
+        ignoreProxyWarning = settings.getBoolean(PROXY_IGNORE, false);
         loggedIn = settings.getBoolean(LOGGED_IN, false);
         loadImage = settings.getBoolean(IMAGE_LOAD, true);
         loadAnswer = settings.getBoolean(ANSWER_LOAD, false);

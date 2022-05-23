@@ -374,7 +374,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 
     @Override
-    public void onConfirm(ConfirmDialog.DialogType type) {
+    public void onConfirm(DialogType type, boolean rememberChoice) {
         if (type == DialogType.VIDEO_ERROR) {
             Uri link = getIntent().getParcelableExtra(VIDEO_URI);
             if (link != null) {
