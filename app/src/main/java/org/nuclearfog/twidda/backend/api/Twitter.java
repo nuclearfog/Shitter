@@ -1160,25 +1160,29 @@ public class Twitter implements GlobalSettings.SettingsListener {
                 Directmessages result = new Directmessages(cursor, nextCursor);
                 for (int pos = 0; pos < array.length(); pos++) {
                     JSONObject item = array.getJSONObject(pos);
-                    DirectmessageV1 message = new DirectmessageV1(item);
-                    long senderId = message.getSenderId();
-                    long receiverId = message.getReceiverId();
-                    // cache user instances to reduce API calls
-                    if (userCache.containsKey(senderId)) {
-                        message.addSender(userCache.get(senderId));
-                    } else {
-                        User user = showUser(senderId);
-                        userCache.put(senderId, user);
-                        message.addSender(user);
+                    try {
+                        DirectmessageV1 message = new DirectmessageV1(item);
+                        long senderId = message.getSenderId();
+                        long receiverId = message.getReceiverId();
+                        // cache user instances to reduce API calls
+                        if (userCache.containsKey(senderId)) {
+                            message.addSender(userCache.get(senderId));
+                        } else {
+                            User user = showUser(senderId);
+                            userCache.put(senderId, user);
+                            message.addSender(user);
+                        }
+                        if (userCache.containsKey(receiverId)) {
+                            message.addReceiver(userCache.get(receiverId));
+                        } else {
+                            User user = showUser(receiverId);
+                            userCache.put(receiverId, user);
+                            message.addReceiver(user);
+                        }
+                        result.add(message);
+                    } catch (JSONException e) {
+                        Log.w("directmessage", e);
                     }
-                    if (userCache.containsKey(receiverId)) {
-                        message.addReceiver(userCache.get(receiverId));
-                    } else {
-                        User user = showUser(receiverId);
-                        userCache.put(receiverId, user);
-                        message.addReceiver(user);
-                    }
-                    result.add(message);
                 }
                 return result;
             }
@@ -1687,6 +1691,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param params   additional http parameters
      * @return http resonse
      */
+    @SuppressWarnings("SameParameterValue")
     private Response post(String endpoint, List<String> params, JSONObject json) throws IOException {
         RequestBody body = RequestBody.create(TYPE_JSON, json.toString());
         return post(endpoint, params, body);
@@ -1767,6 +1772,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param endpoint endpoint url
      * @return http response
      */
+    @SuppressWarnings("SameParameterValue")
     private Response delete(String endpoint, List<String> params) throws IOException {
         String authHeader = buildHeader("DELETE", endpoint, params);
         String url = appendParams(endpoint, params);
