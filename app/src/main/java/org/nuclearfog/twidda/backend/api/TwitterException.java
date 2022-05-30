@@ -112,6 +112,9 @@ public class TwitterException extends Exception implements TwitterError {
             case 261:
                 return ERROR_API_ACCESS_DENIED;
 
+            case 324:
+                return INVALID_MEDIA;
+
             case 354:
                 return DM_TOO_LONG;
 

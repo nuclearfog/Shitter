@@ -240,4 +240,5 @@
     <string name="confirm_unknown_error">Unbekannter Fehler!</string>
     <string name="dialog_confirm_remember">merken</string>
     <string name="directmessage_media_button">Medienanhang</string>
+    <string name="error_invalid_media">Ungültige Mediendatei!</string>
 </resources>

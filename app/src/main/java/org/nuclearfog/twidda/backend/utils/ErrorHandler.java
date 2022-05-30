@@ -105,6 +105,9 @@ public final class ErrorHandler {
                 case TwitterError.REQUEST_FORBIDDEN:
                     return context.getString(R.string.error_forbidden_api_access);
 
+                case TwitterError.INVALID_MEDIA:
+                    return context.getString(R.string.error_invalid_media);
+
                 case TwitterError.APP_SUSPENDED:
                 case TwitterError.ERROR_API_ACCESS_DENIED:
                     GlobalSettings settings = GlobalSettings.getInstance(context);
@@ -147,6 +150,7 @@ public final class ErrorHandler {
         int REQUEST_FORBIDDEN = 18;
         int APP_SUSPENDED = 19;
         int ERROR_API_ACCESS_DENIED = 20;
+        int INVALID_MEDIA = 21;
 
         int getErrorType();
 
