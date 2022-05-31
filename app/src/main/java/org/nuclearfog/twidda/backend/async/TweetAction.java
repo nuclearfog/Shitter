@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see TweetActivity
  */
-public class TweetAction extends AsyncTask<Void, Tweet, Void> {
+public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 
     /**
      * actions for the tweet
@@ -39,6 +39,7 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
         RETWEET,
         /**
          * remove retweet
+         * (delete operation, "retweet ID" required)
          */
         UNRETWEET,
         /**
@@ -59,6 +60,7 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
         UNHIDE,
         /**
          * delete own tweet
+         * (delete operation, "retweet ID" required)
          */
         DELETE
     }
@@ -70,95 +72,95 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
     private AppDatabase db;
 
     private Action action;
-    private long tweetId, retweetId;
-
 
     /**
-     * @param tweetId ID of the tweet
+     * @param action action for a given tweet
      */
-    public TweetAction(TweetActivity activity, Action action, long tweetId, long retweetId) {
+    public TweetAction(TweetActivity activity, Action action) {
         super();
+        weakRef = new WeakReference<>(activity);
         db = new AppDatabase(activity);
         twitter = Twitter.get(activity);
-        weakRef = new WeakReference<>(activity);
 
         this.action = action;
-        this.retweetId = retweetId;
-        this.tweetId = tweetId;
     }
 
-
+    /**
+     * @param ids first value is the tweet ID. The second value is the retweet ID. Required for delete operations
+     */
     @Override
-    protected Void doInBackground(Void... v) {
+    protected Void doInBackground(Long... ids) {
         try {
             switch (action) {
                 case LD_DB:
-                    Tweet tweet = db.getTweet(tweetId);
-                    if (tweet != null) {
-                        publishProgress(tweet);
+                    Tweet newTweet = db.getTweet(ids[0]);
+                    if (newTweet != null) {
+                        publishProgress(newTweet);
                     }
 
                 case LOAD:
-                    tweet = twitter.showTweet(tweetId);
+                    newTweet = twitter.showTweet(ids[0]);
                     //tweet = mTwitter.getStatus(tweetId);
-                    publishProgress(tweet);
-                    if (db.containsTweet(tweetId)) {
+                    publishProgress(newTweet);
+                    if (db.containsTweet(ids[0])) {
                         // update tweet if there is a database entry
-                        db.updateTweet(tweet);
+                        db.updateTweet(newTweet);
                     }
                     break;
 
                 case DELETE:
-                    twitter.deleteTweet(tweetId);
-                    db.removeTweet(tweetId);
+                    twitter.deleteTweet(ids[0]);
+                    db.removeTweet(ids[0]);
                     // removing retweet reference to this tweet
-                    if (retweetId > 0)
-                        db.removeTweet(retweetId);
+                    db.removeTweet(ids[1]);
                     break;
 
                 case RETWEET:
-                    tweet = twitter.retweetTweet(tweetId);
-                    publishProgress(tweet);
-                    db.updateTweet(tweet);
+                    newTweet = twitter.retweetTweet(ids[0]);
+                    if (newTweet.getEmbeddedTweet() != null)
+                        publishProgress(newTweet.getEmbeddedTweet());
+                    db.updateTweet(newTweet);
                     break;
 
                 case UNRETWEET:
-                    tweet = twitter.unretweetTweet(tweetId);
-                    publishProgress(tweet);
-                    db.updateTweet(tweet);
+                    newTweet = twitter.unretweetTweet(ids[0]);
+                    publishProgress(newTweet);
+                    db.updateTweet(newTweet);
                     // removing retweet reference to this tweet
-                    if (retweetId > 0)
-                        db.removeTweet(retweetId);
-                    else
-                        db.removeTweet(tweetId);
+                    db.removeTweet(ids[1]);
                     break;
 
                 case FAVORITE:
-                    tweet = twitter.favoriteTweet(tweetId);
-                    publishProgress(tweet);
-                    db.storeFavorite(tweet);
+                    newTweet = twitter.favoriteTweet(ids[0]);
+                    publishProgress(newTweet);
+                    db.storeFavorite(newTweet);
                     break;
 
                 case UNFAVORITE:
-                    tweet = twitter.unfavoriteTweet(tweetId);
-                    publishProgress(tweet);
-                    db.removeFavorite(tweet);
+                    newTweet = twitter.unfavoriteTweet(ids[0]);
+                    publishProgress(newTweet);
+                    db.removeFavorite(newTweet);
                     break;
 
                 case HIDE:
-                    twitter.hideReply(tweetId, true);
-                    db.hideReply(tweetId, true);
+                    twitter.hideReply(ids[0], true);
+                    db.hideReply(ids[0], true);
                     break;
 
                 case UNHIDE:
-                    twitter.hideReply(tweetId, false);
-                    db.hideReply(tweetId, false);
+                    twitter.hideReply(ids[0], false);
+                    db.hideReply(ids[0], false);
                     break;
             }
         } catch (TwitterException twException) {
             this.twException = twException;
             if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
-                db.removeTweet(tweetId);
+                // delete database entry if tweet was not found
+                db.removeTweet(ids[0]);
+                if (ids.length > 1) {
+                    // also remove reference to this tweet
+                    db.removeTweet(ids[1]);
+                }
             }
         }
         return null;
@@ -179,9 +181,9 @@ public class TweetAction extends AsyncTask<Void, Tweet, Void> {
         TweetActivity activity = weakRef.get();
         if (activity != null) {
             if (twException == null) {
-                activity.OnSuccess(action, tweetId);
+                activity.OnSuccess(action);
             } else {
-                activity.onError(twException, tweetId);
+                activity.onError(twException);
             }
         }
     }

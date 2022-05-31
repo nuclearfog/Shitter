@@ -121,12 +121,6 @@ public class TweetV1 implements Tweet {
         }
         if (quoted_tweet != null) {
             embeddedTweet = new TweetV1(quoted_tweet, twitterId);
-            // API 1.1 bug:
-            // values of the embedded tweet should match with the parent tweet
-            // retweeted/favorited values does not match with the values of the embedded tweet
-            // fix: override retweeted/favorited with the embedded tweets values
-            isRetweeted = embeddedTweet.isRetweeted();
-            isFavorited = embeddedTweet.isFavorited();
         }
         // remove short media link
         int linkPos = text.lastIndexOf("https://t.co/");
@@ -265,9 +259,9 @@ public class TweetV1 implements Tweet {
      */
     public void setRetweet(boolean isRetweeted) {
         this.isRetweeted = isRetweeted;
-        if (isRetweeted) {
-            retweetCount++;
-        } else if (retweetCount > 0) {
+        // note: Twitter API v1.1 doesn't increment/decrement retweet count right
+        // so we have to correct this number
+        if (!isRetweeted && retweetCount > 0) {
             retweetCount--;
         }
         if (embeddedTweet instanceof TweetV1) {
@@ -282,14 +276,23 @@ public class TweetV1 implements Tweet {
      */
     public void setFavorite(boolean isFavorited) {
         this.isFavorited = isFavorited;
-        if (isFavorited) {
-            favoriteCount++;
-        } else if (favoriteCount > 0) {
+        // note: Twitter API v1.1 doesn't increment/decrement favorite count right
+        // so we have to correct this number
+        if (!isFavorited && favoriteCount > 0) {
             favoriteCount--;
         }
         if (embeddedTweet instanceof TweetV1) {
             ((TweetV1) embeddedTweet).setFavorite(isFavorited);
         }
+    }
+
+    /**
+     * overwrite embedded tweet information
+     *
+     * @param tweet new embedded tweet
+     */
+    public void setEmbeddedTweet(Tweet tweet) {
+        this.embeddedTweet = tweet;
     }
 
     /**

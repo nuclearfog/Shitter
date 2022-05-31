@@ -214,7 +214,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      */
     public String getRequestToken() throws TwitterException {
         try {
-            Response response = post(REQUEST_TOKEN, new ArrayList<>(1));
+            Response response = post(REQUEST_TOKEN, new ArrayList<>());
             if (response.code() == 200 && response.body() != null) {
                 String res = response.body().string();
                 // extrect oauth_token from url
@@ -234,7 +234,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      */
     public User login(String oauth_token, String pin) throws TwitterException {
         try {
-            List<String> params = new ArrayList<>(3);
+            List<String> params = new ArrayList<>();
             params.add("oauth_verifier=" + pin);
             params.add("oauth_token=" + oauth_token);
             Response response = post(OAUTH_VERIFIER, params);
@@ -261,7 +261,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      */
     public User getCredentials() throws TwitterException {
         try {
-            Response response = get(CREDENTIALS, new ArrayList<>(1));
+            Response response = get(CREDENTIALS, new ArrayList<>());
             if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
                 return new UserV1(json);
@@ -281,7 +281,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return user information
      */
     public User showUser(long id) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + id);
         return getUser1(USER_LOOKUP, params);
     }
@@ -293,7 +293,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return user information
      */
     public User showUser(String screen_name) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         if (screen_name.startsWith("@"))
             screen_name = screen_name.substring(1);
         params.add("screen_name=" + StringTools.encode(screen_name));
@@ -308,7 +308,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of users
      */
     public Users getFollowing(long userId, long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         params.add("cursor=" + cursor);
         return getUsers1(USER_FOLLOWING, params);
@@ -322,7 +322,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of users
      */
     public Users getFollower(long userId, long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         params.add("cursor=" + cursor);
         return getUsers1(USER_FOLLOWER, params);
@@ -336,7 +336,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of users
      */
     public Users getListMember(long listId, long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
         Users result = getUsers1(USER_LIST_MEMBER, params);
@@ -357,7 +357,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of users
      */
     public Users getListSubscriber(long listId, long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
         Users result = getUsers1(USER_LIST_SUBSCRIBER, params);
@@ -377,7 +377,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return relationship infirmation
      */
     public Relation getRelationToUser(long userId) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>();
         params.add("source_id=" + settings.getCurrentUserId());
         params.add("target_id=" + userId);
         try {
@@ -401,7 +401,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User followUser(long userId) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         return getUser1(USER_FOLLOW, params);
     }
@@ -413,7 +413,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User unfollowUser(long userId) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         return getUser1(USER_UNFOLLOW, params);
     }
@@ -425,7 +425,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of users
      */
     public Users getBlockedUsers(long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("cursor=" + cursor);
         return getUsers1(BLOCK_LIST, params);
     }
@@ -437,7 +437,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User blockUser(long userId) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         User user = getUser1(USER_BLOCK, params);
         filterDatabase.addUser(userId);
@@ -451,7 +451,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User blockUser(String screen_name) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         if (screen_name.startsWith("@"))
             screen_name = screen_name.substring(1);
         params.add("screen_name=" + StringTools.encode(screen_name));
@@ -467,7 +467,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User unblockUser(long userId) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         return getUser1(USER_UNBLOCK, params);
     }
@@ -479,7 +479,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of users
      */
     public Users getMutedUsers(long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("cursor=" + cursor);
         return getUsers1(MUTES_LIST, params);
     }
@@ -491,7 +491,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User muteUser(long userId) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         return getUser1(USER_MUTE, params);
     }
@@ -503,7 +503,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User muteUser(String screen_name) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         if (screen_name.startsWith("@"))
             screen_name = screen_name.substring(1);
         params.add("screen_name=" + StringTools.encode(screen_name));
@@ -517,7 +517,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User unmuteUser(long userId) throws TwitterException {
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         return getUser1(USER_UNMUTE, params);
     }
@@ -553,7 +553,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets matching the search string
      */
     public List<Tweet> searchTweets(String search, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(7);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -578,7 +578,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         long currentPage = page > 0 ? page : 1;
         long nextPage = currentPage + 1;
 
-        List<String> params = new ArrayList<>(4);
+        List<String> params = new ArrayList<>();
         params.add("q=" + StringTools.encode(search));
         params.add("page=" + currentPage);
         Users result = getUsers1(USER_SEARCH, params);
@@ -600,7 +600,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return trend list
      */
     public List<Trend> getTrends(int id) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
+        List<String> params = new ArrayList<>();
         params.add("id=" + id);
         try {
             Response response = get(TRENDS, params);
@@ -655,7 +655,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getHomeTimeline(long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(7);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 0)
@@ -671,7 +671,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getMentionTimeline(long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(7);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -688,7 +688,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getUserTimeline(long userId, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(8);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -706,7 +706,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getUserTimeline(String screen_name, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(8);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -724,7 +724,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getUserFavorits(long userId, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(8);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -742,7 +742,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getUserFavorits(String screen_name, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(8);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -760,7 +760,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getUserlistTweets(long listId, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(8);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         if (maxId > 1)
@@ -779,7 +779,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of tweets
      */
     public List<Tweet> getTweetReplies(String screen_name, long tweetId, long minId, long maxId) throws TwitterException {
-        List<String> params = new ArrayList<>(7);
+        List<String> params = new ArrayList<>();
         if (minId > 0)
             params.add("since_id=" + minId);
         else
@@ -809,7 +809,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return tweet information
      */
     public Tweet showTweet(long tweetId) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         params.add("id=" + tweetId);
         return getTweet1(SHOW_TWEET, params);
     }
@@ -821,7 +821,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated tweet
      */
     public Tweet favoriteTweet(long tweetId) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         params.add("id=" + tweetId);
         TweetV1 result = getTweet1(TWEET_FAVORITE, params);
         result.setFavorite(true);
@@ -835,7 +835,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated tweet
      */
     public Tweet unfavoriteTweet(long tweetId) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         params.add("id=" + tweetId);
         TweetV1 result = getTweet1(TWEET_UNFAVORITE, params);
         result.setFavorite(false);
@@ -849,7 +849,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated tweet
      */
     public Tweet retweetTweet(long tweetId) throws TwitterException {
-        TweetV1 result = getTweet1(TWEET_RETWEET + tweetId + JSON, new ArrayList<>(2));
+        TweetV1 result = getTweet1(TWEET_RETWEET + tweetId + JSON, new ArrayList<>());
         result.setRetweet(true);
         return result;
     }
@@ -861,7 +861,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated tweet
      */
     public Tweet unretweetTweet(long tweetId) throws TwitterException {
-        TweetV1 result = getTweet1(TWEET_UNRETWEET + tweetId + JSON, new ArrayList<>(2));
+        TweetV1 result = getTweet1(TWEET_UNRETWEET + tweetId + JSON, new ArrayList<>());
         result.setRetweet(false);
         return result;
     }
@@ -875,7 +875,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
     public void hideReply(long tweetId, boolean hide) throws TwitterException {
         try {
             RequestBody body = RequestBody.create(TYPE_JSON, "{\"hidden\":" + hide + "}");
-            Response response = put(TWEET_UNI + tweetId + "/hidden", new ArrayList<>(2), body);
+            Response response = put(TWEET_UNI + tweetId + "/hidden", new ArrayList<>(), body);
 
             if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
@@ -897,7 +897,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param tweetId tweet ID
      */
     public void deleteTweet(long tweetId) throws TwitterException {
-        getTweet1(TWEET_DELETE + tweetId + JSON, new ArrayList<>(2));
+        getTweet1(TWEET_DELETE + tweetId + JSON, new ArrayList<>());
     }
 
     /**
@@ -906,7 +906,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param update tweet update information
      */
     public void uploadTweet(TweetUpdate update, long[] mediaIds) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
+        List<String> params = new ArrayList<>();
         params.add("status=" + StringTools.encode(update.getText()));
         if (update.getReplyId() > 0)
             params.add("in_reply_to_status_id=" + update.getReplyId());
@@ -933,7 +933,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user list
      */
     public UserList createUserlist(UserlistUpdate update) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>();
         params.add("name=" + StringTools.encode(update.getTitle()));
         params.add("description=" + StringTools.encode(update.getDescription()));
         if (update.isPublic())
@@ -950,7 +950,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user list
      */
     public UserList updateUserlist(UserlistUpdate update) throws TwitterException {
-        List<String> params = new ArrayList<>(6);
+        List<String> params = new ArrayList<>();
         params.add("list_id=" + update.getId());
         params.add("name=" + StringTools.encode(update.getTitle()));
         params.add("description=" + StringTools.encode(update.getDescription()));
@@ -968,7 +968,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return userlist information
      */
     public UserList getUserlist1(long listId) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
+        List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         return getUserlist1(USERLIST_SHOW, params);
     }
@@ -980,7 +980,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return userlist information
      */
     public UserList followUserlist(long listId) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
+        List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         UserListV1 result = getUserlist1(USERLIST_FOLLOW, params);
         result.setFollowing(true);
@@ -994,7 +994,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return userlist information
      */
     public UserList unfollowUserlist(long listId) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
+        List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         UserListV1 result = getUserlist1(USERLIST_UNFOLLOW, params);
         result.setFollowing(false);
@@ -1008,7 +1008,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return removed userlist
      */
     public UserList deleteUserlist(long listId) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
+        List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         return getUserlist1(USERLIST_DESTROY, params);
     }
@@ -1021,7 +1021,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of userlists
      */
     public UserLists getUserListOwnerships(long userId, String screen_name) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         if (userId > 0)
             params.add("user_id=" + userId);
         else
@@ -1038,7 +1038,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of userlists
      */
     public UserLists getUserListMemberships(long userId, String screen_name, long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(5);
+        List<String> params = new ArrayList<>();
         if (userId > 0)
             params.add("user_id=" + userId);
         else
@@ -1055,7 +1055,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param screen_name screen name
      */
     public void addUserToUserlist(long listId, String screen_name) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         if (screen_name.startsWith("@"))
             screen_name = screen_name.substring(1);
         params.add("list_id=" + listId);
@@ -1070,7 +1070,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param screen_name screen name
      */
     public void removeUserFromUserlist(long listId, String screen_name) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         if (screen_name.startsWith("@"))
             screen_name = screen_name.substring(1);
         params.add("list_id=" + listId);
@@ -1126,7 +1126,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @param messageId ID of the message to delete
      */
     public void deleteDirectmessage(long messageId) throws TwitterException {
-        List<String> params = new ArrayList<>(2);
+        List<String> params = new ArrayList<>();
         params.add("id=" + messageId);
         try {
             Response response = delete(DIRECTMESSAGE_DELETE, params);
@@ -1145,7 +1145,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of direct messages
      */
     public Directmessages getDirectmessages(String cursor) throws TwitterException {
-        List<String> params = new ArrayList<>(3);
+        List<String> params = new ArrayList<>();
         params.add("count=" + settings.getListSize());
         if (cursor != null && !cursor.isEmpty())
             params.add("cursor=" + cursor);
@@ -1299,7 +1299,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return updated user information
      */
     public User updateProfile(ProfileUpdate update) throws TwitterException {
-        List<String> params = new ArrayList<>(7);
+        List<String> params = new ArrayList<>();
         params.add("name=" + StringTools.encode(update.getName()));
         params.add("url=" + StringTools.encode(update.getUrl()));
         params.add("location=" + StringTools.encode(update.getLocation()));
@@ -1337,7 +1337,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             // the API returns up to 5000 blocked user IDs
             // but for bigger lists, we have to parse the whole list
             for (int i = 0; i < 10 && cursor != 0; i++) {
-                List<String> params = new ArrayList<>(2);
+                List<String> params = new ArrayList<>();
                 params.add("cursor=" + cursor);
                 Response response = get(BLOCK_ID_LIST, params);
                 if (response.body() != null && response.code() == 200) {
@@ -1421,7 +1421,14 @@ public class Twitter implements GlobalSettings.SettingsListener {
             if (response.body() != null && response.code() == 200) {
                 JSONObject json = new JSONObject(response.body().string());
                 long currentId = settings.getCurrentUserId();
-                return new TweetV1(json, currentId);
+                TweetV1 result = new TweetV1(json, currentId);
+                // fix: embedded tweet information doesn't match with the parent tweet
+                //      re-downloading embedded tweet information
+                if (result.getEmbeddedTweet() != null) {
+                    Tweet embedded = showTweet(result.getEmbeddedTweet().getId());
+                    result.setEmbeddedTweet(embedded);
+                }
+                return result;
             }
             throw new TwitterException(response);
         } catch (IOException err) {
@@ -1480,7 +1487,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      */
     private Users getUsers2(String endpoint) throws TwitterException {
         try {
-            List<String> params = new ArrayList<>(2);
+            List<String> params = new ArrayList<>();
             params.add(UserV2.PARAMS);
             Response response = get(endpoint, params);
             if (response.body() != null && response.code() == 200) {
@@ -1619,7 +1626,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
      */
     private void updateImage(String endpoint, InputStream input, String key) throws TwitterException {
         try {
-            List<String> params = new ArrayList<>(3);
+            List<String> params = new ArrayList<>();
             params.add("skip_status=true");
             params.add("include_entities=false");
             Response response = post(endpoint, params, input, key, false);

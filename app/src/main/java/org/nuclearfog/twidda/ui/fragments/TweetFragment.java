@@ -149,7 +149,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
                     Tweet updateTweet = (Tweet) data;
                     adapter.updateItem(updateTweet);
                 }
-            } else if (returnCode == TweetActivity.RETURN_TWEET_NOT_FOUND) {
+            } else if (returnCode == TweetActivity.RETURN_TWEET_REMOVED) {
                 long removedTweetId = intent.getLongExtra(TweetActivity.INTENT_TWEET_REMOVED_ID, 0);
                 adapter.remove(removedTweetId);
             }
