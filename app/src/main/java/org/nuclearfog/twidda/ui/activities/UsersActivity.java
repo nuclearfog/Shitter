@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -32,7 +33,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * todo
+ * Activity to show lists of Twitter users
  *
  * @author nuclearfog
  */
@@ -100,8 +101,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
 
-        tablayout.setupWithViewPager(pager);
-        tablayout.addOnTabSelectedListener(this);
+        settings = GlobalSettings.getInstance(this);
 
         int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
         long id = getIntent().getLongExtra(KEY_USERDETAIL_ID, -1);
@@ -110,18 +110,21 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
             case USERLIST_FRIENDS:
                 adapter.setupFollowingPage(id);
                 pager.setOffscreenPageLimit(1);
+                tablayout.setVisibility(View.GONE);
                 toolbar.setTitle(R.string.userlist_following);
                 break;
 
             case USERLIST_FOLLOWER:
                 adapter.setupFollowerPage(id);
                 pager.setOffscreenPageLimit(1);
+                tablayout.setVisibility(View.GONE);
                 toolbar.setTitle(R.string.userlist_follower);
                 break;
 
             case USERLIST_RETWEETS:
                 adapter.setupRetweeterPage(id);
                 pager.setOffscreenPageLimit(1);
+                tablayout.setVisibility(View.GONE);
                 toolbar.setTitle(R.string.toolbar_userlist_retweet);
                 break;
 
@@ -129,28 +132,30 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
                 int title = settings.likeEnabled() ? R.string.toolbar_tweet_liker : R.string.toolbar_tweet_favoriter;
                 adapter.setFavoriterPage(id);
                 pager.setOffscreenPageLimit(1);
+                tablayout.setVisibility(View.GONE);
                 toolbar.setTitle(title);
                 break;
 
             case USERLIST_EXCLUDED_USERS:
                 adapter.setupMuteBlockPage();
                 pager.setOffscreenPageLimit(2);
+                tablayout.setupWithViewPager(pager);
+                tablayout.addOnTabSelectedListener(this);
+                AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
                 toolbar.setTitle("");
                 break;
 
             case USERLIST_REQUESTS:
                 adapter.setupFollowRequestPage();
                 pager.setOffscreenPageLimit(2);
+                tablayout.setupWithViewPager(pager);
+                tablayout.addOnTabSelectedListener(this);
+                AppStyles.setTabIcons(tablayout, settings, R.array.user_requests_icon);
                 toolbar.setTitle("");
                 break;
         }
-
         setSupportActionBar(toolbar);
-        settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(root, settings.getBackgroundColor());
-        AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
-
-
     }
 
 
@@ -166,7 +171,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
             AppStyles.setMenuIconColor(m, settings.getIconColor());
             AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
             return super.onCreateOptionsMenu(m);
-        }// todo add icons
+        }
         return false;
     }
 

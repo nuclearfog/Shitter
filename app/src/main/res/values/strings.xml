@@ -119,7 +119,7 @@
     <string name="menu_tweet_unhide">unhide</string>
     <string name="menu_tweet_open_browser">open in browser</string>
     <string name="menu_mute_user">mute</string>
-    <string name="menu_follow_requests">requests</string>
+    <string name="menu_follow_requests">Requests</string>
     <string name="menu_edit_profile">edit profile</string>
     <string name="menu_edit_save">save</string>
     <string name="menu_add_user">add user to list</string>

@@ -233,8 +233,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments = new ListFragment[2];
         fragments[0] = new UserFragment();
         fragments[1] = new UserFragment();
-        fragments[0].setArguments(paramFollowing);
-        fragments[1].setArguments(paramFollower);
+        fragments[0].setArguments(paramFollower);
+        fragments[1].setArguments(paramFollowing);
         notifyDataSetChanged();
     }
 

@@ -23,6 +23,11 @@
         <item>@drawable/block</item>
     </integer-array>
 
+    <integer-array name="user_requests_icon">
+        <item>@drawable/follower_request</item>
+        <item>@drawable/following_request</item>
+    </integer-array>
+
     <integer-array name="profile_tab_icons">
         <item>@drawable/home</item>
         <item>@drawable/favorite</item>
