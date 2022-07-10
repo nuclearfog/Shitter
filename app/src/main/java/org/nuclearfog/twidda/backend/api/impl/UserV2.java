@@ -76,12 +76,12 @@ public class UserV2 implements User {
             follower = metrics.optInt("followers_count");
             tweetCount = metrics.optInt("tweet_count");
         }
+        defaultImage = profileImageUrl.contains("default_profile_images");
 
         // not yet implemented in API 2.0
         // todo check if Twitter added these values
         likeCount = -1;
         followReqSent = false;
-        defaultImage = false;
     }
 
     @Override
