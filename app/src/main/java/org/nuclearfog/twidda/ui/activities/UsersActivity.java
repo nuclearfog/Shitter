@@ -32,11 +32,49 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * Activity to show block and mute list of the current user
+ * todo
  *
  * @author nuclearfog
  */
-public class UserExclude extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
+public class UsersActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
+
+    /**
+     * type of users to get from twitter
+     * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS}
+     */
+    public static final String KEY_USERDETAIL_MODE = "userlist_mode";
+
+    /**
+     * ID of a userlist, an user or a tweet to get the users from
+     */
+    public static final String KEY_USERDETAIL_ID = "userlist_id";
+
+    /**
+     * friends of an user, requires user ID
+     */
+    public static final int USERLIST_FRIENDS = 0xDF893242;
+
+    /**
+     * follower of an user, requires user ID
+     */
+    public static final int USERLIST_FOLLOWER = 0xA89F5968;
+
+    /**
+     * user retweeting a tweet, requires tweet ID
+     */
+    public static final int USERLIST_RETWEETS = 0x19F582E;
+
+    /**
+     * user favoriting/liking a tweet, requires tweet ID
+     */
+    public static final int USERLIST_FAVORIT = 0x9bcc3f99;
+
+    /**
+     * setup list to show excluded (muted, blocked) users
+     */
+    public static final int USERLIST_EXCLUDED_USERS = 0x896a786;
+
+    public static final int USERLIST_REQUESTS = 0x0948693;
 
     private GlobalSettings settings;
     private UserExcludeLoader userExclTask;
@@ -61,42 +99,75 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
-        pager.setOffscreenPageLimit(2);
-        adapter.setupMuteBlockPage();
+
         tablayout.setupWithViewPager(pager);
         tablayout.addOnTabSelectedListener(this);
 
-        toolbar.setTitle("");
+        int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
+        long id = getIntent().getLongExtra(KEY_USERDETAIL_ID, -1);
+
+        switch (mode) {
+            case USERLIST_FRIENDS:
+                adapter.setupFollowingPage(id);
+                pager.setOffscreenPageLimit(1);
+                toolbar.setTitle(R.string.userlist_following);
+                break;
+
+            case USERLIST_FOLLOWER:
+                adapter.setupFollowerPage(id);
+                pager.setOffscreenPageLimit(1);
+                toolbar.setTitle(R.string.userlist_follower);
+                break;
+
+            case USERLIST_RETWEETS:
+                adapter.setupRetweeterPage(id);
+                pager.setOffscreenPageLimit(1);
+                toolbar.setTitle(R.string.toolbar_userlist_retweet);
+                break;
+
+            case USERLIST_FAVORIT:
+                int title = settings.likeEnabled() ? R.string.toolbar_tweet_liker : R.string.toolbar_tweet_favoriter;
+                adapter.setFavoriterPage(id);
+                pager.setOffscreenPageLimit(1);
+                toolbar.setTitle(title);
+                break;
+
+            case USERLIST_EXCLUDED_USERS:
+                adapter.setupMuteBlockPage();
+                pager.setOffscreenPageLimit(2);
+                toolbar.setTitle("");
+                break;
+
+            case USERLIST_REQUESTS:
+                adapter.setupFollowRequestPage();
+                pager.setOffscreenPageLimit(2);
+                toolbar.setTitle("");
+                break;
+        }
+
         setSupportActionBar(toolbar);
         settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(root, settings.getBackgroundColor());
         AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
+
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
-        getMenuInflater().inflate(R.menu.excludelist, m);
-        MenuItem search = m.findItem(R.id.menu_exclude_user);
-        SearchView searchView = (SearchView) search.getActionView();
-        searchView.setOnQueryTextListener(this);
-        AppStyles.setTheme(searchView, Color.TRANSPARENT);
-        AppStyles.setMenuIconColor(m, settings.getIconColor());
-        AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-        return super.onCreateOptionsMenu(m);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_exclude_refresh) {
-            if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
-                Toast.makeText(this, R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
-                userExclTask = new UserExcludeLoader(this, REFRESH);
-                userExclTask.execute();
-            }
-        }
-        return super.onOptionsItemSelected(item);
+        int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
+        if (mode == USERLIST_EXCLUDED_USERS) {
+            getMenuInflater().inflate(R.menu.excludelist, m);
+            MenuItem search = m.findItem(R.id.menu_exclude_user);
+            SearchView searchView = (SearchView) search.getActionView();
+            searchView.setOnQueryTextListener(this);
+            AppStyles.setTheme(searchView, Color.TRANSPARENT);
+            AppStyles.setMenuIconColor(m, settings.getIconColor());
+            AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+            return super.onCreateOptionsMenu(m);
+        }// todo add icons
+        return false;
     }
 
 
@@ -111,6 +182,19 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
             searchView.setQueryHint(hint);
         }
         return super.onPrepareOptionsMenu(m);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_exclude_refresh) {
+            if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
+                Toast.makeText(this, R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
+                userExclTask = new UserExcludeLoader(this, REFRESH);
+                userExclTask.execute();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

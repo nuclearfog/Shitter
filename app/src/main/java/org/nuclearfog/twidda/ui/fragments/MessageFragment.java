@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.ui.fragments;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.ui.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
@@ -28,7 +28,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.DirectMessage;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
-import org.nuclearfog.twidda.ui.activities.SearchPage;
+import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.activities.TweetActivity;
 import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -96,7 +96,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
     @Override
     public void onTagClick(String tag) {
         if (!isRefreshing()) {
-            Intent intent = new Intent(requireContext(), SearchPage.class);
+            Intent intent = new Intent(requireContext(), SearchActivity.class);
             intent.putExtra(KEY_SEARCH_QUERY, tag);
             startActivity(intent);
         }

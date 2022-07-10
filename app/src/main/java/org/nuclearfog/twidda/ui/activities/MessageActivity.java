@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.ui.fragments.MessageFragment;
  *
  * @author nuclearfog
  */
-public class DirectMessage extends AppCompatActivity {
+public class MessageActivity extends AppCompatActivity {
 
     private GlobalSettings settings;
 

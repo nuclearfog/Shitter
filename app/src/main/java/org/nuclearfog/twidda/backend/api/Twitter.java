@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -71,40 +72,51 @@ import okio.Okio;
  */
 public class Twitter implements GlobalSettings.SettingsListener {
 
+    // API parameters
     private static final String OAUTH = "1.0";
     public static final String SIGNATURE_ALG = "HMAC-SHA256";
-    private static final String JSON = ".json";
 
+    // API addresses
     private static final String API = "https://api.twitter.com/";
     private static final String UPLOAD = "https://upload.twitter.com/";
     private static final String DOWNLOAD = "https://ton.twitter.com/";
 
-    private static final String AUTHENTICATE = API + "oauth/authenticate";
-    public static final String REQUEST_URL = AUTHENTICATE + "?oauth_token=";
+    // authentication endpoints
+    public static final String AUTHENTICATE = API + "oauth/authenticate";
     private static final String REQUEST_TOKEN = API + "oauth/request_token";
     private static final String OAUTH_VERIFIER = API + "oauth/access_token";
     private static final String CREDENTIALS = API + "1.1/account/verify_credentials.json";
-    private static final String USER_LOOKUP = API + "1.1/users/show.json";
-    private static final String USER_FOLLOWING = API + "1.1/friends/list.json";
-    private static final String USER_FOLLOWER = API + "1.1/followers/list.json";
-    private static final String USER_SEARCH = API + "1.1/users/search.json";
-    private static final String USER_LIST_MEMBER = API + "1.1/lists/members.json";
-    private static final String USER_LIST_SUBSCRIBER = API + "1.1/lists/subscribers.json";
-    private static final String BLOCK_LIST = API + "1.1/blocks/list.json";
-    private static final String BLOCK_ID_LIST = API + "1.1/blocks/ids.json";
-    private static final String MUTES_LIST = API + "1.1/mutes/users/list.json";
-    private static final String SHOW_TWEET = API + "1.1/statuses/show.json";
-    private static final String SHOW_HOME = API + "1.1/statuses/home_timeline.json";
-    private static final String SHOW_MENTIONS = API + "1.1/statuses/mentions_timeline.json";
-    private static final String USER_TIMELINE = API + "1.1/statuses/user_timeline.json";
-    private static final String USER_FAVORITS = API + "1.1/favorites/list.json";
+
+    // user ID endpoints
+    private static final String IDS_BLOCKED_USERS = API + "1.1/blocks/ids.json";
+    private static final String IDS_MUTED_USERS = API + "1.1/mutes/users/ids.json";
+
+    // user endpoints
+    private static final String USERS_MUTES = API + "1.1/mutes/users/list.json";
     private static final String USER_FOLLOW = API + "1.1/friendships/create.json";
     private static final String USER_UNFOLLOW = API + "1.1/friendships/destroy.json";
     private static final String USER_BLOCK = API + "1.1/blocks/create.json";
     private static final String USER_UNBLOCK = API + "1.1/blocks/destroy.json";
     private static final String USER_MUTE = API + "1.1/mutes/users/create.json";
     private static final String USER_UNMUTE = API + "1.1/mutes/users/destroy.json";
+    private static final String USER_LOOKUP = API + "1.1/users/show.json";
+    private static final String USERS_FOLLOWING = API + "1.1/friends/list.json";
+    private static final String USERS_FOLLOWER = API + "1.1/followers/list.json";
+    private static final String USERS_SEARCH = API + "1.1/users/search.json";
+    private static final String USERS_LIST_MEMBER = API + "1.1/lists/members.json";
+    private static final String USERS_LIST_SUBSCRIBER = API + "1.1/lists/subscribers.json";
+    private static final String USERS_LOOKUP = API + "1.1/users/lookup.json";
+    private static final String USERS_BLOCKED_LIST = API + "1.1/blocks/list.json";
+    private static final String USERS_FOLLOW_INCOMING = API + "1.1/friendships/incoming.json";
+    private static final String USERS_FOLLOW_OUTGOING = API + "1.1/friendships/outgoing.json";
+
+    // tweet endpoints
+    private static final String TWEETS_HOME_TIMELINE = API + "1.1/statuses/home_timeline.json";
+    private static final String TWEETS_MENTIONS = API + "1.1/statuses/mentions_timeline.json";
+    private static final String TWEETS_USER = API + "1.1/statuses/user_timeline.json";
+    private static final String TWEETS_USER_FAVORITS = API + "1.1/favorites/list.json";
     private static final String TWEETS_LIST = API + "1.1/lists/statuses.json";
+    private static final String TWEET_LOOKUP = API + "1.1/statuses/show.json";
     private static final String TWEET_SEARCH = API + "1.1/search/tweets.json";
     private static final String TWEET_FAVORITE = API + "1.1/favorites/create.json";
     private static final String TWEET_UNFAVORITE = API + "1.1/favorites/destroy.json";
@@ -113,8 +125,8 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private static final String TWEET_UPLOAD = API + "1.1/statuses/update.json";
     private static final String TWEET_DELETE = API + "1.1/statuses/destroy/";
     private static final String TWEET_UNI = API + "2/tweets/";
-    private static final String TRENDS = API + "1.1/trends/place.json";
-    private static final String LOCATIONS = API + "1.1/trends/available.json";
+
+    // userlist endpoints
     private static final String USERLIST_SHOW = API + "1.1/lists/show.json";
     private static final String USERLIST_FOLLOW = API + "1.1/lists/subscribers/create.json";
     private static final String USERLIST_UNFOLLOW = API + "1.1/lists/subscribers/destroy.json";
@@ -125,18 +137,28 @@ public class Twitter implements GlobalSettings.SettingsListener {
     private static final String USERLIST_MEMBERSHIP = API + "1.1/lists/memberships.json";
     private static final String USERLIST_ADD_USER = API + "1.1/lists/members/create.json";
     private static final String USERLIST_DEL_USER = API + "1.1/lists/members/destroy.json";
-    private static final String RELATION = API + "1.1/friendships/show.json";
+
+    // directmessage endpoints
     private static final String DIRECTMESSAGE = API + "1.1/direct_messages/events/list.json";
     private static final String DIRECTMESSAGE_CREATE = API + "1.1/direct_messages/events/new.json";
     private static final String DIRECTMESSAGE_DELETE = API + "1.1/direct_messages/events/destroy.json";
-    private static final String MEDIA_UPLOAD = UPLOAD + "1.1/media/upload.json";
+
+    // profile update endpoints
     private static final String PROFILE_UPDATE = API + "1.1/account/update_profile.json";
     private static final String PROFILE_UPDATE_IMAGE = API + "1.1/account/update_profile_image.json";
     private static final String PROFILE_UPDATE_BANNER = API + "1.1/account/update_profile_banner.json";
 
+    // other endpoints
+    private static final String TRENDS = API + "1.1/trends/place.json";
+    private static final String LOCATIONS = API + "1.1/trends/available.json";
+    private static final String RELATION = API + "1.1/friendships/show.json";
+    private static final String MEDIA_UPLOAD = UPLOAD + "1.1/media/upload.json";
+
     private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
     private static final MediaType TYPE_JSON = MediaType.parse("application/json");
     private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
+
+    private static final String JSON = ".json";
 
     /**
      * To upload big files like videos, files must be chunked in segments.
@@ -301,6 +323,55 @@ public class Twitter implements GlobalSettings.SettingsListener {
     }
 
     /**
+     * search for users matching a search string
+     *
+     * @param search search string
+     * @param page   page of the search results
+     * @return list of users
+     */
+    public Users searchUsers(String search, long page) throws TwitterException {
+        // search endpoint only supports pages parameter
+        long currentPage = page > 0 ? page : 1;
+        long nextPage = currentPage + 1;
+
+        List<String> params = new ArrayList<>();
+        params.add("q=" + StringTools.encode(search));
+        params.add("page=" + currentPage);
+        Users result = getUsers1(USERS_SEARCH, params);
+        // notice that there are no more results
+        // if result size is less than the requested size
+        if (result.size() < settings.getListSize())
+            nextPage = 0;
+        if (settings.filterResults())
+            filterUsers(result);
+        result.setPrevCursor(currentPage - 1);
+        result.setNextCursor(nextPage);
+        return result;
+    }
+
+    /**
+     * get users retweeting a tweet
+     *
+     * @param tweetId ID of the tweet
+     * @return user list
+     */
+    public Users getRetweetingUsers(long tweetId) throws TwitterException {
+        String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
+        return getUsers2(endpoint);
+    }
+
+    /**
+     * get users liking a tweet
+     *
+     * @param tweetId ID of the tweet
+     * @return user list
+     */
+    public Users getLikingUsers(long tweetId) throws TwitterException {
+        String endpoint = TWEET_UNI + tweetId + "/liking_users";
+        return getUsers2(endpoint);
+    }
+
+    /**
      * create a list of users a specified user is following
      *
      * @param userId ID of the user
@@ -311,7 +382,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         params.add("cursor=" + cursor);
-        return getUsers1(USER_FOLLOWING, params);
+        return getUsers1(USERS_FOLLOWING, params);
     }
 
     /**
@@ -325,7 +396,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>();
         params.add("user_id=" + userId);
         params.add("cursor=" + cursor);
-        return getUsers1(USER_FOLLOWER, params);
+        return getUsers1(USERS_FOLLOWER, params);
     }
 
     /**
@@ -339,7 +410,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
-        Users result = getUsers1(USER_LIST_MEMBER, params);
+        Users result = getUsers1(USERS_LIST_MEMBER, params);
         // fix API returns zero previous_cursor when the end of the list is reached
         // override previous cursor
         if (cursor == -1L)
@@ -360,7 +431,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<String> params = new ArrayList<>();
         params.add("list_id=" + listId);
         params.add("cursor=" + cursor);
-        Users result = getUsers1(USER_LIST_SUBSCRIBER, params);
+        Users result = getUsers1(USERS_LIST_SUBSCRIBER, params);
         // fix API returns zero previous_cursor when the end of the list is reached
         // override previous cursor
         if (cursor == -1L)
@@ -368,6 +439,54 @@ public class Twitter implements GlobalSettings.SettingsListener {
         else
             result.setPrevCursor(cursor);
         return result;
+    }
+
+    /**
+     * get block list of the current user
+     *
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getBlockedUsers(long cursor) throws TwitterException {
+        List<String> params = new ArrayList<>();
+        params.add("cursor=" + cursor);
+        return getUsers1(USERS_BLOCKED_LIST, params);
+    }
+
+    /**
+     * get mute list of the current user
+     *
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getMutedUsers(long cursor) throws TwitterException {
+        List<String> params = new ArrayList<>();
+        params.add("cursor=" + cursor);
+        return getUsers1(USERS_MUTES, params);
+    }
+
+    /**
+     * return a list of the 100 recent users requesting a follow
+     *
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getIncomingFollowRequests(long cursor) throws TwitterException {
+        long[] ids = getUserIDs(USERS_FOLLOW_INCOMING, cursor);
+        // remove last array entry (cursor) from ID list
+        return getUsers1(Arrays.copyOf(ids, ids.length - 1));
+    }
+
+    /**
+     * return a list of the recent 100 users with pending follow requests
+     *
+     * @param cursor cursor value used to parse the list
+     * @return list of users
+     */
+    public Users getOutgoingFollowRequests(long cursor) throws TwitterException {
+        long[] ids = getUserIDs(USERS_FOLLOW_OUTGOING, cursor);
+        // remove last array entry (cursor) from ID list
+        return getUsers1(Arrays.copyOf(ids, ids.length - 1));
     }
 
     /**
@@ -419,18 +538,6 @@ public class Twitter implements GlobalSettings.SettingsListener {
     }
 
     /**
-     * get block list of the current user
-     *
-     * @param cursor cursor value used to parse the list
-     * @return list of users
-     */
-    public Users getBlockedUsers(long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>();
-        params.add("cursor=" + cursor);
-        return getUsers1(BLOCK_LIST, params);
-    }
-
-    /**
      * block specific user
      *
      * @param userId ID of the user
@@ -473,18 +580,6 @@ public class Twitter implements GlobalSettings.SettingsListener {
     }
 
     /**
-     * get mute list of the current user
-     *
-     * @param cursor cursor value used to parse the list
-     * @return list of users
-     */
-    public Users getMutedUsers(long cursor) throws TwitterException {
-        List<String> params = new ArrayList<>();
-        params.add("cursor=" + cursor);
-        return getUsers1(MUTES_LIST, params);
-    }
-
-    /**
      * mute specific user
      *
      * @param userId ID of the user
@@ -523,28 +618,6 @@ public class Twitter implements GlobalSettings.SettingsListener {
     }
 
     /**
-     * get users retweeting a tweet
-     *
-     * @param tweetId ID of the tweet
-     * @return user list
-     */
-    public Users getRetweetingUsers(long tweetId) throws TwitterException {
-        String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
-        return getUsers2(endpoint);
-    }
-
-    /**
-     * get users liking a tweet
-     *
-     * @param tweetId ID of the tweet
-     * @return user list
-     */
-    public Users getLikingUsers(long tweetId) throws TwitterException {
-        String endpoint = TWEET_UNI + tweetId + "/liking_users";
-        return getUsers2(endpoint);
-    }
-
-    /**
      * search tweets matching a search string
      *
      * @param search search string
@@ -563,33 +636,6 @@ public class Twitter implements GlobalSettings.SettingsListener {
         List<Tweet> result = getTweets1(TWEET_SEARCH, params);
         if (settings.filterResults())
             filterTweets(result);
-        return result;
-    }
-
-    /**
-     * search for users matching a search string
-     *
-     * @param search search string
-     * @param page   page of the search results
-     * @return list of users
-     */
-    public Users searchUsers(String search, long page) throws TwitterException {
-        // search endpoint only supports pages parameter
-        long currentPage = page > 0 ? page : 1;
-        long nextPage = currentPage + 1;
-
-        List<String> params = new ArrayList<>();
-        params.add("q=" + StringTools.encode(search));
-        params.add("page=" + currentPage);
-        Users result = getUsers1(USER_SEARCH, params);
-        // notice that there are no more results
-        // if result size is less than the requested size
-        if (result.size() < settings.getListSize())
-            nextPage = 0;
-        if (settings.filterResults())
-            filterUsers(result);
-        result.setPrevCursor(currentPage - 1);
-        result.setNextCursor(nextPage);
         return result;
     }
 
@@ -660,7 +706,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             params.add("since_id=" + minId);
         if (maxId > 0)
             params.add("max_id=" + maxId);
-        return getTweets1(SHOW_HOME, params);
+        return getTweets1(TWEETS_HOME_TIMELINE, params);
     }
 
     /**
@@ -676,7 +722,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             params.add("since_id=" + minId);
         if (maxId > 1)
             params.add("max_id=" + maxId);
-        return getTweets1(SHOW_MENTIONS, params);
+        return getTweets1(TWEETS_MENTIONS, params);
     }
 
     /**
@@ -694,7 +740,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("user_id=" + userId);
-        return getTweets1(USER_TIMELINE, params);
+        return getTweets1(TWEETS_USER, params);
     }
 
     /**
@@ -712,7 +758,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("screen_name=" + StringTools.encode(screen_name));
-        return getTweets1(USER_TIMELINE, params);
+        return getTweets1(TWEETS_USER, params);
     }
 
     /**
@@ -730,7 +776,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("user_id=" + userId);
-        return getTweets1(USER_FAVORITS, params);
+        return getTweets1(TWEETS_USER_FAVORITS, params);
     }
 
     /**
@@ -748,7 +794,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
         if (maxId > 1)
             params.add("max_id=" + maxId);
         params.add("screen_name=" + StringTools.encode(screen_name));
-        return getTweets1(USER_FAVORITS, params);
+        return getTweets1(TWEETS_USER_FAVORITS, params);
     }
 
     /**
@@ -811,7 +857,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
     public Tweet showTweet(long tweetId) throws TwitterException {
         List<String> params = new ArrayList<>();
         params.add("id=" + tweetId);
-        return getTweet1(SHOW_TWEET, params);
+        return getTweet1(TWEET_LOOKUP, params);
     }
 
     /**
@@ -1331,34 +1377,29 @@ public class Twitter implements GlobalSettings.SettingsListener {
      * @return list of IDs
      */
     public List<Long> getIdBlocklist() throws TwitterException {
-        try {
-            long cursor = -1;
-            List<Long> result = new ArrayList<>(100);
-            // the API returns up to 5000 blocked user IDs
-            // but for bigger lists, we have to parse the whole list
-            for (int i = 0; i < 10 && cursor != 0; i++) {
-                List<String> params = new ArrayList<>();
-                params.add("cursor=" + cursor);
-                Response response = get(BLOCK_ID_LIST, params);
-                if (response.body() != null && response.code() == 200) {
-                    JSONObject json = new JSONObject(response.body().string());
-                    JSONArray idArray = json.getJSONArray("ids");
-                    cursor = Long.parseLong(json.optString("next_cursor_str", "0"));
-                    for (int pos = 0; pos < idArray.length(); pos++) {
-                        result.add(idArray.getLong(pos));
-                    }
-                } else {
-                    throw new TwitterException(response);
-                }
+        // Note: the API returns up to 5000 user IDs
+        // but for bigger lists, we have to parse the whole list
+        Set<Long> result = new TreeSet<>();
+
+        // add blocked user IDs
+        long cursor = -1;
+        for (int i = 0; i < 10 && cursor != 0; i++) {
+            long[] ids = getUserIDs(IDS_BLOCKED_USERS, cursor);
+            for (int pos = 0; pos < ids.length - 2; pos++) {
+                result.add(ids[pos]);
             }
-            return result;
-        } catch (IOException err) {
-            throw new TwitterException(err);
-        } catch (JSONException err) {
-            throw new TwitterException(err);
-        } catch (NumberFormatException err) {
-            throw new TwitterException(err);
+            cursor = ids[ids.length - 1];
         }
+        // add muted user IDs
+        cursor = -1;
+        for (int i = 0; i < 10 && cursor != 0; i++) {
+            long[] ids = getUserIDs(IDS_MUTED_USERS, cursor);
+            for (int pos = 0; pos < ids.length - 2; pos++) {
+                result.add(ids[pos]);
+            }
+            cursor = ids[ids.length - 1];
+        }
+        return new ArrayList<>(result);
     }
 
     /**
@@ -1413,7 +1454,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
             params.add(TweetV1.INCL_RT_ID);
             params.add(TweetV1.INCL_ENTITIES);
             Response response;
-            if (endpoint.equals(SHOW_TWEET)) {
+            if (endpoint.equals(TWEET_LOOKUP)) {
                 response = get(endpoint, params);
             } else {
                 response = post(endpoint, params);
@@ -1439,6 +1480,59 @@ public class Twitter implements GlobalSettings.SettingsListener {
     }
 
     /**
+     * returns an array of user IDs from a given endpoint
+     *
+     * @param endpoint Endpoint where to get the user IDs
+     * @param cursor   cursor value to parse the ID pages
+     * @return  an array of user IDs + the list cursor on the last array index
+     */
+    private long[] getUserIDs(String endpoint, long cursor) throws TwitterException {
+        try {
+            List<String> params = new ArrayList<>();
+            params.add("cursor=" + cursor);
+            Response response = get(endpoint, params);
+            if (response.body() != null && response.code() == 200) {
+                JSONObject json = new JSONObject(response.body().string());
+                JSONArray idArray = json.getJSONArray("ids");
+                cursor = Long.parseLong(json.optString("next_cursor_str", "0"));
+                long[] result = new long[idArray.length() + 1];
+                for (int pos = 0; pos < idArray.length(); pos++) {
+                    result[pos] = idArray.getLong(pos);
+                }
+                result[result.length - 1] = cursor;
+                return result;
+            } else {
+                throw new TwitterException(response);
+            }
+        } catch (IOException err) {
+            throw new TwitterException(err);
+        } catch (JSONException err) {
+            throw new TwitterException(err);
+        } catch (NumberFormatException err) {
+            throw new TwitterException(err);
+        }
+    }
+
+	/**
+	 * lookup a list of user IDs
+	 *
+	 * @param ids User IDs
+	 * @return a list of users
+	 */
+    private Users getUsers1(long[] ids) throws TwitterException {
+		List<String> params = new ArrayList<>();
+		if (ids.length > 0) {
+			StringBuilder idBuf = new StringBuilder("user_id=");
+			for (long id : ids) {
+				idBuf.append(id).append("%2C");
+			}
+			params.add(idBuf.substring(0,idBuf.length() - 3));
+            return getUsers1(USERS_LOOKUP, params);
+		}
+		return new Users(0L, 0L);
+    }
+
+    /**
      * create a list of users using API v 1.1
      *
      * @param endpoint endpoint url to get the user data from
@@ -1447,12 +1541,17 @@ public class Twitter implements GlobalSettings.SettingsListener {
      */
     private Users getUsers1(String endpoint, List<String> params) throws TwitterException {
         try {
-            params.add("count=" + settings.getListSize());
-            params.add("skip_status=true");
-            Response response = get(endpoint, params);
+            Response response;
+            if (USERS_LOOKUP.equals(endpoint)) {
+                response = post(endpoint, params);
+            } else {
+                params.add("skip_status=true");
+                params.add("count=" + settings.getListSize());
+                response = get(endpoint, params);
+            }
             if (response.body() != null && response.code() == 200) {
                 String jsonResult = response.body().string();
-                if (endpoint.equals(USER_SEARCH)) // convert to JSON object
+                if (!jsonResult.startsWith("{\"users\":")) // convert to users JSON object
                     jsonResult = "{\"users\":" + jsonResult + '}';
                 JSONObject json = new JSONObject(jsonResult);
                 JSONArray array = json.getJSONArray("users");

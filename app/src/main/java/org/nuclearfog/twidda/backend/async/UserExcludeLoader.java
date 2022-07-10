@@ -9,13 +9,13 @@ import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.User;
-import org.nuclearfog.twidda.ui.activities.UserExclude;
+import org.nuclearfog.twidda.ui.activities.UsersActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * Backend of {@link UserExclude}
+ * Backend of {@link UsersActivity}
  * performs user mute or block actions and stores a list of IDs with blocked/muted users
  * This list is used to filter search results
  *
@@ -42,14 +42,14 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 
     @Nullable
     private TwitterException err;
-    private WeakReference<UserExclude> weakRef;
+    private WeakReference<UsersActivity> weakRef;
     private FilterDatabase filterDatabase;
     private AppDatabase appDatabase;
     private Twitter twitter;
     private Mode mode;
 
 
-    public UserExcludeLoader(UserExclude activity, Mode mode) {
+    public UserExcludeLoader(UsersActivity activity, Mode mode) {
         super();
         twitter = Twitter.get(activity);
         appDatabase = new AppDatabase(activity);
@@ -87,7 +87,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        UserExclude activity = weakRef.get();
+        UsersActivity activity = weakRef.get();
         if (activity != null) {
             if (err == null) {
                 activity.onSuccess(mode);

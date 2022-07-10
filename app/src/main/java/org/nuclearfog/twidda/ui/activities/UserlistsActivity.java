@@ -21,11 +21,11 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * Activity to show user lists of a twitter user
+ * Activity to show userlists of a twitter user
  *
  * @author nuclearfog
  */
-public class Userlists extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class UserlistsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     /**
      * Key for the ID the list owner

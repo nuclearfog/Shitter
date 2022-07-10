@@ -33,7 +33,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class SearchPage extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
+public class SearchActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
     /**
      * Key for the search query, required
@@ -133,8 +133,8 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        if (s.length() <= SearchPage.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
-            Intent search = new Intent(this, SearchPage.class);
+        if (s.length() <= SearchActivity.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
+            Intent search = new Intent(this, SearchActivity.class);
             search.putExtra(KEY_SEARCH_QUERY, s);
             startActivity(search);
         } else {

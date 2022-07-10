@@ -50,7 +50,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     /**
      * key to define user, tweet or list ID
      */
-    public static final String KEY_FRAG_USER_ID = "user_id";
+    public static final String KEY_FRAG_USER_ID_ALL = "user_id_all";
 
     /**
      * key to enable function to remove users from list
@@ -103,6 +103,16 @@ public class UserFragment extends ListFragment implements UserClickListener,
     public static final int USER_FRAG_MUTES = 0x5246DC35;
 
     /**
+     * configuration to show outgoing follow requests
+     */
+    public static final int USER_FRAG_FOLLOWING_REQUEST = 0x89e5255a;
+
+    /**
+     * configuration to show users requesting a follow
+     */
+    public static final int USER_FRAG_FOLLOWER_REQUEST = 0x72544f17;
+
+    /**
      * Request code to update user information
      */
     private static final int REQ_USER_UPDATE = 0x3F29;
@@ -126,7 +136,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
         Bundle param = getArguments();
         if (param != null) {
             mode = param.getInt(KEY_FRAG_USER_MODE, 0);
-            id = param.getLong(KEY_FRAG_USER_ID, 0);
+            id = param.getLong(KEY_FRAG_USER_ID_ALL, 0);
             search = param.getString(KEY_FRAG_USER_SEARCH, "");
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
@@ -310,6 +320,16 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
             case USER_FRAG_MUTES:
                 userTask = new UserLoader(this, Type.MUTE, id, search);
+                userTask.execute(cursor);
+                break;
+
+            case USER_FRAG_FOLLOWER_REQUEST:
+                userTask = new UserLoader(this, Type.FOLLOWER_REQ, id, search);
+                userTask.execute(cursor);
+                break;
+
+            case USER_FRAG_FOLLOWING_REQUEST:
+                userTask = new UserLoader(this, Type.FOLLOWING_REQ, id, search);
                 userTask.execute(cursor);
                 break;
         }

@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static org.nuclearfog.twidda.ui.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_ID;
 
 import android.app.Dialog;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     private static final int REQUEST_ACCOUNT_CHANGE = 0x345;
 
     /**
-     * Request code to start {@link AppSettings}
+     * Request code to start {@link SettingsActivity}
      */
     private static final int REQUEST_APP_SETTINGS = 0x54AD;
 
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 AppStyles.setTheme(root, settings.getBackgroundColor());
                 AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
                 // check if an account was removed
-                if (returnCode == AppSettings.RETURN_APP_LOGOUT) {
+                if (returnCode == SettingsActivity.RETURN_APP_LOGOUT) {
                     // clear old login fragments
                     adapter.clear();
                     pager.setAdapter(adapter);
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         }
         // open app settings
         else if (item.getItemId() == R.id.action_settings) {
-            Intent settings = new Intent(this, AppSettings.class);
+            Intent settings = new Intent(this, SettingsActivity.class);
             startActivityForResult(settings, REQUEST_APP_SETTINGS);
         }
         // theme expanded search view
@@ -265,8 +265,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        if (s.length() <= SearchPage.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
-            Intent search = new Intent(this, SearchPage.class);
+        if (s.length() <= SearchActivity.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
+            Intent search = new Intent(this, SearchActivity.class);
             search.putExtra(KEY_SEARCH_QUERY, s);
             startActivity(search);
         } else {

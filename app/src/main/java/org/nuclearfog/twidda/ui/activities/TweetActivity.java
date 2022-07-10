@@ -6,13 +6,13 @@ import static android.view.View.OnClickListener;
 import static android.view.View.OnLongClickListener;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.ui.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_REPLYID;
 import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.USERLIST_FAVORIT;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_FAVORIT;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_RETWEETS;
 import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
@@ -405,14 +405,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // show user retweeting this tweet
             else if (v.getId() == R.id.tweet_retweet) {
-                Intent userList = new Intent(this, UserDetail.class);
+                Intent userList = new Intent(this, UsersActivity.class);
                 userList.putExtra(KEY_USERDETAIL_ID, clickedTweet.getId());
                 userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
                 startActivity(userList);
             }
             // show user favoriting this tweet
             else if (v.getId() == R.id.tweet_favorite) {
-                Intent userList = new Intent(this, UserDetail.class);
+                Intent userList = new Intent(this, UsersActivity.class);
                 userList.putExtra(KEY_USERDETAIL_ID, clickedTweet.getId());
                 userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_FAVORIT);
                 startActivity(userList);
@@ -539,7 +539,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onTagClick(String tag) {
-        Intent intent = new Intent(this, SearchPage.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra(KEY_SEARCH_QUERY, tag);
         startActivity(intent);
     }

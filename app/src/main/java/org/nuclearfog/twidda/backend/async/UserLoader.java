@@ -61,6 +61,10 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
          * load a list of muted users
          */
         MUTE,
+
+        FOLLOWING_REQ,
+
+        FOLLOWER_REQ,
     }
 
     @Nullable
@@ -121,6 +125,11 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
                 case MUTE:
                     return mTwitter.getMutedUsers(cursor);
 
+                case FOLLOWER_REQ:
+                    return mTwitter.getIncomingFollowRequests(cursor);
+
+                case FOLLOWING_REQ:
+                    return mTwitter.getOutgoingFollowRequests(cursor);
             }
         } catch (TwitterException twException) {
             this.twException = twException;

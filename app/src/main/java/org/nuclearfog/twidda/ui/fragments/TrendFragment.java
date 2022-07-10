@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.ui.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Trend;
-import org.nuclearfog.twidda.ui.activities.SearchPage;
+import org.nuclearfog.twidda.ui.activities.SearchActivity;
 
 import java.util.List;
 
@@ -76,7 +76,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
     @Override
     public void onTrendClick(Trend trend) {
         if (!isRefreshing()) {
-            Intent intent = new Intent(requireContext(), SearchPage.class);
+            Intent intent = new Intent(requireContext(), SearchActivity.class);
             String name = trend.getName();
             if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\""))
                 name = "\"" + name + "\"";

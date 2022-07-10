@@ -32,6 +32,10 @@
         android:visible="false"
         android:title="@string/menu_goto_lists" />
     <item
+        android:id="@+id/profile_requests"
+        android:visible="false"
+        android:title="@string/menu_follow_requests" />
+    <item
         android:id="@+id/profile_block_mute"
         android:visible="false"
         android:title="@string/menu_excluded_users" />

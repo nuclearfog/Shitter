@@ -16,16 +16,18 @@ import static org.nuclearfog.twidda.backend.async.UserAction.Action.PROFILE_DB;
 import static org.nuclearfog.twidda.backend.async.UserAction.Action.PROFILE_lOAD;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.ui.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.USERLIST_FOLLOWER;
-import static org.nuclearfog.twidda.ui.activities.UserDetail.USERLIST_FRIENDS;
-import static org.nuclearfog.twidda.ui.activities.Userlists.KEY_USERLIST_OWNER_ID;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_EXCLUDED_USERS;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_FOLLOWER;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_FRIENDS;
+import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_ID;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_REQUESTS;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -295,7 +297,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             }
             if (user.isCurrentUser() || !user.isProtected()) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
+                MenuItem requestItem = m.findItem(R.id.profile_requests);
                 listItem.setVisible(true);
+                requestItem.setVisible(true);
             }
             if (user.isCurrentUser()) {
                 MenuItem dmIcon = m.findItem(R.id.profile_message);
@@ -397,7 +401,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             else if (item.getItemId() == R.id.profile_message) {
                 Intent dmPage;
                 if (user.isCurrentUser()) {
-                    dmPage = new Intent(this, DirectMessage.class);
+                    dmPage = new Intent(this, MessageActivity.class);
                 } else {
                     dmPage = new Intent(this, MessageEditor.class);
                     dmPage.putExtra(KEY_DM_PREFIX, user.getScreenname());
@@ -406,14 +410,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             }
             // open users list
             else if (item.getItemId() == R.id.profile_lists) {
-                Intent listPage = new Intent(this, Userlists.class);
+                Intent listPage = new Intent(this, UserlistsActivity.class);
                 listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
                 startActivity(listPage);
             }
             // open mute/block list
             else if (item.getItemId() == R.id.profile_block_mute) {
-                Intent userExclude = new Intent(this, UserExclude.class);
-                startActivity(userExclude);
+                Intent usersIntent = new Intent(this, UsersActivity.class);
+                usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_EXCLUDED_USERS);
+                startActivity(usersIntent);
+            }
+            // open request list
+            else if (item.getItemId() == R.id.profile_requests) {
+                Intent usersIntent = new Intent(this, UsersActivity.class);
+                usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_REQUESTS);
+                startActivity(usersIntent);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -435,7 +446,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onTagClick(String text) {
-        Intent intent = new Intent(this, SearchPage.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra(KEY_SEARCH_QUERY, text);
         startActivity(intent);
     }
@@ -482,10 +493,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (v.getId() == R.id.following) {
             if (user != null && relation != null) {
                 if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
-                    Intent following = new Intent(this, UserDetail.class);
-                    following.putExtra(KEY_USERDETAIL_ID, user.getId());
-                    following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
-                    startActivity(following);
+                    Intent usersIntent = new Intent(this, UsersActivity.class);
+                    usersIntent.putExtra(KEY_USERDETAIL_ID, user.getId());
+                    usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
+                    startActivity(usersIntent);
                 }
             }
         }
@@ -493,10 +504,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         else if (v.getId() == R.id.follower) {
             if (user != null && relation != null) {
                 if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
-                    Intent follower = new Intent(this, UserDetail.class);
-                    follower.putExtra(KEY_USERDETAIL_ID, user.getId());
-                    follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
-                    startActivity(follower);
+                    Intent usersIntent = new Intent(this, UsersActivity.class);
+                    usersIntent.putExtra(KEY_USERDETAIL_ID, user.getId());
+                    usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
+                    startActivity(usersIntent);
                 }
             }
         }

@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.login_setting) {
-            Intent settings = new Intent(this, AppSettings.class);
+            Intent settings = new Intent(this, SettingsActivity.class);
             startActivity(settings);
         } else if (item.getItemId() == R.id.login_select_account) {
             Intent accountManager = new Intent(this, AccountActivity.class);
@@ -206,7 +206,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
 
     private void connect() {
-        String link = Twitter.REQUEST_URL + requestToken;
+        String link = Twitter.AUTHENTICATE + "?oauth_token=";
         Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
         try {
             startActivity(loginIntent);

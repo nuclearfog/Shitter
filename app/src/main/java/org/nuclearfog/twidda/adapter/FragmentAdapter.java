@@ -10,12 +10,17 @@ import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_MENT;
 import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_TWEETS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID_ALL;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_BLOCKS;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FAVORIT;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOWER_REQUEST;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOWING_REQUEST;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FRIENDS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LISTS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_MUTES;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_RETWEET;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SUBSCR;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
@@ -186,8 +191,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         tweetParam.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
         userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LISTS);
         userParam.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
-        userParam.putLong(KEY_FRAG_USER_ID, listId);
-        subscrParam.putLong(KEY_FRAG_USER_ID, listId);
+        userParam.putLong(KEY_FRAG_USER_ID_ALL, listId);
+        subscrParam.putLong(KEY_FRAG_USER_ID_ALL, listId);
         subscrParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SUBSCR);
         fragments = new ListFragment[3];
         fragments[0] = new TweetFragment();
@@ -213,6 +218,79 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments[1] = new UserFragment();
         fragments[0].setArguments(paramMute);
         fragments[1].setArguments(paramBlock);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * setup adapter to show follow requesting users
+     */
+    public void setupFollowRequestPage() {
+        Bundle paramFollowing = new Bundle();
+        Bundle paramFollower = new Bundle();
+        paramFollowing.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING_REQUEST);
+        paramFollower.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER_REQUEST);
+
+        fragments = new ListFragment[2];
+        fragments[0] = new UserFragment();
+        fragments[1] = new UserFragment();
+        fragments[0].setArguments(paramFollowing);
+        fragments[1].setArguments(paramFollower);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * setup adapter to show "following" of an user
+     *
+     * @param userId ID of the user
+     */
+    public void setupFollowingPage(long userId) {
+        Bundle userParam = new Bundle();
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING_REQUEST);
+        userParam.putLong(KEY_FRAG_USER_ID_ALL, userId);
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FRIENDS);
+        fragments = new ListFragment[1];
+        fragments[0] = new UserFragment();
+        fragments[0].setArguments(userParam);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * setup adapter to show "follower" of an user
+     *
+     * @param userId ID of the user
+     */
+    public void setupFollowerPage(long userId) {
+        Bundle userParam = new Bundle();
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER_REQUEST);
+        userParam.putLong(KEY_FRAG_USER_ID_ALL, userId);
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FRIENDS);
+        fragments = new ListFragment[1];
+        fragments[0] = new UserFragment();
+        fragments[0].setArguments(userParam);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * setup adapter to show users retweeting a tweet
+     * @param tweetId
+     */
+    public void setupRetweeterPage(long tweetId) {
+        Bundle userParam = new Bundle();
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
+        userParam.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
+        fragments = new ListFragment[1];
+        fragments[0] = new UserFragment();
+        fragments[0].setArguments(userParam);
+        notifyDataSetChanged();
+    }
+
+    public void setFavoriterPage(long tweetId) {
+        Bundle userParam = new Bundle();
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FAVORIT);
+        userParam.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
+        fragments = new ListFragment[1];
+        fragments[0] = new UserFragment();
+        fragments[0].setArguments(userParam);
         notifyDataSetChanged();
     }
 

@@ -12,12 +12,13 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 
 /**
  * Spinner Adapter for font settings
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.ui.activities.AppSettings
+ * @see SettingsActivity
  */
 public class FontAdapter extends BaseAdapter {
 

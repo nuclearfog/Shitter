@@ -12,6 +12,7 @@ import androidx.annotation.MainThread;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
  * Adapter class for Location selection spinner
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.ui.activities.AppSettings
+ * @see SettingsActivity
  */
 public class LocationAdapter extends BaseAdapter {
 
