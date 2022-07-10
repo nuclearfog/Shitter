@@ -272,7 +272,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     /**
      * setup adapter to show users retweeting a tweet
-     * @param tweetId
+     *
+     * @param tweetId ID of the tweet
      */
     public void setupRetweeterPage(long tweetId) {
         Bundle userParam = new Bundle();
@@ -284,6 +285,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * setup adapter to show users liking a tweet
+     *
+     * @param tweetId ID of the tweet
+     */
     public void setFavoriterPage(long tweetId) {
         Bundle userParam = new Bundle();
         userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FAVORIT);
