@@ -34,83 +34,97 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
  *
  * @author nuclearfog
  */
-public class UserFragment extends ListFragment implements UserClickListener,
-        OnConfirmListener, ListManagerCallback {
+public class UserFragment extends ListFragment implements UserClickListener, OnConfirmListener, ListManagerCallback {
 
     /**
      * key to set the type of user list to show
+     * value type is integer
      */
     public static final String KEY_FRAG_USER_MODE = "user_mode";
 
     /**
      * key to define search string like username
+     * value type is string
      */
     public static final String KEY_FRAG_USER_SEARCH = "user_search";
 
     /**
      * key to define user, tweet or list ID
+     * value type is long
      */
     public static final String KEY_FRAG_USER_ID_ALL = "user_id_all";
 
     /**
-     * key to enable function to remove users from list
+     * key enable function to remove users from list
+     * value type is boolean
      */
     public static final String KEY_FRAG_DEL_USER = "user_en_del";
 
     /**
-     * configuration for a list of users following the specified user
+     * value to configure to show users following the authenticating user
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_FOLLOWS = 0xE45DD2;
+    public static final int USER_FRAG_FOLLOWER = 0xE45DD2;
 
     /**
-     * configuration for a list of users followed by the specified user
+     * value to configure to show users followed by the authenticating user
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_FRIENDS = 0x64D432EB;
+    public static final int USER_FRAG_FOLLOWING = 0x64D432EB;
 
     /**
-     * configuration to get a list of users retweeting a tweet
+     * value to configure to show users retweeting a tweet
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
     public static final int USER_FRAG_RETWEET = 0x2AC31E6B;
 
     /**
-     * configuration to get a list of users favoring a tweet
+     * value to configure to show users favoring a tweet
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
     public static final int USER_FRAG_FAVORIT = 0xA7FB2BB4;
 
     /**
-     * configuration for a list of searched users
+     * value to configure to search users matching a search string
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
     public static final int USER_FRAG_SEARCH = 0x162C3599;
 
     /**
-     * configuration for a list of userlist subscriber
+     * value to configure to show subscribers of an userlist
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_SUBSCR = 0x21DCF91C;
+    public static final int USER_FRAG_LIST_SUBSCRIBER = 0x21DCF91C;
 
     /**
-     * configuration for a list of users added to a list
+     * value to configure to show members of an userlist
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_LISTS = 0x9A00B3A5;
+    public static final int USER_FRAG_LIST_MEMBERS = 0x9A00B3A5;
 
     /**
-     * configuration for block list
+     * value to configure a list of blocked users
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_BLOCKS = 0x83D186AD;
+    public static final int USER_FRAG_BLOCKED_USERS = 0x83D186AD;
 
     /**
-     * configuration for mute list
+     * value to configure a list of muted users
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_MUTES = 0x5246DC35;
+    public static final int USER_FRAG_MUTED_USERS = 0x5246DC35;
 
     /**
-     * configuration to show outgoing follow requests
+     * value to configure a list of users with incoming following request
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_FOLLOWING_REQUEST = 0x89e5255a;
+    public static final int USER_FRAG_FOLLOW_INCOMING = 0x89e5255a;
 
     /**
-     * configuration to show users requesting a follow
+     * value to configure a list of users with outgoing following request
+     * corresponding key {@link #KEY_FRAG_USER_MODE}
      */
-    public static final int USER_FRAG_FOLLOWER_REQUEST = 0x72544f17;
+    public static final int USER_FRAG_FOLLOW_OUTGOING = 0x72544f17;
 
     /**
      * Request code to update user information
@@ -278,12 +292,12 @@ public class UserFragment extends ListFragment implements UserClickListener,
      */
     private void load(long cursor) {
         switch (mode) {
-            case USER_FRAG_FOLLOWS:
+            case USER_FRAG_FOLLOWER:
                 userTask = new UserLoader(this, Type.FOLLOWS, id, search);
                 userTask.execute(cursor);
                 break;
 
-            case USER_FRAG_FRIENDS:
+            case USER_FRAG_FOLLOWING:
                 userTask = new UserLoader(this, Type.FRIENDS, id, search);
                 userTask.execute(cursor);
                 break;
@@ -303,32 +317,32 @@ public class UserFragment extends ListFragment implements UserClickListener,
                 userTask.execute(cursor);
                 break;
 
-            case USER_FRAG_SUBSCR:
+            case USER_FRAG_LIST_SUBSCRIBER:
                 userTask = new UserLoader(this, Type.SUBSCRIBER, id, search);
                 userTask.execute(cursor);
                 break;
 
-            case USER_FRAG_LISTS:
+            case USER_FRAG_LIST_MEMBERS:
                 userTask = new UserLoader(this, Type.LISTMEMBER, id, search);
                 userTask.execute(cursor);
                 break;
 
-            case USER_FRAG_BLOCKS:
+            case USER_FRAG_BLOCKED_USERS:
                 userTask = new UserLoader(this, Type.BLOCK, id, search);
                 userTask.execute(cursor);
                 break;
 
-            case USER_FRAG_MUTES:
+            case USER_FRAG_MUTED_USERS:
                 userTask = new UserLoader(this, Type.MUTE, id, search);
                 userTask.execute(cursor);
                 break;
 
-            case USER_FRAG_FOLLOWER_REQUEST:
+            case USER_FRAG_FOLLOW_OUTGOING:
                 userTask = new UserLoader(this, Type.FOLLOWER_REQ, id, search);
                 userTask.execute(cursor);
                 break;
 
-            case USER_FRAG_FOLLOWING_REQUEST:
+            case USER_FRAG_FOLLOW_INCOMING:
                 userTask = new UserLoader(this, Type.FOLLOWING_REQ, id, search);
                 userTask.execute(cursor);
                 break;

@@ -13,16 +13,17 @@ import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID_ALL;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_BLOCKS;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_BLOCKED_USERS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FAVORIT;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOWER_REQUEST;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOWING_REQUEST;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FRIENDS;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LISTS;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_MUTES;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOW_OUTGOING;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOW_INCOMING;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOWER;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOWING;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LIST_MEMBERS;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_MUTED_USERS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_RETWEET;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SUBSCR;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LIST_SUBSCRIBER;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_NAME;
@@ -189,11 +190,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         Bundle subscrParam = new Bundle();
         tweetParam.putLong(KEY_FRAG_TWEET_ID, listId);
         tweetParam.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
-        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LISTS);
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_MEMBERS);
         userParam.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
         userParam.putLong(KEY_FRAG_USER_ID_ALL, listId);
         subscrParam.putLong(KEY_FRAG_USER_ID_ALL, listId);
-        subscrParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SUBSCR);
+        subscrParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_SUBSCRIBER);
         fragments = new ListFragment[3];
         fragments[0] = new TweetFragment();
         fragments[1] = new UserFragment();
@@ -210,8 +211,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public void setupMuteBlockPage() {
         Bundle paramMute = new Bundle();
         Bundle paramBlock = new Bundle();
-        paramMute.putInt(KEY_FRAG_USER_MODE, USER_FRAG_MUTES);
-        paramBlock.putInt(KEY_FRAG_USER_MODE, USER_FRAG_BLOCKS);
+        paramMute.putInt(KEY_FRAG_USER_MODE, USER_FRAG_MUTED_USERS);
+        paramBlock.putInt(KEY_FRAG_USER_MODE, USER_FRAG_BLOCKED_USERS);
 
         fragments = new ListFragment[2];
         fragments[0] = new UserFragment();
@@ -227,8 +228,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public void setupFollowRequestPage() {
         Bundle paramFollowing = new Bundle();
         Bundle paramFollower = new Bundle();
-        paramFollowing.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING_REQUEST);
-        paramFollower.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER_REQUEST);
+        paramFollowing.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOW_INCOMING);
+        paramFollower.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOW_OUTGOING);
 
         fragments = new ListFragment[2];
         fragments[0] = new UserFragment();
@@ -245,9 +246,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      */
     public void setupFollowingPage(long userId) {
         Bundle userParam = new Bundle();
-        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING_REQUEST);
         userParam.putLong(KEY_FRAG_USER_ID_ALL, userId);
-        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FRIENDS);
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING);
         fragments = new ListFragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(userParam);
@@ -261,9 +261,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      */
     public void setupFollowerPage(long userId) {
         Bundle userParam = new Bundle();
-        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER_REQUEST);
         userParam.putLong(KEY_FRAG_USER_ID_ALL, userId);
-        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FRIENDS);
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER);
         fragments = new ListFragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(userParam);
@@ -277,8 +276,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      */
     public void setupRetweeterPage(long tweetId) {
         Bundle userParam = new Bundle();
-        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
         userParam.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
+        userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
         fragments = new ListFragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(userParam);
