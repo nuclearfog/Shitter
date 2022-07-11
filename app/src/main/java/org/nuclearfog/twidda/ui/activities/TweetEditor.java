@@ -46,11 +46,13 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
     /**
      * key for the replied tweet if any
+     * value type is Long
      */
     public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
 
     /**
      * key for the text added to the tweet if any
+     * value type is String
      */
     public static final String KEY_TWEETPOPUP_TEXT = "tweet_text";
 

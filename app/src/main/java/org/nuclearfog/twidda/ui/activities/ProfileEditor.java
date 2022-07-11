@@ -58,16 +58,18 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
     /**
      * key to preload user data
+     * value is {@link User}
      */
     public static final String KEY_PROFILE_DATA = "profile-editor-data";
 
     /**
      * key to update profile information
+     * value is {@link User}
      */
     public static final String KEY_UPDATED_PROFILE = "profile-update";
 
     /**
-     * return code to inform calling activity that profile information has changed
+     * return code used if profile information has changed
      */
     public static final int RETURN_PROFILE_CHANGED = 0xF5C0E570;
 

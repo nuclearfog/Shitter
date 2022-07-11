@@ -29,11 +29,13 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 
     /**
      * Key for the ID the list owner
+     * value type is Long
      */
     public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
 
     /**
      * alternative key for the screen name of the owner
+     * value type is String
      */
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 

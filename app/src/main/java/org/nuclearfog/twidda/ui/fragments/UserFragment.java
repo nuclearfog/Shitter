@@ -30,7 +30,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
- * Fragment class for lists a list of users
+ * fragment class to show a list of users
  *
  * @author nuclearfog
  */
@@ -38,7 +38,10 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
     /**
      * key to set the type of user list to show
-     * value type is integer
+     * possible value types are {@link #USER_FRAG_FOLLOWER}, {@link #USER_FRAG_FOLLOWING}, {@link #USER_FRAG_RETWEET},
+     * {@link #USER_FRAG_FAVORIT}, {@link #USER_FRAG_FAVORIT}, {@link #USER_FRAG_SEARCH}, {@link #USER_FRAG_LIST_SUBSCRIBER},
+     * {@link #USER_FRAG_LIST_MEMBERS}, {@link #USER_FRAG_BLOCKED_USERS}, {@link #USER_FRAG_MUTED_USERS},
+     * {@link #USER_FRAG_FOLLOW_INCOMING} and {@link #USER_FRAG_FOLLOW_OUTGOING}
      */
     public static final String KEY_FRAG_USER_MODE = "user_mode";
 
@@ -62,67 +65,67 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
     /**
      * value to configure to show users following the authenticating user
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_FOLLOWER = 0xE45DD2;
 
     /**
      * value to configure to show users followed by the authenticating user
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_FOLLOWING = 0x64D432EB;
 
     /**
      * value to configure to show users retweeting a tweet
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_RETWEET = 0x2AC31E6B;
 
     /**
      * value to configure to show users favoring a tweet
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_FAVORIT = 0xA7FB2BB4;
 
     /**
      * value to configure to search users matching a search string
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_SEARCH = 0x162C3599;
 
     /**
      * value to configure to show subscribers of an userlist
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_LIST_SUBSCRIBER = 0x21DCF91C;
 
     /**
      * value to configure to show members of an userlist
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_LIST_MEMBERS = 0x9A00B3A5;
 
     /**
      * value to configure a list of blocked users
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_BLOCKED_USERS = 0x83D186AD;
 
     /**
      * value to configure a list of muted users
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_MUTED_USERS = 0x5246DC35;
 
     /**
      * value to configure a list of users with incoming following request
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_FOLLOW_INCOMING = 0x89e5255a;
 
     /**
      * value to configure a list of users with outgoing following request
-     * corresponding key {@link #KEY_FRAG_USER_MODE}
+     * @see #KEY_FRAG_USER_MODE
      */
     public static final int USER_FRAG_FOLLOW_OUTGOING = 0x72544f17;
 

@@ -37,6 +37,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
     /**
      * Key for the search query, required
+     * value type is String
      */
     public static final String KEY_SEARCH_QUERY = "search_query";
 

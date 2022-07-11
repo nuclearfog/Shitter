@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import java.util.List;
 
 /**
- * Fragment class for trend lists
+ * Fragment class to show a list of Twitter trends
  *
  * @author nuclearfog
  */

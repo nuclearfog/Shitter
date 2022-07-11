@@ -38,12 +38,14 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
 
     /**
-     * Key for the list ID of the list if an existing list should be updated
+     * Key for the list ID if an existing list should be updated
+     * value type is Long
      */
     public static final String KEY_LIST_EDITOR_DATA = "list_edit_data";
 
     /**
      * Key for updated list information
+     * value type is {@link UserList}
      */
     public static final String KEY_UPDATED_USERLIST = "userlist-update";
 

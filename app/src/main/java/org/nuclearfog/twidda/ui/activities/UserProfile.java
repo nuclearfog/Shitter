@@ -90,21 +90,25 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     /**
      * Key for the user ID
+     * value type is Long
      */
     public static final String KEY_PROFILE_ID = "profile_id";
 
     /**
      * key for user object
+     * value type is {@link User}
      */
     public static final String KEY_PROFILE_DATA = "profile_data";
 
     /**
      * key to prevent this activity to reload profile information as they are up to date
+     * value type is Boolean
      */
     public static final String KEY_PROFILE_DISABLE_RELOAD = "profile_no_reload";
 
     /**
      * key to send updated user data
+     * value type is {@link User}
      */
     public static final String KEY_USER_UPDATE = "user_update";
 

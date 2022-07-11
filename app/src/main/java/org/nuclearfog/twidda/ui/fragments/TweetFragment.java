@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.ui.activities.TweetActivity;
 import java.util.List;
 
 /**
- * #Fragment class for a list of tweets
+ * fragment class to show a list of tweets
  *
  * @author nuclearfog
  */
@@ -29,53 +29,62 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
     /**
      * Key to define what type of tweets should be loaded
-     * {@link #TWEET_FRAG_HOME}, {@link #TWEET_FRAG_MENT}, {@link #TWEET_FRAG_TWEETS}, {@link #TWEET_FRAG_FAVORS}
+     * possible values are {@link #TWEET_FRAG_HOME}, {@link #TWEET_FRAG_MENT}, {@link #TWEET_FRAG_TWEETS}, {@link #TWEET_FRAG_FAVORS}
      * {@link #TWEET_FRAG_ANSWER}, {@link #TWEET_FRAG_SEARCH}, {@link #TWEET_FRAG_LIST}
      */
     public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
 
     /**
-     * Key to define a search string such as username or text
+     * Key to define a search query
+     * value type is String
      */
     public static final String KEY_FRAG_TWEET_SEARCH = "tweet_search";
 
     /**
-     * Key to define a tweet ID to get replies
+     * Key to define a an (tweet, user, list) ID
+     * value type is Long
      */
     public static final String KEY_FRAG_TWEET_ID = "tweet_id";
 
     /**
      * setup list for home timeline
+     * @see #KEY_FRAG_TWEET_MODE
      */
     public static final int TWEET_FRAG_HOME = 0xE7028B60;
 
     /**
      * setup list for mention timeline
+     * @see #KEY_FRAG_TWEET_MODE
      */
     public static final int TWEET_FRAG_MENT = 0x9EC8274D;
 
     /**
-     * setup list for user tweets
+     * setup list for tweet timeline of a specific user
+     * @see #KEY_FRAG_TWEET_MODE
      */
     public static final int TWEET_FRAG_TWEETS = 0x4DBEF6CD;
 
     /**
-     * setup list for user favorites
+     * setup list for favorite timeline of a specific user
+     * @see #KEY_FRAG_TWEET_MODE
      */
     public static final int TWEET_FRAG_FAVORS = 0x8DE749EC;
 
     /**
-     * setup list for tweet replies
+     * setup list for tweet replies of a specific tweet
+     * @see #KEY_FRAG_TWEET_MODE
      */
     public static final int TWEET_FRAG_ANSWER = 0xAFB5F1C0;
 
     /**
-     * setup list for search
+     * setup list for search timeline
+     * @see #KEY_FRAG_TWEET_MODE
      */
     public static final int TWEET_FRAG_SEARCH = 0x91A71117;
 
     /**
-     * setup list for user list tweets
+     * setup list for userlist timeline
+     * @see #KEY_FRAG_TWEET_MODE
      */
     public static final int TWEET_FRAG_LIST = 0x43F518F7;
 

@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 
 /**
- * Fragment class for user lists
+ * Fragment class to show userlists
  *
  * @author nuclearfog
  */
@@ -31,11 +31,14 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
     /**
      * Key for the owner ID
+     * value type is Long
      */
     public static final String KEY_FRAG_LIST_OWNER_ID = "list_owner_id";
 
     /**
-     * alternative key for the owner name
+     * key for the owner screenname
+     * alternative to {@link #KEY_FRAG_LIST_OWNER_ID}
+     * value type is String
      */
     public static final String KEY_FRAG_LIST_OWNER_NAME = "list_owner_name";
 
@@ -46,19 +49,21 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     public static final String KEY_FRAG_LIST_LIST_TYPE = "list_type";
 
     /**
-     * setup the list to show all user lists owned by a specified user
+     * value to show all user lists owned by a specified user
+     * @see #KEY_FRAG_LIST_LIST_TYPE
      */
     public static final int LIST_USER_OWNS = 0x5F36F90D;
 
     /**
-     * setup the list to show all user lists the specified user is added to
+     * value to show all user lists the specified user is added to
+     * @see #KEY_FRAG_LIST_LIST_TYPE
      */
     public static final int LIST_USER_SUBSCR_TO = 0xAA7386AA;
 
     /**
      * request code to open an user list to check for changes
      */
-    public static final int REQUEST_OPEN_LIST = 0x9541;
+    private static final int REQUEST_OPEN_LIST = 0x9541;
 
     private ListLoader listTask;
     private UserlistAdapter adapter;

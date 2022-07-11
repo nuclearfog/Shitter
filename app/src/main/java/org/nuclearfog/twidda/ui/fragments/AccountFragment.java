@@ -23,8 +23,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import java.util.List;
 
 /**
- * fragment class of the {@link AccountActivity}
- * all registered user accounts are listed here
+ * fragment class to show registered accounts
  *
  * @author nuclearfog
  */

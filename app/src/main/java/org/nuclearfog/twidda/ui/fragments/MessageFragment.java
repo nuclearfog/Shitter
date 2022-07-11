@@ -36,7 +36,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
- * Fragment class for direct message lists
+ * Fragment class to show a list of directmessages
  *
  * @author nuclearfog
  */

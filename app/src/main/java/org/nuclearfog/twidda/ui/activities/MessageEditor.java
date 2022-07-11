@@ -33,14 +33,15 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 
 /**
- * Direct message popup activity
+ * Directmessage editor activity
  *
  * @author nuclearfog
  */
 public class MessageEditor extends MediaActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
 
     /**
-     * key for the screen name if any
+     * key for the screenname if any
+     * value type is String
      */
     public static final String KEY_DM_PREFIX = "dm_prefix";
 

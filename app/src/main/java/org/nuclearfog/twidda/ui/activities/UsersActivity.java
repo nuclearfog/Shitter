@@ -41,40 +41,51 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
     /**
      * type of users to get from twitter
-     * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS}
+     * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS},
+     * {@link #USERLIST_FAVORIT}, {@link #USERLIST_EXCLUDED_USERS} or {@link #USERLIST_REQUESTS},
      */
     public static final String KEY_USERDETAIL_MODE = "userlist_mode";
 
     /**
      * ID of a userlist, an user or a tweet to get the users from
+     * value type is Long
      */
     public static final String KEY_USERDETAIL_ID = "userlist_id";
 
     /**
      * friends of an user, requires user ID
+     * @see #KEY_USERDETAIL_MODE
      */
     public static final int USERLIST_FRIENDS = 0xDF893242;
 
     /**
      * follower of an user, requires user ID
+     * @see #KEY_USERDETAIL_MODE
      */
     public static final int USERLIST_FOLLOWER = 0xA89F5968;
 
     /**
      * user retweeting a tweet, requires tweet ID
+     * @see #KEY_USERDETAIL_MODE
      */
     public static final int USERLIST_RETWEETS = 0x19F582E;
 
     /**
      * user favoriting/liking a tweet, requires tweet ID
+     * @see #KEY_USERDETAIL_MODE
      */
     public static final int USERLIST_FAVORIT = 0x9bcc3f99;
 
     /**
      * setup list to show excluded (muted, blocked) users
+     * @see #KEY_USERDETAIL_MODE
      */
     public static final int USERLIST_EXCLUDED_USERS = 0x896a786;
 
+    /**
+     * setup list to show incoming & outgoing follow requests
+     * @see #KEY_USERDETAIL_MODE
+     */
     public static final int USERLIST_REQUESTS = 0x0948693;
 
     private GlobalSettings settings;

@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.ui.fragments.ListFragment;
 public class AccountActivity extends AppCompatActivity {
 
     /**
-     * request login page
+     * request code to start {@link LoginActivity}
      */
     private static final int REQUEST_LOGIN = 0xDF14;
 
@@ -38,6 +38,7 @@ public class AccountActivity extends AppCompatActivity {
 
     /**
      * key to disable account selector option from menu
+     * value type is Boolean
      */
     public static final String KEY_DISABLE_SELECTOR = "disable-acc-manager";
 

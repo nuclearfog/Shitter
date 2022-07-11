@@ -27,7 +27,7 @@ import org.nuclearfog.zoomview.ZoomView;
 import java.io.File;
 
 /**
- * Activity to show online of local images
+ * Activity to show online and local images
  *
  * @author nuclearfog
  */
@@ -35,11 +35,13 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 
     /**
      * key to add URI of the image (online or local)
+     * value type is {@link Uri}
      */
     public static final String IMAGE_URIS = "image-uri";
 
     /**
      * key to define where the images are located (online or local)
+     * value type is Boolean
      */
     public static final String IMAGE_DOWNLOAD = "image-download";
 

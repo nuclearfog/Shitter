@@ -51,21 +51,25 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
     /**
      * key to add list information
+     * value type is {@link UserList}
      */
     public static final String KEY_LIST_DATA = "list_data";
 
     /**
      * alternative key to {@link #KEY_LIST_DATA} to download list information
+     * value type is Long
      */
     public static final String KEY_LIST_ID = "list_id";
 
     /**
-     * activity result key to return the ID of a removed list
+     * result key to return the ID of a removed list
+     * value type is {@link UserList}
      */
     public static final String RESULT_REMOVED_LIST_ID = "removed-list-id";
 
     /**
      * result key to update an user list
+     * value type is {@link UserList}
      */
     public static final String RESULT_UPDATE_LIST = "update-user-list";
 

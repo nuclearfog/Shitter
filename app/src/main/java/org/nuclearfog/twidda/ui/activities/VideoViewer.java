@@ -59,11 +59,13 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
     /**
      * key for an Uri array with local links
+     * value type is {@link Uri}
      */
     public static final String VIDEO_URI = "media_uri";
 
     /**
      * Key to enable extra layouts for a video
+     * value type is Boolean
      */
     public static final String ENABLE_VIDEO_CONTROLS = "enable_controls";
 

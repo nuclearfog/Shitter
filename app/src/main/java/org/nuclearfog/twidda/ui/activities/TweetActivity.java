@@ -88,28 +88,33 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     public static final int RETURN_TWEET_REMOVED = 0x8B03DB84;
 
     /**
-     * bundle key for a {@link Tweet} value.
+     * key used for tweet information
+     * value type is {@link Tweet}
      * If no tweet object exists, {@link #KEY_TWEET_ID} and {@link #KEY_TWEET_NAME} will be used instead
      */
     public static final String KEY_TWEET_DATA = "tweet_data";
 
     /**
-     * {@link Bundle} key for the Tweet ID value, alternative to {@link #KEY_TWEET_DATA}
+     * key for the Tweet ID value, alternative to {@link #KEY_TWEET_DATA}
+     * value type is Long
      */
     public static final String KEY_TWEET_ID = "tweet_tweet_id";
 
     /**
-     * {@link Bundle} key for the tweet author's name. alternative to {@link #KEY_TWEET_DATA}
+     * key for the tweet author's name. alternative to {@link #KEY_TWEET_DATA}
+     * value type is String
      */
     public static final String KEY_TWEET_NAME = "tweet_author";
 
     /**
-     * {@link Intent} key to return a tweet object with updated information
+     * key to return updated tweet information
+     * value type is {@link Tweet}
      */
     public static final String INTENT_TWEET_UPDATE_DATA = "tweet_update_data";
 
     /**
-     * @link Intent} key to return a tweet ID if this tweet was deleted
+     * key to return a tweet ID if this tweet was deleted
+     * value type is Long
      */
     public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
 

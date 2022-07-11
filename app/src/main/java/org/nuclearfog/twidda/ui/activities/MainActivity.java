@@ -41,7 +41,8 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
     /**
-     * bundle key used to set the tab page
+     * key used to set the tab page
+     * vale type is Integer
      */
     public static final String KEY_TAB_PAGE = "tab_pos";
 
