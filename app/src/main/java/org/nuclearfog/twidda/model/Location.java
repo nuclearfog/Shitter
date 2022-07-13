@@ -7,13 +7,13 @@ package org.nuclearfog.twidda.model;
  */
 public interface Location {
 
-    /**
-     * @return ID of the place (World ID)
-     */
-    int getId();
+	/**
+	 * @return ID of the place (World ID)
+	 */
+	int getId();
 
-    /**
-     * @return name of the location (country, city)
-     */
-    String getName();
+	/**
+	 * @return name of the location (country, city)
+	 */
+	String getName();
 }

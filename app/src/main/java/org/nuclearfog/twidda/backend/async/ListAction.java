@@ -16,80 +16,80 @@ import java.lang.ref.WeakReference;
  */
 public class ListAction extends AsyncTask<Void, Void, UserList> {
 
-    /**
-     * load userlist information
-     */
-    public static final int LOAD = 1;
+	/**
+	 * load userlist information
+	 */
+	public static final int LOAD = 1;
 
-    /**
-     * unfollow user list
-     */
-    public static final int FOLLOW = 2;
+	/**
+	 * unfollow user list
+	 */
+	public static final int FOLLOW = 2;
 
-    /**
-     * unfollow user list
-     */
-    public static final int UNFOLLOW = 3;
+	/**
+	 * unfollow user list
+	 */
+	public static final int UNFOLLOW = 3;
 
-    /**
-     * delete user list
-     */
-    public static final int DELETE = 4;
-
-
-    private WeakReference<UserlistActivity> weakRef;
-    private Twitter twitter;
-    private TwitterException err;
-
-    private long listId;
-    private int action;
-
-    /**
-     * @param activity Callback to update list information
-     * @param listId   ID of the list to process
-     * @param action   what action should be performed
-     */
-    public ListAction(UserlistActivity activity, long listId, int action) {
-        super();
-        weakRef = new WeakReference<>(activity);
-        twitter = Twitter.get(activity);
-        this.listId = listId;
-        this.action = action;
-    }
+	/**
+	 * delete user list
+	 */
+	public static final int DELETE = 4;
 
 
-    @Override
-    protected UserList doInBackground(Void... v) {
-        try {
-            switch (action) {
-                case LOAD:
-                    return twitter.getUserlist1(listId);
+	private WeakReference<UserlistActivity> weakRef;
+	private Twitter twitter;
+	private TwitterException err;
 
-                case FOLLOW:
-                    return twitter.followUserlist(listId);
+	private long listId;
+	private int action;
 
-                case UNFOLLOW:
-                    return twitter.unfollowUserlist(listId);
-
-                case DELETE:
-                    return twitter.deleteUserlist(listId);
-            }
-        } catch (TwitterException err) {
-            this.err = err;
-        }
-        return null;
-    }
+	/**
+	 * @param activity Callback to update list information
+	 * @param listId   ID of the list to process
+	 * @param action   what action should be performed
+	 */
+	public ListAction(UserlistActivity activity, long listId, int action) {
+		super();
+		weakRef = new WeakReference<>(activity);
+		twitter = Twitter.get(activity);
+		this.listId = listId;
+		this.action = action;
+	}
 
 
-    @Override
-    protected void onPostExecute(UserList userList) {
-        UserlistActivity callback = this.weakRef.get();
-        if (callback != null) {
-            if (userList != null) {
-                callback.onSuccess(userList, action);
-            } else {
-                callback.onFailure(err, listId);
-            }
-        }
-    }
+	@Override
+	protected UserList doInBackground(Void... v) {
+		try {
+			switch (action) {
+				case LOAD:
+					return twitter.getUserlist1(listId);
+
+				case FOLLOW:
+					return twitter.followUserlist(listId);
+
+				case UNFOLLOW:
+					return twitter.unfollowUserlist(listId);
+
+				case DELETE:
+					return twitter.deleteUserlist(listId);
+			}
+		} catch (TwitterException err) {
+			this.err = err;
+		}
+		return null;
+	}
+
+
+	@Override
+	protected void onPostExecute(UserList userList) {
+		UserlistActivity callback = this.weakRef.get();
+		if (callback != null) {
+			if (userList != null) {
+				callback.onSuccess(userList, action);
+			} else {
+				callback.onFailure(err, listId);
+			}
+		}
+	}
 }

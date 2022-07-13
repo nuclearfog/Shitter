@@ -25,47 +25,47 @@ import org.nuclearfog.twidda.ui.fragments.MessageFragment;
  */
 public class MessageActivity extends AppCompatActivity {
 
-    private GlobalSettings settings;
+	private GlobalSettings settings;
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(AppStyles.setFontScale(newBase));
-    }
-
-
-    @Override
-    protected void onCreate(@Nullable Bundle b) {
-        super.onCreate(b);
-        setContentView(R.layout.page_fragment);
-        ViewGroup root = findViewById(R.id.fragment_root);
-        Toolbar tool = findViewById(R.id.fragment_toolbar);
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, new MessageFragment());
-        fragmentTransaction.commit();
-
-        tool.setTitle(R.string.directmessage);
-        setSupportActionBar(tool);
-
-        settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(root, settings.getBackgroundColor());
-    }
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(AppStyles.setFontScale(newBase));
+	}
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu m) {
-        getMenuInflater().inflate(R.menu.message, m);
-        AppStyles.setMenuIconColor(m, settings.getIconColor());
-        return super.onCreateOptionsMenu(m);
-    }
+	@Override
+	protected void onCreate(@Nullable Bundle b) {
+		super.onCreate(b);
+		setContentView(R.layout.page_fragment);
+		ViewGroup root = findViewById(R.id.fragment_root);
+		Toolbar tool = findViewById(R.id.fragment_toolbar);
+
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.replace(R.id.fragment_container, new MessageFragment());
+		fragmentTransaction.commit();
+
+		tool.setTitle(R.string.directmessage);
+		setSupportActionBar(tool);
+
+		settings = GlobalSettings.getInstance(this);
+		AppStyles.setTheme(root, settings.getBackgroundColor());
+	}
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.message) {
-            Intent sendDm = new Intent(this, MessageEditor.class);
-            startActivity(sendDm);
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu m) {
+		getMenuInflater().inflate(R.menu.message, m);
+		AppStyles.setMenuIconColor(m, settings.getIconColor());
+		return super.onCreateOptionsMenu(m);
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		if (item.getItemId() == R.id.message) {
+			Intent sendDm = new Intent(this, MessageEditor.class);
+			startActivity(sendDm);
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

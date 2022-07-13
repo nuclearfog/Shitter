@@ -19,33 +19,33 @@ import okhttp3.Route;
  * @author nuclearfog
  */
 public class ProxyAuthenticator extends Authenticator implements okhttp3.Authenticator {
-    private GlobalSettings settings;
+	private GlobalSettings settings;
 
-    /**
-     * @param settings global app settings instance
-     */
-    public ProxyAuthenticator(GlobalSettings settings) {
-        this.settings = settings;
-    }
-
-
-    @Override
-    protected PasswordAuthentication getPasswordAuthentication() {
-        if (settings.isProxyAuthSet()) {
-            String username = settings.getProxyUser();
-            char[] password = settings.getProxyPass().toCharArray();
-            return new PasswordAuthentication(username, password);
-        }
-        return new PasswordAuthentication("", new char[0]);
-    }
+	/**
+	 * @param settings global app settings instance
+	 */
+	public ProxyAuthenticator(GlobalSettings settings) {
+		this.settings = settings;
+	}
 
 
-    @Override
-    public Request authenticate(Route route, @NonNull Response response) {
-        if (settings.isProxyAuthSet()) {
-            String credential = Credentials.basic(settings.getProxyUser(), settings.getProxyPass());
-            return response.request().newBuilder().header("Proxy-Authorization", credential).build();
-        }
-        return null;
-    }
+	@Override
+	protected PasswordAuthentication getPasswordAuthentication() {
+		if (settings.isProxyAuthSet()) {
+			String username = settings.getProxyUser();
+			char[] password = settings.getProxyPass().toCharArray();
+			return new PasswordAuthentication(username, password);
+		}
+		return new PasswordAuthentication("", new char[0]);
+	}
+
+
+	@Override
+	public Request authenticate(Route route, @NonNull Response response) {
+		if (settings.isProxyAuthSet()) {
+			String credential = Credentials.basic(settings.getProxyUser(), settings.getProxyPass());
+			return response.request().newBuilder().header("Proxy-Authorization", credential).build();
+		}
+		return null;
+	}
 }

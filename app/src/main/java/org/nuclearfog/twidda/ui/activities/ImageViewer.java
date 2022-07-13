@@ -33,146 +33,146 @@ import java.io.File;
  */
 public class ImageViewer extends MediaActivity implements OnImageClickListener {
 
-    /**
-     * key to add URI of the image (online or local)
-     * value type is {@link Uri}
-     */
-    public static final String IMAGE_URIS = "image-uri";
+	/**
+	 * key to add URI of the image (online or local)
+	 * value type is {@link Uri}
+	 */
+	public static final String IMAGE_URIS = "image-uri";
 
-    /**
-     * key to define where the images are located (online or local)
-     * value type is Boolean
-     */
-    public static final String IMAGE_DOWNLOAD = "image-download";
+	/**
+	 * key to define where the images are located (online or local)
+	 * value type is Boolean
+	 */
+	public static final String IMAGE_DOWNLOAD = "image-download";
 
-    /**
-     * name of the cache folder where online images will be stored
-     * after the end of this activity this folder will be cleared
-     */
-    private static final String CACHE_FOLDER = "imagecache";
+	/**
+	 * name of the cache folder where online images will be stored
+	 * after the end of this activity this folder will be cleared
+	 */
+	private static final String CACHE_FOLDER = "imagecache";
 
-    @Nullable
-    private ImageLoader imageAsync;
-    private ImageAdapter adapter;
-    private File cacheFolder;
+	@Nullable
+	private ImageLoader imageAsync;
+	private ImageAdapter adapter;
+	private File cacheFolder;
 
-    private ZoomView zoomImage;
-    private ProgressBar loadingCircle;
-
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.page_image);
-        loadingCircle = findViewById(R.id.media_progress);
-        zoomImage = findViewById(R.id.image_full);
-        RecyclerView imageList = findViewById(R.id.image_list);
-
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
-
-        cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
-        cacheFolder.mkdirs();
-        adapter = new ImageAdapter(getApplicationContext(), this);
-        imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-        imageList.setAdapter(adapter);
-
-        Parcelable[] links = getIntent().getParcelableArrayExtra(IMAGE_URIS);
-        boolean online = getIntent().getBooleanExtra(IMAGE_DOWNLOAD, true);
-        Uri[] uris = {null};
-        if (links != null) {
-            uris = new Uri[links.length];
-            for (int i = 0; i < uris.length; i++) {
-                uris[i] = (Uri) links[i];
-            }
-        }
-        if (online) {
-            imageAsync = new ImageLoader(this, cacheFolder);
-            imageAsync.execute(uris);
-        } else {
-            adapter.addAll(uris);
-            adapter.disableSaveButton();
-            zoomImage.setImageURI(uris[0]);
-            loadingCircle.setVisibility(INVISIBLE);
-        }
-    }
+	private ZoomView zoomImage;
+	private ProgressBar loadingCircle;
 
 
-    @Override
-    protected void onDestroy() {
-        if (imageAsync != null && imageAsync.getStatus() == RUNNING)
-            imageAsync.cancel(true);
-        clearCache();
-        super.onDestroy();
-    }
+	@Override
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.page_image);
+		loadingCircle = findViewById(R.id.media_progress);
+		zoomImage = findViewById(R.id.image_full);
+		RecyclerView imageList = findViewById(R.id.image_list);
+
+		GlobalSettings settings = GlobalSettings.getInstance(this);
+		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
+
+		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
+		cacheFolder.mkdirs();
+		adapter = new ImageAdapter(getApplicationContext(), this);
+		imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+		imageList.setAdapter(adapter);
+
+		Parcelable[] links = getIntent().getParcelableArrayExtra(IMAGE_URIS);
+		boolean online = getIntent().getBooleanExtra(IMAGE_DOWNLOAD, true);
+		Uri[] uris = {null};
+		if (links != null) {
+			uris = new Uri[links.length];
+			for (int i = 0; i < uris.length; i++) {
+				uris[i] = (Uri) links[i];
+			}
+		}
+		if (online) {
+			imageAsync = new ImageLoader(this, cacheFolder);
+			imageAsync.execute(uris);
+		} else {
+			adapter.addAll(uris);
+			adapter.disableSaveButton();
+			zoomImage.setImageURI(uris[0]);
+			loadingCircle.setVisibility(INVISIBLE);
+		}
+	}
 
 
-    @Override
-    public void onImageClick(Uri uri) {
-        zoomImage.reset();
-        zoomImage.setImageURI(uri);
-    }
+	@Override
+	protected void onDestroy() {
+		if (imageAsync != null && imageAsync.getStatus() == RUNNING)
+			imageAsync.cancel(true);
+		clearCache();
+		super.onDestroy();
+	}
 
 
-    @Override
-    public void onImageSave(Uri uri) {
-        storeImage(uri);
-    }
+	@Override
+	public void onImageClick(Uri uri) {
+		zoomImage.reset();
+		zoomImage.setImageURI(uri);
+	}
 
 
-    @Override
-    protected void onAttachLocation(@Nullable Location location) {
-    }
+	@Override
+	public void onImageSave(Uri uri) {
+		storeImage(uri);
+	}
 
 
-    @Override
-    protected void onMediaFetched(int resultType, @NonNull Uri uri) {
-    }
+	@Override
+	protected void onAttachLocation(@Nullable Location location) {
+	}
 
-    /**
-     * set downloaded image into preview list
-     *
-     * @param imageUri Image Uri
-     */
-    public void setImage(Uri imageUri) {
-        if (adapter.isEmpty()) {
-            zoomImage.reset();
-            zoomImage.setImageURI(imageUri);
-            loadingCircle.setVisibility(INVISIBLE);
-        }
-        adapter.addLast(imageUri);
-    }
 
-    /**
-     * Called from {@link ImageLoader} when all images are downloaded successfully
-     */
-    public void onSuccess() {
-        adapter.disableLoading();
-    }
+	@Override
+	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
+	}
 
-    /**
-     * Called from {@link ImageLoader} when an error occurs
-     *
-     * @param err Exception caught by {@link ImageLoader}
-     */
-    public void onError(ErrorHandler.TwitterError err) {
-        ErrorHandler.handleFailure(getApplicationContext(), err);
-        finish();
-    }
+	/**
+	 * set downloaded image into preview list
+	 *
+	 * @param imageUri Image Uri
+	 */
+	public void setImage(Uri imageUri) {
+		if (adapter.isEmpty()) {
+			zoomImage.reset();
+			zoomImage.setImageURI(imageUri);
+			loadingCircle.setVisibility(INVISIBLE);
+		}
+		adapter.addLast(imageUri);
+	}
 
-    /**
-     * clear the image cache
-     */
-    private void clearCache() {
-        try {
-            File[] files = cacheFolder.listFiles();
-            if (files != null && files.length > 0) {
-                for (File file : files) {
-                    file.delete();
-                }
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
+	/**
+	 * Called from {@link ImageLoader} when all images are downloaded successfully
+	 */
+	public void onSuccess() {
+		adapter.disableLoading();
+	}
+
+	/**
+	 * Called from {@link ImageLoader} when an error occurs
+	 *
+	 * @param err Exception caught by {@link ImageLoader}
+	 */
+	public void onError(ErrorHandler.TwitterError err) {
+		ErrorHandler.handleFailure(getApplicationContext(), err);
+		finish();
+	}
+
+	/**
+	 * clear the image cache
+	 */
+	private void clearCache() {
+		try {
+			File[] files = cacheFolder.listFiles();
+			if (files != null && files.length > 0) {
+				for (File file : files) {
+					file.delete();
+				}
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+	}
 }

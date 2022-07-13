@@ -17,87 +17,87 @@ import org.nuclearfog.twidda.model.User;
  */
 public class DirectMessageImpl implements DirectMessage {
 
-    private long id;
-    private long time;
-    private long senderId;
-    private long receiverId;
-    private String text;
-    private User sender;
-    private User receiver;
-    private String media;
+	private long id;
+	private long time;
+	private long senderId;
+	private long receiverId;
+	private String text;
+	private User sender;
+	private User receiver;
+	private String media;
 
 
-    public DirectMessageImpl(Cursor cursor) {
-        text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
-        time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
-        id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
-        senderId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.FROM));
-        receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
-        media = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));
-    }
+	public DirectMessageImpl(Cursor cursor) {
+		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
+		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
+		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
+		senderId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.FROM));
+		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
+		media = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));
+	}
 
-    @Override
-    public long getId() {
-        return id;
-    }
+	@Override
+	public long getId() {
+		return id;
+	}
 
-    @Override
-    public User getSender() {
-        return sender;
-    }
+	@Override
+	public User getSender() {
+		return sender;
+	}
 
-    @Override
-    public User getReceiver() {
-        return receiver;
-    }
+	@Override
+	public User getReceiver() {
+		return receiver;
+	}
 
-    @Override
-    public String getText() {
-        return text;
-    }
+	@Override
+	public String getText() {
+		return text;
+	}
 
-    @Override
-    public long getTimestamp() {
-        return time;
-    }
+	@Override
+	public long getTimestamp() {
+		return time;
+	}
 
-    @Nullable
-    @Override
-    public Uri getMedia() {
-        if (media != null)
-            return Uri.parse(media);
-        return null;
-    }
+	@Nullable
+	@Override
+	public Uri getMedia() {
+		if (media != null)
+			return Uri.parse(media);
+		return null;
+	}
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (!(obj instanceof DirectMessage))
-            return false;
-        return ((DirectMessage) obj).getId() == id;
-    }
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof DirectMessage))
+			return false;
+		return ((DirectMessage) obj).getId() == id;
+	}
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "from=" + sender + " to=" + receiver + " message=\"" + text + "\"";
-    }
+	@NonNull
+	@Override
+	public String toString() {
+		return "from=" + sender + " to=" + receiver + " message=\"" + text + "\"";
+	}
 
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
-
-
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
-    }
+	public void setSender(User sender) {
+		this.sender = sender;
+	}
 
 
-    public long getSenderId() {
-        return senderId;
-    }
+	public void setReceiver(User receiver) {
+		this.receiver = receiver;
+	}
 
 
-    public long getReceiverId() {
-        return receiverId;
-    }
+	public long getSenderId() {
+		return senderId;
+	}
+
+
+	public long getReceiverId() {
+		return receiverId;
+	}
 }

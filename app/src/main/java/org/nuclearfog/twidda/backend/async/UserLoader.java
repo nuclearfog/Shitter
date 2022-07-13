@@ -19,134 +19,144 @@ import java.lang.ref.WeakReference;
  */
 public class UserLoader extends AsyncTask<Long, Void, Users> {
 
-    public static final long NO_CURSOR = -1;
+	public static final long NO_CURSOR = -1;
 
-    /**
-     * actions to perform
-     */
-    public enum Type {
-        /**
-         * load follower list
-         */
-        FOLLOWS,
-        /**
-         * load following list
-         */
-        FRIENDS,
-        /**
-         * load users retweeting a tweet
-         */
-        RETWEET,
-        /**
-         * load users favoriting a tweet
-         */
-        FAVORIT,
-        /**
-         * search for users
-         */
-        SEARCH,
-        /**
-         * load users subscribing an userlist
-         */
-        SUBSCRIBER,
-        /**
-         * load members of an userlist
-         */
-        LISTMEMBER,
-        /**
-         * load a list of blocked users
-         */
-        BLOCK,
-        /**
-         * load a list of muted users
-         */
-        MUTE,
+	/**
+	 * load follower list
+	 */
+	public static final int FOLLOWS = 1;
 
-        FOLLOWING_REQ,
+	/**
+	 * load following list
+	 */
+	public static final int FRIENDS = 2;
 
-        FOLLOWER_REQ,
-    }
+	/**
+	 * load users retweeting a tweet
+	 */
+	public static final int RETWEET = 3;
 
-    @Nullable
-    private TwitterException twException;
-    private final WeakReference<UserFragment> weakRef;
-    private Twitter mTwitter;
+	/**
+	 * load users favoriting a tweet
+	 */
+	public static final int FAVORIT = 4;
 
-    private final Type type;
-    private final String search;
-    private final long id;
+	/**
+	 * list users of a search result
+	 */
+	public static final int SEARCH = 5;
 
-    /**
-     * @param fragment reference to {@link UserFragment}
-     * @param type     type of list to load
-     * @param id       ID depending on what list to load (user ID, tweet ID, list ID)
-     * @param search   search string if type is {@link Type#SEARCH} or empty
-     */
-    public UserLoader(UserFragment fragment, Type type, long id, String search) {
-        super();
-        mTwitter = Twitter.get(fragment.getContext());
-        weakRef = new WeakReference<>(fragment);
+	/**
+	 * load users subscribing an userlist
+	 */
+	public static final int SUBSCRIBER = 6;
 
-        this.type = type;
-        this.search = search;
-        this.id = id;
-    }
+	/**
+	 * load members of an userlist
+	 */
+	public static final int LISTMEMBER = 7;
+
+	/**
+	 * create a list of blocked users
+	 */
+	public static final int BLOCK = 8;
+
+	/**
+	 * create a list of muted users
+	 */
+	public static final int MUTE = 9;
+
+	/**
+	 * create a list with outgoing follow requests
+	 */
+	public static final int OUTGOING_REQ = 10;
+
+	/**
+	 * create a list with incoming follow requests
+	 */
+	public static final int INCOMING_REQ = 11;
 
 
-    @Override
-    protected Users doInBackground(Long[] param) {
-        try {
-            long cursor = param[0];
-            switch (type) {
-                case FOLLOWS:
-                    return mTwitter.getFollower(id, cursor);
+	@Nullable
+	private TwitterException twException;
+	private final WeakReference<UserFragment> weakRef;
+	private Twitter mTwitter;
 
-                case FRIENDS:
-                    return mTwitter.getFollowing(id, cursor);
+	private final int type;
+	private final String search;
+	private final long id;
 
-                case RETWEET:
-                    return mTwitter.getRetweetingUsers(id);
+	/**
+	 * @param fragment reference to {@link UserFragment}
+	 * @param type     type of list to load
+	 * @param id       ID depending on what list to load (user ID, tweet ID, list ID)
+	 * @param search   search string if type is {@link #SEARCH} or empty
+	 */
+	public UserLoader(UserFragment fragment, int type, long id, String search) {
+		super();
+		mTwitter = Twitter.get(fragment.getContext());
+		weakRef = new WeakReference<>(fragment);
 
-                case FAVORIT:
-                    return mTwitter.getLikingUsers(id);
-
-                case SEARCH:
-                    return mTwitter.searchUsers(search, cursor);
-
-                case SUBSCRIBER:
-                    return mTwitter.getListSubscriber(id, cursor);
-
-                case LISTMEMBER:
-                    return mTwitter.getListMember(id, cursor);
-
-                case BLOCK:
-                    return mTwitter.getBlockedUsers(cursor);
-
-                case MUTE:
-                    return mTwitter.getMutedUsers(cursor);
-
-                case FOLLOWER_REQ:
-                    return mTwitter.getIncomingFollowRequests(cursor);
-
-                case FOLLOWING_REQ:
-                    return mTwitter.getOutgoingFollowRequests(cursor);
-            }
-        } catch (TwitterException twException) {
-            this.twException = twException;
-        }
-        return null;
-    }
+		this.type = type;
+		this.search = search;
+		this.id = id;
+	}
 
 
-    @Override
-    protected void onPostExecute(Users users) {
-        UserFragment fragment = weakRef.get();
-        if (fragment != null) {
-            if (users != null) {
-                fragment.setData(users);
-            } else {
-                fragment.onError(twException);
-            }
-        }
-    }
+	@Override
+	protected Users doInBackground(Long[] param) {
+		try {
+			long cursor = param[0];
+			switch (type) {
+				case FOLLOWS:
+					return mTwitter.getFollower(id, cursor);
+
+				case FRIENDS:
+					return mTwitter.getFollowing(id, cursor);
+
+				case RETWEET:
+					return mTwitter.getRetweetingUsers(id);
+
+				case FAVORIT:
+					return mTwitter.getLikingUsers(id);
+
+				case SEARCH:
+					return mTwitter.searchUsers(search, cursor);
+
+				case SUBSCRIBER:
+					return mTwitter.getListSubscriber(id, cursor);
+
+				case LISTMEMBER:
+					return mTwitter.getListMember(id, cursor);
+
+				case BLOCK:
+					return mTwitter.getBlockedUsers(cursor);
+
+				case MUTE:
+					return mTwitter.getMutedUsers(cursor);
+
+				case INCOMING_REQ:
+					return mTwitter.getIncomingFollowRequests(cursor);
+
+				case OUTGOING_REQ:
+					return mTwitter.getOutgoingFollowRequests(cursor);
+			}
+		} catch (TwitterException twException) {
+			this.twException = twException;
+		}
+		return null;
+	}
+
+
+	@Override
+	protected void onPostExecute(Users users) {
+		UserFragment fragment = weakRef.get();
+		if (fragment != null) {
+			if (users != null) {
+				fragment.setData(users);
+			} else {
+				fragment.onError(twException);
+			}
+		}
+	}
 }

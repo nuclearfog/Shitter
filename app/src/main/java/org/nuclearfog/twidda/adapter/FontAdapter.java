@@ -22,47 +22,47 @@ import org.nuclearfog.twidda.ui.activities.SettingsActivity;
  */
 public class FontAdapter extends BaseAdapter {
 
-    private GlobalSettings settings;
+	private GlobalSettings settings;
 
-    /**
-     * @param settings app settings for background and font color
-     */
-    public FontAdapter(GlobalSettings settings) {
-        this.settings = settings;
-    }
-
-
-    @Override
-    public int getCount() {
-        return FONTS.length;
-    }
+	/**
+	 * @param settings app settings for background and font color
+	 */
+	public FontAdapter(GlobalSettings settings) {
+		this.settings = settings;
+	}
 
 
-    @Override
-    public long getItemId(int pos) {
-        return pos;
-    }
+	@Override
+	public int getCount() {
+		return FONTS.length;
+	}
 
 
-    @Override
-    public Typeface getItem(int pos) {
-        return FONTS[pos];
-    }
+	@Override
+	public long getItemId(int pos) {
+		return pos;
+	}
 
 
-    @Override
-    public View getView(int pos, View view, ViewGroup parent) {
-        TextView textItem;
-        if (view == null) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            view = inflater.inflate(R.layout.item_dropdown, parent, false);
-        }
-        textItem = view.findViewById(R.id.dropdown_textitem);
-        textItem.setText(FONT_NAMES[pos]);
-        textItem.setTypeface(FONTS[pos]);
-        textItem.setTextColor(settings.getFontColor());
-        textItem.setBackgroundColor(settings.getCardColor());
-        view.setBackgroundColor(settings.getBackgroundColor());
-        return view;
-    }
+	@Override
+	public Typeface getItem(int pos) {
+		return FONTS[pos];
+	}
+
+
+	@Override
+	public View getView(int pos, View view, ViewGroup parent) {
+		TextView textItem;
+		if (view == null) {
+			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+			view = inflater.inflate(R.layout.item_dropdown, parent, false);
+		}
+		textItem = view.findViewById(R.id.dropdown_textitem);
+		textItem.setText(FONT_NAMES[pos]);
+		textItem.setTypeface(FONTS[pos]);
+		textItem.setTextColor(settings.getFontColor());
+		textItem.setBackgroundColor(settings.getCardColor());
+		view.setBackgroundColor(settings.getBackgroundColor());
+		return view;
+	}
 }

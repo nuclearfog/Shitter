@@ -31,100 +31,100 @@ import java.util.List;
  */
 public class TrendAdapter extends Adapter<ViewHolder> {
 
-    /**
-     * Max trend count Twitter API returns
-     */
-    private static final int INIT_COUNT = 50;
+	/**
+	 * Max trend count Twitter API returns
+	 */
+	private static final int INIT_COUNT = 50;
 
-    /**
-     * Locale specific number format
-     */
-    private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
-
-
-    private TrendClickListener itemClickListener;
-    private GlobalSettings settings;
-    private List<Trend> trends = new ArrayList<>(INIT_COUNT);
-
-    /**
-     * @param itemClickListener Listener for item click
-     */
-    public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
-        this.settings = settings;
-        this.itemClickListener = itemClickListener;
-    }
-
-    /**
-     * replace data from list
-     *
-     * @param trendList list of trends
-     */
-    @MainThread
-    public void setData(@NonNull List<Trend> trendList) {
-        trends.clear();
-        trends.addAll(trendList);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * check if adapter is empty
-     *
-     * @return true if adapter is empty
-     */
-    public boolean isEmpty() {
-        return trends.isEmpty();
-    }
+	/**
+	 * Locale specific number format
+	 */
+	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 
-    @Override
-    public int getItemCount() {
-        return trends.size();
-    }
+	private TrendClickListener itemClickListener;
+	private GlobalSettings settings;
+	private List<Trend> trends = new ArrayList<>(INIT_COUNT);
+
+	/**
+	 * @param itemClickListener Listener for item click
+	 */
+	public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
+		this.settings = settings;
+		this.itemClickListener = itemClickListener;
+	}
+
+	/**
+	 * replace data from list
+	 *
+	 * @param trendList list of trends
+	 */
+	@MainThread
+	public void setData(@NonNull List<Trend> trendList) {
+		trends.clear();
+		trends.addAll(trendList);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * check if adapter is empty
+	 *
+	 * @return true if adapter is empty
+	 */
+	public boolean isEmpty() {
+		return trends.isEmpty();
+	}
 
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final TrendHolder vh = new TrendHolder(parent, settings);
-        vh.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = vh.getLayoutPosition();
-                if (position != NO_POSITION) {
-                    itemClickListener.onTrendClick(trends.get(position));
-                }
-            }
-        });
-        return vh;
-    }
+	@Override
+	public int getItemCount() {
+		return trends.size();
+	}
 
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
-        TrendHolder holder = (TrendHolder) vh;
-        Trend trend = trends.get(index);
-        holder.textViews[0].setText(trend.getRank() + ".");
-        holder.textViews[1].setText(trend.getName());
-        if (trend.getPopularity() > 0) {
-            Resources resources = holder.textViews[2].getContext().getResources();
-            String trendVol = NUM_FORMAT.format(trend.getPopularity()) + " " + resources.getString(R.string.trend_range);
-            holder.textViews[2].setText(trendVol);
-            holder.textViews[2].setVisibility(VISIBLE);
-        } else {
-            holder.textViews[2].setVisibility(GONE);
-        }
-    }
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		final TrendHolder vh = new TrendHolder(parent, settings);
+		vh.itemView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int position = vh.getLayoutPosition();
+				if (position != NO_POSITION) {
+					itemClickListener.onTrendClick(trends.get(position));
+				}
+			}
+		});
+		return vh;
+	}
 
-    /**
-     * Listener for trend list
-     */
-    public interface TrendClickListener {
 
-        /**
-         * called when trend item is clicked
-         *
-         * @param trend trend name
-         */
-        void onTrendClick(Trend trend);
-    }
+	@Override
+	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
+		TrendHolder holder = (TrendHolder) vh;
+		Trend trend = trends.get(index);
+		holder.textViews[0].setText(trend.getRank() + ".");
+		holder.textViews[1].setText(trend.getName());
+		if (trend.getPopularity() > 0) {
+			Resources resources = holder.textViews[2].getContext().getResources();
+			String trendVol = NUM_FORMAT.format(trend.getPopularity()) + " " + resources.getString(R.string.trend_range);
+			holder.textViews[2].setText(trendVol);
+			holder.textViews[2].setVisibility(VISIBLE);
+		} else {
+			holder.textViews[2].setVisibility(GONE);
+		}
+	}
+
+	/**
+	 * Listener for trend list
+	 */
+	public interface TrendClickListener {
+
+		/**
+		 * called when trend item is clicked
+		 *
+		 * @param trend trend name
+		 */
+		void onTrendClick(Trend trend);
+	}
 }

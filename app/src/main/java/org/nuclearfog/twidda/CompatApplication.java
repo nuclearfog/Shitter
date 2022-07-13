@@ -15,15 +15,15 @@ import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 public class CompatApplication extends Application {
 
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        // enable support for vector drawables
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        }
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		// enable support for vector drawables
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+		}
 
-        // check and enable TLS 1.2 support
-        TLSSocketFactory.setSupportTLS();
-    }
+		// check and enable TLS 1.2 support
+		TLSSocketFactory.setSupportTLS();
+	}
 }

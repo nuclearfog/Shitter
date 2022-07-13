@@ -24,46 +24,46 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class Footer extends ViewHolder {
 
-    public final ProgressBar loadCircle;
-    public final Button loadBtn;
+	public final ProgressBar loadCircle;
+	public final Button loadBtn;
 
-    /**
-     * @param parent     Parent view from adapter
-     * @param horizontal true if footer orientation is horizontal
-     */
-    public Footer(ViewGroup parent, GlobalSettings settings, boolean horizontal) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false));
-        // get views
-        CardView background = (CardView) itemView;
-        loadCircle = itemView.findViewById(R.id.placeholder_loading);
-        loadBtn = itemView.findViewById(R.id.placeholder_button);
-        // theme views
-        background.setCardBackgroundColor(settings.getCardColor());
-        loadBtn.setTextColor(settings.getFontColor());
-        loadBtn.setTypeface(settings.getTypeFace());
-        AppStyles.setButtonColor(loadBtn, settings.getFontColor());
-        AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
-        // enable extra views
-        if (horizontal) {
-            loadBtn.setVisibility(INVISIBLE);
-            loadCircle.setVisibility(VISIBLE);
-            background.getLayoutParams().height = MATCH_PARENT;
-            background.getLayoutParams().width = WRAP_CONTENT;
-        }
-    }
+	/**
+	 * @param parent     Parent view from adapter
+	 * @param horizontal true if footer orientation is horizontal
+	 */
+	public Footer(ViewGroup parent, GlobalSettings settings, boolean horizontal) {
+		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false));
+		// get views
+		CardView background = (CardView) itemView;
+		loadCircle = itemView.findViewById(R.id.placeholder_loading);
+		loadBtn = itemView.findViewById(R.id.placeholder_button);
+		// theme views
+		background.setCardBackgroundColor(settings.getCardColor());
+		loadBtn.setTextColor(settings.getFontColor());
+		loadBtn.setTypeface(settings.getTypeFace());
+		AppStyles.setButtonColor(loadBtn, settings.getFontColor());
+		AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
+		// enable extra views
+		if (horizontal) {
+			loadBtn.setVisibility(INVISIBLE);
+			loadCircle.setVisibility(VISIBLE);
+			background.getLayoutParams().height = MATCH_PARENT;
+			background.getLayoutParams().width = WRAP_CONTENT;
+		}
+	}
 
-    /**
-     * enable or disable progress circle
-     *
-     * @param enable true to enable progress, false to disable
-     */
-    public void setLoading(boolean enable) {
-        if (enable) {
-            loadCircle.setVisibility(VISIBLE);
-            loadBtn.setVisibility(INVISIBLE);
-        } else {
-            loadCircle.setVisibility(INVISIBLE);
-            loadBtn.setVisibility(VISIBLE);
-        }
-    }
+	/**
+	 * enable or disable progress circle
+	 *
+	 * @param enable true to enable progress, false to disable
+	 */
+	public void setLoading(boolean enable) {
+		if (enable) {
+			loadCircle.setVisibility(VISIBLE);
+			loadBtn.setVisibility(INVISIBLE);
+		} else {
+			loadCircle.setVisibility(INVISIBLE);
+			loadBtn.setVisibility(VISIBLE);
+		}
+	}
 }

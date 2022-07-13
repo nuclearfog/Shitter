@@ -19,46 +19,46 @@ import java.lang.ref.WeakReference;
 public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 
 
-    private WeakReference<UserlistEditor> weakRef;
-    private TwitterException err;
-    private Twitter twitter;
+	private WeakReference<UserlistEditor> weakRef;
+	private TwitterException err;
+	private Twitter twitter;
 
-    private UserlistUpdate update;
+	private UserlistUpdate update;
 
-    /**
-     * @param activity callback to {@link UserlistEditor}
-     * @param update   userlist to update
-     */
-    public ListUpdater(UserlistEditor activity, UserlistUpdate update) {
-        super();
-        weakRef = new WeakReference<>(activity);
-        twitter = Twitter.get(activity);
-        this.update = update;
-    }
-
-
-    @Override
-    protected UserList doInBackground(Void... v) {
-        try {
-            if (update.exists())
-                return twitter.updateUserlist(update);
-            return twitter.createUserlist(update);
-        } catch (TwitterException err) {
-            this.err = err;
-        }
-        return null;
-    }
+	/**
+	 * @param activity callback to {@link UserlistEditor}
+	 * @param update   userlist to update
+	 */
+	public ListUpdater(UserlistEditor activity, UserlistUpdate update) {
+		super();
+		weakRef = new WeakReference<>(activity);
+		twitter = Twitter.get(activity);
+		this.update = update;
+	}
 
 
-    @Override
-    protected void onPostExecute(UserList result) {
-        UserlistEditor activity = weakRef.get();
-        if (activity != null) {
-            if (result != null) {
-                activity.onSuccess(result);
-            } else {
-                activity.onError(err);
-            }
-        }
-    }
+	@Override
+	protected UserList doInBackground(Void... v) {
+		try {
+			if (update.exists())
+				return twitter.updateUserlist(update);
+			return twitter.createUserlist(update);
+		} catch (TwitterException err) {
+			this.err = err;
+		}
+		return null;
+	}
+
+
+	@Override
+	protected void onPostExecute(UserList result) {
+		UserlistEditor activity = weakRef.get();
+		if (activity != null) {
+			if (result != null) {
+				activity.onSuccess(result);
+			} else {
+				activity.onError(err);
+			}
+		}
+	}
 }

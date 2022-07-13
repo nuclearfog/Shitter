@@ -14,117 +14,117 @@ import java.util.LinkedList;
  */
 public class Users extends LinkedList<User> {
 
-    public static final long serialVersionUID = -1108521824070076679L;
+	public static final long serialVersionUID = -1108521824070076679L;
 
-    private long prevCursor;
-    private long nextCursor;
+	private long prevCursor;
+	private long nextCursor;
 
-    /**
-     * creates an empty list with defined cursors
-     *
-     * @param prevCursor previous cursor of the list
-     * @param nextCursor next cursor of the list
-     */
-    public Users(long prevCursor, long nextCursor) {
-        super();
-        this.prevCursor = prevCursor;
-        this.nextCursor = nextCursor;
-    }
+	/**
+	 * creates an empty list with defined cursors
+	 *
+	 * @param prevCursor previous cursor of the list
+	 * @param nextCursor next cursor of the list
+	 */
+	public Users(long prevCursor, long nextCursor) {
+		super();
+		this.prevCursor = prevCursor;
+		this.nextCursor = nextCursor;
+	}
 
-    @Nullable
-    @Override
-    public User get(int index) {
-        return super.get(index);
-    }
+	@Nullable
+	@Override
+	public User get(int index) {
+		return super.get(index);
+	}
 
-    /**
-     * remove user item from list matching screen name
-     *
-     * @param name screen name of the user
-     * @return index of the user item or -1 if not found
-     */
-    public int removeItem(String name) {
-        for (int index = 0; index < size(); index++) {
-            User item = get(index);
-            if (item != null && item.getScreenname().contains(name)) {
-                remove(index);
-                return index;
-            }
-        }
-        return -1;
-    }
+	/**
+	 * remove user item from list matching screen name
+	 *
+	 * @param name screen name of the user
+	 * @return index of the user item or -1 if not found
+	 */
+	public int removeItem(String name) {
+		for (int index = 0; index < size(); index++) {
+			User item = get(index);
+			if (item != null && item.getScreenname().contains(name)) {
+				remove(index);
+				return index;
+			}
+		}
+		return -1;
+	}
 
-    /**
-     * check if list is linked to a previous list
-     *
-     * @return true if list is linked
-     */
-    public boolean hasPrevious() {
-        return prevCursor != 0;
-    }
+	/**
+	 * check if list is linked to a previous list
+	 *
+	 * @return true if list is linked
+	 */
+	public boolean hasPrevious() {
+		return prevCursor != 0;
+	}
 
-    /**
-     * check if list has a successor
-     *
-     * @return true if list has a successor
-     */
-    public boolean hasNext() {
-        return nextCursor != 0;
-    }
+	/**
+	 * check if list has a successor
+	 *
+	 * @return true if list has a successor
+	 */
+	public boolean hasNext() {
+		return nextCursor != 0;
+	}
 
-    /**
-     * get next link to a list
-     *
-     * @return cursor
-     */
-    public long getNext() {
-        return nextCursor;
-    }
+	/**
+	 * get next link to a list
+	 *
+	 * @return cursor
+	 */
+	public long getNext() {
+		return nextCursor;
+	}
 
-    /**
-     * replace whole list including cursors
-     *
-     * @param list new list
-     */
-    public void replace(Users list) {
-        super.clear();
-        super.addAll(list);
-        prevCursor = list.prevCursor;
-        nextCursor = list.nextCursor;
-    }
+	/**
+	 * replace whole list including cursors
+	 *
+	 * @param list new list
+	 */
+	public void replace(Users list) {
+		super.clear();
+		super.addAll(list);
+		prevCursor = list.prevCursor;
+		nextCursor = list.nextCursor;
+	}
 
-    /**
-     * set previous cursor
-     *
-     * @param prevCursor cursor value
-     */
-    public void setPrevCursor(long prevCursor) {
-        this.prevCursor = prevCursor;
-    }
+	/**
+	 * set previous cursor
+	 *
+	 * @param prevCursor cursor value
+	 */
+	public void setPrevCursor(long prevCursor) {
+		this.prevCursor = prevCursor;
+	}
 
-    /**
-     * set next cursor
-     *
-     * @param nextCursor cursor value
-     */
-    public void setNextCursor(long nextCursor) {
-        this.nextCursor = nextCursor;
-    }
+	/**
+	 * set next cursor
+	 *
+	 * @param nextCursor cursor value
+	 */
+	public void setNextCursor(long nextCursor) {
+		this.nextCursor = nextCursor;
+	}
 
-    /**
-     * add a sublist at the bottom of this list including next cursor
-     *
-     * @param list  new sublist
-     * @param index index of the sub list
-     */
-    public void addAt(Users list, int index) {
-        super.addAll(index, list);
-        nextCursor = list.nextCursor;
-    }
+	/**
+	 * add a sublist at the bottom of this list including next cursor
+	 *
+	 * @param list  new sublist
+	 * @param index index of the sub list
+	 */
+	public void addAt(Users list, int index) {
+		super.addAll(index, list);
+		nextCursor = list.nextCursor;
+	}
 
-    @Override
-    @NonNull
-    public String toString() {
-        return "size=" + size() + " pre=" + prevCursor + " pos=" + nextCursor;
-    }
+	@Override
+	@NonNull
+	public String toString() {
+		return "size=" + size() + " pre=" + prevCursor + " pos=" + nextCursor;
+	}
 }

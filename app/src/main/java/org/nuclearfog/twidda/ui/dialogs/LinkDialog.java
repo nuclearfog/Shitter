@@ -34,116 +34,116 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickListener {
 
-    private TextView title, description;
-    private ImageView preview;
-    private ProgressBar loading;
+	private TextView title, description;
+	private ImageView preview;
+	private ProgressBar loading;
 
-    private Picasso picasso;
+	private Picasso picasso;
 
-    private TextCrawler textCrawler;
-    private String url;
+	private TextCrawler textCrawler;
+	private String url;
 
-    /**
-     *
-     */
-    public LinkDialog(Context context) {
-        super(context, R.style.AppInfoDialog);
-        setContentView(R.layout.dialog_link_preview);
-        ImageView close = findViewById(R.id.link_preview_close);
-        loading = findViewById(R.id.link_preview_progress);
-        title = findViewById(R.id.link_preview_title);
-        description = findViewById(R.id.link_preview_description);
-        preview = findViewById(R.id.link_preview_image);
+	/**
+	 *
+	 */
+	public LinkDialog(Context context) {
+		super(context, R.style.AppInfoDialog);
+		setContentView(R.layout.dialog_link_preview);
+		ImageView close = findViewById(R.id.link_preview_close);
+		loading = findViewById(R.id.link_preview_progress);
+		title = findViewById(R.id.link_preview_title);
+		description = findViewById(R.id.link_preview_description);
+		preview = findViewById(R.id.link_preview_image);
 
-        close.setImageResource(R.drawable.cross);
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-        AppStyles.setProgressColor(loading, settings.getHighlightColor());
-        AppStyles.setDrawableColor(close, Color.BLACK);
-        title.setTextColor(Color.BLUE);
-        description.setMovementMethod(ScrollingMovementMethod.getInstance());
-        picasso = PicassoBuilder.get(context);
+		close.setImageResource(R.drawable.cross);
+		GlobalSettings settings = GlobalSettings.getInstance(context);
+		AppStyles.setProgressColor(loading, settings.getHighlightColor());
+		AppStyles.setDrawableColor(close, Color.BLACK);
+		title.setTextColor(Color.BLUE);
+		description.setMovementMethod(ScrollingMovementMethod.getInstance());
+		picasso = PicassoBuilder.get(context);
 
-        textCrawler = new TextCrawler();
-        close.setOnClickListener(this);
-        title.setOnClickListener(this);
-    }
+		textCrawler = new TextCrawler();
+		close.setOnClickListener(this);
+		title.setOnClickListener(this);
+	}
 
-    /**
-     * show dialog and generate link preview
-     *
-     * @param url link url to show preview
-     */
-    public void show(String url) {
-        if (!isShowing()) {
-            super.show();
-            // load preview
-            textCrawler.makePreview(this, url);
-            this.url = url;
-        }
-    }
-
-
-    @Override
-    public void dismiss() {
-        super.dismiss();
-        textCrawler.cancel();
-        picasso.cancelRequest(preview);
-    }
+	/**
+	 * show dialog and generate link preview
+	 *
+	 * @param url link url to show preview
+	 */
+	public void show(String url) {
+		if (!isShowing()) {
+			super.show();
+			// load preview
+			textCrawler.makePreview(this, url);
+			this.url = url;
+		}
+	}
 
 
-    @Override
-    public void onPre() {
-        // reset views
-        title.setText("");
-        description.setText("");
-        preview.setImageResource(0);
-        loading.setVisibility(View.VISIBLE);
-    }
+	@Override
+	public void dismiss() {
+		super.dismiss();
+		textCrawler.cancel();
+		picasso.cancelRequest(preview);
+	}
 
 
-    @Override
-    public void onPos(SourceContent sourceContent, boolean b) {
-        loading.setVisibility(View.INVISIBLE);
-        if (sourceContent.isSuccess()) {
-            // set website title
-            title.setText(sourceContent.getTitle());
-            description.setText(sourceContent.getDescription());
-            // check for image
-            if (!sourceContent.getImages().isEmpty()) {
-                // load first image as preview
-                String link = sourceContent.getImages().get(0);
-                if (link != null && link.startsWith("https://")) {
-                    // load image without caching
-                    picasso.load(link).networkPolicy(NO_STORE).into(preview);
-                }
-            } else {
-                // no image preview
-                preview.setVisibility(View.GONE);
-            }
-        } else {
-            // no valid title means lack of information
-            // so open link directly in browser
-            title.performClick();
-            dismiss();
-        }
-    }
+	@Override
+	public void onPre() {
+		// reset views
+		title.setText("");
+		description.setText("");
+		preview.setImageResource(0);
+		loading.setVisibility(View.VISIBLE);
+	}
 
 
-    @Override
-    public void onClick(View v) {
-        // close icon
-        if (v.getId() == R.id.link_preview_close) {
-            dismiss();
-        }
-        // title
-        else if (v.getId() == R.id.link_preview_title) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            try {
-                getContext().startActivity(intent);
-            } catch (ActivityNotFoundException err) {
-                Toast.makeText(getContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
-            }
-        }
-    }
+	@Override
+	public void onPos(SourceContent sourceContent, boolean b) {
+		loading.setVisibility(View.INVISIBLE);
+		if (sourceContent.isSuccess()) {
+			// set website title
+			title.setText(sourceContent.getTitle());
+			description.setText(sourceContent.getDescription());
+			// check for image
+			if (!sourceContent.getImages().isEmpty()) {
+				// load first image as preview
+				String link = sourceContent.getImages().get(0);
+				if (link != null && link.startsWith("https://")) {
+					// load image without caching
+					picasso.load(link).networkPolicy(NO_STORE).into(preview);
+				}
+			} else {
+				// no image preview
+				preview.setVisibility(View.GONE);
+			}
+		} else {
+			// no valid title means lack of information
+			// so open link directly in browser
+			title.performClick();
+			dismiss();
+		}
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		// close icon
+		if (v.getId() == R.id.link_preview_close) {
+			dismiss();
+		}
+		// title
+		else if (v.getId() == R.id.link_preview_title) {
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse(url));
+			try {
+				getContext().startActivity(intent);
+			} catch (ActivityNotFoundException err) {
+				Toast.makeText(getContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
+			}
+		}
+	}
 }

@@ -10,29 +10,29 @@ import androidx.annotation.Nullable;
  */
 public interface Account {
 
-    /**
-     * @return ID of the account (user ID)
-     */
-    long getId();
+	/**
+	 * @return ID of the account (user ID)
+	 */
+	long getId();
 
-    /**
-     * @return date of the first login
-     */
-    long getLoginDate();
+	/**
+	 * @return date of the first login
+	 */
+	long getLoginDate();
 
-    /**
-     * @return user information of the account
-     */
-    @Nullable
-    User getUser();
+	/**
+	 * @return user information of the account
+	 */
+	@Nullable
+	User getUser();
 
-    /**
-     * @return first access token of the user
-     */
-    String getAccessToken();
+	/**
+	 * @return first access token of the user
+	 */
+	String getAccessToken();
 
-    /**
-     * @return second access token of the user
-     */
-    String getTokenSecret();
+	/**
+	 * @return second access token of the user
+	 */
+	String getTokenSecret();
 }

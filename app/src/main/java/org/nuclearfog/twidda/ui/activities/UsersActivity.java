@@ -1,9 +1,9 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.Mode.BLOCK_USER;
-import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.Mode.MUTE_USER;
-import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.Mode.REFRESH;
+import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.BLOCK_USER;
+import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.MUTE_USER;
+import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.REFRESH;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -39,246 +39,252 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class UsersActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
-    /**
-     * type of users to get from twitter
-     * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS},
-     * {@link #USERLIST_FAVORIT}, {@link #USERLIST_EXCLUDED_USERS} or {@link #USERLIST_REQUESTS},
-     */
-    public static final String KEY_USERDETAIL_MODE = "userlist_mode";
+	/**
+	 * type of users to get from twitter
+	 * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS},
+	 * {@link #USERLIST_FAVORIT}, {@link #USERLIST_EXCLUDED_USERS} or {@link #USERLIST_REQUESTS},
+	 */
+	public static final String KEY_USERDETAIL_MODE = "userlist_mode";
 
-    /**
-     * ID of a userlist, an user or a tweet to get the users from
-     * value type is Long
-     */
-    public static final String KEY_USERDETAIL_ID = "userlist_id";
+	/**
+	 * ID of a userlist, an user or a tweet to get the users from
+	 * value type is Long
+	 */
+	public static final String KEY_USERDETAIL_ID = "userlist_id";
 
-    /**
-     * friends of an user, requires user ID
-     * @see #KEY_USERDETAIL_MODE
-     */
-    public static final int USERLIST_FRIENDS = 0xDF893242;
+	/**
+	 * friends of an user, requires user ID
+	 *
+	 * @see #KEY_USERDETAIL_MODE
+	 */
+	public static final int USERLIST_FRIENDS = 0xDF893242;
 
-    /**
-     * follower of an user, requires user ID
-     * @see #KEY_USERDETAIL_MODE
-     */
-    public static final int USERLIST_FOLLOWER = 0xA89F5968;
+	/**
+	 * follower of an user, requires user ID
+	 *
+	 * @see #KEY_USERDETAIL_MODE
+	 */
+	public static final int USERLIST_FOLLOWER = 0xA89F5968;
 
-    /**
-     * user retweeting a tweet, requires tweet ID
-     * @see #KEY_USERDETAIL_MODE
-     */
-    public static final int USERLIST_RETWEETS = 0x19F582E;
+	/**
+	 * user retweeting a tweet, requires tweet ID
+	 *
+	 * @see #KEY_USERDETAIL_MODE
+	 */
+	public static final int USERLIST_RETWEETS = 0x19F582E;
 
-    /**
-     * user favoriting/liking a tweet, requires tweet ID
-     * @see #KEY_USERDETAIL_MODE
-     */
-    public static final int USERLIST_FAVORIT = 0x9bcc3f99;
+	/**
+	 * user favoriting/liking a tweet, requires tweet ID
+	 *
+	 * @see #KEY_USERDETAIL_MODE
+	 */
+	public static final int USERLIST_FAVORIT = 0x9bcc3f99;
 
-    /**
-     * setup list to show excluded (muted, blocked) users
-     * @see #KEY_USERDETAIL_MODE
-     */
-    public static final int USERLIST_EXCLUDED_USERS = 0x896a786;
+	/**
+	 * setup list to show excluded (muted, blocked) users
+	 *
+	 * @see #KEY_USERDETAIL_MODE
+	 */
+	public static final int USERLIST_EXCLUDED_USERS = 0x896a786;
 
-    /**
-     * setup list to show incoming & outgoing follow requests
-     * @see #KEY_USERDETAIL_MODE
-     */
-    public static final int USERLIST_REQUESTS = 0x0948693;
+	/**
+	 * setup list to show incoming & outgoing follow requests
+	 *
+	 * @see #KEY_USERDETAIL_MODE
+	 */
+	public static final int USERLIST_REQUESTS = 0x0948693;
 
-    private GlobalSettings settings;
-    private UserExcludeLoader userExclTask;
+	private GlobalSettings settings;
+	private UserExcludeLoader userExclTask;
 
-    private Toolbar toolbar;
-    private TabLayout tablayout;
+	private Toolbar toolbar;
+	private TabLayout tablayout;
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(AppStyles.setFontScale(newBase));
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInst) {
-        super.onCreate(savedInst);
-        setContentView(R.layout.page_user_exclude);
-        ViewGroup root = findViewById(R.id.userexclude_root);
-        toolbar = findViewById(R.id.userexclude_toolbar);
-        tablayout = findViewById(R.id.userexclude_tab);
-        ViewPager pager = findViewById(R.id.userexclude_pager);
-
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-        pager.setAdapter(adapter);
-
-        settings = GlobalSettings.getInstance(this);
-
-        int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
-        long id = getIntent().getLongExtra(KEY_USERDETAIL_ID, -1);
-
-        switch (mode) {
-            case USERLIST_FRIENDS:
-                adapter.setupFollowingPage(id);
-                pager.setOffscreenPageLimit(1);
-                tablayout.setVisibility(View.GONE);
-                toolbar.setTitle(R.string.userlist_following);
-                break;
-
-            case USERLIST_FOLLOWER:
-                adapter.setupFollowerPage(id);
-                pager.setOffscreenPageLimit(1);
-                tablayout.setVisibility(View.GONE);
-                toolbar.setTitle(R.string.userlist_follower);
-                break;
-
-            case USERLIST_RETWEETS:
-                adapter.setupRetweeterPage(id);
-                pager.setOffscreenPageLimit(1);
-                tablayout.setVisibility(View.GONE);
-                toolbar.setTitle(R.string.toolbar_userlist_retweet);
-                break;
-
-            case USERLIST_FAVORIT:
-                int title = settings.likeEnabled() ? R.string.toolbar_tweet_liker : R.string.toolbar_tweet_favoriter;
-                adapter.setFavoriterPage(id);
-                pager.setOffscreenPageLimit(1);
-                tablayout.setVisibility(View.GONE);
-                toolbar.setTitle(title);
-                break;
-
-            case USERLIST_EXCLUDED_USERS:
-                adapter.setupMuteBlockPage();
-                pager.setOffscreenPageLimit(2);
-                tablayout.setupWithViewPager(pager);
-                tablayout.addOnTabSelectedListener(this);
-                AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
-                toolbar.setTitle("");
-                break;
-
-            case USERLIST_REQUESTS:
-                adapter.setupFollowRequestPage();
-                pager.setOffscreenPageLimit(2);
-                tablayout.setupWithViewPager(pager);
-                tablayout.addOnTabSelectedListener(this);
-                AppStyles.setTabIcons(tablayout, settings, R.array.user_requests_icon);
-                toolbar.setTitle("");
-                break;
-        }
-        setSupportActionBar(toolbar);
-        AppStyles.setTheme(root, settings.getBackgroundColor());
-    }
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(AppStyles.setFontScale(newBase));
+	}
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu m) {
-        int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
-        if (mode == USERLIST_EXCLUDED_USERS) {
-            getMenuInflater().inflate(R.menu.excludelist, m);
-            MenuItem search = m.findItem(R.id.menu_exclude_user);
-            SearchView searchView = (SearchView) search.getActionView();
-            searchView.setOnQueryTextListener(this);
-            AppStyles.setTheme(searchView, Color.TRANSPARENT);
-            AppStyles.setMenuIconColor(m, settings.getIconColor());
-            AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-            return super.onCreateOptionsMenu(m);
-        }
-        return false;
-    }
+	@Override
+	protected void onCreate(Bundle savedInst) {
+		super.onCreate(savedInst);
+		setContentView(R.layout.page_user_exclude);
+		ViewGroup root = findViewById(R.id.userexclude_root);
+		toolbar = findViewById(R.id.userexclude_toolbar);
+		tablayout = findViewById(R.id.userexclude_tab);
+		ViewPager pager = findViewById(R.id.userexclude_pager);
+
+		FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+		pager.setAdapter(adapter);
+
+		settings = GlobalSettings.getInstance(this);
+
+		int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
+		long id = getIntent().getLongExtra(KEY_USERDETAIL_ID, -1);
+
+		switch (mode) {
+			case USERLIST_FRIENDS:
+				adapter.setupFollowingPage(id);
+				pager.setOffscreenPageLimit(1);
+				tablayout.setVisibility(View.GONE);
+				toolbar.setTitle(R.string.userlist_following);
+				break;
+
+			case USERLIST_FOLLOWER:
+				adapter.setupFollowerPage(id);
+				pager.setOffscreenPageLimit(1);
+				tablayout.setVisibility(View.GONE);
+				toolbar.setTitle(R.string.userlist_follower);
+				break;
+
+			case USERLIST_RETWEETS:
+				adapter.setupRetweeterPage(id);
+				pager.setOffscreenPageLimit(1);
+				tablayout.setVisibility(View.GONE);
+				toolbar.setTitle(R.string.toolbar_userlist_retweet);
+				break;
+
+			case USERLIST_FAVORIT:
+				int title = settings.likeEnabled() ? R.string.toolbar_tweet_liker : R.string.toolbar_tweet_favoriter;
+				adapter.setFavoriterPage(id);
+				pager.setOffscreenPageLimit(1);
+				tablayout.setVisibility(View.GONE);
+				toolbar.setTitle(title);
+				break;
+
+			case USERLIST_EXCLUDED_USERS:
+				adapter.setupMuteBlockPage();
+				pager.setOffscreenPageLimit(2);
+				tablayout.setupWithViewPager(pager);
+				tablayout.addOnTabSelectedListener(this);
+				AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
+				toolbar.setTitle("");
+				break;
+
+			case USERLIST_REQUESTS:
+				adapter.setupFollowRequestPage();
+				pager.setOffscreenPageLimit(2);
+				tablayout.setupWithViewPager(pager);
+				tablayout.addOnTabSelectedListener(this);
+				AppStyles.setTabIcons(tablayout, settings, R.array.user_requests_icon);
+				toolbar.setTitle("");
+				break;
+		}
+		setSupportActionBar(toolbar);
+		AppStyles.setTheme(root, settings.getBackgroundColor());
+	}
 
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu m) {
-        SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
-        if (tablayout.getSelectedTabPosition() == 0) {
-            String hint = getString(R.string.menu_hint_mute_user);
-            searchView.setQueryHint(hint);
-        } else if (tablayout.getSelectedTabPosition() == 1) {
-            String hint = getString(R.string.menu_hint_block_user);
-            searchView.setQueryHint(hint);
-        }
-        return super.onPrepareOptionsMenu(m);
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu m) {
+		int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
+		if (mode == USERLIST_EXCLUDED_USERS) {
+			getMenuInflater().inflate(R.menu.excludelist, m);
+			MenuItem search = m.findItem(R.id.menu_exclude_user);
+			SearchView searchView = (SearchView) search.getActionView();
+			searchView.setOnQueryTextListener(this);
+			AppStyles.setTheme(searchView, Color.TRANSPARENT);
+			AppStyles.setMenuIconColor(m, settings.getIconColor());
+			AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+			return super.onCreateOptionsMenu(m);
+		}
+		return false;
+	}
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_exclude_refresh) {
-            if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
-                Toast.makeText(this, R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
-                userExclTask = new UserExcludeLoader(this, REFRESH);
-                userExclTask.execute();
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onPrepareOptionsMenu(Menu m) {
+		SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
+		if (tablayout.getSelectedTabPosition() == 0) {
+			String hint = getString(R.string.menu_hint_mute_user);
+			searchView.setQueryHint(hint);
+		} else if (tablayout.getSelectedTabPosition() == 1) {
+			String hint = getString(R.string.menu_hint_block_user);
+			searchView.setQueryHint(hint);
+		}
+		return super.onPrepareOptionsMenu(m);
+	}
 
 
-    @Override
-    public void onTabSelected(Tab tab) {
-        // reset menu
-        invalidateOptionsMenu();
-    }
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		if (item.getItemId() == R.id.menu_exclude_refresh) {
+			if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
+				Toast.makeText(this, R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
+				userExclTask = new UserExcludeLoader(this, REFRESH);
+				userExclTask.execute();
+			}
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 
-    @Override
-    public void onTabUnselected(Tab tab) {
-    }
+	@Override
+	public void onTabSelected(Tab tab) {
+		// reset menu
+		invalidateOptionsMenu();
+	}
 
 
-    @Override
-    public void onTabReselected(Tab tab) {
-    }
+	@Override
+	public void onTabUnselected(Tab tab) {
+	}
 
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
-            if (tablayout.getSelectedTabPosition() == 0) {
-                userExclTask = new UserExcludeLoader(this, MUTE_USER);
-                userExclTask.execute(query);
-                return true;
-            }
-            if (tablayout.getSelectedTabPosition() == 1) {
-                userExclTask = new UserExcludeLoader(this, BLOCK_USER);
-                userExclTask.execute(query);
-                return true;
-            }
-        }
-        return false;
-    }
+	@Override
+	public void onTabReselected(Tab tab) {
+	}
 
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
+			if (tablayout.getSelectedTabPosition() == 0) {
+				userExclTask = new UserExcludeLoader(this, MUTE_USER);
+				userExclTask.execute(query);
+				return true;
+			}
+			if (tablayout.getSelectedTabPosition() == 1) {
+				userExclTask = new UserExcludeLoader(this, BLOCK_USER);
+				userExclTask.execute(query);
+				return true;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * called from {@link UserExcludeLoader} if task finished successfully
-     */
-    public void onSuccess(UserExcludeLoader.Mode mode) {
-        switch (mode) {
-            case MUTE_USER:
-                Toast.makeText(this, R.string.info_user_muted, Toast.LENGTH_SHORT).show();
-                invalidateOptionsMenu();
-                break;
 
-            case BLOCK_USER:
-                Toast.makeText(this, R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
-                invalidateOptionsMenu();
-                break;
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		return false;
+	}
 
-            case REFRESH:
-                Toast.makeText(this, R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
+	/**
+	 * called from {@link UserExcludeLoader} if task finished successfully
+	 */
+	public void onSuccess(int mode) {
+		switch (mode) {
+			case MUTE_USER:
+				Toast.makeText(this, R.string.info_user_muted, Toast.LENGTH_SHORT).show();
+				invalidateOptionsMenu();
+				break;
 
-    /**
-     * called from {@link UserExcludeLoader} if an error occurs
-     */
-    public void onError(ErrorHandler.TwitterError err) {
-        ErrorHandler.handleFailure(this, err);
-    }
+			case BLOCK_USER:
+				Toast.makeText(this, R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
+				invalidateOptionsMenu();
+				break;
+
+			case REFRESH:
+				Toast.makeText(this, R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
+				break;
+		}
+	}
+
+	/**
+	 * called from {@link UserExcludeLoader} if an error occurs
+	 */
+	public void onError(ErrorHandler.TwitterError err) {
+		ErrorHandler.handleFailure(this, err);
+	}
 }

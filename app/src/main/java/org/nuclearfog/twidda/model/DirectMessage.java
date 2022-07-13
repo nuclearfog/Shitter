@@ -11,34 +11,34 @@ import androidx.annotation.Nullable;
  */
 public interface DirectMessage {
 
-    /**
-     * @return ID of the direct message
-     */
-    long getId();
+	/**
+	 * @return ID of the direct message
+	 */
+	long getId();
 
-    /**
-     * @return author of the message
-     */
-    User getSender();
+	/**
+	 * @return author of the message
+	 */
+	User getSender();
 
-    /**
-     * @return receiver of the message
-     */
-    User getReceiver();
+	/**
+	 * @return receiver of the message
+	 */
+	User getReceiver();
 
-    /**
-     * @return message text
-     */
-    String getText();
+	/**
+	 * @return message text
+	 */
+	String getText();
 
-    /**
-     * @return date of creation
-     */
-    long getTimestamp();
+	/**
+	 * @return date of creation
+	 */
+	long getTimestamp();
 
-    /**
-     * @return get attached media link
-     */
-    @Nullable
-    Uri getMedia();
+	/**
+	 * @return get attached media link
+	 */
+	@Nullable
+	Uri getMedia();
 }

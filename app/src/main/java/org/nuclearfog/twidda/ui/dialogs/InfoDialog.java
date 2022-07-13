@@ -14,23 +14,23 @@ import org.nuclearfog.twidda.R;
  */
 public class InfoDialog extends Dialog {
 
-    /**
-     *
-     */
-    public InfoDialog(Context context) {
-        super(context, R.style.AppInfoDialog);
-        setContentView(R.layout.dialog_app_info);
-        TextView appInfo = findViewById(R.id.settings_app_info);
+	/**
+	 *
+	 */
+	public InfoDialog(Context context) {
+		super(context, R.style.AppInfoDialog);
+		setContentView(R.layout.dialog_app_info);
+		TextView appInfo = findViewById(R.id.settings_app_info);
 
-        appInfo.append(" V");
-        appInfo.append(BuildConfig.VERSION_NAME);
-    }
+		appInfo.append(" V");
+		appInfo.append(BuildConfig.VERSION_NAME);
+	}
 
 
-    @Override
-    public void show() {
-        if (!isShowing()) {
-            super.show();
-        }
-    }
+	@Override
+	public void show() {
+		if (!isShowing()) {
+			super.show();
+		}
+	}
 }

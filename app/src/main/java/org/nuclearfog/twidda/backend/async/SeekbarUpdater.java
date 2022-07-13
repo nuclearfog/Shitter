@@ -14,38 +14,38 @@ import java.util.concurrent.TimeUnit;
  */
 public class SeekbarUpdater implements Runnable {
 
-    private ScheduledExecutorService updater;
-    private WeakReference<VideoViewer> weakRef;
+	private ScheduledExecutorService updater;
+	private WeakReference<VideoViewer> weakRef;
 
-    private Runnable seekUpdate = new Runnable() {
-        public void run() {
-            VideoViewer mediaViewer = weakRef.get();
-            if (mediaViewer != null) {
-                mediaViewer.updateSeekBar();
-            }
-        }
-    };
-
-
-    public SeekbarUpdater(VideoViewer activity, int milliseconds) {
-        weakRef = new WeakReference<>(activity);
-        updater = Executors.newScheduledThreadPool(1);
-        updater.scheduleWithFixedDelay(this, milliseconds, milliseconds, TimeUnit.MILLISECONDS);
-    }
+	private Runnable seekUpdate = new Runnable() {
+		public void run() {
+			VideoViewer mediaViewer = weakRef.get();
+			if (mediaViewer != null) {
+				mediaViewer.updateSeekBar();
+			}
+		}
+	};
 
 
-    @Override
-    public void run() {
-        VideoViewer mediaViewer = weakRef.get();
-        if (mediaViewer != null) {
-            mediaViewer.runOnUiThread(seekUpdate);
-        }
-    }
+	public SeekbarUpdater(VideoViewer activity, int milliseconds) {
+		weakRef = new WeakReference<>(activity);
+		updater = Executors.newScheduledThreadPool(1);
+		updater.scheduleWithFixedDelay(this, milliseconds, milliseconds, TimeUnit.MILLISECONDS);
+	}
 
-    /**
-     * shutdown updater
-     */
-    public void shutdown() {
-        updater.shutdown();
-    }
+
+	@Override
+	public void run() {
+		VideoViewer mediaViewer = weakRef.get();
+		if (mediaViewer != null) {
+			mediaViewer.runOnUiThread(seekUpdate);
+		}
+	}
+
+	/**
+	 * shutdown updater
+	 */
+	public void shutdown() {
+		updater.shutdown();
+	}
 }

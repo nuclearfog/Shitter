@@ -17,49 +17,49 @@ import java.lang.ref.WeakReference;
  */
 public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
 
-    private WeakReference<MediaActivity> weakRef;
-    private InputStream mediaStream;
-    private OutputStream fileStream;
+	private WeakReference<MediaActivity> weakRef;
+	private InputStream mediaStream;
+	private OutputStream fileStream;
 
-    /**
-     * @param mediaStream inputstream of a cached image file
-     * @param fileStream  destiny output stream of a file
-     */
-    public ImageSaver(MediaActivity activity, InputStream mediaStream, OutputStream fileStream) {
-        super();
-        weakRef = new WeakReference<>(activity);
-        this.mediaStream = mediaStream;
-        this.fileStream = fileStream;
-    }
-
-
-    @Override
-    protected Boolean doInBackground(Void... v) {
-        try {
-            int length;
-            byte[] buffer = new byte[4096];
-            while ((length = mediaStream.read(buffer)) > 0) {
-                fileStream.write(buffer, 0, length);
-            }
-            mediaStream.close();
-            fileStream.close();
-        } catch (IOException err) {
-            err.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+	/**
+	 * @param mediaStream inputstream of a cached image file
+	 * @param fileStream  destiny output stream of a file
+	 */
+	public ImageSaver(MediaActivity activity, InputStream mediaStream, OutputStream fileStream) {
+		super();
+		weakRef = new WeakReference<>(activity);
+		this.mediaStream = mediaStream;
+		this.fileStream = fileStream;
+	}
 
 
-    @Override
-    protected void onPostExecute(Boolean success) {
-        MediaActivity activity = weakRef.get();
-        if (activity != null) {
-            if (success) {
-                activity.onImageSaved();
-            } else {
-                activity.onError();
-            }
-        }
-    }
+	@Override
+	protected Boolean doInBackground(Void... v) {
+		try {
+			int length;
+			byte[] buffer = new byte[4096];
+			while ((length = mediaStream.read(buffer)) > 0) {
+				fileStream.write(buffer, 0, length);
+			}
+			mediaStream.close();
+			fileStream.close();
+		} catch (IOException err) {
+			err.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+
+	@Override
+	protected void onPostExecute(Boolean success) {
+		MediaActivity activity = weakRef.get();
+		if (activity != null) {
+			if (success) {
+				activity.onImageSaved();
+			} else {
+				activity.onError();
+			}
+		}
+	}
 }

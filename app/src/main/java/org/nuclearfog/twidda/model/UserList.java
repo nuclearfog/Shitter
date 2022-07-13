@@ -9,48 +9,48 @@ import java.io.Serializable;
  */
 public interface UserList extends Serializable {
 
-    /**
-     * @return ID of the user list
-     */
-    long getId();
+	/**
+	 * @return ID of the user list
+	 */
+	long getId();
 
-    /**
-     * @return date of creation
-     */
-    long getTimestamp();
+	/**
+	 * @return date of creation
+	 */
+	long getTimestamp();
 
-    /**
-     * @return title of the list
-     */
-    String getTitle();
+	/**
+	 * @return title of the list
+	 */
+	String getTitle();
 
-    /**
-     * @return description of the list
-     */
-    String getDescription();
+	/**
+	 * @return description of the list
+	 */
+	String getDescription();
 
-    /**
-     * @return owner of the list
-     */
-    User getListOwner();
+	/**
+	 * @return owner of the list
+	 */
+	User getListOwner();
 
-    /**
-     * @return true if list is private
-     */
-    boolean isPrivate();
+	/**
+	 * @return true if list is private
+	 */
+	boolean isPrivate();
 
-    /**
-     * @return true if current user is following the list
-     */
-    boolean isFollowing();
+	/**
+	 * @return true if current user is following the list
+	 */
+	boolean isFollowing();
 
-    /**
-     * @return list member count
-     */
-    int getMemberCount();
+	/**
+	 * @return list member count
+	 */
+	int getMemberCount();
 
-    /**
-     * @return list subscriber count
-     */
-    int getSubscriberCount();
+	/**
+	 * @return list subscriber count
+	 */
+	int getSubscriberCount();
 }

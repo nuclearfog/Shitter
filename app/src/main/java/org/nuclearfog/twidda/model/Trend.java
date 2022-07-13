@@ -7,18 +7,18 @@ package org.nuclearfog.twidda.model;
  */
 public interface Trend {
 
-    /**
-     * @return trend name
-     */
-    String getName();
+	/**
+	 * @return trend name
+	 */
+	String getName();
 
-    /**
-     * @return rank of the trend
-     */
-    int getRank();
+	/**
+	 * @return rank of the trend
+	 */
+	int getRank();
 
-    /**
-     * @return popularity of the trend
-     */
-    int getPopularity();
+	/**
+	 * @return popularity of the trend
+	 */
+	int getPopularity();
 }

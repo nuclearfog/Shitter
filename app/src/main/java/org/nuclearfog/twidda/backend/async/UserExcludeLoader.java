@@ -23,77 +23,76 @@ import java.util.List;
  */
 public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 
-    public enum Mode {
-        /**
-         * refresh exclude list
-         */
-        REFRESH,
+	/**
+	 * refresh exclude list
+	 */
+	public static final int REFRESH = 1;
 
-        /**
-         * mute specified user
-         */
-        MUTE_USER,
+	/**
+	 * mute specified user
+	 */
+	public static final int MUTE_USER = 2;
 
-        /**
-         * block specified user
-         */
-        BLOCK_USER
-    }
+	/**
+	 * block specified user
+	 */
+	public static final int BLOCK_USER = 3;
 
-    @Nullable
-    private TwitterException err;
-    private WeakReference<UsersActivity> weakRef;
-    private FilterDatabase filterDatabase;
-    private AppDatabase appDatabase;
-    private Twitter twitter;
-    private Mode mode;
+	@Nullable
+	private TwitterException err;
+	private WeakReference<UsersActivity> weakRef;
+	private FilterDatabase filterDatabase;
+	private AppDatabase appDatabase;
+	private Twitter twitter;
 
-
-    public UserExcludeLoader(UsersActivity activity, Mode mode) {
-        super();
-        twitter = Twitter.get(activity);
-        appDatabase = new AppDatabase(activity);
-        filterDatabase = new FilterDatabase(activity);
-        weakRef = new WeakReference<>(activity);
-        this.mode = mode;
-    }
+	private int mode;
 
 
-    @Override
-    protected Void doInBackground(String[] names) {
-        try {
-            switch (mode) {
-                case REFRESH:
-                    List<Long> ids = twitter.getIdBlocklist();
-                    filterDatabase.setExcludeList(ids);
-                    break;
-
-                case MUTE_USER:
-                    User user = twitter.muteUser(names[0]);
-                    appDatabase.storeUser(user);
-                    break;
-
-                case BLOCK_USER:
-                    user = twitter.blockUser(names[0]);
-                    appDatabase.storeUser(user);
-                    break;
-            }
-        } catch (TwitterException err) {
-            this.err = err;
-        }
-        return null;
-    }
+	public UserExcludeLoader(UsersActivity activity, int mode) {
+		super();
+		twitter = Twitter.get(activity);
+		appDatabase = new AppDatabase(activity);
+		filterDatabase = new FilterDatabase(activity);
+		weakRef = new WeakReference<>(activity);
+		this.mode = mode;
+	}
 
 
-    @Override
-    protected void onPostExecute(Void v) {
-        UsersActivity activity = weakRef.get();
-        if (activity != null) {
-            if (err == null) {
-                activity.onSuccess(mode);
-            } else {
-                activity.onError(err);
-            }
-        }
-    }
+	@Override
+	protected Void doInBackground(String[] names) {
+		try {
+			switch (mode) {
+				case REFRESH:
+					List<Long> ids = twitter.getIdBlocklist();
+					filterDatabase.setExcludeList(ids);
+					break;
+
+				case MUTE_USER:
+					User user = twitter.muteUser(names[0]);
+					appDatabase.storeUser(user);
+					break;
+
+				case BLOCK_USER:
+					user = twitter.blockUser(names[0]);
+					appDatabase.storeUser(user);
+					break;
+			}
+		} catch (TwitterException err) {
+			this.err = err;
+		}
+		return null;
+	}
+
+
+	@Override
+	protected void onPostExecute(Void v) {
+		UsersActivity activity = weakRef.get();
+		if (activity != null) {
+			if (err == null) {
+				activity.onSuccess(mode);
+			} else {
+				activity.onError(err);
+			}
+		}
+	}
 }

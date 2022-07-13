@@ -18,38 +18,38 @@ import java.util.List;
  */
 public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 
-    private TwitterException twException;
-    private WeakReference<SettingsActivity> weakRef;
-    private Twitter twitter;
+	private TwitterException twException;
+	private WeakReference<SettingsActivity> weakRef;
+	private Twitter twitter;
 
 
-    public LocationLoader(SettingsActivity activity) {
-        super();
-        weakRef = new WeakReference<>(activity);
-        twitter = Twitter.get(activity);
-    }
+	public LocationLoader(SettingsActivity activity) {
+		super();
+		weakRef = new WeakReference<>(activity);
+		twitter = Twitter.get(activity);
+	}
 
 
-    @Override
-    protected List<Location> doInBackground(Void[] v) {
-        try {
-            return twitter.getLocations();
-        } catch (TwitterException twException) {
-            this.twException = twException;
-        }
-        return null;
-    }
+	@Override
+	protected List<Location> doInBackground(Void[] v) {
+		try {
+			return twitter.getLocations();
+		} catch (TwitterException twException) {
+			this.twException = twException;
+		}
+		return null;
+	}
 
 
-    @Override
-    protected void onPostExecute(List<Location> locations) {
-        SettingsActivity activity = weakRef.get();
-        if (activity != null) {
-            if (locations != null) {
-                activity.setLocationData(locations);
-            } else {
-                activity.onError(twException);
-            }
-        }
-    }
+	@Override
+	protected void onPostExecute(List<Location> locations) {
+		SettingsActivity activity = weakRef.get();
+		if (activity != null) {
+			if (locations != null) {
+				activity.setLocationData(locations);
+			} else {
+				activity.onError(twException);
+			}
+		}
+	}
 }

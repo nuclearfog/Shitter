@@ -20,101 +20,101 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class TLSSocketFactory extends SSLSocketFactory {
 
-    private static final String TLS_1_1 = "TLSv1.1";
-    private static final String TLS_1_2 = "TLSv1.2";
-    private static final String TLS_1_3 = "TLSv1.3";
+	private static final String TLS_1_1 = "TLSv1.1";
+	private static final String TLS_1_2 = "TLSv1.2";
+	private static final String TLS_1_3 = "TLSv1.3";
 
-    /**
-     * protocols required by Twitter API
-     */
-    private static final String[] PROTOCOLS = {TLS_1_1, TLS_1_2};
+	/**
+	 * protocols required by Twitter API
+	 */
+	private static final String[] PROTOCOLS = {TLS_1_1, TLS_1_2};
 
-    private SSLSocketFactory internalSSLSocketFactory;
+	private SSLSocketFactory internalSSLSocketFactory;
 
-    /**
-     * check if TLS 1.2 is enabled and enable experimental TLS 1.2 support on Pre-Lollipop devices
-     */
-    public static void setSupportTLS() {
-        try {
-            boolean tlsEnabled = false;
-            SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
-            String[] protocols = param.getProtocols();
-            for (String protocol : protocols) {
-                if (protocol.equals(TLS_1_2) || protocol.equals(TLS_1_3)) {
-                    tlsEnabled = true;
-                    break;
-                }
-            }
-            if (!tlsEnabled) {
-                HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
-            }
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
-    }
+	/**
+	 * check if TLS 1.2 is enabled and enable experimental TLS 1.2 support on Pre-Lollipop devices
+	 */
+	public static void setSupportTLS() {
+		try {
+			boolean tlsEnabled = false;
+			SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
+			String[] protocols = param.getProtocols();
+			for (String protocol : protocols) {
+				if (protocol.equals(TLS_1_2) || protocol.equals(TLS_1_3)) {
+					tlsEnabled = true;
+					break;
+				}
+			}
+			if (!tlsEnabled) {
+				HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+			}
+		} catch (Exception err) {
+			err.printStackTrace();
+		}
+	}
 
-    /**
-     *
-     */
-    public TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
-        SSLContext context = SSLContext.getInstance(TLS_1_2);
-        context.init(null, null, null);
-        internalSSLSocketFactory = context.getSocketFactory();
-    }
-
-
-    @Override
-    public String[] getDefaultCipherSuites() {
-        return internalSSLSocketFactory.getDefaultCipherSuites();
-    }
+	/**
+	 *
+	 */
+	public TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
+		SSLContext context = SSLContext.getInstance(TLS_1_2);
+		context.init(null, null, null);
+		internalSSLSocketFactory = context.getSocketFactory();
+	}
 
 
-    @Override
-    public String[] getSupportedCipherSuites() {
-        return internalSSLSocketFactory.getSupportedCipherSuites();
-    }
+	@Override
+	public String[] getDefaultCipherSuites() {
+		return internalSSLSocketFactory.getDefaultCipherSuites();
+	}
 
 
-    @Override
-    public Socket createSocket() throws IOException {
-        return enableTLSOnSocket(internalSSLSocketFactory.createSocket());
-    }
+	@Override
+	public String[] getSupportedCipherSuites() {
+		return internalSSLSocketFactory.getSupportedCipherSuites();
+	}
 
 
-    @Override
-    public Socket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException {
-        return enableTLSOnSocket(internalSSLSocketFactory.createSocket(s, host, port, autoClose));
-    }
+	@Override
+	public Socket createSocket() throws IOException {
+		return enableTLSOnSocket(internalSSLSocketFactory.createSocket());
+	}
 
 
-    @Override
-    public Socket createSocket(String host, int port) throws IOException {
-        return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port));
-    }
+	@Override
+	public Socket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException {
+		return enableTLSOnSocket(internalSSLSocketFactory.createSocket(s, host, port, autoClose));
+	}
 
 
-    @Override
-    public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException {
-        return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port, localHost, localPort));
-    }
+	@Override
+	public Socket createSocket(String host, int port) throws IOException {
+		return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port));
+	}
 
 
-    @Override
-    public Socket createSocket(InetAddress host, int port) throws IOException {
-        return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port));
-    }
+	@Override
+	public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException {
+		return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port, localHost, localPort));
+	}
 
 
-    @Override
-    public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
-        return enableTLSOnSocket(internalSSLSocketFactory.createSocket(address, port, localAddress, localPort));
-    }
+	@Override
+	public Socket createSocket(InetAddress host, int port) throws IOException {
+		return enableTLSOnSocket(internalSSLSocketFactory.createSocket(host, port));
+	}
 
 
-    private Socket enableTLSOnSocket(Socket socket) {
-        if (socket instanceof SSLSocket) {
-            ((SSLSocket) socket).setEnabledProtocols(PROTOCOLS);
-        }
-        return socket;
-    }
+	@Override
+	public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
+		return enableTLSOnSocket(internalSSLSocketFactory.createSocket(address, port, localAddress, localPort));
+	}
+
+
+	private Socket enableTLSOnSocket(Socket socket) {
+		if (socket instanceof SSLSocket) {
+			((SSLSocket) socket).setEnabledProtocols(PROTOCOLS);
+		}
+		return socket;
+	}
 }

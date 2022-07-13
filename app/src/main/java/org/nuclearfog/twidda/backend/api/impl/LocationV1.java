@@ -13,44 +13,44 @@ import org.nuclearfog.twidda.model.Location;
  */
 public class LocationV1 implements Location {
 
-    private int id;
-    private String name;
+	private int id;
+	private String name;
 
-    /**
-     * @param json JSON object containing location information
-     */
-    public LocationV1(JSONObject json) {
-        id = json.optInt("woeid");
-        String placeName = json.optString("name");
-        String country = json.optString("country");
+	/**
+	 * @param json JSON object containing location information
+	 */
+	public LocationV1(JSONObject json) {
+		id = json.optInt("woeid");
+		String placeName = json.optString("name");
+		String country = json.optString("country");
 
-        if (!country.isEmpty() && !country.equals(placeName)) {
-            name = country + ", " + placeName;
-        } else {
-            name = placeName;
-        }
-    }
+		if (!country.isEmpty() && !country.equals(placeName)) {
+			name = country + ", " + placeName;
+		} else {
+			name = placeName;
+		}
+	}
 
-    @Override
-    public int getId() {
-        return id;
-    }
+	@Override
+	public int getId() {
+		return id;
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (!(obj instanceof Location))
-            return false;
-        return ((Location) obj).getId() == id;
-    }
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Location))
+			return false;
+		return ((Location) obj).getId() == id;
+	}
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "id=" + id + " name=\"" + name + "\"";
-    }
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=" + id + " name=\"" + name + "\"";
+	}
 }

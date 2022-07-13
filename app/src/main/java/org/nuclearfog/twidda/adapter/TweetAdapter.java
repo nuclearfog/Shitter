@@ -45,312 +45,312 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class TweetAdapter extends Adapter<ViewHolder> {
 
-    /**
-     * index of {@link #loadingIndex} if no index is defined
-     */
-    private static final int NO_LOADING = -1;
+	/**
+	 * index of {@link #loadingIndex} if no index is defined
+	 */
+	private static final int NO_LOADING = -1;
 
-    /**
-     * View type for a tweet item
-     */
-    private static final int VIEW_TWEET = 0;
+	/**
+	 * View type for a tweet item
+	 */
+	private static final int VIEW_TWEET = 0;
 
-    /**
-     * View type for a placeholder item
-     */
-    private static final int VIEW_GAP = 1;
+	/**
+	 * View type for a placeholder item
+	 */
+	private static final int VIEW_GAP = 1;
 
-    /**
-     * Minimum count of new Tweets to insert a placeholder.
-     */
-    private static final int MIN_COUNT = 2;
+	/**
+	 * Minimum count of new Tweets to insert a placeholder.
+	 */
+	private static final int MIN_COUNT = 2;
 
-    /**
-     * Locale specific number format
-     */
-    private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
-
-
-    private TweetClickListener itemClickListener;
-    private GlobalSettings settings;
-    private Resources resources;
-    private Picasso picasso;
-
-    private final List<Tweet> tweets = new LinkedList<>();
-    private int loadingIndex = NO_LOADING;
-
-    /**
-     * @param itemClickListener listener for item click
-     */
-    public TweetAdapter(Context context, TweetClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-        settings = GlobalSettings.getInstance(context);
-        picasso = PicassoBuilder.get(context);
-        resources = context.getResources();
-    }
-
-    /**
-     * Insert data at specific index of the list
-     *
-     * @param data  Tweet data
-     * @param index position to insert
-     */
-    @MainThread
-    public void insertAt(@NonNull List<Tweet> data, int index) {
-        disableLoading();
-        if (data.size() > MIN_COUNT) {
-            if (tweets.isEmpty() || tweets.get(index) != null) {
-                // Add placeholder
-                tweets.add(index, null);
-                notifyItemInserted(index);
-            }
-        } else {
-            if (!tweets.isEmpty() && tweets.get(index) == null) {
-                // remove placeholder
-                tweets.remove(index);
-                notifyItemRemoved(index);
-            }
-        }
-        if (!data.isEmpty()) {
-            tweets.addAll(index, data);
-            notifyItemRangeInserted(index, data.size());
-        }
-    }
-
-    /**
-     * Replace all items in the list
-     *
-     * @param data tweet data
-     */
-    @MainThread
-    public void replaceAll(@NonNull List<Tweet> data) {
-        tweets.clear();
-        tweets.addAll(data);
-        if (data.size() > MIN_COUNT) {
-            tweets.add(null);
-        }
-        loadingIndex = NO_LOADING;
-        notifyDataSetChanged();
-    }
-
-    /**
-     * update a single item
-     *
-     * @param tweet updated tweet
-     */
-    @MainThread
-    public void updateItem(Tweet tweet) {
-        int index = tweets.indexOf(tweet);
-        if (index >= 0) {
-            tweets.set(index, tweet);
-            notifyItemChanged(index);
-        }
-    }
-
-    /**
-     * Remove specific tweet from list
-     *
-     * @param id ID of the tweet
-     */
-    @MainThread
-    public void remove(long id) {
-        for (int pos = tweets.size() - 1; pos >= 0; pos--) {
-            Tweet tweet = tweets.get(pos);
-            if (tweet != null) {
-                Tweet embedded = tweet.getEmbeddedTweet();
-                // remove tweet and any retweet of it
-                if (tweet.getId() == id || (embedded != null && embedded.getId() == id)) {
-                    tweets.remove(pos);
-                    notifyItemRemoved(pos);
-                }
-            }
-        }
-    }
-
-    /**
-     * check if list is empty
-     *
-     * @return true if list is empty
-     */
-    public boolean isEmpty() {
-        return tweets.isEmpty();
-    }
-
-    /**
-     * disable placeholder load animation
-     */
-    public void disableLoading() {
-        if (loadingIndex != NO_LOADING) {
-            int oldIndex = loadingIndex;
-            loadingIndex = NO_LOADING;
-            notifyItemChanged(oldIndex);
-        }
-    }
-
-    @Override
-    public long getItemId(int index) {
-        Tweet tweet = tweets.get(index);
-        if (tweet != null)
-            return tweet.getId();
-        return NO_ID;
-    }
+	/**
+	 * Locale specific number format
+	 */
+	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 
-    @Override
-    public int getItemCount() {
-        return tweets.size();
-    }
+	private TweetClickListener itemClickListener;
+	private GlobalSettings settings;
+	private Resources resources;
+	private Picasso picasso;
+
+	private final List<Tweet> tweets = new LinkedList<>();
+	private int loadingIndex = NO_LOADING;
+
+	/**
+	 * @param itemClickListener listener for item click
+	 */
+	public TweetAdapter(Context context, TweetClickListener itemClickListener) {
+		this.itemClickListener = itemClickListener;
+		settings = GlobalSettings.getInstance(context);
+		picasso = PicassoBuilder.get(context);
+		resources = context.getResources();
+	}
+
+	/**
+	 * Insert data at specific index of the list
+	 *
+	 * @param data  Tweet data
+	 * @param index position to insert
+	 */
+	@MainThread
+	public void insertAt(@NonNull List<Tweet> data, int index) {
+		disableLoading();
+		if (data.size() > MIN_COUNT) {
+			if (tweets.isEmpty() || tweets.get(index) != null) {
+				// Add placeholder
+				tweets.add(index, null);
+				notifyItemInserted(index);
+			}
+		} else {
+			if (!tweets.isEmpty() && tweets.get(index) == null) {
+				// remove placeholder
+				tweets.remove(index);
+				notifyItemRemoved(index);
+			}
+		}
+		if (!data.isEmpty()) {
+			tweets.addAll(index, data);
+			notifyItemRangeInserted(index, data.size());
+		}
+	}
+
+	/**
+	 * Replace all items in the list
+	 *
+	 * @param data tweet data
+	 */
+	@MainThread
+	public void replaceAll(@NonNull List<Tweet> data) {
+		tweets.clear();
+		tweets.addAll(data);
+		if (data.size() > MIN_COUNT) {
+			tweets.add(null);
+		}
+		loadingIndex = NO_LOADING;
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * update a single item
+	 *
+	 * @param tweet updated tweet
+	 */
+	@MainThread
+	public void updateItem(Tweet tweet) {
+		int index = tweets.indexOf(tweet);
+		if (index >= 0) {
+			tweets.set(index, tweet);
+			notifyItemChanged(index);
+		}
+	}
+
+	/**
+	 * Remove specific tweet from list
+	 *
+	 * @param id ID of the tweet
+	 */
+	@MainThread
+	public void remove(long id) {
+		for (int pos = tweets.size() - 1; pos >= 0; pos--) {
+			Tweet tweet = tweets.get(pos);
+			if (tweet != null) {
+				Tweet embedded = tweet.getEmbeddedTweet();
+				// remove tweet and any retweet of it
+				if (tweet.getId() == id || (embedded != null && embedded.getId() == id)) {
+					tweets.remove(pos);
+					notifyItemRemoved(pos);
+				}
+			}
+		}
+	}
+
+	/**
+	 * check if list is empty
+	 *
+	 * @return true if list is empty
+	 */
+	public boolean isEmpty() {
+		return tweets.isEmpty();
+	}
+
+	/**
+	 * disable placeholder load animation
+	 */
+	public void disableLoading() {
+		if (loadingIndex != NO_LOADING) {
+			int oldIndex = loadingIndex;
+			loadingIndex = NO_LOADING;
+			notifyItemChanged(oldIndex);
+		}
+	}
+
+	@Override
+	public long getItemId(int index) {
+		Tweet tweet = tweets.get(index);
+		if (tweet != null)
+			return tweet.getId();
+		return NO_ID;
+	}
 
 
-    @Override
-    public int getItemViewType(int index) {
-        if (tweets.get(index) == null)
-            return VIEW_GAP;
-        return VIEW_TWEET;
-    }
+	@Override
+	public int getItemCount() {
+		return tweets.size();
+	}
 
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TWEET) {
-            final TweetHolder vh = new TweetHolder(parent, settings);
-            vh.itemView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        Tweet tweet = tweets.get(position);
-                        if (tweet != null) {
-                            itemClickListener.onTweetClick(tweet);
-                        }
-                    }
-                }
-            });
-            return vh;
-        } else {
-            final Footer footer = new Footer(parent, settings, false);
-            footer.loadBtn.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = footer.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        long sinceId = 0;
-                        long maxId = 0;
-                        if (position == 0) {
-                            Tweet tweet = tweets.get(position + 1);
-                            if (tweet != null) {
-                                sinceId = tweet.getId();
-                            }
-                        } else if (position == tweets.size() - 1) {
-                            Tweet tweet = tweets.get(position - 1);
-                            if (tweet != null) {
-                                maxId = tweet.getId() - 1;
-                            }
-                        } else {
-                            Tweet tweet = tweets.get(position + 1);
-                            if (tweet != null) {
-                                sinceId = tweet.getId();
-                            }
-                            tweet = tweets.get(position - 1);
-                            if (tweet != null) {
-                                maxId = tweet.getId() - 1;
-                            }
-                        }
-                        boolean success = itemClickListener.onPlaceholderClick(sinceId, maxId, position);
-                        if (success) {
-                            footer.setLoading(true);
-                            loadingIndex = position;
-                        }
-                    }
-                }
-            });
-            return footer;
-        }
-    }
+	@Override
+	public int getItemViewType(int index) {
+		if (tweets.get(index) == null)
+			return VIEW_GAP;
+		return VIEW_TWEET;
+	}
 
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
-        if (holder instanceof TweetHolder) {
-            Tweet tweet = tweets.get(index);
-            if (tweet != null) {
-                TweetHolder tweetItem = (TweetHolder) holder;
-                User user = tweet.getAuthor();
-                if (tweet.getEmbeddedTweet() != null) {
-                    tweetItem.textViews[5].setText(user.getScreenname());
-                    tweetItem.textViews[5].setVisibility(VISIBLE);
-                    tweetItem.rtUser.setVisibility(VISIBLE);
-                    tweet = tweet.getEmbeddedTweet();
-                    user = tweet.getAuthor();
-                } else {
-                    tweetItem.textViews[5].setVisibility(INVISIBLE);
-                    tweetItem.rtUser.setVisibility(INVISIBLE);
-                }
-                Spanned text = Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor());
-                tweetItem.textViews[2].setText(text);
-                tweetItem.textViews[0].setText(user.getUsername());
-                tweetItem.textViews[1].setText(user.getScreenname());
-                tweetItem.textViews[3].setText(NUM_FORMAT.format(tweet.getRetweetCount()));
-                tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
-                tweetItem.textViews[6].setText(formatCreationTime(resources, tweet.getTimestamp()));
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		if (viewType == VIEW_TWEET) {
+			final TweetHolder vh = new TweetHolder(parent, settings);
+			vh.itemView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int position = vh.getLayoutPosition();
+					if (position != NO_POSITION) {
+						Tweet tweet = tweets.get(position);
+						if (tweet != null) {
+							itemClickListener.onTweetClick(tweet);
+						}
+					}
+				}
+			});
+			return vh;
+		} else {
+			final Footer footer = new Footer(parent, settings, false);
+			footer.loadBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int position = footer.getLayoutPosition();
+					if (position != NO_POSITION) {
+						long sinceId = 0;
+						long maxId = 0;
+						if (position == 0) {
+							Tweet tweet = tweets.get(position + 1);
+							if (tweet != null) {
+								sinceId = tweet.getId();
+							}
+						} else if (position == tweets.size() - 1) {
+							Tweet tweet = tweets.get(position - 1);
+							if (tweet != null) {
+								maxId = tweet.getId() - 1;
+							}
+						} else {
+							Tweet tweet = tweets.get(position + 1);
+							if (tweet != null) {
+								sinceId = tweet.getId();
+							}
+							tweet = tweets.get(position - 1);
+							if (tweet != null) {
+								maxId = tweet.getId() - 1;
+							}
+						}
+						boolean success = itemClickListener.onPlaceholderClick(sinceId, maxId, position);
+						if (success) {
+							footer.setLoading(true);
+							loadingIndex = position;
+						}
+					}
+				}
+			});
+			return footer;
+		}
+	}
 
-                if (tweet.isRetweeted()) {
-                    tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);
-                } else {
-                    tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-                }
-                if (tweet.isFavorited()) {
-                    tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor(), SRC_IN);
-                } else {
-                    tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-                }
-                if (user.isVerified()) {
-                    tweetItem.verifiedIcon.setVisibility(VISIBLE);
-                } else {
-                    tweetItem.verifiedIcon.setVisibility(GONE);
-                }
-                if (user.isProtected()) {
-                    tweetItem.lockedIcon.setVisibility(VISIBLE);
-                } else {
-                    tweetItem.lockedIcon.setVisibility(GONE);
-                }
-                if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
-                    String profileImageUrl = user.getImageUrl();
-                    if (!user.hasDefaultProfileImage())
-                        profileImageUrl += settings.getImageSuffix();
-                    picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
-                            .error(R.drawable.no_image).into(tweetItem.profile);
-                } else {
-                    tweetItem.profile.setImageResource(0);
-                }
-            }
-        } else if (holder instanceof Footer) {
-            Footer footer = (Footer) holder;
-            footer.setLoading(loadingIndex != NO_LOADING);
-        }
-    }
 
-    /**
-     * Listener for tweet click
-     */
-    public interface TweetClickListener {
+	@Override
+	public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
+		if (holder instanceof TweetHolder) {
+			Tweet tweet = tweets.get(index);
+			if (tweet != null) {
+				TweetHolder tweetItem = (TweetHolder) holder;
+				User user = tweet.getAuthor();
+				if (tweet.getEmbeddedTweet() != null) {
+					tweetItem.textViews[5].setText(user.getScreenname());
+					tweetItem.textViews[5].setVisibility(VISIBLE);
+					tweetItem.rtUser.setVisibility(VISIBLE);
+					tweet = tweet.getEmbeddedTweet();
+					user = tweet.getAuthor();
+				} else {
+					tweetItem.textViews[5].setVisibility(INVISIBLE);
+					tweetItem.rtUser.setVisibility(INVISIBLE);
+				}
+				Spanned text = Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor());
+				tweetItem.textViews[2].setText(text);
+				tweetItem.textViews[0].setText(user.getUsername());
+				tweetItem.textViews[1].setText(user.getScreenname());
+				tweetItem.textViews[3].setText(NUM_FORMAT.format(tweet.getRetweetCount()));
+				tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
+				tweetItem.textViews[6].setText(formatCreationTime(resources, tweet.getTimestamp()));
 
-        /**
-         * handle click action
-         *
-         * @param tweet clicked tweet
-         */
-        void onTweetClick(Tweet tweet);
+				if (tweet.isRetweeted()) {
+					tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);
+				} else {
+					tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+				}
+				if (tweet.isFavorited()) {
+					tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor(), SRC_IN);
+				} else {
+					tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+				}
+				if (user.isVerified()) {
+					tweetItem.verifiedIcon.setVisibility(VISIBLE);
+				} else {
+					tweetItem.verifiedIcon.setVisibility(GONE);
+				}
+				if (user.isProtected()) {
+					tweetItem.lockedIcon.setVisibility(VISIBLE);
+				} else {
+					tweetItem.lockedIcon.setVisibility(GONE);
+				}
+				if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
+					String profileImageUrl = user.getImageUrl();
+					if (!user.hasDefaultProfileImage())
+						profileImageUrl += settings.getImageSuffix();
+					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
+							.error(R.drawable.no_image).into(tweetItem.profile);
+				} else {
+					tweetItem.profile.setImageResource(0);
+				}
+			}
+		} else if (holder instanceof Footer) {
+			Footer footer = (Footer) holder;
+			footer.setLoading(loadingIndex != NO_LOADING);
+		}
+	}
 
-        /**
-         * called then the user clcks on the placeholder
-         *
-         * @param minId the highest tweet ID below the placeholder or '0' if there is none
-         * @param maxId the lowest tweet ID above the placeholder or '0' if there is none
-         * @param pos   position of the placeholder
-         * @return true  if click was handled
-         */
-        boolean onPlaceholderClick(long minId, long maxId, int pos);
-    }
+	/**
+	 * Listener for tweet click
+	 */
+	public interface TweetClickListener {
+
+		/**
+		 * handle click action
+		 *
+		 * @param tweet clicked tweet
+		 */
+		void onTweetClick(Tweet tweet);
+
+		/**
+		 * called then the user clcks on the placeholder
+		 *
+		 * @param minId the highest tweet ID below the placeholder or '0' if there is none
+		 * @param maxId the lowest tweet ID above the placeholder or '0' if there is none
+		 * @param pos   position of the placeholder
+		 * @return true  if click was handled
+		 */
+		boolean onPlaceholderClick(long minId, long maxId, int pos);
+	}
 }

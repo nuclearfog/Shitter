@@ -29,105 +29,105 @@ import java.util.List;
  */
 public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener {
 
-    @Nullable
-    private AccountLoader loginTask;
-    private GlobalSettings settings;
-    private AccountAdapter adapter;
-    private ConfirmDialog dialog;
-    private Account selection;
+	@Nullable
+	private AccountLoader loginTask;
+	private GlobalSettings settings;
+	private AccountAdapter adapter;
+	private ConfirmDialog dialog;
+	private Account selection;
 
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        dialog = new ConfirmDialog(requireContext());
-        settings = GlobalSettings.getInstance(requireContext());
-        adapter = new AccountAdapter(requireContext(), this);
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		dialog = new ConfirmDialog(requireContext());
+		settings = GlobalSettings.getInstance(requireContext());
+		adapter = new AccountAdapter(requireContext(), this);
 
-        setAdapter(adapter);
-        dialog.setConfirmListener(this);
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (loginTask == null) {
-            setRefresh(true);
-            loginTask = new AccountLoader(this);
-            loginTask.execute();
-        }
-    }
+		setAdapter(adapter);
+		dialog.setConfirmListener(this);
+	}
 
 
-    @Override
-    public void onDestroy() {
-        if (loginTask != null && loginTask.getStatus() == RUNNING)
-            loginTask.cancel(true);
-        super.onDestroy();
-    }
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (loginTask == null) {
+			setRefresh(true);
+			loginTask = new AccountLoader(this);
+			loginTask.execute();
+		}
+	}
 
 
-    @Override
-    protected void onReload() {
-        if (loginTask == null || loginTask.getStatus() != RUNNING)
-            loginTask = new AccountLoader(this);
-        loginTask.execute();
-    }
+	@Override
+	public void onDestroy() {
+		if (loginTask != null && loginTask.getStatus() == RUNNING)
+			loginTask.cancel(true);
+		super.onDestroy();
+	}
 
 
-    @Override
-    protected void onReset() {
-        adapter.clear();
-        loginTask = new AccountLoader(this);
-        loginTask.execute();
-        setRefresh(true);
-    }
+	@Override
+	protected void onReload() {
+		if (loginTask == null || loginTask.getStatus() != RUNNING)
+			loginTask = new AccountLoader(this);
+		loginTask.execute();
+	}
 
 
-    @Override
-    public void onAccountClick(Account account) {
-        // set new account
-        settings.setAccessToken(account.getAccessToken());
-        settings.setTokenSecret(account.getTokenSecret());
-        settings.setUserId(account.getId());
-        // finish activity and return to parent activity
-        requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
-        requireActivity().finish();
-    }
+	@Override
+	protected void onReset() {
+		adapter.clear();
+		loginTask = new AccountLoader(this);
+		loginTask.execute();
+		setRefresh(true);
+	}
 
 
-    @Override
-    public void onAccountRemove(Account account) {
-        if (!dialog.isShowing()) {
-            selection = account;
-            dialog.show(DialogType.REMOVE_ACCOUNT);
-        }
-    }
+	@Override
+	public void onAccountClick(Account account) {
+		// set new account
+		settings.setAccessToken(account.getAccessToken());
+		settings.setTokenSecret(account.getTokenSecret());
+		settings.setUserId(account.getId());
+		// finish activity and return to parent activity
+		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
+		requireActivity().finish();
+	}
 
 
-    @Override
-    public void onConfirm(DialogType type, boolean rememberChoice) {
-        if (type == DialogType.REMOVE_ACCOUNT) {
-            loginTask = new AccountLoader(this);
-            loginTask.execute(selection);
-        }
-    }
+	@Override
+	public void onAccountRemove(Account account) {
+		if (!dialog.isShowing()) {
+			selection = account;
+			dialog.show(DialogType.REMOVE_ACCOUNT);
+		}
+	}
 
-    /**
-     * called from {@link AccountLoader} to set login information
-     *
-     * @param result login information
-     */
-    public void onSuccess(List<Account> result) {
-        adapter.setData(result);
-        setRefresh(false);
-    }
 
-    /**
-     * called from {@link AccountLoader} when an error occurs
-     */
-    public void onError() {
-        Toast.makeText(requireContext(), R.string.error_login_information, Toast.LENGTH_SHORT).show();
-    }
+	@Override
+	public void onConfirm(DialogType type, boolean rememberChoice) {
+		if (type == DialogType.REMOVE_ACCOUNT) {
+			loginTask = new AccountLoader(this);
+			loginTask.execute(selection);
+		}
+	}
+
+	/**
+	 * called from {@link AccountLoader} to set login information
+	 *
+	 * @param result login information
+	 */
+	public void onSuccess(List<Account> result) {
+		adapter.setData(result);
+		setRefresh(false);
+	}
+
+	/**
+	 * called from {@link AccountLoader} when an error occurs
+	 */
+	public void onError() {
+		Toast.makeText(requireContext(), R.string.error_login_information, Toast.LENGTH_SHORT).show();
+	}
 }

@@ -12,57 +12,57 @@ import java.io.InputStream;
  */
 public class MediaStream {
 
-    private InputStream inputStream;
-    private String mimeType;
+	private InputStream inputStream;
+	private String mimeType;
 
-    /**
-     * @param inputStream stream of the media (local or online)
-     * @param mimeType    MIME type e.g. image/jpeg
-     */
-    public MediaStream(InputStream inputStream, String mimeType) {
-        this.inputStream = inputStream;
-        this.mimeType = mimeType;
-    }
+	/**
+	 * @param inputStream stream of the media (local or online)
+	 * @param mimeType    MIME type e.g. image/jpeg
+	 */
+	public MediaStream(InputStream inputStream, String mimeType) {
+		this.inputStream = inputStream;
+		this.mimeType = mimeType;
+	}
 
-    /**
-     * @return input stream of the media file
-     */
-    public InputStream getStream() {
-        return inputStream;
-    }
+	/**
+	 * @return input stream of the media file
+	 */
+	public InputStream getStream() {
+		return inputStream;
+	}
 
-    /**
-     * @return MIME type of the stream
-     */
-    public String getMimeType() {
-        return mimeType;
-    }
+	/**
+	 * @return MIME type of the stream
+	 */
+	public String getMimeType() {
+		return mimeType;
+	}
 
-    /**
-     * @return remaining bytes of the stream
-     */
-    public long available() {
-        try {
-            return inputStream.available();
-        } catch (IOException e) {
-            return 0;
-        }
-    }
+	/**
+	 * @return remaining bytes of the stream
+	 */
+	public long available() {
+		try {
+			return inputStream.available();
+		} catch (IOException e) {
+			return 0;
+		}
+	}
 
-    /**
-     * close stream
-     */
-    public void close() {
-        try {
-            inputStream.close();
-        } catch (IOException e) {
-            // ignore
-        }
-    }
+	/**
+	 * close stream
+	 */
+	public void close() {
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			// ignore
+		}
+	}
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "mime:\"" + mimeType + "\" size:" + available();
-    }
+	@NonNull
+	@Override
+	public String toString() {
+		return "mime:\"" + mimeType + "\" size:" + available();
+	}
 }

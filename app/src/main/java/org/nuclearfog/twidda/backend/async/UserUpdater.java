@@ -22,56 +22,56 @@ import java.lang.ref.WeakReference;
  */
 public class UserUpdater extends AsyncTask<Void, Void, User> {
 
-    @Nullable
-    private ErrorHandler.TwitterError exception;
-    private WeakReference<ProfileEditor> weakRef;
-    private Twitter twitter;
-    private AppDatabase db;
+	@Nullable
+	private ErrorHandler.TwitterError exception;
+	private WeakReference<ProfileEditor> weakRef;
+	private Twitter twitter;
+	private AppDatabase db;
 
-    private ProfileUpdate profile;
-
-
-    public UserUpdater(ProfileEditor activity, ProfileUpdate profile) {
-        super();
-        weakRef = new WeakReference<>(activity);
-        twitter = Twitter.get(activity);
-        db = new AppDatabase(activity);
-        this.profile = profile;
-    }
+	private ProfileUpdate profile;
 
 
-    @Override
-    protected User doInBackground(Void[] v) {
-        try {
-            if (profile.getProfileImageStream() != null) {
-                twitter.updateProfileImage(profile.getProfileImageStream());
-            }
-            if (profile.getBannerImageStream() != null) {
-                twitter.updateBannerImage(profile.getBannerImageStream());
-            }
-            User user = twitter.updateProfile(profile);
-            // save new user information
-            db.storeUser(user);
-            return user;
-        } catch (TwitterException exception) {
-            this.exception = exception;
-        } finally {
-            // close image streams
-            profile.close();
-        }
-        return null;
-    }
+	public UserUpdater(ProfileEditor activity, ProfileUpdate profile) {
+		super();
+		weakRef = new WeakReference<>(activity);
+		twitter = Twitter.get(activity);
+		db = new AppDatabase(activity);
+		this.profile = profile;
+	}
 
 
-    @Override
-    protected void onPostExecute(@Nullable User user) {
-        ProfileEditor activity = weakRef.get();
-        if (activity != null) {
-            if (user != null) {
-                activity.onSuccess(user);
-            } else {
-                activity.onError(exception);
-            }
-        }
-    }
+	@Override
+	protected User doInBackground(Void[] v) {
+		try {
+			if (profile.getProfileImageStream() != null) {
+				twitter.updateProfileImage(profile.getProfileImageStream());
+			}
+			if (profile.getBannerImageStream() != null) {
+				twitter.updateBannerImage(profile.getBannerImageStream());
+			}
+			User user = twitter.updateProfile(profile);
+			// save new user information
+			db.storeUser(user);
+			return user;
+		} catch (TwitterException exception) {
+			this.exception = exception;
+		} finally {
+			// close image streams
+			profile.close();
+		}
+		return null;
+	}
+
+
+	@Override
+	protected void onPostExecute(@Nullable User user) {
+		ProfileEditor activity = weakRef.get();
+		if (activity != null) {
+			if (user != null) {
+				activity.onSuccess(user);
+			} else {
+				activity.onError(exception);
+			}
+		}
+	}
 }

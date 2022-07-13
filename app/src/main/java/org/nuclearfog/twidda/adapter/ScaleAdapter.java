@@ -22,45 +22,45 @@ import java.util.Locale;
  */
 public class ScaleAdapter extends BaseAdapter {
 
-    private GlobalSettings settings;
+	private GlobalSettings settings;
 
 
-    public ScaleAdapter(GlobalSettings settings) {
-        this.settings = settings;
-    }
+	public ScaleAdapter(GlobalSettings settings) {
+		this.settings = settings;
+	}
 
 
-    @Override
-    public long getItemId(int pos) {
-        return pos;
-    }
+	@Override
+	public long getItemId(int pos) {
+		return pos;
+	}
 
 
-    @Override
-    public int getCount() {
-        return SCALES.length;
-    }
+	@Override
+	public int getCount() {
+		return SCALES.length;
+	}
 
 
-    @Override
-    public Float getItem(int pos) {
-        return SCALES[pos];
-    }
+	@Override
+	public Float getItem(int pos) {
+		return SCALES[pos];
+	}
 
 
-    @Override
-    public View getView(int pos, View view, ViewGroup parent) {
-        TextView textItem;
-        if (view == null) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            view = inflater.inflate(R.layout.item_dropdown, parent, false);
-        }
-        textItem = view.findViewById(R.id.dropdown_textitem);
-        textItem.setText(String.format(Locale.getDefault(), "%.1f X", SCALES[pos]));
-        textItem.setTypeface(settings.getTypeFace());
-        textItem.setTextColor(settings.getFontColor());
-        textItem.setBackgroundColor(settings.getCardColor());
-        view.setBackgroundColor(settings.getBackgroundColor());
-        return view;
-    }
+	@Override
+	public View getView(int pos, View view, ViewGroup parent) {
+		TextView textItem;
+		if (view == null) {
+			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+			view = inflater.inflate(R.layout.item_dropdown, parent, false);
+		}
+		textItem = view.findViewById(R.id.dropdown_textitem);
+		textItem.setText(String.format(Locale.getDefault(), "%.1f X", SCALES[pos]));
+		textItem.setTypeface(settings.getTypeFace());
+		textItem.setTextColor(settings.getFontColor());
+		textItem.setBackgroundColor(settings.getCardColor());
+		view.setBackgroundColor(settings.getBackgroundColor());
+		return view;
+	}
 }

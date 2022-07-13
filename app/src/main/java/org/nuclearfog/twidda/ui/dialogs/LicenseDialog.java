@@ -14,19 +14,19 @@ import org.nuclearfog.twidda.R;
 public class LicenseDialog extends Dialog {
 
 
-    public LicenseDialog(Context context) {
-        super(context, R.style.LicenseDialog);
-        WebView htmlViewer = new WebView(context);
-        setContentView(htmlViewer);
+	public LicenseDialog(Context context) {
+		super(context, R.style.LicenseDialog);
+		WebView htmlViewer = new WebView(context);
+		setContentView(htmlViewer);
 
-        htmlViewer.loadUrl("file:///android_asset/licenses.html");
-    }
+		htmlViewer.loadUrl("file:///android_asset/licenses.html");
+	}
 
 
-    @Override
-    public void show() {
-        if (!isShowing()) {
-            super.show();
-        }
-    }
+	@Override
+	public void show() {
+		if (!isShowing()) {
+			super.show();
+		}
+	}
 }

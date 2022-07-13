@@ -26,83 +26,83 @@ import org.nuclearfog.twidda.ui.fragments.ListFragment;
  */
 public class AccountActivity extends AppCompatActivity {
 
-    /**
-     * request code to start {@link LoginActivity}
-     */
-    private static final int REQUEST_LOGIN = 0xDF14;
+	/**
+	 * request code to start {@link LoginActivity}
+	 */
+	private static final int REQUEST_LOGIN = 0xDF14;
 
-    /**
-     * return code to notify that a new account was selected
-     */
-    public static final int RETURN_ACCOUNT_CHANGED = 0x3660;
+	/**
+	 * return code to notify that a new account was selected
+	 */
+	public static final int RETURN_ACCOUNT_CHANGED = 0x3660;
 
-    /**
-     * key to disable account selector option from menu
-     * value type is Boolean
-     */
-    public static final String KEY_DISABLE_SELECTOR = "disable-acc-manager";
+	/**
+	 * key to disable account selector option from menu
+	 * value type is Boolean
+	 */
+	public static final String KEY_DISABLE_SELECTOR = "disable-acc-manager";
 
-    private GlobalSettings settings;
-    private ListFragment fragment;
-
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(AppStyles.setFontScale(newBase));
-    }
+	private GlobalSettings settings;
+	private ListFragment fragment;
 
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.page_fragment);
-        ViewGroup root = findViewById(R.id.fragment_root);
-        Toolbar tool = findViewById(R.id.fragment_toolbar);
-        fragment = new AccountFragment();
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
-
-        tool.setTitle(R.string.account_page);
-        setSupportActionBar(tool);
-
-        settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(root, settings.getBackgroundColor());
-    }
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(AppStyles.setFontScale(newBase));
+	}
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu m) {
-        getMenuInflater().inflate(R.menu.accounts, m);
-        // disable account selector icon if this activity started from LoginActivity
-        boolean disableSelector = getIntent().getBooleanExtra(KEY_DISABLE_SELECTOR, false);
-        m.findItem(R.id.action_add_account).setVisible(!disableSelector);
-        // theme icons
-        AppStyles.setMenuIconColor(m, settings.getIconColor());
-        return super.onCreateOptionsMenu(m);
-    }
+	@Override
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.page_fragment);
+		ViewGroup root = findViewById(R.id.fragment_root);
+		Toolbar tool = findViewById(R.id.fragment_toolbar);
+		fragment = new AccountFragment();
+
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.replace(R.id.fragment_container, fragment);
+		fragmentTransaction.commit();
+
+		tool.setTitle(R.string.account_page);
+		setSupportActionBar(tool);
+
+		settings = GlobalSettings.getInstance(this);
+		AppStyles.setTheme(root, settings.getBackgroundColor());
+	}
 
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_add_account) {
-            // open login page to add new account
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivityForResult(loginIntent, REQUEST_LOGIN);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu m) {
+		getMenuInflater().inflate(R.menu.accounts, m);
+		// disable account selector icon if this activity started from LoginActivity
+		boolean disableSelector = getIntent().getBooleanExtra(KEY_DISABLE_SELECTOR, false);
+		m.findItem(R.id.action_add_account).setVisible(!disableSelector);
+		// theme icons
+		AppStyles.setMenuIconColor(m, settings.getIconColor());
+		return super.onCreateOptionsMenu(m);
+	}
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LOGIN && resultCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
-            setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
-            // new account registered, reload fragment
-            fragment.reset();
-        }
-    }
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		if (item.getItemId() == R.id.action_add_account) {
+			// open login page to add new account
+			Intent loginIntent = new Intent(this, LoginActivity.class);
+			startActivityForResult(loginIntent, REQUEST_LOGIN);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == REQUEST_LOGIN && resultCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
+			setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
+			// new account registered, reload fragment
+			fragment.reset();
+		}
+	}
 }

@@ -27,123 +27,123 @@ import java.lang.ref.WeakReference;
  */
 public abstract class ListFragment extends Fragment implements OnRefreshListener {
 
-    /**
-     * delay to enable SwipeRefreshLayout
-     */
-    private static final int REFRESH_DELAY_MS = 1000;
+	/**
+	 * delay to enable SwipeRefreshLayout
+	 */
+	private static final int REFRESH_DELAY_MS = 1000;
 
-    private RecyclerView list;
-    private SwipeRefreshLayout reload;
-    protected GlobalSettings settings;
+	private RecyclerView list;
+	private SwipeRefreshLayout reload;
+	protected GlobalSettings settings;
 
-    private boolean isRefreshing = false;
-
-
-    @Override
-    public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
-        settings = GlobalSettings.getInstance(requireContext());
-
-        list = new RecyclerView(requireContext());
-        list.setLayoutManager(new LinearLayoutManager(requireContext()));
-        reload = new SwipeRefreshLayout(requireContext());
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        reload.setColorSchemeColors(settings.getIconColor());
-        reload.setOnRefreshListener(this);
-        reload.addView(list);
-        return reload;
-    }
+	private boolean isRefreshing = false;
 
 
-    @Override
-    public final void onRefresh() {
-        onReload();
-    }
+	@Override
+	public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
+		settings = GlobalSettings.getInstance(requireContext());
 
-    /**
-     * enables or disables swipe layout
-     *
-     * @param enable true to enable swipe view delayed, false to stop immediately
-     */
-    protected void setRefresh(boolean enable) {
-        isRefreshing = enable;
-        if (enable) {
-            reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
-        } else {
-            reload.setRefreshing(false);
-        }
-    }
+		list = new RecyclerView(requireContext());
+		list.setLayoutManager(new LinearLayoutManager(requireContext()));
+		reload = new SwipeRefreshLayout(requireContext());
+		reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+		reload.setColorSchemeColors(settings.getIconColor());
+		reload.setOnRefreshListener(this);
+		reload.addView(list);
+		return reload;
+	}
 
-    /**
-     * check if swipe refresh is active
-     *
-     * @return true if swipe view is active
-     */
-    protected boolean isRefreshing() {
-        return isRefreshing || reload.isRefreshing();
-    }
 
-    /**
-     * set list adapter
-     *
-     * @param adapter adapter for the list
-     */
-    protected void setAdapter(Adapter<? extends ViewHolder> adapter) {
-        if (list != null) {
-            list.setAdapter(adapter);
-        }
-    }
+	@Override
+	public final void onRefresh() {
+		onReload();
+	}
 
-    /**
-     * called to reset all data
-     */
-    public void reset() {
-        // check if fragment is initialized
-        if (reload != null && list != null) {
-            // reset colors
-            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-            reload.setColorSchemeColors(settings.getIconColor());
-            // force redrawing list to apply colors
-            list.setAdapter(list.getAdapter());
-            onReset();
-        }
-    }
+	/**
+	 * enables or disables swipe layout
+	 *
+	 * @param enable true to enable swipe view delayed, false to stop immediately
+	 */
+	protected void setRefresh(boolean enable) {
+		isRefreshing = enable;
+		if (enable) {
+			reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
+		} else {
+			reload.setRefreshing(false);
+		}
+	}
 
-    /**
-     * called when this tab is deselected
-     */
-    public void onTabChange() {
-        if (list != null) {
-            list.smoothScrollToPosition(0);
-        }
-    }
+	/**
+	 * check if swipe refresh is active
+	 *
+	 * @return true if swipe view is active
+	 */
+	protected boolean isRefreshing() {
+		return isRefreshing || reload.isRefreshing();
+	}
 
-    /**
-     * called when swipe refresh is active
-     */
-    protected abstract void onReload();
+	/**
+	 * set list adapter
+	 *
+	 * @param adapter adapter for the list
+	 */
+	protected void setAdapter(Adapter<? extends ViewHolder> adapter) {
+		if (list != null) {
+			list.setAdapter(adapter);
+		}
+	}
 
-    /**
-     * called to reset all data
-     */
-    protected abstract void onReset();
+	/**
+	 * called to reset all data
+	 */
+	public void reset() {
+		// check if fragment is initialized
+		if (reload != null && list != null) {
+			// reset colors
+			reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+			reload.setColorSchemeColors(settings.getIconColor());
+			// force redrawing list to apply colors
+			list.setAdapter(list.getAdapter());
+			onReset();
+		}
+	}
 
-    /**
-     * runnable class to delay swiperefreshlayout
-     */
-    private static class RefreshDelay implements Runnable {
+	/**
+	 * called when this tab is deselected
+	 */
+	public void onTabChange() {
+		if (list != null) {
+			list.smoothScrollToPosition(0);
+		}
+	}
 
-        private WeakReference<ListFragment> callback;
+	/**
+	 * called when swipe refresh is active
+	 */
+	protected abstract void onReload();
 
-        private RefreshDelay(ListFragment fragment) {
-            callback = new WeakReference<>(fragment);
-        }
+	/**
+	 * called to reset all data
+	 */
+	protected abstract void onReset();
 
-        @Override
-        public void run() {
-            ListFragment fragment = callback.get();
-            if (fragment != null && fragment.isRefreshing && !fragment.reload.isRefreshing()) {
-                fragment.reload.setRefreshing(true);
-            }
-        }
-    }
+	/**
+	 * runnable class to delay swiperefreshlayout
+	 */
+	private static class RefreshDelay implements Runnable {
+
+		private WeakReference<ListFragment> callback;
+
+		private RefreshDelay(ListFragment fragment) {
+			callback = new WeakReference<>(fragment);
+		}
+
+		@Override
+		public void run() {
+			ListFragment fragment = callback.get();
+			if (fragment != null && fragment.isRefreshing && !fragment.reload.isRefreshing()) {
+				fragment.reload.setRefreshing(true);
+			}
+		}
+	}
 }

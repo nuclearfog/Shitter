@@ -14,35 +14,35 @@ import org.nuclearfog.twidda.model.Trend;
  */
 public class TrendImpl implements Trend {
 
-    private String name;
-    private int range;
-    private int rank;
+	private String name;
+	private int range;
+	private int rank;
 
 
-    public TrendImpl(Cursor cursor) {
-        name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.TREND));
-        range = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.VOL));
-        rank = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.INDEX));
-    }
+	public TrendImpl(Cursor cursor) {
+		name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.TREND));
+		range = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.VOL));
+		rank = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.INDEX));
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public int getRank() {
-        return rank;
-    }
+	@Override
+	public int getRank() {
+		return rank;
+	}
 
-    @Override
-    public int getPopularity() {
-        return range;
-    }
+	@Override
+	public int getPopularity() {
+		return range;
+	}
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "rank=" + rank + " name=\"" + name + "\"";
-    }
+	@NonNull
+	@Override
+	public String toString() {
+		return "rank=" + rank + " name=\"" + name + "\"";
+	}
 }
