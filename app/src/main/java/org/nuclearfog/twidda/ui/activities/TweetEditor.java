@@ -32,7 +32,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
@@ -310,13 +309,13 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		// retry uploading tweet
-		if (type == DialogType.TWEET_EDITOR_ERROR) {
+		if (type == ConfirmDialog.TWEET_EDITOR_ERROR) {
 			updateTweet();
 		}
 		// leave editor
-		else if (type == DialogType.TWEET_EDITOR_LEAVE) {
+		else if (type == ConfirmDialog.TWEET_EDITOR_LEAVE) {
 			finish();
 		}
 	}
@@ -334,8 +333,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	 */
 	public void onError(@Nullable ErrorHandler.TwitterError error) {
 		String message = ErrorHandler.getErrorMessage(this, error);
-		confirmDialog.setMessage(message);
-		confirmDialog.show(DialogType.TWEET_EDITOR_ERROR);
+		confirmDialog.show(ConfirmDialog.TWEET_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}
 
@@ -344,7 +342,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	 */
 	private void showClosingMsg() {
 		if (tweetText.length() > 0 || tweetUpdate.mediaCount() > 0 || tweetUpdate.hasLocation()) {
-			confirmDialog.show(DialogType.TWEET_EDITOR_LEAVE);
+			confirmDialog.show(ConfirmDialog.TWEET_EDITOR_LEAVE);
 		} else {
 			finish();
 		}

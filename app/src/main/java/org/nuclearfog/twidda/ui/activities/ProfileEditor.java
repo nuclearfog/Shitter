@@ -42,7 +42,6 @@ import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
@@ -167,7 +166,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		} else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
 			finish();
 		} else {
-			confirmDialog.show(DialogType.PROFILE_EDITOR_LEAVE);
+			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_LEAVE);
 		}
 	}
 
@@ -241,13 +240,13 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		// leave without settings
-		if (type == DialogType.PROFILE_EDITOR_LEAVE) {
+		if (type == ConfirmDialog.PROFILE_EDITOR_LEAVE) {
 			finish();
 		}
 		// retry
-		else if (type == DialogType.PROFILE_EDITOR_ERROR) {
+		else if (type == ConfirmDialog.PROFILE_EDITOR_ERROR) {
 			updateUser();
 		}
 	}
@@ -284,8 +283,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	 */
 	public void onError(ErrorHandler.TwitterError err) {
 		String message = ErrorHandler.getErrorMessage(this, err);
-		confirmDialog.setMessage(message);
-		confirmDialog.show(DialogType.PROFILE_EDITOR_ERROR);
+		confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}
 

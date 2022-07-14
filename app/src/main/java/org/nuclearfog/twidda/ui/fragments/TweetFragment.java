@@ -28,8 +28,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
 	/**
 	 * Key to define what type of tweets should be loaded
-	 * possible values are {@link #TWEET_FRAG_HOME}, {@link #TWEET_FRAG_MENT}, {@link #TWEET_FRAG_TWEETS}, {@link #TWEET_FRAG_FAVORS}
-	 * {@link #TWEET_FRAG_ANSWER}, {@link #TWEET_FRAG_SEARCH}, {@link #TWEET_FRAG_LIST}
+	 * possible values are {@link #TWEET_FRAG_HOME,#TWEET_FRAG_MENT,#TWEET_FRAG_TWEETS,#TWEET_FRAG_FAVORS,#TWEET_FRAG_ANSWER,#TWEET_FRAG_SEARCH,#TWEET_FRAG_LIST}
 	 */
 	public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
 

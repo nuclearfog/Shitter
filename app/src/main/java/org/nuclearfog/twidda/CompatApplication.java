@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 
 /**
- * custom application class to initialize support for old android versions and proxy settings
+ * custom application class to to add support for Android devices below API 21
  *
  * @author nuclearfog
  */
@@ -18,12 +18,14 @@ public class CompatApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+
 		// enable support for vector drawables
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 			AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 		}
 
-		// check and enable TLS 1.2 support
+		// check if TLS 1.2 is supported
+		// enable experimental TLS 1.2 support
 		TLSSocketFactory.setSupportTLS();
 	}
 }

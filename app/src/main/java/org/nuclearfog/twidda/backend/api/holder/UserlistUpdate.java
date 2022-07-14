@@ -24,7 +24,7 @@ public class UserlistUpdate {
 	 * @param title       Title of the list
 	 * @param description short description of the list
 	 * @param isPublic    true if list should be public
-	 * @param listId      ID of the list to update or {@link UserlistUpdate#NEW_LIST} to create a new list
+	 * @param listId      ID of the list to update or {@link #NEW_LIST} to create a new list
 	 */
 	public UserlistUpdate(String title, String description, boolean isPublic, long listId) {
 		this.title = title;

@@ -34,7 +34,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 import java.util.regex.Pattern;
@@ -224,12 +223,12 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			}
 			// delete user list
 			else if (item.getItemId() == R.id.menu_delete_list) {
-				confirmDialog.show(DialogType.LIST_DELETE);
+				confirmDialog.show(ConfirmDialog.LIST_DELETE);
 			}
 			// follow user list
 			else if (item.getItemId() == R.id.menu_follow_list) {
 				if (userList.isFollowing()) {
-					confirmDialog.show(DialogType.LIST_UNFOLLOW);
+					confirmDialog.show(ConfirmDialog.LIST_UNFOLLOW);
 				} else {
 					listLoaderTask = new ListAction(this, userList.getId(), ListAction.FOLLOW);
 					listLoaderTask.execute();
@@ -276,16 +275,16 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		// delete user list
-		if (type == DialogType.LIST_DELETE) {
+		if (type == ConfirmDialog.LIST_DELETE) {
 			if (userList != null) {
 				listLoaderTask = new ListAction(this, userList.getId(), ListAction.DELETE);
 				listLoaderTask.execute();
 			}
 		}
 		// unfollow user list
-		else if (type == DialogType.LIST_UNFOLLOW) {
+		else if (type == ConfirmDialog.LIST_UNFOLLOW) {
 			if (userList != null) {
 				listLoaderTask = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
 				listLoaderTask.execute();

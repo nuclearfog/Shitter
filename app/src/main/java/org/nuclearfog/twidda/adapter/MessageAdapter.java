@@ -154,7 +154,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					if (position != NO_POSITION) {
 						DirectMessage message = data.get(position);
 						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.Action.ANSWER);
+							itemClickListener.onClick(message, OnMessageClickListener.ANSWER);
 						}
 					}
 				}
@@ -166,7 +166,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					if (position != NO_POSITION) {
 						DirectMessage message = data.get(position);
 						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.Action.DELETE);
+							itemClickListener.onClick(message, OnMessageClickListener.DELETE);
 						}
 					}
 				}
@@ -178,7 +178,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					if (position != NO_POSITION) {
 						DirectMessage message = data.get(position);
 						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.Action.PROFILE);
+							itemClickListener.onClick(message, OnMessageClickListener.PROFILE);
 						}
 					}
 				}
@@ -190,7 +190,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					if (position != NO_POSITION) {
 						DirectMessage message = data.get(position);
 						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.Action.MEDIA);
+							itemClickListener.onClick(message, OnMessageClickListener.MEDIA);
 						}
 					}
 				}
@@ -278,22 +278,32 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	public interface OnMessageClickListener extends OnTagClickListener {
 
 		/**
-		 * Actions performed by clicking the buttons
+		 * indicates that the "answer" button was clicked
 		 */
-		enum Action {
-			ANSWER,
-			DELETE,
-			PROFILE,
-			MEDIA
-		}
+		int ANSWER = 1;
+
+		/**
+		 * indicates that the "delete" button was clicked
+		 */
+		int DELETE = 10;
+
+		/**
+		 * indicates that the profile image was clicked
+		 */
+		int PROFILE = 100;
+
+		/**
+		 * indicates that the media button was clicked
+		 */
+		int MEDIA = 1000;
 
 		/**
 		 * called when a button was clicked
 		 *
 		 * @param message Message information
-		 * @param action  what button was clicked
+		 * @param action  what button was clicked {@link #ANSWER,#DELETE,#PROFILE,#MEDIA}
 		 */
-		void onClick(DirectMessage message, Action action);
+		void onClick(DirectMessage message, int action);
 
 		/**
 		 * called when the footer was clicked

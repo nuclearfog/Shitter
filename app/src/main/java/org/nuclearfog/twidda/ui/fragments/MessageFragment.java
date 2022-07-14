@@ -32,7 +32,6 @@ import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.activities.TweetActivity;
 import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
@@ -130,7 +129,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onClick(DirectMessage message, Action action) {
+	public void onClick(DirectMessage message, int action) {
 		if (!isRefreshing()) {
 			switch (action) {
 				case ANSWER:
@@ -142,7 +141,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 				case DELETE:
 					if (!confirmDialog.isShowing() && messageTask != null && messageTask.getStatus() != RUNNING) {
 						deleteId = message.getId();
-						confirmDialog.show(DialogType.MESSAGE_DELETE);
+						confirmDialog.show(ConfirmDialog.MESSAGE_DELETE);
 					}
 					break;
 
@@ -176,8 +175,8 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
-		if (type == DialogType.MESSAGE_DELETE) {
+	public void onConfirm(int type, boolean rememberChoice) {
+		if (type == ConfirmDialog.MESSAGE_DELETE) {
 			if (messageTask != null && messageTask.getStatus() != RUNNING) {
 				messageTask = new MessageLoader(this, MessageLoader.DEL, null, deleteId);
 				messageTask.execute();

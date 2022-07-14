@@ -25,7 +25,6 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
@@ -119,7 +118,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		} else if (title.isEmpty() && descr.isEmpty()) {
 			super.onBackPressed();
 		} else {
-			confirmDialog.show(DialogType.LIST_EDITOR_LEAVE);
+			confirmDialog.show(ConfirmDialog.LIST_EDITOR_LEAVE);
 		}
 	}
 
@@ -150,13 +149,13 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		// retry updating list
-		if (type == DialogType.LIST_EDITOR_ERROR) {
+		if (type == ConfirmDialog.LIST_EDITOR_ERROR) {
 			updateList();
 		}
 		// leave editor
-		else if (type == DialogType.LIST_EDITOR_LEAVE) {
+		else if (type == ConfirmDialog.LIST_EDITOR_LEAVE) {
 			finish();
 		}
 	}
@@ -185,8 +184,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	 */
 	public void onError(@Nullable ErrorHandler.TwitterError err) {
 		String message = ErrorHandler.getErrorMessage(this, err);
-		confirmDialog.setMessage(message);
-		confirmDialog.show(DialogType.LIST_EDITOR_ERROR);
+		confirmDialog.show(ConfirmDialog.LIST_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}
 

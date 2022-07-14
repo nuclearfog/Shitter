@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
@@ -16,39 +17,123 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * this dialog is to confirm for user action
+ * Custom alert dialog class to show error and warning messages to user
+ * and to ask to confirm actions
  *
  * @author nuclearfog
  */
 public class ConfirmDialog extends Dialog implements OnClickListener {
 
 	/**
-	 * types of dialogs, every dialog has its own message and title
+	 * setup a proxy error dialog
 	 */
-	public enum DialogType {
-		WRONG_PROXY,
-		DELETE_APP_DATA,
-		APP_LOG_OUT,
-		REMOVE_ACCOUNT,
-		PROXY_CONFIRM,
-		VIDEO_ERROR,
-		TWEET_DELETE,
-		TWEET_EDITOR_LEAVE,
-		TWEET_EDITOR_ERROR,
-		MESSAGE_DELETE,
-		MESSAGE_EDITOR_LEAVE,
-		MESSAGE_EDITOR_ERROR,
-		PROFILE_EDITOR_LEAVE,
-		PROFILE_EDITOR_ERROR,
-		PROFILE_UNFOLLOW,
-		PROFILE_BLOCK,
-		PROFILE_MUTE,
-		LIST_REMOVE_USER,
-		LIST_UNFOLLOW,
-		LIST_DELETE,
-		LIST_EDITOR_LEAVE,
-		LIST_EDITOR_ERROR
-	}
+	public static final int WRONG_PROXY = 601;
+
+	/**
+	 * show "delete app data" dialog
+	 */
+	public static final int DELETE_APP_DATA = 602;
+
+	/**
+	 * show "log out" dialog
+	 */
+	public static final int APP_LOG_OUT = 603;
+
+	/**
+	 * show "remove account" dialog
+	 */
+	public static final int REMOVE_ACCOUNT = 604;
+
+	/**
+	 * show "proxy bypass" dialog
+	 */
+	public static final int PROXY_CONFIRM = 605;
+
+	/**
+	 * show "video error" dialog
+	 */
+	public static final int VIDEO_ERROR = 606;
+
+	/**
+	 * show "delete Tweet?" dialog
+	 */
+	public static final int TWEET_DELETE = 607;
+
+	/**
+	 * show "discard tweet" dialog
+	 */
+	public static final int TWEET_EDITOR_LEAVE = 608;
+
+	/**
+	 * show "Tweet create error" dialog
+	 */
+	public static final int TWEET_EDITOR_ERROR = 609;
+
+	/**
+	 * show "delete directmessage" dialog
+	 */
+	public static final int MESSAGE_DELETE = 610;
+
+	/**
+	 * show "discard directmessage" dialog
+	 */
+	public static final int MESSAGE_EDITOR_LEAVE = 611;
+
+	/**
+	 * show "directmessage upload" error
+	 */
+	public static final int MESSAGE_EDITOR_ERROR = 612;
+
+	/**
+	 * show "discard profile changes" dialog
+	 */
+	public static final int PROFILE_EDITOR_LEAVE = 613;
+
+	/**
+	 * show "error profile update" dialog
+	 */
+	public static final int PROFILE_EDITOR_ERROR = 614;
+
+	/**
+	 * show "unfollow user" dialog
+	 */
+	public static final int PROFILE_UNFOLLOW = 615;
+
+	/**
+	 * show "block user" dialog
+	 */
+	public static final int PROFILE_BLOCK = 616;
+
+	/**
+	 * show "mute user" dialog
+	 */
+	public static final int PROFILE_MUTE = 617;
+
+	/**
+	 * show "remove user from list" dialog
+	 */
+	public static final int LIST_REMOVE_USER = 618;
+
+	/**
+	 * show "unfollow userlist" dialog
+	 */
+	public static final int LIST_UNFOLLOW = 619;
+
+	/**
+	 * show "delete userlsit" dialog
+	 */
+	public static final int LIST_DELETE = 620;
+
+	/**
+	 * show "discard changes" dialog
+	 */
+	public static final int LIST_EDITOR_LEAVE = 621;
+
+	/**
+	 * show "update userlist error" dialog
+	 */
+	public static final int LIST_EDITOR_ERROR = 622;
+
 
 	private TextView title, message, confirmDescr;
 	private CompoundButton confirmCheck;
@@ -83,61 +168,73 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 *
 	 * @param type Type of dialog to show
 	 */
-	public void show(DialogType type) {
+	public void show(int type) {
+		show(type, "");
+	}
+
+	/**
+	 * creates an alert dialog
+	 *
+	 * @param type Type of dialog to show
+	 * @param messageTxt override default message text
+	 */
+	public void show(int type, @NonNull String messageTxt) {
 		if (isShowing())
 			return;
 
 		// attach type to the view
 		confirm.setTag(type);
 
-		// default values
+		// default visibility values
 		int titleVis = View.GONE;
-		int titleTxt = R.string.info_error;
-		int messageTxt = R.string.confirm_unknown_error;
-		int confirmTxt = android.R.string.ok;
-		int confirmIcon = R.drawable.check;
 		int confirmVis = View.INVISIBLE;
-		int cancelTxt = android.R.string.cancel;
-		int cancelIcon = R.drawable.cross;
 		int cancelVis = View.VISIBLE;
+
+		// default resource values
+		int titleRes = R.string.info_error;
+		int messageRes = R.string.confirm_unknown_error;
+		int confirmRes = android.R.string.ok;
+		int confirmIconRes = R.drawable.check;
+		int cancelRes = android.R.string.cancel;
+		int cancelIconRes = R.drawable.cross;
 
 		switch (type) {
 			case MESSAGE_DELETE:
-				messageTxt = R.string.confirm_delete_message;
+				messageRes = R.string.confirm_delete_message;
 				break;
 
 			case WRONG_PROXY:
 				titleVis = View.VISIBLE;
-				messageTxt = R.string.error_wrong_connection_settings;
+				messageRes = R.string.error_wrong_connection_settings;
 				break;
 
 			case DELETE_APP_DATA:
-				messageTxt = R.string.confirm_delete_database;
+				messageRes = R.string.confirm_delete_database;
 				break;
 
 			case APP_LOG_OUT:
-				messageTxt = R.string.confirm_log_lout;
+				messageRes = R.string.confirm_log_lout;
 				break;
 
 			case VIDEO_ERROR:
 				titleVis = View.VISIBLE;
-				messageTxt = R.string.error_cant_load_video;
-				confirmIcon = 0;
-				confirmTxt = R.string.confirm_open_link;
+				messageRes = R.string.error_cant_load_video;
+				confirmIconRes = 0;
+				confirmRes = R.string.confirm_open_link;
 				cancelVis = View.GONE;
 				break;
 
 			case LIST_EDITOR_LEAVE:
 			case PROFILE_EDITOR_LEAVE:
-				messageTxt = R.string.confirm_discard;
+				messageRes = R.string.confirm_discard;
 				break;
 
 			case TWEET_EDITOR_LEAVE:
-				messageTxt = R.string.confirm_cancel_tweet;
+				messageRes = R.string.confirm_cancel_tweet;
 				break;
 
 			case MESSAGE_EDITOR_LEAVE:
-				messageTxt = R.string.confirm_cancel_message;
+				messageRes = R.string.confirm_cancel_message;
 				break;
 
 			case LIST_EDITOR_ERROR:
@@ -145,62 +242,66 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 			case TWEET_EDITOR_ERROR:
 			case PROFILE_EDITOR_ERROR:
 				titleVis = View.VISIBLE;
-				messageTxt = R.string.error_connection_failed;
-				confirmTxt = R.string.confirm_retry_button;
+				messageRes = R.string.error_connection_failed;
+				confirmRes = R.string.confirm_retry_button;
 				break;
 
 			case TWEET_DELETE:
-				messageTxt = R.string.confirm_delete_tweet;
+				messageRes = R.string.confirm_delete_tweet;
 				break;
 
 			case PROFILE_UNFOLLOW:
-				messageTxt = R.string.confirm_unfollow;
+				messageRes = R.string.confirm_unfollow;
 				break;
 
 			case PROFILE_BLOCK:
-				messageTxt = R.string.confirm_block;
+				messageRes = R.string.confirm_block;
 				break;
 
 			case PROFILE_MUTE:
-				messageTxt = R.string.confirm_mute;
+				messageRes = R.string.confirm_mute;
 				break;
 
 			case LIST_REMOVE_USER:
-				messageTxt = R.string.confirm_remove_user_from_list;
+				messageRes = R.string.confirm_remove_user_from_list;
 				break;
 
 			case LIST_UNFOLLOW:
-				messageTxt = R.string.confirm_unfollow_list;
+				messageRes = R.string.confirm_unfollow_list;
 				break;
 
 			case LIST_DELETE:
-				messageTxt = R.string.confirm_delete_list;
+				messageRes = R.string.confirm_delete_list;
 				break;
 
 			case REMOVE_ACCOUNT:
-				messageTxt = R.string.confirm_remove_account;
+				messageRes = R.string.confirm_remove_account;
 				break;
 
 			case PROXY_CONFIRM:
 				confirmVis = View.VISIBLE;
 				titleVis = View.VISIBLE;
-				titleTxt = R.string.dialog_confirm_warning;
-				messageTxt = R.string.dialog_warning_videoview;
+				titleRes = R.string.dialog_confirm_warning;
+				messageRes = R.string.dialog_warning_videoview;
 				break;
 		}
 		title.setVisibility(titleVis);
-		title.setText(titleTxt);
-		message.setText(messageTxt);
+		title.setText(titleRes);
 
 		cancel.setVisibility(cancelVis);
-		cancel.setText(cancelTxt);
-		cancel.setCompoundDrawablesWithIntrinsicBounds(cancelIcon, 0, 0, 0);
+		cancel.setText(cancelRes);
+		cancel.setCompoundDrawablesWithIntrinsicBounds(cancelIconRes, 0, 0, 0);
 
 		confirmCheck.setVisibility(confirmVis);
 		confirmDescr.setVisibility(confirmVis);
 
-		confirm.setText(confirmTxt);
-		confirm.setCompoundDrawablesWithIntrinsicBounds(confirmIcon, 0, 0, 0);
+		confirm.setText(confirmRes);
+		confirm.setCompoundDrawablesWithIntrinsicBounds(confirmIconRes, 0, 0, 0);
+
+		if (messageTxt.isEmpty())
+			message.setText(messageRes);
+		else
+			message.setText(messageTxt);
 
 		super.show();
 	}
@@ -210,8 +311,8 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public void onClick(View v) {
 		if (v.getId() == R.id.confirm_yes) {
 			Object tag = v.getTag();
-			if (listener != null && tag instanceof DialogType) {
-				DialogType type = (DialogType) tag;
+			if (listener != null && tag instanceof Integer) {
+				int type = (int) tag;
 				boolean remember = confirmCheck.getVisibility() == View.VISIBLE && confirmCheck.isChecked();
 				listener.onConfirm(type, remember);
 			}
@@ -229,25 +330,15 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	}
 
 	/**
-	 * set message text
-	 *
-	 * @param message message text
-	 */
-	public void setMessage(String message) {
-		this.message.setText(message);
-	}
-
-	/**
 	 * Alert dialog listener
 	 */
 	public interface OnConfirmListener {
 
 		/**
 		 * called when the positive button was clicked
-		 *
-		 * @param type           type of dialog
+		 *  @param type           type of dialog
 		 * @param rememberChoice true if choice should be remembered
 		 */
-		void onConfirm(DialogType type, boolean rememberChoice);
+		void onConfirm(int type, boolean rememberChoice);
 	}
 }

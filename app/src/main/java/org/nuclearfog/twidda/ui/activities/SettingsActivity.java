@@ -4,7 +4,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.OnClickListener;
 import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -283,7 +282,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (saveConnectionSettings()) {
 			super.onBackPressed();
 		} else {
-			confirmDialog.show(DialogType.WRONG_PROXY);
+			confirmDialog.show(ConfirmDialog.WRONG_PROXY);
 		}
 	}
 
@@ -316,9 +315,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		// confirm log out
-		if (type == DialogType.APP_LOG_OUT) {
+		if (type == ConfirmDialog.APP_LOG_OUT) {
 			settings.logout();
 			// remove account from database
 			AccountDatabase accountDB = new AccountDatabase(this);
@@ -327,12 +326,12 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			finish();
 		}
 		// confirm delete app data and cache
-		else if (type == DialogType.DELETE_APP_DATA) {
+		else if (type == ConfirmDialog.DELETE_APP_DATA) {
 			DatabaseAdapter.deleteDatabase(this);
 			setResult(RETURN_DATA_CLEARED);
 		}
 		// confirm leaving without saving proxy changes
-		else if (type == DialogType.WRONG_PROXY) {
+		else if (type == ConfirmDialog.WRONG_PROXY) {
 			// exit without saving proxy settings
 			finish();
 		}
@@ -343,11 +342,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public void onClick(View v) {
 		// delete database
 		if (v.getId() == R.id.delete_db) {
-			confirmDialog.show(DialogType.DELETE_APP_DATA);
+			confirmDialog.show(ConfirmDialog.DELETE_APP_DATA);
 		}
 		// logout from twitter
 		else if (v.getId() == R.id.logout) {
-			confirmDialog.show(DialogType.APP_LOG_OUT);
+			confirmDialog.show(ConfirmDialog.APP_LOG_OUT);
 		}
 		// set background color
 		else if (v.getId() == R.id.color_background) {

@@ -718,7 +718,7 @@ public class AppDatabase {
 	 *
 	 * @param user user information
 	 * @param db   SQLITE DB
-	 * @param mode SQLITE mode {@link SQLiteDatabase#CONFLICT_IGNORE} or {@link SQLiteDatabase#CONFLICT_REPLACE}
+	 * @param mode SQLITE mode {@link SQLiteDatabase#CONFLICT_IGNORE,SQLiteDatabase#CONFLICT_REPLACE}
 	 */
 	private void storeUser(User user, SQLiteDatabase db, int mode) {
 		int register = getUserRegister(db, user.getId());

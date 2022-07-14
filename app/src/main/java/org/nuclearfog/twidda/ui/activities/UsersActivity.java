@@ -41,8 +41,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	/**
 	 * type of users to get from twitter
-	 * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS},
-	 * {@link #USERLIST_FAVORIT}, {@link #USERLIST_EXCLUDED_USERS} or {@link #USERLIST_REQUESTS},
+	 * {@link #USERLIST_FRIENDS,#USERLIST_FOLLOWER,#USERLIST_RETWEETS,#USERLIST_FAVORIT,#USERLIST_EXCLUDED_USERS,#USERLIST_REQUESTS}
 	 */
 	public static final String KEY_USERDETAIL_MODE = "userlist_mode";
 

@@ -46,7 +46,6 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
@@ -341,7 +340,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		if (what == MEDIA_ERROR_UNKNOWN) {
-			confirmDialog.show(DialogType.VIDEO_ERROR);
+			confirmDialog.show(ConfirmDialog.VIDEO_ERROR);
 			return true;
 		}
 		return false;
@@ -376,8 +375,8 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
-		if (type == DialogType.VIDEO_ERROR) {
+	public void onConfirm(int type, boolean rememberChoice) {
+		if (type == ConfirmDialog.VIDEO_ERROR) {
 			Uri link = getIntent().getParcelableExtra(VIDEO_URI);
 			if (link != null) {
 				// open link in a browser

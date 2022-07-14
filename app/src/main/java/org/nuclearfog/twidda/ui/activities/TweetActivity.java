@@ -57,7 +57,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.LinkDialog;
 import org.nuclearfog.twidda.ui.fragments.TweetFragment;
@@ -333,7 +332,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		User author = clickedTweet.getAuthor();
 		// Delete tweet option
 		if (item.getItemId() == R.id.menu_tweet_delete) {
-			confirmDialog.show(DialogType.TWEET_DELETE);
+			confirmDialog.show(ConfirmDialog.TWEET_DELETE);
 		}
 		// hide tweet
 		else if (item.getItemId() == R.id.menu_tweet_hide) {
@@ -462,7 +461,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 						mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
 						startActivity(mediaIntent);
 					} else {
-						confirmDialog.show(DialogType.PROXY_CONFIRM);
+						confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
 					}
 				}
 				// open embedded gif link
@@ -519,16 +518,16 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		if (tweet != null) {
 			Tweet clickedTweet = tweet;
 			if (tweet.getEmbeddedTweet() != null) {
 				clickedTweet = tweet.getEmbeddedTweet();
 			}
-			if (type == DialogType.TWEET_DELETE) {
+			if (type == ConfirmDialog.TWEET_DELETE) {
 				statusAsync = new TweetAction(this, TweetAction.DELETE);
 				statusAsync.execute(clickedTweet.getId(), clickedTweet.getRetweetId());
-			} else if (type == DialogType.PROXY_CONFIRM) {
+			} else if (type == ConfirmDialog.PROXY_CONFIRM) {
 				settings.setIgnoreProxyWarning(rememberChoice);
 
 				Uri link = clickedTweet.getMediaUris()[0];

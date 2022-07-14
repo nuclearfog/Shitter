@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 
 import android.os.Bundle;
 import android.view.View;
@@ -101,14 +100,14 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	public void onAccountRemove(Account account) {
 		if (!dialog.isShowing()) {
 			selection = account;
-			dialog.show(DialogType.REMOVE_ACCOUNT);
+			dialog.show(ConfirmDialog.REMOVE_ACCOUNT);
 		}
 	}
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
-		if (type == DialogType.REMOVE_ACCOUNT) {
+	public void onConfirm(int type, boolean rememberChoice) {
+		if (type == ConfirmDialog.REMOVE_ACCOUNT) {
 			loginTask = new AccountLoader(this);
 			loginTask.execute(selection);
 		}

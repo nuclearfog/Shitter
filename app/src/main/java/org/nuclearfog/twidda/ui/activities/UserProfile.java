@@ -64,7 +64,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 import java.text.NumberFormat;
@@ -361,7 +360,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 						profileAsync = new UserAction(this, UserAction.ACTION_FOLLOW, user.getId());
 						profileAsync.execute();
 					} else {
-						confirmDialog.show(DialogType.PROFILE_UNFOLLOW);
+						confirmDialog.show(ConfirmDialog.PROFILE_UNFOLLOW);
 					}
 				}
 			}
@@ -372,7 +371,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 						profileAsync = new UserAction(this, UserAction.ACTION_UNMUTE, user.getId());
 						profileAsync.execute();
 					} else {
-						confirmDialog.show(DialogType.PROFILE_MUTE);
+						confirmDialog.show(ConfirmDialog.PROFILE_MUTE);
 					}
 				}
 			}
@@ -383,7 +382,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 						profileAsync = new UserAction(this, UserAction.ACTION_UNBLOCK, user.getId());
 						profileAsync.execute();
 					} else {
-						confirmDialog.show(DialogType.PROFILE_BLOCK);
+						confirmDialog.show(ConfirmDialog.PROFILE_BLOCK);
 					}
 				}
 			}
@@ -543,20 +542,20 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		if (user != null) {
 			// confirmed unfollowing user
-			if (type == DialogType.PROFILE_UNFOLLOW) {
+			if (type == ConfirmDialog.PROFILE_UNFOLLOW) {
 				profileAsync = new UserAction(this, UserAction.ACTION_UNFOLLOW, user.getId());
 				profileAsync.execute();
 			}
 			// confirmed blocking user
-			else if (type == DialogType.PROFILE_BLOCK) {
+			else if (type == ConfirmDialog.PROFILE_BLOCK) {
 				profileAsync = new UserAction(this, UserAction.ACTION_BLOCK, user.getId());
 				profileAsync.execute();
 			}
 			// confirmed muting user
-			else if (type == DialogType.PROFILE_MUTE) {
+			else if (type == ConfirmDialog.PROFILE_MUTE) {
 				profileAsync = new UserAction(this, UserAction.ACTION_MUTE, user.getId());
 				profileAsync.execute();
 			}

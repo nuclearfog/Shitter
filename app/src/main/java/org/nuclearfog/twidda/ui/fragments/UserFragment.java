@@ -24,7 +24,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.UserProfile;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
@@ -36,10 +35,10 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 	/**
 	 * key to set the type of user list to show
-	 * possible value types are {@link #USER_FRAG_FOLLOWER}, {@link #USER_FRAG_FOLLOWING}, {@link #USER_FRAG_RETWEET},
-	 * {@link #USER_FRAG_FAVORIT}, {@link #USER_FRAG_FAVORIT}, {@link #USER_FRAG_SEARCH}, {@link #USER_FRAG_LIST_SUBSCRIBER},
-	 * {@link #USER_FRAG_LIST_MEMBERS}, {@link #USER_FRAG_BLOCKED_USERS}, {@link #USER_FRAG_MUTED_USERS},
-	 * {@link #USER_FRAG_FOLLOW_INCOMING} and {@link #USER_FRAG_FOLLOW_OUTGOING}
+	 * possible value types are
+	 * {@link #USER_FRAG_FOLLOWER,#USER_FRAG_FOLLOWING,#USER_FRAG_RETWEET,#USER_FRAG_FAVORIT},
+	 * {@link #USER_FRAG_SEARCH,#USER_FRAG_LIST_SUBSCRIBER,#USER_FRAG_LIST_MEMBERS,#USER_FRAG_BLOCKED_USERS},
+	 * {@link #USER_FRAG_MUTED_USERS,#USER_FRAG_FOLLOW_INCOMING,#USER_FRAG_FOLLOW_OUTGOING}
 	 */
 	public static final String KEY_FRAG_USER_MODE = "user_mode";
 
@@ -244,14 +243,14 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	public void onDelete(String name) {
 		if (!confirmDialog.isShowing()) {
 			deleteUserName = name;
-			confirmDialog.show(DialogType.LIST_REMOVE_USER);
+			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
 		}
 	}
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
-		if (type == DialogType.LIST_REMOVE_USER) {
+	public void onConfirm(int type, boolean rememberChoice) {
+		if (type == ConfirmDialog.LIST_REMOVE_USER) {
 			if (listTask == null || listTask.getStatus() != RUNNING) {
 				listTask = new ListManager(requireContext(), id, ListManager.DEL_USER, deleteUserName, this);
 				listTask.execute();

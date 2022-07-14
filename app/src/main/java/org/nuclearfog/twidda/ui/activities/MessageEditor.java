@@ -27,7 +27,6 @@ import org.nuclearfog.twidda.backend.async.MessageUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
@@ -99,7 +98,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		if (receiver.getText().length() == 0 && message.getText().length() == 0 && holder.getMediaUri() == null) {
 			super.onBackPressed();
 		} else {
-			confirmDialog.show(DialogType.MESSAGE_EDITOR_LEAVE);
+			confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_LEAVE);
 		}
 	}
 
@@ -167,13 +166,13 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 
 	@Override
-	public void onConfirm(DialogType type, boolean rememberChoice) {
+	public void onConfirm(int type, boolean rememberChoice) {
 		// retry sending message
-		if (type == DialogType.MESSAGE_EDITOR_ERROR) {
+		if (type == ConfirmDialog.MESSAGE_EDITOR_ERROR) {
 			sendMessage();
 		}
 		// leave message editor
-		else if (type == DialogType.MESSAGE_EDITOR_LEAVE) {
+		else if (type == ConfirmDialog.MESSAGE_EDITOR_LEAVE) {
 			finish();
 		}
 	}
@@ -193,8 +192,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	 */
 	public void onError(@Nullable ErrorHandler.TwitterError error) {
 		String message = ErrorHandler.getErrorMessage(this, error);
-		confirmDialog.setMessage(message);
-		confirmDialog.show(DialogType.MESSAGE_EDITOR_ERROR);
+		confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}
 

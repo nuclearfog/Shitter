@@ -44,7 +44,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 	/**
 	 * key to define the type of the list
-	 * {@link #LIST_USER_OWNS} or {@link #LIST_USER_SUBSCR_TO}
+	 * {@link #LIST_USER_OWNS,#LIST_USER_SUBSCR_TO}
 	 */
 	public static final String KEY_FRAG_LIST_LIST_TYPE = "list_type";
 
