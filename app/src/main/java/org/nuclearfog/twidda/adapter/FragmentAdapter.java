@@ -53,8 +53,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	private ListFragment[] fragments;
 
 	/**
-	 * Initialize Fragment Adapter
-	 *
 	 * @param fManager Activity Fragment Manager
 	 */
 	public FragmentAdapter(FragmentManager fManager) {
@@ -96,16 +94,16 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * setup adapter for the home activity
 	 */
 	public void setupForHomePage() {
-		Bundle home_tl = new Bundle();
-		Bundle ment_tl = new Bundle();
-		home_tl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_HOME);
-		ment_tl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_MENT);
+		Bundle paramHomeTl = new Bundle();
+		Bundle paramMention = new Bundle();
+		paramHomeTl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_HOME);
+		paramMention.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_MENT);
 		fragments = new ListFragment[3];
 		fragments[0] = new TweetFragment();
 		fragments[1] = new TrendFragment();
 		fragments[2] = new TweetFragment();
-		fragments[0].setArguments(home_tl);
-		fragments[2].setArguments(ment_tl);
+		fragments[0].setArguments(paramHomeTl);
+		fragments[2].setArguments(paramMention);
 		notifyDataSetChanged();
 	}
 
@@ -115,20 +113,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param userId ID of the user
 	 */
 	public void setupProfilePage(long userId) {
+		Bundle paramTweet = new Bundle();
+		Bundle paramFavorite = new Bundle();
+		paramTweet.putLong(KEY_FRAG_TWEET_ID, userId);
+		paramFavorite.putLong(KEY_FRAG_TWEET_ID, userId);
+		paramTweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
+		paramFavorite.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
 		fragments = new ListFragment[2];
-
 		fragments[0] = new TweetFragment();
-		Bundle usr_tweet = new Bundle();
-		usr_tweet.putLong(KEY_FRAG_TWEET_ID, userId);
-		usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
-		fragments[0].setArguments(usr_tweet);
-
 		fragments[1] = new TweetFragment();
-		Bundle usr_favor = new Bundle();
-		usr_favor.putLong(KEY_FRAG_TWEET_ID, userId);
-		usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
-		fragments[1].setArguments(usr_favor);
-
+		fragments[0].setArguments(paramTweet);
+		fragments[1].setArguments(paramFavorite);
 		notifyDataSetChanged();
 	}
 
@@ -138,17 +133,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param search Search string
 	 */
 	public void setupSearchPage(String search) {
-		Bundle tweetSearch = new Bundle();
-		Bundle userSearch = new Bundle();
-		tweetSearch.putString(KEY_FRAG_TWEET_SEARCH, search);
-		userSearch.putString(KEY_FRAG_USER_SEARCH, search);
-		tweetSearch.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_SEARCH);
-		userSearch.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
+		Bundle paramTweetSearch = new Bundle();
+		Bundle paramUserSearch = new Bundle();
+		paramTweetSearch.putString(KEY_FRAG_TWEET_SEARCH, search);
+		paramUserSearch.putString(KEY_FRAG_USER_SEARCH, search);
+		paramTweetSearch.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_SEARCH);
+		paramUserSearch.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
 		fragments = new ListFragment[2];
 		fragments[0] = new TweetFragment();
 		fragments[1] = new UserFragment();
-		fragments[0].setArguments(tweetSearch);
-		fragments[1].setArguments(userSearch);
+		fragments[0].setArguments(paramTweetSearch);
+		fragments[1].setArguments(paramUserSearch);
 		notifyDataSetChanged();
 	}
 
@@ -159,22 +154,22 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param username screen name of the owner
 	 */
 	public void setupListPage(long userId, String username) {
-		Bundle userListParam = new Bundle();
-		Bundle subscriberParam = new Bundle();
+		Bundle paramUserlistOwnership = new Bundle();
+		Bundle paramUserlistSubscription = new Bundle();
 		if (userId > 0) {
-			userListParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
-			subscriberParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+			paramUserlistOwnership.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+			paramUserlistSubscription.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
 		} else {
-			userListParam.putString(KEY_FRAG_LIST_OWNER_NAME, username);
-			subscriberParam.putString(KEY_FRAG_LIST_OWNER_NAME, username);
+			paramUserlistOwnership.putString(KEY_FRAG_LIST_OWNER_NAME, username);
+			paramUserlistSubscription.putString(KEY_FRAG_LIST_OWNER_NAME, username);
 		}
-		userListParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
-		subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
+		paramUserlistOwnership.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
+		paramUserlistSubscription.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
 		fragments = new ListFragment[2];
 		fragments[0] = new UserListFragment();
 		fragments[1] = new UserListFragment();
-		fragments[0].setArguments(userListParam);
-		fragments[1].setArguments(subscriberParam);
+		fragments[0].setArguments(paramUserlistOwnership);
+		fragments[1].setArguments(paramUserlistSubscription);
 		notifyDataSetChanged();
 	}
 
@@ -185,23 +180,23 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param ownerOfList true if current user owns this list
 	 */
 	public void setupListContentPage(long listId, boolean ownerOfList) {
-		Bundle tweetParam = new Bundle();
-		Bundle userParam = new Bundle();
-		Bundle subscrParam = new Bundle();
-		tweetParam.putLong(KEY_FRAG_TWEET_ID, listId);
-		tweetParam.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
-		userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_MEMBERS);
-		userParam.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
-		userParam.putLong(KEY_FRAG_USER_ID_ALL, listId);
-		subscrParam.putLong(KEY_FRAG_USER_ID_ALL, listId);
-		subscrParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_SUBSCRIBER);
+		Bundle paramUserlistTl = new Bundle();
+		Bundle paramUserlistMember = new Bundle();
+		Bundle paramUserlistSubscriber = new Bundle();
+		paramUserlistTl.putLong(KEY_FRAG_TWEET_ID, listId);
+		paramUserlistTl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
+		paramUserlistMember.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_MEMBERS);
+		paramUserlistMember.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
+		paramUserlistMember.putLong(KEY_FRAG_USER_ID_ALL, listId);
+		paramUserlistSubscriber.putLong(KEY_FRAG_USER_ID_ALL, listId);
+		paramUserlistSubscriber.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_SUBSCRIBER);
 		fragments = new ListFragment[3];
 		fragments[0] = new TweetFragment();
 		fragments[1] = new UserFragment();
 		fragments[2] = new UserFragment();
-		fragments[0].setArguments(tweetParam);
-		fragments[1].setArguments(userParam);
-		fragments[2].setArguments(subscrParam);
+		fragments[0].setArguments(paramUserlistTl);
+		fragments[1].setArguments(paramUserlistMember);
+		fragments[2].setArguments(paramUserlistSubscriber);
 		notifyDataSetChanged();
 	}
 
@@ -209,16 +204,15 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * setup adapter for a page of muted / blocked users
 	 */
 	public void setupMuteBlockPage() {
-		Bundle paramMute = new Bundle();
-		Bundle paramBlock = new Bundle();
-		paramMute.putInt(KEY_FRAG_USER_MODE, USER_FRAG_MUTED_USERS);
-		paramBlock.putInt(KEY_FRAG_USER_MODE, USER_FRAG_BLOCKED_USERS);
-
+		Bundle paramMuteList = new Bundle();
+		Bundle paramBlockList = new Bundle();
+		paramMuteList.putInt(KEY_FRAG_USER_MODE, USER_FRAG_MUTED_USERS);
+		paramBlockList.putInt(KEY_FRAG_USER_MODE, USER_FRAG_BLOCKED_USERS);
 		fragments = new ListFragment[2];
 		fragments[0] = new UserFragment();
 		fragments[1] = new UserFragment();
-		fragments[0].setArguments(paramMute);
-		fragments[1].setArguments(paramBlock);
+		fragments[0].setArguments(paramMuteList);
+		fragments[1].setArguments(paramBlockList);
 		notifyDataSetChanged();
 	}
 
@@ -230,7 +224,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		Bundle paramFollower = new Bundle();
 		paramFollowing.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOW_INCOMING);
 		paramFollower.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOW_OUTGOING);
-
 		fragments = new ListFragment[2];
 		fragments[0] = new UserFragment();
 		fragments[1] = new UserFragment();
@@ -245,12 +238,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param userId ID of the user
 	 */
 	public void setupFollowingPage(long userId) {
-		Bundle userParam = new Bundle();
-		userParam.putLong(KEY_FRAG_USER_ID_ALL, userId);
-		userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING);
+		Bundle paramFollowing = new Bundle();
+		paramFollowing.putLong(KEY_FRAG_USER_ID_ALL, userId);
+		paramFollowing.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
-		fragments[0].setArguments(userParam);
+		fragments[0].setArguments(paramFollowing);
 		notifyDataSetChanged();
 	}
 
@@ -260,12 +253,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param userId ID of the user
 	 */
 	public void setupFollowerPage(long userId) {
-		Bundle userParam = new Bundle();
-		userParam.putLong(KEY_FRAG_USER_ID_ALL, userId);
-		userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER);
+		Bundle paramFollower = new Bundle();
+		paramFollower.putLong(KEY_FRAG_USER_ID_ALL, userId);
+		paramFollower.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
-		fragments[0].setArguments(userParam);
+		fragments[0].setArguments(paramFollower);
 		notifyDataSetChanged();
 	}
 
@@ -275,12 +268,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param tweetId ID of the tweet
 	 */
 	public void setupRetweeterPage(long tweetId) {
-		Bundle userParam = new Bundle();
-		userParam.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
-		userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
+		Bundle paramRetweeter = new Bundle();
+		paramRetweeter.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
+		paramRetweeter.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
-		fragments[0].setArguments(userParam);
+		fragments[0].setArguments(paramRetweeter);
 		notifyDataSetChanged();
 	}
 
@@ -290,12 +283,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param tweetId ID of the tweet
 	 */
 	public void setFavoriterPage(long tweetId) {
-		Bundle userParam = new Bundle();
-		userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FAVORIT);
-		userParam.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
+		Bundle paramFavoriter = new Bundle();
+		paramFavoriter.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FAVORIT);
+		paramFavoriter.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
-		fragments[0].setArguments(userParam);
+		fragments[0].setArguments(paramFavoriter);
 		notifyDataSetChanged();
 	}
 

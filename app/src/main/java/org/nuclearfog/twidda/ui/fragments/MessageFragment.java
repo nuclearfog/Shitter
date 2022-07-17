@@ -7,7 +7,7 @@ import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUER
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -30,7 +30,7 @@ import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.activities.TweetActivity;
-import org.nuclearfog.twidda.ui.activities.UserProfile;
+import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
@@ -146,7 +146,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 					break;
 
 				case PROFILE:
-					Intent profile = new Intent(requireContext(), UserProfile.class);
+					Intent profile = new Intent(requireContext(), ProfileActivity.class);
 					profile.putExtra(KEY_PROFILE_DATA, message.getSender());
 					startActivity(profile);
 					break;

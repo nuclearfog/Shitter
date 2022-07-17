@@ -422,8 +422,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// open profile of the tweet author
 			else if (v.getId() == R.id.tweet_profile) {
-				Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-				profile.putExtra(UserProfile.KEY_PROFILE_DATA, clickedTweet.getAuthor());
+				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
+				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, clickedTweet.getAuthor());
 				startActivity(profile);
 			}
 			// open replied tweet
@@ -475,8 +475,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// go to user retweeting this tweet
 			else if (v.getId() == R.id.tweet_retweeter_reference) {
-				Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-				profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getAuthor());
+				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
+				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, tweet.getAuthor());
 				startActivity(profile);
 			}
 		}

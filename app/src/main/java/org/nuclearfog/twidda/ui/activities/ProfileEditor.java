@@ -5,7 +5,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
-import static org.nuclearfog.twidda.ui.activities.UserProfile.TOOLBAR_TRANSPARENCY;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.TOOLBAR_TRANSPARENCY;
 
 import android.content.Context;
 import android.content.Intent;

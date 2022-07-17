@@ -4,8 +4,8 @@ import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUER
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DATA;
-import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DISABLE_RELOAD;
 import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_LIST_ID;
 import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_NAME;
 
@@ -24,7 +24,7 @@ import org.nuclearfog.twidda.ui.activities.MessageActivity;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.activities.TweetActivity;
 import org.nuclearfog.twidda.ui.activities.TweetEditor;
-import org.nuclearfog.twidda.ui.activities.UserProfile;
+import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistsActivity;
 
@@ -134,7 +134,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 					User user = mTwitter.showUser(path);
 					data.putSerializable(KEY_PROFILE_DATA, user);
 					data.putBoolean(KEY_PROFILE_DISABLE_RELOAD, true);
-					dataHolder = new DataHolder(data, UserProfile.class);
+					dataHolder = new DataHolder(data, ProfileActivity.class);
 				} else {
 					String username = '@' + path.substring(0, path.indexOf('/'));
 					// show tweet

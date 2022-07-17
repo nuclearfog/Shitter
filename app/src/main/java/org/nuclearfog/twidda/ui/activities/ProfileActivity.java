@@ -76,7 +76,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener,
+public class ProfileActivity extends AppCompatActivity implements OnClickListener, OnTagClickListener,
 		OnTabSelectedListener, OnConfirmListener, Callback {
 
 	/**
@@ -584,7 +584,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 	public void onSuccess() {
 		// setup toolbar background
 		if (settings.toolbarOverlapEnabled()) {
-			AppStyles.setToolbarBackground(UserProfile.this, bannerImage, toolbarBackground);
+			AppStyles.setToolbarBackground(ProfileActivity.this, bannerImage, toolbarBackground);
 		}
 	}
 

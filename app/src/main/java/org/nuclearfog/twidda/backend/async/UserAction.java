@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
-import org.nuclearfog.twidda.ui.activities.UserProfile;
+import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  * This background task loads profile information about a twitter user and take actions
  *
  * @author nuclearfog
- * @see UserProfile
+ * @see ProfileActivity
  */
 public class UserAction extends AsyncTask<Void, User, Relation> {
 
@@ -63,7 +63,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 
 
 	private ErrorHandler.TwitterError twException;
-	private WeakReference<UserProfile> weakRef;
+	private WeakReference<ProfileActivity> weakRef;
 	private Twitter twitter;
 	private FilterDatabase filterDatabase;
 	private AppDatabase appDB;
@@ -74,7 +74,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 	 * @param activity Callback to return the result
 	 * @param userId   ID of the twitter user
 	 */
-	public UserAction(UserProfile activity, int action, long userId) {
+	public UserAction(ProfileActivity activity, int action, long userId) {
 		super();
 		this.weakRef = new WeakReference<>(activity);
 		twitter = Twitter.get(activity);
@@ -166,7 +166,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 
 	@Override
 	protected void onProgressUpdate(User[] users) {
-		UserProfile activity = weakRef.get();
+		ProfileActivity activity = weakRef.get();
 		if (activity != null) {
 			activity.setUser(users[0]);
 		}
@@ -175,7 +175,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 
 	@Override
 	protected void onPostExecute(Relation relation) {
-		UserProfile activity = weakRef.get();
+		ProfileActivity activity = weakRef.get();
 		if (activity != null) {
 			if (relation != null) {
 				activity.onAction(relation);

@@ -158,7 +158,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				tablayout.setupWithViewPager(pager);
 				tablayout.addOnTabSelectedListener(this);
 				AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
-				toolbar.setTitle("");
+				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
 				break;
 
 			case USERLIST_REQUESTS:
@@ -167,7 +167,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				tablayout.setupWithViewPager(pager);
 				tablayout.addOnTabSelectedListener(this);
 				AppStyles.setTabIcons(tablayout, settings, R.array.user_requests_icon);
-				toolbar.setTitle("");
+				toolbar.setTitle(R.string.menu_toolbar_request);
 				break;
 		}
 		setSupportActionBar(toolbar);

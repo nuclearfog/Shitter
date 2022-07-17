@@ -242,4 +242,6 @@
     <string name="directmessage_media_button">Medienanhang</string>
     <string name="error_invalid_media">Ungültige Mediendatei!</string>
 	<string name="menu_follow_requests">Anfragen</string>
+	<string name="menu_toolbar_excluded_users">Blocklisten</string>
+    <string name="menu_toolbar_request">Follow Anfragen</string>
 </resources>

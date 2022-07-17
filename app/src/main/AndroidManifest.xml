@@ -62,7 +62,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".ui.activities.UserProfile"
+            android:name=".ui.activities.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

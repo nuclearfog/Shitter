@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_ID;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		// open home profile
 		if (item.getItemId() == R.id.action_profile) {
-			Intent user = new Intent(this, UserProfile.class);
+			Intent user = new Intent(this, ProfileActivity.class);
 			user.putExtra(KEY_PROFILE_ID, settings.getCurrentUserId());
 			startActivity(user);
 		}

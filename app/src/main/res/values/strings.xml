@@ -139,6 +139,8 @@
     <string name="menu_tweet_copy_text">Text</string>
     <string name="menu_media_link">Media link</string>
     <string name="menu_tweet_copy_link">Tweet link</string>
+    <string name="menu_toolbar_request">Follow requests</string>
+    <string name="menu_toolbar_excluded_users">Blocklists</string>
 
     <!--dialog strings-->
     <string name="dialog_link_image_preview">Link preview image</string>

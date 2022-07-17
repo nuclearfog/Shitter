@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.ui.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.backend.async.UserLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.ui.activities.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.backend.async.UserLoader;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
-import org.nuclearfog.twidda.ui.activities.UserProfile;
+import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
@@ -201,8 +201,8 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == REQ_USER_UPDATE && resultCode == UserProfile.RETURN_USER_UPDATED && data != null) {
-			Object result = data.getSerializableExtra(UserProfile.KEY_USER_UPDATE);
+		if (requestCode == REQ_USER_UPDATE && resultCode == ProfileActivity.RETURN_USER_UPDATED && data != null) {
+			Object result = data.getSerializableExtra(ProfileActivity.KEY_USER_UPDATE);
 			if (result instanceof User) {
 				User update = (User) result;
 				adapter.updateUser(update);
@@ -222,7 +222,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	@Override
 	public void onUserClick(User user) {
 		if (!isRefreshing()) {
-			Intent intent = new Intent(requireContext(), UserProfile.class);
+			Intent intent = new Intent(requireContext(), ProfileActivity.class);
 			intent.putExtra(KEY_PROFILE_DATA, user);
 			startActivityForResult(intent, REQ_USER_UPDATE);
 		}
