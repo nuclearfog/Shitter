@@ -120,7 +120,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int LIST_UNFOLLOW = 619;
 
 	/**
-	 * show "delete userlsit" dialog
+	 * show "delete userlist" dialog
 	 */
 	public static final int LIST_DELETE = 620;
 

@@ -61,7 +61,7 @@ public class UserlistUpdate {
 	}
 
 	/**
-	 * check if list is visible for everone
+	 * check if list is public
 	 *
 	 * @return true if list is public
 	 */

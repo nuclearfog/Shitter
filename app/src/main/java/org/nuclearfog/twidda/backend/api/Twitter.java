@@ -239,7 +239,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			Response response = post(REQUEST_TOKEN, new ArrayList<>());
 			if (response.code() == 200 && response.body() != null) {
 				String res = response.body().string();
-				// extrect oauth_token from url
+				// extract oauth_token from url
 				Uri uri = Uri.parse(AUTHENTICATE + "?" + res);
 				return uri.getQueryParameter("oauth_token");
 			}
@@ -262,7 +262,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			Response response = post(OAUTH_VERIFIER, params);
 			if (response.code() == 200 && response.body() != null) {
 				String res = response.body().string();
-				// extrect tokens from link
+				// extract tokens from link
 				Uri uri = Uri.parse(OAUTH_VERIFIER + "?" + res);
 				settings.setAccessToken(uri.getQueryParameter("oauth_token"));
 				settings.setTokenSecret(uri.getQueryParameter("oauth_token_secret"));
@@ -493,7 +493,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 * get relationship information to an user
 	 *
 	 * @param userId ID of the user
-	 * @return relationship infirmation
+	 * @return relationship information
 	 */
 	public Relation getRelationToUser(long userId) throws TwitterException {
 		List<String> params = new ArrayList<>();
@@ -568,7 +568,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	}
 
 	/**
-	 * unclock specific user
+	 * unblock specific user
 	 *
 	 * @param userId ID of the user
 	 * @return updated user information
@@ -1241,7 +1241,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	}
 
 	/**
-	 * upload medida file to twitter and generate a media ID
+	 * upload media file to twitter and generate a media ID
 	 *
 	 * @param mediaStream inputstream with MIME type of the media
 	 * @return media ID
@@ -1267,8 +1267,8 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			Response response = post(MEDIA_UPLOAD, params);
 			if (response.code() < 200 || response.code() >= 300 || response.body() == null)
 				throw new TwitterException(response);
-			JSONObject respone = new JSONObject(response.body().string());
-			final long mediaId = Long.parseLong(respone.getString("media_id_string"));
+			JSONObject jsonResponse = new JSONObject(response.body().string());
+			final long mediaId = Long.parseLong(jsonResponse.getString("media_id_string"));
 
 			// step 2 APPEND
 			int segmentIndex = 0;
@@ -1783,7 +1783,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 *
 	 * @param endpoint endpoint url
 	 * @param params   additional http parameters
-	 * @return http resonse
+	 * @return http response
 	 */
 	private Response post(String endpoint, List<String> params) throws IOException {
 		RequestBody body = RequestBody.create(TYPE_TEXT, "");
@@ -1795,7 +1795,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 *
 	 * @param endpoint endpoint url
 	 * @param params   additional http parameters
-	 * @return http resonse
+	 * @return http response
 	 */
 	@SuppressWarnings("SameParameterValue")
 	private Response post(String endpoint, List<String> params, JSONObject json) throws IOException {
@@ -1809,7 +1809,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 * @param endpoint    endpoint url
 	 * @param params      additional http parameters
 	 * @param enableChunk true to enable file chunk
-	 * @return http resonse
+	 * @return http response
 	 */
 	private Response post(String endpoint, List<String> params, InputStream is, String addToKey, boolean enableChunk) throws IOException {
 		RequestBody data = new RequestBody() {

@@ -30,7 +30,7 @@ public class TweetV1 implements Tweet {
 	public static final String EXT_MODE = "tweet_mode=extended";
 
 	/**
-	 * query parameter to include ID of the reteet if available
+	 * query parameter to include ID of the retweet if available
 	 */
 	public static final String INCL_RT_ID = "include_my_retweet=true";
 

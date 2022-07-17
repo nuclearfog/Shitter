@@ -69,37 +69,37 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	public static final String ENABLE_VIDEO_CONTROLS = "enable_controls";
 
 	/**
-	 * playback status marks that the player isn't initialized yet
+	 * playback status used if player is idle
 	 */
 	private static final int IDLE = -1;
 
 	/**
-	 * playback status marks that the player currently plays a video
+	 * playback status used for "play" mode
 	 */
 	private static final int PLAY = 1;
 
 	/**
-	 * playback status marks that the player has been paused
+	 * playback status used for "pause" mode
 	 */
 	private static final int PAUSE = 2;
 
 	/**
-	 * playback status marks that the player is fast forwarding
+	 * playback status used for "forward" mode
 	 */
 	private static final int FORWARD = 3;
 
 	/**
-	 * playback status marks that the player is fast backwarding
+	 * playback status used for "backward" mode
 	 */
 	private static final int BACKWARD = 4;
 
 	/**
-	 * refresh time for video progress updatein milliseconds
+	 * refresh time for video progress update in milliseconds
 	 */
 	private static final int PROGRESS_UPDATE = 1000;
 
 	/**
-	 * speed factor for fast forward or fast backward
+	 * speed ratio for "backward" and "forward"
 	 */
 	private static final int SPEED_FACTOR = 6;
 
@@ -116,7 +116,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	private ViewGroup controlPanel;
 
 	private boolean enableVideoExtras;
-	private int playstatus = IDLE;
+	private int playStatus = IDLE;
 
 
 	@Override
@@ -192,7 +192,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	protected void onStop() {
 		super.onStop();
 		if (enableVideoExtras) {
-			playstatus = PAUSE;
+			playStatus = PAUSE;
 			setPlayPauseButton();
 			videoView.pause();
 		}
@@ -213,14 +213,14 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 		if (v.getId() == R.id.controller_play) {
 			if (!videoView.isPlaying())
 				videoView.start();
-			playstatus = PLAY;
+			playStatus = PLAY;
 			setPlayPauseButton();
 		}
 		// pause video
 		if (v.getId() == R.id.controller_pause) {
 			if (videoView.isPlaying())
 				videoView.pause();
-			playstatus = PAUSE;
+			playStatus = PAUSE;
 			setPlayPauseButton();
 		}
 		// open link with another app
@@ -241,30 +241,30 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	public boolean onTouch(View v, MotionEvent event) {
 		// fast backward
 		if (v.getId() == R.id.controller_backward) {
-			if (playstatus == PAUSE)
+			if (playStatus == PAUSE)
 				return false;
 			if (event.getAction() == ACTION_DOWN) {
-				playstatus = BACKWARD;
+				playStatus = BACKWARD;
 				videoView.pause();
 				return true;
 			}
 			if (event.getAction() == ACTION_UP) {
-				playstatus = PLAY;
+				playStatus = PLAY;
 				videoView.start();
 				return true;
 			}
 		}
 		// fast forward
 		else if (v.getId() == R.id.controller_forward) {
-			if (playstatus == PAUSE)
+			if (playStatus == PAUSE)
 				return false;
 			if (event.getAction() == ACTION_DOWN) {
-				playstatus = FORWARD;
+				playStatus = FORWARD;
 				videoView.pause();
 				return true;
 			}
 			if (event.getAction() == ACTION_UP) {
-				playstatus = PLAY;
+				playStatus = PLAY;
 				videoView.start();
 				return true;
 			}
@@ -300,13 +300,13 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	public void onPrepared(MediaPlayer mp) {
 		// enable controls for video
 		if (enableVideoExtras) {
-			if (playstatus == IDLE) {
-				playstatus = PLAY;
+			if (playStatus == IDLE) {
+				playStatus = PLAY;
 				video_progress.setMax(mp.getDuration());
 				duration.setText(StringTools.formatMediaTime(mp.getDuration()));
 				mp.setOnInfoListener(this);
 			}
-			if (playstatus == PLAY) {
+			if (playStatus == PLAY) {
 				int videoPos = video_progress.getProgress();
 				mp.seekTo(videoPos);
 				mp.start();
@@ -349,7 +349,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 	@Override
 	public void onCompletion(MediaPlayer mp) {
-		playstatus = PAUSE;
+		playStatus = PAUSE;
 		setPlayPauseButton();
 		video_progress.setProgress(0);
 	}
@@ -402,7 +402,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	 * set play pause button
 	 */
 	private void setPlayPauseButton() {
-		if (playstatus == PAUSE || playstatus == IDLE) {
+		if (playStatus == PAUSE || playStatus == IDLE) {
 			play.setVisibility(VISIBLE);
 			pause.setVisibility(INVISIBLE);
 		} else {
@@ -416,7 +416,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	 */
 	public void updateSeekBar() {
 		int videoPos = video_progress.getProgress();
-		switch (playstatus) {
+		switch (playStatus) {
 			case PLAY:
 				video_progress.setProgress(videoView.getCurrentPosition());
 				break;

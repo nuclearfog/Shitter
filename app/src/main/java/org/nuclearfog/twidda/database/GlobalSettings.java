@@ -475,7 +475,7 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * check if linke preview is enabled
+	 * check if link preview is enabled
 	 */
 	public boolean linkPreviewEnabled() {
 		return linkPreview;

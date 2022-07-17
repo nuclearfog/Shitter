@@ -117,7 +117,7 @@ public final class StringTools {
 	}
 
 	/**
-	 * unescapte html based text
+	 * un-escape html based text
 	 *
 	 * @param text text containing html escapes
 	 * @return unescaped text

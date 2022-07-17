@@ -138,7 +138,7 @@ public class ProfileUpdate {
 	/**
 	 * initialize inputstreams of the image files
 	 *
-	 * @return true if initialization succeded
+	 * @return true if initialization finished without any error
 	 */
 	public boolean prepare(ContentResolver resolver) {
 		try {

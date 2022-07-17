@@ -20,7 +20,7 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
 /**
- * Create Picasso instance with proxy connection and TLS 1.2 support for pre Lollipo devices
+ * Create Picasso instance with proxy connection and TLS 1.2 support for pre Lollipop devices
  *
  * @author nuclearfog
  */

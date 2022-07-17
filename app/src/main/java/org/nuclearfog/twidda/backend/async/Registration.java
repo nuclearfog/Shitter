@@ -82,7 +82,6 @@ public class Registration extends AsyncTask<String, Void, String> {
 					activity.connect(result);
 				}
 			}
-			// notify when an error occured
 			else {
 				activity.onError(exception);
 			}
