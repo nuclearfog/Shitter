@@ -2,8 +2,8 @@
 
 # Lightweight Twitter app for Android 4.1+
 
-
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](https://github.com/nuclearfog/Shitter/releases/latest/download/SH1TT3R.apk)
+<!-- please change the hardcoded links to match your repository name -->
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](../../releases/latest/download/SH1TT3R.apk)
 ![](https://img.shields.io/github/downloads/nuclearfog/Shitter/total)
 
 
@@ -26,14 +26,14 @@
 
 ## How to build
 
-You can import this project with Android Studio. To get access to the Twitter API, you have to apply for a developer account. For more information visit <a href="https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api">Twitter Developer Platform</a>. Add your API keys to this <a href="https://github.com/nuclearfog/Shitter/blob/master/app/src/main/java/org/nuclearfog/twidda/backend/utils/Tokens.java">file</a>.
+You can import this project with Android Studio. To get access to the Twitter API, you have to apply for a developer account. For more information visit <a href="https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api">Twitter Developer Platform</a>. Add your oauth 1.0 keys to this [file](app/src/main/java/org/nuclearfog/twidda/backend/utils/Tokens.java).
+
 
 
 ## Information
 
-The API keys of all releases are my property and only intended for this app! Please check the Twitter rules <a href="https://support.twitter.com/articles/18311-the-twitter-rules">here</a> and <a href="https://help.twitter.com/rules-and-policies/twitter-api">here</a>.
-
-If you have any questions, feel free to open a <a href="https://github.com/nuclearfog/Shitter/discussions">discussion</a>. If you have found a bug, please open an issue.
+App releases may contain private API keys belonging to the repository owner. Please check the Twitter rules <a href="https://support.twitter.com/articles/18311-the-twitter-rules">here</a> and <a href="https://help.twitter.com/rules-and-policies/twitter-api">here</a>.
+If you have any questions or if you have found a bug, please open an issue.
 
 
 ## 3rd party libraries and licenses
