@@ -10,10 +10,10 @@ import androidx.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.api.holder.MediaStream;
-import org.nuclearfog.twidda.backend.api.holder.ProfileUpdate;
-import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
-import org.nuclearfog.twidda.backend.api.holder.UserlistUpdate;
+import org.nuclearfog.twidda.backend.api.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.api.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.api.update.TweetUpdate;
+import org.nuclearfog.twidda.backend.api.update.UserlistUpdate;
 import org.nuclearfog.twidda.backend.api.impl.DirectmessageV1;
 import org.nuclearfog.twidda.backend.api.impl.LocationV1;
 import org.nuclearfog.twidda.backend.api.impl.RelationV1;
@@ -1243,21 +1243,21 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	/**
 	 * upload media file to twitter and generate a media ID
 	 *
-	 * @param mediaStream inputstream with MIME type of the media
+	 * @param mediaUpdate inputstream with MIME type of the media
 	 * @return media ID
 	 */
-	public long uploadMedia(MediaStream mediaStream) throws TwitterException {
+	public long uploadMedia(MediaUpdate mediaUpdate) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		boolean enableChunk;
 		try {
 			// step 1 INIT
 			params.add("command=INIT");
-			params.add("media_type=" + mediaStream.getMimeType());
-			params.add("total_bytes=" + mediaStream.available());
-			if (mediaStream.getMimeType().startsWith("video/")) {
+			params.add("media_type=" + mediaUpdate.getMimeType());
+			params.add("total_bytes=" + mediaUpdate.available());
+			if (mediaUpdate.getMimeType().startsWith("video/")) {
 				params.add("media_category=tweet_video");
 				enableChunk = true;
-			} else if (mediaStream.getMimeType().startsWith("image/gif")) {
+			} else if (mediaUpdate.getMimeType().startsWith("image/gif")) {
 				params.add("media_category=tweet_gif");
 				enableChunk = true;
 			} else {
@@ -1272,12 +1272,12 @@ public class Twitter implements GlobalSettings.SettingsListener {
 
 			// step 2 APPEND
 			int segmentIndex = 0;
-			while (mediaStream.available() > 0) {
+			while (mediaUpdate.available() > 0) {
 				params.clear();
 				params.add("command=APPEND");
 				params.add("segment_index=" + segmentIndex++);
 				params.add("media_id=" + mediaId);
-				response = post(MEDIA_UPLOAD, params, mediaStream.getStream(), "media", enableChunk);
+				response = post(MEDIA_UPLOAD, params, mediaUpdate.getStream(), "media", enableChunk);
 				if (response.code() < 200 || response.code() >= 300)
 					throw new TwitterException(response);
 			}
@@ -1304,7 +1304,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 * @param link link to the image
 	 * @return image bitmap
 	 */
-	public MediaStream downloadImage(String link) throws TwitterException {
+	public MediaUpdate downloadImage(String link) throws TwitterException {
 		try {
 			// this type of link requires authentication
 			if (link.startsWith(DOWNLOAD)) {
@@ -1314,7 +1314,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 					if (type != null) {
 						String mime = type.toString();
 						InputStream stream = response.body().byteStream();
-						return new MediaStream(stream, mime);
+						return new MediaUpdate(stream, mime);
 					}
 				}
 				throw new TwitterException(response);
@@ -1328,7 +1328,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 					if (type != null) {
 						String mime = type.toString();
 						InputStream stream = response.body().byteStream();
-						return new MediaStream(stream, mime);
+						return new MediaUpdate(stream, mime);
 					}
 				}
 				throw new TwitterException(response);

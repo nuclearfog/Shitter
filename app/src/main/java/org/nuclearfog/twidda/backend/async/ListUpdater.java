@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.api.holder.UserlistUpdate;
+import org.nuclearfog.twidda.backend.api.update.UserlistUpdate;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.UserlistEditor;
 

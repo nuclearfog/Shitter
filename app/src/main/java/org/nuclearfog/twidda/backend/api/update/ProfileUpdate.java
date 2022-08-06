@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.holder;
+package org.nuclearfog.twidda.backend.api.update;
 
 import android.content.ContentResolver;
 import android.content.Context;

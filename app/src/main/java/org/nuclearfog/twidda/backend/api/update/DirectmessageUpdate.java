@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.holder;
+package org.nuclearfog.twidda.backend.api.update;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -20,7 +20,7 @@ import java.io.InputStream;
 public class DirectmessageUpdate {
 
 	private Uri uri;
-	private MediaStream mediaStream;
+	private MediaUpdate mediaUpdate;
 	private String name = "";
 	private String text = "";
 
@@ -63,8 +63,8 @@ public class DirectmessageUpdate {
 	 * @return input stream
 	 */
 	@Nullable
-	public MediaStream getMediaStream() {
-		return mediaStream;
+	public MediaUpdate getMediaUpdate() {
+		return mediaUpdate;
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class DirectmessageUpdate {
 			String mimeType = resolver.getType(uri);
 			InputStream fileStream = resolver.openInputStream(uri);
 			if (fileStream != null && mimeType != null && fileStream.available() > 0) {
-				mediaStream = new MediaStream(fileStream, mimeType);
+				mediaUpdate = new MediaUpdate(fileStream, mimeType);
 				return true;
 			}
 		} catch (IOException e) {
@@ -124,14 +124,14 @@ public class DirectmessageUpdate {
 	 * close inputstream of media file
 	 */
 	public void close() {
-		if (mediaStream != null) {
-			mediaStream.close();
+		if (mediaUpdate != null) {
+			mediaUpdate.close();
 		}
 	}
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "to:\"" + name + "\" text:\"" + text + "\" media:" + (mediaStream != null);
+		return "to:\"" + name + "\" text:\"" + text + "\" media:" + (mediaUpdate != null);
 	}
 }

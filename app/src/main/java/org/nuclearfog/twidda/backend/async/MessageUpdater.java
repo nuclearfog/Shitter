@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.api.holder.DirectmessageUpdate;
+import org.nuclearfog.twidda.backend.api.update.DirectmessageUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 
@@ -46,8 +46,8 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 			long id = twitter.showUser(message.getName()).getId();
 			// upload media if any
 			long mediaId = -1;
-			if (message.getMediaStream() != null) {
-				mediaId = twitter.uploadMedia(message.getMediaStream());
+			if (message.getMediaUpdate() != null) {
+				mediaId = twitter.uploadMedia(message.getMediaUpdate());
 			}
 			// upload message and media ID
 			if (!isCancelled()) {
@@ -57,7 +57,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 		} catch (TwitterException exception) {
 			this.exception = exception;
 		} finally {
-			// close mediastream
+			// close all streams
 			message.close();
 		}
 		return false;

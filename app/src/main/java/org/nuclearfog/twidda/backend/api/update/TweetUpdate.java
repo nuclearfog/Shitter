@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.holder;
+package org.nuclearfog.twidda.backend.api.update;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,7 +26,7 @@ public class TweetUpdate {
 	private double latitude;
 
 	private List<Uri> mediaUris = new ArrayList<>(5);
-	private MediaStream[] mediaStreams = {};
+	private MediaUpdate[] mediaUpdates = {};
 	private boolean hasLocation = false;
 
 	/**
@@ -97,10 +97,10 @@ public class TweetUpdate {
 	/**
 	 * get information about media attached to the tweet
 	 *
-	 * @return list of mediastream instances
+	 * @return list of media updates
 	 */
-	public MediaStream[] getMediaStreams() {
-		return mediaStreams;
+	public MediaUpdate[] getMediaUpdates() {
+		return mediaUpdates;
 	}
 
 	/**
@@ -158,13 +158,13 @@ public class TweetUpdate {
 			return true;
 		try {
 			// open input streams
-			mediaStreams = new MediaStream[mediaUris.size()];
-			for (int i = 0; i < mediaStreams.length; i++) {
+			mediaUpdates = new MediaUpdate[mediaUris.size()];
+			for (int i = 0; i < mediaUpdates.length; i++) {
 				InputStream is = resolver.openInputStream(mediaUris.get(i));
 				String mime = resolver.getType(mediaUris.get(i));
 				// check if stream is valid
 				if (is != null && mime != null && is.available() > 0) {
-					mediaStreams[i] = new MediaStream(is, mime);
+					mediaUpdates[i] = new MediaUpdate(is, mime);
 				} else {
 					return false;
 				}
@@ -180,8 +180,8 @@ public class TweetUpdate {
 	 * close all open streams
 	 */
 	public void close() {
-		for (MediaStream mediaStream : mediaStreams) {
-			mediaStream.close();
+		for (MediaUpdate mediaUpdate : mediaUpdates) {
+			mediaUpdate.close();
 		}
 	}
 

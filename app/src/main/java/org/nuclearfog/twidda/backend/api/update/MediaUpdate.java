@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.holder;
+package org.nuclearfog.twidda.backend.api.update;
 
 import androidx.annotation.NonNull;
 
@@ -10,7 +10,7 @@ import java.io.InputStream;
  *
  * @author nuclearfog
  */
-public class MediaStream {
+public class MediaUpdate {
 
 	private InputStream inputStream;
 	private String mimeType;
@@ -19,7 +19,7 @@ public class MediaStream {
 	 * @param inputStream stream of the media (local or online)
 	 * @param mimeType    MIME type e.g. image/jpeg
 	 */
-	public MediaStream(InputStream inputStream, String mimeType) {
+	public MediaUpdate(InputStream inputStream, String mimeType) {
 		this.inputStream = inputStream;
 		this.mimeType = mimeType;
 	}

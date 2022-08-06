@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.api.holder.MediaStream;
-import org.nuclearfog.twidda.backend.api.holder.TweetUpdate;
+import org.nuclearfog.twidda.backend.api.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.api.update.TweetUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.activities.TweetEditor;
 
@@ -40,11 +40,11 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Void> {
 		TweetUpdate update = tweets[0];
 		try {
 			// upload media first
-			MediaStream[] mediaStreams = update.getMediaStreams();
-			long[] mediaIds = new long[mediaStreams.length];
-			for (int pos = 0; pos < mediaStreams.length; pos++) {
+			MediaUpdate[] mediaUpdates = update.getMediaUpdates();
+			long[] mediaIds = new long[mediaUpdates.length];
+			for (int pos = 0; pos < mediaUpdates.length; pos++) {
 				// upload media file and save media ID
-				mediaIds[pos] = twitter.uploadMedia(mediaStreams[pos]);
+				mediaIds[pos] = twitter.uploadMedia(mediaUpdates[pos]);
 			}
 			// upload tweet
 			if (!isCancelled()) {
