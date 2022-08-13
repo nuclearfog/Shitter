@@ -274,7 +274,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.tweet, m);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);
@@ -282,7 +282,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu m) {
+	public boolean onPrepareOptionsMenu(@NonNull Menu m) {
 		if (tweet == null)
 			return super.onPrepareOptionsMenu(m);
 

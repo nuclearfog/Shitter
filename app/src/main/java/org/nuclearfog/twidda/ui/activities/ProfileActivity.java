@@ -274,7 +274,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.profile, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
@@ -283,7 +283,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu m) {
+	public boolean onPrepareOptionsMenu(@NonNull Menu m) {
 		if (user != null) {
 			if (user.followRequested()) {
 				MenuItem followIcon = m.findItem(R.id.profile_follow);

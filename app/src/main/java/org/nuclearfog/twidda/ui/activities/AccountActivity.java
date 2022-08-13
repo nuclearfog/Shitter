@@ -73,7 +73,7 @@ public class AccountActivity extends AppCompatActivity {
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.accounts, m);
 		// disable account selector icon if this activity started from LoginActivity
 		boolean disableSelector = getIntent().getBooleanExtra(KEY_DISABLE_SELECTOR, false);

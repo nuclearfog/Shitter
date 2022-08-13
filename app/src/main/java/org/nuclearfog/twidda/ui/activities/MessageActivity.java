@@ -53,7 +53,7 @@ public class MessageActivity extends AppCompatActivity {
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.message, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);

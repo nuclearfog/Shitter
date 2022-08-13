@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.login, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		m.findItem(R.id.login_select_account).setVisible(!settings.isLoggedIn());

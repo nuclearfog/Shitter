@@ -296,7 +296,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.settings, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);

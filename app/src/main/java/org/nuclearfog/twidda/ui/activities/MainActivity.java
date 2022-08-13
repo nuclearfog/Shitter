@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.home, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		MenuItem search = m.findItem(R.id.action_search);

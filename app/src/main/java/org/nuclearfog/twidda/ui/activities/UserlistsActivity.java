@@ -111,7 +111,7 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.lists, m);
 		m.findItem(R.id.list_create).setVisible(isHome);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());

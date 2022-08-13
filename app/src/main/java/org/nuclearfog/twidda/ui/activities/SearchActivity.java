@@ -93,7 +93,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.search, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		MenuItem searchItem = m.findItem(R.id.new_search);

@@ -172,7 +172,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.edit, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);

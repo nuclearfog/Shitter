@@ -176,7 +176,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu m) {
+	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
 		if (mode == USERLIST_EXCLUDED_USERS) {
 			getMenuInflater().inflate(R.menu.excludelist, m);
