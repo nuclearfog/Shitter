@@ -1,9 +1,9 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.BLOCK_USER;
-import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.MUTE_USER;
-import static org.nuclearfog.twidda.backend.async.UserExcludeLoader.REFRESH;
+import static org.nuclearfog.twidda.backend.async.FilterLoader.BLOCK_USER;
+import static org.nuclearfog.twidda.backend.async.FilterLoader.MUTE_USER;
+import static org.nuclearfog.twidda.backend.async.FilterLoader.REFRESH;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -27,7 +27,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.async.UserExcludeLoader;
+import org.nuclearfog.twidda.backend.async.FilterLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -94,7 +94,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public static final int USERLIST_REQUESTS = 0x0948693;
 
 	private GlobalSettings settings;
-	private UserExcludeLoader userExclTask;
+	private FilterLoader userExclTask;
 
 	private Toolbar toolbar;
 	private TabLayout tablayout;
@@ -211,7 +211,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		if (item.getItemId() == R.id.menu_exclude_refresh) {
 			if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
 				Toast.makeText(this, R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
-				userExclTask = new UserExcludeLoader(this, REFRESH);
+				userExclTask = new FilterLoader(this, REFRESH);
 				userExclTask.execute();
 			}
 		}
@@ -240,12 +240,12 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public boolean onQueryTextSubmit(String query) {
 		if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
 			if (tablayout.getSelectedTabPosition() == 0) {
-				userExclTask = new UserExcludeLoader(this, MUTE_USER);
+				userExclTask = new FilterLoader(this, MUTE_USER);
 				userExclTask.execute(query);
 				return true;
 			}
 			if (tablayout.getSelectedTabPosition() == 1) {
-				userExclTask = new UserExcludeLoader(this, BLOCK_USER);
+				userExclTask = new FilterLoader(this, BLOCK_USER);
 				userExclTask.execute(query);
 				return true;
 			}
@@ -260,7 +260,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	}
 
 	/**
-	 * called from {@link UserExcludeLoader} if task finished successfully
+	 * called from {@link FilterLoader} if task finished successfully
 	 */
 	public void onSuccess(int mode) {
 		switch (mode) {
@@ -281,7 +281,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	}
 
 	/**
-	 * called from {@link UserExcludeLoader} if an error occurs
+	 * called from {@link FilterLoader} if an error occurs
 	 */
 	public void onError(ErrorHandler.TwitterError err) {
 		ErrorHandler.handleFailure(this, err);

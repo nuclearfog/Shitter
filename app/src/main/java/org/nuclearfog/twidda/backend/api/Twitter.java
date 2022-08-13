@@ -1758,10 +1758,18 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 * filter tweets from blocked users
 	 */
 	private void filterTweets(List<Tweet> tweets) {
-		Set<Long> exclude = filterDatabase.getExcludeSet();
+		Set<Long> excludedIds = filterDatabase.getFilteredUserIds();
 		for (int pos = tweets.size() - 1; pos >= 0; pos--) {
-			if (exclude.contains(tweets.get(pos).getAuthor().getId())) {
+			long authorId = tweets.get(pos).getAuthor().getId();
+			Tweet embeddedTweet = tweets.get(pos).getEmbeddedTweet();
+			if (excludedIds.contains(authorId)) {
 				tweets.remove(pos);
+			}
+			else if (embeddedTweet != null) {
+				authorId = embeddedTweet.getAuthor().getId();
+				if (excludedIds.contains(authorId)) {
+					tweets.remove(pos);
+				}
 			}
 		}
 	}
@@ -1770,7 +1778,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 * remove blocked users from list
 	 */
 	private void filterUsers(List<User> users) {
-		Set<Long> exclude = filterDatabase.getExcludeSet();
+		Set<Long> exclude = filterDatabase.getFilteredUserIds();
 		for (int pos = users.size() - 1; pos >= 0; pos--) {
 			if (exclude.contains(users.get(pos).getId())) {
 				users.remove(pos);

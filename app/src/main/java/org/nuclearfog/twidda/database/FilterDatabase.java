@@ -47,11 +47,11 @@ public class FilterDatabase {
 	}
 
 	/**
-	 * replace exclude list with a new version
+	 * create a new filterlist containing user IDs
 	 *
 	 * @param ids list of user IDs
 	 */
-	public void setExcludeList(List<Long> ids) {
+	public void setFilteredUserIds(List<Long> ids) {
 		long homeId = settings.getCurrentUserId();
 		String[] args = {Long.toString(homeId)};
 		SQLiteDatabase db = getDbWrite();
@@ -67,11 +67,11 @@ public class FilterDatabase {
 	}
 
 	/**
-	 * return current users exclude set containing user IDs
+	 * return the current filterlist containing user IDs
 	 *
 	 * @return a set of user IDs
 	 */
-	public Set<Long> getExcludeSet() {
+	public Set<Long> getFilteredUserIds() {
 		String[] args = {Long.toString(settings.getCurrentUserId())};
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.query(UserExcludeTable.NAME, LIST_ID_COL, LIST_SELECT, args, null, null, null, null);

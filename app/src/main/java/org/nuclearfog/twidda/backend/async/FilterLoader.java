@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
+public class FilterLoader extends AsyncTask<String, Void, Void> {
 
 	/**
 	 * refresh exclude list
@@ -48,7 +48,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 	private int mode;
 
 
-	public UserExcludeLoader(UsersActivity activity, int mode) {
+	public FilterLoader(UsersActivity activity, int mode) {
 		super();
 		twitter = Twitter.get(activity);
 		appDatabase = new AppDatabase(activity);
@@ -64,7 +64,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 			switch (mode) {
 				case REFRESH:
 					List<Long> ids = twitter.getIdBlocklist();
-					filterDatabase.setExcludeList(ids);
+					filterDatabase.setFilteredUserIds(ids);
 					break;
 
 				case MUTE_USER:
