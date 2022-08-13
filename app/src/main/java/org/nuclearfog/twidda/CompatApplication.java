@@ -1,9 +1,9 @@
 package org.nuclearfog.twidda;
 
-import android.app.Application;
 import android.os.Build;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.multidex.MultiDexApplication;
 
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 
@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
  *
  * @author nuclearfog
  */
-public class CompatApplication extends Application {
+public class CompatApplication extends MultiDexApplication {
 
 
 	@Override

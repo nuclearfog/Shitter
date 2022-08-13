@@ -28,7 +28,7 @@ android {
             proguardFile 'proguard-rules.pro'
         }
         debug {
-            multiDexEnabled false
+            multiDexEnabled true
             proguardFile 'proguard-debug.pro'
             applicationIdSuffix '.debug'
             versionNameSuffix '.DEBUG'
@@ -63,6 +63,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
     //noinspection GradleDependency
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     //noinspection GradleDependency
