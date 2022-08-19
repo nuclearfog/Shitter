@@ -66,7 +66,6 @@
         android:id="@+id/edit_pb"
         android:layout_width="@dimen/editprofile_image"
         android:layout_height="@dimen/editprofile_image"
-        android:layout_marginLeft="@dimen/editprofile_profile_image_left_margin"
         android:layout_marginStart="@dimen/editprofile_profile_image_left_margin"
         android:contentDescription="@string/image_preview"
         android:scaleType="centerCrop"

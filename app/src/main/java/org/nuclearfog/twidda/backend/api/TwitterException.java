@@ -9,6 +9,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 import java.io.IOException;
 
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * custom exception implementation containing additional information like http status code and API error code
@@ -42,11 +43,12 @@ public class TwitterException extends Exception implements TwitterError {
 		// basic information
 		this.httpCode = response.code();
 		this.message = response.message();
+		ResponseBody body = response.body();
 
 		// get extra information
-		if (response.body() != null) {
+		if (body != null) {
 			try {
-				JSONObject json = new JSONObject(response.body().string());
+				JSONObject json = new JSONObject(body.string());
 				JSONArray errors = json.optJSONArray("errors");
 				if (errors != null) {
 					JSONObject error = errors.optJSONObject(0);

@@ -10,13 +10,11 @@ android {
 
     defaultConfig {
         applicationId 'org.nuclearfog.twidda'
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 32
-        versionCode 60
-        versionName '2.0.7'
-        // limiting language support for smaller APK size
+        versionCode 61
+        versionName '2.1'
         resConfigs 'en', 'de-rDE', 'zh-rCN'
-        vectorDrawables.useSupportLibrary true
     }
 
     buildTypes {
@@ -28,7 +26,6 @@ android {
             proguardFile 'proguard-rules.pro'
         }
         debug {
-            multiDexEnabled true
             proguardFile 'proguard-debug.pro'
             applicationIdSuffix '.debug'
             versionNameSuffix '.DEBUG'
@@ -52,20 +49,18 @@ proguardDictionaries {
     dictionaryNames = ['dict/class-dictionary', 'dict/package-dictionary', 'dict/obfuscation-dictionary']
     minLineLength 4
     maxLineLength 8
-    linesCountInDictionary 12000
+    linesCountInDictionary 12500
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     //noinspection GradleDependency
-    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     //noinspection GradleDependency
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.github.open-android:Picasso-transformations:0.1.0'
