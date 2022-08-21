@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activities.MainActivity">
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/main_layout"
+	android:fitsSystemWindows="true"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.activities.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/home_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/mainpage_toolbar_height" />
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/home_toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/mainpage_toolbar_height" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/home_tab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent" />
+	<com.google.android.material.tabs.TabLayout
+		android:id="@+id/home_tab"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent" />
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/home_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+	<androidx.viewpager.widget.ViewPager
+		android:id="@+id/home_pager"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
 
 </LinearLayout>

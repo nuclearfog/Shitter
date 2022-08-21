@@ -71,6 +71,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		preview = findViewById(R.id.dm_preview);
 		receiver = findViewById(R.id.dm_receiver);
 		message = findViewById(R.id.dm_text);
+		AppStyles.setEditorTheme(root, background);
 
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
@@ -79,11 +80,6 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		if (prefix != null) {
 			receiver.append(prefix);
 		}
-		send.setImageResource(R.drawable.right);
-		media.setImageResource(R.drawable.attachment);
-		preview.setImageResource(R.drawable.image);
-		preview.setVisibility(GONE);
-		AppStyles.setEditorTheme(root, background);
 
 		send.setOnClickListener(this);
 		media.setOnClickListener(this);

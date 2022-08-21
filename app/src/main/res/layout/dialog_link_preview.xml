@@ -1,70 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/dialog_linkpreview_padding"
-    tools:context=".ui.dialogs.LinkDialog">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="@dimen/dialog_linkpreview_padding"
+	tools:context=".ui.dialogs.LinkDialog">
 
-    <ImageView
-        android:id="@+id/link_preview_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/dialog_link_image_preview"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="2.0" />
+	<ImageView
+		android:id="@+id/link_preview_image"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:contentDescription="@string/dialog_link_image_preview"
+		android:scaleType="centerCrop"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintDimensionRatio="2.0" />
 
-    <ImageView
-        android:id="@+id/link_preview_close"
-        android:layout_width="@dimen/dialog_linkpreview_btn_size"
-        android:layout_height="@dimen/dialog_linkpreview_btn_size"
-        android:layout_margin="@dimen/dialog_linkpreview_margin"
-        android:contentDescription="@string/dialog_link_close"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+	<ImageView
+		android:id="@+id/link_preview_close"
+		android:layout_width="@dimen/dialog_linkpreview_btn_size"
+		android:layout_height="@dimen/dialog_linkpreview_btn_size"
+		android:layout_margin="@dimen/dialog_linkpreview_margin"
+		android:contentDescription="@string/dialog_link_close"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/link_preview_image_barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="link_preview_image,link_preview_close" />
+	<androidx.constraintlayout.widget.Barrier
+		android:id="@+id/link_preview_image_barrier"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:barrierDirection="bottom"
+		app:constraint_referenced_ids="link_preview_image,link_preview_close" />
 
-    <TextView
-        android:id="@+id/link_preview_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dialog_linkpreview_margin"
-        android:singleLine="true"
-        android:textSize="@dimen/dialog_linkpreview_textsize_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/link_preview_image"
-        app:layout_constraintEnd_toEndOf="parent" />
+	<TextView
+		android:id="@+id/link_preview_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_linkpreview_margin"
+		android:singleLine="true"
+		android:textSize="@dimen/dialog_linkpreview_textsize_title"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/link_preview_image"
+		app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/link_preview_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dialog_linkpreview_margin"
-        android:fadeScrollbars="false"
-        android:maxLines="@integer/dialog_description_line_count"
-        android:scrollbars="vertical"
-        android:textSize="@dimen/dialog_linkpreview_textsize_description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/link_preview_title"
-        app:layout_constraintEnd_toEndOf="parent" />
+	<TextView
+		android:id="@+id/link_preview_description"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_linkpreview_margin"
+		android:fadeScrollbars="false"
+		android:maxLines="@integer/dialog_description_line_count"
+		android:scrollbars="vertical"
+		android:textSize="@dimen/dialog_linkpreview_textsize_description"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/link_preview_title"
+		app:layout_constraintEnd_toEndOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/link_preview_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+	<ProgressBar
+		android:id="@+id/link_preview_progress"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -84,15 +84,8 @@ public class DirectmessageUpdate {
 	 */
 	public boolean addMedia(Context context, @NonNull Uri uri) {
 		// check if file is valid
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			DocumentFile file = DocumentFile.fromSingleUri(context, uri);
-			if (file != null && file.length() > 0) {
-				this.uri = uri;
-				return true;
-			}
-		}
-		// skip validation for old android versions
-		else {
+		DocumentFile file = DocumentFile.fromSingleUri(context, uri);
+		if (file != null && file.length() > 0) {
 			this.uri = uri;
 			return true;
 		}

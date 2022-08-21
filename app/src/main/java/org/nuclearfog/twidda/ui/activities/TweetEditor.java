@@ -121,6 +121,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
+		AppStyles.setEditorTheme(root, background);
 
 		Intent data = getIntent();
 		long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
@@ -130,12 +131,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		if (prefix != null) {
 			tweetText.append(prefix);
 		}
-
-		mediaBtn.setImageResource(R.drawable.attachment);
-		locationBtn.setImageResource(R.drawable.location);
-		tweetButton.setImageResource(R.drawable.tweet);
-		closeButton.setImageResource(R.drawable.cross);
-		AppStyles.setEditorTheme(root, background);
 
 		closeButton.setOnClickListener(this);
 		tweetButton.setOnClickListener(this);

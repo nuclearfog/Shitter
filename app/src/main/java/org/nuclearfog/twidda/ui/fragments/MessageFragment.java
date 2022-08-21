@@ -3,11 +3,11 @@ package org.nuclearfog.twidda.ui.fragments;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -28,9 +28,9 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.DirectMessage;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
+import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.activities.TweetActivity;
-import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 

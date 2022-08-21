@@ -27,7 +27,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.async.Registration;
+import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	 */
 	public static final int RETURN_LOGIN_SUCCESSFUL = 0x145;
 
-	private Registration registerAsync;
+	private LoginAction registerAsync;
 	private GlobalSettings settings;
 
 	private EditText pinInput;
@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 			if (requestToken == null) {
 				if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
 					Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
-					registerAsync = new Registration(this);
+					registerAsync = new LoginAction(this);
 					registerAsync.execute();
 				}
 			} else {
@@ -170,7 +170,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 				if (pinInput.getText() != null && pinInput.length() > 0) {
 					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
 					String twitterPin = pinInput.getText().toString();
-					registerAsync = new Registration(this);
+					registerAsync = new LoginAction(this);
 					registerAsync.execute(requestToken, twitterPin);
 				}
 			}

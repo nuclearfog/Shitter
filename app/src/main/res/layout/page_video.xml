@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/half_transparent"
-    tools:context=".ui.activities.VideoViewer">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/half_transparent"
+	tools:context=".ui.activities.VideoViewer">
 
-    <VideoView
-        android:id="@+id/video_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+	<VideoView
+		android:id="@+id/video_view"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/media_progress"
-        android:layout_width="@dimen/mediapage_circle_size"
-        android:layout_height="@dimen/mediapage_circle_size"
-        android:layout_marginTop="@dimen/mediapage_preview_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+	<ProgressBar
+		android:id="@+id/media_progress"
+		android:layout_width="@dimen/mediapage_circle_size"
+		android:layout_height="@dimen/mediapage_circle_size"
+		android:layout_marginTop="@dimen/mediapage_preview_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
 
-    <include
-        android:id="@+id/media_controlpanel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_marginBottom="@dimen/mediapage_controller_bottom_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        layout="@layout/popup_controlpanel" />
+	<include
+		android:id="@+id/media_controlpanel"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:visibility="invisible"
+		android:layout_marginBottom="@dimen/mediapage_controller_bottom_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		layout="@layout/popup_controlpanel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -138,7 +138,9 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	private TextView title, message, confirmDescr;
 	private CompoundButton confirmCheck;
 	private Button confirm, cancel;
+	private ViewGroup root;
 
+	private GlobalSettings settings;
 	@Nullable
 	private OnConfirmListener listener;
 
@@ -148,7 +150,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public ConfirmDialog(Context context) {
 		super(context, R.style.ConfirmDialog);
 		setContentView(R.layout.dialog_confirm);
-		ViewGroup root = findViewById(R.id.confirm_rootview);
+		root = findViewById(R.id.confirm_rootview);
 		confirm = findViewById(R.id.confirm_yes);
 		cancel = findViewById(R.id.confirm_no);
 		title = findViewById(R.id.confirm_title);
@@ -156,8 +158,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		confirmDescr = findViewById(R.id.confirm_remember_descr);
 		confirmCheck = findViewById(R.id.confirm_remember);
 
-		GlobalSettings settings = GlobalSettings.getInstance(context);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		settings = GlobalSettings.getInstance(context);
 
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
@@ -175,7 +176,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	/**
 	 * creates an alert dialog
 	 *
-	 * @param type Type of dialog to show
+	 * @param type       Type of dialog to show
 	 * @param messageTxt override default message text
 	 */
 	public void show(int type, @NonNull String messageTxt) {
@@ -303,6 +304,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		else
 			message.setText(messageTxt);
 
+		AppStyles.setTheme(root, settings.getBackgroundColor());
 		super.show();
 	}
 
@@ -336,7 +338,8 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 		/**
 		 * called when the positive button was clicked
-		 *  @param type           type of dialog
+		 *
+		 * @param type           type of dialog
 		 * @param rememberChoice true if choice should be remembered
 		 */
 		void onConfirm(int type, boolean rememberChoice);

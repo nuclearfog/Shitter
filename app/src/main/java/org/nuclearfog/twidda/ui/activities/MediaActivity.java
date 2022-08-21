@@ -307,22 +307,18 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	private void openMediaPicker(int requestCode) {
 		Intent mediaSelect = new Intent(ACTION_PICK);
 		mediaSelect.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			switch (requestCode) {
-				case REQUEST_IMG_VID:
-					// pick image or video
-					mediaSelect.setType(MIME_ALL_READ);
-					mediaSelect.putExtra(EXTRA_MIME_TYPES, TYPE_ALL);
-					break;
+		switch (requestCode) {
+			case REQUEST_IMG_VID:
+				// pick image or video
+				mediaSelect.setType(MIME_ALL_READ);
+				mediaSelect.putExtra(EXTRA_MIME_TYPES, TYPE_ALL);
+				break;
 
-				case REQUEST_IMAGE:
-				case REQUEST_PROFILE:
-				case REQUEST_BANNER:
-					mediaSelect.setType(MIME_IMAGE_READ);
-					break;
-			}
-		} else {
-			mediaSelect.setType(MIME_ALL_READ);
+			case REQUEST_IMAGE:
+			case REQUEST_PROFILE:
+			case REQUEST_BANNER:
+				mediaSelect.setType(MIME_IMAGE_READ);
+				break;
 		}
 		try {
 			startActivityForResult(mediaSelect, requestCode);

@@ -1,78 +1,78 @@
 plugins {
-    id 'com.android.application'
-    id 'io.michaelrocks.paranoid'
-    id 'ru.cleverpumpkin.proguard-dictionaries-generator'
+	id 'com.android.application'
+	id 'io.michaelrocks.paranoid'
+	id 'ru.cleverpumpkin.proguard-dictionaries-generator'
 }
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion '33.0.0'
+	compileSdkVersion 33
+	buildToolsVersion '33.0.0'
 
-    defaultConfig {
-        applicationId 'org.nuclearfog.twidda'
-        minSdkVersion 21
-        targetSdkVersion 32
-        versionCode 61
-        versionName '2.1'
-        resConfigs 'en', 'de-rDE', 'zh-rCN'
-    }
+	defaultConfig {
+		applicationId 'org.nuclearfog.twidda'
+		minSdkVersion 21
+		targetSdkVersion 33
+		versionCode 61
+		versionName '2.1'
+		resConfigs 'en', 'de-rDE', 'zh-rCN'
+	}
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-            debuggable false
-            multiDexEnabled false
-            proguardFile 'proguard-rules.pro'
-        }
-        debug {
-            proguardFile 'proguard-debug.pro'
-            applicationIdSuffix '.debug'
-            versionNameSuffix '.DEBUG'
-        }
-    }
+	buildTypes {
+		release {
+			minifyEnabled true
+			shrinkResources true
+			debuggable false
+			multiDexEnabled false
+			proguardFile 'proguard-rules.pro'
+		}
+		debug {
+			proguardFile 'proguard-debug.pro'
+			applicationIdSuffix '.debug'
+			versionNameSuffix '.DEBUG'
+		}
+	}
 
-    packagingOptions {
-        exclude '/META-INF/CHANGES'
-        exclude '/META-INF/DEPENDENCIES'
-        exclude '/META-INF/README.md'
-        exclude '/META-INF/androidx.*'
-        exclude '/META-INF/kotlin*'
-        exclude '/META-INF/com.*'
-        exclude '/META-INF/services/**'
-        exclude '/META-INF/com/**'
-        exclude '/kotlin/**'
-        exclude '/Debug*'
-    }
+	packagingOptions {
+		exclude '/META-INF/CHANGES'
+		exclude '/META-INF/DEPENDENCIES'
+		exclude '/META-INF/README.md'
+		exclude '/META-INF/androidx.*'
+		exclude '/META-INF/kotlin*'
+		exclude '/META-INF/com.*'
+		exclude '/META-INF/services/**'
+		exclude '/META-INF/com/**'
+		exclude '/kotlin/**'
+		exclude '/Debug*'
+	}
 
-    paranoid {
-        enabled true
-    }
+	paranoid {
+		enabled true
+	}
 }
 
 proguardDictionaries {
-    dictionaryNames = ['dict/class-dictionary', 'dict/package-dictionary', 'dict/obfuscation-dictionary']
-    minLineLength 4
-    maxLineLength 8
-    linesCountInDictionary 12500
+	dictionaryNames = ['dict/class-dictionary', 'dict/package-dictionary', 'dict/obfuscation-dictionary']
+	minLineLength 4
+	maxLineLength 8
+	linesCountInDictionary 12500
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    //noinspection GradleDependency
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    //noinspection GradleDependency
-    implementation 'com.squareup.picasso:picasso:2.8'
-    implementation 'com.github.open-android:Picasso-transformations:0.1.0'
-    implementation 'com.github.QuadFlask:colorpicker:0.0.15'
-    implementation 'com.github.nuclearfog:ZoomView:1.0.4'
-    implementation 'com.github.nuclearfog:Tagger:2.3'
-    implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4.1'
-    implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
-    implementation 'com.github.LeonardoCardoso:Android-Link-Preview:master'
+	implementation 'androidx.appcompat:appcompat:1.5.0'
+	implementation 'com.google.android.material:material:1.6.1'
+	implementation 'androidx.recyclerview:recyclerview:1.2.1'
+	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+	implementation 'androidx.cardview:cardview:1.0.0'
+	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+	//noinspection GradleDependency
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	//noinspection GradleDependency
+	implementation 'com.squareup.picasso:picasso:2.8'
+	implementation 'com.github.open-android:Picasso-transformations:0.1.0'
+	implementation 'com.github.QuadFlask:colorpicker:0.0.15'
+	implementation 'com.github.nuclearfog:ZoomView:1.0.4'
+	implementation 'com.github.nuclearfog:Tagger:2.3'
+	implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4.1'
+	implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
+	implementation 'com.github.LeonardoCardoso:Android-Link-Preview:master'
 }

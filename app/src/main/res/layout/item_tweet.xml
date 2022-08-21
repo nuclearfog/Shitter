@@ -1,171 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    style="@style/CardViewStyle">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	style="@style/CardViewStyle">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/tweetitem_layout_padding">
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="@dimen/tweetitem_layout_padding">
 
-        <ImageView
-            android:id="@+id/tweetPb"
-            android:layout_width="@dimen/tweetitem_profile_size"
-            android:layout_height="@dimen/tweetitem_profile_size"
-            android:contentDescription="@string/profile_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+		<ImageView
+			android:id="@+id/tweetPb"
+			android:layout_width="@dimen/tweetitem_profile_size"
+			android:layout_height="@dimen/tweetitem_profile_size"
+			android:contentDescription="@string/profile_image"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/verified_icon"
-            android:layout_width="@dimen/tweetitem_icon_size"
-            android:layout_height="@dimen/tweetitem_icon_size"
-            android:layout_marginStart="@dimen/tweetitem_padding_drawable"
-            app:layout_constraintStart_toEndOf="@id/tweetPb"
-            app:layout_constraintTop_toTopOf="@id/username"
-            app:layout_constraintBottom_toBottomOf="@id/username"
-            app:layout_constraintEnd_toStartOf="@id/username"
-            tools:ignore="ContentDescription" />
+		<ImageView
+			android:id="@+id/verified_icon"
+			android:layout_width="@dimen/tweetitem_icon_size"
+			android:layout_height="@dimen/tweetitem_icon_size"
+			android:layout_marginStart="@dimen/tweetitem_padding_drawable"
+			app:layout_constraintStart_toEndOf="@id/tweetPb"
+			app:layout_constraintTop_toTopOf="@id/username"
+			app:layout_constraintBottom_toBottomOf="@id/username"
+			app:layout_constraintEnd_toStartOf="@id/username"
+			tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tweetitem_text_margin"
-            android:singleLine="true"
-            app:layout_constraintStart_toEndOf="@id/verified_icon"
-            app:layout_constraintTop_toTopOf="@id/tweetPb"
-            app:layout_constraintBottom_toTopOf="@id/screenname"
-            app:layout_constraintEnd_toStartOf="@id/time" />
+		<TextView
+			android:id="@+id/username"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/tweetitem_text_margin"
+			android:singleLine="true"
+			app:layout_constraintStart_toEndOf="@id/verified_icon"
+			app:layout_constraintTop_toTopOf="@id/tweetPb"
+			app:layout_constraintBottom_toTopOf="@id/screenname"
+			app:layout_constraintEnd_toStartOf="@id/time" />
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tweetitem_text_margin"
-            android:singleLine="true"
-            android:textSize="@dimen/tweetitem_textsize_date"
-            app:layout_constraintStart_toEndOf="@id/username"
-            app:layout_constraintTop_toTopOf="@id/username"
-            app:layout_constraintBottom_toBottomOf="@id/username"
-            app:layout_constraintEnd_toEndOf="parent" />
+		<TextView
+			android:id="@+id/time"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/tweetitem_text_margin"
+			android:singleLine="true"
+			android:textSize="@dimen/tweetitem_textsize_date"
+			app:layout_constraintStart_toEndOf="@id/username"
+			app:layout_constraintTop_toTopOf="@id/username"
+			app:layout_constraintBottom_toBottomOf="@id/username"
+			app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageView
-            android:id="@+id/locked_icon"
-            android:layout_width="@dimen/tweetitem_icon_size"
-            android:layout_height="@dimen/tweetitem_icon_size"
-            android:layout_marginStart="@dimen/tweetitem_padding_drawable"
-            app:layout_constraintStart_toEndOf="@id/tweetPb"
-            app:layout_constraintTop_toTopOf="@id/screenname"
-            app:layout_constraintBottom_toBottomOf="@id/screenname"
-            app:layout_constraintEnd_toStartOf="@id/screenname"
-            tools:ignore="ContentDescription" />
+		<ImageView
+			android:id="@+id/locked_icon"
+			android:layout_width="@dimen/tweetitem_icon_size"
+			android:layout_height="@dimen/tweetitem_icon_size"
+			android:layout_marginStart="@dimen/tweetitem_padding_drawable"
+			app:layout_constraintStart_toEndOf="@id/tweetPb"
+			app:layout_constraintTop_toTopOf="@id/screenname"
+			app:layout_constraintBottom_toBottomOf="@id/screenname"
+			app:layout_constraintEnd_toStartOf="@id/screenname"
+			tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/screenname"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tweetitem_text_margin"
-            android:singleLine="true"
-            app:layout_constraintStart_toEndOf="@id/locked_icon"
-            app:layout_constraintTop_toBottomOf="@id/username"
-            app:layout_constraintBottom_toBottomOf="@id/tweetPb"
-            app:layout_constraintEnd_toEndOf="parent" />
+		<TextView
+			android:id="@+id/screenname"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/tweetitem_text_margin"
+			android:singleLine="true"
+			app:layout_constraintStart_toEndOf="@id/locked_icon"
+			app:layout_constraintTop_toBottomOf="@id/username"
+			app:layout_constraintBottom_toBottomOf="@id/tweetPb"
+			app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/tweet_text_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="screenname, tweetPb" />
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/tweet_text_barrier"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:barrierDirection="bottom"
+			app:constraint_referenced_ids="screenname, tweetPb" />
 
-        <TextView
-            android:id="@+id/tweettext"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tweet_text_barrier"
-            app:layout_constraintEnd_toEndOf="parent" />
+		<TextView
+			android:id="@+id/tweettext"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/tweet_text_barrier"
+			app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageView
-            android:id="@+id/rt_user_icon"
-            android:layout_width="@dimen/tweetitem_icon_size"
-            android:layout_height="@dimen/tweetitem_icon_size"
-            android:layout_marginStart="@dimen/tweetitem_text_margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tweettext"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/retweeter"
-            tools:ignore="ContentDescription" />
+		<ImageView
+			android:id="@+id/rt_user_icon"
+			android:layout_width="@dimen/tweetitem_icon_size"
+			android:layout_height="@dimen/tweetitem_icon_size"
+			android:layout_marginStart="@dimen/tweetitem_text_margin"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/tweettext"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/retweeter"
+			tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/retweeter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tweetitem_text_margin"
-            android:layout_marginStart="@dimen/tweetitem_text_margin"
-            android:layout_marginRight="@dimen/tweetitem_text_margin"
-            android:layout_marginEnd="@dimen/tweetitem_text_margin"
-            android:singleLine="true"
-            android:textSize="@dimen/tweetitem_textsize_button"
-            app:layout_constraintStart_toEndOf="@id/rt_user_icon"
-            app:layout_constraintTop_toTopOf="@id/rt_user_icon"
-            app:layout_constraintBottom_toBottomOf="@id/rt_user_icon"
-            app:layout_constraintEnd_toStartOf="@id/rt_icon" />
+		<TextView
+			android:id="@+id/retweeter"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="@dimen/tweetitem_text_margin"
+			android:layout_marginStart="@dimen/tweetitem_text_margin"
+			android:layout_marginRight="@dimen/tweetitem_text_margin"
+			android:layout_marginEnd="@dimen/tweetitem_text_margin"
+			android:singleLine="true"
+			android:textSize="@dimen/tweetitem_textsize_button"
+			app:layout_constraintStart_toEndOf="@id/rt_user_icon"
+			app:layout_constraintTop_toTopOf="@id/rt_user_icon"
+			app:layout_constraintBottom_toBottomOf="@id/rt_user_icon"
+			app:layout_constraintEnd_toStartOf="@id/rt_icon" />
 
-        <ImageView
-            android:id="@+id/rt_icon"
-            android:layout_width="@dimen/tweetitem_icon_size"
-            android:layout_height="@dimen/tweetitem_icon_size"
-            app:layout_constraintStart_toEndOf="@id/retweeter"
-            app:layout_constraintTop_toBottomOf="@id/tweettext"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/retweet_number"
-            tools:ignore="ContentDescription" />
+		<ImageView
+			android:id="@+id/rt_icon"
+			android:layout_width="@dimen/tweetitem_icon_size"
+			android:layout_height="@dimen/tweetitem_icon_size"
+			app:layout_constraintStart_toEndOf="@id/retweeter"
+			app:layout_constraintTop_toBottomOf="@id/tweettext"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/retweet_number"
+			tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/retweet_number"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tweetitem_text_margin"
-            android:layout_marginStart="@dimen/tweetitem_text_margin"
-            android:layout_marginRight="@dimen/tweetitem_text_margin"
-            android:layout_marginEnd="@dimen/tweetitem_text_margin"
-            android:singleLine="true"
-            android:textSize="@dimen/tweetitem_textsize_button"
-            app:layout_constraintStart_toEndOf="@id/rt_icon"
-            app:layout_constraintTop_toTopOf="@id/rt_icon"
-            app:layout_constraintBottom_toBottomOf="@id/rt_icon"
-            app:layout_constraintEnd_toStartOf="@id/fav_icon" />
+		<TextView
+			android:id="@+id/retweet_number"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="@dimen/tweetitem_text_margin"
+			android:layout_marginStart="@dimen/tweetitem_text_margin"
+			android:layout_marginRight="@dimen/tweetitem_text_margin"
+			android:layout_marginEnd="@dimen/tweetitem_text_margin"
+			android:singleLine="true"
+			android:textSize="@dimen/tweetitem_textsize_button"
+			app:layout_constraintStart_toEndOf="@id/rt_icon"
+			app:layout_constraintTop_toTopOf="@id/rt_icon"
+			app:layout_constraintBottom_toBottomOf="@id/rt_icon"
+			app:layout_constraintEnd_toStartOf="@id/fav_icon" />
 
-        <ImageView
-            android:id="@+id/fav_icon"
-            android:layout_width="@dimen/tweetitem_icon_size"
-            android:layout_height="@dimen/tweetitem_icon_size"
-            app:layout_constraintStart_toEndOf="@id/retweet_number"
-            app:layout_constraintTop_toBottomOf="@id/tweettext"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/favorite_number"
-            tools:ignore="ContentDescription" />
+		<ImageView
+			android:id="@+id/fav_icon"
+			android:layout_width="@dimen/tweetitem_icon_size"
+			android:layout_height="@dimen/tweetitem_icon_size"
+			app:layout_constraintStart_toEndOf="@id/retweet_number"
+			app:layout_constraintTop_toBottomOf="@id/tweettext"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/favorite_number"
+			tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/favorite_number"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tweetitem_text_margin"
-            android:layout_marginStart="@dimen/tweetitem_text_margin"
-            android:layout_marginRight="@dimen/tweetitem_text_margin"
-            android:layout_marginEnd="@dimen/tweetitem_text_margin"
-            android:singleLine="true"
-            android:textSize="@dimen/tweetitem_textsize_button"
-            app:layout_constraintStart_toEndOf="@id/fav_icon"
-            app:layout_constraintTop_toTopOf="@id/fav_icon"
-            app:layout_constraintBottom_toBottomOf="@id/fav_icon"
-            app:layout_constraintEnd_toEndOf="parent" />
+		<TextView
+			android:id="@+id/favorite_number"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="@dimen/tweetitem_text_margin"
+			android:layout_marginStart="@dimen/tweetitem_text_margin"
+			android:layout_marginRight="@dimen/tweetitem_text_margin"
+			android:layout_marginEnd="@dimen/tweetitem_text_margin"
+			android:singleLine="true"
+			android:textSize="@dimen/tweetitem_textsize_button"
+			app:layout_constraintStart_toEndOf="@id/fav_icon"
+			app:layout_constraintTop_toTopOf="@id/fav_icon"
+			app:layout_constraintBottom_toBottomOf="@id/fav_icon"
+			app:layout_constraintEnd_toEndOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

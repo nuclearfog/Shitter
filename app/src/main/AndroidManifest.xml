@@ -1,145 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.nuclearfog.twidda"
-    tools:ignore="LockedOrientationActivity">
+	xmlns:tools="http://schemas.android.com/tools"
+	package="org.nuclearfog.twidda"
+	tools:ignore="LockedOrientationActivity">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29"
-        tools:ignore="ScopedStorage" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission
+		android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+		android:maxSdkVersion="29"
+		tools:ignore="ScopedStorage" />
 
-    <application
-        android:allowBackup="false"
-        android:fullBackupContent="false"
-        android:dataExtractionRules="@xml/rules"
-        android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:ignore="UnusedAttribute">
+	<application
+		android:allowBackup="false"
+		android:fullBackupContent="false"
+		android:dataExtractionRules="@xml/rules"
+		android:icon="@mipmap/ic_launcher"
+		android:requestLegacyExternalStorage="true"
+		android:label="@string/app_name"
+		android:supportsRtl="true"
+		android:theme="@style/AppTheme"
+		tools:ignore="UnusedAttribute">
 
-        <activity
-            android:name=".ui.activities.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:exported="true">
+		<activity
+			android:name=".ui.activities.MainActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme"
+			android:exported="true">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:scheme="https"
-                    android:host="twitter.com" />
-                <data
-                    android:scheme="https"
-                    android:host="www.twitter.com" />
-                <data
-                    android:scheme="https"
-                    android:host="mobile.twitter.com" />
-            </intent-filter>
+				<data
+					android:scheme="https"
+					android:host="twitter.com" />
+				<data
+					android:scheme="https"
+					android:host="www.twitter.com" />
+				<data
+					android:scheme="https"
+					android:host="mobile.twitter.com" />
+			</intent-filter>
 
-        </activity>
+		</activity>
 
-        <activity
-            android:name=".ui.activities.SearchActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.SearchActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.ProfileActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.ProfileActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.TweetEditor"
-            android:screenOrientation="portrait"
-            android:theme="@style/TransparencyDim" />
+		<activity
+			android:name=".ui.activities.TweetEditor"
+			android:screenOrientation="portrait"
+			android:theme="@style/TransparencyDim" />
 
-        <activity
-            android:name=".ui.activities.MessageEditor"
-            android:screenOrientation="portrait"
-            android:theme="@style/TransparencyDim" />
+		<activity
+			android:name=".ui.activities.MessageEditor"
+			android:screenOrientation="portrait"
+			android:theme="@style/TransparencyDim" />
 
-        <activity
-            android:name=".ui.activities.SettingsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.SettingsActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.TweetActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.TweetActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.LoginActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.LoginActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.MediaActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.MediaActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.MessageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.MessageActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.VideoViewer"
-            android:screenOrientation="portrait"
-            android:theme="@style/Transparency" />
+		<activity
+			android:name=".ui.activities.VideoViewer"
+			android:screenOrientation="portrait"
+			android:theme="@style/Transparency" />
 
-        <activity
-            android:name=".ui.activities.ImageViewer"
-            android:screenOrientation="portrait"
-            android:theme="@style/Transparency" />
+		<activity
+			android:name=".ui.activities.ImageViewer"
+			android:screenOrientation="portrait"
+			android:theme="@style/Transparency" />
 
-        <activity
-            android:name=".ui.activities.ProfileEditor"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden" />
+		<activity
+			android:name=".ui.activities.ProfileEditor"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme"
+			android:windowSoftInputMode="stateHidden" />
 
-        <activity
-            android:name=".ui.activities.UserlistsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.UserlistsActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.UserlistActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.UserlistActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.UserlistEditor"
-            android:screenOrientation="portrait"
-            android:theme="@style/TransparencyDim" />
+		<activity
+			android:name=".ui.activities.UserlistEditor"
+			android:screenOrientation="portrait"
+			android:theme="@style/TransparencyDim" />
 
-        <activity
-            android:name=".ui.activities.AccountActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.AccountActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".ui.activities.UsersActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+		<activity
+			android:name=".ui.activities.UsersActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
 
-    </application>
+	</application>
 
 </manifest>

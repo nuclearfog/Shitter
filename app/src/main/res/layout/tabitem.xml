@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center_horizontal">
 
-    <ImageView
-        android:id="@+id/tab_icon"
-        android:layout_width="@dimen/tabitem_icon_size"
-        android:layout_height="@dimen/tabitem_icon_size"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tab_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ContentDescription" />
+	<ImageView
+		android:id="@+id/tab_icon"
+		android:layout_width="@dimen/tabitem_icon_size"
+		android:layout_height="@dimen/tabitem_icon_size"
+		android:scaleType="fitXY"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toTopOf="@id/tab_text"
+		app:layout_constraintEnd_toEndOf="parent"
+		tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tab_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:singleLine="true"
-        android:textSize="@dimen/tabitem_textsize"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tab_icon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+	<TextView
+		android:id="@+id/tab_text"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:singleLine="true"
+		android:textSize="@dimen/tabitem_textsize"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/tab_icon"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

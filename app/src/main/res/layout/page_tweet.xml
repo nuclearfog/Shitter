@@ -1,325 +1,325 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tweet_layout"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activities.TweetActivity">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/tweet_layout"
+	android:fitsSystemWindows="true"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.activities.TweetActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tweet_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/tweet_toolbar_height" />
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/tweet_toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/tweet_toolbar_height" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent">
+		<com.google.android.material.appbar.AppBarLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@android:color/transparent">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+			<com.google.android.material.appbar.CollapsingToolbarLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/tweet_profile"
-                        android:layout_width="@dimen/tweet_profile"
-                        android:layout_height="@dimen/tweet_profile"
-                        android:layout_marginStart="@dimen/tweet_profileimage_margin"
-                        android:layout_marginTop="@dimen/tweet_profileimage_margin"
-                        android:contentDescription="@string/profile_image"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+					<ImageView
+						android:id="@+id/tweet_profile"
+						android:layout_width="@dimen/tweet_profile"
+						android:layout_height="@dimen/tweet_profile"
+						android:layout_marginStart="@dimen/tweet_profileimage_margin"
+						android:layout_marginTop="@dimen/tweet_profileimage_margin"
+						android:contentDescription="@string/profile_image"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tweet_username"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/tweet_padding_drawable"
-                        android:layout_marginLeft="@dimen/tweet_textview_margin"
-                        android:layout_marginStart="@dimen/tweet_textview_margin"
-                        android:layout_marginRight="@dimen/tweet_textview_margin"
-                        android:layout_marginEnd="@dimen/tweet_textview_margin"
-                        android:singleLine="true"
-                        app:layout_constraintStart_toEndOf="@id/tweet_profile"
-                        app:layout_constraintTop_toTopOf="@id/tweet_profile"
-                        app:layout_constraintBottom_toTopOf="@id/tweet_screenname"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintVertical_chainStyle="packed" />
+					<TextView
+						android:id="@+id/tweet_username"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:drawablePadding="@dimen/tweet_padding_drawable"
+						android:layout_marginLeft="@dimen/tweet_textview_margin"
+						android:layout_marginStart="@dimen/tweet_textview_margin"
+						android:layout_marginRight="@dimen/tweet_textview_margin"
+						android:layout_marginEnd="@dimen/tweet_textview_margin"
+						android:singleLine="true"
+						app:layout_constraintStart_toEndOf="@id/tweet_profile"
+						app:layout_constraintTop_toTopOf="@id/tweet_profile"
+						app:layout_constraintBottom_toTopOf="@id/tweet_screenname"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintVertical_chainStyle="packed" />
 
-                    <TextView
-                        android:id="@+id/tweet_screenname"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/tweet_padding_drawable"
-                        android:layout_marginLeft="@dimen/tweet_textview_margin"
-                        android:layout_marginStart="@dimen/tweet_textview_margin"
-                        android:layout_marginRight="@dimen/tweet_textview_margin"
-                        android:layout_marginEnd="@dimen/tweet_textview_margin"
-                        android:singleLine="true"
-                        app:layout_constraintStart_toEndOf="@id/tweet_profile"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_username"
-                        app:layout_constraintBottom_toTopOf="@id/tweet_date"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintVertical_chainStyle="packed" />
+					<TextView
+						android:id="@+id/tweet_screenname"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:drawablePadding="@dimen/tweet_padding_drawable"
+						android:layout_marginLeft="@dimen/tweet_textview_margin"
+						android:layout_marginStart="@dimen/tweet_textview_margin"
+						android:layout_marginRight="@dimen/tweet_textview_margin"
+						android:layout_marginEnd="@dimen/tweet_textview_margin"
+						android:singleLine="true"
+						app:layout_constraintStart_toEndOf="@id/tweet_profile"
+						app:layout_constraintTop_toBottomOf="@id/tweet_username"
+						app:layout_constraintBottom_toTopOf="@id/tweet_date"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintVertical_chainStyle="packed" />
 
-                    <TextView
-                        android:id="@+id/tweet_date"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/tweet_textview_margin"
-                        android:layout_marginStart="@dimen/tweet_textview_margin"
-                        android:layout_marginRight="@dimen/tweet_textview_margin"
-                        android:layout_marginEnd="@dimen/tweet_textview_margin"
-                        android:singleLine="true"
-                        android:textSize="@dimen/tweet_textsize_small"
-                        app:layout_constraintStart_toEndOf="@id/tweet_profile"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_screenname"
-                        app:layout_constraintBottom_toBottomOf="@id/tweet_profile"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintVertical_chainStyle="packed" />
+					<TextView
+						android:id="@+id/tweet_date"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="@dimen/tweet_textview_margin"
+						android:layout_marginStart="@dimen/tweet_textview_margin"
+						android:layout_marginRight="@dimen/tweet_textview_margin"
+						android:layout_marginEnd="@dimen/tweet_textview_margin"
+						android:singleLine="true"
+						android:textSize="@dimen/tweet_textsize_small"
+						app:layout_constraintStart_toEndOf="@id/tweet_profile"
+						app:layout_constraintTop_toBottomOf="@id/tweet_screenname"
+						app:layout_constraintBottom_toBottomOf="@id/tweet_profile"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintVertical_chainStyle="packed" />
 
-                    <androidx.constraintlayout.widget.Barrier
-                        android:id="@+id/tweet_profile_barrier"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:barrierDirection="bottom"
-                        app:constraint_referenced_ids="tweet_profile, tweet_date" />
+					<androidx.constraintlayout.widget.Barrier
+						android:id="@+id/tweet_profile_barrier"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						app:barrierDirection="bottom"
+						app:constraint_referenced_ids="tweet_profile, tweet_date" />
 
-                    <Button
-                        android:id="@+id/tweet_answer_reference"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/tweet_button_height"
-                        android:visibility="invisible"
-                        android:paddingLeft="@dimen/tweet_button_padding"
-                        android:paddingRight="@dimen/tweet_button_padding"
-                        android:drawablePadding="@dimen/tweet_padding_drawable"
-                        android:layout_margin="@dimen/tweet_textview_margin"
-                        android:minWidth="0dp"
-                        android:textSize="@dimen/tweet_textsize_small"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_profile_barrier"
-                        app:layout_constraintEnd_toStartOf="@id/tweet_retweeter_reference"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        style="@style/FeedbackButton" />
+					<Button
+						android:id="@+id/tweet_answer_reference"
+						android:layout_width="wrap_content"
+						android:layout_height="@dimen/tweet_button_height"
+						android:visibility="invisible"
+						android:paddingLeft="@dimen/tweet_button_padding"
+						android:paddingRight="@dimen/tweet_button_padding"
+						android:drawablePadding="@dimen/tweet_padding_drawable"
+						android:layout_margin="@dimen/tweet_textview_margin"
+						android:minWidth="0dp"
+						android:textSize="@dimen/tweet_textsize_small"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/tweet_profile_barrier"
+						app:layout_constraintEnd_toStartOf="@id/tweet_retweeter_reference"
+						app:layout_constraintHorizontal_bias="0.0"
+						app:layout_constraintHorizontal_chainStyle="packed"
+						style="@style/FeedbackButton" />
 
-                    <Button
-                        android:id="@+id/tweet_retweeter_reference"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/tweet_button_height"
-                        android:visibility="invisible"
-                        android:paddingLeft="@dimen/tweet_button_padding"
-                        android:paddingRight="@dimen/tweet_button_padding"
-                        android:drawablePadding="@dimen/tweet_padding_drawable"
-                        android:layout_margin="@dimen/tweet_textview_margin"
-                        android:minWidth="0dp"
-                        android:textSize="@dimen/tweet_textsize_small"
-                        app:layout_constraintStart_toEndOf="@id/tweet_answer_reference"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_profile_barrier"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        style="@style/FeedbackButton" />
+					<Button
+						android:id="@+id/tweet_retweeter_reference"
+						android:layout_width="wrap_content"
+						android:layout_height="@dimen/tweet_button_height"
+						android:visibility="invisible"
+						android:paddingLeft="@dimen/tweet_button_padding"
+						android:paddingRight="@dimen/tweet_button_padding"
+						android:drawablePadding="@dimen/tweet_padding_drawable"
+						android:layout_margin="@dimen/tweet_textview_margin"
+						android:minWidth="0dp"
+						android:textSize="@dimen/tweet_textsize_small"
+						app:layout_constraintStart_toEndOf="@id/tweet_answer_reference"
+						app:layout_constraintTop_toBottomOf="@id/tweet_profile_barrier"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_chainStyle="packed"
+						style="@style/FeedbackButton" />
 
-                    <androidx.constraintlayout.widget.Barrier
-                        android:id="@+id/tweet_text_barrier"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:barrierDirection="bottom"
-                        app:constraint_referenced_ids="tweet_retweeter_reference, tweet_answer_reference" />
+					<androidx.constraintlayout.widget.Barrier
+						android:id="@+id/tweet_text_barrier"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						app:barrierDirection="bottom"
+						app:constraint_referenced_ids="tweet_retweeter_reference, tweet_answer_reference" />
 
-                    <TextView
-                        android:id="@+id/tweet_detailed"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/tweet_textview_margin"
-                        android:layout_marginStart="@dimen/tweet_textview_margin"
-                        android:layout_marginTop="@dimen/tweet_textview_margin"
-                        android:layout_marginRight="@dimen/tweet_textview_margin"
-                        android:layout_marginEnd="@dimen/tweet_textview_margin"
-                        android:fadeScrollbars="false"
-                        android:linksClickable="true"
-                        android:maxLines="@integer/tweet_text_max_lines"
-                        android:scrollbars="vertical"
-                        android:textSize="@dimen/tweet_textsize"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_text_barrier"
-                        app:layout_constraintEnd_toEndOf="parent" />
+					<TextView
+						android:id="@+id/tweet_detailed"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="@dimen/tweet_textview_margin"
+						android:layout_marginStart="@dimen/tweet_textview_margin"
+						android:layout_marginTop="@dimen/tweet_textview_margin"
+						android:layout_marginRight="@dimen/tweet_textview_margin"
+						android:layout_marginEnd="@dimen/tweet_textview_margin"
+						android:fadeScrollbars="false"
+						android:linksClickable="true"
+						android:maxLines="@integer/tweet_text_max_lines"
+						android:scrollbars="vertical"
+						android:textSize="@dimen/tweet_textsize"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/tweet_text_barrier"
+						app:layout_constraintEnd_toEndOf="parent" />
 
-                    <ImageButton
-                        android:id="@+id/tweet_media_attach"
-                        android:layout_width="@dimen/tweet_button_media_width"
-                        android:layout_height="@dimen/tweet_button_media_height"
-                        android:visibility="invisible"
-                        android:layout_marginTop="@dimen/tweet_button_margin"
-                        android:contentDescription="@string/image_preview"
-                        app:layout_constraintStart_toStartOf="@id/tweet_api"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_detailed"
-                        app:layout_constraintEnd_toEndOf="@id/tweet_api"
-                        style="@style/RoundButton" />
+					<ImageButton
+						android:id="@+id/tweet_media_attach"
+						android:layout_width="@dimen/tweet_button_media_width"
+						android:layout_height="@dimen/tweet_button_media_height"
+						android:visibility="invisible"
+						android:layout_marginTop="@dimen/tweet_button_margin"
+						android:contentDescription="@string/image_preview"
+						app:layout_constraintStart_toStartOf="@id/tweet_api"
+						app:layout_constraintTop_toBottomOf="@id/tweet_detailed"
+						app:layout_constraintEnd_toEndOf="@id/tweet_api"
+						style="@style/RoundButton" />
 
-                    <TextView
-                        android:id="@+id/tweet_sensitive"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="invisible"
-                        android:drawablePadding="@dimen/tweet_padding_drawable"
-                        android:layout_marginLeft="@dimen/tweet_textview_margin"
-                        android:layout_marginStart="@dimen/tweet_textview_margin"
-                        android:layout_marginTop="@dimen/tweet_textview_margin"
-                        android:layout_marginRight="@dimen/tweet_textview_margin"
-                        android:layout_marginEnd="@dimen/tweet_textview_margin"
-                        android:singleLine="true"
-                        android:text="@string/tweet_sensitive_media"
-                        android:textSize="@dimen/tweet_textsize_small"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_media_attach"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0" />
+					<TextView
+						android:id="@+id/tweet_sensitive"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:visibility="invisible"
+						android:drawablePadding="@dimen/tweet_padding_drawable"
+						android:layout_marginLeft="@dimen/tweet_textview_margin"
+						android:layout_marginStart="@dimen/tweet_textview_margin"
+						android:layout_marginTop="@dimen/tweet_textview_margin"
+						android:layout_marginRight="@dimen/tweet_textview_margin"
+						android:layout_marginEnd="@dimen/tweet_textview_margin"
+						android:singleLine="true"
+						android:text="@string/tweet_sensitive_media"
+						android:textSize="@dimen/tweet_textsize_small"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/tweet_media_attach"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_bias="0.0" />
 
-                    <TextView
-                        android:id="@+id/tweet_location_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/tweet_padding_drawable"
-                        android:layout_marginStart="@dimen/tweet_textview_margin"
-                        android:layout_marginTop="@dimen/tweet_textview_margin"
-                        android:singleLine="true"
-                        android:textSize="@dimen/tweet_textsize_locale"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_sensitive"
-                        app:layout_constraintEnd_toStartOf="@id/tweet_location_coordinate"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintHorizontal_chainStyle="packed" />
+					<TextView
+						android:id="@+id/tweet_location_name"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:drawablePadding="@dimen/tweet_padding_drawable"
+						android:layout_marginStart="@dimen/tweet_textview_margin"
+						android:layout_marginTop="@dimen/tweet_textview_margin"
+						android:singleLine="true"
+						android:textSize="@dimen/tweet_textsize_locale"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/tweet_sensitive"
+						app:layout_constraintEnd_toStartOf="@id/tweet_location_coordinate"
+						app:layout_constraintHorizontal_bias="0.0"
+						app:layout_constraintHorizontal_chainStyle="packed" />
 
-                    <Button
-                        android:id="@+id/tweet_location_coordinate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/tweet_button_height"
-                        android:visibility="invisible"
-                        android:paddingLeft="@dimen/tweet_button_padding"
-                        android:paddingRight="@dimen/tweet_button_padding"
-                        android:layout_marginStart="@dimen/tweet_button_margin"
-                        android:singleLine="true"
-                        android:textSize="@dimen/tweet_textsize_locale"
-                        app:layout_constraintStart_toEndOf="@id/tweet_location_name"
-                        app:layout_constraintTop_toTopOf="@id/tweet_location_name"
-                        app:layout_constraintBottom_toBottomOf="@id/tweet_location_name"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        style="@style/FeedbackButton" />
+					<Button
+						android:id="@+id/tweet_location_coordinate"
+						android:layout_width="wrap_content"
+						android:layout_height="@dimen/tweet_button_height"
+						android:visibility="invisible"
+						android:paddingLeft="@dimen/tweet_button_padding"
+						android:paddingRight="@dimen/tweet_button_padding"
+						android:layout_marginStart="@dimen/tweet_button_margin"
+						android:singleLine="true"
+						android:textSize="@dimen/tweet_textsize_locale"
+						app:layout_constraintStart_toEndOf="@id/tweet_location_name"
+						app:layout_constraintTop_toTopOf="@id/tweet_location_name"
+						app:layout_constraintBottom_toBottomOf="@id/tweet_location_name"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintHorizontal_chainStyle="packed"
+						style="@style/FeedbackButton" />
 
-                    <androidx.constraintlayout.widget.Barrier
-                        android:id="@+id/tweet_api_barrier"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:barrierDirection="bottom"
-                        app:constraint_referenced_ids="tweet_location_coordinate, tweet_location_name" />
+					<androidx.constraintlayout.widget.Barrier
+						android:id="@+id/tweet_api_barrier"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						app:barrierDirection="bottom"
+						app:constraint_referenced_ids="tweet_location_coordinate, tweet_location_name" />
 
-                    <TextView
-                        android:id="@+id/tweet_api"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/tweet_textview_margin"
-                        android:layout_marginStart="@dimen/tweet_textview_margin"
-                        android:layout_marginRight="@dimen/tweet_textview_margin"
-                        android:layout_marginEnd="@dimen/tweet_textview_margin"
-                        android:linksClickable="false"
-                        android:singleLine="true"
-                        android:textSize="@dimen/tweet_textsize_small"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tweet_api_barrier"
-                        app:layout_constraintEnd_toEndOf="parent" />
+					<TextView
+						android:id="@+id/tweet_api"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="@dimen/tweet_textview_margin"
+						android:layout_marginStart="@dimen/tweet_textview_margin"
+						android:layout_marginRight="@dimen/tweet_textview_margin"
+						android:layout_marginEnd="@dimen/tweet_textview_margin"
+						android:linksClickable="false"
+						android:singleLine="true"
+						android:textSize="@dimen/tweet_textsize_small"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/tweet_api_barrier"
+						app:layout_constraintEnd_toEndOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+				</androidx.constraintlayout.widget.ConstraintLayout>
 
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+			</com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        </com.google.android.material.appbar.AppBarLayout>
+		</com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+		<androidx.core.widget.NestedScrollView
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:fillViewport="true"
+			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:orientation="vertical"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
 
-                <Button
-                    android:id="@+id/tweet_answer"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/tweet_button_height"
-                    android:visibility="invisible"
-                    android:paddingLeft="@dimen/tweet_button_padding"
-                    android:paddingRight="@dimen/tweet_button_padding"
-                    android:drawablePadding="@dimen/tweet_padding_drawable"
-                    android:layout_margin="@dimen/tweet_button_margin"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment"
-                    app:layout_constraintEnd_toStartOf="@id/tweet_retweet"
-                    app:layout_constraintHorizontal_weight="1"
-                    style="@style/FeedbackButton" />
+				<Button
+					android:id="@+id/tweet_answer"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/tweet_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/tweet_button_padding"
+					android:paddingRight="@dimen/tweet_button_padding"
+					android:drawablePadding="@dimen/tweet_padding_drawable"
+					android:layout_margin="@dimen/tweet_button_margin"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment"
+					app:layout_constraintEnd_toStartOf="@id/tweet_retweet"
+					app:layout_constraintHorizontal_weight="1"
+					style="@style/FeedbackButton" />
 
-                <Button
-                    android:id="@+id/tweet_retweet"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/tweet_button_height"
-                    android:visibility="invisible"
-                    android:paddingLeft="@dimen/tweet_button_padding"
-                    android:paddingRight="@dimen/tweet_button_padding"
-                    android:drawablePadding="@dimen/tweet_padding_drawable"
-                    android:layout_margin="@dimen/tweet_button_margin"
-                    app:layout_constraintStart_toEndOf="@id/tweet_answer"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment"
-                    app:layout_constraintEnd_toStartOf="@id/tweet_favorite"
-                    app:layout_constraintHorizontal_weight="1"
-                    style="@style/FeedbackButton" />
+				<Button
+					android:id="@+id/tweet_retweet"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/tweet_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/tweet_button_padding"
+					android:paddingRight="@dimen/tweet_button_padding"
+					android:drawablePadding="@dimen/tweet_padding_drawable"
+					android:layout_margin="@dimen/tweet_button_margin"
+					app:layout_constraintStart_toEndOf="@id/tweet_answer"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment"
+					app:layout_constraintEnd_toStartOf="@id/tweet_favorite"
+					app:layout_constraintHorizontal_weight="1"
+					style="@style/FeedbackButton" />
 
-                <Button
-                    android:id="@+id/tweet_favorite"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/tweet_button_height"
-                    android:visibility="invisible"
-                    android:paddingLeft="@dimen/tweet_button_padding"
-                    android:paddingRight="@dimen/tweet_button_padding"
-                    android:drawablePadding="@dimen/tweet_padding_drawable"
-                    android:layout_margin="@dimen/tweet_button_margin"
-                    app:layout_constraintStart_toEndOf="@id/tweet_retweet"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_weight="1"
-                    style="@style/FeedbackButton" />
+				<Button
+					android:id="@+id/tweet_favorite"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/tweet_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/tweet_button_padding"
+					android:paddingRight="@dimen/tweet_button_padding"
+					android:drawablePadding="@dimen/tweet_padding_drawable"
+					android:layout_margin="@dimen/tweet_button_margin"
+					app:layout_constraintStart_toEndOf="@id/tweet_retweet"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_weight="1"
+					style="@style/FeedbackButton" />
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/tweet_reply_fragment"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tweet_favorite"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+				<androidx.fragment.app.FragmentContainerView
+					android:id="@+id/tweet_reply_fragment"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/tweet_favorite"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.core.widget.NestedScrollView>
+		</androidx.core.widget.NestedScrollView>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </LinearLayout>

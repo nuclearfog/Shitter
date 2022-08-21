@@ -186,9 +186,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		fontSelector.setSelected(false);
 		scaleSelector.setSelected(false);
 
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-			scaleSelector.setVisibility(GONE); // scaling not supported on API < 17
-		}
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 

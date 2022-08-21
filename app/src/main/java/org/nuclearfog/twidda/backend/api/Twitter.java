@@ -9,10 +9,6 @@ import androidx.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.api.update.MediaUpdate;
-import org.nuclearfog.twidda.backend.api.update.ProfileUpdate;
-import org.nuclearfog.twidda.backend.api.update.TweetUpdate;
-import org.nuclearfog.twidda.backend.api.update.UserlistUpdate;
 import org.nuclearfog.twidda.backend.api.impl.DirectmessageV1;
 import org.nuclearfog.twidda.backend.api.impl.LocationV1;
 import org.nuclearfog.twidda.backend.api.impl.RelationV1;
@@ -21,6 +17,10 @@ import org.nuclearfog.twidda.backend.api.impl.TweetV1;
 import org.nuclearfog.twidda.backend.api.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.impl.UserV1;
 import org.nuclearfog.twidda.backend.api.impl.UserV2;
+import org.nuclearfog.twidda.backend.api.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.api.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.api.update.TweetUpdate;
+import org.nuclearfog.twidda.backend.api.update.UserlistUpdate;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
@@ -48,6 +48,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -1722,8 +1723,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			Tweet embeddedTweet = tweets.get(pos).getEmbeddedTweet();
 			if (excludedIds.contains(authorId)) {
 				tweets.remove(pos);
-			}
-			else if (embeddedTweet != null) {
+			} else if (embeddedTweet != null) {
 				authorId = embeddedTweet.getAuthor().getId();
 				if (excludedIds.contains(authorId)) {
 					tweets.remove(pos);

@@ -1,271 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/user_view"
-    android:fitsSystemWindows="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.activities.ProfileActivity">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/user_view"
+	android:fitsSystemWindows="true"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.activities.ProfileActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent">
+	<com.google.android.material.appbar.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+		<com.google.android.material.appbar.CollapsingToolbarLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/profile_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/profile_content"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/profile_banner"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/profile_banner"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintDimensionRatio="3.0" />
+				<ImageView
+					android:id="@+id/profile_banner"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:adjustViewBounds="true"
+					android:contentDescription="@string/profile_banner"
+					android:scaleType="centerCrop"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintDimensionRatio="3.0" />
 
-                <ImageView
-                    android:id="@+id/profile_toolbar_background"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/profile_toolbar_height"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:ignore="ContentDescription" />
+				<ImageView
+					android:id="@+id/profile_toolbar_background"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/profile_toolbar_height"
+					android:scaleType="centerCrop"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					tools:ignore="ContentDescription" />
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/profile_toolbar"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/profile_toolbar_height"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+				<androidx.appcompat.widget.Toolbar
+					android:id="@+id/profile_toolbar"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/profile_toolbar_height"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
 
-                <ImageView
-                    android:id="@+id/profile_img"
-                    android:layout_width="@dimen/profile_image_size"
-                    android:layout_height="@dimen/profile_image_size"
-                    android:layout_marginStart="@dimen/profile_image_padding_left"
-                    android:contentDescription="@string/profile_image"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_banner"
-                    app:layout_constraintBottom_toBottomOf="@id/profile_banner" />
+				<ImageView
+					android:id="@+id/profile_img"
+					android:layout_width="@dimen/profile_image_size"
+					android:layout_height="@dimen/profile_image_size"
+					android:layout_marginStart="@dimen/profile_image_padding_left"
+					android:contentDescription="@string/profile_image"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/profile_banner"
+					app:layout_constraintBottom_toBottomOf="@id/profile_banner" />
 
-                <TextView
-                    android:id="@+id/profile_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/profile_tv_background_padding"
-                    android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:layout_marginLeft="@dimen/profile_username_margin"
-                    android:layout_marginStart="@dimen/profile_username_margin"
-                    android:layout_marginRight="@dimen/profile_username_margin"
-                    android:layout_marginEnd="@dimen/profile_username_margin"
-                    android:singleLine="true"
-                    android:textSize="@dimen/profile_textsize_big"
-                    app:layout_constraintStart_toEndOf="@id/profile_img"
-                    app:layout_constraintBottom_toBottomOf="@id/profile_banner"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constrainedWidth="true" />
+				<TextView
+					android:id="@+id/profile_username"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:padding="@dimen/profile_tv_background_padding"
+					android:drawablePadding="@dimen/profile_padding_drawable"
+					android:layout_marginLeft="@dimen/profile_username_margin"
+					android:layout_marginStart="@dimen/profile_username_margin"
+					android:layout_marginRight="@dimen/profile_username_margin"
+					android:layout_marginEnd="@dimen/profile_username_margin"
+					android:singleLine="true"
+					android:textSize="@dimen/profile_textsize_big"
+					app:layout_constraintStart_toEndOf="@id/profile_img"
+					app:layout_constraintBottom_toBottomOf="@id/profile_banner"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_bias="0.0"
+					app:layout_constrainedWidth="true" />
 
-                <TextView
-                    android:id="@+id/profile_screenname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/profile_tv_background_padding"
-                    android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:layout_marginLeft="@dimen/profile_username_margin"
-                    android:layout_marginStart="@dimen/profile_username_margin"
-                    android:layout_marginRight="@dimen/profile_username_margin"
-                    android:layout_marginEnd="@dimen/profile_username_margin"
-                    android:singleLine="true"
-                    android:textSize="@dimen/profile_textsize_big"
-                    app:layout_constraintStart_toEndOf="@id/profile_img"
-                    app:layout_constraintTop_toBottomOf="@id/profile_username"
-                    app:layout_constraintEnd_toEndOf="@id/follow_back"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constrainedWidth="true" />
+				<TextView
+					android:id="@+id/profile_screenname"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:padding="@dimen/profile_tv_background_padding"
+					android:drawablePadding="@dimen/profile_padding_drawable"
+					android:layout_marginLeft="@dimen/profile_username_margin"
+					android:layout_marginStart="@dimen/profile_username_margin"
+					android:layout_marginRight="@dimen/profile_username_margin"
+					android:layout_marginEnd="@dimen/profile_username_margin"
+					android:singleLine="true"
+					android:textSize="@dimen/profile_textsize_big"
+					app:layout_constraintStart_toEndOf="@id/profile_img"
+					app:layout_constraintTop_toBottomOf="@id/profile_username"
+					app:layout_constraintEnd_toEndOf="@id/follow_back"
+					app:layout_constraintHorizontal_bias="0.0"
+					app:layout_constraintHorizontal_chainStyle="packed"
+					app:layout_constrainedWidth="true" />
 
-                <TextView
-                    android:id="@+id/follow_back"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    android:padding="@dimen/profile_tv_background_padding"
-                    android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:layout_marginStart="@dimen/profile_tv_margin"
-                    android:singleLine="true"
-                    android:text="@string/follows_you"
-                    android:textSize="@dimen/profile_textsize_big"
-                    app:layout_constraintStart_toEndOf="@id/profile_screenname"
-                    app:layout_constraintTop_toBottomOf="@id/profile_username"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constrainedWidth="true" />
+				<TextView
+					android:id="@+id/follow_back"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:padding="@dimen/profile_tv_background_padding"
+					android:drawablePadding="@dimen/profile_padding_drawable"
+					android:layout_marginStart="@dimen/profile_tv_margin"
+					android:singleLine="true"
+					android:text="@string/follows_you"
+					android:textSize="@dimen/profile_textsize_big"
+					app:layout_constraintStart_toEndOf="@id/profile_screenname"
+					app:layout_constraintTop_toBottomOf="@id/profile_username"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_chainStyle="packed"
+					app:layout_constrainedWidth="true" />
 
-                <Button
-                    android:id="@+id/following"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/profile_button_height"
-                    android:visibility="invisible"
-                    android:paddingLeft="@dimen/profile_button_background_padding"
-                    android:paddingRight="@dimen/profile_button_background_padding"
-                    android:layout_marginLeft="@dimen/profile_button_margin"
-                    android:layout_marginStart="@dimen/profile_button_margin"
-                    android:layout_marginRight="@dimen/profile_button_margin"
-                    android:layout_marginEnd="@dimen/profile_button_margin"
-                    android:textSize="@dimen/profile_textsize_big"
-                    app:layout_constraintStart_toEndOf="@id/profile_img"
-                    app:layout_constraintTop_toBottomOf="@id/profile_screenname"
-                    app:layout_constraintEnd_toStartOf="@id/follower"
-                    app:layout_constraintHorizontal_weight="1"
-                    style="@style/FeedbackButton" />
+				<Button
+					android:id="@+id/following"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/profile_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/profile_button_background_padding"
+					android:paddingRight="@dimen/profile_button_background_padding"
+					android:layout_marginLeft="@dimen/profile_button_margin"
+					android:layout_marginStart="@dimen/profile_button_margin"
+					android:layout_marginRight="@dimen/profile_button_margin"
+					android:layout_marginEnd="@dimen/profile_button_margin"
+					android:textSize="@dimen/profile_textsize_big"
+					app:layout_constraintStart_toEndOf="@id/profile_img"
+					app:layout_constraintTop_toBottomOf="@id/profile_screenname"
+					app:layout_constraintEnd_toStartOf="@id/follower"
+					app:layout_constraintHorizontal_weight="1"
+					style="@style/FeedbackButton" />
 
-                <Button
-                    android:id="@+id/follower"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/profile_button_height"
-                    android:visibility="invisible"
-                    android:paddingLeft="@dimen/profile_button_background_padding"
-                    android:paddingRight="@dimen/profile_button_background_padding"
-                    android:layout_marginLeft="@dimen/profile_button_margin"
-                    android:layout_marginStart="@dimen/profile_button_margin"
-                    android:layout_marginRight="@dimen/profile_button_margin"
-                    android:layout_marginEnd="@dimen/profile_button_margin"
-                    android:textSize="@dimen/profile_textsize_big"
-                    app:layout_constraintStart_toEndOf="@id/following"
-                    app:layout_constraintTop_toTopOf="@id/following"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_weight="1"
-                    style="@style/FeedbackButton" />
+				<Button
+					android:id="@+id/follower"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/profile_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/profile_button_background_padding"
+					android:paddingRight="@dimen/profile_button_background_padding"
+					android:layout_marginLeft="@dimen/profile_button_margin"
+					android:layout_marginStart="@dimen/profile_button_margin"
+					android:layout_marginRight="@dimen/profile_button_margin"
+					android:layout_marginEnd="@dimen/profile_button_margin"
+					android:textSize="@dimen/profile_textsize_big"
+					app:layout_constraintStart_toEndOf="@id/following"
+					app:layout_constraintTop_toTopOf="@id/following"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_weight="1"
+					style="@style/FeedbackButton" />
 
-                <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/profile_bio_barrier"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="following, follower, profile_img" />
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/profile_bio_barrier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:barrierDirection="bottom"
+					app:constraint_referenced_ids="following, follower, profile_img" />
 
-                <TextView
-                    android:id="@+id/bio"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/profile_tv_margin"
-                    android:layout_marginStart="@dimen/profile_tv_margin"
-                    android:layout_marginTop="@dimen/profile_tv_margin"
-                    android:layout_marginRight="@dimen/profile_tv_margin"
-                    android:layout_marginEnd="@dimen/profile_tv_margin"
-                    android:fadeScrollbars="false"
-                    android:linksClickable="true"
-                    android:maxLines="@integer/profile_text_bio_lines"
-                    android:scrollbars="vertical"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_bio_barrier"
-                    app:layout_constraintEnd_toEndOf="parent" />
+				<TextView
+					android:id="@+id/bio"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/profile_tv_margin"
+					android:layout_marginStart="@dimen/profile_tv_margin"
+					android:layout_marginTop="@dimen/profile_tv_margin"
+					android:layout_marginRight="@dimen/profile_tv_margin"
+					android:layout_marginEnd="@dimen/profile_tv_margin"
+					android:fadeScrollbars="false"
+					android:linksClickable="true"
+					android:maxLines="@integer/profile_text_bio_lines"
+					android:scrollbars="vertical"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/profile_bio_barrier"
+					app:layout_constraintEnd_toEndOf="parent" />
 
 
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:layout_marginLeft="@dimen/profile_tv_margin"
-                    android:layout_marginStart="@dimen/profile_tv_margin"
-                    android:layout_marginRight="@dimen/profile_tv_margin"
-                    android:layout_marginEnd="@dimen/profile_tv_margin"
-                    android:singleLine="true"
-                    android:textSize="@dimen/profile_textsize_small"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/bio"
-                    app:layout_constraintEnd_toStartOf="@id/links"
-                    app:layout_constraintHorizontal_weight="1" />
+				<TextView
+					android:id="@+id/location"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:drawablePadding="@dimen/profile_padding_drawable"
+					android:layout_marginLeft="@dimen/profile_tv_margin"
+					android:layout_marginStart="@dimen/profile_tv_margin"
+					android:layout_marginRight="@dimen/profile_tv_margin"
+					android:layout_marginEnd="@dimen/profile_tv_margin"
+					android:singleLine="true"
+					android:textSize="@dimen/profile_textsize_small"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/bio"
+					app:layout_constraintEnd_toStartOf="@id/links"
+					app:layout_constraintHorizontal_weight="1" />
 
-                <TextView
-                    android:id="@+id/links"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:layout_marginLeft="@dimen/profile_tv_margin"
-                    android:layout_marginStart="@dimen/profile_tv_margin"
-                    android:layout_marginRight="@dimen/profile_tv_margin"
-                    android:layout_marginEnd="@dimen/profile_tv_margin"
-                    android:linksClickable="true"
-                    android:singleLine="true"
-                    android:textSize="@dimen/profile_textsize_small"
-                    app:layout_constraintStart_toEndOf="@id/location"
-                    app:layout_constraintTop_toBottomOf="@id/bio"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_weight="1" />
+				<TextView
+					android:id="@+id/links"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:drawablePadding="@dimen/profile_padding_drawable"
+					android:layout_marginLeft="@dimen/profile_tv_margin"
+					android:layout_marginStart="@dimen/profile_tv_margin"
+					android:layout_marginRight="@dimen/profile_tv_margin"
+					android:layout_marginEnd="@dimen/profile_tv_margin"
+					android:linksClickable="true"
+					android:singleLine="true"
+					android:textSize="@dimen/profile_textsize_small"
+					app:layout_constraintStart_toEndOf="@id/location"
+					app:layout_constraintTop_toBottomOf="@id/bio"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_weight="1" />
 
-                <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/profile_date_barrier"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="links, location" />
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/profile_date_barrier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:barrierDirection="bottom"
+					app:constraint_referenced_ids="links, location" />
 
-                <TextView
-                    android:id="@+id/profile_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:layout_marginLeft="@dimen/profile_tv_margin"
-                    android:layout_marginStart="@dimen/profile_tv_margin"
-                    android:layout_marginRight="@dimen/profile_tv_margin"
-                    android:layout_marginEnd="@dimen/profile_tv_margin"
-                    android:singleLine="true"
-                    android:textSize="@dimen/profile_textsize_small"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profile_date_barrier"
-                    app:layout_constraintEnd_toEndOf="parent" />
+				<TextView
+					android:id="@+id/profile_date"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:drawablePadding="@dimen/profile_padding_drawable"
+					android:layout_marginLeft="@dimen/profile_tv_margin"
+					android:layout_marginStart="@dimen/profile_tv_margin"
+					android:layout_marginRight="@dimen/profile_tv_margin"
+					android:layout_marginEnd="@dimen/profile_tv_margin"
+					android:singleLine="true"
+					android:textSize="@dimen/profile_textsize_small"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/profile_date_barrier"
+					app:layout_constraintEnd_toEndOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+		</com.google.android.material.appbar.CollapsingToolbarLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
+	</com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:fillViewport="true"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/profile_tab"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+			<com.google.android.material.tabs.TabLayout
+				android:id="@+id/profile_tab"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@android:color/transparent" />
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/profile_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+			<androidx.viewpager.widget.ViewPager
+				android:id="@+id/profile_pager"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent" />
 
-        </LinearLayout>
+		</LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+	</androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

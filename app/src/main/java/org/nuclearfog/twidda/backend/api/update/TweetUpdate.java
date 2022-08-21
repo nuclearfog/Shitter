@@ -52,13 +52,8 @@ public class TweetUpdate {
 	 * @return number of media attached to this holder or -1 if file is invalid
 	 */
 	public int addMedia(Context context, Uri mediaUri) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
-			if (file != null && file.length() > 0) {
-				mediaUris.add(mediaUri);
-				return mediaUris.size();
-			}
-		} else {
+		DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
+		if (file != null && file.length() > 0) {
 			mediaUris.add(mediaUri);
 			return mediaUris.size();
 		}

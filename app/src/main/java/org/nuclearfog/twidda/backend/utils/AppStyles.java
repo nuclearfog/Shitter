@@ -20,7 +20,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -114,13 +113,10 @@ public final class AppStyles {
 	 * @return context with new configuration
 	 */
 	public static Context setFontScale(Context context) {
-		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-			AppStyles instance = new AppStyles(context);
-			Configuration config = context.getResources().getConfiguration();
-			config.fontScale = instance.settings.getTextScale();
-			return context.createConfigurationContext(config);
-		}
-		return context;
+		AppStyles instance = new AppStyles(context);
+		Configuration config = context.getResources().getConfiguration();
+		config.fontScale = instance.settings.getTextScale();
+		return context.createConfigurationContext(config);
 	}
 
 	/**

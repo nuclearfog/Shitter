@@ -229,6 +229,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		favButton.setOnClickListener(this);
 		rtwButton.setOnLongClickListener(this);
 		favButton.setOnLongClickListener(this);
+		retweeter.setOnLongClickListener(this);
 		profile_img.setOnClickListener(this);
 		tweetLocGPS.setOnClickListener(this);
 		mediaButton.setOnClickListener(this);
@@ -486,31 +487,36 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	@Override
 	public boolean onLongClick(View v) {
 		if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
-			Tweet clickedTweet = tweet;
-			if (tweet.getEmbeddedTweet() != null) {
-				clickedTweet = tweet.getEmbeddedTweet();
-			}
 			// retweet this tweet
 			if (v.getId() == R.id.tweet_retweet) {
-				if (clickedTweet.isRetweeted()) {
+				if (tweet.isRetweeted()) {
 					statusAsync = new TweetAction(this, TweetAction.UNRETWEET);
 				} else {
 					statusAsync = new TweetAction(this, TweetAction.RETWEET);
 				}
-				statusAsync.execute(clickedTweet.getId(), clickedTweet.getRetweetId());
+				statusAsync.execute(tweet.getId(), tweet.getRetweetId());
 				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
 			// favorite the tweet
 			else if (v.getId() == R.id.tweet_favorite) {
-				if (clickedTweet.isFavorited()) {
+				if (tweet.isFavorited()) {
 					statusAsync = new TweetAction(this, TweetAction.UNFAVORITE);
 				} else {
 					statusAsync = new TweetAction(this, TweetAction.FAVORITE);
 				}
-				statusAsync.execute(clickedTweet.getId());
+				statusAsync.execute(tweet.getId());
 				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
 				return true;
+			}
+			// go to original tweet
+			else if (v.getId() == R.id.tweet_retweeter_reference) {
+				Tweet embeddedTweet = tweet.getEmbeddedTweet();
+				if (embeddedTweet != null) {
+					Intent tweetIntent = new Intent(this, TweetActivity.class);
+					tweetIntent.putExtra(KEY_TWEET_DATA, embeddedTweet);
+					startActivity(tweetIntent);
+				}
 			}
 		}
 		return false;

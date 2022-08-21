@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer-array name="home_tab_icons">
-        <item>@drawable/home</item>
-        <item>@drawable/hash</item>
-        <item>@drawable/mention</item>
-    </integer-array>
+	<integer-array name="home_tab_icons">
+		<item>@drawable/home</item>
+		<item>@drawable/hash</item>
+		<item>@drawable/mention</item>
+	</integer-array>
 
-    <integer-array name="search_tab_icons">
-        <item>@drawable/search</item>
-        <item>@drawable/user</item>
-    </integer-array>
+	<integer-array name="search_tab_icons">
+		<item>@drawable/search</item>
+		<item>@drawable/user</item>
+	</integer-array>
 
-    <integer-array name="list_tab_icons">
-        <item>@drawable/list</item>
-        <item>@drawable/user</item>
-        <item>@drawable/subscriber</item>
-    </integer-array>
+	<integer-array name="list_tab_icons">
+		<item>@drawable/list</item>
+		<item>@drawable/user</item>
+		<item>@drawable/subscriber</item>
+	</integer-array>
 
-    <integer-array name="user_exclude_icons">
-        <item>@drawable/mute</item>
-        <item>@drawable/block</item>
-    </integer-array>
+	<integer-array name="user_exclude_icons">
+		<item>@drawable/mute</item>
+		<item>@drawable/block</item>
+	</integer-array>
 
-    <integer-array name="user_requests_icon">
-        <item>@drawable/follower_request</item>
-        <item>@drawable/following_request</item>
-    </integer-array>
+	<integer-array name="user_requests_icon">
+		<item>@drawable/follower_request</item>
+		<item>@drawable/following_request</item>
+	</integer-array>
 
-    <integer-array name="profile_tab_icons">
-        <item>@drawable/home</item>
-        <item>@drawable/favorite</item>
-    </integer-array>
+	<integer-array name="profile_tab_icons">
+		<item>@drawable/home</item>
+		<item>@drawable/favorite</item>
+	</integer-array>
 
-    <integer-array name="profile_tab_icons_like">
-        <item>@drawable/home</item>
-        <item>@drawable/like</item>
-    </integer-array>
+	<integer-array name="profile_tab_icons_like">
+		<item>@drawable/home</item>
+		<item>@drawable/like</item>
+	</integer-array>
 
-    <integer-array name="userlist_tab_icons">
-        <item>@drawable/following</item>
-        <item>@drawable/follower</item>
-    </integer-array>
+	<integer-array name="userlist_tab_icons">
+		<item>@drawable/following</item>
+		<item>@drawable/follower</item>
+	</integer-array>
 
 </resources>

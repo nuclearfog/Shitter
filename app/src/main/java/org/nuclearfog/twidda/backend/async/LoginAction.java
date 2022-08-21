@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see LoginActivity
  */
-public class Registration extends AsyncTask<String, Void, String> {
+public class LoginAction extends AsyncTask<String, Void, String> {
 
 	@Nullable
 	private ErrorHandler.TwitterError exception;
@@ -36,7 +36,7 @@ public class Registration extends AsyncTask<String, Void, String> {
 	 *
 	 * @param activity Activity Context
 	 */
-	public Registration(LoginActivity activity) {
+	public LoginAction(LoginActivity activity) {
 		super();
 		weakRef = new WeakReference<>(activity);
 		accountDB = new AccountDatabase(activity);
@@ -81,8 +81,7 @@ public class Registration extends AsyncTask<String, Void, String> {
 				} else {
 					activity.connect(result);
 				}
-			}
-			else {
+			} else {
 				activity.onError(exception);
 			}
 		}

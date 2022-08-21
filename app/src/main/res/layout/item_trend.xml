@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    style="@style/CardViewStyle">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	style="@style/CardViewStyle">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/trenditem_layout_padding">
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="@dimen/trenditem_layout_padding">
 
-        <TextView
-            android:id="@+id/trendpos"
-            android:layout_width="@dimen/trenditem_textsize_trendindex_width"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|end"
-            android:singleLine="true"
-            android:textAlignment="gravity"
-            android:textSize="@dimen/trenditem_textsize_trendindex"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/trendname"
-            app:layout_constrainedWidth="false" />
+		<TextView
+			android:id="@+id/trendpos"
+			android:layout_width="@dimen/trenditem_textsize_trendindex_width"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical|end"
+			android:singleLine="true"
+			android:textAlignment="gravity"
+			android:textSize="@dimen/trenditem_textsize_trendindex"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toStartOf="@id/trendname"
+			app:layout_constrainedWidth="false" />
 
-        <TextView
-            android:id="@+id/trendname"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/trenditem_text_margin"
-            android:singleLine="true"
-            android:textSize="@dimen/trenditem_textsize_trendname"
-            app:layout_constraintStart_toEndOf="@id/trendpos"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/trendvol"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constrainedWidth="true" />
+		<TextView
+			android:id="@+id/trendname"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/trenditem_text_margin"
+			android:singleLine="true"
+			android:textSize="@dimen/trenditem_textsize_trendname"
+			app:layout_constraintStart_toEndOf="@id/trendpos"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toTopOf="@id/trendvol"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constrainedWidth="true" />
 
-        <TextView
-            android:id="@+id/trendvol"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/trenditem_text_margin"
-            android:singleLine="true"
-            android:textSize="@dimen/trenditem_textsize_trendvol"
-            app:layout_constraintStart_toEndOf="@id/trendpos"
-            app:layout_constraintTop_toBottomOf="@id/trendname"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constrainedWidth="false" />
+		<TextView
+			android:id="@+id/trendvol"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/trenditem_text_margin"
+			android:singleLine="true"
+			android:textSize="@dimen/trenditem_textsize_trendvol"
+			app:layout_constraintStart_toEndOf="@id/trendpos"
+			app:layout_constraintTop_toBottomOf="@id/trendname"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constrainedWidth="false" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
