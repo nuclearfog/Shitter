@@ -37,6 +37,11 @@ public class AccountActivity extends AppCompatActivity {
 	public static final int RETURN_ACCOUNT_CHANGED = 0x3660;
 
 	/**
+	 * return code to notify if settings may changed
+	 */
+	public static final int RETURN_SETTINGS_CHANGED = 0x336;
+
+	/**
 	 * key to disable account selector option from menu
 	 * value type is Boolean
 	 */
@@ -44,6 +49,7 @@ public class AccountActivity extends AppCompatActivity {
 
 	private GlobalSettings settings;
 	private ListFragment fragment;
+	private Toolbar tool;
 
 
 	@Override
@@ -57,7 +63,7 @@ public class AccountActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_fragment);
 		ViewGroup root = findViewById(R.id.fragment_root);
-		Toolbar tool = findViewById(R.id.fragment_toolbar);
+		tool = findViewById(R.id.fragment_toolbar);
 		fragment = new AccountFragment();
 
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -99,10 +105,18 @@ public class AccountActivity extends AppCompatActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == REQUEST_LOGIN && resultCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
-			setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
+		if (requestCode == REQUEST_LOGIN) {
 			// new account registered, reload fragment
-			fragment.reset();
+			if (resultCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
+				setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
+				fragment.reset();
+			}
+			// check if setting page was opened and reload theme
+			else if (resultCode == LoginActivity.RETURN_SETTINGS_CHANGED) {
+				AppStyles.setTheme(tool, settings.getBackgroundColor());
+				setResult(RETURN_SETTINGS_CHANGED);
+				fragment.reset();
+			}
 		}
 	}
 }

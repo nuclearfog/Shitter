@@ -47,9 +47,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	private static final int REQUEST_ACCOUNT_SELECT = 0x384F;
 
 	/**
-	 * return code to recognize the parent activity that a login process finished successful
+	 * return code to notify if a login process was successful
 	 */
 	public static final int RETURN_LOGIN_SUCCESSFUL = 0x145;
+
+	/**
+	 * return code to notify if settings may changed
+	 */
+	public static final int RETURN_SETTINGS_CHANGED = 0x227;
 
 	private LoginAction registerAsync;
 	private GlobalSettings settings;
@@ -79,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
 		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
+		setResult(RESULT_CANCELED);
 
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
@@ -101,13 +107,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
 
 	@Override
-	public void onBackPressed() {
-		setResult(RESULT_CANCELED);
-		super.onBackPressed();
-	}
-
-
-	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.login, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
@@ -118,10 +117,15 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		// open settings page
 		if (item.getItemId() == R.id.login_setting) {
 			Intent settings = new Intent(this, SettingsActivity.class);
 			startActivity(settings);
-		} else if (item.getItemId() == R.id.login_select_account) {
+			// notify MainActivity that settings will change maybe
+			setResult(RETURN_SETTINGS_CHANGED);
+		}
+		// open account selector
+		else if (item.getItemId() == R.id.login_select_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
 			accountManager.putExtra(KEY_DISABLE_SELECTOR, true);
 			startActivityForResult(accountManager, REQUEST_ACCOUNT_SELECT);
