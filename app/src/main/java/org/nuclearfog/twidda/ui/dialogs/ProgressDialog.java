@@ -45,6 +45,8 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 		GlobalSettings settings = GlobalSettings.getInstance(context);
 		AppStyles.setProgressColor(circle, settings.getHighlightColor());
 		AppStyles.setDrawableColor(cancel, settings.getIconColor());
+
+		cancel.setOnClickListener(this);
 	}
 
 
@@ -68,10 +70,8 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 	 * enables cancel button and adds a listener
 	 */
 	public void addOnProgressStopListener(OnProgressStopListener listener) {
-		this.listener = listener;
 		cancel.setVisibility(VISIBLE);
-		cancel.setImageResource(R.drawable.cross);
-		cancel.setOnClickListener(this);
+		this.listener = listener;
 	}
 
 	/**

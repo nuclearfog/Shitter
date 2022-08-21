@@ -94,7 +94,7 @@ public class TweetV1 implements Tweet {
 		String replyUsrIdStr = json.optString("in_reply_to_user_id_str");
 		JSONObject locationJson = json.optJSONObject("place");
 		JSONObject user_retweet = json.optJSONObject("current_user_retweet");
-		JSONObject quoted_tweet = json.optJSONObject("retweeted_status");
+		JSONObject embedded_tweet = json.optJSONObject("retweeted_status");
 
 		if (ID_PATTERN.matcher(idStr).matches()) {
 			id = Long.parseLong(idStr);
@@ -119,8 +119,8 @@ public class TweetV1 implements Tweet {
 				retweetId = Long.parseLong(retweetIdStr);
 			}
 		}
-		if (quoted_tweet != null) {
-			embeddedTweet = new TweetV1(quoted_tweet, twitterId);
+		if (embedded_tweet != null) {
+			embeddedTweet = new TweetV1(embedded_tweet, twitterId);
 		}
 		// remove short media link
 		int linkPos = text.lastIndexOf("https://t.co/");
@@ -293,6 +293,9 @@ public class TweetV1 implements Tweet {
 	 */
 	public void setEmbeddedTweet(Tweet tweet) {
 		this.embeddedTweet = tweet;
+		// todo clone information of the retweet to this tweet
+		// API bug: information of the retweet differs from this tweet
+		// so we have to adjust them
 	}
 
 	/**

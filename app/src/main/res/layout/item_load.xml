@@ -18,6 +18,8 @@
 		android:layout_height="@dimen/loaditem_button_size"
 		android:background="@android:color/transparent"
 		android:layout_gravity="center"
-		android:contentDescription="@android:string/cancel" />
+		android:contentDescription="@android:string/cancel"
+		android:visibility="invisible"
+		android:src="@drawable/cross" />
 
 </FrameLayout>

@@ -47,7 +47,6 @@ public class LoginHolder extends ViewHolder {
 			tv.setTextColor(settings.getFontColor());
 			tv.setTypeface(settings.getTypeFace());
 		}
-		remove.setImageResource(R.drawable.cross);
 		remove.setColorFilter(settings.getIconColor(), SRC_IN);
 		background.setCardBackgroundColor(settings.getCardColor());
 		AppStyles.setButtonColor(remove, settings.getFontColor());

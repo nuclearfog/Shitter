@@ -92,7 +92,6 @@ public final class AppStyles {
 	public static void setEditorTheme(ViewGroup root, ImageView background) {
 		AppStyles instance = new AppStyles(root.getContext());
 		instance.setSubViewTheme(root);
-		background.setImageResource(R.drawable.background);
 		setDrawableColor(background, instance.settings.getPopupColor());
 	}
 

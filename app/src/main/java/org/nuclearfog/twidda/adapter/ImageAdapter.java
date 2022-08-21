@@ -147,9 +147,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 				});
 			}
 			return item;
-		} else {
-			return new Footer(parent, settings, true);
 		}
+		return new Footer(parent, settings, true);
 	}
 
 

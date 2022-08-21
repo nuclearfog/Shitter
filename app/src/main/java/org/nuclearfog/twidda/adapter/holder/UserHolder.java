@@ -44,12 +44,6 @@ public class UserHolder extends ViewHolder {
 		verifyIcon = itemView.findViewById(R.id.useritem_verified);
 		lockedIcon = itemView.findViewById(R.id.useritem_locked);
 		delete = itemView.findViewById(R.id.useritem_del_user);
-		// set view icons
-		followerIcon.setImageResource(R.drawable.follower);
-		followingIcon.setImageResource(R.drawable.following);
-		verifyIcon.setImageResource(R.drawable.verify);
-		lockedIcon.setImageResource(R.drawable.lock);
-		delete.setImageResource(R.drawable.cross);
 		// theme views
 		background.setCardBackgroundColor(settings.getCardColor());
 		followerIcon.setColorFilter(settings.getIconColor(), SRC_IN);

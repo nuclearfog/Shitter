@@ -55,7 +55,6 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
 		description = findViewById(R.id.link_preview_description);
 		preview = findViewById(R.id.link_preview_image);
 
-		close.setImageResource(R.drawable.cross);
 		GlobalSettings settings = GlobalSettings.getInstance(context);
 		AppStyles.setProgressColor(loading, settings.getHighlightColor());
 		AppStyles.setDrawableColor(close, Color.BLACK);

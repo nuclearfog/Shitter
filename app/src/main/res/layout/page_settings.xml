@@ -253,6 +253,7 @@
 						android:layout_width="@dimen/settings_icon_size"
 						android:layout_height="@dimen/settings_icon_size"
 						android:layout_marginTop="@dimen/settings_column_margin"
+						android:src="@drawable/font"
 						app:layout_constraintDimensionRatio="1.0"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/enable_like"

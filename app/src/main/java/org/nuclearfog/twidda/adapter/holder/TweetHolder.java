@@ -44,15 +44,9 @@ public class TweetHolder extends ViewHolder {
 		textViews[4] = itemView.findViewById(R.id.favorite_number);
 		textViews[5] = itemView.findViewById(R.id.retweeter);
 		textViews[6] = itemView.findViewById(R.id.time);
-		// set icons
-		verifiedIcon.setImageResource(R.drawable.verify);
-		lockedIcon.setImageResource(R.drawable.lock);
-		rtUser.setImageResource(R.drawable.retweet);
-		rtIcon.setImageResource(R.drawable.retweet);
+		// replace icon
 		if (settings.likeEnabled())
 			favIcon.setImageResource(R.drawable.like);
-		else
-			favIcon.setImageResource(R.drawable.favorite);
 		// theme views
 		verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
 		lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);

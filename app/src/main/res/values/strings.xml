@@ -52,6 +52,7 @@
 	<string name="info_permission_write">Write permission used to store images.</string>
 	<string name="info_restart_app_on_change">restarting required to apply changes</string>
 	<string name="info_tweet_text_copied">Tweet text copied</string>
+	<string name="info_tweet_location_copied">Location coordinates copied</string>
 	<string name="info_tweet_medialink_copied">Media link copied</string>
 	<string name="info_error">Error</string>
 

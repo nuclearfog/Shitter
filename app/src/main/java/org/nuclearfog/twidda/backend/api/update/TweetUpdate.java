@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;

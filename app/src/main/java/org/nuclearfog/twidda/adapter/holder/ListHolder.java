@@ -48,14 +48,6 @@ public class ListHolder extends ViewHolder {
 		textViews[5] = itemView.findViewById(R.id.list_member);
 		textViews[6] = itemView.findViewById(R.id.list_subscriber);
 		textViews[7] = itemView.findViewById(R.id.list_action);
-		// set icons
-		icons[0].setImageResource(R.drawable.verify);
-		icons[1].setImageResource(R.drawable.lock);
-		icons[2].setImageResource(R.drawable.user);
-		icons[3].setImageResource(R.drawable.subscriber);
-		icons[4].setImageResource(R.drawable.date);
-		icons[5].setImageResource(R.drawable.lock);
-		icons[6].setImageResource(R.drawable.back);
 		// theme views
 		for (TextView tv : textViews) {
 			tv.setTextColor(settings.getFontColor());

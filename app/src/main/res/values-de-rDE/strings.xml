@@ -244,4 +244,5 @@
 	<string name="menu_follow_requests">Anfragen</string>
 	<string name="menu_toolbar_excluded_users">Blocklisten</string>
 	<string name="menu_toolbar_request">Follow Anfragen</string>
+	<string name="info_tweet_location_copied">Standortkoordinaten kopiert</string>
 </resources>

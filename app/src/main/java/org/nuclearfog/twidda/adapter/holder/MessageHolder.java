@@ -49,11 +49,6 @@ public class MessageHolder extends ViewHolder {
 		textViews[4] = itemView.findViewById(R.id.dm_message);
 		buttons[0] = itemView.findViewById(R.id.dm_answer);
 		buttons[1] = itemView.findViewById(R.id.dm_delete);
-		// set icons
-		receiver_icon.setImageResource(R.drawable.right);
-		verifiedIcon.setImageResource(R.drawable.verify);
-		lockedIcon.setImageResource(R.drawable.lock);
-		mediaButton.setImageResource(R.drawable.image);
 		// theme views
 		for (TextView tv : textViews) {
 			tv.setTextColor(settings.getFontColor());

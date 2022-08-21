@@ -9,7 +9,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.Menu;
@@ -23,7 +22,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -131,7 +129,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		Toolbar toolbar = findViewById(R.id.toolbar_setting);
 		View trend_card = findViewById(R.id.settings_trend_card);
 		View user_card = findViewById(R.id.settings_data_card);
-		ImageView fontIcon = findViewById(R.id.settings_fonttype_icon);
 		SwitchButton toggleImg = findViewById(R.id.toggleImg);
 		SwitchButton toggleAns = findViewById(R.id.toggleAns);
 		SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
@@ -170,7 +167,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 		toolbar.setTitle(R.string.title_settings);
 		setSupportActionBar(toolbar);
-		fontIcon.setImageResource(R.drawable.font);
 
 		settings = GlobalSettings.getInstance(this);
 		locationAdapter = new LocationAdapter(settings);

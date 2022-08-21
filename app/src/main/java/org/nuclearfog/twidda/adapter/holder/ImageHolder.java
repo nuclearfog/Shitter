@@ -32,8 +32,6 @@ public class ImageHolder extends ViewHolder {
 		CardView cardBackground = (CardView) itemView;
 		preview = itemView.findViewById(R.id.item_image_preview);
 		saveButton = itemView.findViewById(R.id.item_image_save);
-		// set icon
-		saveButton.setImageResource(R.drawable.save);
 		// theme views
 		cardBackground.setCardBackgroundColor(settings.getCardColor());
 		AppStyles.setButtonColor(saveButton, settings.getFontColor());

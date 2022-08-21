@@ -23,6 +23,7 @@
 		android:layout_gravity="top|end"
 		android:contentDescription="@string/item_image_save"
 		android:scaleType="fitCenter"
+		android:src="@drawable/save"
 		style="@style/RoundButton" />
 
 </androidx.cardview.widget.CardView>

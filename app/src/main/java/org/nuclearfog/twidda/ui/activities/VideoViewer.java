@@ -129,6 +129,9 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_video);
+		ImageButton forward = controlPanel.findViewById(R.id.controller_forward);
+		ImageButton backward = controlPanel.findViewById(R.id.controller_backward);
+		ImageButton share = controlPanel.findViewById(R.id.controller_share);
 		controlPanel = findViewById(R.id.media_controlpanel);
 		loadingCircle = findViewById(R.id.media_progress);
 		videoView = findViewById(R.id.video_view);
@@ -137,17 +140,8 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 		pause = controlPanel.findViewById(R.id.controller_pause);
 		duration = controlPanel.findViewById(R.id.controller_duration);
 		position = controlPanel.findViewById(R.id.controller_position);
-		ImageButton forward = controlPanel.findViewById(R.id.controller_forward);
-		ImageButton backward = controlPanel.findViewById(R.id.controller_backward);
-		ImageButton share = controlPanel.findViewById(R.id.controller_share);
 
 		confirmDialog = new ConfirmDialog(this);
-
-		share.setImageResource(R.drawable.share);
-		forward.setImageResource(R.drawable.forward);
-		backward.setImageResource(R.drawable.backward);
-		play.setImageResource(R.drawable.play);
-		pause.setImageResource(R.drawable.pause);
 
 		GlobalSettings settings = GlobalSettings.getInstance(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());

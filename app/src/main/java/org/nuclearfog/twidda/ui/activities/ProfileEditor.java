@@ -100,7 +100,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		setContentView(R.layout.page_editprofile);
 		Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
 		ConstraintLayout root = findViewById(R.id.page_edit);
-		ImageView changeImageBtn = findViewById(R.id.profile_change_image_btn);
 		profile_image = findViewById(R.id.edit_pb);
 		profile_banner = findViewById(R.id.edit_banner);
 		addBannerBtn = findViewById(R.id.edit_add_banner);
@@ -126,8 +125,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 			constraints.applyTo(root);
 		}
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
-		changeBannerBtn.setImageResource(R.drawable.add);
-		changeImageBtn.setImageResource(R.drawable.add);
 		profile_banner.setDrawingCacheEnabled(true);
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 		picasso = PicassoBuilder.get(this);

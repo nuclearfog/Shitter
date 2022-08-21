@@ -68,7 +68,6 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 		try {
 			switch (action) {
 				case DB:
-					// TODO store cursor in the preferences
 					Directmessages messages = db.getMessages();
 					if (messages.isEmpty()) {
 						messages = twitter.getDirectmessages("");
@@ -106,11 +105,10 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 			if (messages != null) {
 				fragment.setData(messages);
 			} else {
-				if (messageId > 0) {
-					fragment.removeItem(messageId);
-				}
 				if (twException != null) {
 					fragment.onError(twException);
+				} else {
+					fragment.removeItem(messageId);
 				}
 			}
 		}

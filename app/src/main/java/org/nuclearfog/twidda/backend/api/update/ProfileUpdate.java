@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend.api.update;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

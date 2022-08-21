@@ -123,6 +123,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 	private static final int MENU_GROUP_COPY = 0x157426;
 
+	@Nullable
+	private ClipboardManager clip;
 	private GlobalSettings settings;
 	private TweetAction statusAsync;
 	private Picasso picasso;
@@ -199,6 +201,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		fragmentTransaction.replace(R.id.tweet_reply_fragment, TweetFragment.class, param);
 		fragmentTransaction.commit();
 
+		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
 		settings = GlobalSettings.getInstance(this);
 		ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
@@ -227,12 +231,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		ansButton.setOnClickListener(this);
 		rtwButton.setOnClickListener(this);
 		favButton.setOnClickListener(this);
-		rtwButton.setOnLongClickListener(this);
-		favButton.setOnLongClickListener(this);
-		retweeter.setOnLongClickListener(this);
 		profile_img.setOnClickListener(this);
 		tweetLocGPS.setOnClickListener(this);
 		mediaButton.setOnClickListener(this);
+		rtwButton.setOnLongClickListener(this);
+		favButton.setOnLongClickListener(this);
+		retweeter.setOnLongClickListener(this);
+		tweetLocGPS.setOnLongClickListener(this);
 	}
 
 
@@ -357,7 +362,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		}
 		// copy tweet link to clipboard
 		else if (item.getItemId() == R.id.menu_tweet_copy_text) {
-			ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("tweet text", clickedTweet.getText());
 				clip.setPrimaryClip(linkClip);
@@ -368,7 +372,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		else if (item.getItemId() == R.id.menu_tweet_copy_tweetlink) {
 			String username = author.getScreenname().substring(1);
 			String tweetLink = settings.getTwitterHostname() + username + "/status/" + clickedTweet.getId();
-			ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
 				clip.setPrimaryClip(linkClip);
@@ -380,9 +383,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 			int index = item.getItemId();
 			Uri[] mediaLinks = clickedTweet.getMediaUris();
 			if (index >= 0 && index < mediaLinks.length) {
-				ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 				if (clip != null) {
-					ClipData linkClip = ClipData.newPlainText("media link", mediaLinks[index].toString());
+					ClipData linkClip = ClipData.newPlainText("tweet media link", mediaLinks[index].toString());
 					clip.setPrimaryClip(linkClip);
 					Toast.makeText(this, R.string.info_tweet_medialink_copied, LENGTH_SHORT).show();
 				}
@@ -516,6 +518,19 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 					Intent tweetIntent = new Intent(this, TweetActivity.class);
 					tweetIntent.putExtra(KEY_TWEET_DATA, embeddedTweet);
 					startActivity(tweetIntent);
+				}
+			}
+			// copy tweet coordinates
+			else if (v.getId() == R.id.tweet_location_coordinate) {
+				if (clip != null) {
+					ClipData linkClip;
+					Tweet embeddedTweet = tweet.getEmbeddedTweet();
+					if (embeddedTweet != null)
+						linkClip = ClipData.newPlainText("Tweet location coordinates", embeddedTweet.getLocationCoordinates());
+					else
+						linkClip = ClipData.newPlainText("Tweet location coordinates", tweet.getLocationCoordinates());
+					clip.setPrimaryClip(linkClip);
+					Toast.makeText(this, R.string.info_tweet_location_copied, LENGTH_SHORT).show();
 				}
 			}
 		}
