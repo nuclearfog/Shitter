@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -105,13 +106,14 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 	@Nullable
 	private SeekbarUpdater seekUpdate;
+	private GlobalSettings settings;
 
 	private ConfirmDialog confirmDialog;
 
 	private TextView duration, position;
 	private ProgressBar loadingCircle;
 	private SeekBar video_progress;
-	private ImageButton play, pause;
+	private ImageButton playPause;
 	private VideoView videoView;
 	private ViewGroup controlPanel;
 
@@ -129,21 +131,20 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_video);
-		ImageButton forward = controlPanel.findViewById(R.id.controller_forward);
-		ImageButton backward = controlPanel.findViewById(R.id.controller_backward);
-		ImageButton share = controlPanel.findViewById(R.id.controller_share);
-		controlPanel = findViewById(R.id.media_controlpanel);
+		ImageButton forward = findViewById(R.id.controller_forward);
+		ImageButton backward = findViewById(R.id.controller_backward);
+		ImageButton share = findViewById(R.id.controller_share);
 		loadingCircle = findViewById(R.id.media_progress);
+		controlPanel = findViewById(R.id.media_controlpanel);
 		videoView = findViewById(R.id.video_view);
-		video_progress = controlPanel.findViewById(R.id.controller_progress);
-		play = controlPanel.findViewById(R.id.controller_play);
-		pause = controlPanel.findViewById(R.id.controller_pause);
-		duration = controlPanel.findViewById(R.id.controller_duration);
-		position = controlPanel.findViewById(R.id.controller_position);
+		video_progress = findViewById(R.id.controller_progress);
+		playPause = findViewById(R.id.controller_play);
+		duration = findViewById(R.id.controller_duration);
+		position = findViewById(R.id.controller_position);
 
 		confirmDialog = new ConfirmDialog(this);
 
-		GlobalSettings settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.getInstance(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
 		AppStyles.setTheme(controlPanel, settings.getBackgroundColor());
 		videoView.setZOrderMediaOverlay(true); // disable black background
@@ -168,8 +169,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 			videoView.setVideoURI(link);
 		}
 		share.setOnClickListener(this);
-		play.setOnClickListener(this);
-		pause.setOnClickListener(this);
+		playPause.setOnClickListener(this);
 		videoView.setOnTouchListener(this);
 		backward.setOnTouchListener(this);
 		forward.setOnTouchListener(this);
@@ -186,9 +186,9 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	protected void onStop() {
 		super.onStop();
 		if (enableVideoExtras) {
-			playStatus = PAUSE;
-			setPlayPauseButton();
 			videoView.pause();
+			setPlayPause(R.drawable.play);
+			playStatus = PAUSE;
 		}
 	}
 
@@ -203,19 +203,19 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 	@Override
 	public void onClick(View v) {
-		// play video
+		// play/pause video
 		if (v.getId() == R.id.controller_play) {
-			if (!videoView.isPlaying())
-				videoView.start();
-			playStatus = PLAY;
-			setPlayPauseButton();
-		}
-		// pause video
-		if (v.getId() == R.id.controller_pause) {
-			if (videoView.isPlaying())
-				videoView.pause();
-			playStatus = PAUSE;
-			setPlayPauseButton();
+			if (playStatus == PAUSE) {
+				playStatus = PLAY;
+				if (!videoView.isPlaying())
+					videoView.start();
+				setPlayPause(R.drawable.pause);
+			} else if (playStatus == PLAY) {
+				playStatus = PAUSE;
+				if (videoView.isPlaying())
+					videoView.pause();
+				setPlayPause(R.drawable.play);
+			}
 		}
 		// open link with another app
 		else if (v.getId() == R.id.controller_share) {
@@ -343,9 +343,9 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 	@Override
 	public void onCompletion(MediaPlayer mp) {
-		playStatus = PAUSE;
-		setPlayPauseButton();
+		setPlayPause(R.drawable.play);
 		video_progress.setProgress(0);
+		playStatus = PAUSE;
 	}
 
 
@@ -393,19 +393,6 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	}
 
 	/**
-	 * set play pause button
-	 */
-	private void setPlayPauseButton() {
-		if (playStatus == PAUSE || playStatus == IDLE) {
-			play.setVisibility(VISIBLE);
-			pause.setVisibility(INVISIBLE);
-		} else {
-			play.setVisibility(INVISIBLE);
-			pause.setVisibility(VISIBLE);
-		}
-	}
-
-	/**
 	 * updates controller panel SeekBar
 	 */
 	public void updateSeekBar() {
@@ -431,5 +418,12 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 				video_progress.setProgress(videoPos);
 				break;
 		}
+	}
+
+
+	private void setPlayPause(@DrawableRes int icon) {
+		playPause.setImageResource(icon);
+		AppStyles.setDrawableColor(playPause.getDrawable(), settings.getIconColor());
+		AppStyles.setButtonColor(playPause, settings.getFontColor());
 	}
 }
