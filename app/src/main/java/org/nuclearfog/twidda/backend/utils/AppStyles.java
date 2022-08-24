@@ -253,7 +253,7 @@ public final class AppStyles {
 				Drawable icon = AppCompatResources.getDrawable(context, resId);
 				setDrawableColor(icon, settings.getIconColor());
 				if (mTab.getCustomView() == null) {
-					tabView = View.inflate(context, R.layout.tabitem, null);
+					tabView = View.inflate(context, R.layout.item_tab, null);
 					mTab.setCustomView(tabView);
 				} else {
 					// Update existing view

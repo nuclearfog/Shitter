@@ -20,6 +20,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.location.Location;
@@ -50,11 +51,11 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
- * Media viewer activity for images and videos
+ * video player activity to show local and online videos/animations
  *
  * @author nuclearfog
  */
-public class VideoViewer extends MediaActivity implements OnSeekBarChangeListener, OnCompletionListener, DialogInterface.OnDismissListener,
+public class VideoViewer extends MediaActivity implements OnSeekBarChangeListener, OnCompletionListener, OnDismissListener,
 		OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener, OnConfirmListener {
 
 	/**
@@ -294,16 +295,25 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	public void onPrepared(MediaPlayer mp) {
 		// enable controls for video
 		if (enableVideoExtras) {
-			if (playStatus == IDLE) {
-				playStatus = PLAY;
-				video_progress.setMax(mp.getDuration());
-				duration.setText(StringTools.formatMediaTime(mp.getDuration()));
-				mp.setOnInfoListener(this);
-			}
-			if (playStatus == PLAY) {
-				int videoPos = video_progress.getProgress();
-				mp.seekTo(videoPos);
-				mp.start();
+			switch (playStatus) {
+				case IDLE:
+					// initialize seekbar
+					playStatus = PLAY;
+					video_progress.setMax(mp.getDuration());
+					duration.setText(StringTools.formatMediaTime(mp.getDuration()));
+					mp.setOnInfoListener(this);
+					// fall through
+
+				case PLAY:
+					// set video pos and start playback
+					mp.seekTo(video_progress.getProgress());
+					mp.start();
+					break;
+
+				case PAUSE:
+					// set only video pos
+					mp.seekTo(video_progress.getProgress());
+					break;
 			}
 		}
 		// setup video looping for gif
