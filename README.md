@@ -1,6 +1,6 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
-# Lightweight Twitter app for Android 4.1+
+# Lightweight Android Twitter app
 
 <!-- please change the hardcoded links to match your repository name -->
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](../../releases/latest/download/SH1TT3R.apk)
@@ -53,7 +53,7 @@ If you have any questions or if you have found a bug, please open an issue.
 ## Graphics
 - SVG Icons from <a href="http://www.entypo.com">Entypo</a> & <a href="https://www.svgrepo.com">SVG Repo</a>
 - logo and app icon design by <a href="https://github.com/Tobaloidee">@Tobaloidee</a>
-- Twitter4J logo from <a href="https://twitter4j.org/en/powered-by.html">Twitter4J website</a>
+- Twitter4J logo (version 1.x) from <a href="https://twitter4j.org/en/powered-by.html">Twitter4J website</a>
 
 ## Thanks to
 - <a href="https://github.com/Tobaloidee">@Tobaloidee</a> for app logo design
