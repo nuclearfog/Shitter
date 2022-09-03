@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.impl.DirectmessageV1;
 import org.nuclearfog.twidda.backend.api.impl.LocationV1;
+import org.nuclearfog.twidda.backend.api.impl.MetricsImpl;
 import org.nuclearfog.twidda.backend.api.impl.RelationV1;
 import org.nuclearfog.twidda.backend.api.impl.TrendV1;
 import org.nuclearfog.twidda.backend.api.impl.TweetV1;
@@ -31,6 +32,7 @@ import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.Tweet;
@@ -1203,6 +1205,30 @@ public class Twitter implements GlobalSettings.SettingsListener {
 					}
 				}
 				return result;
+			}
+			throw new TwitterException(response);
+		} catch (IOException | JSONException err) {
+			throw new TwitterException(err);
+		}
+	}
+
+	/**
+	 * get tweet metrics (views, link clicks, etc.)
+	 *
+	 * @param tweetId ID of the tweet to get the metrics from
+	 * @return tweet metrics
+	 */
+	public Metrics getTweetMetrics(long tweetId) throws TwitterException {
+		List<String> params = new ArrayList<>();
+		params.add(MetricsImpl.PARAMS);
+		try {
+			Response response = get(TWEET_UNI + tweetId, params);
+			ResponseBody body = response.body();
+			if (body != null && response.code() == 200) {
+				JSONObject json = new JSONObject(body.string());
+				if (json.opt("data") != null) {
+					return new MetricsImpl(json);
+				}
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {

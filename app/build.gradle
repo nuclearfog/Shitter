@@ -26,7 +26,6 @@ android {
 			proguardFile 'proguard-rules.pro'
 		}
 		debug {
-			proguardFile 'proguard-debug.pro'
 			applicationIdSuffix '.debug'
 			versionNameSuffix '.DEBUG'
 		}

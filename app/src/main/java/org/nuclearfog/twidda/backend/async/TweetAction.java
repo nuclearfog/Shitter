@@ -100,6 +100,7 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 					if (newTweet != null) {
 						publishProgress(newTweet);
 					}
+					// fall through
 
 				case LOAD:
 					newTweet = twitter.showTweet(ids[0]);
