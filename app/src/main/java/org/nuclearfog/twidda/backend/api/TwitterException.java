@@ -26,6 +26,13 @@ public class TwitterException extends Exception implements TwitterError {
 	private int retryAfter = -1;
 
 	/**
+	 * @param message exception message
+	 */
+	TwitterException(String message) {
+		this.message = message;
+	}
+
+	/**
 	 * create exception caused by another exception
 	 */
 	TwitterException(Exception e) {

@@ -1287,11 +1287,41 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			response = post(MEDIA_UPLOAD, params);
 			if (response.code() < 200 || response.code() >= 300)
 				throw new TwitterException(response);
+			// skip step 4 if chunking isn#t enabled
+			if (!enableChunk)
+				return mediaId;
+
+			// step 4 STATUS
+			params.clear();
+			params.add("command=STATUS");
+			params.add("media_id=" + mediaId);
+
+			int retries = 0;
+			String state;
+			do {
+				response = get(MEDIA_UPLOAD, params);
+				body = response.body();
+				if (response.code() < 200 || response.code() >= 300 || body == null)
+					throw new TwitterException(response);
+				jsonResponse = new JSONObject(body.string());
+				JSONObject processingInfo = jsonResponse.getJSONObject("processing_info");
+				long retryAfter = processingInfo.optLong("check_after_secs");
+				state = processingInfo.optString("state");
+				// wait until next polling
+				Thread.sleep(retryAfter * 1000L);
+			} while (state.equals("in_progress") && ++retries <= 10);
+
+			// check if media processing was successfully
+			if (!state.equals("succeeded")) {
+				JSONObject jsonError = jsonResponse.getJSONObject("processing_info").getJSONObject("error");
+				String message = jsonError.getString("message");
+				throw new TwitterException(message);
+			}
 			return mediaId;
 		} catch (IOException err) {
 			err.printStackTrace();
 			throw new TwitterException(err);
-		} catch (JSONException err) {
+		} catch (JSONException | InterruptedException err) {
 			throw new TwitterException(err);
 		}
 	}
