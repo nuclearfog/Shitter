@@ -64,6 +64,7 @@ import org.nuclearfog.twidda.ui.fragments.TweetFragment;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -585,38 +586,29 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	 * @param tag link string
 	 */
 	@Override
-	public void onLinkClick(final String tag) {
-		String shortLink = tag;
-		int cut = shortLink.indexOf('?');
-		if (cut > 0) {
-			shortLink = shortLink.substring(0, cut);
-		}
-		// check if the link if from a tweet
-		if (LINK_PATTERN.matcher(shortLink).matches()) {
-			try {
-				String name = shortLink.substring(20, shortLink.indexOf('/', 20));
-				long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-				Intent intent = new Intent(this, TweetActivity.class);
-				intent.putExtra(KEY_TWEET_ID, id);
-				intent.putExtra(KEY_TWEET_NAME, name);
-				startActivity(intent);
-				return;
-			} catch (Exception err) {
-				err.printStackTrace();
-				// if an error occurs, open link in browser
-			}
+	public void onLinkClick(String tag) {
+		Uri link = Uri.parse(tag);
+		// check if the link points to another tweet
+		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+			List<String> segments = link.getPathSegments();
+			Intent intent = new Intent(this, TweetActivity.class);
+			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
+			startActivity(intent);
 		}
 		// open link in browser or preview
-		if (settings.linkPreviewEnabled()) {
-			linkPreview.show(tag);
-		} else {
-			// open link in a browser
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse(tag));
-			try {
-				startActivity(intent);
-			} catch (ActivityNotFoundException err) {
-				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+		else {
+			if (settings.linkPreviewEnabled()) {
+				linkPreview.show(tag);
+			} else {
+				// open link in a browser
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setData(link);
+				try {
+					startActivity(intent);
+				} catch (ActivityNotFoundException err) {
+					Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+				}
 			}
 		}
 	}

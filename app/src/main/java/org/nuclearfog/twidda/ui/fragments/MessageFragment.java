@@ -34,6 +34,8 @@ import org.nuclearfog.twidda.ui.activities.TweetActivity;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
+import java.util.List;
+
 /**
  * Fragment class to show a list of directmessages
  *
@@ -103,22 +105,20 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onLinkClick(final String tag) {
-		String shortLink = tag;
-		int cut = shortLink.indexOf('?');
-		if (cut > 0) {
-			shortLink = shortLink.substring(0, cut);
-		}
-		if (LINK_PATTERN.matcher(shortLink).matches()) {
-			String name = shortLink.substring(20, shortLink.indexOf('/', 20));
-			long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
+	public void onLinkClick(String tag) {
+		Uri link = Uri.parse(tag);
+		// open tweet link
+		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(requireContext(), TweetActivity.class);
-			intent.putExtra(KEY_TWEET_ID, id);
-			intent.putExtra(KEY_TWEET_NAME, name);
+			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
 			startActivity(intent);
-		} else {
+		}
+		// open link in browser
+		else {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse(tag));
+			intent.setData(link);
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {

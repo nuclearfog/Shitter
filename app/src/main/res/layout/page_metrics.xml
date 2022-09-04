@@ -101,7 +101,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 			<TextView
 				android:id="@+id/metrics_retweets"
@@ -110,7 +111,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 			<TextView
 				android:id="@+id/metrics_favorits"
@@ -119,7 +121,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 			<TextView
 				android:id="@+id/metrics_replies"
@@ -128,7 +131,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 			<TextView
 				android:id="@+id/metrics_quotes"
@@ -137,7 +141,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 			<TextView
 				android:id="@+id/metrics_link_count"
@@ -146,7 +151,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 			<TextView
 				android:id="@+id/metrics_profile_count"
@@ -155,7 +161,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 			<TextView
 				android:id="@+id/metrics_video_clicks"
@@ -164,7 +171,8 @@
 				android:visibility="gone"
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"/>
+				android:textSize="@dimen/metrics_textsize_big"
+				android:gravity="end"/>
 
 		</LinearLayout>
 

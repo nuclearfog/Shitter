@@ -46,12 +46,15 @@ public class TweetUpdater extends AsyncTask<TweetUpdate, Void, Void> {
 				// upload media file and save media ID
 				mediaIds[pos] = twitter.uploadMedia(mediaUpdates[pos]);
 			}
+			// fixme error when upoading video
 			// upload tweet
 			if (!isCancelled()) {
 				twitter.uploadTweet(update, mediaIds);
 			}
 		} catch (TwitterException twException) {
 			this.twException = twException;
+		} catch (InterruptedException e) {
+			// ignore
 		} finally {
 			// close inputstreams
 			update.close();

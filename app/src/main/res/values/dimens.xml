@@ -143,7 +143,7 @@
 	<dimen name="metrics_textsize_small">12sp</dimen>
 	<dimen name="metrics_textsize_normal">18sp</dimen>
 	<dimen name="metrics_textsize_big">20sp</dimen>
-	<integer name="metrics_text_max_lines">5</integer>
+	<integer name="metrics_text_max_lines">8</integer>
 
 	<!--dimens of popup_tweet.xml-->
 	<dimen name="tweetpopup_margin_layout">10dp</dimen>

@@ -68,6 +68,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -448,36 +449,24 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 
 	@Override
-	public void onLinkClick(final String tag) {
-		String shortLink;
-		// remove query from link if exists
-		int cut = tag.indexOf('?');
-		if (cut > 0) {
-			shortLink = tag.substring(0, cut);
-		} else {
-			shortLink = tag;
-		}
-		// link points to a tweet
-		if (LINK_PATTERN.matcher(shortLink).matches()) {
-			try {
-				String name = shortLink.substring(20, shortLink.indexOf('/', 20));
-				long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-				Intent intent = new Intent(this, TweetActivity.class);
-				intent.putExtra(KEY_TWEET_ID, id);
-				intent.putExtra(KEY_TWEET_NAME, name);
-				startActivity(intent);
-				return;
-			} catch (Exception err) {
-				err.printStackTrace();
-				// open link in browser if an error occurs
-			}
+	public void onLinkClick(String tag) {
+		Uri link = Uri.parse(tag);
+		// open tweet link
+		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+			List<String> segments = link.getPathSegments();
+			Intent intent = new Intent(this, TweetActivity.class);
+			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
+			startActivity(intent);
 		}
 		// open link in browser
-		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tag));
-		try {
-			startActivity(intent);
-		} catch (ActivityNotFoundException err) {
-			Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+		else {
+			Intent intent = new Intent(Intent.ACTION_VIEW, link);
+			try {
+				startActivity(intent);
+			} catch (ActivityNotFoundException err) {
+				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+			}
 		}
 	}
 

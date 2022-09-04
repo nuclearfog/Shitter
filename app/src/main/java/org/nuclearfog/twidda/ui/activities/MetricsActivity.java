@@ -1,12 +1,22 @@
 package org.nuclearfog.twidda.ui.activities;
 
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
+
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +25,8 @@ import androidx.appcompat.widget.Toolbar;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
+import org.nuclearfog.tag.Tagger.OnTagClickListener;
+import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.backend.async.MetricsLoader;
@@ -29,6 +41,7 @@ import org.nuclearfog.twidda.model.User;
 
 import java.io.Serializable;
 import java.text.NumberFormat;
+import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -37,7 +50,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class MetricsActivity extends AppCompatActivity {
+public class MetricsActivity extends AppCompatActivity implements OnClickListener, OnTagClickListener {
 
 	/**
 	 * key used for tweet information
@@ -58,8 +71,8 @@ public class MetricsActivity extends AppCompatActivity {
 	private TextView replycount;
 	private TextView quoteCount;
 	private TextView videoViews;
-
-	private long tweetId;
+	@Nullable
+	private Tweet tweet;
 
 
 	@Override
@@ -101,14 +114,13 @@ public class MetricsActivity extends AppCompatActivity {
 		}
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 		AppStyles.setProgressColor(loading, settings.getHighlightColor());
-		tweetText.setMovementMethod(ScrollingMovementMethod.getInstance());
+		tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		toolbar.setTitle(R.string.title_metrics);
 
 		Serializable data = getIntent().getSerializableExtra(KEY_METRICS_TWEET);
 		if (data instanceof Tweet) {
-			Tweet tweet = (Tweet) data;
+			tweet = (Tweet) data;
 			User author = tweet.getAuthor();
-			tweetId = tweet.getId();
 			if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
 				String profileImageUrl = author.getImageUrl();
 				if (!author.hasDefaultProfileImage())
@@ -128,18 +140,62 @@ public class MetricsActivity extends AppCompatActivity {
 			}
 			username.setText(author.getUsername());
 			screenname.setText(author.getScreenname());
-			tweetText.setText(Tagger.makeText(tweet.getText(),settings.getHighlightColor()));
+			tweetText.setText(Tagger.makeTextWithLinks(tweet.getText(),settings.getHighlightColor(), this));
 			created.setText(StringTools.formatCreationTime(getResources(), tweet.getTimestamp()));
 		}
+		profile.setOnClickListener(this);
 	}
 
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (metricsAsync == null) {
+		if (metricsAsync == null && tweet != null) {
 			metricsAsync = new MetricsLoader(this);
-			metricsAsync.execute(tweetId);
+			metricsAsync.execute(tweet.getId());
+		}
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.metrics_profile) {
+			if (tweet != null) {
+				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
+				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, tweet.getAuthor());
+				startActivity(profile);
+			}
+		}
+	}
+
+
+	@Override
+	public void onTagClick(String tag) {
+		Intent intent = new Intent(this, SearchActivity.class);
+		intent.putExtra(KEY_SEARCH_QUERY, tag);
+		startActivity(intent);
+	}
+
+
+	@Override
+	public void onLinkClick(String tag) {
+		Uri link = Uri.parse(tag);
+		// open tweet link
+		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+			List<String> segments = link.getPathSegments();
+			Intent intent = new Intent(this, TweetActivity.class);
+			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
+			startActivity(intent);
+		}
+		// open link in browser
+		else {
+			Intent intent = new Intent(Intent.ACTION_VIEW, link);
+			try {
+				startActivity(intent);
+			} catch (ActivityNotFoundException err) {
+				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+			}
 		}
 	}
 
