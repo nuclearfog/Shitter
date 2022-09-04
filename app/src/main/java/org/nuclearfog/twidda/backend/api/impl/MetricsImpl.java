@@ -11,26 +11,32 @@ import org.nuclearfog.twidda.model.Metrics;
  */
 public class MetricsImpl implements Metrics {
 
-	public static final String PARAMS = "tweet.fields=organic_metrics";
+	public static final String PARAMS = "tweet.fields=organic_metrics%2Cpublic_metrics";
 
 	private int impressions;
 	private int retweets;
 	private int likes;
 	private int replies;
+	private int quotes;
 	private int linkClicks;
 	private int profileClicks;
+	private int videoViews;
 
 	/**
 	 * @param json tweet json object containing metrics information
 	 */
 	public MetricsImpl(JSONObject json) throws JSONException {
-		JSONObject organic = json.getJSONObject("data").getJSONObject("organic_metrics");
-		impressions = organic.optInt("impression_count", 0);
-		retweets = organic.optInt("retweet_count", 0);
-		likes = organic.optInt("like_count", 0);
-		replies = organic.optInt("reply_count", 0);
-		linkClicks = organic.optInt("url_link_clicks", 0);
-		profileClicks = organic.optInt("user_profile_", 0);
+		JSONObject metricsData = json.getJSONObject("data");
+		JSONObject metricsOrganic = metricsData.getJSONObject("organic_metrics");
+		JSONObject metricsPublic = metricsData.getJSONObject("public_metrics");
+		impressions = metricsOrganic.optInt("impression_count", 0);
+		retweets = metricsOrganic.optInt("retweet_count", 0);
+		likes = metricsOrganic.optInt("like_count", 0);
+		replies = metricsOrganic.optInt("reply_count", 0);
+		quotes = metricsPublic.optInt("quote_count", 0);
+		linkClicks = metricsOrganic.optInt("url_link_clicks", 0);
+		profileClicks = metricsOrganic.optInt("user_profile_clicks", 0);
+		videoViews = metricsOrganic.optInt("view_count", 0);
 	}
 
 	@Override
@@ -54,6 +60,11 @@ public class MetricsImpl implements Metrics {
 	}
 
 	@Override
+	public int getQuoteCount() {
+		return quotes;
+	}
+
+	@Override
 	public int getLinkClicks() {
 		return linkClicks;
 	}
@@ -61,5 +72,10 @@ public class MetricsImpl implements Metrics {
 	@Override
 	public int getProfileClicks() {
 		return profileClicks;
+	}
+
+	@Override
+	public int getVideoViews() {
+		return videoViews;
 	}
 }

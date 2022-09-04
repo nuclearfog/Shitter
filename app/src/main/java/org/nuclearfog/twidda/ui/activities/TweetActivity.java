@@ -63,6 +63,7 @@ import org.nuclearfog.twidda.ui.fragments.TweetFragment;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -295,6 +296,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		MenuItem optDelete = m.findItem(R.id.menu_tweet_delete);
 		MenuItem optHide = m.findItem(R.id.menu_tweet_hide);
 		MenuItem optCopy = m.findItem(R.id.menu_tweet_copy);
+		MenuItem optMetrics = m.findItem(R.id.menu_tweet_metrics);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
 		Tweet currentTweet = tweet;
@@ -310,9 +312,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 				optHide.setTitle(R.string.menu_tweet_hide);
 			}
 		}
-		// enable delete option only if current user owns tweets
-		optDelete.setVisible(currentTweet.getAuthor().isCurrentUser());
-
+		if (currentTweet.getAuthor().isCurrentUser()) {
+			optDelete.setVisible(true);
+			if (new Date().getTime() - currentTweet.getTimestamp() < 2419200000L) {
+				optMetrics.setVisible(true);
+			}
+		}
 		// add media link items
 		// check if menu doesn't contain media links already
 		if (copyMenu.size() == 2) {
@@ -377,6 +382,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 				clip.setPrimaryClip(linkClip);
 				Toast.makeText(this, R.string.info_tweet_link_copied, LENGTH_SHORT).show();
 			}
+		}
+		// open tweet metrics page
+		else if (item.getItemId() == R.id.menu_tweet_metrics) {
+			Intent metricsIntent = new Intent(getApplicationContext(), MetricsActivity.class);
+			metricsIntent.putExtra(MetricsActivity.KEY_METRICS_TWEET, clickedTweet);
+			startActivity(metricsIntent);
 		}
 		// copy media links
 		else if (item.getGroupId() == MENU_GROUP_COPY) {

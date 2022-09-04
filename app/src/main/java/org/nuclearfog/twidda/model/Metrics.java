@@ -36,6 +36,13 @@ public interface Metrics {
 	int getReplies();
 
 	/**
+	 * get number of quotes
+	 *
+	 * @return quote count
+	 */
+	int getQuoteCount();
+
+	/**
 	 * get link click count
 	 *
 	 * @return click count
@@ -48,4 +55,11 @@ public interface Metrics {
 	 * @return click count
 	 */
 	int getProfileClicks();
+
+	/**
+	 * get video view count
+	 *
+	 * @return video view count
+	 */
+	int getVideoViews();
 }

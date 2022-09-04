@@ -245,4 +245,6 @@
 	<string name="menu_toolbar_excluded_users">Blocklisten</string>
 	<string name="menu_toolbar_request">Follow Anfragen</string>
 	<string name="info_tweet_location_copied">Standortkoordinaten kopiert</string>
+	<string name="title_metrics">Tweet Metriken</string>
+	<string name="menu_tweet_metrics">Metriken</string>
 </resources>

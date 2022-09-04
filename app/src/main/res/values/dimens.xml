@@ -132,6 +132,19 @@
 	<dimen name="loginpage_number_padding">10dp</dimen>
 	<integer name="loginpage_pin_max_chars">10</integer>
 
+	<!--dimens of page_metrics.xml-->
+	<dimen name="metrics_toolbar_height">@dimen/toolbar_height</dimen>
+	<dimen name="metrics_profile">56sp</dimen>
+	<dimen name="metrics_profileimage_margin">5dp</dimen>
+	<dimen name="metrics_textview_margin">5dp</dimen>
+	<dimen name="metrics_item_margin">20dp</dimen>
+	<dimen name="metrics_padding_drawable">5dp</dimen>
+	<dimen name="metrics_padding_drawable_big">15dp</dimen>
+	<dimen name="metrics_textsize_small">12sp</dimen>
+	<dimen name="metrics_textsize_normal">18sp</dimen>
+	<dimen name="metrics_textsize_big">20sp</dimen>
+	<integer name="metrics_text_max_lines">5</integer>
+
 	<!--dimens of popup_tweet.xml-->
 	<dimen name="tweetpopup_margin_layout">10dp</dimen>
 	<dimen name="tweetpopup_button_margin">7dp</dimen>

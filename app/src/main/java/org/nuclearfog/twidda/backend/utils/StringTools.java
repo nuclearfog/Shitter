@@ -83,11 +83,11 @@ public final class StringTools {
 			int number = (int) (diff / 3600000L);
 			return resources.getQuantityString(R.plurals.n_hours, number, number);
 		}
-		if (diff / 60000L > 0) { // more than a minute
+		if (diff / 60000L > 0L) { // more than a minute
 			int number = (int) (diff / 60000L);
 			return resources.getQuantityString(R.plurals.n_minutes, number, number);
 		}
-		if (diff / 1000L > 0) {
+		if (diff / 1000L > 0L) {
 			int number = (int) (diff / 1000L);
 			return resources.getQuantityString(R.plurals.n_seconds, number, number);
 		}
