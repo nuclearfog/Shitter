@@ -162,6 +162,11 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 */
 	private static final int CHUNK_MAX_BYTES = 1024 * 1024;
 
+	/**
+	 * maximum polling request
+	 */
+	private static final int POLLING_MAX_RETRIES = 12;
+
 	private static Twitter instance;
 	private static boolean notifySettingsChange = false;
 
@@ -1244,7 +1249,9 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 */
 	public long uploadMedia(MediaUpdate mediaUpdate) throws TwitterException {
 		List<String> params = new ArrayList<>();
+		String state;
 		boolean enableChunk;
+		int retries = 0;
 		try {
 			// step 1 INIT
 			params.add("command=INIT");
@@ -1262,7 +1269,6 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			}
 			Response response = post(MEDIA_UPLOAD, params);
 			ResponseBody body = response.body();
-
 			if (response.code() < 200 || response.code() >= 300 || body == null)
 				throw new TwitterException(response);
 			JSONObject jsonResponse = new JSONObject(body.string());
@@ -1287,7 +1293,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			response = post(MEDIA_UPLOAD, params);
 			if (response.code() < 200 || response.code() >= 300)
 				throw new TwitterException(response);
-			// skip step 4 if chunking isn#t enabled
+			// skip step 4 if chunking isn't enabled
 			if (!enableChunk)
 				return mediaId;
 
@@ -1295,9 +1301,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 			params.clear();
 			params.add("command=STATUS");
 			params.add("media_id=" + mediaId);
-
-			int retries = 0;
-			String state;
+			// poll media processing information frequently
 			do {
 				response = get(MEDIA_UPLOAD, params);
 				body = response.body();
@@ -1309,8 +1313,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 				state = processingInfo.optString("state");
 				// wait until next polling
 				Thread.sleep(retryAfter * 1000L);
-			} while (state.equals("in_progress") && ++retries <= 10);
-
+			} while (state.equals("in_progress") && ++retries <= POLLING_MAX_RETRIES);
 			// check if media processing was successfully
 			if (!state.equals("succeeded")) {
 				JSONObject jsonError = jsonResponse.getJSONObject("processing_info").getJSONObject("error");
@@ -1318,11 +1321,10 @@ public class Twitter implements GlobalSettings.SettingsListener {
 				throw new TwitterException(message);
 			}
 			return mediaId;
-		} catch (IOException err) {
-			err.printStackTrace();
+		} catch (IOException | JSONException err) {
 			throw new TwitterException(err);
-		} catch (JSONException | InterruptedException err) {
-			throw new TwitterException(err);
+		} catch (InterruptedException e) {
+			return -1L; //ignore
 		}
 	}
 
