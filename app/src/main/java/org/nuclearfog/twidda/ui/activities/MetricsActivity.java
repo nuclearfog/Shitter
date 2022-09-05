@@ -140,7 +140,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			}
 			username.setText(author.getUsername());
 			screenname.setText(author.getScreenname());
-			tweetText.setText(Tagger.makeTextWithLinks(tweet.getText(),settings.getHighlightColor(), this));
+			tweetText.setText(Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor(), this));
 			created.setText(StringTools.formatCreationTime(getResources(), tweet.getTimestamp()));
 		}
 		profile.setOnClickListener(this);

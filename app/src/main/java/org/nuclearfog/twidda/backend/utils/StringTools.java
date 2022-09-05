@@ -240,6 +240,7 @@ public final class StringTools {
 			// determine if a pair of chars represent an emoji
 			if (Character.isSurrogatePair(text.charAt(c), text.charAt(c + 1))) {
 				offset++;
+				limit++;
 			}
 		}
 		return offset;

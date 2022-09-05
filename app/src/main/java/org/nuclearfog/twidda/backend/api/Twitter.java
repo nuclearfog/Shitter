@@ -11,7 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.impl.DirectmessageV1;
 import org.nuclearfog.twidda.backend.api.impl.LocationV1;
-import org.nuclearfog.twidda.backend.api.impl.MetricsImpl;
+import org.nuclearfog.twidda.backend.api.impl.MetricsV2;
 import org.nuclearfog.twidda.backend.api.impl.RelationV1;
 import org.nuclearfog.twidda.backend.api.impl.TrendV1;
 import org.nuclearfog.twidda.backend.api.impl.TweetV1;
@@ -1220,14 +1220,14 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 */
 	public Metrics getTweetMetrics(long tweetId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add(MetricsImpl.PARAMS);
+		params.add(MetricsV2.PARAMS);
 		try {
 			Response response = get(TWEET_UNI + tweetId, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
 				if (json.opt("data") != null) {
-					return new MetricsImpl(json);
+					return new MetricsV2(json);
 				}
 			}
 			throw new TwitterException(response);

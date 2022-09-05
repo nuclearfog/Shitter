@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 			case REQUEST_ACCOUNT_CHANGE:
 				// check if account or theme changed
 				if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED
-				|| returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
+						|| returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
 					AppStyles.setTheme(root, settings.getBackgroundColor());
 					AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
 					adapter.notifySettingsChanged();

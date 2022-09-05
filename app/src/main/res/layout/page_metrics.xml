@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/metrics_root"
 	android:layout_width="match_parent"
@@ -22,7 +21,7 @@
 		android:layout_marginStart="@dimen/metrics_profileimage_margin"
 		android:layout_marginTop="@dimen/metrics_profileimage_margin"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/metrics_toolbar"/>
+		app:layout_constraintTop_toBottomOf="@id/metrics_toolbar" />
 
 	<TextView
 		android:id="@+id/metrics_username"
@@ -35,7 +34,7 @@
 		app:layout_constraintStart_toEndOf="@id/metrics_profile"
 		app:layout_constraintTop_toTopOf="@id/metrics_profile"
 		app:layout_constraintBottom_toTopOf="@id/metrics_screenname"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
 		android:id="@+id/metrics_screenname"
@@ -48,7 +47,7 @@
 		app:layout_constraintStart_toEndOf="@id/metrics_profile"
 		app:layout_constraintTop_toBottomOf="@id/metrics_username"
 		app:layout_constraintBottom_toTopOf="@id/metrics_created"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
 		android:id="@+id/metrics_created"
@@ -60,14 +59,14 @@
 		app:layout_constraintStart_toEndOf="@id/metrics_profile"
 		app:layout_constraintTop_toBottomOf="@id/metrics_screenname"
 		app:layout_constraintBottom_toBottomOf="@id/metrics_profile"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<androidx.constraintlayout.widget.Barrier
 		android:id="@+id/metrics_tweet_barrier"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		app:barrierDirection="bottom"
-		app:constraint_referenced_ids="metrics_screenname,metrics_profile"/>
+		app:constraint_referenced_ids="metrics_screenname,metrics_profile" />
 
 	<TextView
 		android:id="@+id/metrics_tweet"
@@ -78,7 +77,7 @@
 		android:layout_margin="@dimen/metrics_textview_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/metrics_tweet_barrier"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<ScrollView
 		android:id="@+id/metrics_scroll"
@@ -102,7 +101,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 			<TextView
 				android:id="@+id/metrics_retweets"
@@ -112,7 +111,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 			<TextView
 				android:id="@+id/metrics_favorits"
@@ -122,7 +121,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 			<TextView
 				android:id="@+id/metrics_replies"
@@ -132,7 +131,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 			<TextView
 				android:id="@+id/metrics_quotes"
@@ -142,7 +141,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 			<TextView
 				android:id="@+id/metrics_link_count"
@@ -152,7 +151,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 			<TextView
 				android:id="@+id/metrics_profile_count"
@@ -162,7 +161,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 			<TextView
 				android:id="@+id/metrics_video_clicks"
@@ -172,7 +171,7 @@
 				android:drawablePadding="@dimen/metrics_padding_drawable_big"
 				android:layout_margin="@dimen/metrics_item_margin"
 				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end"/>
+				android:gravity="end" />
 
 		</LinearLayout>
 
@@ -185,6 +184,6 @@
 		app:layout_constraintStart_toStartOf="@id/metrics_scroll"
 		app:layout_constraintTop_toTopOf="@id/metrics_scroll"
 		app:layout_constraintBottom_toBottomOf="@id/metrics_scroll"
-		app:layout_constraintEnd_toEndOf="@id/metrics_scroll"/>
+		app:layout_constraintEnd_toEndOf="@id/metrics_scroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

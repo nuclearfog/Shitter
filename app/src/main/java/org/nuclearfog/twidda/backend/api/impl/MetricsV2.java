@@ -9,8 +9,11 @@ import org.nuclearfog.twidda.model.Metrics;
  *
  * @author nuclearfog
  */
-public class MetricsImpl implements Metrics {
+public class MetricsV2 implements Metrics {
 
+	/**
+	 * parameters to get extra information
+	 */
 	public static final String PARAMS = "tweet.fields=organic_metrics%2Cpublic_metrics";
 
 	private int impressions;
@@ -25,7 +28,7 @@ public class MetricsImpl implements Metrics {
 	/**
 	 * @param json tweet json object containing metrics information
 	 */
-	public MetricsImpl(JSONObject json) throws JSONException {
+	public MetricsV2(JSONObject json) throws JSONException {
 		JSONObject metricsData = json.getJSONObject("data");
 		JSONObject metricsOrganic = metricsData.getJSONObject("organic_metrics");
 		JSONObject metricsPublic = metricsData.getJSONObject("public_metrics");
