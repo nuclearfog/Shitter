@@ -15,9 +15,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.RefreshDelay;
+import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import java.lang.ref.WeakReference;
 
 /**
  * this fragment class hosts a list view inside a swipe view
@@ -25,7 +26,7 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public abstract class ListFragment extends Fragment implements OnRefreshListener {
+public abstract class ListFragment extends Fragment implements OnRefreshListener, RefreshCallback {
 
 	/**
 	 * delay to enable SwipeRefreshLayout
@@ -41,15 +42,14 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 	@Override
 	public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
-		settings = GlobalSettings.getInstance(requireContext());
-
 		list = new RecyclerView(requireContext());
 		list.setLayoutManager(new LinearLayoutManager(requireContext()));
 		reload = new SwipeRefreshLayout(requireContext());
-		reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-		reload.setColorSchemeColors(settings.getIconColor());
 		reload.setOnRefreshListener(this);
 		reload.addView(list);
+
+		settings = GlobalSettings.getInstance(requireContext());
+		AppStyles.setSwipeRefreshColor(reload, settings);
 		return reload;
 	}
 
@@ -57,6 +57,14 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	@Override
 	public final void onRefresh() {
 		onReload();
+	}
+
+
+	@Override
+	public void onRefreshDelayed() {
+		if (isRefreshing && !reload.isRefreshing()) {
+			reload.setRefreshing(true);
+		}
 	}
 
 	/**
@@ -98,10 +106,9 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 */
 	public void reset() {
 		// check if fragment is initialized
-		if (reload != null && list != null) {
+		if (reload != null && list != null && settings != null) {
 			// reset colors
-			reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-			reload.setColorSchemeColors(settings.getIconColor());
+			AppStyles.setSwipeRefreshColor(reload, settings);
 			// force redrawing list to apply colors
 			list.setAdapter(list.getAdapter());
 			onReset();
@@ -126,24 +133,4 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * called to reset all data
 	 */
 	protected abstract void onReset();
-
-	/**
-	 * runnable class to delay swiperefreshlayout
-	 */
-	private static class RefreshDelay implements Runnable {
-
-		private WeakReference<ListFragment> callback;
-
-		private RefreshDelay(ListFragment fragment) {
-			callback = new WeakReference<>(fragment);
-		}
-
-		@Override
-		public void run() {
-			ListFragment fragment = callback.get();
-			if (fragment != null && fragment.isRefreshing && !fragment.reload.isRefreshing()) {
-				fragment.reload.setRefreshing(true);
-			}
-		}
-	}
 }

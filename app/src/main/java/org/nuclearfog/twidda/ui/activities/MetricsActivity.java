@@ -14,13 +14,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import com.squareup.picasso.Picasso;
 
@@ -33,6 +34,8 @@ import org.nuclearfog.twidda.backend.async.MetricsLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.RefreshDelay;
+import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Metrics;
@@ -50,7 +53,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class MetricsActivity extends AppCompatActivity implements OnClickListener, OnTagClickListener {
+public class MetricsActivity extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnRefreshListener, RefreshCallback {
 
 	/**
 	 * key used for tweet information
@@ -58,11 +61,16 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	 */
 	public static final String KEY_METRICS_TWEET = "metrics_tweet";
 
+	/**
+	 * delay to enable SwipeRefreshLayout
+	 */
+	private static final int REFRESH_DELAY_MS = 1000;
+
 	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private MetricsLoader metricsAsync;
 
-	private ProgressBar loading;
+	private SwipeRefreshLayout reload;
 	private TextView impressionCount;
 	private TextView linkClicks;
 	private TextView profileClicks;
@@ -74,6 +82,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	@Nullable
 	private Tweet tweet;
 
+	private boolean isRefreshing = false;
 
 	@Override
 	protected void onCreate(Bundle savedInst) {
@@ -95,7 +104,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		replycount = findViewById(R.id.metrics_replies);
 		quoteCount = findViewById(R.id.metrics_quotes);
 		videoViews = findViewById(R.id.metrics_video_clicks);
-		loading = findViewById(R.id.metrics_loading);
+		reload = findViewById(R.id.metrics_refresh);
 
 		Picasso picasso = PicassoBuilder.get(this);
 		GlobalSettings settings = GlobalSettings.getInstance(this);
@@ -113,7 +122,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			favoriteCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
 		}
 		AppStyles.setTheme(root, settings.getBackgroundColor());
-		AppStyles.setProgressColor(loading, settings.getHighlightColor());
+		AppStyles.setSwipeRefreshColor(reload, settings);
 		tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		toolbar.setTitle(R.string.title_metrics);
 
@@ -144,6 +153,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			created.setText(StringTools.formatCreationTime(getResources(), tweet.getTimestamp()));
 		}
 		profile.setOnClickListener(this);
+		reload.setOnRefreshListener(this);
 	}
 
 
@@ -153,6 +163,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		if (metricsAsync == null && tweet != null) {
 			metricsAsync = new MetricsLoader(this);
 			metricsAsync.execute(tweet.getId());
+			setRefresh(true);
 		}
 	}
 
@@ -165,6 +176,15 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, tweet.getAuthor());
 				startActivity(profile);
 			}
+		}
+	}
+
+
+	@Override
+	public void onRefresh() {
+		if (tweet != null) {
+			metricsAsync = new MetricsLoader(this);
+			metricsAsync.execute(tweet.getId());
 		}
 	}
 
@@ -196,6 +216,16 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			} catch (ActivityNotFoundException err) {
 				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public void onRefreshDelayed() {
+		if (isRefreshing && !reload.isRefreshing()) {
+			reload.setRefreshing(true);
 		}
 	}
 
@@ -235,7 +265,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			videoViews.setText(NUM_FORMAT.format(metrics.getVideoViews()));
 			videoViews.setVisibility(View.VISIBLE);
 		}
-		loading.setVisibility(View.GONE);
+		setRefresh(false);
 	}
 
 	/**
@@ -243,6 +273,18 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	 */
 	public void onError(@Nullable TwitterException exception) {
 		ErrorHandler.handleFailure(this, exception);
-		loading.setVisibility(View.GONE);
+		setRefresh(false);
+	}
+
+	/**
+	 *
+	 */
+	private void setRefresh(boolean enable) {
+		isRefreshing = enable;
+		if (enable) {
+			reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
+		} else {
+			reload.setRefreshing(false);
+		}
 	}
 }

@@ -137,9 +137,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 	@Override
 	protected void onReload() {
-		if (listTask != null && listTask.getStatus() != RUNNING) {
-			load(NO_CURSOR);
-		}
+		load(NO_CURSOR);
 	}
 
 

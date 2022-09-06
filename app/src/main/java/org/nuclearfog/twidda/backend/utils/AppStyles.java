@@ -39,6 +39,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -333,6 +334,14 @@ public final class AppStyles {
 		gradient.setColor(color);
 		gradient.setStroke(width, invColor);
 		button.setTextColor(invColor);
+	}
+
+	/**
+	 * sets {@link SwipeRefreshLayout} theme
+	 */
+	public static void setSwipeRefreshColor(SwipeRefreshLayout reload, GlobalSettings settings) {
+		reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+		reload.setColorSchemeColors(settings.getIconColor());
 	}
 
 	/**

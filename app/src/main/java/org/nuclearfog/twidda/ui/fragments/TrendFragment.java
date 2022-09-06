@@ -67,9 +67,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
 	@Override
 	protected void onReload() {
-		if (trendTask != null && trendTask.getStatus() != RUNNING) {
-			load();
-		}
+		load();
 	}
 
 

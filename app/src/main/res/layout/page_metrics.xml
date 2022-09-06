@@ -20,6 +20,7 @@
 		android:layout_height="@dimen/metrics_profile"
 		android:layout_marginStart="@dimen/metrics_profileimage_margin"
 		android:layout_marginTop="@dimen/metrics_profileimage_margin"
+		android:contentDescription="@string/profile_image"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/metrics_toolbar" />
 
@@ -79,8 +80,8 @@
 		app:layout_constraintTop_toBottomOf="@id/metrics_tweet_barrier"
 		app:layout_constraintEnd_toEndOf="parent" />
 
-	<ScrollView
-		android:id="@+id/metrics_scroll"
+	<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+		android:id="@+id/metrics_refresh"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		app:layout_constraintStart_toStartOf="parent"
@@ -88,102 +89,100 @@
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent">
 
-		<LinearLayout
+		<ScrollView
+			android:id="@+id/metrics_scroll"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical">
+			android:layout_height="match_parent">
 
-			<TextView
-				android:id="@+id/metrics_impression"
+			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				android:orientation="vertical">
 
-			<TextView
-				android:id="@+id/metrics_retweets"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				<TextView
+					android:id="@+id/metrics_impression"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-			<TextView
-				android:id="@+id/metrics_favorits"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				<TextView
+					android:id="@+id/metrics_retweets"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-			<TextView
-				android:id="@+id/metrics_replies"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				<TextView
+					android:id="@+id/metrics_favorits"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-			<TextView
-				android:id="@+id/metrics_quotes"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				<TextView
+					android:id="@+id/metrics_replies"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-			<TextView
-				android:id="@+id/metrics_link_count"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				<TextView
+					android:id="@+id/metrics_quotes"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-			<TextView
-				android:id="@+id/metrics_profile_count"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				<TextView
+					android:id="@+id/metrics_link_count"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-			<TextView
-				android:id="@+id/metrics_video_clicks"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				android:drawablePadding="@dimen/metrics_padding_drawable_big"
-				android:layout_margin="@dimen/metrics_item_margin"
-				android:textSize="@dimen/metrics_textsize_big"
-				android:gravity="end" />
+				<TextView
+					android:id="@+id/metrics_profile_count"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-		</LinearLayout>
+				<TextView
+					android:id="@+id/metrics_video_clicks"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/metrics_padding_drawable_big"
+					android:layout_margin="@dimen/metrics_item_margin"
+					android:textSize="@dimen/metrics_textsize_big"
+					android:gravity="end" />
 
-	</ScrollView>
+			</LinearLayout>
 
-	<ProgressBar
-		android:id="@+id/metrics_loading"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:layout_constraintStart_toStartOf="@id/metrics_scroll"
-		app:layout_constraintTop_toTopOf="@id/metrics_scroll"
-		app:layout_constraintBottom_toBottomOf="@id/metrics_scroll"
-		app:layout_constraintEnd_toEndOf="@id/metrics_scroll" />
+		</ScrollView>
+
+	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -69,8 +69,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	protected void onReload() {
-		if (loginTask == null || loginTask.getStatus() != RUNNING)
-			loginTask = new AccountLoader(this);
+		loginTask = new AccountLoader(this);
 		loginTask.execute();
 	}
 

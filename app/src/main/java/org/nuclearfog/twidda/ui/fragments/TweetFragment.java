@@ -173,12 +173,10 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
 	@Override
 	protected void onReload() {
-		if (tweetTask != null && tweetTask.getStatus() != RUNNING) {
-			long sinceId = 0;
-			if (!adapter.isEmpty())
-				sinceId = adapter.getItemId(0);
-			load(sinceId, 0, 0);
-		}
+		long sinceId = 0;
+		if (!adapter.isEmpty())
+			sinceId = adapter.getItemId(0);
+		load(sinceId, 0, 0);
 	}
 
 

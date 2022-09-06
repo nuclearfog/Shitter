@@ -88,9 +88,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	protected void onReload() {
-		if (messageTask != null && messageTask.getStatus() != RUNNING) {
-			load(MessageLoader.LOAD, null);
-		}
+		load(MessageLoader.LOAD, null);
 	}
 
 
