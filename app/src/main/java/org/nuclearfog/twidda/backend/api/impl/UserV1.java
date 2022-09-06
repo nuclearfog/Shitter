@@ -57,18 +57,12 @@ public class UserV1 implements User {
 	 */
 	public UserV1(JSONObject json) throws JSONException {
 		String idStr = json.getString("id_str");
-		if (ID_PATTERN.matcher(idStr).matches()) {
-			id = Long.parseLong(idStr);
-		} else {
-			throw new JSONException("bad ID: " + idStr);
-		}
+		String profileImageUrl = json.optString("profile_image_url_https");
 		username = json.optString("name");
 		screenName = '@' + json.optString("screen_name");
 		isVerified = json.optBoolean("verified");
 		isLocked = json.optBoolean("protected");
-		profileImageUrl = getProfileImage(json);
 		profileBannerUrl = json.optString("profile_banner_url");
-		description = getDescription(json);
 		location = json.optString("location");
 		following = json.optInt("friends_count");
 		follower = json.optInt("followers_count");
@@ -77,7 +71,19 @@ public class UserV1 implements User {
 		followReqSent = json.optBoolean("follow_request_sent");
 		defaultImage = json.optBoolean("default_profile_image");
 		created = StringTools.getTime1(json.optString("created_at"));
+
+		description = getDescription(json);
 		url = getUrl(json);
+		if (defaultImage) {
+			this.profileImageUrl = profileImageUrl;
+		} else {
+			this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
+		}
+		if (ID_PATTERN.matcher(idStr).matches()) {
+			id = Long.parseLong(idStr);
+		} else {
+			throw new JSONException("bad ID: " + idStr);
+		}
 	}
 
 	@Override
@@ -231,21 +237,5 @@ public class UserV1 implements User {
 			// ignore
 		}
 		return "";
-	}
-
-	/**
-	 * get original sized profile image url
-	 *
-	 * @param json root json object of user v1
-	 * @return profile image url
-	 */
-	private String getProfileImage(JSONObject json) {
-		String profileImage = json.optString("profile_image_url_https");
-		// set profile image url
-		int start = profileImage.lastIndexOf('_');
-		int end = profileImage.lastIndexOf('.');
-		if (!defaultImage && start > 0 && end > 0)
-			return profileImage.substring(0, start) + profileImage.substring(end);
-		return profileImage;
 	}
 }

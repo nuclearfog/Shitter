@@ -40,11 +40,9 @@ public class UserV2 implements User {
 	private int following;
 	private int follower;
 	private int tweetCount;
-	private int likeCount;
 	private boolean isCurrentUser;
 	private boolean isVerified;
 	private boolean isProtected;
-	private boolean followReqSent;
 	private boolean defaultImage;
 
 	/**
@@ -52,36 +50,37 @@ public class UserV2 implements User {
 	 * @param twitterId ID of the current user
 	 */
 	public UserV2(JSONObject json, long twitterId) throws JSONException {
+		JSONObject metrics = json.optJSONObject("public_metrics");
+
 		String idStr = json.getString("id");
-		if (ID_PATTERN.matcher(idStr).matches()) {
-			id = Long.parseLong(idStr);
-		} else {
-			throw new JSONException("bad ID: " + idStr);
-		}
+		String profileImageUrl = json.optString("profile_image_url");
 		username = json.optString("name");
 		screenName = '@' + json.optString("username");
 		isProtected = json.optBoolean("protected");
 		location = json.optString("location");
 		isVerified = json.optBoolean("verified");
-		profileImageUrl = json.optString("profile_image_url");
 		profileBannerUrl = json.optString("profile_banner_url");
 		created = StringTools.getTime2(json.optString("created_at"));
-		description = getDescription(json);
-		url = getUrl(json);
-		isCurrentUser = id == twitterId;
+		defaultImage = profileImageUrl.contains("default_profile_images");
 
-		JSONObject metrics = json.optJSONObject("public_metrics");
+		url = getUrl(json);
+		description = getDescription(json);
+		isCurrentUser = id == twitterId;
 		if (metrics != null) {
 			following = metrics.optInt("following_count");
 			follower = metrics.optInt("followers_count");
 			tweetCount = metrics.optInt("tweet_count");
 		}
-		defaultImage = profileImageUrl.contains("default_profile_images");
-
-		// not yet implemented in API 2.0
-		// todo check if Twitter added these values
-		likeCount = -1;
-		followReqSent = false;
+		if (defaultImage) {
+			this.profileImageUrl = profileImageUrl;
+		} else {
+			this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
+		}
+		if (ID_PATTERN.matcher(idStr).matches()) {
+			id = Long.parseLong(idStr);
+		} else {
+			throw new JSONException("bad ID: " + idStr);
+		}
 	}
 
 	@Override
@@ -141,7 +140,8 @@ public class UserV2 implements User {
 
 	@Override
 	public boolean followRequested() {
-		return followReqSent;
+		// todo not yet implemented in API V2
+		return false;
 	}
 
 	@Override
@@ -161,7 +161,8 @@ public class UserV2 implements User {
 
 	@Override
 	public int getFavoriteCount() {
-		return likeCount;
+		// todo not yet implemented in API V2
+		return -1;
 	}
 
 	@Override
@@ -225,19 +226,15 @@ public class UserV2 implements User {
 	 * @return expanded url
 	 */
 	private String getUrl(JSONObject json) {
-		JSONObject entities = json.optJSONObject("entities");
-		if (entities != null) {
-			JSONObject urlJson = entities.optJSONObject("url");
-			if (urlJson != null) {
-				try {
-					JSONArray urls = urlJson.getJSONArray("urls");
-					if (urls.length() > 0) {
-						return urls.getJSONObject(0).getString("display_url");
-					}
-				} catch (JSONException e) {
-					// ignore
-				}
+		try {
+			JSONObject entities = json.getJSONObject("entities");
+			JSONObject urlJson = entities.getJSONObject("url");
+			JSONArray urls = urlJson.getJSONArray("urls");
+			if (urls.length() > 0) {
+				return urls.getJSONObject(0).getString("display_url");
 			}
+		} catch (JSONException e) {
+			// ignore
 		}
 		return "";
 	}

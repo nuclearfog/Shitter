@@ -340,4 +340,23 @@ public final class StringTools {
 			throw new IOException("error generating signature!");
 		}
 	}
+
+	/**
+	 * formate user profile image link. (remove suffix but keep the file extension if any)
+	 *
+	 * @param profileImage user profile image
+	 * @return formatted link
+	 */
+	public static String createProfileImageLink(String profileImage) {
+		// set profile image url
+		int suffix = profileImage.lastIndexOf('_');
+		int extension = profileImage.lastIndexOf('.');
+		if (suffix > 0 && extension > 0) {
+			if (suffix > extension)
+				return profileImage.substring(0, suffix);
+			else
+				return profileImage.substring(0, suffix) + profileImage.substring(extension);
+		}
+		return profileImage;
+	}
 }
