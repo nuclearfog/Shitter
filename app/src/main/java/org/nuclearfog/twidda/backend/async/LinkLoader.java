@@ -1,14 +1,5 @@
 package org.nuclearfog.twidda.backend.async;
 
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DISABLE_RELOAD;
-import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_LIST_ID;
-import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_NAME;
-
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,6 +10,7 @@ import androidx.annotation.NonNull;
 import org.nuclearfog.twidda.backend.api.Twitter;
 import org.nuclearfog.twidda.backend.api.TwitterException;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.MainActivity;
 import org.nuclearfog.twidda.ui.activities.MessageActivity;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -29,7 +21,7 @@ import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistsActivity;
 
 import java.lang.ref.WeakReference;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
  * This class handles deep links and starts activities to show the content
@@ -41,11 +33,6 @@ import java.util.regex.Pattern;
  * @see MainActivity
  */
 public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
-
-	private static final Pattern TWEET_PATH = Pattern.compile("[\\w]+/status/\\d+");
-	private static final Pattern USER_PATH = Pattern.compile("[\\w]+/?(\\bwith_replies\\b|\\bmedia\\b|\\blikes\\b)?");
-	private static final Pattern USERLISTS_PATH = Pattern.compile("[\\w]+/lists");
-	private static final Pattern USERLIST_PATH = Pattern.compile("i/lists/\\d+");
 
 	private WeakReference<MainActivity> weakRef;
 	private TwitterException exception;
@@ -61,44 +48,50 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 
 	@Override
 	protected DataHolder doInBackground(Uri[] links) {
-		DataHolder dataHolder = null;
 		try {
 			Uri link = links[0];
-			String path = link.getPath();
+			List<String> pathSeg = link.getPathSegments();
 			Bundle data = new Bundle();
-			if (path != null && path.length() > 1) {
-				path = path.substring(1);
+			if (!pathSeg.isEmpty()) {
 				// open home timeline tab
-				if (path.equals("home")) {
+				// e.g. twitter.com/home
+				if (pathSeg.get(0).equals("home")) {
 					data.putInt(MainActivity.KEY_TAB_PAGE, 0);
-					dataHolder = new DataHolder(data, MainActivity.class);
+					return new DataHolder(data, MainActivity.class);
 				}
 				// open trend tab
-				else if (path.equals("i/trends") || path.equals("trends") || path.equals("explore")) {
+				// e.g. twitter.com/trends , twitter.com/explore or twitter.com/i/trends
+				else if (pathSeg.get(0).equals("trends") || pathSeg.get(0).equals("explore") ||
+						(pathSeg.size() == 2 && pathSeg.get(0).equals("i") && pathSeg.get(1).equals("trends"))) {
 					data.putInt(MainActivity.KEY_TAB_PAGE, 1);
-					dataHolder = new DataHolder(data, MainActivity.class);
+					return new DataHolder(data, MainActivity.class);
 				}
 				// open mentions timeline
-				else if (path.equals("notifications")) {
+				// e.g. twitter.com/notifications
+				else if (pathSeg.get(0).equals("notifications")) {
 					data.putInt(MainActivity.KEY_TAB_PAGE, 2);
-					dataHolder = new DataHolder(data, MainActivity.class);
+					return new DataHolder(data, MainActivity.class);
 				}
 				// open directmessage page
-				else if (path.equals("messages")) {
-					dataHolder = new DataHolder(data, MessageActivity.class);
+				// e.g. twitter.com/messages
+				else if (pathSeg.get(0).equals("messages")) {
+					return new DataHolder(data, MessageActivity.class);
 				}
 				// open twitter search
-				else if (path.equals("search")) {
+				// e.g. twitter.com/search?q={search string}
+				else if (pathSeg.get(0).equals("search")) {
 					if (link.isHierarchical()) {
 						String search = link.getQueryParameter("q");
 						if (search != null) {
-							data.putString(KEY_SEARCH_QUERY, search);
-							dataHolder = new DataHolder(data, SearchActivity.class);
+							data.putString(SearchActivity.KEY_SEARCH_QUERY, search);
+							return new DataHolder(data, SearchActivity.class);
 						}
 					}
 				}
 				// open tweet editor and add text
-				else if (path.equals("intent/tweet") || path.equals("share")) {
+				// e.g. twitter.com/share or twitter.com/intent/tweet
+				else if (pathSeg.get(0).equals("share") ||
+						(pathSeg.size() == 2 && pathSeg.get(0).equals("intent") && pathSeg.get(1).equals("tweet"))) {
 					if (link.isHierarchical()) {
 						String tweet = "";
 						String text = link.getQueryParameter("text");
@@ -110,53 +103,57 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 							tweet += url + " ";
 						if (via != null)
 							tweet += "via @" + via;
-						data.putString(KEY_TWEETPOPUP_TEXT, tweet);
-						dataHolder = new DataHolder(data, TweetEditor.class);
+						data.putString(TweetEditor.KEY_TWEETPOPUP_TEXT, tweet);
+						return new DataHolder(data, TweetEditor.class);
 					}
 				}
 				// open hashtag search
-				else if (path.startsWith("hashtag/")) {
-					String search = '#' + path.substring(8);
-					data.putString(KEY_SEARCH_QUERY, search);
-					dataHolder = new DataHolder(data, SearchActivity.class);
+				// e.g. twitter.com/hashtag/{hashtag name}
+				else if (pathSeg.size() == 2 && pathSeg.get(0).equals("hashtag")) {
+					String search = '#' + pathSeg.get(1);
+					data.putString(SearchActivity.KEY_SEARCH_QUERY, search);
+					return new DataHolder(data, SearchActivity.class);
 				}
 				// open an userlist
-				else if (USERLIST_PATH.matcher(path).matches()) {
-					long listId = Long.parseLong(path.substring(8));
-					data.putLong(KEY_LIST_ID, listId);
-					dataHolder = new DataHolder(data, UserlistActivity.class);
+				// e.g. twitter.com/i/lists/{list id}
+				else if (pathSeg.size() == 3 && pathSeg.get(0).equals("i") && pathSeg.get(1).equals("lists") && pathSeg.get(2).matches("\\d+")) {
+					long listId = Long.parseLong(pathSeg.get(2));
+					UserList list = mTwitter.getUserlist(listId);
+					data.putSerializable(UserlistActivity.KEY_LIST_DATA, list);
+					data.putBoolean(UserlistActivity.KEY_LIST_NO_UPDATE, true);
+					return new DataHolder(data, UserlistActivity.class);
+				}
+				// show tweet
+				// e.g. twitter.com/{screenname}/status/{tweet ID}
+				else if (pathSeg.size() == 3 && pathSeg.get(1).equals("status") && pathSeg.get(2).matches("\\d+")) {
+					String screenname = pathSeg.get(0);
+					long tweetId = Long.parseLong(pathSeg.get(2));
+					data.putLong(TweetActivity.KEY_TWEET_ID, tweetId);
+					data.putString(TweetActivity.KEY_TWEET_NAME, screenname);
+					return new DataHolder(data, TweetActivity.class);
+				}
+				// show userlists
+				// e.g. twitter.com/{screenname}/lists
+				else if (pathSeg.size() == 2 && pathSeg.get(1).equals("lists")) {
+					String screenname = pathSeg.get(0);
+					data.putString(UserlistsActivity.KEY_USERLIST_OWNER_NAME, screenname);
+					return new DataHolder(data, UserlistsActivity.class);
 				}
 				// show user profile
-				else if (USER_PATH.matcher(path).matches()) {
-					int end = path.indexOf('/');
-					if (end > 0)
-						path = path.substring(0, end);
-					User user = mTwitter.showUser(path);
-					data.putSerializable(KEY_PROFILE_DATA, user);
-					data.putBoolean(KEY_PROFILE_DISABLE_RELOAD, true);
-					dataHolder = new DataHolder(data, ProfileActivity.class);
-				} else {
-					String username = '@' + path.substring(0, path.indexOf('/'));
-					// show tweet
-					if (TWEET_PATH.matcher(path).matches()) {
-						long tweetId = Long.parseLong(path.substring(path.lastIndexOf('/') + 1));
-						data.putLong(KEY_TWEET_ID, tweetId);
-						data.putString(KEY_TWEET_NAME, username);
-						dataHolder = new DataHolder(data, TweetActivity.class);
-					}
-					// show userlists
-					else if (USERLISTS_PATH.matcher(path).matches()) {
-						data.putString(KEY_USERLIST_OWNER_NAME, username);
-						dataHolder = new DataHolder(data, UserlistsActivity.class);
-					}
+				// e.g. twitter.com/{screenname}
+				else if (pathSeg.size() == 1 || (pathSeg.size() == 2 &&
+						(pathSeg.get(1).equals("with_replies") || pathSeg.get(1).equals("media") || pathSeg.get(1).equals("likes")))) {
+					String screenname = pathSeg.get(0);
+					User user = mTwitter.showUser(screenname);
+					data.putSerializable(ProfileActivity.KEY_PROFILE_DATA, user);
+					data.putBoolean(ProfileActivity.KEY_PROFILE_DISABLE_RELOAD, true);
+					return new DataHolder(data, ProfileActivity.class);
 				}
 			}
 		} catch (TwitterException e) {
 			exception = e;
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return dataHolder;
+		return null;
 	}
 
 

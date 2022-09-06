@@ -54,10 +54,10 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	public static final String KEY_LIST_DATA = "list_data";
 
 	/**
-	 * alternative key to {@link #KEY_LIST_DATA} to download list information
-	 * value type is Long
+	 * key to disable list update
+	 * value type is boolean
 	 */
-	public static final String KEY_LIST_ID = "list_id";
+	public static final String KEY_LIST_NO_UPDATE = "list_no_update";
 
 	/**
 	 * result key to return the ID of a removed list
@@ -134,10 +134,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			toolbar.setTitle(userList.getTitle());
 			toolbar.setSubtitle(userList.getDescription());
 			adapter.setupListContentPage(userList.getId(), userList.getListOwner().isCurrentUser());
-		} else {
-			toolbar.setTitle("");
-			long id = getIntent().getLongExtra(KEY_LIST_ID, 0);
-			adapter.setupListContentPage(id, false);
 		}
 
 		setSupportActionBar(toolbar);
@@ -152,16 +148,12 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (listLoaderTask == null) {
-			if (userList != null) {
+		if (listLoaderTask == null && userList != null) {
+			if (!getIntent().getBooleanExtra(KEY_LIST_NO_UPDATE, false)) {
 				// update list information
 				listLoaderTask = new ListAction(this, userList.getId(), ListAction.LOAD);
-			} else {
-				// load list information
-				long id = getIntent().getLongExtra(KEY_LIST_ID, 0);
-				listLoaderTask = new ListAction(this, id, ListAction.LOAD);
+				listLoaderTask.execute();
 			}
-			listLoaderTask.execute();
 		}
 	}
 
@@ -276,18 +268,20 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
-		// delete user list
-		if (type == ConfirmDialog.LIST_DELETE) {
-			if (userList != null) {
-				listLoaderTask = new ListAction(this, userList.getId(), ListAction.DELETE);
-				listLoaderTask.execute();
+		if (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING) {
+			// delete user list
+			if (type == ConfirmDialog.LIST_DELETE) {
+				if (userList != null) {
+					listLoaderTask = new ListAction(this, userList.getId(), ListAction.DELETE);
+					listLoaderTask.execute();
+				}
 			}
-		}
-		// unfollow user list
-		else if (type == ConfirmDialog.LIST_UNFOLLOW) {
-			if (userList != null) {
-				listLoaderTask = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
-				listLoaderTask.execute();
+			// unfollow user list
+			else if (type == ConfirmDialog.LIST_UNFOLLOW) {
+				if (userList != null) {
+					listLoaderTask = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
+					listLoaderTask.execute();
+				}
 			}
 		}
 	}

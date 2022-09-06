@@ -993,7 +993,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 	 * @param listId ID of the list
 	 * @return userlist information
 	 */
-	public UserList getUserlist1(long listId) throws TwitterException {
+	public UserList getUserlist(long listId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + listId);
 		return getUserlist1(USERLIST_SHOW, params);
