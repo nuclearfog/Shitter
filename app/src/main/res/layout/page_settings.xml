@@ -200,13 +200,14 @@
 						android:textSize="@dimen/settings_textsize"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintBottom_toTopOf="@id/settings_toolbar_ov"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
 						android:id="@+id/settings_toolbar_ov"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_marginBottom="@dimen/settings_column_margin"
 						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/settings_look_text"
@@ -229,11 +230,11 @@
 						android:id="@+id/enable_like"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_marginBottom="@dimen/settings_column_margin"
 						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/settings_toolbar_ov"
-						app:layout_constraintBottom_toTopOf="@id/settings_fonttype_icon"
+						app:layout_constraintBottom_toTopOf="@id/spinner_font"
 						app:layout_constraintEnd_toStartOf="@id/enable_like_descr" />
 
 					<TextView
@@ -252,12 +253,11 @@
 						android:id="@+id/settings_fonttype_icon"
 						android:layout_width="@dimen/settings_icon_size"
 						android:layout_height="@dimen/settings_icon_size"
-						android:layout_marginTop="@dimen/settings_column_margin"
 						android:src="@drawable/font"
 						app:layout_constraintDimensionRatio="1.0"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/enable_like"
-						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintTop_toTopOf="@id/spinner_font"
+						app:layout_constraintBottom_toBottomOf="@id/spinner_font"
 						app:layout_constraintEnd_toEndOf="@id/enable_like"
 						tools:ignore="ContentDescription" />
 
@@ -267,10 +267,10 @@
 						android:layout_height="wrap_content"
 						android:popupBackground="@android:color/transparent"
 						app:layout_constraintStart_toStartOf="@+id/enable_like_descr"
-						app:layout_constraintTop_toTopOf="@id/settings_fonttype_icon"
-						app:layout_constraintBottom_toBottomOf="@id/settings_fonttype_icon"
+						app:layout_constraintTop_toBottomOf="@id/enable_like"
+						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintEnd_toStartOf="@id/spinner_scale"
-						app:layout_constraintHorizontal_weight="2" />
+						app:layout_constraintHorizontal_weight="3" />
 
 					<Spinner
 						android:id="@+id/spinner_scale"
@@ -278,7 +278,7 @@
 						android:layout_height="wrap_content"
 						android:layout_marginStart="@dimen/settings_spinner_margin"
 						android:popupBackground="@android:color/transparent"
-						app:layout_constraintHorizontal_weight="1"
+						app:layout_constraintHorizontal_weight="2"
 						app:layout_constraintStart_toEndOf="@id/spinner_font"
 						app:layout_constraintTop_toTopOf="@id/spinner_font"
 						app:layout_constraintBottom_toBottomOf="@id/spinner_font"
@@ -308,6 +308,7 @@
 						android:textSize="@dimen/settings_textsize"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintBottom_toTopOf="@id/toggleImg"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
