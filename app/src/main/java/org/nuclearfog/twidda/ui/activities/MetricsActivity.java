@@ -36,7 +36,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
-import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Tweet;
@@ -44,6 +43,7 @@ import org.nuclearfog.twidda.model.User;
 
 import java.io.Serializable;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -150,7 +150,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			username.setText(author.getUsername());
 			screenname.setText(author.getScreenname());
 			tweetText.setText(Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor(), this));
-			created.setText(StringTools.formatCreationTime(getResources(), tweet.getTimestamp()));
+			created.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTimestamp()));
 		}
 		profile.setOnClickListener(this);
 		reload.setOnRefreshListener(this);
