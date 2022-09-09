@@ -102,12 +102,14 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 	protected void onPostExecute(@Nullable Directmessages messages) {
 		MessageFragment fragment = weakRef.get();
 		if (fragment != null) {
-			if (messages != null) {
-				fragment.setData(messages);
+			if (twException != null) {
+				fragment.onError(twException, messageId);
 			} else {
-				if (twException != null) {
-					fragment.onError(twException);
-				} else {
+				if (action == DB || action == LOAD) {
+					if (messages != null) {
+						fragment.setData(messages);
+					}
+				} else if (action == DEL) {
 					fragment.removeItem(messageId);
 				}
 			}
