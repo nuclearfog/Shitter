@@ -41,7 +41,7 @@ public class MessageHolder extends ViewHolder {
 		mediaButton = itemView.findViewById(R.id.item_message_media);
 		username = itemView.findViewById(R.id.item_message_username);
 		screenname = itemView.findViewById(R.id.item_message_screenname);
-		receiver = itemView.findViewById(R.id.dm_receiver);
+		receiver = itemView.findViewById(R.id.item_message_receiver);
 		time = itemView.findViewById(R.id.item_message_time);
 		message = itemView.findViewById(R.id.item_message_text);
 		answer = itemView.findViewById(R.id.item_message_answer);
