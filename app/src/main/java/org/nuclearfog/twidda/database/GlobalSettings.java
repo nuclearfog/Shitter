@@ -97,6 +97,7 @@ public class GlobalSettings {
 	private static final String IMAGE_LOAD = "image_load";
 	private static final String IMAGE_QUALITY = "image_hq";
 	private static final String ANSWER_LOAD = "answer_load";
+	private static final String TWEET_INDICATOR = "tweet_indicator";
 	private static final String PROFILE_OVERLAP = "profile_toolbar_overlap";
 	private static final String PROXY_SET = "proxy_enabled";
 	private static final String AUTH_SET = "proxy_auth_set";
@@ -158,6 +159,7 @@ public class GlobalSettings {
 	private boolean customAPIKey;
 	private boolean toolbarOverlap;
 	private boolean linkPreview;
+	private boolean tweetIndicators;
 	private boolean filterResults;
 	private boolean enableLike;
 	private boolean twitterAlt;
@@ -578,6 +580,26 @@ public class GlobalSettings {
 
 		Editor edit = settings.edit();
 		edit.putBoolean(ANSWER_LOAD, loadAnswer);
+		edit.apply();
+	}
+
+	/**
+	 * @return true if tweet indicators enabled
+	 */
+	public boolean tweetIndicatorsEnabled() {
+		return tweetIndicators;
+	}
+
+	/**
+	 * enable/disable tweet indicators
+	 *
+	 * @param enable true to enable tweet indicators
+	 */
+	public void enableTweetIndicators(boolean enable) {
+		tweetIndicators = enable;
+
+		Editor edit = settings.edit();
+		edit.putBoolean(TWEET_INDICATOR, enable);
 		edit.apply();
 	}
 
@@ -1120,6 +1142,7 @@ public class GlobalSettings {
 		loggedIn = settings.getBoolean(LOGGED_IN, false);
 		loadImage = settings.getBoolean(IMAGE_LOAD, true);
 		loadAnswer = settings.getBoolean(ANSWER_LOAD, false);
+		tweetIndicators = settings.getBoolean(TWEET_INDICATOR, true);
 		hqImages = settings.getBoolean(IMAGE_QUALITY, false);
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
 		linkPreview = settings.getBoolean(LINK_PREVIEW, false);

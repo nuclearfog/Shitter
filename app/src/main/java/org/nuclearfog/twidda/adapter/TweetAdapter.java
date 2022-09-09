@@ -326,30 +326,35 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 				} else {
 					tweetItem.profile.setImageResource(0);
 				}
-				if (tweet.getLocationName() != null && !tweet.getLocationName().isEmpty()) {
-					tweetItem.location.setVisibility(VISIBLE);
-				} else {
-					tweetItem.location.setVisibility(GONE);
-				}
 				if (tweet.getRepliedTweetId() > 0) {
-					tweetItem.reply.setVisibility(VISIBLE);
+					tweetItem.replyIcon.setVisibility(VISIBLE);
 					tweetItem.replyname.setVisibility(VISIBLE);
 					tweetItem.replyname.setText(tweet.getReplyName());
 				} else {
-					tweetItem.reply.setVisibility(GONE);
+					tweetItem.replyIcon.setVisibility(GONE);
 					tweetItem.replyname.setVisibility(GONE);
 				}
-				if (tweet.getMediaType() != Tweet.MEDIA_NONE) {
-					if (tweet.getMediaType() == Tweet.MEDIA_PHOTO) {
-						tweetItem.media.setImageResource(R.drawable.image);
-					} else if (tweet.getMediaType() == Tweet.MEDIA_VIDEO) {
-						tweetItem.media.setImageResource(R.drawable.video);
-					} else if (tweet.getMediaType() == Tweet.MEDIA_GIF) {
-						tweetItem.media.setImageResource(R.drawable.gif);
+				if (settings.tweetIndicatorsEnabled()) {
+					if (tweet.getLocationName() != null && !tweet.getLocationName().isEmpty()) {
+						tweetItem.location.setVisibility(VISIBLE);
+					} else {
+						tweetItem.location.setVisibility(GONE);
 					}
-					tweetItem.media.setColorFilter(settings.getIconColor());
-					tweetItem.media.setVisibility(VISIBLE);
+					if (tweet.getMediaType() != Tweet.MEDIA_NONE) {
+						if (tweet.getMediaType() == Tweet.MEDIA_PHOTO) {
+							tweetItem.media.setImageResource(R.drawable.image);
+						} else if (tweet.getMediaType() == Tweet.MEDIA_VIDEO) {
+							tweetItem.media.setImageResource(R.drawable.video);
+						} else if (tweet.getMediaType() == Tweet.MEDIA_GIF) {
+							tweetItem.media.setImageResource(R.drawable.gif);
+						}
+						tweetItem.media.setColorFilter(settings.getIconColor());
+						tweetItem.media.setVisibility(VISIBLE);
+					} else {
+						tweetItem.media.setVisibility(GONE);
+					}
 				} else {
+					tweetItem.location.setVisibility(GONE);
 					tweetItem.media.setVisibility(GONE);
 				}
 			}

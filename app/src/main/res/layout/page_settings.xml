@@ -234,7 +234,7 @@
 						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/settings_toolbar_ov"
-						app:layout_constraintBottom_toTopOf="@id/spinner_font"
+						app:layout_constraintBottom_toTopOf="@id/enable_tweet_indicators"
 						app:layout_constraintEnd_toStartOf="@id/enable_like_descr" />
 
 					<TextView
@@ -249,6 +249,29 @@
 						app:layout_constraintBottom_toBottomOf="@id/enable_like"
 						app:layout_constraintEnd_toEndOf="parent" />
 
+					<com.kyleduo.switchbutton.SwitchButton
+						android:id="@+id/enable_tweet_indicators"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginBottom="@dimen/settings_column_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/enable_like"
+						app:layout_constraintBottom_toTopOf="@id/spinner_font"
+						app:layout_constraintEnd_toStartOf="@id/enable_tweet_indicators_descr" />
+
+					<TextView
+						android:id="@+id/enable_tweet_indicators_descr"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:singleLine="true"
+						android:text="@string/settings_enable_indicators"
+						android:textSize="@dimen/settings_textsize_small"
+						app:layout_constraintStart_toEndOf="@id/enable_tweet_indicators"
+						app:layout_constraintTop_toTopOf="@id/enable_tweet_indicators"
+						app:layout_constraintBottom_toBottomOf="@id/enable_tweet_indicators"
+						app:layout_constraintEnd_toEndOf="parent" />
+
 					<ImageView
 						android:id="@+id/settings_fonttype_icon"
 						android:layout_width="@dimen/settings_icon_size"
@@ -258,7 +281,7 @@
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="@id/spinner_font"
 						app:layout_constraintBottom_toBottomOf="@id/spinner_font"
-						app:layout_constraintEnd_toEndOf="@id/enable_like"
+						app:layout_constraintEnd_toEndOf="@id/enable_tweet_indicators"
 						tools:ignore="ContentDescription" />
 
 					<Spinner
@@ -266,9 +289,8 @@
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:popupBackground="@android:color/transparent"
-						app:layout_constraintStart_toStartOf="@+id/enable_like_descr"
-						app:layout_constraintTop_toBottomOf="@id/enable_like"
-						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintStart_toStartOf="@+id/enable_tweet_indicators_descr"
+						app:layout_constraintTop_toBottomOf="@id/enable_tweet_indicators"
 						app:layout_constraintEnd_toStartOf="@id/spinner_scale"
 						app:layout_constraintHorizontal_weight="3" />
 

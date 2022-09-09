@@ -168,6 +168,7 @@
 	<string name="settings_icon_color">Icons</string>
 	<string name="settings_color_like">Like</string>
 	<string name="settings_color_fav">Favorite</string>
+	<string name="settings_enable_indicators">show additional Tweet information</string>
 	<string name="highlight">Highlight</string>
 	<string name="settings_api_info">• changing API Keys requires re-login</string>
 	<string name="settings_list_size">List size</string>

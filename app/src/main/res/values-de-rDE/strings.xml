@@ -247,4 +247,5 @@
 	<string name="info_tweet_location_copied">Standortkoordinaten kopiert</string>
 	<string name="title_metrics">Tweet Metriken</string>
 	<string name="menu_tweet_metrics">Metriken</string>
+	<string name="settings_enable_indicators">zeige zusätzliche Tweet Informationen an</string>
 </resources>

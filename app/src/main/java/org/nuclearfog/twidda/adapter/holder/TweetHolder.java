@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class TweetHolder extends ViewHolder {
 
-	public final ImageView profile, rtUser, verifiedIcon, lockedIcon, rtIcon, favIcon, media, location, reply;
+	public final ImageView profile, rtUser, verifiedIcon, lockedIcon, rtIcon, favIcon, media, location, replyIcon;
 	public final TextView username, screenname, tweettext, retweet, favorite, retweeter, created, replyname;
 
 	/**
@@ -39,7 +39,7 @@ public class TweetHolder extends ViewHolder {
 		favIcon = itemView.findViewById(R.id.item_tweet_favorite_icon);
 		media = itemView.findViewById(R.id.item_tweet_media);
 		location = itemView.findViewById(R.id.item_tweet_location);
-		reply = itemView.findViewById(R.id.item_tweet_reply);
+		replyIcon = itemView.findViewById(R.id.item_tweet_reply);
 		username = itemView.findViewById(R.id.item_tweet_author_username);
 		screenname = itemView.findViewById(R.id.item_tweet_author_screenname);
 		tweettext = itemView.findViewById(R.id.item_tweet_text);
