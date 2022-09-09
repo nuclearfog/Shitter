@@ -65,9 +65,9 @@ public class TweetV1 implements Tweet {
 
 	private long replyUserId = -1L;
 	private long replyTweetId = -1L;
+	private int mediaType = MEDIA_NONE;
 	private String location = "";
 	private String replyName = "";
-	private String mediaType = MEDIA_NONE;
 
 	/**
 	 * @param json      JSON object of a single tweet
@@ -75,6 +75,15 @@ public class TweetV1 implements Tweet {
 	 * @throws JSONException if values are missing
 	 */
 	public TweetV1(JSONObject json, long twitterId) throws JSONException {
+		JSONObject locationJson = json.optJSONObject("place");
+		JSONObject currentUserJson = json.optJSONObject("current_user_retweet");
+		JSONObject embeddedTweetJson = json.optJSONObject("retweeted_status");
+		String tweetIdStr = json.optString("id_str");
+		String replyName = json.optString("in_reply_to_screen_name");
+		String replyTweetIdStr = json.optString("in_reply_to_status_id_str");
+		String replyUsrIdStr = json.optString("in_reply_to_user_id_str");
+		String text = createText(json);
+
 		author = new UserV1(json.getJSONObject("user"), twitterId);
 		retweetCount = json.optInt("retweet_count");
 		favoriteCount = json.optInt("favorite_count");
@@ -85,21 +94,12 @@ public class TweetV1 implements Tweet {
 		source = StringTools.getSource(json.optString("source"));
 		coordinates = getLocation(json);
 		mediaLinks = addMedia(json);
-		text = createText(json);
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 
-		String idStr = json.optString("id_str");
-		String replyName = json.optString("in_reply_to_screen_name");
-		String replyTweetIdStr = json.optString("in_reply_to_status_id_str");
-		String replyUsrIdStr = json.optString("in_reply_to_user_id_str");
-		JSONObject locationJson = json.optJSONObject("place");
-		JSONObject user_retweet = json.optJSONObject("current_user_retweet");
-		JSONObject embedded_tweet = json.optJSONObject("retweeted_status");
-
-		if (ID_PATTERN.matcher(idStr).matches()) {
-			id = Long.parseLong(idStr);
+		if (ID_PATTERN.matcher(tweetIdStr).matches()) {
+			id = Long.parseLong(tweetIdStr);
 		} else {
-			throw new JSONException("bad ID: " + idStr);
+			throw new JSONException("bad ID: " + tweetIdStr);
 		}
 		if (!replyName.isEmpty() && !replyName.equals("null")) {
 			this.replyName = '@' + replyName;
@@ -113,19 +113,21 @@ public class TweetV1 implements Tweet {
 		if (locationJson != null) {
 			location = locationJson.optString("full_name");
 		}
-		if (user_retweet != null) {
-			String retweetIdStr = user_retweet.optString("id_str");
+		if (currentUserJson != null) {
+			String retweetIdStr = currentUserJson.optString("id_str");
 			if (ID_PATTERN.matcher(retweetIdStr).matches()) {
 				retweetId = Long.parseLong(retweetIdStr);
 			}
 		}
-		if (embedded_tweet != null) {
-			embeddedTweet = new TweetV1(embedded_tweet, twitterId);
+		if (embeddedTweetJson != null) {
+			embeddedTweet = new TweetV1(embeddedTweetJson, twitterId);
 		}
 		// remove short media link
 		int linkPos = text.lastIndexOf("https://t.co/");
 		if (linkPos >= 0) {
-			text = text.substring(0, linkPos);
+			this.text = text.substring(0, linkPos);
+		} else {
+			this.text = text;
 		}
 	}
 
@@ -205,7 +207,7 @@ public class TweetV1 implements Tweet {
 	}
 
 	@Override
-	public String getMediaType() {
+	public int getMediaType() {
 		return mediaType;
 	}
 
@@ -293,9 +295,6 @@ public class TweetV1 implements Tweet {
 	 */
 	public void setEmbeddedTweet(Tweet tweet) {
 		this.embeddedTweet = tweet;
-		// todo clone information of the retweet to this tweet
-		// API bug: information of the retweet differs from this tweet
-		// so we have to adjust them
 	}
 
 	/**
@@ -311,7 +310,7 @@ public class TweetV1 implements Tweet {
 				String[] links = new String[media.length()];
 				String mime = mediaItem.getString("type");
 				switch (mime) {
-					case MEDIA_PHOTO:
+					case "photo":
 						mediaType = MEDIA_PHOTO;
 						// get media URLs
 						for (int pos = 0; pos < links.length; pos++) {
@@ -322,7 +321,7 @@ public class TweetV1 implements Tweet {
 						}
 						return links;
 
-					case MEDIA_VIDEO:
+					case "video":
 						mediaType = MEDIA_VIDEO;
 						JSONObject video = mediaItem.getJSONObject("video_info");
 						JSONArray videoVariants = video.getJSONArray("variants");
@@ -335,7 +334,7 @@ public class TweetV1 implements Tweet {
 						}
 						return links;
 
-					case MEDIA_GIF:
+					case "animated_gif":
 						mediaType = MEDIA_GIF;
 						JSONObject gif = mediaItem.getJSONObject("video_info");
 						JSONObject gifVariant = gif.getJSONArray("variants").getJSONObject(0);

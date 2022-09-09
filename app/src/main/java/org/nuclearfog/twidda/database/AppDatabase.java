@@ -790,11 +790,11 @@ public class AppDatabase {
 		} else {
 			tweetFlags &= ~MEDIA_SENS_MASK;
 		}
-		if (Tweet.MEDIA_PHOTO.equals(tweet.getMediaType())) {
+		if (tweet.getMediaType() == Tweet.MEDIA_PHOTO) {
 			tweetFlags |= MEDIA_IMAGE_MASK;
-		} else if (Tweet.MEDIA_VIDEO.equals(tweet.getMediaType())) {
+		} else if (tweet.getMediaType() == Tweet.MEDIA_VIDEO) {
 			tweetFlags |= MEDIA_VIDEO_MASK;
-		} else if (Tweet.MEDIA_GIF.equals(tweet.getMediaType())) {
+		} else if (tweet.getMediaType() == Tweet.MEDIA_GIF) {
 			tweetFlags |= MEDIA_ANGIF_MASK;
 		}
 		ContentValues tweetUpdate = new ContentValues(16);

@@ -15,24 +15,24 @@ import java.io.Serializable;
 public interface Tweet extends Serializable {
 
 	/**
+	 * returned when the tweet doesn't contain any media
+	 */
+	int MEDIA_NONE = -1;
+
+	/**
 	 * returned when the tweet contains one or more images
 	 */
-	String MEDIA_PHOTO = "photo";
+	int MEDIA_PHOTO = 800;
 
 	/**
 	 * returned when the tweet contains a video
 	 */
-	String MEDIA_VIDEO = "video";
+	int MEDIA_VIDEO = 801;
 
 	/**
 	 * returned when the tweet contains an animated gif
 	 */
-	String MEDIA_GIF = "animated_gif";
-
-	/**
-	 * returned when the tweet doesn't contain any media
-	 */
-	String MEDIA_NONE = "*/*";
+	int MEDIA_GIF = 802;
 
 	/**
 	 * @return tweet ID
@@ -109,7 +109,7 @@ public interface Tweet extends Serializable {
 	/**
 	 * @return MIME type of media attached to the tweet
 	 */
-	String getMediaType();
+	int getMediaType();
 
 	/**
 	 * @return true if tweet contains sensitive media

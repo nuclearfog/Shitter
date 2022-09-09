@@ -43,7 +43,7 @@ public class TweetImpl implements Tweet {
 	private User author;
 	private int retweetCount;
 	private int favoriteCount;
-	private String mediaType;
+	private int mediaType;
 	private String locationName;
 	private String locationCoordinates;
 	private String replyName;
@@ -169,7 +169,7 @@ public class TweetImpl implements Tweet {
 	}
 
 	@Override
-	public String getMediaType() {
+	public int getMediaType() {
 		return mediaType;
 	}
 

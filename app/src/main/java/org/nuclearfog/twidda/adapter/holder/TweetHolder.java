@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.adapter.holder;
 
-import static android.graphics.PorterDuff.Mode.SRC_IN;
-
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,50 +9,52 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * Holder class for the tweet view
+ * Holder class for the tweet item view
  *
  * @author nuclearfog
  * @see org.nuclearfog.twidda.adapter.TweetAdapter
  */
 public class TweetHolder extends ViewHolder {
 
-	public final TextView[] textViews = new TextView[7];
-	public final ImageView profile, rtUser, verifiedIcon, lockedIcon, rtIcon, favIcon;
+	public final ImageView profile, rtUser, verifiedIcon, lockedIcon, rtIcon, favIcon, media, location, reply;
+	public final TextView username, screenname, tweettext, retweet, favorite, retweeter, created, replyname;
 
 	/**
-	 * @param parent Parent view from adapter
+	 * @param parent   Parent view from adapter
+	 * @param settings app settings to set theme
 	 */
 	public TweetHolder(ViewGroup parent, GlobalSettings settings) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false));
-		// get views
-		CardView background = (CardView) itemView;
-		profile = itemView.findViewById(R.id.tweetPb);
-		verifiedIcon = itemView.findViewById(R.id.verified_icon);
-		lockedIcon = itemView.findViewById(R.id.locked_icon);
-		rtUser = itemView.findViewById(R.id.rt_user_icon);
-		rtIcon = itemView.findViewById(R.id.rt_icon);
-		favIcon = itemView.findViewById(R.id.fav_icon);
-		textViews[0] = itemView.findViewById(R.id.username);
-		textViews[1] = itemView.findViewById(R.id.screenname);
-		textViews[2] = itemView.findViewById(R.id.tweettext);
-		textViews[3] = itemView.findViewById(R.id.retweet_number);
-		textViews[4] = itemView.findViewById(R.id.favorite_number);
-		textViews[5] = itemView.findViewById(R.id.retweeter);
-		textViews[6] = itemView.findViewById(R.id.time);
-		// replace icon
-		if (settings.likeEnabled())
+		CardView cardLayout = (CardView) itemView;
+		ViewGroup container = itemView.findViewById(R.id.item_tweet_container);
+		profile = itemView.findViewById(R.id.item_tweet_profile_image);
+		verifiedIcon = itemView.findViewById(R.id.item_tweet_verified_icon);
+		lockedIcon = itemView.findViewById(R.id.item_tweet_locked_icon);
+		rtUser = itemView.findViewById(R.id.item_tweet_retweeter_icon);
+		rtIcon = itemView.findViewById(R.id.item_tweet_retweet_icon);
+		favIcon = itemView.findViewById(R.id.item_tweet_favorite_icon);
+		media = itemView.findViewById(R.id.item_tweet_media);
+		location = itemView.findViewById(R.id.item_tweet_location);
+		reply = itemView.findViewById(R.id.item_tweet_reply);
+		username = itemView.findViewById(R.id.item_tweet_author_username);
+		screenname = itemView.findViewById(R.id.item_tweet_author_screenname);
+		tweettext = itemView.findViewById(R.id.item_tweet_text);
+		retweet = itemView.findViewById(R.id.item_tweet_retweet_count);
+		favorite = itemView.findViewById(R.id.item_tweet_favorite_count);
+		retweeter = itemView.findViewById(R.id.item_tweet_retweeter_name);
+		created = itemView.findViewById(R.id.item_tweet_created_at);
+		replyname = itemView.findViewById(R.id.item_tweet_reply_name);
+
+		if (settings.likeEnabled()) {
 			favIcon.setImageResource(R.drawable.like);
-		// theme views
-		verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-		lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-		rtUser.setColorFilter(settings.getIconColor(), SRC_IN);
-		background.setCardBackgroundColor(settings.getCardColor());
-		for (TextView tv : textViews) {
-			tv.setTextColor(settings.getFontColor());
-			tv.setTypeface(settings.getTypeFace());
+		} else {
+			favIcon.setImageResource(R.drawable.favorite);
 		}
+		AppStyles.setTheme(container, 0);
+		cardLayout.setCardBackgroundColor(settings.getCardColor());
 	}
 }

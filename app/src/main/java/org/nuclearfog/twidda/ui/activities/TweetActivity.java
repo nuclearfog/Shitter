@@ -461,14 +461,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 			// open tweet media
 			else if (v.getId() == R.id.tweet_media_attach) {
 				// open embedded image links
-				if (clickedTweet.getMediaType().equals(Tweet.MEDIA_PHOTO)) {
+				if (clickedTweet.getMediaType() == Tweet.MEDIA_PHOTO) {
 					Intent mediaIntent = new Intent(this, ImageViewer.class);
 					mediaIntent.putExtra(ImageViewer.IMAGE_URIS, clickedTweet.getMediaUris());
 					mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
 					startActivity(mediaIntent);
 				}
 				// open embedded video link
-				else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_VIDEO)) {
+				else if (clickedTweet.getMediaType() == Tweet.MEDIA_VIDEO) {
 					if (!settings.isProxyEnabled() || (settings.isProxyEnabled() && settings.ignoreProxyWarning())) {
 						Uri link = clickedTweet.getMediaUris()[0];
 						Intent mediaIntent = new Intent(this, VideoViewer.class);
@@ -480,7 +480,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 					}
 				}
 				// open embedded gif link
-				else if (clickedTweet.getMediaType().equals(Tweet.MEDIA_GIF)) {
+				else if (clickedTweet.getMediaType() == Tweet.MEDIA_GIF) {
 					Uri link = clickedTweet.getMediaUris()[0];
 					Intent mediaIntent = new Intent(this, VideoViewer.class);
 					mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
@@ -508,7 +508,11 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 				} else {
 					statusAsync = new TweetAction(this, TweetAction.RETWEET);
 				}
-				statusAsync.execute(tweet.getId(), tweet.getRetweetId());
+
+				if (tweet.getEmbeddedTweet() != null)
+					statusAsync.execute(tweet.getId(), tweet.getEmbeddedTweet().getRetweetId());
+				else
+					statusAsync.execute(tweet.getId());
 				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}

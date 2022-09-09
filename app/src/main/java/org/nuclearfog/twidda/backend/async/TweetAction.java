@@ -131,7 +131,8 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 					publishProgress(newTweet);
 					db.updateTweet(newTweet);
 					// removing retweet reference to this tweet
-					db.removeTweet(ids[1]);
+					if (ids.length == 2)
+						db.removeTweet(ids[1]);
 					break;
 
 				case FAVORITE:

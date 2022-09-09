@@ -99,8 +99,8 @@
 			android:orientation="vertical"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginLeft="@dimen/editprofile_layout_padding"
-			android:layout_marginRight="@dimen/editprofile_layout_padding">
+			android:layout_marginStart="@dimen/editprofile_layout_padding"
+			android:layout_marginEnd="@dimen/editprofile_layout_padding">
 
 			<TextView
 				android:layout_width="match_parent"

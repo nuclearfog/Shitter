@@ -1,12 +1,9 @@
 package org.nuclearfog.twidda.adapter;
 
-import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -27,6 +24,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
@@ -278,32 +276,36 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 				TweetHolder tweetItem = (TweetHolder) holder;
 				User user = tweet.getAuthor();
 				if (tweet.getEmbeddedTweet() != null) {
-					tweetItem.textViews[5].setText(user.getScreenname());
-					tweetItem.textViews[5].setVisibility(VISIBLE);
+					tweetItem.retweeter.setText(user.getScreenname());
+					tweetItem.retweeter.setVisibility(VISIBLE);
 					tweetItem.rtUser.setVisibility(VISIBLE);
 					tweet = tweet.getEmbeddedTweet();
 					user = tweet.getAuthor();
 				} else {
-					tweetItem.textViews[5].setVisibility(INVISIBLE);
-					tweetItem.rtUser.setVisibility(INVISIBLE);
+					tweetItem.retweeter.setVisibility(GONE);
+					tweetItem.rtUser.setVisibility(GONE);
 				}
-				Spanned text = Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor());
-				tweetItem.textViews[2].setText(text);
-				tweetItem.textViews[0].setText(user.getUsername());
-				tweetItem.textViews[1].setText(user.getScreenname());
-				tweetItem.textViews[3].setText(NUM_FORMAT.format(tweet.getRetweetCount()));
-				tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
-				tweetItem.textViews[6].setText(formatCreationTime(resources, tweet.getTimestamp()));
-
-				if (tweet.isRetweeted()) {
-					tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);
+				tweetItem.username.setText(user.getUsername());
+				tweetItem.screenname.setText(user.getScreenname());
+				tweetItem.retweet.setText(NUM_FORMAT.format(tweet.getRetweetCount()));
+				tweetItem.favorite.setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
+				tweetItem.created.setText(StringTools.formatCreationTime(resources, tweet.getTimestamp()));
+				if (!tweet.getText().isEmpty()) {
+					Spanned text = Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor());
+					tweetItem.tweettext.setText(text);
+					tweetItem.tweettext.setVisibility(VISIBLE);
 				} else {
-					tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+					tweetItem.tweettext.setVisibility(GONE);
+				}
+				if (tweet.isRetweeted()) {
+					tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor());
+				} else {
+					tweetItem.rtIcon.setColorFilter(settings.getIconColor());
 				}
 				if (tweet.isFavorited()) {
-					tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor(), SRC_IN);
+					tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor());
 				} else {
-					tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+					tweetItem.favIcon.setColorFilter(settings.getIconColor());
 				}
 				if (user.isVerified()) {
 					tweetItem.verifiedIcon.setVisibility(VISIBLE);
@@ -323,6 +325,32 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 							.error(R.drawable.no_image).into(tweetItem.profile);
 				} else {
 					tweetItem.profile.setImageResource(0);
+				}
+				if (tweet.getLocationName() != null && !tweet.getLocationName().isEmpty()) {
+					tweetItem.location.setVisibility(VISIBLE);
+				} else {
+					tweetItem.location.setVisibility(GONE);
+				}
+				if (tweet.getRepliedTweetId() > 0) {
+					tweetItem.reply.setVisibility(VISIBLE);
+					tweetItem.replyname.setVisibility(VISIBLE);
+					tweetItem.replyname.setText(tweet.getReplyName());
+				} else {
+					tweetItem.reply.setVisibility(GONE);
+					tweetItem.replyname.setVisibility(GONE);
+				}
+				if (tweet.getMediaType() != Tweet.MEDIA_NONE) {
+					if (tweet.getMediaType() == Tweet.MEDIA_PHOTO) {
+						tweetItem.media.setImageResource(R.drawable.image);
+					} else if (tweet.getMediaType() == Tweet.MEDIA_VIDEO) {
+						tweetItem.media.setImageResource(R.drawable.video);
+					} else if (tweet.getMediaType() == Tweet.MEDIA_GIF) {
+						tweetItem.media.setImageResource(R.drawable.gif);
+					}
+					tweetItem.media.setColorFilter(settings.getIconColor());
+					tweetItem.media.setVisibility(VISIBLE);
+				} else {
+					tweetItem.media.setVisibility(GONE);
 				}
 			}
 		} else if (holder instanceof Footer) {
