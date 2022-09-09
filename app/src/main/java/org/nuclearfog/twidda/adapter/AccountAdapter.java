@@ -1,9 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_CREATED;
-import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_SCR_NAME;
-import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_USERNAME;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.holder.LoginHolder;
+import org.nuclearfog.twidda.adapter.holder.AccountHolder;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -35,7 +32,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.AccountFragment
  */
-public class AccountAdapter extends Adapter<LoginHolder> {
+public class AccountAdapter extends Adapter<AccountHolder> {
 
 	private List<Account> data = new ArrayList<>();
 	private GlobalSettings settings;
@@ -56,8 +53,8 @@ public class AccountAdapter extends Adapter<LoginHolder> {
 
 	@NonNull
 	@Override
-	public LoginHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		final LoginHolder holder = new LoginHolder(parent, settings);
+	public AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		final AccountHolder holder = new AccountHolder(parent, settings);
 		holder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -83,15 +80,15 @@ public class AccountAdapter extends Adapter<LoginHolder> {
 
 
 	@Override
-	public void onBindViewHolder(@NonNull LoginHolder holder, int position) {
+	public void onBindViewHolder(@NonNull AccountHolder holder, int position) {
 		Account account = data.get(position);
 		User user = account.getUser();
 		String date = StringTools.formatCreationTime(resources, account.getLoginDate());
-		holder.text[IDX_CREATED].setText(date);
+		holder.date.setText(date);
 		if (user != null) {
 			// set profile information
-			holder.text[IDX_USERNAME].setText(user.getUsername());
-			holder.text[IDX_SCR_NAME].setText(user.getScreenname());
+			holder.username.setText(user.getUsername());
+			holder.screenname.setText(user.getScreenname());
 			// set profile image
 			if (settings.imagesEnabled()) {
 				String imageLink = user.getImageUrl();
@@ -103,9 +100,9 @@ public class AccountAdapter extends Adapter<LoginHolder> {
 			}
 		} else {
 			holder.profile.setImageResource(0);
-			holder.text[IDX_USERNAME].setText(R.string.account_user_unnamed);
-			holder.text[IDX_SCR_NAME].setText(R.string.account_user_id_prefix);
-			holder.text[IDX_SCR_NAME].append(Long.toString(account.getId()));
+			holder.username.setText(R.string.account_user_unnamed);
+			holder.screenname.setText(R.string.account_user_id_prefix);
+			holder.screenname.append(Long.toString(account.getId()));
 		}
 	}
 

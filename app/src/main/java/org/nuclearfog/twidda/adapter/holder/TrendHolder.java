@@ -8,6 +8,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
@@ -18,23 +19,20 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class TrendHolder extends ViewHolder {
 
-	public final TextView[] textViews = new TextView[3];
+	public final TextView name, rank, vol;
 
 	/**
 	 * @param parent Parent view from adapter
 	 */
 	public TrendHolder(ViewGroup parent, GlobalSettings settings) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false));
-		// get views
 		CardView background = (CardView) itemView;
-		textViews[0] = itemView.findViewById(R.id.trendpos);
-		textViews[1] = itemView.findViewById(R.id.trendname);
-		textViews[2] = itemView.findViewById(R.id.trendvol);
-		// theme views
+		ViewGroup container = itemView.findViewById(R.id.item_trend_container);
+		rank = itemView.findViewById(R.id.item_trend_rank);
+		name = itemView.findViewById(R.id.item_trend_name);
+		vol = itemView.findViewById(R.id.item_trend_vol);
+
+		AppStyles.setTheme(container, 0);
 		background.setCardBackgroundColor(settings.getCardColor());
-		for (TextView tv : textViews) {
-			tv.setTextColor(settings.getFontColor());
-			tv.setTypeface(settings.getTypeFace());
-		}
 	}
 }

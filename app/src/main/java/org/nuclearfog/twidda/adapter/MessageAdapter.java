@@ -147,7 +147,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_MESSAGE) {
 			final MessageHolder holder = new MessageHolder(parent, settings);
-			holder.buttons[0].setOnClickListener(new View.OnClickListener() {
+			holder.answer.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
@@ -159,7 +159,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					}
 				}
 			});
-			holder.buttons[1].setOnClickListener(new View.OnClickListener() {
+			holder.delete.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
@@ -171,7 +171,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					}
 				}
 			});
-			holder.profile_img.setOnClickListener(new View.OnClickListener() {
+			holder.profile.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
@@ -225,11 +225,11 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				Spanned text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
 
 				MessageHolder holder = (MessageHolder) vh;
-				holder.textViews[0].setText(sender.getUsername());
-				holder.textViews[1].setText(sender.getScreenname());
-				holder.textViews[2].setText(message.getReceiver().getScreenname());
-				holder.textViews[3].setText(formatCreationTime(resources, message.getTimestamp()));
-				holder.textViews[4].setText(text);
+				holder.username.setText(sender.getUsername());
+				holder.screenname.setText(sender.getScreenname());
+				holder.receiver.setText(message.getReceiver().getScreenname());
+				holder.time.setText(formatCreationTime(resources, message.getTimestamp()));
+				holder.message.setText(text);
 				if (sender.isVerified()) {
 					holder.verifiedIcon.setVisibility(VISIBLE);
 				} else {
@@ -250,9 +250,9 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					if (!sender.hasDefaultProfileImage())
 						profileImageUrl += settings.getImageSuffix();
 					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
-							.error(R.drawable.no_image).into(holder.profile_img);
+							.error(R.drawable.no_image).into(holder.profile);
 				} else {
-					holder.profile_img.setImageResource(0);
+					holder.profile.setImageResource(0);
 				}
 			}
 		} else if (vh instanceof Footer) {

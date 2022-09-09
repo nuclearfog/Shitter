@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
-import org.nuclearfog.twidda.adapter.holder.ListHolder;
+import org.nuclearfog.twidda.adapter.holder.UserlistHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -158,8 +158,8 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_LIST) {
-			final ListHolder itemHolder = new ListHolder(parent, settings);
-			itemHolder.profile_img.setOnClickListener(new OnClickListener() {
+			final UserlistHolder itemHolder = new UserlistHolder(parent, settings);
+			itemHolder.profile.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					int position = itemHolder.getLayoutPosition();
@@ -206,48 +206,48 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
-		if (holder instanceof ListHolder) {
-			ListHolder vh = (ListHolder) holder;
+		if (holder instanceof UserlistHolder) {
+			UserlistHolder vh = (UserlistHolder) holder;
 			UserList item = data.get(index);
 			if (item != null) {
 				User owner = item.getListOwner();
-				vh.textViews[0].setText(item.getTitle());
-				vh.textViews[1].setText(item.getDescription());
-				vh.textViews[2].setText(owner.getUsername());
-				vh.textViews[3].setText(owner.getScreenname());
-				vh.textViews[4].setText(formatCreationTime(resources, item.getTimestamp()));
-				vh.textViews[5].setText(NUM_FORMAT.format(item.getMemberCount()));
-				vh.textViews[6].setText(NUM_FORMAT.format(item.getSubscriberCount()));
+				vh.title.setText(item.getTitle());
+				vh.description.setText(item.getDescription());
+				vh.username.setText(owner.getUsername());
+				vh.screenname.setText(owner.getScreenname());
+				vh.date.setText(formatCreationTime(resources, item.getTimestamp()));
+				vh.member.setText(NUM_FORMAT.format(item.getMemberCount()));
+				vh.subscriber.setText(NUM_FORMAT.format(item.getSubscriberCount()));
 				if (settings.imagesEnabled() && !owner.getImageUrl().isEmpty()) {
 					String profileImageUrl = owner.getImageUrl();
 					if (!owner.hasDefaultProfileImage())
 						profileImageUrl += settings.getImageSuffix();
 					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(3, 0))
-							.error(R.drawable.no_image).into(vh.profile_img);
+							.error(R.drawable.no_image).into(vh.profile);
 				} else {
-					vh.profile_img.setImageResource(0);
+					vh.profile.setImageResource(0);
 				}
 				if (!item.getListOwner().isCurrentUser() && item.isFollowing()) {
-					vh.icons[6].setVisibility(VISIBLE);
-					vh.textViews[7].setVisibility(VISIBLE);
+					vh.follow.setVisibility(VISIBLE);
+					vh.followList.setVisibility(VISIBLE);
 				} else {
-					vh.icons[6].setVisibility(GONE);
-					vh.textViews[7].setVisibility(GONE);
+					vh.follow.setVisibility(GONE);
+					vh.followList.setVisibility(GONE);
 				}
 				if (owner.isVerified()) {
-					vh.icons[0].setVisibility(VISIBLE);
+					vh.verified.setVisibility(VISIBLE);
 				} else {
-					vh.icons[0].setVisibility(GONE);
+					vh.verified.setVisibility(GONE);
 				}
 				if (owner.isProtected()) {
-					vh.icons[1].setVisibility(VISIBLE);
+					vh.locked.setVisibility(VISIBLE);
 				} else {
-					vh.icons[1].setVisibility(GONE);
+					vh.locked.setVisibility(GONE);
 				}
 				if (item.isPrivate()) {
-					vh.icons[5].setVisibility(VISIBLE);
+					vh.privateList.setVisibility(VISIBLE);
 				} else {
-					vh.icons[5].setVisibility(GONE);
+					vh.privateList.setVisibility(GONE);
 				}
 			}
 		} else if (holder instanceof Footer) {

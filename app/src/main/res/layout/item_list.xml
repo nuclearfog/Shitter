@@ -7,13 +7,14 @@
 	style="@style/CardViewStyle">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/item_list_container"
 		android:orientation="vertical"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:padding="@dimen/listitem_padding">
 
 		<ImageView
-			android:id="@+id/list_owner_profile"
+			android:id="@+id/item_list_profile"
 			android:layout_width="@dimen/listitem_profile"
 			android:layout_height="@dimen/listitem_profile"
 			android:contentDescription="@string/item_list_pb_desc"
@@ -21,207 +22,207 @@
 			app:layout_constraintTop_toTopOf="parent" />
 
 		<ImageView
-			android:id="@+id/list_user_verified"
+			android:id="@+id/item_list_user_verified"
 			android:layout_width="@dimen/listitem_icon_size"
 			android:layout_height="@dimen/listitem_icon_size"
 			android:layout_marginStart="@dimen/listitem_padding_drawable"
 			android:src="@drawable/verify"
-			app:layout_constraintStart_toEndOf="@id/list_owner_profile"
-			app:layout_constraintTop_toTopOf="@id/list_ownername"
-			app:layout_constraintBottom_toBottomOf="@id/list_ownername"
-			app:layout_constraintEnd_toStartOf="@id/list_ownername"
+			app:layout_constraintStart_toEndOf="@id/item_list_profile"
+			app:layout_constraintTop_toTopOf="@id/item_list_username"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_username"
+			app:layout_constraintEnd_toStartOf="@id/item_list_username"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/list_ownername"
+			android:id="@+id/item_list_username"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/listitem_text_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/listitem_textsize_name"
-			app:layout_constraintStart_toEndOf="@id/list_user_verified"
+			app:layout_constraintStart_toEndOf="@id/item_list_user_verified"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/list_screenname"
+			app:layout_constraintBottom_toTopOf="@id/item_list_screenname"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintVertical_chainStyle="packed" />
 
 		<ImageView
-			android:id="@+id/list_user_locked"
+			android:id="@+id/item_list_user_locked"
 			android:layout_width="@dimen/listitem_icon_size"
 			android:layout_height="@dimen/listitem_icon_size"
 			android:layout_marginStart="@dimen/listitem_padding_drawable"
 			android:src="@drawable/lock"
-			app:layout_constraintStart_toEndOf="@id/list_owner_profile"
-			app:layout_constraintTop_toTopOf="@id/list_screenname"
-			app:layout_constraintBottom_toBottomOf="@id/list_screenname"
-			app:layout_constraintEnd_toStartOf="@id/list_screenname"
+			app:layout_constraintStart_toEndOf="@id/item_list_profile"
+			app:layout_constraintTop_toTopOf="@id/item_list_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_screenname"
+			app:layout_constraintEnd_toStartOf="@id/item_list_screenname"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/list_screenname"
+			android:id="@+id/item_list_screenname"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/listitem_text_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/listitem_textsize_name"
-			app:layout_constraintStart_toEndOf="@id/list_user_locked"
-			app:layout_constraintTop_toBottomOf="@id/list_ownername"
-			app:layout_constraintBottom_toTopOf="@id/list_createdat"
+			app:layout_constraintStart_toEndOf="@id/item_list_user_locked"
+			app:layout_constraintTop_toBottomOf="@id/item_list_username"
+			app:layout_constraintBottom_toTopOf="@id/item_list_created_date"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintVertical_chainStyle="packed" />
 
 		<ImageView
-			android:id="@+id/list_date_icon"
+			android:id="@+id/item_list_date_icon"
 			android:layout_width="@dimen/listitem_icon_size"
 			android:layout_height="@dimen/listitem_icon_size"
 			android:layout_marginStart="@dimen/listitem_padding_drawable"
 			android:src="@drawable/date"
-			app:layout_constraintStart_toEndOf="@id/list_owner_profile"
-			app:layout_constraintTop_toTopOf="@id/list_createdat"
-			app:layout_constraintBottom_toBottomOf="@id/list_createdat"
-			app:layout_constraintEnd_toStartOf="@id/list_createdat"
+			app:layout_constraintStart_toEndOf="@id/item_list_profile"
+			app:layout_constraintTop_toTopOf="@id/item_list_created_date"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_created_date"
+			app:layout_constraintEnd_toStartOf="@id/item_list_created_date"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/list_createdat"
+			android:id="@+id/item_list_created_date"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/listitem_padding_drawable"
 			android:layout_marginStart="@dimen/listitem_text_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/listitem_textsize_date"
-			app:layout_constraintStart_toEndOf="@id/list_date_icon"
-			app:layout_constraintTop_toBottomOf="@id/list_screenname"
-			app:layout_constraintBottom_toBottomOf="@id/list_owner_profile"
+			app:layout_constraintStart_toEndOf="@id/item_list_date_icon"
+			app:layout_constraintTop_toBottomOf="@id/item_list_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_profile"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintVertical_chainStyle="packed" />
 
 		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/list_profile_barrier"
+			android:id="@+id/item_list_profile_barrier"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="list_createdat,list_owner_profile" />
+			app:constraint_referenced_ids="item_list_created_date,item_list_profile" />
 
 		<ImageView
-			android:id="@+id/list_private"
+			android:id="@+id/item_list_private"
 			android:layout_width="@dimen/listitem_icon_size_big"
 			android:layout_height="@dimen/listitem_icon_size_big"
 			android:layout_marginEnd="@dimen/listitem_padding_drawable"
 			android:src="@drawable/lock"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="@id/list_title"
-			app:layout_constraintBottom_toBottomOf="@id/list_title"
-			app:layout_constraintEnd_toStartOf="@id/list_title"
+			app:layout_constraintTop_toTopOf="@id/item_list_title"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_title"
+			app:layout_constraintEnd_toStartOf="@id/item_list_title"
 			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintHorizontal_chainStyle="packed"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/list_title"
+			android:id="@+id/item_list_title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/listitem_padding_drawable"
 			android:singleLine="true"
 			android:textSize="@dimen/listitem_textsize_title"
-			app:layout_constraintStart_toEndOf="@id/list_private"
-			app:layout_constraintTop_toBottomOf="@id/list_profile_barrier"
-			app:layout_constraintEnd_toStartOf="@id/list_follow_icon"
+			app:layout_constraintStart_toEndOf="@id/item_list_private"
+			app:layout_constraintTop_toBottomOf="@id/item_list_profile_barrier"
+			app:layout_constraintEnd_toStartOf="@id/item_list_follow_icon"
 			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintHorizontal_chainStyle="packed" />
 
 		<ImageView
-			android:id="@+id/list_follow_icon"
+			android:id="@+id/item_list_follow_icon"
 			android:layout_width="@dimen/listitem_icon_size_big"
 			android:layout_height="@dimen/listitem_icon_size_big"
 			android:layout_marginStart="@dimen/listitem_padding_drawable"
 			android:layout_marginEnd="@dimen/listitem_padding_drawable"
 			android:src="@drawable/back"
-			app:layout_constraintStart_toEndOf="@id/list_title"
-			app:layout_constraintTop_toTopOf="@id/list_action"
-			app:layout_constraintBottom_toBottomOf="@id/list_action"
-			app:layout_constraintEnd_toStartOf="@id/list_action"
+			app:layout_constraintStart_toEndOf="@id/item_list_title"
+			app:layout_constraintTop_toTopOf="@id/item_list_following_indicator"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_following_indicator"
+			app:layout_constraintEnd_toStartOf="@id/item_list_following_indicator"
 			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintHorizontal_chainStyle="packed"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/list_action"
+			android:id="@+id/item_list_following_indicator"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/listitem_padding_drawable"
 			android:singleLine="true"
 			android:text="@string/list_following_indicator"
 			android:textSize="@dimen/listitem_textsize_small"
-			app:layout_constraintStart_toEndOf="@id/list_follow_icon"
-			app:layout_constraintTop_toBottomOf="@id/list_profile_barrier"
-			app:layout_constraintBottom_toBottomOf="@id/list_title"
+			app:layout_constraintStart_toEndOf="@id/item_list_follow_icon"
+			app:layout_constraintTop_toBottomOf="@id/item_list_profile_barrier"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_title"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_chainStyle="packed" />
 
 		<TextView
-			android:id="@+id/list_description"
+			android:id="@+id/item_list_description"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:maxLines="@integer/listitem_description_max_lines"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/list_title"
+			app:layout_constraintTop_toBottomOf="@id/item_list_title"
 			app:layout_constraintEnd_toEndOf="parent" />
 
 		<View
-			android:id="@+id/listitem_placeholder"
+			android:id="@+id/item_list_placeholder"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/list_description"
+			app:layout_constraintTop_toBottomOf="@id/item_list_description"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/list_member_icon" />
+			app:layout_constraintEnd_toStartOf="@id/item_list_member_icon" />
 
 		<ImageView
-			android:id="@+id/list_member_icon"
+			android:id="@+id/item_list_member_icon"
 			android:layout_width="@dimen/listitem_icon_size"
 			android:layout_height="@dimen/listitem_icon_size"
 			android:layout_marginStart="@dimen/listitem_padding_drawable"
 			android:layout_marginEnd="@dimen/listitem_padding_drawable"
 			android:src="@drawable/user"
-			app:layout_constraintStart_toEndOf="@id/listitem_placeholder"
-			app:layout_constraintTop_toTopOf="@id/list_member"
-			app:layout_constraintTop_toBottomOf="@id/list_description"
-			app:layout_constraintBottom_toBottomOf="@id/list_member"
-			app:layout_constraintEnd_toStartOf="@id/list_member"
+			app:layout_constraintStart_toEndOf="@id/item_list_placeholder"
+			app:layout_constraintTop_toTopOf="@id/item_list_member"
+			app:layout_constraintTop_toBottomOf="@id/item_list_description"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_member"
+			app:layout_constraintEnd_toStartOf="@id/item_list_member"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/list_member"
+			android:id="@+id/item_list_member"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:textSize="@dimen/listitem_textsize_small"
-			app:layout_constraintStart_toEndOf="@id/list_member_icon"
-			app:layout_constraintTop_toBottomOf="@id/list_description"
-			app:layout_constraintEnd_toStartOf="@id/list_subscriber_icon" />
+			app:layout_constraintStart_toEndOf="@id/item_list_member_icon"
+			app:layout_constraintTop_toBottomOf="@id/item_list_description"
+			app:layout_constraintEnd_toStartOf="@id/item_list_subscriber_icon" />
 
 		<ImageView
-			android:id="@+id/list_subscriber_icon"
+			android:id="@+id/item_list_subscriber_icon"
 			android:layout_width="@dimen/listitem_icon_size"
 			android:layout_height="@dimen/listitem_icon_size"
 			android:layout_marginStart="@dimen/listitem_padding_drawable"
 			android:layout_marginEnd="@dimen/listitem_padding_drawable"
 			android:src="@drawable/subscriber"
-			app:layout_constraintStart_toEndOf="@id/list_member"
-			app:layout_constraintTop_toTopOf="@id/list_subscriber"
-			app:layout_constraintBottom_toBottomOf="@id/list_subscriber"
-			app:layout_constraintEnd_toStartOf="@id/list_subscriber"
+			app:layout_constraintStart_toEndOf="@id/item_list_member"
+			app:layout_constraintTop_toTopOf="@id/item_list_subscriber"
+			app:layout_constraintBottom_toBottomOf="@id/item_list_subscriber"
+			app:layout_constraintEnd_toStartOf="@id/item_list_subscriber"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/list_subscriber"
+			android:id="@+id/item_list_subscriber"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:textSize="@dimen/listitem_textsize_small"
-			app:layout_constraintStart_toEndOf="@id/list_subscriber_icon"
-			app:layout_constraintTop_toBottomOf="@id/list_description"
+			app:layout_constraintStart_toEndOf="@id/item_list_subscriber_icon"
+			app:layout_constraintTop_toBottomOf="@id/item_list_description"
 			app:layout_constraintEnd_toEndOf="parent" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

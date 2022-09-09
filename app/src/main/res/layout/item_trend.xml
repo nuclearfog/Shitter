@@ -6,12 +6,13 @@
 	style="@style/CardViewStyle">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/item_trend_container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:padding="@dimen/trenditem_layout_padding">
 
 		<TextView
-			android:id="@+id/trendpos"
+			android:id="@+id/item_trend_rank"
 			android:layout_width="@dimen/trenditem_textsize_trendindex_width"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical|end"
@@ -20,31 +21,31 @@
 			android:textSize="@dimen/trenditem_textsize_trendindex"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/trendname"
+			app:layout_constraintEnd_toStartOf="@id/item_trend_name"
 			app:layout_constrainedWidth="false" />
 
 		<TextView
-			android:id="@+id/trendname"
+			android:id="@+id/item_trend_name"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/trenditem_text_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/trenditem_textsize_trendname"
-			app:layout_constraintStart_toEndOf="@id/trendpos"
+			app:layout_constraintStart_toEndOf="@id/item_trend_rank"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/trendvol"
+			app:layout_constraintBottom_toTopOf="@id/item_trend_vol"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constrainedWidth="true" />
 
 		<TextView
-			android:id="@+id/trendvol"
+			android:id="@+id/item_trend_vol"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/trenditem_text_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/trenditem_textsize_trendvol"
-			app:layout_constraintStart_toEndOf="@id/trendpos"
-			app:layout_constraintTop_toBottomOf="@id/trendname"
+			app:layout_constraintStart_toEndOf="@id/item_trend_rank"
+			app:layout_constraintTop_toBottomOf="@id/item_trend_name"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constrainedWidth="false" />

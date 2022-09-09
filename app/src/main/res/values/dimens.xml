@@ -29,11 +29,11 @@
 	<dimen name="tweet_profileimage_margin">5dp</dimen>
 	<dimen name="tweet_textview_margin">5dp</dimen>
 	<dimen name="tweet_button_margin">5dp</dimen>
-	<dimen name="tweet_button_padding">5dp</dimen>
+	<dimen name="tweet_button_padding">5sp</dimen>
 	<dimen name="tweet_button_height">20sp</dimen>
+	<dimen name="tweet_button_media_width">58sp</dimen>
+	<dimen name="tweet_button_media_height">36sp</dimen>
 	<dimen name="tweet_padding_drawable">5dp</dimen>
-	<dimen name="tweet_button_media_width">58dp</dimen>
-	<dimen name="tweet_button_media_height">36dp</dimen>
 	<dimen name="tweet_textsize_small">12sp</dimen>
 	<dimen name="tweet_textsize">18sp</dimen>
 	<dimen name="tweet_textsize_locale">12sp</dimen>
@@ -80,7 +80,7 @@
 	<dimen name="tweetitem_icon_size">14sp</dimen>
 	<dimen name="tweetitem_indicator_size">24sp</dimen>
 	<dimen name="tweetitem_indicator_margin">3dp</dimen>
-	<dimen name="tweetitem_indicator_padding">5dp</dimen>
+	<dimen name="tweetitem_indicator_padding">5sp</dimen>
 
 	<!--dimens of item_trend.xml-->
 	<dimen name="trenditem_layout_padding">5dp</dimen>

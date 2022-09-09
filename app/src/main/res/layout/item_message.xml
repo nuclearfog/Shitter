@@ -7,12 +7,13 @@
 	style="@style/CardViewStyle">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/item_message_container"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/dmitem_margin_layout">
 
 		<ImageView
-			android:id="@+id/dm_profile_img"
+			android:id="@+id/item_message_profile"
 			android:layout_width="@dimen/dmitem_profile"
 			android:layout_height="@dimen/dmitem_profile"
 			android:contentDescription="@string/profile_image"
@@ -20,113 +21,113 @@
 			app:layout_constraintTop_toTopOf="parent" />
 
 		<ImageView
-			android:id="@+id/dm_user_verified"
+			android:id="@+id/item_message_verified"
 			android:layout_width="@dimen/dmitem_icon_size"
 			android:layout_height="@dimen/dmitem_icon_size"
 			android:layout_marginStart="@dimen/dmitem_padding_drawable"
 			android:src="@drawable/verify"
-			app:layout_constraintStart_toEndOf="@id/dm_profile_img"
-			app:layout_constraintTop_toTopOf="@id/dm_username"
-			app:layout_constraintBottom_toBottomOf="@id/dm_username"
+			app:layout_constraintStart_toEndOf="@id/item_message_profile"
+			app:layout_constraintTop_toTopOf="@id/item_message_username"
+			app:layout_constraintBottom_toBottomOf="@id/item_message_username"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/dm_username"
+			android:id="@+id/item_message_username"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/dmitem_padding_drawable"
 			android:layout_marginStart="@dimen/dmitem_text_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/dmitem_textsize_name"
-			app:layout_constraintStart_toEndOf="@id/dm_user_verified"
+			app:layout_constraintStart_toEndOf="@id/item_message_verified"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/dm_screenname"
-			app:layout_constraintEnd_toStartOf="@id/dm_time" />
+			app:layout_constraintBottom_toTopOf="@id/item_message_screenname"
+			app:layout_constraintEnd_toStartOf="@id/item_message_time" />
 
 		<TextView
-			android:id="@+id/dm_time"
+			android:id="@+id/item_message_time"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:textAlignment="gravity"
 			android:textSize="@dimen/dmitem_textsize_date"
-			app:layout_constraintTop_toTopOf="@id/dm_username"
-			app:layout_constraintBottom_toBottomOf="@id/dm_username"
+			app:layout_constraintTop_toTopOf="@id/item_message_username"
+			app:layout_constraintBottom_toBottomOf="@id/item_message_username"
 			app:layout_constraintEnd_toEndOf="parent" />
 
 		<ImageView
-			android:id="@+id/dm_user_locked"
+			android:id="@+id/item_message_private"
 			android:layout_width="@dimen/dmitem_icon_size"
 			android:layout_height="@dimen/dmitem_icon_size"
 			android:layout_marginStart="@dimen/dmitem_padding_drawable"
 			android:src="@drawable/lock"
-			app:layout_constraintStart_toEndOf="@id/dm_profile_img"
-			app:layout_constraintTop_toTopOf="@id/dm_screenname"
-			app:layout_constraintBottom_toBottomOf="@id/dm_screenname"
+			app:layout_constraintStart_toEndOf="@id/item_message_profile"
+			app:layout_constraintTop_toTopOf="@id/item_message_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_message_screenname"
 			app:layout_constraintHorizontal_chainStyle="packed"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/dm_screenname"
+			android:id="@+id/item_message_screenname"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/dmitem_text_margin"
 			android:layout_marginEnd="@dimen/dmitem_text_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/dmitem_textsize_name"
-			app:layout_constraintStart_toEndOf="@id/dm_user_locked"
-			app:layout_constraintTop_toBottomOf="@id/dm_username"
-			app:layout_constraintBottom_toBottomOf="@id/dm_profile_img"
+			app:layout_constraintStart_toEndOf="@id/item_message_private"
+			app:layout_constraintTop_toBottomOf="@id/item_message_username"
+			app:layout_constraintBottom_toBottomOf="@id/item_message_profile"
 			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintHorizontal_chainStyle="packed" />
 
 		<ImageView
-			android:id="@+id/dm_receiver_icon"
+			android:id="@+id/item_message_receiver_icon"
 			android:layout_width="@dimen/dmitem_icon_size"
 			android:layout_height="@dimen/dmitem_icon_size"
 			android:layout_marginStart="@dimen/dmitem_padding_drawable"
 			android:src="@drawable/right"
-			app:layout_constraintStart_toEndOf="@id/dm_screenname"
-			app:layout_constraintTop_toTopOf="@id/dm_screenname"
-			app:layout_constraintBottom_toBottomOf="@id/dm_screenname"
+			app:layout_constraintStart_toEndOf="@id/item_message_screenname"
+			app:layout_constraintTop_toTopOf="@id/item_message_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_message_screenname"
 			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintHorizontal_chainStyle="packed"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/dm_receiver"
+			android:id="@+id/item_message_receiver"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/dmitem_padding_drawable"
 			android:singleLine="true"
 			android:textSize="@dimen/dmitem_textsize_name"
 			android:layout_marginStart="@dimen/dmitem_padding_drawable"
-			app:layout_constraintStart_toEndOf="@id/dm_receiver_icon"
-			app:layout_constraintTop_toTopOf="@id/dm_screenname"
-			app:layout_constraintBottom_toBottomOf="@id/dm_screenname"
+			app:layout_constraintStart_toEndOf="@id/item_message_receiver_icon"
+			app:layout_constraintTop_toTopOf="@id/item_message_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_message_screenname"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_chainStyle="packed" />
 
 		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/dm_profile_barrier"
+			android:id="@+id/item_message_profile_barrier"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="dm_profile_img, dm_screenname, dm_receiver" />
+			app:constraint_referenced_ids="item_message_profile, item_message_screenname, item_message_receiver" />
 
 		<TextView
-			android:id="@+id/dm_message"
+			android:id="@+id/item_message_text"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/dmitem_text_margin"
 			android:linksClickable="true"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/dm_profile_barrier"
-			app:layout_constraintBottom_toTopOf="@id/dm_media"
+			app:layout_constraintTop_toBottomOf="@id/item_message_profile_barrier"
+			app:layout_constraintBottom_toTopOf="@id/item_message_media"
 			app:layout_constraintEnd_toEndOf="parent" />
 
 		<ImageButton
-			android:id="@+id/dm_media"
+			android:id="@+id/item_message_media"
 			android:layout_width="@dimen/dmitem_button_media_width"
 			android:layout_height="@dimen/dmitem_button_media_height"
 			android:visibility="gone"
@@ -134,19 +135,19 @@
 			android:layout_margin="@dimen/dmitem_button_media_margin"
 			android:src="@drawable/image"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintBottom_toTopOf="@+id/dm_button_barrier"
+			app:layout_constraintBottom_toTopOf="@+id/item_message_button_barrier"
 			app:layout_constraintEnd_toEndOf="parent"
 			style="@style/RoundButton" />
 
 		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/dm_button_barrier"
+			android:id="@+id/item_message_button_barrier"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="top"
-			app:constraint_referenced_ids="dm_answer,dm_delete" />
+			app:constraint_referenced_ids="item_message_answer,item_message_delete" />
 
 		<Button
-			android:id="@+id/dm_answer"
+			android:id="@+id/item_message_answer"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/dmitem_button_height"
 			android:layout_marginStart="@dimen/dmitem_button_margin"
@@ -156,13 +157,13 @@
 			android:text="@string/dm_answer"
 			android:textSize="@dimen/dmitem_textsize_button"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/dm_button_barrier"
+			app:layout_constraintTop_toBottomOf="@id/item_message_button_barrier"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/dm_delete"
+			app:layout_constraintEnd_toStartOf="@id/item_message_delete"
 			style="@style/FeedbackButton" />
 
 		<Button
-			android:id="@+id/dm_delete"
+			android:id="@+id/item_message_delete"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/dmitem_button_height"
 			android:layout_marginStart="@dimen/dmitem_button_margin"
@@ -170,8 +171,8 @@
 			android:singleLine="true"
 			android:text="@string/delete_dm"
 			android:textSize="@dimen/dmitem_textsize_button"
-			app:layout_constraintStart_toEndOf="@id/dm_answer"
-			app:layout_constraintTop_toBottomOf="@id/dm_button_barrier"
+			app:layout_constraintStart_toEndOf="@id/item_message_answer"
+			app:layout_constraintTop_toBottomOf="@id/item_message_button_barrier"
 			app:layout_constraintBottom_toBottomOf="parent"
 			style="@style/FeedbackButton" />
 

@@ -7,13 +7,14 @@
 	style="@style/CardViewStyle">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/item_user_container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:padding="@dimen/useritem_layout_padding"
 		android:gravity="center_vertical">
 
 		<ImageView
-			android:id="@+id/user_profileimg"
+			android:id="@+id/item_user_profile"
 			android:layout_width="@dimen/useritem_image_size"
 			android:layout_height="@dimen/useritem_image_size"
 			android:contentDescription="@string/profile_image"
@@ -22,107 +23,107 @@
 			app:layout_constraintBottom_toBottomOf="parent" />
 
 		<ImageView
-			android:id="@+id/useritem_verified"
+			android:id="@+id/item_user_verified"
 			android:layout_width="@dimen/useritem_icon_size"
 			android:layout_height="@dimen/useritem_icon_size"
 			android:layout_marginStart="@dimen/useritem_drawable_margin"
 			android:src="@drawable/verify"
-			app:layout_constraintStart_toEndOf="@id/user_profileimg"
-			app:layout_constraintTop_toTopOf="@id/username_detail"
-			app:layout_constraintBottom_toBottomOf="@id/username_detail"
-			app:layout_constraintEnd_toStartOf="@id/username_detail"
+			app:layout_constraintStart_toEndOf="@id/item_user_profile"
+			app:layout_constraintTop_toTopOf="@id/item_user_username"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_username"
+			app:layout_constraintEnd_toStartOf="@id/item_user_username"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/username_detail"
+			android:id="@+id/item_user_username"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/useritem_drawable_margin"
 			android:layout_marginStart="@dimen/useritem_textview_padding"
 			android:layout_marginEnd="@dimen/useritem_textview_padding"
 			android:singleLine="true"
-			app:layout_constraintStart_toEndOf="@id/useritem_verified"
+			app:layout_constraintStart_toEndOf="@id/item_user_verified"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/useritem_del_user" />
+			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
 
 		<ImageView
-			android:id="@+id/useritem_locked"
+			android:id="@+id/item_user_private"
 			android:layout_width="@dimen/useritem_icon_size"
 			android:layout_height="@dimen/useritem_icon_size"
 			android:layout_marginStart="@dimen/useritem_drawable_margin"
 			android:src="@drawable/lock"
-			app:layout_constraintStart_toEndOf="@id/user_profileimg"
-			app:layout_constraintTop_toTopOf="@id/screenname_detail"
-			app:layout_constraintBottom_toBottomOf="@id/screenname_detail"
-			app:layout_constraintEnd_toEndOf="@id/screenname_detail"
+			app:layout_constraintStart_toEndOf="@id/item_user_profile"
+			app:layout_constraintTop_toTopOf="@id/item_user_screenname"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_screenname"
+			app:layout_constraintEnd_toEndOf="@id/item_user_screenname"
 			app:layout_constraintHorizontal_bias="0.0"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/screenname_detail"
+			android:id="@+id/item_user_screenname"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/useritem_drawable_margin"
 			android:layout_marginStart="@dimen/useritem_textview_padding"
 			android:layout_marginEnd="@dimen/useritem_textview_padding"
 			android:singleLine="true"
-			app:layout_constraintStart_toEndOf="@id/useritem_locked"
-			app:layout_constraintTop_toBottomOf="@id/username_detail"
-			app:layout_constraintEnd_toStartOf="@id/useritem_del_user" />
+			app:layout_constraintStart_toEndOf="@id/item_user_private"
+			app:layout_constraintTop_toBottomOf="@id/item_user_username"
+			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
 
 		<ImageView
-			android:id="@+id/following_icon"
+			android:id="@+id/item_user_following_icon"
 			android:layout_width="@dimen/useritem_icon_size"
 			android:layout_height="@dimen/useritem_icon_size"
 			android:layout_marginStart="@dimen/useritem_drawable_margin"
 			android:layout_marginEnd="@dimen/useritem_drawable_margin"
 			android:src="@drawable/following"
-			app:layout_constraintStart_toEndOf="@id/user_profileimg"
-			app:layout_constraintTop_toBottomOf="@id/screenname_detail"
+			app:layout_constraintStart_toEndOf="@id/item_user_profile"
+			app:layout_constraintTop_toBottomOf="@id/item_user_screenname"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/item_user_friends"
+			app:layout_constraintEnd_toStartOf="@id/item_user_following_count"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/item_user_friends"
+			android:id="@+id/item_user_following_count"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/useritem_drawable_margin"
 			android:singleLine="true"
 			android:textSize="@dimen/useritem_textsize_small"
-			app:layout_constraintStart_toEndOf="@id/following_icon"
-			app:layout_constraintTop_toTopOf="@id/following_icon"
-			app:layout_constraintBottom_toBottomOf="@id/following_icon"
-			app:layout_constraintEnd_toStartOf="@id/follower_icon" />
+			app:layout_constraintStart_toEndOf="@id/item_user_following_icon"
+			app:layout_constraintTop_toTopOf="@id/item_user_following_icon"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_following_icon"
+			app:layout_constraintEnd_toStartOf="@id/item_user_follower_icon" />
 
 		<ImageView
-			android:id="@+id/follower_icon"
+			android:id="@+id/item_user_follower_icon"
 			android:layout_width="@dimen/useritem_icon_size"
 			android:layout_height="@dimen/useritem_icon_size"
 			android:layout_marginStart="@dimen/useritem_drawable_margin"
 			android:layout_marginEnd="@dimen/useritem_drawable_margin"
 			android:src="@drawable/follower"
-			app:layout_constraintStart_toEndOf="@id/item_user_friends"
-			app:layout_constraintTop_toBottomOf="@id/screenname_detail"
+			app:layout_constraintStart_toEndOf="@id/item_user_following_count"
+			app:layout_constraintTop_toBottomOf="@id/item_user_screenname"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/item_user_follower"
+			app:layout_constraintEnd_toStartOf="@id/item_user_follower_count"
 			tools:ignore="ContentDescription" />
 
 		<TextView
-			android:id="@+id/item_user_follower"
+			android:id="@+id/item_user_follower_count"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:drawablePadding="@dimen/useritem_drawable_margin"
 			android:layout_marginEnd="@dimen/useritem_textview_padding"
 			android:singleLine="true"
 			android:textSize="@dimen/useritem_textsize_small"
-			app:layout_constraintStart_toEndOf="@id/follower_icon"
-			app:layout_constraintTop_toTopOf="@id/follower_icon"
-			app:layout_constraintBottom_toBottomOf="@id/follower_icon"
-			app:layout_constraintEnd_toStartOf="@id/useritem_del_user" />
+			app:layout_constraintStart_toEndOf="@id/item_user_follower_icon"
+			app:layout_constraintTop_toTopOf="@id/item_user_follower_icon"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_follower_icon"
+			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
 
 		<ImageButton
-			android:id="@+id/useritem_del_user"
+			android:id="@+id/item_user_delete_buton"
 			android:layout_width="@dimen/useritem_button_size"
 			android:layout_height="@dimen/useritem_button_size"
 			android:visibility="invisible"

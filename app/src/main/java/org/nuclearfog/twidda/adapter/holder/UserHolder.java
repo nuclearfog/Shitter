@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.adapter.holder;
 
-import static android.graphics.PorterDuff.Mode.SRC_IN;
-
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -23,7 +21,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class UserHolder extends ViewHolder {
 
-	public final TextView[] textViews = new TextView[4];
+	public final TextView username, screenname, followingCount, followerCount;
 	public final ImageView profileImg, verifyIcon, lockedIcon;
 	public final ImageButton delete;
 
@@ -32,29 +30,18 @@ public class UserHolder extends ViewHolder {
 	 */
 	public UserHolder(ViewGroup parent, GlobalSettings settings) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false));
-		// get views
 		CardView background = (CardView) itemView;
-		ImageView followingIcon = itemView.findViewById(R.id.following_icon);
-		ImageView followerIcon = itemView.findViewById(R.id.follower_icon);
-		textViews[0] = itemView.findViewById(R.id.username_detail);
-		textViews[1] = itemView.findViewById(R.id.screenname_detail);
-		textViews[2] = itemView.findViewById(R.id.item_user_friends);
-		textViews[3] = itemView.findViewById(R.id.item_user_follower);
-		profileImg = itemView.findViewById(R.id.user_profileimg);
-		verifyIcon = itemView.findViewById(R.id.useritem_verified);
-		lockedIcon = itemView.findViewById(R.id.useritem_locked);
-		delete = itemView.findViewById(R.id.useritem_del_user);
-		// theme views
+		ViewGroup container = itemView.findViewById(R.id.item_user_container);
+		username = itemView.findViewById(R.id.item_user_username);
+		screenname = itemView.findViewById(R.id.item_user_screenname);
+		followingCount = itemView.findViewById(R.id.item_user_following_count);
+		followerCount = itemView.findViewById(R.id.item_user_follower_count);
+		profileImg = itemView.findViewById(R.id.item_user_profile);
+		verifyIcon = itemView.findViewById(R.id.item_user_verified);
+		lockedIcon = itemView.findViewById(R.id.item_user_private);
+		delete = itemView.findViewById(R.id.item_user_delete_buton);
+
+		AppStyles.setTheme(container, 0);
 		background.setCardBackgroundColor(settings.getCardColor());
-		followerIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-		followingIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-		verifyIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-		lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-		delete.setColorFilter(settings.getIconColor(), SRC_IN);
-		AppStyles.setButtonColor(delete, settings.getFontColor());
-		for (TextView tv : textViews) {
-			tv.setTextColor(settings.getFontColor());
-			tv.setTypeface(settings.getTypeFace());
-		}
 	}
 }

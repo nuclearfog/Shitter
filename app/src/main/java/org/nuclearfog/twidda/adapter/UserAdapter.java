@@ -225,10 +225,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
 			User user = data.get(index);
 			if (user != null) {
 				UserHolder userholder = (UserHolder) holder;
-				userholder.textViews[0].setText(user.getUsername());
-				userholder.textViews[1].setText(user.getScreenname());
-				userholder.textViews[2].setText(NUM_FORMAT.format(user.getFollowing()));
-				userholder.textViews[3].setText(NUM_FORMAT.format(user.getFollower()));
+				userholder.username.setText(user.getUsername());
+				userholder.screenname.setText(user.getScreenname());
+				userholder.followingCount.setText(NUM_FORMAT.format(user.getFollowing()));
+				userholder.followerCount.setText(NUM_FORMAT.format(user.getFollower()));
 				if (user.isVerified()) {
 					userholder.verifyIcon.setVisibility(VISIBLE);
 				} else {
