@@ -35,7 +35,8 @@
 		app:layout_constraintStart_toEndOf="@id/metrics_profile"
 		app:layout_constraintTop_toTopOf="@id/metrics_profile"
 		app:layout_constraintBottom_toTopOf="@id/metrics_screenname"
-		app:layout_constraintEnd_toEndOf="parent" />
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintVertical_chainStyle="packed" />
 
 	<TextView
 		android:id="@+id/metrics_screenname"
@@ -48,7 +49,8 @@
 		app:layout_constraintStart_toEndOf="@id/metrics_profile"
 		app:layout_constraintTop_toBottomOf="@id/metrics_username"
 		app:layout_constraintBottom_toTopOf="@id/metrics_created"
-		app:layout_constraintEnd_toEndOf="parent" />
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintVertical_chainStyle="packed" />
 
 	<TextView
 		android:id="@+id/metrics_created"
@@ -61,7 +63,8 @@
 		app:layout_constraintStart_toEndOf="@id/metrics_profile"
 		app:layout_constraintTop_toBottomOf="@id/metrics_screenname"
 		app:layout_constraintBottom_toBottomOf="@id/metrics_profile"
-		app:layout_constraintEnd_toEndOf="parent" />
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintVertical_chainStyle="packed" />
 
 	<androidx.constraintlayout.widget.Barrier
 		android:id="@+id/metrics_tweet_barrier"

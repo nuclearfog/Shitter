@@ -278,11 +278,6 @@ public class TweetV1 implements Tweet {
 	 */
 	public void setFavorite(boolean isFavorited) {
 		this.isFavorited = isFavorited;
-		// note: Twitter API v1.1 doesn't increment/decrement favorite count right
-		// so we have to correct this number
-		if (!isFavorited && favoriteCount > 0) {
-			favoriteCount--;
-		}
 		if (embeddedTweet instanceof TweetV1) {
 			((TweetV1) embeddedTweet).setFavorite(isFavorited);
 		}
