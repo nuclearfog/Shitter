@@ -205,7 +205,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	/**
 	 * called from {@link MessageLoader} if an error occurs
 	 *
-	 * @param error 	Twitter exception
+	 * @param error     Twitter exception
 	 * @param messageId ID of the message assosiated with the error
 	 */
 	public void onError(@NonNull ErrorHandler.TwitterError error, long messageId) {
