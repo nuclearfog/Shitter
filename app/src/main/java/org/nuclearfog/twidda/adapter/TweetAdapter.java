@@ -318,11 +318,13 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 					tweetItem.lockedIcon.setVisibility(GONE);
 				}
 				if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
-					String profileImageUrl = user.getImageUrl();
-					if (!user.hasDefaultProfileImage())
-						profileImageUrl += settings.getImageSuffix();
-					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
-							.error(R.drawable.no_image).into(tweetItem.profile);
+					String profileImageUrl;
+					if (!user.hasDefaultProfileImage()) {
+						profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), settings.getImageSuffix());
+					} else {
+						profileImageUrl = user.getImageUrl();
+					}
+					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(tweetItem.profile);
 				} else {
 					tweetItem.profile.setImageResource(0);
 				}

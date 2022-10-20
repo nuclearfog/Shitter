@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.UserlistHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -219,11 +220,13 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 				vh.member.setText(NUM_FORMAT.format(item.getMemberCount()));
 				vh.subscriber.setText(NUM_FORMAT.format(item.getSubscriberCount()));
 				if (settings.imagesEnabled() && !owner.getImageUrl().isEmpty()) {
-					String profileImageUrl = owner.getImageUrl();
-					if (!owner.hasDefaultProfileImage())
-						profileImageUrl += settings.getImageSuffix();
-					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(3, 0))
-							.error(R.drawable.no_image).into(vh.profile);
+					String profileImageUrl;
+					if (!owner.hasDefaultProfileImage()) {
+						profileImageUrl = StringTools.buildImageLink(owner.getImageUrl(), settings.getImageSuffix());
+					} else {
+						profileImageUrl = owner.getImageUrl();
+					}
+					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(3, 0)).error(R.drawable.no_image).into(vh.profile);
 				} else {
 					vh.profile.setImageResource(0);
 				}

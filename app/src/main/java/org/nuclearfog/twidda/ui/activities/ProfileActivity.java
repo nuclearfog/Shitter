@@ -60,6 +60,7 @@ import org.nuclearfog.twidda.backend.async.UserAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
@@ -655,10 +656,13 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				toolbarBackground.setImageResource(0);
 			}
 			if (!user.getImageUrl().isEmpty()) {
-				String imgLink = user.getImageUrl();
-				if (!user.hasDefaultProfileImage())
-					imgLink += PROFILE_IMG_HIGH_RES;
-				picasso.load(imgLink).transform(new RoundedCornersTransformation(5, 0)).error(R.drawable.no_image).into(profileImage);
+				String profileImageUrl;
+				if (!user.hasDefaultProfileImage()) {
+					profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), PROFILE_IMG_HIGH_RES);
+				} else {
+					profileImageUrl = user.getImageUrl();
+				}
+				picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(5, 0)).error(R.drawable.no_image).into(profileImage);
 			} else {
 				profileImage.setImageResource(0);
 			}

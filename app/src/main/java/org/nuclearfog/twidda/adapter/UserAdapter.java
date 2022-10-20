@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 
@@ -240,11 +241,13 @@ public class UserAdapter extends Adapter<ViewHolder> {
 					userholder.lockedIcon.setVisibility(GONE);
 				}
 				if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
-					String profileImageUrl = user.getImageUrl();
-					if (!user.hasDefaultProfileImage())
-						profileImageUrl += settings.getImageSuffix();
-					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
-							.error(R.drawable.no_image).into(userholder.profileImg);
+					String profileImageUrl;
+					if (!user.hasDefaultProfileImage()) {
+						profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), settings.getImageSuffix());
+					} else {
+						profileImageUrl = user.getImageUrl();
+					}
+					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(userholder.profileImg);
 				} else {
 					userholder.profileImg.setImageResource(0);
 				}

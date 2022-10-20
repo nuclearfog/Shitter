@@ -91,12 +91,13 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 			holder.screenname.setText(user.getScreenname());
 			// set profile image
 			if (settings.imagesEnabled()) {
-				String imageLink = user.getImageUrl();
+				String profileImageUrl;
 				if (!user.hasDefaultProfileImage()) {
-					imageLink += settings.getImageSuffix();
+					profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), settings.getImageSuffix());
+				} else {
+					profileImageUrl = user.getImageUrl();
 				}
-				picasso.load(imageLink).transform(new RoundedCornersTransformation(2, 0))
-						.error(R.drawable.no_image).into(holder.profile);
+				picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(holder.profile);
 			}
 		} else {
 			holder.profile.setImageResource(0);

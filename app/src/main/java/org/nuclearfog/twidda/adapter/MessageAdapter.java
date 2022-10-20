@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.DirectMessage;
 import org.nuclearfog.twidda.model.User;
@@ -246,11 +247,13 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					holder.mediaButton.setVisibility(GONE);
 				}
 				if (settings.imagesEnabled() && !sender.getImageUrl().isEmpty()) {
-					String profileImageUrl = sender.getImageUrl();
-					if (!sender.hasDefaultProfileImage())
-						profileImageUrl += settings.getImageSuffix();
-					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0))
-							.error(R.drawable.no_image).into(holder.profile);
+					String profileImageUrl;
+					if (!sender.hasDefaultProfileImage()) {
+						profileImageUrl = StringTools.buildImageLink(sender.getImageUrl(), settings.getImageSuffix());
+					} else {
+						profileImageUrl = sender.getImageUrl();
+					}
+					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(holder.profile);
 				} else {
 					holder.profile.setImageResource(0);
 				}

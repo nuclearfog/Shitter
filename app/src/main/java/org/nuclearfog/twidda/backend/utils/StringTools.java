@@ -247,6 +247,25 @@ public final class StringTools {
 	}
 
 	/**
+	 * append resolution string to image link
+	 *
+	 * @param link       link to image
+	 * @param resolution resolution string to append
+	 * @return image string with resolution information
+	 */
+	public static String buildImageLink(String link, String resolution) {
+		int lastSeg = link.lastIndexOf('/');
+		if (lastSeg >= 0) {
+			int pos = link.indexOf('.', lastSeg);
+			if (pos > 0) {
+				String ext = link.substring(pos);
+				return link.substring(0, pos) + resolution + ext;
+			}
+		}
+		return link;
+	}
+
+	/**
 	 * get current timestamp in seconds
 	 *
 	 * @return timestamp string

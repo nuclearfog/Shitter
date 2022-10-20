@@ -39,6 +39,7 @@ import org.nuclearfog.twidda.backend.async.UserUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -317,10 +318,13 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	 */
 	private void setUser() {
 		if (!user.getImageUrl().isEmpty()) {
-			String imageLink = user.getImageUrl();
-			if (!user.hasDefaultProfileImage())
-				imageLink += PROFILE_IMG_HIGH_RES;
-			picasso.load(imageLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
+			String profileImageUrl;
+			if (!user.hasDefaultProfileImage()) {
+				profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), PROFILE_IMG_HIGH_RES);
+			} else {
+				profileImageUrl = user.getImageUrl();
+			}
+			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
 		}
 		if (!user.getBannerUrl().isEmpty()) {
 			String bannerLink = user.getBannerUrl() + BANNER_IMG_MID_RES;

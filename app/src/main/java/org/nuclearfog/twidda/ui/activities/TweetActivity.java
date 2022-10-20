@@ -53,6 +53,7 @@ import org.nuclearfog.twidda.backend.async.TweetAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
@@ -707,11 +708,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		}
 		AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
 		if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
-			String profileImageUrl = author.getImageUrl();
-			if (!author.hasDefaultProfileImage())
-				profileImageUrl += settings.getImageSuffix();
-			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(4, 0))
-					.error(R.drawable.no_image).into(profile_img);
+			String profileImageUrl;
+			if (!author.hasDefaultProfileImage()) {
+				profileImageUrl = StringTools.buildImageLink(author.getImageUrl(), settings.getImageSuffix());
+			} else {
+				profileImageUrl = author.getImageUrl();
+			}
+			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(4, 0)).error(R.drawable.no_image).into(profile_img);
 		} else {
 			profile_img.setImageResource(0);
 		}

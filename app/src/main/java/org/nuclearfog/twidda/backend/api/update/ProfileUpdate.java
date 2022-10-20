@@ -136,7 +136,7 @@ public class ProfileUpdate {
 		try {
 			for (int i = 0; i < imageUrls.length; i++) {
 				if (imageUrls[i] != null) {
-					 InputStream profileImgStream = resolver.openInputStream(imageUrls[i]);
+					InputStream profileImgStream = resolver.openInputStream(imageUrls[i]);
 					if (profileImgStream != null && profileImgStream.available() > 0) {
 						this.imageStreams[i] = profileImgStream;
 					} else {
