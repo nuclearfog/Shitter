@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
 
-	// Views and dialogs
 	private Dialog loadingCircle;
 	private TabLayout tabLayout;
 	private ViewPager pager;

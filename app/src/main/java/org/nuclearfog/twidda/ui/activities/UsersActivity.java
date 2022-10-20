@@ -95,6 +95,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	private GlobalSettings settings;
 	private FilterLoader userExclTask;
+	private FragmentAdapter adapter;
 
 	private Toolbar toolbar;
 	private TabLayout tablayout;
@@ -114,7 +115,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		tablayout = findViewById(R.id.userexclude_tab);
 		ViewPager pager = findViewById(R.id.userexclude_pager);
 
-		FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+		adapter = new FragmentAdapter(getSupportFragmentManager());
 		pager.setAdapter(adapter);
 
 		settings = GlobalSettings.getInstance(this);
@@ -228,11 +229,13 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public void onTabUnselected(Tab tab) {
+		adapter.scrollToTop(tab.getPosition());
 	}
 
 
 	@Override
 	public void onTabReselected(Tab tab) {
+		adapter.scrollToTop(tab.getPosition());
 	}
 
 

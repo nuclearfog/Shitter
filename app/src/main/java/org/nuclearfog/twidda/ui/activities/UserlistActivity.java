@@ -300,6 +300,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	@Override
 	public void onTabReselected(Tab tab) {
+		adapter.scrollToTop(tab.getPosition());
 	}
 
 

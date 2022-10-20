@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
@@ -130,17 +131,18 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 
 
 	@Override
-	public void onTabSelected(TabLayout.Tab tab) {
+	public void onTabSelected(Tab tab) {
 	}
 
 
 	@Override
-	public void onTabUnselected(TabLayout.Tab tab) {
+	public void onTabUnselected(Tab tab) {
 		adapter.scrollToTop(tab.getPosition());
 	}
 
 
 	@Override
-	public void onTabReselected(TabLayout.Tab tab) {
+	public void onTabReselected(Tab tab) {
+		adapter.scrollToTop(tab.getPosition());
 	}
 }
