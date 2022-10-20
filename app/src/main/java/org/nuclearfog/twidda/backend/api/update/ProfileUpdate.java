@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.api.update;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -125,15 +126,17 @@ public class ProfileUpdate {
 	}
 
 	/**
-	 * initialize inputstreams of the image files
+	 * initialize input streams of the image files
+	 * streams must be closed calling {@link #close()}
 	 *
 	 * @return true if initialization finished without any error
 	 */
+	@SuppressLint("Recycle")
 	public boolean prepare(ContentResolver resolver) {
 		try {
 			for (int i = 0; i < imageUrls.length; i++) {
 				if (imageUrls[i] != null) {
-					InputStream profileImgStream = resolver.openInputStream(imageUrls[i]);
+					 InputStream profileImgStream = resolver.openInputStream(imageUrls[i]);
 					if (profileImgStream != null && profileImgStream.available() > 0) {
 						this.imageStreams[i] = profileImgStream;
 					} else {

@@ -72,7 +72,6 @@
 	<!--dimens of item_tweet.xml-->
 	<dimen name="tweetitem_profile_size">36sp</dimen>
 	<dimen name="tweetitem_layout_padding">5dp</dimen>
-	<dimen name="tweetitem_layout_margin">5dp</dimen>
 	<dimen name="tweetitem_text_margin">5dp</dimen>
 	<dimen name="tweetitem_drawable_margin">5dp</dimen>
 	<dimen name="tweetitem_textsize_button">12sp</dimen>

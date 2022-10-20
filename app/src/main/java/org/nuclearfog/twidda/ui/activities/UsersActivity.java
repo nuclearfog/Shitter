@@ -100,6 +100,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private Toolbar toolbar;
 	private TabLayout tablayout;
 
+	private int mode;
+
 	@Override
 	protected void attachBaseContext(Context newBase) {
 		super.attachBaseContext(AppStyles.setFontScale(newBase));
@@ -120,7 +122,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 		settings = GlobalSettings.getInstance(this);
 
-		int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
+		mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
 		long id = getIntent().getLongExtra(KEY_USERDETAIL_ID, -1);
 
 		switch (mode) {
@@ -178,7 +180,6 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
-		int mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
 		if (mode == USERLIST_EXCLUDED_USERS) {
 			getMenuInflater().inflate(R.menu.excludelist, m);
 			MenuItem search = m.findItem(R.id.menu_exclude_user);
@@ -195,15 +196,18 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu m) {
-		SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
-		if (tablayout.getSelectedTabPosition() == 0) {
-			String hint = getString(R.string.menu_hint_mute_user);
-			searchView.setQueryHint(hint);
-		} else if (tablayout.getSelectedTabPosition() == 1) {
-			String hint = getString(R.string.menu_hint_block_user);
-			searchView.setQueryHint(hint);
+		if (mode == USERLIST_EXCLUDED_USERS) {
+			SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
+			if (tablayout.getSelectedTabPosition() == 0) {
+				String hint = getString(R.string.menu_hint_mute_user);
+				searchView.setQueryHint(hint);
+			} else if (tablayout.getSelectedTabPosition() == 1) {
+				String hint = getString(R.string.menu_hint_block_user);
+				searchView.setQueryHint(hint);
+			}
+			return super.onPrepareOptionsMenu(m);
 		}
-		return super.onPrepareOptionsMenu(m);
+		return false;
 	}
 
 
