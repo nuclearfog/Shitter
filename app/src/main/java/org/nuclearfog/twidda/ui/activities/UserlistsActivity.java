@@ -78,7 +78,6 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 		pager.setAdapter(adapter);
 		pager.setOffscreenPageLimit(2);
-		pager.setAdapter(adapter);
 		tabLayout.setupWithViewPager(pager);
 		tabLayout.addOnTabSelectedListener(this);
 

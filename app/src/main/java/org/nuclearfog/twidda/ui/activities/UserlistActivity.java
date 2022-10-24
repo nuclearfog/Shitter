@@ -123,8 +123,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 		confirmDialog = new ConfirmDialog(this);
 		adapter = new FragmentAdapter(getSupportFragmentManager());
+		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
-		pager.setOffscreenPageLimit(2);
 		tablayout.setupWithViewPager(pager);
 		tablayout.addOnTabSelectedListener(this);
 

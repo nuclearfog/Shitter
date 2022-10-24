@@ -74,6 +74,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		tabLayout.setupWithViewPager(pager);
 		tabLayout.addOnTabSelectedListener(this);
 		pager.setAdapter(adapter);
+		pager.setOffscreenPageLimit(2);
 
 		search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
 		adapter.setupSearchPage(search);

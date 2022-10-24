@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 		settings = GlobalSettings.getInstance(this);
 		tabLayout.setupWithViewPager(pager);
-		pager.setOffscreenPageLimit(3);
 		adapter = new FragmentAdapter(getSupportFragmentManager());
+		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 
