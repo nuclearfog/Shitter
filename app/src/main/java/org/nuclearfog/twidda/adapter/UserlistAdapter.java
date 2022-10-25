@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.holder.Footer;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.adapter.holder.UserlistHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -41,14 +41,14 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 public class UserlistAdapter extends Adapter<ViewHolder> {
 
 	/**
-	 * indicator if there is no footer
+	 * indicator if there is no loading progress
 	 */
 	private static final int NO_LOADING = -1;
 
 	/**
-	 * View type for a footer
+	 * View type for a placeholder
 	 */
-	private static final int ITEM_FOOTER = 0;
+	private static final int ITEM_PLACEHOLDER = 0;
 
 	/**
 	 * View type for an userlist item
@@ -88,7 +88,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 		disableLoading();
 		if (newData.isEmpty()) {
 			if (!data.isEmpty() && data.peekLast() == null) {
-				// remove footer
+				// remove placeholder
 				int end = data.size() - 1;
 				data.remove(end);
 				notifyItemRemoved(end);
@@ -96,14 +96,14 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 		} else if (data.isEmpty() || !newData.hasPrevious()) {
 			data.replace(newData);
 			if (data.hasNext()) {
-				// Add footer
+				// Add placeholder
 				data.add(null);
 			}
 			notifyDataSetChanged();
 		} else {
 			int end = data.size() - 1;
 			if (!data.hasNext()) {
-				// remove footer
+				// remove placeholder
 				data.remove(end);
 				notifyItemRemoved(end);
 			}
@@ -150,7 +150,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 	@Override
 	public int getItemViewType(int position) {
 		if (data.get(position) == null)
-			return ITEM_FOOTER;
+			return ITEM_PLACEHOLDER;
 		return ITEM_LIST;
 	}
 
@@ -186,21 +186,21 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 			});
 			return itemHolder;
 		} else {
-			final Footer footer = new Footer(parent, settings, false);
-			footer.loadBtn.setOnClickListener(new OnClickListener() {
+			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			placeHolder.loadBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					int position = footer.getLayoutPosition();
+					int position = placeHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						boolean actionPerformed = listener.onFooterClick(data.getNext());
+						boolean actionPerformed = listener.onPlaceholderClick(data.getNext());
 						if (actionPerformed) {
-							footer.setLoading(true);
+							placeHolder.setLoading(true);
 							loadingIndex = position;
 						}
 					}
 				}
 			});
-			return footer;
+			return placeHolder;
 		}
 	}
 
@@ -253,14 +253,14 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 					vh.privateList.setVisibility(GONE);
 				}
 			}
-		} else if (holder instanceof Footer) {
-			Footer footer = (Footer) holder;
-			footer.setLoading(loadingIndex != NO_LOADING);
+		} else if (holder instanceof PlaceHolder) {
+			PlaceHolder placeHolder = (PlaceHolder) holder;
+			placeHolder.setLoading(loadingIndex == index);
 		}
 	}
 
 	/**
-	 * disable loading animation in footer
+	 * disable placeholder view loading animation
 	 */
 	public void disableLoading() {
 		if (loadingIndex != NO_LOADING) {
@@ -290,10 +290,10 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 		void onProfileClick(User user);
 
 		/**
-		 * called when the footer is clicked
+		 * called when the placeholder is clicked
 		 *
 		 * @param cursor next cursor of the list
 		 */
-		boolean onFooterClick(long cursor);
+		boolean onPlaceholderClick(long cursor);
 	}
 }

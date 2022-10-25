@@ -228,7 +228,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 
 	@Override
-	public boolean onFooterClick(long cursor) {
+	public boolean onPlaceholderClick(long cursor) {
 		if (userTask != null && userTask.getStatus() != RUNNING) {
 			load(cursor);
 			return true;

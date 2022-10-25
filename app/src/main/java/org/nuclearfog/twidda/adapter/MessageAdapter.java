@@ -21,8 +21,8 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.MessageHolder;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -51,9 +51,9 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	private static final int TYPE_MESSAGE = 0;
 
 	/**
-	 * view type of a footer item
+	 * view type of a placeholder item
 	 */
-	private static final int TYPE_FOOTER = 1;
+	private static final int TYPE_PLACEHOLDER = 1;
 
 	private OnMessageClickListener itemClickListener;
 	private GlobalSettings settings;
@@ -90,14 +90,14 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 		} else if (data.isEmpty() || !newData.hasPrev()) {
 			data.replaceAll(newData);
 			if (newData.hasNext()) {
-				// add footer
+				// add placeholder
 				data.add(null);
 			}
 			notifyDataSetChanged();
 		} else {
 			int end = data.size() - 1;
 			if (!newData.hasNext()) {
-				// remove footer
+				// remove placeholder
 				data.remove(end);
 				notifyItemRemoved(end);
 			}
@@ -138,7 +138,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	@Override
 	public int getItemViewType(int index) {
 		if (data.get(index) == null)
-			return TYPE_FOOTER;
+			return TYPE_PLACEHOLDER;
 		return TYPE_MESSAGE;
 	}
 
@@ -198,21 +198,21 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 			});
 			return holder;
 		} else {
-			final Footer footer = new Footer(parent, settings, false);
-			footer.loadBtn.setOnClickListener(new View.OnClickListener() {
+			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			placeHolder.loadBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					int position = footer.getLayoutPosition();
+					int position = placeHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						boolean success = itemClickListener.onFooterClick(data.getNextCursor());
+						boolean success = itemClickListener.onPlaceholderClick(data.getNextCursor());
 						if (success) {
-							footer.setLoading(true);
+							placeHolder.setLoading(true);
 							loadingIndex = position;
 						}
 					}
 				}
 			});
-			return footer;
+			return placeHolder;
 		}
 	}
 
@@ -258,14 +258,14 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 					holder.profile.setImageResource(0);
 				}
 			}
-		} else if (vh instanceof Footer) {
-			Footer footer = (Footer) vh;
-			footer.setLoading(loadingIndex != NO_LOADING);
+		} else if (vh instanceof PlaceHolder) {
+			PlaceHolder placeHolder = (PlaceHolder) vh;
+			placeHolder.setLoading(loadingIndex == index);
 		}
 	}
 
 	/**
-	 * disable footer loading animation
+	 * disable placeholder view loading animation
 	 */
 	public void disableLoading() {
 		if (loadingIndex != NO_LOADING) {
@@ -309,11 +309,11 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 		void onClick(DirectMessage message, int action);
 
 		/**
-		 * called when the footer was clicked
+		 * called when the placeholder was clicked
 		 *
 		 * @param cursor message cursor
 		 * @return true if task was started
 		 */
-		boolean onFooterClick(String cursor);
+		boolean onPlaceholderClick(String cursor);
 	}
 }

@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.holder.Footer;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.adapter.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -227,11 +227,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 			});
 			return vh;
 		} else {
-			final Footer footer = new Footer(parent, settings, false);
-			footer.loadBtn.setOnClickListener(new OnClickListener() {
+			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			placeHolder.loadBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					int position = footer.getLayoutPosition();
+					int position = placeHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
 						long sinceId = 0;
 						long maxId = 0;
@@ -257,13 +257,13 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 						}
 						boolean success = itemClickListener.onPlaceholderClick(sinceId, maxId, position);
 						if (success) {
-							footer.setLoading(true);
+							placeHolder.setLoading(true);
 							loadingIndex = position;
 						}
 					}
 				}
 			});
-			return footer;
+			return placeHolder;
 		}
 	}
 
@@ -360,9 +360,9 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 					tweetItem.media.setVisibility(GONE);
 				}
 			}
-		} else if (holder instanceof Footer) {
-			Footer footer = (Footer) holder;
-			footer.setLoading(loadingIndex != NO_LOADING);
+		} else if (holder instanceof PlaceHolder) {
+			PlaceHolder placeHolder = (PlaceHolder) holder;
+			placeHolder.setLoading(loadingIndex == index);
 		}
 	}
 

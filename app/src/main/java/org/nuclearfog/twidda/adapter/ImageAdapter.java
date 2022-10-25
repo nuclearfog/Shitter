@@ -14,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ImageHolder;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 			}
 			return item;
 		}
-		return new Footer(parent, settings, true);
+		return new PlaceHolder(parent, settings, true);
 	}
 
 

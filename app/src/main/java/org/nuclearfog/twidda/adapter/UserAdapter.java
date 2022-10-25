@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.holder.Footer;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -85,7 +85,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		disableLoading();
 		// add empty list
 		if (newData.isEmpty()) {
-			// remove page footer if there isn't a next page
+			// remove placeholder if there isn't a next page
 			if (!data.isEmpty() && data.peekLast() == null) {
 				int end = data.size() - 1;
 				data.remove(end);
@@ -95,7 +95,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		// add items to the top of the list
 		else if (data.isEmpty() || !newData.hasPrevious()) {
 			data.replace(newData);
-			// add page footer if there is a next page
+			// add placeholder if there is a next page
 			if (newData.hasNext()) {
 				data.add(null);
 			}
@@ -104,7 +104,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		// add items to the end of the list
 		else {
 			int end = data.size() - 1;
-			// remove page footer if there isn't a next page
+			// remove placeholder if there isn't a next page
 			if (!newData.hasNext()) {
 				data.remove(end);
 				notifyItemRemoved(end);
@@ -201,21 +201,21 @@ public class UserAdapter extends Adapter<ViewHolder> {
 			}
 			return vh;
 		} else {
-			final Footer footer = new Footer(parent, settings, false);
-			footer.loadBtn.setOnClickListener(new OnClickListener() {
+			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			placeHolder.loadBtn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					int position = footer.getLayoutPosition();
+					int position = placeHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						boolean actionPerformed = listener.onFooterClick(data.getNext());
+						boolean actionPerformed = listener.onPlaceholderClick(data.getNext());
 						if (actionPerformed) {
-							footer.setLoading(true);
+							placeHolder.setLoading(true);
 							loadingIndex = position;
 						}
 					}
 				}
 			});
-			return footer;
+			return placeHolder;
 		}
 	}
 
@@ -252,14 +252,14 @@ public class UserAdapter extends Adapter<ViewHolder> {
 					userholder.profileImg.setImageResource(0);
 				}
 			}
-		} else if (holder instanceof Footer) {
-			Footer footer = (Footer) holder;
-			footer.setLoading(loadingIndex != NO_LOADING);
+		} else if (holder instanceof PlaceHolder) {
+			PlaceHolder placeHolder = (PlaceHolder) holder;
+			placeHolder.setLoading(loadingIndex == index);
 		}
 	}
 
 	/**
-	 * disable loading animation in footer
+	 * disable placeholder view loading animation
 	 */
 	public void disableLoading() {
 		if (loadingIndex != NO_LOADING) {
@@ -291,12 +291,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		void onUserClick(User user);
 
 		/**
-		 * handle footer click
+		 * handle placeholder click
 		 *
 		 * @param cursor next cursor of the list
 		 * @return true if click was handled
 		 */
-		boolean onFooterClick(long cursor);
+		boolean onPlaceholderClick(long cursor);
 
 		/**
 		 * remove user from a list

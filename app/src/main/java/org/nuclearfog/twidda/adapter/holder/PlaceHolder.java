@@ -18,20 +18,20 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * ViewHolder class for a footer/placeholder view
+ * ViewHolder class for a placeholder view
  *
  * @author nuclearfog
  */
-public class Footer extends ViewHolder {
+public class PlaceHolder extends ViewHolder {
 
 	public final ProgressBar loadCircle;
 	public final Button loadBtn;
 
 	/**
 	 * @param parent     Parent view from adapter
-	 * @param horizontal true if footer orientation is horizontal
+	 * @param horizontal true if placeholder orientation is horizontal
 	 */
-	public Footer(ViewGroup parent, GlobalSettings settings, boolean horizontal) {
+	public PlaceHolder(ViewGroup parent, GlobalSettings settings, boolean horizontal) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false));
 		// get views
 		CardView background = (CardView) itemView;

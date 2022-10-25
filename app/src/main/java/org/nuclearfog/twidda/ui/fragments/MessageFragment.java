@@ -163,7 +163,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public boolean onFooterClick(String cursor) {
+	public boolean onPlaceholderClick(String cursor) {
 		if (messageTask != null && messageTask.getStatus() != RUNNING) {
 			load(MessageLoader.LOAD, cursor);
 			return true;
