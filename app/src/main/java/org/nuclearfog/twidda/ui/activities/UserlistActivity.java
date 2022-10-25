@@ -149,7 +149,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	protected void onStart() {
 		super.onStart();
 		if (listLoaderTask == null && userList != null) {
-			if (!getIntent().getBooleanExtra(KEY_LIST_NO_UPDATE, false)) {
+			boolean blockUpdate = getIntent().getBooleanExtra(KEY_LIST_NO_UPDATE, false);
+			if (!blockUpdate) {
 				// update list information
 				listLoaderTask = new ListAction(this, userList.getId(), ListAction.LOAD);
 				listLoaderTask.execute();

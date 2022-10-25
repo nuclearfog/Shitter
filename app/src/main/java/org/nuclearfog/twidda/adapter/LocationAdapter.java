@@ -33,7 +33,6 @@ public class LocationAdapter extends BaseAdapter {
 		this.settings = settings;
 	}
 
-
 	/**
 	 * Add a single item to top
 	 *

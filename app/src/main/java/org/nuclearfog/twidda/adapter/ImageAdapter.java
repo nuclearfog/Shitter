@@ -19,7 +19,6 @@ import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,20 +32,19 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	/**
 	 * View type for an image item
 	 */
-	private static final int PICTURE = 0;
+	private static final int ITEM_IMAGE = 0;
 
 	/**
 	 * View type for a circle view
 	 */
-	private static final int LOADING = 1;
+	private static final int ITEM_PLACEHOLDER = 1;
 
 	private OnImageClickListener itemClickListener;
 	private GlobalSettings settings;
 
-
 	private List<Uri> imageUri = new ArrayList<>(5);
-	private boolean loading = false;
 	private boolean enableSaveButton = true;
+	private boolean loading = false;
 
 	/**
 	 * @param itemClickListener click listener
@@ -56,10 +54,15 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 		this.settings = GlobalSettings.getInstance(context);
 	}
 
-
-	public void addAll(Uri[] uris) {
+	/**
+	 * replace all image links
+	 *
+	 * @param uris list of image links
+	 */
+	@MainThread
+	public void addAll(List<Uri> uris) {
 		imageUri.clear();
-		imageUri.addAll(Arrays.asList(uris));
+		imageUri.addAll(uris);
 		notifyDataSetChanged();
 	}
 
@@ -107,8 +110,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	@Override
 	public int getItemViewType(int position) {
 		if (loading && position == imageUri.size())
-			return LOADING;
-		return PICTURE;
+			return ITEM_PLACEHOLDER;
+		return ITEM_IMAGE;
 	}
 
 
@@ -123,7 +126,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	@NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-		if (viewType == PICTURE) {
+		if (viewType == ITEM_IMAGE) {
 			final ImageHolder item = new ImageHolder(parent, settings);
 			item.preview.setOnClickListener(new OnClickListener() {
 				@Override

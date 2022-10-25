@@ -123,9 +123,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		confirmDialog = new ConfirmDialog(this);
 		AppStyles.setEditorTheme(root, background);
 
-		Intent data = getIntent();
-		long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
-		String prefix = data.getStringExtra(KEY_TWEETPOPUP_TEXT);
+		long inReplyId = getIntent().getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
+		String prefix = getIntent().getStringExtra(KEY_TWEETPOPUP_TEXT);
 
 		tweetUpdate.setReplyId(inReplyId);
 		if (prefix != null) {

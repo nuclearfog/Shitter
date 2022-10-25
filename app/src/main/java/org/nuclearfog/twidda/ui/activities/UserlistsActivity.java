@@ -81,12 +81,11 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 		tabLayout.setupWithViewPager(pager);
 		tabLayout.addOnTabSelectedListener(this);
 
-		Intent data = getIntent();
-		long ownerId = data.getLongExtra(KEY_USERLIST_OWNER_ID, -1);
-		String ownerName = data.getStringExtra(KEY_USERLIST_OWNER_NAME);
+		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, -1);
+		String ownerName = getIntent().getStringExtra(KEY_USERLIST_OWNER_NAME);
+
 		isHome = ownerId == settings.getCurrentUserId();
 		adapter.setupListPage(ownerId, ownerName);
-
 		AppStyles.setTabIcons(tabLayout, settings, R.array.userlist_tab_icons);
 	}
 

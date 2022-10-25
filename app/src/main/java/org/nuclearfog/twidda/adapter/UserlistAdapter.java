@@ -112,7 +112,6 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 		}
 	}
 
-
 	/**
 	 * update a single item
 	 *

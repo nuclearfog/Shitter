@@ -27,6 +27,7 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +119,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	private VideoView videoView;
 	private ViewGroup controlPanel;
 
+	private Uri link;
 	private boolean enableVideoExtras;
 	private int playStatus = IDLE;
 
@@ -153,9 +155,10 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 		// get extras
 		enableVideoExtras = getIntent().getBooleanExtra(ENABLE_VIDEO_CONTROLS, false);
-		Uri link = getIntent().getParcelableExtra(VIDEO_URI);
+		Parcelable data = getIntent().getParcelableExtra(VIDEO_URI);
 
-		if (link != null) {
+		if (data instanceof Uri) {
+			link = (Uri) data;
 			// enable control bar if set
 			if (enableVideoExtras) {
 				controlPanel.setVisibility(VISIBLE);
@@ -381,7 +384,6 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
 		if (type == ConfirmDialog.VIDEO_ERROR) {
-			Uri link = getIntent().getParcelableExtra(VIDEO_URI);
 			if (link != null) {
 				// open link in a browser
 				Intent intent = new Intent(Intent.ACTION_VIEW);

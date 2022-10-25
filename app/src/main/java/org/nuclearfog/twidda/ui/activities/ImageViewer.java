@@ -25,6 +25,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Activity to show online and local images
@@ -79,21 +81,25 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 
 		Parcelable[] links = getIntent().getParcelableArrayExtra(IMAGE_URIS);
 		boolean online = getIntent().getBooleanExtra(IMAGE_DOWNLOAD, true);
-		Uri[] uris = {null};
+
 		if (links != null) {
-			uris = new Uri[links.length];
-			for (int i = 0; i < uris.length; i++) {
-				uris[i] = (Uri) links[i];
+			List<Uri> uris = new LinkedList<>();
+			for (Parcelable link : links) {
+				if (link instanceof Uri) {
+					uris.add((Uri) link);
+				}
 			}
-		}
-		if (online) {
-			imageAsync = new ImageLoader(this, cacheFolder);
-			imageAsync.execute(uris);
-		} else {
-			adapter.addAll(uris);
-			adapter.disableSaveButton();
-			zoomImage.setImageURI(uris[0]);
-			loadingCircle.setVisibility(INVISIBLE);
+			if (!uris.isEmpty()) {
+				if (online) {
+					imageAsync = new ImageLoader(this, cacheFolder);
+					imageAsync.execute(uris.toArray(new Uri[0]));
+				} else {
+					adapter.addAll(uris);
+					adapter.disableSaveButton();
+					zoomImage.setImageURI(uris.get(0));
+					loadingCircle.setVisibility(INVISIBLE);
+				}
+			}
 		}
 	}
 

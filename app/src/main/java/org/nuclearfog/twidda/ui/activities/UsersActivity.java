@@ -99,6 +99,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	private Toolbar toolbar;
 	private TabLayout tablayout;
+	private ViewPager pager;
 
 	private int mode;
 
@@ -115,7 +116,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		ViewGroup root = findViewById(R.id.userexclude_root);
 		toolbar = findViewById(R.id.userexclude_toolbar);
 		tablayout = findViewById(R.id.userexclude_tab);
-		ViewPager pager = findViewById(R.id.userexclude_pager);
+		pager = findViewById(R.id.userexclude_pager);
 
 		adapter = new FragmentAdapter(getSupportFragmentManager());
 		pager.setAdapter(adapter);
@@ -175,6 +176,16 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		}
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root, settings.getBackgroundColor());
+	}
+
+
+	@Override
+	public void onBackPressed() {
+		if (tablayout.getVisibility() == View.VISIBLE && tablayout.getSelectedTabPosition() > 0) {
+			pager.setCurrentItem(0);
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 
