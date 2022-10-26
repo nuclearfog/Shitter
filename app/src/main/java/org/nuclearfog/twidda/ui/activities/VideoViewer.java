@@ -347,7 +347,12 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		if (what == MEDIA_ERROR_UNKNOWN) {
-			confirmDialog.show(ConfirmDialog.VIDEO_ERROR);
+			if (link.getScheme().startsWith("http")) {
+				confirmDialog.show(ConfirmDialog.VIDEO_ERROR);
+			} else {
+				Toast.makeText(this, R.string.error_cant_load_video, LENGTH_SHORT).show();
+				finish();
+			}
 			return true;
 		}
 		return false;

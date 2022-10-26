@@ -318,13 +318,15 @@ public class TweetV1 implements Tweet {
 
 					case "video":
 						mediaType = MEDIA_VIDEO;
+						int maxBitrate = -1;
 						JSONObject video = mediaItem.getJSONObject("video_info");
 						JSONArray videoVariants = video.getJSONArray("variants");
 						for (int pos = 0; pos < videoVariants.length(); pos++) {
 							JSONObject variant = videoVariants.getJSONObject(pos);
-							if (MIME_V_MP4.equals(variant.getString("content_type"))) {
+							int bitRate = variant.optInt("bitrate", 0);
+							if (bitRate > maxBitrate && MIME_V_MP4.equals(variant.getString("content_type"))) {
 								links[0] = variant.getString("url");
-								break;
+								maxBitrate = bitRate;
 							}
 						}
 						return links;
