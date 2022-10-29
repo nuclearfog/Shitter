@@ -261,8 +261,7 @@ public class TweetV1 implements Tweet {
 	 */
 	public void setRetweet(boolean isRetweeted) {
 		this.isRetweeted = isRetweeted;
-		// note: Twitter API v1.1 doesn't increment/decrement retweet count right
-		// so we have to correct this number
+		// fix: Twitter API v1.1 doesn't increment/decrement retweet count right
 		if (!isRetweeted && retweetCount > 0) {
 			retweetCount--;
 		}
@@ -278,6 +277,10 @@ public class TweetV1 implements Tweet {
 	 */
 	public void setFavorite(boolean isFavorited) {
 		this.isFavorited = isFavorited;
+		// fix: Twitter API v1.1 doesn't increment/decrement favorite count right
+		if (!isFavorited && favoriteCount > 0) {
+			favoriteCount--;
+		}
 		if (embeddedTweet instanceof TweetV1) {
 			((TweetV1) embeddedTweet).setFavorite(isFavorited);
 		}
