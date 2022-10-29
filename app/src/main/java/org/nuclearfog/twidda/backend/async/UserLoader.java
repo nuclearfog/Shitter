@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
 
@@ -76,12 +77,11 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 	 */
 	public static final int INCOMING_REQ = 11;
 
+	private WeakReference<UserFragment> weakRef;
+	private Connection connection;
 
 	@Nullable
-	private TwitterException twException;
-	private final WeakReference<UserFragment> weakRef;
-	private Twitter mTwitter;
-
+	private ConnectionException exception;
 	private final int type;
 	private final String search;
 	private final long id;
@@ -94,7 +94,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 	 */
 	public UserLoader(UserFragment fragment, int type, long id, String search) {
 		super();
-		mTwitter = Twitter.get(fragment.getContext());
+		connection = Twitter.get(fragment.getContext());
 		weakRef = new WeakReference<>(fragment);
 
 		this.type = type;
@@ -109,40 +109,40 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 			long cursor = param[0];
 			switch (type) {
 				case FOLLOWS:
-					return mTwitter.getFollower(id, cursor);
+					return connection.getFollower(id, cursor);
 
 				case FRIENDS:
-					return mTwitter.getFollowing(id, cursor);
+					return connection.getFollowing(id, cursor);
 
 				case RETWEET:
-					return mTwitter.getRetweetingUsers(id);
+					return connection.getRetweetingUsers(id);
 
 				case FAVORIT:
-					return mTwitter.getLikingUsers(id);
+					return connection.getLikingUsers(id);
 
 				case SEARCH:
-					return mTwitter.searchUsers(search, cursor);
+					return connection.searchUsers(search, cursor);
 
 				case SUBSCRIBER:
-					return mTwitter.getListSubscriber(id, cursor);
+					return connection.getListSubscriber(id, cursor);
 
 				case LISTMEMBER:
-					return mTwitter.getListMember(id, cursor);
+					return connection.getListMember(id, cursor);
 
 				case BLOCK:
-					return mTwitter.getBlockedUsers(cursor);
+					return connection.getBlockedUsers(cursor);
 
 				case MUTE:
-					return mTwitter.getMutedUsers(cursor);
+					return connection.getMutedUsers(cursor);
 
 				case INCOMING_REQ:
-					return mTwitter.getIncomingFollowRequests(cursor);
+					return connection.getIncomingFollowRequests(cursor);
 
 				case OUTGOING_REQ:
-					return mTwitter.getOutgoingFollowRequests(cursor);
+					return connection.getOutgoingFollowRequests(cursor);
 			}
-		} catch (TwitterException twException) {
-			this.twException = twException;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -155,7 +155,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 			if (users != null) {
 				fragment.setData(users);
 			} else {
-				fragment.onError(twException);
+				fragment.onError(exception);
 			}
 		}
 	}

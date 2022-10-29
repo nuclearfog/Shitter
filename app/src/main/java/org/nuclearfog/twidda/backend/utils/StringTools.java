@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.backend.utils;
 
-import static org.nuclearfog.twidda.backend.api.twitter.Twitter.SIGNATURE_ALG;
-
 import android.content.res.Resources;
 import android.util.Base64;
 
@@ -34,6 +32,11 @@ public final class StringTools {
 	 * regex pattern used to get user mentions
 	 */
 	private static final Pattern MENTION = Pattern.compile("[@][\\w_]+");
+
+	/**
+	 * oauth 1.0 signature algorithm
+	 */
+	public static final String SIGNATURE_ALG = "HMAC-SHA256";
 
 	/**
 	 * date format used by API 1.1

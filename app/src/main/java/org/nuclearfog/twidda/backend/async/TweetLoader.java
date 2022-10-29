@@ -6,9 +6,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.ui.fragments.TweetFragment;
@@ -64,13 +64,12 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 	 */
 	public static final int USERLIST = 8;
 
-
-	@Nullable
-	private TwitterError twException;
 	private WeakReference<TweetFragment> weakRef;
-	private Twitter twitter;
+	private Connection connection;
 	private AppDatabase db;
 
+	@Nullable
+	private ConnectionException exception;
 	private int listType;
 	private String search;
 	private long id;
@@ -86,7 +85,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 	public TweetLoader(TweetFragment fragment, int listType, long id, String search, int pos) {
 		super();
 		db = new AppDatabase(fragment.getContext());
-		twitter = Twitter.get(fragment.getContext());
+		connection = Twitter.get(fragment.getContext());
 		weakRef = new WeakReference<>(fragment);
 
 		this.listType = listType;
@@ -107,14 +106,14 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 					if (sinceId == 0 && maxId == 0) {
 						tweets = db.getHomeTimeline();
 						if (tweets.isEmpty()) {
-							tweets = twitter.getHomeTimeline(sinceId, maxId);
+							tweets = connection.getHomeTimeline(sinceId, maxId);
 							db.storeHomeTimeline(tweets);
 						}
 					} else if (sinceId > 0) {
-						tweets = twitter.getHomeTimeline(sinceId, maxId);
+						tweets = connection.getHomeTimeline(sinceId, maxId);
 						db.storeHomeTimeline(tweets);
 					} else if (maxId > 1) {
-						tweets = twitter.getHomeTimeline(sinceId, maxId);
+						tweets = connection.getHomeTimeline(sinceId, maxId);
 					}
 					break;
 
@@ -122,14 +121,14 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 					if (sinceId == 0 && maxId == 0) {
 						tweets = db.getMentions();
 						if (tweets.isEmpty()) {
-							tweets = twitter.getMentionTimeline(sinceId, maxId);
+							tweets = connection.getMentionTimeline(sinceId, maxId);
 							db.storeMentions(tweets);
 						}
 					} else if (sinceId > 0) {
-						tweets = twitter.getMentionTimeline(sinceId, maxId);
+						tweets = connection.getMentionTimeline(sinceId, maxId);
 						db.storeMentions(tweets);
 					} else if (maxId > 1) {
-						tweets = twitter.getMentionTimeline(sinceId, maxId);
+						tweets = connection.getMentionTimeline(sinceId, maxId);
 					}
 					break;
 
@@ -138,17 +137,17 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 						if (sinceId == 0 && maxId == 0) {
 							tweets = db.getUserTweets(id);
 							if (tweets.isEmpty()) {
-								tweets = twitter.getUserTimeline(id, 0, maxId);
+								tweets = connection.getUserTimeline(id, 0, maxId);
 								db.storeUserTweets(tweets);
 							}
 						} else if (sinceId > 0) {
-							tweets = twitter.getUserTimeline(id, sinceId, maxId);
+							tweets = connection.getUserTimeline(id, sinceId, maxId);
 							db.storeUserTweets(tweets);
 						} else if (maxId > 1) {
-							tweets = twitter.getUserTimeline(id, sinceId, maxId);
+							tweets = connection.getUserTimeline(id, sinceId, maxId);
 						}
 					} else if (search != null) {
-						tweets = twitter.getUserTimeline(search, sinceId, maxId);
+						tweets = connection.getUserTimeline(search, sinceId, maxId);
 					}
 					break;
 
@@ -157,18 +156,18 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 						if (sinceId == 0 && maxId == 0) {
 							tweets = db.getUserFavorites(id);
 							if (tweets.isEmpty()) {
-								tweets = twitter.getUserFavorits(id, 0, maxId);
+								tweets = connection.getUserFavorits(id, 0, maxId);
 								db.storeUserFavs(tweets, id);
 							}
 						} else if (sinceId > 0) {
-							tweets = twitter.getUserFavorits(id, 0, maxId);
+							tweets = connection.getUserFavorits(id, 0, maxId);
 							db.storeUserFavs(tweets, id);
 							pos = CLEAR_LIST; // set flag to clear previous data
 						} else if (maxId > 1) {
-							tweets = twitter.getUserFavorits(id, sinceId, maxId);
+							tweets = connection.getUserFavorits(id, sinceId, maxId);
 						}
 					} else if (search != null) {
-						tweets = twitter.getUserFavorits(search, sinceId, maxId);
+						tweets = connection.getUserFavorits(search, sinceId, maxId);
 					}
 					break;
 
@@ -180,31 +179,31 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 					if (sinceId == 0 && maxId == 0) {
 						tweets = db.getTweetReplies(id);
 						if (tweets.isEmpty()) {
-							tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
+							tweets = connection.getTweetReplies(search, id, sinceId, maxId);
 							if (!tweets.isEmpty() && db.containsTweet(id)) {
 								db.storeReplies(tweets);
 							}
 						}
 					} else if (sinceId > 0) {
-						tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
+						tweets = connection.getTweetReplies(search, id, sinceId, maxId);
 						if (!tweets.isEmpty() && db.containsTweet(id)) {
 							db.storeReplies(tweets);
 						}
 					} else if (maxId > 1) {
-						tweets = twitter.getTweetReplies(search, id, sinceId, maxId);
+						tweets = connection.getTweetReplies(search, id, sinceId, maxId);
 					}
 					break;
 
 				case TWEET_SEARCH:
-					tweets = twitter.searchTweets(search, sinceId, maxId);
+					tweets = connection.searchTweets(search, sinceId, maxId);
 					break;
 
 				case USERLIST:
-					tweets = twitter.getUserlistTweets(id, sinceId, maxId);
+					tweets = connection.getUserlistTweets(id, sinceId, maxId);
 					break;
 			}
-		} catch (TwitterException e) {
-			this.twException = e;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return tweets;
 	}
@@ -217,7 +216,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 			if (tweets != null) {
 				fragment.setData(tweets, pos);
 			} else {
-				fragment.onError(twException);
+				fragment.onError(exception);
 			}
 		}
 	}

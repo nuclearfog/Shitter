@@ -56,6 +56,7 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.UserAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -714,11 +715,11 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 *
 	 * @param err Engine Exception
 	 */
-	public void onError(@Nullable ErrorHandler.TwitterError err) {
+	public void onError(@Nullable ConnectionException err) {
 		ErrorHandler.handleFailure(this, err);
 		if (user == null || (err != null
-				&& (err.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND
-				|| err.getErrorType() == ErrorHandler.TwitterError.USER_NOT_FOUND))) {
+				&& (err.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND
+				|| err.getErrorCode() == ConnectionException.USER_NOT_FOUND))) {
 			finish();
 		}
 	}

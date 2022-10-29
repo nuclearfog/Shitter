@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.ui.activities.TweetActivity;
@@ -68,12 +68,12 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 	 */
 	public static final int DELETE = 9;
 
-
-	@Nullable
-	private TwitterException twException;
-	private Twitter twitter;
+	private Connection connection;
 	private WeakReference<TweetActivity> weakRef;
 	private AppDatabase db;
+
+	@Nullable
+	private ConnectionException exception;
 	private int action;
 
 	/**
@@ -83,7 +83,7 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 		super();
 		weakRef = new WeakReference<>(activity);
 		db = new AppDatabase(activity);
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 
 		this.action = action;
 	}
@@ -103,7 +103,7 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 					// fall through
 
 				case LOAD:
-					newTweet = twitter.showTweet(ids[0]);
+					newTweet = connection.showTweet(ids[0]);
 					//tweet = mTwitter.getStatus(tweetId);
 					publishProgress(newTweet);
 					if (db.containsTweet(ids[0])) {
@@ -113,21 +113,21 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 					break;
 
 				case DELETE:
-					twitter.deleteTweet(ids[0]);
+					connection.deleteTweet(ids[0]);
 					db.removeTweet(ids[0]);
 					// removing retweet reference to this tweet
 					db.removeTweet(ids[1]);
 					break;
 
 				case RETWEET:
-					newTweet = twitter.retweetTweet(ids[0]);
+					newTweet = connection.retweetTweet(ids[0]);
 					if (newTweet.getEmbeddedTweet() != null)
 						publishProgress(newTweet.getEmbeddedTweet());
 					db.updateTweet(newTweet);
 					break;
 
 				case UNRETWEET:
-					newTweet = twitter.unretweetTweet(ids[0]);
+					newTweet = connection.unretweetTweet(ids[0]);
 					publishProgress(newTweet);
 					db.updateTweet(newTweet);
 					// removing retweet reference to this tweet
@@ -136,30 +136,30 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 					break;
 
 				case FAVORITE:
-					newTweet = twitter.favoriteTweet(ids[0]);
+					newTweet = connection.favoriteTweet(ids[0]);
 					publishProgress(newTweet);
 					db.storeFavorite(newTweet);
 					break;
 
 				case UNFAVORITE:
-					newTweet = twitter.unfavoriteTweet(ids[0]);
+					newTweet = connection.unfavoriteTweet(ids[0]);
 					publishProgress(newTweet);
 					db.removeFavorite(newTweet);
 					break;
 
 				case HIDE:
-					twitter.hideReply(ids[0], true);
+					connection.hideReply(ids[0], true);
 					db.hideReply(ids[0], true);
 					break;
 
 				case UNHIDE:
-					twitter.hideReply(ids[0], false);
+					connection.hideReply(ids[0], false);
 					db.hideReply(ids[0], false);
 					break;
 			}
-		} catch (TwitterException twException) {
-			this.twException = twException;
-			if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
+		} catch (ConnectionException exception) {
+			this.exception = exception;
+			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				// delete database entry if tweet was not found
 				db.removeTweet(ids[0]);
 				if (ids.length > 1) {
@@ -185,10 +185,10 @@ public class TweetAction extends AsyncTask<Long, Tweet, Void> {
 	protected void onPostExecute(Void v) {
 		TweetActivity activity = weakRef.get();
 		if (activity != null) {
-			if (twException == null) {
+			if (exception == null) {
 				activity.OnSuccess(action);
 			} else {
-				activity.onError(twException);
+				activity.onError(exception);
 			}
 		}
 	}

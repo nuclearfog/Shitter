@@ -29,7 +29,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MetricsLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -271,7 +271,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	/**
 	 * called from {@link MetricsLoader} if an error occurs
 	 */
-	public void onError(@Nullable TwitterException exception) {
+	public void onError(@Nullable ConnectionException exception) {
 		ErrorHandler.handleFailure(this, exception);
 		setRefresh(false);
 	}

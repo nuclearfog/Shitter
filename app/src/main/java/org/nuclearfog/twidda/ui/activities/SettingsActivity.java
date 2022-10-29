@@ -43,6 +43,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
 import org.nuclearfog.twidda.adapter.ScaleAdapter;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -640,7 +641,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 *
 	 * @param err exception from twitter
 	 */
-	public void onError(ErrorHandler.TwitterError err) {
+	public void onError(ConnectionException err) {
 		ErrorHandler.handleFailure(this, err);
 	}
 

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ImageLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -161,7 +162,7 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 	 *
 	 * @param err Exception caught by {@link ImageLoader}
 	 */
-	public void onError(ErrorHandler.TwitterError err) {
+	public void onError(ConnectionException err) {
 		ErrorHandler.handleFailure(getApplicationContext(), err);
 		finish();
 	}

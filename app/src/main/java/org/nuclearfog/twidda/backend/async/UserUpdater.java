@@ -4,10 +4,10 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.update.ProfileUpdate;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileEditor;
@@ -22,19 +22,18 @@ import java.lang.ref.WeakReference;
  */
 public class UserUpdater extends AsyncTask<Void, Void, User> {
 
-	@Nullable
-	private ErrorHandler.TwitterError exception;
 	private WeakReference<ProfileEditor> weakRef;
-	private Twitter twitter;
+	private Connection connection;
 	private AppDatabase db;
 
+	@Nullable
+	private ConnectionException exception;
 	private ProfileUpdate profile;
-
 
 	public UserUpdater(ProfileEditor activity, ProfileUpdate profile) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 		db = new AppDatabase(activity);
 		this.profile = profile;
 	}
@@ -44,16 +43,16 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 	protected User doInBackground(Void[] v) {
 		try {
 			if (profile.getProfileImageStream() != null) {
-				twitter.updateProfileImage(profile.getProfileImageStream());
+				connection.updateProfileImage(profile.getProfileImageStream());
 			}
 			if (profile.getBannerImageStream() != null) {
-				twitter.updateBannerImage(profile.getBannerImageStream());
+				connection.updateBannerImage(profile.getBannerImageStream());
 			}
-			User user = twitter.updateProfile(profile);
+			User user = connection.updateProfile(profile);
 			// save new user information
 			db.storeUser(user);
 			return user;
-		} catch (TwitterException exception) {
+		} catch (ConnectionException exception) {
 			this.exception = exception;
 		} finally {
 			// close image streams

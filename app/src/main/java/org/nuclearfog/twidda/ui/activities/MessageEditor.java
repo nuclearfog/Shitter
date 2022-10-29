@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.update.DirectmessageUpdate;
 import org.nuclearfog.twidda.backend.async.MessageUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -186,7 +187,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	 *
 	 * @param error Engine Exception
 	 */
-	public void onError(@Nullable ErrorHandler.TwitterError error) {
+	public void onError(@Nullable ConnectionException error) {
 		String message = ErrorHandler.getErrorMessage(this, error);
 		confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_ERROR, message);
 		loadingCircle.dismiss();

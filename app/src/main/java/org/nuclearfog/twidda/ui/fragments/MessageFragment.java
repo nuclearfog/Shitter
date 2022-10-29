@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnMessageClickListener;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -208,9 +209,9 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 * @param error     Twitter exception
 	 * @param messageId ID of the message assosiated with the error
 	 */
-	public void onError(@NonNull ErrorHandler.TwitterError error, long messageId) {
+	public void onError(@NonNull ConnectionException error, long messageId) {
 		ErrorHandler.handleFailure(requireContext(), error);
-		if (error.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
+		if (error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 			adapter.remove(messageId);
 		}
 		setRefresh(false);

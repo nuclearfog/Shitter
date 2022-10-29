@@ -2,8 +2,11 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.ui.activities.MetricsActivity;
 
@@ -17,22 +20,24 @@ import java.lang.ref.WeakReference;
 public class MetricsLoader extends AsyncTask<Long, Void, Metrics> {
 
 	private WeakReference<MetricsActivity> callback;
-	private TwitterException exception;
-	private Twitter mTwitter;
+	private Connection connection;
+
+	@Nullable
+	private ConnectionException exception;
 
 
 	public MetricsLoader(MetricsActivity activity) {
 		super();
 		callback = new WeakReference<>(activity);
-		mTwitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 	}
 
 
 	@Override
 	protected Metrics doInBackground(Long[] ids) {
 		try {
-			return mTwitter.getTweetMetrics(ids[0]);
-		} catch (TwitterException exception) {
+			return connection.getTweetMetrics(ids[0]);
+		} catch (ConnectionException exception) {
 			this.exception = exception;
 		} catch (Exception exception) {
 			exception.printStackTrace();

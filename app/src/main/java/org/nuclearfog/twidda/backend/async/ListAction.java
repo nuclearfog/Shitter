@@ -2,8 +2,9 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 
@@ -38,8 +39,8 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 
 
 	private WeakReference<UserlistActivity> weakRef;
-	private Twitter twitter;
-	private TwitterException err;
+	private Connection connection;
+	private ConnectionException exception;
 
 	private long listId;
 	private int action;
@@ -52,7 +53,7 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 	public ListAction(UserlistActivity activity, long listId, int action) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 		this.listId = listId;
 		this.action = action;
 	}
@@ -63,19 +64,19 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 		try {
 			switch (action) {
 				case LOAD:
-					return twitter.getUserlist(listId);
+					return connection.getUserlist(listId);
 
 				case FOLLOW:
-					return twitter.followUserlist(listId);
+					return connection.followUserlist(listId);
 
 				case UNFOLLOW:
-					return twitter.unfollowUserlist(listId);
+					return connection.unfollowUserlist(listId);
 
 				case DELETE:
-					return twitter.deleteUserlist(listId);
+					return connection.deleteUserlist(listId);
 			}
-		} catch (TwitterException err) {
-			this.err = err;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -88,7 +89,7 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 			if (userList != null) {
 				callback.onSuccess(userList, action);
 			} else {
-				callback.onFailure(err, listId);
+				callback.onFailure(exception, listId);
 			}
 		}
 	}

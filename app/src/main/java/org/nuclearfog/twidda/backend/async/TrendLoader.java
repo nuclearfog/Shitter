@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
@@ -21,11 +22,12 @@ import java.util.List;
  */
 public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 
-	@Nullable
-	private TwitterException twException;
 	private WeakReference<TrendFragment> weakRef;
-	private Twitter twitter;
+	private Connection connection;
 	private AppDatabase db;
+
+	@Nullable
+	private ConnectionException exception;
 	private boolean isEmpty;
 
 	/**
@@ -35,7 +37,7 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 		super();
 		weakRef = new WeakReference<>(fragment);
 		db = new AppDatabase(fragment.getContext());
-		twitter = Twitter.get(fragment.getContext());
+		connection = Twitter.get(fragment.getContext());
 		isEmpty = fragment.isEmpty();
 	}
 
@@ -48,16 +50,16 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 			if (isEmpty) {
 				trends = db.getTrends(woeId);
 				if (trends.isEmpty()) {
-					trends = twitter.getTrends(woeId);
+					trends = connection.getTrends(woeId);
 					db.storeTrends(trends, woeId);
 				}
 			} else {
-				trends = twitter.getTrends(woeId);
+				trends = connection.getTrends(woeId);
 				db.storeTrends(trends, woeId);
 			}
 			return trends;
-		} catch (TwitterException twException) {
-			this.twException = twException;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -70,7 +72,7 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 			if (trends != null) {
 				fragment.setData(trends);
 			} else {
-				fragment.onError(twException);
+				fragment.onError(exception);
 			}
 		}
 	}

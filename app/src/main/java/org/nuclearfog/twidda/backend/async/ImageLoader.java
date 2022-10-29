@@ -5,10 +5,10 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.update.MediaUpdate;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 
@@ -27,10 +27,11 @@ import java.lang.ref.WeakReference;
  */
 public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
-	@Nullable
-	private ErrorHandler.TwitterError err;
-	private Twitter twitter;
 	private WeakReference<ImageViewer> weakRef;
+	private Connection connection;
+
+	@Nullable
+	private ConnectionException exception;
 	private File cacheFolder;
 
 	/**
@@ -40,7 +41,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 	public ImageLoader(ImageViewer activity, File cacheFolder) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 		this.cacheFolder = cacheFolder;
 	}
 
@@ -51,7 +52,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 			// download imaged to a local cache folder
 			for (Uri link : links) {
 				// get input stream
-				MediaUpdate mediaUpdate = twitter.downloadImage(link.toString());
+				MediaUpdate mediaUpdate = connection.downloadImage(link.toString());
 				InputStream input = mediaUpdate.getStream();
 				String mimeType = mediaUpdate.getMimeType();
 
@@ -73,8 +74,8 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 				publishProgress(Uri.fromFile(imageFile));
 			}
 			return true;
-		} catch (TwitterException err) {
-			this.err = err;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
@@ -98,7 +99,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 			if (success) {
 				activity.onSuccess();
 			} else {
-				activity.onError(err);
+				activity.onError(exception);
 			}
 		}
 	}

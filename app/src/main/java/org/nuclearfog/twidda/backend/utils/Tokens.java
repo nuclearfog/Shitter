@@ -27,7 +27,9 @@ public class Tokens {
 	private static Tokens instance;
 	private GlobalSettings settings;
 
-
+	/**
+	 *
+	 */
 	private Tokens(Context context) {
 		settings = GlobalSettings.getInstance(context);
 	}
@@ -38,9 +40,8 @@ public class Tokens {
 	 * @return instance of this class
 	 */
 	public static Tokens getInstance(Context context) {
-		if (instance == null) {
+		if (instance == null)
 			instance = new Tokens(context);
-		}
 		return instance;
 	}
 

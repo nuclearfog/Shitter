@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.TweetLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Tweet;
@@ -219,7 +220,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 	 *
 	 * @param error Twitter exception
 	 */
-	public void onError(@Nullable ErrorHandler.TwitterError error) {
+	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);
 		adapter.disableLoading();
 		setRefresh(false);

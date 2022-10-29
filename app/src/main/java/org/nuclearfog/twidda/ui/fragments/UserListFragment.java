@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.UserlistAdapter;
 import org.nuclearfog.twidda.adapter.UserlistAdapter.ListClickListener;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListLoader;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -181,7 +182,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 	 *
 	 * @param error Twitter exception
 	 */
-	public void onError(@Nullable ErrorHandler.TwitterError error) {
+	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);
 		adapter.disableLoading();
 		setRefresh(false);

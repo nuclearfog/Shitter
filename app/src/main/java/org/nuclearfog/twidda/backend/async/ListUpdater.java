@@ -2,8 +2,11 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.UserlistEditor;
@@ -18,11 +21,11 @@ import java.lang.ref.WeakReference;
  */
 public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 
-
 	private WeakReference<UserlistEditor> weakRef;
-	private TwitterException err;
-	private Twitter twitter;
+	private Connection connection;
 
+	@Nullable
+	private ConnectionException exception;
 	private UserlistUpdate update;
 
 	/**
@@ -32,7 +35,7 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 	public ListUpdater(UserlistEditor activity, UserlistUpdate update) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 		this.update = update;
 	}
 
@@ -41,10 +44,10 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 	protected UserList doInBackground(Void... v) {
 		try {
 			if (update.exists())
-				return twitter.updateUserlist(update);
-			return twitter.createUserlist(update);
-		} catch (TwitterException err) {
-			this.err = err;
+				return connection.updateUserlist(update);
+			return connection.createUserlist(update);
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -57,7 +60,7 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 			if (result != null) {
 				activity.onSuccess(result);
 			} else {
-				activity.onError(err);
+				activity.onError(exception);
 			}
 		}
 	}

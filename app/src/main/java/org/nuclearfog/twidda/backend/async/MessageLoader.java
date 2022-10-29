@@ -4,10 +4,10 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.ui.fragments.MessageFragment;
 
@@ -36,13 +36,13 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 	 */
 	public static final int DEL = 3;
 
-	@Nullable
-	private TwitterException twException;
 	private WeakReference<MessageFragment> weakRef;
-	private Twitter twitter;
+	private Connection connection;
 	private AppDatabase db;
 	private int action;
 
+	@Nullable
+	private ConnectionException exception;
 	private String cursor;
 	private long messageId;
 
@@ -56,7 +56,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 		super();
 		weakRef = new WeakReference<>(fragment);
 		db = new AppDatabase(fragment.getContext());
-		twitter = Twitter.get(fragment.getContext());
+		connection = Twitter.get(fragment.getContext());
 		this.action = action;
 		this.cursor = cursor;
 		this.messageId = messageId;
@@ -70,7 +70,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 				case DB:
 					Directmessages messages = db.getMessages();
 					if (messages.isEmpty()) {
-						messages = twitter.getDirectmessages("");
+						messages = connection.getDirectmessages("");
 						// merge online messages with offline messages
 						db.storeMessage(messages);
 						messages = db.getMessages();
@@ -78,19 +78,19 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 					return messages;
 
 				case LOAD:
-					messages = twitter.getDirectmessages(cursor);
+					messages = connection.getDirectmessages(cursor);
 					// merge online messages with offline messages
 					db.storeMessage(messages);
 					return db.getMessages();
 
 				case DEL:
-					twitter.deleteDirectmessage(messageId);
+					connection.deleteDirectmessage(messageId);
 					db.deleteMessage(messageId);
 					break;
 			}
-		} catch (TwitterException twException) {
-			this.twException = twException;
-			if (twException.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
+		} catch (ConnectionException exception) {
+			this.exception = exception;
+			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				db.deleteMessage(messageId);
 			}
 		}
@@ -102,8 +102,8 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 	protected void onPostExecute(@Nullable Directmessages messages) {
 		MessageFragment fragment = weakRef.get();
 		if (fragment != null) {
-			if (twException != null) {
-				fragment.onError(twException, messageId);
+			if (exception != null) {
+				fragment.onError(exception, messageId);
 			} else {
 				if (action == DB || action == LOAD) {
 					if (messages != null) {

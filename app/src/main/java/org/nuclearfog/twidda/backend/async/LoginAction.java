@@ -4,9 +4,8 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -23,13 +22,14 @@ import java.lang.ref.WeakReference;
  */
 public class LoginAction extends AsyncTask<String, Void, String> {
 
-	@Nullable
-	private ErrorHandler.TwitterError exception;
 	private WeakReference<LoginActivity> weakRef;
 	private AccountDatabase accountDB;
 	private AppDatabase database;
 	private Twitter twitter;
 	private GlobalSettings settings;
+
+	@Nullable
+	private ConnectionException exception;
 
 	/**
 	 * Account to twitter with PIN
@@ -63,7 +63,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 			database.storeUser(user);
 			accountDB.setLogin(user.getId(), settings.getAccessToken(), settings.getTokenSecret());
 			return "";
-		} catch (TwitterException exception) {
+		} catch (ConnectionException exception) {
 			this.exception = exception;
 			return null;
 		}

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
 import org.nuclearfog.twidda.backend.async.ListUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -182,7 +183,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param err twitter exception
 	 */
-	public void onError(@Nullable ErrorHandler.TwitterError err) {
+	public void onError(@Nullable ConnectionException err) {
 		String message = ErrorHandler.getErrorMessage(this, err);
 		confirmDialog.show(ConfirmDialog.LIST_EDITOR_ERROR, message);
 		loadingCircle.dismiss();

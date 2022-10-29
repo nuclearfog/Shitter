@@ -48,7 +48,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.TweetAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -801,12 +801,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	 *
 	 * @param error Error information
 	 */
-	public void onError(@Nullable TwitterException error) {
+	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(this, error);
 		if (tweet == null) {
 			finish();
 		} else {
-			if (error != null && error.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
+			if (error != null && error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				// Mark tweet as removed, so it can be removed from the list
 				Intent returnData = new Intent();
 				returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweet.getId());

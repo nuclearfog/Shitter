@@ -27,6 +27,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LinkLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -326,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	/**
 	 * called from {@link LinkLoader} when an error occurs
 	 */
-	public void onError(ErrorHandler.TwitterError error) {
+	public void onError(ConnectionException error) {
 		ErrorHandler.handleFailure(this, error);
 		loadingCircle.dismiss();
 	}

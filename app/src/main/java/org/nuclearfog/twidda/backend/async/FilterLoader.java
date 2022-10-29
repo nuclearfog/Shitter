@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.User;
@@ -38,19 +39,18 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 	 */
 	public static final int BLOCK_USER = 3;
 
-	@Nullable
-	private TwitterException err;
 	private WeakReference<UsersActivity> weakRef;
 	private FilterDatabase filterDatabase;
 	private AppDatabase appDatabase;
-	private Twitter twitter;
+	private Connection connection;
 
+	@Nullable
+	private ConnectionException exception;
 	private int mode;
-
 
 	public FilterLoader(UsersActivity activity, int mode) {
 		super();
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 		appDatabase = new AppDatabase(activity);
 		filterDatabase = new FilterDatabase(activity);
 		weakRef = new WeakReference<>(activity);
@@ -63,22 +63,22 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 		try {
 			switch (mode) {
 				case REFRESH:
-					List<Long> ids = twitter.getIdBlocklist();
+					List<Long> ids = connection.getIdBlocklist();
 					filterDatabase.setFilteredUserIds(ids);
 					break;
 
 				case MUTE_USER:
-					User user = twitter.muteUser(names[0]);
+					User user = connection.muteUser(names[0]);
 					appDatabase.storeUser(user);
 					break;
 
 				case BLOCK_USER:
-					user = twitter.blockUser(names[0]);
+					user = connection.blockUser(names[0]);
 					appDatabase.storeUser(user);
 					break;
 			}
-		} catch (TwitterException err) {
-			this.err = err;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -88,10 +88,10 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 	protected void onPostExecute(Void v) {
 		UsersActivity activity = weakRef.get();
 		if (activity != null) {
-			if (err == null) {
+			if (exception == null) {
 				activity.onSuccess(mode);
 			} else {
-				activity.onError(err);
+				activity.onError(exception);
 			}
 		}
 	}

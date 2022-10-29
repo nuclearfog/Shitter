@@ -2,8 +2,11 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 
@@ -18,24 +21,26 @@ import java.util.List;
  */
 public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 
-	private TwitterException twException;
 	private WeakReference<SettingsActivity> weakRef;
-	private Twitter twitter;
+	private Connection connection;
+
+	@Nullable
+	private ConnectionException exception;
 
 
 	public LocationLoader(SettingsActivity activity) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 	}
 
 
 	@Override
 	protected List<Location> doInBackground(Void[] v) {
 		try {
-			return twitter.getLocations();
-		} catch (TwitterException twException) {
-			this.twException = twException;
+			return connection.getLocations();
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -48,7 +53,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 			if (locations != null) {
 				activity.setLocationData(locations);
 			} else {
-				activity.onError(twException);
+				activity.onError(exception);
 			}
 		}
 	}

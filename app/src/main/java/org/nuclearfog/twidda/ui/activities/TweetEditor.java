@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.update.TweetUpdate;
 import org.nuclearfog.twidda.backend.async.TweetUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -325,7 +326,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	/**
 	 * Show confirmation dialog if an error occurs while sending tweet
 	 */
-	public void onError(@Nullable ErrorHandler.TwitterError error) {
+	public void onError(@Nullable ConnectionException error) {
 		String message = ErrorHandler.getErrorMessage(this, error);
 		confirmDialog.show(ConfirmDialog.TWEET_EDITOR_ERROR, message);
 		loadingCircle.dismiss();

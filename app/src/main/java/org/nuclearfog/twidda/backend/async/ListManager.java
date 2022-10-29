@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -29,11 +29,11 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 	 */
 	public static final int DEL_USER = 2;
 
-
-	private TwitterException err;
-	private Twitter twitter;
+	private Connection connection;
 	private WeakReference<ListManagerCallback> weakRef;
 
+	@Nullable
+	private ConnectionException exception;
 	private long listId;
 	private String username;
 	private int action;
@@ -48,7 +48,7 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 	public ListManager(Context c, long listId, int action, String username, ListManagerCallback callback) {
 		super();
 		weakRef = new WeakReference<>(callback);
-		twitter = Twitter.get(c);
+		connection = Twitter.get(c);
 		this.listId = listId;
 		this.action = action;
 		this.username = username;
@@ -60,15 +60,15 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 		try {
 			switch (action) {
 				case ADD_USER:
-					twitter.addUserToUserlist(listId, username);
+					connection.addUserToUserlist(listId, username);
 					break;
 
 				case DEL_USER:
-					twitter.removeUserFromUserlist(listId, username);
+					connection.removeUserFromUserlist(listId, username);
 					break;
 			}
-		} catch (TwitterException err) {
-			this.err = err;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -78,10 +78,10 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 	protected void onPostExecute(Void v) {
 		ListManagerCallback callback = weakRef.get();
 		if (callback != null) {
-			if (err == null) {
+			if (exception == null) {
 				callback.onSuccess(username);
 			} else {
-				callback.onFailure(err);
+				callback.onFailure(exception);
 			}
 		}
 	}
@@ -103,6 +103,6 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 		 *
 		 * @param err Engine exception thrown by backend
 		 */
-		void onFailure(@Nullable ErrorHandler.TwitterError err);
+		void onFailure(@Nullable ConnectionException err);
 	}
 }

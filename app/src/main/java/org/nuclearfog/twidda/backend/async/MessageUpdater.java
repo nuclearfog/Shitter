@@ -3,11 +3,12 @@ package org.nuclearfog.twidda.backend.async;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.update.DirectmessageUpdate;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 
 import java.lang.ref.WeakReference;
@@ -20,10 +21,11 @@ import java.lang.ref.WeakReference;
  */
 public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
-	private ErrorHandler.TwitterError exception;
 	private WeakReference<MessageEditor> weakRef;
-	private Twitter twitter;
+	private Connection connection;
 
+	@Nullable
+	private ConnectionException exception;
 	private DirectmessageUpdate message;
 
 	/**
@@ -33,7 +35,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 	 */
 	public MessageUpdater(@NonNull MessageEditor activity, DirectmessageUpdate message) {
 		super();
-		twitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 		weakRef = new WeakReference<>(activity);
 		this.message = message;
 	}
@@ -43,18 +45,18 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 	protected Boolean doInBackground(Void[] v) {
 		try {
 			// first check if user exists
-			long id = twitter.showUser(message.getName()).getId();
+			long id = connection.showUser(message.getName()).getId();
 			// upload media if any
 			long mediaId = -1;
 			if (message.getMediaUpdate() != null) {
-				mediaId = twitter.uploadMedia(message.getMediaUpdate());
+				mediaId = connection.uploadMedia(message.getMediaUpdate());
 			}
 			// upload message and media ID
 			if (!isCancelled()) {
-				twitter.sendDirectmessage(id, message.getText(), mediaId);
+				connection.sendDirectmessage(id, message.getText(), mediaId);
 			}
 			return true;
-		} catch (TwitterException exception) {
+		} catch (ConnectionException exception) {
 			this.exception = exception;
 		} finally {
 			// close all streams

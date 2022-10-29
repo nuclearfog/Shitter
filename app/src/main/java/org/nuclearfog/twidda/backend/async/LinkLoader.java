@@ -6,9 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.MainActivity;
@@ -35,14 +37,16 @@ import java.util.List;
 public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 
 	private WeakReference<MainActivity> weakRef;
-	private TwitterException exception;
-	private Twitter mTwitter;
+	private Connection connection;
+
+	@Nullable
+	private ConnectionException exception;
 
 
 	public LinkLoader(MainActivity activity) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		mTwitter = Twitter.get(activity);
+		connection = Twitter.get(activity);
 	}
 
 
@@ -118,7 +122,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 				// e.g. twitter.com/i/lists/{list id}
 				else if (pathSeg.size() == 3 && pathSeg.get(0).equals("i") && pathSeg.get(1).equals("lists") && pathSeg.get(2).matches("\\d+")) {
 					long listId = Long.parseLong(pathSeg.get(2));
-					UserList list = mTwitter.getUserlist(listId);
+					UserList list = connection.getUserlist(listId);
 					data.putSerializable(UserlistActivity.KEY_LIST_DATA, list);
 					data.putBoolean(UserlistActivity.KEY_LIST_NO_UPDATE, true);
 					return new DataHolder(data, UserlistActivity.class);
@@ -144,14 +148,14 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 				else if (pathSeg.size() == 1 || (pathSeg.size() == 2 &&
 						(pathSeg.get(1).equals("with_replies") || pathSeg.get(1).equals("media") || pathSeg.get(1).equals("likes")))) {
 					String screenname = pathSeg.get(0);
-					User user = mTwitter.showUser(screenname);
+					User user = connection.showUser(screenname);
 					data.putSerializable(ProfileActivity.KEY_PROFILE_DATA, user);
 					data.putBoolean(ProfileActivity.KEY_PROFILE_DISABLE_RELOAD, true);
 					return new DataHolder(data, ProfileActivity.class);
 				}
 			}
-		} catch (TwitterException e) {
-			exception = e;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}

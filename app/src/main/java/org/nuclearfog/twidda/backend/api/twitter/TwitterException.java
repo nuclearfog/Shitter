@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler.TwitterError;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 
 import java.io.IOException;
 
@@ -16,19 +16,20 @@ import okhttp3.ResponseBody;
  *
  * @author nuclearfog
  */
-public class TwitterException extends Exception implements TwitterError {
+class TwitterException extends ConnectionException {
 
 	private static final long serialVersionUID = -7760582201674916919L;
 
 	private String message;
-	private int httpCode;
-	private int errorCode = -1;
+	private int httpCode = -1;
+	private int responseCode = -1;
 	private int retryAfter = -1;
 
 	/**
 	 * @param message exception message
 	 */
 	TwitterException(String message) {
+		super(message);
 		this.message = message;
 	}
 
@@ -37,7 +38,6 @@ public class TwitterException extends Exception implements TwitterError {
 	 */
 	TwitterException(Exception e) {
 		super(e);
-		httpCode = -1;
 		message = e.getMessage();
 	}
 
@@ -47,6 +47,7 @@ public class TwitterException extends Exception implements TwitterError {
 	 * @param response response from API containing additional error information
 	 */
 	TwitterException(Response response) {
+		super(response.message());
 		// basic information
 		this.httpCode = response.code();
 		this.message = response.message();
@@ -61,7 +62,7 @@ public class TwitterException extends Exception implements TwitterError {
 					JSONObject error = errors.optJSONObject(0);
 					if (error != null) {
 						message = error.optString("message");
-						errorCode = error.optInt("code");
+						responseCode = error.optInt("code");
 						retryAfter = error.optInt("x-rate-limit-remaining", -1);
 					}
 				} else {
@@ -75,8 +76,8 @@ public class TwitterException extends Exception implements TwitterError {
 
 
 	@Override
-	public int getErrorType() {
-		switch (errorCode) {
+	public int getErrorCode() {
+		switch (responseCode) {
 			case 88:
 			case 420:   //
 			case 429:   // Rate limit exceeded!
@@ -148,19 +149,22 @@ public class TwitterException extends Exception implements TwitterError {
 		}
 	}
 
+
 	@Override
 	public int getTimeToWait() {
 		return retryAfter;
 	}
+
 
 	@Override
 	public String getMessage() {
 		return message;
 	}
 
+
 	@NonNull
 	@Override
 	public String toString() {
-		return "http=" + httpCode + " errorcode=" + errorCode + " message=\"" + message + "\"";
+		return "http=" + httpCode + " errorcode=" + responseCode + " message=\"" + message + "\"";
 	}
 }

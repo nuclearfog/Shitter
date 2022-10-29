@@ -34,6 +34,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.async.UserUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -279,7 +280,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	 *
 	 * @param err Engine Exception
 	 */
-	public void onError(ErrorHandler.TwitterError err) {
+	public void onError(ConnectionException err) {
 		String message = ErrorHandler.getErrorMessage(this, err);
 		confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		loadingCircle.dismiss();

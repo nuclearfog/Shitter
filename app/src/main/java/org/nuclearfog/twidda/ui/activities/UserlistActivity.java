@@ -26,6 +26,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListAction;
 import org.nuclearfog.twidda.backend.async.ListManager;
 import org.nuclearfog.twidda.backend.async.ListManager.ListManagerCallback;
@@ -340,7 +341,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 
 	@Override
-	public void onFailure(@Nullable ErrorHandler.TwitterError err) {
+	public void onFailure(@Nullable ConnectionException err) {
 		ErrorHandler.handleFailure(this, err);
 	}
 
@@ -384,9 +385,9 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	 * @param err    error information
 	 * @param listId ID of the list where an error occurred
 	 */
-	public void onFailure(@Nullable ErrorHandler.TwitterError err, long listId) {
+	public void onFailure(@Nullable ConnectionException err, long listId) {
 		ErrorHandler.handleFailure(this, err);
-		if (err != null && err.getErrorType() == ErrorHandler.TwitterError.RESOURCE_NOT_FOUND) {
+		if (err != null && err.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 			// List does not exist
 			Intent result = new Intent();
 			result.putExtra(RESULT_REMOVED_LIST_ID, listId);

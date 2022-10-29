@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
@@ -33,9 +34,9 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 
 
 	@Nullable
-	private TwitterException twException;
+	private ConnectionException exception;
 	private WeakReference<UserListFragment> weakRef;
-	private Twitter twitter;
+	private Connection connection;
 
 	private int listType;
 	private long userId;
@@ -49,7 +50,7 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 	 */
 	public ListLoader(UserListFragment fragment, int listType, long userId, String ownerName) {
 		super();
-		twitter = Twitter.get(fragment.getContext());
+		connection = Twitter.get(fragment.getContext());
 		weakRef = new WeakReference<>(fragment);
 
 		this.listType = listType;
@@ -63,13 +64,13 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 		try {
 			switch (listType) {
 				case LOAD_USERLISTS:
-					return twitter.getUserListOwnerships(userId, ownerName);
+					return connection.getUserListOwnerships(userId, ownerName);
 
 				case LOAD_MEMBERSHIPS:
-					return twitter.getUserListMemberships(userId, ownerName, param[0]);
+					return connection.getUserListMemberships(userId, ownerName, param[0]);
 			}
-		} catch (TwitterException twException) {
-			this.twException = twException;
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
@@ -82,7 +83,7 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 			if (result != null) {
 				fragment.setData(result);
 			} else {
-				fragment.onError(twException);
+				fragment.onError(exception);
 			}
 		}
 	}

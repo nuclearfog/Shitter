@@ -2,9 +2,9 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.Relation;
@@ -62,9 +62,9 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 	public static final int ACTION_UNMUTE = 8;
 
 
-	private ErrorHandler.TwitterError twException;
+	private ConnectionException error;
 	private WeakReference<ProfileActivity> weakRef;
-	private Twitter twitter;
+	private Connection connection;
 	private FilterDatabase filterDatabase;
 	private AppDatabase appDB;
 	private long userId;
@@ -76,10 +76,10 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 	 */
 	public UserAction(ProfileActivity activity, int action, long userId) {
 		super();
-		this.weakRef = new WeakReference<>(activity);
-		twitter = Twitter.get(activity);
-		filterDatabase = new FilterDatabase(activity);
+		connection = Twitter.get(activity);
 		appDB = new AppDatabase(activity);
+		filterDatabase = new FilterDatabase(activity);
+		this.weakRef = new WeakReference<>(activity);
 		this.userId = userId;
 		this.action = action;
 	}
@@ -101,11 +101,11 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 
 				case PROFILE_lOAD:
 					// load user information from twitter
-					user = twitter.showUser(userId);
+					user = connection.showUser(userId);
 					publishProgress(user);
 					appDB.storeUser(user);
 					// load user relations from twitter
-					Relation relation = twitter.getRelationToUser(userId);
+					Relation relation = connection.getRelationToUser(userId);
 					if (!relation.isHome()) {
 						boolean muteUser = relation.isBlocked() || relation.isMuted();
 						appDB.muteUser(userId, muteUser);
@@ -113,26 +113,26 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					return relation;
 
 				case ACTION_FOLLOW:
-					user = twitter.followUser(userId);
+					user = connection.followUser(userId);
 					publishProgress(user);
 					break;
 
 				case ACTION_UNFOLLOW:
-					user = twitter.unfollowUser(userId);
+					user = connection.unfollowUser(userId);
 					publishProgress(user);
 					break;
 
 				case ACTION_BLOCK:
-					user = twitter.blockUser(userId);
+					user = connection.blockUser(userId);
 					publishProgress(user);
 					appDB.muteUser(userId, true);
 					break;
 
 				case ACTION_UNBLOCK:
-					user = twitter.unblockUser(userId);
+					user = connection.unblockUser(userId);
 					publishProgress(user);
 					// remove from exclude list only if user is not muted
-					relation = twitter.getRelationToUser(userId);
+					relation = connection.getRelationToUser(userId);
 					if (!relation.isMuted()) {
 						appDB.muteUser(userId, false);
 						filterDatabase.removeUser(userId);
@@ -140,25 +140,25 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					return relation;
 
 				case ACTION_MUTE:
-					user = twitter.muteUser(userId);
+					user = connection.muteUser(userId);
 					publishProgress(user);
 					appDB.muteUser(userId, true);
 					break;
 
 				case ACTION_UNMUTE:
-					user = twitter.unmuteUser(userId);
+					user = connection.unmuteUser(userId);
 					publishProgress(user);
 					// remove from exclude list only if user is not blocked
-					relation = twitter.getRelationToUser(userId);
+					relation = connection.getRelationToUser(userId);
 					if (!relation.isBlocked()) {
 						appDB.muteUser(userId, false);
 						filterDatabase.removeUser(userId);
 					}
 					return relation;
 			}
-			return twitter.getRelationToUser(userId);
-		} catch (TwitterException twException) {
-			this.twException = twException;
+			return connection.getRelationToUser(userId);
+		} catch (ConnectionException exception) {
+			this.error = exception;
 		}
 		return null;
 	}
@@ -180,7 +180,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 			if (relation != null) {
 				activity.onAction(relation);
 			} else {
-				activity.onError(twException);
+				activity.onError(error);
 			}
 		}
 	}

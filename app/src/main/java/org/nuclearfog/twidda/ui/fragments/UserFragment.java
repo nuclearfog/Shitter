@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
-import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListManager;
 import org.nuclearfog.twidda.backend.async.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.async.UserLoader;
@@ -268,7 +268,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 
 	@Override
-	public void onFailure(@Nullable ErrorHandler.TwitterError err) {
+	public void onFailure(@Nullable ConnectionException err) {
 		ErrorHandler.handleFailure(requireContext(), err);
 	}
 
@@ -287,7 +287,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	 *
 	 * @param exception Twitter exception
 	 */
-	public void onError(TwitterException exception) {
+	public void onError(ConnectionException exception) {
 		ErrorHandler.handleFailure(requireContext(), exception);
 		adapter.disableLoading();
 		setRefresh(false);
