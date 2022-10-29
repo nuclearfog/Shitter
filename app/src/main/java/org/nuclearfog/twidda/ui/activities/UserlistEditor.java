@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.update.UserlistUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
 import org.nuclearfog.twidda.backend.async.ListUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl;
 
 import org.json.JSONException;
 import org.json.JSONObject;

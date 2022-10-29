@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
  *
  * @author nuclearfog
  */
-public interface DirectMessage {
+public interface Message {
 
 	/**
 	 * @return ID of the direct message

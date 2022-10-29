@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl;
 
 import android.net.Uri;
 

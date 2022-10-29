@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api;
+package org.nuclearfog.twidda.backend.api.twitter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,19 +9,19 @@ import androidx.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.api.impl.DirectmessageV1;
-import org.nuclearfog.twidda.backend.api.impl.LocationV1;
-import org.nuclearfog.twidda.backend.api.impl.MetricsV2;
-import org.nuclearfog.twidda.backend.api.impl.RelationV1;
-import org.nuclearfog.twidda.backend.api.impl.TrendV1;
-import org.nuclearfog.twidda.backend.api.impl.TweetV1;
-import org.nuclearfog.twidda.backend.api.impl.UserListV1;
-import org.nuclearfog.twidda.backend.api.impl.UserV1;
-import org.nuclearfog.twidda.backend.api.impl.UserV2;
-import org.nuclearfog.twidda.backend.api.update.MediaUpdate;
-import org.nuclearfog.twidda.backend.api.update.ProfileUpdate;
-import org.nuclearfog.twidda.backend.api.update.TweetUpdate;
-import org.nuclearfog.twidda.backend.api.update.UserlistUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.impl.MessageV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.LocationV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.MetricsV2;
+import org.nuclearfog.twidda.backend.api.twitter.impl.RelationV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.TrendV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.UserListV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.UserV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.UserV2;
+import org.nuclearfog.twidda.backend.api.twitter.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.update.TweetUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
@@ -1186,7 +1186,7 @@ public class Twitter implements GlobalSettings.SettingsListener {
 				for (int pos = 0; pos < array.length(); pos++) {
 					JSONObject item = array.getJSONObject(pos);
 					try {
-						DirectmessageV1 message = new DirectmessageV1(item);
+						MessageV1 message = new MessageV1(item);
 						long senderId = message.getSenderId();
 						long receiverId = message.getReceiverId();
 						// cache user instances to reduce API calls

@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
-import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.async.ListManager;
 import org.nuclearfog.twidda.backend.async.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.async.UserLoader;

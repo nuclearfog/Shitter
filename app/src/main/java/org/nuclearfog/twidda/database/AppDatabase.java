@@ -19,11 +19,11 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.lists.Directmessages;
-import org.nuclearfog.twidda.database.impl.DirectMessageImpl;
+import org.nuclearfog.twidda.database.impl.MessageImpl;
 import org.nuclearfog.twidda.database.impl.TrendImpl;
 import org.nuclearfog.twidda.database.impl.TweetImpl;
 import org.nuclearfog.twidda.database.impl.UserImpl;
-import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
@@ -357,9 +357,9 @@ public class AppDatabase {
 	 *
 	 * @param messages list of direct messages
 	 */
-	public void storeMessage(List<DirectMessage> messages) {
+	public void storeMessage(List<Message> messages) {
 		SQLiteDatabase db = getDbWrite();
-		for (DirectMessage message : messages)
+		for (Message message : messages)
 			storeMessage(message, db);
 		commit(db);
 	}
@@ -627,7 +627,7 @@ public class AppDatabase {
 		if (cursor.moveToFirst()) {
 			do {
 				User sender, receiver;
-				DirectMessageImpl message = new DirectMessageImpl(cursor);
+				MessageImpl message = new MessageImpl(cursor);
 				if (userCache.containsKey(message.getSenderId())) {
 					sender = userCache.get(message.getSenderId());
 				} else {
@@ -895,7 +895,7 @@ public class AppDatabase {
 	 * @param message direct message information
 	 * @param db      database instance
 	 */
-	private void storeMessage(DirectMessage message, SQLiteDatabase db) {
+	private void storeMessage(Message message, SQLiteDatabase db) {
 		// store message information
 		ContentValues messageColumn = new ContentValues(6);
 		messageColumn.put(MessageTable.ID, message.getId());

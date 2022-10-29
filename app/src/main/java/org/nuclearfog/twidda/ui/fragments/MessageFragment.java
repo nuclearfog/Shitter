@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -127,7 +127,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onClick(DirectMessage message, int action) {
+	public void onClick(Message message, int action) {
 		if (!isRefreshing()) {
 			switch (action) {
 				case ANSWER:

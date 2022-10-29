@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.backend.utils;
 
-import static org.nuclearfog.twidda.backend.api.Twitter.SIGNATURE_ALG;
+import static org.nuclearfog.twidda.backend.api.twitter.Twitter.SIGNATURE_ALG;
 
 import android.content.res.Resources;
 import android.util.Base64;

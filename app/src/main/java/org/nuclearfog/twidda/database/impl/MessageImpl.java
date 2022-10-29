@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
-import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
 /**
@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclearfog
  */
-public class DirectMessageImpl implements DirectMessage {
+public class MessageImpl implements Message {
 
 	private long id;
 	private long time;
@@ -27,7 +27,7 @@ public class DirectMessageImpl implements DirectMessage {
 	private String media;
 
 
-	public DirectMessageImpl(Cursor cursor) {
+	public MessageImpl(Cursor cursor) {
 		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
@@ -71,9 +71,9 @@ public class DirectMessageImpl implements DirectMessage {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof DirectMessage))
+		if (!(obj instanceof Message))
 			return false;
-		return ((DirectMessage) obj).getId() == id;
+		return ((Message) obj).getId() == id;
 	}
 
 	@NonNull

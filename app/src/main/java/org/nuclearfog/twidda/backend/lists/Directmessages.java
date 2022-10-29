@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.Message;
 
 import java.util.LinkedList;
 
@@ -12,7 +12,7 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class Directmessages extends LinkedList<DirectMessage> {
+public class Directmessages extends LinkedList<Message> {
 
 	private static final long serialVersionUID = 7877548659917419256L;
 
@@ -30,7 +30,7 @@ public class Directmessages extends LinkedList<DirectMessage> {
 
 	@Override
 	@Nullable
-	public DirectMessage get(int index) {
+	public Message get(int index) {
 		return super.get(index);
 	}
 
@@ -65,7 +65,7 @@ public class Directmessages extends LinkedList<DirectMessage> {
 	 */
 	public int removeItem(long id) {
 		for (int index = 0; index < size(); index++) {
-			DirectMessage item = get(index);
+			Message item = get(index);
 			if (item != null && item.getId() == id) {
 				remove(index);
 				return index;

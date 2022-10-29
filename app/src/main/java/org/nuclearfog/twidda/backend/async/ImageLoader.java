@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.api.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
+import org.nuclearfog.twidda.backend.api.twitter.update.MediaUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;

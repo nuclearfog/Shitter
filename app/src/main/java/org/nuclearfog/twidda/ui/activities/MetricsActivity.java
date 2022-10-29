@@ -29,7 +29,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.async.MetricsLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;

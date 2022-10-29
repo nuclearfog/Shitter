@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.api.TwitterException;
-import org.nuclearfog.twidda.backend.api.update.DirectmessageUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
+import org.nuclearfog.twidda.backend.api.twitter.update.DirectmessageUpdate;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 

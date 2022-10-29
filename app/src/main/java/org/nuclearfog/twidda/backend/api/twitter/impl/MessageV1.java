@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl;
 
 import android.net.Uri;
 
@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.regex.Pattern;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class DirectmessageV1 implements DirectMessage {
+public class MessageV1 implements Message {
 
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
@@ -35,7 +35,7 @@ public class DirectmessageV1 implements DirectMessage {
 	 * @param json JSON object containing directmessage information
 	 * @throws JSONException if some values are missing
 	 */
-	public DirectmessageV1(JSONObject json) throws JSONException {
+	public MessageV1(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
 		if (ID_PATTERN.matcher(idStr).matches()) {
 			id = Long.parseLong(idStr);
@@ -87,9 +87,9 @@ public class DirectmessageV1 implements DirectMessage {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof DirectMessage))
+		if (!(obj instanceof Message))
 			return false;
-		return ((DirectMessage) obj).getId() == id;
+		return ((Message) obj).getId() == id;
 	}
 
 	@NonNull

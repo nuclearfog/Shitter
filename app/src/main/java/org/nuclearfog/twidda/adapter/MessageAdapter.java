@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -122,7 +122,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
 	@Override
 	public long getItemId(int index) {
-		DirectMessage message = data.get(index);
+		Message message = data.get(index);
 		if (message != null)
 			return message.getId();
 		return -1;
@@ -153,7 +153,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						DirectMessage message = data.get(position);
+						Message message = data.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.ANSWER);
 						}
@@ -165,7 +165,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						DirectMessage message = data.get(position);
+						Message message = data.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.DELETE);
 						}
@@ -177,7 +177,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						DirectMessage message = data.get(position);
+						Message message = data.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.PROFILE);
 						}
@@ -189,7 +189,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						DirectMessage message = data.get(position);
+						Message message = data.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.MEDIA);
 						}
@@ -220,7 +220,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
 		if (vh instanceof MessageHolder) {
-			DirectMessage message = data.get(index);
+			Message message = data.get(index);
 			if (message != null) {
 				User sender = message.getSender();
 				Spanned text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
@@ -306,7 +306,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 		 * @param message Message information
 		 * @param action  what button was clicked {@link #ANSWER,#DELETE,#PROFILE,#MEDIA}
 		 */
-		void onClick(DirectMessage message, int action);
+		void onClick(Message message, int action);
 
 		/**
 		 * called when the placeholder was clicked

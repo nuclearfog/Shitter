@@ -7,8 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.api.Twitter;
-import org.nuclearfog.twidda.backend.api.TwitterException;
+import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.MainActivity;

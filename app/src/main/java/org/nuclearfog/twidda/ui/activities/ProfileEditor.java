@@ -34,7 +34,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.api.twitter.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.async.UserUpdater;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
