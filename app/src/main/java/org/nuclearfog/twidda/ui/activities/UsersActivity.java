@@ -34,14 +34,14 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * Activity to show lists of Twitter users
+ * Activity to show one or more lists of users
  *
  * @author nuclearfog
  */
 public class UsersActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
 	/**
-	 * type of users to get from twitter
+	 * type of users to get from the source
 	 * {@link #USERS_FRIENDS ,#USERS_FOLLOWER ,#USERS_REPOST ,#USERLIST_FAVORIT,#USERLIST_EXCLUDED_USERS,#USERLIST_REQUESTS}
 	 */
 	public static final String KEY_USERS_MODE = "userlist_mode";
@@ -113,11 +113,11 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	protected void onCreate(Bundle savedInst) {
 		super.onCreate(savedInst);
-		setContentView(R.layout.page_user_exclude);
-		ViewGroup root = findViewById(R.id.userexclude_root);
-		toolbar = findViewById(R.id.userexclude_toolbar);
-		tablayout = findViewById(R.id.userexclude_tab);
-		pager = findViewById(R.id.userexclude_pager);
+		setContentView(R.layout.page_exclude);
+		ViewGroup root = findViewById(R.id.page_exclude_root);
+		toolbar = findViewById(R.id.page_exclude_toolbar);
+		tablayout = findViewById(R.id.page_exclude_tab);
+		pager = findViewById(R.id.page_exclude_pager);
 
 		adapter = new FragmentAdapter(getSupportFragmentManager());
 		pager.setAdapter(adapter);

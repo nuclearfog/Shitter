@@ -275,7 +275,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	/**
 	 * set List data
 	 *
-	 * @param data list of twitter users
+	 * @param data list of users
 	 */
 	public void setData(Users data) {
 		adapter.setData(data);
@@ -284,8 +284,6 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 	/**
 	 * called when an error occurs
-	 *
-	 * @param exception Twitter exception
 	 */
 	public void onError(ConnectionException exception) {
 		ErrorHandler.handleFailure(requireContext(), exception);

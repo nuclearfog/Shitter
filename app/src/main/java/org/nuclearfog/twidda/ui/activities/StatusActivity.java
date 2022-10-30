@@ -156,23 +156,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_status);
-		ViewGroup root = findViewById(R.id.tweet_layout);
-		toolbar = findViewById(R.id.tweet_toolbar);
-		ansButton = findViewById(R.id.tweet_answer);
-		rtwButton = findViewById(R.id.tweet_retweet);
-		favButton = findViewById(R.id.tweet_favorite);
-		userName = findViewById(R.id.tweet_username);
-		screenName = findViewById(R.id.tweet_screenname);
-		profileImage = findViewById(R.id.tweet_profile);
-		replyName = findViewById(R.id.tweet_answer_reference);
-		statusText = findViewById(R.id.tweet_detailed);
-		createdAt = findViewById(R.id.tweet_date);
-		statusApi = findViewById(R.id.tweet_api);
-		locationName = findViewById(R.id.tweet_location_name);
-		coordinates = findViewById(R.id.tweet_location_coordinate);
-		mediaButton = findViewById(R.id.tweet_media_attach);
-		sensitive_media = findViewById(R.id.tweet_sensitive);
-		repostName = findViewById(R.id.tweet_retweeter_reference);
+		ViewGroup root = findViewById(R.id.page_status_root);
+		toolbar = findViewById(R.id.page_status_toolbar);
+		ansButton = findViewById(R.id.page_status_reply);
+		rtwButton = findViewById(R.id.page_status_repost);
+		favButton = findViewById(R.id.page_status_favorite);
+		userName = findViewById(R.id.page_status_username);
+		screenName = findViewById(R.id.page_status_screenname);
+		profileImage = findViewById(R.id.page_status_profile);
+		replyName = findViewById(R.id.page_status_reply_reference);
+		statusText = findViewById(R.id.page_status_text);
+		createdAt = findViewById(R.id.page_status_date);
+		statusApi = findViewById(R.id.page_status_api);
+		locationName = findViewById(R.id.page_status_location_name);
+		coordinates = findViewById(R.id.page_status_location_coordinates);
+		mediaButton = findViewById(R.id.page_status_media_attach);
+		sensitive_media = findViewById(R.id.page_status_sensitive);
+		repostName = findViewById(R.id.page_status_reposter_reference);
 
 		// get parameter
 		Object data = getIntent().getSerializableExtra(KEY_STATUS_DATA);
@@ -201,18 +201,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 		// insert fragment into view
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.tweet_reply_fragment, StatusFragment.class, param);
+		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
 		fragmentTransaction.commit();
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
 		settings = GlobalSettings.getInstance(this);
 		ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
-		rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
+		rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		coordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
 		sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
 		replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
-		repostName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
+		repostName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		statusText.setLinkTextColor(settings.getHighlightColor());
 		if (settings.likeEnabled()) {
@@ -413,7 +413,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (status.getEmbeddedStatus() != null)
 				status = status.getEmbeddedStatus();
 			// answer to the status
-			if (v.getId() == R.id.tweet_answer) {
+			if (v.getId() == R.id.page_status_reply) {
 				String prefix = status.getUserMentions();
 				Intent intent = new Intent(this, StatusEditor.class);
 				intent.putExtra(KEY_STATUS_EDITOR_REPLYID, status.getId());
@@ -422,34 +422,34 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				startActivity(intent);
 			}
 			// show user reposting this status
-			else if (v.getId() == R.id.tweet_retweet) {
+			else if (v.getId() == R.id.page_status_repost) {
 				Intent userList = new Intent(this, UsersActivity.class);
 				userList.putExtra(KEY_USERS_ID, status.getId());
 				userList.putExtra(KEY_USERS_MODE, USERS_REPOST);
 				startActivity(userList);
 			}
 			// show user favoriting this status
-			else if (v.getId() == R.id.tweet_favorite) {
+			else if (v.getId() == R.id.page_status_favorite) {
 				Intent userList = new Intent(this, UsersActivity.class);
 				userList.putExtra(KEY_USERS_ID, status.getId());
 				userList.putExtra(KEY_USERS_MODE, USERS_FAVORIT);
 				startActivity(userList);
 			}
 			// open profile of the status author
-			else if (v.getId() == R.id.tweet_profile) {
+			else if (v.getId() == R.id.page_status_profile) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
 				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, status.getAuthor());
 				startActivity(profile);
 			}
 			// open replied status
-			else if (v.getId() == R.id.tweet_answer_reference) {
+			else if (v.getId() == R.id.page_status_reply_reference) {
 				Intent answerIntent = new Intent(getApplicationContext(), StatusActivity.class);
 				answerIntent.putExtra(KEY_STATUS_ID, status.getRepliedStatusId());
 				answerIntent.putExtra(KEY_STATUS_NAME, status.getReplyName());
 				startActivity(answerIntent);
 			}
 			// open status location coordinates
-			else if (v.getId() == R.id.tweet_location_coordinate) {
+			else if (v.getId() == R.id.page_status_location_coordinates) {
 				Intent locationIntent = new Intent(Intent.ACTION_VIEW);
 				locationIntent.setData(Uri.parse("geo:" + status.getLocationCoordinates() + "?z=14"));
 				try {
@@ -459,7 +459,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				}
 			}
 			// open status media
-			else if (v.getId() == R.id.tweet_media_attach) {
+			else if (v.getId() == R.id.page_status_media_attach) {
 				// open embedded image links
 				if (status.getMediaType() == Status.MEDIA_PHOTO) {
 					Intent mediaIntent = new Intent(this, ImageViewer.class);
@@ -489,7 +489,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				}
 			}
 			// go to user reposting this status
-			else if (v.getId() == R.id.tweet_retweeter_reference) {
+			else if (v.getId() == R.id.page_status_reposter_reference) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
 				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, this.status.getAuthor());
 				startActivity(profile);
@@ -502,7 +502,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public boolean onLongClick(View v) {
 		if (status != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
 			// repost this status
-			if (v.getId() == R.id.tweet_retweet) {
+			if (v.getId() == R.id.page_status_repost) {
 				if (status.isReposted()) {
 					statusAsync = new StatusAction(this, StatusAction.REMOVE_REPOST);
 				} else {
@@ -517,7 +517,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				return true;
 			}
 			// favorite this status
-			else if (v.getId() == R.id.tweet_favorite) {
+			else if (v.getId() == R.id.page_status_favorite) {
 				if (status.isFavorited()) {
 					statusAsync = new StatusAction(this, StatusAction.UNFAVORITE);
 				} else {
@@ -528,7 +528,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				return true;
 			}
 			// go to original status
-			else if (v.getId() == R.id.tweet_retweeter_reference) {
+			else if (v.getId() == R.id.page_status_reposter_reference) {
 				Status embeddedStatus = status.getEmbeddedStatus();
 				if (embeddedStatus != null) {
 					Intent intent = new Intent(this, StatusActivity.class);
@@ -537,7 +537,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				}
 			}
 			// copy status coordinates
-			else if (v.getId() == R.id.tweet_location_coordinate) {
+			else if (v.getId() == R.id.page_status_location_coordinates) {
 				if (clip != null) {
 					ClipData linkClip;
 					Status embeddedStatus = status.getEmbeddedStatus();

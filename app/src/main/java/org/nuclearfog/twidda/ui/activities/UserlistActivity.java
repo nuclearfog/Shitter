@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 /**
  * This activity shows content of an user list
- * like tweets, list member and subscriber
+ * like timeline, list member and subscriber
  *
  * @author nuclearfog
  */
@@ -348,7 +348,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	/**
 	 * called from {@link ListAction} to update userlist information
 	 *
-	 * @param userList TwitterList information
+	 * @param userList userlist update
 	 */
 	public void onSuccess(UserList userList, int action) {
 		this.userList = userList;

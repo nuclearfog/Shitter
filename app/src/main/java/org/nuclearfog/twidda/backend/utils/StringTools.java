@@ -143,7 +143,7 @@ public final class StringTools {
 	/**
 	 * append user mentions in a text to a string
 	 *
-	 * @param text   text with user mentions (e.g. tweet)
+	 * @param text   text with user mentions
 	 * @param author additional text author name
 	 * @return mentioned usernames in one string
 	 */

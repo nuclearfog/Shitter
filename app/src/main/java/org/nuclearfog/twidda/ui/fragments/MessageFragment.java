@@ -106,7 +106,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
-		// open tweet link
+		// open status link
 		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(requireContext(), StatusActivity.class);
@@ -206,7 +206,6 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	/**
 	 * called from {@link MessageLoader} if an error occurs
 	 *
-	 * @param error     Twitter exception
 	 * @param messageId ID of the message assosiated with the error
 	 */
 	public void onError(@NonNull ConnectionException error, long messageId) {

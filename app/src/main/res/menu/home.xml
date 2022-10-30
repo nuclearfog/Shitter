@@ -4,7 +4,7 @@
 
 	<item
 		android:id="@+id/menu_post"
-		android:icon="@drawable/tweet"
+		android:icon="@drawable/post"
 		android:title="@string/menu_tweet"
 		app:showAsAction="ifRoom" />
 

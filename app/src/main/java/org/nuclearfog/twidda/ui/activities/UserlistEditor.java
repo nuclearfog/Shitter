@@ -180,8 +180,6 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 	/**
 	 * called when an error occurs while updating a list
-	 *
-	 * @param err twitter exception
 	 */
 	public void onError(@Nullable ConnectionException err) {
 		String message = ErrorHandler.getErrorMessage(this, err);

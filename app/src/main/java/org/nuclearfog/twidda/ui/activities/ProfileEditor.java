@@ -51,7 +51,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
- * Activity for Twitter profile editor
+ * Activity for profile editor
  *
  * @author nuclearfog
  */

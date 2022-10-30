@@ -109,15 +109,15 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.popup_status);
-		ViewGroup root = findViewById(R.id.tweet_popup);
-		ImageView background = findViewById(R.id.tweet_popup_background);
-		ImageButton statusButton = findViewById(R.id.tweet_send);
-		ImageButton closeButton = findViewById(R.id.close);
-		locationBtn = findViewById(R.id.tweet_add_location);
-		mediaBtn = findViewById(R.id.tweet_add_media);
-		previewBtn = findViewById(R.id.tweet_prev_media);
-		statusText = findViewById(R.id.tweet_input);
-		locationPending = findViewById(R.id.location_progress);
+		ViewGroup root = findViewById(R.id.popup_status_root);
+		ImageView background = findViewById(R.id.popup_status_background);
+		ImageButton statusButton = findViewById(R.id.popup_status_send);
+		ImageButton closeButton = findViewById(R.id.popup_status_close);
+		locationBtn = findViewById(R.id.popup_status_add_location);
+		mediaBtn = findViewById(R.id.popup_status_add_media);
+		previewBtn = findViewById(R.id.popup_status_prev_media);
+		statusText = findViewById(R.id.popup_status_input);
+		locationPending = findViewById(R.id.popup_status_location_loading);
 
 		settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
@@ -173,7 +173,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	public void onClick(View v) {
 		// send status
-		if (v.getId() == R.id.tweet_send) {
+		if (v.getId() == R.id.popup_status_send) {
 			String statusText = this.statusText.getText().toString();
 			// check if status is empty
 			if (statusText.trim().isEmpty() && statusUpdate.mediaCount() == 0) {
@@ -193,11 +193,11 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			}
 		}
 		// show closing message
-		else if (v.getId() == R.id.close) {
+		else if (v.getId() == R.id.popup_status_close) {
 			showClosingMsg();
 		}
 		// Add media to the status
-		else if (v.getId() == R.id.tweet_add_media) {
+		else if (v.getId() == R.id.popup_status_add_media) {
 			if (selectedFormat == MEDIA_NONE) {
 				// request images/videos
 				getMedia(REQUEST_IMG_VID);
@@ -207,7 +207,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			}
 		}
 		// open media preview
-		else if (v.getId() == R.id.tweet_prev_media) {
+		else if (v.getId() == R.id.popup_status_prev_media) {
 			Uri[] uris = statusUpdate.getMediaUris();
 			//
 			if (selectedFormat == MEDIA_VIDEO) {
@@ -233,7 +233,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			}
 		}
 		// add location to the status
-		else if (v.getId() == R.id.tweet_add_location) {
+		else if (v.getId() == R.id.popup_status_add_location) {
 			locationPending.setVisibility(VISIBLE);
 			locationBtn.setVisibility(INVISIBLE);
 			getLocation(true);

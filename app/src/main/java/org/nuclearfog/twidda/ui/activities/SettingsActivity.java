@@ -88,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private static final int COLOR_HIGHLIGHT = 3;
 	private static final int COLOR_CARD = 4;
 	private static final int COLOR_ICON = 5;
-	private static final int COLOR_RETWEET = 6;
+	private static final int COLOR_REPOST = 6;
 	private static final int COLOR_FAVORITE = 7;
 	private static final int COLOR_FOLLOW_REQUEST = 8;
 	private static final int COLOR_FOLLOWING = 9;
@@ -136,7 +136,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton enablePreview = findViewById(R.id.settings_enable_prev);
 		SwitchButton enableLike = findViewById(R.id.enable_like);
 		SwitchButton enableTwitterAlt = findViewById(R.id.settings_enable_twitter_alt);
-		SwitchButton enableTweetIcons = findViewById(R.id.enable_tweet_indicators);
+		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.spinner_font);
 		Spinner scaleSelector = findViewById(R.id.spinner_scale);
@@ -154,7 +154,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		colorButtons[COLOR_HIGHLIGHT] = findViewById(R.id.highlight_color);
 		colorButtons[COLOR_CARD] = findViewById(R.id.color_card);
 		colorButtons[COLOR_ICON] = findViewById(R.id.color_icon);
-		colorButtons[COLOR_RETWEET] = findViewById(R.id.color_rt);
+		colorButtons[COLOR_REPOST] = findViewById(R.id.color_rt);
 		colorButtons[COLOR_FAVORITE] = findViewById(R.id.color_fav);
 		colorButtons[COLOR_FOLLOW_REQUEST] = findViewById(R.id.color_f_req);
 		colorButtons[COLOR_FOLLOWING] = findViewById(R.id.color_follow);
@@ -226,7 +226,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
 		enableLike.setCheckedImmediately(settings.likeEnabled());
 		enableTwitterAlt.setCheckedImmediately(settings.twitterAltSet());
-		enableTweetIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
+		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
 		enableAPI.setCheckedImmediately(settings.isCustomApiSet());
 		enableProxy.setCheckedImmediately(settings.isProxyEnabled());
 		enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
@@ -251,7 +251,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableAPI.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
 		enableTwitterAlt.setOnCheckedChangeListener(this);
-		enableTweetIcons.setOnCheckedChangeListener(this);
+		enableStatusIcons.setOnCheckedChangeListener(this);
 		enablePreview.setOnCheckedChangeListener(this);
 		enableProxy.setOnCheckedChangeListener(this);
 		enableAuth.setOnCheckedChangeListener(this);
@@ -381,9 +381,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			color = settings.getIconColor();
 			setColor(color, false);
 		}
-		// set retweet icon color
+		// set repost icon color
 		else if (v.getId() == R.id.color_rt) {
-			mode = COLOR_RETWEET;
+			mode = COLOR_REPOST;
 			color = settings.getRepostIconColor();
 			setColor(color, false);
 		}
@@ -462,9 +462,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					setButtonColors();
 					break;
 
-				case COLOR_RETWEET:
-					settings.setRetweetIconColor(color);
-					AppStyles.setColorButton(colorButtons[COLOR_RETWEET], color);
+				case COLOR_REPOST:
+					settings.setRepostIconColor(color);
+					AppStyles.setColorButton(colorButtons[COLOR_REPOST], color);
 					break;
 
 				case COLOR_FAVORITE:
@@ -524,9 +524,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		else if (c.getId() == R.id.settings_enable_twitter_alt) {
 			settings.setTwitterAlt(checked);
 		}
-		// enable tweet indicators
-		else if (c.getId() == R.id.enable_tweet_indicators) {
-			settings.enableTweetIndicators(checked);
+		// enable status indicators
+		else if (c.getId() == R.id.enable_status_indicators) {
+			settings.enableStatusIndicators(checked);
 		}
 		// enable link preview
 		else if (c.getId() == R.id.settings_enable_prev) {

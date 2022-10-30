@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.ui.activities.MetricsActivity;
 import java.lang.ref.WeakReference;
 
 /**
- * background asynctask to fetch tweet metrics
+ * background asynctask to fetch status metrics
  *
  * @author nuclearfog
  */
@@ -36,7 +36,7 @@ public class MetricsLoader extends AsyncTask<Long, Void, Metrics> {
 	@Override
 	protected Metrics doInBackground(Long[] ids) {
 		try {
-			return connection.getTweetMetrics(ids[0]);
+			return connection.getStatusMetrics(ids[0]);
 		} catch (ConnectionException exception) {
 			this.exception = exception;
 		} catch (Exception exception) {

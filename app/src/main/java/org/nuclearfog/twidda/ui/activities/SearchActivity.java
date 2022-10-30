@@ -29,7 +29,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * Twitter search Activity
+ * search Activity for statuses and users
  *
  * @author nuclearfog
  */

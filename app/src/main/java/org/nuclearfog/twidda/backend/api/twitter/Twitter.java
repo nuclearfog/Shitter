@@ -620,7 +620,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Status> getUserlistTweets(long listId, long minId, long maxId) throws TwitterException {
+	public List<Status> getUserlistStatuses(long listId, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -632,12 +632,12 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Status> getTweetReplies(String screen_name, long tweetId, long minId, long maxId) throws TwitterException {
+	public List<Status> getStatusReplies(String screen_name, long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
 		else
-			params.add("since_id=" + tweetId);
+			params.add("since_id=" + id);
 		if (maxId > 1)
 			params.add("max_id=" + maxId);
 		if (screen_name.startsWith("@"))
@@ -647,7 +647,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 		List<Status> result = getTweets1(TWEET_SEARCH, params);
 		List<Status> replies = new LinkedList<>();
 		for (Status reply : result) {
-			if (reply.getRepliedStatusId() == tweetId) {
+			if (reply.getRepliedStatusId() == id) {
 				replies.add(reply);
 			}
 		}
@@ -658,17 +658,17 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Status showStatus(long tweetId) throws TwitterException {
+	public Status showStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("id=" + tweetId);
+		params.add("id=" + id);
 		return getTweet1(TWEET_LOOKUP, params);
 	}
 
 
 	@Override
-	public Status favoriteStatus(long tweetId) throws TwitterException {
+	public Status favoriteStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("id=" + tweetId);
+		params.add("id=" + id);
 		TweetV1 result = getTweet1(TWEET_FAVORITE, params);
 		result.setFavorite(true);
 		return result;
@@ -676,9 +676,9 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Status unfavoriteStatus(long tweetId) throws TwitterException {
+	public Status unfavoriteStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("id=" + tweetId);
+		params.add("id=" + id);
 		TweetV1 result = getTweet1(TWEET_UNFAVORITE, params);
 		result.setFavorite(false);
 		return result;
@@ -686,26 +686,26 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Status repostStatus(long tweetId) throws TwitterException {
-		TweetV1 result = getTweet1(TWEET_RETWEET + tweetId + JSON, new ArrayList<>());
+	public Status repostStatus(long id) throws TwitterException {
+		TweetV1 result = getTweet1(TWEET_RETWEET + id + JSON, new ArrayList<>());
 		result.setRetweet(true);
 		return result;
 	}
 
 
 	@Override
-	public Status removeRepost(long tweetId) throws TwitterException {
-		TweetV1 result = getTweet1(TWEET_UNRETWEET + tweetId + JSON, new ArrayList<>());
+	public Status removeRepost(long id) throws TwitterException {
+		TweetV1 result = getTweet1(TWEET_UNRETWEET + id + JSON, new ArrayList<>());
 		result.setRetweet(false);
 		return result;
 	}
 
 
 	@Override
-	public void hideReply(long tweetId, boolean hide) throws TwitterException {
+	public void hideReply(long id, boolean hide) throws TwitterException {
 		try {
 			RequestBody request = RequestBody.create("{\"hidden\":" + hide + "}", TYPE_JSON);
-			Response response = put(TWEET_UNI + tweetId + "/hidden", new ArrayList<>(), request);
+			Response response = put(TWEET_UNI + id + "/hidden", new ArrayList<>(), request);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
@@ -721,8 +721,8 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public void deleteStatus(long tweetId) throws TwitterException {
-		getTweet1(TWEET_DELETE + tweetId + JSON, new ArrayList<>());
+	public void deleteStatus(long id) throws TwitterException {
+		getTweet1(TWEET_DELETE + id + JSON, new ArrayList<>());
 	}
 
 
@@ -960,11 +960,11 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Metrics getTweetMetrics(long tweetId) throws TwitterException {
+	public Metrics getStatusMetrics(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add(MetricsV2.PARAMS);
 		try {
-			Response response = get(TWEET_UNI + tweetId, params);
+			Response response = get(TWEET_UNI + id, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());

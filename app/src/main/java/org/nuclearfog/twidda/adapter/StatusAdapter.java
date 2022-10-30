@@ -91,8 +91,8 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 	/**
 	 * Insert data at specific index of the list
 	 *
-	 * @param statuses  list of statuses to insert
-	 * @param index position to insert
+	 * @param statuses list of statuses to insert
+	 * @param index    position to insert
 	 */
 	@MainThread
 	public void insertAt(@NonNull List<Status> statuses, int index) {

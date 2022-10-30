@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import java.util.List;
 
 /**
- * Fragment class to show a list of Twitter trends
+ * Fragment class to show a list of trends
  *
  * @author nuclearfog
  */
@@ -105,8 +105,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
 	/**
 	 * called from {@link TrendLoader} if an error occurs
-	 *
-	 * @param error Twitter exception
 	 */
 	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);

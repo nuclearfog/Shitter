@@ -5,10 +5,10 @@ import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGM
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_FAVORIT;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_HOME;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USERLIST;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_MENTION;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USER;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USERLIST;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
@@ -38,8 +38,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
-import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
+import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 

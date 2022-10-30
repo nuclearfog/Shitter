@@ -80,7 +80,7 @@ public interface User extends Serializable {
 	int getFollower();
 
 	/**
-	 * @return number of tweets
+	 * @return number of statuses
 	 */
 	int getStatusCount();
 

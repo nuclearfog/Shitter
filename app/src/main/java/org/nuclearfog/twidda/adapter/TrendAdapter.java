@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show twitter trends
+ * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show trends
  *
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.TrendFragment
@@ -32,7 +32,7 @@ import java.util.List;
 public class TrendAdapter extends Adapter<ViewHolder> {
 
 	/**
-	 * Max trend count Twitter API returns
+	 * trend limit
 	 */
 	private static final int INIT_COUNT = 50;
 

@@ -114,7 +114,7 @@
 			android:id="@+id/item_status_reposter_icon"
 			android:layout_width="@dimen/item_status_icon_size"
 			android:layout_height="@dimen/item_status_icon_size"
-			android:src="@drawable/retweet"
+			android:src="@drawable/repost"
 			android:scaleType="fitCenter"
 			app:layout_constraintStart_toEndOf="@id/item_status_reply_name"
 			app:layout_constraintTop_toTopOf="@id/item_status_reposter_name"
@@ -193,13 +193,13 @@
 			android:layout_height="@dimen/item_status_icon_size"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_status_icon_barrier"
-			app:layout_constraintEnd_toStartOf="@id/item_status_reposter_icon" />
+			app:layout_constraintEnd_toStartOf="@id/item_status_repost_icon" />
 
 		<ImageView
 			android:id="@+id/item_status_repost_icon"
 			android:layout_width="@dimen/item_status_icon_size"
 			android:layout_height="@dimen/item_status_icon_size"
-			android:src="@drawable/retweet"
+			android:src="@drawable/repost"
 			app:layout_constraintStart_toEndOf="@id/item_status_indicator_placeholder"
 			app:layout_constraintTop_toBottomOf="@id/item_status_icon_barrier"
 			app:layout_constraintEnd_toStartOf="@id/item_status_repost_count"

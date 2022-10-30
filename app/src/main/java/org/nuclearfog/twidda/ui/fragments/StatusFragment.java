@@ -205,7 +205,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 * Set status data to list
 	 *
 	 * @param statuses List of statuses
-	 * @param pos     position where statuses should be added
+	 * @param pos      position where statuses should be added
 	 */
 	public void setData(List<Status> statuses, int pos) {
 		if (pos == CLEAR_LIST) {
@@ -218,8 +218,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	/**
 	 * called from {@link StatusLoader} if an error occurs
-	 *
-	 * @param error Twitter exception
 	 */
 	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);

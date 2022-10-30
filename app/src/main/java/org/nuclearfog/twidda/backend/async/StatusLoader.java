@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * Background task to download a list of tweets from different sources
+ * Background task to download a list of statuses from different sources
  *
  * @author nuclearfog
  * @see StatusFragment
@@ -25,42 +25,42 @@ import java.util.List;
 public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 
 	/**
-	 * tweets from home timeline
+	 * home timeline
 	 */
 	public static final int HOME = 1;
 
 	/**
-	 * tweets from the mention timeline
+	 * mention timeline
 	 */
 	public static final int MENTION = 2;
 
 	/**
-	 * tweets of an user
+	 * user timeline
 	 */
 	public static final int USER = 3;
 
 	/**
-	 * favorite tweets of an user
+	 * favorite timeline
 	 */
 	public static final int FAVORIT = 4;
 
 	/**
-	 * tweet replies to a tweet
+	 * reply timeline
 	 */
 	public static final int REPLIES = 5;
 
 	/**
-	 * tweet replies from database
+	 * reply timeline (offline database)
 	 */
 	public static final int REPLIES_OFFLINE = 6;
 
 	/**
-	 * tweets from twitter search
+	 * search timeline
 	 */
 	public static final int SEARCH = 7;
 
 	/**
-	 * tweets from an userlist
+	 * userlist timeline
 	 */
 	public static final int USERLIST = 8;
 
@@ -76,11 +76,11 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 	private int pos;
 
 	/**
-	 * @param fragment callback to update tweet data
-	 * @param listType type of tweet list to load
+	 * @param fragment callback
+	 * @param listType type of timeline to load
 	 * @param id       ID, depending on what list type should be loaded
 	 * @param search   search string if any
-	 * @param pos      index of the list where tweets should be inserted
+	 * @param pos      index of the list where new items should be inserted
 	 */
 	public StatusLoader(StatusFragment fragment, int listType, long id, String search, int pos) {
 		super();
@@ -97,124 +97,124 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 
 	@Override
 	protected List<org.nuclearfog.twidda.model.Status> doInBackground(Long[] param) {
-		List<org.nuclearfog.twidda.model.Status> tweets = null;
+		List<org.nuclearfog.twidda.model.Status> statuses = null;
 		long sinceId = param[0];
 		long maxId = param[1];
 		try {
 			switch (listType) {
 				case HOME:
 					if (sinceId == 0 && maxId == 0) {
-						tweets = db.getHomeTimeline();
-						if (tweets.isEmpty()) {
-							tweets = connection.getHomeTimeline(sinceId, maxId);
-							db.saveHomeTimeline(tweets);
+						statuses = db.getHomeTimeline();
+						if (statuses.isEmpty()) {
+							statuses = connection.getHomeTimeline(sinceId, maxId);
+							db.saveHomeTimeline(statuses);
 						}
 					} else if (sinceId > 0) {
-						tweets = connection.getHomeTimeline(sinceId, maxId);
-						db.saveHomeTimeline(tweets);
+						statuses = connection.getHomeTimeline(sinceId, maxId);
+						db.saveHomeTimeline(statuses);
 					} else if (maxId > 1) {
-						tweets = connection.getHomeTimeline(sinceId, maxId);
+						statuses = connection.getHomeTimeline(sinceId, maxId);
 					}
 					break;
 
 				case MENTION:
 					if (sinceId == 0 && maxId == 0) {
-						tweets = db.getMentionTimeline();
-						if (tweets.isEmpty()) {
-							tweets = connection.getMentionTimeline(sinceId, maxId);
-							db.saveMentionTimeline(tweets);
+						statuses = db.getMentionTimeline();
+						if (statuses.isEmpty()) {
+							statuses = connection.getMentionTimeline(sinceId, maxId);
+							db.saveMentionTimeline(statuses);
 						}
 					} else if (sinceId > 0) {
-						tweets = connection.getMentionTimeline(sinceId, maxId);
-						db.saveMentionTimeline(tweets);
+						statuses = connection.getMentionTimeline(sinceId, maxId);
+						db.saveMentionTimeline(statuses);
 					} else if (maxId > 1) {
-						tweets = connection.getMentionTimeline(sinceId, maxId);
+						statuses = connection.getMentionTimeline(sinceId, maxId);
 					}
 					break;
 
 				case USER:
 					if (id > 0) {
 						if (sinceId == 0 && maxId == 0) {
-							tweets = db.getUserTimeline(id);
-							if (tweets.isEmpty()) {
-								tweets = connection.getUserTimeline(id, 0, maxId);
-								db.saveUserTimeline(tweets);
+							statuses = db.getUserTimeline(id);
+							if (statuses.isEmpty()) {
+								statuses = connection.getUserTimeline(id, 0, maxId);
+								db.saveUserTimeline(statuses);
 							}
 						} else if (sinceId > 0) {
-							tweets = connection.getUserTimeline(id, sinceId, maxId);
-							db.saveUserTimeline(tweets);
+							statuses = connection.getUserTimeline(id, sinceId, maxId);
+							db.saveUserTimeline(statuses);
 						} else if (maxId > 1) {
-							tweets = connection.getUserTimeline(id, sinceId, maxId);
+							statuses = connection.getUserTimeline(id, sinceId, maxId);
 						}
 					} else if (search != null) {
-						tweets = connection.getUserTimeline(search, sinceId, maxId);
+						statuses = connection.getUserTimeline(search, sinceId, maxId);
 					}
 					break;
 
 				case FAVORIT:
 					if (id > 0) {
 						if (sinceId == 0 && maxId == 0) {
-							tweets = db.getUserFavorites(id);
-							if (tweets.isEmpty()) {
-								tweets = connection.getUserFavorits(id, 0, maxId);
-								db.saveFavoriteTimeline(tweets, id);
+							statuses = db.getUserFavorites(id);
+							if (statuses.isEmpty()) {
+								statuses = connection.getUserFavorits(id, 0, maxId);
+								db.saveFavoriteTimeline(statuses, id);
 							}
 						} else if (sinceId > 0) {
-							tweets = connection.getUserFavorits(id, 0, maxId);
-							db.saveFavoriteTimeline(tweets, id);
+							statuses = connection.getUserFavorits(id, 0, maxId);
+							db.saveFavoriteTimeline(statuses, id);
 							pos = CLEAR_LIST; // set flag to clear previous data
 						} else if (maxId > 1) {
-							tweets = connection.getUserFavorits(id, sinceId, maxId);
+							statuses = connection.getUserFavorits(id, sinceId, maxId);
 						}
 					} else if (search != null) {
-						tweets = connection.getUserFavorits(search, sinceId, maxId);
+						statuses = connection.getUserFavorits(search, sinceId, maxId);
 					}
 					break;
 
 				case REPLIES_OFFLINE:
-					tweets = db.getReplies(id);
+					statuses = db.getReplies(id);
 					break;
 
 				case REPLIES:
 					if (sinceId == 0 && maxId == 0) {
-						tweets = db.getReplies(id);
-						if (tweets.isEmpty()) {
-							tweets = connection.getTweetReplies(search, id, sinceId, maxId);
-							if (!tweets.isEmpty() && db.containsStatus(id)) {
-								db.saveReplyTimeline(tweets);
+						statuses = db.getReplies(id);
+						if (statuses.isEmpty()) {
+							statuses = connection.getStatusReplies(search, id, sinceId, maxId);
+							if (!statuses.isEmpty() && db.containsStatus(id)) {
+								db.saveReplyTimeline(statuses);
 							}
 						}
 					} else if (sinceId > 0) {
-						tweets = connection.getTweetReplies(search, id, sinceId, maxId);
-						if (!tweets.isEmpty() && db.containsStatus(id)) {
-							db.saveReplyTimeline(tweets);
+						statuses = connection.getStatusReplies(search, id, sinceId, maxId);
+						if (!statuses.isEmpty() && db.containsStatus(id)) {
+							db.saveReplyTimeline(statuses);
 						}
 					} else if (maxId > 1) {
-						tweets = connection.getTweetReplies(search, id, sinceId, maxId);
+						statuses = connection.getStatusReplies(search, id, sinceId, maxId);
 					}
 					break;
 
 				case SEARCH:
-					tweets = connection.searchStatuses(search, sinceId, maxId);
+					statuses = connection.searchStatuses(search, sinceId, maxId);
 					break;
 
 				case USERLIST:
-					tweets = connection.getUserlistTweets(id, sinceId, maxId);
+					statuses = connection.getUserlistStatuses(id, sinceId, maxId);
 					break;
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
 		}
-		return tweets;
+		return statuses;
 	}
 
 
 	@Override
-	protected void onPostExecute(List<org.nuclearfog.twidda.model.Status> tweets) {
+	protected void onPostExecute(List<org.nuclearfog.twidda.model.Status> statuses) {
 		StatusFragment fragment = weakRef.get();
 		if (fragment != null) {
-			if (tweets != null) {
-				fragment.setData(tweets, pos);
+			if (statuses != null) {
+				fragment.setData(statuses, pos);
 			} else {
 				fragment.onError(exception);
 			}

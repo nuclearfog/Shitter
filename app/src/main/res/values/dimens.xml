@@ -23,22 +23,22 @@
 	<dimen name="settings_column_margin">5dp</dimen>
 	<dimen name="settings_seek_number_width">30sp</dimen>
 
-	<!--dimens of page_tweet.xml-->
-	<dimen name="tweet_toolbar_height">@dimen/toolbar_height</dimen>
-	<dimen name="tweet_profile">56sp</dimen>
-	<dimen name="tweet_profileimage_margin">5dp</dimen>
-	<dimen name="tweet_textview_margin">5dp</dimen>
-	<dimen name="tweet_button_margin">5dp</dimen>
-	<dimen name="tweet_button_padding">5sp</dimen>
-	<dimen name="tweet_button_height">20sp</dimen>
-	<dimen name="tweet_button_media_width">58sp</dimen>
-	<dimen name="tweet_button_media_height">36sp</dimen>
-	<dimen name="tweet_padding_drawable">5dp</dimen>
-	<dimen name="tweet_textsize_small">12sp</dimen>
-	<dimen name="tweet_textsize">18sp</dimen>
-	<dimen name="tweet_textsize_locale">12sp</dimen>
-	<dimen name="tweet_button_drawable_padding">5dp</dimen>
-	<integer name="tweet_text_max_lines">5</integer>
+	<!--dimens of page_status.xml-->
+	<dimen name="page_status_toolbar_height">@dimen/toolbar_height</dimen>
+	<dimen name="page_status_profile">56sp</dimen>
+	<dimen name="page_status_profileimage_margin">5dp</dimen>
+	<dimen name="page_status_textview_margin">5dp</dimen>
+	<dimen name="page_status_button_margin">5dp</dimen>
+	<dimen name="page_status_button_padding">5sp</dimen>
+	<dimen name="page_status_button_height">20sp</dimen>
+	<dimen name="page_status_button_media_width">58sp</dimen>
+	<dimen name="page_status_button_media_height">36sp</dimen>
+	<dimen name="page_status_padding_drawable">5dp</dimen>
+	<dimen name="page_status_textsize_small">12sp</dimen>
+	<dimen name="page_status_textsize">18sp</dimen>
+	<dimen name="page_status_textsize_locale">12sp</dimen>
+	<dimen name="page_status_button_drawable_padding">5dp</dimen>
+	<integer name="page_status_text_max_lines">5</integer>
 
 	<!--dimens of page_profile.xml-->
 	<dimen name="profile_toolbar_height">48dp</dimen>
@@ -158,12 +158,12 @@
 	<dimen name="metrics_textsize_big">20sp</dimen>
 	<integer name="metrics_text_max_lines">8</integer>
 
-	<!--dimens of popup_tweet.xml-->
-	<dimen name="tweetpopup_margin_layout">10dp</dimen>
-	<dimen name="tweetpopup_button_margin">7dp</dimen>
-	<dimen name="tweetpopup_button_padding">7dp</dimen>
+	<!--dimens of popup_status.xml-->
+	<dimen name="popup_status_margin_layout">10dp</dimen>
+	<dimen name="popup_status_button_margin">7dp</dimen>
+	<dimen name="popup_status_button_padding">7dp</dimen>
 
-	<!--dimens of popup_dm.xml-->
+	<!--dimens of popup_message.xml-->
 	<dimen name="dmpopup_margin_background">10dp</dimen>
 	<dimen name="dmpopup_text_margin">5dp</dimen>
 	<dimen name="dmpopup_button_margin">5dp</dimen>

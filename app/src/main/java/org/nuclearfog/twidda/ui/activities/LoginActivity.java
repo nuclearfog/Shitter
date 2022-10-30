@@ -35,7 +35,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * Account Activity of the App
- * called from {@link MainActivity} when this app isn't logged in to twitter
+ * called from {@link MainActivity} when this app isn't logged in
  *
  * @author nuclearfog
  */
@@ -182,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	}
 
 	/**
-	 * Called when the app is registered successfully to twitter
+	 * Called when the app is registered successfully
 	 */
 	public void onSuccess() {
 		setResult(RETURN_LOGIN_SUCCESSFUL);
@@ -191,15 +191,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
 	/**
 	 * called when an error occurs while login
-	 *
-	 * @param error Twitter exception
 	 */
 	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(this, error);
 	}
 
 	/**
-	 * Called when a twitter login link was created
+	 * Called when an oauth login link was created
 	 *
 	 * @param requestToken temporary request token
 	 */

@@ -269,105 +269,105 @@ public interface Connection {
 	List<Status> getUserTimeline(String name, long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * show the favorite statuses of an user
+	 * show the favorite timeline of an user
 	 *
 	 * @param userId ID of the user
-	 * @param minId  get tweets with ID above the min ID
-	 * @param maxId  get tweets with ID under the max ID
-	 * @return list of tweets
+	 * @param minId  get statuses with ID above the min ID
+	 * @param maxId  get statuses with ID under the max ID
+	 * @return list of statuses
 	 */
 	List<Status> getUserFavorits(long userId, long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * show the favorite tweets of an user
+	 * show the favorite timeline of an user
 	 *
 	 * @param name  screen name of the user (without '@')
-	 * @param minId get tweets with ID above the min ID
-	 * @param maxId get tweets with ID under the max ID
-	 * @return list of tweets
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
+	 * @return list of statuses
 	 */
 	List<Status> getUserFavorits(String name, long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * return tweets from an user list
+	 * return timeline from an user list
 	 *
 	 * @param listId ID of the list
-	 * @param minId  get tweets with ID above the min ID
-	 * @param maxId  get tweets with ID under the max ID
-	 * @return list of tweets
+	 * @param minId  get statuses with ID above the min ID
+	 * @param maxId  get statuses with ID under the max ID
+	 * @return list of statuses
 	 */
-	List<Status> getUserlistTweets(long listId, long minId, long maxId) throws ConnectionException;
+	List<Status> getUserlistStatuses(long listId, long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * get replies of a tweet
+	 * get replies of a status
 	 *
-	 * @param screen_name screen name of the tweet author
-	 * @param tweetId     Id of the tweet
-	 * @param minId       get tweets with ID above the min ID
-	 * @param maxId       get tweets with ID under the max ID
-	 * @return list of tweets
+	 * @param screen_name screen name of the status author
+	 * @param id          Id of the status
+	 * @param minId       get statuses with ID above the min ID
+	 * @param maxId       get statuses with ID under the max ID
+	 * @return list of statuses
 	 */
-	List<Status> getTweetReplies(String screen_name, long tweetId, long minId, long maxId) throws ConnectionException;
+	List<Status> getStatusReplies(String screen_name, long id, long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * lookup tweet by ID
+	 * lookup status by ID
 	 *
-	 * @param tweetId tweet ID
-	 * @return tweet information
+	 * @param id status ID
+	 * @return status information
 	 */
-	Status showStatus(long tweetId) throws ConnectionException;
+	Status showStatus(long id) throws ConnectionException;
 
 	/**
-	 * favorite specific tweet
+	 * favorite specific status
 	 *
-	 * @param tweetId Tweet ID
-	 * @return updated tweet
+	 * @param id status ID
+	 * @return updated status
 	 */
-	Status favoriteStatus(long tweetId) throws ConnectionException;
+	Status favoriteStatus(long id) throws ConnectionException;
 
 	/**
-	 * remove tweet from favorits
+	 * remove status from favorits
 	 *
-	 * @param tweetId Tweet ID
-	 * @return updated tweet
+	 * @param id status ID
+	 * @return updated status
 	 */
-	Status unfavoriteStatus(long tweetId) throws ConnectionException;
+	Status unfavoriteStatus(long id) throws ConnectionException;
 
 	/**
-	 * retweet specific tweet
+	 * repost specific status
 	 *
-	 * @param tweetId Tweet ID
-	 * @return updated tweet
+	 * @param id status ID
+	 * @return updated status
 	 */
-	Status repostStatus(long tweetId) throws ConnectionException;
+	Status repostStatus(long id) throws ConnectionException;
 
 	/**
-	 * remove retweet
+	 * remove repost
 	 *
-	 * @param tweetId ID of the retweeted tweet
-	 * @return updated tweet
+	 * @param id ID of the reposted status
+	 * @return updated status
 	 */
-	Status removeRepost(long tweetId) throws ConnectionException;
+	Status removeRepost(long id) throws ConnectionException;
 
 	/**
-	 * hides reply of the own tweet
+	 * hides reply of a status
 	 *
-	 * @param tweetId ID of the tweet
-	 * @param hide    true to hide reply
+	 * @param id   ID of the status
+	 * @param hide true to hide reply
 	 */
-	void hideReply(long tweetId, boolean hide) throws ConnectionException;
+	void hideReply(long id, boolean hide) throws ConnectionException;
 
 	/**
-	 * remove tweet of the authenticating user
+	 * remove status of the authenticating user
 	 *
-	 * @param tweetId tweet ID
+	 * @param id status ID
 	 */
-	void deleteStatus(long tweetId) throws ConnectionException;
+	void deleteStatus(long id) throws ConnectionException;
 
 	/**
-	 * upload tweet with additional attachment
+	 * upload status with additional attachment
 	 *
-	 * @param update tweet update information
+	 * @param update status update information
 	 */
 	void uploadStatus(StatusUpdate update, long[] mediaIds) throws ConnectionException;
 
@@ -479,23 +479,22 @@ public interface Connection {
 	Messages getDirectmessages(String cursor) throws ConnectionException;
 
 	/**
-	 * get tweet metrics (views, link clicks, etc.)
+	 * get status metrics (views, link clicks, etc.)
 	 *
-	 * @param tweetId ID of the tweet to get the metrics from
-	 * @return tweet metrics
+	 * @param id ID of the status to get the metrics from
+	 * @return status metrics
 	 */
-	Metrics getTweetMetrics(long tweetId) throws ConnectionException;
+	Metrics getStatusMetrics(long id) throws ConnectionException;
 
 	/**
-	 * upload media file to twitter and generate a media ID
+	 * returns a list of blocked user IDs
 	 *
-	 * @param mediaUpdate inputstream with MIME type of the media
-	 * @return media ID
+	 * @return list of IDs
 	 */
-	long uploadMedia(MediaUpdate mediaUpdate) throws ConnectionException;
+	List<Long> getIdBlocklist() throws ConnectionException;
 
 	/**
-	 * download image from twitter
+	 * download image
 	 *
 	 * @param link link to the image
 	 * @return image bitmap
@@ -525,9 +524,10 @@ public interface Connection {
 	void updateBannerImage(InputStream inputStream) throws ConnectionException;
 
 	/**
-	 * returns a list of blocked user IDs
+	 * upload media file and generate a media ID
 	 *
-	 * @return list of IDs
+	 * @param mediaUpdate inputstream with MIME type of the media
+	 * @return media ID
 	 */
-	List<Long> getIdBlocklist() throws ConnectionException;
+	long uploadMedia(MediaUpdate mediaUpdate) throws ConnectionException;
 }

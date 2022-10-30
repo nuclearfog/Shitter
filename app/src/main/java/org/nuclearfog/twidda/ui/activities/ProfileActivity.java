@@ -133,7 +133,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	private ConfirmDialog confirmDialog;
 
-	private TextView[] tabTweetCount;
+	private TextView[] tabIndicator;
 	private TextView user_location, user_createdAt, user_website, user_bio, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
 	private Button following, follower;
@@ -216,9 +216,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			adapter.setupProfilePage(userId);
 		}
 		if (settings.likeEnabled()) {
-			tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
+			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
 		} else {
-			tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
+			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
 		}
 		tabLayout.addOnTabSelectedListener(this);
 		following.setOnClickListener(this);
@@ -346,15 +346,15 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (user != null) {
-			// write tweet
+			// write status
 			if (item.getItemId() == R.id.profile_post) {
-				Intent tweet = new Intent(this, StatusEditor.class);
+				Intent intent = new Intent(this, StatusEditor.class);
 				if (!user.isCurrentUser()) {
-					// add username to tweet
-					String tweetPrefix = user.getScreenname() + " ";
-					tweet.putExtra(KEY_STATUS_EDITOR_TEXT, tweetPrefix);
+					// add username to status
+					String prefix = user.getScreenname() + " ";
+					intent.putExtra(KEY_STATUS_EDITOR_TEXT, prefix);
 				}
-				startActivity(tweet);
+				startActivity(intent);
 			}
 			// follow / unfollow user
 			else if (item.getItemId() == R.id.profile_follow) {
@@ -453,7 +453,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	@Override
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
-		// open tweet link
+		// open status link
 		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(this, StatusActivity.class);
@@ -600,13 +600,13 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		username.setText(user.getUsername());
 		screenName.setText(user.getScreenname());
 		if (user.getStatusCount() >= 0)
-			tabTweetCount[0].setText(formatter.format(user.getStatusCount()));
+			tabIndicator[0].setText(formatter.format(user.getStatusCount()));
 		else
-			tabTweetCount[0].setText("");
+			tabIndicator[0].setText("");
 		if (user.getFavoriteCount() >= 0)
-			tabTweetCount[1].setText(formatter.format(user.getFavoriteCount()));
+			tabIndicator[1].setText(formatter.format(user.getFavoriteCount()));
 		else
-			tabTweetCount[1].setText("");
+			tabIndicator[1].setText("");
 		if (user_createdAt.getVisibility() != VISIBLE) {
 			String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
 			user_createdAt.setVisibility(VISIBLE);

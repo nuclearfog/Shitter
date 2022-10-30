@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to upload tweet information
+ * This class is used to upload status information
  *
  * @author nuclearfog
  */
@@ -29,16 +29,16 @@ public class StatusUpdate {
 	private boolean hasLocation = false;
 
 	/**
-	 * set ID of the replied tweet
+	 * set ID of the replied status
 	 *
-	 * @param replyId Tweet ID
+	 * @param replyId status ID to reply
 	 */
 	public void setReplyId(long replyId) {
 		this.replyId = replyId;
 	}
 
 	/**
-	 * add tweet text
+	 * add status text
 	 */
 	public void setText(String text) {
 		this.text = text;
@@ -60,7 +60,7 @@ public class StatusUpdate {
 	}
 
 	/**
-	 * Add location to a tweet
+	 * Add location to a status
 	 *
 	 * @param location location information
 	 */
@@ -73,16 +73,16 @@ public class StatusUpdate {
 	/**
 	 * get status text
 	 *
-	 * @return tweet status
+	 * @return status text
 	 */
 	public String getText() {
 		return text;
 	}
 
 	/**
-	 * get ID of the replied tweet
+	 * get ID of the replied status
 	 *
-	 * @return Tweet ID
+	 * @return status ID
 	 */
 	public long getReplyId() {
 		return replyId;

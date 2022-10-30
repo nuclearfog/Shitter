@@ -365,7 +365,7 @@ public class GlobalSettings {
 	 *
 	 * @param color icon color
 	 */
-	public void setRetweetIconColor(int color) {
+	public void setRepostIconColor(int color) {
 		retweet_color = color;
 
 		Editor edit = settings.edit();
@@ -595,7 +595,7 @@ public class GlobalSettings {
 	 *
 	 * @param enable true to enable tweet indicators
 	 */
-	public void enableTweetIndicators(boolean enable) {
+	public void enableStatusIndicators(boolean enable) {
 		tweetIndicators = enable;
 
 		Editor edit = settings.edit();

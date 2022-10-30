@@ -94,12 +94,12 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		ImageView profile = findViewById(R.id.metrics_profile);
 		TextView username = findViewById(R.id.metrics_username);
 		TextView screenname = findViewById(R.id.metrics_screenname);
-		TextView statusText = findViewById(R.id.metrics_tweet);
+		TextView statusText = findViewById(R.id.metrics_text);
 		TextView created = findViewById(R.id.metrics_created);
 		impressionCount = findViewById(R.id.metrics_impression);
 		linkClicks = findViewById(R.id.metrics_link_count);
 		profileClicks = findViewById(R.id.metrics_profile_count);
-		repostCount = findViewById(R.id.metrics_retweets);
+		repostCount = findViewById(R.id.metrics_reposts);
 		favoriteCount = findViewById(R.id.metrics_favorits);
 		replycount = findViewById(R.id.metrics_replies);
 		quoteCount = findViewById(R.id.metrics_quotes);
@@ -112,7 +112,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		impressionCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.views, 0, 0, 0);
 		linkClicks.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
 		profileClicks.setCompoundDrawablesWithIntrinsicBounds(R.drawable.user, 0, 0, 0);
-		repostCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
+		repostCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		replycount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		quoteCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quote, 0, 0, 0);
 		videoViews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.play, 0, 0, 0);

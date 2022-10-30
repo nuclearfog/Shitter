@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * Activity to show userlists of a twitter user
+ * Activity to show userlists of an user
  *
  * @author nuclearfog
  */

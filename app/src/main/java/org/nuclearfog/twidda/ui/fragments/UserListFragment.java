@@ -169,8 +169,6 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 	/**
 	 * set data to list
-	 *
-	 * @param data List of Twitter list data
 	 */
 	public void setData(UserLists data) {
 		adapter.setData(data);
@@ -179,8 +177,6 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 	/**
 	 * called from {@link ListLoader} if an error occurs
-	 *
-	 * @param error Twitter exception
 	 */
 	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);

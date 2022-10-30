@@ -64,14 +64,14 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	@Override
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
-		setContentView(R.layout.popup_dm);
+		setContentView(R.layout.popup_message);
 		ViewGroup root = findViewById(R.id.dm_popup);
-		ImageButton send = findViewById(R.id.dm_send);
-		ImageView background = findViewById(R.id.dm_background);
-		media = findViewById(R.id.dm_media);
-		preview = findViewById(R.id.dm_preview);
-		receiver = findViewById(R.id.dm_receiver);
-		message = findViewById(R.id.dm_text);
+		ImageButton send = findViewById(R.id.popup_message_send);
+		ImageView background = findViewById(R.id.popup_message_background);
+		media = findViewById(R.id.popup_message_media);
+		preview = findViewById(R.id.popup_message_preview);
+		receiver = findViewById(R.id.popup_message_receiver);
+		message = findViewById(R.id.popup_message_text);
 		AppStyles.setEditorTheme(root, background);
 
 		loadingCircle = new ProgressDialog(this);
@@ -133,17 +133,17 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	@Override
 	public void onClick(View v) {
 		// send direct message
-		if (v.getId() == R.id.dm_send) {
+		if (v.getId() == R.id.popup_message_send) {
 			if (messageAsync == null || messageAsync.getStatus() != RUNNING) {
 				sendMessage();
 			}
 		}
 		// get media
-		else if (v.getId() == R.id.dm_media) {
+		else if (v.getId() == R.id.popup_message_media) {
 			getMedia(REQUEST_IMAGE);
 		}
 		// open media
-		else if (v.getId() == R.id.dm_preview) {
+		else if (v.getId() == R.id.popup_message_preview) {
 			if (holder.getMediaUri() != null) {
 				Intent image = new Intent(this, ImageViewer.class);
 				image.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{holder.getMediaUri()});

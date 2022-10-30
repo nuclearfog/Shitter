@@ -92,22 +92,22 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 						}
 					}
 				}
-				// open tweet editor and add text
-				// e.g. twitter.com/share or twitter.com/intent/tweet
+				// open status editor and add text
+				// e.g. twitter.com/share or twitter.com/intent/status
 				else if (pathSeg.get(0).equals("share") ||
 						(pathSeg.size() == 2 && pathSeg.get(0).equals("intent") && pathSeg.get(1).equals("tweet"))) {
 					if (link.isHierarchical()) {
-						String tweet = "";
+						String status = "";
 						String text = link.getQueryParameter("text");
 						String url = link.getQueryParameter("url");
 						String via = link.getQueryParameter("via");
 						if (text != null)
-							tweet = text + " ";
+							status = text + " ";
 						if (url != null)
-							tweet += url + " ";
+							status += url + " ";
 						if (via != null)
-							tweet += "via @" + via;
-						data.putString(StatusEditor.KEY_STATUS_EDITOR_TEXT, tweet);
+							status += "via @" + via;
+						data.putString(StatusEditor.KEY_STATUS_EDITOR_TEXT, status);
 						return new DataHolder(data, StatusEditor.class);
 					}
 				}
@@ -127,12 +127,12 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 					data.putBoolean(UserlistActivity.KEY_LIST_NO_UPDATE, true);
 					return new DataHolder(data, UserlistActivity.class);
 				}
-				// show tweet
+				// show status
 				// e.g. twitter.com/{screenname}/status/{tweet ID}
 				else if (pathSeg.size() == 3 && pathSeg.get(1).equals("status") && pathSeg.get(2).matches("\\d+")) {
 					String screenname = pathSeg.get(0);
-					long tweetId = Long.parseLong(pathSeg.get(2));
-					data.putLong(StatusActivity.KEY_STATUS_ID, tweetId);
+					long Id = Long.parseLong(pathSeg.get(2));
+					data.putLong(StatusActivity.KEY_STATUS_ID, Id);
 					data.putString(StatusActivity.KEY_STATUS_NAME, screenname);
 					return new DataHolder(data, StatusActivity.class);
 				}
