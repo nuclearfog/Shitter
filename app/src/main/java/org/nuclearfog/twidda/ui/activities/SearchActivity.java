@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
 
 import android.content.Context;
 import android.content.Intent;
@@ -111,11 +111,11 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		// write new tweet
+		// create new status
 		if (item.getItemId() == R.id.search_tweet) {
-			Intent intent = new Intent(this, TweetEditor.class);
+			Intent intent = new Intent(this, StatusEditor.class);
 			if (search.startsWith("#"))
-				intent.putExtra(KEY_TWEETPOPUP_TEXT, search + " ");
+				intent.putExtra(KEY_STATUS_EDITOR_TEXT, search + " ");
 			startActivity(intent);
 		}
 		// theme expanded search view

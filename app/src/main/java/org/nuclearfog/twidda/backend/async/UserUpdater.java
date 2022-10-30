@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileEditor;
@@ -50,7 +50,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 			}
 			User user = connection.updateProfile(profile);
 			// save new user information
-			db.storeUser(user);
+			db.saveUser(user);
 			return user;
 		} catch (ConnectionException exception) {
 			this.exception = exception;

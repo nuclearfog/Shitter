@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		}
 		// open tweet editor
 		else if (item.getItemId() == R.id.action_tweet) {
-			Intent tweet = new Intent(this, TweetEditor.class);
+			Intent tweet = new Intent(this, StatusEditor.class);
 			startActivity(tweet);
 		}
 		// open app settings

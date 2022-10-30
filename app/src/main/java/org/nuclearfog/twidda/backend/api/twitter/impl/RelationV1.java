@@ -40,7 +40,7 @@ public class RelationV1 implements Relation {
 	}
 
 	@Override
-	public boolean isHome() {
+	public boolean isCurrentUser() {
 		return isHome;
 	}
 

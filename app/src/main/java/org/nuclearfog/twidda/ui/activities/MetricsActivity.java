@@ -2,9 +2,9 @@ package org.nuclearfog.twidda.ui.activities;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.LINK_PATTERN;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -38,7 +38,7 @@ import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Metrics;
-import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
 import java.io.Serializable;
@@ -57,9 +57,9 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 
 	/**
 	 * key used for tweet information
-	 * value type is {@link Tweet}
+	 * value type is {@link Status}
 	 */
-	public static final String KEY_METRICS_TWEET = "metrics_tweet";
+	public static final String KEY_METRICS_STATUS = "metrics_tweet";
 
 	/**
 	 * delay to enable SwipeRefreshLayout
@@ -80,7 +80,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	private TextView quoteCount;
 	private TextView videoViews;
 	@Nullable
-	private Tweet tweet;
+	private Status tweet;
 
 	private boolean isRefreshing = false;
 
@@ -126,9 +126,9 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		toolbar.setTitle(R.string.title_metrics);
 
-		Serializable data = getIntent().getSerializableExtra(KEY_METRICS_TWEET);
-		if (data instanceof Tweet) {
-			tweet = (Tweet) data;
+		Serializable data = getIntent().getSerializableExtra(KEY_METRICS_STATUS);
+		if (data instanceof Status) {
+			tweet = (Status) data;
 			User author = tweet.getAuthor();
 			if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
 				String profileImageUrl = author.getImageUrl();
@@ -203,9 +203,9 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		// open tweet link
 		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
-			Intent intent = new Intent(this, TweetActivity.class);
-			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
+			Intent intent = new Intent(this, StatusActivity.class);
+			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
 			startActivity(intent);
 		}
 		// open link in browser
@@ -245,12 +245,12 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			profileClicks.setText(NUM_FORMAT.format(metrics.getProfileClicks()));
 			profileClicks.setVisibility(View.VISIBLE);
 		}
-		if (metrics.getRetweets() > 0) {
-			retweetCount.setText(NUM_FORMAT.format(metrics.getRetweets()));
+		if (metrics.getReposts() > 0) {
+			retweetCount.setText(NUM_FORMAT.format(metrics.getReposts()));
 			retweetCount.setVisibility(View.VISIBLE);
 		}
-		if (metrics.getLikes() > 0) {
-			favoriteCount.setText(NUM_FORMAT.format(metrics.getLikes()));
+		if (metrics.getFavorits() > 0) {
+			favoriteCount.setText(NUM_FORMAT.format(metrics.getFavorits()));
 			favoriteCount.setVisibility(View.VISIBLE);
 		}
 		if (metrics.getReplies() > 0) {

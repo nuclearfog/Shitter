@@ -157,7 +157,7 @@ public class UserV1 implements User {
 	}
 
 	@Override
-	public int getTweetCount() {
+	public int getStatusCount() {
 		return tweetCount;
 	}
 

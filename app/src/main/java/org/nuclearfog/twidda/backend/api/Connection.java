@@ -1,17 +1,17 @@
 package org.nuclearfog.twidda.backend.api;
 
-import org.nuclearfog.twidda.backend.api.twitter.update.MediaUpdate;
-import org.nuclearfog.twidda.backend.api.twitter.update.ProfileUpdate;
-import org.nuclearfog.twidda.backend.api.twitter.update.TweetUpdate;
-import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
-import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.backend.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.update.StatusUpdate;
+import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
-import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -50,20 +50,20 @@ public interface Connection {
 	Users searchUsers(String search, long page) throws ConnectionException;
 
 	/**
-	 * get users retweeting a tweet
+	 * get users reposting a status
 	 *
-	 * @param tweetId ID of the tweet
+	 * @param id ID of the status
 	 * @return user list
 	 */
-	Users getRetweetingUsers(long tweetId) throws ConnectionException;
+	Users getRepostingUsers(long id) throws ConnectionException;
 
 	/**
-	 * get users liking a tweet
+	 * get users liking a status
 	 *
-	 * @param tweetId ID of the tweet
+	 * @param id ID of the status
 	 * @return user list
 	 */
-	Users getLikingUsers(long tweetId) throws ConnectionException;
+	Users getFavoritingUsers(long id) throws ConnectionException;
 
 	/**
 	 * create a list of users a specified user is following
@@ -206,14 +206,14 @@ public interface Connection {
 	User unmuteUser(long userId) throws ConnectionException;
 
 	/**
-	 * search tweets matching a search string
+	 * search statuses matching a search string
 	 *
 	 * @param search search string
-	 * @param minId  get tweets with ID above the min ID
-	 * @param maxId  get tweets with ID under the max ID
-	 * @return list of tweets matching the search string
+	 * @param minId  get statuses with ID above the min ID
+	 * @param maxId  get statuses with ID under the max ID
+	 * @return list of statuses matching the search string
 	 */
-	List<Tweet> searchTweets(String search, long minId, long maxId) throws ConnectionException;
+	List<Status> searchStatuses(String search, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * get location trends
@@ -233,60 +233,60 @@ public interface Connection {
 	/**
 	 * show current user's home timeline
 	 *
-	 * @param minId get tweets with ID above the min ID
-	 * @param maxId get tweets with ID under the max ID
-	 * @return list of tweets
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
+	 * @return list of statuses
 	 */
-	List<Tweet> getHomeTimeline(long minId, long maxId) throws ConnectionException;
+	List<Status> getHomeTimeline(long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * show current user's home timeline
 	 *
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
+	 * @return list of statuses
+	 */
+	List<Status> getMentionTimeline(long minId, long maxId) throws ConnectionException;
+
+	/**
+	 * show the timeline of an user
+	 *
+	 * @param userId ID of the user
+	 * @param minId  get statuses with ID above the min ID
+	 * @param maxId  get statuses with ID under the max ID
+	 * @return list of statuses
+	 */
+	List<Status> getUserTimeline(long userId, long minId, long maxId) throws ConnectionException;
+
+	/**
+	 * show the timeline of an user
+	 *
+	 * @param name  screen name of the user (without '@')
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
+	 * @return list of statuses
+	 */
+	List<Status> getUserTimeline(String name, long minId, long maxId) throws ConnectionException;
+
+	/**
+	 * show the favorite statuses of an user
+	 *
+	 * @param userId ID of the user
+	 * @param minId  get tweets with ID above the min ID
+	 * @param maxId  get tweets with ID under the max ID
+	 * @return list of tweets
+	 */
+	List<Status> getUserFavorits(long userId, long minId, long maxId) throws ConnectionException;
+
+	/**
+	 * show the favorite tweets of an user
+	 *
+	 * @param name  screen name of the user (without '@')
 	 * @param minId get tweets with ID above the min ID
 	 * @param maxId get tweets with ID under the max ID
 	 * @return list of tweets
 	 */
-	List<Tweet> getMentionTimeline(long minId, long maxId) throws ConnectionException;
-
-	/**
-	 * show the timeline of an user
-	 *
-	 * @param userId ID of the user
-	 * @param minId  get tweets with ID above the min ID
-	 * @param maxId  get tweets with ID under the max ID
-	 * @return list of tweets
-	 */
-	List<Tweet> getUserTimeline(long userId, long minId, long maxId) throws ConnectionException;
-
-	/**
-	 * show the timeline of an user
-	 *
-	 * @param screen_name screen name of the user (without '@')
-	 * @param minId       get tweets with ID above the min ID
-	 * @param maxId       get tweets with ID under the max ID
-	 * @return list of tweets
-	 */
-	List<Tweet> getUserTimeline(String screen_name, long minId, long maxId) throws ConnectionException;
-
-	/**
-	 * show the favorite tweets of an user
-	 *
-	 * @param userId ID of the user
-	 * @param minId  get tweets with ID above the min ID
-	 * @param maxId  get tweets with ID under the max ID
-	 * @return list of tweets
-	 */
-	List<Tweet> getUserFavorits(long userId, long minId, long maxId) throws ConnectionException;
-
-	/**
-	 * show the favorite tweets of an user
-	 *
-	 * @param screen_name screen name of the user (without '@')
-	 * @param minId       get tweets with ID above the min ID
-	 * @param maxId       get tweets with ID under the max ID
-	 * @return list of tweets
-	 */
-	List<Tweet> getUserFavorits(String screen_name, long minId, long maxId) throws ConnectionException;
+	List<Status> getUserFavorits(String name, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * return tweets from an user list
@@ -296,7 +296,7 @@ public interface Connection {
 	 * @param maxId  get tweets with ID under the max ID
 	 * @return list of tweets
 	 */
-	List<Tweet> getUserlistTweets(long listId, long minId, long maxId) throws ConnectionException;
+	List<Status> getUserlistTweets(long listId, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * get replies of a tweet
@@ -307,7 +307,7 @@ public interface Connection {
 	 * @param maxId       get tweets with ID under the max ID
 	 * @return list of tweets
 	 */
-	List<Tweet> getTweetReplies(String screen_name, long tweetId, long minId, long maxId) throws ConnectionException;
+	List<Status> getTweetReplies(String screen_name, long tweetId, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * lookup tweet by ID
@@ -315,7 +315,7 @@ public interface Connection {
 	 * @param tweetId tweet ID
 	 * @return tweet information
 	 */
-	Tweet showTweet(long tweetId) throws ConnectionException;
+	Status showStatus(long tweetId) throws ConnectionException;
 
 	/**
 	 * favorite specific tweet
@@ -323,7 +323,7 @@ public interface Connection {
 	 * @param tweetId Tweet ID
 	 * @return updated tweet
 	 */
-	Tweet favoriteTweet(long tweetId) throws ConnectionException;
+	Status favoriteStatus(long tweetId) throws ConnectionException;
 
 	/**
 	 * remove tweet from favorits
@@ -331,7 +331,7 @@ public interface Connection {
 	 * @param tweetId Tweet ID
 	 * @return updated tweet
 	 */
-	Tweet unfavoriteTweet(long tweetId) throws ConnectionException;
+	Status unfavoriteStatus(long tweetId) throws ConnectionException;
 
 	/**
 	 * retweet specific tweet
@@ -339,7 +339,7 @@ public interface Connection {
 	 * @param tweetId Tweet ID
 	 * @return updated tweet
 	 */
-	Tweet retweetTweet(long tweetId) throws ConnectionException;
+	Status repostStatus(long tweetId) throws ConnectionException;
 
 	/**
 	 * remove retweet
@@ -347,7 +347,7 @@ public interface Connection {
 	 * @param tweetId ID of the retweeted tweet
 	 * @return updated tweet
 	 */
-	Tweet unretweetTweet(long tweetId) throws ConnectionException;
+	Status removeRepost(long tweetId) throws ConnectionException;
 
 	/**
 	 * hides reply of the own tweet
@@ -362,14 +362,14 @@ public interface Connection {
 	 *
 	 * @param tweetId tweet ID
 	 */
-	void deleteTweet(long tweetId) throws ConnectionException;
+	void deleteStatus(long tweetId) throws ConnectionException;
 
 	/**
 	 * upload tweet with additional attachment
 	 *
 	 * @param update tweet update information
 	 */
-	void uploadTweet(TweetUpdate update, long[] mediaIds) throws ConnectionException;
+	void uploadStatus(StatusUpdate update, long[] mediaIds) throws ConnectionException;
 
 	/**
 	 * create userlist
@@ -377,7 +377,7 @@ public interface Connection {
 	 * @param update Userlist information
 	 * @return updated user list
 	 */
-	UserList createUserlist(UserlistUpdate update) throws ConnectionException;
+	UserList createUserlist(UserListUpdate update) throws ConnectionException;
 
 	/**
 	 * update existing userlist
@@ -385,7 +385,7 @@ public interface Connection {
 	 * @param update Userlist update
 	 * @return updated user list
 	 */
-	UserList updateUserlist(UserlistUpdate update) throws ConnectionException;
+	UserList updateUserlist(UserListUpdate update) throws ConnectionException;
 
 	/**
 	 * return userlist information
@@ -476,7 +476,7 @@ public interface Connection {
 	 * @param cursor list cursor
 	 * @return list of direct messages
 	 */
-	Directmessages getDirectmessages(String cursor) throws ConnectionException;
+	Messages getDirectmessages(String cursor) throws ConnectionException;
 
 	/**
 	 * get tweet metrics (views, link clicks, etc.)

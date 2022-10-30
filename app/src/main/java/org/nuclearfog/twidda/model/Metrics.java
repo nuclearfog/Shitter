@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.model;
 
 /**
- * Tweet metrics class containing information like views and link clicks
+ * Status metrics class containing information like views and link clicks
  *
  * @author nuclearfog
  */
@@ -15,18 +15,18 @@ public interface Metrics {
 	int getViews();
 
 	/**
-	 * get retweet count
+	 * get repost count
 	 *
-	 * @return retweet count
+	 * @return repost count
 	 */
-	int getRetweets();
+	int getReposts();
 
 	/**
 	 * get like/favorite count
 	 *
 	 * @return like count
 	 */
-	int getLikes();
+	int getFavorits();
 
 	/**
 	 * get reply count

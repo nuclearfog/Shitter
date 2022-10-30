@@ -226,7 +226,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
 		enableLike.setCheckedImmediately(settings.likeEnabled());
 		enableTwitterAlt.setCheckedImmediately(settings.twitterAltSet());
-		enableTweetIcons.setCheckedImmediately(settings.tweetIndicatorsEnabled());
+		enableTweetIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
 		enableAPI.setCheckedImmediately(settings.isCustomApiSet());
 		enableProxy.setCheckedImmediately(settings.isProxyEnabled());
 		enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
@@ -384,7 +384,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// set retweet icon color
 		else if (v.getId() == R.id.color_rt) {
 			mode = COLOR_RETWEET;
-			color = settings.getRetweetIconColor();
+			color = settings.getRepostIconColor();
 			setColor(color, false);
 		}
 		// set favorite icon color

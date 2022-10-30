@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.update;
+package org.nuclearfog.twidda.backend.update;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class TweetUpdate {
+public class StatusUpdate {
 
 	private String text;
 	private long replyId;
@@ -71,9 +71,9 @@ public class TweetUpdate {
 	}
 
 	/**
-	 * get tweet message
+	 * get status text
 	 *
-	 * @return tweet text
+	 * @return tweet status
 	 */
 	public String getText() {
 		return text;
@@ -89,7 +89,7 @@ public class TweetUpdate {
 	}
 
 	/**
-	 * get information about media attached to the tweet
+	 * get information about media attached to the status
 	 *
 	 * @return list of media updates
 	 */

@@ -10,7 +10,7 @@ public interface Relation {
 	/**
 	 * @return true if the relation points to the current user
 	 */
-	boolean isHome();
+	boolean isCurrentUser();
 
 	/**
 	 * @return true if current user is following this user

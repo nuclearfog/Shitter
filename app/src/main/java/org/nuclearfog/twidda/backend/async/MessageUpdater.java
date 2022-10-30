@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.update.DirectmessageUpdate;
+import org.nuclearfog.twidda.backend.update.MessageUpdate;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 
 import java.lang.ref.WeakReference;
@@ -26,14 +26,14 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
 	@Nullable
 	private ConnectionException exception;
-	private DirectmessageUpdate message;
+	private MessageUpdate message;
 
 	/**
 	 * send direct message
 	 *
 	 * @param activity Activity context
 	 */
-	public MessageUpdater(@NonNull MessageEditor activity, DirectmessageUpdate message) {
+	public MessageUpdater(@NonNull MessageEditor activity, MessageUpdate message) {
 		super();
 		connection = Twitter.get(activity);
 		weakRef = new WeakReference<>(activity);
@@ -45,7 +45,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 	protected Boolean doInBackground(Void[] v) {
 		try {
 			// first check if user exists
-			long id = connection.showUser(message.getName()).getId();
+			long id = connection.showUser(message.getReceiver()).getId();
 			// upload media if any
 			long mediaId = -1;
 			if (message.getMediaUpdate() != null) {
@@ -53,7 +53,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 			}
 			// upload message and media ID
 			if (!isCancelled()) {
-				connection.sendDirectmessage(id, message.getText(), mediaId);
+				connection.sendDirectmessage(id, message.getMessage(), mediaId);
 			}
 			return true;
 		} catch (ConnectionException exception) {

@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
+import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.UserlistEditor;
 
@@ -26,13 +26,13 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 
 	@Nullable
 	private ConnectionException exception;
-	private UserlistUpdate update;
+	private UserListUpdate update;
 
 	/**
 	 * @param activity callback to {@link UserlistEditor}
 	 * @param update   userlist to update
 	 */
-	public ListUpdater(UserlistEditor activity, UserlistUpdate update) {
+	public ListUpdater(UserlistEditor activity, UserListUpdate update) {
 		super();
 		weakRef = new WeakReference<>(activity);
 		connection = Twitter.get(activity);

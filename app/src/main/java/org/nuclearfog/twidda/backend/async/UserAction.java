@@ -103,10 +103,10 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					// load user information from twitter
 					user = connection.showUser(userId);
 					publishProgress(user);
-					appDB.storeUser(user);
+					appDB.saveUser(user);
 					// load user relations from twitter
 					Relation relation = connection.getRelationToUser(userId);
-					if (!relation.isHome()) {
+					if (!relation.isCurrentUser()) {
 						boolean muteUser = relation.isBlocked() || relation.isMuted();
 						appDB.muteUser(userId, muteUser);
 					}

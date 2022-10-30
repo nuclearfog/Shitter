@@ -5,9 +5,9 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.LINK_PATTERN;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -24,14 +24,14 @@ import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
-import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
-import org.nuclearfog.twidda.ui.activities.TweetActivity;
+import org.nuclearfog.twidda.ui.activities.StatusActivity;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
@@ -109,9 +109,9 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 		// open tweet link
 		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
-			Intent intent = new Intent(requireContext(), TweetActivity.class);
-			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
+			Intent intent = new Intent(requireContext(), StatusActivity.class);
+			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
 			startActivity(intent);
 		}
 		// open link in browser
@@ -188,7 +188,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 *
 	 * @param data list of direct messages
 	 */
-	public void setData(Directmessages data) {
+	public void setData(Messages data) {
 		adapter.setData(data);
 		setRefresh(false);
 	}

@@ -17,8 +17,8 @@ import org.nuclearfog.twidda.ui.activities.MainActivity;
 import org.nuclearfog.twidda.ui.activities.MessageActivity;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
-import org.nuclearfog.twidda.ui.activities.TweetActivity;
-import org.nuclearfog.twidda.ui.activities.TweetEditor;
+import org.nuclearfog.twidda.ui.activities.StatusActivity;
+import org.nuclearfog.twidda.ui.activities.StatusEditor;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistsActivity;
 
@@ -107,8 +107,8 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 							tweet += url + " ";
 						if (via != null)
 							tweet += "via @" + via;
-						data.putString(TweetEditor.KEY_TWEETPOPUP_TEXT, tweet);
-						return new DataHolder(data, TweetEditor.class);
+						data.putString(StatusEditor.KEY_STATUS_EDITOR_TEXT, tweet);
+						return new DataHolder(data, StatusEditor.class);
 					}
 				}
 				// open hashtag search
@@ -132,9 +132,9 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 				else if (pathSeg.size() == 3 && pathSeg.get(1).equals("status") && pathSeg.get(2).matches("\\d+")) {
 					String screenname = pathSeg.get(0);
 					long tweetId = Long.parseLong(pathSeg.get(2));
-					data.putLong(TweetActivity.KEY_TWEET_ID, tweetId);
-					data.putString(TweetActivity.KEY_TWEET_NAME, screenname);
-					return new DataHolder(data, TweetActivity.class);
+					data.putLong(StatusActivity.KEY_STATUS_ID, tweetId);
+					data.putString(StatusActivity.KEY_STATUS_NAME, screenname);
+					return new DataHolder(data, StatusActivity.class);
 				}
 				// show userlists
 				// e.g. twitter.com/{screenname}/lists

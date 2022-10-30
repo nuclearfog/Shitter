@@ -57,17 +57,17 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	/**
 	 * show "delete Tweet?" dialog
 	 */
-	public static final int TWEET_DELETE = 607;
+	public static final int DELETE_STATUS = 607;
 
 	/**
 	 * show "discard tweet" dialog
 	 */
-	public static final int TWEET_EDITOR_LEAVE = 608;
+	public static final int STATUS_EDITOR_LEAVE = 608;
 
 	/**
 	 * show "Tweet create error" dialog
 	 */
-	public static final int TWEET_EDITOR_ERROR = 609;
+	public static final int STATUS_EDITOR_ERROR = 609;
 
 	/**
 	 * show "delete directmessage" dialog
@@ -230,7 +230,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				messageRes = R.string.confirm_discard;
 				break;
 
-			case TWEET_EDITOR_LEAVE:
+			case STATUS_EDITOR_LEAVE:
 				messageRes = R.string.confirm_cancel_tweet;
 				break;
 
@@ -240,14 +240,14 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 			case LIST_EDITOR_ERROR:
 			case MESSAGE_EDITOR_ERROR:
-			case TWEET_EDITOR_ERROR:
+			case STATUS_EDITOR_ERROR:
 			case PROFILE_EDITOR_ERROR:
 				titleVis = View.VISIBLE;
 				messageRes = R.string.error_connection_failed;
 				confirmRes = R.string.confirm_retry_button;
 				break;
 
-			case TWEET_DELETE:
+			case DELETE_STATUS:
 				messageRes = R.string.confirm_delete_tweet;
 				break;
 

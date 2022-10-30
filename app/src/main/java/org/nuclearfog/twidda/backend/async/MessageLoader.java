@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
-import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.ui.fragments.MessageFragment;
 
@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MessageFragment
  */
-public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
+public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 
 	/**
 	 * load messages from database
@@ -64,15 +64,15 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 
 
 	@Override
-	protected Directmessages doInBackground(Void... v) {
+	protected Messages doInBackground(Void... v) {
 		try {
 			switch (action) {
 				case DB:
-					Directmessages messages = db.getMessages();
+					Messages messages = db.getMessages();
 					if (messages.isEmpty()) {
 						messages = connection.getDirectmessages("");
 						// merge online messages with offline messages
-						db.storeMessage(messages);
+						db.saveMessages(messages);
 						messages = db.getMessages();
 					}
 					return messages;
@@ -80,7 +80,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 				case LOAD:
 					messages = connection.getDirectmessages(cursor);
 					// merge online messages with offline messages
-					db.storeMessage(messages);
+					db.saveMessages(messages);
 					return db.getMessages();
 
 				case DEL:
@@ -99,7 +99,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Directmessages> {
 
 
 	@Override
-	protected void onPostExecute(@Nullable Directmessages messages) {
+	protected void onPostExecute(@Nullable Messages messages) {
 		MessageFragment fragment = weakRef.get();
 		if (fragment != null) {
 			if (exception != null) {

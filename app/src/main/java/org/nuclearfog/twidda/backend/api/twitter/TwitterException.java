@@ -90,7 +90,7 @@ class TwitterException extends ConnectionException {
 				return USER_NOT_FOUND;
 
 			case 32:
-				return ACCESS_TOKEN_DEAD;
+				return API_KEYS_ERROR;
 
 			case 416:
 				return APP_SUSPENDED;
@@ -98,9 +98,6 @@ class TwitterException extends ConnectionException {
 			case 34:    //
 			case 144:   // TWEET not found
 				return RESOURCE_NOT_FOUND;
-
-			case 150:
-				return CANT_SEND_DM;
 
 			case 120:
 				return ACCOUNT_UPDATE_FAILED;
@@ -110,13 +107,14 @@ class TwitterException extends ConnectionException {
 				return NOT_AUTHORIZED;
 
 			case 186:
-				return TWEET_TOO_LONG;
+				return STATUS_LENGTH;
 
 			case 187:
-				return DUPLICATE_TWEET;
+				return DUPLICATE_STATUS;
 
 			case 349:
-				return NO_DM_TO_USER;
+			case 150:
+				return MESSAGE_NOT_SENT;
 
 			case 215: // Invalid API keys
 			case 261:
@@ -126,21 +124,21 @@ class TwitterException extends ConnectionException {
 				return INVALID_MEDIA;
 
 			case 354:
-				return DM_TOO_LONG;
+				return MESSAGE_LENGTH;
 
 			case 89:
 				return TOKEN_EXPIRED;
 
 			case 385: // replying tweet that is not visible or deleted
-				return TWEET_CANT_REPLY;
+				return STATUS_CANT_REPLY;
 
 			default:
 				if (httpCode == 401) {
 					return NOT_AUTHORIZED;
 				} else if (httpCode == 403) {
-					return REQUEST_FORBIDDEN;
+					return HTTP_FORBIDDEN;
 				} else if (httpCode == 408) {
-					return REQUEST_CANCELLED;
+					return HTTP_TIMEOUT;
 				} else if (getCause() instanceof IOException) {
 					return NO_CONNECTION;
 				} else {

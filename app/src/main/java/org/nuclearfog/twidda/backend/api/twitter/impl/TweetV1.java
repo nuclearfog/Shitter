@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.Locale;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class TweetV1 implements Tweet {
+public class TweetV1 implements Status {
 
 	public static final long serialVersionUID = 70666106496232760L;
 
@@ -49,7 +49,7 @@ public class TweetV1 implements Tweet {
 	private long id;
 	private long timestamp;
 	private User author;
-	private Tweet embeddedTweet;
+	private Status embeddedTweet;
 
 	private long retweetId;
 	private int retweetCount;
@@ -158,7 +158,7 @@ public class TweetV1 implements Tweet {
 
 	@Nullable
 	@Override
-	public Tweet getEmbeddedTweet() {
+	public Status getEmbeddedStatus() {
 		return embeddedTweet;
 	}
 
@@ -173,17 +173,17 @@ public class TweetV1 implements Tweet {
 	}
 
 	@Override
-	public long getRepliedTweetId() {
+	public long getRepliedStatusId() {
 		return replyTweetId;
 	}
 
 	@Override
-	public long getRetweetId() {
+	public long getRepostId() {
 		return retweetId;
 	}
 
 	@Override
-	public int getRetweetCount() {
+	public int getRepostCount() {
 		return retweetCount;
 	}
 
@@ -217,7 +217,7 @@ public class TweetV1 implements Tweet {
 	}
 
 	@Override
-	public boolean isRetweeted() {
+	public boolean isReposted() {
 		return isRetweeted;
 	}
 
@@ -243,9 +243,9 @@ public class TweetV1 implements Tweet {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Tweet))
+		if (!(obj instanceof Status))
 			return false;
-		return ((Tweet) obj).getId() == id;
+		return ((Status) obj).getId() == id;
 	}
 
 	@NonNull
@@ -291,7 +291,7 @@ public class TweetV1 implements Tweet {
 	 *
 	 * @param tweet new embedded tweet
 	 */
-	public void setEmbeddedTweet(Tweet tweet) {
+	public void setEmbeddedTweet(Status tweet) {
 		this.embeddedTweet = tweet;
 	}
 

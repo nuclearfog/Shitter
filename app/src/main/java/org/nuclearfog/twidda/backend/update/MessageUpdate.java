@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.update;
+package org.nuclearfog.twidda.backend.update;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * This class is used to upload a directmessage
+ * This class is used to upload a message
  *
  * @author nuclearfog
  */
-public class DirectmessageUpdate {
+public class MessageUpdate {
 
 	private Uri uri;
 	private MediaUpdate mediaUpdate;
@@ -26,7 +26,7 @@ public class DirectmessageUpdate {
 	/**
 	 * @param name screen name of the user
 	 */
-	public void setName(String name) {
+	public void setReceiver(String name) {
 		this.name = name;
 	}
 
@@ -42,7 +42,7 @@ public class DirectmessageUpdate {
 	 *
 	 * @return screen name
 	 */
-	public String getName() {
+	public String getReceiver() {
 		return name;
 	}
 
@@ -51,7 +51,7 @@ public class DirectmessageUpdate {
 	 *
 	 * @return message text
 	 */
-	public String getText() {
+	public String getMessage() {
 		return text;
 	}
 

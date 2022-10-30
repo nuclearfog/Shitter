@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.update;
+package org.nuclearfog.twidda.backend.update;
 
 import androidx.annotation.NonNull;
 
@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
  *
  * @author nuclearfog
  */
-public class UserlistUpdate {
+public class UserListUpdate {
 
 	/**
 	 * this ID indicates that the list isn't created yet
@@ -26,7 +26,7 @@ public class UserlistUpdate {
 	 * @param isPublic    true if list should be public
 	 * @param listId      ID of the list to update or {@link #NEW_LIST} to create a new list
 	 */
-	public UserlistUpdate(String title, String description, boolean isPublic, long listId) {
+	public UserListUpdate(String title, String description, boolean isPublic, long listId) {
 		this.title = title;
 		this.description = description;
 		this.isPublic = isPublic;

@@ -23,8 +23,8 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.update.DirectmessageUpdate;
 import org.nuclearfog.twidda.backend.async.MessageUpdater;
+import org.nuclearfog.twidda.backend.update.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -53,7 +53,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	private EditText receiver, message;
 	private ImageButton media, preview;
 
-	private DirectmessageUpdate holder = new DirectmessageUpdate();
+	private MessageUpdate holder = new MessageUpdate();
 
 	@Override
 	protected void attachBaseContext(Context newBase) {
@@ -201,7 +201,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		String message = this.message.getText().toString();
 		if (!username.trim().isEmpty() && (!message.trim().isEmpty() || holder.getMediaUri() != null)) {
 			if (holder.prepare(getContentResolver())) {
-				holder.setName(username);
+				holder.setReceiver(username);
 				holder.setText(message);
 				messageAsync = new MessageUpdater(this, holder);
 				messageAsync.execute();

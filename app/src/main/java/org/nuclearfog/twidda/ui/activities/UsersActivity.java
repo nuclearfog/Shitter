@@ -42,57 +42,57 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	/**
 	 * type of users to get from twitter
-	 * {@link #USERLIST_FRIENDS,#USERLIST_FOLLOWER,#USERLIST_RETWEETS,#USERLIST_FAVORIT,#USERLIST_EXCLUDED_USERS,#USERLIST_REQUESTS}
+	 * {@link #USERS_FRIENDS ,#USERS_FOLLOWER ,#USERS_REPOST ,#USERLIST_FAVORIT,#USERLIST_EXCLUDED_USERS,#USERLIST_REQUESTS}
 	 */
-	public static final String KEY_USERDETAIL_MODE = "userlist_mode";
+	public static final String KEY_USERS_MODE = "userlist_mode";
 
 	/**
-	 * ID of a userlist, an user or a tweet to get the users from
+	 * ID of a userlist, an user or a status to get the users from
 	 * value type is Long
 	 */
-	public static final String KEY_USERDETAIL_ID = "userlist_id";
+	public static final String KEY_USERS_ID = "userlist_id";
 
 	/**
 	 * friends of an user, requires user ID
 	 *
-	 * @see #KEY_USERDETAIL_MODE
+	 * @see #KEY_USERS_MODE
 	 */
-	public static final int USERLIST_FRIENDS = 0xDF893242;
+	public static final int USERS_FRIENDS = 0xDF893242;
 
 	/**
 	 * follower of an user, requires user ID
 	 *
-	 * @see #KEY_USERDETAIL_MODE
+	 * @see #KEY_USERS_MODE
 	 */
-	public static final int USERLIST_FOLLOWER = 0xA89F5968;
+	public static final int USERS_FOLLOWER = 0xA89F5968;
 
 	/**
-	 * user retweeting a tweet, requires tweet ID
+	 * user reposting a status, requires status ID
 	 *
-	 * @see #KEY_USERDETAIL_MODE
+	 * @see #KEY_USERS_MODE
 	 */
-	public static final int USERLIST_RETWEETS = 0x19F582E;
+	public static final int USERS_REPOST = 0x19F582E;
 
 	/**
-	 * user favoriting/liking a tweet, requires tweet ID
+	 * user favoriting/liking a status, requires status ID
 	 *
-	 * @see #KEY_USERDETAIL_MODE
+	 * @see #KEY_USERS_MODE
 	 */
-	public static final int USERLIST_FAVORIT = 0x9bcc3f99;
+	public static final int USERS_FAVORIT = 0x9bcc3f99;
 
 	/**
 	 * setup list to show excluded (muted, blocked) users
 	 *
-	 * @see #KEY_USERDETAIL_MODE
+	 * @see #KEY_USERS_MODE
 	 */
-	public static final int USERLIST_EXCLUDED_USERS = 0x896a786;
+	public static final int USERS_EXCLUDED = 0x896a786;
 
 	/**
 	 * setup list to show incoming & outgoing follow requests
 	 *
-	 * @see #KEY_USERDETAIL_MODE
+	 * @see #KEY_USERS_MODE
 	 */
-	public static final int USERLIST_REQUESTS = 0x0948693;
+	public static final int USERS_REQUESTS = 0x0948693;
 
 	private GlobalSettings settings;
 	private FilterLoader userExclTask;
@@ -124,32 +124,32 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 		settings = GlobalSettings.getInstance(this);
 
-		mode = getIntent().getIntExtra(KEY_USERDETAIL_MODE, 0);
-		long id = getIntent().getLongExtra(KEY_USERDETAIL_ID, -1);
+		mode = getIntent().getIntExtra(KEY_USERS_MODE, 0);
+		long id = getIntent().getLongExtra(KEY_USERS_ID, -1);
 
 		switch (mode) {
-			case USERLIST_FRIENDS:
+			case USERS_FRIENDS:
 				adapter.setupFollowingPage(id);
 				pager.setOffscreenPageLimit(1);
 				tablayout.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.userlist_following);
 				break;
 
-			case USERLIST_FOLLOWER:
+			case USERS_FOLLOWER:
 				adapter.setupFollowerPage(id);
 				pager.setOffscreenPageLimit(1);
 				tablayout.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.userlist_follower);
 				break;
 
-			case USERLIST_RETWEETS:
-				adapter.setupRetweeterPage(id);
+			case USERS_REPOST:
+				adapter.setupReposterPage(id);
 				pager.setOffscreenPageLimit(1);
 				tablayout.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.toolbar_userlist_retweet);
 				break;
 
-			case USERLIST_FAVORIT:
+			case USERS_FAVORIT:
 				int title = settings.likeEnabled() ? R.string.toolbar_tweet_liker : R.string.toolbar_tweet_favoriter;
 				adapter.setFavoriterPage(id);
 				pager.setOffscreenPageLimit(1);
@@ -157,7 +157,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				toolbar.setTitle(title);
 				break;
 
-			case USERLIST_EXCLUDED_USERS:
+			case USERS_EXCLUDED:
 				adapter.setupMuteBlockPage();
 				pager.setOffscreenPageLimit(2);
 				tablayout.setupWithViewPager(pager);
@@ -166,7 +166,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
 				break;
 
-			case USERLIST_REQUESTS:
+			case USERS_REQUESTS:
 				adapter.setupFollowRequestPage();
 				pager.setOffscreenPageLimit(2);
 				tablayout.setupWithViewPager(pager);
@@ -192,7 +192,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
-		if (mode == USERLIST_EXCLUDED_USERS) {
+		if (mode == USERS_EXCLUDED) {
 			getMenuInflater().inflate(R.menu.excludelist, m);
 			MenuItem search = m.findItem(R.id.menu_exclude_user);
 			SearchView searchView = (SearchView) search.getActionView();
@@ -208,7 +208,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu m) {
-		if (mode == USERLIST_EXCLUDED_USERS) {
+		if (mode == USERS_EXCLUDED) {
 			SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
 			if (tablayout.getSelectedTabPosition() == 0) {
 				String hint = getString(R.string.menu_hint_mute_user);

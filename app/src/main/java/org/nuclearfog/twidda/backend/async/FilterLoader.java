@@ -69,12 +69,12 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 
 				case MUTE_USER:
 					User user = connection.muteUser(names[0]);
-					appDatabase.storeUser(user);
+					appDatabase.saveUser(user);
 					break;
 
 				case BLOCK_USER:
 					user = connection.blockUser(names[0]);
-					appDatabase.storeUser(user);
+					appDatabase.saveUser(user);
 					break;
 			}
 		} catch (ConnectionException exception) {

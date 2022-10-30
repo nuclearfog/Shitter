@@ -26,7 +26,7 @@ public class UserImpl implements User {
 	private long created;
 	private int following;
 	private int follower;
-	private int tweetCount;
+	private int statusCount;
 	private int favorCount;
 	private String username;
 	private String screenName;
@@ -54,8 +54,8 @@ public class UserImpl implements User {
 		created = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.SINCE));
 		following = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FRIENDS));
 		follower = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FOLLOWER));
-		tweetCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.TWEETS));
-		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FAVORS));
+		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.STATUSES));
+		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FAVORITS));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserRegisterTable.REGISTER));
 		isVerified = (register & VER_MASK) != 0;
 		isLocked = (register & LCK_MASK) != 0;
@@ -136,8 +136,8 @@ public class UserImpl implements User {
 	}
 
 	@Override
-	public int getTweetCount() {
-		return tweetCount;
+	public int getStatusCount() {
+		return statusCount;
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 /**
  * This database class provides methods to load and store IDs of unwanted users.
- * Blocked users and their tweets will be excluded from Twitter search if enabled.
+ * Blocked users and their statuses will be excluded from Twitter search if enabled.
  *
  * @author nuclearfog
  */

@@ -58,52 +58,40 @@ public final class ErrorHandler {
 				case ConnectionException.RESOURCE_NOT_FOUND:
 					return context.getString(R.string.error_not_found);
 
-				case ConnectionException.CANT_SEND_DM:
-					return context.getString(R.string.error_send_dm_to_user);
-
 				case ConnectionException.NOT_AUTHORIZED:
 					return context.getString(R.string.error_not_authorized);
 
-				case ConnectionException.TWEET_TOO_LONG:
+				case ConnectionException.STATUS_LENGTH:
 					return context.getString(R.string.error_status_length);
 
-				case ConnectionException.DUPLICATE_TWEET:
+				case ConnectionException.DUPLICATE_STATUS:
 					return context.getString(R.string.error_duplicate_status);
 
-				case ConnectionException.NO_DM_TO_USER:
+				case ConnectionException.MESSAGE_NOT_SENT:
 					return context.getString(R.string.error_dm_send);
 
-				case ConnectionException.DM_TOO_LONG:
+				case ConnectionException.MESSAGE_LENGTH:
 					return context.getString(R.string.error_dm_length);
 
 				case ConnectionException.TOKEN_EXPIRED:
 					return context.getString(R.string.error_accesstoken);
 
-				case ConnectionException.NO_MEDIA_FOUND:
-					return context.getString(R.string.error_file_not_found);
-
-				case ConnectionException.NO_LINK_DEFINED:
-					return context.getString(R.string.error_token_not_set);
-
 				case ConnectionException.NO_CONNECTION:
 					return context.getString(R.string.error_connection_failed);
 
-				case ConnectionException.IMAGE_NOT_LOADED:
-					return context.getString(R.string.error_image_loading);
-
-				case ConnectionException.ACCESS_TOKEN_DEAD:
+				case ConnectionException.API_KEYS_ERROR:
 					return context.getString(R.string.error_corrupt_api_key);
 
-				case ConnectionException.TWEET_CANT_REPLY:
+				case ConnectionException.STATUS_CANT_REPLY:
 					return context.getString(R.string.error_cant_reply_to_tweet);
 
 				case ConnectionException.ACCOUNT_UPDATE_FAILED:
 					return context.getString(R.string.error_acc_update);
 
-				case ConnectionException.REQUEST_CANCELLED:
+				case ConnectionException.HTTP_TIMEOUT:
 					return context.getString(R.string.error_result_cancelled);
 
-				case ConnectionException.REQUEST_FORBIDDEN:
+				case ConnectionException.HTTP_FORBIDDEN:
 					return context.getString(R.string.error_forbidden_api_access);
 
 				case ConnectionException.INVALID_MEDIA:

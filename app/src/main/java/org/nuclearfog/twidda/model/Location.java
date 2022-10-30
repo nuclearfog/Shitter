@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.model;
 
 /**
- * interface for Twitter location implementation
+ * interface for location implementation
  *
  * @author nuclearfog
  */

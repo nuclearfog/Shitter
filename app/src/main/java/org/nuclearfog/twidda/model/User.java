@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.model;
 import java.io.Serializable;
 
 /**
- * interface for all user implementations
+ * interface for user implementations
  *
  * @author nuclearfog
  */
@@ -82,7 +82,7 @@ public interface User extends Serializable {
 	/**
 	 * @return number of tweets
 	 */
-	int getTweetCount();
+	int getStatusCount();
 
 	/**
 	 * @return number of favorites/likes

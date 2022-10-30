@@ -5,7 +5,7 @@
 	android:id="@+id/tweet_popup"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.activities.TweetEditor">
+	tools:context=".ui.activities.StatusEditor">
 
 	<ImageView
 		android:id="@+id/tweet_popup_background"

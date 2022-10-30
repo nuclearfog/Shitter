@@ -42,42 +42,42 @@ public class DatabaseAdapter {
 			+ UserTable.SINCE + " INTEGER,"
 			+ UserTable.FRIENDS + " INTEGER,"
 			+ UserTable.FOLLOWER + " INTEGER,"
-			+ UserTable.TWEETS + " INTEGER,"
-			+ UserTable.FAVORS + " INTEGER);";
+			+ UserTable.STATUSES + " INTEGER,"
+			+ UserTable.FAVORITS + " INTEGER);";
 
 	/**
-	 * SQL query to create a table for tweet information
+	 * SQL query to create a table for status information
 	 */
-	private static final String TABLE_TWEET = "CREATE TABLE IF NOT EXISTS "
-			+ TweetTable.NAME + "("
-			+ TweetTable.ID + " INTEGER PRIMARY KEY,"
-			+ TweetTable.USER + " INTEGER,"
-			+ TweetTable.EMBEDDED + " INTEGER,"
-			+ TweetTable.REPLYTWEET + " INTEGER,"
-			+ TweetTable.REPLYNAME + " TEXT,"
-			+ TweetTable.REPLYUSER + " INTEGER,"
-			+ TweetTable.SINCE + " INTEGER,"
-			+ TweetTable.TWEET + " TEXT,"
-			+ TweetTable.MEDIA + " TEXT,"
-			+ TweetTable.RETWEET + " INTEGER,"
-			+ TweetTable.FAVORITE + " INTEGER,"
-			+ TweetTable.SOURCE + " TEXT,"
-			+ TweetTable.PLACE + " TEXT,"
-			+ TweetTable.COORDINATE + " TEXT,"
-			+ "FOREIGN KEY(" + TweetTable.USER + ")"
+	private static final String TABLE_STATUS = "CREATE TABLE IF NOT EXISTS "
+			+ StatusTable.NAME + "("
+			+ StatusTable.ID + " INTEGER PRIMARY KEY,"
+			+ StatusTable.USER + " INTEGER,"
+			+ StatusTable.EMBEDDED + " INTEGER,"
+			+ StatusTable.REPLYSTATUS + " INTEGER,"
+			+ StatusTable.REPLYNAME + " TEXT,"
+			+ StatusTable.REPLYUSER + " INTEGER,"
+			+ StatusTable.SINCE + " INTEGER,"
+			+ StatusTable.TEXT + " TEXT,"
+			+ StatusTable.MEDIA + " TEXT,"
+			+ StatusTable.REPOST + " INTEGER,"
+			+ StatusTable.FAVORITE + " INTEGER,"
+			+ StatusTable.SOURCE + " TEXT,"
+			+ StatusTable.PLACE + " TEXT,"
+			+ StatusTable.COORDINATE + " TEXT,"
+			+ "FOREIGN KEY(" + StatusTable.USER + ")"
 			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "));";
 
 	/**
-	 * SQL query to create a table for favorite tweets
+	 * SQL query to create a table for favorite list
 	 */
-	private static final String TABLE_FAVORS = "CREATE TABLE IF NOT EXISTS "
+	private static final String TABLE_FAVORITES = "CREATE TABLE IF NOT EXISTS "
 			+ FavoriteTable.NAME + "("
-			+ FavoriteTable.FAVORITEDBY + " INTEGER,"
-			+ FavoriteTable.TWEETID + " INTEGER,"
-			+ "FOREIGN KEY(" + FavoriteTable.FAVORITEDBY + ")"
+			+ FavoriteTable.FAVORITER_ID + " INTEGER,"
+			+ FavoriteTable.STATUS_ID + " INTEGER,"
+			+ "FOREIGN KEY(" + FavoriteTable.FAVORITER_ID + ")"
 			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "),"
-			+ "FOREIGN KEY(" + FavoriteTable.TWEETID + ")"
-			+ "REFERENCES " + TweetTable.NAME + "(" + TweetTable.ID + "));";
+			+ "FOREIGN KEY(" + FavoriteTable.STATUS_ID + ")"
+			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
 
 	/**
 	 * SQL query to create a table for trend information
@@ -102,16 +102,16 @@ public class DatabaseAdapter {
 			+ MessageTable.MEDIA + " TEXT);";
 
 	/**
-	 * table for tweet register
+	 * table for status register
 	 */
-	private static final String TABLE_TWEET_REGISTER = "CREATE TABLE IF NOT EXISTS "
-			+ TweetRegisterTable.NAME + "("
-			+ TweetRegisterTable.OWNER + " INTEGER,"
-			+ TweetRegisterTable.ID + " INTEGER,"
-			+ TweetRegisterTable.REGISTER + " INTEGER,"
-			+ TweetRegisterTable.RETWEETUSER + " INTEGER,"
-			+ "FOREIGN KEY(" + TweetRegisterTable.ID + ")"
-			+ "REFERENCES " + TweetTable.NAME + "(" + TweetTable.ID + "));";
+	private static final String TABLE_STATUS_REGISTER = "CREATE TABLE IF NOT EXISTS "
+			+ StatusRegisterTable.NAME + "("
+			+ StatusRegisterTable.OWNER + " INTEGER,"
+			+ StatusRegisterTable.ID + " INTEGER,"
+			+ StatusRegisterTable.REGISTER + " INTEGER,"
+			+ StatusRegisterTable.REPOST_ID + " INTEGER,"
+			+ "FOREIGN KEY(" + StatusRegisterTable.ID + ")"
+			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
 
 	/**
 	 * table for user register
@@ -143,16 +143,16 @@ public class DatabaseAdapter {
 			+ UserExcludeTable.ID + " INTEGER);";
 
 	/**
-	 * table index for tweet table
+	 * table index for status table
 	 */
-	private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet"
-			+ " ON " + TweetTable.NAME + "(" + TweetTable.USER + ");";
+	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
+			+ " ON " + StatusTable.NAME + "(" + StatusTable.USER + ");";
 
 	/**
-	 * table index for tweet register
+	 * table index for status register
 	 */
-	private static final String INDX_TWEET_REG = "CREATE INDEX IF NOT EXISTS idx_tweet_register"
-			+ " ON " + TweetRegisterTable.NAME + "(" + TweetRegisterTable.OWNER + "," + TweetRegisterTable.ID + ");";
+	private static final String INDX_STATUS_REG = "CREATE INDEX IF NOT EXISTS idx_tweet_register"
+			+ " ON " + StatusRegisterTable.NAME + "(" + StatusRegisterTable.OWNER + "," + StatusRegisterTable.ID + ");";
 
 	/**
 	 * table index for user register
@@ -231,17 +231,17 @@ public class DatabaseAdapter {
 	private void initTables() {
 		// create tables
 		db.execSQL(TABLE_USER);
-		db.execSQL(TABLE_TWEET);
-		db.execSQL(TABLE_FAVORS);
+		db.execSQL(TABLE_STATUS);
+		db.execSQL(TABLE_FAVORITES);
 		db.execSQL(TABLE_TRENDS);
 		db.execSQL(TABLE_MESSAGES);
 		db.execSQL(TABLE_LOGINS);
 		db.execSQL(TABLE_USER_EXCLUDE);
-		db.execSQL(TABLE_TWEET_REGISTER);
+		db.execSQL(TABLE_STATUS_REGISTER);
 		db.execSQL(TABLE_USER_REGISTER);
 		// create index
-		db.execSQL(INDX_TWEET);
-		db.execSQL(INDX_TWEET_REG);
+		db.execSQL(INDX_STATUS);
+		db.execSQL(INDX_STATUS_REG);
 		db.execSQL(INDX_USER_REG);
 		if (db.getVersion() == 0) {
 			db.setVersion(DB_VERSION);
@@ -314,27 +314,27 @@ public class DatabaseAdapter {
 		String FOLLOWER = "follower";
 
 		/**
-		 * count of tweets written/retweeted by user
+		 * count of statuses posted by user
 		 */
-		String TWEETS = "tweetCount";
+		String STATUSES = "tweetCount";
 
 		/**
-		 * count of the tweets favored by the user
+		 * count of the statuses favored by the user
 		 */
-		String FAVORS = "favorCount";
+		String FAVORITS = "favorCount";
 	}
 
 	/**
-	 * table for all tweets
+	 * table for all status
 	 */
-	public interface TweetTable {
+	public interface StatusTable {
 		/**
 		 * table name
 		 */
 		String NAME = "tweet";
 
 		/**
-		 * ID of the tweet
+		 * ID of the status
 		 */
 		String ID = "tweetID";
 
@@ -344,19 +344,19 @@ public class DatabaseAdapter {
 		String USER = "userID";
 
 		/**
-		 * tweet text
+		 * status text
 		 */
-		String TWEET = "tweet";
+		String TEXT = "tweet";
 
 		/**
-		 * media links attached to the tweet
+		 * media links attached to the status
 		 */
 		String MEDIA = "media";
 
 		/**
-		 * retweet count
+		 * repost count
 		 */
-		String RETWEET = "retweet";
+		String REPOST = "retweet";
 
 		/**
 		 * favorite count
@@ -364,29 +364,29 @@ public class DatabaseAdapter {
 		String FAVORITE = "favorite";
 
 		/**
-		 * timestamp of the tweet
+		 * timestamp of the status
 		 */
 		String SINCE = "time";
 
 		/**
-		 * API source of the tweet
+		 * API source of the status
 		 */
 		String SOURCE = "source";
 
 		/**
-		 * place name of the tweet
+		 * place name of the status
 		 */
 		String PLACE = "place";
 
 		/**
-		 * GPS coordinate of the tweet
+		 * GPS coordinate of the status
 		 */
 		String COORDINATE = "geo";
 
 		/**
-		 * ID of the re plied tweet
+		 * ID of the replied status
 		 */
-		String REPLYTWEET = "replyID";
+		String REPLYSTATUS = "replyID";
 
 		/**
 		 * ID of the replied user
@@ -399,13 +399,13 @@ public class DatabaseAdapter {
 		String REPLYNAME = "replyname";
 
 		/**
-		 * ID of the embedded (retweeted) status
+		 * ID of the embedded (reposted) status
 		 */
 		String EMBEDDED = "retweetID";
 	}
 
 	/**
-	 * table for favored tweets of an user
+	 * table for favored statuses of an user
 	 */
 	public interface FavoriteTable {
 		/**
@@ -414,13 +414,14 @@ public class DatabaseAdapter {
 		String NAME = "favorit";
 
 		/**
-		 * ID of the tweet
+		 * ID of the status
 		 */
-		String TWEETID = "tweetID";
+		String STATUS_ID = "tweetID";
+
 		/**
-		 * ID of the user of this favored tweet
+		 * ID of the user of this favored status
 		 */
-		String FAVORITEDBY = "ownerID";
+		String FAVORITER_ID = "ownerID";
 	}
 
 	/**
@@ -524,16 +525,16 @@ public class DatabaseAdapter {
 	}
 
 	/**
-	 * table for tweet register
+	 * table for status register
 	 * <p>
-	 * a register contains status flags (status bits) of a tweet
-	 * every flag stands for a status like retweeted or favored
+	 * a register contains status flags (status bits) of a status
+	 * every flag stands for a status like reposted or favored
 	 * the idea is to save space by putting boolean rows into a single integer row
 	 * <p>
 	 * to avoid conflicts between multi users,
 	 * every login has its own status registers
 	 */
-	public interface TweetRegisterTable {
+	public interface StatusRegisterTable {
 		/**
 		 * SQL table name
 		 */
@@ -555,9 +556,9 @@ public class DatabaseAdapter {
 		String REGISTER = "tweetRegister";
 
 		/**
-		 * ID of the retweet of the current user (if exists)
+		 * ID of the repost of the current user (if exists)
 		 */
-		String RETWEETUSER = "retweeterID";
+		String REPOST_ID = "retweeterID";
 	}
 
 	/**

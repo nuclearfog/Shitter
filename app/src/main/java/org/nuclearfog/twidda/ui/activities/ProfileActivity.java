@@ -9,17 +9,17 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.ui.activities.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
 import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_ID;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_EXCLUDED_USERS;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_FOLLOWER;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_FRIENDS;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_REQUESTS;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_EXCLUDED;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FOLLOWER;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FRIENDS;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REQUESTS;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -348,11 +348,11 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		if (user != null) {
 			// write tweet
 			if (item.getItemId() == R.id.profile_tweet) {
-				Intent tweet = new Intent(this, TweetEditor.class);
+				Intent tweet = new Intent(this, StatusEditor.class);
 				if (!user.isCurrentUser()) {
 					// add username to tweet
 					String tweetPrefix = user.getScreenname() + " ";
-					tweet.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
+					tweet.putExtra(KEY_STATUS_EDITOR_TEXT, tweetPrefix);
 				}
 				startActivity(tweet);
 			}
@@ -415,13 +415,13 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			// open mute/block list
 			else if (item.getItemId() == R.id.profile_block_mute) {
 				Intent usersIntent = new Intent(this, UsersActivity.class);
-				usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_EXCLUDED_USERS);
+				usersIntent.putExtra(KEY_USERS_MODE, USERS_EXCLUDED);
 				startActivity(usersIntent);
 			}
 			// open request list
 			else if (item.getItemId() == R.id.profile_requests) {
 				Intent usersIntent = new Intent(this, UsersActivity.class);
-				usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_REQUESTS);
+				usersIntent.putExtra(KEY_USERS_MODE, USERS_REQUESTS);
 				startActivity(usersIntent);
 			}
 		}
@@ -456,9 +456,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		// open tweet link
 		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
-			Intent intent = new Intent(this, TweetActivity.class);
-			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
+			Intent intent = new Intent(this, StatusActivity.class);
+			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
 			startActivity(intent);
 		}
 		// open link in browser
@@ -480,8 +480,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			if (user != null && relation != null) {
 				if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
 					Intent usersIntent = new Intent(this, UsersActivity.class);
-					usersIntent.putExtra(KEY_USERDETAIL_ID, user.getId());
-					usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
+					usersIntent.putExtra(KEY_USERS_ID, user.getId());
+					usersIntent.putExtra(KEY_USERS_MODE, USERS_FRIENDS);
 					startActivity(usersIntent);
 				}
 			}
@@ -491,8 +491,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			if (user != null && relation != null) {
 				if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
 					Intent usersIntent = new Intent(this, UsersActivity.class);
-					usersIntent.putExtra(KEY_USERDETAIL_ID, user.getId());
-					usersIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
+					usersIntent.putExtra(KEY_USERS_ID, user.getId());
+					usersIntent.putExtra(KEY_USERS_MODE, USERS_FOLLOWER);
 					startActivity(usersIntent);
 				}
 			}
@@ -599,8 +599,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		follower.setText(formatter.format(user.getFollower()));
 		username.setText(user.getUsername());
 		screenName.setText(user.getScreenname());
-		if (user.getTweetCount() >= 0)
-			tabTweetCount[0].setText(formatter.format(user.getTweetCount()));
+		if (user.getStatusCount() >= 0)
+			tabTweetCount[0].setText(formatter.format(user.getStatusCount()));
 		else
 			tabTweetCount[0].setText("");
 		if (user.getFavoriteCount() >= 0)

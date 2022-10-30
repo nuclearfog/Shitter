@@ -23,7 +23,7 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.MessageHolder;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
-import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -60,7 +60,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	private Resources resources;
 	private Picasso picasso;
 
-	private Directmessages data = new Directmessages(null, null);
+	private Messages data = new Messages(null, null);
 	private int loadingIndex = NO_LOADING;
 
 	/**
@@ -79,7 +79,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	 * @param newData new message list
 	 */
 	@MainThread
-	public void setData(Directmessages newData) {
+	public void setData(Messages newData) {
 		disableLoading();
 		if (newData.isEmpty()) {
 			if (!data.isEmpty() && data.peekLast() == null) {

@@ -7,16 +7,16 @@ import static android.view.View.OnLongClickListener;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_REPLYID;
-import static org.nuclearfog.twidda.ui.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_FAVORIT;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_ANSWER;
+import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_REPLYID;
+import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FAVORIT;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REPOST;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_ID;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_MODE;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_REPLY;
 
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -49,18 +49,18 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.async.TweetAction;
+import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.LinkDialog;
-import org.nuclearfog.twidda.ui.fragments.TweetFragment;
+import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -71,56 +71,56 @@ import java.util.regex.Pattern;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
- * Tweet Activity for tweet and user information
+ * Status Activity to show status and user information
  *
  * @author nuclearfog
  */
-public class TweetActivity extends AppCompatActivity implements OnClickListener,
+public class StatusActivity extends AppCompatActivity implements OnClickListener,
 		OnLongClickListener, OnTagClickListener, OnConfirmListener {
 
 	/**
-	 * Activity result code to update existing tweet information
+	 * Activity result code to update existing status information
 	 */
-	public static final int RETURN_TWEET_UPDATE = 0x789CD38B;
+	public static final int RETURN_STATUS_UPDATE = 0x789CD38B;
 
 	/**
-	 * Activity result code if a tweet was not found or removed
+	 * Activity result code if a status was not found or removed
 	 */
-	public static final int RETURN_TWEET_REMOVED = 0x8B03DB84;
+	public static final int RETURN_STATUS_REMOVED = 0x8B03DB84;
 
 	/**
-	 * key used for tweet information
-	 * value type is {@link Tweet}
-	 * If no tweet object exists, {@link #KEY_TWEET_ID} and {@link #KEY_TWEET_NAME} will be used instead
+	 * key used for status information
+	 * value type is {@link Status}
+	 * If no status object exists, {@link #KEY_STATUS_ID} and {@link #KEY_STATUS_NAME} will be used instead
 	 */
-	public static final String KEY_TWEET_DATA = "tweet_data";
+	public static final String KEY_STATUS_DATA = "status_data";
 
 	/**
-	 * key for the Tweet ID value, alternative to {@link #KEY_TWEET_DATA}
+	 * key for the status ID value, alternative to {@link #KEY_STATUS_DATA}
 	 * value type is Long
 	 */
-	public static final String KEY_TWEET_ID = "tweet_tweet_id";
+	public static final String KEY_STATUS_ID = "status_id";
 
 	/**
-	 * key for the tweet author's name. alternative to {@link #KEY_TWEET_DATA}
+	 * key for the status author's name. alternative to {@link #KEY_STATUS_DATA}
 	 * value type is String
 	 */
-	public static final String KEY_TWEET_NAME = "tweet_author";
+	public static final String KEY_STATUS_NAME = "status_author";
 
 	/**
-	 * key to return updated tweet information
-	 * value type is {@link Tweet}
+	 * key to return updated status information
+	 * value type is {@link Status}
 	 */
-	public static final String INTENT_TWEET_UPDATE_DATA = "tweet_update_data";
+	public static final String INTENT_STATUS_UPDATE_DATA = "status_update_data";
 
 	/**
-	 * key to return a tweet ID if this tweet was deleted
+	 * key to return an ID if status was deleted
 	 * value type is Long
 	 */
-	public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
+	public static final String INTENT_STATUS_REMOVED_ID = "status_removed_id";
 
 	/**
-	 * regex pattern of a tweet URL
+	 * regex pattern of a status URL
 	 */
 	public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
@@ -129,19 +129,20 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	@Nullable
 	private ClipboardManager clip;
 	private GlobalSettings settings;
-	private TweetAction statusAsync;
+	private StatusAction statusAsync;
 	private Picasso picasso;
 
 	private LinkDialog linkPreview;
 	private ConfirmDialog confirmDialog;
 
-	private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, sensitive_media;
-	private Button ansButton, rtwButton, favButton, replyName, tweetLocGPS, retweeter;
-	private ImageView profile_img, mediaButton;
+	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
+	private Button ansButton, rtwButton, favButton, replyName, coordinates, repostName;
+	private ImageView profileImage, mediaButton;
 	private Toolbar toolbar;
 
 	@Nullable
-	private Tweet tweet;
+	private Status status;
+	private long id;
 	private boolean hidden;
 
 
@@ -154,54 +155,53 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	@Override
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
-		setContentView(R.layout.page_tweet);
+		setContentView(R.layout.page_status);
 		ViewGroup root = findViewById(R.id.tweet_layout);
 		toolbar = findViewById(R.id.tweet_toolbar);
 		ansButton = findViewById(R.id.tweet_answer);
 		rtwButton = findViewById(R.id.tweet_retweet);
 		favButton = findViewById(R.id.tweet_favorite);
-		usrName = findViewById(R.id.tweet_username);
-		scrName = findViewById(R.id.tweet_screenname);
-		profile_img = findViewById(R.id.tweet_profile);
+		userName = findViewById(R.id.tweet_username);
+		screenName = findViewById(R.id.tweet_screenname);
+		profileImage = findViewById(R.id.tweet_profile);
 		replyName = findViewById(R.id.tweet_answer_reference);
-		tweetText = findViewById(R.id.tweet_detailed);
-		tweetDate = findViewById(R.id.tweet_date);
-		tweet_api = findViewById(R.id.tweet_api);
-		tweetLocName = findViewById(R.id.tweet_location_name);
-		tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
+		statusText = findViewById(R.id.tweet_detailed);
+		createdAt = findViewById(R.id.tweet_date);
+		statusApi = findViewById(R.id.tweet_api);
+		locationName = findViewById(R.id.tweet_location_name);
+		coordinates = findViewById(R.id.tweet_location_coordinate);
 		mediaButton = findViewById(R.id.tweet_media_attach);
 		sensitive_media = findViewById(R.id.tweet_sensitive);
-		retweeter = findViewById(R.id.tweet_retweeter_reference);
+		repostName = findViewById(R.id.tweet_retweeter_reference);
 
 		// get parameter
-		Object data = getIntent().getSerializableExtra(KEY_TWEET_DATA);
-		long tweetId;
+		Object data = getIntent().getSerializableExtra(KEY_STATUS_DATA);
 		String username;
-		if (data instanceof Tweet) {
-			tweet = (Tweet) data;
-			Tweet embedded = tweet.getEmbeddedTweet();
+		if (data instanceof Status) {
+			status = (Status) data;
+			Status embedded = status.getEmbeddedStatus();
 			if (embedded != null) {
 				username = embedded.getAuthor().getScreenname();
-				tweetId = embedded.getId();
+				id = embedded.getId();
 			} else {
-				username = tweet.getAuthor().getScreenname();
-				tweetId = tweet.getId();
-				hidden = tweet.isHidden();
+				username = status.getAuthor().getScreenname();
+				id = status.getId();
+				hidden = status.isHidden();
 			}
 		} else {
-			username = getIntent().getStringExtra(KEY_TWEET_NAME);
-			tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
+			username = getIntent().getStringExtra(KEY_STATUS_NAME);
+			id = getIntent().getLongExtra(KEY_STATUS_ID, -1);
 		}
 
-		// create list fragment for tweet replies
+		// create list fragment for status replies
 		Bundle param = new Bundle();
-		param.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_ANSWER);
-		param.putString(KEY_FRAG_TWEET_SEARCH, username);
-		param.putLong(KEY_FRAG_TWEET_ID, tweetId);
+		param.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_REPLY);
+		param.putString(KEY_STATUS_FRAGMENT_SEARCH, username);
+		param.putLong(KEY_STATUS_FRAGMENT_ID, id);
 
 		// insert fragment into view
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.tweet_reply_fragment, TweetFragment.class, param);
+		fragmentTransaction.replace(R.id.tweet_reply_fragment, StatusFragment.class, param);
 		fragmentTransaction.commit();
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -209,12 +209,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		settings = GlobalSettings.getInstance(this);
 		ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-		tweetLocGPS.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
+		coordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
 		sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
 		replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
-		retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-		tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
-		tweetText.setLinkTextColor(settings.getHighlightColor());
+		repostName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
+		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
+		statusText.setLinkTextColor(settings.getHighlightColor());
 		if (settings.likeEnabled()) {
 			favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like, 0, 0, 0);
 		} else {
@@ -229,18 +229,18 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		confirmDialog = new ConfirmDialog(this);
 
 		confirmDialog.setConfirmListener(this);
-		retweeter.setOnClickListener(this);
+		repostName.setOnClickListener(this);
 		replyName.setOnClickListener(this);
 		ansButton.setOnClickListener(this);
 		rtwButton.setOnClickListener(this);
 		favButton.setOnClickListener(this);
-		profile_img.setOnClickListener(this);
-		tweetLocGPS.setOnClickListener(this);
+		profileImage.setOnClickListener(this);
+		coordinates.setOnClickListener(this);
 		mediaButton.setOnClickListener(this);
 		rtwButton.setOnLongClickListener(this);
 		favButton.setOnLongClickListener(this);
-		retweeter.setOnLongClickListener(this);
-		tweetLocGPS.setOnLongClickListener(this);
+		repostName.setOnLongClickListener(this);
+		coordinates.setOnLongClickListener(this);
 	}
 
 
@@ -248,17 +248,16 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	protected void onStart() {
 		super.onStart();
 		if (statusAsync == null) {
-			// print Tweet object and get and update it
-			if (tweet != null) {
-				statusAsync = new TweetAction(this, TweetAction.LOAD);
-				statusAsync.execute(tweet.getId());
-				setTweet(tweet);
+			// print status object and get and update it
+			if (status != null) {
+				statusAsync = new StatusAction(this, StatusAction.LOAD_ONLINE);
+				statusAsync.execute(status.getId());
+				setStatus(status);
 			}
-			// Load Tweet from database first if no tweet is defined
+			// Load status from database first if no status is defined
 			else {
-				long tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
-				statusAsync = new TweetAction(this, TweetAction.LD_DB);
-				statusAsync.execute(tweetId);
+				statusAsync = new StatusAction(this, StatusAction.LOAD_DATABASE);
+				statusAsync.execute(id);
 			}
 		}
 	}
@@ -276,8 +275,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	@Override
 	public void onBackPressed() {
 		Intent returnData = new Intent();
-		returnData.putExtra(INTENT_TWEET_UPDATE_DATA, tweet);
-		setResult(RETURN_TWEET_UPDATE, returnData);
+		returnData.putExtra(INTENT_STATUS_UPDATE_DATA, status);
+		setResult(RETURN_STATUS_UPDATE, returnData);
 		super.onBackPressed();
 	}
 
@@ -292,7 +291,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public boolean onPrepareOptionsMenu(@NonNull Menu m) {
-		if (tweet == null)
+		if (status == null)
 			return super.onPrepareOptionsMenu(m);
 
 		MenuItem optDelete = m.findItem(R.id.menu_tweet_delete);
@@ -301,12 +300,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 		MenuItem optMetrics = m.findItem(R.id.menu_tweet_metrics);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
-		Tweet currentTweet = tweet;
-		if (tweet.getEmbeddedTweet() != null) {
-			currentTweet = tweet.getEmbeddedTweet();
+		Status status = this.status;
+		if (status.getEmbeddedStatus() != null) {
+			status = status.getEmbeddedStatus();
 		}
-		if (currentTweet.getRepliedUserId() == settings.getCurrentUserId()
-				&& currentTweet.getAuthor().getId() != settings.getCurrentUserId()) {
+		if (status.getRepliedUserId() == settings.getCurrentUserId()
+				&& status.getAuthor().getId() != settings.getCurrentUserId()) {
 			optHide.setVisible(true);
 			if (hidden) {
 				optHide.setTitle(R.string.menu_tweet_unhide);
@@ -314,16 +313,16 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 				optHide.setTitle(R.string.menu_tweet_hide);
 			}
 		}
-		if (currentTweet.getAuthor().isCurrentUser()) {
+		if (status.getAuthor().isCurrentUser()) {
 			optDelete.setVisible(true);
-			if (new Date().getTime() - currentTweet.getTimestamp() < 2419200000L) {
+			if (new Date().getTime() - status.getTimestamp() < 2419200000L) {
 				optMetrics.setVisible(true);
 			}
 		}
 		// add media link items
 		// check if menu doesn't contain media links already
 		if (copyMenu.size() == 2) {
-			int mediaCount = currentTweet.getMediaUris().length;
+			int mediaCount = status.getMediaUris().length;
 			for (int i = 0; i < mediaCount; i++) {
 				// create sub menu entry and use array index as item ID
 				String text = getString(R.string.menu_media_link) + ' ' + (i + 1);
@@ -336,68 +335,68 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (tweet == null)
+		if (status == null)
 			return super.onOptionsItemSelected(item);
 
-		Tweet clickedTweet = tweet;
-		if (tweet.getEmbeddedTweet() != null)
-			clickedTweet = tweet.getEmbeddedTweet();
-		User author = clickedTweet.getAuthor();
-		// Delete tweet option
+		Status status = this.status;
+		if (status.getEmbeddedStatus() != null)
+			status = status.getEmbeddedStatus();
+		User author = status.getAuthor();
+		// Delete status option
 		if (item.getItemId() == R.id.menu_tweet_delete) {
-			confirmDialog.show(ConfirmDialog.TWEET_DELETE);
+			confirmDialog.show(ConfirmDialog.DELETE_STATUS);
 		}
-		// hide tweet
+		// hide status
 		else if (item.getItemId() == R.id.menu_tweet_hide) {
 			if (hidden) {
-				statusAsync = new TweetAction(this, TweetAction.UNHIDE);
+				statusAsync = new StatusAction(this, StatusAction.UNHIDE);
 			} else {
-				statusAsync = new TweetAction(this, TweetAction.HIDE);
+				statusAsync = new StatusAction(this, StatusAction.HIDE);
 			}
-			statusAsync.execute(tweet.getId());
+			statusAsync.execute(this.status.getId());
 		}
-		// get tweet link
+		// get status link
 		else if (item.getItemId() == R.id.menu_tweet_browser) {
 			String username = author.getScreenname().substring(1);
-			String tweetLink = settings.getTwitterHostname() + username + "/status/" + clickedTweet.getId();
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
+			String link = settings.getTwitterHostname() + username + "/status/" + status.getId();
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
 				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
 		}
-		// copy tweet link to clipboard
+		// copy status link to clipboard
 		else if (item.getItemId() == R.id.menu_tweet_copy_text) {
 			if (clip != null) {
-				ClipData linkClip = ClipData.newPlainText("tweet text", clickedTweet.getText());
+				ClipData linkClip = ClipData.newPlainText("status text", status.getText());
 				clip.setPrimaryClip(linkClip);
 				Toast.makeText(this, R.string.info_tweet_text_copied, LENGTH_SHORT).show();
 			}
 		}
-		// copy tweet link to clipboard
+		// copy status link to clipboard
 		else if (item.getItemId() == R.id.menu_tweet_copy_tweetlink) {
 			String username = author.getScreenname().substring(1);
-			String tweetLink = settings.getTwitterHostname() + username + "/status/" + clickedTweet.getId();
+			String link = settings.getTwitterHostname() + username + "/status/" + status.getId();
 			if (clip != null) {
-				ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
+				ClipData linkClip = ClipData.newPlainText("status link", link);
 				clip.setPrimaryClip(linkClip);
 				Toast.makeText(this, R.string.info_tweet_link_copied, LENGTH_SHORT).show();
 			}
 		}
-		// open tweet metrics page
+		// open status metrics page
 		else if (item.getItemId() == R.id.menu_tweet_metrics) {
 			Intent metricsIntent = new Intent(getApplicationContext(), MetricsActivity.class);
-			metricsIntent.putExtra(MetricsActivity.KEY_METRICS_TWEET, clickedTweet);
+			metricsIntent.putExtra(MetricsActivity.KEY_METRICS_STATUS, status);
 			startActivity(metricsIntent);
 		}
 		// copy media links
 		else if (item.getGroupId() == MENU_GROUP_COPY) {
 			int index = item.getItemId();
-			Uri[] mediaLinks = clickedTweet.getMediaUris();
+			Uri[] mediaLinks = status.getMediaUris();
 			if (index >= 0 && index < mediaLinks.length) {
 				if (clip != null) {
-					ClipData linkClip = ClipData.newPlainText("tweet media link", mediaLinks[index].toString());
+					ClipData linkClip = ClipData.newPlainText("status media link", mediaLinks[index].toString());
 					clip.setPrimaryClip(linkClip);
 					Toast.makeText(this, R.string.info_tweet_medialink_copied, LENGTH_SHORT).show();
 				}
@@ -409,69 +408,69 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public void onClick(View v) {
-		if (tweet != null) {
-			Tweet clickedTweet = tweet;
-			if (tweet.getEmbeddedTweet() != null)
-				clickedTweet = tweet.getEmbeddedTweet();
-			// answer to the tweet
+		if (status != null) {
+			Status status = this.status;
+			if (status.getEmbeddedStatus() != null)
+				status = status.getEmbeddedStatus();
+			// answer to the status
 			if (v.getId() == R.id.tweet_answer) {
-				String tweetPrefix = clickedTweet.getUserMentions();
-				Intent tweetPopup = new Intent(this, TweetEditor.class);
-				tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, clickedTweet.getId());
-				if (!tweetPrefix.isEmpty())
-					tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
-				startActivity(tweetPopup);
+				String prefix = status.getUserMentions();
+				Intent intent = new Intent(this, StatusEditor.class);
+				intent.putExtra(KEY_STATUS_EDITOR_REPLYID, status.getId());
+				if (!prefix.isEmpty())
+					intent.putExtra(KEY_STATUS_EDITOR_TEXT, prefix);
+				startActivity(intent);
 			}
-			// show user retweeting this tweet
+			// show user reposting this status
 			else if (v.getId() == R.id.tweet_retweet) {
 				Intent userList = new Intent(this, UsersActivity.class);
-				userList.putExtra(KEY_USERDETAIL_ID, clickedTweet.getId());
-				userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
+				userList.putExtra(KEY_USERS_ID, status.getId());
+				userList.putExtra(KEY_USERS_MODE, USERS_REPOST);
 				startActivity(userList);
 			}
-			// show user favoriting this tweet
+			// show user favoriting this status
 			else if (v.getId() == R.id.tweet_favorite) {
 				Intent userList = new Intent(this, UsersActivity.class);
-				userList.putExtra(KEY_USERDETAIL_ID, clickedTweet.getId());
-				userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_FAVORIT);
+				userList.putExtra(KEY_USERS_ID, status.getId());
+				userList.putExtra(KEY_USERS_MODE, USERS_FAVORIT);
 				startActivity(userList);
 			}
-			// open profile of the tweet author
+			// open profile of the status author
 			else if (v.getId() == R.id.tweet_profile) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, clickedTweet.getAuthor());
+				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, status.getAuthor());
 				startActivity(profile);
 			}
-			// open replied tweet
+			// open replied status
 			else if (v.getId() == R.id.tweet_answer_reference) {
-				Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
-				answerIntent.putExtra(KEY_TWEET_ID, clickedTweet.getRepliedTweetId());
-				answerIntent.putExtra(KEY_TWEET_NAME, clickedTweet.getReplyName());
+				Intent answerIntent = new Intent(getApplicationContext(), StatusActivity.class);
+				answerIntent.putExtra(KEY_STATUS_ID, status.getRepliedStatusId());
+				answerIntent.putExtra(KEY_STATUS_NAME, status.getReplyName());
 				startActivity(answerIntent);
 			}
-			// open tweet location coordinates
+			// open status location coordinates
 			else if (v.getId() == R.id.tweet_location_coordinate) {
 				Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-				locationIntent.setData(Uri.parse("geo:" + clickedTweet.getLocationCoordinates() + "?z=14"));
+				locationIntent.setData(Uri.parse("geo:" + status.getLocationCoordinates() + "?z=14"));
 				try {
 					startActivity(locationIntent);
 				} catch (ActivityNotFoundException err) {
 					Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
 				}
 			}
-			// open tweet media
+			// open status media
 			else if (v.getId() == R.id.tweet_media_attach) {
 				// open embedded image links
-				if (clickedTweet.getMediaType() == Tweet.MEDIA_PHOTO) {
+				if (status.getMediaType() == Status.MEDIA_PHOTO) {
 					Intent mediaIntent = new Intent(this, ImageViewer.class);
-					mediaIntent.putExtra(ImageViewer.IMAGE_URIS, clickedTweet.getMediaUris());
+					mediaIntent.putExtra(ImageViewer.IMAGE_URIS, status.getMediaUris());
 					mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
 					startActivity(mediaIntent);
 				}
 				// open embedded video link
-				else if (clickedTweet.getMediaType() == Tweet.MEDIA_VIDEO) {
+				else if (status.getMediaType() == Status.MEDIA_VIDEO) {
 					if (!settings.isProxyEnabled() || (settings.isProxyEnabled() && settings.ignoreProxyWarning())) {
-						Uri link = clickedTweet.getMediaUris()[0];
+						Uri link = status.getMediaUris()[0];
 						Intent mediaIntent = new Intent(this, VideoViewer.class);
 						mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
 						mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
@@ -481,18 +480,18 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 					}
 				}
 				// open embedded gif link
-				else if (clickedTweet.getMediaType() == Tweet.MEDIA_GIF) {
-					Uri link = clickedTweet.getMediaUris()[0];
+				else if (status.getMediaType() == Status.MEDIA_GIF) {
+					Uri link = status.getMediaUris()[0];
 					Intent mediaIntent = new Intent(this, VideoViewer.class);
 					mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
 					mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
 					startActivity(mediaIntent);
 				}
 			}
-			// go to user retweeting this tweet
+			// go to user reposting this status
 			else if (v.getId() == R.id.tweet_retweeter_reference) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, tweet.getAuthor());
+				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, this.status.getAuthor());
 				startActivity(profile);
 			}
 		}
@@ -501,51 +500,51 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public boolean onLongClick(View v) {
-		if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
-			// retweet this tweet
+		if (status != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
+			// repost this status
 			if (v.getId() == R.id.tweet_retweet) {
-				if (tweet.isRetweeted()) {
-					statusAsync = new TweetAction(this, TweetAction.UNRETWEET);
+				if (status.isReposted()) {
+					statusAsync = new StatusAction(this, StatusAction.REMOVE_REPOST);
 				} else {
-					statusAsync = new TweetAction(this, TweetAction.RETWEET);
+					statusAsync = new StatusAction(this, StatusAction.REPOST);
 				}
 
-				if (tweet.getEmbeddedTweet() != null)
-					statusAsync.execute(tweet.getId(), tweet.getEmbeddedTweet().getRetweetId());
+				if (status.getEmbeddedStatus() != null)
+					statusAsync.execute(status.getId(), status.getEmbeddedStatus().getRepostId());
 				else
-					statusAsync.execute(tweet.getId());
+					statusAsync.execute(status.getId());
 				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
-			// favorite the tweet
+			// favorite this status
 			else if (v.getId() == R.id.tweet_favorite) {
-				if (tweet.isFavorited()) {
-					statusAsync = new TweetAction(this, TweetAction.UNFAVORITE);
+				if (status.isFavorited()) {
+					statusAsync = new StatusAction(this, StatusAction.UNFAVORITE);
 				} else {
-					statusAsync = new TweetAction(this, TweetAction.FAVORITE);
+					statusAsync = new StatusAction(this, StatusAction.FAVORITE);
 				}
-				statusAsync.execute(tweet.getId());
+				statusAsync.execute(status.getId());
 				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
-			// go to original tweet
+			// go to original status
 			else if (v.getId() == R.id.tweet_retweeter_reference) {
-				Tweet embeddedTweet = tweet.getEmbeddedTweet();
-				if (embeddedTweet != null) {
-					Intent tweetIntent = new Intent(this, TweetActivity.class);
-					tweetIntent.putExtra(KEY_TWEET_DATA, embeddedTweet);
-					startActivity(tweetIntent);
+				Status embeddedStatus = status.getEmbeddedStatus();
+				if (embeddedStatus != null) {
+					Intent intent = new Intent(this, StatusActivity.class);
+					intent.putExtra(KEY_STATUS_DATA, embeddedStatus);
+					startActivity(intent);
 				}
 			}
-			// copy tweet coordinates
+			// copy status coordinates
 			else if (v.getId() == R.id.tweet_location_coordinate) {
 				if (clip != null) {
 					ClipData linkClip;
-					Tweet embeddedTweet = tweet.getEmbeddedTweet();
-					if (embeddedTweet != null)
-						linkClip = ClipData.newPlainText("Tweet location coordinates", embeddedTweet.getLocationCoordinates());
+					Status embeddedStatus = status.getEmbeddedStatus();
+					if (embeddedStatus != null)
+						linkClip = ClipData.newPlainText("Status location coordinates", embeddedStatus.getLocationCoordinates());
 					else
-						linkClip = ClipData.newPlainText("Tweet location coordinates", tweet.getLocationCoordinates());
+						linkClip = ClipData.newPlainText("Status location coordinates", status.getLocationCoordinates());
 					clip.setPrimaryClip(linkClip);
 					Toast.makeText(this, R.string.info_tweet_location_copied, LENGTH_SHORT).show();
 				}
@@ -557,18 +556,20 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
-		if (tweet != null) {
-			Tweet clickedTweet = tweet;
-			if (tweet.getEmbeddedTweet() != null) {
-				clickedTweet = tweet.getEmbeddedTweet();
+		if (status != null) {
+			Status status = this.status;
+			if (status.getEmbeddedStatus() != null) {
+				status = status.getEmbeddedStatus();
 			}
-			if (type == ConfirmDialog.TWEET_DELETE) {
-				statusAsync = new TweetAction(this, TweetAction.DELETE);
-				statusAsync.execute(clickedTweet.getId(), clickedTweet.getRetweetId());
-			} else if (type == ConfirmDialog.PROXY_CONFIRM) {
+			// delete status
+			if (type == ConfirmDialog.DELETE_STATUS) {
+				statusAsync = new StatusAction(this, StatusAction.DELETE);
+				statusAsync.execute(status.getId(), status.getRepostId());
+			}
+			// confirm playing video without proxy
+			else if (type == ConfirmDialog.PROXY_CONFIRM) {
 				settings.setIgnoreProxyWarning(rememberChoice);
-
-				Uri link = clickedTweet.getMediaUris()[0];
+				Uri link = status.getMediaUris()[0];
 				Intent mediaIntent = new Intent(this, VideoViewer.class);
 				mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
 				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
@@ -593,12 +594,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	@Override
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
-		// check if the link points to another tweet
+		// check if the link points to another status
 		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
-			Intent intent = new Intent(this, TweetActivity.class);
-			intent.putExtra(KEY_TWEET_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(KEY_TWEET_NAME, segments.get(0));
+			Intent intent = new Intent(this, StatusActivity.class);
+			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
+			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
 			startActivity(intent);
 		}
 		// open link in browser or preview
@@ -620,83 +621,83 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 
 	/**
-	 * load tweet into UI
+	 * load status into UI
 	 *
-	 * @param tweetUpdate Tweet information
+	 * @param status Tweet information
 	 */
-	public void setTweet(Tweet tweetUpdate) {
-		tweet = tweetUpdate;
-		if (tweetUpdate.getEmbeddedTweet() != null) {
-			tweetUpdate = tweetUpdate.getEmbeddedTweet();
-			retweeter.setText(tweet.getAuthor().getScreenname());
-			retweeter.setVisibility(VISIBLE);
+	public void setStatus(Status status) {
+		this.status = status;
+		if (status.getEmbeddedStatus() != null) {
+			repostName.setVisibility(VISIBLE);
+			repostName.setText(status.getAuthor().getScreenname());
+			status = status.getEmbeddedStatus();
 		} else {
-			retweeter.setVisibility(GONE);
+			repostName.setVisibility(GONE);
 		}
-		User author = tweetUpdate.getAuthor();
+		User author = status.getAuthor();
 		invalidateOptionsMenu();
 
 		NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
-		if (tweetUpdate.isRetweeted()) {
-			AppStyles.setDrawableColor(rtwButton, settings.getRetweetIconColor());
+		if (status.isReposted()) {
+			AppStyles.setDrawableColor(rtwButton, settings.getRepostIconColor());
 		} else {
 			AppStyles.setDrawableColor(rtwButton, settings.getIconColor());
 		}
-		if (tweetUpdate.isFavorited()) {
+		if (status.isFavorited()) {
 			AppStyles.setDrawableColor(favButton, settings.getFavoriteIconColor());
 		} else {
 			AppStyles.setDrawableColor(favButton, settings.getIconColor());
 		}
 		if (author.isVerified()) {
-			usrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-			AppStyles.setDrawableColor(usrName, settings.getIconColor());
+			userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+			AppStyles.setDrawableColor(userName, settings.getIconColor());
 		} else {
-			usrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
 		if (author.isProtected()) {
-			scrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-			AppStyles.setDrawableColor(scrName, settings.getIconColor());
+			screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+			AppStyles.setDrawableColor(screenName, settings.getIconColor());
 		} else {
-			scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
-		usrName.setText(author.getUsername());
-		scrName.setText(author.getScreenname());
-		tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweetUpdate.getTimestamp()));
-		favButton.setText(buttonNumber.format(tweetUpdate.getFavoriteCount()));
-		rtwButton.setText(buttonNumber.format(tweetUpdate.getRetweetCount()));
-		tweet_api.setText(R.string.tweet_sent_from);
-		tweet_api.append(tweetUpdate.getSource());
+		userName.setText(author.getUsername());
+		screenName.setText(author.getScreenname());
+		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
+		favButton.setText(buttonNumber.format(status.getFavoriteCount()));
+		rtwButton.setText(buttonNumber.format(status.getRepostCount()));
+		statusApi.setText(R.string.tweet_sent_from);
+		statusApi.append(status.getSource());
 
-		if (!tweetUpdate.getText().isEmpty()) {
-			Spannable sTweet = Tagger.makeTextWithLinks(tweetUpdate.getText(), settings.getHighlightColor(), this);
-			tweetText.setVisibility(VISIBLE);
-			tweetText.setText(sTweet);
+		if (!status.getText().isEmpty()) {
+			Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
+			statusText.setVisibility(VISIBLE);
+			statusText.setText(spannableText);
 		} else {
-			tweetText.setVisibility(GONE);
+			statusText.setVisibility(GONE);
 		}
-		if (tweetUpdate.getRepliedTweetId() > 0) {
-			replyName.setText(tweetUpdate.getReplyName());
+		if (status.getRepliedStatusId() > 0) {
+			replyName.setText(status.getReplyName());
 			replyName.setVisibility(VISIBLE);
 		} else {
 			replyName.setVisibility(GONE);
 		}
-		if (tweetUpdate.isSensitive()) {
+		if (status.isSensitive()) {
 			sensitive_media.setVisibility(VISIBLE);
 		} else {
 			sensitive_media.setVisibility(GONE);
 		}
-		switch (tweetUpdate.getMediaType()) {
-			case Tweet.MEDIA_PHOTO:
+		switch (status.getMediaType()) {
+			case Status.MEDIA_PHOTO:
 				mediaButton.setVisibility(VISIBLE);
 				mediaButton.setImageResource(R.drawable.image);
 				break;
 
-			case Tweet.MEDIA_VIDEO:
+			case Status.MEDIA_VIDEO:
 				mediaButton.setVisibility(VISIBLE);
 				mediaButton.setImageResource(R.drawable.video);
 				break;
 
-			case Tweet.MEDIA_GIF:
+			case Status.MEDIA_GIF:
 				mediaButton.setVisibility(VISIBLE);
 				mediaButton.setImageResource(R.drawable.gif);
 				break;
@@ -714,23 +715,23 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 			} else {
 				profileImageUrl = author.getImageUrl();
 			}
-			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(4, 0)).error(R.drawable.no_image).into(profile_img);
+			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(4, 0)).error(R.drawable.no_image).into(profileImage);
 		} else {
-			profile_img.setImageResource(0);
+			profileImage.setImageResource(0);
 		}
-		String placeName = tweetUpdate.getLocationName();
+		String placeName = status.getLocationName();
 		if (placeName != null && !placeName.isEmpty()) {
-			tweetLocName.setVisibility(VISIBLE);
-			tweetLocName.setText(placeName);
+			locationName.setVisibility(VISIBLE);
+			locationName.setText(placeName);
 		} else {
-			tweetLocName.setVisibility(GONE);
+			locationName.setVisibility(GONE);
 		}
-		String location = tweetUpdate.getLocationCoordinates();
+		String location = status.getLocationCoordinates();
 		if (!location.isEmpty()) {
-			tweetLocGPS.setVisibility(VISIBLE);
-			tweetLocGPS.setText(location);
+			coordinates.setVisibility(VISIBLE);
+			coordinates.setText(location);
 		} else {
-			tweetLocGPS.setVisibility(GONE);
+			coordinates.setVisibility(GONE);
 		}
 		if (rtwButton.getVisibility() != VISIBLE) {
 			rtwButton.setVisibility(VISIBLE);
@@ -740,56 +741,56 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	}
 
 	/**
-	 * called after a tweet action
+	 * called after a status action
 	 *
 	 * @param action action type
 	 */
 	public void OnSuccess(int action) {
 		switch (action) {
-			case TweetAction.RETWEET:
+			case StatusAction.REPOST:
 				Toast.makeText(this, R.string.info_tweet_retweeted, LENGTH_SHORT).show();
 				break;
 
-			case TweetAction.UNRETWEET:
+			case StatusAction.REMOVE_REPOST:
 				Toast.makeText(this, R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
 				// todo remove old retweet from list fragment
 				break;
 
-			case TweetAction.FAVORITE:
+			case StatusAction.FAVORITE:
 				if (settings.likeEnabled())
 					Toast.makeText(this, R.string.info_tweet_liked, LENGTH_SHORT).show();
 				else
 					Toast.makeText(this, R.string.info_tweet_favored, LENGTH_SHORT).show();
 				break;
 
-			case TweetAction.UNFAVORITE:
+			case StatusAction.UNFAVORITE:
 				if (settings.likeEnabled())
 					Toast.makeText(this, R.string.info_tweet_unliked, LENGTH_SHORT).show();
 				else
 					Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
 				break;
 
-			case TweetAction.HIDE:
+			case StatusAction.HIDE:
 				hidden = true;
 				invalidateOptionsMenu();
 				Toast.makeText(this, R.string.info_reply_hidden, LENGTH_SHORT).show();
 				break;
 
-			case TweetAction.UNHIDE:
+			case StatusAction.UNHIDE:
 				hidden = false;
 				invalidateOptionsMenu();
 				Toast.makeText(this, R.string.info_reply_unhidden, LENGTH_SHORT).show();
 				break;
 
-			case TweetAction.DELETE:
-				if (tweet != null) {
+			case StatusAction.DELETE:
+				if (status != null) {
 					Toast.makeText(this, R.string.info_tweet_removed, LENGTH_SHORT).show();
 					Intent returnData = new Intent();
-					if (tweet.getEmbeddedTweet() != null)
-						returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweet.getEmbeddedTweet().getId());
+					if (status.getEmbeddedStatus() != null)
+						returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());
 					else
-						returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweet.getId());
-					setResult(RETURN_TWEET_REMOVED, returnData);
+						returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+					setResult(RETURN_STATUS_REMOVED, returnData);
 					finish();
 				}
 				break;
@@ -803,14 +804,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 	 */
 	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(this, error);
-		if (tweet == null) {
+		if (status == null) {
 			finish();
 		} else {
 			if (error != null && error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-				// Mark tweet as removed, so it can be removed from the list
+				// Mark status as removed, so it can be removed from the list
 				Intent returnData = new Intent();
-				returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweet.getId());
-				setResult(RETURN_TWEET_REMOVED, returnData);
+				returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+				setResult(RETURN_STATUS_REMOVED, returnData);
 				finish();
 			}
 		}

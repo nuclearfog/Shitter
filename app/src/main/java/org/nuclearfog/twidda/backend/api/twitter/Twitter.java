@@ -18,15 +18,15 @@ import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserV2;
-import org.nuclearfog.twidda.backend.api.twitter.update.MediaUpdate;
-import org.nuclearfog.twidda.backend.api.twitter.update.ProfileUpdate;
-import org.nuclearfog.twidda.backend.api.twitter.update.TweetUpdate;
-import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
-import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
 import org.nuclearfog.twidda.backend.proxy.UserProxy;
+import org.nuclearfog.twidda.backend.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.update.StatusUpdate;
+import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.FilterDatabase;
@@ -34,8 +34,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
-import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -302,14 +302,14 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Users getRetweetingUsers(long tweetId) throws TwitterException {
+	public Users getRepostingUsers(long tweetId) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
 		return getUsers2(endpoint);
 	}
 
 
 	@Override
-	public Users getLikingUsers(long tweetId) throws TwitterException {
+	public Users getFavoritingUsers(long tweetId) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/liking_users";
 		return getUsers2(endpoint);
 	}
@@ -489,7 +489,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Tweet> searchTweets(String search, long minId, long maxId) throws TwitterException {
+	public List<Status> searchStatuses(String search, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -497,7 +497,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 			params.add("max_id=" + maxId);
 		params.add("q=" + StringTools.encode(search + " +exclude:retweets"));
 		params.add("result_type=recent");
-		List<Tweet> result = getTweets1(TWEET_SEARCH, params);
+		List<Status> result = getTweets1(TWEET_SEARCH, params);
 		if (settings.filterResults())
 			filterTweets(result);
 		return result;
@@ -550,7 +550,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Tweet> getHomeTimeline(long minId, long maxId) throws TwitterException {
+	public List<Status> getHomeTimeline(long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -561,7 +561,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Tweet> getMentionTimeline(long minId, long maxId) throws TwitterException {
+	public List<Status> getMentionTimeline(long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -572,7 +572,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Tweet> getUserTimeline(long userId, long minId, long maxId) throws TwitterException {
+	public List<Status> getUserTimeline(long userId, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -584,19 +584,19 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Tweet> getUserTimeline(String screen_name, long minId, long maxId) throws TwitterException {
+	public List<Status> getUserTimeline(String name, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
 		if (maxId > 1)
 			params.add("max_id=" + maxId);
-		params.add("screen_name=" + StringTools.encode(screen_name));
+		params.add("screen_name=" + StringTools.encode(name));
 		return getTweets1(TWEETS_USER, params);
 	}
 
 
 	@Override
-	public List<Tweet> getUserFavorits(long userId, long minId, long maxId) throws TwitterException {
+	public List<Status> getUserFavorits(long userId, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -608,19 +608,19 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Tweet> getUserFavorits(String screen_name, long minId, long maxId) throws TwitterException {
+	public List<Status> getUserFavorits(String name, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
 		if (maxId > 1)
 			params.add("max_id=" + maxId);
-		params.add("screen_name=" + StringTools.encode(screen_name));
+		params.add("screen_name=" + StringTools.encode(name));
 		return getTweets1(TWEETS_USER_FAVORITS, params);
 	}
 
 
 	@Override
-	public List<Tweet> getUserlistTweets(long listId, long minId, long maxId) throws TwitterException {
+	public List<Status> getUserlistTweets(long listId, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -632,7 +632,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public List<Tweet> getTweetReplies(String screen_name, long tweetId, long minId, long maxId) throws TwitterException {
+	public List<Status> getTweetReplies(String screen_name, long tweetId, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
@@ -644,10 +644,10 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 			screen_name = screen_name.substring(1);
 		params.add("result_type=recent");
 		params.add("q=" + StringTools.encode("to:" + StringTools.encode(screen_name) + " +exclude:retweets"));
-		List<Tweet> result = getTweets1(TWEET_SEARCH, params);
-		List<Tweet> replies = new LinkedList<>();
-		for (Tweet reply : result) {
-			if (reply.getRepliedTweetId() == tweetId) {
+		List<Status> result = getTweets1(TWEET_SEARCH, params);
+		List<Status> replies = new LinkedList<>();
+		for (Status reply : result) {
+			if (reply.getRepliedStatusId() == tweetId) {
 				replies.add(reply);
 			}
 		}
@@ -658,7 +658,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Tweet showTweet(long tweetId) throws TwitterException {
+	public Status showStatus(long tweetId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + tweetId);
 		return getTweet1(TWEET_LOOKUP, params);
@@ -666,7 +666,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Tweet favoriteTweet(long tweetId) throws TwitterException {
+	public Status favoriteStatus(long tweetId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + tweetId);
 		TweetV1 result = getTweet1(TWEET_FAVORITE, params);
@@ -676,7 +676,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Tweet unfavoriteTweet(long tweetId) throws TwitterException {
+	public Status unfavoriteStatus(long tweetId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + tweetId);
 		TweetV1 result = getTweet1(TWEET_UNFAVORITE, params);
@@ -686,7 +686,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Tweet retweetTweet(long tweetId) throws TwitterException {
+	public Status repostStatus(long tweetId) throws TwitterException {
 		TweetV1 result = getTweet1(TWEET_RETWEET + tweetId + JSON, new ArrayList<>());
 		result.setRetweet(true);
 		return result;
@@ -694,7 +694,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Tweet unretweetTweet(long tweetId) throws TwitterException {
+	public Status removeRepost(long tweetId) throws TwitterException {
 		TweetV1 result = getTweet1(TWEET_UNRETWEET + tweetId + JSON, new ArrayList<>());
 		result.setRetweet(false);
 		return result;
@@ -721,13 +721,13 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public void deleteTweet(long tweetId) throws TwitterException {
+	public void deleteStatus(long tweetId) throws TwitterException {
 		getTweet1(TWEET_DELETE + tweetId + JSON, new ArrayList<>());
 	}
 
 
 	@Override
-	public void uploadTweet(TweetUpdate update, long[] mediaIds) throws TwitterException {
+	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("status=" + StringTools.encode(update.getText()));
 		if (update.getReplyId() > 0)
@@ -750,7 +750,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public UserList createUserlist(UserlistUpdate update) throws TwitterException {
+	public UserList createUserlist(UserListUpdate update) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("name=" + StringTools.encode(update.getTitle()));
 		params.add("description=" + StringTools.encode(update.getDescription()));
@@ -763,7 +763,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public UserList updateUserlist(UserlistUpdate update) throws TwitterException {
+	public UserList updateUserlist(UserListUpdate update) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + update.getId());
 		params.add("name=" + StringTools.encode(update.getTitle()));
@@ -909,7 +909,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 
 
 	@Override
-	public Directmessages getDirectmessages(String cursor) throws TwitterException {
+	public Messages getDirectmessages(String cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("count=" + settings.getListSize());
 		if (cursor != null && !cursor.isEmpty())
@@ -923,7 +923,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 				JSONObject json = new JSONObject(body.string());
 				String nextCursor = json.optString("next_cursor");
 				JSONArray array = json.getJSONArray("events");
-				Directmessages result = new Directmessages(cursor, nextCursor);
+				Messages result = new Messages(cursor, nextCursor);
 				for (int pos = 0; pos < array.length(); pos++) {
 					JSONObject item = array.getJSONObject(pos);
 					try {
@@ -1156,7 +1156,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 	 * @param params   additional parameters
 	 * @return list of tweets
 	 */
-	private List<Tweet> getTweets1(String endpoint, List<String> params) throws TwitterException {
+	private List<Status> getTweets1(String endpoint, List<String> params) throws TwitterException {
 		try {
 			params.add(TweetV1.EXT_MODE);
 			params.add(TweetV1.INCL_RT_ID);
@@ -1171,7 +1171,7 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 				else
 					array = new JSONArray(body.string());
 				long homeId = settings.getCurrentUserId();
-				List<Tweet> tweets = new ArrayList<>(array.length() + 1);
+				List<Status> tweets = new ArrayList<>(array.length() + 1);
 				for (int i = 0; i < array.length(); i++) {
 					try {
 						tweets.add(new TweetV1(array.getJSONObject(i), homeId));
@@ -1211,8 +1211,8 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 				TweetV1 result = new TweetV1(json, currentId);
 				// fix: embedded tweet information doesn't match with the parent tweet
 				//      re-downloading embedded tweet information
-				if (result.getEmbeddedTweet() != null) {
-					Tweet embedded = showTweet(result.getEmbeddedTweet().getId());
+				if (result.getEmbeddedStatus() != null) {
+					Status embedded = showStatus(result.getEmbeddedStatus().getId());
 					result.setEmbeddedTweet(embedded);
 				}
 				return result;
@@ -1489,11 +1489,11 @@ public class Twitter implements org.nuclearfog.twidda.backend.api.Connection, Gl
 	/**
 	 * filter tweets from blocked users
 	 */
-	private void filterTweets(List<Tweet> tweets) {
+	private void filterTweets(List<Status> tweets) {
 		Set<Long> excludedIds = filterDatabase.getFilteredUserIds();
 		for (int pos = tweets.size() - 1; pos >= 0; pos--) {
 			long authorId = tweets.get(pos).getAuthor().getId();
-			Tweet embeddedTweet = tweets.get(pos).getEmbeddedTweet();
+			Status embeddedTweet = tweets.get(pos).getEmbeddedStatus();
 			if (excludedIds.contains(authorId)) {
 				tweets.remove(pos);
 			} else if (embeddedTweet != null) {

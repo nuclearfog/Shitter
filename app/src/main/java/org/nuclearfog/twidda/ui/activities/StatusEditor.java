@@ -26,8 +26,8 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.update.TweetUpdate;
-import org.nuclearfog.twidda.backend.async.TweetUpdater;
+import org.nuclearfog.twidda.backend.async.StatusUpdater;
+import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -38,45 +38,45 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 
 /**
- * Tweet editor activity. Media files and location can be attached to a tweet.
+ * Status editor activity.
  *
  * @author nuclearfog
  */
-public class TweetEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener {
+public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener {
 
 	/**
-	 * key for the replied tweet if any
+	 * key to add a statusd ID to reply
 	 * value type is Long
 	 */
-	public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
+	public static final String KEY_STATUS_EDITOR_REPLYID = "status_reply_id";
 
 	/**
-	 * key for the text added to the tweet if any
+	 * key for the text added to the status if any
 	 * value type is String
 	 */
-	public static final String KEY_TWEETPOPUP_TEXT = "tweet_text";
+	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
 
 	private static final String MIME_GIF = "image/gif";
 	private static final String MIME_IMAGE_ALL = "image/";
 	private static final String MIME_VIDEO_ALL = "video/";
 
 	/**
-	 * image limit of a tweet
+	 * image limit of a status
 	 */
 	private static final int MAX_IMAGES = 4;
 
 	/**
-	 * video limit of a tweet
+	 * video limit of a status
 	 */
 	private static final int MAX_VIDEOS = 1;
 
 	/**
-	 * gif limit of a tweet
+	 * gif limit of a status
 	 */
 	private static final int MAX_GIF = 1;
 
 	/**
-	 * mention limit of a tweet
+	 * mention limit of a status
 	 */
 	private static final int MAX_MENTIONS = 10;
 
@@ -85,17 +85,17 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	private static final int MEDIA_VIDEO = 2;
 	private static final int MEDIA_GIF = 3;
 
-	private TweetUpdater uploaderAsync;
+	private StatusUpdater uploaderAsync;
 	private GlobalSettings settings;
 
 	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
 
 	private ImageButton mediaBtn, previewBtn, locationBtn;
-	private EditText tweetText;
+	private EditText statusText;
 	private View locationPending;
 
-	private TweetUpdate tweetUpdate = new TweetUpdate();
+	private StatusUpdate statusUpdate = new StatusUpdate();
 	private int selectedFormat = MEDIA_NONE;
 
 
@@ -108,15 +108,15 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	@Override
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
-		setContentView(R.layout.popup_tweet);
+		setContentView(R.layout.popup_status);
 		ViewGroup root = findViewById(R.id.tweet_popup);
 		ImageView background = findViewById(R.id.tweet_popup_background);
-		ImageButton tweetButton = findViewById(R.id.tweet_send);
+		ImageButton statusButton = findViewById(R.id.tweet_send);
 		ImageButton closeButton = findViewById(R.id.close);
 		locationBtn = findViewById(R.id.tweet_add_location);
 		mediaBtn = findViewById(R.id.tweet_add_media);
 		previewBtn = findViewById(R.id.tweet_prev_media);
-		tweetText = findViewById(R.id.tweet_input);
+		statusText = findViewById(R.id.tweet_input);
 		locationPending = findViewById(R.id.location_progress);
 
 		settings = GlobalSettings.getInstance(this);
@@ -124,16 +124,16 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		confirmDialog = new ConfirmDialog(this);
 		AppStyles.setEditorTheme(root, background);
 
-		long inReplyId = getIntent().getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
-		String prefix = getIntent().getStringExtra(KEY_TWEETPOPUP_TEXT);
+		long inReplyId = getIntent().getLongExtra(KEY_STATUS_EDITOR_REPLYID, 0);
+		String prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
 
-		tweetUpdate.setReplyId(inReplyId);
+		statusUpdate.setReplyId(inReplyId);
 		if (prefix != null) {
-			tweetText.append(prefix);
+			statusText.append(prefix);
 		}
 
 		closeButton.setOnClickListener(this);
-		tweetButton.setOnClickListener(this);
+		statusButton.setOnClickListener(this);
 		mediaBtn.setOnClickListener(this);
 		previewBtn.setOnClickListener(this);
 		locationBtn.setOnClickListener(this);
@@ -172,15 +172,15 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 	@Override
 	public void onClick(View v) {
-		// send tweet
+		// send status
 		if (v.getId() == R.id.tweet_send) {
-			String tweetStr = tweetText.getText().toString();
-			// check if tweet is empty
-			if (tweetStr.trim().isEmpty() && tweetUpdate.mediaCount() == 0) {
+			String statusText = this.statusText.getText().toString();
+			// check if status is empty
+			if (statusText.trim().isEmpty() && statusUpdate.mediaCount() == 0) {
 				Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
 			}
 			// check if mentions exceed the limit
-			else if (StringTools.countMentions(tweetStr) > MAX_MENTIONS) {
+			else if (StringTools.countMentions(statusText) > MAX_MENTIONS) {
 				Toast.makeText(this, R.string.error_mention_exceed, LENGTH_SHORT).show();
 			}
 			// check if GPS location is pending
@@ -189,14 +189,14 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 			}
 			// check if gps locating is not pending
 			else if (uploaderAsync == null || uploaderAsync.getStatus() != RUNNING) {
-				updateTweet();
+				updateStatus();
 			}
 		}
-		// close tweet editor
+		// show closing message
 		else if (v.getId() == R.id.close) {
 			showClosingMsg();
 		}
-		// Add media to the tweet
+		// Add media to the status
 		else if (v.getId() == R.id.tweet_add_media) {
 			if (selectedFormat == MEDIA_NONE) {
 				// request images/videos
@@ -208,7 +208,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		}
 		// open media preview
 		else if (v.getId() == R.id.tweet_prev_media) {
-			Uri[] uris = tweetUpdate.getMediaUris();
+			Uri[] uris = statusUpdate.getMediaUris();
 			//
 			if (selectedFormat == MEDIA_VIDEO) {
 				Intent mediaViewer = new Intent(this, VideoViewer.class);
@@ -232,7 +232,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 				startActivity(mediaViewer);
 			}
 		}
-		// add location to the tweet
+		// add location to the status
 		else if (v.getId() == R.id.tweet_add_location) {
 			locationPending.setVisibility(VISIBLE);
 			locationBtn.setVisibility(INVISIBLE);
@@ -244,7 +244,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	@Override
 	protected void onAttachLocation(@Nullable Location location) {
 		if (location != null) {
-			tweetUpdate.setLocation(location);
+			statusUpdate.setLocation(location);
 			Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
 		} else {
 			Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
@@ -264,7 +264,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		// check if file is a 'gif' image
 		else if (mime.equals(MIME_GIF)) {
 			if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_GIF) {
-				mediaCount = addTweetMedia(uri, R.drawable.gif, MAX_GIF);
+				mediaCount = addStatusMedia(uri, R.drawable.gif, MAX_GIF);
 				if (mediaCount > 0) {
 					selectedFormat = MEDIA_GIF;
 				}
@@ -273,7 +273,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		// check if file is an image
 		else if (mime.startsWith(MIME_IMAGE_ALL)) {
 			if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_IMAGE) {
-				mediaCount = addTweetMedia(uri, R.drawable.image, MAX_IMAGES);
+				mediaCount = addStatusMedia(uri, R.drawable.image, MAX_IMAGES);
 				if (mediaCount > 0) {
 					selectedFormat = MEDIA_IMAGE;
 				}
@@ -282,7 +282,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 		// check if file is a video
 		else if (mime.startsWith(MIME_VIDEO_ALL)) {
 			if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_VIDEO) {
-				mediaCount = addTweetMedia(uri, R.drawable.video, MAX_VIDEOS);
+				mediaCount = addStatusMedia(uri, R.drawable.video, MAX_VIDEOS);
 				if (mediaCount > 0) {
 					selectedFormat = MEDIA_VIDEO;
 				}
@@ -305,18 +305,18 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
-		// retry uploading tweet
-		if (type == ConfirmDialog.TWEET_EDITOR_ERROR) {
-			updateTweet();
+		// retry uploading status
+		if (type == ConfirmDialog.STATUS_EDITOR_ERROR) {
+			updateStatus();
 		}
 		// leave editor
-		else if (type == ConfirmDialog.TWEET_EDITOR_LEAVE) {
+		else if (type == ConfirmDialog.STATUS_EDITOR_LEAVE) {
 			finish();
 		}
 	}
 
 	/**
-	 * called after sending tweet
+	 * called if status was updated successfully
 	 */
 	public void onSuccess() {
 		Toast.makeText(this, R.string.info_tweet_sent, LENGTH_LONG).show();
@@ -324,37 +324,37 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	}
 
 	/**
-	 * Show confirmation dialog if an error occurs while sending tweet
+	 * Show confirmation dialog if an error occurs while sending status
 	 */
 	public void onError(@Nullable ConnectionException error) {
 		String message = ErrorHandler.getErrorMessage(this, error);
-		confirmDialog.show(ConfirmDialog.TWEET_EDITOR_ERROR, message);
+		confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}
 
 	/**
-	 * show confirmation dialog when closing edited tweet
+	 * show confirmation dialog when closing edited status
 	 */
 	private void showClosingMsg() {
-		if (tweetText.length() > 0 || tweetUpdate.mediaCount() > 0 || tweetUpdate.hasLocation()) {
-			confirmDialog.show(ConfirmDialog.TWEET_EDITOR_LEAVE);
+		if (statusText.length() > 0 || statusUpdate.mediaCount() > 0 || statusUpdate.hasLocation()) {
+			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_LEAVE);
 		} else {
 			finish();
 		}
 	}
 
 	/**
-	 * attach media to the tweet
+	 * attach media to the status
 	 *
 	 * @param uri   Uri link of the media
 	 * @param icon  icon of the preview button
 	 * @param limit limit of the media count
 	 * @return media count or -1 if adding failed
 	 */
-	private int addTweetMedia(Uri uri, @DrawableRes int icon, int limit) {
+	private int addStatusMedia(Uri uri, @DrawableRes int icon, int limit) {
 		previewBtn.setImageResource(icon);
 		AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
-		int mediaCount = tweetUpdate.addMedia(this, uri);
+		int mediaCount = statusUpdate.addMedia(this, uri);
 		if (mediaCount > 0)
 			previewBtn.setVisibility(VISIBLE);
 		// if limit reached, remove mediaselect button
@@ -365,17 +365,17 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 	}
 
 	/**
-	 * start uploading tweet and media files
+	 * start uploading status and media files
 	 */
-	private void updateTweet() {
+	private void updateStatus() {
 		// first initialize filestreams of the media files
-		if (tweetUpdate.prepare(getContentResolver())) {
-			String tweetStr = tweetText.getText().toString();
+		if (statusUpdate.prepare(getContentResolver())) {
+			String statusText = this.statusText.getText().toString();
 			// add media
-			tweetUpdate.setText(tweetStr);
-			// send tweet
-			uploaderAsync = new TweetUpdater(this);
-			uploaderAsync.execute(tweetUpdate);
+			statusUpdate.setText(statusText);
+			// send status
+			uploaderAsync = new StatusUpdater(this);
+			uploaderAsync.execute(statusUpdate);
 			// show progress dialog
 			loadingCircle.show();
 		} else {

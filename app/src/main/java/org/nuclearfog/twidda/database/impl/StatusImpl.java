@@ -16,17 +16,17 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.regex.Pattern;
 
 /**
- * Implementation of a database tweet
+ * Implementation of a database STATUS
  *
  * @author nuclearfog
  */
-public class TweetImpl implements Tweet {
+public class StatusImpl implements Status {
 
 	private static final long serialVersionUID = -5957556706939766801L;
 
@@ -37,11 +37,11 @@ public class TweetImpl implements Tweet {
 	private long embeddedId;
 	private long replyID;
 	private long replyUserId;
-	private long myRetweetId;
+	private long myRepostId;
 	@Nullable
-	private Tweet embedded;
+	private Status embedded;
 	private User author;
-	private int retweetCount;
+	private int repostCount;
 	private int favoriteCount;
 	private int mediaType;
 	private String locationName;
@@ -51,42 +51,42 @@ public class TweetImpl implements Tweet {
 	private String source;
 	private String userMentions;
 	private String[] mediaLinks = {};
-	private boolean retweeted;
+	private boolean reposted;
 	private boolean favorited;
 	private boolean sensitive;
 	private boolean isHidden;
 
 
-	public TweetImpl(Cursor cursor, long currentUserId) {
+	public StatusImpl(Cursor cursor, long currentUserId) {
 		author = new UserImpl(cursor, currentUserId);
-		time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.SINCE));
-		text = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.TWEET));
-		retweetCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.RETWEET));
-		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.FAVORITE));
-		id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.ID));
-		replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYNAME));
-		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYTWEET));
-		source = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.SOURCE));
-		String linkStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.MEDIA));
-		locationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.PLACE));
-		locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.COORDINATE));
-		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.REPLYUSER));
-		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetTable.EMBEDDED));
-		myRetweetId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetRegisterTable.RETWEETUSER));
-		int tweetRegister = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TweetRegisterTable.REGISTER));
-		favorited = (tweetRegister & FAV_MASK) != 0;
-		retweeted = (tweetRegister & RTW_MASK) != 0;
-		sensitive = (tweetRegister & MEDIA_SENS_MASK) != 0;
-		isHidden = (tweetRegister & HIDDEN_MASK) != 0;
+		time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SINCE));
+		text = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.TEXT));
+		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPOST));
+		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.FAVORITE));
+		id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.ID));
+		replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYNAME));
+		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYSTATUS));
+		source = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SOURCE));
+		String linkStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.MEDIA));
+		locationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.PLACE));
+		locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.COORDINATE));
+		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYUSER));
+		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.EMBEDDED));
+		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REPOST_ID));
+		int register = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REGISTER));
+		favorited = (register & FAV_MASK) != 0;
+		reposted = (register & RTW_MASK) != 0;
+		sensitive = (register & MEDIA_SENS_MASK) != 0;
+		isHidden = (register & HIDDEN_MASK) != 0;
 		if (!linkStr.isEmpty())
 			mediaLinks = SEPARATOR.split(linkStr);
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		// get media type
-		if ((tweetRegister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
+		if ((register & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
 			mediaType = MEDIA_GIF;
-		} else if ((tweetRegister & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK) {
+		} else if ((register & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK) {
 			mediaType = MEDIA_PHOTO;
-		} else if ((tweetRegister & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK) {
+		} else if ((register & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK) {
 			mediaType = MEDIA_VIDEO;
 		} else {
 			mediaType = MEDIA_NONE;
@@ -120,7 +120,7 @@ public class TweetImpl implements Tweet {
 
 	@Nullable
 	@Override
-	public Tweet getEmbeddedTweet() {
+	public Status getEmbeddedStatus() {
 		return embedded;
 	}
 
@@ -135,18 +135,18 @@ public class TweetImpl implements Tweet {
 	}
 
 	@Override
-	public long getRepliedTweetId() {
+	public long getRepliedStatusId() {
 		return replyID;
 	}
 
 	@Override
-	public long getRetweetId() {
-		return myRetweetId;
+	public long getRepostId() {
+		return myRepostId;
 	}
 
 	@Override
-	public int getRetweetCount() {
-		return retweetCount;
+	public int getRepostCount() {
+		return repostCount;
 	}
 
 	@Override
@@ -179,8 +179,8 @@ public class TweetImpl implements Tweet {
 	}
 
 	@Override
-	public boolean isRetweeted() {
-		return retweeted;
+	public boolean isReposted() {
+		return reposted;
 	}
 
 	@Override
@@ -205,9 +205,9 @@ public class TweetImpl implements Tweet {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Tweet))
+		if (!(obj instanceof Status))
 			return false;
-		return ((Tweet) obj).getId() == id;
+		return ((Status) obj).getId() == id;
 	}
 
 	@NonNull
@@ -217,20 +217,20 @@ public class TweetImpl implements Tweet {
 	}
 
 	/**
-	 * get ID of the embedded tweet
+	 * get ID of the embedded status
 	 *
 	 * @return ID of the
 	 */
-	public long getEmbeddedTweetId() {
+	public long getEmbeddedStatusId() {
 		return embeddedId;
 	}
 
 	/**
-	 * attach tweet referenced by {@link #embeddedId}
+	 * attach status referenced by {@link #embeddedId}
 	 *
-	 * @param embedded embedded tweet
+	 * @param embedded embedded status
 	 */
-	public void addEmbeddedTweet(Tweet embedded) {
+	public void setEmbeddedStatus(Status embedded) {
 		this.embedded = embedded;
 	}
 }

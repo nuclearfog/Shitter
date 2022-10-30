@@ -48,12 +48,12 @@ public class MetricsV2 implements Metrics {
 	}
 
 	@Override
-	public int getRetweets() {
+	public int getReposts() {
 		return retweets;
 	}
 
 	@Override
-	public int getLikes() {
+	public int getFavorits() {
 		return likes;
 	}
 

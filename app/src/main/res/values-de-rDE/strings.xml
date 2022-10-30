@@ -59,7 +59,6 @@
 	<string name="profile_link">Link</string>
 	<string name="close_dm">Direktnachricht schließen</string>
 	<string name="error_user_not_found">Nutzer nicht gefunden!</string>
-	<string name="error_send_dm_to_user">Nachricht kann nicht an den User gesendet werden!</string>
 	<string name="error_accesstoken">Ungültiger Zugang! Bitte neu einloggen!</string>
 	<string name="error_status_length">Status ist zu lang!</string>
 	<string name="error_duplicate_status">Tweet wurde schon versendet!</string>
@@ -96,7 +95,6 @@
 	<string name="info_gps_attached">GPS Position hinzugefügt</string>
 	<string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
 	<string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
-	<string name="error_token_not_set">Bitte zuerst link anklicken!</string>
 	<string name="item_list_pb_desc">Profil des Listeninhabers</string>
 	<string name="list_appbar">Listen</string>
 	<string name="edit_description_hint">Profilebeschreibung eingeben</string>
@@ -117,9 +115,7 @@
 	<string name="error_invalid_link">Ungültiger Link!</string>
 	<string name="settings_app_information">App Quellcode:</string>
 	<string name="error_rate_limit">Zu viele Anfragen! Bitte 15 Minuten warten!</string>
-	<string name="error_file_not_found">Datei nicht gefunden!</string>
 	<string name="item_load_more">Mehr laden</string>
-	<string name="error_image_loading">Bild konnte nicht geladen werden!</string>
 	<string name="item_image_save">Bild speichern</string>
 	<string name="error_cant_load_video">Video kann nicht abgespielt werden!</string>
 	<string name="settings_enable_proxy">Proxy aktivieren</string>

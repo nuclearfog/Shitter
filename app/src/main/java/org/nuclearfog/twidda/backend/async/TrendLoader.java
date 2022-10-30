@@ -51,11 +51,11 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 				trends = db.getTrends(woeId);
 				if (trends.isEmpty()) {
 					trends = connection.getTrends(woeId);
-					db.storeTrends(trends, woeId);
+					db.saveTrends(trends, woeId);
 				}
 			} else {
 				trends = connection.getTrends(woeId);
-				db.storeTrends(trends, woeId);
+				db.saveTrends(trends, woeId);
 			}
 			return trends;
 		} catch (ConnectionException exception) {

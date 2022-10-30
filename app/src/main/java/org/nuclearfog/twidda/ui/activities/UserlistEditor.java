@@ -20,8 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.update.UserlistUpdate;
 import org.nuclearfog.twidda.backend.async.ListUpdater;
+import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.UserList;
@@ -199,13 +199,13 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		if (titleStr.trim().isEmpty()) {
 			Toast.makeText(this, R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
 		} else {
-			UserlistUpdate mHolder;
+			UserListUpdate mHolder;
 			if (userList != null) {
 				// update existing list
-				mHolder = new UserlistUpdate(titleStr, descrStr, isPublic, userList.getId());
+				mHolder = new UserListUpdate(titleStr, descrStr, isPublic, userList.getId());
 			} else {
 				// create new one
-				mHolder = new UserlistUpdate(titleStr, descrStr, isPublic, UserlistUpdate.NEW_LIST);
+				mHolder = new UserListUpdate(titleStr, descrStr, isPublic, UserListUpdate.NEW_LIST);
 			}
 			updaterAsync = new ListUpdater(this, mHolder);
 			updaterAsync.execute();

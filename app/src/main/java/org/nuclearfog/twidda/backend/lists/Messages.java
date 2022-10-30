@@ -12,7 +12,7 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class Directmessages extends LinkedList<Message> {
+public class Messages extends LinkedList<Message> {
 
 	private static final long serialVersionUID = 7877548659917419256L;
 
@@ -22,7 +22,7 @@ public class Directmessages extends LinkedList<Message> {
 	 * @param prevCursor cursor to a previous list
 	 * @param nextCursor cursor to a next list
 	 */
-	public Directmessages(String prevCursor, String nextCursor) {
+	public Messages(String prevCursor, String nextCursor) {
 		super();
 		this.prevCursor = prevCursor;
 		this.nextCursor = nextCursor;
@@ -39,7 +39,7 @@ public class Directmessages extends LinkedList<Message> {
 	 *
 	 * @param list new list
 	 */
-	public void replaceAll(Directmessages list) {
+	public void replaceAll(Messages list) {
 		super.clear();
 		super.addAll(list);
 		prevCursor = list.prevCursor;
@@ -52,7 +52,7 @@ public class Directmessages extends LinkedList<Message> {
 	 * @param list  new list
 	 * @param index Index of the sub list
 	 */
-	public void addAt(Directmessages list, int index) {
+	public void addAt(Messages list, int index) {
 		super.addAll(index, list);
 		nextCursor = list.nextCursor;
 	}

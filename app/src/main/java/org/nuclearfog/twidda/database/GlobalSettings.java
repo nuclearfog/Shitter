@@ -356,7 +356,7 @@ public class GlobalSettings {
 	 *
 	 * @return icon color
 	 */
-	public int getRetweetIconColor() {
+	public int getRepostIconColor() {
 		return retweet_color;
 	}
 
@@ -586,7 +586,7 @@ public class GlobalSettings {
 	/**
 	 * @return true if tweet indicators enabled
 	 */
-	public boolean tweetIndicatorsEnabled() {
+	public boolean statusIndicatorsEnabled() {
 		return tweetIndicators;
 	}
 

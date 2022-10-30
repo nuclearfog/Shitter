@@ -1,14 +1,14 @@
 package org.nuclearfog.twidda.adapter;
 
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_FAVORS;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_HOME;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_LIST;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_MENT;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.TweetFragment.TWEET_FRAG_TWEETS;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_ID;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_MODE;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_FAVORIT;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_HOME;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USERLIST;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_MENTION;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID_ALL;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
@@ -39,7 +39,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
-import org.nuclearfog.twidda.ui.fragments.TweetFragment;
+import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
@@ -96,12 +96,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	public void setupForHomePage() {
 		Bundle paramHomeTl = new Bundle();
 		Bundle paramMention = new Bundle();
-		paramHomeTl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_HOME);
-		paramMention.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_MENT);
+		paramHomeTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_HOME);
+		paramMention.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_MENTION);
 		fragments = new ListFragment[3];
-		fragments[0] = new TweetFragment();
+		fragments[0] = new StatusFragment();
 		fragments[1] = new TrendFragment();
-		fragments[2] = new TweetFragment();
+		fragments[2] = new StatusFragment();
 		fragments[0].setArguments(paramHomeTl);
 		fragments[2].setArguments(paramMention);
 		notifyDataSetChanged();
@@ -115,13 +115,13 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	public void setupProfilePage(long userId) {
 		Bundle paramTweet = new Bundle();
 		Bundle paramFavorite = new Bundle();
-		paramTweet.putLong(KEY_FRAG_TWEET_ID, userId);
-		paramFavorite.putLong(KEY_FRAG_TWEET_ID, userId);
-		paramTweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
-		paramFavorite.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
+		paramTweet.putLong(KEY_STATUS_FRAGMENT_ID, userId);
+		paramFavorite.putLong(KEY_STATUS_FRAGMENT_ID, userId);
+		paramTweet.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USER);
+		paramFavorite.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_FAVORIT);
 		fragments = new ListFragment[2];
-		fragments[0] = new TweetFragment();
-		fragments[1] = new TweetFragment();
+		fragments[0] = new StatusFragment();
+		fragments[1] = new StatusFragment();
 		fragments[0].setArguments(paramTweet);
 		fragments[1].setArguments(paramFavorite);
 		notifyDataSetChanged();
@@ -135,12 +135,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	public void setupSearchPage(String search) {
 		Bundle paramTweetSearch = new Bundle();
 		Bundle paramUserSearch = new Bundle();
-		paramTweetSearch.putString(KEY_FRAG_TWEET_SEARCH, search);
+		paramTweetSearch.putString(KEY_STATUS_FRAGMENT_SEARCH, search);
 		paramUserSearch.putString(KEY_FRAG_USER_SEARCH, search);
-		paramTweetSearch.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_SEARCH);
+		paramTweetSearch.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_SEARCH);
 		paramUserSearch.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
 		fragments = new ListFragment[2];
-		fragments[0] = new TweetFragment();
+		fragments[0] = new StatusFragment();
 		fragments[1] = new UserFragment();
 		fragments[0].setArguments(paramTweetSearch);
 		fragments[1].setArguments(paramUserSearch);
@@ -183,15 +183,15 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		Bundle paramUserlistTl = new Bundle();
 		Bundle paramUserlistMember = new Bundle();
 		Bundle paramUserlistSubscriber = new Bundle();
-		paramUserlistTl.putLong(KEY_FRAG_TWEET_ID, listId);
-		paramUserlistTl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
+		paramUserlistTl.putLong(KEY_STATUS_FRAGMENT_ID, listId);
+		paramUserlistTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USERLIST);
 		paramUserlistMember.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_MEMBERS);
 		paramUserlistMember.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
 		paramUserlistMember.putLong(KEY_FRAG_USER_ID_ALL, listId);
 		paramUserlistSubscriber.putLong(KEY_FRAG_USER_ID_ALL, listId);
 		paramUserlistSubscriber.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_SUBSCRIBER);
 		fragments = new ListFragment[3];
-		fragments[0] = new TweetFragment();
+		fragments[0] = new StatusFragment();
 		fragments[1] = new UserFragment();
 		fragments[2] = new UserFragment();
 		fragments[0].setArguments(paramUserlistTl);
@@ -267,7 +267,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 *
 	 * @param tweetId ID of the tweet
 	 */
-	public void setupRetweeterPage(long tweetId) {
+	public void setupReposterPage(long tweetId) {
 		Bundle paramRetweeter = new Bundle();
 		paramRetweeter.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
 		paramRetweeter.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);

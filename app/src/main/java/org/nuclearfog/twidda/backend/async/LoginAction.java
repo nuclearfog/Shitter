@@ -60,7 +60,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 			// login with pin and access token
 			User user = twitter.login(param[0], param[1]);
 			// save new user information
-			database.storeUser(user);
+			database.saveUser(user);
 			accountDB.setLogin(user.getId(), settings.getAccessToken(), settings.getTokenSecret());
 			return "";
 		} catch (ConnectionException exception) {
