@@ -3,20 +3,20 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/action_tweet"
+		android:id="@+id/menu_post"
 		android:icon="@drawable/tweet"
 		android:title="@string/menu_tweet"
 		app:showAsAction="ifRoom" />
 
 	<item
-		android:id="@+id/action_profile"
+		android:id="@+id/menu_profile"
 		android:icon="@drawable/user"
 		android:title="@string/menu_open_home_profile"
 		android:visible="true"
 		app:showAsAction="ifRoom" />
 
 	<item
-		android:id="@+id/action_search"
+		android:id="@+id/menu_search"
 		android:icon="@drawable/search"
 		android:title="@string/menu_open_twitter_search"
 		android:visible="false"
@@ -24,14 +24,14 @@
 		app:showAsAction="ifRoom|collapseActionView" />
 
 	<item
-		android:id="@+id/action_account"
+		android:id="@+id/menu_account"
 		android:icon="@drawable/switch_account"
 		android:title="@string/menu_select_account"
 		android:visible="false"
 		app:showAsAction="ifRoom" />
 
 	<item
-		android:id="@+id/action_settings"
+		android:id="@+id/menu_settings"
 		android:icon="@drawable/setting"
 		android:title="@string/menu_open_settings"
 		android:visible="false"

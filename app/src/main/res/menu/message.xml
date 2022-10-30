@@ -3,7 +3,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/message"
+		android:id="@+id/menu_message"
 		android:icon="@drawable/message"
 		android:title="@string/menu_write_message"
 		app:showAsAction="always" />

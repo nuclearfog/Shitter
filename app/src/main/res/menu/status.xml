@@ -2,39 +2,37 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<item
-		android:id="@+id/menu_tweet_browser"
+		android:id="@+id/menu_status_browser"
 		android:title="@string/menu_tweet_open_browser" />
 
 	<item
-		android:id="@+id/menu_tweet_copy"
+		android:id="@+id/menu_status_copy"
 		android:title="@android:string/copy">
 
 		<menu>
-
 			<item
-				android:id="@+id/menu_tweet_copy_text"
+				android:id="@+id/menu_status_copy_text"
 				android:title="@string/menu_tweet_copy_text" />
 
 			<item
-				android:id="@+id/menu_tweet_copy_tweetlink"
+				android:id="@+id/menu_status_copy_link"
 				android:title="@string/menu_tweet_copy_link" />
-
 		</menu>
 
 	</item>
 
 	<item
-		android:id="@+id/menu_tweet_metrics"
+		android:id="@+id/menu_status_metrics"
 		android:title="@string/menu_tweet_metrics"
 		android:visible="false" />
 
 	<item
-		android:id="@+id/menu_tweet_hide"
+		android:id="@+id/menu_status_hide"
 		android:title="@string/menu_tweet_hide"
 		android:visible="false" />
 
 	<item
-		android:id="@+id/menu_tweet_delete"
+		android:id="@+id/menu_status_delete"
 		android:title="@string/menu_tweet_delete"
 		android:visible="false" />
 </menu>

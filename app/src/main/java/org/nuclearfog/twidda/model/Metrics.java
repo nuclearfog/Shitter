@@ -8,7 +8,7 @@ package org.nuclearfog.twidda.model;
 public interface Metrics {
 
 	/**
-	 * get view count of the tweet
+	 * get view count of the status
 	 *
 	 * @return view count
 	 */

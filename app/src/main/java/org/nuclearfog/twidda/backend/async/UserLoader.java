@@ -33,12 +33,12 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 	public static final int FRIENDS = 2;
 
 	/**
-	 * load users retweeting a tweet
+	 * load users reposting a status
 	 */
-	public static final int RETWEET = 3;
+	public static final int REPOST = 3;
 
 	/**
-	 * load users favoriting a tweet
+	 * load users favoriting a status
 	 */
 	public static final int FAVORIT = 4;
 
@@ -89,7 +89,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 	/**
 	 * @param fragment reference to {@link UserFragment}
 	 * @param type     type of list to load
-	 * @param id       ID depending on what list to load (user ID, tweet ID, list ID)
+	 * @param id       ID depending on what list to load (user ID, status ID, list ID)
 	 * @param search   search string if type is {@link #SEARCH} or empty
 	 */
 	public UserLoader(UserFragment fragment, int type, long id, String search) {
@@ -114,7 +114,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 				case FRIENDS:
 					return connection.getFollowing(id, cursor);
 
-				case RETWEET:
+				case REPOST:
 					return connection.getRepostingUsers(id);
 
 				case FAVORIT:

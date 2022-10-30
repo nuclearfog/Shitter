@@ -49,17 +49,17 @@ import java.util.List;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
- * This activity shows metrics of a tweet (views, link clicks, etc.)
+ * This activity shows metrics of a status (views, link clicks, etc.)
  *
  * @author nuclearfog
  */
 public class MetricsActivity extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnRefreshListener, RefreshCallback {
 
 	/**
-	 * key used for tweet information
+	 * key used for status information
 	 * value type is {@link Status}
 	 */
-	public static final String KEY_METRICS_STATUS = "metrics_tweet";
+	public static final String KEY_METRICS_STATUS = "metrics_status";
 
 	/**
 	 * delay to enable SwipeRefreshLayout
@@ -74,13 +74,13 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	private TextView impressionCount;
 	private TextView linkClicks;
 	private TextView profileClicks;
-	private TextView retweetCount;
+	private TextView repostCount;
 	private TextView favoriteCount;
 	private TextView replycount;
 	private TextView quoteCount;
 	private TextView videoViews;
 	@Nullable
-	private Status tweet;
+	private Status status;
 
 	private boolean isRefreshing = false;
 
@@ -94,12 +94,12 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		ImageView profile = findViewById(R.id.metrics_profile);
 		TextView username = findViewById(R.id.metrics_username);
 		TextView screenname = findViewById(R.id.metrics_screenname);
-		TextView tweetText = findViewById(R.id.metrics_tweet);
+		TextView statusText = findViewById(R.id.metrics_tweet);
 		TextView created = findViewById(R.id.metrics_created);
 		impressionCount = findViewById(R.id.metrics_impression);
 		linkClicks = findViewById(R.id.metrics_link_count);
 		profileClicks = findViewById(R.id.metrics_profile_count);
-		retweetCount = findViewById(R.id.metrics_retweets);
+		repostCount = findViewById(R.id.metrics_retweets);
 		favoriteCount = findViewById(R.id.metrics_favorits);
 		replycount = findViewById(R.id.metrics_replies);
 		quoteCount = findViewById(R.id.metrics_quotes);
@@ -112,7 +112,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		impressionCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.views, 0, 0, 0);
 		linkClicks.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
 		profileClicks.setCompoundDrawablesWithIntrinsicBounds(R.drawable.user, 0, 0, 0);
-		retweetCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
+		repostCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
 		replycount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		quoteCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quote, 0, 0, 0);
 		videoViews.setCompoundDrawablesWithIntrinsicBounds(R.drawable.play, 0, 0, 0);
@@ -123,13 +123,13 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		}
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 		AppStyles.setSwipeRefreshColor(reload, settings);
-		tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
+		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		toolbar.setTitle(R.string.title_metrics);
 
 		Serializable data = getIntent().getSerializableExtra(KEY_METRICS_STATUS);
 		if (data instanceof Status) {
-			tweet = (Status) data;
-			User author = tweet.getAuthor();
+			status = (Status) data;
+			User author = status.getAuthor();
 			if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
 				String profileImageUrl = author.getImageUrl();
 				if (!author.hasDefaultProfileImage())
@@ -149,8 +149,8 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			}
 			username.setText(author.getUsername());
 			screenname.setText(author.getScreenname());
-			tweetText.setText(Tagger.makeTextWithLinks(tweet.getText(), settings.getHighlightColor(), this));
-			created.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTimestamp()));
+			statusText.setText(Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this));
+			created.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
 		}
 		profile.setOnClickListener(this);
 		reload.setOnRefreshListener(this);
@@ -160,9 +160,9 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (metricsAsync == null && tweet != null) {
+		if (metricsAsync == null && status != null) {
 			metricsAsync = new MetricsLoader(this);
-			metricsAsync.execute(tweet.getId());
+			metricsAsync.execute(status.getId());
 			setRefresh(true);
 		}
 	}
@@ -171,9 +171,9 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.metrics_profile) {
-			if (tweet != null) {
+			if (status != null) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, tweet.getAuthor());
+				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, status.getAuthor());
 				startActivity(profile);
 			}
 		}
@@ -182,9 +182,9 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 
 	@Override
 	public void onRefresh() {
-		if (tweet != null) {
+		if (status != null) {
 			metricsAsync = new MetricsLoader(this);
-			metricsAsync.execute(tweet.getId());
+			metricsAsync.execute(status.getId());
 		}
 	}
 
@@ -200,7 +200,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	@Override
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
-		// open tweet link
+		// open status link
 		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(this, StatusActivity.class);
@@ -232,7 +232,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 	/**
 	 * called from {@link MetricsLoader} if metrics was loaded sucessfully
 	 *
-	 * @param metrics of a specific tweet
+	 * @param metrics of a specific status
 	 */
 	public void onSuccess(Metrics metrics) {
 		impressionCount.setText(NUM_FORMAT.format(metrics.getViews()));
@@ -246,8 +246,8 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 			profileClicks.setVisibility(View.VISIBLE);
 		}
 		if (metrics.getReposts() > 0) {
-			retweetCount.setText(NUM_FORMAT.format(metrics.getReposts()));
-			retweetCount.setVisibility(View.VISIBLE);
+			repostCount.setText(NUM_FORMAT.format(metrics.getReposts()));
+			repostCount.setVisibility(View.VISIBLE);
 		}
 		if (metrics.getFavorits() > 0) {
 			favoriteCount.setText(NUM_FORMAT.format(metrics.getFavorits()));

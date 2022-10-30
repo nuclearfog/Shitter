@@ -283,7 +283,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
-		getMenuInflater().inflate(R.menu.tweet, m);
+		getMenuInflater().inflate(R.menu.status, m);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);
 	}
@@ -294,10 +294,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (status == null)
 			return super.onPrepareOptionsMenu(m);
 
-		MenuItem optDelete = m.findItem(R.id.menu_tweet_delete);
-		MenuItem optHide = m.findItem(R.id.menu_tweet_hide);
-		MenuItem optCopy = m.findItem(R.id.menu_tweet_copy);
-		MenuItem optMetrics = m.findItem(R.id.menu_tweet_metrics);
+		MenuItem optDelete = m.findItem(R.id.menu_status_delete);
+		MenuItem optHide = m.findItem(R.id.menu_status_hide);
+		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
+		MenuItem optMetrics = m.findItem(R.id.menu_status_metrics);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
 		Status status = this.status;
@@ -343,11 +343,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			status = status.getEmbeddedStatus();
 		User author = status.getAuthor();
 		// Delete status option
-		if (item.getItemId() == R.id.menu_tweet_delete) {
+		if (item.getItemId() == R.id.menu_status_delete) {
 			confirmDialog.show(ConfirmDialog.DELETE_STATUS);
 		}
 		// hide status
-		else if (item.getItemId() == R.id.menu_tweet_hide) {
+		else if (item.getItemId() == R.id.menu_status_hide) {
 			if (hidden) {
 				statusAsync = new StatusAction(this, StatusAction.UNHIDE);
 			} else {
@@ -356,7 +356,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			statusAsync.execute(this.status.getId());
 		}
 		// get status link
-		else if (item.getItemId() == R.id.menu_tweet_browser) {
+		else if (item.getItemId() == R.id.menu_status_browser) {
 			String username = author.getScreenname().substring(1);
 			String link = settings.getTwitterHostname() + username + "/status/" + status.getId();
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
@@ -367,7 +367,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		}
 		// copy status link to clipboard
-		else if (item.getItemId() == R.id.menu_tweet_copy_text) {
+		else if (item.getItemId() == R.id.menu_status_copy_text) {
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("status text", status.getText());
 				clip.setPrimaryClip(linkClip);
@@ -375,7 +375,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		}
 		// copy status link to clipboard
-		else if (item.getItemId() == R.id.menu_tweet_copy_tweetlink) {
+		else if (item.getItemId() == R.id.menu_status_copy_link) {
 			String username = author.getScreenname().substring(1);
 			String link = settings.getTwitterHostname() + username + "/status/" + status.getId();
 			if (clip != null) {
@@ -385,7 +385,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		}
 		// open status metrics page
-		else if (item.getItemId() == R.id.menu_tweet_metrics) {
+		else if (item.getItemId() == R.id.menu_status_metrics) {
 			Intent metricsIntent = new Intent(getApplicationContext(), MetricsActivity.class);
 			metricsIntent.putExtra(MetricsActivity.KEY_METRICS_STATUS, status);
 			startActivity(metricsIntent);

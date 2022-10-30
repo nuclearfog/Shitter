@@ -10,7 +10,7 @@
 		app:showAsAction="always|collapseActionView" />
 
 	<item
-		android:id="@+id/search_tweet"
+		android:id="@+id/search_status"
 		android:icon="@drawable/tweet"
 		android:title="@string/menu_tweet"
 		app:showAsAction="ifRoom" />

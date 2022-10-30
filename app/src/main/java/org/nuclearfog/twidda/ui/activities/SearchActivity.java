@@ -112,7 +112,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		// create new status
-		if (item.getItemId() == R.id.search_tweet) {
+		if (item.getItemId() == R.id.search_status) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			if (search.startsWith("#"))
 				intent.putExtra(KEY_STATUS_EDITOR_TEXT, search + " ");

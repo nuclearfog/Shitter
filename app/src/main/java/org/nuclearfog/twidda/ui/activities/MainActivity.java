@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.home, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
-		MenuItem search = m.findItem(R.id.action_search);
+		MenuItem search = m.findItem(R.id.menu_search);
 		SearchView searchView = (SearchView) search.getActionView();
 		searchView.setOnQueryTextListener(this);
 		return super.onCreateOptionsMenu(m);
@@ -188,17 +188,17 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu m) {
-		MenuItem profile = m.findItem(R.id.action_profile);
-		MenuItem tweet = m.findItem(R.id.action_tweet);
-		MenuItem search = m.findItem(R.id.action_search);
-		MenuItem setting = m.findItem(R.id.action_settings);
-		MenuItem account = m.findItem(R.id.action_account);
+		MenuItem profile = m.findItem(R.id.menu_profile);
+		MenuItem status = m.findItem(R.id.menu_post);
+		MenuItem search = m.findItem(R.id.menu_search);
+		MenuItem setting = m.findItem(R.id.menu_settings);
+		MenuItem account = m.findItem(R.id.menu_account);
 
 		switch (tabLayout.getSelectedTabPosition()) {
 			case 0:
 				profile.setVisible(true);
 				search.setVisible(false);
-				tweet.setVisible(true);
+				status.setVisible(true);
 				setting.setVisible(false);
 				account.setVisible(false);
 				search.collapseActionView();
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 			case 1:
 				profile.setVisible(false);
 				search.setVisible(true);
-				tweet.setVisible(false);
+				status.setVisible(false);
 				setting.setVisible(true);
 				account.setVisible(false);
 				break;
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 			case 2:
 				profile.setVisible(false);
 				search.setVisible(false);
-				tweet.setVisible(false);
+				status.setVisible(false);
 				setting.setVisible(true);
 				account.setVisible(true);
 				search.collapseActionView();
@@ -228,28 +228,28 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		// open home profile
-		if (item.getItemId() == R.id.action_profile) {
+		if (item.getItemId() == R.id.menu_profile) {
 			Intent user = new Intent(this, ProfileActivity.class);
 			user.putExtra(KEY_PROFILE_ID, settings.getCurrentUserId());
 			startActivity(user);
 		}
-		// open tweet editor
-		else if (item.getItemId() == R.id.action_tweet) {
-			Intent tweet = new Intent(this, StatusEditor.class);
-			startActivity(tweet);
+		// open status editor
+		else if (item.getItemId() == R.id.menu_post) {
+			Intent intent = new Intent(this, StatusEditor.class);
+			startActivity(intent);
 		}
 		// open app settings
-		else if (item.getItemId() == R.id.action_settings) {
+		else if (item.getItemId() == R.id.menu_settings) {
 			Intent settings = new Intent(this, SettingsActivity.class);
 			startActivityForResult(settings, REQUEST_APP_SETTINGS);
 		}
 		// theme expanded search view
-		else if (item.getItemId() == R.id.action_search) {
+		else if (item.getItemId() == R.id.menu_search) {
 			SearchView searchView = (SearchView) item.getActionView();
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
 		}
 		// open account manager
-		else if (item.getItemId() == R.id.action_account) {
+		else if (item.getItemId() == R.id.menu_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
 			startActivityForResult(accountManager, REQUEST_ACCOUNT_CHANGE);
 		}

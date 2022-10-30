@@ -10,7 +10,7 @@ import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID_ALL;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_BLOCKED_USERS;
@@ -22,7 +22,7 @@ import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_FOLLOW_O
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LIST_MEMBERS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LIST_SUBSCRIBER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_MUTED_USERS;
-import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_RETWEET;
+import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_REPOST;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
@@ -108,42 +108,42 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	}
 
 	/**
-	 * setup adapter for viewing user tweets and favorites
+	 * setup adapter for viewing user timeline and favorites
 	 *
 	 * @param userId ID of the user
 	 */
 	public void setupProfilePage(long userId) {
-		Bundle paramTweet = new Bundle();
+		Bundle paramTimeline = new Bundle();
 		Bundle paramFavorite = new Bundle();
-		paramTweet.putLong(KEY_STATUS_FRAGMENT_ID, userId);
+		paramTimeline.putLong(KEY_STATUS_FRAGMENT_ID, userId);
 		paramFavorite.putLong(KEY_STATUS_FRAGMENT_ID, userId);
-		paramTweet.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USER);
+		paramTimeline.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USER);
 		paramFavorite.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_FAVORIT);
 		fragments = new ListFragment[2];
 		fragments[0] = new StatusFragment();
 		fragments[1] = new StatusFragment();
-		fragments[0].setArguments(paramTweet);
+		fragments[0].setArguments(paramTimeline);
 		fragments[1].setArguments(paramFavorite);
 		notifyDataSetChanged();
 	}
 
 	/**
-	 * setup adapter for search for tweet and user search
+	 * setup adapter for search for status and user search
 	 *
 	 * @param search Search string
 	 */
 	public void setupSearchPage(String search) {
-		Bundle paramTweetSearch = new Bundle();
-		Bundle paramUserSearch = new Bundle();
-		paramTweetSearch.putString(KEY_STATUS_FRAGMENT_SEARCH, search);
-		paramUserSearch.putString(KEY_FRAG_USER_SEARCH, search);
-		paramTweetSearch.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_SEARCH);
-		paramUserSearch.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
+		Bundle paramStatuses = new Bundle();
+		Bundle paramUsers = new Bundle();
+		paramStatuses.putString(KEY_STATUS_FRAGMENT_SEARCH, search);
+		paramUsers.putString(KEY_FRAG_USER_SEARCH, search);
+		paramStatuses.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_SEARCH);
+		paramUsers.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
 		fragments = new ListFragment[2];
 		fragments[0] = new StatusFragment();
 		fragments[1] = new UserFragment();
-		fragments[0].setArguments(paramTweetSearch);
-		fragments[1].setArguments(paramUserSearch);
+		fragments[0].setArguments(paramStatuses);
+		fragments[1].setArguments(paramUsers);
 		notifyDataSetChanged();
 	}
 
@@ -174,7 +174,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	}
 
 	/**
-	 * setup adapter for a page of tweets and users in an user list
+	 * setup adapter for a page of statuses and users in an user list
 	 *
 	 * @param listId      ID of an user list
 	 * @param ownerOfList true if current user owns this list
@@ -187,8 +187,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		paramUserlistTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USERLIST);
 		paramUserlistMember.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_MEMBERS);
 		paramUserlistMember.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
-		paramUserlistMember.putLong(KEY_FRAG_USER_ID_ALL, listId);
-		paramUserlistSubscriber.putLong(KEY_FRAG_USER_ID_ALL, listId);
+		paramUserlistMember.putLong(KEY_FRAG_USER_ID, listId);
+		paramUserlistSubscriber.putLong(KEY_FRAG_USER_ID, listId);
 		paramUserlistSubscriber.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_SUBSCRIBER);
 		fragments = new ListFragment[3];
 		fragments[0] = new StatusFragment();
@@ -239,7 +239,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 */
 	public void setupFollowingPage(long userId) {
 		Bundle paramFollowing = new Bundle();
-		paramFollowing.putLong(KEY_FRAG_USER_ID_ALL, userId);
+		paramFollowing.putLong(KEY_FRAG_USER_ID, userId);
 		paramFollowing.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWING);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
@@ -254,7 +254,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 */
 	public void setupFollowerPage(long userId) {
 		Bundle paramFollower = new Bundle();
-		paramFollower.putLong(KEY_FRAG_USER_ID_ALL, userId);
+		paramFollower.putLong(KEY_FRAG_USER_ID, userId);
 		paramFollower.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWER);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
@@ -263,29 +263,29 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	}
 
 	/**
-	 * setup adapter to show users retweeting a tweet
+	 * setup adapter to show users reposting a status
 	 *
-	 * @param tweetId ID of the tweet
+	 * @param id ID of the status
 	 */
-	public void setupReposterPage(long tweetId) {
-		Bundle paramRetweeter = new Bundle();
-		paramRetweeter.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
-		paramRetweeter.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
+	public void setupReposterPage(long id) {
+		Bundle paramReposter = new Bundle();
+		paramReposter.putLong(KEY_FRAG_USER_ID, id);
+		paramReposter.putInt(KEY_FRAG_USER_MODE, USER_FRAG_REPOST);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
-		fragments[0].setArguments(paramRetweeter);
+		fragments[0].setArguments(paramReposter);
 		notifyDataSetChanged();
 	}
 
 	/**
-	 * setup adapter to show users liking a tweet
+	 * setup adapter to show users liking a status
 	 *
-	 * @param tweetId ID of the tweet
+	 * @param id ID of the status
 	 */
-	public void setFavoriterPage(long tweetId) {
+	public void setFavoriterPage(long id) {
 		Bundle paramFavoriter = new Bundle();
 		paramFavoriter.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FAVORIT);
-		paramFavoriter.putLong(KEY_FRAG_USER_ID_ALL, tweetId);
+		paramFavoriter.putLong(KEY_FRAG_USER_ID, id);
 		fragments = new ListFragment[1];
 		fragments[0] = new UserFragment();
 		fragments[0].setArguments(paramFavoriter);

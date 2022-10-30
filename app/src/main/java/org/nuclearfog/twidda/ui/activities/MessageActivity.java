@@ -62,7 +62,7 @@ public class MessageActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (item.getItemId() == R.id.message) {
+		if (item.getItemId() == R.id.menu_message) {
 			Intent sendDm = new Intent(this, MessageEditor.class);
 			startActivity(sendDm);
 		}

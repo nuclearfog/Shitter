@@ -347,7 +347,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (user != null) {
 			// write tweet
-			if (item.getItemId() == R.id.profile_tweet) {
+			if (item.getItemId() == R.id.profile_post) {
 				Intent tweet = new Intent(this, StatusEditor.class);
 				if (!user.isCurrentUser()) {
 					// add username to tweet

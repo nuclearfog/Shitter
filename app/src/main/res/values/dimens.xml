@@ -69,17 +69,17 @@
 	<dimen name="editprofile_scrollview_margin">10dp</dimen>
 	<integer name="editprofile_username_max_length">50</integer>
 
-	<!--dimens of item_tweet.xml-->
-	<dimen name="tweetitem_profile_size">36sp</dimen>
-	<dimen name="tweetitem_layout_padding">5dp</dimen>
-	<dimen name="tweetitem_text_margin">5dp</dimen>
-	<dimen name="tweetitem_drawable_margin">5dp</dimen>
-	<dimen name="tweetitem_textsize_button">12sp</dimen>
-	<dimen name="tweetitem_textsize_date">12sp</dimen>
-	<dimen name="tweetitem_icon_size">14sp</dimen>
-	<dimen name="tweetitem_indicator_size">28sp</dimen>
-	<dimen name="tweetitem_indicator_margin">3dp</dimen>
-	<dimen name="tweetitem_indicator_padding">6sp</dimen>
+	<!--dimens of item_status.xml-->
+	<dimen name="item_status_profile_size">36sp</dimen>
+	<dimen name="item_status_layout_padding">5dp</dimen>
+	<dimen name="item_status_text_margin">5dp</dimen>
+	<dimen name="item_status_drawable_margin">5dp</dimen>
+	<dimen name="item_status_textsize_button">12sp</dimen>
+	<dimen name="item_status_textsize_date">12sp</dimen>
+	<dimen name="item_status_icon_size">14sp</dimen>
+	<dimen name="item_status_indicator_size">28sp</dimen>
+	<dimen name="item_status_indicator_margin">3dp</dimen>
+	<dimen name="item_status_indicator_padding">6sp</dimen>
 
 	<!--dimens of item_trend.xml-->
 	<dimen name="trenditem_layout_padding">5dp</dimen>

@@ -55,32 +55,32 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int VIDEO_ERROR = 606;
 
 	/**
-	 * show "delete Tweet?" dialog
+	 * show dialog to delete status
 	 */
 	public static final int DELETE_STATUS = 607;
 
 	/**
-	 * show "discard tweet" dialog
+	 * show dialog to discard edited status
 	 */
 	public static final int STATUS_EDITOR_LEAVE = 608;
 
 	/**
-	 * show "Tweet create error" dialog
+	 * show dialog if an error occurs while editin status
 	 */
 	public static final int STATUS_EDITOR_ERROR = 609;
 
 	/**
-	 * show "delete directmessage" dialog
+	 * show dialog to delete message
 	 */
 	public static final int MESSAGE_DELETE = 610;
 
 	/**
-	 * show "discard directmessage" dialog
+	 * show dialog to discard message
 	 */
 	public static final int MESSAGE_EDITOR_LEAVE = 611;
 
 	/**
-	 * show "directmessage upload" error
+	 * show dialog if an error occurs while uploading a message
 	 */
 	public static final int MESSAGE_EDITOR_ERROR = 612;
 

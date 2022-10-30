@@ -36,7 +36,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	/**
 	 * key to set the type of user list to show
 	 * possible value types are
-	 * {@link #USER_FRAG_FOLLOWER,#USER_FRAG_FOLLOWING,#USER_FRAG_RETWEET,#USER_FRAG_FAVORIT},
+	 * {@link #USER_FRAG_FOLLOWER,#USER_FRAG_FOLLOWING,#USER_FRAG_REPOST ,#USER_FRAG_FAVORIT},
 	 * {@link #USER_FRAG_SEARCH,#USER_FRAG_LIST_SUBSCRIBER,#USER_FRAG_LIST_MEMBERS,#USER_FRAG_BLOCKED_USERS},
 	 * {@link #USER_FRAG_MUTED_USERS,#USER_FRAG_FOLLOW_INCOMING,#USER_FRAG_FOLLOW_OUTGOING}
 	 */
@@ -49,10 +49,10 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	public static final String KEY_FRAG_USER_SEARCH = "user_search";
 
 	/**
-	 * key to define user, tweet or list ID
+	 * key to define user, status or list ID
 	 * value type is long
 	 */
-	public static final String KEY_FRAG_USER_ID_ALL = "user_id_all";
+	public static final String KEY_FRAG_USER_ID = "user_id";
 
 	/**
 	 * key enable function to remove users from list
@@ -75,14 +75,14 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	public static final int USER_FRAG_FOLLOWING = 0x64D432EB;
 
 	/**
-	 * value to configure to show users retweeting a tweet
+	 * value to configure to show users reposting a status
 	 *
 	 * @see #KEY_FRAG_USER_MODE
 	 */
-	public static final int USER_FRAG_RETWEET = 0x2AC31E6B;
+	public static final int USER_FRAG_REPOST = 0x2AC31E6B;
 
 	/**
-	 * value to configure to show users favoring a tweet
+	 * value to configure to show users favoring a status
 	 *
 	 * @see #KEY_FRAG_USER_MODE
 	 */
@@ -161,7 +161,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		Bundle param = getArguments();
 		if (param != null) {
 			mode = param.getInt(KEY_FRAG_USER_MODE, 0);
-			id = param.getLong(KEY_FRAG_USER_ID_ALL, 0);
+			id = param.getLong(KEY_FRAG_USER_ID, 0);
 			search = param.getString(KEY_FRAG_USER_SEARCH, "");
 			delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
 		}
@@ -311,8 +311,8 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 				userTask.execute(cursor);
 				break;
 
-			case USER_FRAG_RETWEET:
-				userTask = new UserLoader(this, UserLoader.RETWEET, id, search);
+			case USER_FRAG_REPOST:
+				userTask = new UserLoader(this, UserLoader.REPOST, id, search);
 				userTask.execute(cursor);
 				break;
 

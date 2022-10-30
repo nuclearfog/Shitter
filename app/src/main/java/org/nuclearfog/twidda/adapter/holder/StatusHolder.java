@@ -31,24 +31,24 @@ public class StatusHolder extends ViewHolder {
 	public StatusHolder(ViewGroup parent, GlobalSettings settings) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
 		CardView cardLayout = (CardView) itemView;
-		ViewGroup container = itemView.findViewById(R.id.item_tweet_container);
-		profile = itemView.findViewById(R.id.item_tweet_profile_image);
-		verifiedIcon = itemView.findViewById(R.id.item_tweet_verified_icon);
-		lockedIcon = itemView.findViewById(R.id.item_tweet_locked_icon);
-		rpUser = itemView.findViewById(R.id.item_tweet_retweeter_icon);
-		rtIcon = itemView.findViewById(R.id.item_tweet_retweet_icon);
-		favIcon = itemView.findViewById(R.id.item_tweet_favorite_icon);
-		media = itemView.findViewById(R.id.item_tweet_media);
-		location = itemView.findViewById(R.id.item_tweet_location);
-		replyIcon = itemView.findViewById(R.id.item_tweet_reply);
-		username = itemView.findViewById(R.id.item_tweet_author_username);
-		screenname = itemView.findViewById(R.id.item_tweet_author_screenname);
-		text = itemView.findViewById(R.id.item_tweet_text);
-		repost = itemView.findViewById(R.id.item_tweet_retweet_count);
-		favorite = itemView.findViewById(R.id.item_tweet_favorite_count);
-		reposter = itemView.findViewById(R.id.item_tweet_retweeter_name);
-		created = itemView.findViewById(R.id.item_tweet_created_at);
-		replyname = itemView.findViewById(R.id.item_tweet_reply_name);
+		ViewGroup container = itemView.findViewById(R.id.item_status_container);
+		profile = itemView.findViewById(R.id.item_status_profile_image);
+		verifiedIcon = itemView.findViewById(R.id.item_status_verified_icon);
+		lockedIcon = itemView.findViewById(R.id.item_status_locked_icon);
+		rpUser = itemView.findViewById(R.id.item_status_reposter_icon);
+		rtIcon = itemView.findViewById(R.id.item_status_repost_icon);
+		favIcon = itemView.findViewById(R.id.item_status_favorite_icon);
+		media = itemView.findViewById(R.id.item_status_media);
+		location = itemView.findViewById(R.id.item_status_location);
+		replyIcon = itemView.findViewById(R.id.item_status_reply);
+		username = itemView.findViewById(R.id.item_status_author_username);
+		screenname = itemView.findViewById(R.id.item_status_author_screenname);
+		text = itemView.findViewById(R.id.item_status_text);
+		repost = itemView.findViewById(R.id.item_status_repost_count);
+		favorite = itemView.findViewById(R.id.item_status_favorite_count);
+		reposter = itemView.findViewById(R.id.item_status_reposter_name);
+		created = itemView.findViewById(R.id.item_status_created_at);
+		replyname = itemView.findViewById(R.id.item_status_reply_name);
 
 		if (settings.likeEnabled()) {
 			favIcon.setImageResource(R.drawable.like);
