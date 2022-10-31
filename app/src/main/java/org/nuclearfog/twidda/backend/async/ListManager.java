@@ -60,11 +60,11 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 		try {
 			switch (action) {
 				case ADD_USER:
-					connection.addUserToUserlist(listId, username);
+					connection.addUserToList(listId, username);
 					break;
 
 				case DEL_USER:
-					connection.removeUserFromUserlist(listId, username);
+					connection.removeUserFromList(listId, username);
 					break;
 			}
 		} catch (ConnectionException exception) {

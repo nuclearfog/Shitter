@@ -8,6 +8,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
 import org.nuclearfog.twidda.backend.proxy.UserProxy;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.database.GlobalSettings.OnSettingsChangeListener;
 
 import java.io.File;
 
@@ -19,7 +20,7 @@ import okhttp3.OkHttpClient;
  *
  * @author nuclearfog
  */
-public class PicassoBuilder implements GlobalSettings.SettingsListener {
+public class PicassoBuilder implements OnSettingsChangeListener {
 
 	/**
 	 * cache folder size in bytes

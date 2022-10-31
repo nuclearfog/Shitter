@@ -82,7 +82,7 @@ public class UserV1 implements User {
 		if (ID_PATTERN.matcher(idStr).matches()) {
 			id = Long.parseLong(idStr);
 		} else {
-			throw new JSONException("bad ID: " + idStr);
+			throw new JSONException("bad user ID: " + idStr);
 		}
 	}
 

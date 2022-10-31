@@ -105,7 +105,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					publishProgress(user);
 					appDB.saveUser(user);
 					// load user relations from twitter
-					Relation relation = connection.getRelationToUser(userId);
+					Relation relation = connection.getUserRelationship(userId);
 					if (!relation.isCurrentUser()) {
 						boolean muteUser = relation.isBlocked() || relation.isMuted();
 						appDB.muteUser(userId, muteUser);
@@ -132,7 +132,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					user = connection.unblockUser(userId);
 					publishProgress(user);
 					// remove from exclude list only if user is not muted
-					relation = connection.getRelationToUser(userId);
+					relation = connection.getUserRelationship(userId);
 					if (!relation.isMuted()) {
 						appDB.muteUser(userId, false);
 						filterDatabase.removeUser(userId);
@@ -149,14 +149,14 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					user = connection.unmuteUser(userId);
 					publishProgress(user);
 					// remove from exclude list only if user is not blocked
-					relation = connection.getRelationToUser(userId);
+					relation = connection.getUserRelationship(userId);
 					if (!relation.isBlocked()) {
 						appDB.muteUser(userId, false);
 						filterDatabase.removeUser(userId);
 					}
 					return relation;
 			}
-			return connection.getRelationToUser(userId);
+			return connection.getUserRelationship(userId);
 		} catch (ConnectionException exception) {
 			this.error = exception;
 		}

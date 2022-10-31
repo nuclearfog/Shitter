@@ -29,22 +29,22 @@ import java.util.List;
 public class GlobalSettings {
 
 	/**
-	 * link suffix for low resolution profile images
+	 * media link suffix used by Twitter for low resolution profile images
 	 */
 	public static final String PROFILE_IMG_LOW_RES = "_mini";
 
 	/**
-	 * link suffix for high resolution profile images
+	 * media link suffix used by Twitter for high resolution profile images
 	 */
 	public static final String PROFILE_IMG_HIGH_RES = "_bigger";
 
 	/**
-	 * link suffix for low resolution banner images
+	 * media link suffix used by Twitter for low resolution banner images
 	 */
 	public static final String BANNER_IMG_LOW_RES = "/300x100";
 
 	/**
-	 * link suffix for standard banner image resolution
+	 * media link suffix used by Twitter for standard banner image resolution
 	 */
 	public static final String BANNER_IMG_MID_RES = "/600x200";
 
@@ -53,6 +53,9 @@ public class GlobalSettings {
 	 */
 	private static final String TWITTER_ALT_HOST = "https://nitter.net/";
 
+	/**
+	 * default twitter hostname
+	 */
 	private static final String TWITTER_HOST = "https://twitter.com/";
 
 	/**
@@ -63,22 +66,22 @@ public class GlobalSettings {
 	/**
 	 * custom font families from android system
 	 */
-	public static final Typeface[] FONTS = {DEFAULT, MONOSPACE, SERIF, SANS_SERIF, SANS_SERIF_THIN};
+	public static final Typeface[] FONT_TYPES = {DEFAULT, MONOSPACE, SERIF, SANS_SERIF, SANS_SERIF_THIN};
 
 	/**
-	 * names of the font types {@link #FONTS}
+	 * names of the font types {@link #FONT_TYPES}
 	 */
 	public static final String[] FONT_NAMES = {"Default", "Monospace", "Serif", "Sans-Serif", "sans-serif-thin"};
 
 	/**
 	 * font scales
 	 */
-	public static final float[] SCALES = {0.5f, 0.8f, 1.0f, 1.5f, 2.0f};
+	public static final float[] FONT_SCALES = {0.5f, 0.8f, 1.0f, 1.5f, 2.0f};
 
 	/**
 	 * singleton instance
 	 */
-	private static final GlobalSettings ourInstance = new GlobalSettings();
+	private static final GlobalSettings INSTANCE = new GlobalSettings();
 
 	// App preference names
 	private static final String BACKGROUND_COLOR = "background_color";
@@ -178,7 +181,7 @@ public class GlobalSettings {
 	private int listSize;
 	private long userId;
 
-	private List<SettingsListener> settingsListeners = new LinkedList<>();
+	private List<OnSettingsChangeListener> settingsChangeListeners = new LinkedList<>();
 
 	private GlobalSettings() {
 	}
@@ -190,11 +193,11 @@ public class GlobalSettings {
 	 * @return instance of this class
 	 */
 	public static GlobalSettings getInstance(@NonNull Context context) {
-		if (ourInstance.settings == null) {
-			ourInstance.settings = context.getApplicationContext().getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
-			ourInstance.initialize();
+		if (INSTANCE.settings == null) {
+			INSTANCE.settings = context.getApplicationContext().getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
+			INSTANCE.initialize();
 		}
-		return ourInstance;
+		return INSTANCE;
 	}
 
 	/**
@@ -655,14 +658,14 @@ public class GlobalSettings {
 	 * @return font scale
 	 */
 	public float getTextScale() {
-		return SCALES[indexScale];
+		return FONT_SCALES[indexScale];
 	}
 
 	/**
 	 * get current index of the selected scale value
 	 *
 	 * @return current index
-	 * @see #SCALES
+	 * @see #FONT_SCALES
 	 */
 	public int getScaleIndex() {
 		return indexScale;
@@ -672,7 +675,7 @@ public class GlobalSettings {
 	 * set index of the selected scale
 	 *
 	 * @param index index of the selected scale
-	 * @see #SCALES
+	 * @see #FONT_SCALES
 	 */
 	public void setScaleIndex(int index) {
 		this.indexScale = index;
@@ -688,7 +691,7 @@ public class GlobalSettings {
 	 * @return font family
 	 */
 	public Typeface getTypeFace() {
-		return FONTS[indexFont];
+		return FONT_TYPES[indexFont];
 	}
 
 	/**
@@ -1104,18 +1107,18 @@ public class GlobalSettings {
 	 *
 	 * @param listener listener called when some settings change
 	 */
-	public void addSettingsChangeListener(@NonNull SettingsListener listener) {
-		settingsListeners.add(listener);
+	public void addSettingsChangeListener(@NonNull OnSettingsChangeListener listener) {
+		settingsChangeListeners.add(listener);
 	}
 
 	/**
 	 * notify listener when settings changes and clear old instances
 	 */
 	private void notifySettingsChange() {
-		for (SettingsListener listener : settingsListeners) {
+		for (OnSettingsChangeListener listener : settingsChangeListeners) {
 			listener.onSettingsChange();
 		}
-		settingsListeners.clear();
+		settingsChangeListeners.clear();
 	}
 
 	/**
@@ -1169,7 +1172,7 @@ public class GlobalSettings {
 	/**
 	 * global listener for settings
 	 */
-	public interface SettingsListener {
+	public interface OnSettingsChangeListener {
 
 		/**
 		 * called when settings change

@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.model.Relation;
  */
 public class RelationV1 implements Relation {
 
-	private boolean isHome;
+	private boolean isCurrentUser;
 	private boolean isFollowing;
 	private boolean isFollower;
 	private boolean isBlocked;
@@ -31,7 +31,7 @@ public class RelationV1 implements Relation {
 
 		long sourceId = Long.parseLong(source.getString("id_str"));
 		long targetId = Long.parseLong(target.getString("id_str"));
-		isHome = sourceId == targetId;
+		isCurrentUser = sourceId == targetId;
 		isFollowing = source.optBoolean("following");
 		isFollower = source.optBoolean("followed_by");
 		isBlocked = source.optBoolean("blocking");
@@ -41,7 +41,7 @@ public class RelationV1 implements Relation {
 
 	@Override
 	public boolean isCurrentUser() {
-		return isHome;
+		return isCurrentUser;
 	}
 
 	@Override

@@ -164,10 +164,10 @@
 	<dimen name="popup_status_button_padding">7dp</dimen>
 
 	<!--dimens of popup_message.xml-->
-	<dimen name="dmpopup_margin_background">10dp</dimen>
-	<dimen name="dmpopup_text_margin">5dp</dimen>
-	<dimen name="dmpopup_button_margin">5dp</dimen>
-	<dimen name="dmpopup_button_padding">7dp</dimen>
+	<dimen name="popup_message_margin_background">10dp</dimen>
+	<dimen name="popup_message_text_margin">5dp</dimen>
+	<dimen name="popup_message_button_margin">5dp</dimen>
+	<dimen name="popup_message_button_padding">7dp</dimen>
 
 	<!--dimen of popup_userlist.xml-->
 	<dimen name="popup_userlist_background_margin">10dp</dimen>
@@ -187,7 +187,7 @@
 	<dimen name="mediapage_controller_bottom_margin">20dp</dimen>
 
 	<!--dimens of item_placeholder.xml-->
-	<dimen name="placeholderitem_margin">8dp</dimen>
+	<dimen name="item_placeholder_margin">8dp</dimen>
 
 	<!--dimens of item_image.xml-->
 	<dimen name="imageitem_button_margin">5dp</dimen>

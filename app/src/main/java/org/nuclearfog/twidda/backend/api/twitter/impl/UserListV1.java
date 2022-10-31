@@ -42,7 +42,7 @@ public class UserListV1 implements UserList {
 		if (ID_PATTERN.matcher(idStr).matches()) {
 			id = Long.parseLong(idStr);
 		} else {
-			throw new JSONException("bad ID: " + idStr);
+			throw new JSONException("bad userlist ID: " + idStr);
 		}
 		owner = new UserV1(json.getJSONObject("user"), currentId);
 		createdAt = StringTools.getTime1(json.optString("created_at"));

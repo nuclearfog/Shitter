@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Generic class of a social network connection
+ * Generic interface to implement a social network API
  *
  * @author nuclearfog
  */
@@ -35,10 +35,10 @@ public interface Connection {
 	/**
 	 * lookup user and return user information
 	 *
-	 * @param screen_name screen name of the user
+	 * @param name screen name of the user
 	 * @return user information
 	 */
-	User showUser(String screen_name) throws ConnectionException;
+	User showUser(String name) throws ConnectionException;
 
 	/**
 	 * search for users matching a search string
@@ -68,38 +68,38 @@ public interface Connection {
 	/**
 	 * create a list of users a specified user is following
 	 *
-	 * @param userId ID of the user
+	 * @param id     ID of the user
 	 * @param cursor cursor value used to parse the list
 	 * @return list of users
 	 */
-	Users getFollowing(long userId, long cursor) throws ConnectionException;
+	Users getFollowing(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * create a list of users following a specified user
 	 *
-	 * @param userId ID of the user
+	 * @param id     ID of the user
 	 * @param cursor cursor value used to parse the list
 	 * @return list of users
 	 */
-	Users getFollower(long userId, long cursor) throws ConnectionException;
+	Users getFollower(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * create a list of user list members
 	 *
-	 * @param listId ID of the list
+	 * @param id     ID of the list
 	 * @param cursor cursor value used to parse the list
 	 * @return list of users
 	 */
-	Users getListMember(long listId, long cursor) throws ConnectionException;
+	Users getListMember(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * create a list of user list subscriber
 	 *
-	 * @param listId ID of the list
+	 * @param id     ID of the list
 	 * @param cursor cursor value used to parse the list
 	 * @return list of users
 	 */
-	Users getListSubscriber(long listId, long cursor) throws ConnectionException;
+	Users getListSubscriber(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * get block list of the current user
@@ -136,74 +136,74 @@ public interface Connection {
 	/**
 	 * get relationship information to an user
 	 *
-	 * @param userId ID of the user
+	 * @param id ID of the user
 	 * @return relationship information
 	 */
-	Relation getRelationToUser(long userId) throws ConnectionException;
+	Relation getUserRelationship(long id) throws ConnectionException;
 
 	/**
 	 * follow a specific user
 	 *
-	 * @param userId ID of the user
+	 * @param id ID of the user
 	 * @return updated user information
 	 */
-	User followUser(long userId) throws ConnectionException;
+	User followUser(long id) throws ConnectionException;
 
 	/**
 	 * unfollow a specific user
 	 *
-	 * @param userId ID of the user
+	 * @param id ID of the user
 	 * @return updated user information
 	 */
-	User unfollowUser(long userId) throws ConnectionException;
+	User unfollowUser(long id) throws ConnectionException;
 
 	/**
 	 * block specific user
 	 *
-	 * @param userId ID of the user
+	 * @param id ID of the user
 	 * @return updated user information
 	 */
-	User blockUser(long userId) throws ConnectionException;
+	User blockUser(long id) throws ConnectionException;
 
 	/**
 	 * block specific user
 	 *
-	 * @param screen_name screen name of the user
+	 * @param name screen name of the user
 	 * @return updated user information
 	 */
-	User blockUser(String screen_name) throws ConnectionException;
+	User blockUser(String name) throws ConnectionException;
 
 	/**
 	 * unblock specific user
 	 *
-	 * @param userId ID of the user
+	 * @param id ID of the user
 	 * @return updated user information
 	 */
-	User unblockUser(long userId) throws ConnectionException;
+	User unblockUser(long id) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
-	 * @param userId ID of the user
+	 * @param id ID of the user
 	 * @return updated user information
 	 */
-	User muteUser(long userId) throws ConnectionException;
+	User muteUser(long id) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
-	 * @param screen_name screen name of the user
+	 * @param name screen name of the user
 	 * @return updated user information
 	 */
-	User muteUser(String screen_name) throws ConnectionException;
+	User muteUser(String name) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
-	 * @param userId ID of the user
+	 * @param id ID of the user
 	 * @return updated user information
 	 */
-	User unmuteUser(long userId) throws ConnectionException;
+	User unmuteUser(long id) throws ConnectionException;
 
 	/**
 	 * search statuses matching a search string
@@ -251,12 +251,12 @@ public interface Connection {
 	/**
 	 * show the timeline of an user
 	 *
-	 * @param userId ID of the user
-	 * @param minId  get statuses with ID above the min ID
-	 * @param maxId  get statuses with ID under the max ID
+	 * @param id    ID of the user
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getUserTimeline(long userId, long minId, long maxId) throws ConnectionException;
+	List<Status> getUserTimeline(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * show the timeline of an user
@@ -271,12 +271,12 @@ public interface Connection {
 	/**
 	 * show the favorite timeline of an user
 	 *
-	 * @param userId ID of the user
-	 * @param minId  get statuses with ID above the min ID
-	 * @param maxId  get statuses with ID under the max ID
+	 * @param id    ID of the user
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getUserFavorits(long userId, long minId, long maxId) throws ConnectionException;
+	List<Status> getUserFavorits(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * show the favorite timeline of an user
@@ -291,23 +291,23 @@ public interface Connection {
 	/**
 	 * return timeline from an user list
 	 *
-	 * @param listId ID of the list
-	 * @param minId  get statuses with ID above the min ID
-	 * @param maxId  get statuses with ID under the max ID
+	 * @param id    ID of the list
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getUserlistStatuses(long listId, long minId, long maxId) throws ConnectionException;
+	List<Status> getUserlistStatuses(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * get replies of a status
 	 *
-	 * @param screen_name screen name of the status author
-	 * @param id          Id of the status
-	 * @param minId       get statuses with ID above the min ID
-	 * @param maxId       get statuses with ID under the max ID
+	 * @param name  screen name of the status author
+	 * @param id    Id of the status
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getStatusReplies(String screen_name, long id, long minId, long maxId) throws ConnectionException;
+	List<Status> getStatusReplies(String name, long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * lookup status by ID
@@ -367,7 +367,8 @@ public interface Connection {
 	/**
 	 * upload status with additional attachment
 	 *
-	 * @param update status update information
+	 * @param update   status update information
+	 * @param mediaIds IDs of the uploaded media files if any
 	 */
 	void uploadStatus(StatusUpdate update, long[] mediaIds) throws ConnectionException;
 
@@ -390,85 +391,86 @@ public interface Connection {
 	/**
 	 * return userlist information
 	 *
-	 * @param listId ID of the list
+	 * @param id ID of the list
 	 * @return userlist information
 	 */
-	UserList getUserlist(long listId) throws ConnectionException;
+	UserList getUserlist(long id) throws ConnectionException;
 
 	/**
 	 * follow an userlist
 	 *
-	 * @param listId ID of the list
+	 * @param id ID of the list
 	 * @return userlist information
 	 */
-	UserList followUserlist(long listId) throws ConnectionException;
+	UserList followUserlist(long id) throws ConnectionException;
 
 	/**
 	 * unfollow an userlist
 	 *
-	 * @param listId ID of the list
+	 * @param id ID of the list
 	 * @return userlist information
 	 */
-	UserList unfollowUserlist(long listId) throws ConnectionException;
+	UserList unfollowUserlist(long id) throws ConnectionException;
 
 	/**
 	 * delete an userlist
 	 *
-	 * @param listId ID of the list
+	 * @param id ID of the list
 	 * @return removed userlist
 	 */
-	UserList deleteUserlist(long listId) throws ConnectionException;
+	UserList deleteUserlist(long id) throws ConnectionException;
 
 	/**
 	 * return userlists an user is owning or following
 	 *
-	 * @param userId      ID of the user
-	 * @param screen_name screen name of the user (without '@')
+	 * @param id     ID of the user
+	 * @param name   screen name of the user (without '@')
+	 * @param cursor list cursor
 	 * @return list of userlists
 	 */
-	UserLists getUserListOwnerships(long userId, String screen_name) throws ConnectionException;
+	UserLists getUserlistOwnerships(long id, String name, long cursor) throws ConnectionException;
 
 	/**
 	 * return userlists an user is added to
 	 *
-	 * @param userId      ID of the user
-	 * @param screen_name screen name of the user (without '@')
-	 * @param cursor      list cursor
+	 * @param id     ID of the user
+	 * @param name   screen name of the user (without '@')
+	 * @param cursor list cursor
 	 * @return list of userlists
 	 */
-	UserLists getUserListMemberships(long userId, String screen_name, long cursor) throws ConnectionException;
+	UserLists getUserlistMemberships(long id, String name, long cursor) throws ConnectionException;
 
 	/**
 	 * add user to existing userlist
 	 *
-	 * @param listId      ID of the list
-	 * @param screen_name screen name
+	 * @param id   ID of the list
+	 * @param name screen name
 	 */
-	void addUserToUserlist(long listId, String screen_name) throws ConnectionException;
+	void addUserToList(long id, String name) throws ConnectionException;
 
 	/**
 	 * remove user from existing userlist
 	 *
-	 * @param listId      ID of the list
-	 * @param screen_name screen name
+	 * @param id   ID of the list
+	 * @param name screen name
 	 */
-	void removeUserFromUserlist(long listId, String screen_name) throws ConnectionException;
+	void removeUserFromList(long id, String name) throws ConnectionException;
 
 	/**
 	 * send directmessage to user
 	 *
-	 * @param userId  ID of the user
+	 * @param id      ID of the user
 	 * @param message message text
 	 * @param mediaId ID of uploaded media files or -1 if none
 	 */
-	void sendDirectmessage(long userId, String message, long mediaId) throws ConnectionException;
+	void sendDirectmessage(long id, String message, long mediaId) throws ConnectionException;
 
 	/**
 	 * delete directmessage
 	 *
-	 * @param messageId ID of the message to delete
+	 * @param id ID of the message to delete
 	 */
-	void deleteDirectmessage(long messageId) throws ConnectionException;
+	void deleteDirectmessage(long id) throws ConnectionException;
 
 	/**
 	 * get current user's direct messages

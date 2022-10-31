@@ -49,6 +49,7 @@ public class TweetV1 implements Status {
 	private long id;
 	private long timestamp;
 	private User author;
+	@Nullable
 	private Status embeddedTweet;
 
 	private long retweetId;
@@ -99,7 +100,7 @@ public class TweetV1 implements Status {
 		if (ID_PATTERN.matcher(tweetIdStr).matches()) {
 			id = Long.parseLong(tweetIdStr);
 		} else {
-			throw new JSONException("bad ID: " + tweetIdStr);
+			throw new JSONException("bad tweet ID: " + tweetIdStr);
 		}
 		if (!replyName.isEmpty() && !replyName.equals("null")) {
 			this.replyName = '@' + replyName;
@@ -291,7 +292,7 @@ public class TweetV1 implements Status {
 	 *
 	 * @param tweet new embedded tweet
 	 */
-	public void setEmbeddedTweet(Status tweet) {
+	public void setEmbeddedTweet(@Nullable Status tweet) {
 		this.embeddedTweet = tweet;
 	}
 

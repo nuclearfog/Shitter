@@ -64,10 +64,10 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 		try {
 			switch (listType) {
 				case LOAD_USERLISTS:
-					return connection.getUserListOwnerships(userId, ownerName);
+					return connection.getUserlistOwnerships(userId, ownerName, 0L);
 
 				case LOAD_MEMBERSHIPS:
-					return connection.getUserListMemberships(userId, ownerName, param[0]);
+					return connection.getUserlistMemberships(userId, ownerName, param[0]);
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
