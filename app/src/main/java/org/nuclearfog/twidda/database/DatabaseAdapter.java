@@ -17,9 +17,9 @@ import java.io.File;
 public class DatabaseAdapter {
 
 	/**
-	 * database version number
+	 * database version
 	 */
-	private static final int DB_VERSION = 5;
+	private static final int DB_VERSION = 6;
 
 	/**
 	 * database file name
@@ -131,8 +131,11 @@ public class DatabaseAdapter {
 			+ AccountTable.NAME + "("
 			+ AccountTable.ID + " INTEGER PRIMARY KEY,"
 			+ AccountTable.DATE + " INTEGER,"
-			+ AccountTable.KEY1 + " TEXT,"
-			+ AccountTable.KEY2 + " TEXT);";
+			+ AccountTable.KEY_1 + " TEXT,"
+			+ AccountTable.KEY_2 + " TEXT,"
+			+ AccountTable.HOST + " TEXT,"
+			+ AccountTable.CLIENT_ID + " TEXT,"
+			+ AccountTable.CLIENT_SECRET + " TEXT);";
 
 	/**
 	 * SQL query to create user exclude table
@@ -159,6 +162,21 @@ public class DatabaseAdapter {
 	 */
 	private static final String INDX_USER_REG = "CREATE INDEX IF NOT EXISTS idx_user_register"
 			+ " ON " + UserRegisterTable.NAME + "(" + UserRegisterTable.OWNER + "," + UserRegisterTable.ID + ");";
+
+	/**
+	 * update account table to add social network hostname
+	 */
+	private static final String UPDATE_ADD_HOST = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.HOST + " TEXT;";
+
+	/**
+	 * update account table to add API client ID
+	 */
+	private static final String UPDATE_ADD_CLIENT_ID = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_ID + " TEXT;";
+
+	/**
+	 * update account table to add API client secret
+	 */
+	private static final String UPDATE_ADD_CLIENT_SEC = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_SECRET + " TEXT;";
 
 	/**
 	 * singleton instance
@@ -220,16 +238,10 @@ public class DatabaseAdapter {
 	 * @param c application context
 	 */
 	private void init(Context c) {
+		// fetch database information
 		databasePath = c.getDatabasePath(DB_NAME);
 		db = c.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
-		initTables();
-	}
-
-	/**
-	 * initialize tables if there aren't any
-	 */
-	private void initTables() {
-		// create tables
+		// create tables if not exist
 		db.execSQL(TABLE_USER);
 		db.execSQL(TABLE_STATUS);
 		db.execSQL(TABLE_FAVORITES);
@@ -239,11 +251,18 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_USER_EXCLUDE);
 		db.execSQL(TABLE_STATUS_REGISTER);
 		db.execSQL(TABLE_USER_REGISTER);
-		// create index
+		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
 		db.execSQL(INDX_USER_REG);
+		// set initial version
 		if (db.getVersion() == 0) {
+			db.setVersion(DB_VERSION);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_HOST);
+			db.execSQL(UPDATE_ADD_CLIENT_ID);
+			db.execSQL(UPDATE_ADD_CLIENT_SEC);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -504,6 +523,11 @@ public class DatabaseAdapter {
 		String NAME = "login";
 
 		/**
+		 * social network host
+		 */
+		String HOST = "host";
+
+		/**
 		 * ID of the user
 		 */
 		String ID = "userID";
@@ -514,14 +538,24 @@ public class DatabaseAdapter {
 		String DATE = "date";
 
 		/**
-		 * primary oauth access token
+		 * API ID
 		 */
-		String KEY1 = "auth_key1";
+		String CLIENT_ID = "client_id";
+
+		/**
+		 * API secret
+		 */
+		String CLIENT_SECRET = "client_secret";
+
+		/**
+		 * primary oauth access token or bearer token
+		 */
+		String KEY_1 = "auth_key1";
 
 		/**
 		 * second oauth access token
 		 */
-		String KEY2 = "auth_key2";
+		String KEY_2 = "auth_key2";
 	}
 
 	/**

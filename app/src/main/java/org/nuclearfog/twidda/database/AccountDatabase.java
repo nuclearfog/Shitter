@@ -26,8 +26,8 @@ public class AccountDatabase {
 	 */
 	private static final String[] PROJECTION = {
 			AccountTable.ID,
-			AccountTable.KEY1,
-			AccountTable.KEY2,
+			AccountTable.KEY_1,
+			AccountTable.KEY_2,
 			AccountTable.DATE
 	};
 
@@ -65,8 +65,8 @@ public class AccountDatabase {
 		ContentValues values = new ContentValues(4);
 
 		values.put(AccountTable.ID, id);
-		values.put(AccountTable.KEY1, key1);
-		values.put(AccountTable.KEY2, key2);
+		values.put(AccountTable.KEY_1, key1);
+		values.put(AccountTable.KEY_2, key2);
 		values.put(AccountTable.DATE, System.currentTimeMillis());
 
 		SQLiteDatabase db = dataHelper.getDatabase();
