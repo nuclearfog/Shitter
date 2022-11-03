@@ -1,8 +1,11 @@
 package org.nuclearfog.twidda.database.impl;
 
+import android.database.Cursor;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
@@ -14,39 +17,51 @@ import org.nuclearfog.twidda.model.User;
 public class AccountImpl implements Account {
 
 	/**
-	 * id of the user
+	 * projection of the columns with fixed order
 	 */
-	private final long userId;
+	public static final String[] PROJECTION = {
+			AccountTable.ID,
+			AccountTable.DATE,
+			AccountTable.ACCESS_TOKEN,
+			AccountTable.TOKEN_SECRET,
+			AccountTable.CLIENT_ID,
+			AccountTable.CLIENT_SECRET,
+			AccountTable.HOST
+	};
 
-	/**
-	 * date of the first login
-	 */
-	private final long loginDate;
-
-	/**
-	 * access tokens of the login
-	 */
-	private final String key1, key2;
+	private long userId;
+	private long loginDate;
+	private String accessToken, tokenSecret;
+	private String apiKey, apiSecret;
+	private String host;
 
 	private User user;
 
-
-	public AccountImpl(long userId, long loginDate, String key1, String key2) {
-		this.userId = userId;
-		this.loginDate = loginDate;
-		this.key1 = key1;
-		this.key2 = key2;
+	/**
+	 * @param cursor database cursor containing this {@link #PROJECTION}
+	 */
+	public AccountImpl(Cursor cursor) {
+		userId = cursor.getLong(0);
+		loginDate = cursor.getLong(1);
+		accessToken = cursor.getString(2);
+		tokenSecret = cursor.getString(3);
+		apiKey = cursor.getString(4);
+		apiSecret = cursor.getString(5);
+		host = cursor.getString(6);
 	}
+
 
 	@Override
 	public long getId() {
 		return userId;
 	}
 
+
 	@Override
 	public long getLoginDate() {
 		return loginDate;
 	}
+
 
 	@Nullable
 	@Override
@@ -54,23 +69,41 @@ public class AccountImpl implements Account {
 		return user;
 	}
 
+
+	@Override
+	public String getApiKey() {
+		return apiKey;
+	}
+
+
+	@Override
+	public String getApiSecret() {
+		return apiSecret;
+	}
+
+
 	@Override
 	public String getAccessToken() {
-		return key1;
+		return accessToken;
 	}
+
 
 	@Override
 	public String getTokenSecret() {
-		return key2;
+		return tokenSecret;
+	}
+
+
+	@Override
+	public String getHostname() {
+		return host;
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		if (user != null)
-			return user + " date=" + loginDate;
-		return "id=" + userId + " date=" + loginDate;
+		return "date=" + loginDate + " host=" + host + " user=" + user;
 	}
 
 	/**

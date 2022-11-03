@@ -953,7 +953,7 @@ public class GlobalSettings {
 	 *
 	 * @param login true if current user is logged in successfully
 	 */
-	public void setogin(boolean login) {
+	public void setLogin(boolean login) {
 		loggedIn = login;
 		Editor e = settings.edit();
 		e.putBoolean(LOGGED_IN, login);

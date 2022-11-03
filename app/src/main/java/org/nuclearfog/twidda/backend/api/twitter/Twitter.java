@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.twitter.impl.AccountV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.LocationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.MessageV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.MetricsV2;
@@ -33,6 +34,7 @@ import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.database.GlobalSettings.OnSettingsChangeListener;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Relation;
@@ -216,11 +218,17 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 	/**
 	 * request temporary access token to pass it to the Twitter login page
 	 *
-	 * @return a temporary access token created by Twitter
+	 * @param consumerKey    API key or empty to use default
+	 * @param consumerSecret API secret or empty to use default
+	 * @return a temporary oauth token created by Twitter
 	 */
-	public String getRequestToken() throws TwitterException {
+	public String getRequestToken(String consumerKey, String consumerSecret) throws TwitterException {
 		try {
-			Response response = post(REQUEST_TOKEN, new ArrayList<>());
+			Response response;
+			if (!consumerKey.isEmpty() && !consumerSecret.isEmpty())
+				response = post(REQUEST_TOKEN, new ArrayList<>(), consumerKey, consumerSecret);
+			else
+				response = post(REQUEST_TOKEN, new ArrayList<>());
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				String res = body.string();
@@ -237,24 +245,37 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 	/**
 	 * login to twitter using pin and add store access tokens
 	 *
-	 * @param pin pin from the login website
+	 * @param tempOauthToken temporary oauth token
+	 * @param pin            pin from the login website
+	 * @param consumerKey    API key or empty to use default
+	 * @param consumerSecret API secret or empty to use default
 	 */
-	public User login(String oauth_token, String pin) throws TwitterException {
+	public Account login(String tempOauthToken, String pin, String consumerKey, String consumerSecret) throws TwitterException {
 		try {
 			List<String> params = new ArrayList<>();
 			params.add("oauth_verifier=" + pin);
-			params.add("oauth_token=" + oauth_token);
-			Response response = post(OAUTH_VERIFIER, params);
+			params.add("oauth_token=" + tempOauthToken);
+			Response response;
+			if (!consumerKey.isEmpty() && !consumerSecret.isEmpty())
+				response = post(OAUTH_VERIFIER, params, consumerKey, consumerSecret);
+			else
+				response = post(OAUTH_VERIFIER, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				String res = body.string();
 				// extract tokens from link
 				Uri uri = Uri.parse(OAUTH_VERIFIER + "?" + res);
-				settings.setAccessToken(uri.getQueryParameter("oauth_token"));
-				settings.setTokenSecret(uri.getQueryParameter("oauth_token_secret"));
-				settings.setUserId(Long.parseLong(uri.getQueryParameter("user_id")));
-				settings.setogin(true);
-				return getCredentials();
+				long id = Long.parseLong(uri.getQueryParameter("user_id"));
+				String oauthToken = uri.getQueryParameter("oauth_token");
+				String tokenSecret = uri.getQueryParameter("oauth_token_secret");
+
+				settings.setAccessToken(oauthToken);
+				settings.setTokenSecret(tokenSecret);
+				settings.setUserId(id);
+				settings.setLogin(true);
+
+				User user = getCredentials();
+				return new AccountV1(id, API, oauthToken, tokenSecret, null, null, user);
 			}
 			throw new TwitterException(response);
 		} catch (IOException e) {
@@ -1543,11 +1564,12 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 	 *
 	 * @param endpoint endpoint url
 	 * @param params   additional http parameters
+	 * @param keys     optional API keys
 	 * @return http response
 	 */
-	private Response post(String endpoint, List<String> params) throws IOException {
+	private Response post(String endpoint, List<String> params, String... keys) throws IOException {
 		RequestBody body = RequestBody.create("", TYPE_TEXT);
-		return post(endpoint, params, body);
+		return post(endpoint, params, body, keys);
 	}
 
 	/**
@@ -1599,8 +1621,12 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 	 * @param body     custom body
 	 * @return http response
 	 */
-	private Response post(String endpoint, List<String> params, RequestBody body) throws IOException {
-		String authHeader = buildHeader("POST", endpoint, params);
+	private Response post(String endpoint, List<String> params, RequestBody body, String... keys) throws IOException {
+		String authHeader;
+		if (keys.length == 2)
+			authHeader = buildHeader("POST", endpoint, params, keys[0], keys[1]);
+		else
+			authHeader = buildHeader("POST", endpoint, params);
 		String url = appendParams(endpoint, params);
 		Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).post(body).build();
 		return client.newCall(request).execute();
@@ -1655,15 +1681,29 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 	 * @return header string
 	 */
 	private String buildHeader(String method, String endpoint, List<String> params) throws IOException {
+		return buildHeader(method, endpoint, params, tokens.getConsumerKey(), tokens.getConsumerSec());
+	}
+
+	/**
+	 * create http header with credentials and signature
+	 *
+	 * @param method   endpoint method to call
+	 * @param endpoint endpoint url
+	 * @param params   parameter to add to signature
+	 * @param consumerKey custom consumer key
+	 * @param consumerSecret custom consumer secret key
+	 * @return header string
+	 */
+	private String buildHeader(String method, String endpoint, List<String> params, String consumerKey, String consumerSecret) throws IOException {
 		String timeStamp = StringTools.getTimestamp();
 		String random = StringTools.getRandomString();
-		String signkey = tokens.getConsumerSec() + "&";
+		String signkey = consumerSecret + "&";
 		String oauth_token_param = "";
 
 		// init default parameters
 		TreeSet<String> sortedParams = new TreeSet<>();
 		sortedParams.add("oauth_callback=oob");
-		sortedParams.add("oauth_consumer_key=" + tokens.getConsumerKey());
+		sortedParams.add("oauth_consumer_key=" + consumerKey);
 		sortedParams.add("oauth_nonce=" + random);
 		sortedParams.add("oauth_signature_method=" + StringTools.SIGNATURE_ALG);
 		sortedParams.add("oauth_timestamp=" + timeStamp);

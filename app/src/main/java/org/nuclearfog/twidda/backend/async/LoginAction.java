@@ -8,65 +8,72 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
 
 import java.lang.ref.WeakReference;
 
 /**
- * Background task to connect to twitter and initialize keys
+ * Background task to connect to social network
  *
  * @author nuclearfog
  * @see LoginActivity
  */
 public class LoginAction extends AsyncTask<String, Void, String> {
 
+	/**
+	 * request login page
+	 */
+	public static final int MODE_REQUEST = 1;
+
+	/**
+	 * login with pin and ans save auth keys
+	 */
+	public static final int MODE_LOGIN = 2;
+
 	private WeakReference<LoginActivity> weakRef;
 	private AccountDatabase accountDB;
 	private AppDatabase database;
 	private Twitter twitter;
-	private GlobalSettings settings;
 
 	@Nullable
 	private ConnectionException exception;
+	private int mode;
 
 	/**
 	 * Account to twitter with PIN
 	 *
 	 * @param activity Activity Context
 	 */
-	public LoginAction(LoginActivity activity) {
+	public LoginAction(LoginActivity activity, int mode) {
 		super();
 		weakRef = new WeakReference<>(activity);
 		accountDB = new AccountDatabase(activity);
 		database = new AppDatabase(activity);
-		settings = GlobalSettings.getInstance(activity);
 		twitter = Twitter.get(activity);
+		this.mode = mode;
 	}
 
 
 	@Override
 	protected String doInBackground(String... param) {
 		try {
-			// no PIN means we need to request a token to login
-			if (param.length == 0) {
-				// backup current login if exist
-				if (settings.isLoggedIn() && !accountDB.exists(settings.getCurrentUserId())) {
-					accountDB.setLogin(settings.getCurrentUserId(), settings.getAccessToken(), settings.getTokenSecret());
-				}
-				return twitter.getRequestToken();
+			switch (mode) {
+				case MODE_REQUEST:
+					return twitter.getRequestToken(param[0], param[1]);
+
+				case MODE_LOGIN:
+					// login with pin and access token
+					Account account = twitter.login(param[0], param[1], param[2], param[3]);
+					// save new user information
+					database.saveUser(account.getUser());
+					accountDB.setLogin(account);
+					return "";
 			}
-			// login with pin and access token
-			User user = twitter.login(param[0], param[1]);
-			// save new user information
-			database.saveUser(user);
-			accountDB.setLogin(user.getId(), settings.getAccessToken(), settings.getTokenSecret());
-			return "";
 		} catch (ConnectionException exception) {
 			this.exception = exception;
-			return null;
 		}
+		return null;
 	}
 
 
@@ -74,13 +81,8 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	protected void onPostExecute(String result) {
 		LoginActivity activity = weakRef.get();
 		if (activity != null) {
-			// redirect to Twitter login page
 			if (result != null) {
-				if (result.isEmpty()) {
-					activity.onSuccess();
-				} else {
-					activity.connect(result);
-				}
+				activity.onSuccess(mode, result);
 			} else {
 				activity.onError(exception);
 			}

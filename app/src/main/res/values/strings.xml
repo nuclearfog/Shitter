@@ -149,6 +149,9 @@
 
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
+	<string name="login_key_enable">add api keys</string>
+	<string name="login_key1">consumer key</string>
+	<string name="login_key2">consumer secret</string>
 	<string name="login_verifier">login</string>
 	<string name="popup_tweet_hint" translatable="false">Tweet</string>
 	<string name="title_settings">Settings</string>
@@ -240,6 +243,7 @@
 	<string name="login_first_opt" translatable="false">1.</string>
 	<string name="login_sec_opt" translatable="false">2.</string>
 	<string name="login_trd_opt" translatable="false">3.</string>
+	<string name="login_4th_opt" translatable="false">4.</string>
 	<string name="userlist_public_sel">public</string>
 	<string name="userlist_enter_title">enter list title</string>
 	<string name="userlist_enter_description">enter list description</string>

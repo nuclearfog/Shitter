@@ -22,16 +22,6 @@ import java.util.List;
 public class AccountDatabase {
 
 	/**
-	 * projection of the columns with fixed order
-	 */
-	private static final String[] PROJECTION = {
-			AccountTable.ID,
-			AccountTable.KEY_1,
-			AccountTable.KEY_2,
-			AccountTable.DATE
-	};
-
-	/**
 	 * selection for account entry
 	 */
 	private static final String ACCOUNT_SELECTION = AccountTable.ID + "=?";
@@ -57,17 +47,18 @@ public class AccountDatabase {
 	/**
 	 * register user login
 	 *
-	 * @param id   User ID
-	 * @param key1 access token 1
-	 * @param key2 access token 2
+	 * @param account Account information
 	 */
-	public void setLogin(long id, String key1, String key2) {
-		ContentValues values = new ContentValues(4);
+	public void setLogin(Account account) {
+		ContentValues values = new ContentValues(7);
 
-		values.put(AccountTable.ID, id);
-		values.put(AccountTable.KEY_1, key1);
-		values.put(AccountTable.KEY_2, key2);
-		values.put(AccountTable.DATE, System.currentTimeMillis());
+		values.put(AccountTable.ID, account.getId());
+		values.put(AccountTable.ACCESS_TOKEN, account.getAccessToken());
+		values.put(AccountTable.TOKEN_SECRET, account.getTokenSecret());
+		values.put(AccountTable.DATE, account.getLoginDate());
+		values.put(AccountTable.HOST, account.getHostname());
+		values.put(AccountTable.CLIENT_ID, account.getApiKey());
+		values.put(AccountTable.CLIENT_SECRET, account.getApiSecret());
 
 		SQLiteDatabase db = dataHelper.getDatabase();
 		db.beginTransaction();
@@ -85,16 +76,12 @@ public class AccountDatabase {
 		ArrayList<Account> result = new ArrayList<>();
 
 		SQLiteDatabase db = dataHelper.getDatabase();
-		Cursor cursor = db.query(AccountTable.NAME, PROJECTION, null, null, null, null, SORT_BY_CREATION);
+		Cursor cursor = db.query(AccountTable.NAME, AccountImpl.PROJECTION, null, null, null, null, SORT_BY_CREATION);
 		if (cursor.moveToFirst()) {
 			result.ensureCapacity(cursor.getCount());
 			do {
-				long id = cursor.getLong(0);
-				String key1 = cursor.getString(1);
-				String key2 = cursor.getString(2);
-				long date = cursor.getLong(3);
-				AccountImpl account = new AccountImpl(id, date, key1, key2);
-				account.addUser(database.getUser(id));
+				AccountImpl account = new AccountImpl(cursor);
+				account.addUser(database.getUser(account.getId()));
 				result.add(account);
 			} while (cursor.moveToNext());
 		}
@@ -112,20 +99,5 @@ public class AccountDatabase {
 
 		SQLiteDatabase db = dataHelper.getDatabase();
 		db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
-	}
-
-	/**
-	 * check if user exists
-	 *
-	 * @param id User ID
-	 * @return true if user was found
-	 */
-	public boolean exists(long id) {
-		String[] args = {Long.toString(id)};
-		SQLiteDatabase db = dataHelper.getDatabase();
-		Cursor cursor = db.query(AccountTable.NAME, null, ACCOUNT_SELECTION, args, null, null, null, "1");
-		boolean found = cursor.moveToFirst();
-		cursor.close();
-		return found;
 	}
 }

@@ -102,9 +102,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private Dialog color_dialog_selector, appInfo, license;
 	private ConfirmDialog confirmDialog;
 
-	private View hqImageText, enableAuthTxt, api_info;
-	private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
-	private SwitchButton enableProxy, enableAuth, hqImage, enableAPI;
+	private View hqImageText, enableAuthTxt;
+	private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
+	private SwitchButton enableProxy, enableAuth, hqImage;
 	private Spinner locationSpinner;
 	private TextView list_size;
 	private ViewGroup root;
@@ -142,9 +142,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		Spinner scaleSelector = findViewById(R.id.spinner_scale);
 		enableProxy = findViewById(R.id.settings_enable_proxy);
 		enableAuth = findViewById(R.id.settings_enable_auth);
-		api_info = findViewById(R.id.settings_api_info);
 		hqImage = findViewById(R.id.settings_image_hq);
-		enableAPI = findViewById(R.id.settings_set_custom_keys);
 		locationSpinner = findViewById(R.id.spinner_woeid);
 		hqImageText = findViewById(R.id.settings_image_hq_descr);
 		enableAuthTxt = findViewById(R.id.settings_enable_auth_descr);
@@ -162,8 +160,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		proxyPort = findViewById(R.id.edit_proxy_port);
 		proxyUser = findViewById(R.id.edit_proxyuser);
 		proxyPass = findViewById(R.id.edit_proxypass);
-		api_key1 = findViewById(R.id.settings_custom_key1);
-		api_key2 = findViewById(R.id.settings_custom_key2);
 		list_size = findViewById(R.id.settings_list_size);
 		root = findViewById(R.id.settings_layout);
 
@@ -210,11 +206,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			hqImageText.setVisibility(GONE);
 			hqImage.setVisibility(GONE);
 		}
-		if (!settings.isCustomApiSet()) {
-			api_key1.setVisibility(GONE);
-			api_key2.setVisibility(GONE);
-			api_info.setVisibility(GONE);
-		}
 		if (settings.likeEnabled()) {
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_like);
 		} else {
@@ -227,7 +218,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLike.setCheckedImmediately(settings.likeEnabled());
 		enableTwitterAlt.setCheckedImmediately(settings.twitterAltSet());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
-		enableAPI.setCheckedImmediately(settings.isCustomApiSet());
 		enableProxy.setCheckedImmediately(settings.isProxyEnabled());
 		enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
 		hqImage.setCheckedImmediately(settings.imagesEnabled());
@@ -236,8 +226,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		proxyPort.setText(settings.getProxyPort());
 		proxyUser.setText(settings.getProxyUser());
 		proxyPass.setText(settings.getProxyPass());
-		api_key1.setText(settings.getConsumerKey());
-		api_key2.setText(settings.getConsumerSecret());
 		list_size.setText(Integer.toString(settings.getListSize()));
 		listSizeSelector.setProgress(settings.getListSize() / 10 - 1);
 		setButtonColors();
@@ -248,7 +236,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		delButton.setOnClickListener(this);
 		toggleImg.setOnCheckedChangeListener(this);
 		toggleAns.setOnCheckedChangeListener(this);
-		enableAPI.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
 		enableTwitterAlt.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
@@ -557,18 +544,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				proxyPass.setVisibility(GONE);
 			}
 		}
-		// enable custom API setup
-		else if (c.getId() == R.id.settings_set_custom_keys) {
-			if (checked) {
-				api_key1.setVisibility(VISIBLE);
-				api_key2.setVisibility(VISIBLE);
-				api_info.setVisibility(VISIBLE);
-			} else {
-				api_key1.setVisibility(GONE);
-				api_key2.setVisibility(GONE);
-				api_info.setVisibility(GONE);
-			}
-		}
 	}
 
 
@@ -714,18 +689,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		} else {
 			settings.clearProxyServer();
 			settings.setIgnoreProxyWarning(false);
-		}
-		// check if API-keys are correctly set
-		if (enableAPI.isChecked()) {
-			if (api_key1.length() > 0 && api_key2.length() > 0) {
-				String key1 = api_key1.getText().toString();
-				String key2 = api_key2.getText().toString();
-				settings.setCustomAPI(key1, key2);
-			} else {
-				checkPassed = false;
-			}
-		} else {
-			settings.removeCustomAPI();
 		}
 		return checkPassed;
 	}

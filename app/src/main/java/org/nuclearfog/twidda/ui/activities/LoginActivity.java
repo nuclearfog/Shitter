@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 		Button linkButton = findViewById(R.id.login_get_link);
 		Button loginButton = findViewById(R.id.login_verifier);
 		root = findViewById(R.id.login_root);
-		pinInput = findViewById(R.id.login_enter_pin);
+		pinInput = findViewById(R.id.login_enter_code);
 
 		settings = GlobalSettings.getInstance(this);
 		toolbar.setTitle(R.string.login_info);
@@ -139,7 +139,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_ACCOUNT_SELECT && resultCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
 			// account selected, return to MainActivity
-			onSuccess();
+			setResult(RETURN_LOGIN_SUCCESSFUL);
+			finish();
 		}
 	}
 
@@ -151,8 +152,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 			if (requestToken == null) {
 				if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
 					Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
-					registerAsync = new LoginAction(this);
-					registerAsync.execute();
+					registerAsync = new LoginAction(this, LoginAction.MODE_REQUEST);
+					registerAsync.execute("", "");
 				}
 			} else {
 				// re-use request token
@@ -174,8 +175,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 				if (pinInput.getText() != null && pinInput.length() > 0) {
 					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
 					String twitterPin = pinInput.getText().toString();
-					registerAsync = new LoginAction(this);
-					registerAsync.execute(requestToken, twitterPin);
+					registerAsync = new LoginAction(this, LoginAction.MODE_LOGIN);
+					registerAsync.execute(requestToken, twitterPin, "", "");
 				}
 			}
 		}
@@ -184,9 +185,18 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	/**
 	 * Called when the app is registered successfully
 	 */
-	public void onSuccess() {
-		setResult(RETURN_LOGIN_SUCCESSFUL);
-		finish();
+	public void onSuccess(int mode, String result) {
+		switch (mode) {
+			case LoginAction.MODE_LOGIN:
+				setResult(RETURN_LOGIN_SUCCESSFUL);
+				finish();
+				break;
+
+			case LoginAction.MODE_REQUEST:
+				requestToken = result;
+				connect();
+				break;
+		}
 	}
 
 	/**
@@ -197,16 +207,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	}
 
 	/**
-	 * Called when an oauth login link was created
-	 *
-	 * @param requestToken temporary request token
+	 * open login page
 	 */
-	public void connect(String requestToken) {
-		this.requestToken = requestToken;
-		connect();
-	}
-
-
 	private void connect() {
 		String link = Twitter.AUTHENTICATE + "?oauth_token=" + requestToken;
 		Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));

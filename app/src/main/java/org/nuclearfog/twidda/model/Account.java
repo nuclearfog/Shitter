@@ -27,6 +27,16 @@ public interface Account {
 	User getUser();
 
 	/**
+	 * @return API key assosiated with an account
+	 */
+	String getApiKey();
+
+	/**
+	 * @return API secret key associated with an account
+	 */
+	String getApiSecret();
+
+	/**
 	 * @return first access token of the user
 	 */
 	String getAccessToken();
@@ -35,4 +45,9 @@ public interface Account {
 	 * @return second access token of the user
 	 */
 	String getTokenSecret();
+
+	/**
+	 * @return hostname of the social network
+	 */
+	String getHostname();
 }

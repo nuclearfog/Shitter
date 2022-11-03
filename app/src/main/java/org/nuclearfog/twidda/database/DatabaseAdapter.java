@@ -131,8 +131,8 @@ public class DatabaseAdapter {
 			+ AccountTable.NAME + "("
 			+ AccountTable.ID + " INTEGER PRIMARY KEY,"
 			+ AccountTable.DATE + " INTEGER,"
-			+ AccountTable.KEY_1 + " TEXT,"
-			+ AccountTable.KEY_2 + " TEXT,"
+			+ AccountTable.ACCESS_TOKEN + " TEXT,"
+			+ AccountTable.TOKEN_SECRET + " TEXT,"
 			+ AccountTable.HOST + " TEXT,"
 			+ AccountTable.CLIENT_ID + " TEXT,"
 			+ AccountTable.CLIENT_SECRET + " TEXT);";
@@ -550,12 +550,12 @@ public class DatabaseAdapter {
 		/**
 		 * primary oauth access token or bearer token
 		 */
-		String KEY_1 = "auth_key1";
+		String ACCESS_TOKEN = "auth_key1";
 
 		/**
 		 * second oauth access token
 		 */
-		String KEY_2 = "auth_key2";
+		String TOKEN_SECRET = "auth_key2";
 	}
 
 	/**

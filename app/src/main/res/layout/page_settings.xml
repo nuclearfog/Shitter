@@ -693,7 +693,7 @@
 						android:singleLine="true"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/settings_enable_auth"
-						app:layout_constraintBottom_toTopOf="@id/settings_set_custom_keys"
+						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintEnd_toStartOf="@id/edit_proxypass"
 						app:layout_constraintHorizontal_weight="3"
 						style="@style/TextInput" />
@@ -712,69 +712,6 @@
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintHorizontal_weight="2"
 						style="@style/TextInput" />
-
-					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_set_custom_keys"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/edit_proxypass"
-						app:layout_constraintBottom_toTopOf="@id/settings_custom_key1"
-						app:layout_constraintEnd_toStartOf="@id/settings_set_custom_keys_descr" />
-
-					<TextView
-						android:id="@+id/settings_set_custom_keys_descr"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:singleLine="true"
-						android:text="@string/settings_setup_custom_keys"
-						android:textSize="@dimen/settings_textsize_small"
-						app:layout_constraintStart_toEndOf="@id/settings_set_custom_keys"
-						app:layout_constraintTop_toTopOf="@id/settings_set_custom_keys"
-						app:layout_constraintBottom_toBottomOf="@id/settings_set_custom_keys"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-					<EditText
-						android:id="@+id/settings_custom_key1"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:hint="@string/settings_key1_hint"
-						android:importantForAutofill="no"
-						android:inputType="textPassword"
-						android:singleLine="true"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_set_custom_keys"
-						app:layout_constraintBottom_toTopOf="@id/settings_api_info"
-						app:layout_constraintEnd_toStartOf="@id/settings_custom_key2"
-						app:layout_constraintHorizontal_weight="1"
-						style="@style/TextInput" />
-
-					<EditText
-						android:id="@+id/settings_custom_key2"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:hint="@string/settings_key2_hint"
-						android:importantForAutofill="no"
-						android:inputType="textPassword"
-						android:singleLine="true"
-						app:layout_constraintStart_toEndOf="@id/settings_custom_key1"
-						app:layout_constraintTop_toTopOf="@id/settings_custom_key1"
-						app:layout_constraintBottom_toBottomOf="@id/settings_custom_key1"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintHorizontal_weight="1"
-						style="@style/TextInput" />
-
-					<TextView
-						android:id="@+id/settings_api_info"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:text="@string/settings_api_info"
-						app:layout_constraintStart_toStartOf="@id/settings_custom_key1"
-						app:layout_constraintTop_toBottomOf="@id/settings_custom_key1"
-						app:layout_constraintBottom_toBottomOf="parent"
-						app:layout_constraintEnd_toEndOf="@id/settings_custom_key2" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
 
