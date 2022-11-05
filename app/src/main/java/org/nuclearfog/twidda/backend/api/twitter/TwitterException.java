@@ -56,7 +56,8 @@ class TwitterException extends ConnectionException {
 		// get extra information
 		if (body != null) {
 			try {
-				JSONObject json = new JSONObject(body.string());
+				String bodyStr = body.string();
+				JSONObject json = new JSONObject(bodyStr);
 				JSONArray errors = json.optJSONArray("errors");
 				if (errors != null) {
 					JSONObject error = errors.optJSONObject(0);

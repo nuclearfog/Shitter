@@ -16,14 +16,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -39,7 +46,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class LoginActivity extends AppCompatActivity implements OnClickListener {
+public class LoginActivity extends AppCompatActivity implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener {
 
 	/**
 	 * request code to open {@link AccountActivity}
@@ -59,7 +66,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 	private LoginAction registerAsync;
 	private GlobalSettings settings;
 
-	private EditText pinInput;
+	private EditText pinInput, apiKey1, apiKey2;
+	private SwitchButton apiSwitch;
 	private ViewGroup root;
 
 	private String requestToken;
@@ -77,17 +85,34 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 		Toolbar toolbar = findViewById(R.id.login_toolbar);
 		Button linkButton = findViewById(R.id.login_get_link);
 		Button loginButton = findViewById(R.id.login_verifier);
+		Spinner hostSelector = findViewById(R.id.login_network_selector);
+		apiSwitch = findViewById(R.id.login_enable_key_input);
 		root = findViewById(R.id.login_root);
 		pinInput = findViewById(R.id.login_enter_code);
+		apiKey1 = findViewById(R.id.login_enter_key1);
+		apiKey2 = findViewById(R.id.login_enter_key2);
 
 		settings = GlobalSettings.getInstance(this);
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
 		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
-		setResult(RESULT_CANCELED);
+
+		if (settings.isCustomApiSet()) {
+			apiSwitch.setCheckedImmediately(true);
+			apiKey1.setText(settings.getConsumerKey());
+			apiKey2.setText(settings.getConsumerSecret());
+		} else {
+			apiKey1.setVisibility(View.INVISIBLE);
+			apiKey2.setVisibility(View.INVISIBLE);
+		}
 
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
+		hostSelector.setOnItemSelectedListener(this);
+		apiSwitch.setOnCheckedChangeListener(this);
+
+		// set default result code
+		setResult(RESULT_CANCELED);
 	}
 
 
@@ -153,7 +178,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 				if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
 					Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
 					registerAsync = new LoginAction(this, LoginAction.MODE_REQUEST);
-					registerAsync.execute("", "");
+					if (apiSwitch.isChecked()) {
+						String apiTxt1 = apiKey1.getText().toString();
+						String apiTxt2 = apiKey2.getText().toString();
+						registerAsync.execute(apiTxt1, apiTxt2);
+					} else {
+						registerAsync.execute(null, null);
+					}
 				}
 			} else {
 				// re-use request token
@@ -176,10 +207,40 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
 					String twitterPin = pinInput.getText().toString();
 					registerAsync = new LoginAction(this, LoginAction.MODE_LOGIN);
-					registerAsync.execute(requestToken, twitterPin, "", "");
+					if (apiSwitch.isChecked()) {
+						String apiTxt1 = apiKey1.getText().toString();
+						String apiTxt2 = apiKey2.getText().toString();
+						registerAsync.execute(requestToken, twitterPin, apiTxt1, apiTxt2);
+					} else {
+						registerAsync.execute(requestToken, twitterPin);
+					}
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (buttonView.getId() == R.id.login_enable_key_input) {
+			if (isChecked) {
+				apiKey1.setVisibility(View.VISIBLE);
+				apiKey2.setVisibility(View.VISIBLE);
+			} else {
+				apiKey1.setVisibility(View.INVISIBLE);
+				apiKey2.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
+
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+	}
+
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
 	/**

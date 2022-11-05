@@ -1,24 +1,40 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
-import androidx.annotation.Nullable;
-
+import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
+/**
+ * Twitter implementation of an account
+ *
+ * @author nuclearfog
+ */
 public class AccountV1 implements Account {
 
-	private long id;
 	private long date;
 
-	private String host;
 	private String oauthToken, tokenSecret;
 	private String apiKey, apiSec;
 
 	private User user;
 
-	public AccountV1(long id, String host, String oauthToken, String tokenSecret, String apiKey, String apiSec, User user) {
-		this.id = id;
-		this.host = host;
+	/**
+	 * @param oauthToken  oauth access token
+	 * @param tokenSecret oauth token secret
+	 * @param user        user information
+	 */
+	public AccountV1(String oauthToken, String tokenSecret, User user) {
+		this(oauthToken, tokenSecret, "", "", user);
+	}
+
+	/**
+	 * @param apiKey      API consumer token
+	 * @param apiSec      API consumer secret
+	 * @param oauthToken  oauth access token
+	 * @param tokenSecret oauth token secret
+	 * @param user        user information
+	 */
+	public AccountV1(String oauthToken, String tokenSecret, String apiKey, String apiSec, User user) {
 		this.oauthToken = oauthToken;
 		this.tokenSecret = tokenSecret;
 		this.apiKey = apiKey;
@@ -27,10 +43,9 @@ public class AccountV1 implements Account {
 		date = System.currentTimeMillis();
 	}
 
-
 	@Override
 	public long getId() {
-		return id;
+		return user.getId();
 	}
 
 	@Override
@@ -38,7 +53,6 @@ public class AccountV1 implements Account {
 		return date;
 	}
 
-	@Nullable
 	@Override
 	public User getUser() {
 		return user;
@@ -66,6 +80,6 @@ public class AccountV1 implements Account {
 
 	@Override
 	public String getHostname() {
-		return host;
+		return Twitter.API;
 	}
 }

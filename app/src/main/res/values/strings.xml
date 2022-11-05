@@ -175,7 +175,7 @@
 	<string name="confirm_retry_button">retry</string>
 	<string name="data_consumption">Data consumption</string>
 	<string name="trend_setting">Trend location</string>
-	<string name="register_link">get PIN</string>
+	<string name="register_link">get code</string>
 	<string name="settings_image">enable images</string>
 	<string name="settings_clear_data">clear app data</string>
 	<string name="confirm_delete_tweet">delete tweet?</string>

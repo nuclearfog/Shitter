@@ -25,7 +25,6 @@ public class Tokens {
 	private static final String API_SECRET = "";
 
 
-
 	private static Tokens instance;
 	private GlobalSettings settings;
 
@@ -63,7 +62,7 @@ public class Tokens {
 	 *
 	 * @return consumer secret API key
 	 */
-	public String getConsumerSec() {
+	public String getConsumerSecret() {
 		if (settings.isCustomApiSet())
 			return settings.getConsumerSecret();
 		return API_SECRET;

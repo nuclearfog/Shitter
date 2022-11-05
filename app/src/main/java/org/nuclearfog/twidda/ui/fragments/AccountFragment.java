@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
+import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
@@ -86,9 +87,17 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onAccountClick(Account account) {
 		// set new account
-		settings.setAccessToken(account.getAccessToken());
-		settings.setTokenSecret(account.getTokenSecret());
 		settings.setUserId(account.getId());
+		// setup Twitter account
+		if (account.getHostname().equals(Twitter.API)) {
+			settings.setAccessToken(account.getAccessToken());
+			settings.setTokenSecret(account.getTokenSecret());
+			if (!account.getApiKey().isEmpty() && !account.getApiSecret().isEmpty()) {
+				settings.setCustomAPI(account.getApiKey(), account.getApiSecret());
+			} else {
+				settings.removeCustomAPI();
+			}
+		}
 		// finish activity and return to parent activity
 		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
 		requireActivity().finish();

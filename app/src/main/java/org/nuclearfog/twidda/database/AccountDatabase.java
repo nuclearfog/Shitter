@@ -49,7 +49,7 @@ public class AccountDatabase {
 	 *
 	 * @param account Account information
 	 */
-	public void setLogin(Account account) {
+	public void saveLogin(Account account) {
 		ContentValues values = new ContentValues(7);
 
 		values.put(AccountTable.ID, account.getId());

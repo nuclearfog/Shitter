@@ -64,10 +64,14 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 
 				case MODE_LOGIN:
 					// login with pin and access token
-					Account account = twitter.login(param[0], param[1], param[2], param[3]);
+					Account account;
+					if (param.length == 4)
+						account = twitter.login(param[0], param[1], param[2], param[3]);
+					else
+						account = twitter.login(param[0], param[1]);
 					// save new user information
 					database.saveUser(account.getUser());
-					accountDB.setLogin(account);
+					accountDB.saveLogin(account);
 					return "";
 			}
 		} catch (ConnectionException exception) {
