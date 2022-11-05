@@ -17,12 +17,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,6 +38,7 @@ import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
@@ -97,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		setSupportActionBar(toolbar);
 		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
 
-		if (settings.isCustomApiSet()) {
+		if (settings.isCustomApiSet() || !Tokens.USE_DEFAULT_KEYS) {
 			apiSwitch.setCheckedImmediately(true);
 			apiKey1.setText(settings.getConsumerKey());
 			apiKey2.setText(settings.getConsumerSecret());

@@ -239,7 +239,7 @@
 	<string name="settings_enable_proxy_auth">enable proxy authentication</string>
 	<string name="settings_setup_custom_keys">setup custom API keys</string>
 	<string name="tweet_sensitive_media">sensitive content</string>
-	<string name="login_info">3 steps to login</string>
+	<string name="login_info">4 steps to login</string>
 	<string name="login_first_opt" translatable="false">1.</string>
 	<string name="login_sec_opt" translatable="false">2.</string>
 	<string name="login_trd_opt" translatable="false">3.</string>

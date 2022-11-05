@@ -228,7 +228,7 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 			if (consumerKey != null && !consumerKey.isEmpty() && consumerSecret != null && !consumerSecret.isEmpty())
 				response = post(REQUEST_TOKEN, new ArrayList<>(), consumerKey, consumerSecret);
 			else
-				response = post(REQUEST_TOKEN, new ArrayList<>());
+				response = post(REQUEST_TOKEN, new ArrayList<>(), tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				String res = body.string();
@@ -258,7 +258,7 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 			if (consumerKeys.length == 2)
 				response = post(OAUTH_VERIFIER, params, consumerKeys[0], consumerKeys[1]);
 			else
-				response = post(OAUTH_VERIFIER, params);
+				response = post(OAUTH_VERIFIER, params, tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				// extract tokens from link
@@ -269,12 +269,12 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 				// check if login works
 				User user;
 				Account account;
-				if (consumerKeys.length == 2) {
+				if (consumerKeys.length == 2) { // use custom API keys
 					user = getCredentials(consumerKeys[0], consumerKeys[1], oauthToken, tokenSecret);
 					account = new AccountV1(oauthToken, tokenSecret, consumerKeys[0], consumerKeys[1], user);
 					settings.setCustomAPI(consumerKeys[0], consumerKeys[1]);
-				} else {
-					user = getCredentials(tokens.getConsumerKey(), tokens.getConsumerSecret(), oauthToken, tokenSecret);
+				} else { // use default API keys
+					user = getCredentials(tokens.getConsumerKey(true), tokens.getConsumerSecret(true), oauthToken, tokenSecret);
 					account = new AccountV1(oauthToken, tokenSecret, user);
 					settings.removeCustomAPI();
 				}
@@ -1704,8 +1704,8 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 			consumerKey = keys[0];
 			consumerSecret = keys[1];
 		} else {
-			consumerKey = tokens.getConsumerKey();
-			consumerSecret = tokens.getConsumerSecret();
+			consumerKey = tokens.getConsumerKey(false);
+			consumerSecret = tokens.getConsumerSecret(false);
 		}
 		if (keys.length == 4) {
 			oauthToken = keys[2];

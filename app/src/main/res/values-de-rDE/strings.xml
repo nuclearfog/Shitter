@@ -123,7 +123,7 @@
 	<string name="error_wrong_connection_settings">Falsche Proxykonfiguration! Änderung verwerfen?</string>
 	<string name="error_open_link">Link konnte nicht geöffnet werden!</string>
 	<string name="tweet_sensitive_media">Sensible Inhalte</string>
-	<string name="login_info">3 Schritte zum Login</string>
+	<string name="login_info">4 Schritte zum Login</string>
 	<string name="info_fetching_link">öffne Twitter login Seite. Bitte warten</string>
 	<string name="info_login_to_twitter">In Twitter einloggen</string>
 	<string name="userlist_public_sel">öffentlich</string>

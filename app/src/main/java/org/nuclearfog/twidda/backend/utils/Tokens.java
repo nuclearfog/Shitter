@@ -15,6 +15,12 @@ import io.michaelrocks.paranoid.Obfuscate;
 public class Tokens {
 
 	/**
+	 * false means there are no API keys available
+	 * set to true when you insert API keys here
+	 */
+	public static final boolean USE_DEFAULT_KEYS = false;
+
+	/**
 	 * consumer API key
 	 */
 	private static final String API_KEY = "";
@@ -49,10 +55,11 @@ public class Tokens {
 	/**
 	 * get consumer key of the app
 	 *
+	 * @param forceDefault use default API key
 	 * @return consumer API key
 	 */
-	public String getConsumerKey() {
-		if (settings.isCustomApiSet())
+	public String getConsumerKey(boolean forceDefault) {
+		if (settings.isCustomApiSet() && !forceDefault)
 			return settings.getConsumerKey();
 		return API_KEY;
 	}
@@ -60,10 +67,11 @@ public class Tokens {
 	/**
 	 * get consumer secret of the app
 	 *
+	 * @param forceDefault use default API key
 	 * @return consumer secret API key
 	 */
-	public String getConsumerSecret() {
-		if (settings.isCustomApiSet())
+	public String getConsumerSecret(boolean forceDefault) {
+		if (settings.isCustomApiSet() && !forceDefault)
 			return settings.getConsumerSecret();
 		return API_SECRET;
 	}

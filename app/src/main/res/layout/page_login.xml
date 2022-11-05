@@ -7,7 +7,6 @@
 	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:layout_margin="@dimen/loginpage_layout_margin"
 	tools:context=".ui.activities.LoginActivity">
 
 	<androidx.appcompat.widget.Toolbar
@@ -16,7 +15,7 @@
 		android:layout_height="@dimen/loginpage_toolbar_height"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
 		android:id="@+id/login_first_opt"
@@ -29,7 +28,7 @@
 		app:layout_constraintTop_toTopOf="@id/login_network_selector"
 		app:layout_constraintBottom_toBottomOf="@id/login_network_selector"
 		app:layout_constraintEnd_toStartOf="@id/login_network_selector"
-		app:layout_constraintHorizontal_chainStyle="packed"/>
+		app:layout_constraintHorizontal_chainStyle="packed" />
 
 	<Spinner
 		android:id="@+id/login_network_selector"
@@ -42,19 +41,28 @@
 		app:layout_constraintTop_toBottomOf="@id/login_toolbar"
 		app:layout_constraintBottom_toTopOf="@id/login_enable_key_input"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintVertical_chainStyle="packed"/>
+		app:layout_constraintVertical_chainStyle="packed" />
 
 	<com.kyleduo.switchbutton.SwitchButton
 		android:id="@+id/login_enable_key_input"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="@string/login_key_enable"
-		android:textSize="@dimen/loginpage_textsize_switch"
+		android:layout_marginStart="@dimen/loginpage_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/login_network_selector"
 		app:layout_constraintBottom_toTopOf="@id/login_get_link"
-		app:layout_constraintEnd_toStartOf="@id/login_enter_key1"
 		tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+	<TextView
+		android:id="@+id/login_enable_key_input_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/login_key_enable"
+		android:textSize="@dimen/loginpage_textsize_switch"
+		android:layout_marginStart="@dimen/loginpage_layout_margin"
+		app:layout_constraintStart_toEndOf="@id/login_enable_key_input"
+		app:layout_constraintTop_toTopOf="@id/login_enable_key_input"
+		app:layout_constraintBottom_toBottomOf="@id/login_enable_key_input" />
 
 	<EditText
 		android:id="@+id/login_enter_key1"
@@ -67,12 +75,13 @@
 		android:inputType="textPassword"
 		android:singleLine="true"
 		android:textSize="@dimen/loginpage_textsize_api_key"
-		android:layout_margin="@dimen/loginpage_textview_margin"
+		android:layout_marginEnd="@dimen/loginpage_layout_margin"
+		android:layout_marginStart="@dimen/loginpage_layout_margin"
 		app:layout_constraintHorizontal_weight="1"
-		app:layout_constraintStart_toEndOf="@id/login_enable_key_input"
+		app:layout_constraintStart_toEndOf="@id/login_enable_key_input_label"
 		app:layout_constraintTop_toTopOf="@id/login_enable_key_input"
 		app:layout_constraintBottom_toBottomOf="@id/login_enable_key_input"
-		app:layout_constraintEnd_toStartOf="@id/login_enter_key2"/>
+		app:layout_constraintEnd_toStartOf="@id/login_enter_key2" />
 
 	<EditText
 		android:id="@+id/login_enter_key2"
@@ -85,12 +94,12 @@
 		android:inputType="textPassword"
 		android:singleLine="true"
 		android:textSize="@dimen/loginpage_textsize_api_key"
-		android:layout_margin="@dimen/loginpage_textview_margin"
+		android:layout_marginEnd="@dimen/loginpage_layout_margin"
 		app:layout_constraintHorizontal_weight="1"
 		app:layout_constraintStart_toEndOf="@id/login_enter_key1"
 		app:layout_constraintTop_toTopOf="@id/login_enter_key1"
 		app:layout_constraintBottom_toBottomOf="@id/login_enter_key1"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
 		android:id="@+id/login_sec_opt"
@@ -103,7 +112,7 @@
 		app:layout_constraintTop_toTopOf="@id/login_get_link"
 		app:layout_constraintBottom_toBottomOf="@id/login_get_link"
 		app:layout_constraintEnd_toStartOf="@id/login_get_link"
-		app:layout_constraintHorizontal_chainStyle="packed"/>
+		app:layout_constraintHorizontal_chainStyle="packed" />
 
 	<Button
 		android:id="@+id/login_get_link"
@@ -130,7 +139,7 @@
 		app:layout_constraintTop_toTopOf="@id/login_enter_code"
 		app:layout_constraintBottom_toBottomOf="@id/login_enter_code"
 		app:layout_constraintEnd_toStartOf="@id/login_enter_code"
-		app:layout_constraintHorizontal_chainStyle="packed"/>
+		app:layout_constraintHorizontal_chainStyle="packed" />
 
 	<EditText
 		android:id="@+id/login_enter_code"
@@ -159,7 +168,7 @@
 		app:layout_constraintTop_toTopOf="@id/login_verifier"
 		app:layout_constraintBottom_toBottomOf="@id/login_verifier"
 		app:layout_constraintEnd_toStartOf="@id/login_verifier"
-		app:layout_constraintHorizontal_chainStyle="packed"/>
+		app:layout_constraintHorizontal_chainStyle="packed" />
 
 	<Button
 		android:id="@+id/login_verifier"

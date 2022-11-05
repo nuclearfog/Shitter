@@ -74,7 +74,7 @@
 	<string name="settings_enable_proxy_auth">使用代理认证</string>
 	<string name="settings_setup_custom_keys">设置自定义API密钥</string>
 	<string name="tweet_sensitive_media">敏感内容</string>
-	<string name="login_info">只需三步即可登录</string>
+	<!--<string name="login_info">只需三步即可登录</string>-->
 	<string name="userlist_public_sel">公开</string>
 	<string name="userlist_enter_title">全名</string>
 	<string name="userlist_enter_description">描述</string>
