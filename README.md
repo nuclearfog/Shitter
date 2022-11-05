@@ -4,7 +4,6 @@
 
 <!-- please change the hardcoded links to match your repository name -->
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](../../releases/latest/download/SH1TT3R.apk)
-![](https://img.shields.io/github/downloads/nuclearfog/Shitter/total)
 
 
 ## Features
@@ -56,5 +55,5 @@ If you have any questions or if you have found a bug, please open an issue.
 - Twitter4J logo (version 1.x) from <a href="https://twitter4j.org/en/powered-by.html">Twitter4J website</a>
 
 ## Thanks to
-- <a href="https://github.com/Tobaloidee">@Tobaloidee</a> for app logo design
-- <a href="https://github.com/lehmaning">@lehmaning</a> for simplified chinese translation
+- <a href="https://github.com/Tobaloidee">@Tobaloidee</a>
+- <a href="https://github.com/lehmaning">@lehmaning</a>
