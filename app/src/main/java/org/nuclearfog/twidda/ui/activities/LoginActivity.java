@@ -38,7 +38,7 @@ import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.Tokens;
+import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.utils;
+package org.nuclearfog.twidda.backend.api.twitter;
 
 import android.content.Context;
 
