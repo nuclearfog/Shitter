@@ -306,23 +306,22 @@ public class TweetV1 implements Status {
 			if (media.length() > 0) {
 				// determine MIME type
 				JSONObject mediaItem = media.getJSONObject(0);
-				String[] links = new String[media.length()];
 				String mime = mediaItem.getString("type");
 				switch (mime) {
 					case "photo":
 						mediaType = MEDIA_PHOTO;
 						// get media URLs
-						for (int pos = 0; pos < links.length; pos++) {
+						String[] links = new String[media.length()];
+						for (int pos = 0; pos < media.length(); pos++) {
 							JSONObject item = media.getJSONObject(pos);
-							if (item != null) {
-								links[pos] = item.getString("media_url_https");
-							}
+							links[pos] = item.getString("media_url_https");
 						}
 						return links;
 
 					case "video":
 						mediaType = MEDIA_VIDEO;
 						int maxBitrate = -1;
+						links = new String[1];
 						JSONObject video = mediaItem.getJSONObject("video_info");
 						JSONArray videoVariants = video.getJSONArray("variants");
 						for (int pos = 0; pos < videoVariants.length(); pos++) {
@@ -337,6 +336,7 @@ public class TweetV1 implements Status {
 
 					case "animated_gif":
 						mediaType = MEDIA_GIF;
+						links = new String[1];
 						JSONObject gif = mediaItem.getJSONObject("video_info");
 						JSONObject gifVariant = gif.getJSONArray("variants").getJSONObject(0);
 						if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
