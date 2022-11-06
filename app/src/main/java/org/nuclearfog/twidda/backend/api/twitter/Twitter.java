@@ -23,12 +23,11 @@ import org.nuclearfog.twidda.backend.api.twitter.impl.UserV2;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
-import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
-import org.nuclearfog.twidda.backend.proxy.UserProxy;
 import org.nuclearfog.twidda.backend.update.MediaUpdate;
 import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
+import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -52,7 +51,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -186,13 +184,7 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 		tokens = Tokens.getInstance(context);
 		filterDatabase = new FilterDatabase(context);
 		settings.addSettingsChangeListener(this);
-		// init okhttp
-		OkHttpClient.Builder builder = new OkHttpClient.Builder();
-		builder.writeTimeout(60, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).connectTimeout(60, TimeUnit.SECONDS);
-		// setup proxy
-		builder.proxy(UserProxy.get(settings));
-		builder.proxyAuthenticator(new ProxyAuthenticator(settings));
-		client = builder.build();
+		client = ConnectionBuilder.create(context, 0);
 		notifySettingsChange = false;
 	}
 
