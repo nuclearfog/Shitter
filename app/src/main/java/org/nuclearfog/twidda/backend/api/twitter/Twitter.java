@@ -944,7 +944,7 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 				// init user cache to re-use instances
 				Map<Long, User> userCache = new TreeMap<>();
 				JSONObject json = new JSONObject(body.string());
-				String nextCursor = json.optString("next_cursor");
+				String nextCursor = json.optString("next_cursor", "");
 				JSONArray array = json.getJSONArray("events");
 				Messages result = new Messages(cursor, nextCursor);
 				for (int pos = 0; pos < array.length(); pos++) {
@@ -1066,7 +1066,7 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 				jsonResponse = new JSONObject(body.string());
 				JSONObject processingInfo = jsonResponse.getJSONObject("processing_info");
 				long retryAfter = processingInfo.optLong("check_after_secs");
-				state = processingInfo.optString("state");
+				state = processingInfo.optString("state", "");
 				// wait until next polling
 				Thread.sleep(retryAfter * 1000L);
 			} while (state.equals("in_progress") && ++retries <= POLLING_MAX_RETRIES);

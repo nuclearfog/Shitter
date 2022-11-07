@@ -20,6 +20,11 @@ public class UserListV1 implements UserList {
 
 	public static final long serialVersionUID = 4121925943880606236L;
 
+	/**
+	 * indicates that a list can only be accessed by the owner
+	 */
+	private static final String PRIVATE = "private";
+
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
 	private long id;
@@ -45,12 +50,12 @@ public class UserListV1 implements UserList {
 			throw new JSONException("bad userlist ID: " + idStr);
 		}
 		owner = new UserV1(json.getJSONObject("user"), currentId);
-		createdAt = StringTools.getTime1(json.optString("created_at"));
-		title = json.optString("name");
-		description = json.optString("description");
+		createdAt = StringTools.getTime1(json.optString("created_at", ""));
+		title = json.optString("name", "");
+		description = json.optString("description", "");
 		memberCount = json.optInt("member_count");
 		subscriberCount = json.optInt("subscriber_count");
-		isPrivate = json.optString("mode").equals("private");
+		isPrivate = PRIVATE.equals(json.optString("mode"));
 		following = json.optBoolean("following");
 	}
 

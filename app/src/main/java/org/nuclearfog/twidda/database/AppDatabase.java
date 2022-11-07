@@ -601,7 +601,7 @@ public class AppDatabase {
 	public List<Trend> getTrends(int id) {
 		String[] args = {Integer.toString(id)};
 		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.query(TrendTable.NAME, null, TREND_SELECT, args, null, null, TREND_ORDER);
+		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, TREND_ORDER);
 		List<Trend> trends = new LinkedList<>();
 		if (cursor.moveToFirst()) {
 			do {

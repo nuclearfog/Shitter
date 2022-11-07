@@ -21,8 +21,8 @@ public class LocationV1 implements Location {
 	 */
 	public LocationV1(JSONObject json) {
 		id = json.optInt("woeid");
-		String placeName = json.optString("name");
-		String country = json.optString("country");
+		String placeName = json.optString("name", "");
+		String country = json.optString("country", "");
 
 		if (!country.isEmpty() && !country.equals(placeName)) {
 			name = country + ", " + placeName;

@@ -90,7 +90,7 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 			holder.username.setText(user.getUsername());
 			holder.screenname.setText(user.getScreenname());
 			// set profile image
-			if (settings.imagesEnabled()) {
+			if (settings.imagesEnabled() && !user.getProfileUrl().isEmpty()) {
 				String profileImageUrl;
 				if (!user.hasDefaultProfileImage()) {
 					profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), settings.getImageSuffix());
@@ -98,6 +98,8 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 					profileImageUrl = user.getImageUrl();
 				}
 				picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(holder.profile);
+			} else {
+				holder.profile.setImageResource(0);
 			}
 		} else {
 			holder.profile.setImageResource(0);

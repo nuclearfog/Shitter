@@ -21,7 +21,7 @@ public class TrendV1 implements Trend {
 	 * @param rank position of the trend starting with '1'
 	 */
 	public TrendV1(JSONObject json, int rank) {
-		name = json.optString("name");
+		name = json.optString("name", "");
 		popularity = json.optInt("tweet_volume");
 		this.rank = rank;
 	}

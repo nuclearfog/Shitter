@@ -53,14 +53,14 @@ public class UserV2 implements User {
 		JSONObject metrics = json.optJSONObject("public_metrics");
 
 		String idStr = json.getString("id");
-		String profileImageUrl = json.optString("profile_image_url");
-		username = json.optString("name");
-		screenName = '@' + json.optString("username");
+		String profileImageUrl = json.optString("profile_image_url", "");
+		username = json.optString("name", "");
+		screenName = '@' + json.optString("username", "");
 		isProtected = json.optBoolean("protected");
-		location = json.optString("location");
+		location = json.optString("location", "");
 		isVerified = json.optBoolean("verified");
-		profileBannerUrl = json.optString("profile_banner_url");
-		created = StringTools.getTime2(json.optString("created_at"));
+		profileBannerUrl = json.optString("profile_banner_url", "");
+		created = StringTools.getTime2(json.optString("created_at", ""));
 		defaultImage = profileImageUrl.contains("default_profile_images");
 
 		url = getUrl(json);
@@ -195,7 +195,7 @@ public class UserV2 implements User {
 	 * @return user description
 	 */
 	private String getDescription(JSONObject json) {
-		String description = json.optString("description");
+		String description = json.optString("description", "");
 		JSONObject entities = json.optJSONObject("entities");
 		if (entities != null) {
 			try {

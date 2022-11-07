@@ -14,15 +14,26 @@ import org.nuclearfog.twidda.model.Trend;
  */
 public class TrendImpl implements Trend {
 
+	/**
+	 * SQLite columns
+	 */
+	public static final String[] COLUMNS = {
+			DatabaseAdapter.TrendTable.TREND,
+			DatabaseAdapter.TrendTable.VOL,
+			DatabaseAdapter.TrendTable.INDEX
+	};
+
 	private String name;
 	private int range;
 	private int rank;
 
-
+	/**
+	 * @param cursor database cursor using this {@link #COLUMNS} projection
+	 */
 	public TrendImpl(Cursor cursor) {
-		name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.TREND));
-		range = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.VOL));
-		rank = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.TrendTable.INDEX));
+		name = cursor.getString(0);
+		range = cursor.getInt(1);
+		rank = cursor.getInt(2);
 	}
 
 	@Override

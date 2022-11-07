@@ -19,7 +19,7 @@ public class AccountImpl implements Account {
 	/**
 	 * projection of the columns with fixed order
 	 */
-	public static final String[] PROJECTION = {
+	public static final String[] COLUMNS = {
 			AccountTable.ID,
 			AccountTable.DATE,
 			AccountTable.ACCESS_TOKEN,
@@ -38,7 +38,7 @@ public class AccountImpl implements Account {
 	private User user;
 
 	/**
-	 * @param cursor database cursor containing this {@link #PROJECTION}
+	 * @param cursor database cursor using this {@link #COLUMNS}
 	 */
 	public AccountImpl(Cursor cursor) {
 		userId = cursor.getLong(0);

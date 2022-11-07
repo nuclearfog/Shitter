@@ -40,10 +40,18 @@ public class TweetV1 implements Status {
 	public static final String INCL_ENTITIES = "include_entities=true";
 
 	/**
+	 * type of tweet location to use
+	 */
+	private static final String LOCATION_TYPE = "Point";
+
+	/**
 	 * twitter video/gif MIME
 	 */
 	private static final String MIME_V_MP4 = "video/mp4";
 
+	/**
+	 * regex pattern to compare ID
+	 */
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
 	private long id;
@@ -79,10 +87,10 @@ public class TweetV1 implements Status {
 		JSONObject locationJson = json.optJSONObject("place");
 		JSONObject currentUserJson = json.optJSONObject("current_user_retweet");
 		JSONObject embeddedTweetJson = json.optJSONObject("retweeted_status");
-		String tweetIdStr = json.optString("id_str");
-		String replyName = json.optString("in_reply_to_screen_name");
-		String replyTweetIdStr = json.optString("in_reply_to_status_id_str");
-		String replyUsrIdStr = json.optString("in_reply_to_user_id_str");
+		String tweetIdStr = json.optString("id_str", "");
+		String replyName = json.optString("in_reply_to_screen_name", "");
+		String replyTweetIdStr = json.optString("in_reply_to_status_id_str", "");
+		String replyUsrIdStr = json.optString("in_reply_to_user_id_str", "");
 		String text = createText(json);
 
 		author = new UserV1(json.getJSONObject("user"), twitterId);
@@ -91,8 +99,8 @@ public class TweetV1 implements Status {
 		isFavorited = json.optBoolean("favorited");
 		isRetweeted = json.optBoolean("retweeted");
 		isSensitive = json.optBoolean("possibly_sensitive");
-		timestamp = StringTools.getTime1(json.optString("created_at"));
-		source = StringTools.getSource(json.optString("source"));
+		timestamp = StringTools.getTime1(json.optString("created_at", ""));
+		source = StringTools.getSource(json.optString("source", ""));
 		coordinates = getLocation(json);
 		mediaLinks = addMedia(json);
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
@@ -112,10 +120,10 @@ public class TweetV1 implements Status {
 			replyUserId = Long.parseLong(replyUsrIdStr);
 		}
 		if (locationJson != null) {
-			location = locationJson.optString("full_name");
+			location = locationJson.optString("full_name", "");
 		}
 		if (currentUserJson != null) {
-			String retweetIdStr = currentUserJson.optString("id_str");
+			String retweetIdStr = currentUserJson.optString("id_str", "");
 			if (ID_PATTERN.matcher(retweetIdStr).matches()) {
 				retweetId = Long.parseLong(retweetIdStr);
 			}
@@ -359,9 +367,8 @@ public class TweetV1 implements Status {
 	 * read tweet and expand urls
 	 */
 	private String createText(@NonNull JSONObject json) {
-		String text = json.optString("full_text");
+		String text = json.optString("full_text", "");
 		StringBuilder builder = new StringBuilder(text);
-
 		// check for shortened urls and replace them with full urls
 		try {
 			JSONObject entities = json.getJSONObject("entities");
@@ -377,7 +384,7 @@ public class TweetV1 implements Status {
 			}
 		} catch (JSONException e) {
 			// use default tweet text
-			builder = new StringBuilder(text);
+			return StringTools.unescapeString(text);
 		}
 		// remove html escape strings
 		return StringTools.unescapeString(builder.toString());
@@ -393,7 +400,7 @@ public class TweetV1 implements Status {
 		try {
 			JSONObject coordinateJson = json.optJSONObject("coordinates");
 			if (coordinateJson != null) {
-				if (coordinateJson.optString("type").equals("Point")) {
+				if (LOCATION_TYPE.equals(coordinateJson.optString("type"))) {
 					JSONArray coordinateArray = coordinateJson.optJSONArray("coordinates");
 					if (coordinateArray != null && coordinateArray.length() == 2) {
 						double lon = coordinateArray.getDouble(0);

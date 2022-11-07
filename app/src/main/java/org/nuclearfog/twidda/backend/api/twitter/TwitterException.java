@@ -62,12 +62,12 @@ class TwitterException extends ConnectionException {
 				if (errors != null) {
 					JSONObject error = errors.optJSONObject(0);
 					if (error != null) {
-						message = error.optString("message");
+						message = error.optString("message", "");
 						responseCode = error.optInt("code");
 						retryAfter = error.optInt("x-rate-limit-remaining", -1);
 					}
 				} else {
-					message = json.optString("error");
+					message = json.optString("error", "");
 				}
 			} catch (Exception e) {
 				// ignore extra information

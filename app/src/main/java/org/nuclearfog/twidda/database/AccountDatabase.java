@@ -76,7 +76,7 @@ public class AccountDatabase {
 		ArrayList<Account> result = new ArrayList<>();
 
 		SQLiteDatabase db = dataHelper.getDatabase();
-		Cursor cursor = db.query(AccountTable.NAME, AccountImpl.PROJECTION, null, null, null, null, SORT_BY_CREATION);
+		Cursor cursor = db.query(AccountTable.NAME, AccountImpl.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 		if (cursor.moveToFirst()) {
 			result.ensureCapacity(cursor.getCount());
 			do {

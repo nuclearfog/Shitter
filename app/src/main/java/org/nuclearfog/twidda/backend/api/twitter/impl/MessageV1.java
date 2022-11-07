@@ -142,11 +142,9 @@ public class MessageV1 implements Message {
 	private String setMedia(JSONObject data) {
 		JSONObject attachment = data.optJSONObject("attachment");
 		if (attachment != null) {
-			try {
-				JSONObject urls = attachment.getJSONObject("media");
-				return urls.getString("media_url_https");
-			} catch (JSONException e) {
-				// ignore
+			JSONObject urls = attachment.optJSONObject("media");
+			if (urls != null) {
+				return urls.optString("media_url_https", "");
 			}
 		}
 		return "";
@@ -158,7 +156,7 @@ public class MessageV1 implements Message {
 	 * @param data message data
 	 */
 	private String setText(JSONObject data) {
-		String text = data.optString("text");
+		String text = data.optString("text", "");
 		StringBuilder buf = new StringBuilder(text);
 		JSONObject entities = data.optJSONObject("entities");
 		if (entities != null) {
