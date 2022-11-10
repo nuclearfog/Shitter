@@ -20,7 +20,7 @@ public class LocationV1 implements Location {
 	 * @param json JSON object containing location information
 	 */
 	public LocationV1(JSONObject json) {
-		id = json.optInt("woeid");
+		id = json.optInt("woeid", 1);
 		String placeName = json.optString("name", "");
 		String country = json.optString("country", "");
 

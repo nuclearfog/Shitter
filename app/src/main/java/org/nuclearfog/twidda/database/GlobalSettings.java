@@ -16,6 +16,7 @@ import android.graphics.Typeface;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.database.impl.LocationImpl;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 
 import java.util.LinkedList;
@@ -118,6 +119,7 @@ public class GlobalSettings {
 	private static final String CUSTOM_CONSUMER_KEY_SET = "custom_api_keys";
 	private static final String CUSTOM_CONSUMER_KEY_1 = "api_key1";
 	private static final String CUSTOM_CONSUMER_KEY_2 = "api_key2";
+	private static final String CURRENT_API = "current_api_id";
 
 	// login specific preference names
 	private static final String LOGGED_IN = "login";
@@ -179,6 +181,7 @@ public class GlobalSettings {
 	private int indexFont;
 	private int indexScale;
 	private int listSize;
+	private int apiId;
 	private long userId;
 
 	private List<OnSettingsChangeListener> settingsChangeListeners = new LinkedList<>();
@@ -1021,6 +1024,27 @@ public class GlobalSettings {
 	}
 
 	/**
+	 * set ID of the current used API
+	 *
+	 * @param apiId Id to identify current used API
+	 */
+	public void setApiId(int apiId) {
+		this.apiId = apiId;
+		Editor e = settings.edit();
+		e.putInt(CURRENT_API, apiId);
+		e.apply();
+	}
+
+	/**
+	 * get current API ID
+	 *
+	 * @return API ID
+	 */
+	public int getApiId() {
+		return apiId;
+	}
+
+	/**
 	 * get current users ID
 	 *
 	 * @return User ID
@@ -1139,6 +1163,7 @@ public class GlobalSettings {
 		indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
 		indexScale = settings.getInt(INDEX_SCALE, DEFAULT_SCALE_INDEX);
 		listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
+		apiId = settings.getInt(CURRENT_API, Account.API_TWITTER);
 		isProxyEnabled = settings.getBoolean(PROXY_SET, false);
 		isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
 		ignoreProxyWarning = settings.getBoolean(PROXY_IGNORE, false);

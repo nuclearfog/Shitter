@@ -92,6 +92,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		if (Twitter.API.equals(account.getHostname())) {
 			settings.setAccessToken(account.getAccessToken());
 			settings.setTokenSecret(account.getTokenSecret());
+			settings.setApiId(account.getApiType());
 			if (!account.getApiKey().isEmpty() && !account.getApiSecret().isEmpty()) {
 				settings.setCustomAPI(account.getApiKey(), account.getApiSecret());
 			} else {

@@ -82,4 +82,9 @@ public class AccountV1 implements Account {
 	public String getHostname() {
 		return Twitter.API;
 	}
+
+	@Override
+	public int getApiType() {
+		return Account.API_TWITTER;
+	}
 }

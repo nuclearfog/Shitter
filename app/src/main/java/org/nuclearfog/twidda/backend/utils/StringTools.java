@@ -8,6 +8,7 @@ import org.nuclearfog.twidda.R;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -193,7 +194,7 @@ public final class StringTools {
 			Date date = dateFormat1.parse(timeStr);
 			if (date != null)
 				return date.getTime();
-		} catch (Exception e) {
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return DEFAULT_TIME;
@@ -210,7 +211,7 @@ public final class StringTools {
 			Date date = dateFormat2.parse(timeStr);
 			if (date != null)
 				return date.getTime();
-		} catch (Exception e) {
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return DEFAULT_TIME;

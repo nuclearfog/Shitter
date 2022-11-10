@@ -22,7 +22,7 @@ public class TrendV1 implements Trend {
 	 */
 	public TrendV1(JSONObject json, int rank) {
 		name = json.optString("name", "");
-		popularity = json.optInt("tweet_volume");
+		popularity = json.optInt("tweet_volume", -1);
 		this.rank = rank;
 	}
 

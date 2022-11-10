@@ -50,15 +50,16 @@ public class AccountDatabase {
 	 * @param account Account information
 	 */
 	public void saveLogin(Account account) {
-		ContentValues values = new ContentValues(7);
+		ContentValues values = new ContentValues();
 
 		values.put(AccountTable.ID, account.getId());
 		values.put(AccountTable.ACCESS_TOKEN, account.getAccessToken());
 		values.put(AccountTable.TOKEN_SECRET, account.getTokenSecret());
 		values.put(AccountTable.DATE, account.getLoginDate());
-		values.put(AccountTable.HOST, account.getHostname());
+		values.put(AccountTable.HOSTNAME, account.getHostname());
 		values.put(AccountTable.CLIENT_ID, account.getApiKey());
 		values.put(AccountTable.CLIENT_SECRET, account.getApiSecret());
+		values.put(AccountTable.API, account.getApiType());
 
 		SQLiteDatabase db = dataHelper.getDatabase();
 		db.beginTransaction();

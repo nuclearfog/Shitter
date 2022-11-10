@@ -40,7 +40,7 @@ public class MessageV1 implements Message {
 		if (ID_PATTERN.matcher(idStr).matches()) {
 			id = Long.parseLong(idStr);
 		} else {
-			throw new JSONException("bad ID:" + idStr);
+			throw new JSONException("bad message ID:" + idStr);
 		}
 		timestamp = Long.parseLong(json.getString("created_timestamp"));
 		JSONObject message = json.getJSONObject("message_create");
@@ -157,30 +157,33 @@ public class MessageV1 implements Message {
 	 */
 	private String setText(JSONObject data) {
 		String text = data.optString("text", "");
-		StringBuilder buf = new StringBuilder(text);
 		JSONObject entities = data.optJSONObject("entities");
 		if (entities != null) {
-			try {
-				JSONArray urls = entities.getJSONArray("urls");
-				for (int pos = urls.length() - 1; pos >= 0; pos--) {
-					JSONObject url = urls.getJSONObject(pos);
-					String displayUrl = url.getString("display_url");
-					String expandedUrl = url.getString("expanded_url");
-					JSONArray indices = url.getJSONArray("indices");
-					int start = indices.getInt(0);
-					int end = indices.getInt(1);
-					if (displayUrl.startsWith("pic.twitter.com")) {
-						// remove media link
-						buf.delete(start, end);
-					} else {
-						// replace shortened url with original url
-						buf.replace(start, end, expandedUrl);
+			JSONArray urls = entities.optJSONArray("urls");
+			if (urls != null) {
+				try {
+					StringBuilder buf = new StringBuilder(text);
+					for (int pos = urls.length() - 1; pos >= 0; pos--) {
+						JSONObject url = urls.getJSONObject(pos);
+						String displayUrl = url.getString("display_url");
+						String expandedUrl = url.getString("expanded_url");
+						JSONArray indices = url.getJSONArray("indices");
+						int start = indices.getInt(0);
+						int end = indices.getInt(1);
+						if (displayUrl.startsWith("pic.twitter.com")) {
+							// remove media link
+							buf.delete(start, end);
+						} else {
+							// replace shortened url with original url
+							buf.replace(start, end, expandedUrl);
+						}
 					}
+					return buf.toString();
+				} catch (JSONException e) {
+					// ignore, return default text
 				}
-			} catch (JSONException e) {
-				// ignore, set default text
 			}
 		}
-		return buf.toString();
+		return text;
 	}
 }

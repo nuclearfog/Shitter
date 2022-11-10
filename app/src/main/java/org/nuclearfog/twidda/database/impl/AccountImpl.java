@@ -26,11 +26,13 @@ public class AccountImpl implements Account {
 			AccountTable.TOKEN_SECRET,
 			AccountTable.CLIENT_ID,
 			AccountTable.CLIENT_SECRET,
-			AccountTable.HOST
+			AccountTable.HOSTNAME,
+			AccountTable.API
 	};
 
 	private long userId;
 	private long loginDate;
+	private int apiType;
 	private String accessToken, tokenSecret;
 	private String apiKey, apiSecret;
 	private String host;
@@ -48,6 +50,7 @@ public class AccountImpl implements Account {
 		apiKey = cursor.getString(4);
 		apiSecret = cursor.getString(5);
 		host = cursor.getString(6);
+		apiType = cursor.getInt(7);
 	}
 
 
@@ -97,6 +100,11 @@ public class AccountImpl implements Account {
 	@Override
 	public String getHostname() {
 		return host;
+	}
+
+	@Override
+	public int getApiType() {
+		return apiType;
 	}
 
 

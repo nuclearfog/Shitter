@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.twitter.impl.AccountV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.LocationV1;
@@ -970,7 +971,9 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 						}
 						result.add(message);
 					} catch (JSONException e) {
-						Log.w("directmessage", e);
+						if (BuildConfig.DEBUG) {
+							Log.w("directmessage", e);
+						}
 					}
 				}
 				return result;
@@ -1199,7 +1202,9 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 					try {
 						tweets.add(new TweetV1(array.getJSONObject(i), homeId));
 					} catch (JSONException e) {
-						Log.w("tweet", e);
+						if (BuildConfig.DEBUG) {
+							Log.w("tweet", e);
+						}
 					}
 				}
 				return tweets;
@@ -1328,7 +1333,9 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 					try {
 						users.add(new UserV1(array.getJSONObject(i), homeId));
 					} catch (JSONException e) {
-						Log.w("user", e);
+						if (BuildConfig.DEBUG) {
+							Log.w("user", e);
+						}
 					}
 				}
 				return users;
@@ -1362,7 +1369,9 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 						try {
 							users.add(new UserV2(array.getJSONObject(i), homeId));
 						} catch (JSONException err) {
-							Log.w("user-v2", err);
+							if (BuildConfig.DEBUG) {
+								Log.w("user-v2", err);
+							}
 						}
 					}
 				}
@@ -1460,7 +1469,9 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 					try {
 						result.add(new UserListV1(array.getJSONObject(pos), currentId));
 					} catch (JSONException e) {
-						Log.w("userlist", e);
+						if (BuildConfig.DEBUG) {
+							Log.w("userlist", e);
+						}
 					}
 				}
 				return result;

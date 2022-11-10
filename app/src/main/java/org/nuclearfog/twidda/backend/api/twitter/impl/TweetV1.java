@@ -307,6 +307,7 @@ public class TweetV1 implements Status {
 	/**
 	 * add media links to tweet if any
 	 */
+	@NonNull
 	private String[] addMedia(JSONObject json) {
 		try {
 			JSONObject extEntities = json.getJSONObject("extended_entities");
@@ -366,28 +367,32 @@ public class TweetV1 implements Status {
 	/**
 	 * read tweet and expand urls
 	 */
-	private String createText(@NonNull JSONObject json) {
+	@NonNull
+	private String createText(JSONObject json) {
 		String text = json.optString("full_text", "");
-		StringBuilder builder = new StringBuilder(text);
-		// check for shortened urls and replace them with full urls
-		try {
-			JSONObject entities = json.getJSONObject("entities");
-			JSONArray urls = entities.getJSONArray("urls");
-			for (int i = urls.length() - 1; i >= 0; i--) {
-				JSONObject entry = urls.getJSONObject(i);
-				String link = entry.getString("expanded_url");
-				JSONArray indices = entry.getJSONArray("indices");
-				int start = indices.getInt(0);
-				int end = indices.getInt(1);
-				int offset = StringTools.calculateIndexOffset(text, start);
-				builder.replace(start + offset, end + offset, link);
+		JSONObject entities = json.optJSONObject("entities");
+		if (entities != null) {
+			JSONArray urls = entities.optJSONArray("urls");
+			if (urls != null) {
+				try {
+					// check for shortened urls and replace them with full urls
+					StringBuilder builder = new StringBuilder(text);
+					for (int i = urls.length() - 1; i >= 0; i--) {
+						JSONObject entry = urls.getJSONObject(i);
+						String link = entry.getString("expanded_url");
+						JSONArray indices = entry.getJSONArray("indices");
+						int start = indices.getInt(0);
+						int end = indices.getInt(1);
+						int offset = StringTools.calculateIndexOffset(text, start);
+						builder.replace(start + offset, end + offset, link);
+					}
+					return StringTools.unescapeString(builder.toString());
+				} catch (JSONException e) {
+					// use default tweet text
+				}
 			}
-		} catch (JSONException e) {
-			// use default tweet text
-			return StringTools.unescapeString(text);
 		}
-		// remove html escape strings
-		return StringTools.unescapeString(builder.toString());
+		return StringTools.unescapeString(text);
 	}
 
 	/**
@@ -396,6 +401,7 @@ public class TweetV1 implements Status {
 	 * @param json root tweet json
 	 * @return location uri scheme or empty string if tweet has no location information
 	 */
+	@NonNull
 	private String getLocation(JSONObject json) {
 		try {
 			JSONObject coordinateJson = json.optJSONObject("coordinates");
@@ -410,7 +416,7 @@ public class TweetV1 implements Status {
 				}
 			}
 		} catch (JSONException e) {
-			// ignore, use empty string
+			// use empty string
 		}
 		return "";
 	}

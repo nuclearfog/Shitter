@@ -11,6 +11,11 @@ import androidx.annotation.Nullable;
 public interface Account {
 
 	/**
+	 * API ID used for Twitter accounts
+	 */
+	int API_TWITTER = 1;
+
+	/**
 	 * @return ID of the account (user ID)
 	 */
 	long getId();
@@ -50,4 +55,9 @@ public interface Account {
 	 * @return hostname of the social network
 	 */
 	String getHostname();
+
+	/**
+	 * @return type of the ID {@link #API_TWITTER}
+	 */
+	int getApiType();
 }

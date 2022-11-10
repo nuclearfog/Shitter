@@ -194,26 +194,29 @@ public class UserV2 implements User {
 	 * @param json root json object of user v1
 	 * @return user description
 	 */
+	@NonNull
 	private String getDescription(JSONObject json) {
 		String description = json.optString("description", "");
 		JSONObject entities = json.optJSONObject("entities");
 		if (entities != null) {
-			try {
-				JSONObject descrEntities = entities.getJSONObject("description");
-				JSONArray urls = descrEntities.getJSONArray("urls");
-				// expand shortened urls
-				StringBuilder builder = new StringBuilder(description);
-				for (int i = urls.length() - 1; i >= 0; i--) {
-					JSONObject entry = urls.getJSONObject(i);
-					String link = entry.getString("expanded_url");
-					int start = entry.getInt("start");
-					int end = entry.getInt("end");
-					int offset = StringTools.calculateIndexOffset(description, start);
-					builder.replace(start + offset, end + offset, link);
+			JSONObject descrEntities = entities.optJSONObject("description");
+			if (descrEntities != null) {
+				try {
+					// expand shortened urls
+					JSONArray urls = descrEntities.getJSONArray("urls");
+					StringBuilder builder = new StringBuilder(description);
+					for (int i = urls.length() - 1; i >= 0; i--) {
+						JSONObject entry = urls.getJSONObject(i);
+						String link = entry.getString("expanded_url");
+						int start = entry.getInt("start");
+						int end = entry.getInt("end");
+						int offset = StringTools.calculateIndexOffset(description, start);
+						builder.replace(start + offset, end + offset, link);
+					}
+					return builder.toString();
+				} catch (JSONException e) {
+					// ignore, use default description
 				}
-				return builder.toString();
-			} catch (JSONException e) {
-				// ignore, use default description
 			}
 		}
 		return description;
@@ -225,16 +228,21 @@ public class UserV2 implements User {
 	 * @param json root json object of user v1
 	 * @return expanded url
 	 */
+	@NonNull
 	private String getUrl(JSONObject json) {
-		try {
-			JSONObject entities = json.getJSONObject("entities");
-			JSONObject urlJson = entities.getJSONObject("url");
-			JSONArray urls = urlJson.getJSONArray("urls");
-			if (urls.length() > 0) {
-				return urls.getJSONObject(0).getString("display_url");
+		JSONObject entities = json.optJSONObject("entities");
+		if (entities != null) {
+			JSONObject url = entities.optJSONObject("url");
+			if (url != null) {
+				try {
+					JSONArray urls = url.getJSONArray("urls");
+					if (urls.length() > 0) {
+						return urls.getJSONObject(0).getString("display_url");
+					}
+				} catch (JSONException e) {
+					// ignore
+				}
 			}
-		} catch (JSONException e) {
-			// ignore
 		}
 		return "";
 	}

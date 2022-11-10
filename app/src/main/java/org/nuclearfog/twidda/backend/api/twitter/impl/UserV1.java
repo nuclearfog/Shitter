@@ -71,9 +71,9 @@ public class UserV1 implements User {
 		followReqSent = json.optBoolean("follow_request_sent");
 		defaultImage = json.optBoolean("default_profile_image");
 		created = StringTools.getTime1(json.optString("created_at", ""));
-
 		description = getDescription(json);
 		url = getUrl(json);
+
 		if (defaultImage) {
 			this.profileImageUrl = profileImageUrl;
 		} else {
@@ -195,28 +195,33 @@ public class UserV1 implements User {
 	 * @param json root json object of user v1
 	 * @return user description
 	 */
+	@NonNull
 	private String getDescription(JSONObject json) {
-		try {
-			JSONObject entities = json.getJSONObject("entities");
-			String description = json.getString("description");
-			JSONObject descrEntities = entities.getJSONObject("description");
-			JSONArray urls = descrEntities.getJSONArray("urls");
-
-			// expand shortened urls
-			StringBuilder builder = new StringBuilder(description);
-			for (int i = urls.length() - 1; i >= 0; i--) {
-				JSONObject entry = urls.getJSONObject(i);
-				String link = entry.getString("expanded_url");
-				JSONArray indices = entry.getJSONArray("indices");
-				int start = indices.getInt(0);
-				int end = indices.getInt(1);
-				int offset = StringTools.calculateIndexOffset(description, start);
-				builder.replace(start + offset, end + offset, link);
+		String description = json.optString("description", "");
+		JSONObject entities = json.optJSONObject("entities");
+		if (entities != null) {
+			JSONObject descrEntities = entities.optJSONObject("description");
+			if (descrEntities != null) {
+				try {
+					// expand shortened urls
+					JSONArray urls = descrEntities.getJSONArray("urls");
+					StringBuilder builder = new StringBuilder(description);
+					for (int i = urls.length() - 1; i >= 0; i--) {
+						JSONObject entry = urls.getJSONObject(i);
+						String link = entry.getString("expanded_url");
+						JSONArray indices = entry.getJSONArray("indices");
+						int start = indices.getInt(0);
+						int end = indices.getInt(1);
+						int offset = StringTools.calculateIndexOffset(description, start);
+						builder.replace(start + offset, end + offset, link);
+					}
+					return builder.toString();
+				} catch (JSONException e) {
+					// use default description
+				}
 			}
-			return builder.toString();
-		} catch (JSONException e) {
-			return "";
 		}
+		return description;
 	}
 
 	/**
@@ -225,16 +230,19 @@ public class UserV1 implements User {
 	 * @param json root json object of user v1
 	 * @return expanded url
 	 */
+	@NonNull
 	private String getUrl(JSONObject json) {
-		try {
-			JSONObject entities = json.getJSONObject("entities");
-			JSONObject urlJson = entities.getJSONObject("url");
-			JSONArray urls = urlJson.getJSONArray("urls");
-			if (urls.length() > 0) {
-				return urls.getJSONObject(0).getString("display_url");
+		JSONObject entities = json.optJSONObject("entities");
+		if (entities != null) {
+			try {
+				JSONObject urlJson = entities.getJSONObject("url");
+				JSONArray urls = urlJson.getJSONArray("urls");
+				if (urls.length() > 0) {
+					return urls.getJSONObject(0).getString("display_url");
+				}
+			} catch (JSONException e) {
+				// ignore
 			}
-		} catch (JSONException e) {
-			// ignore
 		}
 		return "";
 	}

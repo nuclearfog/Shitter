@@ -19,7 +19,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 6;
+	private static final int DB_VERSION = 7;
 
 	/**
 	 * database file name
@@ -133,7 +133,8 @@ public class DatabaseAdapter {
 			+ AccountTable.DATE + " INTEGER,"
 			+ AccountTable.ACCESS_TOKEN + " TEXT,"
 			+ AccountTable.TOKEN_SECRET + " TEXT,"
-			+ AccountTable.HOST + " TEXT,"
+			+ AccountTable.HOSTNAME + " TEXT,"
+			+ AccountTable.API + " INTEGER,"
 			+ AccountTable.CLIENT_ID + " TEXT,"
 			+ AccountTable.CLIENT_SECRET + " TEXT);";
 
@@ -166,7 +167,7 @@ public class DatabaseAdapter {
 	/**
 	 * update account table to add social network hostname
 	 */
-	private static final String UPDATE_ADD_HOST = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.HOST + " TEXT;";
+	private static final String UPDATE_ADD_HOST = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.HOSTNAME + " TEXT;";
 
 	/**
 	 * update account table to add API client ID
@@ -177,6 +178,11 @@ public class DatabaseAdapter {
 	 * update account table to add API client secret
 	 */
 	private static final String UPDATE_ADD_CLIENT_SEC = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_SECRET + " TEXT;";
+
+	/**
+	 * update account table to add API client secret
+	 */
+	private static final String UPDATE_ADD_API_ID = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.API + " INTEGER;";
 
 	/**
 	 * singleton instance
@@ -259,10 +265,14 @@ public class DatabaseAdapter {
 		if (db.getVersion() == 0) {
 			db.setVersion(DB_VERSION);
 		}
-		if (db.getVersion() < DB_VERSION) {
+		if (db.getVersion() < 6) {
 			db.execSQL(UPDATE_ADD_HOST);
 			db.execSQL(UPDATE_ADD_CLIENT_ID);
 			db.execSQL(UPDATE_ADD_CLIENT_SEC);
+			db.setVersion(6);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_API_ID);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -525,7 +535,12 @@ public class DatabaseAdapter {
 		/**
 		 * social network host
 		 */
-		String HOST = "host";
+		String HOSTNAME = "host";
+
+		/**
+		 * used API
+		 */
+		String API = "api";
 
 		/**
 		 * ID of the user

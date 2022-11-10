@@ -28,10 +28,10 @@ public class RelationV1 implements Relation {
 		JSONObject relationship = json.getJSONObject("relationship");
 		JSONObject source = relationship.getJSONObject("source");
 		JSONObject target = relationship.getJSONObject("target");
+		String sourceIdStr = source.getString("id_str");
+		String targetIdStr = target.getString("id_str");
 
-		long sourceId = Long.parseLong(source.getString("id_str"));
-		long targetId = Long.parseLong(target.getString("id_str"));
-		isCurrentUser = sourceId == targetId;
+		isCurrentUser = sourceIdStr.equals(targetIdStr);
 		isFollowing = source.optBoolean("following");
 		isFollower = source.optBoolean("followed_by");
 		isBlocked = source.optBoolean("blocking");
