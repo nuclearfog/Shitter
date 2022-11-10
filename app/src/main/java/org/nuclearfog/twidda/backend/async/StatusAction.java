@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
@@ -82,8 +82,8 @@ public class StatusAction extends AsyncTask<Long, Status, Void> {
 	public StatusAction(StatusActivity activity, int action) {
 		super();
 		weakRef = new WeakReference<>(activity);
+		connection = ConnectionManager.get(activity);
 		db = new AppDatabase(activity);
-		connection = Twitter.get(activity);
 
 		this.action = action;
 	}

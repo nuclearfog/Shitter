@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.MainActivity;
@@ -46,7 +46,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 	public LinkLoader(MainActivity activity) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		connection = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 	}
 
 

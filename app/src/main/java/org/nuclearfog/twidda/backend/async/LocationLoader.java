@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 
@@ -31,7 +31,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 	public LocationLoader(SettingsActivity activity) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		connection = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 	}
 
 

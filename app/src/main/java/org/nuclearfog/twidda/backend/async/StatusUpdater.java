@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.update.MediaUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.ui.activities.StatusEditor;
@@ -30,7 +30,7 @@ public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Void> {
 	 */
 	public StatusUpdater(StatusEditor activity) {
 		super();
-		connection = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 		weakRef = new WeakReference<>(activity);
 	}
 

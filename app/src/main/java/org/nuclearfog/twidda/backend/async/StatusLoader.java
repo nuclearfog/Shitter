@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
@@ -85,7 +85,7 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 	public StatusLoader(StatusFragment fragment, int listType, long id, String search, int pos) {
 		super();
 		db = new AppDatabase(fragment.getContext());
-		connection = Twitter.get(fragment.getContext());
+		connection = ConnectionManager.get(fragment.getContext());
 		weakRef = new WeakReference<>(fragment);
 
 		this.listType = listType;

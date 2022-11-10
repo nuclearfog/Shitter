@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -34,7 +36,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	private WeakReference<LoginActivity> weakRef;
 	private AccountDatabase accountDB;
 	private AppDatabase database;
-	private Twitter twitter;
+	private Connection connection;
 
 	@Nullable
 	private ConnectionException exception;
@@ -50,32 +52,35 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 		weakRef = new WeakReference<>(activity);
 		accountDB = new AccountDatabase(activity);
 		database = new AppDatabase(activity);
-		twitter = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 		this.mode = mode;
 	}
 
 
 	@Override
 	protected String doInBackground(String... param) {
-		try {
-			switch (mode) {
-				case MODE_REQUEST:
-					return twitter.getRequestToken(param[0], param[1]);
+		if (connection instanceof Twitter) {
+			try {
+				Twitter twitter = (Twitter) connection;
+				switch (mode) {
+					case MODE_REQUEST:
+						return twitter.getRequestToken(param[0], param[1]);
 
-				case MODE_LOGIN:
-					// login with pin and access token
-					Account account;
-					if (param.length == 4)
-						account = twitter.login(param[0], param[1], param[2], param[3]);
-					else
-						account = twitter.login(param[0], param[1]);
-					// save new user information
-					database.saveUser(account.getUser());
-					accountDB.saveLogin(account);
-					return "";
+					case MODE_LOGIN:
+						// login with pin and access token
+						Account account;
+						if (param.length == 4)
+							account = twitter.login(param[0], param[1], param[2], param[3]);
+						else
+							account = twitter.login(param[0], param[1]);
+						// save new user information
+						database.saveUser(account.getUser());
+						accountDB.saveLogin(account);
+						return "";
+				}
+			} catch (ConnectionException exception) {
+				this.exception = exception;
 			}
-		} catch (ConnectionException exception) {
-			this.exception = exception;
 		}
 		return null;
 	}

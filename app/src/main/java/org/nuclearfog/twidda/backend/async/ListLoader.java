@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
@@ -50,7 +50,7 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 	 */
 	public ListLoader(UserListFragment fragment, int listType, long userId, String ownerName) {
 		super();
-		connection = Twitter.get(fragment.getContext());
+		connection = ConnectionManager.get(fragment.getContext());
 		weakRef = new WeakReference<>(fragment);
 
 		this.listType = listType;

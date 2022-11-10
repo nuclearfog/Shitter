@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 
@@ -53,7 +53,7 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 	public ListAction(UserlistActivity activity, long listId, int action) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		connection = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 		this.listId = listId;
 		this.action = action;
 	}

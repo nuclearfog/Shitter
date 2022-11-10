@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.update.MessageUpdate;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 
@@ -35,7 +35,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 	 */
 	public MessageUpdater(@NonNull MessageEditor activity, MessageUpdate message) {
 		super();
-		connection = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 		weakRef = new WeakReference<>(activity);
 		this.message = message;
 	}

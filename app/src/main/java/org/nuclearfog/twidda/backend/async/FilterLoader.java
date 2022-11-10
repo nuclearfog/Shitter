@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.User;
@@ -50,7 +50,7 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 
 	public FilterLoader(UsersActivity activity, int mode) {
 		super();
-		connection = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 		appDatabase = new AppDatabase(activity);
 		filterDatabase = new FilterDatabase(activity);
 		weakRef = new WeakReference<>(activity);

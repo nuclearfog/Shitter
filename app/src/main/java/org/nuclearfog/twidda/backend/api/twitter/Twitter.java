@@ -32,7 +32,6 @@ import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.database.GlobalSettings.OnSettingsChangeListener;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Metrics;
@@ -68,7 +67,7 @@ import okio.Okio;
  *
  * @author nuclearfog
  */
-public class Twitter implements Connection, OnSettingsChangeListener {
+public class Twitter implements Connection {
 
 	private static final String OAUTH = "1.0";
 
@@ -167,9 +166,6 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 	 */
 	private static final int POLLING_MAX_RETRIES = 12;
 
-	private static Twitter instance;
-	private static boolean notifySettingsChange = false;
-
 	private OkHttpClient client;
 	private GlobalSettings settings;
 	private FilterDatabase filterDatabase;
@@ -180,31 +176,11 @@ public class Twitter implements Connection, OnSettingsChangeListener {
 	 *
 	 * @param context context used to initiate databases
 	 */
-	private Twitter(Context context) {
+	public Twitter(Context context) {
 		settings = GlobalSettings.getInstance(context);
 		tokens = Tokens.getInstance(context);
 		filterDatabase = new FilterDatabase(context);
-		settings.addSettingsChangeListener(this);
 		client = ConnectionBuilder.create(context, 0);
-		notifySettingsChange = false;
-	}
-
-	/**
-	 * get singleton instance
-	 *
-	 * @return instance of this class
-	 */
-	public static Twitter get(Context context) {
-		if (notifySettingsChange || instance == null) {
-			instance = new Twitter(context);
-		}
-		return instance;
-	}
-
-
-	@Override
-	public void onSettingsChange() {
-		notifySettingsChange = true;
 	}
 
 	/**

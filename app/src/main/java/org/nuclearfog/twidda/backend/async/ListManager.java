@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 
 import java.lang.ref.WeakReference;
 
@@ -48,7 +48,7 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 	public ListManager(Context c, long listId, int action, String username, ListManagerCallback callback) {
 		super();
 		weakRef = new WeakReference<>(callback);
-		connection = Twitter.get(c);
+		connection = ConnectionManager.get(c);
 		this.listId = listId;
 		this.action = action;
 		this.username = username;

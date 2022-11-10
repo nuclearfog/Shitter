@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.ui.fragments.MessageFragment;
@@ -56,7 +56,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 		super();
 		weakRef = new WeakReference<>(fragment);
 		db = new AppDatabase(fragment.getContext());
-		connection = Twitter.get(fragment.getContext());
+		connection = ConnectionManager.get(fragment.getContext());
 		this.action = action;
 		this.cursor = cursor;
 		this.messageId = messageId;

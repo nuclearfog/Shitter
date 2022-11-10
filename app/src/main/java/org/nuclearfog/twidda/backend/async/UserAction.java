@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.Relation;
@@ -76,7 +76,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 	 */
 	public UserAction(ProfileActivity activity, int action, long userId) {
 		super();
-		connection = Twitter.get(activity);
+		connection = ConnectionManager.get(activity);
 		appDB = new AppDatabase(activity);
 		filterDatabase = new FilterDatabase(activity);
 		this.weakRef = new WeakReference<>(activity);
