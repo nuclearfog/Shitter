@@ -9,6 +9,7 @@
 		android:layout_height="wrap_content"
 		android:padding="@dimen/dropdown_padding"
 		android:maxLines="2"
-		android:textSize="@dimen/dropdown_text_size" />
+		android:textSize="@dimen/dropdown_text_size"
+		android:drawablePadding="@dimen/dropdown_drawable_padding"/>
 
 </LinearLayout>

@@ -33,6 +33,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.NetworkAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
@@ -55,6 +56,11 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	private static final int REQUEST_ACCOUNT_SELECT = 0x384F;
 
 	/**
+	 * request code to open {@link SettingsActivity}
+	 */
+	private static final int REQUEST_SETTINGS = 0x123;
+
+	/**
 	 * return code to notify if a login process was successful
 	 */
 	public static final int RETURN_LOGIN_SUCCESSFUL = 0x145;
@@ -64,7 +70,12 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	 */
 	public static final int RETURN_SETTINGS_CHANGED = 0x227;
 
-	private LoginAction registerAsync;
+	/**
+	 * ID used if Twitter is selected
+	 */
+	public static final int SELECTOR_TWITTER = 10;
+
+	private LoginAction loginAsync;
 	private GlobalSettings settings;
 
 	private EditText pinInput, apiKey1, apiKey2;
@@ -72,6 +83,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	private ViewGroup root;
 
 	private String requestToken;
+	private int hostSelected = SELECTOR_TWITTER;
+
 
 	@Override
 	protected void attachBaseContext(Context newBase) {
@@ -87,6 +100,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		Button linkButton = findViewById(R.id.login_get_link);
 		Button loginButton = findViewById(R.id.login_verifier);
 		Spinner hostSelector = findViewById(R.id.login_network_selector);
+		View switchLabel = findViewById(R.id.login_enable_key_input_label);
 		apiSwitch = findViewById(R.id.login_enable_key_input);
 		root = findViewById(R.id.login_root);
 		pinInput = findViewById(R.id.login_enter_code);
@@ -97,8 +111,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
 		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
+		NetworkAdapter adapter = new NetworkAdapter(this);
+		hostSelector.setAdapter(adapter);
 
 		if (settings.isCustomApiSet() || !Tokens.USE_DEFAULT_KEYS) {
+			if(!Tokens.USE_DEFAULT_KEYS) {
+				apiSwitch.setVisibility(View.GONE);
+				switchLabel.setVisibility(View.GONE);
+			}
 			apiSwitch.setCheckedImmediately(true);
 			apiKey1.setText(settings.getConsumerKey());
 			apiKey2.setText(settings.getConsumerSecret());
@@ -106,6 +126,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			apiKey1.setVisibility(View.INVISIBLE);
 			apiKey2.setVisibility(View.INVISIBLE);
 		}
+
+		AppStyles.setTheme(root, settings.getBackgroundColor());
 
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
@@ -118,16 +140,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		AppStyles.setTheme(root, settings.getBackgroundColor());
-	}
-
-
-	@Override
 	protected void onDestroy() {
-		if (registerAsync != null && registerAsync.getStatus() == RUNNING)
-			registerAsync.cancel(true);
+		if (loginAsync != null && loginAsync.getStatus() == RUNNING)
+			loginAsync.cancel(true);
 		super.onDestroy();
 	}
 
@@ -145,9 +160,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		// open settings page
 		if (item.getItemId() == R.id.login_setting) {
-			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivity(settings);
-			// notify MainActivity that settings will change maybe
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivityForResult(intent, REQUEST_SETTINGS);
+			// notify MainActivity that settings may changed
 			setResult(RETURN_SETTINGS_CHANGED);
 		}
 		// open account selector
@@ -163,10 +178,15 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == REQUEST_ACCOUNT_SELECT && resultCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
-			// account selected, return to MainActivity
-			setResult(RETURN_LOGIN_SUCCESSFUL);
-			finish();
+		if (requestCode == REQUEST_ACCOUNT_SELECT) {
+			if (resultCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
+				// account selected, return to MainActivity
+				setResult(RETURN_LOGIN_SUCCESSFUL);
+				finish();
+			}
+		}
+		else if (requestCode == REQUEST_SETTINGS) {
+			AppStyles.setTheme(root, settings.getBackgroundColor());
 		}
 	}
 
@@ -176,15 +196,15 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		// get login request token
 		if (v.getId() == R.id.login_get_link) {
 			if (requestToken == null) {
-				if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
+				if (loginAsync == null || loginAsync.getStatus() != RUNNING) {
 					Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
-					registerAsync = new LoginAction(this, LoginAction.MODE_REQUEST);
+					loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
 					if (apiSwitch.isChecked()) {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
-						registerAsync.execute(apiTxt1, apiTxt2);
+						loginAsync.execute(apiTxt1, apiTxt2);
 					} else {
-						registerAsync.execute(null, null);
+						loginAsync.execute(null, null);
 					}
 				}
 			} else {
@@ -203,17 +223,17 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
 			}
 			//
-			else if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
+			else if (loginAsync == null || loginAsync.getStatus() != RUNNING) {
 				if (pinInput.getText() != null && pinInput.length() > 0) {
 					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
 					String twitterPin = pinInput.getText().toString();
-					registerAsync = new LoginAction(this, LoginAction.MODE_LOGIN);
-					if (apiSwitch.isChecked()) {
+					loginAsync = new LoginAction(this, LoginAction.MODE_LOGIN, hostSelected);
+					if (apiSwitch.isChecked()) { // todo check if strings are not empty
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
-						registerAsync.execute(requestToken, twitterPin, apiTxt1, apiTxt2);
+						loginAsync.execute(requestToken, twitterPin, apiTxt1, apiTxt2);
 					} else {
-						registerAsync.execute(requestToken, twitterPin);
+						loginAsync.execute(requestToken, twitterPin);
 					}
 				}
 			}
@@ -237,6 +257,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (id == NetworkAdapter.ID_TWITTER) {
+			hostSelected = SELECTOR_TWITTER;
+		}
 	}
 
 

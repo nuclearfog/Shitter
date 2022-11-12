@@ -46,13 +46,19 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	 * Account to twitter with PIN
 	 *
 	 * @param activity Activity Context
+	 * @param mode indicating login step
+	 * @param networkId ID of the selected network ID // todo add compile time check
 	 */
-	public LoginAction(LoginActivity activity, int mode) {
+	public LoginAction(LoginActivity activity, int mode, int networkId) {
 		super();
 		weakRef = new WeakReference<>(activity);
 		accountDB = new AccountDatabase(activity);
 		database = new AppDatabase(activity);
-		connection = ConnectionManager.get(activity);
+
+		if (networkId == LoginActivity.SELECTOR_TWITTER)
+			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER);
+		else
+			connection = ConnectionManager.get(activity);
 		this.mode = mode;
 	}
 

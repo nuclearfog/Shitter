@@ -136,6 +136,9 @@
 	<dimen name="login_button_padding">7dp</dimen>
 	<dimen name="login_image_size">64dp</dimen>
 
+	<!--dimens of item_dropdown-->
+	<dimen name="dropdown_drawable_padding">5dp</dimen>
+
 	<!--dimens of page_login.xml-->
 	<dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="loginpage_layout_margin">8dp</dimen>

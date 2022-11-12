@@ -147,6 +147,9 @@
 	<string name="app_info_icons">svg icons from:</string>
 	<string name="app_info_icons_links" translatable="false">www.svgrepo.com  www.entypo.com</string>
 
+	<!--network names-->
+	<string name="twitter" translatable="false">Twitter</string>
+
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
 	<string name="login_key_enable">add api keys</string>
