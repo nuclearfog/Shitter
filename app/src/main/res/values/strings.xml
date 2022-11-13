@@ -154,8 +154,6 @@
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
 	<string name="login_key_enable">add api keys</string>
-	<string name="login_key1">consumer key</string>
-	<string name="login_key2">consumer secret</string>
 	<string name="login_verifier">login</string>
 	<string name="popup_tweet_hint" translatable="false">Tweet</string>
 	<string name="title_settings">Settings</string>
@@ -173,7 +171,6 @@
 	<string name="settings_color_fav">Favorite</string>
 	<string name="settings_enable_indicators">show additional Tweet information</string>
 	<string name="highlight">Highlight</string>
-	<string name="settings_api_info">• changing API Keys requires re-login</string>
 	<string name="settings_list_size">List size</string>
 	<string name="settings_enable_like">use \'Like\' instead of ’Favorite’</string>
 	<string name="confirm_retry_button">retry</string>
@@ -241,7 +238,6 @@
 	<string name="item_image_save">save image</string>
 	<string name="settings_enable_proxy">enable proxy</string>
 	<string name="settings_enable_proxy_auth">enable proxy authentication</string>
-	<string name="settings_setup_custom_keys">setup custom API keys</string>
 	<string name="tweet_sensitive_media">sensitive content</string>
 	<string name="login_info">4 steps to login</string>
 	<string name="login_first_opt" translatable="false">1.</string>

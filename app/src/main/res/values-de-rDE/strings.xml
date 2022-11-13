@@ -170,7 +170,6 @@
 	<string name="settings_icon_color">Symbolfarbe</string>
 	<string name="settings_key1_hint">Consumer Key</string>
 	<string name="settings_key2_hint">Consumer Secret</string>
-	<string name="settings_setup_custom_keys">Eigene API Schlüssel verwenden</string>
 	<string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt! Bitte API Schlüssel überprüfen!</string>
 	<string name="error_mention_exceed">Zu viele Nutzer Erwähnungen!</string>
 	<string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
@@ -206,7 +205,6 @@
 	<string name="info_permission_read">Leserechte werden benötigt um Bilder und Videos einzufügen.</string>
 	<string name="info_permission_location">Standortinformationen werden ausschließlich für Tweets verwendet.</string>
 	<string name="error_result_cancelled">Fehler, Anfrage wurde abgebrochen!</string>
-	<string name="settings_api_info">• Eine Änderung der API Schlüssel erfordert erneutes einloggen</string>
 	<string name="settings_color_like">Like</string>
 	<string name="settings_color_fav">Favorit</string>
 	<string name="settings_enable_like">\"Like\" anstatt \"Favorit\" verwenden</string>

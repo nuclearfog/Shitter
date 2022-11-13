@@ -143,7 +143,6 @@
 	<dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="loginpage_layout_margin">8dp</dimen>
 	<dimen name="loginpage_dropdown_margin">5dp</dimen>
-	<dimen name="loginpage_textview_margin">5dp</dimen>
 	<dimen name="loginpage_button_padding">24dp</dimen>
 	<dimen name="loginpage_textsize_button">14sp</dimen>
 	<dimen name="loginpage_padding_drawable">5dp</dimen>
@@ -151,7 +150,6 @@
 	<dimen name="loginpage_textsize_api_key">16sp</dimen>
 	<dimen name="loginpage_textsize_login_key">20sp</dimen>
 	<dimen name="loginpage_number_padding">10dp</dimen>
-	<integer name="loginpage_pin_max_chars">10</integer>
 
 	<!--dimens of page_metrics.xml-->
 	<dimen name="metrics_toolbar_height">@dimen/toolbar_height</dimen>

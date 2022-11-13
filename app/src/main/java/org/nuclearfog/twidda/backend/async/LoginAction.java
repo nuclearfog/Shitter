@@ -36,8 +36,8 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	private WeakReference<LoginActivity> weakRef;
 	private AccountDatabase accountDB;
 	private AppDatabase database;
+	@Nullable
 	private Connection connection;
-
 	@Nullable
 	private ConnectionException exception;
 	private int mode;
@@ -47,7 +47,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	 *
 	 * @param activity  Activity Context
 	 * @param mode      indicating login step
-	 * @param networkId ID of the selected network ID // todo add compile time check
+	 * @param networkId ID of the selected network ID
 	 */
 	public LoginAction(LoginActivity activity, int mode, int networkId) {
 		super();
@@ -57,8 +57,6 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 
 		if (networkId == LoginActivity.SELECTOR_TWITTER)
 			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER);
-		else
-			connection = ConnectionManager.get(activity);
 		this.mode = mode;
 	}
 
