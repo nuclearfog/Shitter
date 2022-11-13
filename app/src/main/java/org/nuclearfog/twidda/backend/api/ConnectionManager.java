@@ -36,8 +36,8 @@ public class ConnectionManager {
 	/**
 	 * get singleton class of a connection
 	 *
-	 * @return singleton instance
 	 * @param select select instance type to create {@link #SELECT_AUTO,#SELECT_TWITTER}
+	 * @return singleton instance
 	 */
 	public static Connection get(Context context, int select) {
 		// create new singleton instance if there is none or if settings change

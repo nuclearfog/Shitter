@@ -16,7 +16,7 @@ public class Tokens {
 
 	/**
 	 * false means there are no API keys available
-	 * set to true when you insert API keys here
+	 * set to true when {@link #API_KEY} and {@link #API_SECRET} are set
 	 */
 	public static final boolean USE_DEFAULT_KEYS = false;
 

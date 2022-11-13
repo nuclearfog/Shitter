@@ -46,20 +46,24 @@ public class NetworkAdapter extends BaseAdapter {
 		settings = GlobalSettings.getInstance(context);
 	}
 
+
 	@Override
 	public int getCount() {
 		return ICONS.length;
 	}
+
 
 	@Override
 	public Object getItem(int position) {
 		return null;
 	}
 
+
 	@Override
 	public long getItemId(int position) {
 		return IDS[position];
 	}
+
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {

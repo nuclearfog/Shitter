@@ -45,8 +45,8 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	/**
 	 * Account to twitter with PIN
 	 *
-	 * @param activity Activity Context
-	 * @param mode indicating login step
+	 * @param activity  Activity Context
+	 * @param mode      indicating login step
 	 * @param networkId ID of the selected network ID // todo add compile time check
 	 */
 	public LoginAction(LoginActivity activity, int mode, int networkId) {

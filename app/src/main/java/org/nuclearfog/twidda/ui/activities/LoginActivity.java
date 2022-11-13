@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	private SwitchButton apiSwitch;
 	private ViewGroup root;
 
+	@Nullable
 	private String requestToken;
 	private int hostSelected = SELECTOR_TWITTER;
 
@@ -115,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		hostSelector.setAdapter(adapter);
 
 		if (settings.isCustomApiSet() || !Tokens.USE_DEFAULT_KEYS) {
-			if(!Tokens.USE_DEFAULT_KEYS) {
+			if (!Tokens.USE_DEFAULT_KEYS) {
 				apiSwitch.setVisibility(View.GONE);
 				switchLabel.setVisibility(View.GONE);
 			}
@@ -184,8 +185,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				setResult(RETURN_LOGIN_SUCCESSFUL);
 				finish();
 			}
-		}
-		else if (requestCode == REQUEST_SETTINGS) {
+		} else if (requestCode == REQUEST_SETTINGS) {
 			AppStyles.setTheme(root, settings.getBackgroundColor());
 		}
 	}
@@ -193,42 +193,66 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public void onClick(View v) {
+		if (loginAsync != null && loginAsync.getStatus() == RUNNING)
+			return;
 		// get login request token
 		if (v.getId() == R.id.login_get_link) {
-			if (requestToken == null) {
-				if (loginAsync == null || loginAsync.getStatus() != RUNNING) {
-					Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
-					if (apiSwitch.isChecked()) {
+			if (hostSelected == SELECTOR_TWITTER) {
+				if (requestToken == null) {
+					// check if input is ok
+					if (apiSwitch.isChecked() && (apiKey1.length() == 0 || apiKey2.length() == 0)) {
+						if (apiKey1.length() == 0) {
+							apiKey1.setError(getString(R.string.error_empty_token));
+						}
+						if (apiKey2.length() == 0) {
+							apiKey2.setError(getString(R.string.error_empty_token));
+						}
+					}
+					// use user defined token keys
+					else if (apiSwitch.isChecked()) {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
+						Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
+						loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
 						loginAsync.execute(apiTxt1, apiTxt2);
-					} else {
+					}
+					// use system keys
+					else if (Tokens.USE_DEFAULT_KEYS) {
+						Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
+						loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
 						loginAsync.execute(null, null);
 					}
+				} else {
+					// re-use request token
+					connect();
 				}
-			} else {
-				// re-use request token
-				connect();
 			}
 		}
 		// verify login credentials
 		else if (v.getId() == R.id.login_verifier) {
-			// check if user clicked on PIN button
-			if (requestToken == null) {
-				Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
-			}
-			// check if PIN exists
-			else if (pinInput.length() == 0) {
-				Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
-			}
-			//
-			else if (loginAsync == null || loginAsync.getStatus() != RUNNING) {
-				if (pinInput.getText() != null && pinInput.length() > 0) {
-					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
+			if (hostSelected == SELECTOR_TWITTER) {
+				// check if user clicked on PIN button
+				if (requestToken == null) {
+					Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
+				}
+				// check if input is ok
+				else if (pinInput.length() == 0 || (apiSwitch.isChecked() && (apiKey1.length() == 0 || apiKey2.length() == 0))) {
+					if (apiKey1.length() == 0) {
+						apiKey1.setError(getString(R.string.error_empty_token));
+					}
+					if (apiKey2.length() == 0) {
+						apiKey2.setError(getString(R.string.error_empty_token));
+					}
+					if (pinInput.length() == 0) {
+						pinInput.setError(getString(R.string.error_enter_pin));
+					}
+				}
+				// login app
+				else {
 					String twitterPin = pinInput.getText().toString();
+					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
 					loginAsync = new LoginAction(this, LoginAction.MODE_LOGIN, hostSelected);
-					if (apiSwitch.isChecked()) { // todo check if strings are not empty
+					if (apiSwitch.isChecked()) {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
 						loginAsync.execute(requestToken, twitterPin, apiTxt1, apiTxt2);
@@ -251,6 +275,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				apiKey1.setVisibility(View.INVISIBLE);
 				apiKey2.setVisibility(View.INVISIBLE);
 			}
+			// reset request token
+			requestToken = null;
 		}
 	}
 

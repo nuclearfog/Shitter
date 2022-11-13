@@ -97,6 +97,7 @@
 	<string name="error_login_information">could not load login information!</string>
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
+	<string name="error_empty_token">token key missing!</string>
 
 	<!-- menu icon strings -->
 	<string name="menu_tweet">write Tweet</string>
