@@ -39,16 +39,15 @@
 		app:layout_constraintWidth_percent="0.5"
 		app:layout_constraintStart_toEndOf="@id/login_first_opt"
 		app:layout_constraintTop_toBottomOf="@id/login_toolbar"
-		app:layout_constraintBottom_toTopOf="@id/login_enable_key_input"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintVertical_chainStyle="packed" />
+		app:layout_constraintBottom_toTopOf="@id/login_get_link"
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<androidx.constraintlayout.widget.Barrier
 		android:id="@+id/login_first_barrier"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		app:barrierDirection="bottom"
-		app:constraint_referenced_ids="login_first_opt,login_network_selector" />
+		app:barrierDirection="top"
+		app:constraint_referenced_ids="login_enable_key_input,login_enable_key_input_label,login_enter_key1,login_enter_key2" />
 
 	<com.kyleduo.switchbutton.SwitchButton
 		android:id="@+id/login_enable_key_input"
@@ -56,8 +55,8 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="@dimen/loginpage_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/login_first_barrier"
-		app:layout_constraintBottom_toTopOf="@id/login_get_link"
+		app:layout_constraintTop_toTopOf="@id/login_enter_key1"
+		app:layout_constraintBottom_toBottomOf="@id/login_enter_key1"
 		tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 	<TextView
@@ -84,10 +83,10 @@
 		android:textSize="@dimen/loginpage_textsize_api_key"
 		android:layout_marginEnd="@dimen/loginpage_layout_margin"
 		android:layout_marginStart="@dimen/loginpage_layout_margin"
+		android:layout_marginTop="@dimen/loginpage_layout_margin"
 		app:layout_constraintHorizontal_weight="2"
 		app:layout_constraintStart_toEndOf="@id/login_enable_key_input_label"
-		app:layout_constraintTop_toTopOf="@id/login_enable_key_input"
-		app:layout_constraintBottom_toBottomOf="@id/login_enable_key_input"
+		app:layout_constraintTop_toBottomOf="@id/login_network_selector"
 		app:layout_constraintEnd_toStartOf="@id/login_enter_key2" />
 
 	<EditText
@@ -101,11 +100,11 @@
 		android:inputType="textPassword"
 		android:singleLine="true"
 		android:textSize="@dimen/loginpage_textsize_api_key"
+		android:layout_marginTop="@dimen/loginpage_layout_margin"
 		android:layout_marginEnd="@dimen/loginpage_layout_margin"
 		app:layout_constraintHorizontal_weight="3"
 		app:layout_constraintStart_toEndOf="@id/login_enter_key1"
-		app:layout_constraintTop_toTopOf="@id/login_enter_key1"
-		app:layout_constraintBottom_toBottomOf="@id/login_enter_key1"
+		app:layout_constraintTop_toBottomOf="@id/login_network_selector"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
