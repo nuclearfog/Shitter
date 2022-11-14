@@ -14,8 +14,14 @@ import org.nuclearfog.twidda.model.Account;
  */
 public class ConnectionManager {
 
+	/**
+	 * select connection to a social network automatically
+	 */
 	public static final int SELECT_AUTO = 0;
 
+	/**
+	 * force using Twitter connection
+	 */
 	public static final int SELECT_TWITTER = 1;
 
 	private static Connection connection;
@@ -52,6 +58,8 @@ public class ConnectionManager {
 			else {
 				if (settings.getApiId() == Account.API_TWITTER) {
 					connection = new Twitter(context);
+				} else {
+					throw new RuntimeException("no connection selected!");
 				}
 			}
 			settings.addSettingsChangeListener(new OnSettingsChangeListener() {

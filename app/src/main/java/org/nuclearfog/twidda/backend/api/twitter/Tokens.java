@@ -7,7 +7,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import io.michaelrocks.paranoid.Obfuscate;
 
 /**
- * this class manages API and access tokens
+ * this class manages Twitter oauth 1.0 keys (consumer token & token secret) for API V1.1 & V2
  *
  * @author nuclearfog
  */
@@ -16,19 +16,19 @@ public class Tokens {
 
 	/**
 	 * false means there are no API keys available
-	 * set to true when {@link #API_KEY} and {@link #API_SECRET} are set
+	 * set to true when {@link #CONSUMER_TOKEN} and {@link #TOKEN_SECRET} are set
 	 */
 	public static final boolean USE_DEFAULT_KEYS = false;
 
 	/**
-	 * consumer API key
+	 * add here your consumer token
 	 */
-	private static final String API_KEY = "";
+	private static final String CONSUMER_TOKEN = "";
 
 	/**
-	 * consumer API secret
+	 * add here your token secret
 	 */
-	private static final String API_SECRET = "";
+	private static final String TOKEN_SECRET = "";
 
 
 	private static Tokens instance;
@@ -61,7 +61,7 @@ public class Tokens {
 	public String getConsumerKey(boolean forceDefault) {
 		if (settings.isCustomApiSet() && !forceDefault)
 			return settings.getConsumerKey();
-		return API_KEY;
+		return CONSUMER_TOKEN;
 	}
 
 	/**
@@ -73,6 +73,6 @@ public class Tokens {
 	public String getConsumerSecret(boolean forceDefault) {
 		if (settings.isCustomApiSet() && !forceDefault)
 			return settings.getConsumerSecret();
-		return API_SECRET;
+		return TOKEN_SECRET;
 	}
 }

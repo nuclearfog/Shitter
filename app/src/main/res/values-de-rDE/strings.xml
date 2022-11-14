@@ -242,4 +242,5 @@
 	<string name="title_metrics">Tweet Metriken</string>
 	<string name="menu_tweet_metrics">Metriken</string>
 	<string name="settings_enable_indicators">zeige zusätzliche Tweet Informationen an</string>
+	<string name="login_key_enable">Token einfügen</string>
 </resources>

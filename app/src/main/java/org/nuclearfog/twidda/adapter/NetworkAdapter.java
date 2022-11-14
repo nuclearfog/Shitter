@@ -41,6 +41,7 @@ public class NetworkAdapter extends BaseAdapter {
 	private GlobalSettings settings;
 
 	/**
+	 *
 	 */
 	public NetworkAdapter(Context context) {
 		settings = GlobalSettings.getInstance(context);

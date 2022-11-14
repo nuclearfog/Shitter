@@ -153,7 +153,7 @@
 
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
-	<string name="login_key_enable">add api keys</string>
+	<string name="login_key_enable">add keys</string>
 	<string name="login_verifier">login</string>
 	<string name="popup_tweet_hint" translatable="false">Tweet</string>
 	<string name="title_settings">Settings</string>
