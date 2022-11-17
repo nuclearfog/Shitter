@@ -38,23 +38,6 @@ public class Users extends LinkedList<User> {
 	}
 
 	/**
-	 * remove user item from list matching screen name
-	 *
-	 * @param name screen name of the user
-	 * @return index of the user item or -1 if not found
-	 */
-	public int removeItem(String name) {
-		for (int index = 0; index < size(); index++) {
-			User item = get(index);
-			if (item != null && item.getScreenname().contains(name)) {
-				remove(index);
-				return index;
-			}
-		}
-		return -1;
-	}
-
-	/**
 	 * check if list is linked to a previous list
 	 *
 	 * @return true if list is linked

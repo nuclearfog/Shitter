@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
 		NetworkAdapter adapter = new NetworkAdapter(this);
 		hostSelector.setAdapter(adapter);
+		hostSelector.setSelection(0);
 
 		if (settings.isCustomApiSet() || !Tokens.USE_DEFAULT_KEYS) {
 			if (!Tokens.USE_DEFAULT_KEYS) {
@@ -212,13 +213,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 					else if (apiSwitch.isChecked()) {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
-						Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
+						Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
 						loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
 						loginAsync.execute(apiTxt1, apiTxt2);
 					}
 					// use system keys
 					else if (Tokens.USE_DEFAULT_KEYS) {
-						Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
+						Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
 						loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
 						loginAsync.execute(null, null);
 					}

@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
@@ -89,7 +88,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		// set new account
 		settings.setUserId(account.getId());
 		// setup Twitter account
-		if (Twitter.API.equals(account.getHostname())) {
+		if (account.getApiType() == Account.API_TWITTER) {
 			settings.setAccessToken(account.getAccessToken());
 			settings.setTokenSecret(account.getTokenSecret());
 			settings.setApiId(account.getApiType());
@@ -98,6 +97,10 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 			} else {
 				settings.removeCustomAPI();
 			}
+		}
+		if (account.getUser() != null) {
+			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
+			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 		}
 		// finish activity and return to parent activity
 		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);

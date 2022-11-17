@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -30,7 +31,7 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 	public static final int DEL_USER = 2;
 
 	private Connection connection;
-	private WeakReference<ListManagerCallback> weakRef;
+	private WeakReference<UserlistActivity> weakRef;
 
 	@Nullable
 	private ConnectionException exception;
@@ -45,7 +46,7 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 	 * @param username name of the user to add or remove
 	 * @param callback callback to update information
 	 */
-	public ListManager(Context c, long listId, int action, String username, ListManagerCallback callback) {
+	public ListManager(Context c, long listId, int action, String username, UserlistActivity callback) {
 		super();
 		weakRef = new WeakReference<>(callback);
 		connection = ConnectionManager.get(c);
@@ -76,33 +77,13 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected void onPostExecute(Void v) {
-		ListManagerCallback callback = weakRef.get();
+		UserlistActivity callback = weakRef.get();
 		if (callback != null) {
 			if (exception == null) {
-				callback.onSuccess(username);
+				callback.onSuccess(action, username);
 			} else {
 				callback.onFailure(exception);
 			}
 		}
-	}
-
-	/**
-	 * Callback interface for Activities or fragments
-	 */
-	public interface ListManagerCallback {
-
-		/**
-		 * Called when AsyncTask finished successfully
-		 *
-		 * @param names the names of the users added or removed from list
-		 */
-		void onSuccess(String names);
-
-		/**
-		 * called when an error occurs
-		 *
-		 * @param err Engine exception thrown by backend
-		 */
-		void onFailure(@Nullable ConnectionException err);
 	}
 }

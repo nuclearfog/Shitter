@@ -64,15 +64,17 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
 	private Users data = new Users(0L, 0L);
 	private int loadingIndex = NO_LOADING;
-	private boolean userRemovable = false;
+	private boolean enableDelete;
 
 	/**
-	 * @param listener click listener
+	 * @param listener     click listener
+	 * @param enableDelete true to enable delete button
 	 */
-	public UserAdapter(Context context, UserClickListener listener) {
-		this.listener = listener;
+	public UserAdapter(Context context, UserClickListener listener, boolean enableDelete) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		this.enableDelete = enableDelete;
+		this.listener = listener;
 	}
 
 	/**
@@ -131,12 +133,13 @@ public class UserAdapter extends Adapter<ViewHolder> {
 	/**
 	 * remove user from adapter
 	 *
-	 * @param name screen name of the user to remove
+	 * @param user screen name of the user to remove
 	 */
 	@MainThread
-	public void removeUser(String name) {
-		int pos = data.removeItem(name);
+	public void removeUser(User user) {
+		int pos = data.indexOf(user);
 		if (pos >= 0) {
+			data.remove(pos);
 			notifyItemRemoved(pos);
 		}
 	}
@@ -182,7 +185,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 					}
 				}
 			});
-			if (userRemovable) {
+			if (enableDelete) {
 				vh.delete.setVisibility(VISIBLE);
 				vh.delete.setOnClickListener(new OnClickListener() {
 					@Override
@@ -191,7 +194,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 						if (position != NO_POSITION) {
 							User user = data.get(position);
 							if (user != null) {
-								listener.onDelete(user.getScreenname());
+								listener.onDelete(user);
 							}
 						}
 					}
@@ -270,15 +273,6 @@ public class UserAdapter extends Adapter<ViewHolder> {
 	}
 
 	/**
-	 * enables delete button for an user item
-	 *
-	 * @param enable true to enable delete button
-	 */
-	public void enableDeleteButton(boolean enable) {
-		userRemovable = enable;
-	}
-
-	/**
 	 * Listener for list click
 	 */
 	public interface UserClickListener {
@@ -301,8 +295,8 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		/**
 		 * remove user from a list
 		 *
-		 * @param name screen name of the user
+		 * @param user user to remove from the list
 		 */
-		void onDelete(String name);
+		void onDelete(User user);
 	}
 }

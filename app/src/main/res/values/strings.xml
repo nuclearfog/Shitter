@@ -14,11 +14,11 @@
 	<string name="info_list_followed">Userlist followed</string>
 	<string name="info_list_unfollowed">Userlist unfollowed</string>
 	<string name="info_adding_user_to_list">adding user to list</string>
-	<string name="info_user_added_to_list">\@%1$s added to List</string>
-	<string name="info_user_removed">\@%1$s removed from list</string>
+	<string name="info_user_added_to_list">%1$s added to List</string>
+	<string name="info_user_removed">%1$s removed from list</string>
 	<string name="info_list_updated">Userlist updated</string>
 	<string name="info_list_created">Userlist created</string>
-	<string name="info_fetching_link">redirecting to Twitter login website. Please wait</string>
+	<string name="info_open_twitter_login">redirecting to Twitter login website. Please wait</string>
 	<string name="info_login_to_twitter">login to Twitter</string>
 	<string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
 	<string name="info_get_link">please open twitter login page first to get the PIN</string>
@@ -55,6 +55,7 @@
 	<string name="info_tweet_text_copied">Tweet text copied</string>
 	<string name="info_tweet_location_copied">Location coordinates copied</string>
 	<string name="info_tweet_medialink_copied">Media link copied</string>
+	<string name="info_account_selected">\@%1$s selected</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->

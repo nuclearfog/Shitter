@@ -124,7 +124,7 @@
 	<string name="error_open_link">Link konnte nicht geöffnet werden!</string>
 	<string name="tweet_sensitive_media">Sensible Inhalte</string>
 	<string name="login_info">4 Schritte zum Login</string>
-	<string name="info_fetching_link">öffne Twitter login Seite. Bitte warten</string>
+	<string name="info_open_twitter_login">öffne Twitter login Seite. Bitte warten</string>
 	<string name="info_login_to_twitter">In Twitter einloggen</string>
 	<string name="userlist_public_sel">öffentlich</string>
 	<string name="userlist_enter_title">Titel eingeben</string>
@@ -139,7 +139,7 @@
 	<string name="menu_edit_list">Liste bearbeiten</string>
 	<string name="update_list">aktualisieren</string>
 	<string name="confirm_remove_user_from_list">Nutzer von der Liste entfernen?</string>
-	<string name="info_user_removed">\@%1$s von der Liste entfernt!</string>
+	<string name="info_user_removed">%1$s von der Liste entfernt!</string>
 	<string name="descr_remove_user">Nutzer von der Liste entfernen</string>
 	<string name="menu_tweet">Tweet verfassen</string>
 	<string name="menu_open_home_profile">öffne Profil</string>
@@ -160,7 +160,7 @@
 	<string name="descr_add_profile_image">Profilbild ändern</string>
 	<string name="settings_enable_hq_img">Bilder in hoher Auflösung</string>
 	<string name="menu_app_info">Über</string>
-	<string name="info_user_added_to_list">\@%1$s wurde zur Liste hinzugefügt!</string>
+	<string name="info_user_added_to_list">%1$s wurde zur Liste hinzugefügt!</string>
 	<string name="error_username_format">Nutzername falsch!</string>
 	<string name="error_not_defined">Undefinierter Fehler!</string>
 	<string name="error_cant_reply_to_tweet">Tweet ist nicht für Antworten freigegeben!</string>

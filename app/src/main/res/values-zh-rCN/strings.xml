@@ -94,12 +94,12 @@
 	<string name="button_share">分享链接</string>
 
 	<!-- toast messages to inform user -->
-	<string name="info_user_removed">\@%1$s 该用户已从列表中移除</string>
+	<string name="info_user_removed">%1$s 该用户已从列表中移除</string>
 	<string name="info_adding_user_to_list">正在添加用户到列表</string>
-	<string name="info_user_added_to_list">\@%1$s 已添加到列表</string>
+	<string name="info_user_added_to_list">%1$s 已添加到列表</string>
 	<string name="info_list_updated">列表已更新</string>
 	<string name="info_list_created">列表已创建</string>
-	<string name="info_fetching_link">正在重定向到 Twitter 登录页面</string>
+	<string name="info_open_twitter_login">正在重定向到 Twitter 登录页面</string>
 	<string name="info_login_to_twitter">正在登录到 Twitter</string>
 	<string name="error_wrong_connection_settings">连接设置错误！</string>
 	<string name="info_get_link">请先在浏览器中获取 PIN，然后点击第一个按钮！</string>

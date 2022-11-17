@@ -7,31 +7,26 @@ import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DA
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.async.ListManager;
-import org.nuclearfog.twidda.backend.async.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.async.UserLoader;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 
 /**
  * fragment class to show a list of users
  *
  * @author nuclearfog
  */
-public class UserFragment extends ListFragment implements UserClickListener, OnConfirmListener, ListManagerCallback {
+public class UserFragment extends ListFragment implements UserClickListener {
 
 	/**
 	 * key to set the type of user list to show
@@ -142,42 +137,35 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	 */
 	private static final int REQ_USER_UPDATE = 0x3F29;
 
-	private UserLoader userTask;
-	private ListManager listTask;
+	private UserLoader userAsync;
 
-	private ConfirmDialog confirmDialog;
 	private UserAdapter adapter;
 
-	private String deleteUserName = "";
 	private String search = "";
 	private long id = 0;
 	private int mode = 0;
-	private boolean delUser = false;
 
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		Bundle param = getArguments();
+		boolean delUser = false;
 		if (param != null) {
 			mode = param.getInt(KEY_FRAG_USER_MODE, 0);
 			id = param.getLong(KEY_FRAG_USER_ID, 0);
 			search = param.getString(KEY_FRAG_USER_SEARCH, "");
 			delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
 		}
-		confirmDialog = new ConfirmDialog(requireContext());
-		adapter = new UserAdapter(requireContext(), this);
-		adapter.enableDeleteButton(delUser);
+		adapter = new UserAdapter(requireContext(), this, delUser);
 		setAdapter(adapter);
-
-		confirmDialog.setConfirmListener(this);
 	}
 
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (userTask == null) {
+		if (userAsync == null) {
 			load(NO_CURSOR);
 		}
 	}
@@ -192,8 +180,8 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 	@Override
 	public void onDestroy() {
-		if (userTask != null && userTask.getStatus() == RUNNING)
-			userTask.cancel(true);
+		if (userAsync != null && userAsync.getStatus() == RUNNING)
+			userAsync.cancel(true);
 		super.onDestroy();
 	}
 
@@ -229,7 +217,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (userTask != null && userTask.getStatus() != RUNNING) {
+		if (userAsync != null && userAsync.getStatus() != RUNNING) {
 			load(cursor);
 			return true;
 		}
@@ -238,38 +226,12 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 
 	@Override
-	public void onDelete(String name) {
-		if (!confirmDialog.isShowing()) {
-			deleteUserName = name;
-			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
+	public void onDelete(User user) {
+		if (getActivity() instanceof UserlistActivity) {
+			// call parent activity to handle user delete
+			UserlistActivity callback = (UserlistActivity) getActivity();
+			callback.onDelete(user);
 		}
-	}
-
-
-	@Override
-	public void onConfirm(int type, boolean rememberChoice) {
-		if (type == ConfirmDialog.LIST_REMOVE_USER) {
-			if (listTask == null || listTask.getStatus() != RUNNING) {
-				listTask = new ListManager(requireContext(), id, ListManager.DEL_USER, deleteUserName, this);
-				listTask.execute();
-			}
-		}
-	}
-
-
-	@Override
-	public void onSuccess(String name) {
-		if (name.startsWith("@"))
-			name = name.substring(1);
-		String info = getString(R.string.info_user_removed, name);
-		Toast.makeText(requireContext(), info, Toast.LENGTH_SHORT).show();
-		adapter.removeUser(name);
-	}
-
-
-	@Override
-	public void onFailure(@Nullable ConnectionException err) {
-		ErrorHandler.handleFailure(requireContext(), err);
 	}
 
 	/**
@@ -291,6 +253,15 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		setRefresh(false);
 	}
 
+	/**
+	 * remove specific user from fragment list
+	 *
+	 * @param user user to remove
+	 */
+	public void removeUser(User user) {
+		adapter.removeUser(user);
+	}
+
 
 	/**
 	 * load content into the list
@@ -300,60 +271,53 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	private void load(long cursor) {
 		switch (mode) {
 			case USER_FRAG_FOLLOWER:
-				userTask = new UserLoader(this, UserLoader.FOLLOWS, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.FOLLOWS, id, search);
 				break;
 
 			case USER_FRAG_FOLLOWING:
-				userTask = new UserLoader(this, UserLoader.FRIENDS, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.FRIENDS, id, search);
 				break;
 
 			case USER_FRAG_REPOST:
-				userTask = new UserLoader(this, UserLoader.REPOST, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.REPOST, id, search);
 				break;
 
 			case USER_FRAG_FAVORIT:
-				userTask = new UserLoader(this, UserLoader.FAVORIT, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.FAVORIT, id, search);
 				break;
 
 			case USER_FRAG_SEARCH:
-				userTask = new UserLoader(this, UserLoader.SEARCH, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.SEARCH, id, search);
 				break;
 
 			case USER_FRAG_LIST_SUBSCRIBER:
-				userTask = new UserLoader(this, UserLoader.SUBSCRIBER, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.SUBSCRIBER, id, search);
 				break;
 
 			case USER_FRAG_LIST_MEMBERS:
-				userTask = new UserLoader(this, UserLoader.LISTMEMBER, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.LISTMEMBER, id, search);
 				break;
 
 			case USER_FRAG_BLOCKED_USERS:
-				userTask = new UserLoader(this, UserLoader.BLOCK, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.BLOCK, id, search);
 				break;
 
 			case USER_FRAG_MUTED_USERS:
-				userTask = new UserLoader(this, UserLoader.MUTE, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.MUTE, id, search);
 				break;
 
 			case USER_FRAG_FOLLOW_OUTGOING:
-				userTask = new UserLoader(this, UserLoader.INCOMING_REQ, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.INCOMING_REQ, id, search);
 				break;
 
 			case USER_FRAG_FOLLOW_INCOMING:
-				userTask = new UserLoader(this, UserLoader.OUTGOING_REQ, id, search);
-				userTask.execute(cursor);
+				userAsync = new UserLoader(this, UserLoader.OUTGOING_REQ, id, search);
 				break;
+
+			default:
+				return;
 		}
+		userAsync.execute(cursor);
 		if (cursor == NO_CURSOR) {
 			setRefresh(true);
 		}

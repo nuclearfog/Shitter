@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -29,13 +30,14 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListAction;
 import org.nuclearfog.twidda.backend.async.ListManager;
-import org.nuclearfog.twidda.backend.async.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.fragments.UserFragment;
 
 import java.util.regex.Pattern;
 
@@ -45,8 +47,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class UserlistActivity extends AppCompatActivity implements OnTabSelectedListener,
-		OnQueryTextListener, ListManagerCallback, OnConfirmListener {
+public class UserlistActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, OnConfirmListener {
 
 	/**
 	 * key to add list information
@@ -93,8 +94,9 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
 	private FragmentAdapter adapter;
-	private ListAction listLoaderTask;
-	private ListManager userListManager;
+	private ListAction listLoaderAsync;
+	private ListManager listManagerAsync;
+
 	private GlobalSettings settings;
 
 	private ConfirmDialog confirmDialog;
@@ -105,6 +107,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	@Nullable
 	private UserList userList;
+	@Nullable
+	private User user;
 
 
 	@Override
@@ -149,12 +153,12 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (listLoaderTask == null && userList != null) {
+		if (listLoaderAsync == null && userList != null) {
 			boolean blockUpdate = getIntent().getBooleanExtra(KEY_LIST_NO_UPDATE, false);
 			if (!blockUpdate) {
 				// update list information
-				listLoaderTask = new ListAction(this, userList.getId(), ListAction.LOAD);
-				listLoaderTask.execute();
+				listLoaderAsync = new ListAction(this, userList.getId(), ListAction.LOAD);
+				listLoaderAsync.execute();
 			}
 		}
 	}
@@ -162,8 +166,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	@Override
 	protected void onDestroy() {
-		if (listLoaderTask != null && listLoaderTask.getStatus() == RUNNING) {
-			listLoaderTask.cancel(true);
+		if (listLoaderAsync != null && listLoaderAsync.getStatus() == RUNNING) {
+			listLoaderAsync.cancel(true);
 		}
 		super.onDestroy();
 	}
@@ -208,7 +212,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (userList != null && (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING)) {
+		if (userList != null && (listLoaderAsync == null || listLoaderAsync.getStatus() != RUNNING)) {
 			// open user list editor
 			if (item.getItemId() == R.id.menu_list_edit) {
 				Intent editList = new Intent(this, UserlistEditor.class);
@@ -224,8 +228,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 				if (userList.isFollowing()) {
 					confirmDialog.show(ConfirmDialog.LIST_UNFOLLOW);
 				} else {
-					listLoaderTask = new ListAction(this, userList.getId(), ListAction.FOLLOW);
-					listLoaderTask.execute();
+					listLoaderAsync = new ListAction(this, userList.getId(), ListAction.FOLLOW);
+					listLoaderAsync.execute();
 				}
 			}
 			// theme expanded search view
@@ -270,19 +274,26 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
-		if (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING) {
+		if (userList != null) {
 			// delete user list
 			if (type == ConfirmDialog.LIST_DELETE) {
-				if (userList != null) {
-					listLoaderTask = new ListAction(this, userList.getId(), ListAction.DELETE);
-					listLoaderTask.execute();
+				if (listLoaderAsync == null || listLoaderAsync.getStatus() != RUNNING) {
+					listLoaderAsync = new ListAction(this, userList.getId(), ListAction.DELETE);
+					listLoaderAsync.execute();
 				}
 			}
 			// unfollow user list
 			else if (type == ConfirmDialog.LIST_UNFOLLOW) {
-				if (userList != null) {
-					listLoaderTask = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
-					listLoaderTask.execute();
+				if (listLoaderAsync == null || listLoaderAsync.getStatus() != RUNNING) {
+					listLoaderAsync = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
+					listLoaderAsync.execute();
+				}
+			}
+			// remove user from list
+			else if (type == ConfirmDialog.LIST_REMOVE_USER) {
+				if ((listManagerAsync == null || listManagerAsync.getStatus() != RUNNING) && user != null) {
+					listManagerAsync = new ListManager(this, userList.getId(), ListManager.DEL_USER, user.getScreenname(), this);
+					listManagerAsync.execute();
 				}
 			}
 		}
@@ -317,10 +328,10 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		if (userList == null)
 			return false;
 		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (userListManager == null || userListManager.getStatus() != RUNNING) {
+			if (listManagerAsync == null || listManagerAsync.getStatus() != RUNNING) {
 				Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-				userListManager = new ListManager(this, userList.getId(), ListManager.ADD_USER, query, this);
-				userListManager.execute();
+				listManagerAsync = new ListManager(this, userList.getId(), ListManager.ADD_USER, query, this);
+				listManagerAsync.execute();
 				return true;
 			}
 		} else {
@@ -329,20 +340,54 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		return false;
 	}
 
+	/**
+	 * called from {@link ListManager}
+	 *
+	 * @param action what action was taken
+	 * @param name   screen name of the list member
+	 */
+	public void onSuccess(int action, String name) {
+		switch (action) {
+			case ListManager.ADD_USER:
+				if (!name.startsWith("@"))
+					name = '@' + name;
+				String info = getString(R.string.info_user_added_to_list, name);
+				Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+				invalidateOptionsMenu();
+				break;
 
-	@Override
-	public void onSuccess(String name) {
-		if (name.startsWith("@"))
-			name = name.substring(1);
-		String info = getString(R.string.info_user_added_to_list, name);
-		Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
-		invalidateOptionsMenu();
+			case ListManager.DEL_USER:
+				if (user != null) {
+					info = getString(R.string.info_user_removed, user.getScreenname());
+					Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+					// remove user from list member page
+					Fragment fragment = adapter.getItem(1);
+					if (fragment instanceof UserFragment) {
+						UserFragment callback = (UserFragment) fragment;
+						callback.removeUser(user);
+					}
+				}
+				break;
+		}
 	}
 
+	/**
+	 * called from {@link ListManager} when an error occurs
+	 */
+	public void onFailure(@Nullable ConnectionException exception) {
+		ErrorHandler.handleFailure(this, exception);
+	}
 
-	@Override
-	public void onFailure(@Nullable ConnectionException err) {
-		ErrorHandler.handleFailure(this, err);
+	/**
+	 * called from {@link org.nuclearfog.twidda.ui.fragments.UserFragment} when an user should be removed from a list
+	 *
+	 * @param user user to remove from the lsit
+	 */
+	public void onDelete(User user) {
+		this.user = user;
+		if (!confirmDialog.isShowing()) {
+			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
+		}
 	}
 
 	/**
