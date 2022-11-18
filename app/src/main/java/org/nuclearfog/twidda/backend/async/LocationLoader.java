@@ -36,7 +36,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 
 
 	@Override
-	protected List<Location> doInBackground(Void[] v) {
+	protected List<Location> doInBackground(Void... v) {
 		try {
 			return connection.getLocations();
 		} catch (ConnectionException exception) {

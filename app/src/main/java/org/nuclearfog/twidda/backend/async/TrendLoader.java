@@ -43,7 +43,7 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 
 
 	@Override
-	protected List<Trend> doInBackground(Integer[] param) {
+	protected List<Trend> doInBackground(Integer... param) {
 		List<Trend> trends;
 		int woeId = param[0];
 		try {

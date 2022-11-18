@@ -14,33 +14,47 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
+public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
+
+	/**
+	 * load all saved logins
+	 */
+	public static final int MODE_LOAD = 1;
+
+	/**
+	 * delete specific login
+	 */
+	public static final int MODE_DELETE = 2;
 
 	private AccountDatabase accountDatabase;
 	private WeakReference<AccountFragment> weakRef;
 
+	private int mode;
+	private long deleteId;
 
-	public AccountLoader(AccountFragment fragment) {
+	/**
+	 * @param mode action to take {@link #MODE_LOAD,#MODE_DELETE}
+	 */
+	public AccountLoader(AccountFragment fragment, int mode) {
 		super();
 		weakRef = new WeakReference<>(fragment);
 		accountDatabase = new AccountDatabase(fragment.requireContext());
+		this.mode = mode;
 	}
 
 
 	@Override
-	protected List<Account> doInBackground(Account... param) {
-		List<Account> result = null;
-		try {
-			// remove account if parameter is set
-			if (param.length > 0 && param[0] != null) {
-				accountDatabase.removeLogin(param[0].getId());
-			}
-			// get registered users
-			result = accountDatabase.getLogins();
-		} catch (Exception err) {
-			err.printStackTrace();
+	protected List<Account> doInBackground(Long... param) {
+		// get all logins
+		if (mode == MODE_LOAD) {
+			return accountDatabase.getLogins();
 		}
-		return result;
+		// delete login
+		else if (mode == MODE_DELETE) {
+			accountDatabase.removeLogin(param[0]);
+			deleteId = param[0];
+		}
+		return null;
 	}
 
 
@@ -48,10 +62,10 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
 	protected void onPostExecute(List<Account> accounts) {
 		AccountFragment fragment = weakRef.get();
 		if (fragment != null) {
-			if (accounts != null) {
+			if (mode == MODE_LOAD) {
 				fragment.onSuccess(accounts);
-			} else {
-				fragment.onError();
+			} else if (mode == MODE_DELETE) {
+				fragment.onDelete(deleteId);
 			}
 		}
 	}

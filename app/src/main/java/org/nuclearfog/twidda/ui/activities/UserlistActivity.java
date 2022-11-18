@@ -384,9 +384,9 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	 * @param user user to remove from the lsit
 	 */
 	public void onDelete(User user) {
-		this.user = user;
 		if (!confirmDialog.isShowing()) {
 			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
+			this.user = user;
 		}
 	}
 

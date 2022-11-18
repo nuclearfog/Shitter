@@ -118,22 +118,27 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 	/**
 	 * sets login data
 	 *
-	 * @param data list with login items
+	 * @param newData list with login items
 	 */
 	@MainThread
-	public void setData(List<Account> data) {
-		this.data.clear();
-		this.data.addAll(data);
+	public void setData(List<Account> newData) {
+		data.clear();
+		data.addAll(newData);
 		notifyDataSetChanged();
 	}
 
 	/**
-	 * clear adapter data
+	 * remove single item with specific ID
+	 *
+	 * @param id Id of the element to remove
 	 */
-	@MainThread
-	public void clear() {
-		data.clear();
-		notifyDataSetChanged();
+	public void removeItem(long id) {
+		for (int i = data.size() - 1; i >= 0; i--) {
+			if (data.get(i).getId() == id) {
+				data.remove(i);
+				break;
+			}
+		}
 	}
 
 	/**

@@ -51,7 +51,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 
 
 	@Override
-	protected DataHolder doInBackground(Uri[] links) {
+	protected DataHolder doInBackground(Uri... links) {
 		try {
 			Uri link = links[0];
 			List<String> pathSeg = link.getPathSegments();

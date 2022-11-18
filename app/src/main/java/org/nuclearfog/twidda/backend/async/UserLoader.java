@@ -104,7 +104,7 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 
 
 	@Override
-	protected Users doInBackground(Long[] param) {
+	protected Users doInBackground(Long... param) {
 		try {
 			long cursor = param[0];
 			switch (type) {

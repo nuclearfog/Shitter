@@ -42,7 +42,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
 
 	@Override
-	protected Boolean doInBackground(Void[] v) {
+	protected Boolean doInBackground(Void... v) {
 		try {
 			// first check if user exists
 			long id = connection.showUser(message.getReceiver()).getId();

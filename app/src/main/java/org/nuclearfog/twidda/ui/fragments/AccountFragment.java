@@ -53,7 +53,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		super.onStart();
 		if (loginTask == null) {
 			setRefresh(true);
-			loginTask = new AccountLoader(this);
+			loginTask = new AccountLoader(this, AccountLoader.MODE_LOAD);
 			loginTask.execute();
 		}
 	}
@@ -69,17 +69,13 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	protected void onReload() {
-		loginTask = new AccountLoader(this);
+		loginTask = new AccountLoader(this, AccountLoader.MODE_LOAD);
 		loginTask.execute();
 	}
 
 
 	@Override
 	protected void onReset() {
-		adapter.clear();
-		loginTask = new AccountLoader(this);
-		loginTask.execute();
-		setRefresh(true);
 	}
 
 
@@ -120,13 +116,13 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
 		if (type == ConfirmDialog.REMOVE_ACCOUNT) {
-			loginTask = new AccountLoader(this);
-			loginTask.execute(selection);
+			loginTask = new AccountLoader(this, AccountLoader.MODE_DELETE);
+			loginTask.execute(selection.getId());
 		}
 	}
 
 	/**
-	 * called from {@link AccountLoader} to set login information
+	 * called from {@link AccountLoader} to add accounts to list
 	 *
 	 * @param result login information
 	 */
@@ -136,9 +132,11 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	}
 
 	/**
-	 * called from {@link AccountLoader} when an error occurs
+	 * called from {@link AccountLoader} to remove account from list
+	 *
+	 * @param id ID of the account to delete
 	 */
-	public void onError() {
-		Toast.makeText(requireContext(), R.string.error_login_information, Toast.LENGTH_SHORT).show();
+	public void onDelete(long id) {
+		adapter.removeItem(id);
 	}
 }

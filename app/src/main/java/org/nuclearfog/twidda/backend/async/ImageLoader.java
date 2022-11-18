@@ -47,7 +47,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
 
 	@Override
-	protected Boolean doInBackground(Uri[] links) {
+	protected Boolean doInBackground(Uri... links) {
 		try {
 			// download imaged to a local cache folder
 			for (Uri link : links) {

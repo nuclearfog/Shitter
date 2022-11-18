@@ -55,7 +55,7 @@
 	<string name="info_tweet_text_copied">Tweet text copied</string>
 	<string name="info_tweet_location_copied">Location coordinates copied</string>
 	<string name="info_tweet_medialink_copied">Media link copied</string>
-	<string name="info_account_selected">\@%1$s selected</string>
+	<string name="info_account_selected">%1$s selected</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -95,7 +95,6 @@
 	<string name="error_invalid_media">Invalid media file!</string>
 	<string name="error_not_defined">Not specified error!</string>
 	<string name="error_forbidden_api_access">API does not support this operation!</string>
-	<string name="error_login_information">could not load login information!</string>
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
 	<string name="error_empty_token">token key missing!</string>

@@ -215,7 +215,6 @@
 	<string name="toolbar_tweet_favoriter">Tweet favorisiert von</string>
 	<string name="toolbar_tweet_liker">Tweet gelikt von</string>
 	<string name="error_forbidden_api_access">Diese API unterstützt nicht diese Aktion!</string>
-	<string name="error_login_information">Login Informationen konnten nicht geladen werden!</string>
 	<string name="error_adding_media">Fehler, Mediendatei konnte nicht hinzugefügt werden!</string>
 	<string name="confirm_open_link">im Browser öffnen</string>
 	<string name="error_media_init">Fehler beim Vorbreiten der Mediendateien!</string>

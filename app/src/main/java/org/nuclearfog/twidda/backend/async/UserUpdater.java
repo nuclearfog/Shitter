@@ -40,7 +40,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 
 
 	@Override
-	protected User doInBackground(Void[] v) {
+	protected User doInBackground(Void... v) {
 		try {
 			if (profile.getProfileImageStream() != null) {
 				connection.updateProfileImage(profile.getProfileImageStream());

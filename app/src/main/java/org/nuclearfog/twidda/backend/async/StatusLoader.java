@@ -96,7 +96,7 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 
 
 	@Override
-	protected List<org.nuclearfog.twidda.model.Status> doInBackground(Long[] param) {
+	protected List<org.nuclearfog.twidda.model.Status> doInBackground(Long... param) {
 		List<org.nuclearfog.twidda.model.Status> statuses = null;
 		long sinceId = param[0];
 		long maxId = param[1];

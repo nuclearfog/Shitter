@@ -59,7 +59,7 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 
 
 	@Override
-	protected Void doInBackground(String[] names) {
+	protected Void doInBackground(String... names) {
 		try {
 			switch (mode) {
 				case REFRESH:

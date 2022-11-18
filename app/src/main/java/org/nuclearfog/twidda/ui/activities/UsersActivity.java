@@ -33,6 +33,8 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import java.util.regex.Pattern;
+
 /**
  * Activity to show one or more lists of users
  *
@@ -93,6 +95,11 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	 * @see #KEY_USERS_MODE
 	 */
 	public static final int USERS_REQUESTS = 0x0948693;
+
+	/**
+	 * regex pattern to validate username
+	 */
+	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
 	private GlobalSettings settings;
 	private FilterLoader userExclTask;
@@ -257,17 +264,21 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public boolean onQueryTextSubmit(String query) {
-		if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
-			if (tablayout.getSelectedTabPosition() == 0) {
-				userExclTask = new FilterLoader(this, MUTE_USER);
-				userExclTask.execute(query);
-				return true;
+		if (USERNAME_PATTERN.matcher(query).matches()) {
+			if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
+				if (tablayout.getSelectedTabPosition() == 0) {
+					userExclTask = new FilterLoader(this, MUTE_USER);
+					userExclTask.execute(query);
+					return true;
+				}
+				if (tablayout.getSelectedTabPosition() == 1) {
+					userExclTask = new FilterLoader(this, BLOCK_USER);
+					userExclTask.execute(query);
+					return true;
+				}
 			}
-			if (tablayout.getSelectedTabPosition() == 1) {
-				userExclTask = new FilterLoader(this, BLOCK_USER);
-				userExclTask.execute(query);
-				return true;
-			}
+		} else {
+			Toast.makeText(this, R.string.error_username_format, Toast.LENGTH_SHORT).show();
 		}
 		return false;
 	}
