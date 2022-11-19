@@ -167,7 +167,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				}
 			} else if (returnCode == StatusActivity.RETURN_STATUS_REMOVED) {
 				long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0);
-				adapter.remove(statusId);
+				adapter.removeItem(statusId);
 			}
 		}
 	}
@@ -209,9 +209,9 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 */
 	public void setData(List<Status> statuses, int pos) {
 		if (pos == CLEAR_LIST) {
-			adapter.replaceAll(statuses);
+			adapter.replaceItems(statuses);
 		} else {
-			adapter.insertAt(statuses, pos);
+			adapter.addItems(statuses, pos);
 		}
 		setRefresh(false);
 	}

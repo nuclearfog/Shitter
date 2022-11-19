@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
@@ -34,11 +33,12 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class AccountAdapter extends Adapter<AccountHolder> {
 
-	private List<Account> data = new ArrayList<>();
 	private GlobalSettings settings;
 	private OnAccountClickListener listener;
 	private Resources resources;
 	private Picasso picasso;
+
+	private List<Account> accounts = new ArrayList<>();
 
 	/**
 	 * @param listener item click listener
@@ -60,7 +60,7 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 			public void onClick(View v) {
 				int position = holder.getLayoutPosition();
 				if (position != NO_POSITION) {
-					Account account = data.get(position);
+					Account account = accounts.get(position);
 					listener.onAccountClick(account);
 				}
 			}
@@ -70,7 +70,7 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 			public void onClick(View v) {
 				int position = holder.getLayoutPosition();
 				if (position != NO_POSITION) {
-					Account account = data.get(position);
+					Account account = accounts.get(position);
 					listener.onAccountRemove(account);
 				}
 			}
@@ -81,7 +81,7 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 
 	@Override
 	public void onBindViewHolder(@NonNull AccountHolder holder, int position) {
-		Account account = data.get(position);
+		Account account = accounts.get(position);
 		User user = account.getUser();
 		String date = StringTools.formatCreationTime(resources, account.getLoginDate());
 		holder.date.setText(date);
@@ -112,18 +112,17 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 
 	@Override
 	public int getItemCount() {
-		return data.size();
+		return accounts.size();
 	}
 
 	/**
 	 * sets login data
 	 *
-	 * @param newData list with login items
+	 * @param newAccounts list with login items
 	 */
-	@MainThread
-	public void setData(List<Account> newData) {
-		data.clear();
-		data.addAll(newData);
+	public void replaceItems(List<Account> newAccounts) {
+		accounts.clear();
+		accounts.addAll(newAccounts);
 		notifyDataSetChanged();
 	}
 
@@ -133,9 +132,10 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 	 * @param id Id of the element to remove
 	 */
 	public void removeItem(long id) {
-		for (int i = data.size() - 1; i >= 0; i--) {
-			if (data.get(i).getId() == id) {
-				data.remove(i);
+		for (int i = accounts.size() - 1; i >= 0; i--) {
+			Account account = accounts.get(i);
+			if (account != null && account.getId() == id) {
+				accounts.remove(i);
 				break;
 			}
 		}

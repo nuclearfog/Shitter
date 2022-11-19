@@ -33,6 +33,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	private GlobalSettings settings;
 	private AccountAdapter adapter;
 	private ConfirmDialog dialog;
+
 	private Account selection;
 
 
@@ -127,7 +128,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	 * @param result login information
 	 */
 	public void onSuccess(List<Account> result) {
-		adapter.setData(result);
+		adapter.replaceItems(result);
 		setRefresh(false);
 	}
 

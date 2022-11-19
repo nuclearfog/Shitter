@@ -193,7 +193,7 @@ public class UserFragment extends ListFragment implements UserClickListener {
 			Object result = data.getSerializableExtra(ProfileActivity.KEY_USER_UPDATE);
 			if (result instanceof User) {
 				User update = (User) result;
-				adapter.updateUser(update);
+				adapter.updateItem(update);
 			}
 		}
 	}
@@ -240,7 +240,7 @@ public class UserFragment extends ListFragment implements UserClickListener {
 	 * @param data list of users
 	 */
 	public void setData(Users data) {
-		adapter.setData(data);
+		adapter.addItems(data);
 		setRefresh(false);
 	}
 
@@ -259,7 +259,7 @@ public class UserFragment extends ListFragment implements UserClickListener {
 	 * @param user user to remove
 	 */
 	public void removeUser(User user) {
-		adapter.removeUser(user);
+		adapter.removeItem(user);
 	}
 
 

@@ -11,7 +11,6 @@ import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -60,7 +59,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	private Resources resources;
 	private Picasso picasso;
 
-	private Messages data = new Messages(null, null);
+	private Messages messages = new Messages(null, null);
 	private int loadingIndex = NO_LOADING;
 
 	/**
@@ -73,56 +72,10 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 		resources = context.getResources();
 	}
 
-	/**
-	 * set messages
-	 *
-	 * @param newData new message list
-	 */
-	@MainThread
-	public void setData(Messages newData) {
-		disableLoading();
-		if (newData.isEmpty()) {
-			if (!data.isEmpty() && data.peekLast() == null) {
-				int end = data.size() - 1;
-				data.remove(end);
-				notifyItemRemoved(end);
-			}
-		} else if (data.isEmpty() || !newData.hasPrev()) {
-			data.replaceAll(newData);
-			if (newData.hasNext()) {
-				// add placeholder
-				data.add(null);
-			}
-			notifyDataSetChanged();
-		} else {
-			int end = data.size() - 1;
-			if (!newData.hasNext()) {
-				// remove placeholder
-				data.remove(end);
-				notifyItemRemoved(end);
-			}
-			data.addAt(newData, end);
-			notifyItemRangeInserted(end, newData.size());
-		}
-	}
-
-	/**
-	 * Remove a single item from list if found
-	 *
-	 * @param id message ID
-	 */
-	@MainThread
-	public void remove(long id) {
-		int pos = data.removeItem(id);
-		if (pos >= 0) {
-			notifyItemRemoved(pos);
-		}
-	}
-
 
 	@Override
 	public long getItemId(int index) {
-		Message message = data.get(index);
+		Message message = messages.get(index);
 		if (message != null)
 			return message.getId();
 		return -1;
@@ -131,13 +84,13 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
 	@Override
 	public int getItemCount() {
-		return data.size();
+		return messages.size();
 	}
 
 
 	@Override
 	public int getItemViewType(int index) {
-		if (data.get(index) == null)
+		if (messages.get(index) == null)
 			return TYPE_PLACEHOLDER;
 		return TYPE_MESSAGE;
 	}
@@ -153,7 +106,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						Message message = data.get(position);
+						Message message = messages.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.ANSWER);
 						}
@@ -165,7 +118,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						Message message = data.get(position);
+						Message message = messages.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.DELETE);
 						}
@@ -177,7 +130,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						Message message = data.get(position);
+						Message message = messages.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.PROFILE);
 						}
@@ -189,7 +142,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = holder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						Message message = data.get(position);
+						Message message = messages.get(position);
 						if (message != null) {
 							itemClickListener.onClick(message, OnMessageClickListener.MEDIA);
 						}
@@ -204,7 +157,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = placeHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						boolean success = itemClickListener.onPlaceholderClick(data.getNextCursor());
+						boolean success = itemClickListener.onPlaceholderClick(messages.getNextCursor());
 						if (success) {
 							placeHolder.setLoading(true);
 							loadingIndex = position;
@@ -220,7 +173,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
 		if (vh instanceof MessageHolder) {
-			Message message = data.get(index);
+			Message message = messages.get(index);
 			if (message != null) {
 				User sender = message.getSender();
 				Spanned text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
@@ -261,6 +214,50 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 		} else if (vh instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) vh;
 			placeHolder.setLoading(loadingIndex == index);
+		}
+	}
+
+	/**
+	 * set messages
+	 *
+	 * @param newData new message list
+	 */
+	public void addItems(Messages newData) {
+		disableLoading();
+		if (newData.isEmpty()) {
+			if (!messages.isEmpty() && messages.peekLast() == null) {
+				int end = messages.size() - 1;
+				messages.remove(end);
+				notifyItemRemoved(end);
+			}
+		} else if (messages.isEmpty() || !newData.hasPrev()) {
+			messages.replaceAll(newData);
+			if (newData.hasNext()) {
+				// add placeholder
+				messages.add(null);
+			}
+			notifyDataSetChanged();
+		} else {
+			int end = messages.size() - 1;
+			if (!newData.hasNext()) {
+				// remove placeholder
+				messages.remove(end);
+				notifyItemRemoved(end);
+			}
+			messages.addAt(newData, end);
+			notifyItemRangeInserted(end, newData.size());
+		}
+	}
+
+	/**
+	 * Remove a single item from list if found
+	 *
+	 * @param id message ID
+	 */
+	public void removeItem(long id) {
+		int pos = messages.removeItem(id);
+		if (pos >= 0) {
+			notifyItemRemoved(pos);
 		}
 	}
 

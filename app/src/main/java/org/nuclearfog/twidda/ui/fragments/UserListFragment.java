@@ -171,7 +171,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 	 * set data to list
 	 */
 	public void setData(UserLists data) {
-		adapter.setData(data);
+		adapter.addItems(data);
 		setRefresh(false);
 	}
 

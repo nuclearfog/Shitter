@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.MainThread;
-
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
@@ -26,60 +24,26 @@ import java.util.List;
 public class LocationAdapter extends BaseAdapter {
 
 	private GlobalSettings settings;
-	private List<Location> data = new ArrayList<>();
 
+	private List<Location> locations = new ArrayList<>();
 
+	/**
+	 *
+	 */
 	public LocationAdapter(GlobalSettings settings) {
 		this.settings = settings;
-	}
-
-	/**
-	 * Add a single item to top
-	 *
-	 * @param top top item to add
-	 */
-	@MainThread
-	public void addTop(Location top) {
-		data.add(top);
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * replace content with new items
-	 *
-	 * @param newData item list
-	 */
-	@MainThread
-	public void setData(List<Location> newData) {
-		data.clear();
-		data.addAll(newData);
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * get position of the item or "0" if not found
-	 *
-	 * @param item item to search
-	 * @return index of the item
-	 */
-	public int getPosition(Location item) {
-		int pos = data.indexOf(item);
-		if (pos == -1) {
-			return 0;
-		}
-		return pos;
 	}
 
 
 	@Override
 	public int getCount() {
-		return data.size();
+		return locations.size();
 	}
 
 
 	@Override
 	public Location getItem(int pos) {
-		return data.get(pos);
+		return locations.get(pos);
 	}
 
 
@@ -100,8 +64,43 @@ public class LocationAdapter extends BaseAdapter {
 		textItem.setBackgroundColor(settings.getCardColor());
 		textItem.setTextColor(settings.getFontColor());
 		textItem.setTypeface(settings.getTypeFace());
-		textItem.setText(data.get(pos).getName());
+		textItem.setText(locations.get(pos).getName());
 		view.setBackgroundColor(settings.getBackgroundColor());
 		return view;
+	}
+
+	/**
+	 * Add a single item to top
+	 *
+	 * @param top top item to add
+	 */
+	public void addItem(Location top) {
+		locations.add(top);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * replace content with new items
+	 *
+	 * @param newData item list
+	 */
+	public void replaceItems(List<Location> newData) {
+		locations.clear();
+		locations.addAll(newData);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * get position of the item or "0" if not found
+	 *
+	 * @param item item to search
+	 * @return index of the item
+	 */
+	public int indexOf(Location item) {
+		int pos = locations.indexOf(item);
+		if (pos == -1) {
+			return 0;
+		}
+		return pos;
 	}
 }

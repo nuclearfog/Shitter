@@ -95,7 +95,7 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 					imageAsync = new ImageLoader(this, cacheFolder);
 					imageAsync.execute(uris.toArray(new Uri[0]));
 				} else {
-					adapter.addAll(uris);
+					adapter.replaceItems(uris);
 					adapter.disableSaveButton();
 					zoomImage.setImageURI(uris.get(0));
 					loadingCircle.setVisibility(INVISIBLE);
@@ -147,7 +147,7 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 			zoomImage.setImageURI(imageUri);
 			loadingCircle.setVisibility(INVISIBLE);
 		}
-		adapter.addLast(imageUri);
+		adapter.addItem(imageUri);
 	}
 
 	/**

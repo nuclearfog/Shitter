@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -65,7 +64,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 	private Resources resources;
 	private Picasso picasso;
 
-	private UserLists data = new UserLists(0L, 0L);
+	private UserLists userlists = new UserLists(0L, 0L);
 	private int loadingIndex = NO_LOADING;
 
 	/**
@@ -78,77 +77,16 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 		resources = context.getResources();
 	}
 
-	/**
-	 * adds new data to the list
-	 *
-	 * @param newData new list to add
-	 */
-	@MainThread
-	public void setData(UserLists newData) {
-		disableLoading();
-		if (newData.isEmpty()) {
-			if (!data.isEmpty() && data.peekLast() == null) {
-				// remove placeholder
-				int end = data.size() - 1;
-				data.remove(end);
-				notifyItemRemoved(end);
-			}
-		} else if (data.isEmpty() || !newData.hasPrevious()) {
-			data.replace(newData);
-			if (data.hasNext()) {
-				// Add placeholder
-				data.add(null);
-			}
-			notifyDataSetChanged();
-		} else {
-			int end = data.size() - 1;
-			if (!data.hasNext()) {
-				// remove placeholder
-				data.remove(end);
-				notifyItemRemoved(end);
-			}
-			data.addAt(newData, end);
-			notifyItemRangeInserted(end, newData.size());
-		}
-	}
-
-	/**
-	 * update a single item
-	 *
-	 * @param list updated list
-	 */
-	@MainThread
-	public void updateItem(UserList list) {
-		int index = data.indexOf(list);
-		if (index >= 0) {
-			data.set(index, list);
-			notifyItemChanged(index);
-		}
-	}
-
-	/**
-	 * remove user list item from list
-	 *
-	 * @param itemId user list id to remove
-	 */
-	@MainThread
-	public void removeItem(long itemId) {
-		int index = data.removeItem(itemId);
-		if (index >= 0) {
-			notifyItemRemoved(index);
-		}
-	}
-
 
 	@Override
 	public int getItemCount() {
-		return data.size();
+		return userlists.size();
 	}
 
 
 	@Override
 	public int getItemViewType(int position) {
-		if (data.get(position) == null)
+		if (userlists.get(position) == null)
 			return ITEM_PLACEHOLDER;
 		return ITEM_LIST;
 	}
@@ -164,7 +102,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = itemHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						UserList item = data.get(position);
+						UserList item = userlists.get(position);
 						if (item != null) {
 							listener.onProfileClick(item.getListOwner());
 						}
@@ -176,7 +114,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = itemHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						UserList item = data.get(position);
+						UserList item = userlists.get(position);
 						if (item != null) {
 							listener.onListClick(item);
 						}
@@ -191,7 +129,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = placeHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						boolean actionPerformed = listener.onPlaceholderClick(data.getNext());
+						boolean actionPerformed = listener.onPlaceholderClick(userlists.getNext());
 						if (actionPerformed) {
 							placeHolder.setLoading(true);
 							loadingIndex = position;
@@ -208,7 +146,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 	public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
 		if (holder instanceof UserlistHolder) {
 			UserlistHolder vh = (UserlistHolder) holder;
-			UserList item = data.get(index);
+			UserList item = userlists.get(index);
 			if (item != null) {
 				User owner = item.getListOwner();
 				vh.title.setText(item.getTitle());
@@ -255,6 +193,64 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 		} else if (holder instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) holder;
 			placeHolder.setLoading(loadingIndex == index);
+		}
+	}
+
+	/**
+	 * adds new data to the list
+	 *
+	 * @param newUserlists new list to add
+	 */
+	public void addItems(UserLists newUserlists) {
+		disableLoading();
+		if (newUserlists.isEmpty()) {
+			if (!userlists.isEmpty() && userlists.peekLast() == null) {
+				// remove placeholder
+				int end = userlists.size() - 1;
+				userlists.remove(end);
+				notifyItemRemoved(end);
+			}
+		} else if (userlists.isEmpty() || !newUserlists.hasPrevious()) {
+			userlists.replace(newUserlists);
+			if (userlists.hasNext()) {
+				// Add placeholder
+				userlists.add(null);
+			}
+			notifyDataSetChanged();
+		} else {
+			int end = userlists.size() - 1;
+			if (!userlists.hasNext()) {
+				// remove placeholder
+				userlists.remove(end);
+				notifyItemRemoved(end);
+			}
+			userlists.addAt(newUserlists, end);
+			notifyItemRangeInserted(end, newUserlists.size());
+		}
+	}
+
+	/**
+	 * update a single item
+	 *
+	 * @param list updated list
+	 */
+	public void updateItem(UserList list) {
+		int index = userlists.indexOf(list);
+		if (index >= 0) {
+			userlists.set(index, list);
+			notifyItemChanged(index);
+		}
+	}
+
+	/**
+	 * remove user list item from list
+	 *
+	 * @param itemId user list id to remove
+	 */
+	public void removeItem(long itemId) {
+		int index = userlists.removeItem(itemId);
+		if (index >= 0) {
+			notifyItemRemoved(index);
 		}
 	}
 

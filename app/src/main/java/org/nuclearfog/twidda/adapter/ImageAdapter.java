@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -42,7 +41,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	private OnImageClickListener itemClickListener;
 	private GlobalSettings settings;
 
-	private List<Uri> imageUri = new ArrayList<>(5);
+	private List<Uri> imageLinks = new ArrayList<>(5);
 	private boolean enableSaveButton = true;
 	private boolean loading = false;
 
@@ -54,15 +53,72 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 		this.settings = GlobalSettings.getInstance(context);
 	}
 
+
+	@Override
+	public int getItemViewType(int position) {
+		if (loading && position == imageLinks.size())
+			return ITEM_PLACEHOLDER;
+		return ITEM_IMAGE;
+	}
+
+
+	@Override
+	public int getItemCount() {
+		if (loading)
+			return imageLinks.size() + 1;
+		return imageLinks.size();
+	}
+
+
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+		if (viewType == ITEM_IMAGE) {
+			final ImageHolder item = new ImageHolder(parent, settings);
+			item.preview.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int pos = item.getLayoutPosition();
+					if (pos != NO_POSITION) {
+						itemClickListener.onImageClick(imageLinks.get(pos));
+					}
+				}
+			});
+			if (enableSaveButton) {
+				item.saveButton.setVisibility(VISIBLE);
+				item.saveButton.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						int pos = item.getLayoutPosition();
+						if (pos != NO_POSITION) {
+							itemClickListener.onImageSave(imageLinks.get(pos));
+						}
+					}
+				});
+			}
+			return item;
+		}
+		return new PlaceHolder(parent, settings, true);
+	}
+
+
+	@Override
+	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
+		if (vh instanceof ImageHolder) {
+			ImageHolder item = (ImageHolder) vh;
+			Uri uri = imageLinks.get(index);
+			item.preview.setImageURI(uri);
+		}
+	}
+
 	/**
 	 * replace all image links
 	 *
-	 * @param uris list of image links
+	 * @param newLinks list of image links
 	 */
-	@MainThread
-	public void addAll(List<Uri> uris) {
-		imageUri.clear();
-		imageUri.addAll(uris);
+	public void replaceItems(List<Uri> newLinks) {
+		imageLinks.clear();
+		imageLinks.addAll(newLinks);
 		notifyDataSetChanged();
 	}
 
@@ -71,23 +127,21 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	 *
 	 * @param uri Uri of the image
 	 */
-	@MainThread
-	public void addLast(@NonNull Uri uri) {
-		int imagePos = imageUri.size();
+	public void addItem(@NonNull Uri uri) {
+		int imagePos = imageLinks.size();
 		if (imagePos == 0)
 			loading = true;
-		imageUri.add(uri);
+		imageLinks.add(uri);
 		notifyItemInserted(imagePos);
 	}
 
 	/**
 	 * disable placeholder view
 	 */
-	@MainThread
 	public void disableLoading() {
 		loading = false;
-		int circlePos = imageUri.size();
-		notifyItemRemoved(circlePos);
+		int progressViewPos = imageLinks.size();
+		notifyItemRemoved(progressViewPos);
 	}
 
 	/**
@@ -103,65 +157,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	 * @return true if there isn't any image
 	 */
 	public boolean isEmpty() {
-		return imageUri.isEmpty();
-	}
-
-
-	@Override
-	public int getItemViewType(int position) {
-		if (loading && position == imageUri.size())
-			return ITEM_PLACEHOLDER;
-		return ITEM_IMAGE;
-	}
-
-
-	@Override
-	public int getItemCount() {
-		if (loading)
-			return imageUri.size() + 1;
-		return imageUri.size();
-	}
-
-
-	@NonNull
-	@Override
-	public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-		if (viewType == ITEM_IMAGE) {
-			final ImageHolder item = new ImageHolder(parent, settings);
-			item.preview.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int pos = item.getLayoutPosition();
-					if (pos != NO_POSITION) {
-						itemClickListener.onImageClick(imageUri.get(pos));
-					}
-				}
-			});
-			if (enableSaveButton) {
-				item.saveButton.setVisibility(VISIBLE);
-				item.saveButton.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						int pos = item.getLayoutPosition();
-						if (pos != NO_POSITION) {
-							itemClickListener.onImageSave(imageUri.get(pos));
-						}
-					}
-				});
-			}
-			return item;
-		}
-		return new PlaceHolder(parent, settings, true);
-	}
-
-
-	@Override
-	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
-		if (vh instanceof ImageHolder) {
-			ImageHolder item = (ImageHolder) vh;
-			Uri uri = imageUri.get(index);
-			item.preview.setImageURI(uri);
-		}
+		return imageLinks.isEmpty();
 	}
 
 	/**

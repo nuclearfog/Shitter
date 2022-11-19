@@ -168,7 +168,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 		settings = GlobalSettings.getInstance(this);
 		locationAdapter = new LocationAdapter(settings);
-		locationAdapter.addTop(settings.getTrendLocation());
+		locationAdapter.addItem(settings.getTrendLocation());
 		locationSpinner.setAdapter(locationAdapter);
 		locationSpinner.setSelected(false);
 		fontAdapter = new FontAdapter(settings);
@@ -604,8 +604,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 * @param data location data
 	 */
 	public void setLocationData(List<Location> data) {
-		locationAdapter.setData(data);
-		int position = locationAdapter.getPosition(settings.getTrendLocation());
+		locationAdapter.replaceItems(data);
+		int position = locationAdapter.indexOf(settings.getTrendLocation());
 		if (position > 0)
 			locationSpinner.setSelection(position, false);
 		locationSpinner.setOnItemSelectedListener(this);

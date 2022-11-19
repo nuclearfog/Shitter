@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -41,9 +40,9 @@ public class TrendAdapter extends Adapter<ViewHolder> {
 	 */
 	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
-
 	private TrendClickListener itemClickListener;
 	private GlobalSettings settings;
+
 	private List<Trend> trends = new ArrayList<>(INIT_COUNT);
 
 	/**
@@ -52,27 +51,6 @@ public class TrendAdapter extends Adapter<ViewHolder> {
 	public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
 		this.settings = settings;
 		this.itemClickListener = itemClickListener;
-	}
-
-	/**
-	 * replace data from list
-	 *
-	 * @param trendList list of trends
-	 */
-	@MainThread
-	public void setData(@NonNull List<Trend> trendList) {
-		trends.clear();
-		trends.addAll(trendList);
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * check if adapter is empty
-	 *
-	 * @return true if adapter is empty
-	 */
-	public boolean isEmpty() {
-		return trends.isEmpty();
 	}
 
 
@@ -113,6 +91,26 @@ public class TrendAdapter extends Adapter<ViewHolder> {
 		} else {
 			holder.vol.setVisibility(GONE);
 		}
+	}
+
+	/**
+	 * replace data from list
+	 *
+	 * @param trendList list of trends
+	 */
+	public void replaceItems(@NonNull List<Trend> trendList) {
+		trends.clear();
+		trends.addAll(trendList);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * check if adapter is empty
+	 *
+	 * @return true if adapter is empty
+	 */
+	public boolean isEmpty() {
+		return trends.isEmpty();
 	}
 
 	/**

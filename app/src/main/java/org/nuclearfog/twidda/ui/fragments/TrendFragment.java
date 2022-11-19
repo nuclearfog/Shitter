@@ -90,7 +90,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 	 * @param data Trend data
 	 */
 	public void setData(List<Trend> data) {
-		adapter.setData(data);
+		adapter.replaceItems(data);
 		setRefresh(false);
 	}
 

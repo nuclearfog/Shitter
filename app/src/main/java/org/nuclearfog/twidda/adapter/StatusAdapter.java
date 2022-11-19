@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -75,7 +74,7 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 	private Resources resources;
 	private Picasso picasso;
 
-	private final List<Status> data = new LinkedList<>();
+	private final List<Status> statuses = new LinkedList<>();
 	private int loadingIndex = NO_LOADING;
 
 	/**
@@ -88,107 +87,10 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 		resources = context.getResources();
 	}
 
-	/**
-	 * Insert data at specific index of the list
-	 *
-	 * @param statuses list of statuses to insert
-	 * @param index    position to insert
-	 */
-	@MainThread
-	public void insertAt(@NonNull List<Status> statuses, int index) {
-		disableLoading();
-		if (statuses.size() > MIN_COUNT) {
-			if (data.isEmpty() || data.get(index) != null) {
-				// Add placeholder
-				data.add(index, null);
-				notifyItemInserted(index);
-			}
-		} else {
-			if (!data.isEmpty() && data.get(index) == null) {
-				// remove placeholder
-				data.remove(index);
-				notifyItemRemoved(index);
-			}
-		}
-		if (!statuses.isEmpty()) {
-			data.addAll(index, statuses);
-			notifyItemRangeInserted(index, statuses.size());
-		}
-	}
-
-	/**
-	 * Replace all items in the list
-	 *
-	 * @param statuses list of statuses to add
-	 */
-	@MainThread
-	public void replaceAll(@NonNull List<Status> statuses) {
-		data.clear();
-		data.addAll(statuses);
-		if (statuses.size() > MIN_COUNT) {
-			data.add(null);
-		}
-		loadingIndex = NO_LOADING;
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * update a single item
-	 *
-	 * @param status status to update
-	 */
-	@MainThread
-	public void updateItem(Status status) {
-		int index = data.indexOf(status);
-		if (index >= 0) {
-			data.set(index, status);
-			notifyItemChanged(index);
-		}
-	}
-
-	/**
-	 * Remove specific status from list
-	 *
-	 * @param id ID of the status
-	 */
-	@MainThread
-	public void remove(long id) {
-		for (int pos = data.size() - 1; pos >= 0; pos--) {
-			Status status = data.get(pos);
-			if (status != null) {
-				Status embedded = status.getEmbeddedStatus();
-				// remove status and any repost of it
-				if (status.getId() == id || (embedded != null && embedded.getId() == id)) {
-					data.remove(pos);
-					notifyItemRemoved(pos);
-				}
-			}
-		}
-	}
-
-	/**
-	 * check if list is empty
-	 *
-	 * @return true if list is empty
-	 */
-	public boolean isEmpty() {
-		return data.isEmpty();
-	}
-
-	/**
-	 * disable placeholder load animation
-	 */
-	public void disableLoading() {
-		if (loadingIndex != NO_LOADING) {
-			int oldIndex = loadingIndex;
-			loadingIndex = NO_LOADING;
-			notifyItemChanged(oldIndex);
-		}
-	}
 
 	@Override
 	public long getItemId(int index) {
-		Status status = data.get(index);
+		Status status = statuses.get(index);
 		if (status != null)
 			return status.getId();
 		return NO_ID;
@@ -197,13 +99,13 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 
 	@Override
 	public int getItemCount() {
-		return data.size();
+		return statuses.size();
 	}
 
 
 	@Override
 	public int getItemViewType(int index) {
-		if (data.get(index) == null)
+		if (statuses.get(index) == null)
 			return VIEW_PLACEHOLDER;
 		return VIEW_STATUS;
 	}
@@ -219,7 +121,7 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = vh.getLayoutPosition();
 					if (position != NO_POSITION) {
-						Status status = data.get(position);
+						Status status = statuses.get(position);
 						if (status != null) {
 							itemClickListener.onStatusSelected(status);
 						}
@@ -237,21 +139,21 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 						long sinceId = 0;
 						long maxId = 0;
 						if (position == 0) {
-							Status status = data.get(position + 1);
+							Status status = statuses.get(position + 1);
 							if (status != null) {
 								sinceId = status.getId();
 							}
-						} else if (position == data.size() - 1) {
-							Status status = data.get(position - 1);
+						} else if (position == statuses.size() - 1) {
+							Status status = statuses.get(position - 1);
 							if (status != null) {
 								maxId = status.getId() - 1;
 							}
 						} else {
-							Status status = data.get(position + 1);
+							Status status = statuses.get(position + 1);
 							if (status != null) {
 								sinceId = status.getId();
 							}
-							status = data.get(position - 1);
+							status = statuses.get(position - 1);
 							if (status != null) {
 								maxId = status.getId() - 1;
 							}
@@ -272,7 +174,7 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
 		if (holder instanceof StatusHolder) {
-			Status status = data.get(index);
+			Status status = statuses.get(index);
 			if (status != null) {
 				StatusHolder statusHolder = (StatusHolder) holder;
 				User user = status.getAuthor();
@@ -364,6 +266,100 @@ public class StatusAdapter extends Adapter<ViewHolder> {
 		} else if (holder instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) holder;
 			placeHolder.setLoading(loadingIndex == index);
+		}
+	}
+
+	/**
+	 * Insert data at specific index of the list
+	 *
+	 * @param statuses list of statuses to insert
+	 * @param index    position to insert
+	 */
+	public void addItems(@NonNull List<Status> statuses, int index) {
+		disableLoading();
+		if (statuses.size() > MIN_COUNT) {
+			if (this.statuses.isEmpty() || this.statuses.get(index) != null) {
+				// Add placeholder
+				this.statuses.add(index, null);
+				notifyItemInserted(index);
+			}
+		} else {
+			if (!this.statuses.isEmpty() && this.statuses.get(index) == null) {
+				// remove placeholder
+				this.statuses.remove(index);
+				notifyItemRemoved(index);
+			}
+		}
+		if (!statuses.isEmpty()) {
+			this.statuses.addAll(index, statuses);
+			notifyItemRangeInserted(index, statuses.size());
+		}
+	}
+
+	/**
+	 * Replace all items in the list
+	 *
+	 * @param statuses list of statuses to add
+	 */
+	public void replaceItems(@NonNull List<Status> statuses) {
+		this.statuses.clear();
+		this.statuses.addAll(statuses);
+		if (statuses.size() > MIN_COUNT) {
+			this.statuses.add(null);
+		}
+		loadingIndex = NO_LOADING;
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * update a single item
+	 *
+	 * @param status status to update
+	 */
+	public void updateItem(Status status) {
+		int index = statuses.indexOf(status);
+		if (index >= 0) {
+			statuses.set(index, status);
+			notifyItemChanged(index);
+		}
+	}
+
+	/**
+	 * Remove specific status from list
+	 *
+	 * @param id ID of the status
+	 */
+	public void removeItem(long id) {
+		for (int pos = statuses.size() - 1; pos >= 0; pos--) {
+			Status status = statuses.get(pos);
+			if (status != null) {
+				Status embedded = status.getEmbeddedStatus();
+				// remove status and any repost of it
+				if (status.getId() == id || (embedded != null && embedded.getId() == id)) {
+					statuses.remove(pos);
+					notifyItemRemoved(pos);
+				}
+			}
+		}
+	}
+
+	/**
+	 * check if list is empty
+	 *
+	 * @return true if list is empty
+	 */
+	public boolean isEmpty() {
+		return statuses.isEmpty();
+	}
+
+	/**
+	 * disable placeholder load animation
+	 */
+	public void disableLoading() {
+		if (loadingIndex != NO_LOADING) {
+			int oldIndex = loadingIndex;
+			loadingIndex = NO_LOADING;
+			notifyItemChanged(oldIndex);
 		}
 	}
 

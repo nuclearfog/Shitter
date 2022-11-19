@@ -189,7 +189,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 * @param data list of direct messages
 	 */
 	public void setData(Messages data) {
-		adapter.setData(data);
+		adapter.addItems(data);
 		setRefresh(false);
 	}
 
@@ -200,7 +200,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 */
 	public void removeItem(long id) {
 		Toast.makeText(requireContext(), R.string.info_dm_removed, LENGTH_SHORT).show();
-		adapter.remove(id);
+		adapter.removeItem(id);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	public void onError(@NonNull ConnectionException error, long messageId) {
 		ErrorHandler.handleFailure(requireContext(), error);
 		if (error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-			adapter.remove(messageId);
+			adapter.removeItem(messageId);
 		}
 		setRefresh(false);
 	}

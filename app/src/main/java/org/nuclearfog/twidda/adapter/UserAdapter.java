@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -58,13 +57,14 @@ public class UserAdapter extends Adapter<ViewHolder> {
 	 */
 	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
-	private UserClickListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private Users data = new Users(0L, 0L);
-	private int loadingIndex = NO_LOADING;
+	private UserClickListener listener;
 	private boolean enableDelete;
+
+	private Users users = new Users(0L, 0L);
+	private int loadingIndex = NO_LOADING;
 
 	/**
 	 * @param listener     click listener
@@ -77,83 +77,16 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		this.listener = listener;
 	}
 
-	/**
-	 * insert an user list depending on cursor to the top or bottom
-	 *
-	 * @param newData new userlist
-	 */
-	@MainThread
-	public void setData(@NonNull Users newData) {
-		disableLoading();
-		// add empty list
-		if (newData.isEmpty()) {
-			// remove placeholder if there isn't a next page
-			if (!data.isEmpty() && data.peekLast() == null) {
-				int end = data.size() - 1;
-				data.remove(end);
-				notifyItemRemoved(end);
-			}
-		}
-		// add items to the top of the list
-		else if (data.isEmpty() || !newData.hasPrevious()) {
-			data.replace(newData);
-			// add placeholder if there is a next page
-			if (newData.hasNext()) {
-				data.add(null);
-			}
-			notifyDataSetChanged();
-		}
-		// add items to the end of the list
-		else {
-			int end = data.size() - 1;
-			// remove placeholder if there isn't a next page
-			if (!newData.hasNext()) {
-				data.remove(end);
-				notifyItemRemoved(end);
-			}
-			data.addAt(newData, end);
-			notifyItemRangeInserted(end, newData.size());
-		}
-	}
-
-	/**
-	 * update user information
-	 *
-	 * @param user User update
-	 */
-	@MainThread
-	public void updateUser(User user) {
-		int index = data.indexOf(user);
-		if (index >= 0) {
-			data.set(index, user);
-			notifyItemChanged(index);
-		}
-	}
-
-	/**
-	 * remove user from adapter
-	 *
-	 * @param user screen name of the user to remove
-	 */
-	@MainThread
-	public void removeUser(User user) {
-		int pos = data.indexOf(user);
-		if (pos >= 0) {
-			data.remove(pos);
-			notifyItemRemoved(pos);
-		}
-	}
-
 
 	@Override
 	public int getItemCount() {
-		return data.size();
+		return users.size();
 	}
 
 
 	@Override
 	public long getItemId(int index) {
-		User user = data.get(index);
+		User user = users.get(index);
 		if (user != null)
 			return user.getId();
 		return NO_ID;
@@ -162,7 +95,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
 	@Override
 	public int getItemViewType(int index) {
-		if (data.get(index) == null)
+		if (users.get(index) == null)
 			return ITEM_GAP;
 		return ITEM_USER;
 	}
@@ -178,7 +111,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = vh.getLayoutPosition();
 					if (position != NO_POSITION) {
-						User user = data.get(position);
+						User user = users.get(position);
 						if (user != null) {
 							listener.onUserClick(user);
 						}
@@ -192,7 +125,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 					public void onClick(View v) {
 						int position = vh.getLayoutPosition();
 						if (position != NO_POSITION) {
-							User user = data.get(position);
+							User user = users.get(position);
 							if (user != null) {
 								listener.onDelete(user);
 							}
@@ -210,7 +143,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 				public void onClick(View v) {
 					int position = placeHolder.getLayoutPosition();
 					if (position != NO_POSITION) {
-						boolean actionPerformed = listener.onPlaceholderClick(data.getNext());
+						boolean actionPerformed = listener.onPlaceholderClick(users.getNext());
 						if (actionPerformed) {
 							placeHolder.setLoading(true);
 							loadingIndex = position;
@@ -226,7 +159,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
 		if (holder instanceof UserHolder) {
-			User user = data.get(index);
+			User user = users.get(index);
 			if (user != null) {
 				UserHolder userholder = (UserHolder) holder;
 				userholder.username.setText(user.getUsername());
@@ -258,6 +191,70 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		} else if (holder instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) holder;
 			placeHolder.setLoading(loadingIndex == index);
+		}
+	}
+
+	/**
+	 * insert an user list depending on cursor to the top or bottom
+	 *
+	 * @param newUsers new userlist
+	 */
+	public void addItems(@NonNull Users newUsers) {
+		disableLoading();
+		// add empty list
+		if (newUsers.isEmpty()) {
+			// remove placeholder if there isn't a next page
+			if (!users.isEmpty() && users.peekLast() == null) {
+				int end = users.size() - 1;
+				users.remove(end);
+				notifyItemRemoved(end);
+			}
+		}
+		// add items to the top of the list
+		else if (users.isEmpty() || !newUsers.hasPrevious()) {
+			users.replace(newUsers);
+			// add placeholder if there is a next page
+			if (newUsers.hasNext()) {
+				users.add(null);
+			}
+			notifyDataSetChanged();
+		}
+		// add items to the end of the list
+		else {
+			int end = users.size() - 1;
+			// remove placeholder if there isn't a next page
+			if (!newUsers.hasNext()) {
+				users.remove(end);
+				notifyItemRemoved(end);
+			}
+			users.addAt(newUsers, end);
+			notifyItemRangeInserted(end, newUsers.size());
+		}
+	}
+
+	/**
+	 * update user information
+	 *
+	 * @param user User update
+	 */
+	public void updateItem(User user) {
+		int index = users.indexOf(user);
+		if (index >= 0) {
+			users.set(index, user);
+			notifyItemChanged(index);
+		}
+	}
+
+	/**
+	 * remove user from adapter
+	 *
+	 * @param user screen name of the user to remove
+	 */
+	public void removeItem(User user) {
+		int pos = users.indexOf(user);
+		if (pos >= 0) {
+			users.remove(pos);
+			notifyItemRemoved(pos);
 		}
 	}
 
