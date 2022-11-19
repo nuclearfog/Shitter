@@ -136,6 +136,7 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 			Account account = accounts.get(i);
 			if (account != null && account.getId() == id) {
 				accounts.remove(i);
+				notifyItemRemoved(i);
 				break;
 			}
 		}

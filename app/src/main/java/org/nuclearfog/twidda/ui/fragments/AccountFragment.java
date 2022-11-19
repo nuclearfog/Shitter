@@ -77,6 +77,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	protected void onReset() {
+		loginTask = new AccountLoader(this, AccountLoader.MODE_LOAD);
+		loginTask.execute();
+		setRefresh(true);
 	}
 
 

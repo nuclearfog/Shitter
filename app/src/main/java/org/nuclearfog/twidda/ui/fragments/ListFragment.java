@@ -76,8 +76,10 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		isRefreshing = enable;
 		if (enable) {
 			reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
+			reload.setEnabled(false);
 		} else {
 			reload.setRefreshing(false);
+			reload.setEnabled(true);
 		}
 	}
 
