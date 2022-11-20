@@ -60,7 +60,7 @@ public class Tokens {
 	 */
 	public String getConsumerKey(boolean forceDefault) {
 		if (settings.isCustomApiSet() && !forceDefault)
-			return settings.getConsumerKey();
+			return settings.getLogin().getConsumerToken();
 		return CONSUMER_TOKEN;
 	}
 
@@ -72,7 +72,7 @@ public class Tokens {
 	 */
 	public String getConsumerSecret(boolean forceDefault) {
 		if (settings.isCustomApiSet() && !forceDefault)
-			return settings.getConsumerSecret();
+			return settings.getLogin().getConsumerSecret();
 		return TOKEN_SECRET;
 	}
 }

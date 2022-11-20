@@ -52,7 +52,7 @@ public class FilterDatabase {
 	 * @param ids list of user IDs
 	 */
 	public void setFilteredUserIds(List<Long> ids) {
-		long homeId = settings.getCurrentUserId();
+		long homeId = settings.getLogin().getId();
 		String[] args = {Long.toString(homeId)};
 		SQLiteDatabase db = getDbWrite();
 
@@ -72,13 +72,14 @@ public class FilterDatabase {
 	 * @return a set of user IDs
 	 */
 	public Set<Long> getFilteredUserIds() {
-		String[] args = {Long.toString(settings.getCurrentUserId())};
+		String[] args = {Long.toString(settings.getLogin().getId())};
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.query(UserExcludeTable.NAME, LIST_ID_COL, LIST_SELECT, args, null, null, null, null);
 
 		Set<Long> result = new TreeSet<>();
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				long id = cursor.getLong(0);
 				result.add(id);
 			} while (cursor.moveToNext());
@@ -96,7 +97,7 @@ public class FilterDatabase {
 		SQLiteDatabase db = getDbWrite();
 		ContentValues column = new ContentValues(2);
 		column.put(UserExcludeTable.ID, userId);
-		column.put(UserExcludeTable.OWNER, settings.getCurrentUserId());
+		column.put(UserExcludeTable.OWNER, settings.getLogin().getId());
 		db.insert(UserExcludeTable.NAME, null, column);
 		commit(db);
 	}
@@ -107,7 +108,7 @@ public class FilterDatabase {
 	 * @param userId ID of the user
 	 */
 	public void removeUser(long userId) {
-		String[] args = {Long.toString(settings.getCurrentUserId()), Long.toString(userId)};
+		String[] args = {Long.toString(settings.getLogin().getId()), Long.toString(userId)};
 		SQLiteDatabase db = getDbWrite();
 		db.delete(UserExcludeTable.NAME, COLUMN_SELECT, args);
 		commit(db);

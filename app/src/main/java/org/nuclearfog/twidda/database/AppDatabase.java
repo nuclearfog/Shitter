@@ -238,7 +238,7 @@ public class AppDatabase {
 	public AppDatabase(Context context) {
 		adapter = DatabaseAdapter.getInstance(context);
 		GlobalSettings settings = GlobalSettings.getInstance(context);
-		homeId = settings.getCurrentUserId();
+		homeId = settings.getLogin().getId();
 		limit = settings.getListSize();
 	}
 
@@ -377,7 +377,8 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(HOME_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -399,7 +400,8 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(MENTION_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -422,7 +424,8 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -445,7 +448,8 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(USERFAVORIT_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -500,7 +504,8 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -604,7 +609,8 @@ public class AppDatabase {
 		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, TREND_ORDER);
 		List<Trend> trends = new LinkedList<>();
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				trends.add(new TrendImpl(cursor));
 			} while (cursor.moveToNext());
 		}
@@ -625,7 +631,8 @@ public class AppDatabase {
 		Map<Long, User> userCache = new TreeMap<>();
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do {
+			do
+			{
 				User sender, receiver;
 				MessageImpl message = new MessageImpl(cursor);
 				if (userCache.containsKey(message.getSenderId())) {

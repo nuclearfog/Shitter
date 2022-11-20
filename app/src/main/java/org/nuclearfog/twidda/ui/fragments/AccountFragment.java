@@ -85,19 +85,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	public void onAccountClick(Account account) {
-		// set new account
-		settings.setUserId(account.getId());
-		// setup Twitter account
-		if (account.getApiType() == Account.API_TWITTER) {
-			settings.setAccessToken(account.getAccessToken());
-			settings.setTokenSecret(account.getTokenSecret());
-			settings.setApiId(account.getApiType());
-			if (!account.getApiKey().isEmpty() && !account.getApiSecret().isEmpty()) {
-				settings.setCustomAPI(account.getApiKey(), account.getApiSecret());
-			} else {
-				settings.removeCustomAPI();
-			}
-		}
+		settings.setLogin(account, false);
 		if (account.getUser() != null) {
 			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();

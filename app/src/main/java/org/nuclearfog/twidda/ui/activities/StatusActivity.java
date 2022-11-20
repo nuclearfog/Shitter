@@ -304,8 +304,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (status.getEmbeddedStatus() != null) {
 			status = status.getEmbeddedStatus();
 		}
-		if (status.getRepliedUserId() == settings.getCurrentUserId()
-				&& status.getAuthor().getId() != settings.getCurrentUserId()) {
+		if (status.getRepliedUserId() == settings.getLogin().getId() && status.getAuthor().getId() != settings.getLogin().getId()) {
 			optHide.setVisible(true);
 			if (hidden) {
 				optHide.setTitle(R.string.menu_tweet_unhide);

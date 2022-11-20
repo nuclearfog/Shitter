@@ -14,7 +14,9 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.database.impl.AccountImpl;
 import org.nuclearfog.twidda.database.impl.LocationImpl;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
@@ -116,16 +118,18 @@ public class GlobalSettings {
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
-	private static final String CUSTOM_CONSUMER_KEY_SET = "custom_api_keys";
-	private static final String CUSTOM_CONSUMER_KEY_1 = "api_key1";
-	private static final String CUSTOM_CONSUMER_KEY_2 = "api_key2";
+	private static final String CUSTOM_CONSUMER_KEYS = "custom_api_keys";
+	private static final String CONSUMER_TOKEN = "api_key1";
+	private static final String CONSUMER_SECRET = "api_key2";
+	private static final String BEARER_TOKEN = "bearer";
 	private static final String CURRENT_API = "current_api_id";
+	private static final String HOSTNAME = "mastodon_host";
 
 	// login specific preference names
 	private static final String LOGGED_IN = "login";
 	private static final String CURRENT_ID = "userID";
-	private static final String CURRENT_AUTH_KEY1 = "key1";
-	private static final String CURRENT_AUTH_KEY2 = "key2";
+	private static final String OAUTH_TOKEN = "key1";
+	private static final String OAUTH_SECRET = "key2";
 
 	// file name of the preferences
 	private static final String APP_SETTINGS = "settings";
@@ -146,12 +150,13 @@ public class GlobalSettings {
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
 	private static final int DEFAULT_LOCATION_ID = 1;
 	private static final String DEFAULT_LOCATION_NAME = "Worldwide";
-
+	private static final String DEFAULT_MASTODON_HOST = "https://mastodon.social";
 
 	private SharedPreferences settings;
+
 	private Location location;
-	private String api_key1, api_key2;
-	private String auth_key1, auth_key2;
+	private Account account;
+
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
 	private boolean loadImage;
@@ -181,8 +186,6 @@ public class GlobalSettings {
 	private int indexFont;
 	private int indexScale;
 	private int listSize;
-	private int apiId;
-	private long userId;
 
 	private List<OnSettingsChangeListener> settingsChangeListeners = new LinkedList<>();
 
@@ -751,9 +754,9 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * set Twitter alternative link
+	 * enable alternative service to open tweet links (nitter.net)
 	 *
-	 * @param enable true to enable alternative link
+	 * @param enable true to enable alternative service
 	 */
 	public void setTwitterAlt(boolean enable) {
 		twitterAlt = enable;
@@ -764,7 +767,7 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * get hostname of the Twitter service to use
+	 * get hostname to open tweet links
 	 *
 	 * @return custom host domain name if alternative is set, otherwise default Twitter host
 	 */
@@ -950,154 +953,6 @@ public class GlobalSettings {
 		return loggedIn;
 	}
 
-
-	/**
-	 * set app login status
-	 *
-	 * @param login true if current user is logged in successfully
-	 */
-	public void setLogin(boolean login) {
-		loggedIn = login;
-		Editor e = settings.edit();
-		e.putBoolean(LOGGED_IN, login);
-		e.apply();
-	}
-
-	/**
-	 * return access token of the current user
-	 *
-	 * @return first access token
-	 */
-	public String getAccessToken() {
-		return auth_key1;
-	}
-
-	/**
-	 * set access token of the current user
-	 *
-	 * @param token first access token
-	 */
-	public void setAccessToken(String token) {
-		this.auth_key1 = token;
-		Editor e = settings.edit();
-		e.putString(CURRENT_AUTH_KEY1, token);
-		e.apply();
-	}
-
-	/**
-	 * return second access token of the current user
-	 *
-	 * @return first access token
-	 */
-	public String getTokenSecret() {
-		return auth_key2;
-	}
-
-	/**
-	 * set second access token of the current user
-	 *
-	 * @param token first access token
-	 */
-	public void setTokenSecret(String token) {
-		this.auth_key2 = token;
-		Editor e = settings.edit();
-		e.putString(CURRENT_AUTH_KEY2, token);
-		e.apply();
-	}
-
-	/**
-	 * get Consumer keys
-	 *
-	 * @return key string
-	 */
-	public String getConsumerKey() {
-		return api_key1;
-	}
-
-	/**
-	 * get consumer key secret
-	 *
-	 * @return key string
-	 */
-	public String getConsumerSecret() {
-		return api_key2;
-	}
-
-	/**
-	 * set ID of the current used API
-	 *
-	 * @param apiId Id to identify current used API
-	 */
-	public void setApiId(int apiId) {
-		this.apiId = apiId;
-		Editor e = settings.edit();
-		e.putInt(CURRENT_API, apiId);
-		e.apply();
-	}
-
-	/**
-	 * get current API ID
-	 *
-	 * @return API ID
-	 */
-	public int getApiId() {
-		return apiId;
-	}
-
-	/**
-	 * get current users ID
-	 *
-	 * @return User ID
-	 */
-	public long getCurrentUserId() {
-		return userId;
-	}
-
-	/**
-	 * set current user ID
-	 *
-	 * @param userId current user ID
-	 */
-	public void setUserId(long userId) {
-		this.userId = userId;
-		Editor e = settings.edit();
-		e.putLong(CURRENT_ID, userId);
-		e.apply();
-	}
-
-	/**
-	 * sets custom API consumer keys
-	 *
-	 * @param key1 consumer key
-	 * @param key2 consumer key secret
-	 */
-	public void setCustomAPI(String key1, String key2) {
-		customAPIKey = true;
-		this.api_key1 = key1;
-		this.api_key2 = key2;
-
-		Editor e = settings.edit();
-		e.putBoolean(CUSTOM_CONSUMER_KEY_SET, true);
-		e.putString(CUSTOM_CONSUMER_KEY_1, key1);
-		e.putString(CUSTOM_CONSUMER_KEY_2, key2);
-		e.apply();
-	}
-
-	/**
-	 * remove all API keys
-	 */
-	public void removeCustomAPI() {
-		customAPIKey = false;
-		this.api_key1 = "";
-		this.api_key2 = "";
-
-		Editor e = settings.edit();
-		e.remove(CUSTOM_CONSUMER_KEY_SET);
-		e.remove(CUSTOM_CONSUMER_KEY_1);
-		e.remove(CUSTOM_CONSUMER_KEY_2);
-		e.apply();
-	}
-
 	/**
 	 * check if custom API consumer keys are set
 	 *
@@ -1108,21 +963,55 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * clear user specific settings
+	 * get login information
+	 *
+	 * @return current account
 	 */
-	public void logout() {
-		loggedIn = false;
-		auth_key1 = "";
-		auth_key2 = "";
-		userId = 0;
-		Editor e = settings.edit();
-		e.remove(LOGGED_IN);
-		e.remove(CURRENT_AUTH_KEY1);
-		e.remove(CURRENT_AUTH_KEY2);
-		e.remove(CURRENT_ID);
-		e.apply();
-		notifySettingsChange();
+	public Account getLogin() {
+		return account;
 	}
+
+	/**
+	 * save login information
+	 *
+	 * @param account account information
+	 * @param notify  true to notify that settings changed
+	 */
+	public void setLogin(@Nullable Account account, boolean notify) {
+		Editor e = settings.edit();
+		if (account == null) {
+			loggedIn = false;
+			customAPIKey = false;
+			e.remove(LOGGED_IN);
+			e.remove(CUSTOM_CONSUMER_KEYS);
+			e.remove(CURRENT_ID);
+			e.remove(OAUTH_TOKEN);
+			e.remove(OAUTH_SECRET);
+			e.remove(CONSUMER_TOKEN);
+			e.remove(CONSUMER_SECRET);
+			e.remove(BEARER_TOKEN);
+			e.remove(HOSTNAME);
+		} else {
+			this.account = account;
+			loggedIn = true;
+			customAPIKey = !account.getConsumerToken().isEmpty() && !account.getConsumerToken().isEmpty();
+			e.putBoolean(LOGGED_IN, true);
+			e.putBoolean(CUSTOM_CONSUMER_KEYS, customAPIKey);
+			e.putLong(CURRENT_ID, account.getId());
+			e.putString(OAUTH_TOKEN, account.getOauthToken());
+			e.putString(OAUTH_SECRET, account.getOauthSecret());
+			e.putString(CONSUMER_TOKEN, account.getConsumerToken());
+			e.putString(CONSUMER_SECRET, account.getConsumerSecret());
+			e.putString(BEARER_TOKEN, account.getBearerToken());
+			e.putString(HOSTNAME, account.getHostname());
+
+		}
+		e.apply();
+		if (notify) {
+			notifySettingsChange();
+		}
+	}
+
 
 	/**
 	 * register settings listener
@@ -1163,7 +1052,6 @@ public class GlobalSettings {
 		indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
 		indexScale = settings.getInt(INDEX_SCALE, DEFAULT_SCALE_INDEX);
 		listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
-		apiId = settings.getInt(CURRENT_API, Account.API_TWITTER);
 		isProxyEnabled = settings.getBoolean(PROXY_SET, false);
 		isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
 		ignoreProxyWarning = settings.getBoolean(PROXY_IGNORE, false);
@@ -1176,22 +1064,26 @@ public class GlobalSettings {
 		linkPreview = settings.getBoolean(LINK_PREVIEW, false);
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
-		customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
+		customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEYS, false);
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
 		proxyPass = settings.getString(PROXY_PASS, "");
-		api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
-		api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");
 		String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
 		int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_ID);
 		location = new LocationImpl(place, woeId);
 
-		// user specific settings
-		auth_key1 = settings.getString(CURRENT_AUTH_KEY1, "");
-		auth_key2 = settings.getString(CURRENT_AUTH_KEY2, "");
-		userId = settings.getLong(CURRENT_ID, 0);
+		// login informations
+		String oauthToken = settings.getString(OAUTH_TOKEN, "");
+		String oauthSecret = settings.getString(OAUTH_SECRET, "");
+		String consumerToken = settings.getString(CONSUMER_TOKEN, "");
+		String consumerSecret = settings.getString(CONSUMER_SECRET, "");
+		String bearerToken = settings.getString(BEARER_TOKEN, "");
+		String hostname = settings.getString(HOSTNAME, DEFAULT_MASTODON_HOST);
+		int apiId = settings.getInt(CURRENT_API, Account.API_TWITTER);
+		long userId = settings.getLong(CURRENT_ID, 0);
+		account = new AccountImpl(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
 	}
 
 	/**

@@ -43,6 +43,7 @@ public class StatusImpl implements Status {
 	private User author;
 	private int repostCount;
 	private int favoriteCount;
+	private int replyCount;
 	private int mediaType;
 	private String locationName;
 	private String locationCoordinates;
@@ -56,13 +57,17 @@ public class StatusImpl implements Status {
 	private boolean sensitive;
 	private boolean isHidden;
 
-
+	/**
+	 * @param cursor        database cursor
+	 * @param currentUserId user ID of the current login
+	 */
 	public StatusImpl(Cursor cursor, long currentUserId) {
 		author = new UserImpl(cursor, currentUserId);
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SINCE));
 		text = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.TEXT));
 		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPOST));
 		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.FAVORITE));
+		replyCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLY));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.ID));
 		replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYNAME));
 		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYSTATUS));
@@ -93,30 +98,36 @@ public class StatusImpl implements Status {
 		}
 	}
 
+
 	@Override
 	public long getId() {
 		return id;
 	}
+
 
 	@Override
 	public String getText() {
 		return text;
 	}
 
+
 	@Override
 	public User getAuthor() {
 		return author;
 	}
+
 
 	@Override
 	public long getTimestamp() {
 		return time;
 	}
 
+
 	@Override
 	public String getSource() {
 		return source;
 	}
+
 
 	@Nullable
 	@Override
@@ -124,35 +135,48 @@ public class StatusImpl implements Status {
 		return embedded;
 	}
 
+
 	@Override
 	public String getReplyName() {
 		return replyName;
 	}
+
 
 	@Override
 	public long getRepliedUserId() {
 		return replyUserId;
 	}
 
+
 	@Override
 	public long getRepliedStatusId() {
 		return replyID;
 	}
+
 
 	@Override
 	public long getRepostId() {
 		return myRepostId;
 	}
 
+
 	@Override
 	public int getRepostCount() {
 		return repostCount;
 	}
 
+
 	@Override
 	public int getFavoriteCount() {
 		return favoriteCount;
 	}
+
+
+	@Override
+	public int getReplyCount() {
+		return replyCount;
+	}
+
 
 	@NonNull
 	@Override
@@ -163,45 +187,54 @@ public class StatusImpl implements Status {
 		return result;
 	}
 
+
 	@Override
 	public String getUserMentions() {
 		return userMentions;
 	}
+
 
 	@Override
 	public int getMediaType() {
 		return mediaType;
 	}
 
+
 	@Override
 	public boolean isSensitive() {
 		return sensitive;
 	}
+
 
 	@Override
 	public boolean isReposted() {
 		return reposted;
 	}
 
+
 	@Override
 	public boolean isFavorited() {
 		return favorited;
 	}
+
 
 	@Override
 	public String getLocationName() {
 		return locationName;
 	}
 
+
 	@Override
 	public String getLocationCoordinates() {
 		return locationCoordinates;
 	}
 
+
 	@Override
 	public boolean isHidden() {
 		return isHidden;
 	}
+
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
@@ -209,6 +242,7 @@ public class StatusImpl implements Status {
 			return false;
 		return ((Status) obj).getId() == id;
 	}
+
 
 	@NonNull
 	@Override

@@ -53,12 +53,12 @@ public class AccountDatabase {
 		ContentValues values = new ContentValues();
 
 		values.put(AccountTable.ID, account.getId());
-		values.put(AccountTable.ACCESS_TOKEN, account.getAccessToken());
-		values.put(AccountTable.TOKEN_SECRET, account.getTokenSecret());
+		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
+		values.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 		values.put(AccountTable.DATE, account.getLoginDate());
 		values.put(AccountTable.HOSTNAME, account.getHostname());
-		values.put(AccountTable.CLIENT_ID, account.getApiKey());
-		values.put(AccountTable.CLIENT_SECRET, account.getApiSecret());
+		values.put(AccountTable.CLIENT_ID, account.getConsumerToken());
+		values.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
 		values.put(AccountTable.API, account.getApiType());
 
 		SQLiteDatabase db = dataHelper.getDatabase();
@@ -80,7 +80,8 @@ public class AccountDatabase {
 		Cursor cursor = db.query(AccountTable.NAME, AccountImpl.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 		if (cursor.moveToFirst()) {
 			result.ensureCapacity(cursor.getCount());
-			do {
+			do
+			{
 				AccountImpl account = new AccountImpl(cursor);
 				account.addUser(database.getUser(account.getId()));
 				result.add(account);

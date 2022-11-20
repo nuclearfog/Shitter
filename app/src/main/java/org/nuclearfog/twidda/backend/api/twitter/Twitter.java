@@ -11,13 +11,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
-import org.nuclearfog.twidda.backend.api.twitter.impl.AccountV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.LocationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.MessageV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.MetricsV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.RelationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TrendV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserV2;
@@ -184,17 +184,17 @@ public class Twitter implements Connection {
 	}
 
 	/**
-	 * request temporary access token to pass it to the Twitter login page
+	 * create authorisation link
 	 *
-	 * @param consumerKey    API key or empty to use default
-	 * @param consumerSecret API secret or empty to use default
+	 * @param params optional string parameters containing oauth token, token secret
 	 * @return a temporary oauth token created by Twitter
 	 */
-	public String getRequestToken(String consumerKey, String consumerSecret) throws TwitterException {
+	@Override
+	public String getAuthorisationLink(String... params) throws TwitterException {
 		try {
 			Response response;
-			if (consumerKey != null && !consumerKey.isEmpty() && consumerSecret != null && !consumerSecret.isEmpty())
-				response = post(REQUEST_TOKEN, new ArrayList<>(), consumerKey, consumerSecret);
+			if (params.length == 2)
+				response = post(REQUEST_TOKEN, new ArrayList<>(), params[0], params[1]);
 			else
 				response = post(REQUEST_TOKEN, new ArrayList<>(), tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
 			ResponseBody body = response.body();
@@ -202,7 +202,8 @@ public class Twitter implements Connection {
 				String res = body.string();
 				// extract oauth_token from url
 				Uri uri = Uri.parse(AUTHENTICATE + "?" + res);
-				return uri.getQueryParameter("oauth_token");
+				String requestToken = uri.getQueryParameter("oauth_token");
+				return Twitter.AUTHENTICATE + "?oauth_token=" + requestToken;
 			}
 			throw new TwitterException(response);
 		} catch (IOException e) {
@@ -213,18 +214,18 @@ public class Twitter implements Connection {
 	/**
 	 * login to twitter using pin and add store access tokens
 	 *
-	 * @param tempOauthToken temporary oauth token
-	 * @param pin            pin from the login website
-	 * @param consumerKeys   API keys or empty to use default
+	 * @param paramsStr parameters (oauth pin & authorisation link required, oauth token, token secret optional)
 	 */
-	public Account login(String tempOauthToken, String pin, String... consumerKeys) throws TwitterException {
+	@Override
+	public Account loginApp(String... paramsStr) throws TwitterException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("oauth_verifier=" + pin);
-			params.add("oauth_token=" + tempOauthToken);
+			String oauthToken = Uri.parse(paramsStr[0]).getQueryParameter("oauth_token");
+			params.add("oauth_verifier=" + paramsStr[1]);
+			params.add("oauth_token=" + oauthToken);
 			Response response;
-			if (consumerKeys.length == 2)
-				response = post(OAUTH_VERIFIER, params, consumerKeys[0], consumerKeys[1]);
+			if (paramsStr.length == 4)
+				response = post(OAUTH_VERIFIER, params, paramsStr[2], paramsStr[3]);
 			else
 				response = post(OAUTH_VERIFIER, params, tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
 			ResponseBody body = response.body();
@@ -232,26 +233,20 @@ public class Twitter implements Connection {
 				// extract tokens from link
 				String res = body.string();
 				Uri uri = Uri.parse(OAUTH_VERIFIER + "?" + res);
-				String oauthToken = uri.getQueryParameter("oauth_token");
+				oauthToken = uri.getQueryParameter("oauth_token");
 				String tokenSecret = uri.getQueryParameter("oauth_token_secret");
 				// check if login works
 				User user;
 				Account account;
-				if (consumerKeys.length == 2) { // use custom API keys
-					user = getCredentials(consumerKeys[0], consumerKeys[1], oauthToken, tokenSecret);
-					account = new AccountV1(oauthToken, tokenSecret, consumerKeys[0], consumerKeys[1], user);
-					settings.setCustomAPI(consumerKeys[0], consumerKeys[1]);
+				if (paramsStr.length == 4) { // use custom API keys
+					user = getCredentials(paramsStr[2], paramsStr[3], oauthToken, tokenSecret);
+					account = new TwitterAccount(oauthToken, tokenSecret, paramsStr[2], paramsStr[3], user);
 				} else { // use default API keys
 					user = getCredentials(tokens.getConsumerKey(true), tokens.getConsumerSecret(true), oauthToken, tokenSecret);
-					account = new AccountV1(oauthToken, tokenSecret, user);
-					settings.removeCustomAPI();
+					account = new TwitterAccount(oauthToken, tokenSecret, user);
 				}
 				// save login credentials
-				settings.setAccessToken(oauthToken);
-				settings.setTokenSecret(tokenSecret);
-				settings.setUserId(user.getId());
-				settings.setLogin(true);
-
+				settings.setLogin(account, false);
 				return account;
 			}
 			throw new TwitterException(response);
@@ -400,7 +395,7 @@ public class Twitter implements Connection {
 	@Override
 	public Relation getUserRelationship(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("source_id=" + settings.getCurrentUserId());
+		params.add("source_id=" + settings.getLogin().getId());
 		params.add("target_id=" + id);
 		try {
 			Response response = get(RELATION, params);
@@ -1037,7 +1032,8 @@ public class Twitter implements Connection {
 			params.add("command=STATUS");
 			params.add("media_id=" + mediaId);
 			// poll media processing information frequently
-			do {
+			do
+			{
 				response = get(MEDIA_UPLOAD, params);
 				body = response.body();
 				if (response.code() < 200 || response.code() >= 300 || body == null)
@@ -1172,7 +1168,7 @@ public class Twitter implements Connection {
 					array = new JSONObject(body.string()).getJSONArray("statuses");
 				else
 					array = new JSONArray(body.string());
-				long homeId = settings.getCurrentUserId();
+				long homeId = settings.getLogin().getId();
 				List<Status> tweets = new ArrayList<>(array.length() + 1);
 				for (int i = 0; i < array.length(); i++) {
 					try {
@@ -1211,8 +1207,7 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				long currentId = settings.getCurrentUserId();
-				TweetV1 result = new TweetV1(json, currentId);
+				TweetV1 result = new TweetV1(json, settings.getLogin().getId());
 				// fix: embedded tweet information doesn't match with the parent tweet
 				//      re-downloading embedded tweet information
 				if (result.getEmbeddedStatus() != null) {
@@ -1304,7 +1299,7 @@ public class Twitter implements Connection {
 				long prevCursor = Long.parseLong(json.optString("previous_cursor_str", "0"));
 				long nextCursor = Long.parseLong(json.optString("next_cursor_str", "0"));
 				Users users = new Users(prevCursor, nextCursor);
-				long homeId = settings.getCurrentUserId();
+				long homeId = settings.getLogin().getId();
 				for (int i = 0; i < array.length(); i++) {
 					try {
 						users.add(new UserV1(array.getJSONObject(i), homeId));
@@ -1340,7 +1335,7 @@ public class Twitter implements Connection {
 				// check if result is not empty
 				if (json.has("data")) {
 					JSONArray array = json.getJSONArray("data");
-					long homeId = settings.getCurrentUserId();
+					long homeId = settings.getLogin().getId();
 					for (int i = 0; i < array.length(); i++) {
 						try {
 							users.add(new UserV2(array.getJSONObject(i), homeId));
@@ -1378,8 +1373,7 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				long currentId = settings.getCurrentUserId();
-				return new UserV1(json, currentId);
+				return new UserV1(json, settings.getLogin().getId());
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {
@@ -1404,8 +1398,7 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				long currentId = settings.getCurrentUserId();
-				return new UserListV1(json, currentId);
+				return new UserListV1(json, settings.getLogin().getId());
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {
@@ -1440,7 +1433,7 @@ public class Twitter implements Connection {
 					array = new JSONArray(bodyStr);
 					result = new UserLists(0L, 0L);
 				}
-				long currentId = settings.getCurrentUserId();
+				long currentId = settings.getLogin().getId();
 				for (int pos = 0; pos < array.length(); pos++) {
 					try {
 						result.add(new UserListV1(array.getJSONObject(pos), currentId));
@@ -1689,8 +1682,8 @@ public class Twitter implements Connection {
 			oauthToken = keys[2];
 			tokenSecret = keys[3];
 		} else {
-			oauthToken = settings.getAccessToken();
-			tokenSecret = settings.getTokenSecret();
+			oauthToken = settings.getLogin().getOauthToken();
+			tokenSecret = settings.getLogin().getOauthSecret();
 		}
 		String signkey = consumerSecret + "&";
 		// init default parameters

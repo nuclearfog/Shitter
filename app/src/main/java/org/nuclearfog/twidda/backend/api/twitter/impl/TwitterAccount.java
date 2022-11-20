@@ -9,12 +9,12 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclearfog
  */
-public class AccountV1 implements Account {
+public class TwitterAccount implements Account {
 
 	private long date;
 
-	private String oauthToken, tokenSecret;
-	private String apiKey, apiSec;
+	private String oauthToken, oauthSecret;
+	private String consumerToken, consumerSecret;
 
 	private User user;
 
@@ -23,65 +23,80 @@ public class AccountV1 implements Account {
 	 * @param tokenSecret oauth token secret
 	 * @param user        user information
 	 */
-	public AccountV1(String oauthToken, String tokenSecret, User user) {
+	public TwitterAccount(String oauthToken, String tokenSecret, User user) {
 		this(oauthToken, tokenSecret, "", "", user);
 	}
 
 	/**
-	 * @param apiKey      API consumer token
-	 * @param apiSec      API consumer secret
-	 * @param oauthToken  oauth access token
-	 * @param tokenSecret oauth token secret
-	 * @param user        user information
+	 * @param consumerToken  API consumer token
+	 * @param consumerSecret API consumer secret
+	 * @param oauthToken     oauth access token
+	 * @param tokenSecret    oauth token secret
+	 * @param user           user information
 	 */
-	public AccountV1(String oauthToken, String tokenSecret, String apiKey, String apiSec, User user) {
+	public TwitterAccount(String oauthToken, String tokenSecret, String consumerToken, String consumerSecret, User user) {
 		this.oauthToken = oauthToken;
-		this.tokenSecret = tokenSecret;
-		this.apiKey = apiKey;
-		this.apiSec = apiSec;
+		this.oauthSecret = tokenSecret;
+		this.consumerToken = consumerToken;
+		this.consumerSecret = consumerSecret;
 		this.user = user;
 		date = System.currentTimeMillis();
 	}
+
 
 	@Override
 	public long getId() {
 		return user.getId();
 	}
 
+
 	@Override
 	public long getLoginDate() {
 		return date;
 	}
+
 
 	@Override
 	public User getUser() {
 		return user;
 	}
 
-	@Override
-	public String getApiKey() {
-		return apiKey;
-	}
 
 	@Override
-	public String getApiSecret() {
-		return apiSec;
+	public String getConsumerToken() {
+		return consumerToken;
 	}
 
+
 	@Override
-	public String getAccessToken() {
+	public String getConsumerSecret() {
+		return consumerSecret;
+	}
+
+
+	@Override
+	public String getOauthToken() {
 		return oauthToken;
 	}
 
+
 	@Override
-	public String getTokenSecret() {
-		return tokenSecret;
+	public String getOauthSecret() {
+		return oauthSecret;
 	}
+
+
+	@Override
+	public String getBearerToken() {
+		return "";
+	}
+
 
 	@Override
 	public String getHostname() {
 		return Twitter.API;
 	}
+
 
 	@Override
 	public int getApiType() {

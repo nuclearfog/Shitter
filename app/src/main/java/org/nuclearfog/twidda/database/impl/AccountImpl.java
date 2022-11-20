@@ -34,10 +34,25 @@ public class AccountImpl implements Account {
 	private long loginDate;
 	private int apiType;
 	private String accessToken, tokenSecret;
-	private String apiKey, apiSecret;
+	private String consumerToken, consumerSecret;
+	private String bearerToken;
 	private String host;
 
 	private User user;
+
+	/**
+	 *
+	 */
+	public AccountImpl(long userId, String accessToken, String tokenSecret, String consumerToken, String consumerSecret, String bearerToken, String host, int apiType) {
+		this.userId = userId;
+		this.accessToken = accessToken;
+		this.tokenSecret = tokenSecret;
+		this.consumerToken = consumerToken;
+		this.consumerSecret = consumerSecret;
+		this.bearerToken = bearerToken;
+		this.host = host;
+		this.apiType = apiType;
+	}
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS}
@@ -47,8 +62,8 @@ public class AccountImpl implements Account {
 		loginDate = cursor.getLong(1);
 		accessToken = cursor.getString(2);
 		tokenSecret = cursor.getString(3);
-		apiKey = cursor.getString(4);
-		apiSecret = cursor.getString(5);
+		consumerToken = cursor.getString(4);
+		consumerSecret = cursor.getString(5);
 		host = cursor.getString(6);
 		apiType = cursor.getInt(7);
 	}
@@ -74,26 +89,32 @@ public class AccountImpl implements Account {
 
 
 	@Override
-	public String getApiKey() {
-		return apiKey;
+	public String getConsumerToken() {
+		return consumerToken;
 	}
 
 
 	@Override
-	public String getApiSecret() {
-		return apiSecret;
+	public String getConsumerSecret() {
+		return consumerSecret;
 	}
 
 
 	@Override
-	public String getAccessToken() {
+	public String getOauthToken() {
 		return accessToken;
 	}
 
 
 	@Override
-	public String getTokenSecret() {
+	public String getOauthSecret() {
 		return tokenSecret;
+	}
+
+
+	@Override
+	public String getBearerToken() {
+		return bearerToken;
 	}
 
 

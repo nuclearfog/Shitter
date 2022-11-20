@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		// open home profile
 		if (item.getItemId() == R.id.menu_profile) {
 			Intent user = new Intent(this, ProfileActivity.class);
-			user.putExtra(KEY_PROFILE_ID, settings.getCurrentUserId());
+			user.putExtra(KEY_PROFILE_ID, settings.getLogin().getId());
 			startActivity(user);
 		}
 		// open status editor

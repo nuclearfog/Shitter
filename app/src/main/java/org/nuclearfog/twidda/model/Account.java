@@ -16,6 +16,11 @@ public interface Account {
 	int API_TWITTER = 1;
 
 	/**
+	 * API ID used for Mastodon accounts
+	 */
+	int API_MASTODON = 2;
+
+	/**
 	 * @return ID of the account (user ID)
 	 */
 	long getId();
@@ -34,22 +39,27 @@ public interface Account {
 	/**
 	 * @return API key assosiated with an account
 	 */
-	String getApiKey();
+	String getConsumerToken();
 
 	/**
 	 * @return API secret key associated with an account
 	 */
-	String getApiSecret();
+	String getConsumerSecret();
 
 	/**
-	 * @return first access token of the user
+	 * @return oauth token
 	 */
-	String getAccessToken();
+	String getOauthToken();
 
 	/**
-	 * @return second access token of the user
+	 * @return oauth secret
 	 */
-	String getTokenSecret();
+	String getOauthSecret();
+
+	/**
+	 * @return bearer token
+	 */
+	String getBearerToken();
 
 	/**
 	 * @return hostname of the social network

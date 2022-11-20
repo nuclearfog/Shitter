@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.api;
 
 import android.content.Context;
 
+import org.nuclearfog.twidda.backend.api.mastodon.Mastodon;
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.database.GlobalSettings.OnSettingsChangeListener;
@@ -20,9 +21,14 @@ public class ConnectionManager {
 	public static final int SELECT_AUTO = 0;
 
 	/**
-	 * force using Twitter connection
+	 * select Twitter connection
 	 */
 	public static final int SELECT_TWITTER = 1;
+
+	/**
+	 * select Mastodon connection
+	 */
+	public static final int SELECT_MASTODON = 2;
 
 	private static Connection connection;
 	private static boolean notifySettingsChange = false;
@@ -54,9 +60,13 @@ public class ConnectionManager {
 			if (select == SELECT_TWITTER) {
 				connection = new Twitter(context);
 			}
+			// create Mastodon isntance
+			else if (select == SELECT_MASTODON) {
+				connection = new Mastodon(context);
+			}
 			// select automatically
 			else {
-				if (settings.getApiId() == Account.API_TWITTER) {
+				if (settings.getLogin().getApiType() == Account.API_TWITTER) {
 					connection = new Twitter(context);
 				} else {
 					throw new RuntimeException("no connection selected!");

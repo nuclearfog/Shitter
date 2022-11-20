@@ -12,7 +12,7 @@
 	<string name="title_settings">Einstellungen</string>
 	<string name="settings_image">Bilder laden</string>
 	<string name="settings_clear_data">Daten löschen</string>
-	<string name="toolbar_userlist_retweet">Tweet retweetet von</string>
+	<string name="toolbar_userlist_retweet">Status geteilt von</string>
 	<string name="settings_background">Hintergrund</string>
 	<string name="confirm_delete_tweet">Tweet löschen?</string>
 	<string name="error_enter_pin">PIN eingeben!</string>
@@ -78,10 +78,10 @@
 	<string name="error_not_authorized">Keine Berechtigung!</string>
 	<string name="error_file_format">Dateiformat nicht unterstützt!</string>
 	<string name="settings_enable_ans_load">Tweet-Replies automatisch laden</string>
-	<string name="info_tweet_retweeted">Tweet retweeted!</string>
-	<string name="info_tweet_unretweeted">Retweet entfernt!</string>
-	<string name="info_tweet_favored">Tweet favorisiert!</string>
-	<string name="info_tweet_unfavored">tweet aus den favoriten entfernt!</string>
+	<string name="info_tweet_retweeted">Status reposted!</string>
+	<string name="info_tweet_unretweeted">Repost entfernt!</string>
+	<string name="info_tweet_favored">Status favorisiert!</string>
+	<string name="info_tweet_unfavored">Status aus den Favoriten entfernt!</string>
 	<string name="proxy_port">Port</string>
 	<string name="settings_connections">Verbindungseinsellungen</string>
 	<string name="login_verifier">Login</string>
@@ -187,7 +187,7 @@
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
 	<string name="menu_select_account">Account auswählen</string>
 	<string name="menu_add_account">Account hinzufügen</string>
-	<string name="settings_rt_icon_color">Retweet</string>
+	<string name="settings_rt_icon_color">Repost</string>
 	<string name="settings_follow_req_color">Anfrage Icon</string>
 	<string name="settings_follow_color">Follow Icon</string>
 	<string name="settings_enable_toolbar_overlap">Kompakte Profilansicht</string>

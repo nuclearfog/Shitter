@@ -201,6 +201,12 @@ public class TweetV1 implements Status {
 		return favoriteCount;
 	}
 
+	@Override
+	public int getReplyCount() {
+		// not implemented in API V1.1
+		return 0;
+	}
+
 	@NonNull
 	@Override
 	public Uri[] getMediaUris() {

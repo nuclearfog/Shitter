@@ -19,7 +19,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 7;
+	private static final int DB_VERSION = 8;
 
 	/**
 	 * database file name
@@ -61,6 +61,7 @@ public class DatabaseAdapter {
 			+ StatusTable.MEDIA + " TEXT,"
 			+ StatusTable.REPOST + " INTEGER,"
 			+ StatusTable.FAVORITE + " INTEGER,"
+			+ StatusTable.REPLY + " INTEGER,"
 			+ StatusTable.SOURCE + " TEXT,"
 			+ StatusTable.PLACE + " TEXT,"
 			+ StatusTable.COORDINATE + " TEXT,"
@@ -185,6 +186,11 @@ public class DatabaseAdapter {
 	private static final String UPDATE_ADD_API_ID = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.API + " INTEGER;";
 
 	/**
+	 * update account table to add API client secret
+	 */
+	private static final String UPDATE_ADD_REPLY_COUNT = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.REPLY + " INTEGER;";
+
+	/**
 	 * singleton instance
 	 */
 	private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
@@ -271,8 +277,12 @@ public class DatabaseAdapter {
 			db.execSQL(UPDATE_ADD_CLIENT_SEC);
 			db.setVersion(6);
 		}
-		if (db.getVersion() < DB_VERSION) {
+		if (db.getVersion() < 7) {
 			db.execSQL(UPDATE_ADD_API_ID);
+			db.setVersion(7);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_REPLY_COUNT);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -391,6 +401,11 @@ public class DatabaseAdapter {
 		 * favorite count
 		 */
 		String FAVORITE = "favorite";
+
+		/**
+		 * reply count
+		 */
+		String REPLY = "reply";
 
 		/**
 		 * timestamp of the status

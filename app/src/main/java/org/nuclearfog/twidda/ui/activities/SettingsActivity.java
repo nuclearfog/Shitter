@@ -302,10 +302,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public void onConfirm(int type, boolean rememberChoice) {
 		// confirm log out
 		if (type == ConfirmDialog.APP_LOG_OUT) {
-			settings.logout();
 			// remove account from database
 			AccountDatabase accountDB = new AccountDatabase(this);
-			accountDB.removeLogin(settings.getCurrentUserId());
+			accountDB.removeLogin(settings.getLogin().getId());
+			settings.setLogin(null, true);
 			setResult(RETURN_APP_LOGOUT);
 			finish();
 		}

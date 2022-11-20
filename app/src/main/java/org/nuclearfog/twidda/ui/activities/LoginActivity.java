@@ -36,7 +36,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.NetworkAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -83,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	private ViewGroup root;
 
 	@Nullable
-	private String requestToken;
+	private String link;
 	private int hostSelected = SELECTOR_TWITTER;
 
 
@@ -122,8 +121,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				switchLabel.setVisibility(View.GONE);
 			}
 			apiSwitch.setCheckedImmediately(true);
-			apiKey1.setText(settings.getConsumerKey());
-			apiKey2.setText(settings.getConsumerSecret());
+			apiKey1.setText(settings.getLogin().getConsumerToken());
+			apiKey2.setText(settings.getLogin().getConsumerToken());
 		} else {
 			apiKey1.setVisibility(View.INVISIBLE);
 			apiKey2.setVisibility(View.INVISIBLE);
@@ -199,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		// get login request token
 		if (v.getId() == R.id.login_get_link) {
 			if (hostSelected == SELECTOR_TWITTER) {
-				if (requestToken == null) {
+				if (link == null) {
 					// check if input is ok
 					if (apiSwitch.isChecked() && (apiKey1.length() == 0 || apiKey2.length() == 0)) {
 						if (apiKey1.length() == 0) {
@@ -214,14 +213,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
 						Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
+						loginAsync = new LoginAction(this, LoginAction.MODE_TWITTER_REQUEST, hostSelected);
 						loginAsync.execute(apiTxt1, apiTxt2);
 					}
 					// use system keys
 					else if (Tokens.USE_DEFAULT_KEYS) {
 						Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST, hostSelected);
-						loginAsync.execute(null, null);
+						loginAsync = new LoginAction(this, LoginAction.MODE_TWITTER_REQUEST, hostSelected);
+						loginAsync.execute();
 					}
 				} else {
 					// re-use request token
@@ -233,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		else if (v.getId() == R.id.login_verifier) {
 			if (hostSelected == SELECTOR_TWITTER) {
 				// check if user clicked on PIN button
-				if (requestToken == null) {
+				if (link == null) {
 					Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
 				}
 				// check if input is ok
@@ -252,13 +251,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				else {
 					String twitterPin = pinInput.getText().toString();
 					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, LoginAction.MODE_LOGIN, hostSelected);
+					loginAsync = new LoginAction(this, LoginAction.MODE_TWITTER_LOGIN, hostSelected);
 					if (apiSwitch.isChecked()) {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
-						loginAsync.execute(requestToken, twitterPin, apiTxt1, apiTxt2);
+						loginAsync.execute(link, twitterPin, apiTxt1, apiTxt2);
 					} else {
-						loginAsync.execute(requestToken, twitterPin);
+						loginAsync.execute(link, twitterPin);
 					}
 				}
 			}
@@ -277,7 +276,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				apiKey2.setVisibility(View.INVISIBLE);
 			}
 			// reset request token
-			requestToken = null;
+			link = null;
 		}
 	}
 
@@ -299,13 +298,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	 */
 	public void onSuccess(int mode, String result) {
 		switch (mode) {
-			case LoginAction.MODE_LOGIN:
+			case LoginAction.MODE_TWITTER_LOGIN:
 				setResult(RETURN_LOGIN_SUCCESSFUL);
 				finish();
 				break;
 
-			case LoginAction.MODE_REQUEST:
-				requestToken = result;
+			case LoginAction.MODE_TWITTER_REQUEST:
+				link = result;
 				connect();
 				break;
 		}
@@ -322,7 +321,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	 * open login page
 	 */
 	private void connect() {
-		String link = Twitter.AUTHENTICATE + "?oauth_token=" + requestToken;
 		Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
 		try {
 			startActivity(loginIntent);

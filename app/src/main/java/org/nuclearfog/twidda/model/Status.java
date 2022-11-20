@@ -96,6 +96,11 @@ public interface Status extends Serializable {
 	int getFavoriteCount();
 
 	/**
+	 * @return number of replies
+	 */
+	int getReplyCount();
+
+	/**
 	 * @return media links (up to 4) to images and videos
 	 */
 	@NonNull

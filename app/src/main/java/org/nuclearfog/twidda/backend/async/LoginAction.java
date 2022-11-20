@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
@@ -26,12 +25,12 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	/**
 	 * request login page
 	 */
-	public static final int MODE_REQUEST = 1;
+	public static final int MODE_TWITTER_REQUEST = 1;
 
 	/**
 	 * login with pin and ans save auth keys
 	 */
-	public static final int MODE_LOGIN = 2;
+	public static final int MODE_TWITTER_LOGIN = 2;
 
 	private WeakReference<LoginActivity> weakRef;
 	private AccountDatabase accountDB;
@@ -63,28 +62,21 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected String doInBackground(String... param) {
-		if (connection instanceof Twitter) {
-			try {
-				Twitter twitter = (Twitter) connection;
-				switch (mode) {
-					case MODE_REQUEST:
-						return twitter.getRequestToken(param[0], param[1]);
+		try {
+			switch (mode) {
+				case MODE_TWITTER_REQUEST:
+					return connection.getAuthorisationLink(param);
 
-					case MODE_LOGIN:
-						// login with pin and access token
-						Account account;
-						if (param.length == 4)
-							account = twitter.login(param[0], param[1], param[2], param[3]);
-						else
-							account = twitter.login(param[0], param[1]);
-						// save new user information
-						database.saveUser(account.getUser());
-						accountDB.saveLogin(account);
-						return "";
-				}
-			} catch (ConnectionException exception) {
-				this.exception = exception;
+				case MODE_TWITTER_LOGIN:
+					// login with pin and access token
+					Account account = connection.loginApp(param);
+					// save new user information
+					database.saveUser(account.getUser());
+					accountDB.saveLogin(account);
+					return "";
 			}
+		} catch (ConnectionException exception) {
+			this.exception = exception;
 		}
 		return null;
 	}
