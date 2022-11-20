@@ -11,11 +11,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
@@ -47,7 +51,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class LoginActivity extends AppCompatActivity implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener {
+public class LoginActivity extends AppCompatActivity implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener, TextWatcher {
 
 	/**
 	 * request code to open {@link AccountActivity}
@@ -69,21 +73,19 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	 */
 	public static final int RETURN_SETTINGS_CHANGED = 0x227;
 
-	/**
-	 * ID used if Twitter is selected
-	 */
-	public static final int SELECTOR_TWITTER = 10;
-
+	@Nullable
 	private LoginAction loginAsync;
 	private GlobalSettings settings;
 
+	private EditText apiHost;
 	private EditText pinInput, apiKey1, apiKey2;
 	private SwitchButton apiSwitch;
+	private Spinner hostSelector;
+	private View switchLabel;
 	private ViewGroup root;
 
 	@Nullable
-	private String link;
-	private int hostSelected = SELECTOR_TWITTER;
+	private String loginLink;
 
 
 	@Override
@@ -99,8 +101,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		Toolbar toolbar = findViewById(R.id.login_toolbar);
 		Button linkButton = findViewById(R.id.login_get_link);
 		Button loginButton = findViewById(R.id.login_verifier);
-		Spinner hostSelector = findViewById(R.id.login_network_selector);
-		View switchLabel = findViewById(R.id.login_enable_key_input_label);
+		apiHost = findViewById(R.id.login_enter_hostname);
+		switchLabel = findViewById(R.id.login_enable_key_input_label);
+		hostSelector = findViewById(R.id.login_network_selector);
 		apiSwitch = findViewById(R.id.login_enable_key_input);
 		root = findViewById(R.id.login_root);
 		pinInput = findViewById(R.id.login_enter_code);
@@ -122,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			apiSwitch.setCheckedImmediately(true);
 			apiKey1.setText(settings.getLogin().getConsumerToken());
-			apiKey2.setText(settings.getLogin().getConsumerToken());
+			apiKey2.setText(settings.getLogin().getConsumerSecret());
 		} else {
 			apiKey1.setVisibility(View.INVISIBLE);
 			apiKey2.setVisibility(View.INVISIBLE);
@@ -134,6 +137,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		loginButton.setOnClickListener(this);
 		hostSelector.setOnItemSelectedListener(this);
 		apiSwitch.setOnCheckedChangeListener(this);
+
+		apiKey1.addTextChangedListener(this);
+		apiKey2.addTextChangedListener(this);
+		apiHost.addTextChangedListener(this);
 
 		// set default result code
 		setResult(RESULT_CANCELED);
@@ -197,69 +204,86 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			return;
 		// get login request token
 		if (v.getId() == R.id.login_get_link) {
-			if (hostSelected == SELECTOR_TWITTER) {
-				if (link == null) {
-					// check if input is ok
-					if (apiSwitch.isChecked() && (apiKey1.length() == 0 || apiKey2.length() == 0)) {
-						if (apiKey1.length() == 0) {
-							apiKey1.setError(getString(R.string.error_empty_token));
-						}
-						if (apiKey2.length() == 0) {
-							apiKey2.setError(getString(R.string.error_empty_token));
-						}
-					}
-					// use user defined token keys
-					else if (apiSwitch.isChecked()) {
+			// re use login link
+			if (loginLink != null) {
+				connect();
+			}
+			// generate Twitter login link
+			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+				// use user defined token keys
+				if (apiSwitch.isChecked()) {
+					if (apiKey1.length() == 0)
+						apiKey1.setError(getString(R.string.error_empty_token));
+					else if (apiKey2.length() == 0)
+						apiKey2.setError(getString(R.string.error_empty_token));
+					else {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
 						Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, LoginAction.MODE_TWITTER_REQUEST, hostSelected);
+						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_REQUEST);
 						loginAsync.execute(apiTxt1, apiTxt2);
 					}
-					// use system keys
-					else if (Tokens.USE_DEFAULT_KEYS) {
-						Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, LoginAction.MODE_TWITTER_REQUEST, hostSelected);
+				}
+				// use system tokens
+				else if (Tokens.USE_DEFAULT_KEYS) {
+					Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
+					loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_REQUEST);
+					loginAsync.execute();
+				}
+			}
+			// generate Mastodon login
+			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
+				if (apiHost.length() > 0 && !Patterns.WEB_URL.matcher(apiHost.getText()).matches()) {
+					Toast.makeText(this, R.string.error_invalid_url, LENGTH_LONG).show();
+				} else {
+					Toast.makeText(this, R.string.info_open_mastodon_login, LENGTH_LONG).show();
+					loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_REQUEST);
+					if (apiHost.length() > 0) {
+						String link = apiHost.getText().toString();
+						loginAsync.execute(link);
+					} else {
 						loginAsync.execute();
 					}
-				} else {
-					// re-use request token
-					connect();
 				}
 			}
 		}
 		// verify login credentials
 		else if (v.getId() == R.id.login_verifier) {
-			if (hostSelected == SELECTOR_TWITTER) {
-				// check if user clicked on PIN button
-				if (link == null) {
-					Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
-				}
-				// check if input is ok
-				else if (pinInput.length() == 0 || (apiSwitch.isChecked() && (apiKey1.length() == 0 || apiKey2.length() == 0))) {
-					if (apiKey1.length() == 0) {
+			String code = pinInput.getText().toString();
+			// check if user clicked on PIN button
+			if (loginLink == null) {
+				Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
+			}
+			else if (code.isEmpty()) {
+				pinInput.setError(getString(R.string.error_enter_code));
+			}
+			// login to Twitter
+			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+				if (apiSwitch.isChecked()) {
+					if (apiKey1.length() == 0)
 						apiKey1.setError(getString(R.string.error_empty_token));
-					}
-					if (apiKey2.length() == 0) {
+					else if (apiKey2.length() == 0)
 						apiKey2.setError(getString(R.string.error_empty_token));
-					}
-					if (pinInput.length() == 0) {
-						pinInput.setError(getString(R.string.error_enter_pin));
-					}
-				}
-				// login app
-				else {
-					String twitterPin = pinInput.getText().toString();
-					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, LoginAction.MODE_TWITTER_LOGIN, hostSelected);
-					if (apiSwitch.isChecked()) {
+					else {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
-						loginAsync.execute(link, twitterPin, apiTxt1, apiTxt2);
-					} else {
-						loginAsync.execute(link, twitterPin);
+						Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
+						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_LOGIN);
+						loginAsync.execute(loginLink, code, apiTxt1, apiTxt2);
 					}
 				}
+				// use system tokens
+				else if (Tokens.USE_DEFAULT_KEYS) {
+					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
+					loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_LOGIN);
+					loginAsync.execute(loginLink, code);
+				}
+			}
+			// login to mastodon
+			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
+				Toast.makeText(this, R.string.info_login_to_mastodon, LENGTH_LONG).show();
+				loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_LOGIN);
+				loginAsync.execute(loginLink, code);
 			}
 		}
 	}
@@ -275,16 +299,41 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				apiKey1.setVisibility(View.INVISIBLE);
 				apiKey2.setVisibility(View.INVISIBLE);
 			}
-			// reset request token
-			link = null;
+			// reset login link
+			loginLink = null;
 		}
 	}
 
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		// twitter selected
 		if (id == NetworkAdapter.ID_TWITTER) {
-			hostSelected = SELECTOR_TWITTER;
+			apiHost.setVisibility(View.GONE);
+			pinInput.setInputType(EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
+			if (Tokens.USE_DEFAULT_KEYS) {
+				apiSwitch.setVisibility(View.VISIBLE);
+				switchLabel.setVisibility(View.VISIBLE);
+				if (apiSwitch.isChecked()) {
+					apiKey1.setVisibility(View.VISIBLE);
+					apiKey2.setVisibility(View.VISIBLE);
+				} else {
+					apiKey1.setVisibility(View.INVISIBLE);
+					apiKey2.setVisibility(View.INVISIBLE);
+				}
+			} else {
+				apiKey1.setVisibility(View.VISIBLE);
+				apiKey2.setVisibility(View.VISIBLE);
+			}
+		}
+		// mastodon selected
+		else if (id == NetworkAdapter.ID_MASTODON) {
+			pinInput.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+			apiSwitch.setVisibility(View.GONE);
+			switchLabel.setVisibility(View.GONE);
+			apiKey1.setVisibility(View.GONE);
+			apiKey2.setVisibility(View.GONE);
+			apiHost.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -293,18 +342,34 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		// remove login link if API keys or host changes
+		loginLink = null;
+	}
+
 	/**
 	 * Called when the app is registered successfully
 	 */
 	public void onSuccess(int mode, String result) {
 		switch (mode) {
-			case LoginAction.MODE_TWITTER_LOGIN:
+			case LoginAction.MODE_LOGIN:
 				setResult(RETURN_LOGIN_SUCCESSFUL);
 				finish();
 				break;
 
-			case LoginAction.MODE_TWITTER_REQUEST:
-				link = result;
+			case LoginAction.MODE_REQUEST:
+				loginLink = result;
 				connect();
 				break;
 		}
@@ -321,7 +386,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	 * open login page
 	 */
 	private void connect() {
-		Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
+		Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(loginLink));
 		try {
 			startActivity(loginIntent);
 		} catch (ActivityNotFoundException err) {

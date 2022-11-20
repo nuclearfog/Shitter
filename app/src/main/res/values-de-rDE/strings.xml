@@ -15,7 +15,7 @@
 	<string name="toolbar_userlist_retweet">Status geteilt von</string>
 	<string name="settings_background">Hintergrund</string>
 	<string name="confirm_delete_tweet">Tweet löschen?</string>
-	<string name="error_enter_pin">PIN eingeben!</string>
+	<string name="error_enter_code">PIN eingeben!</string>
 	<string name="confirm_delete_database">App Daten Löschen?</string>
 	<string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrung nach:"</string>
 	<string name="info_tweet_sent">Tweet gesendet</string>
@@ -94,7 +94,7 @@
 	<string name="confirm_mute">Nutzer stummschalten?</string>
 	<string name="info_gps_attached">GPS Position hinzugefügt</string>
 	<string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
-	<string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
+	<string name="info_get_link">Bitte zuerst die Loginseite öffnen!</string>
 	<string name="item_list_pb_desc">Profil des Listeninhabers</string>
 	<string name="list_appbar">Listen</string>
 	<string name="edit_description_hint">Profilebeschreibung eingeben</string>

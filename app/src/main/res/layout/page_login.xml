@@ -69,7 +69,8 @@
 		android:maxLines="1"
 		app:layout_constraintStart_toEndOf="@id/login_enable_key_input"
 		app:layout_constraintTop_toTopOf="@id/login_enable_key_input"
-		app:layout_constraintBottom_toBottomOf="@id/login_enable_key_input" />
+		app:layout_constraintBottom_toBottomOf="@id/login_enable_key_input"
+		app:layout_constraintEnd_toStartOf="@id/login_enter_key1"/>
 
 	<EditText
 		android:id="@+id/login_enter_key1"
@@ -105,6 +106,24 @@
 		android:maxLines="1"
 		app:layout_constraintHorizontal_weight="3"
 		app:layout_constraintStart_toEndOf="@id/login_enter_key1"
+		app:layout_constraintTop_toBottomOf="@id/login_network_selector"
+		app:layout_constraintEnd_toStartOf="@id/login_enter_hostname" />
+
+	<EditText
+		android:id="@+id/login_enter_hostname"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:autofillHints="pin"
+		android:background="@android:color/transparent"
+		android:drawablePadding="@dimen/loginpage_padding_drawable"
+		android:hint="@string/settings_mastodon_hint"
+		android:textSize="@dimen/loginpage_textsize_api_key"
+		android:layout_marginStart="@dimen/loginpage_layout_margin"
+		android:layout_marginTop="@dimen/loginpage_layout_margin"
+		android:layout_marginEnd="@dimen/loginpage_layout_margin"
+		android:maxLines="1"
+		app:layout_constraintStart_toEndOf="@id/login_enter_key2"
 		app:layout_constraintTop_toBottomOf="@id/login_network_selector"
 		app:layout_constraintEnd_toEndOf="parent" />
 
@@ -157,7 +176,7 @@
 		android:background="@android:color/transparent"
 		android:drawablePadding="@dimen/loginpage_padding_drawable"
 		android:hint="@string/login_pin"
-		android:inputType="textPassword"
+		android:inputType="numberPassword"
 		android:textSize="@dimen/loginpage_textsize_login_key"
 		android:maxLines="1"
 		app:layout_constraintStart_toEndOf="@id/login_third_opt"

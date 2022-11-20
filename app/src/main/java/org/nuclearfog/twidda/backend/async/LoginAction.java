@@ -25,37 +25,44 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	/**
 	 * request login page
 	 */
-	public static final int MODE_TWITTER_REQUEST = 1;
+	public static final int MODE_REQUEST = 1;
 
 	/**
 	 * login with pin and ans save auth keys
 	 */
-	public static final int MODE_TWITTER_LOGIN = 2;
+	public static final int MODE_LOGIN = 2;
+
+	public static final int LOGIN_TWITTER = 10;
+
+	public static final int LOGIN_MASTODON = 11;
 
 	private WeakReference<LoginActivity> weakRef;
 	private AccountDatabase accountDB;
 	private AppDatabase database;
-	@Nullable
 	private Connection connection;
 	@Nullable
 	private ConnectionException exception;
+
 	private int mode;
 
 	/**
 	 * Account to twitter with PIN
 	 *
-	 * @param activity  Activity Context
-	 * @param mode      indicating login step
-	 * @param networkId ID of the selected network ID
+	 * @param activity Activity Context
+	 * @param network  network type {@link #LOGIN_MASTODON,#LOGIN_TWITTER}
+	 * @param mode     indicating login step
 	 */
-	public LoginAction(LoginActivity activity, int mode, int networkId) {
+	public LoginAction(LoginActivity activity, int network, int mode) {
 		super();
 		weakRef = new WeakReference<>(activity);
 		accountDB = new AccountDatabase(activity);
 		database = new AppDatabase(activity);
 
-		if (networkId == LoginActivity.SELECTOR_TWITTER)
+		if (network == LOGIN_TWITTER) {
 			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER);
+		} else if (network == LOGIN_MASTODON) {
+			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_MASTODON);
+		}
 		this.mode = mode;
 	}
 
@@ -64,10 +71,10 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	protected String doInBackground(String... param) {
 		try {
 			switch (mode) {
-				case MODE_TWITTER_REQUEST:
+				case MODE_REQUEST:
 					return connection.getAuthorisationLink(param);
 
-				case MODE_TWITTER_LOGIN:
+				case MODE_LOGIN:
 					// login with pin and access token
 					Account account = connection.loginApp(param);
 					// save new user information

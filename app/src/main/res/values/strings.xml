@@ -18,9 +18,11 @@
 	<string name="info_list_updated">Userlist updated</string>
 	<string name="info_list_created">Userlist created</string>
 	<string name="info_open_twitter_login">redirecting to Twitter login website. Please wait</string>
-	<string name="info_login_to_twitter">login to Twitter</string>
+	<string name="info_open_mastodon_login">redirecting to Mastodon login website. Please wait</string>
+	<string name="info_login_to_twitter">login to Twitter, please wait</string>
+	<string name="info_login_to_mastodon">login to Mastodon, please wait</string>
 	<string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
-	<string name="info_get_link">please open twitter login page first to get the PIN</string>
+	<string name="info_get_link">please open login page first to get the PIN</string>
 	<string name="info_gps_attached">GPS position added</string>
 	<string name="info_tweet_retweeted">reposted</string>
 	<string name="info_tweet_unretweeted">Repost removed</string>
@@ -61,7 +63,7 @@
 	<string name="error_empty_tweet">Empty status!</string>
 	<string name="error_dm">enter username or message!</string>
 	<string name="error_not_found">not found!</string>
-	<string name="error_enter_pin">enter PIN!</string>
+	<string name="error_enter_code">code missing!</string>
 	<string name="error_limit_exceeded">"Rate limit exceeded! Retry after: "</string>
 	<string name="error_open_link">could not open link!</string>
 	<string name="error_cant_load_video">could not play video!</string>
@@ -97,6 +99,7 @@
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
 	<string name="error_empty_token">token key missing!</string>
+	<string name="error_invalid_url">invalid URL!</string>
 
 	<!-- menu icon strings -->
 	<string name="menu_tweet">write status</string>
@@ -149,6 +152,7 @@
 
 	<!--network names-->
 	<string name="twitter" translatable="false">Twitter</string>
+	<string name="mastodon" translatable="false">Mastodon</string>
 
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
@@ -212,6 +216,7 @@
 	<string name="proxy_password">Password</string>
 	<string name="settings_key1_hint">Consumer key</string>
 	<string name="settings_key2_hint">Consumer secret</string>
+	<string name="settings_mastodon_hint">mastodon.social</string>
 	<string name="confirm_mute">mute user?</string>
 	<string name="item_list_pb_desc">Profile of the list owner</string>
 	<string name="list_appbar">Lists</string>

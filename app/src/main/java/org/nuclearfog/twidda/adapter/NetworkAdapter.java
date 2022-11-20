@@ -19,24 +19,29 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 public class NetworkAdapter extends BaseAdapter {
 
 	/**
-	 * ID for twitter selection
+	 * ID for Twitter selection
 	 */
 	public static final int ID_TWITTER = 10;
 
 	/**
+	 * ID for Mastodon selection
+	 */
+	public static final int ID_MASTODON = 20;
+
+	/**
 	 * social network icons
 	 */
-	private static final int[] ICONS = {R.drawable.twitter};
+	private static final int[] ICONS = {R.drawable.twitter, R.drawable.mastodon};
 
 	/**
 	 * social network names
 	 */
-	private static final int[] STRINGS = {R.string.twitter};
+	private static final int[] STRINGS = {R.string.twitter, R.string.mastodon};
 
 	/**
 	 * social network IDs
 	 */
-	private static final int[] IDS = {ID_TWITTER};
+	private static final int[] IDS = {ID_TWITTER, ID_MASTODON};
 
 	private GlobalSettings settings;
 

@@ -128,7 +128,7 @@
 	<string name="error_empty_tweet">推文为空！</string>
 	<string name="error_dm">请输入用户名或消息内容！</string>
 	<string name="error_not_found">不存在！</string>
-	<string name="error_enter_pin">请输入 PIN！</string>
+	<string name="error_enter_code">请输入 PIN！</string>
 	<string name="error_limit_exceeded">“请求次数过多，请在15分钟后重试。”</string>
 	<string name="error_open_link">无法打开链接！</string>
 	<string name="error_cant_load_video">无法播放该视频！</string>
