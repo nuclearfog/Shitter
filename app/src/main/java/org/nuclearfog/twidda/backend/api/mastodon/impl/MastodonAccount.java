@@ -21,7 +21,17 @@ public class MastodonAccount implements Account {
 
 	private User user;
 
-	public MastodonAccount() {
+	/**
+	 *
+	 */
+	public MastodonAccount(User user, String hostname, String baerer, String client_id, String client_secret) {
+		this.user = user;
+		this.hostname = hostname;
+		this.bearer = baerer;
+		this.client_id = client_id;
+		this.client_secret = client_secret;
+		createdAt = System.currentTimeMillis();
+		id = user.getId();
 	}
 
 

@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.api.mastodon;
 
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 
+import okhttp3.Response;
+
 /**
  * custom exception used by {@link Mastodon} class
  *
@@ -14,6 +16,11 @@ public class MastodonException extends ConnectionException {
 
 	public MastodonException(Exception e) {
 		super(e);
+	}
+
+
+	public MastodonException(Response response) {
+		super(response.message());
 	}
 
 

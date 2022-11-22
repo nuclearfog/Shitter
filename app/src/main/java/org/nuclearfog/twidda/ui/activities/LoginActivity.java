@@ -240,6 +240,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 					loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_REQUEST);
 					if (apiHost.length() > 0) {
 						String link = apiHost.getText().toString();
+						if (!link.startsWith("https://"))
+							link = "https://" + link;
 						loginAsync.execute(link);
 					} else {
 						loginAsync.execute();
@@ -307,6 +309,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		// reset login link after provider change
+		loginLink = null;
 		// twitter selected
 		if (id == NetworkAdapter.ID_TWITTER) {
 			apiHost.setVisibility(View.GONE);
