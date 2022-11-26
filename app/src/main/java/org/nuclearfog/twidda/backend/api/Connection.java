@@ -234,10 +234,9 @@ public interface Connection {
 	/**
 	 * get location trends
 	 *
-	 * @param id world ID
 	 * @return trend list
 	 */
-	List<Trend> getTrends(int id) throws ConnectionException;
+	List<Trend> getTrends() throws ConnectionException;
 
 	/**
 	 * get available locations for trends

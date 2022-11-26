@@ -19,7 +19,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 8;
+	private static final int DB_VERSION = 9;
 
 	/**
 	 * database file name
@@ -137,7 +137,8 @@ public class DatabaseAdapter {
 			+ AccountTable.HOSTNAME + " TEXT,"
 			+ AccountTable.API + " INTEGER,"
 			+ AccountTable.CLIENT_ID + " TEXT,"
-			+ AccountTable.CLIENT_SECRET + " TEXT);";
+			+ AccountTable.CLIENT_SECRET + " TEXT,"
+			+ AccountTable.BEARER + " TEXT);";
 
 	/**
 	 * SQL query to create user exclude table
@@ -189,6 +190,11 @@ public class DatabaseAdapter {
 	 * update account table to add API client secret
 	 */
 	private static final String UPDATE_ADD_REPLY_COUNT = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.REPLY + " INTEGER;";
+
+	/**
+	 * update account table to add API client secret
+	 */
+	private static final String UPDATE_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
 
 	/**
 	 * singleton instance
@@ -281,8 +287,12 @@ public class DatabaseAdapter {
 			db.execSQL(UPDATE_ADD_API_ID);
 			db.setVersion(7);
 		}
-		if (db.getVersion() < DB_VERSION) {
+		if (db.getVersion() < 8) {
 			db.execSQL(UPDATE_ADD_REPLY_COUNT);
+			db.setVersion(8);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_BEARER);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -578,7 +588,7 @@ public class DatabaseAdapter {
 		String CLIENT_SECRET = "client_secret";
 
 		/**
-		 * primary oauth access token or bearer token
+		 * primary oauth access token
 		 */
 		String ACCESS_TOKEN = "auth_key1";
 
@@ -586,6 +596,11 @@ public class DatabaseAdapter {
 		 * second oauth access token
 		 */
 		String TOKEN_SECRET = "auth_key2";
+
+		/**
+		 * bearer token
+		 */
+		String BEARER = "bearer";
 	}
 
 	/**

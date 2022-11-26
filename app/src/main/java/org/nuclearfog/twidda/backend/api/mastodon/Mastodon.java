@@ -6,10 +6,13 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
@@ -19,6 +22,7 @@ import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
@@ -59,6 +63,10 @@ public class Mastodon implements Connection {
 	private static final String AUTHORIZE_APP = "/oauth/authorize";
 	private static final String LOGIN_APP = "/oauth/token";
 	private static final String VERIFY_CREDENTIALS = "/api/v1/accounts/verify_credentials";
+	private static final String HOME_TIMELINE = "/api/v1/timelines/home";
+	private static final String LIST_TIMELINE = "/api/v1/timelines/list/";
+	private static final String SEARCH_TIMELINE = "/api/v2/search";
+	private static final String ENDPOINT_TRENDS = "/api/v1/trends/tags";
 
 	MediaType TYPE_TEXT = MediaType.parse("text/plain");
 
@@ -271,67 +279,86 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> searchStatuses(String search, long minId, long maxId) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		params.add("q=" + StringTools.encode(search));
+		params.add("type=statuses");
+		return getStatuses(SEARCH_TIMELINE, params, minId, maxId);
 	}
 
 
 	@Override
-	public List<Trend> getTrends(int id) throws MastodonException {
-		return null;
+	public List<Trend> getTrends() throws MastodonException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("limit=" + settings.getListSize());
+			Response response = get(settings.getLogin().getHostname() + ENDPOINT_TRENDS, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONArray(body.string());
+				List<Trend> result = new ArrayList<>(array.length());
+				for (int i = 0; i < array.length(); i++) {
+					result.add(new MastodonTrend(array.getJSONObject(i), i));
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public List<Location> getLocations() throws MastodonException {
-		return null;
+		return new ArrayList<>(0);
 	}
 
 
 	@Override
 	public List<Status> getHomeTimeline(long minId, long maxId) throws MastodonException {
-		return null;
+		return getStatuses(HOME_TIMELINE, new ArrayList<>(0), minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getMentionTimeline(long minId, long maxId) throws MastodonException {
-		return null;
+		return new ArrayList<>(0);
 	}
 
 
 	@Override
 	public List<Status> getUserTimeline(long id, long minId, long maxId) throws MastodonException {
-		return null;
+		return new ArrayList<>(0);
 	}
 
 
 	@Override
 	public List<Status> getUserTimeline(String name, long minId, long maxId) throws MastodonException {
-		return null;
+		return new ArrayList<>(0);
 	}
 
 
 	@Override
 	public List<Status> getUserFavorits(long id, long minId, long maxId) throws MastodonException {
-		return null;
+		return new ArrayList<>(0);
 	}
 
 
 	@Override
 	public List<Status> getUserFavorits(String name, long minId, long maxId) throws MastodonException {
-		return null;
+		return new ArrayList<>(0);
 	}
 
 
 	@Override
 	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws MastodonException {
-		return null;
+		return getStatuses(LIST_TIMELINE + id, new ArrayList<>(0), minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getStatusReplies(String name, long id, long minId, long maxId) throws MastodonException {
-		return null;
+		return new ArrayList<>(0);
 	}
 
 
@@ -503,6 +530,43 @@ public class Mastodon implements Connection {
 	}
 
 	/**
+	 * get a status timeline
+	 *
+	 * @param endpoint Endpoint to use
+	 * @param params   additional parameters
+	 * @param minId    minimum status ID
+	 * @param maxId    maximum status ID
+	 * @return status  timeline
+	 */
+	private List<Status> getStatuses(String endpoint, List<String> params, long minId, long maxId) throws MastodonException {
+		if (minId > 0)
+			params.add("since_id=" + minId);
+		if (maxId > minId)
+			params.add("max_id=" + maxId);
+		params.add("limit=" + settings.getListSize());
+		try {
+			Response response = get(settings.getLogin().getHostname() + endpoint, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray statuses;
+				if (SEARCH_TIMELINE.equals(endpoint))
+					statuses = new JSONObject(body.string()).getJSONArray("statuses");
+				else
+					statuses = new JSONArray(body.string());
+				List<Status> result = new ArrayList<>(statuses.length());
+				long currentId = settings.getLogin().getId();
+				for (int i = 0; i < statuses.length(); i++) {
+					result.add(new MastodonStatus(statuses.getJSONObject(i), currentId));
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
 	 * get information about the current user
 	 *
 	 * @param host   Mastodon hostname
@@ -515,12 +579,23 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				return new MastodonUser(json, true);
+				return new MastodonUser(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
 			throw new MastodonException(e);
 		}
+	}
+
+	/**
+	 * create get response with user bearer token
+	 *
+	 * @param endpoint endpoint url
+	 * @param params   additional parameters
+	 * @return GET response
+	 */
+	private Response get(String endpoint, List<String> params) throws IOException {
+		return get(endpoint, settings.getLogin().getBearerToken(), params);
 	}
 
 	/**

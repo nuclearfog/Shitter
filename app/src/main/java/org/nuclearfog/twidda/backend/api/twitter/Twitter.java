@@ -500,7 +500,8 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public List<Trend> getTrends(int id) throws TwitterException {
+	public List<Trend> getTrends() throws TwitterException {
+		int id = settings.getTrendLocation().getId();
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
 		try {
@@ -510,9 +511,10 @@ public class Twitter implements Connection {
 				JSONArray json = new JSONArray(body.string());
 				JSONArray trends = json.getJSONObject(0).getJSONArray("trends");
 				List<Trend> result = new ArrayList<>(trends.length() + 1);
+
 				for (int pos = 0; pos < trends.length(); pos++) {
 					JSONObject trend = trends.getJSONObject(pos);
-					result.add(new TrendV1(trend, pos + 1));
+					result.add(new TrendV1(trend, pos, id));
 				}
 				return result;
 			}

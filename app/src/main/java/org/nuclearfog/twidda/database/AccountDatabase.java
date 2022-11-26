@@ -53,14 +53,14 @@ public class AccountDatabase {
 		ContentValues values = new ContentValues();
 
 		values.put(AccountTable.ID, account.getId());
-		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
-		values.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 		values.put(AccountTable.DATE, account.getLoginDate());
 		values.put(AccountTable.HOSTNAME, account.getHostname());
 		values.put(AccountTable.CLIENT_ID, account.getConsumerToken());
 		values.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
 		values.put(AccountTable.API, account.getApiType());
-
+		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
+		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
+		values.put(AccountTable.BEARER, account.getBearerToken());
 		SQLiteDatabase db = dataHelper.getDatabase();
 		db.beginTransaction();
 		db.insertWithOnConflict(AccountTable.NAME, "", values, CONFLICT_REPLACE);

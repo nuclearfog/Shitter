@@ -20,7 +20,7 @@ import java.util.List;
  * @author nuclearfog
  * @see TrendFragment
  */
-public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
+public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
 	private WeakReference<TrendFragment> weakRef;
 	private Connection connection;
@@ -43,19 +43,18 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 
 
 	@Override
-	protected List<Trend> doInBackground(Integer... param) {
+	protected List<Trend> doInBackground(Void... v) {
 		List<Trend> trends;
-		int woeId = param[0];
 		try {
 			if (isEmpty) {
-				trends = db.getTrends(woeId);
+				trends = db.getTrends();
 				if (trends.isEmpty()) {
-					trends = connection.getTrends(woeId);
-					db.saveTrends(trends, woeId);
+					trends = connection.getTrends();
+					db.saveTrends(trends);
 				}
 			} else {
-				trends = connection.getTrends(woeId);
-				db.saveTrends(trends, woeId);
+				trends = connection.getTrends();
+				db.saveTrends(trends);
 			}
 			return trends;
 		} catch (ConnectionException exception) {

@@ -116,6 +116,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 	 */
 	private void load() {
 		trendTask = new TrendLoader(this);
-		trendTask.execute(settings.getTrendLocation().getId());
+		trendTask.execute();
 	}
 }

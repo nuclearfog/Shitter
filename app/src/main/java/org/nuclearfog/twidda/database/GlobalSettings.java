@@ -1004,7 +1004,7 @@ public class GlobalSettings {
 			e.putString(CONSUMER_SECRET, account.getConsumerSecret());
 			e.putString(BEARER_TOKEN, account.getBearerToken());
 			e.putString(HOSTNAME, account.getHostname());
-
+			e.putInt(CURRENT_API, account.getApiType());
 		}
 		e.apply();
 		if (notify) {

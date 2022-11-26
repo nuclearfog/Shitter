@@ -23,13 +23,21 @@ public class MastodonUser implements User {
 	private int following, follower;
 	private int statusCount;
 	private boolean locked;
-	private boolean isCurrentUser;
+	private boolean isCurrentUser = true;
+
+	/**
+	 * @param json          json object used by Mastodon API
+	 * @param currentUserId ID of the current user
+	 */
+	public MastodonUser(JSONObject json, long currentUserId) throws JSONException {
+		this(json);
+		isCurrentUser = currentUserId == id;
+	}
 
 	/**
 	 * @param json json object used by Mastodon API
-	 * @param isCurrentUser true if this user is the current user
 	 */
-	public MastodonUser(JSONObject json, boolean isCurrentUser) throws JSONException {
+	public MastodonUser(JSONObject json) throws JSONException {
 		id = Long.parseLong(json.getString("id"));
 		screenname = json.optString("acct", "");
 		username = json.optString("display_name");
@@ -43,7 +51,6 @@ public class MastodonUser implements User {
 		follower = json.optInt("followers_count");
 		statusCount = json.optInt("statuses_count");
 		locked = json.optBoolean("locked");
-		this.isCurrentUser = isCurrentUser;
 	}
 
 

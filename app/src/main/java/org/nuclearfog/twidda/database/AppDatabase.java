@@ -220,12 +220,7 @@ public class AppDatabase {
 	/**
 	 * limit of database entries
 	 */
-	private final int limit;
-
-	/**
-	 * ID of the current user
-	 */
-	private final long homeId;
+	private GlobalSettings settings;
 
 	/**
 	 * adapter for the database backend
@@ -237,9 +232,7 @@ public class AppDatabase {
 	 */
 	public AppDatabase(Context context) {
 		adapter = DatabaseAdapter.getInstance(context);
-		GlobalSettings settings = GlobalSettings.getInstance(context);
-		homeId = settings.getLogin().getId();
-		limit = settings.getListSize();
+		settings = GlobalSettings.getInstance(context);
 	}
 
 	/**
@@ -321,15 +314,14 @@ public class AppDatabase {
 	 * store location specific trends
 	 *
 	 * @param trends List of Trends
-	 * @param woeId  Yahoo World ID
 	 */
-	public void saveTrends(List<Trend> trends, int woeId) {
-		String[] args = {Integer.toString(woeId)};
+	public void saveTrends(List<Trend> trends) {
+		String[] args = {Integer.toString(settings.getTrendLocation().getId())};
 		SQLiteDatabase db = getDbWrite();
 		db.delete(TrendTable.NAME, TREND_SELECT, args);
 		for (Trend trend : trends) {
 			ContentValues trendColumn = new ContentValues(4);
-			trendColumn.put(TrendTable.ID, woeId);
+			trendColumn.put(TrendTable.ID, trend.getLocationId());
 			trendColumn.put(TrendTable.VOL, trend.getPopularity());
 			trendColumn.put(TrendTable.TREND, trend.getName());
 			trendColumn.put(TrendTable.INDEX, trend.getRank());
@@ -348,7 +340,7 @@ public class AppDatabase {
 			status = status.getEmbeddedStatus();
 		SQLiteDatabase db = getDbWrite();
 		saveStatus(status, 0, db);
-		saveFavorite(status.getId(), homeId, db);
+		saveFavorite(status.getId(), settings.getLogin().getId(), db);
 		commit(db);
 	}
 
@@ -370,8 +362,8 @@ public class AppDatabase {
 	 * @return home timeline
 	 */
 	public List<Status> getHomeTimeline() {
-		String homeStr = Long.toString(homeId);
-		String[] args = {homeStr, homeStr, Integer.toString(limit)};
+		String homeStr = Long.toString(settings.getLogin().getId());
+		String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
 		List<Status> result = new LinkedList<>();
@@ -393,8 +385,8 @@ public class AppDatabase {
 	 * @return mention timeline
 	 */
 	public List<Status> getMentionTimeline() {
-		String homeStr = Long.toString(homeId);
-		String[] args = {homeStr, homeStr, Integer.toString(limit)};
+		String homeStr = Long.toString(settings.getLogin().getId());
+		String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
 		List<Status> result = new LinkedList<>();
@@ -417,8 +409,8 @@ public class AppDatabase {
 	 * @return user timeline
 	 */
 	public List<Status> getUserTimeline(long userID) {
-		String homeStr = Long.toString(homeId);
-		String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(limit)};
+		String homeStr = Long.toString(settings.getLogin().getId());
+		String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
 		List<Status> result = new LinkedList<>();
@@ -441,8 +433,8 @@ public class AppDatabase {
 	 * @return favorite timeline
 	 */
 	public List<Status> getUserFavorites(long ownerID) {
-		String homeStr = Long.toString(homeId);
-		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(limit)};
+		String homeStr = Long.toString(settings.getLogin().getId());
+		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
 		List<Status> result = new LinkedList<>();
@@ -478,7 +470,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Status getStatus(long id) {
-		String homeStr = Long.toString(homeId);
+		String homeStr = Long.toString(settings.getLogin().getId());
 		String[] args = {Long.toString(id), homeStr, homeStr};
 
 		SQLiteDatabase db = getDbRead();
@@ -497,8 +489,8 @@ public class AppDatabase {
 	 * @return status reply timeline
 	 */
 	public List<Status> getReplies(long id) {
-		String homeStr = Long.toString(homeId);
-		String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(limit)};
+		String homeStr = Long.toString(settings.getLogin().getId());
+		String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
 		List<Status> result = new LinkedList<>();
@@ -548,7 +540,7 @@ public class AppDatabase {
 	 * @param hide true to hide this status
 	 */
 	public void hideReply(long id, boolean hide) {
-		String[] args = {Long.toString(id), Long.toString(homeId)};
+		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		SQLiteDatabase db = getDbWrite();
 		int register = getStatusRegister(db, id);
@@ -569,7 +561,7 @@ public class AppDatabase {
 	 * @param status status to remove from the favorites
 	 */
 	public void removeFavorite(Status status) {
-		String[] delArgs = {Long.toString(status.getId()), Long.toString(homeId)};
+		String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 		if (status.getEmbeddedStatus() != null) {
 			status = status.getEmbeddedStatus();
@@ -600,11 +592,10 @@ public class AppDatabase {
 	/**
 	 * Load trend List
 	 *
-	 * @param id location ID
 	 * @return list of trends
 	 */
-	public List<Trend> getTrends(int id) {
-		String[] args = {Integer.toString(id)};
+	public List<Trend> getTrends() {
+		String[] args = {Integer.toString(settings.getTrendLocation().getId())};
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, TREND_ORDER);
 		List<Trend> trends = new LinkedList<>();
@@ -624,8 +615,8 @@ public class AppDatabase {
 	 * @return list of direct messages
 	 */
 	public Messages getMessages() {
-		String homeIdStr = Long.toString(homeId);
-		String[] args = {homeIdStr, homeIdStr, Integer.toString(limit)};
+		String homeIdStr = Long.toString(settings.getLogin().getId());
+		String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
 		Messages result = new Messages(null, null);
 		SQLiteDatabase db = getDbRead();
 		Map<Long, User> userCache = new TreeMap<>();
@@ -694,7 +685,7 @@ public class AppDatabase {
 	 * @return status
 	 */
 	private Status getStatus(Cursor cursor) {
-		StatusImpl result = new StatusImpl(cursor, homeId);
+		StatusImpl result = new StatusImpl(cursor, settings.getLogin().getId());
 		// check if there is an embedded status
 		if (result.getEmbeddedStatusId() > 1)
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
@@ -715,7 +706,7 @@ public class AppDatabase {
 
 		User user = null;
 		if (cursor.moveToFirst())
-			user = new UserImpl(cursor, homeId);
+			user = new UserImpl(cursor, settings.getLogin().getId());
 		cursor.close();
 		return user;
 	}
@@ -926,7 +917,7 @@ public class AppDatabase {
 	 * @return status register
 	 */
 	private int getStatusRegister(SQLiteDatabase db, long id) {
-		String[] args = {Long.toString(id), Long.toString(homeId)};
+		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		Cursor c = db.query(StatusRegisterTable.NAME, STATUS_REG_COLUMN, STATUS_REG_SELECT, args, null, null, null, SINGLE_ITEM);
 		int result = 0;
@@ -944,13 +935,13 @@ public class AppDatabase {
 	 * @param register status register
 	 */
 	public void saveStatusRegister(SQLiteDatabase db, Status status, int register) {
-		String[] args = {Long.toString(status.getId()), Long.toString(homeId)};
+		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 		ContentValues values = new ContentValues(4);
 		values.put(StatusRegisterTable.REGISTER, register);
 		values.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
 		values.put(StatusRegisterTable.ID, status.getId());
-		values.put(StatusRegisterTable.OWNER, homeId);
+		values.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
 
 		int count = db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
 		if (count == 0) {
@@ -967,7 +958,7 @@ public class AppDatabase {
 	 * @return user flags
 	 */
 	private int getUserRegister(SQLiteDatabase db, long userID) {
-		String[] args = {Long.toString(userID), Long.toString(homeId)};
+		String[] args = {Long.toString(userID), Long.toString(settings.getLogin().getId())};
 
 		Cursor c = db.query(UserRegisterTable.NAME, USER_REG_COLUMN, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
 		int result = 0;
@@ -985,16 +976,16 @@ public class AppDatabase {
 	 * @param register status register
 	 */
 	public void saveUserRegister(SQLiteDatabase db, long id, int register) {
-		String[] args = {Long.toString(id), Long.toString(homeId)};
+		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		ContentValues values = new ContentValues(3);
 		values.put(UserRegisterTable.ID, id);
-		values.put(UserRegisterTable.OWNER, homeId);
+		values.put(UserRegisterTable.OWNER, settings.getLogin().getId());
 		values.put(UserRegisterTable.REGISTER, register);
 
 		int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
 		if (cnt == 0) {
-			// create new entry if there isn't one
+			// create new entry if there isn't an entry
 			db.insert(UserRegisterTable.NAME, null, values);
 		}
 	}

@@ -13,6 +13,11 @@ public interface Trend {
 	String getName();
 
 	/**
+	 * @return ID of the trend location
+	 */
+	int getLocationId();
+
+	/**
 	 * @return rank of the trend
 	 */
 	int getRank();

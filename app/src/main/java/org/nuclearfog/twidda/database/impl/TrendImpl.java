@@ -20,12 +20,14 @@ public class TrendImpl implements Trend {
 	public static final String[] COLUMNS = {
 			DatabaseAdapter.TrendTable.TREND,
 			DatabaseAdapter.TrendTable.VOL,
-			DatabaseAdapter.TrendTable.INDEX
+			DatabaseAdapter.TrendTable.INDEX,
+			DatabaseAdapter.TrendTable.ID
 	};
 
 	private String name;
 	private int range;
 	private int rank;
+	private int id;
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
@@ -34,11 +36,17 @@ public class TrendImpl implements Trend {
 		name = cursor.getString(0);
 		range = cursor.getInt(1);
 		rank = cursor.getInt(2);
+		id = cursor.getInt(3);
 	}
 
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public int getLocationId() {
+		return id;
 	}
 
 	@Override
