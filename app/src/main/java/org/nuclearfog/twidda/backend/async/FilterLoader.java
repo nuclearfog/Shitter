@@ -7,9 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.FilterDatabase;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.UsersActivity;
 
 import java.lang.ref.WeakReference;
@@ -41,7 +39,6 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 
 	private WeakReference<UsersActivity> weakRef;
 	private FilterDatabase filterDatabase;
-	private AppDatabase appDatabase;
 	private Connection connection;
 
 	@Nullable
@@ -51,7 +48,6 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 	public FilterLoader(UsersActivity activity, int mode) {
 		super();
 		connection = ConnectionManager.get(activity);
-		appDatabase = new AppDatabase(activity);
 		filterDatabase = new FilterDatabase(activity);
 		weakRef = new WeakReference<>(activity);
 		this.mode = mode;
@@ -68,13 +64,11 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 					break;
 
 				case MUTE_USER:
-					User user = connection.muteUser(names[0]);
-					appDatabase.saveUser(user);
+					connection.muteUser(names[0]);
 					break;
 
 				case BLOCK_USER:
-					user = connection.blockUser(names[0]);
-					appDatabase.saveUser(user);
+					connection.blockUser(names[0]);
 					break;
 			}
 		} catch (ConnectionException exception) {

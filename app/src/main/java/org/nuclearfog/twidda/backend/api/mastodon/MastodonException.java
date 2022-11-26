@@ -24,6 +24,11 @@ public class MastodonException extends ConnectionException {
 	}
 
 
+	public MastodonException(String message) {
+		super(message);
+	}
+
+
 	@Override
 	public int getErrorCode() {
 		return 0;

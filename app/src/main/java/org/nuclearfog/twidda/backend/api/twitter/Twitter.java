@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.impl.LocationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.MessageV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.MetricsV2;
@@ -412,74 +413,72 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public User followUser(long id) throws TwitterException {
+	public void followUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getUser1(USER_FOLLOW, params);
+		getUser1(USER_FOLLOW, params);
 	}
 
 
 	@Override
-	public User unfollowUser(long id) throws TwitterException {
+	public void unfollowUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getUser1(USER_UNFOLLOW, params);
+		getUser1(USER_UNFOLLOW, params);
 	}
 
 
 	@Override
-	public User blockUser(long id) throws TwitterException {
+	public void blockUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		User user = getUser1(USER_BLOCK, params);
-		filterDatabase.addUser(id);
-		return user;
+		filterDatabase.addUser(user.getId());
 	}
 
 
 	@Override
-	public User blockUser(String name) throws TwitterException {
+	public void blockUser(String name) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
 		User user = getUser1(USER_BLOCK, params);
 		filterDatabase.addUser(user.getId());
-		return user;
 	}
 
 
 	@Override
-	public User unblockUser(long id) throws TwitterException {
+	public void unblockUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getUser1(USER_UNBLOCK, params);
+		getUser1(USER_UNBLOCK, params);
 	}
 
 
 	@Override
-	public User muteUser(long id) throws TwitterException {
+	public void muteUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getUser1(USER_MUTE, params);
+		getUser1(USER_MUTE, params);
 	}
 
 
 	@Override
-	public User muteUser(String name) throws TwitterException {
+	public void muteUser(String name) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
-		return getUser1(USER_MUTE, params);
+		getUser1(USER_MUTE, params);
 	}
 
 
 	@Override
-	public User unmuteUser(long id) throws TwitterException {
+	public void unmuteUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getUser1(USER_UNMUTE, params);
+		getUser1(USER_UNMUTE, params);
 	}
 
 
@@ -699,21 +698,14 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public void hideReply(long id, boolean hide) throws TwitterException {
-		try {
-			RequestBody request = RequestBody.create("{\"hidden\":" + hide + "}", TYPE_JSON);
-			Response response = put(TWEET_UNI + id + "/hidden", new ArrayList<>(), request);
-			ResponseBody body = response.body();
-			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string());
-				if (json.getJSONObject("data").getBoolean("hidden") == hide) {
-					return; // successfull if result equals request
-				}
-			}
-			throw new TwitterException(response);
-		} catch (IOException | JSONException e) {
-			throw new TwitterException(e);
-		}
+	public void muteConversation(long id) throws TwitterException {
+		muteStatus(id, true);
+	}
+
+
+	@Override
+	public void unmuteConversation(long id) throws ConnectionException {
+		muteStatus(id, false);
 	}
 
 
@@ -1471,6 +1463,28 @@ public class Twitter implements Connection {
 			}
 		} catch (IOException err) {
 			throw new TwitterException(err);
+		}
+	}
+
+	/**
+	 * mute a status from conversation
+	 * @param id ID of the status
+	 * @param hide true to hide the status
+	 */
+	private void muteStatus(long id, boolean hide) throws TwitterException {
+		try {
+			RequestBody request = RequestBody.create("{\"hidden\":" + hide + "}", TYPE_JSON);
+			Response response = put(TWEET_UNI + id + "/hidden", new ArrayList<>(), request);
+			ResponseBody body = response.body();
+			if (body != null && response.code() == 200) {
+				JSONObject json = new JSONObject(body.string());
+				if (json.getJSONObject("data").getBoolean("hidden") == hide) {
+					return; // successfull if result equals request
+				}
+			}
+			throw new TwitterException(response);
+		} catch (IOException | JSONException e) {
+			throw new TwitterException(e);
 		}
 	}
 

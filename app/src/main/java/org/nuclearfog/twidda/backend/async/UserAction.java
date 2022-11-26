@@ -113,24 +113,20 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					return relation;
 
 				case ACTION_FOLLOW:
-					user = connection.followUser(userId);
-					publishProgress(user);
+					connection.followUser(userId);
 					break;
 
 				case ACTION_UNFOLLOW:
-					user = connection.unfollowUser(userId);
-					publishProgress(user);
+					connection.unfollowUser(userId);
 					break;
 
 				case ACTION_BLOCK:
-					user = connection.blockUser(userId);
-					publishProgress(user);
+					connection.blockUser(userId);
 					appDB.muteUser(userId, true);
 					break;
 
 				case ACTION_UNBLOCK:
-					user = connection.unblockUser(userId);
-					publishProgress(user);
+					connection.unblockUser(userId);
 					// remove from exclude list only if user is not muted
 					relation = connection.getUserRelationship(userId);
 					if (!relation.isMuted()) {
@@ -140,14 +136,12 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					return relation;
 
 				case ACTION_MUTE:
-					user = connection.muteUser(userId);
-					publishProgress(user);
+					connection.muteUser(userId);
 					appDB.muteUser(userId, true);
 					break;
 
 				case ACTION_UNMUTE:
-					user = connection.unmuteUser(userId);
-					publishProgress(user);
+					connection.unmuteUser(userId);
 					// remove from exclude list only if user is not blocked
 					relation = connection.getUserRelationship(userId);
 					if (!relation.isBlocked()) {

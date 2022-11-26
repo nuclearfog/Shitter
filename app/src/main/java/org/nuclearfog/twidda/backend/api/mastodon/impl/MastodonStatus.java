@@ -44,7 +44,6 @@ public class MastodonStatus implements Status {
 			source = application.optString("name", "");
 		else
 			source = "";
-
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 	}
 
@@ -54,25 +53,30 @@ public class MastodonStatus implements Status {
 		return id;
 	}
 
+
 	@Override
 	public String getText() {
 		return text;
 	}
+
 
 	@Override
 	public User getAuthor() {
 		return author;
 	}
 
+
 	@Override
 	public long getTimestamp() {
 		return createdAt;
 	}
 
+
 	@Override
 	public String getSource() {
 		return source;
 	}
+
 
 	@Nullable
 	@Override
@@ -80,40 +84,48 @@ public class MastodonStatus implements Status {
 		return null;
 	}
 
+
 	@Override
 	public String getReplyName() {
-		return null;
+		return "";
 	}
+
 
 	@Override
 	public long getRepliedUserId() {
 		return 0;
 	}
 
+
 	@Override
 	public long getRepliedStatusId() {
 		return 0;
 	}
+
 
 	@Override
 	public long getRepostId() {
 		return 0;
 	}
 
+
 	@Override
 	public int getRepostCount() {
 		return reblogCount;
 	}
+
 
 	@Override
 	public int getFavoriteCount() {
 		return favoriteCount;
 	}
 
+
 	@Override
 	public int getReplyCount() {
 		return replyCount;
 	}
+
 
 	@NonNull
 	@Override
@@ -121,43 +133,51 @@ public class MastodonStatus implements Status {
 		return new Uri[0];
 	}
 
+
 	@Override
 	public String getUserMentions() {
-		return null;
+		return "";
 	}
+
 
 	@Override
 	public int getMediaType() {
 		return 0;
 	}
 
+
 	@Override
 	public boolean isSensitive() {
 		return sensitive;
 	}
+
 
 	@Override
 	public boolean isReposted() {
 		return reblogged;
 	}
 
+
 	@Override
 	public boolean isFavorited() {
 		return favorited;
 	}
+
 
 	@Override
 	public boolean isHidden() {
 		return false;
 	}
 
+
 	@Override
 	public String getLocationName() {
-		return null;
+		return "";
 	}
+
 
 	@Override
 	public String getLocationCoordinates() {
-		return null;
+		return "";
 	}
 }

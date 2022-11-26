@@ -85,7 +85,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	public void onAccountClick(Account account) {
-		settings.setLogin(account, false);
+		settings.setLogin(account, true);
 		if (account.getUser() != null) {
 			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();

@@ -161,65 +161,57 @@ public interface Connection {
 	 * follow a specific user
 	 *
 	 * @param id ID of the user
-	 * @return updated user information
 	 */
-	User followUser(long id) throws ConnectionException;
+	void followUser(long id) throws ConnectionException;
 
 	/**
 	 * unfollow a specific user
 	 *
 	 * @param id ID of the user
-	 * @return updated user information
 	 */
-	User unfollowUser(long id) throws ConnectionException;
+	void unfollowUser(long id) throws ConnectionException;
 
 	/**
 	 * block specific user
 	 *
 	 * @param id ID of the user
-	 * @return updated user information
 	 */
-	User blockUser(long id) throws ConnectionException;
+	void blockUser(long id) throws ConnectionException;
 
 	/**
 	 * block specific user
 	 *
 	 * @param name screen name of the user
-	 * @return updated user information
 	 */
-	User blockUser(String name) throws ConnectionException;
+	void blockUser(String name) throws ConnectionException;
 
 	/**
 	 * unblock specific user
 	 *
 	 * @param id ID of the user
-	 * @return updated user information
 	 */
-	User unblockUser(long id) throws ConnectionException;
+	void unblockUser(long id) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
 	 * @param id ID of the user
-	 * @return updated user information
 	 */
-	User muteUser(long id) throws ConnectionException;
+	void muteUser(long id) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
 	 * @param name screen name of the user
-	 * @return updated user information
 	 */
-	User muteUser(String name) throws ConnectionException;
+	void muteUser(String name) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
 	 * @param id ID of the user
-	 * @return updated user information
 	 */
-	User unmuteUser(long id) throws ConnectionException;
+	void unmuteUser(long id) throws ConnectionException;
 
 	/**
 	 * search statuses matching a search string
@@ -365,12 +357,18 @@ public interface Connection {
 	Status removeRepost(long id) throws ConnectionException;
 
 	/**
-	 * hides reply of a status
+	 * mute a status from conversation
 	 *
 	 * @param id   ID of the status
-	 * @param hide true to hide reply
 	 */
-	void hideReply(long id, boolean hide) throws ConnectionException;
+	void muteConversation(long id) throws ConnectionException;
+
+	/**
+	 * unmute a status from conversation
+	 *
+	 * @param id   ID of the status
+	 */
+	void unmuteConversation(long id) throws ConnectionException;
 
 	/**
 	 * remove status of the authenticating user

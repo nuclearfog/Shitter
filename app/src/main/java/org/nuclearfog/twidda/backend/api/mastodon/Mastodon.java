@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
@@ -52,6 +53,9 @@ import okhttp3.ResponseBody;
  */
 public class Mastodon implements Connection {
 
+	/**
+	 * default Mastodon hostname
+	 */
 	private static final String DEFAULT_HOST = "https://mastodon.social";
 
 	private static final String AUTH_SCOPES = "read%20write%20follow";
@@ -59,6 +63,7 @@ public class Mastodon implements Connection {
 	private static final String AUTH_WEBSITE = "https://github.com/nuclearfog/Shitter";
 	private static final String AUTH_NAME = "SH1TT3R";
 
+	// Mastodon endpoints see https://docs.joinmastodon.org/methods/
 	private static final String REGISTER_APP = "/api/v1/apps";
 	private static final String AUTHORIZE_APP = "/oauth/authorize";
 	private static final String LOGIN_APP = "/oauth/token";
@@ -66,7 +71,18 @@ public class Mastodon implements Connection {
 	private static final String HOME_TIMELINE = "/api/v1/timelines/home";
 	private static final String LIST_TIMELINE = "/api/v1/timelines/list/";
 	private static final String SEARCH_TIMELINE = "/api/v2/search";
+	private static final String ENDPOINT_USER_TIMELINE = "/api/v1/accounts/";
+	private static final String ENDPOINT_USER_FAVORITS = "/api/v1/favourites";
 	private static final String ENDPOINT_TRENDS = "/api/v1/trends/tags";
+	private static final String ENDPOINT_GET_USER = "/api/v1/accounts/";
+	private static final String ENDPOINT_RELATIONSHIP = "/api/v1/accounts/relationships";
+	private static final String ENDPOINT_STATUS = "/api/v1/statuses/";
+	private static final String ENDPOINT_ACCOUNTS = "/api/v1/accounts/";
+	private static final String ENDPOINT_SEARCH_ACCOUNTS = "/api/v1/accounts/search";
+	private static final String ENDPOINT_LIST = "/api/v1/lists/";
+	private static final String ENDPOINT_BLOCKS = "/api/v1/blocks";
+	private static final String ENDPOINT_MUTES = "/api/v1/mutes";
+	private static final String ENDPOINT_INCOMIN_REQUESTS = "/api/v1/follow_requests";
 
 	MediaType TYPE_TEXT = MediaType.parse("text/plain");
 
@@ -96,7 +112,7 @@ public class Mastodon implements Connection {
 		else
 			hostname = paramsStr[0];
 		try {
-			Response response = post(hostname + REGISTER_APP, null, params);
+			Response response = post(hostname, REGISTER_APP, null, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
@@ -128,7 +144,7 @@ public class Mastodon implements Connection {
 		params.add("scope=" + AUTH_SCOPES);
 
 		try {
-			Response response = post(host + LOGIN_APP, null, params);
+			Response response = post(host, LOGIN_APP, null, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
@@ -147,133 +163,162 @@ public class Mastodon implements Connection {
 
 	@Override
 	public User showUser(long id) throws MastodonException {
-		return null;
+		return getUser(ENDPOINT_GET_USER + id, new ArrayList<>());
 	}
 
 
 	@Override
 	public User showUser(String name) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public Users searchUsers(String search, long page) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		params.add("q=" + StringTools.encode(search));
+		params.add("limit=" + settings.getListSize());
+		return getUsers(ENDPOINT_SEARCH_ACCOUNTS, params);
 	}
 
 
 	@Override
 	public Users getRepostingUsers(long id) throws MastodonException {
-		return null;
+		return getUsers(ENDPOINT_STATUS + id + "/reblogged_by", new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getFavoritingUsers(long id) throws MastodonException {
-		return null;
+		return getUsers(ENDPOINT_STATUS + id + "/favourited_by", new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getFollowing(long id, long cursor) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		if (cursor > 0)
+			params.add("since_id=" + cursor);
+		return getUsers(ENDPOINT_ACCOUNTS + id + "/following", params);
 	}
 
 
 	@Override
 	public Users getFollower(long id, long cursor) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		if (cursor > 0)
+			params.add("since_id=" + cursor);
+		return getUsers(ENDPOINT_ACCOUNTS + id + "/followers", params);
 	}
 
 
 	@Override
 	public Users getListMember(long id, long cursor) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		params.add("limit=" + settings.getListSize());
+		return getUsers(ENDPOINT_LIST + id + "/accounts", params);
 	}
 
 
 	@Override
 	public Users getListSubscriber(long id, long cursor) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public Users getBlockedUsers(long cursor) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		params.add("limit=" + settings.getListSize());
+		return getUsers(ENDPOINT_BLOCKS, params);
 	}
 
 
 	@Override
 	public Users getMutedUsers(long cursor) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		params.add("limit=" + settings.getListSize());
+		return getUsers(ENDPOINT_MUTES, params);
 	}
 
 
 	@Override
 	public Users getIncomingFollowRequests(long cursor) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		params.add("limit=" + settings.getListSize());
+		return getUsers(ENDPOINT_INCOMIN_REQUESTS, params);
 	}
 
 
 	@Override
 	public Users getOutgoingFollowRequests(long cursor) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public Relation getUserRelationship(long id) throws MastodonException {
-		return null;
+		List<String> params = new ArrayList<>();
+		params.add("id[]=" + id);
+		try {
+			Response response = get(ENDPOINT_RELATIONSHIP, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONArray(body.string());
+				return new MastodonRelation(array.getJSONObject(0), settings.getLogin().getId());
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
-	public User followUser(long id) throws MastodonException {
-		return null;
+	public void followUser(long id) throws MastodonException {
+		sendPost(ENDPOINT_ACCOUNTS + id + "/follow", new ArrayList<>());
 	}
 
 
 	@Override
-	public User unfollowUser(long id) throws MastodonException {
-		return null;
+	public void unfollowUser(long id) throws MastodonException {
+		sendPost(ENDPOINT_ACCOUNTS + id + "/unfollow", new ArrayList<>());
 	}
 
 
 	@Override
-	public User blockUser(long id) throws MastodonException {
-		return null;
+	public void blockUser(long id) throws MastodonException {
+		sendPost(ENDPOINT_ACCOUNTS + id + "/block", new ArrayList<>());
 	}
 
 
 	@Override
-	public User blockUser(String name) throws MastodonException {
-		return null;
+	public void blockUser(String name) throws MastodonException {
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
-	public User unblockUser(long id) throws MastodonException {
-		return null;
+	public void unblockUser(long id) throws MastodonException {
+		sendPost(ENDPOINT_ACCOUNTS + id + "/unblock", new ArrayList<>());
 	}
 
 
 	@Override
-	public User muteUser(long id) throws MastodonException {
-		return null;
+	public void muteUser(long id) throws MastodonException {
+		sendPost(ENDPOINT_ACCOUNTS + id + "/mute", new ArrayList<>());
 	}
 
 
 	@Override
-	public User muteUser(String name) throws MastodonException {
-		return null;
+	public void muteUser(String name) throws MastodonException {
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
-	public User unmuteUser(long id) throws MastodonException {
-		return null;
+	public void unmuteUser(long id) throws MastodonException {
+		sendPost(ENDPOINT_ACCOUNTS + id + "/unmute", new ArrayList<>());
 	}
 
 
@@ -291,7 +336,7 @@ public class Mastodon implements Connection {
 		try {
 			List<String> params = new ArrayList<>();
 			params.add("limit=" + settings.getListSize());
-			Response response = get(settings.getLogin().getHostname() + ENDPOINT_TRENDS, params);
+			Response response = get(ENDPOINT_TRENDS, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONArray(body.string());
@@ -310,7 +355,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Location> getLocations() throws MastodonException {
-		return new ArrayList<>(0);
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
@@ -322,31 +367,34 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getMentionTimeline(long minId, long maxId) throws MastodonException {
-		return new ArrayList<>(0);
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public List<Status> getUserTimeline(long id, long minId, long maxId) throws MastodonException {
-		return new ArrayList<>(0);
+		String endpoint =  ENDPOINT_USER_TIMELINE + id + "/statuses";
+		return getStatuses(endpoint, new ArrayList<>(), minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getUserTimeline(String name, long minId, long maxId) throws MastodonException {
-		return new ArrayList<>(0);
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public List<Status> getUserFavorits(long id, long minId, long maxId) throws MastodonException {
+		if (id == settings.getLogin().getId()) // mastodon only returns favorits of the authenticating user
+			return getStatuses(ENDPOINT_USER_FAVORITS, new ArrayList<>(), minId, maxId);
 		return new ArrayList<>(0);
 	}
 
 
 	@Override
 	public List<Status> getUserFavorits(String name, long minId, long maxId) throws MastodonException {
-		return new ArrayList<>(0);
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
@@ -358,175 +406,241 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getStatusReplies(String name, long id, long minId, long maxId) throws MastodonException {
-		return new ArrayList<>(0);
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public Status showStatus(long id) throws MastodonException {
-		return null;
+		return getStatus(ENDPOINT_STATUS + id, new ArrayList<>());
 	}
 
 
 	@Override
 	public Status favoriteStatus(long id) throws MastodonException {
-		return null;
+		return getStatus(ENDPOINT_STATUS + id + "/favourite", new ArrayList<>());
 	}
 
 
 	@Override
 	public Status unfavoriteStatus(long id) throws MastodonException {
-		return null;
+		return getStatus(ENDPOINT_STATUS + id + "/unfavourite", new ArrayList<>());
 	}
 
 
 	@Override
 	public Status repostStatus(long id) throws MastodonException {
-		return null;
+		return getStatus(ENDPOINT_STATUS + id + "/reblog", new ArrayList<>());
 	}
 
 
 	@Override
 	public Status removeRepost(long id) throws MastodonException {
-		return null;
+		return getStatus(ENDPOINT_STATUS + id + "/unreblog", new ArrayList<>());
 	}
 
 
 	@Override
-	public void hideReply(long id, boolean hide) throws MastodonException {
+	public void muteConversation(long id) throws MastodonException {
+		sendPost(ENDPOINT_MUTES + id + "/mute", new ArrayList<>());
+	}
 
+
+	@Override
+	public void unmuteConversation(long id) throws MastodonException {
+		sendPost(ENDPOINT_STATUS + id + "/unmute", new ArrayList<>());
 	}
 
 
 	@Override
 	public void deleteStatus(long id) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserList createUserlist(UserListUpdate update) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserList updateUserlist(UserListUpdate update) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserList getUserlist(long id) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserList followUserlist(long id) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserList unfollowUserlist(long id) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserList deleteUserlist(long id) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserLists getUserlistOwnerships(long id, String name, long cursor) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public UserLists getUserlistMemberships(long id, String name, long cursor) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public void addUserToList(long id, String name) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public void removeUserFromList(long id, String name) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public void sendDirectmessage(long id, String message, long mediaId) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public void deleteDirectmessage(long id) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public Messages getDirectmessages(String cursor) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public Metrics getStatusMetrics(long id) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public List<Long> getIdBlocklist() throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public MediaUpdate downloadImage(String link) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public User updateProfile(ProfileUpdate update) throws MastodonException {
-		return null;
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public void updateProfileImage(InputStream inputStream) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public void updateBannerImage(InputStream inputStream) throws MastodonException {
-
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
 	@Override
 	public long uploadMedia(MediaUpdate mediaUpdate) throws MastodonException {
-		return 0;
+		throw new MastodonException("not implemented!"); // todo add implementation
+	}
+
+	/**
+	 * get a status from endpoint
+	 *
+	 * @param endpoint endpoint to use
+	 * @param params   additional parameters
+	 * @return status
+	 */
+	private Status getStatus(String endpoint, List<String> params) throws MastodonException {
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonStatus(json, settings.getLogin().getId());
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
+	 * get user from endpoint
+	 *
+	 * @param endpoint endpoint to use
+	 * @param params   additional parameters
+	 * @return user instance
+	 */
+	private User getUser(String endpoint, List<String> params) throws MastodonException {
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonUser(json, settings.getLogin().getId());
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
+	 * send post request to ui
+	 *
+	 * @param endpoint endpoint to use
+	 * @param params   additional parameters
+	 */
+	private void sendPost(String endpoint, List<String> params) throws MastodonException {
+		try {
+			Response response = post(endpoint, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null)
+				return;
+			throw new MastodonException(response);
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 	/**
@@ -545,7 +659,7 @@ public class Mastodon implements Connection {
 			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());
 		try {
-			Response response = get(settings.getLogin().getHostname() + endpoint, params);
+			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONArray statuses;
@@ -567,6 +681,32 @@ public class Mastodon implements Connection {
 	}
 
 	/**
+	 * get a list of users from an endpoint
+	 *
+	 * @param endpoint Ednpoint to use
+	 * @param params additional parameters
+	 * @return list of users
+	 */
+	private Users getUsers(String endpoint, List<String> params) throws MastodonException {
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONArray(body.string());
+				Users result = new Users(0L, 0L);
+				for (int i = 0 ; i < array.length() ; i++) {
+					User item = new MastodonUser(array.getJSONObject(i));
+					result.add(item);
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
 	 * get information about the current user
 	 *
 	 * @param host   Mastodon hostname
@@ -575,7 +715,7 @@ public class Mastodon implements Connection {
 	 */
 	private User getCredentials(String host, @NonNull String bearer) throws MastodonException {
 		try {
-			Response response = get(host + VERIFY_CREDENTIALS, bearer, new ArrayList<>());
+			Response response = get(host, VERIFY_CREDENTIALS, bearer, new ArrayList<>());
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
@@ -590,12 +730,25 @@ public class Mastodon implements Connection {
 	/**
 	 * create get response with user bearer token
 	 *
-	 * @param endpoint endpoint url
+	 * @param endpoint endpoint to use
 	 * @param params   additional parameters
 	 * @return GET response
 	 */
 	private Response get(String endpoint, List<String> params) throws IOException {
-		return get(endpoint, settings.getLogin().getBearerToken(), params);
+		Account currentLogin = settings.getLogin();
+		return get(currentLogin.getHostname(), endpoint, currentLogin.getBearerToken(), params);
+	}
+
+	/**
+	 * create post response with user bearer token
+	 *
+	 * @param endpoint endpoint to use
+	 * @param params   additional parameters
+	 * @return POST response
+	 */
+	private Response post(String endpoint, List<String> params) throws IOException {
+		Account currentLogin = settings.getLogin();
+		return post(currentLogin.getHostname(), endpoint, currentLogin.getBearerToken(), params);
 	}
 
 	/**
@@ -606,8 +759,8 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return GET response
 	 */
-	private Response get(String endpoint, @Nullable String bearer, List<String> params) throws IOException {
-		Request.Builder request = new Request.Builder().url(buildUrl(endpoint, params)).get();
+	private Response get(String hostname, String endpoint, @Nullable String bearer, List<String> params) throws IOException {
+		Request.Builder request = new Request.Builder().url(buildUrl(hostname, endpoint, params)).get();
 		if (bearer != null) {
 			request.addHeader("Authorization", "Bearer " + bearer);
 		}
@@ -622,9 +775,9 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return POST response
 	 */
-	private Response post(String endpoint, @Nullable String bearer, List<String> params) throws IOException {
+	private Response post(String hostname, String endpoint, @Nullable String bearer, List<String> params) throws IOException {
 		RequestBody body = RequestBody.create("", TYPE_TEXT);
-		Request.Builder request = new Request.Builder().url(buildUrl(endpoint, params)).post(body);
+		Request.Builder request = new Request.Builder().url(buildUrl(hostname, endpoint, params)).post(body);
 		if (bearer != null) {
 			request.addHeader("Authorization", "Bearer " + bearer);
 		}
@@ -638,9 +791,10 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return url with hostname and query parameters
 	 */
-	private String buildUrl(String hostname, List<String> params) {
+	private String buildUrl(String hostname, String endpoint, List<String> params) {
 		if (!params.isEmpty()) {
 			StringBuilder result = new StringBuilder(hostname);
+			result.append(endpoint);
 			result.append('?');
 			for (String param : params) {
 				result.append(param).append('&');
@@ -648,6 +802,6 @@ public class Mastodon implements Connection {
 			result.deleteCharAt(result.length() - 1);
 			return result.toString();
 		}
-		return hostname;
+		return hostname + endpoint;
 	}
 }
