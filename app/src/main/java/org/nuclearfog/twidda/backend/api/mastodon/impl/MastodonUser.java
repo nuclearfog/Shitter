@@ -38,7 +38,6 @@ public class MastodonUser implements User {
 	 * @param json json object used by Mastodon API
 	 */
 	public MastodonUser(JSONObject json) throws JSONException {
-		id = Long.parseLong(json.getString("id"));
 		screenname = json.optString("acct", "");
 		username = json.optString("display_name");
 		createdAt = StringTools.getTime2(json.optString("created_at", ""));
@@ -46,11 +45,16 @@ public class MastodonUser implements User {
 		bannerUrl = json.optString("banner");
 		description = json.optString("note");
 		url = json.optString("url");
-
 		following = json.optInt("following_count");
 		follower = json.optInt("followers_count");
 		statusCount = json.optInt("statuses_count");
 		locked = json.optBoolean("locked");
+
+		try {
+			id = Long.parseLong(json.getString("id"));
+		} catch (NumberFormatException e) {
+			throw new JSONException("bad user ID:" + id);
+		}
 	}
 
 

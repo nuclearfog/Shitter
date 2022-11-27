@@ -12,6 +12,8 @@ import org.nuclearfog.twidda.model.Trend;
  */
 public class TrendV1 implements Trend {
 
+	private static final long serialVersionUID = -2405773547644847221L;
+
 	private int rank;
 	private int popularity;
 	private int locationId;

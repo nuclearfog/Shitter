@@ -149,7 +149,7 @@
 	<dimen name="loginpage_textsize_switch">12sp</dimen>
 	<dimen name="loginpage_textsize_api_key">16sp</dimen>
 	<dimen name="loginpage_textsize_login_key">20sp</dimen>
-	<dimen name="loginpage_number_padding">10dp</dimen>
+	<dimen name="loginpage_number_margin">10dp</dimen>
 	<dimen name="loginpage_label_max_width">110dp</dimen>
 
 	<!--dimens of page_metrics.xml-->

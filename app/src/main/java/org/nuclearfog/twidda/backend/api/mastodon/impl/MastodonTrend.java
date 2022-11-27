@@ -11,6 +11,8 @@ import org.nuclearfog.twidda.model.Trend;
  */
 public class MastodonTrend implements Trend {
 
+	private static final long serialVersionUID = 4328931229081239280L;
+
 	private int rank;
 	private int popularity;
 	private String name;

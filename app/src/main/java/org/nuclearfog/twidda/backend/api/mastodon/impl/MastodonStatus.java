@@ -18,6 +18,8 @@ import org.nuclearfog.twidda.model.User;
  */
 public class MastodonStatus implements Status {
 
+	private static final long serialVersionUID = 1184375228249441241L;
+
 	private long id;
 	private long createdAt;
 

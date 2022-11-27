@@ -14,6 +14,8 @@ import org.nuclearfog.twidda.model.Trend;
  */
 public class TrendImpl implements Trend {
 
+	private static final long serialVersionUID = 1799880502954768985L;
+
 	/**
 	 * SQLite columns
 	 */

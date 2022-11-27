@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.model;
 
+import java.io.Serializable;
+
 /**
  * interface for trend implementations
  *
  * @author nuclearfog
  */
-public interface Trend {
+public interface Trend extends Serializable {
 
 	/**
 	 * @return trend name
