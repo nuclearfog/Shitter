@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
@@ -84,6 +85,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_MUTES = "/api/v1/mutes";
 	private static final String ENDPOINT_INCOMIN_REQUESTS = "/api/v1/follow_requests";
 	private static final String ENDPOINT_LOOKUP_USER = "/api/v1/accounts/lookup";
+	private static final String ENDPOINT_USERLIST = "/api/v1/lists";
 
 	MediaType TYPE_TEXT = MediaType.parse("text/plain");
 
@@ -164,7 +166,11 @@ public class Mastodon implements Connection {
 
 	@Override
 	public User showUser(long id) throws MastodonException {
-		return getUser(ENDPOINT_GET_USER + id, new ArrayList<>());
+		try {
+			return createUser(get(ENDPOINT_GET_USER + id, new ArrayList<>()));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
@@ -172,7 +178,11 @@ public class Mastodon implements Connection {
 	public User showUser(String name) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("acct=" + name);
-		return getUser(ENDPOINT_LOOKUP_USER, params);
+		try {
+			return createUser(get(ENDPOINT_LOOKUP_USER, params));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
@@ -225,7 +235,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Users getListSubscriber(long id, long cursor) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
@@ -332,6 +342,8 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
 		params.add("type=statuses");
+		params.add("following=false");
+		params.add("offset=0");
 		return getStatuses(SEARCH_TIMELINE, params, minId, maxId);
 	}
 
@@ -385,7 +397,8 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getUserTimeline(String name, long minId, long maxId) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		User user = showUser(name);
+		return getUserTimeline(user.getId(), minId, maxId);
 	}
 
 
@@ -399,7 +412,8 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getUserFavorits(String name, long minId, long maxId) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		User user = showUser(name);
+		return getUserFavorits(user.getId(), minId, maxId);
 	}
 
 
@@ -459,73 +473,133 @@ public class Mastodon implements Connection {
 
 	@Override
 	public void deleteStatus(long id) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		try {
+			Response response = delete(ENDPOINT_STATUS + id, new ArrayList<>());
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		List<String> params = new ArrayList<>();
+		params.add("status=" + StringTools.encode(update.getText()));
+		params.add("visibility=public");
+		if (update.getReplyId() > 0)
+			params.add("in_reply_to_id=" + update.getReplyId());
+		for (long mediaId : mediaIds)
+			params.add("media_ids[]=" + mediaId);
+		try {
+			Response response = post(ENDPOINT_STATUS, params);
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public UserList createUserlist(UserListUpdate update) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		List<String> params = new ArrayList<>();
+		params.add("title=" + update.getTitle());
+		try {
+			return createUserlist(post(ENDPOINT_USERLIST, params));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public UserList updateUserlist(UserListUpdate update) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		List<String> params = new ArrayList<>();
+		params.add("id=" + update.getId());
+		params.add("title=" + update.getTitle());
+		try {
+			return createUserlist(put(ENDPOINT_USERLIST, params));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public UserList getUserlist(long id) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		try {
+			return createUserlist(get(ENDPOINT_USERLIST + '/' + id, new ArrayList<>()));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public UserList followUserlist(long id) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
 	@Override
 	public UserList unfollowUserlist(long id) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
 	@Override
 	public UserList deleteUserlist(long id) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		try {
+			return createUserlist(delete(ENDPOINT_USERLIST + '/' + id, new ArrayList<>()));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public UserLists getUserlistOwnerships(long id, String name, long cursor) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
 	@Override
 	public UserLists getUserlistMemberships(long id, String name, long cursor) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
 	@Override
 	public void addUserToList(long id, String name) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		List<String> params = new ArrayList<>();
+		params.add("account_ids[]=\"" + name + "\"");
+		try {
+			Response response = post(ENDPOINT_USERLIST + '/' + id + "/accounts", params);
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
 	@Override
 	public void removeUserFromList(long id, String name) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		List<String> params = new ArrayList<>();
+		params.add("account_ids[]=\"" + name + "\"");
+		try {
+			Response response = delete(ENDPOINT_USERLIST + '/' + id + "/accounts", params);
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
@@ -591,6 +665,16 @@ public class Mastodon implements Connection {
 	/**
 	 * get information about the current user
 	 *
+	 * @return current user information
+	 */
+	private User getCredentials() throws MastodonException {
+		Account login = settings.getLogin();
+		return getCredentials(login.getHostname(), login.getBearerToken());
+	}
+
+	/**
+	 * get information about the current user
+	 *
 	 * @param host   Mastodon hostname
 	 * @param bearer bearer token to use
 	 * @return current user information
@@ -598,21 +682,6 @@ public class Mastodon implements Connection {
 	private User getCredentials(String host, @NonNull String bearer) throws MastodonException {
 		try {
 			return createUser(get(host, VERIFY_CREDENTIALS, bearer, new ArrayList<>()));
-		} catch (IOException e) {
-			throw new MastodonException(e);
-		}
-	}
-
-	/**
-	 * get user from endpoint
-	 *
-	 * @param endpoint endpoint to use
-	 * @param params   additional parameters
-	 * @return user instance
-	 */
-	private User getUser(String endpoint, List<String> params) throws MastodonException {
-		try {
-			return createUser(get(endpoint, params));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -748,6 +817,26 @@ public class Mastodon implements Connection {
 	}
 
 	/**
+	 * create userlist from endpoint
+	 *
+	 * @param response endpoint response
+	 * @return status
+	 */
+	private UserList createUserlist(Response response) throws MastodonException {
+		try {
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				User currentUser = getCredentials();
+				return new MastodonList(json, currentUser);
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
 	 * create a list of statuses from a resposne
 	 *
 	 * @param response endpoint response
@@ -848,6 +937,36 @@ public class Mastodon implements Connection {
 		if (bearer != null) {
 			request.addHeader("Authorization", "Bearer " + bearer);
 		}
+		return client.newCall(request.build()).execute();
+	}
+
+	/**
+	 * create a PUT response
+	 *
+	 * @param endpoint endpoint url
+	 * @param params   additional parameters
+	 * @return PUT response
+	 */
+	private Response put(String endpoint, List<String> params) throws IOException {
+		Account login = settings.getLogin();
+		RequestBody body = RequestBody.create("", TYPE_TEXT);
+		Request.Builder request = new Request.Builder().url(buildUrl(login.getHostname(), endpoint, params)).put(body);
+		request.addHeader("Authorization", "Bearer " + login.getBearerToken());
+		return client.newCall(request.build()).execute();
+	}
+
+	/**
+	 * create a DELETE response
+	 *
+	 * @param endpoint endpoint url
+	 * @param params   additional parameters
+	 * @return DELETE response
+	 */
+	private Response delete(String endpoint, List<String> params) throws IOException {
+		Account login = settings.getLogin();
+		RequestBody body = RequestBody.create("", TYPE_TEXT);
+		Request.Builder request = new Request.Builder().url(buildUrl(login.getHostname(), endpoint, params)).delete(body);
+		request.addHeader("Authorization", "Bearer " + login.getBearerToken());
 		return client.newCall(request.build()).execute();
 	}
 

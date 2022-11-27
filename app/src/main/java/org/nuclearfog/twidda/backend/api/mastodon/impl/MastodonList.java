@@ -1,0 +1,88 @@
+package org.nuclearfog.twidda.backend.api.mastodon.impl;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.model.UserList;
+
+/**
+ * userlist implementation
+ * https://docs.joinmastodon.org/entities/List/
+ *
+ * @author nuclearfog
+ */
+public class MastodonList implements UserList {
+
+	private static final long serialVersionUID = 2135928743724359656L;
+
+	private long id;
+	private String title;
+	private User owner;
+
+
+	public MastodonList(JSONObject json, User owner) throws JSONException {
+		String idStr = json.getString("id");
+		title = json.getString("title");
+		this.owner = owner;
+
+		try {
+			id = Long.parseLong(idStr);
+		} catch (NumberFormatException e) {
+			throw new JSONException("bad ID:" + idStr);
+		}
+	}
+
+
+	@Override
+	public long getId() {
+		return id;
+	}
+
+
+	@Override
+	public long getTimestamp() {
+		return 0;
+	}
+
+
+	@Override
+	public String getTitle() {
+		return title;
+	}
+
+
+	@Override
+	public String getDescription() {
+		return "";
+	}
+
+
+	@Override
+	public User getListOwner() {
+		return owner;
+	}
+
+
+	@Override
+	public boolean isPrivate() {
+		return true;
+	}
+
+
+	@Override
+	public boolean isFollowing() {
+		return false;
+	}
+
+
+	@Override
+	public int getMemberCount() {
+		return 0;
+	}
+
+
+	@Override
+	public int getSubscriberCount() {
+		return 0;
+	}
+}
