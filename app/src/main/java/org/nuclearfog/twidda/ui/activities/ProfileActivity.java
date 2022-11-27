@@ -63,6 +63,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -658,7 +659,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			}
 			if (!user.getImageUrl().isEmpty()) {
 				String profileImageUrl;
-				if (!user.hasDefaultProfileImage()) {
+				if (!user.hasDefaultProfileImage() && settings.getLogin().getApiType() == Account.API_TWITTER) {
 					profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), PROFILE_IMG_HIGH_RES);
 				} else {
 					profileImageUrl = user.getImageUrl();

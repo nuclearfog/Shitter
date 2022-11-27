@@ -87,6 +87,7 @@
 		android:layout_marginStart="@dimen/loginpage_layout_margin"
 		android:layout_marginTop="@dimen/loginpage_layout_margin"
 		android:maxLines="1"
+		android:ellipsize="end"
 		app:layout_constraintHorizontal_weight="2"
 		app:layout_constraintStart_toEndOf="@id/login_enable_key_input_label"
 		app:layout_constraintTop_toBottomOf="@id/login_network_selector"
@@ -105,6 +106,7 @@
 		android:layout_marginTop="@dimen/loginpage_layout_margin"
 		android:layout_marginEnd="@dimen/loginpage_layout_margin"
 		android:maxLines="1"
+		android:ellipsize="end"
 		app:layout_constraintHorizontal_weight="3"
 		app:layout_constraintStart_toEndOf="@id/login_enter_key1"
 		app:layout_constraintTop_toBottomOf="@id/login_network_selector"
@@ -174,7 +176,7 @@
 
 	<EditText
 		android:id="@+id/login_enter_code"
-		android:layout_width="wrap_content"
+		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:autofillHints="pin"
 		android:background="@android:color/transparent"
@@ -184,6 +186,8 @@
 		android:textSize="@dimen/loginpage_textsize_login_key"
 		android:maxLines="1"
 		android:layout_marginEnd="@dimen/loginpage_layout_margin"
+		android:ellipsize="end"
+		app:layout_constraintWidth_percent="0.5"
 		app:layout_constraintStart_toEndOf="@id/login_third_opt"
 		app:layout_constraintTop_toBottomOf="@id/login_get_link"
 		app:layout_constraintBottom_toTopOf="@id/login_verifier"

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -81,10 +82,12 @@ public class TweetV1 implements Status {
 		JSONObject locationJson = json.optJSONObject("place");
 		JSONObject currentUserJson = json.optJSONObject("current_user_retweet");
 		JSONObject embeddedTweetJson = json.optJSONObject("retweeted_status");
+		String retweetIdStr = "0";
 		String tweetIdStr = json.optString("id_str", "");
 		String replyName = json.optString("in_reply_to_screen_name", "");
 		String replyTweetIdStr = json.optString("in_reply_to_status_id_str", "0");
 		String replyUsrIdStr = json.optString("in_reply_to_user_id_str", "0");
+		String source = json.optString("source", "");
 		String text = createText(json);
 
 		author = new UserV1(json.getJSONObject("user"), twitterId);
@@ -94,21 +97,22 @@ public class TweetV1 implements Status {
 		isRetweeted = json.optBoolean("retweeted");
 		isSensitive = json.optBoolean("possibly_sensitive");
 		timestamp = StringTools.getTime1(json.optString("created_at", ""));
-		source = StringTools.getSource(json.optString("source", ""));
 		coordinates = getLocation(json);
 		mediaLinks = addMedia(json);
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
-
+		this.source = Jsoup.parse(source).text();
 		try {
 			id = Long.parseLong(tweetIdStr);
-			replyTweetId = Long.parseLong(replyTweetIdStr);
-			replyUserId = Long.parseLong(replyUsrIdStr);
-			if (currentUserJson != null) {
-				String retweetIdStr = currentUserJson.optString("id_str", "0");
+			if (currentUserJson != null)
+				retweetIdStr = currentUserJson.optString("id_str", "0");
+			if (!replyTweetIdStr.equals("null"))
+				replyTweetId = Long.parseLong(replyTweetIdStr);
+			if (!replyUsrIdStr.equals("null"))
+				replyUserId = Long.parseLong(replyUsrIdStr);
+			if (!retweetIdStr.equals("null"))
 				retweetId = Long.parseLong(retweetIdStr);
-			}
 		} catch (NumberFormatException e) {
-			throw new JSONException("bad IDs: " + tweetIdStr + "," + replyUsrIdStr + " or retweet ID");
+			throw new JSONException("bad IDs:" + tweetIdStr + "," + replyUsrIdStr + "," + retweetIdStr);
 		}
 		if (!replyName.isEmpty() && !replyName.equals("null")) {
 			this.replyName = '@' + replyName;

@@ -92,7 +92,7 @@ public class AccountAdapter extends Adapter<AccountHolder> {
 			// set profile image
 			if (settings.imagesEnabled() && !user.getProfileUrl().isEmpty()) {
 				String profileImageUrl;
-				if (!user.hasDefaultProfileImage()) {
+				if (!user.hasDefaultProfileImage() && account.getApiType() == Account.API_TWITTER) {
 					profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), settings.getImageSuffix());
 				} else {
 					profileImageUrl = user.getImageUrl();

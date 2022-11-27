@@ -26,6 +26,7 @@ public class AccountImpl implements Account {
 			AccountTable.TOKEN_SECRET,
 			AccountTable.CLIENT_ID,
 			AccountTable.CLIENT_SECRET,
+			AccountTable.BEARER,
 			AccountTable.HOSTNAME,
 			AccountTable.API
 	};
@@ -64,8 +65,9 @@ public class AccountImpl implements Account {
 		tokenSecret = cursor.getString(3);
 		consumerToken = cursor.getString(4);
 		consumerSecret = cursor.getString(5);
-		host = cursor.getString(6);
-		apiType = cursor.getInt(7);
+		bearerToken = cursor.getString(6);
+		host = cursor.getString(7);
+		apiType = cursor.getInt(8);
 	}
 
 

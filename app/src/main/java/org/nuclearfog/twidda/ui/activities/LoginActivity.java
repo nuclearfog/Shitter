@@ -44,6 +44,7 @@ import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 
 /**
  * Account Activity of the App
@@ -119,18 +120,22 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		hostSelector.setSelection(0);
 
 		if (settings.isCustomApiSet() || !Tokens.USE_DEFAULT_KEYS) {
+			apiSwitch.setCheckedImmediately(true);
+			// force using custom API tokens
 			if (!Tokens.USE_DEFAULT_KEYS) {
 				apiSwitch.setVisibility(View.GONE);
 				switchLabel.setVisibility(View.GONE);
 			}
-			apiSwitch.setCheckedImmediately(true);
-			apiKey1.setText(settings.getLogin().getConsumerToken());
-			apiKey2.setText(settings.getLogin().getConsumerSecret());
+			// use custom API tokens if there were set in a previously login
+			Account login = settings.getLogin();
+			if (login.getApiType() == Account.API_TWITTER) {
+				apiKey1.setText(login.getConsumerToken());
+				apiKey2.setText(login.getConsumerSecret());
+			}
 		} else {
 			apiKey1.setVisibility(View.INVISIBLE);
 			apiKey2.setVisibility(View.INVISIBLE);
 		}
-
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 
 		linkButton.setOnClickListener(this);
@@ -350,6 +355,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 	}
+
 
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {

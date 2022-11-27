@@ -66,12 +66,14 @@ public class ConnectionManager {
 			}
 			// select automatically
 			else {
-				if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+				Account login = settings.getLogin();
+				if (login.getApiType() == Account.API_TWITTER) {
 					connection = new Twitter(context);
-				} else if (settings.getLogin().getApiType() == Account.API_MASTODON) {
+				} else if (login.getApiType() == Account.API_MASTODON) {
 					connection = new Mastodon(context);
 				} else {
-					throw new RuntimeException("no connection selected!");
+					connection = new Twitter(context);
+					//throw new RuntimeException("no connection selected!");
 				}
 			}
 			settings.addSettingsChangeListener(new OnSettingsChangeListener() {

@@ -218,20 +218,6 @@ public final class StringTools {
 	}
 
 	/**
-	 * extract API name from Twitter href string
-	 *
-	 * @param srcHref twitter API href
-	 * @return API name
-	 */
-	public static String getSource(String srcHref) {
-		int start = srcHref.indexOf('>') + 1;
-		int end = srcHref.lastIndexOf('<');
-		if (start > 0 && end > start)
-			return srcHref.substring(start, end);
-		return srcHref;
-	}
-
-	/**
 	 * calculate index offset caused by emojies
 	 *
 	 * @param text  twitter test

@@ -12,8 +12,8 @@ android {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 65
-		versionName '2.2'
+		versionCode 66
+		versionName '3.0a'
 		resConfigs 'en', 'de-rDE', 'zh-rCN'
 	}
 
@@ -63,6 +63,7 @@ dependencies {
 	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 	implementation 'androidx.cardview:cardview:1.0.0'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+	implementation 'org.jsoup:jsoup:1.15.3'
 	//noinspection GradleDependency
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	//noinspection GradleDependency

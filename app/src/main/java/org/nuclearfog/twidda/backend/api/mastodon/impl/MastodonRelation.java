@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Relation;
 
@@ -22,12 +23,17 @@ public class MastodonRelation implements Relation {
 	 * @param json      Relation json object
 	 * @param currentId ID of the current user
 	 */
-	public MastodonRelation(JSONObject json, long currentId) {
-		currentUser = currentId == Long.parseLong(json.optString("id", "0"));
+	public MastodonRelation(JSONObject json, long currentId) throws JSONException {
+		String idStr = json.getString("id");
 		following = json.optBoolean("following");
 		follower = json.optBoolean("followed_by");
 		blocked = json.optBoolean("blocking");
 		muted = json.optBoolean("muting");
+		try {
+			currentUser = currentId == Long.parseLong(idStr);
+		} catch (NumberFormatException e) {
+			throw new JSONException("bad ID:" + idStr);
+		}
 	}
 
 

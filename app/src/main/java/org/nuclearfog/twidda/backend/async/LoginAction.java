@@ -32,8 +32,14 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	 */
 	public static final int MODE_LOGIN = 2;
 
+	/**
+	 * use Twitter account to login
+	 */
 	public static final int LOGIN_TWITTER = 10;
 
+	/**
+	 * use Mastodon account to login
+	 */
 	public static final int LOGIN_MASTODON = 11;
 
 	private WeakReference<LoginActivity> weakRef;
@@ -57,13 +63,15 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 		weakRef = new WeakReference<>(activity);
 		accountDB = new AccountDatabase(activity);
 		database = new AppDatabase(activity);
+		this.mode = mode;
 
 		if (network == LOGIN_TWITTER) {
 			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER);
 		} else if (network == LOGIN_MASTODON) {
 			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_MASTODON);
+		} else {
+			throw new RuntimeException("no connection selected: " + mode);
 		}
-		this.mode = mode;
 	}
 
 

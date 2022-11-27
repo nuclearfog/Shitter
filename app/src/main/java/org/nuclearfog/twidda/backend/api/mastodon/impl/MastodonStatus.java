@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -51,7 +52,8 @@ public class MastodonStatus implements Status {
 		favoriteCount = json.optInt("favourites_count");
 		favorited = json.optBoolean("favourited");
 		reblogged = json.optBoolean("reblogged");
-		text = json.optString("text", "");
+		text = json.optString("content", "");
+		text = Jsoup.parse(text).text();
 		sensitive = json.optBoolean("sensitive", false);
 		if (mentionsJson != null) {
 			StringBuilder mentionsBuilder = new StringBuilder();
@@ -60,7 +62,6 @@ public class MastodonStatus implements Status {
 				mentionsBuilder.append('@').append(item).append(' ');
 			}
 			mentions = mentionsBuilder.toString();
-			text = mentions + ' ' + text;
 		} else {
 			mentions = "";
 		}
@@ -71,8 +72,10 @@ public class MastodonStatus implements Status {
 		}
 		try {
 			id = Long.parseLong(idStr);
-			replyId = Long.parseLong(replyIdStr);
-			replyUserId = Long.parseLong(replyUserIdStr);
+			if (!replyIdStr.equals("null"))
+				replyId = Long.parseLong(replyIdStr);
+			if (!replyUserIdStr.equals("null"))
+				replyUserId = Long.parseLong(replyUserIdStr);
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad ID:" + idStr + ' ' + replyIdStr + ' ' + replyUserIdStr);
 		}
