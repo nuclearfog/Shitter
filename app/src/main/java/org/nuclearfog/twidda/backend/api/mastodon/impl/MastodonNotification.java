@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.json.JSONException;
@@ -24,7 +25,10 @@ public class MastodonNotification implements Notification {
 	private User user;
 	private Status status;
 
-
+	/**
+	 * @param json      notification json object
+	 * @param currentId Id of the current user
+	 */
 	public MastodonNotification(JSONObject json, long currentId) throws JSONException {
 		String idStr = json.getString("id");
 		String typeStr = json.getString("type");
@@ -105,5 +109,20 @@ public class MastodonNotification implements Notification {
 	@Override
 	public Status getStatus() {
 		return status;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=" + id + " " + user;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Notification))
+			return false;
+		return ((Notification) obj).getId() == id;
 	}
 }

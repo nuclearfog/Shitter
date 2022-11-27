@@ -13,7 +13,6 @@ import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 /**
  * API v 1.1 implementation of a tweet
@@ -49,11 +48,6 @@ public class TweetV1 implements Status {
 	 */
 	private static final String MIME_V_MP4 = "video/mp4";
 
-	/**
-	 * regex pattern to compare ID
-	 */
-	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
-
 	private long id;
 	private long timestamp;
 	private User author;
@@ -72,8 +66,8 @@ public class TweetV1 implements Status {
 	private String text;
 	private String source;
 
-	private long replyUserId = -1L;
-	private long replyTweetId = -1L;
+	private long replyUserId;
+	private long replyTweetId;
 	private int mediaType = MEDIA_NONE;
 	private String location = "";
 	private String replyName = "";
@@ -89,8 +83,8 @@ public class TweetV1 implements Status {
 		JSONObject embeddedTweetJson = json.optJSONObject("retweeted_status");
 		String tweetIdStr = json.optString("id_str", "");
 		String replyName = json.optString("in_reply_to_screen_name", "");
-		String replyTweetIdStr = json.optString("in_reply_to_status_id_str", "");
-		String replyUsrIdStr = json.optString("in_reply_to_user_id_str", "");
+		String replyTweetIdStr = json.optString("in_reply_to_status_id_str", "0");
+		String replyUsrIdStr = json.optString("in_reply_to_user_id_str", "0");
 		String text = createText(json);
 
 		author = new UserV1(json.getJSONObject("user"), twitterId);
@@ -105,28 +99,22 @@ public class TweetV1 implements Status {
 		mediaLinks = addMedia(json);
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 
-		if (ID_PATTERN.matcher(tweetIdStr).matches()) {
+		try {
 			id = Long.parseLong(tweetIdStr);
-		} else {
-			throw new JSONException("bad tweet ID: " + tweetIdStr);
+			replyTweetId = Long.parseLong(replyTweetIdStr);
+			replyUserId = Long.parseLong(replyUsrIdStr);
+			if (currentUserJson != null) {
+				String retweetIdStr = currentUserJson.optString("id_str", "0");
+				retweetId = Long.parseLong(retweetIdStr);
+			}
+		} catch (NumberFormatException e) {
+			throw new JSONException("bad IDs: " + tweetIdStr + "," + replyUsrIdStr + " or retweet ID");
 		}
 		if (!replyName.isEmpty() && !replyName.equals("null")) {
 			this.replyName = '@' + replyName;
 		}
-		if (ID_PATTERN.matcher(replyTweetIdStr).matches()) {
-			replyTweetId = Long.parseLong(replyTweetIdStr);
-		}
-		if (ID_PATTERN.matcher(replyUsrIdStr).matches()) {
-			replyUserId = Long.parseLong(replyUsrIdStr);
-		}
 		if (locationJson != null) {
 			location = locationJson.optString("full_name", "");
-		}
-		if (currentUserJson != null) {
-			String retweetIdStr = currentUserJson.optString("id_str", "");
-			if (ID_PATTERN.matcher(retweetIdStr).matches()) {
-				retweetId = Long.parseLong(retweetIdStr);
-			}
 		}
 		if (embeddedTweetJson != null) {
 			embeddedTweet = new TweetV1(embeddedTweetJson, twitterId);

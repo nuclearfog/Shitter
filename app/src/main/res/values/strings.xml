@@ -228,7 +228,6 @@
 	<string name="confirm_delete_list">delete userlist?</string>
 	<string name="confirm_delete_message">delete message?</string>
 	<string name="confirm_unfollow_list">unfollow list?</string>
-	<string name="trend_range_tweets">Tweets</string>
 	<string name="trend_range">Posts</string>
 	<string name="enter_username">enter username</string>
 	<string name="profile_banner">Banner Image</string>

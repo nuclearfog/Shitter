@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.User;
@@ -19,7 +22,10 @@ public class MastodonList implements UserList {
 	private String title;
 	private User owner;
 
-
+	/**
+	 * @param json  userlist json object
+	 * @param owner owner of the list
+	 */
 	public MastodonList(JSONObject json, User owner) throws JSONException {
 		String idStr = json.getString("id");
 		title = json.getString("title");
@@ -84,5 +90,20 @@ public class MastodonList implements UserList {
 	@Override
 	public int getSubscriberCount() {
 		return 0;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=" + id + " title=\"" + title + "\"";
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof UserList))
+			return false;
+		return ((UserList) obj).getId() == id;
 	}
 }

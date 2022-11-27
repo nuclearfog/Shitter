@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.model.Account;
@@ -22,12 +23,16 @@ public class MastodonAccount implements Account {
 	private User user;
 
 	/**
-	 *
+	 * @param user          user information
+	 * @param hostname      hostname of the Mastodon isntance
+	 * @param bearer        bearer token
+	 * @param client_id     app client ID
+	 * @param client_secret app client secret
 	 */
-	public MastodonAccount(User user, String hostname, String baerer, String client_id, String client_secret) {
+	public MastodonAccount(User user, String hostname, String bearer, String client_id, String client_secret) {
 		this.user = user;
 		this.hostname = hostname;
-		this.bearer = baerer;
+		this.bearer = bearer;
 		this.client_id = client_id;
 		this.client_secret = client_secret;
 		createdAt = System.currentTimeMillis();
@@ -93,5 +98,20 @@ public class MastodonAccount implements Account {
 	@Override
 	public int getApiType() {
 		return API_MASTODON;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return user.toString();
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Account))
+			return false;
+		return user.equals(((Account) obj).getUser());
 	}
 }

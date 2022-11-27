@@ -5,6 +5,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -21,32 +22,60 @@ public class MastodonStatus implements Status {
 	private static final long serialVersionUID = 1184375228249441241L;
 
 	private long id;
+	private long replyId;
+	private long replyUserId;
 	private long createdAt;
 
 	private int replyCount, favoriteCount, reblogCount;
 	private boolean favorited, reblogged, sensitive;
 
-	private String text, source;
+	private String text, source, mentions;
 
 	private User author;
 
-
+	/**
+	 * @param json          Mastodon status json object
+	 * @param currentUserId Id of the current user
+	 */
 	public MastodonStatus(JSONObject json, long currentUserId) throws JSONException {
 		JSONObject application = json.optJSONObject("application");
-		id = Long.parseLong(json.getString("id"));
+		JSONArray mentionsJson = json.optJSONArray("mentions");
+		String idStr = json.getString("id");
+		String replyIdStr = json.optString("in_reply_to_id", "0");
+		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
+
+		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 		createdAt = StringTools.getTime2(json.optString("created_at"));
 		replyCount = json.optInt("replies_count");
 		reblogCount = json.optInt("reblogs_count");
 		favoriteCount = json.optInt("favourites_count");
 		favorited = json.optBoolean("favourited");
 		reblogged = json.optBoolean("reblogged");
-		text = json.optString("content", "");
+		text = json.optString("text", "");
 		sensitive = json.optBoolean("sensitive", false);
-		if (application != null)
+		if (mentionsJson != null) {
+			StringBuilder mentionsBuilder = new StringBuilder();
+			for (int i = 0; i < mentionsJson.length(); i++) {
+				String item = mentionsJson.getJSONObject(i).optString("acct", "");
+				mentionsBuilder.append('@').append(item).append(' ');
+			}
+			mentions = mentionsBuilder.toString();
+			text = mentions + ' ' + text;
+		} else {
+			mentions = "";
+		}
+		if (application != null) {
 			source = application.optString("name", "");
-		else
+		} else {
 			source = "";
-		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
+		}
+		try {
+			id = Long.parseLong(idStr);
+			replyId = Long.parseLong(replyIdStr);
+			replyUserId = Long.parseLong(replyUserIdStr);
+		} catch (NumberFormatException e) {
+			throw new JSONException("bad ID:" + idStr + ' ' + replyIdStr + ' ' + replyUserIdStr);
+		}
 	}
 
 
@@ -95,13 +124,13 @@ public class MastodonStatus implements Status {
 
 	@Override
 	public long getRepliedUserId() {
-		return 0;
+		return replyUserId;
 	}
 
 
 	@Override
 	public long getRepliedStatusId() {
-		return 0;
+		return replyId;
 	}
 
 
@@ -138,13 +167,13 @@ public class MastodonStatus implements Status {
 
 	@Override
 	public String getUserMentions() {
-		return "";
+		return mentions;
 	}
 
 
 	@Override
 	public int getMediaType() {
-		return 0;
+		return MEDIA_NONE;
 	}
 
 
@@ -181,5 +210,20 @@ public class MastodonStatus implements Status {
 	@Override
 	public String getLocationCoordinates() {
 		return "";
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return author.toString() + " text=\"" + text + "\"";
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Status))
+			return false;
+		return ((Status) obj).getId() == id;
 	}
 }

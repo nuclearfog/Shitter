@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
@@ -101,5 +104,20 @@ public class TwitterAccount implements Account {
 	@Override
 	public int getApiType() {
 		return Account.API_TWITTER;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return user.toString();
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Account))
+			return false;
+		return user.equals(((Account) obj).getUser());
 	}
 }

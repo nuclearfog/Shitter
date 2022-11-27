@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -38,6 +41,7 @@ public class MastodonUser implements User {
 	 * @param json json object used by Mastodon API
 	 */
 	public MastodonUser(JSONObject json) throws JSONException {
+		String idStr = json.getString("id");
 		screenname = json.optString("acct", "");
 		username = json.optString("display_name");
 		createdAt = StringTools.getTime2(json.optString("created_at", ""));
@@ -51,9 +55,9 @@ public class MastodonUser implements User {
 		locked = json.optBoolean("locked");
 
 		try {
-			id = Long.parseLong(json.getString("id"));
+			id = Long.parseLong(idStr);
 		} catch (NumberFormatException e) {
-			throw new JSONException("bad user ID:" + id);
+			throw new JSONException("bad user ID:" + idStr);
 		}
 	}
 
@@ -163,5 +167,20 @@ public class MastodonUser implements User {
 	@Override
 	public boolean isCurrentUser() {
 		return isCurrentUser;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "name=\"" + screenname + "\"";
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof User))
+			return false;
+		return ((User) obj).getId() == id;
 	}
 }

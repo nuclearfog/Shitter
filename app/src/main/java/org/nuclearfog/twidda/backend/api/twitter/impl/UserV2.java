@@ -9,8 +9,6 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
 
-import java.util.regex.Pattern;
-
 /**
  * User implementation of API V2
  *
@@ -19,8 +17,6 @@ import java.util.regex.Pattern;
 public class UserV2 implements User {
 
 	public static final long serialVersionUID = 1136243062864162774L;
-
-	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
 	/**
 	 * extra parameters required to fetch additional data
@@ -76,9 +72,9 @@ public class UserV2 implements User {
 		} else {
 			this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
 		}
-		if (ID_PATTERN.matcher(idStr).matches()) {
+		try {
 			id = Long.parseLong(idStr);
-		} else {
+		} catch (NumberFormatException e) {
 			throw new JSONException("bad user ID: " + idStr);
 		}
 	}

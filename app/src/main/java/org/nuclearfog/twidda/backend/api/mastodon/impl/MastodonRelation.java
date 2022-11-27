@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Relation;
 
@@ -16,7 +18,10 @@ public class MastodonRelation implements Relation {
 	private boolean blocked;
 	private boolean muted;
 
-
+	/**
+	 * @param json      Relation json object
+	 * @param currentId ID of the current user
+	 */
 	public MastodonRelation(JSONObject json, long currentId) {
 		currentUser = currentId == Long.parseLong(json.optString("id", "0"));
 		following = json.optBoolean("following");
@@ -59,5 +64,13 @@ public class MastodonRelation implements Relation {
 	@Override
 	public boolean canDm() {
 		return false;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "following=" + following + " follower=" + follower +
+				" blocked=" + blocked + " muted=" + muted;
 	}
 }

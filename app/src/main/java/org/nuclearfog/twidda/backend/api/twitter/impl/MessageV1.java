@@ -11,16 +11,12 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
-import java.util.regex.Pattern;
-
 /**
  * API 1.1 implementation of a directmessage
  *
  * @author nuclearfog
  */
 public class MessageV1 implements Message {
-
-	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
 	private long id;
 	private long timestamp;
@@ -37,9 +33,9 @@ public class MessageV1 implements Message {
 	 */
 	public MessageV1(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
-		if (ID_PATTERN.matcher(idStr).matches()) {
+		try {
 			id = Long.parseLong(idStr);
-		} else {
+		} catch (NumberFormatException e) {
 			throw new JSONException("bad message ID:" + idStr);
 		}
 		timestamp = Long.parseLong(json.getString("created_timestamp"));

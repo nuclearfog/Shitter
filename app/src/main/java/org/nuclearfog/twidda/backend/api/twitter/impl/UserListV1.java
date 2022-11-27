@@ -9,8 +9,6 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
-import java.util.regex.Pattern;
-
 /**
  * API v 1.1 user list implementation
  *
@@ -24,8 +22,6 @@ public class UserListV1 implements UserList {
 	 * indicates that a list can only be accessed by the owner
 	 */
 	private static final String PRIVATE = "private";
-
-	private static final Pattern ID_PATTERN = Pattern.compile("\\d+");
 
 	private long id;
 	private long createdAt;
@@ -44,11 +40,7 @@ public class UserListV1 implements UserList {
 	 */
 	public UserListV1(JSONObject json, long currentId) throws JSONException {
 		String idStr = json.getString("id_str");
-		if (ID_PATTERN.matcher(idStr).matches()) {
-			id = Long.parseLong(idStr);
-		} else {
-			throw new JSONException("bad userlist ID: " + idStr);
-		}
+
 		owner = new UserV1(json.getJSONObject("user"), currentId);
 		createdAt = StringTools.getTime1(json.optString("created_at", ""));
 		title = json.optString("name", "");
@@ -57,6 +49,11 @@ public class UserListV1 implements UserList {
 		subscriberCount = json.optInt("subscriber_count");
 		isPrivate = PRIVATE.equals(json.optString("mode"));
 		following = json.optBoolean("following");
+		try {
+			id = Long.parseLong(idStr);
+		} catch (NumberFormatException e) {
+			throw new JSONException("bad userlist ID: " + idStr);
+		}
 	}
 
 	@Override

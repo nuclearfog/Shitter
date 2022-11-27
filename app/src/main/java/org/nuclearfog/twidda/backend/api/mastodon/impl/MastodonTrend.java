@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Trend;
@@ -17,7 +19,10 @@ public class MastodonTrend implements Trend {
 	private int popularity;
 	private String name;
 
-
+	/**
+	 * @param json trend json object
+	 * @param pos  array index
+	 */
 	public MastodonTrend(JSONObject json, int pos) {
 		JSONArray history = json.optJSONArray("history");
 		name = json.optString("name", "");
@@ -52,5 +57,12 @@ public class MastodonTrend implements Trend {
 	@Override
 	public int getPopularity() {
 		return popularity;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "name=\"" + name + " rank=" + rank;
 	}
 }
