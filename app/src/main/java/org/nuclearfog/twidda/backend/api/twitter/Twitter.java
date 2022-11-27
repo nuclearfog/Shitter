@@ -36,6 +36,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Metrics;
+import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
@@ -1139,6 +1140,12 @@ public class Twitter implements Connection {
 			cursor = ids[ids.length - 1];
 		}
 		return new ArrayList<>(result);
+	}
+
+
+	@Override
+	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
+		throw new TwitterException("not supported!");
 	}
 
 	/**

@@ -10,8 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
@@ -29,6 +31,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Metrics;
+import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
@@ -86,6 +89,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_INCOMIN_REQUESTS = "/api/v1/follow_requests";
 	private static final String ENDPOINT_LOOKUP_USER = "/api/v1/accounts/lookup";
 	private static final String ENDPOINT_USERLIST = "/api/v1/lists";
+	private static final String ENDPOINT_NOTIFICATION = "/api/v1/notifications";
 
 	MediaType TYPE_TEXT = MediaType.parse("text/plain");
 
@@ -384,7 +388,23 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getMentionTimeline(long minId, long maxId) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		List<String> params = new ArrayList<>();
+		params.add("since_id=" + minId);
+		params.add("max_id=" + maxId);
+		params.add("limit=" + settings.getListSize());
+		params.add("types[]=mention");
+		try {
+			List<Notification> notifications = createNotifications(get(ENDPOINT_NOTIFICATION, params));
+			List<Status> mentions = new ArrayList<>(notifications.size());
+			for (Notification notification : notifications) {
+				if (notification.getType() == Notification.TYPE_MENTION) {
+					mentions.add(notification.getStatus());
+				}
+			}
+			return mentions;
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
@@ -662,6 +682,20 @@ public class Mastodon implements Connection {
 		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
+
+	@Override
+	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
+		List<String> params = new ArrayList<>();
+		params.add("since_id=" + minId);
+		params.add("max_id=" + maxId);
+		params.add("limit=" + settings.getListSize());
+		try {
+			return createNotifications(get(ENDPOINT_NOTIFICATION, params));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
 	/**
 	 * get information about the current user
 	 *
@@ -857,6 +891,28 @@ public class Mastodon implements Connection {
 				for (int i = 0; i < statuses.length(); i++) {
 					result.add(new MastodonStatus(statuses.getJSONObject(i), currentId));
 				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
+	 * create notification from response
+	 *
+	 * @return notification
+	 */
+	private List<Notification> createNotifications(Response response) throws MastodonException {
+		try {
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				long currentId = settings.getLogin().getId();
+				JSONArray json = new JSONArray(body.string());
+				List<Notification> result = new ArrayList<>(json.length());
+				for (int i = 0; i < json.length(); i++)
+					result.add(new MastodonNotification(json.getJSONObject(i), currentId));
 				return result;
 			}
 			throw new MastodonException(response);

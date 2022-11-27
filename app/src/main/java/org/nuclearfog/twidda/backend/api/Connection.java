@@ -10,6 +10,7 @@ import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Metrics;
+import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
@@ -545,4 +546,13 @@ public interface Connection {
 	 * @return media ID
 	 */
 	long uploadMedia(MediaUpdate mediaUpdate) throws ConnectionException;
+
+	/**
+	 * get notification of the current user
+	 *
+	 * @param minId minimum ID
+	 * @param maxId maximum ID
+	 * @return notification list
+	 */
+	List<Notification> getNotifications(long minId, long maxId) throws ConnectionException;
 }
