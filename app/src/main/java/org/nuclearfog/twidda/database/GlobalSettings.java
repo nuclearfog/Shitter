@@ -542,6 +542,8 @@ public class GlobalSettings {
 	 * @return suffix string
 	 */
 	public String getImageSuffix() {
+		if (account.getApiType() == Account.API_MASTODON)
+			return "";
 		if (hqImages)
 			return PROFILE_IMG_HIGH_RES;
 		return PROFILE_IMG_LOW_RES;
@@ -553,6 +555,8 @@ public class GlobalSettings {
 	 * @return suffix string
 	 */
 	public String getBannerSuffix() {
+		if (account.getApiType() == Account.API_MASTODON)
+			return "";
 		if (hqImages)
 			return BANNER_IMG_MID_RES;
 		return BANNER_IMG_LOW_RES;

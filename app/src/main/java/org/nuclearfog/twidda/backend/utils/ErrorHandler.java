@@ -52,6 +52,9 @@ public final class ErrorHandler {
 					}
 					return context.getString(R.string.error_rate_limit);
 
+				case ConnectionException.SERVICE_UNAVAILABLE:
+					return context.getString(R.string.error_service_unavailable);
+
 				case ConnectionException.USER_NOT_FOUND:
 					return context.getString(R.string.error_user_not_found);
 

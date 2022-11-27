@@ -12,12 +12,7 @@ public abstract class ConnectionException extends Exception {
 	/**
 	 * defines an error which is not listed here
 	 */
-	public static final int ERROR_NOT_DEFINED = -1;
-
-	/**
-	 * indicates that an API rate limit is exceeded
-	 */
-	public static final int RATE_LIMIT_EX = 0;
+	public static final int ERROR_NOT_DEFINED = 0;
 
 	/**
 	 * indicates that an user was not found by his ID or @name
@@ -103,6 +98,16 @@ public abstract class ConnectionException extends Exception {
 	 * invalid media (wrong format, size)
 	 */
 	public static final int INVALID_MEDIA = 17;
+
+	/**
+	 * indicates that an API rate limit is exceeded
+	 */
+	public static final int RATE_LIMIT_EX = 18;
+
+	/**
+	 * service not available
+	 */
+	public static final int SERVICE_UNAVAILABLE = 19;
 
 	/**
 	 *

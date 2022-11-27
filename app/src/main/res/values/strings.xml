@@ -79,6 +79,7 @@
 	<string name="error_file_format">File format not supported!</string>
 	<string name="error_empty_name">Empty user name!</string>
 	<string name="error_user_not_found">User not found!</string>
+	<string name="error_service_unavailable">Service not available!</string>
 	<string name="error_accesstoken">Invalid access! Please re-login!</string>
 	<string name="error_status_length">Status is too long!</string>
 	<string name="error_duplicate_status">Duplicate Status!</string>
@@ -98,7 +99,7 @@
 	<string name="error_forbidden_api_access">API does not support this operation!</string>
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
-	<string name="error_empty_token">token key missing!</string>
+	<string name="error_empty_token">please add token key</string>
 	<string name="error_invalid_url">invalid URL!</string>
 
 	<!-- menu icon strings -->
@@ -216,7 +217,7 @@
 	<string name="proxy_password">Password</string>
 	<string name="settings_key1_hint">Consumer key</string>
 	<string name="settings_key2_hint">Consumer secret</string>
-	<string name="settings_mastodon_hint">mastodon.social</string>
+	<string name="settings_mastodon_hint" translatable="false">mastodon.social</string>
 	<string name="confirm_mute">mute user?</string>
 	<string name="item_list_pb_desc">Profile of the list owner</string>
 	<string name="list_appbar">Lists</string>
