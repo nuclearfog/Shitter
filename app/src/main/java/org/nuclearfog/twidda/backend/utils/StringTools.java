@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,10 +52,16 @@ public final class StringTools {
 	 */
 	private static final SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
 
+	private static final TimeZone TIME_ZONE = TimeZone.getDefault();
+
 	/**
 	 * fallback date if parsing failed
 	 */
 	private static final long DEFAULT_TIME = 0x61D99F64;
+
+	public static final int TIME_TWITTER_V1 = 0xE16A;
+	public static final int TIME_TWITTER_V2 = 0x3F5C;
+	public static final int TIME_MASTODON = 0x5105;
 
 	/**
 	 * random generator used to generate random strings
@@ -184,33 +191,33 @@ public final class StringTools {
 	}
 
 	/**
-	 * convert Twitter API 1.1 date time to long format
+	 * convert time strings from different APIs to the local format
 	 *
-	 * @param timeStr Twitter time string
+	 * @param timeStr    Twitter time string
+	 * @param timeFormat API format to use {@link #TIME_TWITTER_V1,#TIME_TWITTER_V2,#TIME_MASTODON}
 	 * @return date time
 	 */
-	public static long getTime1(String timeStr) {
+	public static long getTime(String timeStr, int timeFormat) {
 		try {
-			Date date = dateFormat1.parse(timeStr);
-			if (date != null)
-				return date.getTime();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return DEFAULT_TIME;
-	}
+			switch (timeFormat) {
+				case TIME_TWITTER_V1:
+					Date result = dateFormat1.parse(timeStr);
+					if (result != null)
+						return result.getTime();
+					break;
 
-	/**
-	 * convert Twitter API 2 date time to long format
-	 *
-	 * @param timeStr Twitter time string
-	 * @return date time
-	 */
-	public static long getTime2(String timeStr) {
-		try {
-			Date date = dateFormat2.parse(timeStr);
-			if (date != null)
-				return date.getTime();
+				case TIME_TWITTER_V2:
+					result = dateFormat2.parse(timeStr);
+					if (result != null)
+						return result.getTime();
+					break;
+
+				case TIME_MASTODON:
+					result = dateFormat2.parse(timeStr);
+					if (result != null) // temporary fix: Mastodon time depends on timezone
+						return result.getTime() + TIME_ZONE.getOffset(new Date().getTime());
+					break;
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend.api;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
-import org.nuclearfog.twidda.backend.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
@@ -515,7 +515,7 @@ public interface Connection {
 	 * @param link link to the image
 	 * @return image bitmap
 	 */
-	MediaUpdate downloadImage(String link) throws ConnectionException;
+	MediaStatus downloadImage(String link) throws ConnectionException;
 
 	/**
 	 * updates current user's profile
@@ -545,7 +545,7 @@ public interface Connection {
 	 * @param mediaUpdate inputstream with MIME type of the media
 	 * @return media ID
 	 */
-	long uploadMedia(MediaUpdate mediaUpdate) throws ConnectionException;
+	long uploadMedia(MediaStatus mediaUpdate) throws ConnectionException;
 
 	/**
 	 * get notification of the current user

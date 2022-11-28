@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.adapter;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -182,7 +181,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 				holder.username.setText(sender.getUsername());
 				holder.screenname.setText(sender.getScreenname());
 				holder.receiver.setText(message.getReceiver().getScreenname());
-				holder.time.setText(formatCreationTime(resources, message.getTimestamp()));
+				holder.time.setText(StringTools.formatCreationTime(resources, message.getTimestamp()));
 				holder.message.setText(text);
 				if (sender.isVerified()) {
 					holder.verifiedIcon.setVisibility(VISIBLE);

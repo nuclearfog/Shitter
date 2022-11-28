@@ -46,7 +46,7 @@ public class MastodonStatus implements Status {
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
-		createdAt = StringTools.getTime2(json.optString("created_at"));
+		createdAt = StringTools.getTime(json.optString("created_at"), StringTools.TIME_MASTODON);
 		replyCount = json.optInt("replies_count");
 		reblogCount = json.optInt("reblogs_count");
 		favoriteCount = json.optInt("favourites_count");

@@ -19,13 +19,14 @@ import org.nuclearfog.twidda.backend.api.twitter.impl.RelationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TrendV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
+import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterNotification;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserV2;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
-import org.nuclearfog.twidda.backend.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
@@ -972,7 +973,7 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public long uploadMedia(MediaUpdate mediaUpdate) throws TwitterException {
+	public long uploadMedia(MediaStatus mediaUpdate) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		String state;
 		boolean enableChunk;
@@ -1056,7 +1057,7 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public MediaUpdate downloadImage(String link) throws TwitterException {
+	public MediaStatus downloadImage(String link) throws TwitterException {
 		try {
 			// this type of link requires authentication
 			if (link.startsWith(DOWNLOAD)) {
@@ -1067,7 +1068,7 @@ public class Twitter implements Connection {
 					if (type != null) {
 						String mime = type.toString();
 						InputStream stream = body.byteStream();
-						return new MediaUpdate(stream, mime);
+						return new MediaStatus(stream, mime);
 					}
 				}
 				throw new TwitterException(response);
@@ -1082,7 +1083,7 @@ public class Twitter implements Connection {
 					if (type != null) {
 						String mime = type.toString();
 						InputStream stream = body.byteStream();
-						return new MediaUpdate(stream, mime);
+						return new MediaStatus(stream, mime);
 					}
 				}
 				throw new TwitterException(response);
@@ -1145,7 +1146,12 @@ public class Twitter implements Connection {
 
 	@Override
 	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
-		throw new TwitterException("not supported!");
+		List<Status> mentions = getMentionTimeline(minId, maxId);
+		List<Notification> result = new ArrayList<>(mentions.size());
+		for (Status status : mentions) {
+			result.add(new TwitterNotification(status));
+		}
+		return result;
 	}
 
 	/**
@@ -1595,6 +1601,7 @@ public class Twitter implements Connection {
 	 * @param endpoint    endpoint url
 	 * @param params      additional http parameters
 	 * @param enableChunk true to enable file chunk
+	 * @param addToKey    key to add the file
 	 * @return http response
 	 */
 	private Response post(String endpoint, List<String> params, InputStream is, String addToKey, boolean enableChunk) throws IOException {

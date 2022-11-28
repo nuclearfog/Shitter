@@ -56,7 +56,7 @@ public class UserV2 implements User {
 		location = json.optString("location", "");
 		isVerified = json.optBoolean("verified");
 		profileBannerUrl = json.optString("profile_banner_url", "");
-		created = StringTools.getTime2(json.optString("created_at", ""));
+		created = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V2);
 		defaultImage = profileImageUrl.contains("default_profile_images");
 
 		url = getUrl(json);

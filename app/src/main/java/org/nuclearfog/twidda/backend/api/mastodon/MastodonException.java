@@ -44,6 +44,10 @@ public class MastodonException extends ConnectionException {
 				errorCode = RATE_LIMIT_EX;
 				break;
 
+			case 422:
+				errorCode = INVALID_MEDIA;
+				break;
+
 			case 503:
 				errorCode = SERVICE_UNAVAILABLE;
 				break;

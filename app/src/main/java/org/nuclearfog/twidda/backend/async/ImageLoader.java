@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 
@@ -52,7 +52,7 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 			// download imaged to a local cache folder
 			for (Uri link : links) {
 				// get input stream
-				MediaUpdate mediaUpdate = connection.downloadImage(link.toString());
+				MediaStatus mediaUpdate = connection.downloadImage(link.toString());
 				InputStream input = mediaUpdate.getStream();
 				String mimeType = mediaUpdate.getMimeType();
 

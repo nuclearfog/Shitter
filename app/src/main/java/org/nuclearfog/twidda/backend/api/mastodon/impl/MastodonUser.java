@@ -44,7 +44,7 @@ public class MastodonUser implements User {
 		String idStr = json.getString("id");
 		screenname = json.optString("acct", "");
 		username = json.optString("display_name");
-		createdAt = StringTools.getTime2(json.optString("created_at", ""));
+		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_MASTODON);
 		profileUrl = json.optString("avatar");
 		bannerUrl = json.optString("banner");
 		description = json.optString("note");

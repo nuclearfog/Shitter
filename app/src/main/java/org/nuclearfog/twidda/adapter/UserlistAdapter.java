@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.adapter;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -66,6 +65,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 
 	private UserLists userlists = new UserLists(0L, 0L);
 	private int loadingIndex = NO_LOADING;
+
 
 	/**
 	 * @param listener item click listener
@@ -153,7 +153,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> {
 				vh.description.setText(item.getDescription());
 				vh.username.setText(owner.getUsername());
 				vh.screenname.setText(owner.getScreenname());
-				vh.date.setText(formatCreationTime(resources, item.getTimestamp()));
+				vh.date.setText(StringTools.formatCreationTime(resources, item.getTimestamp()));
 				vh.member.setText(NUM_FORMAT.format(item.getMemberCount()));
 				vh.subscriber.setText(NUM_FORMAT.format(item.getSubscriberCount()));
 				if (settings.imagesEnabled() && !owner.getImageUrl().isEmpty()) {

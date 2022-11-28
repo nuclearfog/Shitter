@@ -66,7 +66,7 @@ public class UserV1 implements User {
 		favoriteCount = json.optInt("favourites_count");
 		followReqSent = json.optBoolean("follow_request_sent");
 		defaultImage = json.optBoolean("default_profile_image");
-		created = StringTools.getTime1(json.optString("created_at", ""));
+		created = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		description = getDescription(json);
 		url = getUrl(json);
 

@@ -25,7 +25,7 @@ public class StatusUpdate {
 	private double latitude;
 
 	private List<Uri> mediaUris = new ArrayList<>(5);
-	private MediaUpdate[] mediaUpdates = {};
+	private MediaStatus[] mediaUpdates = {};
 	private boolean hasLocation = false;
 
 	/**
@@ -93,7 +93,7 @@ public class StatusUpdate {
 	 *
 	 * @return list of media updates
 	 */
-	public MediaUpdate[] getMediaUpdates() {
+	public MediaStatus[] getMediaUpdates() {
 		return mediaUpdates;
 	}
 
@@ -152,13 +152,13 @@ public class StatusUpdate {
 			return true;
 		try {
 			// open input streams
-			mediaUpdates = new MediaUpdate[mediaUris.size()];
+			mediaUpdates = new MediaStatus[mediaUris.size()];
 			for (int i = 0; i < mediaUpdates.length; i++) {
 				InputStream is = resolver.openInputStream(mediaUris.get(i));
 				String mime = resolver.getType(mediaUris.get(i));
 				// check if stream is valid
 				if (is != null && mime != null && is.available() > 0) {
-					mediaUpdates[i] = new MediaUpdate(is, mime);
+					mediaUpdates[i] = new MediaStatus(is, mime);
 				} else {
 					return false;
 				}
@@ -174,7 +174,7 @@ public class StatusUpdate {
 	 * close all open streams
 	 */
 	public void close() {
-		for (MediaUpdate mediaUpdate : mediaUpdates) {
+		for (MediaStatus mediaUpdate : mediaUpdates) {
 			mediaUpdate.close();
 		}
 	}

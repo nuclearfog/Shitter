@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
-import org.nuclearfog.twidda.backend.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
@@ -44,11 +44,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okio.BufferedSink;
+import okio.Okio;
 
 /**
  * Implementation of the Mastodon API
@@ -90,8 +93,11 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_LOOKUP_USER = "/api/v1/accounts/lookup";
 	private static final String ENDPOINT_USERLIST = "/api/v1/lists";
 	private static final String ENDPOINT_NOTIFICATION = "/api/v1/notifications";
+	private static final String ENDPOINT_UPLOAD_MEDIA = "/api/v2/media";
+	private static final String ENDPOINT_MEDIA_STATUS = "/api/v1/media/";
 
-	MediaType TYPE_TEXT = MediaType.parse("text/plain");
+	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
+	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
 
 
 	private GlobalSettings settings;
@@ -508,6 +514,8 @@ public class Mastodon implements Connection {
 	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("status=" + StringTools.encode(update.getText()));
+		// add identifier to prevent duplicate posts
+		params.add("Idempotency-Key=" + System.currentTimeMillis() / 5000);
 		params.add("visibility=public");
 		if (update.getReplyId() > 0)
 			params.add("in_reply_to_id=" + update.getReplyId());
@@ -654,8 +662,23 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public MediaUpdate downloadImage(String link) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+	public MediaStatus downloadImage(String link) throws MastodonException {
+		try {
+			Request request = new Request.Builder().url(link).get().build();
+			Response response = client.newCall(request).execute();
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				MediaType type = body.contentType();
+				if (type != null) {
+					String mime = type.toString();
+					InputStream stream = body.byteStream();
+					return new MediaStatus(stream, mime);
+				}
+			}
+			throw new MastodonException(response);
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
@@ -678,8 +701,32 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public long uploadMedia(MediaUpdate mediaUpdate) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+	public long uploadMedia(MediaStatus mediaUpdate) throws MastodonException {
+		try {
+			Response response = post(ENDPOINT_UPLOAD_MEDIA, new ArrayList<>(), mediaUpdate.getStream(), "file");
+			ResponseBody body = response.body();
+			if (body != null) {
+				if (response.code() == 200) {
+					JSONObject json = new JSONObject(body.string());
+					return Long.parseLong(json.getString("id"));
+				}
+				// wait until processed
+				else if (response.code() == 202) {
+					int retryCount = 0;
+					JSONObject json = new JSONObject(body.string());
+					long id = Long.parseLong(json.getString("id"));
+					while (retryCount++ < 10) {
+						response = get(ENDPOINT_MEDIA_STATUS + id, new ArrayList<>());
+						if (response.code() == 200)
+							return id;
+						Thread.sleep(2000L);
+					}
+				}
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException | NumberFormatException | InterruptedException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
@@ -952,18 +999,6 @@ public class Mastodon implements Connection {
 	}
 
 	/**
-	 * create post response with user bearer token
-	 *
-	 * @param endpoint endpoint to use
-	 * @param params   additional parameters
-	 * @return POST response
-	 */
-	private Response post(String endpoint, List<String> params) throws IOException {
-		Account currentLogin = settings.getLogin();
-		return post(currentLogin.getHostname(), endpoint, currentLogin.getBearerToken(), params);
-	}
-
-	/**
 	 * create a GET response
 	 *
 	 * @param endpoint endpoint url
@@ -980,6 +1015,18 @@ public class Mastodon implements Connection {
 	}
 
 	/**
+	 * create post response with user bearer token
+	 *
+	 * @param endpoint endpoint to use
+	 * @param params   additional parameters
+	 * @return POST response
+	 */
+	private Response post(String endpoint, List<String> params) throws IOException {
+		Account login = settings.getLogin();
+		return post(login.getHostname(), endpoint, login.getBearerToken(), params);
+	}
+
+	/**
 	 * create a POST response
 	 *
 	 * @param endpoint endpoint url
@@ -988,7 +1035,43 @@ public class Mastodon implements Connection {
 	 * @return POST response
 	 */
 	private Response post(String hostname, String endpoint, @Nullable String bearer, List<String> params) throws IOException {
-		RequestBody body = RequestBody.create("", TYPE_TEXT);
+		return post(hostname, endpoint, bearer, params, RequestBody.create("", TYPE_TEXT));
+	}
+
+	/**
+	 * send POST request with file and create response
+	 *
+	 * @param endpoint endpoint url
+	 * @param params   additional http parameters
+	 * @return http response
+	 */
+	private Response post(String endpoint, List<String> params, InputStream is, String addToKey) throws IOException {
+		RequestBody data = new RequestBody() {
+			@Override
+			public MediaType contentType() {
+				return TYPE_STREAM;
+			}
+
+			@Override
+			public void writeTo(@NonNull BufferedSink sink) throws IOException {
+				sink.writeAll(Okio.buffer(Okio.source(is)));
+			}
+		};
+		Account login = settings.getLogin();
+		RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, StringTools.getRandomString(), data).build();
+		return post(login.getHostname(), endpoint, login.getBearerToken(), params, body);
+	}
+
+	/**
+	 * send POST request
+	 *
+	 * @param hostname hostname of a Mastodon instance
+	 * @param endpoint POST endpoint to use
+	 * @param bearer   bearer token to authenticate
+	 * @param params   additional parameters
+	 * @return POST response
+	 */
+	private Response post(String hostname, String endpoint, @Nullable String bearer, List<String> params, RequestBody body) throws IOException {
 		Request.Builder request = new Request.Builder().url(buildUrl(hostname, endpoint, params)).post(body);
 		if (bearer != null) {
 			request.addHeader("Authorization", "Bearer " + bearer);

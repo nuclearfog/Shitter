@@ -96,7 +96,7 @@ public class TweetV1 implements Status {
 		isFavorited = json.optBoolean("favorited");
 		isRetweeted = json.optBoolean("retweeted");
 		isSensitive = json.optBoolean("possibly_sensitive");
-		timestamp = StringTools.getTime1(json.optString("created_at", ""));
+		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		coordinates = getLocation(json);
 		mediaLinks = addMedia(json);
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());

@@ -10,7 +10,7 @@ import java.io.InputStream;
  *
  * @author nuclearfog
  */
-public class MediaUpdate {
+public class MediaStatus {
 
 	private InputStream inputStream;
 	private String mimeType;
@@ -19,7 +19,7 @@ public class MediaUpdate {
 	 * @param inputStream stream of the media (local or online)
 	 * @param mimeType    MIME type e.g. image/jpeg
 	 */
-	public MediaUpdate(InputStream inputStream, String mimeType) {
+	public MediaStatus(InputStream inputStream, String mimeType) {
 		this.inputStream = inputStream;
 		this.mimeType = mimeType;
 	}

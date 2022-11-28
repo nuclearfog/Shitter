@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.update.MediaUpdate;
+import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.ui.activities.StatusEditor;
 
@@ -40,7 +40,7 @@ public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Void> {
 		StatusUpdate statusUpdate = statusUpdates[0];
 		try {
 			// upload media first
-			MediaUpdate[] mediaUpdates = statusUpdate.getMediaUpdates();
+			MediaStatus[] mediaUpdates = statusUpdate.getMediaUpdates();
 			long[] mediaIds = new long[mediaUpdates.length];
 			for (int pos = 0; pos < mediaUpdates.length; pos++) {
 				// upload media file and save media ID

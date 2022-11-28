@@ -19,7 +19,7 @@ import java.io.InputStream;
 public class MessageUpdate {
 
 	private Uri uri;
-	private MediaUpdate mediaUpdate;
+	private MediaStatus mediaUpdate;
 	private String name = "";
 	private String text = "";
 
@@ -62,7 +62,7 @@ public class MessageUpdate {
 	 * @return input stream
 	 */
 	@Nullable
-	public MediaUpdate getMediaUpdate() {
+	public MediaStatus getMediaUpdate() {
 		return mediaUpdate;
 	}
 
@@ -103,7 +103,7 @@ public class MessageUpdate {
 			String mimeType = resolver.getType(uri);
 			InputStream fileStream = resolver.openInputStream(uri);
 			if (fileStream != null && mimeType != null && fileStream.available() > 0) {
-				mediaUpdate = new MediaUpdate(fileStream, mimeType);
+				mediaUpdate = new MediaStatus(fileStream, mimeType);
 				return true;
 			}
 		} catch (IOException e) {

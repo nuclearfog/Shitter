@@ -42,7 +42,7 @@ public class UserListV1 implements UserList {
 		String idStr = json.getString("id_str");
 
 		owner = new UserV1(json.getJSONObject("user"), currentId);
-		createdAt = StringTools.getTime1(json.optString("created_at", ""));
+		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		title = json.optString("name", "");
 		description = json.optString("description", "");
 		memberCount = json.optInt("member_count");
