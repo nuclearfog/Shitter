@@ -27,10 +27,12 @@ public class MastodonStatus implements Status {
 	private long replyUserId;
 	private long createdAt;
 
+	private int mediaType;
 	private int replyCount, favoriteCount, reblogCount;
 	private boolean favorited, reblogged, sensitive;
 
 	private String text, source, mentions;
+	private String[] mediaLinks;
 
 	private User author;
 
@@ -55,6 +57,7 @@ public class MastodonStatus implements Status {
 		text = json.optString("content", "");
 		text = Jsoup.parse(text).text();
 		sensitive = json.optBoolean("sensitive", false);
+		mediaLinks = getMediaLinks(json);
 		if (mentionsJson != null) {
 			StringBuilder mentionsBuilder = new StringBuilder();
 			for (int i = 0; i < mentionsJson.length(); i++) {
@@ -164,7 +167,10 @@ public class MastodonStatus implements Status {
 	@NonNull
 	@Override
 	public Uri[] getMediaUris() {
-		return new Uri[0];
+		Uri[] result = new Uri[mediaLinks.length];
+		for (int i = 0; i < result.length; i++)
+			result[i] = Uri.parse(mediaLinks[i]);
+		return result;
 	}
 
 
@@ -176,7 +182,7 @@ public class MastodonStatus implements Status {
 
 	@Override
 	public int getMediaType() {
-		return MEDIA_NONE;
+		return mediaType;
 	}
 
 
@@ -228,5 +234,43 @@ public class MastodonStatus implements Status {
 		if (!(obj instanceof Status))
 			return false;
 		return ((Status) obj).getId() == id;
+	}
+
+	/**
+	 * get medialinks from json
+	 *
+	 * @return media link array
+	 */
+	private String[] getMediaLinks(JSONObject json) {
+		try {
+			JSONArray attachments = json.getJSONArray("media_attachments");
+			String[] result = new String[attachments.length()];
+			if (result.length > 0) {
+				String type = attachments.getJSONObject(0).getString("type");
+				switch (type) {
+					case "image":
+						mediaType = MEDIA_PHOTO;
+						break;
+
+					case "gifv":
+						mediaType = MEDIA_GIF;
+						break;
+
+					case "video":
+						mediaType = MEDIA_VIDEO;
+						break;
+
+					default:
+						mediaType = MEDIA_NONE;
+				}
+				for (int i = 0; i < result.length; i++) {
+					JSONObject item = attachments.getJSONObject(i);
+					result[i] = item.optString("url", "");
+				}
+			}
+			return result;
+		} catch (JSONException e) {
+			return new String[0];
+		}
 	}
 }
