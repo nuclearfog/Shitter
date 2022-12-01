@@ -1,5 +1,9 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -14,6 +18,8 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.activities.ProfileActivity;
+import org.nuclearfog.twidda.ui.activities.StatusActivity;
 
 import java.util.List;
 
@@ -65,7 +71,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	@Override
 	public void onStatusClick(Status status) {
 		if (!isRefreshing()) {
-			// todo add implementation
+			Intent intent = new Intent(requireContext(), StatusActivity.class);
+			intent.putExtra(KEY_STATUS_DATA, status);
+			startActivity(intent); // todo add update
 		}
 	}
 
@@ -73,7 +81,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	@Override
 	public void onUserClick(User user) {
 		if (!isRefreshing()) {
-			// todo add implementation
+			Intent intent = new Intent(requireContext(), ProfileActivity.class);
+			intent.putExtra(KEY_PROFILE_DATA, user);
+			startActivity(intent); // todo add update
 		}
 	}
 

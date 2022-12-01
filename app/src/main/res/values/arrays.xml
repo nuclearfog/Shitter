@@ -4,7 +4,7 @@
 	<integer-array name="home_tab_icons">
 		<item>@drawable/home</item>
 		<item>@drawable/hash</item>
-		<item>@drawable/mention</item>
+		<item>@drawable/bell</item>
 	</integer-array>
 
 	<integer-array name="search_tab_icons">

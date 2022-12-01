@@ -75,6 +75,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		reposter = itemView.findViewById(R.id.item_status_reposter_name);
 		created = itemView.findViewById(R.id.item_status_created_at);
 		replyname = itemView.findViewById(R.id.item_status_reply_name);
+		this.settings = settings;
+		this.picasso = picasso;
 
 		if (settings.likeEnabled()) {
 			favIcon.setImageResource(R.drawable.like);
@@ -83,8 +85,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		}
 		AppStyles.setTheme(container, 0);
 		cardLayout.setCardBackgroundColor(settings.getCardColor());
-		this.settings = settings;
-		this.picasso = picasso;
+
+		label.setOnClickListener(this);
+		itemView.setOnClickListener(this);
 	}
 
 
