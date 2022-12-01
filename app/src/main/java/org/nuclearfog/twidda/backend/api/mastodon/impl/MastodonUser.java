@@ -42,7 +42,7 @@ public class MastodonUser implements User {
 	 */
 	public MastodonUser(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
-		screenname = json.optString("acct", "");
+		screenname = '@' + json.optString("acct", "");
 		username = json.optString("display_name");
 		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_MASTODON);
 		profileUrl = json.optString("avatar");

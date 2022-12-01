@@ -27,12 +27,7 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 	/**
 	 * home timeline
 	 */
-	public static final int HOME = 1;
-
-	/**
-	 * mention timeline
-	 */
-	public static final int MENTION = 2;
+	public static final int HOME = 2;
 
 	/**
 	 * user timeline
@@ -114,21 +109,6 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 						db.saveHomeTimeline(statuses);
 					} else if (maxId > 1) {
 						statuses = connection.getHomeTimeline(sinceId, maxId);
-					}
-					break;
-
-				case MENTION:
-					if (sinceId == 0 && maxId == 0) {
-						statuses = db.getMentionTimeline();
-						if (statuses.isEmpty()) {
-							statuses = connection.getMentionTimeline(sinceId, maxId);
-							db.saveMentionTimeline(statuses);
-						}
-					} else if (sinceId > 0) {
-						statuses = connection.getMentionTimeline(sinceId, maxId);
-						db.saveMentionTimeline(statuses);
-					} else if (maxId > 1) {
-						statuses = connection.getMentionTimeline(sinceId, maxId);
 					}
 					break;
 

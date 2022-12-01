@@ -1,24 +1,16 @@
 package org.nuclearfog.twidda.adapter;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
-import android.content.res.Resources;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.TrendHolder;
+import org.nuclearfog.twidda.adapter.holder.TrendHolder.OnTrendClickListener;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,17 +20,12 @@ import java.util.List;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.TrendFragment
  */
-public class TrendAdapter extends Adapter<ViewHolder> {
+public class TrendAdapter extends Adapter<ViewHolder> implements OnTrendClickListener {
 
 	/**
 	 * trend limit
 	 */
 	private static final int INIT_COUNT = 50;
-
-	/**
-	 * Locale specific number format
-	 */
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private TrendClickListener itemClickListener;
 	private GlobalSettings settings;
@@ -64,15 +51,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		final TrendHolder vh = new TrendHolder(parent, settings);
-		vh.itemView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				int position = vh.getLayoutPosition();
-				if (position != NO_POSITION) {
-					itemClickListener.onTrendClick(trends.get(position));
-				}
-			}
-		});
+		vh.setOnTrendClickListener(this);
 		return vh;
 	}
 
@@ -81,16 +60,13 @@ public class TrendAdapter extends Adapter<ViewHolder> {
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
 		TrendHolder holder = (TrendHolder) vh;
 		Trend trend = trends.get(index);
-		holder.rank.setText(trend.getRank() + ".");
-		holder.name.setText(trend.getName());
-		if (trend.getPopularity() > 0) {
-			Resources resources = holder.vol.getContext().getResources();
-			String trendVol = NUM_FORMAT.format(trend.getPopularity()) + " " + resources.getString(R.string.trend_range);
-			holder.vol.setText(trendVol);
-			holder.vol.setVisibility(VISIBLE);
-		} else {
-			holder.vol.setVisibility(GONE);
-		}
+		holder.setContent(trend);
+	}
+
+
+	@Override
+	public void onTrendClick(int position) {
+		itemClickListener.onTrendClick(trends.get(position));
 	}
 
 	/**

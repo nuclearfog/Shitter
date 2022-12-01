@@ -393,28 +393,6 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getMentionTimeline(long minId, long maxId) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		params.add("since_id=" + minId);
-		params.add("max_id=" + maxId);
-		params.add("limit=" + settings.getListSize());
-		params.add("types[]=mention");
-		try {
-			List<Notification> notifications = createNotifications(get(ENDPOINT_NOTIFICATION, params));
-			List<Status> mentions = new ArrayList<>(notifications.size());
-			for (Notification notification : notifications) {
-				if (notification.getType() == Notification.TYPE_MENTION) {
-					mentions.add(notification.getStatus());
-				}
-			}
-			return mentions;
-		} catch (IOException e) {
-			throw new MastodonException(e);
-		}
-	}
-
-
-	@Override
 	public List<Status> getUserTimeline(long id, long minId, long maxId) throws MastodonException {
 		String endpoint =  ENDPOINT_USER_TIMELINE + id + "/statuses";
 		return getStatuses(endpoint, new ArrayList<>(), minId, maxId);
@@ -733,8 +711,10 @@ public class Mastodon implements Connection {
 	@Override
 	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
 		List<String> params = new ArrayList<>();
-		params.add("since_id=" + minId);
-		params.add("max_id=" + maxId);
+		if (minId > 0)
+			params.add("since_id=" + minId);
+		if (maxId > minId)
+			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());
 		try {
 			return createNotifications(get(ENDPOINT_NOTIFICATION, params));

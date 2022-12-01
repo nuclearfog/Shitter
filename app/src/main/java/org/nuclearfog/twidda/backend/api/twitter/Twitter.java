@@ -559,17 +559,6 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public List<Status> getMentionTimeline(long minId, long maxId) throws TwitterException {
-		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
-		return getTweets1(TWEETS_MENTIONS, params);
-	}
-
-
-	@Override
 	public List<Status> getUserTimeline(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
@@ -1146,7 +1135,13 @@ public class Twitter implements Connection {
 
 	@Override
 	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
-		List<Status> mentions = getMentionTimeline(minId, maxId);
+		List<String> params = new ArrayList<>();
+		if (minId > 0)
+			params.add("since_id=" + minId);
+		if (maxId > 1)
+			params.add("max_id=" + maxId);
+		params.add("count=" + settings.getListSize());
+		List<Status> mentions = getTweets1(TWEETS_MENTIONS, params);
 		List<Notification> result = new ArrayList<>(mentions.size());
 		for (Status status : mentions) {
 			result.add(new TwitterNotification(status));

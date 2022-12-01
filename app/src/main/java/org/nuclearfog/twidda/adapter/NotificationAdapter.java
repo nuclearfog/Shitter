@@ -1,0 +1,286 @@
+package org.nuclearfog.twidda.adapter;
+
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
+import com.squareup.picasso.Picasso;
+
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
+import org.nuclearfog.twidda.adapter.holder.StatusHolder;
+import org.nuclearfog.twidda.adapter.holder.StatusHolder.OnStatusClickListener;
+import org.nuclearfog.twidda.adapter.holder.UserHolder;
+import org.nuclearfog.twidda.adapter.holder.UserHolder.OnUserClickListener;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Notification;
+import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.User;
+
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Rycyclerview adapter for notifications
+ *
+ * @author nuclearfog
+ */
+public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatusClickListener, OnUserClickListener, OnHolderClickListener {
+
+	/**
+	 * Minimum count of new statuses to insert a placeholder.
+	 */
+	private static final int MIN_COUNT = 2;
+
+	private static final int NO_LOADING = -1;
+
+	/**
+	 * notification placeholder
+	 */
+	private static final int TYPE_PLACEHOLER = 0;
+
+	/**
+	 * notifcation type for statuses
+	 */
+	private static final int TYPE_STATUS = 1;
+
+	/**
+	 * notification type for users
+	 */
+	private static final int TYPE_USER = 2;
+
+	private Picasso picasso;
+	private GlobalSettings settings;
+	private OnNotificationClickListener listener;
+
+	private List<Notification> items = new LinkedList<>();
+	private int loadingIndex = NO_LOADING;
+
+
+	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
+		settings = GlobalSettings.getInstance(context);
+		picasso = PicassoBuilder.get(context);
+		this.listener = listener;
+	}
+
+
+	@NonNull
+	@Override
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		if (viewType == TYPE_STATUS) {
+			StatusHolder holder = new StatusHolder(parent, settings, picasso);
+			holder.setOnStatusClickListener(this);
+			return holder;
+		} else if (viewType == TYPE_USER) {
+			final UserHolder holder = new UserHolder(parent, settings, picasso);
+			holder.setOnUserClickListener(this);
+			return holder;
+		} else {
+			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			placeHolder.loadBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int position = placeHolder.getLayoutPosition();
+					if (position != NO_POSITION) {
+						long sinceId = 0;
+						long maxId = 0;
+						if (position == 0) {
+							Notification item = items.get(position + 1);
+							if (item != null) {
+								sinceId = item.getId();
+							}
+						} else if (position == items.size() - 1) {
+							Notification item = items.get(position - 1);
+							if (item != null) {
+								maxId = item.getId() - 1;
+							}
+						} else {
+							Notification item = items.get(position + 1);
+							if (item != null) {
+								sinceId = item.getId();
+							}
+							item = items.get(position - 1);
+							if (item != null) {
+								maxId = item.getId() - 1;
+							}
+						}
+						boolean success = listener.onPlaceholderClick(sinceId, maxId, position);
+						if (success) {
+							placeHolder.setLoading(true);
+							loadingIndex = position;
+						}
+					}
+				}
+			});
+			return placeHolder;
+		}
+	}
+
+
+	@Override
+	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+		Notification item = items.get(position);
+		if (item != null) {
+			if (holder instanceof StatusHolder && item.getStatus() != null) {
+				StatusHolder statusHolder = (StatusHolder) holder;
+				statusHolder.setContent(item.getStatus());
+				statusHolder.setLabel(item);
+			} else if (holder instanceof UserHolder && item.getUser() != null) {
+				UserHolder userHolder = (UserHolder) holder;
+				userHolder.setContent(item.getUser());
+				userHolder.setLabel(item);
+			}
+		} else if (holder instanceof PlaceHolder) {
+			PlaceHolder placeHolder = (PlaceHolder) holder;
+			placeHolder.setLoading(loadingIndex == position);
+		}
+	}
+
+
+	@Override
+	public int getItemCount() {
+		return items.size();
+	}
+
+
+	@Override
+	public int getItemViewType(int position) {
+		Notification item = items.get(position);
+		if (item == null)
+			return TYPE_PLACEHOLER;
+		switch (item.getType()) {
+			default:
+				return TYPE_PLACEHOLER;
+
+			case Notification.TYPE_FAVORITE:
+			case Notification.TYPE_MENTION:
+			case Notification.TYPE_REPOST:
+			case Notification.TYPE_POLL:
+			case Notification.TYPE_STATUS:
+			case Notification.TYPE_UPDATE:
+				return TYPE_STATUS;
+
+			case Notification.TYPE_FOLLOW:
+			case Notification.TYPE_REQUEST:
+				return TYPE_USER;
+		}
+	}
+
+
+	@Override
+	public boolean onHolderClick(int position) {
+		return false;
+	}
+
+
+	@Override
+	public void onStatusClick(int position, int type) {
+		Notification item = items.get(position);
+		switch (type) {
+			case OnStatusClickListener.TYPE_LABEL:
+				if (item != null && item.getUser() != null) {
+					listener.onUserClick(item.getUser());
+				}
+				break;
+
+			case OnStatusClickListener.TYPE_STATUS:
+				if (item != null && item.getStatus() != null) {
+					listener.onStatusClick(item.getStatus());
+				}
+				break;
+		}
+	}
+
+
+	@Override
+	public void onUserClick(int position, int type) {
+		Notification item = items.get(position);
+		if (type == OnUserClickListener.ITEM_CLICK) {
+			if (item != null && item.getUser() != null) {
+				listener.onUserClick(item.getUser());
+			}
+		}
+	}
+
+	/**
+	 * add new items at specific position
+	 *
+	 * @param newItems items to add
+	 * @param index    position where to add the items
+	 */
+	public void addItems(List<Notification> newItems, int index) {
+		disableLoading();
+		if (newItems.size() > MIN_COUNT) {
+			if (items.isEmpty() || items.get(index) != null) {
+				// Add placeholder
+				items.add(index, null);
+				notifyItemInserted(index);
+			}
+		} else {
+			if (!items.isEmpty() && items.get(index) == null) {
+				// remove placeholder
+				items.remove(index);
+				notifyItemRemoved(index);
+			}
+		}
+		if (!newItems.isEmpty()) {
+			items.addAll(index, newItems);
+			notifyItemRangeInserted(index, newItems.size());
+		}
+	}
+
+	/**
+	 * disable placeholder load animation
+	 */
+	public void disableLoading() {
+		if (loadingIndex != NO_LOADING) {
+			int oldIndex = loadingIndex;
+			loadingIndex = NO_LOADING;
+			notifyItemChanged(oldIndex);
+		}
+	}
+
+	/**
+	 * @return true if adapter is empty
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
+	}
+
+	/**
+	 * notification item listener
+	 */
+	public interface OnNotificationClickListener {
+
+		/**
+		 * called on status item click
+		 *
+		 * @param status clicked status
+		 */
+		void onStatusClick(Status status);
+
+		/**
+		 * called on user item click
+		 *
+		 * @param user clicked user
+		 */
+		void onUserClick(User user);
+
+		/**
+		 * called on placeholder click
+		 *
+		 * @param sinceId  notification ID below the placeholder
+		 * @param maxId    notification ID over the placeholder
+		 * @param position position of the placeholder
+		 * @return true to enable loading animation
+		 */
+		boolean onPlaceholderClick(long sinceId, long maxId, long position);
+	}
+}

@@ -54,13 +54,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public static final int STATUS_FRAGMENT_HOME = 0xE7028B60;
 
 	/**
-	 * setup list for mention timeline
-	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
-	 */
-	public static final int STATUS_FRAGMENT_MENTION = 0x9EC8274D;
-
-	/**
 	 * setup list for status timeline of a specific user
 	 *
 	 * @see #KEY_STATUS_FRAGMENT_MODE
@@ -131,7 +124,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onStart() {
 		super.onStart();
 		if (statusAsync == null) {
-			load(0, 0, CLEAR_LIST);
+			load(0L, 0L, CLEAR_LIST);
 			setRefresh(true);
 		}
 	}
@@ -141,7 +134,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	protected void onReset() {
 		adapter = new StatusAdapter(requireContext(), this);
 		setAdapter(adapter);
-		load(0, 0, CLEAR_LIST);
+		load(0L, 0L, CLEAR_LIST);
 		setRefresh(true);
 	}
 
@@ -178,7 +171,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		long sinceId = 0;
 		if (!adapter.isEmpty())
 			sinceId = adapter.getItemId(0);
-		load(sinceId, 0, 0);
+		load(sinceId, 0L, 0);
 	}
 
 
@@ -236,11 +229,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		switch (mode) {
 			case STATUS_FRAGMENT_HOME:
 				statusAsync = new StatusLoader(this, StatusLoader.HOME, id, search, index);
-				statusAsync.execute(sinceId, maxId);
-				break;
-
-			case STATUS_FRAGMENT_MENTION:
-				statusAsync = new StatusLoader(this, StatusLoader.MENTION, id, search, index);
 				statusAsync.execute(sinceId, maxId);
 				break;
 

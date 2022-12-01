@@ -279,5 +279,10 @@
 	<string name="toolbar_tweet_liker">User liking this status</string>
 	<string name="time_now">now</string>
 	<string name="confirm_open_link">open in browser</string>
+	<string name="info_user_favorited">%1$s favorited your status</string>
+	<string name="info_user_follow">%1$s followed you</string>
+	<string name="info_user_follow_request">%1$s request to follow you</string>
+	<string name="info_user_mention">%1$s mentioned you</string>
+	<string name="info_user_repost">%1$s reposted your status</string>
 
 </resources>

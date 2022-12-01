@@ -44,7 +44,6 @@ public class AppDatabase {
 	public static final int FAV_MASK = 1;          //  status is favorited by user
 	public static final int RTW_MASK = 1 << 1;     //  status is reposted by user
 	public static final int HOM_MASK = 1 << 2;     //  status is from home timeline
-	public static final int MEN_MASK = 1 << 3;     //  status is from mention timeline
 	public static final int UTW_MASK = 1 << 4;     //  status is from an users timeline
 	public static final int RPL_MASK = 1 << 5;     //  status is from a reply timeline
 	public static final int MEDIA_IMAGE_MASK = 1 << 6; // status contains images
@@ -84,17 +83,6 @@ public class AppDatabase {
 	 */
 	static final String HOME_QUERY = "SELECT * FROM " + STATUS_TABLE
 			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + HOM_MASK + " IS NOT 0"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " ORDER BY " + StatusTable.ID
-			+ " DESC LIMIT ?";
-
-	/**
-	 * SQL query to get mention timeline
-	 */
-	static final String MENTION_QUERY = "SELECT * FROM " + STATUS_TABLE
-			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + MEN_MASK + " IS NOT 0"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCL_USR + " IS 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.ID
@@ -259,18 +247,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * save mention timeline
-	 *
-	 * @param mentions status
-	 */
-	public void saveMentionTimeline(List<Status> mentions) {
-		SQLiteDatabase db = getDbWrite();
-		for (Status status : mentions)
-			saveStatus(status, MEN_MASK, db);
-		commit(db);
-	}
-
-	/**
 	 * save user timeline
 	 *
 	 * @param stats user timeline
@@ -368,29 +344,6 @@ public class AppDatabase {
 		SQLiteDatabase db = getDbRead();
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(HOME_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do
-			{
-				Status status = getStatus(cursor);
-				result.add(status);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
-	}
-
-	/**
-	 * load mention timeline
-	 *
-	 * @return mention timeline
-	 */
-	public List<Status> getMentionTimeline() {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
-
-		SQLiteDatabase db = getDbRead();
-		List<Status> result = new LinkedList<>();
-		Cursor cursor = db.rawQuery(MENTION_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do
 			{

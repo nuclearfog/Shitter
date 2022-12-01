@@ -5,7 +5,6 @@ import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGM
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_FAVORIT;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_HOME;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_MENTION;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USER;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USERLIST;
@@ -38,6 +37,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
+import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
@@ -95,15 +95,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 */
 	public void setupForHomePage() {
 		Bundle paramHomeTl = new Bundle();
-		Bundle paramMention = new Bundle();
 		paramHomeTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_HOME);
-		paramMention.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_MENTION);
 		fragments = new ListFragment[3];
 		fragments[0] = new StatusFragment();
 		fragments[1] = new TrendFragment();
-		fragments[2] = new StatusFragment();
+		fragments[2] = new NotificationFragment();
 		fragments[0].setArguments(paramHomeTl);
-		fragments[2].setArguments(paramMention);
 		notifyDataSetChanged();
 	}
 

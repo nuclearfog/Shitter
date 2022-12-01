@@ -1,11 +1,12 @@
 package org.nuclearfog.twidda.adapter.holder;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -22,10 +23,12 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class PlaceHolder extends ViewHolder {
+public class PlaceHolder extends ViewHolder implements OnClickListener {
 
 	public final ProgressBar loadCircle;
 	public final Button loadBtn;
+
+	private OnHolderClickListener listener;
 
 	/**
 	 * @param parent     Parent view from adapter
@@ -45,10 +48,23 @@ public class PlaceHolder extends ViewHolder {
 		AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
 		// enable extra views
 		if (horizontal) {
-			loadBtn.setVisibility(INVISIBLE);
-			loadCircle.setVisibility(VISIBLE);
+			loadBtn.setVisibility(View.INVISIBLE);
+			loadCircle.setVisibility(View.VISIBLE);
 			background.getLayoutParams().height = MATCH_PARENT;
 			background.getLayoutParams().width = WRAP_CONTENT;
+		}
+		loadBtn.setOnClickListener(this);
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		if (v == loadBtn) {
+			int position = getLayoutPosition();
+			if (position != NO_POSITION && listener != null) {
+				boolean enableLoading = listener.onHolderClick(position);
+				setLoading(enableLoading);
+			}
 		}
 	}
 
@@ -59,11 +75,31 @@ public class PlaceHolder extends ViewHolder {
 	 */
 	public void setLoading(boolean enable) {
 		if (enable) {
-			loadCircle.setVisibility(VISIBLE);
-			loadBtn.setVisibility(INVISIBLE);
+			loadCircle.setVisibility(View.VISIBLE);
+			loadBtn.setVisibility(View.INVISIBLE);
 		} else {
-			loadCircle.setVisibility(INVISIBLE);
-			loadBtn.setVisibility(VISIBLE);
+			loadCircle.setVisibility(View.INVISIBLE);
+			loadBtn.setVisibility(View.VISIBLE);
 		}
+	}
+
+	/**
+	 * set click listener for this item
+	 */
+	public void setOnHolderClickListener(OnHolderClickListener listener) {
+		this.listener = listener;
+	}
+
+	/**
+	 * listener used to call after item click
+	 */
+	public interface OnHolderClickListener {
+
+		/**
+		 *
+		 * @param position position of the item
+		 * @return true to enable loading animation
+		 */
+		boolean onHolderClick(int position);
 	}
 }

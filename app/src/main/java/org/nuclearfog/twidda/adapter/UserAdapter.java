@@ -1,13 +1,8 @@
 package org.nuclearfog.twidda.adapter;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.Context;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -16,18 +11,14 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
+import org.nuclearfog.twidda.adapter.holder.UserHolder.OnUserClickListener;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
-
-import java.text.NumberFormat;
-
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show users
@@ -35,7 +26,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.UserFragment
  */
-public class UserAdapter extends Adapter<ViewHolder> {
+public class UserAdapter extends Adapter<ViewHolder> implements OnUserClickListener, OnHolderClickListener {
 
 	/**
 	 * index of {@link #loadingIndex} if no index is defined
@@ -52,10 +43,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 	 */
 	private static final int ITEM_GAP = 1;
 
-	/**
-	 * locale specific number formatter
-	 */
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
+
 
 	private GlobalSettings settings;
 	private Picasso picasso;
@@ -105,52 +93,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_USER) {
-			final UserHolder vh = new UserHolder(parent, settings);
-			vh.itemView.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = vh.getLayoutPosition();
-					if (position != NO_POSITION) {
-						User user = users.get(position);
-						if (user != null) {
-							listener.onUserClick(user);
-						}
-					}
-				}
-			});
-			if (enableDelete) {
-				vh.delete.setVisibility(VISIBLE);
-				vh.delete.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						int position = vh.getLayoutPosition();
-						if (position != NO_POSITION) {
-							User user = users.get(position);
-							if (user != null) {
-								listener.onDelete(user);
-							}
-						}
-					}
-				});
-			} else {
-				vh.delete.setVisibility(GONE);
-			}
+			UserHolder vh = new UserHolder(parent, settings, picasso);
+			vh.setOnUserClickListener(this);
 			return vh;
 		} else {
-			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
-			placeHolder.loadBtn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = placeHolder.getLayoutPosition();
-					if (position != NO_POSITION) {
-						boolean actionPerformed = listener.onPlaceholderClick(users.getNext());
-						if (actionPerformed) {
-							placeHolder.setLoading(true);
-							loadingIndex = position;
-						}
-					}
-				}
-			});
+			PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			placeHolder.setOnHolderClickListener(this);
 			return placeHolder;
 		}
 	}
@@ -161,36 +109,42 @@ public class UserAdapter extends Adapter<ViewHolder> {
 		if (holder instanceof UserHolder) {
 			User user = users.get(index);
 			if (user != null) {
-				UserHolder userholder = (UserHolder) holder;
-				userholder.username.setText(user.getUsername());
-				userholder.screenname.setText(user.getScreenname());
-				userholder.followingCount.setText(NUM_FORMAT.format(user.getFollowing()));
-				userholder.followerCount.setText(NUM_FORMAT.format(user.getFollower()));
-				if (user.isVerified()) {
-					userholder.verifyIcon.setVisibility(VISIBLE);
-				} else {
-					userholder.verifyIcon.setVisibility(GONE);
-				}
-				if (user.isProtected()) {
-					userholder.lockedIcon.setVisibility(VISIBLE);
-				} else {
-					userholder.lockedIcon.setVisibility(GONE);
-				}
-				if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
-					String profileImageUrl;
-					if (!user.hasDefaultProfileImage()) {
-						profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), settings.getImageSuffix());
-					} else {
-						profileImageUrl = user.getImageUrl();
-					}
-					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(userholder.profileImg);
-				} else {
-					userholder.profileImg.setImageResource(0);
-				}
+				((UserHolder) holder).setContent(user);
 			}
 		} else if (holder instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) holder;
 			placeHolder.setLoading(loadingIndex == index);
+		}
+	}
+
+
+	@Override
+	public boolean onHolderClick(int position) {
+		boolean actionPerformed = listener.onPlaceholderClick(users.getNext());
+		if (actionPerformed) {
+			loadingIndex = position;
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public void onUserClick(int position, int type) {
+		switch (type) {
+			case OnUserClickListener.ITEM_CLICK:
+				User user = users.get(position);
+				if (user != null) {
+					listener.onUserClick(user);
+				}
+				break;
+
+			case OnUserClickListener.ITEM_REMOVE:
+				user = users.get(position);
+				if (enableDelete && user != null) {
+					listener.onDelete(user);
+				}
+				break;
 		}
 	}
 

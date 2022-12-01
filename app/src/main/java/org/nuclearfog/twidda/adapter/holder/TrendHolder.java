@@ -1,6 +1,12 @@
 package org.nuclearfog.twidda.adapter.holder;
 
+
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
+import android.content.res.Resources;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -10,6 +16,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Trend;
+
+import java.text.NumberFormat;
 
 /**
  * ViewHolder for a trend item
@@ -17,9 +26,16 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.adapter.TrendAdapter
  */
-public class TrendHolder extends ViewHolder {
+public class TrendHolder extends ViewHolder implements OnClickListener {
 
-	public final TextView name, rank, vol;
+	/**
+	 * Locale specific number format
+	 */
+	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
+
+	private TextView name, rank, vol;
+
+	private OnTrendClickListener listener;
 
 	/**
 	 * @param parent Parent view from adapter
@@ -34,5 +50,53 @@ public class TrendHolder extends ViewHolder {
 
 		AppStyles.setTheme(container, 0);
 		background.setCardBackgroundColor(settings.getCardColor());
+		itemView.setOnClickListener(this);
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		if (v == itemView) {
+			int position = getLayoutPosition();
+			if (position != NO_POSITION && listener != null) {
+				listener.onTrendClick(position);
+			}
+		}
+	}
+
+	/**
+	 * set item click listener
+	 */
+	public void setOnTrendClickListener(OnTrendClickListener listener) {
+		this.listener = listener;
+	}
+
+	/**
+	 * set view content
+	 *
+	 * @param trend content information
+	 */
+	public void setContent(Trend trend) {
+		rank.setText(trend.getRank() + ".");
+		name.setText(trend.getName());
+		if (trend.getPopularity() > 0) {
+			Resources resources = vol.getResources();
+			String trendVol = NUM_FORMAT.format(trend.getPopularity()) + " " + resources.getString(R.string.trend_range);
+			vol.setText(trendVol);
+			vol.setVisibility(View.VISIBLE);
+		} else {
+			vol.setVisibility(View.GONE);
+		}
+	}
+
+	/**
+	 * Item click listener
+	 */
+	public interface OnTrendClickListener {
+
+		/**
+		 * @param position index of the view holder
+		 */
+		void onTrendClick(int position);
 	}
 }

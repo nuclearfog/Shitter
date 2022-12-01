@@ -248,15 +248,6 @@ public interface Connection {
 	List<Status> getHomeTimeline(long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * show current user's home timeline
-	 *
-	 * @param minId get statuses with ID above the min ID
-	 * @param maxId get statuses with ID under the max ID
-	 * @return list of statuses
-	 */
-	List<Status> getMentionTimeline(long minId, long maxId) throws ConnectionException;
-
-	/**
 	 * show the timeline of an user
 	 *
 	 * @param id    ID of the user
