@@ -1140,7 +1140,6 @@ public class Twitter implements Connection {
 			params.add("since_id=" + minId);
 		if (maxId > 1)
 			params.add("max_id=" + maxId);
-		params.add("count=" + settings.getListSize());
 		List<Status> mentions = getTweets1(TWEETS_MENTIONS, params);
 		List<Notification> result = new ArrayList<>(mentions.size());
 		for (Status status : mentions) {
