@@ -51,21 +51,22 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnStatusClickL
 	 */
 	private static final int MIN_COUNT = 2;
 
-
-	private StatusSelectListener itemClickListener;
+	private StatusSelectListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private final List<Status> items = new LinkedList<>();
-	private int loadingIndex = NO_LOADING;
+	private final List<Status> items;
+	private int loadingIndex;
 
 	/**
 	 * @param itemClickListener listener for item click
 	 */
 	public StatusAdapter(Context context, StatusSelectListener itemClickListener) {
-		this.itemClickListener = itemClickListener;
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		loadingIndex = NO_LOADING;
+		items = new LinkedList<>();
+		this.listener = itemClickListener;
 	}
 
 
@@ -145,7 +146,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnStatusClickL
 				maxId = status.getId() - 1;
 			}
 		}
-		boolean success = itemClickListener.onPlaceholderClick(sinceId, maxId, position);
+		boolean success = listener.onPlaceholderClick(sinceId, maxId, position);
 		if (success) {
 			loadingIndex = position;
 			return true;
@@ -159,7 +160,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnStatusClickL
 		if (type == OnStatusClickListener.TYPE_STATUS) {
 			Status status = items.get(position);
 			if (status != null) {
-				itemClickListener.onStatusSelected(status);
+				listener.onStatusSelected(status);
 			}
 		}
 	}

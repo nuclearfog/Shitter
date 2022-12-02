@@ -30,14 +30,15 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnTrendClickLis
 	private TrendClickListener itemClickListener;
 	private GlobalSettings settings;
 
-	private List<Trend> trends = new ArrayList<>(INIT_COUNT);
+	private List<Trend> trends;
 
 	/**
 	 * @param itemClickListener Listener for item click
 	 */
 	public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
-		this.settings = settings;
 		this.itemClickListener = itemClickListener;
+		this.settings = settings;
+		trends = new ArrayList<>(INIT_COUNT);
 	}
 
 

@@ -4,6 +4,7 @@ import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DA
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 
@@ -89,7 +90,11 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	@Override
-	public boolean onPlaceholderClick(long sinceId, long maxId, long position) {
+	public boolean onPlaceholderClick(long sinceId, long maxId, int position) {
+		if (notificationAsync != null && notificationAsync.getStatus() != AsyncTask.Status.RUNNING) {
+			load(sinceId, maxId, position);
+			return true;
+		}
 		return false;
 	}
 

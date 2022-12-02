@@ -1,12 +1,10 @@
 package org.nuclearfog.twidda.adapter;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.content.Context;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -60,13 +58,15 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatus
 	private GlobalSettings settings;
 	private OnNotificationClickListener listener;
 
-	private List<Notification> items = new LinkedList<>();
-	private int loadingIndex = NO_LOADING;
+	private List<Notification> items;
+	private int loadingIndex;
 
 
 	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		items = new LinkedList<>();
+		loadingIndex = NO_LOADING;
 		this.listener = listener;
 	}
 
@@ -83,42 +83,8 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatus
 			holder.setOnUserClickListener(this);
 			return holder;
 		} else {
-			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
-			placeHolder.loadBtn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = placeHolder.getLayoutPosition();
-					if (position != NO_POSITION) {
-						long sinceId = 0;
-						long maxId = 0;
-						if (position == 0) {
-							Notification item = items.get(position + 1);
-							if (item != null) {
-								sinceId = item.getId();
-							}
-						} else if (position == items.size() - 1) {
-							Notification item = items.get(position - 1);
-							if (item != null) {
-								maxId = item.getId() - 1;
-							}
-						} else {
-							Notification item = items.get(position + 1);
-							if (item != null) {
-								sinceId = item.getId();
-							}
-							item = items.get(position - 1);
-							if (item != null) {
-								maxId = item.getId() - 1;
-							}
-						}
-						boolean success = listener.onPlaceholderClick(sinceId, maxId, position);
-						if (success) {
-							placeHolder.setLoading(true);
-							loadingIndex = position;
-						}
-					}
-				}
-			});
+			PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			placeHolder.setOnHolderClickListener(this);
 			return placeHolder;
 		}
 	}
@@ -151,6 +117,15 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatus
 
 
 	@Override
+	public long getItemId(int position) {
+		Notification notification = items.get(position);
+		if (notification != null)
+			return notification.getId();
+		return RecyclerView.NO_ID;
+	}
+
+
+	@Override
 	public int getItemViewType(int position) {
 		Notification item = items.get(position);
 		if (item == null)
@@ -176,6 +151,33 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatus
 
 	@Override
 	public boolean onHolderClick(int position) {
+		long sinceId = 0;
+		long maxId = 0;
+		if (position == 0) {
+			Notification notification = items.get(position + 1);
+			if (notification != null) {
+				sinceId = notification.getId();
+			}
+		} else if (position == items.size() - 1) {
+			Notification notification = items.get(position - 1);
+			if (notification != null) {
+				maxId = notification.getId() - 1;
+			}
+		} else {
+			Notification notification = items.get(position + 1);
+			if (notification != null) {
+				sinceId = notification.getId();
+			}
+			notification = items.get(position - 1);
+			if (notification != null) {
+				maxId = notification.getId() - 1;
+			}
+		}
+		boolean success = listener.onPlaceholderClick(sinceId, maxId, position);
+		if (success) {
+			loadingIndex = position;
+			return true;
+		}
 		return false;
 	}
 
@@ -281,6 +283,6 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatus
 		 * @param position position of the placeholder
 		 * @return true to enable loading animation
 		 */
-		boolean onPlaceholderClick(long sinceId, long maxId, long position);
+		boolean onPlaceholderClick(long sinceId, long maxId, int position);
 	}
 }

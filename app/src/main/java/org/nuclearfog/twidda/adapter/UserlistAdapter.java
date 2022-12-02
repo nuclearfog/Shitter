@@ -50,9 +50,8 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnListClickL
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private UserLists userlists = new UserLists(0L, 0L);
-	private int loadingIndex = NO_LOADING;
-
+	private UserLists userlists;
+	private int loadingIndex;
 
 	/**
 	 * @param listener item click listener
@@ -61,6 +60,8 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnListClickL
 		this.listener = listener;
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		userlists = new UserLists(0L, 0L);
+		loadingIndex = NO_LOADING;
 	}
 
 

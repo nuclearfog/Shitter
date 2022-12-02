@@ -43,16 +43,14 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnUserClickListe
 	 */
 	private static final int ITEM_GAP = 1;
 
-
-
 	private GlobalSettings settings;
 	private Picasso picasso;
 
 	private UserClickListener listener;
 	private boolean enableDelete;
 
-	private Users users = new Users(0L, 0L);
-	private int loadingIndex = NO_LOADING;
+	private Users users;
+	private int loadingIndex;
 
 	/**
 	 * @param listener     click listener
@@ -61,6 +59,8 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnUserClickListe
 	public UserAdapter(Context context, UserClickListener listener, boolean enableDelete) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		users = new Users(0L, 0L);
+		loadingIndex = NO_LOADING;
 		this.enableDelete = enableDelete;
 		this.listener = listener;
 	}

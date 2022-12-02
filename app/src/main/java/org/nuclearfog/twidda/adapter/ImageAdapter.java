@@ -1,12 +1,7 @@
 package org.nuclearfog.twidda.adapter;
 
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.content.Context;
 import android.net.Uri;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -14,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.adapter.holder.ImageHolder;
+import org.nuclearfog.twidda.adapter.holder.ImageHolder.OnImageItemClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -26,7 +22,7 @@ import java.util.List;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.activities.ImageViewer
  */
-public class ImageAdapter extends Adapter<ViewHolder> {
+public class ImageAdapter extends Adapter<ViewHolder> implements OnImageItemClickListener {
 
 	/**
 	 * View type for an image item
@@ -41,14 +37,17 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	private OnImageClickListener itemClickListener;
 	private GlobalSettings settings;
 
-	private List<Uri> imageLinks = new ArrayList<>(5);
-	private boolean enableSaveButton = true;
-	private boolean loading = false;
+	private List<Uri> imageLinks;
+	private boolean enableSaveButton;
+	private boolean loading;
 
 	/**
 	 * @param itemClickListener click listener
 	 */
 	public ImageAdapter(Context context, OnImageClickListener itemClickListener) {
+		imageLinks = new ArrayList<>(5);
+		enableSaveButton = true;
+		loading = false;
 		this.itemClickListener = itemClickListener;
 		this.settings = GlobalSettings.getInstance(context);
 	}
@@ -74,28 +73,10 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
 		if (viewType == ITEM_IMAGE) {
-			final ImageHolder item = new ImageHolder(parent, settings);
-			item.preview.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int pos = item.getLayoutPosition();
-					if (pos != NO_POSITION) {
-						itemClickListener.onImageClick(imageLinks.get(pos));
-					}
-				}
-			});
-			if (enableSaveButton) {
-				item.saveButton.setVisibility(VISIBLE);
-				item.saveButton.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						int pos = item.getLayoutPosition();
-						if (pos != NO_POSITION) {
-							itemClickListener.onImageSave(imageLinks.get(pos));
-						}
-					}
-				});
-			}
+			ImageHolder item = new ImageHolder(parent, settings);
+			item.setOnImageClickListener(this);
+			if (enableSaveButton)
+				item.enableSaveButton();
 			return item;
 		}
 		return new PlaceHolder(parent, settings, true);
@@ -106,8 +87,21 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
 		if (vh instanceof ImageHolder) {
 			ImageHolder item = (ImageHolder) vh;
-			Uri uri = imageLinks.get(index);
-			item.preview.setImageURI(uri);
+			item.setImageUri(imageLinks.get(index));
+		}
+	}
+
+
+	@Override
+	public void onImageClick(int position, int type) {
+		switch (type) {
+			case OnImageItemClickListener.TYPE_IMAGE:
+				itemClickListener.onImageClick(imageLinks.get(position));
+				break;
+
+			case OnImageItemClickListener.TYPE_SAVE:
+				itemClickListener.onImageSave(imageLinks.get(position));
+				break;
 		}
 	}
 

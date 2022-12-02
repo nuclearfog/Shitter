@@ -1,13 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.content.Context;
-import android.content.res.Resources;
-import android.text.Spanned;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -16,19 +9,15 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
-import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.MessageHolder;
+import org.nuclearfog.twidda.adapter.holder.MessageHolder.OnMessageClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
+import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
-import org.nuclearfog.twidda.model.User;
-
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show directmessages
@@ -36,7 +25,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.MessageFragment
  */
-public class MessageAdapter extends Adapter<ViewHolder> {
+public class MessageAdapter extends Adapter<ViewHolder> implements OnMessageClickListener, OnHolderClickListener {
 
 	/**
 	 * index of {@link #loadingIndex} if no index is defined
@@ -55,20 +44,20 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
 	private OnMessageClickListener itemClickListener;
 	private GlobalSettings settings;
-	private Resources resources;
 	private Picasso picasso;
 
-	private Messages messages = new Messages(null, null);
-	private int loadingIndex = NO_LOADING;
+	private Messages messages;
+	private int loadingIndex;
 
 	/**
 	 * @param itemClickListener click listener
 	 */
 	public MessageAdapter(Context context, OnMessageClickListener itemClickListener) {
-		this.itemClickListener = itemClickListener;
+		messages = new Messages(null, null);
+		loadingIndex = NO_LOADING;
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
-		resources = context.getResources();
+		this.itemClickListener = itemClickListener;
 	}
 
 
@@ -99,71 +88,12 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_MESSAGE) {
-			final MessageHolder holder = new MessageHolder(parent, settings);
-			holder.answer.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = holder.getLayoutPosition();
-					if (position != NO_POSITION) {
-						Message message = messages.get(position);
-						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.ANSWER);
-						}
-					}
-				}
-			});
-			holder.delete.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = holder.getLayoutPosition();
-					if (position != NO_POSITION) {
-						Message message = messages.get(position);
-						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.DELETE);
-						}
-					}
-				}
-			});
-			holder.profile.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = holder.getLayoutPosition();
-					if (position != NO_POSITION) {
-						Message message = messages.get(position);
-						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.PROFILE);
-						}
-					}
-				}
-			});
-			holder.mediaButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = holder.getLayoutPosition();
-					if (position != NO_POSITION) {
-						Message message = messages.get(position);
-						if (message != null) {
-							itemClickListener.onClick(message, OnMessageClickListener.MEDIA);
-						}
-					}
-				}
-			});
+			final MessageHolder holder = new MessageHolder(parent, settings, picasso);
+			holder.setOnMessageClickListener(this);
 			return holder;
 		} else {
 			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
-			placeHolder.loadBtn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int position = placeHolder.getLayoutPosition();
-					if (position != NO_POSITION) {
-						boolean success = itemClickListener.onPlaceholderClick(messages.getNextCursor());
-						if (success) {
-							placeHolder.setLoading(true);
-							loadingIndex = position;
-						}
-					}
-				}
-			});
+			placeHolder.setOnHolderClickListener(this);
 			return placeHolder;
 		}
 	}
@@ -174,46 +104,57 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 		if (vh instanceof MessageHolder) {
 			Message message = messages.get(index);
 			if (message != null) {
-				User sender = message.getSender();
-				Spanned text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
-
-				MessageHolder holder = (MessageHolder) vh;
-				holder.username.setText(sender.getUsername());
-				holder.screenname.setText(sender.getScreenname());
-				holder.receiver.setText(message.getReceiver().getScreenname());
-				holder.time.setText(StringTools.formatCreationTime(resources, message.getTimestamp()));
-				holder.message.setText(text);
-				if (sender.isVerified()) {
-					holder.verifiedIcon.setVisibility(VISIBLE);
-				} else {
-					holder.verifiedIcon.setVisibility(GONE);
-				}
-				if (sender.isProtected()) {
-					holder.lockedIcon.setVisibility(VISIBLE);
-				} else {
-					holder.lockedIcon.setVisibility(GONE);
-				}
-				if (message.getMedia() != null) {
-					holder.mediaButton.setVisibility(VISIBLE);
-				} else {
-					holder.mediaButton.setVisibility(GONE);
-				}
-				if (settings.imagesEnabled() && !sender.getImageUrl().isEmpty()) {
-					String profileImageUrl;
-					if (!sender.hasDefaultProfileImage()) {
-						profileImageUrl = StringTools.buildImageLink(sender.getImageUrl(), settings.getImageSuffix());
-					} else {
-						profileImageUrl = sender.getImageUrl();
-					}
-					picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(holder.profile);
-				} else {
-					holder.profile.setImageResource(0);
-				}
+				((MessageHolder) vh).setContent(message);
 			}
 		} else if (vh instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) vh;
 			placeHolder.setLoading(loadingIndex == index);
 		}
+	}
+
+
+	@Override
+	public void onMessageClick(int position, int type) {
+		Message message = messages.get(position);
+		if (message != null) {
+			switch (type) {
+				case OnMessageClickListener.ANSWER:
+					itemClickListener.onClick(message, OnMessageClickListener.ANSWER);
+					break;
+
+				case OnMessageClickListener.DELETE:
+					itemClickListener.onClick(message, OnMessageClickListener.DELETE);
+					break;
+
+				case OnMessageClickListener.MEDIA:
+					itemClickListener.onClick(message, OnMessageClickListener.MEDIA);
+					break;
+
+				case OnMessageClickListener.PROFILE:
+					itemClickListener.onClick(message, OnMessageClickListener.PROFILE);
+					break;
+			}
+		}
+	}
+
+
+	@Override
+	public void onTextClick(String text, boolean isLink) {
+		if (isLink) {
+			itemClickListener.onLinkClick(text);
+		} else {
+			itemClickListener.onTagClick(text);
+		}
+	}
+
+
+	@Override
+	public boolean onHolderClick(int position) {
+		boolean success = itemClickListener.onPlaceholderClick(messages.getNextCursor());
+		if (success) {
+			loadingIndex = position;
+		}
+		return success;
 	}
 
 	/**

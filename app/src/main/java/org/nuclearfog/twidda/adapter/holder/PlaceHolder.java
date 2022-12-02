@@ -25,8 +25,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class PlaceHolder extends ViewHolder implements OnClickListener {
 
-	public final ProgressBar loadCircle;
-	public final Button loadBtn;
+	private ProgressBar loadCircle;
+	private Button loadBtn;
 
 	private OnHolderClickListener listener;
 

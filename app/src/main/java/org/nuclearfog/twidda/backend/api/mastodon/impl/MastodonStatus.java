@@ -27,7 +27,6 @@ public class MastodonStatus implements Status {
 	private long replyUserId;
 	private long createdAt;
 
-	private int mediaType;
 	private int replyCount, favoriteCount, reblogCount;
 	private boolean favorited, reblogged, sensitive;
 
@@ -35,6 +34,8 @@ public class MastodonStatus implements Status {
 	private String[] mediaLinks;
 
 	private User author;
+
+	private int mediaType = MEDIA_NONE;
 
 	/**
 	 * @param json          Mastodon status json object
@@ -259,9 +260,6 @@ public class MastodonStatus implements Status {
 					case "video":
 						mediaType = MEDIA_VIDEO;
 						break;
-
-					default:
-						mediaType = MEDIA_NONE;
 				}
 				for (int i = 0; i < result.length; i++) {
 					JSONObject item = attachments.getJSONObject(i);

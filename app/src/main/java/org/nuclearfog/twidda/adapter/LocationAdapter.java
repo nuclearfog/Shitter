@@ -25,12 +25,13 @@ public class LocationAdapter extends BaseAdapter {
 
 	private GlobalSettings settings;
 
-	private List<Location> locations = new ArrayList<>();
+	private List<Location> locations;
 
 	/**
 	 *
 	 */
 	public LocationAdapter(GlobalSettings settings) {
+		locations = new ArrayList<>();
 		this.settings = settings;
 	}
 

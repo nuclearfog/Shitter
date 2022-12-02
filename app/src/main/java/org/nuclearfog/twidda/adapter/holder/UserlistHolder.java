@@ -35,8 +35,8 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 
 	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
-	public final ImageView profile, verified, locked, privateList, follow;
-	public final TextView title, description, username, screenname, date, member, subscriber, followList;
+	private ImageView profile, verified, locked, privateList, follow;
+	private TextView title, description, username, screenname, date, member, subscriber, followList;
 
 	private GlobalSettings settings;
 	private Picasso picasso;
