@@ -144,6 +144,7 @@
 	<string name="menu_tweet_copy_link">Tweet link</string>
 	<string name="menu_toolbar_request">Follow requests</string>
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
+	<string name="menu_message">Messages</string>
 
 	<!--dialog strings-->
 	<string name="dialog_link_image_preview">Link preview image</string>

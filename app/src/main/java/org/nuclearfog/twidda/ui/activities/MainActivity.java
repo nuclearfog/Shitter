@@ -187,45 +187,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu m) {
-		MenuItem profile = m.findItem(R.id.menu_profile);
-		MenuItem status = m.findItem(R.id.menu_post);
-		MenuItem search = m.findItem(R.id.menu_search);
-		MenuItem setting = m.findItem(R.id.menu_settings);
-		MenuItem account = m.findItem(R.id.menu_account);
-
-		switch (tabLayout.getSelectedTabPosition()) {
-			case 0:
-				profile.setVisible(true);
-				search.setVisible(false);
-				status.setVisible(true);
-				setting.setVisible(false);
-				account.setVisible(false);
-				search.collapseActionView();
-				break;
-
-			case 1:
-				profile.setVisible(false);
-				search.setVisible(true);
-				status.setVisible(false);
-				setting.setVisible(true);
-				account.setVisible(false);
-				break;
-
-			case 2:
-				profile.setVisible(false);
-				search.setVisible(false);
-				status.setVisible(false);
-				setting.setVisible(true);
-				account.setVisible(true);
-				search.collapseActionView();
-				break;
-		}
-		return super.onPrepareOptionsMenu(m);
-	}
-
-
-	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		// open home profile
 		if (item.getItemId() == R.id.menu_profile) {
@@ -288,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 	@Override
 	public void onTabSelected(Tab tab) {
-		invalidateOptionsMenu();
 	}
 
 
