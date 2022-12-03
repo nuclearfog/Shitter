@@ -303,7 +303,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				MenuItem setting = m.findItem(R.id.profile_settings);
 				MenuItem userExcl = m.findItem(R.id.profile_block_mute);
 				MenuItem requestItem = m.findItem(R.id.profile_requests);
-				dmIcon.setVisible(true);
 				setting.setVisible(true);
 				userExcl.setVisible(true);
 				requestItem.setVisible(true);
@@ -398,14 +397,10 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			}
 			// open direct message
 			else if (item.getItemId() == R.id.profile_message) {
-				Intent dmPage;
-				if (user.isCurrentUser()) {
-					dmPage = new Intent(this, MessageActivity.class);
-				} else {
-					dmPage = new Intent(this, MessageEditor.class);
-					dmPage.putExtra(KEY_DM_PREFIX, user.getScreenname());
-				}
-				startActivity(dmPage);
+				Intent intent = new Intent(this, MessageEditor.class);
+				if (!user.isCurrentUser())
+					intent.putExtra(KEY_DM_PREFIX, user.getScreenname());
+				startActivity(intent);
 			}
 			// open users list
 			else if (item.getItemId() == R.id.profile_lists) {

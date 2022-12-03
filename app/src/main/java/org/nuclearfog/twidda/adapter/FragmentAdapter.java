@@ -37,6 +37,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
+import org.nuclearfog.twidda.ui.fragments.MessageFragment;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
@@ -96,10 +97,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	public void setupForHomePage() {
 		Bundle paramHomeTl = new Bundle();
 		paramHomeTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_HOME);
-		fragments = new ListFragment[3];
+		fragments = new ListFragment[4];
 		fragments[0] = new StatusFragment();
 		fragments[1] = new TrendFragment();
 		fragments[2] = new NotificationFragment();
+		fragments[3] = new MessageFragment();
 		fragments[0].setArguments(paramHomeTl);
 		notifyDataSetChanged();
 	}

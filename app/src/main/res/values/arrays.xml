@@ -5,6 +5,7 @@
 		<item>@drawable/home</item>
 		<item>@drawable/hash</item>
 		<item>@drawable/bell</item>
+		<item>@drawable/message</item>
 	</integer-array>
 
 	<integer-array name="search_tab_icons">
