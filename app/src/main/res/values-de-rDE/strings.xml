@@ -35,7 +35,6 @@
 	<string name="menu_unmute_user">Stummschaltung aufheben</string>
 	<string name="info_user_muted">stummgeschaltet!</string>
 	<string name="info_user_unmuted">Stummschaltung aufgehoben!</string>
-	<string name="directmessage">Direktnachrichten</string>
 	<string name="username">Username</string>
 	<string name="dm_message">Nachricht</string>
 	<string name="info_dm_send">Direktnachricht gesendet!</string>
@@ -144,7 +143,7 @@
 	<string name="menu_tweet">Status posten</string>
 	<string name="menu_open_home_profile">Profil</string>
 	<string name="menu_open_twitter_search">Twitter suche</string>
-	<string name="menu_open_settings">Einstellungen öffnen</string>
+	<string name="menu_open_settings">Einstellungen</string>
 	<string name="menu_create_list">erstelle Nutzerliste</string>
 	<string name="menu_write_message">Direktnachricht</string>
 	<string name="time_now">jetzt</string>
@@ -185,7 +184,7 @@
 	<string name="dialog_link_close">Linkvorschau schließen</string>
 	<string name="settings_toggle_link_preview">Linkvorschau aktivieren</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
-	<string name="menu_select_account">Account auswählen</string>
+	<string name="menu_select_account">Logins</string>
 	<string name="menu_add_account">Account hinzufügen</string>
 	<string name="settings_rt_icon_color">Repost</string>
 	<string name="settings_follow_req_color">Anfrage Icon</string>

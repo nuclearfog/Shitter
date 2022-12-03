@@ -137,7 +137,7 @@
 	<string name="menu_hint_mute_user">enter @name to mute</string>
 	<string name="menu_hint_block_user">enter @name to block</string>
 	<string name="menu_refresh_exclude">refresh exclude list</string>
-	<string name="menu_select_account">select account</string>
+	<string name="menu_select_account">Logins</string>
 	<string name="menu_add_account">add account</string>
 	<string name="menu_tweet_copy_text">Text</string>
 	<string name="menu_media_link">Media link</string>
@@ -187,7 +187,6 @@
 	<string name="confirm_delete_tweet">delete status?</string>
 	<string name="confirm_delete_database">clear app data?</string>
 	<string name="tweet_sent_from">"sent from: "</string>
-	<string name="directmessage">Directmessage</string>
 	<string name="directmessage_media_button">media attachment</string>
 	<string name="username">Username</string>
 	<string name="dm_message">Message</string>

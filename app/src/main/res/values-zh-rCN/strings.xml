@@ -23,7 +23,6 @@
 	<string name="confirm_delete_tweet">删除推文？</string>
 	<string name="confirm_delete_database">清除应用数据？</string>
 	<string name="tweet_sent_from">"来自："</string>
-	<string name="directmessage">私信</string>
 	<string name="username">用户名</string>
 	<string name="dm_message">消息内容</string>
 	<string name="confirm_cancel_message">取消发送消息？</string>

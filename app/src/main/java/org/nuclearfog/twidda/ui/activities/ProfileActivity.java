@@ -299,7 +299,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				listItem.setVisible(true);
 			}
 			if (user.isCurrentUser()) {
-				MenuItem dmIcon = m.findItem(R.id.profile_message);
 				MenuItem setting = m.findItem(R.id.profile_settings);
 				MenuItem userExcl = m.findItem(R.id.profile_block_mute);
 				MenuItem requestItem = m.findItem(R.id.profile_requests);

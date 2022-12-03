@@ -96,11 +96,6 @@
 			android:theme="@style/AppTheme" />
 
 		<activity
-			android:name=".ui.activities.MessageActivity"
-			android:screenOrientation="portrait"
-			android:theme="@style/AppTheme" />
-
-		<activity
 			android:name=".ui.activities.VideoViewer"
 			android:screenOrientation="portrait"
 			android:theme="@style/Transparency" />

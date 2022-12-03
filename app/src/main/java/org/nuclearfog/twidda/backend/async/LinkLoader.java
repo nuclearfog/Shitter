@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.MainActivity;
-import org.nuclearfog.twidda.ui.activities.MessageActivity;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
@@ -79,7 +78,8 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 				// open directmessage page
 				// e.g. twitter.com/messages
 				else if (pathSeg.get(0).equals("messages")) {
-					return new DataHolder(data, MessageActivity.class);
+					data.putInt(MainActivity.KEY_TAB_PAGE, 3);
+					return new DataHolder(data, MainActivity.class);
 				}
 				// open twitter search
 				// e.g. twitter.com/search?q={search string}

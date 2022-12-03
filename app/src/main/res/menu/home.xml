@@ -10,14 +10,14 @@
 		app:showAsAction="always|collapseActionView" />
 
 	<item
-		android:id="@+id/menu_post"
-		android:icon="@drawable/post"
-		android:title="@string/menu_tweet"
+		android:id="@+id/menu_profile"
+		android:title="@string/menu_open_home_profile"
+		android:icon="@drawable/user"
 		app:showAsAction="ifRoom" />
 
 	<item
-		android:id="@+id/menu_profile"
-		android:title="@string/menu_open_home_profile"
+		android:id="@+id/menu_post"
+		android:title="@string/menu_tweet"
 		app:showAsAction="withText" />
 
 	<item

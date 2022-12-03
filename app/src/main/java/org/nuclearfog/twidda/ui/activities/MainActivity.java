@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	private Dialog loadingCircle;
 	private TabLayout tabLayout;
 	private ViewPager pager;
+	private Toolbar toolbar;
 	private ViewGroup root;
 
 
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_main);
-		Toolbar toolbar = findViewById(R.id.home_toolbar);
+		toolbar = findViewById(R.id.home_toolbar);
 		pager = findViewById(R.id.home_pager);
 		tabLayout = findViewById(R.id.home_tab);
 		root = findViewById(R.id.main_layout);
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
 		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
@@ -141,25 +143,17 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				// check if account changed
 				else if (returnCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
 					adapter.setupForHomePage();
-					AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
-					AppStyles.setTheme(root, settings.getBackgroundColor());
 				}
 				break;
 
 			case REQUEST_ACCOUNT_CHANGE:
 				// check if account or theme changed
-				if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED
-						|| returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
-					AppStyles.setTheme(root, settings.getBackgroundColor());
-					AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
+				if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED || returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
 					adapter.notifySettingsChanged();
 				}
 				break;
 
 			case REQUEST_APP_SETTINGS:
-				// set new theme
-				AppStyles.setTheme(root, settings.getBackgroundColor());
-				AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
 				// check if an account was removed
 				if (returnCode == SettingsActivity.RETURN_APP_LOGOUT) {
 					// clear old login fragments
@@ -172,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				}
 				break;
 		}
+		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
+		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}
 
 
