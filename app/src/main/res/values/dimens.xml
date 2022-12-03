@@ -73,7 +73,7 @@
 	<dimen name="item_status_profile_size">36sp</dimen>
 	<dimen name="item_status_layout_padding">5dp</dimen>
 	<dimen name="item_status_text_margin">5dp</dimen>
-	<dimen name="item_status_image_margin">8dp</dimen>
+	<dimen name="item_status_label_margin">8dp</dimen>
 	<dimen name="item_status_drawable_margin">5dp</dimen>
 	<dimen name="item_status_textsize_notification">12sp</dimen>
 	<dimen name="item_status_textsize_button">12sp</dimen>

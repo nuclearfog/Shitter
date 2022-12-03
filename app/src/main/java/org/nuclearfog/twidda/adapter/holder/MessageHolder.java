@@ -37,7 +37,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class MessageHolder extends ViewHolder implements OnClickListener, OnTagClickListener {
 
-	private TextView username, screenname, receiver, time, text;
+	private TextView username, screenname, time, text;
 	private ImageView profile, verifiedIcon, lockedIcon;
 	private ImageButton mediaButton;
 	private Button answer, delete;
@@ -45,7 +45,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private OnMessageClickListener listener;
+	private OnItemClickListener listener;
 
 	/**
 	 * @param parent Parent view from adapter
@@ -60,7 +60,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		mediaButton = itemView.findViewById(R.id.item_message_media);
 		username = itemView.findViewById(R.id.item_message_username);
 		screenname = itemView.findViewById(R.id.item_message_screenname);
-		receiver = itemView.findViewById(R.id.item_message_receiver);
 		time = itemView.findViewById(R.id.item_message_time);
 		text = itemView.findViewById(R.id.item_message_text);
 		answer = itemView.findViewById(R.id.item_message_answer);
@@ -74,6 +73,10 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		this.picasso = picasso;
 
 		itemView.setOnClickListener(this);
+		profile.setOnClickListener(this);
+		answer.setOnClickListener(this);
+		delete.setOnClickListener(this);
+		mediaButton.setOnClickListener(this);
 	}
 
 
@@ -82,15 +85,15 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		int position = getLayoutPosition();
 		if (position != NO_POSITION && listener != null) {
 			if (v == itemView) {
-				listener.onMessageClick(position, OnMessageClickListener.TYPE_VIEW);
+				listener.onItemClick(position, OnItemClickListener.MESSAGE_VIEW);
 			} else if (v == answer) {
-				listener.onMessageClick(position, OnMessageClickListener.TYPE_ANSWER);
+				listener.onItemClick(position, OnItemClickListener.MESSAGE_ANSWER);
 			} else if (v == delete) {
-				listener.onMessageClick(position, OnMessageClickListener.TYPE_DELETE);
+				listener.onItemClick(position, OnItemClickListener.MESSAGE_DELETE);
 			} else if (v == profile) {
-				listener.onMessageClick(position, OnMessageClickListener.TYPE_PROFILE);
+				listener.onItemClick(position, OnItemClickListener.PROFILE_CLICK);
 			} else if (v == mediaButton) {
-				listener.onMessageClick(position, OnMessageClickListener.TYPE_MEDIA);
+				listener.onItemClick(position, OnItemClickListener.MESSAGE_MEDIA);
 			}
 		}
 	}
@@ -120,7 +123,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 
 		username.setText(sender.getUsername());
 		screenname.setText(sender.getScreenname());
-		receiver.setText(message.getReceiver().getScreenname());
 		time.setText(StringTools.formatCreationTime(itemView.getResources(), message.getTimestamp()));
 		text.setText(textSpan);
 		if (sender.isVerified()) {
@@ -154,30 +156,14 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	/**
 	 * set item click listener
 	 */
-	public void setOnMessageClickListener(OnMessageClickListener listener) {
+	public void setOnMessageClickListener(OnItemClickListener listener) {
 		this.listener = listener;
 	}
 
 	/**
 	 * item click listener
 	 */
-	public interface OnMessageClickListener {
-
-		int TYPE_VIEW = 9;
-
-		int TYPE_ANSWER = 10;
-
-		int TYPE_PROFILE = 11;
-
-		int TYPE_MEDIA = 12;
-
-		int TYPE_DELETE = 1;
-
-		/**
-		 * @param position position of the item
-		 * @param type     click type {@link #TYPE_ANSWER,#TYPE_PROFILE,#TYPE_MEDIA,#TYPE_DELETE}
-		 */
-		void onMessageClick(int position, int type);
+	public interface OnItemClickListener extends OnHolderClickListener {
 
 		/**
 		 * @param text   clicked text

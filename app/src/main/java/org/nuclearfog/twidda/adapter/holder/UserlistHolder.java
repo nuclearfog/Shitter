@@ -41,12 +41,12 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private OnListClickListener listener;
+	private OnHolderClickListener listener;
 
 	/**
 	 * @param parent Parent view from adapter
 	 */
-	public UserlistHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnListClickListener listener) {
+	public UserlistHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_list_container);
@@ -80,9 +80,9 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		int position = getLayoutPosition();
 		if (position != NO_POSITION) {
 			if (v == itemView) {
-				listener.onUserlistClick(position, OnListClickListener.LIST_CLICK);
+				listener.onItemClick(position, OnHolderClickListener.LIST_CLICK);
 			} else if (v == profile) {
-				listener.onUserlistClick(position, OnListClickListener.PROFILE_CLICK);
+				listener.onItemClick(position, OnHolderClickListener.LIST_PROFILE);
 			}
 		}
 	}
@@ -132,21 +132,5 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		} else {
 			privateList.setVisibility(View.GONE);
 		}
-	}
-
-	/**
-	 * item click listener
-	 */
-	public interface OnListClickListener {
-
-		int LIST_CLICK = 1;
-
-		int PROFILE_CLICK = 2;
-
-		/**
-		 * @param position position of the item
-		 * @param type     type of click
-		 */
-		void onUserlistClick(int position, int type);
 	}
 }

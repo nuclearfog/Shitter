@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.adapter.holder.ImageHolder;
-import org.nuclearfog.twidda.adapter.holder.ImageHolder.OnImageItemClickListener;
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.activities.ImageViewer
  */
-public class ImageAdapter extends Adapter<ViewHolder> implements OnImageItemClickListener {
+public class ImageAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * View type for an image item
@@ -93,16 +93,22 @@ public class ImageAdapter extends Adapter<ViewHolder> implements OnImageItemClic
 
 
 	@Override
-	public void onImageClick(int position, int type) {
+	public void onItemClick(int position, int type) {
 		switch (type) {
-			case OnImageItemClickListener.TYPE_IMAGE:
+			case OnHolderClickListener.IMAGE_CLICK:
 				itemClickListener.onImageClick(imageLinks.get(position));
 				break;
 
-			case OnImageItemClickListener.TYPE_SAVE:
+			case OnHolderClickListener.IMAGE_SAVE:
 				itemClickListener.onImageSave(imageLinks.get(position));
 				break;
 		}
+	}
+
+
+	@Override
+	public boolean onPlaceholderClick(int position) {
+		return false;
 	}
 
 	/**

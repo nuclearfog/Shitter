@@ -11,9 +11,8 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.adapter.holder.MessageHolder;
-import org.nuclearfog.twidda.adapter.holder.MessageHolder.OnMessageClickListener;
+import org.nuclearfog.twidda.adapter.holder.MessageHolder.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
-import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -25,7 +24,7 @@ import org.nuclearfog.twidda.model.Message;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.MessageFragment
  */
-public class MessageAdapter extends Adapter<ViewHolder> implements OnMessageClickListener, OnHolderClickListener {
+public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickListener {
 
 	/**
 	 * index of {@link #loadingIndex} if no index is defined
@@ -114,23 +113,23 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnMessageClic
 
 
 	@Override
-	public void onMessageClick(int position, int type) {
+	public void onItemClick(int position, int type) {
 		Message message = messages.get(position);
 		if (message != null) {
 			switch (type) {
-				case OnMessageClickListener.ANSWER:
+				case OnItemClickListener.MESSAGE_ANSWER:
 					itemClickListener.onClick(message, OnMessageClickListener.ANSWER);
 					break;
 
-				case OnMessageClickListener.DELETE:
+				case OnItemClickListener.MESSAGE_DELETE:
 					itemClickListener.onClick(message, OnMessageClickListener.DELETE);
 					break;
 
-				case OnMessageClickListener.MEDIA:
+				case OnItemClickListener.MESSAGE_MEDIA:
 					itemClickListener.onClick(message, OnMessageClickListener.MEDIA);
 					break;
 
-				case OnMessageClickListener.PROFILE:
+				case OnItemClickListener.MESSAGE_PROFILE:
 					itemClickListener.onClick(message, OnMessageClickListener.PROFILE);
 					break;
 			}
@@ -149,7 +148,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnMessageClic
 
 
 	@Override
-	public boolean onHolderClick(int position) {
+	public boolean onPlaceholderClick(int position) {
 		boolean success = itemClickListener.onPlaceholderClick(messages.getNextCursor());
 		if (success) {
 			loadingIndex = position;
@@ -225,17 +224,17 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnMessageClic
 		/**
 		 * indicates that the "delete" button was clicked
 		 */
-		int DELETE = 10;
+		int DELETE = 2;
 
 		/**
 		 * indicates that the profile image was clicked
 		 */
-		int PROFILE = 100;
+		int PROFILE = 3;
 
 		/**
 		 * indicates that the media button was clicked
 		 */
-		int MEDIA = 1000;
+		int MEDIA = 4;
 
 		/**
 		 * called when a button was clicked

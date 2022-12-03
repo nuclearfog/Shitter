@@ -622,7 +622,9 @@ public class GlobalSettings {
 	 * @return saved location information
 	 */
 	public Location getTrendLocation() {
-		return location;
+		if (account.getApiType() == Account.API_TWITTER)
+			return location;
+		return new LocationImpl("", -1);
 	}
 
 	/**

@@ -909,7 +909,6 @@ public class Twitter implements Connection {
 					try {
 						MessageV1 message = new MessageV1(item);
 						long senderId = message.getSenderId();
-						long receiverId = message.getReceiverId();
 						// cache user instances to reduce API calls
 						if (userCache.containsKey(senderId)) {
 							message.addSender(userCache.get(senderId));
@@ -917,13 +916,6 @@ public class Twitter implements Connection {
 							User user = showUser(senderId);
 							userCache.put(senderId, user);
 							message.addSender(user);
-						}
-						if (userCache.containsKey(receiverId)) {
-							message.addReceiver(userCache.get(receiverId));
-						} else {
-							User user = showUser(receiverId);
-							userCache.put(receiverId, user);
-							message.addReceiver(user);
 						}
 						result.add(message);
 					} catch (JSONException e) {

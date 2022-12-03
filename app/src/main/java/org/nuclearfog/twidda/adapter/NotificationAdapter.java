@@ -10,12 +10,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
-import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.StatusHolder;
-import org.nuclearfog.twidda.adapter.holder.StatusHolder.OnStatusClickListener;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
-import org.nuclearfog.twidda.adapter.holder.UserHolder.OnUserClickListener;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
@@ -30,7 +28,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatusClickListener, OnUserClickListener, OnHolderClickListener {
+public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * Minimum count of new statuses to insert a placeholder.
@@ -150,7 +148,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatus
 
 
 	@Override
-	public boolean onHolderClick(int position) {
+	public boolean onPlaceholderClick(int position) {
 		long sinceId = 0;
 		long maxId = 0;
 		if (position == 0) {
@@ -183,31 +181,21 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnStatus
 
 
 	@Override
-	public void onStatusClick(int position, int type) {
+	public void onItemClick(int position, int type) {
 		Notification item = items.get(position);
 		switch (type) {
-			case OnStatusClickListener.TYPE_LABEL:
+			case OnHolderClickListener.USER_CLICK:
+			case OnHolderClickListener.STATUS_LABEL:
 				if (item != null && item.getUser() != null) {
 					listener.onUserClick(item.getUser());
 				}
 				break;
 
-			case OnStatusClickListener.TYPE_STATUS:
+			case OnHolderClickListener.STATUS_CLICK:
 				if (item != null && item.getStatus() != null) {
 					listener.onStatusClick(item.getStatus());
 				}
 				break;
-		}
-	}
-
-
-	@Override
-	public void onUserClick(int position, int type) {
-		Notification item = items.get(position);
-		if (type == OnUserClickListener.ITEM_CLICK) {
-			if (item != null && item.getUser() != null) {
-				listener.onUserClick(item.getUser());
-			}
 		}
 	}
 

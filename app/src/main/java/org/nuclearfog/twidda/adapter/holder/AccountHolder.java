@@ -39,7 +39,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private OnAccountClickListener listener;
+	private OnHolderClickListener listener;
 
 	/**
 	 *
@@ -69,9 +69,9 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 		int position = getLayoutPosition();
 		if (position != NO_POSITION && listener != null) {
 			if (v == itemView) {
-				listener.onAccountClick(position, OnAccountClickListener.TYPE_SELECT);
+				listener.onItemClick(position, OnHolderClickListener.ACCOUNT_SELECT);
 			} else if (v == remove) {
-				listener.onAccountClick(position, OnAccountClickListener.TYPE_REMOVE);
+				listener.onItemClick(position, OnHolderClickListener.ACCOUNT_REMOVE);
 			}
 		}
 	}
@@ -111,23 +111,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set item click listener
 	 */
-	public void setOnAccountClickListener(OnAccountClickListener listener) {
+	public void setOnAccountClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
-	}
-
-	/**
-	 * listener for item click
-	 */
-	public interface OnAccountClickListener {
-
-		int TYPE_SELECT = 3;
-
-		int TYPE_REMOVE = 4;
-
-		/**
-		 * @param position position of the item
-		 * @param type     type of click {@link #TYPE_SELECT,#TYPE_REMOVE}
-		 */
-		void onAccountClick(int position, int type);
 	}
 }

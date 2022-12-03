@@ -19,19 +19,27 @@
 			android:lines="1"
 			android:drawablePadding="@dimen/item_status_drawable_margin"
 			android:textSize="@dimen/item_status_textsize_notification"
+			android:layout_marginBottom="@dimen/item_status_label_margin"
 			android:visibility="gone"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toTopOf="@id/item_status_label_barrier"
 			app:layout_constraintEnd_toEndOf="parent" />
+
+		<androidx.constraintlayout.widget.Barrier
+			android:id="@+id/item_status_label_barrier"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			app:barrierDirection="top"
+			app:constraint_referenced_ids="item_status_profile_image,item_status_verified_icon,item_status_author_username" />
 
 		<ImageView
 			android:id="@+id/item_status_profile_image"
 			android:layout_width="@dimen/item_status_profile_size"
 			android:layout_height="@dimen/item_status_profile_size"
 			android:contentDescription="@string/profile_image"
-			android:layout_marginTop="@dimen/item_status_image_margin"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/item_status_label" />
+			app:layout_constraintTop_toBottomOf="@id/item_status_label_barrier" />
 
 		<ImageView
 			android:id="@+id/item_status_verified_icon"

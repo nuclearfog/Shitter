@@ -47,7 +47,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private OnStatusClickListener listener;
+	private OnHolderClickListener listener;
 
 	/**
 	 * @param parent   Parent view from adapter
@@ -96,9 +96,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		int position = getLayoutPosition();
 		if (position != NO_POSITION && listener != null) {
 			if (v == itemView) {
-				listener.onStatusClick(position, OnStatusClickListener.TYPE_STATUS);
+				listener.onItemClick(position, OnHolderClickListener.STATUS_CLICK);
 			} else if (v == label) {
-				listener.onStatusClick(position, OnStatusClickListener.TYPE_LABEL);
+				listener.onItemClick(position, OnHolderClickListener.STATUS_LABEL);
 			}
 		}
 	}
@@ -215,7 +215,10 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 				break;
 
 			case Notification.TYPE_MENTION:
-				text = resources.getString(R.string.info_user_mention, name);
+				if (name.startsWith("@"))
+					text = resources.getString(R.string.info_user_mention, name.substring(1));
+				else
+					text = resources.getString(R.string.info_user_mention, name);
 				iconRes = R.drawable.mention;
 				break;
 
@@ -238,23 +241,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set item click listener
 	 */
-	public void setOnStatusClickListener(OnStatusClickListener listener) {
+	public void setOnStatusClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
-	}
-
-	/**
-	 * item click listener
-	 */
-	public interface OnStatusClickListener {
-
-		int TYPE_STATUS = 1;
-
-		int TYPE_LABEL = 2;
-
-		/**
-		 * @param position position of this item
-		 * @param type type of user click {@link #TYPE_LABEL,#TYPE_STATUS}
-		 */
-		void onStatusClick(int position, int type);
 	}
 }
