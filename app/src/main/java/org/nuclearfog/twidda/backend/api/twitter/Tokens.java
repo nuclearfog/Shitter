@@ -18,17 +18,17 @@ public class Tokens {
 	 * false means there are no API keys available
 	 * set to true when {@link #CONSUMER_TOKEN} and {@link #TOKEN_SECRET} are set
 	 */
-	public static final boolean USE_DEFAULT_KEYS = true;
+	public static final boolean USE_DEFAULT_KEYS = false;
 
 	/**
 	 * add here your consumer token
 	 */
-	private static final String CONSUMER_TOKEN = "wpZaXeqDEQzgJsdRUAAbzAS3V";
+	private static final String CONSUMER_TOKEN = "xxx";
 
 	/**
 	 * add here your token secret
 	 */
-	private static final String TOKEN_SECRET = "5V80dYmX0w3XDWSykFIsJhOh8HP6JxImMxdcveY7TDa29V25Mz";
+	private static final String TOKEN_SECRET = "xxx";
 
 
 	private static Tokens instance;
