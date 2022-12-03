@@ -23,12 +23,6 @@
 <img src="/images/shitter_1.jpg" height="360"/> <img src="/images/shitter_2.jpg" height="360"/> <img src="/images/shitter_3.jpg" height="360"/> <img src="/images/shitter_4.jpg" height="360"/>
 
 
-## How to build
-
-You can import this project with Android Studio. To get access to the Twitter API, you have to apply for a developer account. For more information visit <a href="https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api">Twitter Developer Platform</a>. Add your oauth 1.0 keys to this [file](app/src/main/java/org/nuclearfog/twidda/backend/utils/Tokens.java).
-
-
-
 ## Information
 
 App releases may contain private API keys belonging to the repository owner. Please check the Twitter rules <a href="https://support.twitter.com/articles/18311-the-twitter-rules">here</a> and <a href="https://help.twitter.com/rules-and-policies/twitter-api">here</a>.
