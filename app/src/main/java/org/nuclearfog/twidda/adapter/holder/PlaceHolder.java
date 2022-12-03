@@ -62,7 +62,7 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 		if (v == loadBtn) {
 			int position = getLayoutPosition();
 			if (position != NO_POSITION && listener != null) {
-				boolean enableLoading = listener.onHolderClick(position);
+				boolean enableLoading = listener.onPlaceholderClick(position);
 				setLoading(enableLoading);
 			}
 		}
@@ -88,18 +88,5 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 	 */
 	public void setOnHolderClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
-	}
-
-	/**
-	 * listener used to call after item click
-	 */
-	public interface OnHolderClickListener {
-
-		/**
-		 *
-		 * @param position position of the item
-		 * @return true to enable loading animation
-		 */
-		boolean onHolderClick(int position);
 	}
 }

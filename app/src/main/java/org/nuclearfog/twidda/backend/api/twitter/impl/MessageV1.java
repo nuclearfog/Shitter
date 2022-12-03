@@ -23,7 +23,6 @@ public class MessageV1 implements Message {
 	private long sender_id;
 	private long receiver_id;
 	private User sender;
-	private User receiver;
 	private String text;
 	private String mediaLink;
 
@@ -48,30 +47,36 @@ public class MessageV1 implements Message {
 		text = setText(data);
 	}
 
+
 	@Override
 	public long getId() {
 		return id;
 	}
+
 
 	@Override
 	public User getSender() {
 		return sender;
 	}
 
-	@Override
-	public User getReceiver() {
-		return receiver;
-	}
 
 	@Override
 	public String getText() {
 		return text;
 	}
 
+
 	@Override
 	public long getTimestamp() {
 		return timestamp;
 	}
+
+
+	@Override
+	public long getReceiverId() {
+		return receiver_id;
+	}
+
 
 	@Nullable
 	@Override
@@ -81,6 +86,7 @@ public class MessageV1 implements Message {
 		return null;
 	}
 
+
 	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Message))
@@ -88,10 +94,11 @@ public class MessageV1 implements Message {
 		return ((Message) obj).getId() == id;
 	}
 
+
 	@NonNull
 	@Override
 	public String toString() {
-		return "from=" + sender + " to=" + receiver + " message=\"" + text + "\"";
+		return "from=" + sender + " message=\"" + text + "\"";
 	}
 
 	/**
@@ -104,30 +111,12 @@ public class MessageV1 implements Message {
 	}
 
 	/**
-	 * get ID of the receiver
-	 *
-	 * @return user ID
-	 */
-	public long getReceiverId() {
-		return receiver_id;
-	}
-
-	/**
 	 * add sender information
 	 *
 	 * @param sender user information
 	 */
 	public void addSender(User sender) {
 		this.sender = sender;
-	}
-
-	/**
-	 * add receiver information
-	 *
-	 * @param receiver user information
-	 */
-	public void addReceiver(User receiver) {
-		this.receiver = receiver;
 	}
 
 	/**

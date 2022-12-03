@@ -35,7 +35,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 
 	private TextView name, rank, vol;
 
-	private OnTrendClickListener listener;
+	private OnHolderClickListener listener;
 
 	/**
 	 * @param parent Parent view from adapter
@@ -59,7 +59,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 		if (v == itemView) {
 			int position = getLayoutPosition();
 			if (position != NO_POSITION && listener != null) {
-				listener.onTrendClick(position);
+				listener.onItemClick(position, OnHolderClickListener.NO_TYPE);
 			}
 		}
 	}
@@ -67,7 +67,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set item click listener
 	 */
-	public void setOnTrendClickListener(OnTrendClickListener listener) {
+	public void setOnTrendClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -87,16 +87,5 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 		} else {
 			vol.setVisibility(View.GONE);
 		}
-	}
-
-	/**
-	 * Item click listener
-	 */
-	public interface OnTrendClickListener {
-
-		/**
-		 * @param position index of the view holder
-		 */
-		void onTrendClick(int position);
 	}
 }

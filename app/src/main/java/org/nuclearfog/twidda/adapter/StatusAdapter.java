@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
-import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.StatusHolder;
-import org.nuclearfog.twidda.adapter.holder.StatusHolder.OnStatusClickListener;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
@@ -29,7 +28,7 @@ import java.util.List;
  * @author nuclearfog
  * @see StatusFragment
  */
-public class StatusAdapter extends Adapter<ViewHolder> implements OnStatusClickListener, OnHolderClickListener {
+public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * index of {@link #loadingIndex} if no index is defined
@@ -123,7 +122,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnStatusClickL
 
 
 	@Override
-	public boolean onHolderClick(int position) {
+	public boolean onPlaceholderClick(int position) {
 		long sinceId = 0;
 		long maxId = 0;
 		if (position == 0) {
@@ -156,8 +155,8 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnStatusClickL
 
 
 	@Override
-	public void onStatusClick(int position, int type) {
-		if (type == OnStatusClickListener.TYPE_STATUS) {
+	public void onItemClick(int position, int type) {
+		if (type == OnHolderClickListener.STATUS_CLICK) {
 			Status status = items.get(position);
 			if (status != null) {
 				listener.onStatusSelected(status);

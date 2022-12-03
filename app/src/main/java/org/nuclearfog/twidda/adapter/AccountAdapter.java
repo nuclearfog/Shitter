@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.adapter.holder.AccountHolder;
-import org.nuclearfog.twidda.adapter.holder.AccountHolder.OnAccountClickListener;
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
@@ -23,7 +23,7 @@ import java.util.List;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.AccountFragment
  */
-public class AccountAdapter extends Adapter<AccountHolder> implements OnAccountClickListener {
+public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderClickListener {
 
 	private GlobalSettings settings;
 	private OnAccountClickListener listener;
@@ -65,13 +65,19 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnAccountC
 
 
 	@Override
-	public void onAccountClick(int position, int type) {
+	public void onItemClick(int position, int type) {
 		Account account = accounts.get(position);
-		if (type == AccountHolder.OnAccountClickListener.TYPE_SELECT) {
+		if (type == OnHolderClickListener.ACCOUNT_SELECT) {
 			listener.onAccountClick(account);
-		} else if (type == AccountHolder.OnAccountClickListener.TYPE_REMOVE) {
+		} else if (type == OnHolderClickListener.ACCOUNT_REMOVE) {
 			listener.onAccountRemove(account);
 		}
+	}
+
+
+	@Override
+	public boolean onPlaceholderClick(int position) {
+		return false;
 	}
 
 	/**

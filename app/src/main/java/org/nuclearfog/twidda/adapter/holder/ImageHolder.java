@@ -28,7 +28,7 @@ public class ImageHolder extends ViewHolder implements OnClickListener {
 	private ImageView preview;
 	private ImageButton saveButton;
 
-	private OnImageItemClickListener listener;
+	private OnHolderClickListener listener;
 
 	/**
 	 * @param parent Parent view from adapter
@@ -54,9 +54,9 @@ public class ImageHolder extends ViewHolder implements OnClickListener {
 		int pos = getLayoutPosition();
 		if (pos != NO_POSITION && listener != null) {
 			if (v == preview) {
-				listener.onImageClick(pos, OnImageItemClickListener.TYPE_IMAGE);
+				listener.onItemClick(pos, OnHolderClickListener.IMAGE_CLICK);
 			} else if (v == saveButton) {
-				listener.onImageClick(pos, OnImageItemClickListener.TYPE_SAVE);
+				listener.onItemClick(pos, OnHolderClickListener.IMAGE_SAVE);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ public class ImageHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set item click listener
 	 */
-	public void setOnImageClickListener(OnImageItemClickListener listener) {
+	public void setOnImageClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -80,21 +80,5 @@ public class ImageHolder extends ViewHolder implements OnClickListener {
 	 */
 	public void setImageUri(Uri uri) {
 		preview.setImageURI(uri);
-	}
-
-	/**
-	 * item click listener
-	 */
-	public interface OnImageItemClickListener {
-
-		int TYPE_IMAGE = 1;
-
-		int TYPE_SAVE = 2;
-
-		/**
-		 * @param position position of the image
-		 * @param type     type of action {@link #TYPE_IMAGE,#TYPE_SAVE}
-		 */
-		void onImageClick(int position, int type);
 	}
 }

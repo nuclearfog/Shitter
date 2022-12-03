@@ -577,7 +577,7 @@ public class AppDatabase {
 		if (cursor.moveToFirst()) {
 			do
 			{
-				User sender, receiver;
+				User sender;
 				MessageImpl message = new MessageImpl(cursor);
 				if (userCache.containsKey(message.getSenderId())) {
 					sender = userCache.get(message.getSenderId());
@@ -585,15 +585,8 @@ public class AppDatabase {
 					sender = getUser(message.getSenderId());
 					userCache.put(message.getSenderId(), sender);
 				}
-				if (userCache.containsKey(message.getReceiverId())) {
-					receiver = userCache.get(message.getReceiverId());
-				} else {
-					receiver = getUser(message.getReceiverId());
-					userCache.put(message.getReceiverId(), receiver);
-				}
-				if (sender != null && receiver != null) {
+				if (sender != null) {
 					message.setSender(sender);
-					message.setReceiver(receiver);
 					result.add(message);
 				}
 			} while (cursor.moveToNext());
@@ -852,14 +845,13 @@ public class AppDatabase {
 		messageColumn.put(MessageTable.ID, message.getId());
 		messageColumn.put(MessageTable.SINCE, message.getTimestamp());
 		messageColumn.put(MessageTable.FROM, message.getSender().getId());
-		messageColumn.put(MessageTable.TO, message.getReceiver().getId());
+		messageColumn.put(MessageTable.TO, message.getReceiverId());
 		messageColumn.put(MessageTable.MESSAGE, message.getText());
 		if (message.getMedia() != null)
 			messageColumn.put(MessageTable.MEDIA, message.getMedia().toString());
 		db.insertWithOnConflict(MessageTable.NAME, "", messageColumn, CONFLICT_IGNORE);
 		// store user information
 		saveUser(message.getSender(), db, CONFLICT_IGNORE);
-		saveUser(message.getReceiver(), db, CONFLICT_IGNORE);
 	}
 
 	/**

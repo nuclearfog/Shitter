@@ -49,7 +49,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private OnUserClickListener listener;
+	private OnHolderClickListener listener;
 
 	/**
 	 * @param parent Parent view from adapter
@@ -83,9 +83,9 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		int position = getLayoutPosition();
 		if (listener != null && position != NO_POSITION) {
 			if (v == itemView) {
-				listener.onUserClick(position, OnUserClickListener.ITEM_CLICK);
+				listener.onItemClick(position, OnHolderClickListener.USER_CLICK);
 			} else if (v == delete) {
-				listener.onUserClick(position, OnUserClickListener.ITEM_REMOVE);
+				listener.onItemClick(position, OnHolderClickListener.USER_REMOVE);
 			}
 		}
 	}
@@ -93,7 +93,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set item click listener
 	 */
-	public void setOnUserClickListener(OnUserClickListener listener) {
+	public void setOnUserClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -161,21 +161,5 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		label.setVisibility(VISIBLE);
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
 		label.setText(text);
-	}
-
-	/**
-	 * Item click listener
-	 */
-	public interface OnUserClickListener {
-
-		int ITEM_CLICK = 1;
-
-		int ITEM_REMOVE = 2;
-
-		/**
-		 * @param position position of the item
-		 * @param type     type of action {@link #ITEM_REMOVE,#ITEM_CLICK}
-		 */
-		void onUserClick(int position, int type);
 	}
 }

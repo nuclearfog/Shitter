@@ -24,7 +24,7 @@ public interface Message {
 	/**
 	 * @return receiver of the message
 	 */
-	User getReceiver();
+	long getReceiverId();
 
 	/**
 	 * @return message text

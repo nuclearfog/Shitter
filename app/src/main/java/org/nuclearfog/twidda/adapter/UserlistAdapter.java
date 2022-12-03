@@ -9,10 +9,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
-import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.UserlistHolder;
-import org.nuclearfog.twidda.adapter.holder.UserlistHolder.OnListClickListener;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -25,7 +24,7 @@ import org.nuclearfog.twidda.model.UserList;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.UserListFragment
  */
-public class UserlistAdapter extends Adapter<ViewHolder> implements OnListClickListener, OnHolderClickListener {
+public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * indicator if there is no loading progress
@@ -108,15 +107,15 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnListClickL
 
 
 	@Override
-	public void onUserlistClick(int position, int type) {
+	public void onItemClick(int position, int type) {
 		UserList item = userlists.get(position);
 		if (item != null) {
 			switch (type) {
-				case OnListClickListener.LIST_CLICK:
+				case OnHolderClickListener.LIST_CLICK:
 					listener.onListClick(item);
 					break;
 
-				case OnListClickListener.PROFILE_CLICK:
+				case OnHolderClickListener.LIST_PROFILE:
 					listener.onProfileClick(item.getListOwner());
 					break;
 			}
@@ -125,7 +124,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnListClickL
 
 
 	@Override
-	public boolean onHolderClick(int position) {
+	public boolean onPlaceholderClick(int position) {
 		boolean actionPerformed = listener.onPlaceholderClick(userlists.getNext());
 		if (actionPerformed)
 			loadingIndex = position;

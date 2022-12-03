@@ -81,39 +81,12 @@
 			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintHorizontal_chainStyle="packed" />
 
-		<ImageView
-			android:id="@+id/item_message_receiver_icon"
-			android:layout_width="@dimen/dmitem_icon_size"
-			android:layout_height="@dimen/dmitem_icon_size"
-			android:layout_marginStart="@dimen/dmitem_padding_drawable"
-			android:src="@drawable/right"
-			app:layout_constraintStart_toEndOf="@id/item_message_screenname"
-			app:layout_constraintTop_toTopOf="@id/item_message_screenname"
-			app:layout_constraintBottom_toBottomOf="@id/item_message_screenname"
-			app:layout_constraintHorizontal_bias="0.0"
-			app:layout_constraintHorizontal_chainStyle="packed"
-			tools:ignore="ContentDescription" />
-
-		<TextView
-			android:id="@+id/item_message_receiver"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:drawablePadding="@dimen/dmitem_padding_drawable"
-			android:singleLine="true"
-			android:textSize="@dimen/dmitem_textsize_name"
-			android:layout_marginStart="@dimen/dmitem_padding_drawable"
-			app:layout_constraintStart_toEndOf="@id/item_message_receiver_icon"
-			app:layout_constraintTop_toTopOf="@id/item_message_screenname"
-			app:layout_constraintBottom_toBottomOf="@id/item_message_screenname"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_chainStyle="packed" />
-
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/item_message_profile_barrier"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="item_message_profile, item_message_screenname, item_message_receiver" />
+			app:constraint_referenced_ids="item_message_profile,item_message_private,item_message_screenname" />
 
 		<TextView
 			android:id="@+id/item_message_text"

@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
-import org.nuclearfog.twidda.adapter.holder.PlaceHolder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
-import org.nuclearfog.twidda.adapter.holder.UserHolder.OnUserClickListener;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -26,7 +25,7 @@ import org.nuclearfog.twidda.model.User;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.UserFragment
  */
-public class UserAdapter extends Adapter<ViewHolder> implements OnUserClickListener, OnHolderClickListener {
+public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * index of {@link #loadingIndex} if no index is defined
@@ -119,7 +118,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnUserClickListe
 
 
 	@Override
-	public boolean onHolderClick(int position) {
+	public boolean onPlaceholderClick(int position) {
 		boolean actionPerformed = listener.onPlaceholderClick(users.getNext());
 		if (actionPerformed) {
 			loadingIndex = position;
@@ -130,16 +129,16 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnUserClickListe
 
 
 	@Override
-	public void onUserClick(int position, int type) {
+	public void onItemClick(int position, int type) {
 		switch (type) {
-			case OnUserClickListener.ITEM_CLICK:
+			case OnHolderClickListener.USER_CLICK:
 				User user = users.get(position);
 				if (user != null) {
 					listener.onUserClick(user);
 				}
 				break;
 
-			case OnUserClickListener.ITEM_REMOVE:
+			case OnHolderClickListener.USER_REMOVE:
 				user = users.get(position);
 				if (enableDelete && user != null) {
 					listener.onDelete(user);

@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.TrendHolder;
-import org.nuclearfog.twidda.adapter.holder.TrendHolder.OnTrendClickListener;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
 
@@ -20,7 +20,7 @@ import java.util.List;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.TrendFragment
  */
-public class TrendAdapter extends Adapter<ViewHolder> implements OnTrendClickListener {
+public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * trend limit
@@ -66,8 +66,14 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnTrendClickLis
 
 
 	@Override
-	public void onTrendClick(int position) {
+	public void onItemClick(int position, int type) {
 		itemClickListener.onTrendClick(trends.get(position));
+	}
+
+
+	@Override
+	public boolean onPlaceholderClick(int position) {
+		return false;
 	}
 
 	/**
