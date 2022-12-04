@@ -8,14 +8,14 @@
 
 ## Features
 
-- fast access to tweets, userprofiles and trends
-- tweet, directmessage and userlist editor
+- access to statuses, users and trends
+- real timeline (chronological order)
+- status, list and profile editor
 - customizable theme
-- image/video preview
+- media preview
 - GPS locale support
-- proxy support
-- multi account support
-- custom API key support
+- multi account support (experimental support for Mastodon)
+- no ads, no app tracking, proxy support
 
 
 ## Screenshots
@@ -30,6 +30,7 @@ If you have any questions or if you have found a bug, please open an issue.
 
 
 ## 3rd party libraries and licenses
+
 - <a href="https://github.com/square/picasso">picasso 2.8</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
 - <a href="https://github.com/MichaelRocks/paranoid">String obfuscation</a>
@@ -41,13 +42,14 @@ If you have any questions or if you have found a bug, please open an issue.
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
-- Version 1.x: <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
 
 ## Graphics
+
 - SVG Icons from <a href="http://www.entypo.com">Entypo</a> & <a href="https://www.svgrepo.com">SVG Repo</a>
 - logo and app icon design by <a href="https://github.com/Tobaloidee">@Tobaloidee</a>
 - Twitter4J logo (version 1.x) from <a href="https://twitter4j.org/en/powered-by.html">Twitter4J website</a>
 
 ## Thanks to
+
 - <a href="https://github.com/Tobaloidee">@Tobaloidee</a>
 - <a href="https://github.com/lehmaning">@lehmaning</a>

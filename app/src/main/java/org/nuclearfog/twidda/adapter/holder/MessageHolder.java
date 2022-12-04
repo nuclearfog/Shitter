@@ -91,7 +91,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 			} else if (v == delete) {
 				listener.onItemClick(position, OnItemClickListener.MESSAGE_DELETE);
 			} else if (v == profile) {
-				listener.onItemClick(position, OnItemClickListener.PROFILE_CLICK);
+				listener.onItemClick(position, OnItemClickListener.MESSAGE_PROFILE);
 			} else if (v == mediaButton) {
 				listener.onItemClick(position, OnItemClickListener.MESSAGE_MEDIA);
 			}

@@ -33,8 +33,6 @@ import org.nuclearfog.twidda.model.User;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * SQLite database class to store and load status, messages, trends and user information
@@ -205,6 +203,10 @@ public class AppDatabase {
 	 * SQL query to get current user's messages
 	 */
 	private static final String MESSAGE_QUERY = "SELECT * FROM " + MessageTable.NAME
+			+ " INNER JOIN " + UserTable.NAME
+			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserTable.NAME + "." + UserTable.ID
+			+ " INNER JOIN " + UserRegisterTable.NAME
+			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID
 			+ " WHERE " + MessageTable.FROM + "=? OR " + MessageTable.TO + "=?"
 			+ " ORDER BY " + MessageTable.SINCE + " DESC LIMIT ?;";
 
@@ -706,27 +708,16 @@ public class AppDatabase {
 	 * @return list of direct messages
 	 */
 	public Messages getMessages() {
-		String homeIdStr = Long.toString(settings.getLogin().getId());
+		long currentId = settings.getLogin().getId();
+		String homeIdStr = Long.toString(currentId);
 		String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
 		Messages result = new Messages(null, null);
 		SQLiteDatabase db = getDbRead();
-		Map<Long, User> userCache = new TreeMap<>();
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do
 			{
-				User sender;
-				MessageImpl message = new MessageImpl(cursor);
-				if (userCache.containsKey(message.getSenderId())) {
-					sender = userCache.get(message.getSenderId());
-				} else {
-					sender = getUser(message.getSenderId());
-					userCache.put(message.getSenderId(), sender);
-				}
-				if (sender != null) {
-					message.setSender(sender);
-					result.add(message);
-				}
+				result.add(new MessageImpl(cursor, currentId));
 			} while (cursor.moveToNext());
 		}
 		cursor.close();

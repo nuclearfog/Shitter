@@ -11,35 +11,33 @@ public interface OnHolderClickListener {
 
 	int LIST_CLICK = 1;
 
-	int PROFILE_CLICK = 2;
+	int USER_CLICK = 2;
 
-	int USER_CLICK = 3;
+	int USER_REMOVE = 3;
 
-	int USER_REMOVE = 4;
+	int STATUS_CLICK = 4;
 
-	int STATUS_CLICK = 5;
+	int STATUS_LABEL = 5;
 
-	int STATUS_LABEL = 6;
+	int LIST_PROFILE = 6;
 
-	int LIST_PROFILE = 7;
+	int MESSAGE_VIEW = 7;
 
-	int MESSAGE_VIEW = 8;
+	int MESSAGE_ANSWER = 8;
 
-	int MESSAGE_ANSWER = 9;
+	int MESSAGE_PROFILE = 9;
 
-	int MESSAGE_PROFILE = 10;
+	int MESSAGE_MEDIA = 10;
 
-	int MESSAGE_MEDIA = 11;
+	int MESSAGE_DELETE = 11;
 
-	int MESSAGE_DELETE = 12;
+	int ACCOUNT_SELECT = 12;
 
-	int ACCOUNT_SELECT = 13;
+	int ACCOUNT_REMOVE = 13;
 
-	int ACCOUNT_REMOVE = 14;
+	int IMAGE_CLICK = 14;
 
-	int IMAGE_CLICK = 15;
-
-	int IMAGE_SAVE = 16;
+	int IMAGE_SAVE = 15;
 
 	/**
 	 * called when an item was clicked

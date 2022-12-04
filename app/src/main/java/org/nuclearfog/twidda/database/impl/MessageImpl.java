@@ -19,18 +19,20 @@ public class MessageImpl implements Message {
 
 	private long id;
 	private long time;
-	private long senderId;
 	private long receiverId;
 	private String text;
 	private User sender;
 	private String media;
 
-
-	public MessageImpl(Cursor cursor) {
+	/**
+	 * @param cursor    database cursor containing UserTable column
+	 * @param currentId Id of the current user
+	 */
+	public MessageImpl(Cursor cursor, long currentId) {
+		sender = new UserImpl(cursor, currentId);
 		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
-		senderId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.FROM));
 		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
 		media = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));
 	}
@@ -87,15 +89,5 @@ public class MessageImpl implements Message {
 	@Override
 	public String toString() {
 		return "from=" + sender + " message=\"" + text + "\"";
-	}
-
-
-	public void setSender(User sender) {
-		this.sender = sender;
-	}
-
-
-	public long getSenderId() {
-		return senderId;
 	}
 }
