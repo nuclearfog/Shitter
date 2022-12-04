@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.database.impl;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
@@ -84,5 +85,20 @@ public class NotificationImpl implements Notification {
 	 */
 	public long getItemId() {
 		return itemId;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Notification))
+			return false;
+		return ((Notification) obj).getId() == id;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=" + id + " " + user;
 	}
 }

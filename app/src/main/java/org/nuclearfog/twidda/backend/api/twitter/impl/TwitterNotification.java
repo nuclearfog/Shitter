@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -49,5 +52,21 @@ public class TwitterNotification implements Notification {
 	@Override
 	public Status getStatus() {
 		return status;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=" + status.getId() + " " + status.getAuthor();
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Notification))
+			return false;
+		Notification notification = ((Notification) obj);
+		return status.equals(notification.getStatus());
 	}
 }

@@ -142,7 +142,7 @@ public class AccountImpl implements Account {
 	@NonNull
 	@Override
 	public String toString() {
-		return "date=" + loginDate + " host=" + host + " user=" + user;
+		return "date=" + loginDate + " host=\"" + host + "\" user=" + user;
 	}
 
 	/**

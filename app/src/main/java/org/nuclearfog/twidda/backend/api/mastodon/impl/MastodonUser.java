@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.User;
 
@@ -42,18 +43,22 @@ public class MastodonUser implements User {
 	 */
 	public MastodonUser(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
+		String description = json.optString("note", "");
 		screenname = '@' + json.optString("acct", "");
-		username = json.optString("display_name");
+		username = json.optString("display_name", "");
 		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_MASTODON);
-		profileUrl = json.optString("avatar");
-		bannerUrl = json.optString("banner");
-		description = json.optString("note");
-		url = json.optString("url");
+		profileUrl = json.optString("avatar", "");
+		bannerUrl = json.optString("banner", "");
+		url = json.optString("url", "");
 		following = json.optInt("following_count");
 		follower = json.optInt("followers_count");
 		statusCount = json.optInt("statuses_count");
 		locked = json.optBoolean("locked");
-
+		if (!description.isEmpty()) {
+			this.description = Jsoup.parse(description).text();
+		} else {
+			this.description = "";
+		}
 		try {
 			id = Long.parseLong(idStr);
 		} catch (NumberFormatException e) {
