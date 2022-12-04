@@ -166,7 +166,10 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		if (status.getRepliedStatusId() > 0) {
 			replyIcon.setVisibility(View.VISIBLE);
 			replyname.setVisibility(View.VISIBLE);
-			replyname.setText(status.getReplyName());
+			if (!status.getReplyName().isEmpty())
+				replyname.setText(status.getReplyName());
+			else
+				replyname.setText(R.string.status_replyname_empty);
 		} else {
 			replyIcon.setVisibility(View.GONE);
 			replyname.setVisibility(View.GONE);

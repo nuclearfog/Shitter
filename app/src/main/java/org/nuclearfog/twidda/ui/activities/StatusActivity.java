@@ -675,7 +675,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			statusText.setVisibility(GONE);
 		}
 		if (status.getRepliedStatusId() > 0) {
-			replyName.setText(status.getReplyName());
+			if (!status.getReplyName().isEmpty())
+				replyName.setText(status.getReplyName());
+			else
+				replyName.setText(R.string.status_replyname_empty);
 			replyName.setVisibility(VISIBLE);
 		} else {
 			replyName.setVisibility(GONE);

@@ -249,4 +249,5 @@
 	<string name="error_empty_token">Bitte Schlüssel hinzufügen</string>
 	<string name="info_account_selected">%1$s ausgewählt</string>
 	<string name="menu_message">Nachricht schreiben</string>
+	<string name="status_replyname_empty">Antwort</string>
 </resources>

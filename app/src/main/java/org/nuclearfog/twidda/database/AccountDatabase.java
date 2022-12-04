@@ -59,7 +59,7 @@ public class AccountDatabase {
 		values.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
 		values.put(AccountTable.API, account.getApiType());
 		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
-		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
+		values.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 		values.put(AccountTable.BEARER, account.getBearerToken());
 		SQLiteDatabase db = dataHelper.getDatabase();
 		db.beginTransaction();
