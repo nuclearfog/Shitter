@@ -1,12 +1,12 @@
 package org.nuclearfog.twidda.database.impl;
 
-import static org.nuclearfog.twidda.database.AppDatabase.FAV_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.FAVORITE_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.HIDDEN_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_ANGIF_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_IMAGE_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_SENS_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_VIDEO_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.RTW_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.REPOST_MASK;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -79,11 +79,11 @@ public class StatusImpl implements Status {
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REPOST_ID));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REGISTER));
-		favorited = (register & FAV_MASK) != 0;
-		reposted = (register & RTW_MASK) != 0;
+		favorited = (register & FAVORITE_MASK) != 0;
+		reposted = (register & REPOST_MASK) != 0;
 		sensitive = (register & MEDIA_SENS_MASK) != 0;
 		isHidden = (register & HIDDEN_MASK) != 0;
-		if (!linkStr.isEmpty())
+		if (linkStr != null && !linkStr.isEmpty())
 			mediaLinks = SEPARATOR.split(linkStr);
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		// get media type

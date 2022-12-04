@@ -70,7 +70,7 @@ public interface Notification extends Serializable {
 	 *
 	 * @return time
 	 */
-	long createdAt();
+	long getCreatedAt();
 
 	/**
 	 * get user from the notification

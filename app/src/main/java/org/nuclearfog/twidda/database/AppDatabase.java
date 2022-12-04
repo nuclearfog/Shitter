@@ -4,6 +4,7 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
@@ -20,10 +21,12 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.database.impl.MessageImpl;
+import org.nuclearfog.twidda.database.impl.NotificationImpl;
 import org.nuclearfog.twidda.database.impl.StatusImpl;
 import org.nuclearfog.twidda.database.impl.TrendImpl;
 import org.nuclearfog.twidda.database.impl.UserImpl;
 import org.nuclearfog.twidda.model.Message;
+import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
@@ -40,29 +43,90 @@ import java.util.TreeMap;
  */
 public class AppDatabase {
 
-	// Status status bits
-	public static final int FAV_MASK = 1;          //  status is favorited by user
-	public static final int RTW_MASK = 1 << 1;     //  status is reposted by user
-	public static final int HOM_MASK = 1 << 2;     //  status is from home timeline
-	public static final int UTW_MASK = 1 << 4;     //  status is from an users timeline
-	public static final int RPL_MASK = 1 << 5;     //  status is from a reply timeline
-	public static final int MEDIA_IMAGE_MASK = 1 << 6; // status contains images
-	public static final int MEDIA_VIDEO_MASK = 2 << 6; // status contains a video
-	public static final int MEDIA_ANGIF_MASK = 3 << 6; // status contains an animation
-	public static final int MEDIA_SENS_MASK = 1 << 8;  // status contains sensitive media
-	public static final int HIDDEN_MASK = 1 << 9;      // status is hidden
+	/**
+	 * flag indicates that a status was favorited by the current user
+	 */
+	public static final int FAVORITE_MASK = 1;
 
-	// user status bits
-	public static final int VER_MASK = 1;          //  user is verified
-	public static final int LCK_MASK = 1 << 1;     //  user is private
-	public static final int FRQ_MASK = 1 << 2;     //  a follow request is pending
-	public static final int EXCL_USR = 1 << 3;     //  user excluded from mention timeline
-	public static final int DEF_IMG = 1 << 4;      //  user has a default profile image
+	/**
+	 * flag indicates that a status was reposted by the current user
+	 */
+	public static final int REPOST_MASK = 1 << 1;
+
+	/**
+	 * flag indicates that a status exists in the home timeline of the current user
+	 */
+	public static final int HOME_TIMELINE_MASK = 1 << 2;
+
+	/**
+	 * flag indicates that a status exists in the notification of the current user
+	 */
+	public static final int NOTIFICATION_MASK = 1 << 3;
+
+	/**
+	 * flag indicates that a status exists in an user timeline
+	 */
+	public static final int USER_TIMELINE_MASK = 1 << 4;
+
+	/**
+	 * flag indicates that a status exists in the reply of a status
+	 */
+	public static final int STATUS_REPLY_MASK = 1 << 5;
+
+	/**
+	 * flag indicates that a status contains images
+	 */
+	public static final int MEDIA_IMAGE_MASK = 1 << 6;
+
+	/**
+	 * flag indicates that a status contains a video
+	 */
+	public static final int MEDIA_VIDEO_MASK = 2 << 6;
+
+	/**
+	 * flag indicates that a status contains a gif
+	 */
+	public static final int MEDIA_ANGIF_MASK = 3 << 6;
+
+	/**
+	 * flag indicates that a status contains sensitive media
+	 */
+	public static final int MEDIA_SENS_MASK = 1 << 8;
+
+	/**
+	 * flag indicates that a status was hidden by the current user
+	 */
+	public static final int HIDDEN_MASK = 1 << 9;
+
+	/**
+	 * flag indicates that an user is verified
+	 */
+	public static final int VERIFIED_MASK = 1;
+
+	/**
+	 * flag indicates that an user is locked/private
+	 */
+	public static final int LOCKED_MASK = 1 << 1;
+
+	/**
+	 * flag indicates that the current user has sent a follow request to an user
+	 */
+	public static final int FOLLOW_REQUEST_MASK = 1 << 2;
+
+	/**
+	 * flag indicates that the statuses of an user are excluded from timeline
+	 */
+	public static final int EXCLUDE_MASK = 1 << 3;
+
+	/**
+	 * flag indicates that the user has a default profile image
+	 */
+	public static final int DEFAULT_IMAGE_MASK = 1 << 4;
 
 	/**
 	 * query to create status table with user and register columns
 	 */
-	private static final String STATUS_TABLE = StatusTable.NAME
+	private static final String STATUS_SUBQUERY = StatusTable.NAME
 			+ " INNER JOIN " + UserTable.NAME
 			+ " ON " + StatusTable.NAME + "." + StatusTable.USER + "=" + UserTable.NAME + "." + UserTable.ID
 			+ " INNER JOIN " + UserRegisterTable.NAME
@@ -73,71 +137,87 @@ public class AppDatabase {
 	/**
 	 * query to get user information
 	 */
-	private static final String USER_TABLE = "SELECT * FROM " + UserTable.NAME
+	private static final String USER_SUBQUERY = UserTable.NAME
 			+ " INNER JOIN " + UserRegisterTable.NAME
-			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID
-			+ " WHERE " + UserTable.NAME + "." + UserTable.ID + "=? LIMIT 1";
+			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID;
 
 	/**
 	 * SQL query to get home timeline status
 	 */
-	static final String HOME_QUERY = "SELECT * FROM " + STATUS_TABLE
-			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + HOM_MASK + " IS NOT 0"
+	private static final String HOME_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
+			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + HOME_TIMELINE_MASK + " IS NOT 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.ID
-			+ " DESC LIMIT ?";
+			+ " DESC LIMIT ?;";
 
 	/**
 	 * SQL query to get status of an user
 	 */
-	static final String USER_STATUS_QUERY = "SELECT * FROM " + STATUS_TABLE
-			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + UTW_MASK + " IS NOT 0"
+	private static final String USER_STATUS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
+			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + USER_TIMELINE_MASK + " IS NOT 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " AND " + StatusTable.NAME + "." + StatusTable.USER + "=?"
 			+ " ORDER BY " + StatusTable.ID
-			+ " DESC LIMIT ?";
+			+ " DESC LIMIT ?;";
 
 	/**
 	 * SQL query to get status favored by an user
 	 */
-	static final String USERFAVORIT_QUERY = "SELECT * FROM " + STATUS_TABLE
+	private static final String USERFAVORIT_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
 			+ " INNER JOIN " + FavoriteTable.NAME
 			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + FavoriteTable.NAME + "." + FavoriteTable.STATUS_ID
 			+ " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.FAVORITER_ID + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.ID
-			+ " DESC LIMIT ?";
+			+ " DESC LIMIT ?;";
 
 	/**
 	 * SQL query to get a single status specified by an ID
 	 */
-	static final String SINGLE_STATUS_QUERY = "SELECT * FROM " + STATUS_TABLE
+	static final String SINGLE_STATUS_QUERY = "SELECT * FROM " + STATUS_SUBQUERY
 			+ " WHERE " + StatusTable.NAME + "." + StatusTable.ID + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " LIMIT 1";
+			+ " LIMIT 1;";
+
+	/**
+	 * query to get user information
+	 */
+	private static final String SINGLE_USER_QUERY = "SELECT * FROM " + USER_SUBQUERY
+			+ " WHERE " + UserTable.NAME + "." + UserTable.ID + "=? LIMIT 1;";
 
 	/**
 	 * SQL query to get replies of a status specified by a status ID
 	 */
-	static final String REPLY_QUERY = "SELECT * FROM " + STATUS_TABLE
+	private static final String REPLY_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
 			+ " WHERE " + StatusTable.NAME + "." + StatusTable.REPLYSTATUS + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + RPL_MASK + " IS NOT 0"
+			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + STATUS_REPLY_MASK + " IS NOT 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + HIDDEN_MASK + " IS 0"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCL_USR + " IS 0"
-			+ " ORDER BY " + StatusTable.ID + " DESC LIMIT ?";
+			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCLUDE_MASK + " IS 0"
+			+ " ORDER BY " + StatusTable.ID + " DESC LIMIT ?;";
 
 	/**
 	 * SQL query to get current user's messages
 	 */
-	static final String MESSAGE_QUERY = "SELECT * FROM " + MessageTable.NAME
+	private static final String MESSAGE_QUERY = "SELECT * FROM " + MessageTable.NAME
 			+ " WHERE " + MessageTable.FROM + "=? OR " + MessageTable.TO + "=?"
-			+ " ORDER BY " + MessageTable.SINCE + " DESC LIMIT ?";
+			+ " ORDER BY " + MessageTable.SINCE + " DESC LIMIT ?;";
+
+	/**
+	 * SQL query to get notifications
+	 */
+	private static final String NOTIFICATION_QUERY = "SELECT * FROM " + NotificationTable.NAME
+			+ " LEFT JOIN (SELECT * FROM " + USER_SUBQUERY + ") " + UserTable.NAME
+			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + NotificationTable.NAME + "." + NotificationTable.ITEM
+			+ " LEFT JOIN (SELECT * FROM " + STATUS_SUBQUERY + ") " + StatusTable.NAME
+			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + NotificationTable.NAME + "." + NotificationTable.ITEM
+			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.OWNER + "=?"
+			+ " ORDER BY " + NotificationTable.ID + " DESC LIMIT ?;";
 
 	/**
 	 * select status entries from favorite table matching status ID
@@ -242,7 +322,7 @@ public class AppDatabase {
 	public void saveHomeTimeline(List<Status> home) {
 		SQLiteDatabase db = getDbWrite();
 		for (Status status : home)
-			saveStatus(status, HOM_MASK, db);
+			saveStatus(status, HOME_TIMELINE_MASK, db);
 		commit(db);
 	}
 
@@ -254,7 +334,7 @@ public class AppDatabase {
 	public void saveUserTimeline(List<Status> stats) {
 		SQLiteDatabase db = getDbWrite();
 		for (Status status : stats)
-			saveStatus(status, UTW_MASK, db);
+			saveStatus(status, USER_TIMELINE_MASK, db);
 		commit(db);
 	}
 
@@ -282,7 +362,7 @@ public class AppDatabase {
 	public void saveReplyTimeline(List<Status> replies) {
 		SQLiteDatabase db = getDbWrite();
 		for (Status status : replies)
-			saveStatus(status, RPL_MASK, db);
+			saveStatus(status, STATUS_REPLY_MASK, db);
 		commit(db);
 	}
 
@@ -321,6 +401,29 @@ public class AppDatabase {
 	}
 
 	/**
+	 * save notifications to database
+	 */
+	public void saveNotifications(List<Notification> notifications) {
+		SQLiteDatabase db = getDbWrite();
+		for (Notification notification : notifications) {
+			ContentValues column = new ContentValues(4);
+			column.put(NotificationTable.ID, notification.getId());
+			column.put(NotificationTable.DATE, notification.getCreatedAt());
+			column.put(NotificationTable.TYPE, notification.getType());
+			column.put(NotificationTable.OWNER, settings.getLogin().getId());
+			if (notification.getStatus() != null) {
+				saveStatus(notification.getStatus(), NOTIFICATION_MASK, db);
+				column.put(NotificationTable.ITEM, notification.getStatus().getId());
+			} else if (notification.getUser() != null) {
+				saveUser(notification.getUser());
+				column.put(NotificationTable.ITEM, notification.getUser().getId());
+			}
+			db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
+		}
+		commit(db);
+	}
+
+	/**
 	 * store direct messages
 	 *
 	 * @param messages list of direct messages
@@ -345,8 +448,7 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(HOME_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -369,8 +471,7 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -393,8 +494,7 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(USERFAVORIT_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -453,6 +553,45 @@ public class AppDatabase {
 			{
 				Status status = getStatus(cursor);
 				result.add(status);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
+	 * get notifiactions
+	 *
+	 * @return notification lsit
+	 */
+	public List<Notification> getNotifications() {
+		String[] args = {Long.toString(settings.getLogin().getId()), Integer.toString(settings.getListSize())};
+		SQLiteDatabase db = getDbRead();
+		List<Notification> result = new LinkedList<>();
+		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
+		if (cursor.moveToFirst()) {
+			do
+			{
+				NotificationImpl notification = new NotificationImpl(cursor);
+				switch (notification.getType()) {
+					case Notification.TYPE_FAVORITE:
+					case Notification.TYPE_REPOST:
+					case Notification.TYPE_MENTION:
+					case Notification.TYPE_POLL:
+					case Notification.TYPE_STATUS:
+					case Notification.TYPE_UPDATE:
+						Status status = getStatus(cursor);
+						notification.addStatus(status);
+						break;
+
+					case Notification.TYPE_FOLLOW:
+					case Notification.TYPE_REQUEST:
+						User user = getUser(cursor);
+						notification.addUser(user);
+						break;
+
+				}
+				result.add(notification);
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -522,7 +661,7 @@ public class AppDatabase {
 		SQLiteDatabase db = getDbWrite();
 		// get status register
 		int register = getStatusRegister(db, status.getId());
-		register &= ~FAV_MASK; // unset favorite flag
+		register &= ~FAVORITE_MASK; // unset favorite flag
 		// update database
 		saveStatusRegister(db, status, register);
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
@@ -553,8 +692,7 @@ public class AppDatabase {
 		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, TREND_ORDER);
 		List<Trend> trends = new LinkedList<>();
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				trends.add(new TrendImpl(cursor));
 			} while (cursor.moveToNext());
 		}
@@ -616,12 +754,57 @@ public class AppDatabase {
 		SQLiteDatabase db = getDbWrite();
 		int register = getUserRegister(db, id);
 		if (mute) {
-			register |= EXCL_USR;
+			register |= EXCLUDE_MASK;
 		} else {
-			register &= ~EXCL_USR;
+			register &= ~EXCLUDE_MASK;
 		}
 		saveUserRegister(db, id, register);
 		commit(db);
+	}
+
+	/**
+	 * set register of a status. Update if an entry exists
+	 *
+	 * @param db       database instance
+	 * @param status   status
+	 * @param register status register
+	 */
+	public void saveStatusRegister(SQLiteDatabase db, Status status, int register) {
+		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
+
+		ContentValues values = new ContentValues(4);
+		values.put(StatusRegisterTable.REGISTER, register);
+		values.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
+		values.put(StatusRegisterTable.ID, status.getId());
+		values.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
+
+		int count = db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
+		if (count == 0) {
+			// create new entry if there isn't one
+			db.insert(StatusRegisterTable.NAME, null, values);
+		}
+	}
+
+	/**
+	 * set user register. If entry exists, update it.
+	 *
+	 * @param db       database instance
+	 * @param id       User ID
+	 * @param register status register
+	 */
+	public void saveUserRegister(SQLiteDatabase db, long id, int register) {
+		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
+
+		ContentValues values = new ContentValues(3);
+		values.put(UserRegisterTable.ID, id);
+		values.put(UserRegisterTable.OWNER, settings.getLogin().getId());
+		values.put(UserRegisterTable.REGISTER, register);
+
+		int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
+		if (cnt == 0) {
+			// create new entry if there isn't an entry
+			db.insert(UserRegisterTable.NAME, null, values);
+		}
 	}
 
 	/**
@@ -648,8 +831,18 @@ public class AppDatabase {
 	@Nullable
 	private User getUser(long userId, SQLiteDatabase db) {
 		String[] args = {Long.toString(userId)};
-		Cursor cursor = db.rawQuery(USER_TABLE, args);
+		Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
+		return getUser(cursor);
+	}
 
+	/**
+	 * get user from cursor
+	 *
+	 * @param cursor database cursor containing user information
+	 * @return user if found or null
+	 */
+	@Nullable
+	private User getUser(Cursor cursor) {
 		User user = null;
 		if (cursor.moveToFirst())
 			user = new UserImpl(cursor, settings.getLogin().getId());
@@ -667,21 +860,21 @@ public class AppDatabase {
 	private void saveUser(User user, SQLiteDatabase db, int mode) {
 		int register = getUserRegister(db, user.getId());
 		if (user.isVerified())
-			register |= VER_MASK;
+			register |= VERIFIED_MASK;
 		else
-			register &= ~VER_MASK;
+			register &= ~VERIFIED_MASK;
 		if (user.isProtected())
-			register |= LCK_MASK;
+			register |= LOCKED_MASK;
 		else
-			register &= ~LCK_MASK;
+			register &= ~LOCKED_MASK;
 		if (user.followRequested())
-			register |= FRQ_MASK;
+			register |= FOLLOW_REQUEST_MASK;
 		else
-			register &= ~FRQ_MASK;
+			register &= ~FOLLOW_REQUEST_MASK;
 		if (user.hasDefaultProfileImage())
-			register |= DEF_IMG;
+			register |= DEFAULT_IMAGE_MASK;
 		else
-			register &= ~DEF_IMG;
+			register &= ~DEFAULT_IMAGE_MASK;
 
 		ContentValues userColumn = new ContentValues(13);
 		userColumn.put(UserTable.ID, user.getId());
@@ -720,14 +913,14 @@ public class AppDatabase {
 		}
 		statusFlags |= getStatusRegister(db, status.getId());
 		if (status.isFavorited()) {
-			statusFlags |= FAV_MASK;
+			statusFlags |= FAVORITE_MASK;
 		} else {
-			statusFlags &= ~FAV_MASK;
+			statusFlags &= ~FAVORITE_MASK;
 		}
 		if (status.isReposted()) {
-			statusFlags |= RTW_MASK;
+			statusFlags |= REPOST_MASK;
 		} else {
-			statusFlags &= ~RTW_MASK;
+			statusFlags &= ~REPOST_MASK;
 		}
 		if (status.isSensitive()) {
 			statusFlags |= MEDIA_SENS_MASK;
@@ -777,13 +970,13 @@ public class AppDatabase {
 		User user = status.getAuthor();
 		int register = getStatusRegister(db, status.getId());
 		if (status.isReposted())
-			register |= RTW_MASK;
+			register |= REPOST_MASK;
 		else
-			register &= ~RTW_MASK;
+			register &= ~REPOST_MASK;
 		if (status.isFavorited())
-			register |= FAV_MASK;
+			register |= FAVORITE_MASK;
 		else
-			register &= ~FAV_MASK;
+			register &= ~FAVORITE_MASK;
 
 		ContentValues statusUpdate = new ContentValues(6);
 		statusUpdate.put(StatusTable.TEXT, status.getText());
@@ -873,29 +1066,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * set register of a status. Update if an entry exists
-	 *
-	 * @param db       database instance
-	 * @param status   status
-	 * @param register status register
-	 */
-	public void saveStatusRegister(SQLiteDatabase db, Status status, int register) {
-		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
-
-		ContentValues values = new ContentValues(4);
-		values.put(StatusRegisterTable.REGISTER, register);
-		values.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
-		values.put(StatusRegisterTable.ID, status.getId());
-		values.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
-
-		int count = db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
-		if (count == 0) {
-			// create new entry if there isn't one
-			db.insert(StatusRegisterTable.NAME, null, values);
-		}
-	}
-
-	/**
 	 * get user register or zero if not found
 	 *
 	 * @param db     database instance
@@ -911,28 +1081,6 @@ public class AppDatabase {
 			result = c.getInt(0);
 		c.close();
 		return result;
-	}
-
-	/**
-	 * set user register. If entry exists, update it.
-	 *
-	 * @param db       database instance
-	 * @param id       User ID
-	 * @param register status register
-	 */
-	public void saveUserRegister(SQLiteDatabase db, long id, int register) {
-		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
-
-		ContentValues values = new ContentValues(3);
-		values.put(UserRegisterTable.ID, id);
-		values.put(UserRegisterTable.OWNER, settings.getLogin().getId());
-		values.put(UserRegisterTable.REGISTER, register);
-
-		int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
-		if (cnt == 0) {
-			// create new entry if there isn't an entry
-			db.insert(UserRegisterTable.NAME, null, values);
-		}
 	}
 
 	/**

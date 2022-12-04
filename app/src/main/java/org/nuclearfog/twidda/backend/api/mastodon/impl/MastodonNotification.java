@@ -94,7 +94,7 @@ public class MastodonNotification implements Notification {
 
 
 	@Override
-	public long createdAt() {
+	public long getCreatedAt() {
 		return createdAt;
 	}
 

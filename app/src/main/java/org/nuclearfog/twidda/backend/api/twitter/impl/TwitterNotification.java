@@ -35,7 +35,7 @@ public class TwitterNotification implements Notification {
 
 
 	@Override
-	public long createdAt() {
+	public long getCreatedAt() {
 		return status.getTimestamp();
 	}
 

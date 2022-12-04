@@ -47,7 +47,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		super.onStart();
 		if (notificationAsync == null) {
 			load(0L, 0L, 0);
-
+			setRefresh(true);
 		}
 	}
 

@@ -149,6 +149,17 @@ public class DatabaseAdapter {
 			+ UserExcludeTable.ID + " INTEGER);";
 
 	/**
+	 * SQL query to create table for notifications
+	 */
+	public static final String TABLE_NOTIFICATION = "CREATE TABLE IF NOT EXISTS "
+			+ NotificationTable.NAME + "("
+			+ NotificationTable.ID + " INTEGER PRIMARY KEY,"
+			+ NotificationTable.OWNER + " INTEGER,"
+			+ NotificationTable.DATE + " INTEGER,"
+			+ NotificationTable.TYPE + " INTEGER,"
+			+ NotificationTable.ITEM + " INTEGER);";
+
+	/**
 	 * table index for status table
 	 */
 	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
@@ -269,6 +280,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_USER_EXCLUDE);
 		db.execSQL(TABLE_STATUS_REGISTER);
 		db.execSQL(TABLE_USER_REGISTER);
+		db.execSQL(TABLE_NOTIFICATION);
 		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
@@ -683,5 +695,23 @@ public class DatabaseAdapter {
 		 * user ID to filter
 		 */
 		String ID = "userID";
+	}
+
+	/**
+	 * table for notifications
+	 */
+	public interface NotificationTable {
+
+		String NAME = "notification";
+
+		String ID = "notificationID";
+
+		String OWNER = "ownerID";
+
+		String DATE = "timestamp";
+
+		String ITEM = "itemID";
+
+		String TYPE = "type";
 	}
 }
