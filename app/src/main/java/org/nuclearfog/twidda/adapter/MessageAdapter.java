@@ -87,11 +87,11 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_MESSAGE) {
-			final MessageHolder holder = new MessageHolder(parent, settings, picasso);
+			MessageHolder holder = new MessageHolder(parent, settings, picasso);
 			holder.setOnMessageClickListener(this);
 			return holder;
 		} else {
-			final PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
+			PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
 			placeHolder.setOnHolderClickListener(this);
 			return placeHolder;
 		}

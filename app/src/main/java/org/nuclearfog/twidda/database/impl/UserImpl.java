@@ -10,7 +10,8 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 import org.nuclearfog.twidda.model.User;
 
 /**
@@ -43,20 +44,20 @@ public class UserImpl implements User {
 
 
 	public UserImpl(Cursor cursor, long currentUserId) {
-		id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.ID));
-		username = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.USERNAME));
-		screenName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.SCREENNAME));
-		profileImg = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.IMAGE));
-		bio = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.DESCRIPTION));
-		link = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.LINK));
-		location = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.LOCATION));
-		bannerImg = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.BANNER));
-		created = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.SINCE));
-		following = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FRIENDS));
-		follower = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FOLLOWER));
-		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.STATUSES));
-		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserTable.FAVORITS));
-		int register = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.UserRegisterTable.REGISTER));
+		id = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.ID));
+		username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
+		screenName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));
+		profileImg = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
+		bio = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.DESCRIPTION));
+		link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
+		location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
+		bannerImg = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
+		created = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
+		following = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FRIENDS));
+		follower = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FOLLOWER));
+		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.STATUSES));
+		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FAVORITS));
+		int register = cursor.getInt(cursor.getColumnIndexOrThrow(UserRegisterTable.REGISTER));
 		isVerified = (register & VERIFIED_MASK) != 0;
 		isLocked = (register & LOCKED_MASK) != 0;
 		followReqSent = (register & FOLLOW_REQUEST_MASK) != 0;

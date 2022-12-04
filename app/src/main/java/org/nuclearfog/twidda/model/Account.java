@@ -70,4 +70,12 @@ public interface Account {
 	 * @return type of the ID {@link #API_TWITTER}
 	 */
 	int getApiType();
+
+	/**
+	 * return true if the account uses the app default API tokens
+	 * currently only used by Twitter logins
+	 *
+	 * @return true if this account uses default app integrated API tokens
+	 */
+	boolean usingDefaultTokens();
 }

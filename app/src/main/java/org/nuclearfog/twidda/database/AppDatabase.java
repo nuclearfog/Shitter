@@ -212,12 +212,9 @@ public class AppDatabase {
 
 	/**
 	 * SQL query to get notifications
+	 * todo find a better way to query notification, statuses and users with one command
 	 */
 	private static final String NOTIFICATION_QUERY = "SELECT * FROM " + NotificationTable.NAME
-			+ " LEFT JOIN (SELECT * FROM " + USER_SUBQUERY + ") " + UserTable.NAME
-			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + NotificationTable.NAME + "." + NotificationTable.ITEM
-			+ " LEFT JOIN (SELECT * FROM " + STATUS_SUBQUERY + ") " + StatusTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + NotificationTable.NAME + "." + NotificationTable.ITEM
 			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.OWNER + "=?"
 			+ " ORDER BY " + NotificationTable.ID + " DESC LIMIT ?;";
 
@@ -324,7 +321,7 @@ public class AppDatabase {
 	public void saveHomeTimeline(List<Status> home) {
 		SQLiteDatabase db = getDbWrite();
 		for (Status status : home)
-			saveStatus(status, HOME_TIMELINE_MASK, db);
+			saveStatus(status, db, HOME_TIMELINE_MASK);
 		commit(db);
 	}
 
@@ -336,7 +333,7 @@ public class AppDatabase {
 	public void saveUserTimeline(List<Status> stats) {
 		SQLiteDatabase db = getDbWrite();
 		for (Status status : stats)
-			saveStatus(status, USER_TIMELINE_MASK, db);
+			saveStatus(status, db, USER_TIMELINE_MASK);
 		commit(db);
 	}
 
@@ -350,7 +347,7 @@ public class AppDatabase {
 		SQLiteDatabase db = getDbWrite();
 		removeOldFavorites(db, ownerId);
 		for (Status status : fav) {
-			saveStatus(status, 0, db);
+			saveStatus(status, db, 0);
 			saveFavorite(status.getId(), ownerId, db);
 		}
 		commit(db);
@@ -364,7 +361,7 @@ public class AppDatabase {
 	public void saveReplyTimeline(List<Status> replies) {
 		SQLiteDatabase db = getDbWrite();
 		for (Status status : replies)
-			saveStatus(status, STATUS_REPLY_MASK, db);
+			saveStatus(status, db, STATUS_REPLY_MASK);
 		commit(db);
 	}
 
@@ -397,7 +394,7 @@ public class AppDatabase {
 		if (status.getEmbeddedStatus() != null)
 			status = status.getEmbeddedStatus();
 		SQLiteDatabase db = getDbWrite();
-		saveStatus(status, 0, db);
+		saveStatus(status, db, 0);
 		saveFavorite(status.getId(), settings.getLogin().getId(), db);
 		commit(db);
 	}
@@ -414,13 +411,14 @@ public class AppDatabase {
 			column.put(NotificationTable.TYPE, notification.getType());
 			column.put(NotificationTable.OWNER, settings.getLogin().getId());
 			if (notification.getStatus() != null) {
-				saveStatus(notification.getStatus(), NOTIFICATION_MASK, db);
+				saveStatus(notification.getStatus(), db, NOTIFICATION_MASK);
 				column.put(NotificationTable.ITEM, notification.getStatus().getId());
+				db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
 			} else if (notification.getUser() != null) {
-				saveUser(notification.getUser());
+				saveUser(notification.getUser(), db, CONFLICT_REPLACE);
 				column.put(NotificationTable.ITEM, notification.getUser().getId());
+				db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
 			}
-			db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
 		}
 		commit(db);
 	}
@@ -513,8 +511,12 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public User getUser(long userId) {
+		String[] args = {Long.toString(userId)};
 		SQLiteDatabase db = getDbRead();
-		return getUser(userId, db);
+		Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
+		User user = getUser(cursor);
+		cursor.close();
+		return user;
 	}
 
 	/**
@@ -551,8 +553,7 @@ public class AppDatabase {
 		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				Status status = getStatus(cursor);
 				result.add(status);
 			} while (cursor.moveToNext());
@@ -572,8 +573,7 @@ public class AppDatabase {
 		List<Notification> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				NotificationImpl notification = new NotificationImpl(cursor);
 				switch (notification.getType()) {
 					case Notification.TYPE_FAVORITE:
@@ -582,18 +582,20 @@ public class AppDatabase {
 					case Notification.TYPE_POLL:
 					case Notification.TYPE_STATUS:
 					case Notification.TYPE_UPDATE:
-						Status status = getStatus(cursor);
+						Status status = getStatus(notification.getItemId());
 						notification.addStatus(status);
 						break;
 
 					case Notification.TYPE_FOLLOW:
 					case Notification.TYPE_REQUEST:
-						User user = getUser(cursor);
+						User user = getUser(notification.getItemId());
 						notification.addUser(user);
 						break;
 
 				}
-				result.add(notification);
+				if (notification.getUser() != null || notification.getStatus() != null) {
+					result.add(notification);
+				}
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -715,8 +717,7 @@ public class AppDatabase {
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				result.add(new MessageImpl(cursor, currentId));
 			} while (cursor.moveToNext());
 		}
@@ -731,8 +732,12 @@ public class AppDatabase {
 	 * @return true if found
 	 */
 	public boolean containsStatus(long id) {
+		String[] args = {Long.toString(id)};
 		SQLiteDatabase db = getDbRead();
-		return statusExists(id, db);
+		Cursor c = db.query(StatusTable.NAME, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
+		boolean result = c.moveToFirst();
+		c.close();
+		return result;
 	}
 
 	/**
@@ -813,20 +818,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * get user information from table
-	 *
-	 * @param userId Id of the user
-	 * @param db     SQLITE DB
-	 * @return user instance
-	 */
-	@Nullable
-	private User getUser(long userId, SQLiteDatabase db) {
-		String[] args = {Long.toString(userId)};
-		Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
-		return getUser(cursor);
-	}
-
-	/**
 	 * get user from cursor
 	 *
 	 * @param cursor database cursor containing user information
@@ -834,11 +825,9 @@ public class AppDatabase {
 	 */
 	@Nullable
 	private User getUser(Cursor cursor) {
-		User user = null;
 		if (cursor.moveToFirst())
-			user = new UserImpl(cursor, settings.getLogin().getId());
-		cursor.close();
-		return user;
+			return new UserImpl(cursor, settings.getLogin().getId());
+		return null;
 	}
 
 	/**
@@ -894,12 +883,12 @@ public class AppDatabase {
 	 * @param statusFlags predefined status status register or zero if there isn't one
 	 * @param db          SQLite database
 	 */
-	private void saveStatus(Status status, int statusFlags, SQLiteDatabase db) {
+	private void saveStatus(Status status, SQLiteDatabase db, int statusFlags) {
 		User user = status.getAuthor();
 		Status rtStat = status.getEmbeddedStatus();
 		long rtId = -1L;
 		if (rtStat != null) {
-			saveStatus(rtStat, 0, db);
+			saveStatus(rtStat, db, 0);
 			rtId = rtStat.getId();
 		}
 		statusFlags |= getStatusRegister(db, status.getId());
@@ -1070,22 +1059,6 @@ public class AppDatabase {
 		int result = 0;
 		if (c.moveToFirst())
 			result = c.getInt(0);
-		c.close();
-		return result;
-	}
-
-	/**
-	 * check if status exists in database
-	 *
-	 * @param id status ID
-	 * @param db database instance
-	 * @return true if found
-	 */
-	private boolean statusExists(long id, SQLiteDatabase db) {
-		String[] args = {Long.toString(id)};
-
-		Cursor c = db.query(StatusTable.NAME, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
-		boolean result = c.moveToFirst();
 		c.close();
 		return result;
 	}

@@ -71,7 +71,7 @@ public class ImageAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 	@NonNull
 	@Override
-	public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_IMAGE) {
 			ImageHolder item = new ImageHolder(parent, settings);
 			item.setOnImageClickListener(this);

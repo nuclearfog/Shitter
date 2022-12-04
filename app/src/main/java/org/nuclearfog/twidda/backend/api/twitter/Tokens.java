@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api.twitter;
 import android.content.Context;
 
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 
 import io.michaelrocks.paranoid.Obfuscate;
 
@@ -59,9 +60,10 @@ public class Tokens {
 	 * @return consumer API key
 	 */
 	public String getConsumerKey(boolean forceDefault) {
-		if (settings.isCustomApiSet() && !forceDefault)
-			return settings.getLogin().getConsumerToken();
-		return CONSUMER_TOKEN;
+		Account login = settings.getLogin();
+		if (login.usingDefaultTokens() || forceDefault)
+			return CONSUMER_TOKEN;
+		return login.getConsumerToken();
 	}
 
 	/**
@@ -71,8 +73,9 @@ public class Tokens {
 	 * @return consumer secret API key
 	 */
 	public String getConsumerSecret(boolean forceDefault) {
-		if (settings.isCustomApiSet() && !forceDefault)
-			return settings.getLogin().getConsumerSecret();
-		return TOKEN_SECRET;
+		Account login = settings.getLogin();
+		if (login.usingDefaultTokens() || forceDefault)
+			return TOKEN_SECRET;
+		return login.getConsumerSecret();
 	}
 }

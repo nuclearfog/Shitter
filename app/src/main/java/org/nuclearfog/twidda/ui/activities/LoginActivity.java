@@ -114,41 +114,25 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		settings = GlobalSettings.getInstance(this);
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
-		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
+		//pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
 		NetworkAdapter adapter = new NetworkAdapter(this);
 		hostSelector.setAdapter(adapter);
 		hostSelector.setSelection(0);
 
-		if (settings.isCustomApiSet() || !Tokens.USE_DEFAULT_KEYS) {
-			apiSwitch.setCheckedImmediately(true);
-			// force using custom API tokens
-			if (!Tokens.USE_DEFAULT_KEYS) {
-				apiSwitch.setVisibility(View.GONE);
-				switchLabel.setVisibility(View.GONE);
-			}
-			// use custom API tokens if there were set in a previously login
-			Account login = settings.getLogin();
-			if (login.getApiType() == Account.API_TWITTER) {
-				apiKey1.setText(login.getConsumerToken());
-				apiKey2.setText(login.getConsumerSecret());
-			}
-		} else {
-			apiKey1.setVisibility(View.INVISIBLE);
-			apiKey2.setVisibility(View.INVISIBLE);
-		}
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
 		hostSelector.setOnItemSelectedListener(this);
 		apiSwitch.setOnCheckedChangeListener(this);
-
 		apiKey1.addTextChangedListener(this);
 		apiKey2.addTextChangedListener(this);
 		apiHost.addTextChangedListener(this);
 
 		// set default result code
 		setResult(RESULT_CANCELED);
+		// set input layout
+		setInput();
 	}
 
 
@@ -316,34 +300,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		// reset login link after provider change
 		loginLink = null;
-		// twitter selected
-		if (id == NetworkAdapter.ID_TWITTER) {
-			apiHost.setVisibility(View.GONE);
-			pinInput.setInputType(EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
-			if (Tokens.USE_DEFAULT_KEYS) {
-				apiSwitch.setVisibility(View.VISIBLE);
-				switchLabel.setVisibility(View.VISIBLE);
-				if (apiSwitch.isChecked()) {
-					apiKey1.setVisibility(View.VISIBLE);
-					apiKey2.setVisibility(View.VISIBLE);
-				} else {
-					apiKey1.setVisibility(View.INVISIBLE);
-					apiKey2.setVisibility(View.INVISIBLE);
-				}
-			} else {
-				apiKey1.setVisibility(View.VISIBLE);
-				apiKey2.setVisibility(View.VISIBLE);
-			}
-		}
-		// mastodon selected
-		else if (id == NetworkAdapter.ID_MASTODON) {
-			pinInput.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-			apiSwitch.setVisibility(View.GONE);
-			switchLabel.setVisibility(View.GONE);
-			apiKey1.setVisibility(View.GONE);
-			apiKey2.setVisibility(View.GONE);
-			apiHost.setVisibility(View.VISIBLE);
-		}
+		setInput();
 	}
 
 
@@ -401,6 +358,53 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			startActivity(loginIntent);
 		} catch (ActivityNotFoundException err) {
 			Toast.makeText(this, R.string.error_open_link, LENGTH_SHORT).show();
+		}
+	}
+
+
+	private void setInput() {
+		long id = hostSelector.getSelectedItemId();
+		if (id == NetworkAdapter.ID_TWITTER) {
+			// disable Mastodon input
+			apiHost.setVisibility(View.GONE);
+			pinInput.setInputType(EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
+			// check if app contains default API keys
+			if (Tokens.USE_DEFAULT_KEYS) {
+				apiSwitch.setVisibility(View.VISIBLE);
+				switchLabel.setVisibility(View.VISIBLE);
+				// set key input visibility depending on API switch
+				if (apiSwitch.isChecked()) {
+					apiKey1.setVisibility(View.VISIBLE);
+					apiKey2.setVisibility(View.VISIBLE);
+				} else {
+					apiKey1.setVisibility(View.INVISIBLE);
+					apiKey2.setVisibility(View.INVISIBLE);
+				}
+			}
+			// if not, force Twitter API key input
+			else {
+				apiKey1.setVisibility(View.VISIBLE);
+				apiKey2.setVisibility(View.VISIBLE);
+				apiSwitch.setVisibility(View.GONE);
+				switchLabel.setVisibility(View.GONE);
+			}
+			// add API keys from previous Twitter login if exists
+			Account login = settings.getLogin();
+			if (!login.usingDefaultTokens()) {
+				apiKey1.setText(login.getConsumerToken());
+				apiKey2.setText(login.getConsumerSecret());
+			}
+		}
+		// mastodon selected
+		else if (id == NetworkAdapter.ID_MASTODON) {
+			// setup Mastodon input
+			pinInput.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+			apiHost.setVisibility(View.VISIBLE);
+			// disable Twitter input
+			apiSwitch.setVisibility(View.GONE);
+			switchLabel.setVisibility(View.GONE);
+			apiKey1.setVisibility(View.GONE);
+			apiKey2.setVisibility(View.GONE);
 		}
 	}
 }

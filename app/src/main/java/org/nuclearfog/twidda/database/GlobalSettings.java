@@ -118,7 +118,6 @@ public class GlobalSettings {
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
-	private static final String CUSTOM_CONSUMER_KEYS = "custom_api_keys";
 	private static final String CONSUMER_TOKEN = "api_key1";
 	private static final String CONSUMER_SECRET = "api_key2";
 	private static final String BEARER_TOKEN = "bearer";
@@ -166,7 +165,6 @@ public class GlobalSettings {
 	private boolean isProxyEnabled;
 	private boolean isProxyAuthSet;
 	private boolean ignoreProxyWarning;
-	private boolean customAPIKey;
 	private boolean toolbarOverlap;
 	private boolean linkPreview;
 	private boolean tweetIndicators;
@@ -960,15 +958,6 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * check if custom API consumer keys are set
-	 *
-	 * @return true if custom API keys are set
-	 */
-	public boolean isCustomApiSet() {
-		return customAPIKey;
-	}
-
-	/**
 	 * get login information
 	 *
 	 * @return current account
@@ -987,9 +976,7 @@ public class GlobalSettings {
 		Editor e = settings.edit();
 		if (account == null) {
 			loggedIn = false;
-			customAPIKey = false;
 			e.remove(LOGGED_IN);
-			e.remove(CUSTOM_CONSUMER_KEYS);
 			e.remove(CURRENT_ID);
 			e.remove(OAUTH_TOKEN);
 			e.remove(OAUTH_SECRET);
@@ -1000,9 +987,7 @@ public class GlobalSettings {
 		} else {
 			this.account = account;
 			loggedIn = true;
-			customAPIKey = !account.getConsumerToken().isEmpty() && !account.getConsumerToken().isEmpty();
 			e.putBoolean(LOGGED_IN, true);
-			e.putBoolean(CUSTOM_CONSUMER_KEYS, customAPIKey);
 			e.putLong(CURRENT_ID, account.getId());
 			e.putString(OAUTH_TOKEN, account.getOauthToken());
 			e.putString(OAUTH_SECRET, account.getOauthSecret());
@@ -1070,7 +1055,6 @@ public class GlobalSettings {
 		linkPreview = settings.getBoolean(LINK_PREVIEW, false);
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
-		customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEYS, false);
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");

@@ -77,7 +77,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 			holder.setOnStatusClickListener(this);
 			return holder;
 		} else if (viewType == TYPE_USER) {
-			final UserHolder holder = new UserHolder(parent, settings, picasso);
+			UserHolder holder = new UserHolder(parent, settings, picasso);
 			holder.setOnUserClickListener(this);
 			return holder;
 		} else {

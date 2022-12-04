@@ -107,6 +107,12 @@ public class TwitterAccount implements Account {
 	}
 
 
+	@Override
+	public boolean usingDefaultTokens() {
+		return consumerToken == null || consumerToken.isEmpty() || consumerSecret == null || consumerSecret.isEmpty();
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {

@@ -18,7 +18,7 @@ public class NotificationImpl implements Notification {
 
 	private static final long serialVersionUID = 436155941776152806L;
 
-	private long id, timestamp;
+	private long id, timestamp, itemId;
 	private int type;
 
 	private User user;
@@ -29,6 +29,7 @@ public class NotificationImpl implements Notification {
 	 */
 	public NotificationImpl(Cursor cursor) {
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ID));
+		itemId = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ITEM));
 		type = cursor.getInt(cursor.getColumnIndexOrThrow(NotificationTable.TYPE));
 		timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.DATE));
 	}
@@ -80,5 +81,14 @@ public class NotificationImpl implements Notification {
 	 */
 	public void addStatus(Status status) {
 		this.status = status;
+	}
+
+	/**
+	 * get ID of the attached item (user/status ID)
+	 *
+	 * @return item ID
+	 */
+	public long getItemId() {
+		return itemId;
 	}
 }

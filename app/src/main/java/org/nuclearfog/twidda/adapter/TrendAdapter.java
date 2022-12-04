@@ -51,7 +51,7 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	@NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		final TrendHolder vh = new TrendHolder(parent, settings);
+		TrendHolder vh = new TrendHolder(parent, settings);
 		vh.setOnTrendClickListener(this);
 		return vh;
 	}

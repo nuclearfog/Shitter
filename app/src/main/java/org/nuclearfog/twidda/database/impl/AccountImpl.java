@@ -38,7 +38,6 @@ public class AccountImpl implements Account {
 	private String consumerToken, consumerSecret;
 	private String bearerToken;
 	private String host;
-
 	private User user;
 
 	/**
@@ -125,9 +124,18 @@ public class AccountImpl implements Account {
 		return host;
 	}
 
+
 	@Override
 	public int getApiType() {
 		return apiType;
+	}
+
+
+	@Override
+	public boolean usingDefaultTokens() {
+		if (apiType != API_TWITTER)
+			return false;
+		 return consumerToken == null || consumerToken.isEmpty() || consumerSecret == null || consumerSecret.isEmpty();
 	}
 
 

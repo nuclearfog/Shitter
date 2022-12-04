@@ -103,9 +103,9 @@ public final class ErrorHandler {
 				case ConnectionException.APP_SUSPENDED:
 				case ConnectionException.ERROR_API_ACCESS_DENIED:
 					GlobalSettings settings = GlobalSettings.getInstance(context);
-					if (settings.isCustomApiSet())
-						return context.getString(R.string.error_api_access_denied);
-					return context.getString(R.string.error_api_key_expired);
+					if (settings.getLogin().usingDefaultTokens())
+						return context.getString(R.string.error_api_key_expired);
+					return context.getString(R.string.error_api_access_denied);
 
 				case ConnectionException.ERROR_NOT_DEFINED:
 					return error.getMessage();
