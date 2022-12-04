@@ -206,6 +206,11 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 			SearchView searchView = (SearchView) item.getActionView();
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
 		}
+		// open message editor
+		else if (item.getItemId() == R.id.menu_message) {
+			Intent intent = new Intent(this, MessageEditor.class);
+			startActivity(intent);
+		}
 		// open account manager
 		else if (item.getItemId() == R.id.menu_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);

@@ -74,6 +74,8 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	protected void onReset() {
+		adapter = new MessageAdapter(requireContext(), this);
+		setAdapter(adapter);
 		load(MessageLoader.DB, null);
 		setRefresh(true);
 	}

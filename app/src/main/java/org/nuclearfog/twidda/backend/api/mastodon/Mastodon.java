@@ -623,7 +623,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Messages getDirectmessages(String cursor) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		return new Messages("", ""); // todo add implementation
 	}
 
 
