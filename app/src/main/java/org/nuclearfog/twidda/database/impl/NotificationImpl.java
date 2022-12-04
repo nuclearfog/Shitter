@@ -22,12 +22,15 @@ public class NotificationImpl implements Notification {
 	private int type;
 
 	private User user;
+	@Nullable
 	private Status status;
 
 	/**
 	 * @param cursor database cursor containing Notification table column
+	 * @param currentId current user's ID
 	 */
-	public NotificationImpl(Cursor cursor) {
+	public NotificationImpl(Cursor cursor, long currentId) {
+		user = new UserImpl(cursor, currentId);
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ID));
 		itemId = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ITEM));
 		type = cursor.getInt(cursor.getColumnIndexOrThrow(NotificationTable.TYPE));
@@ -63,15 +66,6 @@ public class NotificationImpl implements Notification {
 	@Override
 	public Status getStatus() {
 		return status;
-	}
-
-	/**
-	 * attach user information
-	 *
-	 * @param user user information
-	 */
-	public void addUser(User user) {
-		this.user = user;
 	}
 
 	/**

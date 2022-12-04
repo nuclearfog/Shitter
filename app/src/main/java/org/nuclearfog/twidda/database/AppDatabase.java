@@ -212,9 +212,10 @@ public class AppDatabase {
 
 	/**
 	 * SQL query to get notifications
-	 * todo find a better way to query notification, statuses and users with one command
 	 */
 	private static final String NOTIFICATION_QUERY = "SELECT * FROM " + NotificationTable.NAME
+			+ " INNER JOIN(" + USER_SUBQUERY + ")" + UserTable.NAME
+			+ " ON " + NotificationTable.NAME + "." + NotificationTable.USER + "=" + UserTable.NAME + "." + UserTable.ID
 			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.OWNER + "=?"
 			+ " ORDER BY " + NotificationTable.ID + " DESC LIMIT ?;";
 
@@ -405,20 +406,19 @@ public class AppDatabase {
 	public void saveNotifications(List<Notification> notifications) {
 		SQLiteDatabase db = getDbWrite();
 		for (Notification notification : notifications) {
-			ContentValues column = new ContentValues(4);
+			ContentValues column = new ContentValues();
 			column.put(NotificationTable.ID, notification.getId());
 			column.put(NotificationTable.DATE, notification.getCreatedAt());
 			column.put(NotificationTable.TYPE, notification.getType());
 			column.put(NotificationTable.OWNER, settings.getLogin().getId());
+			column.put(NotificationTable.USER, notification.getUser().getId());
+			saveUser(notification.getUser(), db, CONFLICT_IGNORE);
+			// add status
 			if (notification.getStatus() != null) {
 				saveStatus(notification.getStatus(), db, NOTIFICATION_MASK);
 				column.put(NotificationTable.ITEM, notification.getStatus().getId());
-				db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
-			} else if (notification.getUser() != null) {
-				saveUser(notification.getUser(), db, CONFLICT_REPLACE);
-				column.put(NotificationTable.ITEM, notification.getUser().getId());
-				db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
 			}
+			db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
 		}
 		commit(db);
 	}
@@ -568,13 +568,14 @@ public class AppDatabase {
 	 * @return notification lsit
 	 */
 	public List<Notification> getNotifications() {
-		String[] args = {Long.toString(settings.getLogin().getId()), Integer.toString(settings.getListSize())};
+		long currentId = settings.getLogin().getId();
+		String[] args = {Long.toString(currentId), Integer.toString(settings.getListSize())};
 		SQLiteDatabase db = getDbRead();
 		List<Notification> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				NotificationImpl notification = new NotificationImpl(cursor);
+				NotificationImpl notification = new NotificationImpl(cursor, currentId);
 				switch (notification.getType()) {
 					case Notification.TYPE_FAVORITE:
 					case Notification.TYPE_REPOST:
@@ -585,17 +586,8 @@ public class AppDatabase {
 						Status status = getStatus(notification.getItemId());
 						notification.addStatus(status);
 						break;
-
-					case Notification.TYPE_FOLLOW:
-					case Notification.TYPE_REQUEST:
-						User user = getUser(notification.getItemId());
-						notification.addUser(user);
-						break;
-
 				}
-				if (notification.getUser() != null || notification.getStatus() != null) {
-					result.add(notification);
-				}
+				result.add(notification);
 			} while (cursor.moveToNext());
 		}
 		cursor.close();

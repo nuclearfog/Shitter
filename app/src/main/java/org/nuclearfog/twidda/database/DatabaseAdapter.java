@@ -19,7 +19,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 9;
+	private static final int DB_VERSION = 10;
 
 	/**
 	 * database file name
@@ -155,6 +155,7 @@ public class DatabaseAdapter {
 			+ NotificationTable.NAME + "("
 			+ NotificationTable.ID + " INTEGER PRIMARY KEY,"
 			+ NotificationTable.OWNER + " INTEGER,"
+			+ NotificationTable.USER + " INTEGER,"
 			+ NotificationTable.DATE + " INTEGER,"
 			+ NotificationTable.TYPE + " INTEGER,"
 			+ NotificationTable.ITEM + " INTEGER);";
@@ -206,6 +207,11 @@ public class DatabaseAdapter {
 	 * update account table to add API client secret
 	 */
 	private static final String UPDATE_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
+
+	/**
+	 * update account table to add API client secret
+	 */
+	private static final String UPDATE_ADD_NOTIFICATION_USER = "ALTER TABLE " + NotificationTable.NAME + " ADD " + NotificationTable.USER + " INTEGER;";
 
 	/**
 	 * singleton instance
@@ -303,8 +309,12 @@ public class DatabaseAdapter {
 			db.execSQL(UPDATE_ADD_REPLY_COUNT);
 			db.setVersion(8);
 		}
-		if (db.getVersion() < DB_VERSION) {
+		if (db.getVersion() < 9) {
 			db.execSQL(UPDATE_ADD_BEARER);
+			db.setVersion(9);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_NOTIFICATION_USER);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -709,6 +719,8 @@ public class DatabaseAdapter {
 		String OWNER = "ownerID";
 
 		String DATE = "timestamp";
+
+		String USER = "userID";
 
 		String ITEM = "itemID";
 
