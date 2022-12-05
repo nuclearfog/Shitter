@@ -712,18 +712,40 @@ public class DatabaseAdapter {
 	 */
 	public interface NotificationTable {
 
+		/**
+		 * table name
+		 */
 		String NAME = "notification";
 
+		/**
+		 * ID of the notification
+		 */
 		String ID = "notificationID";
 
+		/**
+		 * ID of the user owning the notification
+		 */
 		String OWNER = "ownerID";
 
+		/**
+		 * creation time of the notification
+		 */
 		String DATE = "timestamp";
 
+		/**
+		 * ID of the notification sender (user ID)
+		 */
 		String USER = "userID";
 
+		/**
+		 * universal ID (status ID, list ID...)
+		 */
 		String ITEM = "itemID";
 
+		/**
+		 * type of notification
+		 * {@link org.nuclearfog.twidda.model.Notification}
+		 */
 		String TYPE = "type";
 	}
 }

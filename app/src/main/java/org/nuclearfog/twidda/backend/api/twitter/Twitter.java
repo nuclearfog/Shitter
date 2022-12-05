@@ -1009,8 +1009,7 @@ public class Twitter implements Connection {
 			params.add("command=STATUS");
 			params.add("media_id=" + mediaId);
 			// poll media processing information frequently
-			do
-			{
+			do {
 				response = get(MEDIA_UPLOAD, params);
 				body = response.body();
 				if (response.code() < 200 || response.code() >= 300 || body == null)

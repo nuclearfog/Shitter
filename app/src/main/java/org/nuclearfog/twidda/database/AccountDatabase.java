@@ -80,8 +80,7 @@ public class AccountDatabase {
 		Cursor cursor = db.query(AccountTable.NAME, AccountImpl.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 		if (cursor.moveToFirst()) {
 			result.ensureCapacity(cursor.getCount());
-			do
-			{
+			do {
 				AccountImpl account = new AccountImpl(cursor);
 				account.addUser(database.getUser(account.getId()));
 				result.add(account);

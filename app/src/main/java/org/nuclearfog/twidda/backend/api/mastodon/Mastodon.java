@@ -382,7 +382,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Location> getLocations() throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		return new ArrayList<>(0); // todo add implementation
 	}
 
 

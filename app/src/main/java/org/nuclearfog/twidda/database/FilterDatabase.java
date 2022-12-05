@@ -78,8 +78,7 @@ public class FilterDatabase {
 
 		Set<Long> result = new TreeSet<>();
 		if (cursor.moveToFirst()) {
-			do
-			{
+			do {
 				long id = cursor.getLong(0);
 				result.add(id);
 			} while (cursor.moveToNext());
