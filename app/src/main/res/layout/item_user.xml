@@ -10,8 +10,7 @@
 		android:id="@+id/item_user_container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:padding="@dimen/item_user_layout_padding"
-		android:gravity="center_vertical">
+		android:padding="@dimen/item_user_layout_padding">
 
 		<TextView
 			android:id="@+id/item_user_label"
@@ -19,10 +18,12 @@
 			android:layout_height="wrap_content"
 			android:lines="1"
 			android:drawablePadding="@dimen/item_user_drawable_margin"
-			android:visibility="gone"
 			android:textSize="@dimen/item_user_textsize_notification"
+			android:layout_marginBottom="@dimen/item_user_image_margin"
+			android:visibility="gone"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toTopOf="@id/item_user_notification_barrier"
 			app:layout_constraintEnd_toEndOf="parent" />
 
 		<androidx.constraintlayout.widget.Barrier
@@ -37,10 +38,8 @@
 			android:layout_width="@dimen/item_user_image_size"
 			android:layout_height="@dimen/item_user_image_size"
 			android:contentDescription="@string/profile_image"
-			android:layout_marginTop="@dimen/item_user_image_margin"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/item_user_label"
-			app:layout_constraintBottom_toBottomOf="parent" />
+			app:layout_constraintTop_toBottomOf="@id/item_user_notification_barrier" />
 
 		<ImageView
 			android:id="@+id/item_user_verified"
@@ -64,6 +63,7 @@
 			android:singleLine="true"
 			app:layout_constraintStart_toEndOf="@id/item_user_verified"
 			app:layout_constraintTop_toTopOf="@id/item_user_profile"
+			app:layout_constraintBottom_toTopOf="@id/item_user_screenname"
 			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
 
 		<ImageView
@@ -89,6 +89,7 @@
 			android:singleLine="true"
 			app:layout_constraintStart_toEndOf="@id/item_user_private"
 			app:layout_constraintTop_toBottomOf="@id/item_user_username"
+			app:layout_constraintBottom_toTopOf="@id/item_user_following_icon"
 			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
 
 		<ImageView
@@ -151,8 +152,8 @@
 			android:contentDescription="@string/descr_remove_user"
 			android:scaleType="fitCenter"
 			android:src="@drawable/cross"
-			app:layout_constraintTop_toBottomOf="@id/item_user_label"
-			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintTop_toTopOf="@id/item_user_profile"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_profile"
 			app:layout_constraintEnd_toEndOf="parent"
 			style="@style/RoundButton" />
 
