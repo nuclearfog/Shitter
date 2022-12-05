@@ -8,4 +8,9 @@
 		android:title="@string/menu_create_list"
 		android:visible="false"
 		app:showAsAction="always" />
+
+	<item
+		android:id="@+id/list_blocklists"
+		android:title="@string/menu_excluded_users"
+		android:visible="false" />
 </menu>

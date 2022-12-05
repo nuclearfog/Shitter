@@ -16,7 +16,6 @@ import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR
 import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_EXCLUDED;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FOLLOWER;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FRIENDS;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REQUESTS;
@@ -300,10 +299,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			}
 			if (user.isCurrentUser()) {
 				MenuItem setting = m.findItem(R.id.profile_settings);
-				MenuItem userExcl = m.findItem(R.id.profile_block_mute);
 				MenuItem requestItem = m.findItem(R.id.profile_requests);
 				setting.setVisible(true);
-				userExcl.setVisible(true);
 				requestItem.setVisible(true);
 			} else {
 				MenuItem followIcon = m.findItem(R.id.profile_follow);
@@ -406,12 +403,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				Intent listPage = new Intent(this, UserlistsActivity.class);
 				listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
 				startActivity(listPage);
-			}
-			// open mute/block list
-			else if (item.getItemId() == R.id.profile_block_mute) {
-				Intent usersIntent = new Intent(this, UsersActivity.class);
-				usersIntent.putExtra(KEY_USERS_MODE, USERS_EXCLUDED);
-				startActivity(usersIntent);
 			}
 			// open request list
 			else if (item.getItemId() == R.id.profile_requests) {

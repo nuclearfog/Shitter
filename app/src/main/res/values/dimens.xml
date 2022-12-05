@@ -2,6 +2,7 @@
 <resources>
 	<!--global dimens-->
 	<dimen name="toolbar_height">56dp</dimen>
+	<dimen name="toolbar_height_small">48dp</dimen>
 	<dimen name="edittext_background_padding">5dp</dimen>
 	<dimen name="edittext_textsize">16sp</dimen>
 	<dimen name="edittext_margin">2dp</dimen>
@@ -41,7 +42,7 @@
 	<integer name="page_status_text_max_lines">5</integer>
 
 	<!--dimens of page_profile.xml-->
-	<dimen name="profile_toolbar_height">48dp</dimen>
+	<dimen name="profile_toolbar_height">@dimen/toolbar_height_small</dimen>
 	<dimen name="profile_image_size">86dp</dimen>
 	<dimen name="profile_image_padding_left">10dp</dimen>
 	<dimen name="profile_tv_background_padding">2dp</dimen>
@@ -63,7 +64,7 @@
 	<dimen name="editprofile_edittext_padding">5dp</dimen>
 	<dimen name="editprofile_bio_min_height">150dp</dimen>
 	<dimen name="editprofile_image">@dimen/profile_image_size</dimen>
-	<dimen name="editprofile_toolbar_height">@dimen/profile_toolbar_height</dimen>
+	<dimen name="editprofile_toolbar_height">@dimen/toolbar_height_small</dimen>
 	<dimen name="editprofile_add_btn_size">40dp</dimen>
 	<dimen name="editprofile_profile_image_left_margin">10dp</dimen>
 	<dimen name="editprofile_scrollview_margin">10dp</dimen>

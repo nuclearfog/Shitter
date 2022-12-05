@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.ui.activities;
 
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_EXCLUDED;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -87,6 +90,7 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 		isHome = ownerId == settings.getLogin().getId();
 		adapter.setupListPage(ownerId, ownerName);
 		AppStyles.setTabIcons(tabLayout, settings, R.array.userlist_tab_icons);
+		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}
 
 
@@ -113,6 +117,7 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.lists, m);
 		m.findItem(R.id.list_create).setVisible(isHome);
+		m.findItem(R.id.list_blocklists).setVisible(isHome);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);
 	}
@@ -120,9 +125,16 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		// open list editor
 		if (item.getItemId() == R.id.list_create) {
 			Intent createList = new Intent(this, UserlistEditor.class);
 			startActivityForResult(createList, REQUEST_CREATE_LIST);
+		}
+		// open mute/block list
+		else if (item.getItemId() == R.id.list_blocklists) {
+			Intent usersIntent = new Intent(this, UsersActivity.class);
+			usersIntent.putExtra(KEY_USERS_MODE, USERS_EXCLUDED);
+			startActivity(usersIntent);
 		}
 		return super.onOptionsItemSelected(item);
 	}
