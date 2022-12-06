@@ -17,7 +17,6 @@ import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -515,20 +514,6 @@ public interface Connection {
 	 * @return updated user information
 	 */
 	User updateProfile(ProfileUpdate update) throws ConnectionException;
-
-	/**
-	 * update current user's profile image
-	 *
-	 * @param inputStream inputstream of the local image file
-	 */
-	void updateProfileImage(InputStream inputStream) throws ConnectionException;
-
-	/**
-	 * update current user's profile banner image
-	 *
-	 * @param inputStream inputstream of the local image file
-	 */
-	void updateBannerImage(InputStream inputStream) throws ConnectionException;
 
 	/**
 	 * upload media file and generate a media ID

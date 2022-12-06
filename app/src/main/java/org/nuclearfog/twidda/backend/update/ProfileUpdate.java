@@ -176,7 +176,6 @@ public class ProfileUpdate {
 			result += " location:\"" + location + "\"";
 		if (!url.isEmpty())
 			result += " url:\"" + url + "\"";
-		result += " image:" + imageAdded();
 		return result;
 	}
 }

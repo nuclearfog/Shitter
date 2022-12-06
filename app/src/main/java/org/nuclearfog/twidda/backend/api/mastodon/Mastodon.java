@@ -95,6 +95,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_NOTIFICATION = "/api/v1/notifications";
 	private static final String ENDPOINT_UPLOAD_MEDIA = "/api/v2/media";
 	private static final String ENDPOINT_MEDIA_STATUS = "/api/v1/media/";
+	private static final String ENDPOINT_UPDATE_CREDENTIALS = "/api/v1/accounts/update_credentials";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -352,8 +353,7 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
 		params.add("type=statuses");
-		params.add("following=false");
-		params.add("offset=0");
+		params.add("resolve=true");
 		return getStatuses(SEARCH_TIMELINE, params, minId, maxId);
 	}
 
@@ -382,7 +382,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Location> getLocations() throws MastodonException {
-		return new ArrayList<>(0); // todo add implementation
+		return new ArrayList<>(0); // not supported yet
 	}
 
 
@@ -429,7 +429,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getStatusReplies(String name, long id, long minId, long maxId) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		return new ArrayList<>(0); // todo add implementation
 	}
 
 
@@ -662,19 +662,31 @@ public class Mastodon implements Connection {
 
 	@Override
 	public User updateProfile(ProfileUpdate update) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
-	}
+		List<String> params = new ArrayList<>();
+		List<InputStream> streams = new ArrayList<>();
+		List<String> keys = new ArrayList<>();
 
-
-	@Override
-	public void updateProfileImage(InputStream inputStream) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
-	}
-
-
-	@Override
-	public void updateBannerImage(InputStream inputStream) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		params.add("display_name=" + update.getName());
+		params.add("note=" + update.getDescription());
+		if (update.getProfileImageStream() != null) {
+			streams.add(update.getProfileImageStream());
+			keys.add("avatar");
+		}
+		if (update.getBannerImageStream() != null) {
+			streams.add(update.getBannerImageStream());
+			keys.add("header");
+		}
+		try {
+			Response response = patch(ENDPOINT_UPDATE_CREDENTIALS, params, streams, keys);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonUser(json, settings.getLogin().getId());
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 
@@ -1026,19 +1038,8 @@ public class Mastodon implements Connection {
 	 * @return http response
 	 */
 	private Response post(String endpoint, List<String> params, InputStream is, String addToKey) throws IOException {
-		RequestBody data = new RequestBody() {
-			@Override
-			public MediaType contentType() {
-				return TYPE_STREAM;
-			}
-
-			@Override
-			public void writeTo(@NonNull BufferedSink sink) throws IOException {
-				sink.writeAll(Okio.buffer(Okio.source(is)));
-			}
-		};
 		Account login = settings.getLogin();
-		RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, StringTools.getRandomString(), data).build();
+		RequestBody body = createUploadRequest(is, addToKey);
 		return post(login.getHostname(), endpoint, login.getBearerToken(), params, body);
 	}
 
@@ -1087,6 +1088,49 @@ public class Mastodon implements Connection {
 		Request.Builder request = new Request.Builder().url(buildUrl(login.getHostname(), endpoint, params)).delete(body);
 		request.addHeader("Authorization", "Bearer " + login.getBearerToken());
 		return client.newCall(request.build()).execute();
+	}
+
+	/**
+	 * create a DELETE response
+	 *
+	 * @param endpoint endpoint url
+	 * @param params   additional parameters
+	 * @return DELETE response
+	 */
+	private Response patch(String endpoint, List<String> params, List<InputStream> streams, List<String> keys) throws IOException {
+		Account login = settings.getLogin();
+		Request.Builder builder = new Request.Builder().url(buildUrl(login.getHostname(), endpoint, params));
+		if (streams.isEmpty() || keys.isEmpty()) {
+			builder.patch(RequestBody.create("", TYPE_TEXT));
+		} else {
+			for (int i = 0; i < streams.size() && i < keys.size(); i++) {
+				builder.patch(createUploadRequest(streams.get(i), keys.get(i)));
+			}
+		}
+		Request request = builder.addHeader("Authorization", "Bearer " + login.getBearerToken()).build();
+		return client.newCall(request).execute();
+	}
+
+	/**
+	 * create requestbody with upload stream
+	 *
+	 * @param is input stream to upload a file
+	 * @param addToKey upload stream key
+	 * @return request body
+	 */
+	private RequestBody createUploadRequest(final InputStream is, String addToKey) {
+		RequestBody data = new RequestBody() {
+			@Override
+			public MediaType contentType() {
+				return TYPE_STREAM;
+			}
+
+			@Override
+			public void writeTo(@NonNull BufferedSink sink) throws IOException {
+				sink.writeAll(Okio.buffer(Okio.source(is)));
+			}
+		};
+		return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, StringTools.getRandomString(), data).build();
 	}
 
 	/**

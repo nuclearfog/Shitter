@@ -1081,19 +1081,13 @@ public class Twitter implements Connection {
 		params.add("url=" + StringTools.encode(update.getUrl()));
 		params.add("location=" + StringTools.encode(update.getLocation()));
 		params.add("description=" + StringTools.encode(update.getDescription()));
+		if (update.getProfileImageStream() != null) {
+			updateImage(PROFILE_UPDATE_IMAGE, update.getProfileImageStream(), "image");
+		}
+		if (update.getBannerImageStream() != null) {
+			updateImage(PROFILE_UPDATE_BANNER, update.getBannerImageStream(), "banner");
+		}
 		return getUser1(PROFILE_UPDATE, params);
-	}
-
-
-	@Override
-	public void updateProfileImage(InputStream inputStream) throws TwitterException {
-		updateImage(PROFILE_UPDATE_IMAGE, inputStream, "image");
-	}
-
-
-	@Override
-	public void updateBannerImage(InputStream inputStream) throws TwitterException {
-		updateImage(PROFILE_UPDATE_BANNER, inputStream, "banner");
 	}
 
 

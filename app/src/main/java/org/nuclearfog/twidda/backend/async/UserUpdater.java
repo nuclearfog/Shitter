@@ -42,12 +42,6 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 	@Override
 	protected User doInBackground(Void... v) {
 		try {
-			if (profile.getProfileImageStream() != null) {
-				connection.updateProfileImage(profile.getProfileImageStream());
-			}
-			if (profile.getBannerImageStream() != null) {
-				connection.updateBannerImage(profile.getBannerImageStream());
-			}
 			User user = connection.updateProfile(profile);
 			// save new user information
 			db.saveUser(user);

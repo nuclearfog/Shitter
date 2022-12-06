@@ -662,6 +662,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		userName.setText(author.getUsername());
 		screenName.setText(author.getScreenname());
 		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
+		ansButton.setText(buttonNumber.format(status.getReplyCount()));
 		favButton.setText(buttonNumber.format(status.getFavoriteCount()));
 		rtwButton.setText(buttonNumber.format(status.getRepostCount()));
 		statusApi.setText(R.string.tweet_sent_from);
