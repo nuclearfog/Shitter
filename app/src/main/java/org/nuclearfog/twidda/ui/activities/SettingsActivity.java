@@ -50,6 +50,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -136,6 +137,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton enablePreview = findViewById(R.id.settings_enable_prev);
 		SwitchButton enableLike = findViewById(R.id.enable_like);
 		SwitchButton enableTwitterAlt = findViewById(R.id.settings_enable_twitter_alt);
+		View EnableTwitterAltDescr = findViewById(R.id.settings_enable_twitter_alt_descr);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.spinner_font);
@@ -185,6 +187,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 
+		if (settings.getLogin().getApiType() != Account.API_TWITTER) {
+			enableTwitterAlt.setVisibility(GONE);
+			EnableTwitterAltDescr.setVisibility(GONE);
+		}
 		if (!settings.isLoggedIn()) {
 			trend_card.setVisibility(GONE);
 			user_card.setVisibility(GONE);

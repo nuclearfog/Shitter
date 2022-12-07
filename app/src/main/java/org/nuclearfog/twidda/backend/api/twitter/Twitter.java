@@ -91,7 +91,7 @@ public class Twitter implements Connection {
 
 	// user endpoints
 	private static final String USERS_MUTES = API + "/1.1/mutes/users/list.json";
-	private static final String USER_FOLLOW = API + "1.1/friendships/create.json";
+	private static final String USER_FOLLOW = API + "/1.1/friendships/create.json";
 	private static final String USER_UNFOLLOW = API + "/1.1/friendships/destroy.json";
 	private static final String USER_BLOCK = API + "/1.1/blocks/create.json";
 	private static final String USER_UNBLOCK = API + "/1.1/blocks/destroy.json";
@@ -137,7 +137,7 @@ public class Twitter implements Connection {
 	private static final String USERLIST_DEL_USER = API + "/1.1/lists/members/destroy.json";
 
 	// directmessage endpoints
-	private static final String DIRECTMESSAGE = API + "1.1/direct_messages/events/list.json";
+	private static final String DIRECTMESSAGE = API + "/1.1/direct_messages/events/list.json";
 	private static final String DIRECTMESSAGE_CREATE = API + "/1.1/direct_messages/events/new.json";
 	private static final String DIRECTMESSAGE_DELETE = API + "/1.1/direct_messages/events/destroy.json";
 

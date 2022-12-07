@@ -340,7 +340,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		Status status = this.status;
 		if (status.getEmbeddedStatus() != null)
 			status = status.getEmbeddedStatus();
-		User author = status.getAuthor();
 		// Delete status option
 		if (item.getItemId() == R.id.menu_status_delete) {
 			confirmDialog.show(ConfirmDialog.DELETE_STATUS);

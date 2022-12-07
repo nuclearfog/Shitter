@@ -34,12 +34,12 @@ public class GlobalSettings {
 	/**
 	 * alternative Twitter service
 	 */
-	private static final String TWITTER_ALT_HOST = "https://nitter.net/";
+	private static final String TWITTER_ALT_HOST = "https://nitter.net";
 
 	/**
 	 * default twitter hostname
 	 */
-	private static final String TWITTER_HOST = "https://twitter.com/";
+	private static final String TWITTER_HOST = "https://twitter.com";
 
 	/**
 	 * custom android font
@@ -81,7 +81,6 @@ public class GlobalSettings {
 	private static final String INDEX_SCALE = "index_scale";
 	private static final String LIST_SIZE = "preload";
 	private static final String IMAGE_LOAD = "image_load";
-	private static final String IMAGE_QUALITY = "image_hq";
 	private static final String ANSWER_LOAD = "answer_load";
 	private static final String TWEET_INDICATOR = "tweet_indicator";
 	private static final String PROFILE_OVERLAP = "profile_toolbar_overlap";
@@ -129,7 +128,6 @@ public class GlobalSettings {
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
 	private static final int DEFAULT_LOCATION_ID = 1;
 	private static final String DEFAULT_LOCATION_NAME = "Worldwide";
-	private static final String DEFAULT_MASTODON_HOST = "https://mastodon.social";
 
 	private SharedPreferences settings;
 
@@ -139,7 +137,6 @@ public class GlobalSettings {
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
 	private boolean loadImage;
-	private boolean hqImages;
 	private boolean loadAnswer;
 	private boolean loggedIn;
 	private boolean isProxyEnabled;
@@ -697,21 +694,14 @@ public class GlobalSettings {
 	 */
 	public void setTwitterAlt(boolean enable) {
 		twitterAlt = enable;
-
 		Editor edit = settings.edit();
+		if (enable) { // fixme add hostname changes also in account instance and database
+			edit.putString(HOSTNAME, TWITTER_ALT_HOST);
+		} else {
+			edit.putString(HOSTNAME, TWITTER_HOST);
+		}
 		edit.putBoolean(ENABLE_TWITTER_ALT, enable);
 		edit.apply();
-	}
-
-	/**
-	 * get hostname to open tweet links
-	 *
-	 * @return custom host domain name if alternative is set, otherwise default Twitter host
-	 */
-	public String getTwitterHostname() {
-		if (twitterAlt)
-			return TWITTER_ALT_HOST;
-		return TWITTER_HOST;
 	}
 
 	/**
@@ -983,7 +973,6 @@ public class GlobalSettings {
 		loadImage = settings.getBoolean(IMAGE_LOAD, true);
 		loadAnswer = settings.getBoolean(ANSWER_LOAD, false);
 		tweetIndicators = settings.getBoolean(TWEET_INDICATOR, true);
-		hqImages = settings.getBoolean(IMAGE_QUALITY, false);
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
 		linkPreview = settings.getBoolean(LINK_PREVIEW, false);
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
@@ -1003,7 +992,7 @@ public class GlobalSettings {
 		String consumerToken = settings.getString(CONSUMER_TOKEN, "");
 		String consumerSecret = settings.getString(CONSUMER_SECRET, "");
 		String bearerToken = settings.getString(BEARER_TOKEN, "");
-		String hostname = settings.getString(HOSTNAME, DEFAULT_MASTODON_HOST);
+		String hostname = settings.getString(HOSTNAME, TWITTER_HOST);
 		int apiId = settings.getInt(CURRENT_API, Account.API_TWITTER);
 		long userId = settings.getLong(CURRENT_ID, 0);
 		account = new AccountImpl(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);

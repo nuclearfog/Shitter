@@ -65,7 +65,6 @@
 	<string name="enter_username">输入用户名</string>
 	<string name="profile_banner">主页背景</string>
 	<string name="editprofile_add_banner">添加主页背景</string>
-	<string name="settings_enable_hq_img">启用高清图像</string>
 	<string name="settings_app_information">关于应用与许可信息：</string>
 	<string name="item_load_more">加载更多</string>
 	<string name="item_image_save">保存图片</string>

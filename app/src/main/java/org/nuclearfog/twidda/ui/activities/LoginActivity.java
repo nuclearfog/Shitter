@@ -231,6 +231,8 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 						String link = apiHost.getText().toString();
 						if (!link.startsWith("https://"))
 							link = "https://" + link;
+						if (link.endsWith("/"))
+							link = link.substring(0, link.length() - 1);
 						loginAsync.execute(link);
 					} else {
 						loginAsync.execute();
