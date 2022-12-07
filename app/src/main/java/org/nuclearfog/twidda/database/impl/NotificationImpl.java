@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -28,10 +29,10 @@ public class NotificationImpl implements Notification {
 
 	/**
 	 * @param cursor database cursor containing Notification table column
-	 * @param currentId current user's ID
+	 * @param account current user information
 	 */
-	public NotificationImpl(Cursor cursor, long currentId, int apiType) {
-		user = new UserImpl(cursor, currentId, apiType);
+	public NotificationImpl(Cursor cursor, Account account) {
+		user = new UserImpl(cursor, account);
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ID));
 		itemId = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ITEM));
 		type = cursor.getInt(cursor.getColumnIndexOrThrow(NotificationTable.TYPE));

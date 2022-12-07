@@ -137,6 +137,11 @@ public interface Status extends Serializable {
 	boolean isHidden();
 
 	/**
+	 * @return path of the social media link
+	 */
+	String getLinkPath();
+
+	/**
 	 * @return name of the location if attached
 	 */
 	String getLocationName();

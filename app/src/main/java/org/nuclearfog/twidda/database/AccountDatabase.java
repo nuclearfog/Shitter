@@ -82,7 +82,7 @@ public class AccountDatabase {
 			result.ensureCapacity(cursor.getCount());
 			do {
 				AccountImpl account = new AccountImpl(cursor);
-				account.addUser(database.getUser(account.getId()));
+				account.addUser(database.getUser(account.getId(), account));
 				result.add(account);
 			} while (cursor.moveToNext());
 		}

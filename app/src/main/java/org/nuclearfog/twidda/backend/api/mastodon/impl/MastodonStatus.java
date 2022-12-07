@@ -212,6 +212,15 @@ public class MastodonStatus implements Status {
 
 
 	@Override
+	public String getLinkPath() {
+		if (!author.getScreenname().isEmpty()) {
+			return '/' + author.getScreenname() + id;
+		}
+		return "";
+	}
+
+
+	@Override
 	public String getLocationName() {
 		return "";
 	}

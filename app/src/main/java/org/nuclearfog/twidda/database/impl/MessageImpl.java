@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
@@ -26,10 +27,10 @@ public class MessageImpl implements Message {
 
 	/**
 	 * @param cursor    database cursor containing UserTable column
-	 * @param currentId Id of the current user
+	 * @param account current user information
 	 */
-	public MessageImpl(Cursor cursor, long currentId, int apiType) {
-		sender = new UserImpl(cursor, currentId, apiType);
+	public MessageImpl(Cursor cursor, Account account) {
+		sender = new UserImpl(cursor, account);
 		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));

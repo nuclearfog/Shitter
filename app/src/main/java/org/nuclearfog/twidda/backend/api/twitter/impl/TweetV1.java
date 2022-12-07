@@ -132,30 +132,36 @@ public class TweetV1 implements Status {
 		}
 	}
 
+
 	@Override
 	public long getId() {
 		return id;
 	}
+
 
 	@Override
 	public String getText() {
 		return text;
 	}
 
+
 	@Override
 	public User getAuthor() {
 		return author;
 	}
+
 
 	@Override
 	public long getTimestamp() {
 		return timestamp;
 	}
 
+
 	@Override
 	public String getSource() {
 		return source;
 	}
+
 
 	@Nullable
 	@Override
@@ -163,41 +169,49 @@ public class TweetV1 implements Status {
 		return embeddedTweet;
 	}
 
+
 	@Override
 	public String getReplyName() {
 		return replyName;
 	}
+
 
 	@Override
 	public long getRepliedUserId() {
 		return replyUserId;
 	}
 
+
 	@Override
 	public long getRepliedStatusId() {
 		return replyTweetId;
 	}
+
 
 	@Override
 	public long getRepostId() {
 		return retweetId;
 	}
 
+
 	@Override
 	public int getRepostCount() {
 		return retweetCount;
 	}
+
 
 	@Override
 	public int getFavoriteCount() {
 		return favoriteCount;
 	}
 
+
 	@Override
 	public int getReplyCount() {
 		// not implemented in API V1.1
 		return 0;
 	}
+
 
 	@NonNull
 	@Override
@@ -208,45 +222,64 @@ public class TweetV1 implements Status {
 		return result;
 	}
 
+
 	@Override
 	public String getUserMentions() {
 		return userMentions;
 	}
+
 
 	@Override
 	public int getMediaType() {
 		return mediaType;
 	}
 
+
 	@Override
 	public boolean isSensitive() {
 		return isSensitive;
 	}
+
 
 	@Override
 	public boolean isReposted() {
 		return isRetweeted;
 	}
 
+
 	@Override
 	public boolean isFavorited() {
 		return isFavorited;
 	}
+
 
 	@Override
 	public String getLocationName() {
 		return location;
 	}
 
+
 	@Override
 	public String getLocationCoordinates() {
 		return coordinates;
 	}
 
+
 	@Override
 	public boolean isHidden() {
 		return false;
 	}
+
+
+	@Override
+	public String getLinkPath() {
+		if (!author.getScreenname().isEmpty()) {
+			String username = '/' + author.getScreenname().substring(1);
+			return username + "/status/" + id;
+		}
+		return "";
+	}
+
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
@@ -254,6 +287,7 @@ public class TweetV1 implements Status {
 			return false;
 		return ((Status) obj).getId() == id;
 	}
+
 
 	@NonNull
 	@Override

@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
@@ -45,6 +46,7 @@ public class StatusImpl implements Status {
 	private int favoriteCount;
 	private int replyCount;
 	private int mediaType;
+	private int apiType;
 	private String locationName;
 	private String locationCoordinates;
 	private String replyName;
@@ -58,11 +60,11 @@ public class StatusImpl implements Status {
 	private boolean isHidden;
 
 	/**
-	 * @param cursor        database cursor
-	 * @param currentUserId user ID of the current login
+	 * @param cursor  database cursor
+	 * @param account current user login information
 	 */
-	public StatusImpl(Cursor cursor, long currentUserId, int apiType) {
-		author = new UserImpl(cursor, currentUserId, apiType);
+	public StatusImpl(Cursor cursor, Account account) {
+		author = new UserImpl(cursor, account);
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SINCE));
 		text = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.TEXT));
 		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPOST));
@@ -96,6 +98,7 @@ public class StatusImpl implements Status {
 		} else {
 			mediaType = MEDIA_NONE;
 		}
+		apiType = account.getApiType();
 	}
 
 
@@ -233,6 +236,20 @@ public class StatusImpl implements Status {
 	@Override
 	public boolean isHidden() {
 		return isHidden;
+	}
+
+
+	@Override
+	public String getLinkPath() {
+		if (!author.getScreenname().isEmpty()) {
+			if (apiType == Account.API_TWITTER) {
+				String username = '/' + author.getScreenname().substring(1);
+				return username + "/status/" + id;
+			} else if (apiType == Account.API_MASTODON) {
+				return '/' + author.getScreenname() + id;
+			}
+		}
+		return "";
 	}
 
 

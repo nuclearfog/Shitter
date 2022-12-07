@@ -356,8 +356,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
-			String username = author.getScreenname().substring(1);
-			String link = settings.getTwitterHostname() + username + "/status/" + status.getId();
+			String link = settings.getLogin().getHostname() + status.getLinkPath();
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
 			try {
 				startActivity(intent);
@@ -375,9 +374,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// copy status link to clipboard
 		else if (item.getItemId() == R.id.menu_status_copy_link) {
-			String username = author.getScreenname().substring(1);
-			String link = settings.getTwitterHostname() + username + "/status/" + status.getId();
 			if (clip != null) {
+				String link = settings.getLogin().getHostname() + status.getLinkPath();
 				ClipData linkClip = ClipData.newPlainText("status link", link);
 				clip.setPrimaryClip(linkClip);
 				Toast.makeText(this, R.string.info_tweet_link_copied, LENGTH_SHORT).show();

@@ -75,82 +75,82 @@ public class Twitter implements Connection {
 	private static final String OAUTH = "1.0";
 
 	// API addresses
-	public static final String API = "https://api.twitter.com/";
-	private static final String UPLOAD = "https://upload.twitter.com/";
+	public static final String API = "https://api.twitter.com";
+	private static final String UPLOAD = "https://upload.twitter.com";
 	private static final String DOWNLOAD = "https://ton.twitter.com/";
 
 	// authentication endpoints
-	public static final String AUTHENTICATE = API + "oauth/authenticate";
-	private static final String REQUEST_TOKEN = API + "oauth/request_token";
-	private static final String OAUTH_VERIFIER = API + "oauth/access_token";
-	private static final String CREDENTIALS = API + "1.1/account/verify_credentials.json";
+	public static final String AUTHENTICATE = API + "/oauth/authenticate";
+	private static final String REQUEST_TOKEN = API + "/oauth/request_token";
+	private static final String OAUTH_VERIFIER = API + "/oauth/access_token";
+	private static final String CREDENTIALS = API + "/1.1/account/verify_credentials.json";
 
 	// user ID endpoints
-	private static final String IDS_BLOCKED_USERS = API + "1.1/blocks/ids.json";
-	private static final String IDS_MUTED_USERS = API + "1.1/mutes/users/ids.json";
+	private static final String IDS_BLOCKED_USERS = API + "/1.1/blocks/ids.json";
+	private static final String IDS_MUTED_USERS = API + "/1.1/mutes/users/ids.json";
 
 	// user endpoints
-	private static final String USERS_MUTES = API + "1.1/mutes/users/list.json";
+	private static final String USERS_MUTES = API + "/1.1/mutes/users/list.json";
 	private static final String USER_FOLLOW = API + "1.1/friendships/create.json";
-	private static final String USER_UNFOLLOW = API + "1.1/friendships/destroy.json";
-	private static final String USER_BLOCK = API + "1.1/blocks/create.json";
-	private static final String USER_UNBLOCK = API + "1.1/blocks/destroy.json";
-	private static final String USER_MUTE = API + "1.1/mutes/users/create.json";
-	private static final String USER_UNMUTE = API + "1.1/mutes/users/destroy.json";
-	private static final String USER_LOOKUP = API + "1.1/users/show.json";
-	private static final String USERS_FOLLOWING = API + "1.1/friends/list.json";
-	private static final String USERS_FOLLOWER = API + "1.1/followers/list.json";
-	private static final String USERS_SEARCH = API + "1.1/users/search.json";
-	private static final String USERS_LIST_MEMBER = API + "1.1/lists/members.json";
-	private static final String USERS_LIST_SUBSCRIBER = API + "1.1/lists/subscribers.json";
-	private static final String USERS_LOOKUP = API + "1.1/users/lookup.json";
-	private static final String USERS_BLOCKED_LIST = API + "1.1/blocks/list.json";
-	private static final String USERS_FOLLOW_INCOMING = API + "1.1/friendships/incoming.json";
-	private static final String USERS_FOLLOW_OUTGOING = API + "1.1/friendships/outgoing.json";
+	private static final String USER_UNFOLLOW = API + "/1.1/friendships/destroy.json";
+	private static final String USER_BLOCK = API + "/1.1/blocks/create.json";
+	private static final String USER_UNBLOCK = API + "/1.1/blocks/destroy.json";
+	private static final String USER_MUTE = API + "/1.1/mutes/users/create.json";
+	private static final String USER_UNMUTE = API + "/1.1/mutes/users/destroy.json";
+	private static final String USER_LOOKUP = API + "/1.1/users/show.json";
+	private static final String USERS_FOLLOWING = API + "/1.1/friends/list.json";
+	private static final String USERS_FOLLOWER = API + "/1.1/followers/list.json";
+	private static final String USERS_SEARCH = API + "/1.1/users/search.json";
+	private static final String USERS_LIST_MEMBER = API + "/1.1/lists/members.json";
+	private static final String USERS_LIST_SUBSCRIBER = API + "/1.1/lists/subscribers.json";
+	private static final String USERS_LOOKUP = API + "/1.1/users/lookup.json";
+	private static final String USERS_BLOCKED_LIST = API + "/1.1/blocks/list.json";
+	private static final String USERS_FOLLOW_INCOMING = API + "/1.1/friendships/incoming.json";
+	private static final String USERS_FOLLOW_OUTGOING = API + "/1.1/friendships/outgoing.json";
 
 	// tweet endpoints
-	private static final String TWEETS_HOME_TIMELINE = API + "1.1/statuses/home_timeline.json";
-	private static final String TWEETS_MENTIONS = API + "1.1/statuses/mentions_timeline.json";
-	private static final String TWEETS_USER = API + "1.1/statuses/user_timeline.json";
-	private static final String TWEETS_USER_FAVORITS = API + "1.1/favorites/list.json";
-	private static final String TWEETS_LIST = API + "1.1/lists/statuses.json";
-	private static final String TWEET_LOOKUP = API + "1.1/statuses/show.json";
-	private static final String TWEET_SEARCH = API + "1.1/search/tweets.json";
-	private static final String TWEET_FAVORITE = API + "1.1/favorites/create.json";
-	private static final String TWEET_UNFAVORITE = API + "1.1/favorites/destroy.json";
-	private static final String TWEET_RETWEET = API + "1.1/statuses/retweet/";
-	private static final String TWEET_UNRETWEET = API + "1.1/statuses/unretweet/";
-	private static final String TWEET_UPLOAD = API + "1.1/statuses/update.json";
-	private static final String TWEET_DELETE = API + "1.1/statuses/destroy/";
-	private static final String TWEET_UNI = API + "2/tweets/";
+	private static final String TWEETS_HOME_TIMELINE = API + "/1.1/statuses/home_timeline.json";
+	private static final String TWEETS_MENTIONS = API + "/1.1/statuses/mentions_timeline.json";
+	private static final String TWEETS_USER = API + "/1.1/statuses/user_timeline.json";
+	private static final String TWEETS_USER_FAVORITS = API + "/1.1/favorites/list.json";
+	private static final String TWEETS_LIST = API + "/1.1/lists/statuses.json";
+	private static final String TWEET_LOOKUP = API + "/1.1/statuses/show.json";
+	private static final String TWEET_SEARCH = API + "/1.1/search/tweets.json";
+	private static final String TWEET_FAVORITE = API + "/1.1/favorites/create.json";
+	private static final String TWEET_UNFAVORITE = API + "/1.1/favorites/destroy.json";
+	private static final String TWEET_RETWEET = API + "/1.1/statuses/retweet/";
+	private static final String TWEET_UNRETWEET = API + "/1.1/statuses/unretweet/";
+	private static final String TWEET_UPLOAD = API + "/1.1/statuses/update.json";
+	private static final String TWEET_DELETE = API + "/1.1/statuses/destroy/";
+	private static final String TWEET_UNI = API + "/2/tweets/";
 
 	// userlist endpoints
-	private static final String USERLIST_SHOW = API + "1.1/lists/show.json";
-	private static final String USERLIST_FOLLOW = API + "1.1/lists/subscribers/create.json";
-	private static final String USERLIST_UNFOLLOW = API + "1.1/lists/subscribers/destroy.json";
-	private static final String USERLIST_CREATE = API + "1.1/lists/create.json";
-	private static final String USERLIST_UPDATE = API + "1.1/lists/update.json";
-	private static final String USERLIST_DESTROY = API + "1.1/lists/destroy.json";
-	private static final String USERLIST_OWNERSHIP = API + "1.1/lists/list.json";
-	private static final String USERLIST_MEMBERSHIP = API + "1.1/lists/memberships.json";
-	private static final String USERLIST_ADD_USER = API + "1.1/lists/members/create.json";
-	private static final String USERLIST_DEL_USER = API + "1.1/lists/members/destroy.json";
+	private static final String USERLIST_SHOW = API + "/1.1/lists/show.json";
+	private static final String USERLIST_FOLLOW = API + "/1.1/lists/subscribers/create.json";
+	private static final String USERLIST_UNFOLLOW = API + "/1.1/lists/subscribers/destroy.json";
+	private static final String USERLIST_CREATE = API + "/1.1/lists/create.json";
+	private static final String USERLIST_UPDATE = API + "/1.1/lists/update.json";
+	private static final String USERLIST_DESTROY = API + "/1.1/lists/destroy.json";
+	private static final String USERLIST_OWNERSHIP = API + "/1.1/lists/list.json";
+	private static final String USERLIST_MEMBERSHIP = API + "/1.1/lists/memberships.json";
+	private static final String USERLIST_ADD_USER = API + "/1.1/lists/members/create.json";
+	private static final String USERLIST_DEL_USER = API + "/1.1/lists/members/destroy.json";
 
 	// directmessage endpoints
 	private static final String DIRECTMESSAGE = API + "1.1/direct_messages/events/list.json";
-	private static final String DIRECTMESSAGE_CREATE = API + "1.1/direct_messages/events/new.json";
-	private static final String DIRECTMESSAGE_DELETE = API + "1.1/direct_messages/events/destroy.json";
+	private static final String DIRECTMESSAGE_CREATE = API + "/1.1/direct_messages/events/new.json";
+	private static final String DIRECTMESSAGE_DELETE = API + "/1.1/direct_messages/events/destroy.json";
 
 	// profile update endpoints
-	private static final String PROFILE_UPDATE = API + "1.1/account/update_profile.json";
-	private static final String PROFILE_UPDATE_IMAGE = API + "1.1/account/update_profile_image.json";
-	private static final String PROFILE_UPDATE_BANNER = API + "1.1/account/update_profile_banner.json";
+	private static final String PROFILE_UPDATE = API + "/1.1/account/update_profile.json";
+	private static final String PROFILE_UPDATE_IMAGE = API + "/1.1/account/update_profile_image.json";
+	private static final String PROFILE_UPDATE_BANNER = API + "/1.1/account/update_profile_banner.json";
 
 	// other endpoints
-	private static final String TRENDS = API + "1.1/trends/place.json";
-	private static final String LOCATIONS = API + "1.1/trends/available.json";
-	private static final String RELATION = API + "1.1/friendships/show.json";
-	private static final String MEDIA_UPLOAD = UPLOAD + "1.1/media/upload.json";
+	private static final String TRENDS = API + "/1.1/trends/place.json";
+	private static final String LOCATIONS = API + "/1.1/trends/available.json";
+	private static final String RELATION = API + "/1.1/friendships/show.json";
+	private static final String MEDIA_UPLOAD = UPLOAD + "/1.1/media/upload.json";
 
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
 	private static final MediaType TYPE_JSON = MediaType.parse("application/json");

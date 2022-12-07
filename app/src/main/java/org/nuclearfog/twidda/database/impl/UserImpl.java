@@ -46,10 +46,9 @@ public class UserImpl implements User {
 
 	/**
 	 * @param cursor database cursor containing user column
-	 * @param currentUserId ID of the current user
-	 * @param apiType current used API type
+	 * @param account current user login
 	 */
-	public UserImpl(Cursor cursor, long currentUserId, int apiType) {
+	public UserImpl(Cursor cursor, Account account) {
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.ID));
 		username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
 		screenName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));
@@ -68,8 +67,8 @@ public class UserImpl implements User {
 		isLocked = (register & LOCKED_MASK) != 0;
 		followReqSent = (register & FOLLOW_REQUEST_MASK) != 0;
 		defaultImage = (register & DEFAULT_IMAGE_MASK) != 0;
-		isCurrentUser = currentUserId == id;
-		this.apiType = apiType;
+		isCurrentUser = account.getId() == id;
+		this.apiType = account.getApiType();
 	}
 
 

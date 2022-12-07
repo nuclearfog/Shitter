@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend.api.twitter.impl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
@@ -13,6 +12,8 @@ import org.nuclearfog.twidda.model.User;
  * @author nuclearfog
  */
 public class TwitterAccount implements Account {
+
+	private static final String TWITTER_LINK = "https://twitter.com";
 
 	private long date;
 
@@ -97,7 +98,7 @@ public class TwitterAccount implements Account {
 
 	@Override
 	public String getHostname() {
-		return Twitter.API;
+		return TWITTER_LINK;
 	}
 
 

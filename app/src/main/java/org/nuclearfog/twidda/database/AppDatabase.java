@@ -512,10 +512,24 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public User getUser(long userId) {
+		return getUser(userId, settings.getLogin());
+	}
+
+	/**
+	 * get user information
+	 *
+	 * @param userId ID of user
+	 * @param account current user information
+	 * @return user information or null if not found
+	 */
+	@Nullable
+	public User getUser(long userId, Account account) {
 		String[] args = {Long.toString(userId)};
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
-		User user = getUser(cursor);
+		User user = null;
+		if (cursor.moveToFirst())
+			user = new UserImpl(cursor, account);
 		cursor.close();
 		return user;
 	}
@@ -576,7 +590,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				NotificationImpl notification = new NotificationImpl(cursor, login.getId(), login.getApiType());
+				NotificationImpl notification = new NotificationImpl(cursor, login);
 				switch (notification.getType()) {
 					case Notification.TYPE_FAVORITE:
 					case Notification.TYPE_REPOST:
@@ -711,7 +725,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				result.add(new MessageImpl(cursor, login.getId(), login.getApiType()));
+				result.add(new MessageImpl(cursor, login));
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -804,24 +818,11 @@ public class AppDatabase {
 	 */
 	private Status getStatus(Cursor cursor) {
 		Account login = settings.getLogin();
-		StatusImpl result = new StatusImpl(cursor, login.getId(), login.getApiType());
+		StatusImpl result = new StatusImpl(cursor, login);
 		// check if there is an embedded status
 		if (result.getEmbeddedStatusId() > 1)
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
 		return result;
-	}
-
-	/**
-	 * get user from cursor
-	 *
-	 * @param cursor database cursor containing user information
-	 * @return user if found or null
-	 */
-	@Nullable
-	private User getUser(Cursor cursor) {
-		if (cursor.moveToFirst())
-			return new UserImpl(cursor, settings.getLogin().getId(), settings.getLogin().getApiType());
-		return null;
 	}
 
 	/**
