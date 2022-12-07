@@ -61,8 +61,8 @@ public class StatusImpl implements Status {
 	 * @param cursor        database cursor
 	 * @param currentUserId user ID of the current login
 	 */
-	public StatusImpl(Cursor cursor, long currentUserId) {
-		author = new UserImpl(cursor, currentUserId);
+	public StatusImpl(Cursor cursor, long currentUserId, int apiType) {
+		author = new UserImpl(cursor, currentUserId, apiType);
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SINCE));
 		text = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.TEXT));
 		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPOST));

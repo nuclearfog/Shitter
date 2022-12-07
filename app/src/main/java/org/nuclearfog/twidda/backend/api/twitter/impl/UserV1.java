@@ -82,95 +82,132 @@ public class UserV1 implements User {
 		}
 	}
 
+
 	@Override
 	public long getId() {
 		return id;
 	}
+
 
 	@Override
 	public String getUsername() {
 		return username;
 	}
 
+
 	@Override
 	public String getScreenname() {
 		return screenName;
 	}
+
 
 	@Override
 	public long getCreatedAt() {
 		return created;
 	}
 
+
 	@Override
-	public String getImageUrl() {
+	public String getOriginalProfileImageUrl() {
 		return profileImageUrl;
 	}
 
-	@Override
-	public String getBannerUrl() {
-		return profileBannerUrl;
-	}
 
 	@Override
-	public String getDescription() {
-		return description;
+	public String getProfileImageThumbnailUrl() {
+		if (defaultImage || profileImageUrl.isEmpty())
+			return profileImageUrl;
+		return profileImageUrl + "_bigger";
 	}
 
-	@Override
-	public String getLocation() {
-		return location;
-	}
 
 	@Override
-	public String getProfileUrl() {
-		return url;
+	public String getOriginalBannerImageUrl() {
+		if (profileBannerUrl.isEmpty())
+			return "";
+		return profileBannerUrl + "/1500x500";
 	}
 
-	@Override
-	public boolean isVerified() {
-		return isVerified;
-	}
 
 	@Override
-	public boolean isProtected() {
-		return isLocked;
+	public String getBannerImageThumbnailUrl() {
+		if (profileBannerUrl.isEmpty())
+			return "";
+		return profileBannerUrl + "/600x200";
 	}
 
-	@Override
-	public boolean followRequested() {
-		return followReqSent;
-	}
-
-	@Override
-	public int getFollowing() {
-		return following;
-	}
-
-	@Override
-	public int getFollower() {
-		return follower;
-	}
-
-	@Override
-	public int getStatusCount() {
-		return tweetCount;
-	}
-
-	@Override
-	public int getFavoriteCount() {
-		return favoriteCount;
-	}
 
 	@Override
 	public boolean hasDefaultProfileImage() {
 		return defaultImage;
 	}
 
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+
+	@Override
+	public String getLocation() {
+		return location;
+	}
+
+
+	@Override
+	public String getProfileUrl() {
+		return url;
+	}
+
+
+	@Override
+	public boolean isVerified() {
+		return isVerified;
+	}
+
+
+	@Override
+	public boolean isProtected() {
+		return isLocked;
+	}
+
+
+	@Override
+	public boolean followRequested() {
+		return followReqSent;
+	}
+
+
+	@Override
+	public int getFollowing() {
+		return following;
+	}
+
+
+	@Override
+	public int getFollower() {
+		return follower;
+	}
+
+
+	@Override
+	public int getStatusCount() {
+		return tweetCount;
+	}
+
+
+	@Override
+	public int getFavoriteCount() {
+		return favoriteCount;
+	}
+
+
 	@Override
 	public boolean isCurrentUser() {
 		return isCurrentUser;
 	}
+
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
@@ -178,6 +215,7 @@ public class UserV1 implements User {
 			return false;
 		return ((User) obj).getId() == id;
 	}
+
 
 	@NonNull
 	@Override

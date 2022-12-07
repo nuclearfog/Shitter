@@ -32,26 +32,6 @@ import java.util.List;
 public class GlobalSettings {
 
 	/**
-	 * media link suffix used by Twitter for low resolution profile images
-	 */
-	public static final String PROFILE_IMG_LOW_RES = "_mini";
-
-	/**
-	 * media link suffix used by Twitter for high resolution profile images
-	 */
-	public static final String PROFILE_IMG_HIGH_RES = "_bigger";
-
-	/**
-	 * media link suffix used by Twitter for low resolution banner images
-	 */
-	public static final String BANNER_IMG_LOW_RES = "/300x100";
-
-	/**
-	 * media link suffix used by Twitter for standard banner image resolution
-	 */
-	public static final String BANNER_IMG_MID_RES = "/600x200";
-
-	/**
 	 * alternative Twitter service
 	 */
 	private static final String TWITTER_ALT_HOST = "https://nitter.net/";
@@ -522,53 +502,6 @@ public class GlobalSettings {
 
 		Editor edit = settings.edit();
 		edit.putBoolean(FILTER_RESULTS, enable);
-		edit.apply();
-	}
-
-	/**
-	 * sets image quality
-	 *
-	 * @return true if thumbnails should be in high resolution
-	 */
-	public boolean getImageQuality() {
-		return hqImages;
-	}
-
-	/**
-	 * returns the twitter image suffix depending on the resolution
-	 *
-	 * @return suffix string
-	 */
-	public String getImageSuffix() {
-		if (account.getApiType() == Account.API_MASTODON)
-			return "";
-		if (hqImages)
-			return PROFILE_IMG_HIGH_RES;
-		return PROFILE_IMG_LOW_RES;
-	}
-
-	/**
-	 * returns the suffix for the banner image link
-	 *
-	 * @return suffix string
-	 */
-	public String getBannerSuffix() {
-		if (account.getApiType() == Account.API_MASTODON)
-			return "";
-		if (hqImages)
-			return BANNER_IMG_MID_RES;
-		return BANNER_IMG_LOW_RES;
-	}
-
-	/**
-	 * sets the image quality
-	 *
-	 * @param enable true if small thumbnails should be in high resolution
-	 */
-	public void setHighQualityImage(boolean enable) {
-		hqImages = enable;
-		Editor edit = settings.edit();
-		edit.putBoolean(IMAGE_QUALITY, enable);
 		edit.apply();
 	}
 

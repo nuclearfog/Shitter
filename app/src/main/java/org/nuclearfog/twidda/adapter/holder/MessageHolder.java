@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
@@ -140,14 +141,10 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		} else {
 			mediaButton.setVisibility(View.GONE);
 		}
-		if (settings.imagesEnabled() && !sender.getImageUrl().isEmpty()) {
-			String profileImageUrl;
-			if (!sender.hasDefaultProfileImage()) {
-				profileImageUrl = StringTools.buildImageLink(sender.getImageUrl(), settings.getImageSuffix());
-			} else {
-				profileImageUrl = sender.getImageUrl();
-			}
-			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(profile);
+		String profileImageUrl = sender.getProfileImageThumbnailUrl();
+		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
+			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
 		} else {
 			profile.setImageResource(0);
 		}

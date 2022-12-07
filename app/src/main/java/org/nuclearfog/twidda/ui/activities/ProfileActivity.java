@@ -6,7 +6,6 @@ import static android.view.View.GONE;
 import static android.view.View.OnClickListener;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
@@ -49,6 +48,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
@@ -60,9 +60,7 @@ import org.nuclearfog.twidda.backend.async.UserAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -497,8 +495,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		}
 		// open profile image
 		else if (v.getId() == R.id.profile_img) {
-			if (user != null && !user.getImageUrl().isEmpty()) {
-				Uri[] uris = {Uri.parse(user.getImageUrl())};
+			if (user != null && !user.getOriginalProfileImageUrl().isEmpty()) {
+				Uri[] uris = {Uri.parse(user.getOriginalProfileImageUrl())};
 				Intent imageIntent = new Intent(this, ImageViewer.class);
 				imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
 				imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
@@ -507,8 +505,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		}
 		// open banner image
 		else if (v.getId() == R.id.profile_banner) {
-			if (user != null && !user.getBannerUrl().isEmpty()) {
-				Uri[] uris = {Uri.parse(user.getBannerUrl())};
+			if (user != null && !user.getOriginalBannerImageUrl().isEmpty()) {
+				Uri[] uris = {Uri.parse(user.getOriginalBannerImageUrl())};
 				Intent imageIntent = new Intent(this, ImageViewer.class);
 				imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
 				imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
@@ -635,21 +633,17 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			user_website.setVisibility(GONE);
 		}
 		if (settings.imagesEnabled()) {
-			if (!user.getBannerUrl().isEmpty()) {
-				String bannerLink = user.getBannerUrl() + settings.getBannerSuffix();
-				picasso.load(bannerLink).error(R.drawable.no_banner).into(bannerImage, this);
+			String profileImageUrl = user.getBannerImageThumbnailUrl();
+			String bannerImageUrl = user.getProfileImageThumbnailUrl();
+			if (!profileImageUrl.isEmpty()) {
+				picasso.load(profileImageUrl).error(R.drawable.no_banner).into(bannerImage, this);
 			} else {
 				bannerImage.setImageResource(0);
 				toolbarBackground.setImageResource(0);
 			}
-			if (!user.getImageUrl().isEmpty()) {
-				String profileImageUrl;
-				if (!user.hasDefaultProfileImage() && settings.getLogin().getApiType() == Account.API_TWITTER) {
-					profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), PROFILE_IMG_HIGH_RES);
-				} else {
-					profileImageUrl = user.getImageUrl();
-				}
-				picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(5, 0)).error(R.drawable.no_image).into(profileImage);
+			if (!bannerImageUrl.isEmpty()) {
+				Transformation roundCorner = new RoundedCornersTransformation(5, 0);
+				picasso.load(bannerImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
 			} else {
 				profileImage.setImageResource(0);
 			}

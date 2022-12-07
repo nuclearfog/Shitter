@@ -3,8 +3,6 @@ package org.nuclearfog.twidda.ui.activities;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
-import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.TOOLBAR_TRANSPARENCY;
 
 import android.content.Context;
@@ -32,6 +30,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -40,7 +39,6 @@ import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -318,18 +316,14 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	 * Set current user's information
 	 */
 	private void setUser() {
-		if (!user.getImageUrl().isEmpty()) {
-			String profileImageUrl;
-			if (!user.hasDefaultProfileImage()) {
-				profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), PROFILE_IMG_HIGH_RES);
-			} else {
-				profileImageUrl = user.getImageUrl();
-			}
-			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
+		String profileImageUrl = user.getProfileImageThumbnailUrl();
+		String bannerImageUrl = user.getBannerImageThumbnailUrl();
+		if (!profileImageUrl.isEmpty()) {
+			Transformation roundCorner = new RoundedCornersTransformation(5, 0);
+			picasso.load(profileImageUrl).transform(roundCorner).into(profile_image);
 		}
-		if (!user.getBannerUrl().isEmpty()) {
-			String bannerLink = user.getBannerUrl() + BANNER_IMG_MID_RES;
-			picasso.load(bannerLink).into(profile_banner, this);
+		if (!bannerImageUrl.isEmpty()) {
+			picasso.load(bannerImageUrl).into(profile_banner, this);
 			addBannerBtn.setVisibility(INVISIBLE);
 			changeBannerBtn.setVisibility(VISIBLE);
 		} else {

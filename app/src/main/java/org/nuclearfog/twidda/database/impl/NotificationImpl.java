@@ -30,8 +30,8 @@ public class NotificationImpl implements Notification {
 	 * @param cursor database cursor containing Notification table column
 	 * @param currentId current user's ID
 	 */
-	public NotificationImpl(Cursor cursor, long currentId) {
-		user = new UserImpl(cursor, currentId);
+	public NotificationImpl(Cursor cursor, long currentId, int apiType) {
+		user = new UserImpl(cursor, currentId, apiType);
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ID));
 		itemId = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ITEM));
 		type = cursor.getInt(cursor.getColumnIndexOrThrow(NotificationTable.TYPE));

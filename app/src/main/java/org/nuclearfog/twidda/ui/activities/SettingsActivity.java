@@ -102,9 +102,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private Dialog color_dialog_selector, appInfo, license;
 	private ConfirmDialog confirmDialog;
 
-	private View hqImageText, enableAuthTxt;
+	private View enableAuthTxt;
 	private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
-	private SwitchButton enableProxy, enableAuth, hqImage;
+	private SwitchButton enableProxy, enableAuth;
 	private Spinner locationSpinner;
 	private TextView list_size;
 	private ViewGroup root;
@@ -142,9 +142,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		Spinner scaleSelector = findViewById(R.id.spinner_scale);
 		enableProxy = findViewById(R.id.settings_enable_proxy);
 		enableAuth = findViewById(R.id.settings_enable_auth);
-		hqImage = findViewById(R.id.settings_image_hq);
 		locationSpinner = findViewById(R.id.spinner_woeid);
-		hqImageText = findViewById(R.id.settings_image_hq_descr);
 		enableAuthTxt = findViewById(R.id.settings_enable_auth_descr);
 		colorButtons[COLOR_BACKGROUND] = findViewById(R.id.color_background);
 		colorButtons[COLOR_TEXT] = findViewById(R.id.color_text);
@@ -202,10 +200,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			proxyUser.setVisibility(GONE);
 			proxyPass.setVisibility(GONE);
 		}
-		if (!settings.imagesEnabled()) {
-			hqImageText.setVisibility(GONE);
-			hqImage.setVisibility(GONE);
-		}
 		if (settings.likeEnabled()) {
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_like);
 		} else {
@@ -220,8 +214,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
 		enableProxy.setCheckedImmediately(settings.isProxyEnabled());
 		enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
-		hqImage.setCheckedImmediately(settings.imagesEnabled());
-		hqImage.setCheckedImmediately(settings.getImageQuality());
 		proxyAddr.setText(settings.getProxyHost());
 		proxyPort.setText(settings.getProxyPort());
 		proxyUser.setText(settings.getProxyUser());
@@ -242,7 +234,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enablePreview.setOnCheckedChangeListener(this);
 		enableProxy.setOnCheckedChangeListener(this);
 		enableAuth.setOnCheckedChangeListener(this);
-		hqImage.setOnCheckedChangeListener(this);
 		toolbarOverlap.setOnCheckedChangeListener(this);
 		fontSelector.setOnItemSelectedListener(this);
 		scaleSelector.setOnItemSelectedListener(this);
@@ -478,21 +469,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// toggle image loading
 		if (c.getId() == R.id.toggleImg) {
 			settings.setImageLoad(checked);
-			if (checked) {
-				hqImageText.setVisibility(VISIBLE);
-				hqImage.setVisibility(VISIBLE);
-			} else {
-				hqImageText.setVisibility(GONE);
-				hqImage.setVisibility(GONE);
-			}
 		}
 		// toggle automatic answer load
 		else if (c.getId() == R.id.toggleAns) {
 			settings.setAnswerLoad(checked);
-		}
-		// enable high quality images
-		else if (c.getId() == R.id.settings_image_hq) {
-			settings.setHighQualityImage(checked);
 		}
 		// enable toolbar overlap
 		else if (c.getId() == R.id.settings_toolbar_ov) {

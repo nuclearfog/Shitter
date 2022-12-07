@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -89,14 +90,10 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			username.setText(user.getUsername());
 			screenname.setText(user.getScreenname());
 			// set profile image
-			if (settings.imagesEnabled() && !user.getProfileUrl().isEmpty()) {
-				String profileImageUrl;
-				if (!user.hasDefaultProfileImage() && account.getApiType() == Account.API_TWITTER) {
-					profileImageUrl = StringTools.buildImageLink(user.getImageUrl(), settings.getImageSuffix());
-				} else {
-					profileImageUrl = user.getImageUrl();
-				}
-				picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(2, 0)).error(R.drawable.no_image).into(profile);
+			String profileImageUrl = user.getProfileImageThumbnailUrl();
+			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+				Transformation roundCorner = new RoundedCornersTransformation(2, 0);
+				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
 			} else {
 				profile.setImageResource(0);
 			}

@@ -28,8 +28,8 @@ public class MessageImpl implements Message {
 	 * @param cursor    database cursor containing UserTable column
 	 * @param currentId Id of the current user
 	 */
-	public MessageImpl(Cursor cursor, long currentId) {
-		sender = new UserImpl(cursor, currentId);
+	public MessageImpl(Cursor cursor, long currentId, int apiType) {
+		sender = new UserImpl(cursor, currentId, apiType);
 		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));

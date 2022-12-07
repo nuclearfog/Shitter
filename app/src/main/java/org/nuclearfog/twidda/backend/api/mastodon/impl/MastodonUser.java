@@ -92,13 +92,25 @@ public class MastodonUser implements User {
 
 
 	@Override
-	public String getImageUrl() {
+	public String getOriginalProfileImageUrl() {
 		return profileUrl;
 	}
 
 
 	@Override
-	public String getBannerUrl() {
+	public String getProfileImageThumbnailUrl() {
+		return profileUrl;
+	}
+
+
+	@Override
+	public String getOriginalBannerImageUrl() {
+		return bannerUrl;
+	}
+
+
+	@Override
+	public String getBannerImageThumbnailUrl() {
 		return bannerUrl;
 	}
 

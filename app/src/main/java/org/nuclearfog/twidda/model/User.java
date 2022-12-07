@@ -32,12 +32,27 @@ public interface User extends Serializable {
 	/**
 	 * @return profile image url
 	 */
-	String getImageUrl();
+	String getOriginalProfileImageUrl();
 
 	/**
-	 * @return profile banner url
+	 * @return small profile image url
 	 */
-	String getBannerUrl();
+	String getProfileImageThumbnailUrl();
+
+	/**
+	 * @return profile banner url in the highest available resolution
+	 */
+	String getOriginalBannerImageUrl();
+
+	/**
+	 * @return small banner image url
+	 */
+	String getBannerImageThumbnailUrl();
+
+	/**
+	 * @return true if user has a default profile image
+	 */
+	boolean hasDefaultProfileImage();
 
 	/**
 	 * @return profile description (bio)
@@ -88,11 +103,6 @@ public interface User extends Serializable {
 	 * @return number of favorites/likes
 	 */
 	int getFavoriteCount();
-
-	/**
-	 * @return true if user has a default profile image
-	 */
-	boolean hasDefaultProfileImage();
 
 	/**
 	 * @return true if the user is the same as the current user

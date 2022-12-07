@@ -24,6 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
@@ -130,12 +131,10 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		if (data instanceof Status) {
 			status = (Status) data;
 			User author = status.getAuthor();
-			if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
-				String profileImageUrl = author.getImageUrl();
-				if (!author.hasDefaultProfileImage())
-					profileImageUrl += settings.getImageSuffix();
-				picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(4, 0))
-						.error(R.drawable.no_image).into(profile);
+			String profileImageUrl = author.getProfileImageThumbnailUrl();
+			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+				Transformation roundCorner = new RoundedCornersTransformation(4, 0);
+				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
 			} else {
 				profile.setImageResource(0);
 			}

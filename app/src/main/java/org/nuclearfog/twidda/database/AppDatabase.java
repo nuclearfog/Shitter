@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.database.impl.NotificationImpl;
 import org.nuclearfog.twidda.database.impl.StatusImpl;
 import org.nuclearfog.twidda.database.impl.TrendImpl;
 import org.nuclearfog.twidda.database.impl.UserImpl;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
@@ -568,14 +569,14 @@ public class AppDatabase {
 	 * @return notification lsit
 	 */
 	public List<Notification> getNotifications() {
-		long currentId = settings.getLogin().getId();
-		String[] args = {Long.toString(currentId), Integer.toString(settings.getListSize())};
+		Account login = settings.getLogin();
+		String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
 		SQLiteDatabase db = getDbRead();
 		List<Notification> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				NotificationImpl notification = new NotificationImpl(cursor, currentId);
+				NotificationImpl notification = new NotificationImpl(cursor, login.getId(), login.getApiType());
 				switch (notification.getType()) {
 					case Notification.TYPE_FAVORITE:
 					case Notification.TYPE_REPOST:
@@ -702,15 +703,15 @@ public class AppDatabase {
 	 * @return list of direct messages
 	 */
 	public Messages getMessages() {
-		long currentId = settings.getLogin().getId();
-		String homeIdStr = Long.toString(currentId);
+		Account login = settings.getLogin();
+		String homeIdStr = Long.toString(login.getId());
 		String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
 		Messages result = new Messages(null, null);
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				result.add(new MessageImpl(cursor, currentId));
+				result.add(new MessageImpl(cursor, login.getId(), login.getApiType()));
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -802,7 +803,8 @@ public class AppDatabase {
 	 * @return status
 	 */
 	private Status getStatus(Cursor cursor) {
-		StatusImpl result = new StatusImpl(cursor, settings.getLogin().getId());
+		Account login = settings.getLogin();
+		StatusImpl result = new StatusImpl(cursor, login.getId(), login.getApiType());
 		// check if there is an embedded status
 		if (result.getEmbeddedStatusId() > 1)
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
@@ -818,7 +820,7 @@ public class AppDatabase {
 	@Nullable
 	private User getUser(Cursor cursor) {
 		if (cursor.moveToFirst())
-			return new UserImpl(cursor, settings.getLogin().getId());
+			return new UserImpl(cursor, settings.getLogin().getId(), settings.getLogin().getApiType());
 		return null;
 	}
 
@@ -852,11 +854,11 @@ public class AppDatabase {
 		userColumn.put(UserTable.ID, user.getId());
 		userColumn.put(UserTable.USERNAME, user.getUsername());
 		userColumn.put(UserTable.SCREENNAME, user.getScreenname());
-		userColumn.put(UserTable.IMAGE, user.getImageUrl());
+		userColumn.put(UserTable.IMAGE, user.getOriginalProfileImageUrl());
 		userColumn.put(UserTable.DESCRIPTION, user.getDescription());
 		userColumn.put(UserTable.LINK, user.getProfileUrl());
 		userColumn.put(UserTable.LOCATION, user.getLocation());
-		userColumn.put(UserTable.BANNER, user.getBannerUrl());
+		userColumn.put(UserTable.BANNER, user.getOriginalBannerImageUrl());
 		userColumn.put(UserTable.SINCE, user.getCreatedAt());
 		userColumn.put(UserTable.FRIENDS, user.getFollowing());
 		userColumn.put(UserTable.FOLLOWER, user.getFollower());
@@ -960,11 +962,11 @@ public class AppDatabase {
 		ContentValues userUpdate = new ContentValues(9);
 		userUpdate.put(UserTable.USERNAME, user.getUsername());
 		userUpdate.put(UserTable.SCREENNAME, user.getScreenname());
-		userUpdate.put(UserTable.IMAGE, user.getImageUrl());
+		userUpdate.put(UserTable.IMAGE, user.getOriginalProfileImageUrl());
 		userUpdate.put(UserTable.DESCRIPTION, user.getDescription());
 		userUpdate.put(UserTable.LINK, user.getProfileUrl());
 		userUpdate.put(UserTable.LOCATION, user.getLocation());
-		userUpdate.put(UserTable.BANNER, user.getBannerUrl());
+		userUpdate.put(UserTable.BANNER, user.getOriginalBannerImageUrl());
 		userUpdate.put(UserTable.FRIENDS, user.getFollowing());
 		userUpdate.put(UserTable.FOLLOWER, user.getFollower());
 

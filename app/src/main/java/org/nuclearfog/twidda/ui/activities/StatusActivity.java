@@ -43,6 +43,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
@@ -53,7 +54,6 @@ import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -711,14 +711,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 		}
 		AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
-		if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
-			String profileImageUrl;
-			if (!author.hasDefaultProfileImage()) {
-				profileImageUrl = StringTools.buildImageLink(author.getImageUrl(), settings.getImageSuffix());
-			} else {
-				profileImageUrl = author.getImageUrl();
-			}
-			picasso.load(profileImageUrl).transform(new RoundedCornersTransformation(4, 0)).error(R.drawable.no_image).into(profileImage);
+		String profileImageUrl = author.getProfileImageThumbnailUrl();
+		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+			Transformation roundCorner = new RoundedCornersTransformation(4, 0);
+			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
 		} else {
 			profileImage.setImageResource(0);
 		}

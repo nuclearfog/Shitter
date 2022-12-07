@@ -341,7 +341,7 @@
 						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/settings_data_text"
-						app:layout_constraintBottom_toTopOf="@id/settings_image_hq"
+						app:layout_constraintBottom_toTopOf="@id/toggleAns"
 						app:layout_constraintEnd_toStartOf="@id/toggleImg_descr" />
 
 					<TextView
@@ -358,37 +358,13 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_image_hq"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/toggleImg"
-						app:layout_constraintBottom_toTopOf="@id/toggleAns"
-						app:layout_constraintEnd_toStartOf="@id/settings_image_hq_descr" />
-
-					<TextView
-						android:id="@+id/settings_image_hq_descr"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_weight="1"
-						android:singleLine="true"
-						android:text="@string/settings_enable_hq_img"
-						android:textSize="@dimen/settings_textsize_small"
-						app:layout_constraintStart_toEndOf="@id/settings_image_hq"
-						app:layout_constraintTop_toTopOf="@id/settings_image_hq"
-						app:layout_constraintBottom_toBottomOf="@id/settings_image_hq"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-					<com.kyleduo.switchbutton.SwitchButton
 						android:id="@+id/toggleAns"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginBottom="@dimen/settings_column_margin"
 						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_image_hq"
+						app:layout_constraintTop_toBottomOf="@id/toggleImg"
 						app:layout_constraintBottom_toTopOf="@id/settings_enable_prev"
 						app:layout_constraintEnd_toStartOf="@id/toggleAns_descr" />
 

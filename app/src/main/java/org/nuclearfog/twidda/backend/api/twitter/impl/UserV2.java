@@ -79,60 +79,96 @@ public class UserV2 implements User {
 		}
 	}
 
+
 	@Override
 	public long getId() {
 		return id;
 	}
+
 
 	@Override
 	public String getUsername() {
 		return username;
 	}
 
+
 	@Override
 	public String getScreenname() {
 		return screenName;
 	}
+
 
 	@Override
 	public long getCreatedAt() {
 		return created;
 	}
 
+
 	@Override
-	public String getImageUrl() {
+	public String getOriginalProfileImageUrl() {
 		return profileImageUrl;
 	}
 
+
 	@Override
-	public String getBannerUrl() {
-		return profileBannerUrl;
+	public String getProfileImageThumbnailUrl() {
+		if (defaultImage || profileImageUrl.isEmpty())
+			return profileImageUrl;
+		return profileImageUrl + "_bigger";
 	}
+
+
+	@Override
+	public String getOriginalBannerImageUrl() {
+		if (profileBannerUrl.isEmpty())
+			return "";
+		return profileBannerUrl + "/1500x500";
+	}
+
+
+	@Override
+	public String getBannerImageThumbnailUrl() {
+		if (profileBannerUrl.isEmpty())
+			return "";
+		return profileBannerUrl + "/600x200";
+	}
+
+
+	@Override
+	public boolean hasDefaultProfileImage() {
+		return defaultImage;
+	}
+
 
 	@Override
 	public String getDescription() {
 		return description;
 	}
 
+
 	@Override
 	public String getLocation() {
 		return location;
 	}
+
 
 	@Override
 	public String getProfileUrl() {
 		return url;
 	}
 
+
 	@Override
 	public boolean isVerified() {
 		return isVerified;
 	}
 
+
 	@Override
 	public boolean isProtected() {
 		return isProtected;
 	}
+
 
 	@Override
 	public boolean followRequested() {
@@ -140,20 +176,24 @@ public class UserV2 implements User {
 		return false;
 	}
 
+
 	@Override
 	public int getFollowing() {
 		return following;
 	}
+
 
 	@Override
 	public int getFollower() {
 		return follower;
 	}
 
+
 	@Override
 	public int getStatusCount() {
 		return tweetCount;
 	}
+
 
 	@Override
 	public int getFavoriteCount() {
@@ -161,15 +201,12 @@ public class UserV2 implements User {
 		return -1;
 	}
 
-	@Override
-	public boolean hasDefaultProfileImage() {
-		return defaultImage;
-	}
 
 	@Override
 	public boolean isCurrentUser() {
 		return isCurrentUser;
 	}
+
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
@@ -178,11 +215,13 @@ public class UserV2 implements User {
 		return ((User) obj).getId() == id;
 	}
 
+
 	@NonNull
 	@Override
 	public String toString() {
 		return "name=\"" + screenName + "\"";
 	}
+
 
 	/**
 	 * expand URLs of the user description

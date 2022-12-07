@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
 /**
@@ -29,29 +30,34 @@ public class UserImpl implements User {
 	private int follower;
 	private int statusCount;
 	private int favorCount;
+	private int apiType;
 	private String username;
 	private String screenName;
 	private String bio;
 	private String location;
 	private String link;
-	private String profileImg;
-	private String bannerImg;
+	private String profileImageUrl;
+	private String profileBannerUrl;
 	private boolean isCurrentUser;
 	private boolean isVerified;
 	private boolean isLocked;
 	private boolean followReqSent;
 	private boolean defaultImage;
 
-
-	public UserImpl(Cursor cursor, long currentUserId) {
+	/**
+	 * @param cursor database cursor containing user column
+	 * @param currentUserId ID of the current user
+	 * @param apiType current used API type
+	 */
+	public UserImpl(Cursor cursor, long currentUserId, int apiType) {
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.ID));
 		username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
 		screenName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));
-		profileImg = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
+		profileImageUrl = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
 		bio = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.DESCRIPTION));
 		link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
 		location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
-		bannerImg = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
+		profileBannerUrl = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
 		created = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
 		following = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FRIENDS));
 		follower = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FOLLOWER));
@@ -63,6 +69,7 @@ public class UserImpl implements User {
 		followReqSent = (register & FOLLOW_REQUEST_MASK) != 0;
 		defaultImage = (register & DEFAULT_IMAGE_MASK) != 0;
 		isCurrentUser = currentUserId == id;
+		this.apiType = apiType;
 	}
 
 
@@ -71,90 +78,126 @@ public class UserImpl implements User {
 		return id;
 	}
 
+
 	@Override
 	public String getUsername() {
 		return username;
 	}
+
 
 	@Override
 	public String getScreenname() {
 		return screenName;
 	}
 
+
 	@Override
 	public long getCreatedAt() {
 		return created;
 	}
 
-	@Override
-	public String getImageUrl() {
-		return profileImg;
-	}
 
 	@Override
-	public String getBannerUrl() {
-		return bannerImg;
+	public String getOriginalProfileImageUrl() {
+		return profileImageUrl;
 	}
 
-	@Override
-	public String getDescription() {
-		return bio;
-	}
 
 	@Override
-	public String getLocation() {
-		return location;
+	public String getProfileImageThumbnailUrl() {
+		if (apiType != Account.API_TWITTER || defaultImage || profileImageUrl.isEmpty())
+			return profileImageUrl;
+		return profileImageUrl + "_bigger";
 	}
 
-	@Override
-	public String getProfileUrl() {
-		return link;
-	}
 
 	@Override
-	public boolean isVerified() {
-		return isVerified;
+	public String getOriginalBannerImageUrl() {
+		if (apiType != Account.API_TWITTER || profileBannerUrl.isEmpty())
+			return profileBannerUrl;
+		return profileBannerUrl + "/1500x500";
 	}
 
-	@Override
-	public boolean isProtected() {
-		return isLocked;
-	}
 
 	@Override
-	public boolean followRequested() {
-		return followReqSent;
+	public String getBannerImageThumbnailUrl() {
+		if (apiType != Account.API_TWITTER || profileBannerUrl.isEmpty())
+			return profileBannerUrl;
+		return profileBannerUrl + "/600x200";
 	}
 
-	@Override
-	public int getFollowing() {
-		return following;
-	}
-
-	@Override
-	public int getFollower() {
-		return follower;
-	}
-
-	@Override
-	public int getStatusCount() {
-		return statusCount;
-	}
-
-	@Override
-	public int getFavoriteCount() {
-		return favorCount;
-	}
 
 	@Override
 	public boolean hasDefaultProfileImage() {
 		return defaultImage;
 	}
 
+
+	@Override
+	public String getDescription() {
+		return bio;
+	}
+
+
+	@Override
+	public String getLocation() {
+		return location;
+	}
+
+
+	@Override
+	public String getProfileUrl() {
+		return link;
+	}
+
+
+	@Override
+	public boolean isVerified() {
+		return isVerified;
+	}
+
+
+	@Override
+	public boolean isProtected() {
+		return isLocked;
+	}
+
+
+	@Override
+	public boolean followRequested() {
+		return followReqSent;
+	}
+
+
+	@Override
+	public int getFollowing() {
+		return following;
+	}
+
+
+	@Override
+	public int getFollower() {
+		return follower;
+	}
+
+
+	@Override
+	public int getStatusCount() {
+		return statusCount;
+	}
+
+
+	@Override
+	public int getFavoriteCount() {
+		return favorCount;
+	}
+
+
 	@Override
 	public boolean isCurrentUser() {
 		return isCurrentUser;
 	}
+
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
@@ -162,6 +205,7 @@ public class UserImpl implements User {
 			return false;
 		return ((User) obj).getId() == id;
 	}
+
 
 	@NonNull
 	@Override
