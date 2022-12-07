@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 import androidx.annotation.NonNull;
 
@@ -19,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 10;
+	private static final int DB_VERSION = 9;
 
 	/**
 	 * database file name
@@ -128,7 +129,7 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create a table for user logins
 	 */
-	private static final String TABLE_LOGINS = "CREATE TABLE IF NOT EXISTS "
+	private static final String TABLE_ACCOUNTS = "CREATE TABLE IF NOT EXISTS "
 			+ AccountTable.NAME + "("
 			+ AccountTable.ID + " INTEGER PRIMARY KEY,"
 			+ AccountTable.DATE + " INTEGER,"
@@ -143,7 +144,7 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create user exclude table
 	 */
-	private static final String TABLE_USER_EXCLUDE = "CREATE TABLE IF NOT EXISTS "
+	private static final String TABLE_USER_BLOCKLIST = "CREATE TABLE IF NOT EXISTS "
 			+ UserExcludeTable.NAME + "("
 			+ UserExcludeTable.OWNER + " INTEGER,"
 			+ UserExcludeTable.ID + " INTEGER);";
@@ -209,11 +210,6 @@ public class DatabaseAdapter {
 	private static final String UPDATE_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
 
 	/**
-	 * update account table to add API client secret
-	 */
-	private static final String UPDATE_ADD_NOTIFICATION_USER = "ALTER TABLE " + NotificationTable.NAME + " ADD " + NotificationTable.USER + " INTEGER;";
-
-	/**
 	 * singleton instance
 	 */
 	private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
@@ -252,8 +248,15 @@ public class DatabaseAdapter {
 	 * @return database instance
 	 */
 	public static DatabaseAdapter getInstance(@NonNull Context context) {
-		if (INSTANCE.db == null)
-			INSTANCE.init(context.getApplicationContext());
+		if (INSTANCE.db == null) {
+			try {
+				INSTANCE.init(context.getApplicationContext());
+			} catch (SQLiteException e) {
+				// if database is corrupted, clear and create a new one
+				e.printStackTrace();
+				deleteDatabase(context);
+			}
+		}
 		return INSTANCE;
 	}
 
@@ -282,8 +285,8 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_FAVORITES);
 		db.execSQL(TABLE_TRENDS);
 		db.execSQL(TABLE_MESSAGES);
-		db.execSQL(TABLE_LOGINS);
-		db.execSQL(TABLE_USER_EXCLUDE);
+		db.execSQL(TABLE_ACCOUNTS);
+		db.execSQL(TABLE_USER_BLOCKLIST);
 		db.execSQL(TABLE_STATUS_REGISTER);
 		db.execSQL(TABLE_USER_REGISTER);
 		db.execSQL(TABLE_NOTIFICATION);
@@ -309,12 +312,8 @@ public class DatabaseAdapter {
 			db.execSQL(UPDATE_ADD_REPLY_COUNT);
 			db.setVersion(8);
 		}
-		if (db.getVersion() < 9) {
-			db.execSQL(UPDATE_ADD_BEARER);
-			db.setVersion(9);
-		}
 		if (db.getVersion() < DB_VERSION) {
-			db.execSQL(UPDATE_ADD_NOTIFICATION_USER);
+			db.execSQL(UPDATE_ADD_BEARER);
 			db.setVersion(DB_VERSION);
 		}
 	}

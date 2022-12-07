@@ -681,7 +681,7 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				return new MastodonUser(json, settings.getLogin().getId());
+				return new MastodonUser(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
