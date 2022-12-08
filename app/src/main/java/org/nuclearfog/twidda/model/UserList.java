@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.model;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 /**
@@ -32,6 +34,7 @@ public interface UserList extends Serializable {
 	/**
 	 * @return owner of the list
 	 */
+	@Nullable
 	User getListOwner();
 
 	/**

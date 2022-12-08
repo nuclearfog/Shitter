@@ -148,15 +148,13 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		String host = link.getScheme() + "://" + link.getHost();
 		String client_id = link.getQueryParameter("client_id");
-		String client_secret = link.getQueryParameter("client_secret");
-
+		String clientSecret = link.getQueryParameter("client_secret");
 		params.add("client_id=" + client_id);
-		params.add("client_secret=" + client_secret);
+		params.add("client_secret=" + clientSecret);
 		params.add("grant_type=authorization_code");
 		params.add("code=" + paramsStr[1]);
 		params.add("redirect_uri=" + REDIRECT_URI);
 		params.add("scope=" + AUTH_SCOPES);
-
 		try {
 			Response response = post(host, LOGIN_APP, null, params);
 			ResponseBody body = response.body();
@@ -164,7 +162,7 @@ public class Mastodon implements Connection {
 				JSONObject json = new JSONObject(body.string());
 				String bearer = json.getString("access_token");
 				User user = getCredentials(host, bearer);
-				Account account = new MastodonAccount(user, host, bearer, client_id, client_secret);
+				Account account = new MastodonAccount(user, host, bearer, client_id, clientSecret);
 				settings.setLogin(account, false);
 				return account;
 			}
@@ -275,8 +273,8 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Users getOutgoingFollowRequests(long cursor) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+	public Users getOutgoingFollowRequests(long cursor) {
+		return new Users(0L, 0L); // not yet implemented in the mastodon API
 	}
 
 
@@ -428,7 +426,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getStatusReplies(String name, long id, long minId, long maxId) throws MastodonException {
+	public List<Status> getStatusReplies(String name, long id, long minId, long maxId) {
 		return new ArrayList<>(0); // todo add implementation
 	}
 
@@ -568,14 +566,17 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public UserLists getUserlistOwnerships(long id, String name, long cursor) throws MastodonException {
-		throw new MastodonException("not supported!");
+	public UserLists getUserlistOwnerships(long id, String name, long cursor) {
+		return new UserLists(0L, 0L); // not implemented yet in the official API
 	}
 
 
 	@Override
 	public UserLists getUserlistMemberships(long id, String name, long cursor) throws MastodonException {
-		throw new MastodonException("not supported!");
+		List<String> params = new ArrayList<>();
+		if (cursor > 0)
+			params.add("since_id=" + cursor);
+		return getUserLists(ENDPOINT_ACCOUNTS + '/' + id + "/lists", params);
 	}
 
 
@@ -828,6 +829,32 @@ public class Mastodon implements Connection {
 	}
 
 	/**
+	 * create userlists from GET endpoint
+	 *
+	 * @param endpoint userlist endpoint
+	 * @param params additional parameters
+	 * @return userlists
+	 */
+	private UserLists getUserLists(String endpoint, List<String> params) throws MastodonException {
+		params.add("limit=" + settings.getListSize());
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONArray(body.string());
+				UserLists result = new UserLists(0L, 0L);// todo add pagination
+				for (int i = 0 ; i  < array.length(); i++) {
+					result.add(new MastodonList(array.getJSONObject(i)));
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
 	 * create user from response
 	 *
 	 * @param response endpoint response
@@ -900,8 +927,9 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				User currentUser = getCredentials();
-				return new MastodonList(json, currentUser);
+				MastodonList result = new MastodonList(json);
+				result.setOwner(getCredentials());
+				return result;
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

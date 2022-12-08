@@ -24,12 +24,10 @@ public class MastodonList implements UserList {
 
 	/**
 	 * @param json  userlist json object
-	 * @param owner owner of the list
 	 */
-	public MastodonList(JSONObject json, User owner) throws JSONException {
+	public MastodonList(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
 		title = json.getString("title");
-		this.owner = owner;
 
 		try {
 			id = Long.parseLong(idStr);
@@ -105,5 +103,14 @@ public class MastodonList implements UserList {
 		if (!(obj instanceof UserList))
 			return false;
 		return ((UserList) obj).getId() == id;
+	}
+
+	/**
+	 * setup list owner
+	 *
+	 * @param owner owner of this list
+	 */
+	public void setOwner(User owner) {
+		this.owner = owner;
 	}
 }

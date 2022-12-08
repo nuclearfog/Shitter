@@ -223,9 +223,9 @@ public class Twitter implements Connection {
 	public Account loginApp(String... paramsStr) throws TwitterException {
 		try {
 			List<String> params = new ArrayList<>();
-			String oauthToken = Uri.parse(paramsStr[0]).getQueryParameter("oauth_token");
+			String tempOauthToken = Uri.parse(paramsStr[0]).getQueryParameter("oauth_token");
 			params.add("oauth_verifier=" + paramsStr[1]);
-			params.add("oauth_token=" + oauthToken);
+			params.add("oauth_token=" + tempOauthToken);
 			Response response;
 			if (paramsStr.length == 4)
 				response = post(OAUTH_VERIFIER, params, paramsStr[2], paramsStr[3]);
@@ -236,7 +236,7 @@ public class Twitter implements Connection {
 				// extract tokens from link
 				String res = body.string();
 				Uri uri = Uri.parse(OAUTH_VERIFIER + "?" + res);
-				oauthToken = uri.getQueryParameter("oauth_token");
+				String oauthToken = uri.getQueryParameter("oauth_token");
 				String tokenSecret = uri.getQueryParameter("oauth_token_secret");
 				// check if login works
 				User user;

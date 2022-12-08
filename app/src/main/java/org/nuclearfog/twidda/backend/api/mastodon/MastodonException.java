@@ -33,11 +33,8 @@ public class MastodonException extends ConnectionException {
 				break;
 
 			case 403:
-				errorCode = HTTP_FORBIDDEN;
-				break;
-
 			case 404:
-				errorCode = RESOURCE_NOT_FOUND;
+				errorCode = HTTP_FORBIDDEN;
 				break;
 
 			case 429:

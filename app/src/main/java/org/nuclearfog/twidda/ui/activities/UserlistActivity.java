@@ -138,7 +138,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			userList = (UserList) data;
 			toolbar.setTitle(userList.getTitle());
 			toolbar.setSubtitle(userList.getDescription());
-			adapter.setupListContentPage(userList.getId(), userList.getListOwner().isCurrentUser());
+			boolean isOwner = userList.getListOwner() != null && userList.getListOwner().isCurrentUser();
+			adapter.setupListContentPage(userList.getId(), isOwner);
 		}
 
 		setSupportActionBar(toolbar);
@@ -191,7 +192,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		SearchView searchUser = (SearchView) search.getActionView();
 		AppStyles.setTheme(searchUser, Color.TRANSPARENT);
 		if (userList != null) {
-			if (userList.getListOwner().isCurrentUser()) {
+			if (userList.getListOwner() != null && userList.getListOwner().isCurrentUser()) {
 				searchUser.setQueryHint(getString(R.string.menu_add_user));
 				searchUser.setOnQueryTextListener(this);
 				editList.setVisible(true);

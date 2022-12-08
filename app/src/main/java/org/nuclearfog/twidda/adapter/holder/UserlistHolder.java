@@ -95,34 +95,45 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		User owner = userlist.getListOwner();
 		title.setText(userlist.getTitle());
 		description.setText(userlist.getDescription());
-		username.setText(owner.getUsername());
-		screenname.setText(owner.getScreenname());
 		date.setText(StringTools.formatCreationTime(itemView.getResources(), userlist.getTimestamp()));
 		member.setText(NUM_FORMAT.format(userlist.getMemberCount()));
 		subscriber.setText(NUM_FORMAT.format(userlist.getSubscriberCount()));
-		String profileImageUrl = owner.getProfileImageThumbnailUrl();
-		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
-			Transformation roundCorner = new RoundedCornersTransformation(3, 0);
-			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
-		} else {
-			profile.setImageResource(0);
-		}
-		if (!userlist.getListOwner().isCurrentUser() && userlist.isFollowing()) {
-			follow.setVisibility(View.VISIBLE);
-			followList.setVisibility(View.VISIBLE);
-		} else {
-			follow.setVisibility(View.GONE);
-			followList.setVisibility(View.GONE);
-		}
-		if (owner.isVerified()) {
-			verified.setVisibility(View.VISIBLE);
-		} else {
-			verified.setVisibility(View.GONE);
-		}
-		if (owner.isProtected()) {
-			locked.setVisibility(View.VISIBLE);
+
+		if (owner != null) {
+			username.setText(owner.getUsername());
+			screenname.setText(owner.getScreenname());
+			String profileImageUrl = owner.getProfileImageThumbnailUrl();
+			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+				Transformation roundCorner = new RoundedCornersTransformation(3, 0);
+				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
+			} else {
+				profile.setImageResource(0);
+			}
+			if (!owner.isCurrentUser() && userlist.isFollowing()) {
+				follow.setVisibility(View.VISIBLE);
+				followList.setVisibility(View.VISIBLE);
+			} else {
+				follow.setVisibility(View.GONE);
+				followList.setVisibility(View.GONE);
+			}
+			if (owner.isVerified()) {
+				verified.setVisibility(View.VISIBLE);
+			} else {
+				verified.setVisibility(View.GONE);
+			}
+			if (owner.isProtected()) {
+				locked.setVisibility(View.VISIBLE);
+			} else {
+				locked.setVisibility(View.GONE);
+			}
 		} else {
 			locked.setVisibility(View.GONE);
+			verified.setVisibility(View.GONE);
+			follow.setVisibility(View.GONE);
+			followList.setVisibility(View.GONE);
+			profile.setVisibility(View.GONE);
+			username.setVisibility(View.GONE);
+			screenname.setVisibility(View.GONE);
 		}
 		if (userlist.isPrivate()) {
 			privateList.setVisibility(View.VISIBLE);
