@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
@@ -39,6 +41,7 @@ public class StatusImpl implements Status {
 	private long replyID;
 	private long replyUserId;
 	private long myRepostId;
+	private long conversationId;
 	@Nullable
 	private Status embedded;
 	private User author;
@@ -53,7 +56,7 @@ public class StatusImpl implements Status {
 	private String text;
 	private String source;
 	private String userMentions;
-	private String[] mediaLinks = {};
+	private String[] mediaLinks;
 	private boolean reposted;
 	private boolean favorited;
 	private boolean sensitive;
@@ -80,6 +83,7 @@ public class StatusImpl implements Status {
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REPOST_ID));
+		conversationId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.CONVERSATION));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REGISTER));
 		favorited = (register & FAVORITE_MASK) != 0;
 		reposted = (register & REPOST_MASK) != 0;
@@ -87,6 +91,8 @@ public class StatusImpl implements Status {
 		isHidden = (register & HIDDEN_MASK) != 0;
 		if (linkStr != null && !linkStr.isEmpty())
 			mediaLinks = SEPARATOR.split(linkStr);
+		else
+			mediaLinks = new String[0];
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		// get media type
 		if ((register & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
@@ -160,6 +166,12 @@ public class StatusImpl implements Status {
 	@Override
 	public long getRepostId() {
 		return myRepostId;
+	}
+
+
+	@Override
+	public long getConversationId() {
+		return conversationId;
 	}
 
 
@@ -250,6 +262,19 @@ public class StatusImpl implements Status {
 			}
 		}
 		return "";
+	}
+
+
+	@Override
+	public Card[] getCards() {
+		return new Card[0];
+	}
+
+
+	@Nullable
+	@Override
+	public Poll getPoll() {
+		return null;
 	}
 
 

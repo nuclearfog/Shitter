@@ -148,7 +148,6 @@
 
 	<!--dialog strings-->
 	<string name="dialog_link_image_preview">Link preview image</string>
-	<string name="dialog_link_close">close link preview</string>
 	<string name="app_info_icons">svg icons from:</string>
 	<string name="app_info_icons_links" translatable="false">www.svgrepo.com  www.entypo.com</string>
 

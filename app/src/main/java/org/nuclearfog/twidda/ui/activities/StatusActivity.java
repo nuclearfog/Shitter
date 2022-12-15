@@ -41,6 +41,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -49,17 +51,19 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.CardAdapter;
+import org.nuclearfog.twidda.adapter.CardAdapter.OnCardClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.ui.dialogs.LinkDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
 import java.text.NumberFormat;
@@ -76,7 +80,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  */
 public class StatusActivity extends AppCompatActivity implements OnClickListener,
-		OnLongClickListener, OnTagClickListener, OnConfirmListener {
+		OnLongClickListener, OnTagClickListener, OnConfirmListener, OnCardClickListener {
 
 	/**
 	 * Activity result code to update existing status information
@@ -132,12 +136,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private StatusAction statusAsync;
 	private Picasso picasso;
 
-	private LinkDialog linkPreview;
+	private CardAdapter adapter;
 	private ConfirmDialog confirmDialog;
 
 	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
 	private Button ansButton, rtwButton, favButton, replyName, coordinates, repostName;
 	private ImageView profileImage, mediaButton;
+	private RecyclerView cardList;
 	private Toolbar toolbar;
 
 	@Nullable
@@ -173,6 +178,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		mediaButton = findViewById(R.id.page_status_media_attach);
 		sensitive_media = findViewById(R.id.page_status_sensitive);
 		repostName = findViewById(R.id.page_status_reposter_reference);
+		cardList = findViewById(R.id.page_status_cards);
 
 		// get parameter
 		Object data = getIntent().getSerializableExtra(KEY_STATUS_DATA);
@@ -205,6 +211,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		fragmentTransaction.commit();
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+		adapter = new CardAdapter(this, this);
 
 		settings = GlobalSettings.getInstance(this);
 		ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
@@ -215,6 +222,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repostName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		statusText.setLinkTextColor(settings.getHighlightColor());
+		cardList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+		cardList.setAdapter(adapter);
 		if (settings.likeEnabled()) {
 			favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like, 0, 0, 0);
 		} else {
@@ -225,9 +234,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		AppStyles.setTheme(root, settings.getBackgroundColor());
 		picasso = PicassoBuilder.get(this);
 
-		linkPreview = new LinkDialog(this);
 		confirmDialog = new ConfirmDialog(this);
-
 		confirmDialog.setConfirmListener(this);
 		repostName.setOnClickListener(this);
 		replyName.setOnClickListener(this);
@@ -267,7 +274,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	protected void onDestroy() {
 		if (statusAsync != null && statusAsync.getStatus() == RUNNING)
 			statusAsync.cancel(true);
-		linkPreview.cancel();
 		super.onDestroy();
 	}
 
@@ -576,6 +582,25 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
+	public void onCardClick(Card card, int type) {
+		if (type == OnCardClickListener.TYPE_LINK) {
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse(card.getUrl()));
+			try {
+				startActivity(intent);
+			} catch (ActivityNotFoundException err) {
+				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+			}
+		} else if (type == OnCardClickListener.TYPE_IMAGE) {
+			Intent mediaIntent = new Intent(this, ImageViewer.class);
+			mediaIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(card.getImageUrl())});
+			mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+			startActivity(mediaIntent);
+		}
+	}
+
+
+	@Override
 	public void onTagClick(String tag) {
 		Intent intent = new Intent(this, SearchActivity.class);
 		intent.putExtra(KEY_SEARCH_QUERY, tag);
@@ -598,19 +623,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
 			startActivity(intent);
 		}
-		// open link in browser or preview
+		// open link in a browser
 		else {
-			if (settings.linkPreviewEnabled()) {
-				linkPreview.show(tag);
-			} else {
-				// open link in a browser
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(link);
-				try {
-					startActivity(intent);
-				} catch (ActivityNotFoundException err) {
-					Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-				}
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(link);
+			try {
+				startActivity(intent);
+			} catch (ActivityNotFoundException err) {
+				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -733,6 +753,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			rtwButton.setVisibility(VISIBLE);
 			favButton.setVisibility(VISIBLE);
 			ansButton.setVisibility(VISIBLE);
+		}
+		if (settings.linkPreviewEnabled() && status.getCards().length > 0) {
+			cardList.setVisibility(VISIBLE);
+			adapter.replaceAll(status.getCards());
 		}
 	}
 

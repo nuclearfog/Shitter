@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 9;
+	private static final int DB_VERSION = 10;
 
 	/**
 	 * database file name
@@ -63,6 +63,7 @@ public class DatabaseAdapter {
 			+ StatusTable.REPOST + " INTEGER,"
 			+ StatusTable.FAVORITE + " INTEGER,"
 			+ StatusTable.REPLY + " INTEGER,"
+			+ StatusTable.CONVERSATION + " INTEGER,"
 			+ StatusTable.SOURCE + " TEXT,"
 			+ StatusTable.PLACE + " TEXT,"
 			+ StatusTable.COORDINATE + " TEXT,"
@@ -210,6 +211,11 @@ public class DatabaseAdapter {
 	private static final String UPDATE_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
 
 	/**
+	 * update account table to add API client secret
+	 */
+	private static final String UPDATE_ADD_CONVERSATION_ID = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.CONVERSATION + " INTEGER;";
+
+	/**
 	 * singleton instance
 	 */
 	private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
@@ -312,8 +318,12 @@ public class DatabaseAdapter {
 			db.execSQL(UPDATE_ADD_REPLY_COUNT);
 			db.setVersion(8);
 		}
-		if (db.getVersion() < DB_VERSION) {
+		if (db.getVersion() < 9) {
 			db.execSQL(UPDATE_ADD_BEARER);
+			db.setVersion(9);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_CONVERSATION_ID);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -462,6 +472,11 @@ public class DatabaseAdapter {
 		 * ID of the replied status
 		 */
 		String REPLYSTATUS = "replyID";
+
+		/**
+		 * first status ID of a conversation
+		 */
+		String CONVERSATION = "conversationID";
 
 		/**
 		 * ID of the replied user

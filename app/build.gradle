@@ -74,5 +74,4 @@ dependencies {
 	implementation 'com.github.nuclearfog:Tagger:2.3'
 	implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4.1'
 	implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
-	implementation 'com.github.LeonardoCardoso:Android-Link-Preview:master'
 }

@@ -149,6 +149,18 @@
 						app:layout_constraintTop_toBottomOf="@id/page_status_text_barrier"
 						app:layout_constraintEnd_toEndOf="parent" />
 
+					<androidx.recyclerview.widget.RecyclerView
+						android:id="@+id/page_status_cards"
+						android:layout_width="0dp"
+						android:layout_height="@dimen/page_status_cards_list_height"
+						android:visibility="gone"
+						android:foregroundGravity="center"
+						android:layout_margin="@dimen/page_status_cards_list_margin"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/page_status_text"
+						app:layout_constraintBottom_toTopOf="@id/page_status_media_attach"
+						app:layout_constraintEnd_toEndOf="parent" />
+
 					<ImageButton
 						android:id="@+id/page_status_media_attach"
 						android:layout_width="@dimen/page_status_button_media_width"
@@ -159,7 +171,7 @@
 						android:scaleType="fitCenter"
 						android:padding="@dimen/page_status_button_drawable_padding"
 						app:layout_constraintStart_toStartOf="@id/page_status_api"
-						app:layout_constraintTop_toBottomOf="@id/page_status_text"
+						app:layout_constraintTop_toBottomOf="@id/page_status_cards"
 						app:layout_constraintEnd_toEndOf="@id/page_status_api"
 						style="@style/RoundButton" />
 
@@ -304,7 +316,8 @@
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/page_status_favorite"
 					app:layout_constraintBottom_toBottomOf="parent"
-					app:layout_constraintEnd_toEndOf="parent" />
+					app:layout_constraintEnd_toEndOf="parent"
+					tools:layout="@layout/page_list" />
 
 			</androidx.constraintlayout.widget.ConstraintLayout>
 

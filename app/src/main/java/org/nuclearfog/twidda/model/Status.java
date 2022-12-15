@@ -81,6 +81,11 @@ public interface Status extends Serializable {
 	long getRepliedStatusId();
 
 	/**
+	 * @return conversation Id (ID of the first status of a conversation)
+	 */
+	long getConversationId();
+
+	/**
 	 * @return ID of the status reposted by the current user
 	 */
 	long getRepostId();
@@ -150,4 +155,15 @@ public interface Status extends Serializable {
 	 * @return GPS coordinates if attached
 	 */
 	String getLocationCoordinates();
+
+	/**
+	 * @return link preview card or null if not exists
+	 */
+	Card[] getCards();
+
+	/**
+	 * @return status poll or null if not exists
+	 */
+	@Nullable
+	Poll getPoll();
 }

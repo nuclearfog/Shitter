@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.backend.api.twitter.impl.MetricsV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.RelationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TrendV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterNotification;
 import org.nuclearfog.twidda.backend.api.twitter.impl.UserListV1;
@@ -115,6 +116,7 @@ public class Twitter implements Connection {
 	private static final String TWEETS_USER_FAVORITS = API + "/1.1/favorites/list.json";
 	private static final String TWEETS_LIST = API + "/1.1/lists/statuses.json";
 	private static final String TWEET_LOOKUP = API + "/1.1/statuses/show.json";
+	private static final String TWEET2_LOOKUP = API + "/2/tweets/";
 	private static final String TWEET_SEARCH = API + "/1.1/search/tweets.json";
 	private static final String TWEET_FAVORITE = API + "/1.1/favorites/create.json";
 	private static final String TWEET_UNFAVORITE = API + "/1.1/favorites/destroy.json";
@@ -648,7 +650,14 @@ public class Twitter implements Connection {
 	public Status showStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
-		return getTweet1(TWEET_LOOKUP, params);
+		Status status = getTweet1(TWEET_LOOKUP, params);
+		try {
+			params.clear();
+			return getTweet2(TWEET2_LOOKUP + id, params, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
 	}
 
 
@@ -1197,10 +1206,40 @@ public class Twitter implements Connection {
 				// fix: embedded tweet information doesn't match with the parent tweet
 				//      re-downloading embedded tweet information
 				if (result.getEmbeddedStatus() != null) {
-					Status embedded = showStatus(result.getEmbeddedStatus().getId());
-					result.setEmbeddedTweet(embedded);
+					params.clear();
+					params.add("id=" + result.getEmbeddedStatus().getId());
+					Status status = getTweet1(TWEET_LOOKUP, params);
+					result.setEmbeddedTweet(status);
 				}
 				return result;
+			}
+			throw new TwitterException(response);
+		} catch (IOException | JSONException err) {
+			throw new TwitterException(err);
+		}
+	}
+
+	/**
+	 * return tweet from API 2.0 endpoint
+	 *
+	 * @param endpoint to use
+	 * @param params   additional parameter
+	 */
+	private TweetV2 getTweet2(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
+		try {
+			Response response;
+			params.add("tweet.fields=" + TweetV2.FIELDS_TWEET);
+			params.add("poll.fields=" + TweetV2.FIELDS_POLL);
+			params.add("expansions=" + TweetV2.FIELDS_EXPANSION);
+			if (endpoint.startsWith(TWEET2_LOOKUP)) {
+				response = get(endpoint, params);
+			} else {
+				response = post(endpoint, params);
+			}
+			ResponseBody body = response.body();
+			if (body != null && response.code() == 200) {
+				JSONObject json = new JSONObject(body.string()).getJSONObject("data");
+				return new TweetV2(json, statusCompat);
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {

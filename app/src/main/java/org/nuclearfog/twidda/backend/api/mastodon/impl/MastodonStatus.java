@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
@@ -34,6 +36,7 @@ public class MastodonStatus implements Status {
 	private String[] mediaLinks;
 
 	private User author;
+	private Card[] cards;
 
 	private int mediaType = MEDIA_NONE;
 
@@ -42,7 +45,8 @@ public class MastodonStatus implements Status {
 	 * @param currentUserId Id of the current user
 	 */
 	public MastodonStatus(JSONObject json, long currentUserId) throws JSONException {
-		JSONObject application = json.optJSONObject("application");
+		JSONObject appJson = json.optJSONObject("application");
+		JSONObject cardJson = json.optJSONObject("card");
 		JSONArray mentionsJson = json.optJSONArray("mentions");
 		String idStr = json.getString("id");
 		String replyIdStr = json.optString("in_reply_to_id", "0");
@@ -59,6 +63,7 @@ public class MastodonStatus implements Status {
 		text = Jsoup.parse(text).text();
 		sensitive = json.optBoolean("sensitive", false);
 		mediaLinks = getMediaLinks(json);
+
 		if (mentionsJson != null) {
 			StringBuilder mentionsBuilder = new StringBuilder();
 			for (int i = 0; i < mentionsJson.length(); i++) {
@@ -69,10 +74,15 @@ public class MastodonStatus implements Status {
 		} else {
 			mentions = "";
 		}
-		if (application != null) {
-			source = application.optString("name", "");
+		if (appJson != null) {
+			source = appJson.optString("name", "");
 		} else {
 			source = "";
+		}
+		if (cardJson != null) {
+			cards = new Card[]{new MastodonCard(cardJson)};
+		} else {
+			cards = new Card[0];
 		}
 		try {
 			id = Long.parseLong(idStr);
@@ -138,6 +148,12 @@ public class MastodonStatus implements Status {
 	@Override
 	public long getRepliedStatusId() {
 		return replyId;
+	}
+
+
+	@Override
+	public long getConversationId() {
+		return 0; // todo add implementation
 	}
 
 
@@ -229,6 +245,20 @@ public class MastodonStatus implements Status {
 	@Override
 	public String getLocationCoordinates() {
 		return "";
+	}
+
+
+	@Nullable
+	@Override
+	public Card[] getCards() {
+		return cards;
+	}
+
+
+	@Nullable
+	@Override
+	public Poll getPoll() {
+		return null;
 	}
 
 

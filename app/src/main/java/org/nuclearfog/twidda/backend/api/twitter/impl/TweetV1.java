@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
@@ -189,6 +191,13 @@ public class TweetV1 implements Status {
 
 
 	@Override
+	public long getConversationId() {
+		// not implemented in API V1.1
+		return 0;
+	}
+
+
+	@Override
 	public long getRepostId() {
 		return retweetId;
 	}
@@ -278,6 +287,20 @@ public class TweetV1 implements Status {
 			return username + "/status/" + id;
 		}
 		return "";
+	}
+
+
+	@Nullable
+	@Override
+	public Card[] getCards() {
+		return new Card[0];
+	}
+
+
+	@Nullable
+	@Override
+	public Poll getPoll() {
+		return null;
 	}
 
 

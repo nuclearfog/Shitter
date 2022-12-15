@@ -925,6 +925,7 @@ public class AppDatabase {
 		statusUpdate.put(StatusTable.COORDINATE, status.getLocationCoordinates());
 		statusUpdate.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		statusUpdate.put(StatusTable.REPLYNAME, status.getReplyName());
+		statusUpdate.put(StatusTable.CONVERSATION, status.getConversationId());
 
 		db.insertWithOnConflict(StatusTable.NAME, "", statusUpdate, CONFLICT_REPLACE);
 

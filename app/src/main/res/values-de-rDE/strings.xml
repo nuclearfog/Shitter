@@ -180,7 +180,6 @@
 	<string name="button_share">Videolink teilen</string>
 	<string name="settings_look">Aussehen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
-	<string name="dialog_link_close">Linkvorschau schließen</string>
 	<string name="settings_toggle_link_preview">Linkvorschau aktivieren</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
 	<string name="menu_select_account">Logins</string>
