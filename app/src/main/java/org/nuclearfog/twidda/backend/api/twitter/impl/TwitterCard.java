@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
+import android.util.Patterns;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Card;
@@ -16,7 +18,7 @@ public class TwitterCard implements Card {
 	private String url;
 	private String title;
 	private String description;
-	private String imageUrl;
+	private String imageUrl = "";
 
 
 	public TwitterCard(JSONObject json) {
@@ -25,14 +27,14 @@ public class TwitterCard implements Card {
 		title = json.optString("title", "");
 		description = json.optString("description", "");
 		if (images != null && images.length() > 0) {
+			// first index contains image with the highest resolutuion
 			JSONObject image = images.optJSONObject(0);
 			if (image != null) {
-				imageUrl = image.optString("url");
-			} else {
-				imageUrl = "";
+				String imageUrl = image.optString("url", "");
+				if (Patterns.WEB_URL.matcher(imageUrl).matches()) {
+					this.imageUrl = imageUrl;
+				}
 			}
-		} else {
-			imageUrl = "";
 		}
 	}
 

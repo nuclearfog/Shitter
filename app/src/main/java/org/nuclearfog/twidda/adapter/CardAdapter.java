@@ -27,7 +27,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardHolder> implements OnI
 	private Picasso picasso;
 	private OnCardClickListener listener;
 
-	private Card[] cards;
+	private Card[] cards = {};
 
 
 	public CardAdapter(Context context, OnCardClickListener listener) {
@@ -71,7 +71,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardHolder> implements OnI
 	 * replace all items
 	 * @param newCards new items to insert
 	 */
-	public void replaceAll(Card[] newCards) {
+	public void replaceAll(@NonNull Card[] newCards) {
 		cards = Arrays.copyOf(newCards, newCards.length);
 		notifyDataSetChanged();
 	}
@@ -81,8 +81,14 @@ public class CardAdapter extends RecyclerView.Adapter<CardHolder> implements OnI
 	 */
 	public interface OnCardClickListener {
 
+		/**
+		 * indicates a link click
+		 */
 		int TYPE_LINK = 1;
 
+		/**
+		 * indicates an image thumbnail click
+		 */
 		int TYPE_IMAGE = 2;
 
 		/**

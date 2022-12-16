@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
+import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -50,12 +52,12 @@ public class UserV2 implements User {
 
 		String idStr = json.getString("id");
 		String profileImageUrl = json.optString("profile_image_url", "");
+		String profileBannerUrl = json.optString("profile_banner_url", "");
 		username = json.optString("name", "");
 		screenName = '@' + json.optString("username", "");
 		isProtected = json.optBoolean("protected");
 		location = json.optString("location", "");
 		isVerified = json.optBoolean("verified");
-		profileBannerUrl = json.optString("profile_banner_url", "");
 		created = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V2);
 		defaultImage = profileImageUrl.contains("default_profile_images");
 
@@ -67,10 +69,19 @@ public class UserV2 implements User {
 			follower = metrics.optInt("followers_count");
 			tweetCount = metrics.optInt("tweet_count");
 		}
-		if (defaultImage) {
-			this.profileImageUrl = profileImageUrl;
+		if  (Patterns.WEB_URL.matcher(profileImageUrl).matches()) {
+			if (defaultImage) {
+				this.profileImageUrl = profileImageUrl;
+			} else {
+				this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
+			}
 		} else {
-			this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
+			this.profileImageUrl = "";
+		}
+		if (Patterns.WEB_URL.matcher(profileBannerUrl).matches()) {
+			this.profileBannerUrl = profileBannerUrl;
+		} else {
+			this.profileBannerUrl = "";
 		}
 		try {
 			id = Long.parseLong(idStr);

@@ -31,9 +31,15 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	 */
 	private static final int TEXT_TRANSPARENCY = 0xafffffff;
 
+	/**
+	 * how much views should be fit in the window
+	 */
 	private static final int COLUMN_COUNT = 2;
 
-	private static final int MAX_TITLE_LEN = 20;
+	/**
+	 * maximum char count of the title before truncating
+	 */
+	private static final int TITLE_MAX_LEN = 30;
 
 	private TextView linkText;
 	private ImageView preview;
@@ -80,17 +86,17 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	public void setContent(Card card) {
 		String textStr;
 		String title = card.getTitle();
-		if (title.length() > MAX_TITLE_LEN)
-			textStr = title.substring(0, MAX_TITLE_LEN - 3) + "...";
-		else
+		if (title.length() > TITLE_MAX_LEN) {
+			textStr = title.substring(0, TITLE_MAX_LEN - 3) + "...";
+		} else {
 			textStr = title;
+		}
 		if (!card.getDescription().isEmpty())
 			textStr += '\n' + card.getDescription();
 		SpannableString textSpan = new SpannableString(textStr);
 		if (!title.isEmpty())
-			textSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length() - 1, 0);
+			textSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, Math.min(textStr.length() - 1, TITLE_MAX_LEN), 0);
 		linkText.setText(textSpan);
-		//description.setText(card.getDescription());
 		if (!card.getImageUrl().isEmpty()) {
 			picasso.load(card.getImageUrl()).into(preview);
 		}
@@ -108,8 +114,14 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	 */
 	public interface OnItemClickListener {
 
+		/**
+		 * indicates a link click
+		 */
 		int TYPE_LINK = 1;
 
+		/**
+		 * indicates a click on the image
+		 */
 		int TYPE_IMAGE = 2;
 
 		/**

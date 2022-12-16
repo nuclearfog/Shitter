@@ -33,6 +33,7 @@ public class TwitterNotification implements Notification {
 
 	@Override
 	public int getType() {
+		// Twitte rcurrently only supports mentions as notification
 		return TYPE_MENTION;
 	}
 

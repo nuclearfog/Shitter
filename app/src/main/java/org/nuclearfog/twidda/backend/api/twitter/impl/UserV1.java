@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
+import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -54,11 +56,11 @@ public class UserV1 implements User {
 	public UserV1(JSONObject json) throws JSONException {
 		String idStr = json.getString("id_str");
 		String profileImageUrl = json.optString("profile_image_url_https", "");
+		String profileBannerUrl = json.optString("profile_banner_url", "");
 		username = json.optString("name", "");
 		screenName = '@' + json.optString("screen_name", "");
 		isVerified = json.optBoolean("verified");
 		isLocked = json.optBoolean("protected");
-		profileBannerUrl = json.optString("profile_banner_url", "");
 		location = json.optString("location", "");
 		following = json.optInt("friends_count");
 		follower = json.optInt("followers_count");
@@ -70,6 +72,17 @@ public class UserV1 implements User {
 		description = getDescription(json);
 		url = getUrl(json);
 
+		//
+		if (Patterns.WEB_URL.matcher(profileImageUrl).matches()) {
+			this.profileImageUrl = profileImageUrl;
+		} else {
+			this.profileImageUrl = "";
+		}
+		if (Patterns.WEB_URL.matcher(profileBannerUrl).matches()) {
+			this.profileBannerUrl = profileBannerUrl;
+		} else {
+			this.profileBannerUrl = "";
+		}
 		if (defaultImage) {
 			this.profileImageUrl = profileImageUrl;
 		} else {
