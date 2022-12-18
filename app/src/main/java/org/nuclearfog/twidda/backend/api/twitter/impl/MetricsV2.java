@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Metrics;
 
@@ -24,19 +23,19 @@ public class MetricsV2 implements Metrics {
 	private int videoViews;
 
 	/**
-	 * @param json tweet json object containing metrics information
+	 * @param metricsPublic    json of public metrics
+	 * @param nonPublicMetrics json of non public metrics
+	 * @param statusId         Id of the status
 	 */
-	public MetricsV2(JSONObject json, long statusId) throws JSONException {
-		JSONObject metricsOrganic = json.getJSONObject("organic_metrics");
-		JSONObject metricsPublic = json.getJSONObject("public_metrics");
-		impressions = metricsOrganic.optInt("impression_count", 0);
-		retweets = metricsOrganic.optInt("retweet_count", 0);
-		likes = metricsOrganic.optInt("like_count", 0);
-		replies = metricsOrganic.optInt("reply_count", 0);
+	public MetricsV2(JSONObject metricsPublic, JSONObject nonPublicMetrics, long statusId) {
+		impressions = nonPublicMetrics.optInt("impression_count", 0);
+		retweets = nonPublicMetrics.optInt("retweet_count", 0);
+		likes = nonPublicMetrics.optInt("like_count", 0);
+		replies = nonPublicMetrics.optInt("reply_count", 0);
 		quotes = metricsPublic.optInt("quote_count", 0);
-		linkClicks = metricsOrganic.optInt("url_link_clicks", 0);
-		profileClicks = metricsOrganic.optInt("user_profile_clicks", 0);
-		videoViews = metricsOrganic.optInt("view_count", 0);
+		linkClicks = nonPublicMetrics.optInt("url_link_clicks", 0);
+		profileClicks = nonPublicMetrics.optInt("user_profile_clicks", 0);
+		videoViews = nonPublicMetrics.optInt("view_count", 0);
 		this.statusId = statusId;
 	}
 

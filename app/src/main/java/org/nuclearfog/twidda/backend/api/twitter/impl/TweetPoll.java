@@ -79,8 +79,12 @@ public class TweetPoll implements Poll {
 		return options;
 	}
 
-
+	/**
+	 *
+	 */
 	private static class TweetOption implements Option {
+
+		private static final long serialVersionUID = -7594109890754209971L;
 
 		private String name;
 		private int voteCount;

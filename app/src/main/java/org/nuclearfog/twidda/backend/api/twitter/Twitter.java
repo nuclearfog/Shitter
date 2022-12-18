@@ -1220,7 +1220,7 @@ public class Twitter implements Connection {
 			}
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string()).getJSONObject("data");
+				JSONObject json = new JSONObject(body.string());
 				return new TweetV2(json, statusCompat);
 			}
 			throw new TwitterException(response);

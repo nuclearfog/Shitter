@@ -27,39 +27,51 @@ public class TweetV2  implements Status {
 	private static final long serialVersionUID = -2740140825640061692L;
 
 	public static final String FIELDS_TWEET = "attachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings";
-	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Corganic_metrics";
+	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Cnon_public_metrics";
 	public static final String FIELDS_POLL ="duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
 	public static final String FIELDS_EXPANSION = "attachments.poll_ids";
 
-	private long conversationId;
 	private int replyCount;
 	private Status tweetCompat;
 	private Metrics metrics;
+	private Poll poll;
 	private List<Card> cards = new LinkedList<>();
+	private long conversationId = -1L;
 
 	/**
 	 * @param json Tweet v2 json
 	 * @param tweetCompat Tweet containing base informations
 	 */
 	public TweetV2(JSONObject json, Status tweetCompat) throws JSONException {
-		JSONObject publicMetrics = json.getJSONObject("public_metrics");
-		JSONObject entities = json.getJSONObject("entities");
+		JSONObject data = json.getJSONObject("data");
+		JSONObject includes = json.optJSONObject("includes");
+		JSONObject publicMetrics = data.getJSONObject("public_metrics");
+		JSONObject nonPublicMetrics = data.optJSONObject("non_public_metrics");
+		JSONObject entities = data.getJSONObject("entities");
 		JSONArray urls = entities.optJSONArray("urls");
-		String conversationIdStr = json.optString("conversation_id", "-1");
+		String conversationIdStr = data.optString("conversation_id", "-1");
 		replyCount = publicMetrics.getInt("reply_count");
-		if (!conversationIdStr.equals("null")) {
-			conversationId = Long.parseLong(conversationIdStr);
-		} else {
-			conversationId = -1L;
+		if (nonPublicMetrics != null) {
+			metrics = new MetricsV2(publicMetrics, nonPublicMetrics, tweetCompat.getId());
 		}
-		if (json.optJSONObject("organic_metrics") != null) {
-			metrics = new MetricsV2(json, tweetCompat.getId());
+		if (includes != null) {
+			JSONArray polls = includes.optJSONArray("polls");
+			if (polls != null && polls.length() > 0) {
+				poll = new TweetPoll(polls.getJSONObject(0));
+			}
 		}
 		if (urls != null) {
 			for (int i = 0 ; i < urls.length() ; i++) {
 				TwitterCard item = new TwitterCard(urls.getJSONObject(i));
 				if (!item.getUrl().startsWith("https://twitter.com"))
 					cards.add(item);
+			}
+		}
+		if (!conversationIdStr.equals("null")) {
+			try {
+				conversationId = Long.parseLong(conversationIdStr);
+			} catch (NumberFormatException e) {
+				throw new JSONException("Bad ID: " + conversationIdStr);
 			}
 		}
 		this.tweetCompat = tweetCompat;
@@ -220,8 +232,7 @@ public class TweetV2  implements Status {
 	@Nullable
 	@Override
 	public Poll getPoll() {
-		// todo add implementation
-		return null;
+		return poll;
 	}
 
 

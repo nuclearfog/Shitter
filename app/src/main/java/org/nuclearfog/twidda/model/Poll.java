@@ -43,7 +43,7 @@ public interface Poll extends Serializable {
 	/**
 	 * represents a vote option
 	 */
-	interface Option {
+	interface Option extends Serializable {
 
 		/**
 		 * @return title of the option

@@ -157,7 +157,7 @@ public interface Status extends Serializable {
 	String getLocationCoordinates();
 
 	/**
-	 * @return link preview card or null if not exists
+	 * @return cards representing link previews
 	 */
 	Card[] getCards();
 
@@ -168,7 +168,7 @@ public interface Status extends Serializable {
 	Poll getPoll();
 
 	/**
-	 * @return status metrics
+	 * @return status metrics or null if status doesn't belong to the current user
 	 */
 	@Nullable
 	Metrics getMetrics();

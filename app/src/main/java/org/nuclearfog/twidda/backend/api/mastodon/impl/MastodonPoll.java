@@ -89,8 +89,12 @@ public class MastodonPoll implements Poll {
 		return options;
 	}
 
-
+	/**
+	 *
+	 */
 	private static class MastodonOption implements Option {
+
+		private static final long serialVersionUID = 4625032116285945452L;
 
 		private String title;
 		private int voteCount;
