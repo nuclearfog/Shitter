@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.model;
 
+import java.io.Serializable;
+
 /**
  * interface for relation implementations
  *
  * @author nuclearfog
  */
-public interface Relation {
+public interface Relation extends Serializable {
 
 	/**
 	 * @return true if the relation points to the current user

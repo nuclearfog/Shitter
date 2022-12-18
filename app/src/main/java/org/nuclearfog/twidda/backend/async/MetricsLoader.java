@@ -36,7 +36,7 @@ public class MetricsLoader extends AsyncTask<Long, Void, Metrics> {
 	@Override
 	protected Metrics doInBackground(Long... ids) {
 		try {
-			return connection.getStatusMetrics(ids[0]);
+			return connection.showStatus(ids[0]).getMetrics();
 		} catch (ConnectionException exception) {
 			this.exception = exception;
 		} catch (Exception exception) {

@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -29,24 +30,31 @@ public class TweetV2  implements Status {
 	public static final String FIELDS_POLL ="duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
 	public static final String FIELDS_EXPANSION = "attachments.poll_ids";
 
-	private Status tweetCompat;
-	private List<Card> cards;
 	private long conversationId;
 	private int replyCount;
+	private Status tweetCompat;
+	private Metrics metrics;
+	private List<Card> cards = new LinkedList<>();
 
-
+	/**
+	 * @param json Tweet v2 json
+	 * @param tweetCompat Tweet containing base informations
+	 */
 	public TweetV2(JSONObject json, Status tweetCompat) throws JSONException {
 		JSONObject publicMetrics = json.getJSONObject("public_metrics");
 		JSONObject entities = json.getJSONObject("entities");
 		JSONArray urls = entities.optJSONArray("urls");
 		String conversationIdStr = json.optString("conversation_id", "-1");
+		JSONObject metricsData = json.optJSONObject("data");
 		replyCount = publicMetrics.getInt("reply_count");
 		if (!conversationIdStr.equals("null")) {
 			conversationId = Long.parseLong(conversationIdStr);
 		} else {
 			conversationId = -1L;
 		}
-		cards = new LinkedList<>();
+		if (metricsData != null) {
+			metrics = new MetricsV2(metricsData, tweetCompat.getId());
+		}
 		if (urls != null) {
 			for (int i = 0 ; i < urls.length() ; i++) {
 				TwitterCard item = new TwitterCard(urls.getJSONObject(i));
@@ -212,6 +220,29 @@ public class TweetV2  implements Status {
 	@Nullable
 	@Override
 	public Poll getPoll() {
+		// todo add implementation
 		return null;
+	}
+
+
+	@Nullable
+	@Override
+	public Metrics getMetrics() {
+		return metrics;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Status))
+			return false;
+		return ((Status) obj).getId() == tweetCompat.getId();
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return tweetCompat.toString();
 	}
 }

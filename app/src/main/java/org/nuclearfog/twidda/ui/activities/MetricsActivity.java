@@ -172,7 +172,7 @@ public class MetricsActivity extends AppCompatActivity implements OnClickListene
 		if (v.getId() == R.id.metrics_profile) {
 			if (status != null) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, status.getAuthor());
+				profile.putExtra(ProfileActivity.KEY_PROFILE_USER, status.getAuthor());
 				startActivity(profile);
 			}
 		}

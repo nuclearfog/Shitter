@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA;
 
 import android.content.Intent;
@@ -83,7 +83,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onUserClick(User user) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), ProfileActivity.class);
-			intent.putExtra(KEY_PROFILE_DATA, user);
+			intent.putExtra(KEY_PROFILE_USER, user);
 			startActivity(intent); // todo add update
 		}
 	}

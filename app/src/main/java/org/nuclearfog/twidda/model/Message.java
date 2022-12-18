@@ -4,12 +4,14 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
+import java.io.Serializable;
+
 /**
  * interface class for directmessage implementations
  *
  * @author nuclearfog
  */
-public interface Message {
+public interface Message extends Serializable {
 
 	/**
 	 * @return ID of the direct message

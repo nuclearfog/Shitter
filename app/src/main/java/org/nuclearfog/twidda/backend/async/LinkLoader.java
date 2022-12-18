@@ -149,7 +149,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 						(pathSeg.get(1).equals("with_replies") || pathSeg.get(1).equals("media") || pathSeg.get(1).equals("likes")))) {
 					String screenname = pathSeg.get(0);
 					User user = connection.showUser(screenname);
-					data.putSerializable(ProfileActivity.KEY_PROFILE_DATA, user);
+					data.putSerializable(ProfileActivity.KEY_PROFILE_USER, user);
 					data.putBoolean(ProfileActivity.KEY_PROFILE_DISABLE_RELOAD, true);
 					return new DataHolder(data, ProfileActivity.class);
 				}

@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.model.Location;
  */
 public class LocationImpl implements Location {
 
+	private static final long serialVersionUID = 3719416358210741464L;
 
 	private int id;
 	private String name;

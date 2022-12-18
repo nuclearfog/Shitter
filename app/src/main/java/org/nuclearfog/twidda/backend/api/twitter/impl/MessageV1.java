@@ -18,6 +18,8 @@ import org.nuclearfog.twidda.model.User;
  */
 public class MessageV1 implements Message {
 
+	private static final long serialVersionUID = 6821470849021163618L;
+
 	private long id;
 	private long timestamp;
 	private long sender_id;

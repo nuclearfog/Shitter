@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.ui.fragments;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
@@ -148,7 +148,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 				case PROFILE:
 					Intent profile = new Intent(requireContext(), ProfileActivity.class);
-					profile.putExtra(KEY_PROFILE_DATA, message.getSender());
+					profile.putExtra(KEY_PROFILE_USER, message.getSender());
 					startActivity(profile);
 					break;
 

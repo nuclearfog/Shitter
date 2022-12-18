@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -37,6 +38,7 @@ public class MastodonStatus implements Status {
 
 	private User author;
 	private Card[] cards;
+	private Poll poll;
 
 	private int mediaType = MEDIA_NONE;
 
@@ -47,6 +49,7 @@ public class MastodonStatus implements Status {
 	public MastodonStatus(JSONObject json, long currentUserId) throws JSONException {
 		JSONObject appJson = json.optJSONObject("application");
 		JSONObject cardJson = json.optJSONObject("card");
+		JSONObject pollJson = json.optJSONObject("poll");
 		JSONArray mentionsJson = json.optJSONArray("mentions");
 		String idStr = json.getString("id");
 		String replyIdStr = json.optString("in_reply_to_id", "0");
@@ -64,6 +67,9 @@ public class MastodonStatus implements Status {
 		sensitive = json.optBoolean("sensitive", false);
 		mediaLinks = getMediaLinks(json);
 
+		if (pollJson != null) {
+			poll = new MastodonPoll(pollJson);
+		}
 		if (mentionsJson != null) {
 			StringBuilder mentionsBuilder = new StringBuilder();
 			for (int i = 0; i < mentionsJson.length(); i++) {
@@ -258,6 +264,13 @@ public class MastodonStatus implements Status {
 	@Nullable
 	@Override
 	public Poll getPoll() {
+		return poll;
+	}
+
+
+	@Nullable
+	@Override
+	public Metrics getMetrics() {
 		return null;
 	}
 

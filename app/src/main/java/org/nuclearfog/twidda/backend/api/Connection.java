@@ -9,7 +9,6 @@ import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
-import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
@@ -483,14 +482,6 @@ public interface Connection {
 	 * @return list of direct messages
 	 */
 	Messages getDirectmessages(String cursor) throws ConnectionException;
-
-	/**
-	 * get status metrics (views, link clicks, etc.)
-	 *
-	 * @param id ID of the status to get the metrics from
-	 * @return status metrics
-	 */
-	Metrics getStatusMetrics(long id) throws ConnectionException;
 
 	/**
 	 * returns a list of blocked user IDs

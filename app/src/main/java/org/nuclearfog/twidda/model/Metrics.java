@@ -1,11 +1,18 @@
 package org.nuclearfog.twidda.model;
 
+import java.io.Serializable;
+
 /**
  * Status metrics class containing information like views and link clicks
  *
  * @author nuclearfog
  */
-public interface Metrics {
+public interface Metrics extends Serializable {
+
+	/**
+	 * @return Id of the status
+	 */
+	long getStatusId();
 
 	/**
 	 * get view count of the status

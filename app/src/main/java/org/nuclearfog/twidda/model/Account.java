@@ -2,13 +2,15 @@ package org.nuclearfog.twidda.model;
 
 import androidx.annotation.Nullable;
 
+import java.io.Serializable;
+
 /**
  * interface of account implementations
  * An account class collects information about a saved login.
  *
  * @author nuclearfog
  */
-public interface Account {
+public interface Account extends Serializable {
 
 	/**
 	 * API ID used for Twitter accounts

@@ -13,6 +13,8 @@ import org.nuclearfog.twidda.model.Relation;
  */
 public class RelationV1 implements Relation {
 
+	private static final long serialVersionUID = -1595992003137510951L;
+
 	private boolean isCurrentUser;
 	private boolean isFollowing;
 	private boolean isFollower;

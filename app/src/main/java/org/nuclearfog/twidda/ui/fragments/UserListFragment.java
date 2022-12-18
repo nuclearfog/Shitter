@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.ui.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.backend.async.ListLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_LIST_DATA;
 
 import android.content.Intent;
@@ -153,7 +153,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 	@Override
 	public void onProfileClick(User user) {
 		Intent profile = new Intent(requireContext(), ProfileActivity.class);
-		profile.putExtra(KEY_PROFILE_DATA, user);
+		profile.putExtra(KEY_PROFILE_USER, user);
 		startActivity(profile);
 	}
 

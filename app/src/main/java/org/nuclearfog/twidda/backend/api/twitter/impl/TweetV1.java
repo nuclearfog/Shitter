@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -300,6 +301,14 @@ public class TweetV1 implements Status {
 	@Nullable
 	@Override
 	public Poll getPoll() {
+		return null;
+	}
+
+
+	@Nullable
+	@Override
+	public  Metrics getMetrics() {
+		// Twitter API 1.1 doesn't support metrics
 		return null;
 	}
 

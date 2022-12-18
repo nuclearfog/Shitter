@@ -90,7 +90,13 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 * key for user object
 	 * value type is {@link User}
 	 */
-	public static final String KEY_PROFILE_DATA = "profile_data";
+	public static final String KEY_PROFILE_USER = "profile_user";
+
+	/**
+	 * key for relation object
+	 * value type is {@link Relation}
+	 */
+	private static final String KEY_PROFILE_RELATION = "profile_relation";
 
 	/**
 	 * key to prevent this activity to reload profile information as they are up to date
@@ -205,7 +211,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		confirmDialog = new ConfirmDialog(this);
 
 		Intent i = getIntent();
-		Object o = i.getSerializableExtra(KEY_PROFILE_DATA);
+		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
 		if (o instanceof User) {
 			user = (User) o;
 			adapter.setupProfilePage(user.getId());
@@ -237,7 +243,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				long userId = data.getLongExtra(KEY_PROFILE_ID, 0);
 				profileAsync = new UserAction(this, UserAction.PROFILE_DB, userId);
 				profileAsync.execute();
-			} else {
+			} else if (relation == null) {
 				setUser(user);
 				if (!data.getBooleanExtra(KEY_PROFILE_DISABLE_RELOAD, false)) {
 					profileAsync = new UserAction(this, UserAction.PROFILE_lOAD, user.getId());
@@ -245,6 +251,26 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_PROFILE_USER, user);
+		outState.putSerializable(KEY_PROFILE_RELATION, relation);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Object data = savedInstanceState.getSerializable(KEY_PROFILE_USER);
+		if (data instanceof User)
+			user = (User) data;
+		data = savedInstanceState.getSerializable(KEY_PROFILE_RELATION);
+		if (data instanceof Relation)
+			relation = (Relation) data;
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 

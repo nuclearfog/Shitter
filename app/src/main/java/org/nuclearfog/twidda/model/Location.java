@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.model;
 
+import java.io.Serializable;
+
 /**
  * interface for location implementation
  *
  * @author nuclearfog
  */
-public interface Location {
+public interface Location extends Serializable {
 
 	/**
 	 * @return ID of the place (World ID)

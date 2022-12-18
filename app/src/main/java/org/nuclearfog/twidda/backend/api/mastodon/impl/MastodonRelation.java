@@ -13,6 +13,8 @@ import org.nuclearfog.twidda.model.Relation;
  */
 public class MastodonRelation implements Relation {
 
+	private static final long serialVersionUID = -3824807644551732407L;
+
 	private boolean currentUser;
 	private boolean following;
 	private boolean follower;

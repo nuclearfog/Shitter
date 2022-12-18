@@ -30,7 +30,6 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
-import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
@@ -625,12 +624,6 @@ public class Mastodon implements Connection {
 	@Override
 	public Messages getDirectmessages(String cursor) throws MastodonException {
 		return new Messages("", ""); // todo add implementation
-	}
-
-
-	@Override
-	public Metrics getStatusMetrics(long id) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 

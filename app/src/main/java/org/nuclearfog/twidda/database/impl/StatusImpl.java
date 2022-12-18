@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -274,6 +275,13 @@ public class StatusImpl implements Status {
 	@Nullable
 	@Override
 	public Poll getPoll() {
+		return null;
+	}
+
+
+	@Nullable
+	@Override
+	public Metrics getMetrics() {
 		return null;
 	}
 

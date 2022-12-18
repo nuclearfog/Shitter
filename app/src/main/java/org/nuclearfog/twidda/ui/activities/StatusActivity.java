@@ -440,7 +440,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// open profile of the status author
 			else if (v.getId() == R.id.page_status_profile) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, status.getAuthor());
+				profile.putExtra(ProfileActivity.KEY_PROFILE_USER, status.getAuthor());
 				startActivity(profile);
 			}
 			// open replied status
@@ -493,7 +493,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// go to user reposting this status
 			else if (v.getId() == R.id.page_status_reposter_reference) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_DATA, this.status.getAuthor());
+				profile.putExtra(ProfileActivity.KEY_PROFILE_USER, this.status.getAuthor());
 				startActivity(profile);
 			}
 		}

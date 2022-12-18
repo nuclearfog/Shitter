@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.impl.LocationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.MessageV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.MetricsV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.RelationV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TrendV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV1;
@@ -37,7 +36,6 @@ import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
-import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
@@ -943,26 +941,6 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public Metrics getStatusMetrics(long id) throws TwitterException {
-		List<String> params = new ArrayList<>();
-		params.add(MetricsV2.PARAMS);
-		try {
-			Response response = get(TWEET_UNI + id, params);
-			ResponseBody body = response.body();
-			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string());
-				if (json.opt("data") != null) {
-					return new MetricsV2(json);
-				}
-			}
-			throw new TwitterException(response);
-		} catch (IOException | JSONException err) {
-			throw new TwitterException(err);
-		}
-	}
-
-
-	@Override
 	public long uploadMedia(MediaStatus mediaUpdate) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		String state;
@@ -1231,6 +1209,7 @@ public class Twitter implements Connection {
 			params.add("tweet.fields=" + TweetV2.FIELDS_TWEET);
 			params.add("poll.fields=" + TweetV2.FIELDS_POLL);
 			params.add("expansions=" + TweetV2.FIELDS_EXPANSION);
+			// todo add parameters if home tweet "tweet.fields=organic_metrics%2Cpublic_metrics";
 			if (endpoint.startsWith(TWEET2_LOOKUP)) {
 				response = get(endpoint, params);
 			} else {

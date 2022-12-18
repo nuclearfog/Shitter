@@ -16,6 +16,8 @@ import org.nuclearfog.twidda.model.User;
  */
 public class AccountImpl implements Account {
 
+	private static final long serialVersionUID = -2276274593772105348L;
+
 	/**
 	 * projection of the columns with fixed order
 	 */

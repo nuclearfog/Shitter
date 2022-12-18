@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.ui.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.backend.async.UserLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -209,7 +209,7 @@ public class UserFragment extends ListFragment implements UserClickListener {
 	public void onUserClick(User user) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), ProfileActivity.class);
-			intent.putExtra(KEY_PROFILE_DATA, user);
+			intent.putExtra(KEY_PROFILE_USER, user);
 			startActivityForResult(intent, REQ_USER_UPDATE);
 		}
 	}

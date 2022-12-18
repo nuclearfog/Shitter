@@ -166,4 +166,10 @@ public interface Status extends Serializable {
 	 */
 	@Nullable
 	Poll getPoll();
+
+	/**
+	 * @return status metrics
+	 */
+	@Nullable
+	Metrics getMetrics();
 }
