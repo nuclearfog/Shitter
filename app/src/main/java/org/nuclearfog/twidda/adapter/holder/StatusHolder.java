@@ -4,6 +4,7 @@ package org.nuclearfog.twidda.adapter.holder;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,7 +85,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		} else {
 			favIcon.setImageResource(R.drawable.favorite);
 		}
-		AppStyles.setTheme(container, 0);
+		AppStyles.setTheme(container, Color.TRANSPARENT);
 		cardLayout.setCardBackgroundColor(settings.getCardColor());
 
 		label.setOnClickListener(this);

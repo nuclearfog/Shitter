@@ -159,19 +159,6 @@
 	<dimen name="loginpage_number_margin">10dp</dimen>
 	<dimen name="loginpage_label_max_width">110dp</dimen>
 
-	<!--dimens of page_metrics.xml-->
-	<dimen name="metrics_toolbar_height">@dimen/toolbar_height</dimen>
-	<dimen name="metrics_profile">56sp</dimen>
-	<dimen name="metrics_profileimage_margin">5dp</dimen>
-	<dimen name="metrics_textview_margin">5dp</dimen>
-	<dimen name="metrics_item_margin">20dp</dimen>
-	<dimen name="metrics_padding_drawable">5dp</dimen>
-	<dimen name="metrics_padding_drawable_big">15dp</dimen>
-	<dimen name="metrics_textsize_small">12sp</dimen>
-	<dimen name="metrics_textsize_normal">18sp</dimen>
-	<dimen name="metrics_textsize_big">20sp</dimen>
-	<integer name="metrics_text_max_lines">8</integer>
-
 	<!--dimens of popup_status.xml-->
 	<dimen name="popup_status_margin_layout">10dp</dimen>
 	<dimen name="popup_status_button_margin">7dp</dimen>
@@ -227,6 +214,14 @@
 
 	<!--dimens of dialog_license.xml-->
 	<dimen name="license_textsize">8sp</dimen>
+
+	<!-- dimens of dialog_metrics.xml-->
+	<dimen name="dialog_metrics_layout_margin">5dp</dimen>
+	<dimen name="dialog_metrics_layout_padding">12dp</dimen>
+	<dimen name="dialog_metrics_drawable_padding">5dp</dimen>
+	<dimen name="dialog_metrics_title_textsize">20sp</dimen>
+	<dimen name="dialog_metrics_item_textsize">16sp</dimen>
+	<dimen name="dialog_metrics_item_iconsize">20sp</dimen>
 
 	<!--dimens of dialog_confirm.xml-->
 	<dimen name="confirm_button_margin">10dp</dimen>

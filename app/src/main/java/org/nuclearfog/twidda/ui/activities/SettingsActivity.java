@@ -180,7 +180,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		fontSelector.setSelected(false);
 		scaleSelector.setSelected(false);
 
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
 		confirmDialog = new ConfirmDialog(this);
@@ -403,7 +403,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					if (settings.isLoggedIn()) {
 						locationAdapter.notifyDataSetChanged();
 					}
-					AppStyles.setTheme(root, settings.getBackgroundColor());
+					AppStyles.setTheme(root);
 					setButtonColors();
 					break;
 
@@ -414,7 +414,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					if (settings.isLoggedIn()) {
 						locationAdapter.notifyDataSetChanged();
 					}
-					AppStyles.setTheme(root, settings.getBackgroundColor());
+					AppStyles.setTheme(root);
 					setButtonColors();
 					break;
 
@@ -435,14 +435,14 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					if (settings.isLoggedIn()) {
 						locationAdapter.notifyDataSetChanged();
 					}
-					AppStyles.setTheme(root, settings.getBackgroundColor());
+					AppStyles.setTheme(root);
 					setButtonColors();
 					break;
 
 				case COLOR_ICON:
 					settings.setIconColor(color);
 					invalidateOptionsMenu();
-					AppStyles.setTheme(root, settings.getBackgroundColor());
+					AppStyles.setTheme(root);
 					setButtonColors();
 					break;
 

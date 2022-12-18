@@ -13,6 +13,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -186,6 +187,7 @@ public class GlobalSettings {
 	 *
 	 * @return color value
 	 */
+	@ColorInt
 	public int getBackgroundColor() {
 		return background_color;
 	}

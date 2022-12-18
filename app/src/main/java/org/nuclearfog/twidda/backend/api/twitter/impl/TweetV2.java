@@ -27,6 +27,7 @@ public class TweetV2  implements Status {
 	private static final long serialVersionUID = -2740140825640061692L;
 
 	public static final String FIELDS_TWEET = "attachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings";
+	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Corganic_metrics";
 	public static final String FIELDS_POLL ="duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
 	public static final String FIELDS_EXPANSION = "attachments.poll_ids";
 
@@ -45,15 +46,14 @@ public class TweetV2  implements Status {
 		JSONObject entities = json.getJSONObject("entities");
 		JSONArray urls = entities.optJSONArray("urls");
 		String conversationIdStr = json.optString("conversation_id", "-1");
-		JSONObject metricsData = json.optJSONObject("data");
 		replyCount = publicMetrics.getInt("reply_count");
 		if (!conversationIdStr.equals("null")) {
 			conversationId = Long.parseLong(conversationIdStr);
 		} else {
 			conversationId = -1L;
 		}
-		if (metricsData != null) {
-			metrics = new MetricsV2(metricsData, tweetCompat.getId());
+		if (json.optJSONObject("organic_metrics") != null) {
+			metrics = new MetricsV2(json, tweetCompat.getId());
 		}
 		if (urls != null) {
 			for (int i = 0 ; i < urls.length() ; i++) {

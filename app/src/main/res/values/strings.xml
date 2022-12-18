@@ -283,5 +283,6 @@
 	<string name="info_user_mention">%1$s mentioned you</string>
 	<string name="info_user_repost">%1$s reposted your status</string>
 	<string name="status_replyname_empty">Reply</string>
+	<string name="status_metrics_title">Status metrics</string>
 
 </resources>

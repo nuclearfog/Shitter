@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.adapter.holder;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+import android.graphics.Color;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -66,7 +67,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		answer = itemView.findViewById(R.id.item_message_answer);
 		delete = itemView.findViewById(R.id.item_message_delete);
 
-		AppStyles.setTheme(container, 0);
+		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
 		text.setMovementMethod(LinkMovementMethod.getInstance());
 

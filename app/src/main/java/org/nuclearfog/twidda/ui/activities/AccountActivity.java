@@ -74,7 +74,7 @@ public class AccountActivity extends AppCompatActivity {
 		setSupportActionBar(tool);
 
 		settings = GlobalSettings.getInstance(this);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 	}
 
 
@@ -113,7 +113,7 @@ public class AccountActivity extends AppCompatActivity {
 			}
 			// check if setting page was opened and reload theme
 			else if (resultCode == LoginActivity.RETURN_SETTINGS_CHANGED) {
-				AppStyles.setTheme(tool, settings.getBackgroundColor());
+				AppStyles.setTheme(tool);
 				setResult(RETURN_SETTINGS_CHANGED);
 				fragment.reset();
 			}

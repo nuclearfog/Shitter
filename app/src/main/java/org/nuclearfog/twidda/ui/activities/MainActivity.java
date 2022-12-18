@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		adapter = new FragmentAdapter(getSupportFragmentManager());
 		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
 		toolbar.setTitle("");
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				}
 				break;
 		}
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}

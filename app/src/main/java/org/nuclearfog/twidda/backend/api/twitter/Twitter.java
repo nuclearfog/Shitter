@@ -1206,10 +1206,13 @@ public class Twitter implements Connection {
 	private TweetV2 getTweet2(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
 		try {
 			Response response;
-			params.add("tweet.fields=" + TweetV2.FIELDS_TWEET);
+			// add metrics information if tweet is from current user
+			if (statusCompat.getAuthor().isCurrentUser())
+				params.add("tweet.fields=" + TweetV2.FIELDS_TWEET_PRIVATE);
+			else
+				params.add("tweet.fields=" + TweetV2.FIELDS_TWEET);
 			params.add("poll.fields=" + TweetV2.FIELDS_POLL);
 			params.add("expansions=" + TweetV2.FIELDS_EXPANSION);
-			// todo add parameters if home tweet "tweet.fields=organic_metrics%2Cpublic_metrics";
 			if (endpoint.startsWith(TWEET2_LOOKUP)) {
 				response = get(endpoint, params);
 			} else {

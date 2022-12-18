@@ -170,9 +170,9 @@
 						android:contentDescription="@string/image_preview"
 						android:scaleType="fitCenter"
 						android:padding="@dimen/page_status_button_drawable_padding"
-						app:layout_constraintStart_toStartOf="@id/page_status_api"
+						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/page_status_cards"
-						app:layout_constraintEnd_toEndOf="@id/page_status_api"
+						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/RoundButton" />
 
 					<TextView

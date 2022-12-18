@@ -126,7 +126,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		}
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
 		profile_banner.setDrawingCacheEnabled(true);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		picasso = PicassoBuilder.get(this);
 
 		Object data = getIntent().getSerializableExtra(KEY_PROFILE_DATA);

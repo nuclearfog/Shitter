@@ -183,7 +183,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				break;
 		}
 		setSupportActionBar(toolbar);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 	}
 
 

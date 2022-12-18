@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.ArrayRes;
+import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
@@ -73,12 +74,23 @@ public final class AppStyles {
 	}
 
 	/**
+	 * sets view theme with default background color
+	 *
+	 * @param root Root view container
+	 */
+	public static void setTheme(ViewGroup root) {
+		AppStyles instance = new AppStyles(root.getContext());
+		root.setBackgroundColor(instance.settings.getBackgroundColor());
+		instance.setSubViewTheme(root);
+	}
+
+	/**
 	 * sets view theme with custom background color
 	 *
 	 * @param root       Root view container
 	 * @param background custom background color
 	 */
-	public static void setTheme(ViewGroup root, int background) {
+	public static void setTheme(ViewGroup root, @ColorInt int background) {
 		AppStyles instance = new AppStyles(root.getContext());
 		root.setBackgroundColor(background);
 		instance.setSubViewTheme(root);

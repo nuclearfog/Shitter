@@ -198,7 +198,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
 		user_bio.setMovementMethod(LinkAndScrollMovement.getInstance());
 		user_bio.setLinkTextColor(settings.getHighlightColor());
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		user_website.setTextColor(settings.getHighlightColor());
 		tabLayout.setBackgroundColor(Color.TRANSPARENT);
 

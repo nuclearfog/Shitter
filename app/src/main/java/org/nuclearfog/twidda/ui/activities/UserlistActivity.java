@@ -144,7 +144,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 		setSupportActionBar(toolbar);
 		settings = GlobalSettings.getInstance(this);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		AppStyles.setTabIcons(tablayout, settings, R.array.list_tab_icons);
 
 		confirmDialog.setConfirmListener(this);
@@ -236,7 +236,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			// theme expanded search view
 			else if (item.getItemId() == R.id.menu_list_add_user) {
 				SearchView searchView = (SearchView) item.getActionView();
-				AppStyles.setTheme(searchView, android.R.color.transparent);
+				AppStyles.setTheme(searchView, Color.TRANSPARENT);
 			}
 		}
 		return super.onOptionsItemSelected(item);

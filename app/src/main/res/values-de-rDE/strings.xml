@@ -248,4 +248,5 @@
 	<string name="info_account_selected">%1$s ausgewählt</string>
 	<string name="menu_message">Nachricht schreiben</string>
 	<string name="status_replyname_empty">Antwort</string>
+	<string name="status_metrics_title">Statusmetriken</string>
 </resources>

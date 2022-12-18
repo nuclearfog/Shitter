@@ -114,12 +114,12 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		settings = GlobalSettings.getInstance(this);
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
-		//pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
+		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
 		NetworkAdapter adapter = new NetworkAdapter(this);
 		hostSelector.setAdapter(adapter);
 		hostSelector.setSelection(0);
 
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
@@ -182,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				finish();
 			}
 		} else if (requestCode == REQUEST_SETTINGS) {
-			AppStyles.setTheme(root, settings.getBackgroundColor());
+			AppStyles.setTheme(root);
 		}
 	}
 

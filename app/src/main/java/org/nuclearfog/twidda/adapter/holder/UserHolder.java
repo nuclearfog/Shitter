@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,7 +69,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		lockedIcon = itemView.findViewById(R.id.item_user_private);
 		delete = itemView.findViewById(R.id.item_user_delete_buton);
 
-		AppStyles.setTheme(container, 0);
+		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
 		this.settings = settings;
 		this.picasso = picasso;

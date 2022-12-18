@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * Custom alert dialog class to show error and warning messages to user
@@ -140,7 +139,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	private Button confirm, cancel;
 	private ViewGroup root;
 
-	private GlobalSettings settings;
 	@Nullable
 	private OnConfirmListener listener;
 
@@ -148,7 +146,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 *
 	 */
 	public ConfirmDialog(Context context) {
-		super(context, R.style.ConfirmDialog);
+		super(context);
 		setContentView(R.layout.dialog_confirm);
 		root = findViewById(R.id.confirm_rootview);
 		confirm = findViewById(R.id.confirm_yes);
@@ -158,10 +156,13 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		confirmDescr = findViewById(R.id.confirm_remember_descr);
 		confirmCheck = findViewById(R.id.confirm_remember);
 
-		settings = GlobalSettings.getInstance(context);
-
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
+	}
+
+
+	@Override
+	public void show() {
 	}
 
 	/**
@@ -304,7 +305,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		else
 			message.setText(messageTxt);
 
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		super.show();
 	}
 

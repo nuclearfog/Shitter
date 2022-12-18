@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
@@ -98,7 +99,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 			textSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, Math.min(textStr.length() - 1, TITLE_MAX_LEN), 0);
 		linkText.setText(textSpan);
 		if (!card.getImageUrl().isEmpty()) {
-			picasso.load(card.getImageUrl()).into(preview);
+			picasso.load(card.getImageUrl()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(preview);
 		}
 	}
 

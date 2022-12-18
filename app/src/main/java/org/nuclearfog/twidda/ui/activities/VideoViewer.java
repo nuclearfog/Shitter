@@ -149,7 +149,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 
 		settings = GlobalSettings.getInstance(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
-		AppStyles.setTheme(controlPanel, settings.getBackgroundColor());
+		AppStyles.setTheme(controlPanel);
 		videoView.setZOrderMediaOverlay(true); // disable black background
 		videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
 

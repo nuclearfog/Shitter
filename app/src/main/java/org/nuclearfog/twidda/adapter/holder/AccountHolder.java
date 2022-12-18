@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.adapter.holder;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,7 +56,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 		remove = itemView.findViewById(R.id.item_account_remove);
 		profile = itemView.findViewById(R.id.item_account_profile);
 
-		AppStyles.setTheme(container, 0);
+		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
 		this.settings = settings;
 		this.picasso = picasso;

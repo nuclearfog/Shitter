@@ -4,6 +4,7 @@ package org.nuclearfog.twidda.adapter.holder;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,7 +49,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 		name = itemView.findViewById(R.id.item_trend_name);
 		vol = itemView.findViewById(R.id.item_trend_vol);
 
-		AppStyles.setTheme(container, 0);
+		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
 		itemView.setOnClickListener(this);
 	}

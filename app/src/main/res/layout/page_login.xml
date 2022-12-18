@@ -188,7 +188,6 @@
 		android:maxLines="1"
 		android:layout_marginEnd="@dimen/loginpage_layout_margin"
 		android:ellipsize="end"
-		android:drawableStart="@drawable/key"
 		android:gravity="center"
 		app:layout_constraintWidth_percent="0.5"
 		app:layout_constraintStart_toEndOf="@id/login_third_opt"

@@ -64,6 +64,7 @@ import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
 import java.text.NumberFormat;
@@ -138,6 +139,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	private CardAdapter adapter;
 	private ConfirmDialog confirmDialog;
+	private MetricsDialog metricsDialog;
 
 	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
 	private Button ansButton, rtwButton, favButton, replyName, coordinates, repostName;
@@ -231,10 +233,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 		picasso = PicassoBuilder.get(this);
 
 		confirmDialog = new ConfirmDialog(this);
+		metricsDialog = new MetricsDialog(this);
 		confirmDialog.setConfirmListener(this);
 		repostName.setOnClickListener(this);
 		replyName.setOnClickListener(this);
@@ -388,9 +391,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// open status metrics page
 		else if (item.getItemId() == R.id.menu_status_metrics) {
-			Intent metricsIntent = new Intent(getApplicationContext(), MetricsActivity.class);
-			metricsIntent.putExtra(MetricsActivity.KEY_METRICS_STATUS, status);
-			startActivity(metricsIntent);
+			if (status.getMetrics() != null) {
+				metricsDialog.show(status.getMetrics());
+			}
 		}
 		// copy media links
 		else if (item.getGroupId() == MENU_GROUP_COPY) {

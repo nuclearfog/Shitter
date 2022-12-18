@@ -79,7 +79,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
 		adapter.setupSearchPage(search);
 		AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
-		AppStyles.setTheme(root, settings.getBackgroundColor());
+		AppStyles.setTheme(root);
 	}
 
 
