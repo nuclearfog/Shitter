@@ -161,7 +161,6 @@
 	<string name="login_verifier">login</string>
 	<string name="popup_tweet_hint">Status</string>
 	<string name="title_settings">Settings</string>
-	<string name="title_metrics">Status metrics</string>
 	<string name="userlist_following" translatable="false">Following</string>
 	<string name="userlist_follower" translatable="false">Follower</string>
 	<string name="toolbar_userlist_retweet">Status reposted by</string>

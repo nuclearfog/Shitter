@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -502,7 +503,7 @@ public class Twitter implements Connection {
 
 	@Override
 	public List<Trend> getTrends() throws TwitterException {
-		int id = settings.getTrendLocation().getId();
+		int id = settings.getTrendLocation().getWorldId();
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
 		try {
@@ -1206,13 +1207,16 @@ public class Twitter implements Connection {
 	private TweetV2 getTweet2(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
 		try {
 			Response response;
-			// add metrics information if tweet is from current user
-			if (statusCompat.getAuthor().isCurrentUser())
+			// add metrics information if tweet is from current user and the tweet is not older than 30 days and not a retweet
+			if (statusCompat.getAuthor().isCurrentUser() && new Date().getTime() - statusCompat.getTimestamp() < 2419200000L
+					&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() <= 0))
 				params.add("tweet.fields=" + TweetV2.FIELDS_TWEET_PRIVATE);
 			else
 				params.add("tweet.fields=" + TweetV2.FIELDS_TWEET);
 			params.add("poll.fields=" + TweetV2.FIELDS_POLL);
 			params.add("expansions=" + TweetV2.FIELDS_EXPANSION);
+			params.add("user.fields=" + TweetV2.FIELDS_USER);
+			params.add("media.fields=" + TweetV2.FIELDS_MEDIA);
 			if (endpoint.startsWith(TWEET2_LOOKUP)) {
 				response = get(endpoint, params);
 			} else {
@@ -1221,7 +1225,7 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				return new TweetV2(json, statusCompat);
+				return new TweetV2(json, statusCompat, settings.getLogin().getId());
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {
@@ -1333,7 +1337,7 @@ public class Twitter implements Connection {
 	private Users getUsers2(String endpoint) throws TwitterException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add(UserV2.PARAMS);
+			params.add("user.fields=" + UserV2.PARAMS);
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {

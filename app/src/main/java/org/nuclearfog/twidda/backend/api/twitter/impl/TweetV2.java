@@ -1,14 +1,15 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
@@ -26,110 +27,224 @@ public class TweetV2  implements Status {
 
 	private static final long serialVersionUID = -2740140825640061692L;
 
-	public static final String FIELDS_TWEET = "attachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings";
+	public static final String FIELDS_USER = UserV2.PARAMS;
+	public static final String FIELDS_TWEET = "id%2Ctext%2Cattachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings%2Cgeo%2Csource%2Cpossibly_sensitive";
 	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Cnon_public_metrics";
 	public static final String FIELDS_POLL ="duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
-	public static final String FIELDS_EXPANSION = "attachments.poll_ids";
+	public static final String FIELDS_EXPANSION = "attachments.poll_ids%2Cauthor_id%2Creferenced_tweets.id%2Cattachments.media_keys";
+	public static final String FIELDS_MEDIA = "media_key%2Cpreview_image_url%2Ctype%2Curl";
 
+	private long id;
+	private long timestamp;
+	private long replyUserId;
+	private long conversationId;
+	private long repliedTweetId;
+	private long retweetId;
+	private String tweetText;
+	private String source;
+	private String mentions = "";
+	private String replyName = "";
+	private Location location;
+
+	private boolean retweeted;
+	private boolean favorited;
+	private boolean sensitive;
 	private int replyCount;
-	private Status tweetCompat;
+	private int retweetCount;
+	private int favoriteCount;
+
+	private User author;
+	private Status embedded;
 	private Metrics metrics;
 	private Poll poll;
-	private List<Card> cards = new LinkedList<>();
-	private long conversationId = -1L;
+	private Media[] medias = {};
+	private Card[] cards = {};
+
+	/**
+	 * @param json Tweet v2 json
+	 * @param currentId Id of the current user
+	 */
+	public TweetV2(JSONObject json, long currentId) throws JSONException {
+		this(json, null, currentId);
+	}
 
 	/**
 	 * @param json Tweet v2 json
 	 * @param tweetCompat Tweet containing base informations
+	 * @param currentId Id of the current user
 	 */
-	public TweetV2(JSONObject json, Status tweetCompat) throws JSONException {
+	public TweetV2(JSONObject json, @Nullable Status tweetCompat, long currentId) throws JSONException {
 		JSONObject data = json.getJSONObject("data");
-		JSONObject includes = json.optJSONObject("includes");
+		JSONObject includes = json.getJSONObject("includes");
 		JSONObject publicMetrics = data.getJSONObject("public_metrics");
 		JSONObject nonPublicMetrics = data.optJSONObject("non_public_metrics");
 		JSONObject entities = data.getJSONObject("entities");
+		JSONObject geoJson = data.optJSONObject("geo");
+		JSONArray mentionsJson = entities.optJSONArray("mentions");
+		JSONArray tweetReferences = data.optJSONArray("referenced_tweets");
+		JSONArray users = includes.getJSONArray("users");
 		JSONArray urls = entities.optJSONArray("urls");
+		JSONArray polls = includes.optJSONArray("polls");
+		JSONArray mediaArray = includes.optJSONArray("media");
+		String idStr = data.getString("id");
+		String textStr = data.optString("text", "");
+		String timeStr = data.optString("created_at", "");
+		String replyUserIdStr = data.optString("in_reply_to_user_id", "-1");
 		String conversationIdStr = data.optString("conversation_id", "-1");
+
+		author = new UserV2(users.getJSONObject(0), currentId);
 		replyCount = publicMetrics.getInt("reply_count");
+		retweetCount = publicMetrics.getInt("retweet_count");
+		favoriteCount = publicMetrics.getInt("like_count");
+		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);//fehler
+		source = data.optString("source", "unknown");
+		sensitive = data.optBoolean("possibly_sensitive", false);
+
+		// add attributes missing from API V2.0
+		if (tweetCompat != null) {
+			replyName = tweetCompat.getReplyName();
+			embedded = tweetCompat.getEmbeddedStatus();
+			retweeted = tweetCompat.isReposted();
+			favorited = tweetCompat.isFavorited();
+		}
+		// add poll
+		if (polls != null && polls.length() > 0) {
+			poll = new TweetPoll(polls.getJSONObject(0));
+		}
+		// add metrics
 		if (nonPublicMetrics != null) {
-			metrics = new MetricsV2(publicMetrics, nonPublicMetrics, tweetCompat.getId());
+			metrics = new MetricsV2(publicMetrics, nonPublicMetrics, id);
 		}
-		if (includes != null) {
-			JSONArray polls = includes.optJSONArray("polls");
-			if (polls != null && polls.length() > 0) {
-				poll = new TweetPoll(polls.getJSONObject(0));
+		// add mentioned usernames
+		if (mentionsJson != null && mentionsJson.length() > 0) {
+			StringBuilder builder = new StringBuilder();
+			for (int i = 0 ; i < mentionsJson.length() ; i++) {
+				JSONObject mentionJson = mentionsJson.getJSONObject(i);
+				builder.append('@').append(mentionJson.getString("username")).append(' ');
+			}
+			mentions = builder.toString();
+		}
+		// add location
+		if (geoJson != null) {
+			location = new LocationV2(geoJson);
+		}
+		// add media
+		if (mediaArray != null && mediaArray.length() > 0) {
+			medias = new Media[mediaArray.length()];
+			for (int i = 0; i < mediaArray.length() ; i++) {
+				JSONObject media = mediaArray.getJSONObject(i);
+				medias[i] = new MediaV2(media);
 			}
 		}
+		// expand urls
 		if (urls != null) {
-			for (int i = 0 ; i < urls.length() ; i++) {
+			// check for shortened urls and replace them with full urls
+			StringBuilder builder = new StringBuilder(textStr);
+			List<Card> cardsList = new LinkedList<>();
+			for (int i = urls.length() - 1; i >= 0; i--) {
+				// expand shortened links
+				JSONObject entry = urls.getJSONObject(i);
+				String link = entry.getString("expanded_url");
+				int start = entry.optInt("start", -1);
+				int end = entry.optInt("end", -1);
+				if (start >= 0 && end > start) {
+					int offset = StringTools.calculateIndexOffset(textStr, start);
+					builder.replace(start + offset, end + offset, link);
+				}
+				// create Twitter card
 				TwitterCard item = new TwitterCard(urls.getJSONObject(i));
-				if (!item.getUrl().startsWith("https://twitter.com"))
-					cards.add(item);
+				if (!item.getUrl().startsWith("https://twitter.com")) {
+					cardsList.add(item);
+				}
+			}
+			tweetText = StringTools.unescapeString(builder.toString());
+			cards = cardsList.toArray(cards);
+		} else {
+			tweetText = textStr;
+		}
+		// add references to other tweets
+		if (tweetReferences != null && tweetReferences.length() > 0) {
+			for (int i = 0 ; i < tweetReferences.length(); i++) {
+				JSONObject tweetReference = tweetReferences.getJSONObject(i);
+				String referenceType = tweetReference.optString("type", "");
+				try {
+					if (referenceType.equals("replied_to")) {
+						repliedTweetId = Long.parseLong(tweetReference.optString("id"));
+					} else if (referenceType.equals("retweeted")) {
+						retweetId = Long.parseLong(tweetReference.optString("id"));
+					}
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		if (!conversationIdStr.equals("null")) {
-			try {
+		// add IDs
+		try {
+			id = Long.parseLong(idStr);
+			replyUserId = Long.parseLong(replyUserIdStr);
+			if (!conversationIdStr.equals("null")) {
 				conversationId = Long.parseLong(conversationIdStr);
-			} catch (NumberFormatException e) {
-				throw new JSONException("Bad ID: " + conversationIdStr);
+			} else {
+				conversationId = -1L;
 			}
+		} catch (NumberFormatException e) {
+			throw new JSONException("Bad IDs: " + conversationIdStr + "," + idStr + "," + replyUserIdStr);
 		}
-		this.tweetCompat = tweetCompat;
 	}
 
 
 	@Override
 	public long getId() {
-		return tweetCompat.getId();
+		return id;
 	}
 
 
 	@Override
 	public String getText() {
-		return tweetCompat.getText();
+		return tweetText;
 	}
 
 
 	@Override
 	public User getAuthor() {
-		return tweetCompat.getAuthor();
+		return author;
 	}
 
 
 	@Override
 	public long getTimestamp() {
-		return tweetCompat.getTimestamp();
+		return timestamp;
 	}
 
 
 	@Override
 	public String getSource() {
-		return tweetCompat.getSource();
+		return source;
 	}
 
 
 	@Nullable
 	@Override
 	public Status getEmbeddedStatus() {
-		return tweetCompat.getEmbeddedStatus();
+		return embedded;
 	}
 
 
 	@Override
 	public String getReplyName() {
-		return tweetCompat.getReplyName();
+		return replyName;
 	}
 
 
 	@Override
 	public long getRepliedUserId() {
-		return tweetCompat.getRepliedUserId();
+		return replyUserId;
 	}
 
 
 	@Override
 	public long getRepliedStatusId() {
-		return tweetCompat.getRepliedStatusId();
+		return repliedTweetId;
 	}
 
 
@@ -141,19 +256,19 @@ public class TweetV2  implements Status {
 
 	@Override
 	public long getRepostId() {
-		return tweetCompat.getRepostId();
+		return retweetId;
 	}
 
 
 	@Override
 	public int getRepostCount() {
-		return tweetCompat.getRepostCount();
+		return retweetCount;
 	}
 
 
 	@Override
 	public int getFavoriteCount() {
-		return tweetCompat.getFavoriteCount();
+		return favoriteCount;
 	}
 
 
@@ -165,67 +280,60 @@ public class TweetV2  implements Status {
 
 	@NonNull
 	@Override
-	public Uri[] getMediaUris() {
-		return tweetCompat.getMediaUris();
+	public Media[] getMedia() {
+		return medias;
 	}
 
 
 	@Override
 	public String getUserMentions() {
-		return tweetCompat.getUserMentions();
-	}
-
-
-	@Override
-	public int getMediaType() {
-		return tweetCompat.getMediaType();
+		return mentions;
 	}
 
 
 	@Override
 	public boolean isSensitive() {
-		return tweetCompat.isSensitive();
+		return sensitive;
 	}
 
 
 	@Override
 	public boolean isReposted() {
-		return tweetCompat.isReposted();
+		return retweeted;
 	}
 
 
 	@Override
 	public boolean isFavorited() {
-		return tweetCompat.isFavorited();
+		return favorited;
 	}
 
 
 	@Override
 	public boolean isHidden() {
-		return tweetCompat.isHidden();
+		return false;
 	}
+
 
 	@Override
 	public String getLinkPath() {
-		return tweetCompat.getLinkPath();
+		if (!author.getScreenname().isEmpty()) {
+			String username = '/' + author.getScreenname().substring(1);
+			return username + "/status/" + id;
+		}
+		return "";
 	}
 
 
 	@Override
-	public String getLocationName() {
-		return tweetCompat.getLocationName();
-	}
-
-
-	@Override
-	public String getLocationCoordinates() {
-		return tweetCompat.getLocationCoordinates();
+	public Location getLocation() {
+		return location;
 	}
 
 
 	@Override
 	public Card[] getCards() {
-		return cards.toArray(new Card[0]);
+		return cards;
 	}
 
 
@@ -247,13 +355,13 @@ public class TweetV2  implements Status {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Status))
 			return false;
-		return ((Status) obj).getId() == tweetCompat.getId();
+		return ((Status) obj).getId() == id;
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return tweetCompat.toString();
+		return "id=" + id + " from=" + author;
 	}
 }

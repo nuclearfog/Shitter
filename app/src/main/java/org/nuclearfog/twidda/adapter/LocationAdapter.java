@@ -50,7 +50,7 @@ public class LocationAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int pos) {
-		return getItem(pos).getId();
+		return getItem(pos).getWorldId();
 	}
 
 
@@ -65,7 +65,7 @@ public class LocationAdapter extends BaseAdapter {
 		textItem.setBackgroundColor(settings.getCardColor());
 		textItem.setTextColor(settings.getFontColor());
 		textItem.setTypeface(settings.getTypeFace());
-		textItem.setText(locations.get(pos).getName());
+		textItem.setText(locations.get(pos).getFullName());
 		view.setBackgroundColor(settings.getBackgroundColor());
 		return view;
 	}

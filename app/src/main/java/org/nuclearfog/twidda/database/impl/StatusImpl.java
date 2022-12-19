@@ -2,14 +2,10 @@ package org.nuclearfog.twidda.database.impl;
 
 import static org.nuclearfog.twidda.database.AppDatabase.FAVORITE_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.HIDDEN_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_ANGIF_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_IMAGE_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_SENS_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_VIDEO_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.REPOST_MASK;
 
 import android.database.Cursor;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,12 +14,12 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
-
-import java.util.regex.Pattern;
 
 /**
  * Implementation of a database STATUS
@@ -33,8 +29,6 @@ import java.util.regex.Pattern;
 public class StatusImpl implements Status {
 
 	private static final long serialVersionUID = -5957556706939766801L;
-
-	private static final Pattern SEPARATOR = Pattern.compile(";");
 
 	private long id;
 	private long time;
@@ -46,18 +40,15 @@ public class StatusImpl implements Status {
 	@Nullable
 	private Status embedded;
 	private User author;
+	private Location location;
 	private int repostCount;
 	private int favoriteCount;
 	private int replyCount;
-	private int mediaType;
 	private int apiType;
-	private String locationName;
-	private String locationCoordinates;
 	private String replyName;
 	private String text;
 	private String source;
 	private String userMentions;
-	private String[] mediaLinks;
 	private boolean reposted;
 	private boolean favorited;
 	private boolean sensitive;
@@ -78,9 +69,9 @@ public class StatusImpl implements Status {
 		replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYNAME));
 		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYSTATUS));
 		source = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SOURCE));
-		String linkStr = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.MEDIA));
-		locationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.PLACE));
-		locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.COORDINATE));
+		String locationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.PLACE));
+		String locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.COORDINATE));
+		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REPOST_ID));
@@ -90,21 +81,8 @@ public class StatusImpl implements Status {
 		reposted = (register & REPOST_MASK) != 0;
 		sensitive = (register & MEDIA_SENS_MASK) != 0;
 		isHidden = (register & HIDDEN_MASK) != 0;
-		if (linkStr != null && !linkStr.isEmpty())
-			mediaLinks = SEPARATOR.split(linkStr);
-		else
-			mediaLinks = new String[0];
-		userMentions = StringTools.getUserMentions(text, author.getScreenname());
-		// get media type
-		if ((register & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK) {
-			mediaType = MEDIA_GIF;
-		} else if ((register & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK) {
-			mediaType = MEDIA_PHOTO;
-		} else if ((register & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK) {
-			mediaType = MEDIA_VIDEO;
-		} else {
-			mediaType = MEDIA_NONE;
-		}
+		if (locationCoordinates != null || locationName != null)
+			location = new LocationImpl(locationName, locationCoordinates);
 		apiType = account.getApiType();
 	}
 
@@ -196,23 +174,14 @@ public class StatusImpl implements Status {
 
 	@NonNull
 	@Override
-	public Uri[] getMediaUris() {
-		Uri[] result = new Uri[mediaLinks.length];
-		for (int i = 0; i < result.length; i++)
-			result[i] = Uri.parse(mediaLinks[i]);
-		return result;
+	public Media[] getMedia() {
+		return new Media[0]; // todo implement this in a separate table
 	}
 
 
 	@Override
 	public String getUserMentions() {
 		return userMentions;
-	}
-
-
-	@Override
-	public int getMediaType() {
-		return mediaType;
 	}
 
 
@@ -235,14 +204,8 @@ public class StatusImpl implements Status {
 
 
 	@Override
-	public String getLocationName() {
-		return locationName;
-	}
-
-
-	@Override
-	public String getLocationCoordinates() {
-		return locationCoordinates;
+	public Location getLocation() {
+		return location;
 	}
 
 

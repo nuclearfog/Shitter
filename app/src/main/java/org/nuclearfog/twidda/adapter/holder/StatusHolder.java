@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.adapter.StatusAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -173,23 +174,31 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			replyname.setVisibility(View.GONE);
 		}
 		if (settings.statusIndicatorsEnabled()) {
-			if (status.getLocationName() != null && !status.getLocationName().isEmpty()) {
+			// use first media item to determine icon
+			// todo add more icons for the case there are different media items
+			Media[] medias = status.getMedia();
+			if (medias.length > 0) {
+				Media item = medias[0];
+				if (item.getMediaType() == Media.PHOTO) {
+					media.setImageResource(R.drawable.image);
+					media.setVisibility(View.VISIBLE);
+				} else if (item.getMediaType() == Media.VIDEO) {
+					media.setImageResource(R.drawable.video);
+					media.setVisibility(View.VISIBLE);
+				} else if (item.getMediaType() == Media.GIF) {
+					media.setImageResource(R.drawable.gif);
+					media.setVisibility(View.VISIBLE);
+				} else {
+					media.setVisibility(View.GONE);
+				}
+				media.setColorFilter(settings.getIconColor());
+			} else {
+				media.setVisibility(View.GONE);
+			}
+			if (status.getLocation() != null) {
 				location.setVisibility(View.VISIBLE);
 			} else {
 				location.setVisibility(View.GONE);
-			}
-			if (status.getMediaType() != Status.MEDIA_NONE) {
-				if (status.getMediaType() == Status.MEDIA_PHOTO) {
-					media.setImageResource(R.drawable.image);
-				} else if (status.getMediaType() == Status.MEDIA_VIDEO) {
-					media.setImageResource(R.drawable.video);
-				} else if (status.getMediaType() == Status.MEDIA_GIF) {
-					media.setImageResource(R.drawable.gif);
-				}
-				media.setColorFilter(settings.getIconColor());
-				media.setVisibility(View.VISIBLE);
-			} else {
-				media.setVisibility(View.GONE);
 			}
 		} else {
 			location.setVisibility(View.GONE);

@@ -23,8 +23,7 @@ public class UserV2 implements User {
 	/**
 	 * extra parameters required to fetch additional data
 	 */
-	public static final String PARAMS = "user.fields=profile_image_url%2Cpublic_metrics%2Cverified" +
-			"%2Cprotected%2Cdescription%2Ccreated_at%2Curl%2Centities";
+	public static final String PARAMS = "profile_image_url%2Cpublic_metrics%2Cverified%2Cprotected%2Cdescription%2Ccreated_at%2Curl%2Centities";
 
 	private long id;
 	private long created;

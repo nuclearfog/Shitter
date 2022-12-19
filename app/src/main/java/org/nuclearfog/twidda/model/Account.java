@@ -69,7 +69,7 @@ public interface Account extends Serializable {
 	String getHostname();
 
 	/**
-	 * @return type of the ID {@link #API_TWITTER}
+	 * @return type of the ID {@link #API_TWITTER,#API_MASTODON}
 	 */
 	int getApiType();
 

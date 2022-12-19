@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,12 +9,12 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
-
-import java.util.Locale;
 
 /**
  * API v 1.1 implementation of a tweet
@@ -42,21 +40,13 @@ public class TweetV1 implements Status {
 	 */
 	public static final String INCL_ENTITIES = "include_entities=true";
 
-	/**
-	 * type of tweet location to use
-	 */
-	private static final String LOCATION_TYPE = "Point";
-
-	/**
-	 * twitter video/gif MIME
-	 */
-	private static final String MIME_V_MP4 = "video/mp4";
-
 	private long id;
 	private long timestamp;
 	private User author;
 	@Nullable
 	private Status embeddedTweet;
+	private Location location;
+	private Media[] medias = {};
 
 	private long retweetId;
 	private int retweetCount;
@@ -64,16 +54,12 @@ public class TweetV1 implements Status {
 	private boolean isSensitive;
 	private boolean isRetweeted;
 	private boolean isFavorited;
-	private String[] mediaLinks;
 	private String userMentions;
-	private String coordinates;
 	private String text;
 	private String source;
 
 	private long replyUserId;
 	private long replyTweetId;
-	private int mediaType = MEDIA_NONE;
-	private String location = "";
 	private String replyName = "";
 
 	/**
@@ -85,13 +71,14 @@ public class TweetV1 implements Status {
 		JSONObject locationJson = json.optJSONObject("place");
 		JSONObject currentUserJson = json.optJSONObject("current_user_retweet");
 		JSONObject embeddedTweetJson = json.optJSONObject("retweeted_status");
-		String retweetIdStr = "0";
+		JSONObject extEntities = json.optJSONObject("extended_entities");
 		String tweetIdStr = json.optString("id_str", "");
-		String replyName = json.optString("in_reply_to_screen_name", "");
+		String replyNameStr = json.optString("in_reply_to_screen_name", "");
 		String replyTweetIdStr = json.optString("in_reply_to_status_id_str", "0");
 		String replyUsrIdStr = json.optString("in_reply_to_user_id_str", "0");
-		String source = json.optString("source", "");
-		String text = createText(json);
+		String sourceStr = json.optString("source", "");
+		String textStr = createText(json);
+		String retweetIdStr = null;
 
 		author = new UserV1(json.getJSONObject("user"), twitterId);
 		retweetCount = json.optInt("retweet_count");
@@ -100,38 +87,48 @@ public class TweetV1 implements Status {
 		isRetweeted = json.optBoolean("retweeted");
 		isSensitive = json.optBoolean("possibly_sensitive");
 		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
-		coordinates = getLocation(json);
-		mediaLinks = addMedia(json);
-		userMentions = StringTools.getUserMentions(text, author.getScreenname());
-		this.source = Jsoup.parse(source).text();
-		try {
-			id = Long.parseLong(tweetIdStr);
-			if (currentUserJson != null)
-				retweetIdStr = currentUserJson.optString("id_str", "0");
-			if (!replyTweetIdStr.equals("null"))
-				replyTweetId = Long.parseLong(replyTweetIdStr);
-			if (!replyUsrIdStr.equals("null"))
-				replyUserId = Long.parseLong(replyUsrIdStr);
-			if (!retweetIdStr.equals("null"))
-				retweetId = Long.parseLong(retweetIdStr);
-		} catch (NumberFormatException e) {
-			throw new JSONException("bad IDs:" + tweetIdStr + "," + replyUsrIdStr + "," + retweetIdStr);
+		userMentions = StringTools.getUserMentions(textStr, author.getScreenname());
+		source = Jsoup.parse(sourceStr).text();
+
+		if (extEntities != null) {
+			JSONArray mediaArray = extEntities.optJSONArray("media");
+			if (mediaArray != null && mediaArray.length() > 0) {
+				medias = new Media[mediaArray.length()];
+				for (int i = 0; i < mediaArray.length() ; i++) {
+					JSONObject mediaItem = mediaArray.getJSONObject(0);
+					medias[i] = new MediaV1(mediaItem);
+				}
+			}
 		}
-		if (!replyName.isEmpty() && !replyName.equals("null")) {
-			this.replyName = '@' + replyName;
+		if (currentUserJson != null) {
+			retweetIdStr = currentUserJson.optString("id_str", "0");
 		}
-		if (locationJson != null) {
-			location = locationJson.optString("full_name", "");
+		if (!replyNameStr.isEmpty() && !replyNameStr.equals("null")) {
+			replyName = '@' + replyNameStr;
 		}
 		if (embeddedTweetJson != null) {
 			embeddedTweet = new TweetV1(embeddedTweetJson, twitterId);
 		}
+		if (locationJson != null) {
+			location = new LocationV1(locationJson);
+		}
 		// remove short media link
-		int linkPos = text.lastIndexOf("https://t.co/");
+		int linkPos = textStr.lastIndexOf("https://t.co/");
 		if (linkPos >= 0) {
-			this.text = text.substring(0, linkPos);
+			text = textStr.substring(0, linkPos);
 		} else {
-			this.text = text;
+			text = textStr;
+		}
+		try {
+			id = Long.parseLong(tweetIdStr);
+			if (retweetIdStr != null && !retweetIdStr.equals("null"))
+				retweetId = Long.parseLong(retweetIdStr);
+			if (!replyTweetIdStr.equals("null"))
+				replyTweetId = Long.parseLong(replyTweetIdStr);
+			if (!replyUsrIdStr.equals("null"))
+				replyUserId = Long.parseLong(replyUsrIdStr);
+		} catch (NumberFormatException e) {
+			throw new JSONException("bad ID:" + tweetIdStr + "," + replyUsrIdStr + "," + retweetIdStr);
 		}
 	}
 
@@ -225,23 +222,14 @@ public class TweetV1 implements Status {
 
 	@NonNull
 	@Override
-	public Uri[] getMediaUris() {
-		Uri[] result = new Uri[mediaLinks.length];
-		for (int i = 0; i < result.length; i++)
-			result[i] = Uri.parse(mediaLinks[i]);
-		return result;
+	public Media[] getMedia() {
+		return medias;
 	}
 
 
 	@Override
 	public String getUserMentions() {
 		return userMentions;
-	}
-
-
-	@Override
-	public int getMediaType() {
-		return mediaType;
 	}
 
 
@@ -264,14 +252,8 @@ public class TweetV1 implements Status {
 
 
 	@Override
-	public String getLocationName() {
+	public Location getLocation() {
 		return location;
-	}
-
-
-	@Override
-	public String getLocationCoordinates() {
-		return coordinates;
 	}
 
 
@@ -369,66 +351,6 @@ public class TweetV1 implements Status {
 	}
 
 	/**
-	 * add media links to tweet if any
-	 */
-	@NonNull
-	private String[] addMedia(JSONObject json) {
-		try {
-			JSONObject extEntities = json.getJSONObject("extended_entities");
-			JSONArray media = extEntities.getJSONArray("media");
-			if (media.length() > 0) {
-				// determine MIME type
-				JSONObject mediaItem = media.getJSONObject(0);
-				String mime = mediaItem.getString("type");
-				switch (mime) {
-					case "photo":
-						mediaType = MEDIA_PHOTO;
-						// get media URLs
-						String[] links = new String[media.length()];
-						for (int pos = 0; pos < media.length(); pos++) {
-							JSONObject item = media.getJSONObject(pos);
-							links[pos] = item.getString("media_url_https");
-						}
-						return links;
-
-					case "video":
-						mediaType = MEDIA_VIDEO;
-						int maxBitrate = -1;
-						links = new String[1];
-						JSONObject video = mediaItem.getJSONObject("video_info");
-						JSONArray videoVariants = video.getJSONArray("variants");
-						for (int pos = 0; pos < videoVariants.length(); pos++) {
-							JSONObject variant = videoVariants.getJSONObject(pos);
-							int bitRate = variant.optInt("bitrate", 0);
-							if (bitRate > maxBitrate && MIME_V_MP4.equals(variant.getString("content_type"))) {
-								links[0] = variant.getString("url");
-								maxBitrate = bitRate;
-							}
-						}
-						return links;
-
-					case "animated_gif":
-						mediaType = MEDIA_GIF;
-						links = new String[1];
-						JSONObject gif = mediaItem.getJSONObject("video_info");
-						JSONObject gifVariant = gif.getJSONArray("variants").getJSONObject(0);
-						if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
-							links[0] = gifVariant.getString("url");
-						}
-						return links;
-
-					default:
-						mediaType = MEDIA_NONE;
-						break;
-				}
-			}
-		} catch (JSONException e) {
-			// ignore, return empty array
-		}
-		return new String[0];
-	}
-
-	/**
 	 * read tweet and expand urls
 	 */
 	@NonNull
@@ -457,31 +379,5 @@ public class TweetV1 implements Status {
 			}
 		}
 		return StringTools.unescapeString(text);
-	}
-
-	/**
-	 * create location coordinate string to use for uri link
-	 *
-	 * @param json root tweet json
-	 * @return location uri scheme or empty string if tweet has no location information
-	 */
-	@NonNull
-	private String getLocation(JSONObject json) {
-		try {
-			JSONObject coordinateJson = json.optJSONObject("coordinates");
-			if (coordinateJson != null) {
-				if (LOCATION_TYPE.equals(coordinateJson.optString("type"))) {
-					JSONArray coordinateArray = coordinateJson.optJSONArray("coordinates");
-					if (coordinateArray != null && coordinateArray.length() == 2) {
-						double lon = coordinateArray.getDouble(0);
-						double lat = coordinateArray.getDouble(1);
-						return String.format(Locale.US, "%.6f,%.6f", lat, lon);
-					}
-				}
-			}
-		} catch (JSONException e) {
-			// use empty string
-		}
-		return "";
 	}
 }

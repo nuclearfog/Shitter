@@ -566,8 +566,8 @@ public class GlobalSettings {
 		this.location = location;
 
 		Editor edit = settings.edit();
-		edit.putInt(TREND_ID, location.getId());
-		edit.putString(TREND_LOC, location.getName());
+		edit.putInt(TREND_ID, location.getWorldId());
+		edit.putString(TREND_LOC, location.getFullName());
 		edit.apply();
 	}
 
@@ -912,6 +912,7 @@ public class GlobalSettings {
 		} else {
 			this.account = account;
 			loggedIn = true;
+			twitterAlt = false;
 			e.putBoolean(LOGGED_IN, true);
 			e.putLong(CURRENT_ID, account.getId());
 			e.putString(OAUTH_TOKEN, account.getOauthToken());
@@ -927,7 +928,6 @@ public class GlobalSettings {
 			notifySettingsChange();
 		}
 	}
-
 
 	/**
 	 * register settings listener

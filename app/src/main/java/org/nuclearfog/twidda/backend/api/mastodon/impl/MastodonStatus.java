@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,6 +9,8 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
@@ -34,13 +34,11 @@ public class MastodonStatus implements Status {
 	private boolean favorited, reblogged, sensitive;
 
 	private String text, source, mentions;
-	private String[] mediaLinks;
 
 	private User author;
 	private Card[] cards;
+	private Media[] medias;
 	private Poll poll;
-
-	private int mediaType = MEDIA_NONE;
 
 	/**
 	 * @param json          Mastodon status json object
@@ -51,6 +49,7 @@ public class MastodonStatus implements Status {
 		JSONObject cardJson = json.optJSONObject("card");
 		JSONObject pollJson = json.optJSONObject("poll");
 		JSONArray mentionsJson = json.optJSONArray("mentions");
+		JSONArray mediaArray = json.optJSONArray("media_attachments");
 		String idStr = json.getString("id");
 		String replyIdStr = json.optString("in_reply_to_id", "0");
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
@@ -65,10 +64,16 @@ public class MastodonStatus implements Status {
 		text = json.optString("content", "");
 		text = Jsoup.parse(text).text();
 		sensitive = json.optBoolean("sensitive", false);
-		mediaLinks = getMediaLinks(json);
 
 		if (pollJson != null) {
 			poll = new MastodonPoll(pollJson);
+		}
+		if (mediaArray != null && mediaArray.length() > 0) {
+			medias = new Media[mediaArray.length()];
+			for (int i = 0; i < mediaArray.length(); i++) {
+				JSONObject mediaItem = mediaArray.getJSONObject(i);
+				medias[i] = new MastodonMedia(mediaItem);
+			}
 		}
 		if (mentionsJson != null) {
 			StringBuilder mentionsBuilder = new StringBuilder();
@@ -189,23 +194,14 @@ public class MastodonStatus implements Status {
 
 	@NonNull
 	@Override
-	public Uri[] getMediaUris() {
-		Uri[] result = new Uri[mediaLinks.length];
-		for (int i = 0; i < result.length; i++)
-			result[i] = Uri.parse(mediaLinks[i]);
-		return result;
+	public Media[] getMedia() {
+		return medias;
 	}
 
 
 	@Override
 	public String getUserMentions() {
 		return mentions;
-	}
-
-
-	@Override
-	public int getMediaType() {
-		return mediaType;
 	}
 
 
@@ -243,14 +239,9 @@ public class MastodonStatus implements Status {
 
 
 	@Override
-	public String getLocationName() {
-		return "";
-	}
-
-
-	@Override
-	public String getLocationCoordinates() {
-		return "";
+	@Nullable
+	public Location getLocation() {
+		return null; // todo add implementation
 	}
 
 
@@ -287,40 +278,5 @@ public class MastodonStatus implements Status {
 		if (!(obj instanceof Status))
 			return false;
 		return ((Status) obj).getId() == id;
-	}
-
-	/**
-	 * get medialinks from json
-	 *
-	 * @return media link array
-	 */
-	private String[] getMediaLinks(JSONObject json) {
-		try {
-			JSONArray attachments = json.getJSONArray("media_attachments");
-			String[] result = new String[attachments.length()];
-			if (result.length > 0) {
-				String type = attachments.getJSONObject(0).getString("type");
-				switch (type) {
-					case "image":
-						mediaType = MEDIA_PHOTO;
-						break;
-
-					case "gifv":
-						mediaType = MEDIA_GIF;
-						break;
-
-					case "video":
-						mediaType = MEDIA_VIDEO;
-						break;
-				}
-				for (int i = 0; i < result.length; i++) {
-					JSONObject item = attachments.getJSONObject(i);
-					result[i] = item.optString("url", "");
-				}
-			}
-			return result;
-		} catch (JSONException e) {
-			return new String[0];
-		}
 	}
 }

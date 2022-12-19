@@ -60,6 +60,8 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -330,7 +332,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// add media link items
 		// check if menu doesn't contain media links already
 		if (copyMenu.size() == 2) {
-			int mediaCount = status.getMediaUris().length;
+			int mediaCount = status.getMedia().length;
 			for (int i = 0; i < mediaCount; i++) {
 				// create sub menu entry and use array index as item ID
 				String text = getString(R.string.menu_media_link) + ' ' + (i + 1);
@@ -398,10 +400,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// copy media links
 		else if (item.getGroupId() == MENU_GROUP_COPY) {
 			int index = item.getItemId();
-			Uri[] mediaLinks = status.getMediaUris();
-			if (index >= 0 && index < mediaLinks.length) {
+			Media[] medias = status.getMedia();
+			if (index >= 0 && index < medias.length) {
 				if (clip != null) {
-					ClipData linkClip = ClipData.newPlainText("status media link", mediaLinks[index].toString());
+					ClipData linkClip = ClipData.newPlainText("status media link", medias[index].getUrl());
 					clip.setPrimaryClip(linkClip);
 					Toast.makeText(this, R.string.info_tweet_medialink_copied, LENGTH_SHORT).show();
 				}
@@ -455,42 +457,50 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// open status location coordinates
 			else if (v.getId() == R.id.page_status_location_coordinates) {
-				Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-				locationIntent.setData(Uri.parse("geo:" + status.getLocationCoordinates() + "?z=14"));
-				try {
-					startActivity(locationIntent);
-				} catch (ActivityNotFoundException err) {
-					Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
+				if (status.getLocation() != null) {
+					Intent locationIntent = new Intent(Intent.ACTION_VIEW);
+					locationIntent.setData(Uri.parse("geo:" + status.getLocation().getCoordinates() + "?z=14"));
+					try {
+						startActivity(locationIntent);
+					} catch (ActivityNotFoundException err) {
+						Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
+					}
 				}
 			}
 			// open status media
 			else if (v.getId() == R.id.page_status_media_attach) {
-				// open embedded image links
-				if (status.getMediaType() == Status.MEDIA_PHOTO) {
-					Intent mediaIntent = new Intent(this, ImageViewer.class);
-					mediaIntent.putExtra(ImageViewer.IMAGE_URIS, status.getMediaUris());
-					mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
-					startActivity(mediaIntent);
-				}
-				// open embedded video link
-				else if (status.getMediaType() == Status.MEDIA_VIDEO) {
-					if (!settings.isProxyEnabled() || (settings.isProxyEnabled() && settings.ignoreProxyWarning())) {
-						Uri link = status.getMediaUris()[0];
-						Intent mediaIntent = new Intent(this, VideoViewer.class);
-						mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
-						mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-						startActivity(mediaIntent);
-					} else {
-						confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
+				Media[] mediaItem = status.getMedia();
+				if (mediaItem.length > 0) {
+					int mediaType = mediaItem[0].getMediaType();
+					Uri[] uris = new Uri[mediaItem.length];
+					for (int i = 0 ; i < uris.length ; i++) {
+						uris[i] = Uri.parse(mediaItem[i].getUrl());
 					}
-				}
-				// open embedded gif link
-				else if (status.getMediaType() == Status.MEDIA_GIF) {
-					Uri link = status.getMediaUris()[0];
-					Intent mediaIntent = new Intent(this, VideoViewer.class);
-					mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
-					mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
-					startActivity(mediaIntent);
+					// open embedded image links
+					if (mediaType == Media.PHOTO) {
+						Intent mediaIntent = new Intent(this, ImageViewer.class);
+						mediaIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
+						mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+						startActivity(mediaIntent);
+					}
+					// open embedded video link
+					else if (mediaType == Media.VIDEO) {
+						if (!settings.isProxyEnabled() || (settings.isProxyEnabled() && settings.ignoreProxyWarning())) {
+							Intent mediaIntent = new Intent(this, VideoViewer.class);
+							mediaIntent.putExtra(VideoViewer.VIDEO_URI, uris[0]);
+							mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+							startActivity(mediaIntent);
+						} else {
+							confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
+						}
+					}
+					// open embedded gif link
+					else if (mediaType == Media.GIF) {
+						Intent mediaIntent = new Intent(this, VideoViewer.class);
+						mediaIntent.putExtra(VideoViewer.VIDEO_URI, uris[0]);
+						mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+						startActivity(mediaIntent);
+					}
 				}
 			}
 			// go to user reposting this status
@@ -543,13 +553,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// copy status coordinates
 			else if (v.getId() == R.id.page_status_location_coordinates) {
-				if (clip != null) {
-					ClipData linkClip;
-					Status embeddedStatus = status.getEmbeddedStatus();
-					if (embeddedStatus != null)
-						linkClip = ClipData.newPlainText("Status location coordinates", embeddedStatus.getLocationCoordinates());
-					else
-						linkClip = ClipData.newPlainText("Status location coordinates", status.getLocationCoordinates());
+				Location location;
+				if (status.getEmbeddedStatus() != null) {
+					location = status.getEmbeddedStatus().getLocation();
+				} else {
+					location = status.getLocation();
+				}
+				if (clip != null && location != null) {
+					ClipData linkClip = ClipData.newPlainText("Status location coordinates", location.getCoordinates());
 					clip.setPrimaryClip(linkClip);
 					Toast.makeText(this, R.string.info_tweet_location_copied, LENGTH_SHORT).show();
 				}
@@ -574,11 +585,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// confirm playing video without proxy
 			else if (type == ConfirmDialog.PROXY_CONFIRM) {
 				settings.setIgnoreProxyWarning(rememberChoice);
-				Uri link = status.getMediaUris()[0];
-				Intent mediaIntent = new Intent(this, VideoViewer.class);
-				mediaIntent.putExtra(VideoViewer.VIDEO_URI, link);
-				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-				startActivity(mediaIntent);
+				Media[] mediaItems = status.getMedia();
+				if (mediaItems.length > 0) {
+					Uri uri = Uri.parse(mediaItems[0].getUrl());
+					Intent mediaIntent = new Intent(this, VideoViewer.class);
+					mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
+					mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+					startActivity(mediaIntent);
+				}
 			}
 		}
 	}
@@ -654,6 +668,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			repostName.setVisibility(GONE);
 		}
 		User author = status.getAuthor();
+		Location location = status.getLocation();
 		invalidateOptionsMenu();
 
 		NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
@@ -709,26 +724,30 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			sensitive_media.setVisibility(GONE);
 		}
-		switch (status.getMediaType()) {
-			case Status.MEDIA_PHOTO:
-				mediaButton.setVisibility(VISIBLE);
-				mediaButton.setImageResource(R.drawable.image);
-				break;
+		if (status.getMedia().length > 0) {
+			Media mediaItem = status.getMedia()[0];
+			switch (mediaItem.getMediaType()) {
+				case Media.PHOTO:
+					mediaButton.setVisibility(VISIBLE);
+					mediaButton.setImageResource(R.drawable.image);
+					break;
 
-			case Status.MEDIA_VIDEO:
-				mediaButton.setVisibility(VISIBLE);
-				mediaButton.setImageResource(R.drawable.video);
-				break;
+				case Media.VIDEO:
+					mediaButton.setVisibility(VISIBLE);
+					mediaButton.setImageResource(R.drawable.video);
+					break;
 
-			case Status.MEDIA_GIF:
-				mediaButton.setVisibility(VISIBLE);
-				mediaButton.setImageResource(R.drawable.gif);
-				break;
+				case Media.GIF:
+					mediaButton.setVisibility(VISIBLE);
+					mediaButton.setImageResource(R.drawable.gif);
+					break;
 
-			default:
-				mediaButton.setVisibility(GONE);
-				mediaButton.setImageResource(0);
-				break;
+				default:
+					mediaButton.setVisibility(GONE);
+					break;
+			}
+		} else {
+			mediaButton.setVisibility(GONE);
 		}
 		AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
 		String profileImageUrl = author.getProfileImageThumbnailUrl();
@@ -738,18 +757,21 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			profileImage.setImageResource(0);
 		}
-		String placeName = status.getLocationName();
-		if (placeName != null && !placeName.isEmpty()) {
-			locationName.setVisibility(VISIBLE);
-			locationName.setText(placeName);
+		if (location != null) {
+			if (!location.getPlace().isEmpty()) {
+				locationName.setVisibility(VISIBLE);
+				locationName.setText(location.getFullName());
+			} else {
+				locationName.setVisibility(GONE);
+			}
+			if (!location.getCoordinates().isEmpty()) {
+				coordinates.setVisibility(VISIBLE);
+				coordinates.setText(location.getCoordinates());
+			} else {
+				coordinates.setVisibility(GONE);
+			}
 		} else {
 			locationName.setVisibility(GONE);
-		}
-		String location = status.getLocationCoordinates();
-		if (!location.isEmpty()) {
-			coordinates.setVisibility(VISIBLE);
-			coordinates.setText(location);
-		} else {
 			coordinates.setVisibility(GONE);
 		}
 		if (rtwButton.getVisibility() != VISIBLE) {

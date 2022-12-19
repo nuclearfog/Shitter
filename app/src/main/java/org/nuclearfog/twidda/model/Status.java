@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.model;
 
-import android.net.Uri;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
@@ -13,26 +10,6 @@ import java.io.Serializable;
  * @author nuclearfog
  */
 public interface Status extends Serializable {
-
-	/**
-	 * returned when the status doesn't contain any media
-	 */
-	int MEDIA_NONE = -1;
-
-	/**
-	 * returned when the status contains one or more images
-	 */
-	int MEDIA_PHOTO = 800;
-
-	/**
-	 * returned when the status contains a video
-	 */
-	int MEDIA_VIDEO = 801;
-
-	/**
-	 * returned when the status contains an animated gif
-	 */
-	int MEDIA_GIF = 802;
 
 	/**
 	 * @return status ID
@@ -106,20 +83,9 @@ public interface Status extends Serializable {
 	int getReplyCount();
 
 	/**
-	 * @return media links (up to 4) to images and videos
-	 */
-	@NonNull
-	Uri[] getMediaUris();
-
-	/**
 	 * @return mentioned user names in the status text
 	 */
 	String getUserMentions();
-
-	/**
-	 * @return MIME type of media attached to the status
-	 */
-	int getMediaType();
 
 	/**
 	 * @return true if status contains sensitive media
@@ -147,19 +113,20 @@ public interface Status extends Serializable {
 	String getLinkPath();
 
 	/**
-	 * @return name of the location if attached
-	 */
-	String getLocationName();
-
-	/**
-	 * @return GPS coordinates if attached
-	 */
-	String getLocationCoordinates();
-
-	/**
 	 * @return cards representing link previews
 	 */
 	Card[] getCards();
+
+	/**
+	 * @return media links (up to 4) to images and videos
+	 */
+	Media[] getMedia();
+
+	/**
+	 * @return name of the location if attached
+	 */
+	@Nullable
+	Location getLocation();
 
 	/**
 	 * @return status poll or null if not exists

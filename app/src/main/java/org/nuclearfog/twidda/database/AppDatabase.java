@@ -15,7 +15,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
@@ -71,21 +70,6 @@ public class AppDatabase {
 	 * flag indicates that a status exists in the reply of a status
 	 */
 	public static final int STATUS_REPLY_MASK = 1 << 5;
-
-	/**
-	 * flag indicates that a status contains images
-	 */
-	public static final int MEDIA_IMAGE_MASK = 1 << 6;
-
-	/**
-	 * flag indicates that a status contains a video
-	 */
-	public static final int MEDIA_VIDEO_MASK = 2 << 6;
-
-	/**
-	 * flag indicates that a status contains a gif
-	 */
-	public static final int MEDIA_ANGIF_MASK = 3 << 6;
 
 	/**
 	 * flag indicates that a status contains sensitive media
@@ -373,7 +357,7 @@ public class AppDatabase {
 	 * @param trends List of Trends
 	 */
 	public void saveTrends(List<Trend> trends) {
-		String[] args = {Integer.toString(settings.getTrendLocation().getId())};
+		String[] args = {Integer.toString(settings.getTrendLocation().getWorldId())};
 		SQLiteDatabase db = getDbWrite();
 		db.delete(TrendTable.NAME, TREND_SELECT, args);
 		for (Trend trend : trends) {
@@ -698,7 +682,7 @@ public class AppDatabase {
 	 * @return list of trends
 	 */
 	public List<Trend> getTrends() {
-		String[] args = {Integer.toString(settings.getTrendLocation().getId())};
+		String[] args = {Integer.toString(settings.getTrendLocation().getWorldId())};
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, TREND_ORDER);
 		List<Trend> trends = new LinkedList<>();
@@ -902,15 +886,7 @@ public class AppDatabase {
 		} else {
 			statusFlags &= ~MEDIA_SENS_MASK;
 		}
-		if (status.getMediaType() == Status.MEDIA_PHOTO) {
-			statusFlags |= MEDIA_IMAGE_MASK;
-		} else if (status.getMediaType() == Status.MEDIA_VIDEO) {
-			statusFlags |= MEDIA_VIDEO_MASK;
-		} else if (status.getMediaType() == Status.MEDIA_GIF) {
-			statusFlags |= MEDIA_ANGIF_MASK;
-		}
 		ContentValues statusUpdate = new ContentValues(16);
-		statusUpdate.put(StatusTable.MEDIA, getMediaLinks(status));
 		statusUpdate.put(StatusTable.ID, status.getId());
 		statusUpdate.put(StatusTable.USER, user.getId());
 		statusUpdate.put(StatusTable.SINCE, status.getTimestamp());
@@ -921,14 +897,14 @@ public class AppDatabase {
 		statusUpdate.put(StatusTable.REPOST, status.getRepostCount());
 		statusUpdate.put(StatusTable.FAVORITE, status.getFavoriteCount());
 		statusUpdate.put(StatusTable.REPLYUSER, status.getRepliedUserId());
-		statusUpdate.put(StatusTable.PLACE, status.getLocationName());
-		statusUpdate.put(StatusTable.COORDINATE, status.getLocationCoordinates());
 		statusUpdate.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		statusUpdate.put(StatusTable.REPLYNAME, status.getReplyName());
 		statusUpdate.put(StatusTable.CONVERSATION, status.getConversationId());
-
+		if (status.getLocation() != null) {
+			statusUpdate.put(StatusTable.PLACE, status.getLocation().getPlace());
+			statusUpdate.put(StatusTable.COORDINATE, status.getLocation().getCoordinates());
+		}
 		db.insertWithOnConflict(StatusTable.NAME, "", statusUpdate, CONFLICT_REPLACE);
-
 		saveUser(user, db, CONFLICT_IGNORE);
 		saveStatusRegister(db, status, statusFlags);
 	}
@@ -959,7 +935,6 @@ public class AppDatabase {
 		statusUpdate.put(StatusTable.REPOST, status.getRepostCount());
 		statusUpdate.put(StatusTable.FAVORITE, status.getFavoriteCount());
 		statusUpdate.put(StatusTable.REPLYNAME, status.getReplyName());
-		statusUpdate.put(StatusTable.MEDIA, getMediaLinks(status));
 
 		ContentValues userUpdate = new ContentValues(9);
 		userUpdate.put(UserTable.USERNAME, user.getUsername());
@@ -1087,18 +1062,5 @@ public class AppDatabase {
 	private synchronized void commit(SQLiteDatabase db) {
 		db.setTransactionSuccessful();
 		db.endTransaction();
-	}
-
-	/**
-	 * create string where media links are separated by ' ; '
-	 *
-	 * @param status status information
-	 * @return String of media links
-	 */
-	private String getMediaLinks(Status status) {
-		StringBuilder media = new StringBuilder();
-		for (Uri link : status.getMediaUris())
-			media.append(link.toString()).append(";");
-		return media.toString();
 	}
 }

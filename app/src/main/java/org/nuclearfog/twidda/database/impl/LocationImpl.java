@@ -14,40 +14,80 @@ public class LocationImpl implements Location {
 
 	private static final long serialVersionUID = 3719416358210741464L;
 
-	private int id;
-	private String name;
+	private int worldId = -1;
+	private String name = "";
+	private String coordinates = "";
 
 	/**
-	 * construct location object from local
-	 *
-	 * @param placeName name of locale
-	 * @param worldId   woe id
+	 * @param name place name
+	 * @param worldId   world id
 	 */
-	public LocationImpl(String placeName, int worldId) {
-		this.name = placeName;
-		this.id = worldId;
+	public LocationImpl(String name, int worldId) {
+		this.name = name;
+		this.worldId = worldId;
 	}
 
+	/**
+	 * @param name place name
+	 * @param coordinates comma separated gps coordinates
+	 */
+	public LocationImpl(String name, String coordinates) {
+		if (name != null) {
+			this.name = name;
+		}
+		if (coordinates != null) {
+			this.coordinates = coordinates;
+		}
+	}
+
+
 	@Override
-	public String getName() {
+	public String getFullName() {
 		return name;
 	}
 
+
 	@Override
-	public int getId() {
-		return id;
+	public long getId() {
+		return 0;
 	}
+
+
+	@Override
+	public int getWorldId() {
+		return worldId;
+	}
+
+
+	@Override
+	public String getCountry() {
+		return "";
+	}
+
+
+	@Override
+	public String getPlace() {
+		return "";
+	}
+
+
+	@Override
+	public String getCoordinates() {
+		return coordinates;
+	}
+
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Location))
 			return false;
-		return ((Location) obj).getId() == id;
+		return ((Location) obj).getWorldId() == worldId;
 	}
+
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + id + " name=\"" + name + "\"";
+		return "id=" + worldId + " name=\"" + name + "\"";
 	}
 }
