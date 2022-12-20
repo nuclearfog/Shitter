@@ -502,7 +502,7 @@ public class AppDatabase {
 	/**
 	 * get user information
 	 *
-	 * @param userId ID of user
+	 * @param userId  ID of user
 	 * @param account current user information
 	 * @return user information or null if not found
 	 */

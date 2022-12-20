@@ -37,7 +37,7 @@ public class MediaV1 implements Media {
 
 			case "video":
 				int maxBitrate = -1;
-				JSONArray videoVariants = json.getJSONArray("variants");
+				JSONArray videoVariants = json.getJSONObject("video_info").getJSONArray("variants");
 				for (int i = 0; i < videoVariants.length(); i++) {
 					JSONObject variant = videoVariants.getJSONObject(i);
 					int bitRate = variant.optInt("bitrate", 0);
@@ -51,7 +51,7 @@ public class MediaV1 implements Media {
 
 			case "animated_gif":
 				JSONArray gifVariants = json.getJSONArray("variants");
-				for (int i = 0; i < gifVariants.length() ; i++) {
+				for (int i = 0; i < gifVariants.length(); i++) {
 					JSONObject gifVariant = gifVariants.getJSONObject(i);
 					if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
 						url = gifVariant.getString("url");

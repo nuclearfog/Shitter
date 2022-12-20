@@ -391,7 +391,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getUserTimeline(long id, long minId, long maxId) throws MastodonException {
-		String endpoint =  ENDPOINT_USER_TIMELINE + id + "/statuses";
+		String endpoint = ENDPOINT_USER_TIMELINE + id + "/statuses";
 		return getStatuses(endpoint, new ArrayList<>(), minId, maxId);
 	}
 
@@ -825,7 +825,7 @@ public class Mastodon implements Connection {
 	 * create userlists from GET endpoint
 	 *
 	 * @param endpoint userlist endpoint
-	 * @param params additional parameters
+	 * @param params   additional parameters
 	 * @return userlists
 	 */
 	private UserLists getUserLists(String endpoint, List<String> params) throws MastodonException {
@@ -836,7 +836,7 @@ public class Mastodon implements Connection {
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONArray(body.string());
 				UserLists result = new UserLists(0L, 0L);// todo add pagination
-				for (int i = 0 ; i  < array.length(); i++) {
+				for (int i = 0; i < array.length(); i++) {
 					result.add(new MastodonList(array.getJSONObject(i)));
 				}
 				return result;
@@ -1135,7 +1135,7 @@ public class Mastodon implements Connection {
 	/**
 	 * create requestbody with upload stream
 	 *
-	 * @param is input stream to upload a file
+	 * @param is       input stream to upload a file
 	 * @param addToKey upload stream key
 	 * @return request body
 	 */

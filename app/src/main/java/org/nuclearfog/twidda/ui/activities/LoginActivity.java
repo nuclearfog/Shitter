@@ -246,8 +246,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			// check if user clicked on PIN button
 			if (loginLink == null) {
 				Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
-			}
-			else if (code.isEmpty()) {
+			} else if (code.isEmpty()) {
 				pinInput.setError(getString(R.string.error_enter_code));
 			}
 			// login to Twitter

@@ -1485,7 +1485,8 @@ public class Twitter implements Connection {
 
 	/**
 	 * mute a status from conversation
-	 * @param id ID of the status
+	 *
+	 * @param id   ID of the status
 	 * @param hide true to hide the status
 	 */
 	private void muteStatus(long id, boolean hide) throws TwitterException {

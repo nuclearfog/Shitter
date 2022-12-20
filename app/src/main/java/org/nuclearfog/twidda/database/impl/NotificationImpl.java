@@ -28,7 +28,7 @@ public class NotificationImpl implements Notification {
 	private Status status;
 
 	/**
-	 * @param cursor database cursor containing Notification table column
+	 * @param cursor  database cursor containing Notification table column
 	 * @param account current user information
 	 */
 	public NotificationImpl(Cursor cursor, Account account) {

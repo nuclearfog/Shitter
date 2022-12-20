@@ -17,11 +17,12 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.PreviewAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 
 /**
- * adapter item for {@link org.nuclearfog.twidda.adapter.CardAdapter}
+ * adapter item for {@link PreviewAdapter}
  *
  * @author nuclearfog
  */
@@ -126,7 +127,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 		int TYPE_IMAGE = 2;
 
 		/**
-		 * @param pos index of the item
+		 * @param pos  index of the item
 		 * @param type type of click {@link #TYPE_IMAGE,#TYPE_LINK}
 		 */
 		void onItemClick(int pos, int type);

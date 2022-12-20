@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class TweetV2  implements Status {
+public class TweetV2 implements Status {
 
 	private static final long serialVersionUID = -2740140825640061692L;
 
@@ -51,12 +51,12 @@ public class TweetV2  implements Status {
 	/**
 	 * fields to add twitter poll object
 	 */
-	public static final String FIELDS_POLL ="duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
+	public static final String FIELDS_POLL = "duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
 
 	/**
 	 * fields to add extra media information
 	 */
-	public static final String FIELDS_MEDIA = "media_key%2Cpreview_image_url%2Ctype%2Curl";
+	public static final String FIELDS_MEDIA = MediaV2.FIELDS_MEDIA;
 
 	private long id;
 	private long timestamp;
@@ -85,7 +85,7 @@ public class TweetV2  implements Status {
 	private Card[] cards = {};
 
 	/**
-	 * @param json Tweet v2 json
+	 * @param json      Tweet v2 json
 	 * @param currentId Id of the current user
 	 */
 	public TweetV2(JSONObject json, long currentId) throws JSONException {
@@ -93,9 +93,9 @@ public class TweetV2  implements Status {
 	}
 
 	/**
-	 * @param json Tweet v2 json
+	 * @param json        Tweet v2 json
 	 * @param tweetCompat Tweet containing base informations
-	 * @param currentId Id of the current user
+	 * @param currentId   Id of the current user
 	 */
 	public TweetV2(JSONObject json, @Nullable Status tweetCompat, long currentId) throws JSONException {
 		JSONObject data = json.getJSONObject("data");
@@ -142,7 +142,7 @@ public class TweetV2  implements Status {
 		// add mentioned usernames
 		if (mentionsJson != null && mentionsJson.length() > 0) {
 			StringBuilder builder = new StringBuilder();
-			for (int i = 0 ; i < mentionsJson.length() ; i++) {
+			for (int i = 0; i < mentionsJson.length(); i++) {
 				JSONObject mentionJson = mentionsJson.getJSONObject(i);
 				builder.append('@').append(mentionJson.getString("username")).append(' ');
 			}
@@ -155,7 +155,7 @@ public class TweetV2  implements Status {
 		// add media
 		if (mediaArray != null && mediaArray.length() > 0) {
 			medias = new Media[mediaArray.length()];
-			for (int i = 0; i < mediaArray.length() ; i++) {
+			for (int i = 0; i < mediaArray.length(); i++) {
 				JSONObject media = mediaArray.getJSONObject(i);
 				medias[i] = new MediaV2(media);
 			}
@@ -169,15 +169,16 @@ public class TweetV2  implements Status {
 				// expand shortened links
 				JSONObject entry = urls.getJSONObject(i);
 				String link = entry.getString("expanded_url");
+				String mediaKey = entry.optString("media_key", "");
 				int start = entry.optInt("start", -1);
 				int end = entry.optInt("end", -1);
 				if (start >= 0 && end > start) {
 					int offset = StringTools.calculateIndexOffset(textStr, start);
 					builder.replace(start + offset, end + offset, link);
 				}
-				// create Twitter card
-				TwitterCard item = new TwitterCard(urls.getJSONObject(i));
-				if (!item.getUrl().startsWith("https://twitter.com")) {
+				// create Twitter card if link is not a media link
+				if (mediaKey.isEmpty()) {
+					TwitterCard item = new TwitterCard(urls.getJSONObject(i));
 					cardsList.add(item);
 				}
 			}
@@ -188,7 +189,7 @@ public class TweetV2  implements Status {
 		}
 		// add references to other tweets
 		if (tweetReferences != null && tweetReferences.length() > 0) {
-			for (int i = 0 ; i < tweetReferences.length(); i++) {
+			for (int i = 0; i < tweetReferences.length(); i++) {
 				JSONObject tweetReference = tweetReferences.getJSONObject(i);
 				String referenceType = tweetReference.optString("type", "");
 				try {

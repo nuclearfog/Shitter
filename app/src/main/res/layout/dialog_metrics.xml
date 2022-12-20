@@ -20,7 +20,7 @@
 		android:text="@string/status_metrics_title"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 
 	<ImageView
@@ -43,7 +43,7 @@
 		android:gravity="end"
 		app:layout_constraintStart_toEndOf="@id/dialog_metrics_views_icon"
 		app:layout_constraintTop_toBottomOf="@id/dialog_metrics_title"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<ImageView
 		android:id="@+id/metrics_profile_clicks_icon"
@@ -53,7 +53,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="@id/dialog_metrics_profile_clicks"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_metrics_profile_clicks"
-		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_profile_clicks"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_profile_clicks" />
 
 	<TextView
 		android:id="@+id/dialog_metrics_profile_clicks"
@@ -65,7 +65,7 @@
 		android:gravity="end"
 		app:layout_constraintStart_toEndOf="@id/metrics_profile_clicks_icon"
 		app:layout_constraintTop_toBottomOf="@id/dialog_metrics_views"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<ImageView
 		android:id="@+id/dialog_metrics_link_clicks_icon"
@@ -75,7 +75,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="@id/dialog_metrics_link_clicks"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_metrics_link_clicks"
-		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_link_clicks"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_link_clicks" />
 
 	<TextView
 		android:id="@+id/dialog_metrics_link_clicks"
@@ -87,7 +87,7 @@
 		android:gravity="end"
 		app:layout_constraintStart_toEndOf="@id/dialog_metrics_link_clicks_icon"
 		app:layout_constraintTop_toBottomOf="@id/dialog_metrics_profile_clicks"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<ImageView
 		android:id="@+id/dialog_metrics_quotes_icon"
@@ -97,7 +97,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="@id/dialog_metrics_quotes"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_metrics_quotes"
-		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_quotes"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_quotes" />
 
 	<TextView
 		android:id="@+id/dialog_metrics_quotes"
@@ -109,7 +109,7 @@
 		android:gravity="end"
 		app:layout_constraintStart_toEndOf="@id/dialog_metrics_quotes_icon"
 		app:layout_constraintTop_toBottomOf="@id/dialog_metrics_link_clicks"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<ImageView
 		android:id="@+id/dialog_metrics_video_view_icon"
@@ -119,7 +119,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="@id/dialog_metrics_video_view"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_metrics_video_view"
-		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_video_view"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_metrics_video_view" />
 
 	<TextView
 		android:id="@+id/dialog_metrics_video_view"
@@ -131,6 +131,6 @@
 		android:gravity="end"
 		app:layout_constraintStart_toEndOf="@id/dialog_metrics_video_view_icon"
 		app:layout_constraintTop_toBottomOf="@id/dialog_metrics_quotes"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

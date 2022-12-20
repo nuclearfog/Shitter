@@ -28,7 +28,7 @@ public class MessageImpl implements Message {
 	private String media;
 
 	/**
-	 * @param cursor    database cursor containing UserTable column
+	 * @param cursor  database cursor containing UserTable column
 	 * @param account current user information
 	 */
 	public MessageImpl(Cursor cursor, Account account) {

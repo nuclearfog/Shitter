@@ -45,7 +45,7 @@ public class UserImpl implements User {
 	private boolean defaultImage;
 
 	/**
-	 * @param cursor database cursor containing user column
+	 * @param cursor  database cursor containing user column
 	 * @param account current user login
 	 */
 	public UserImpl(Cursor cursor, Account account) {

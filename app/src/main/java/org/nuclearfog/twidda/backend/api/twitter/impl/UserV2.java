@@ -68,7 +68,7 @@ public class UserV2 implements User {
 			follower = metrics.optInt("followers_count");
 			tweetCount = metrics.optInt("tweet_count");
 		}
-		if  (Patterns.WEB_URL.matcher(profileImageUrl).matches()) {
+		if (Patterns.WEB_URL.matcher(profileImageUrl).matches()) {
 			if (defaultImage) {
 				this.profileImageUrl = profileImageUrl;
 			} else {

@@ -349,14 +349,14 @@ public interface Connection {
 	/**
 	 * mute a status from conversation
 	 *
-	 * @param id   ID of the status
+	 * @param id ID of the status
 	 */
 	void muteConversation(long id) throws ConnectionException;
 
 	/**
 	 * unmute a status from conversation
 	 *
-	 * @param id   ID of the status
+	 * @param id ID of the status
 	 */
 	void unmuteConversation(long id) throws ConnectionException;
 

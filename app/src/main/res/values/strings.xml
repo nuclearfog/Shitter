@@ -234,7 +234,7 @@
 	<string name="settings_app_information">App source code:</string>
 	<string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
 	<string name="settings_look">Look</string>
-	<string name="settings_toggle_link_preview">enable link preview</string>
+	<string name="settings_toggle_media_preview">enable media preview</string>
 	<string name="settings_description_enable_twitter_alt">use nitter.net for links</string>
 	<string name="item_load_more">load more</string>
 	<string name="item_image_save">save image</string>

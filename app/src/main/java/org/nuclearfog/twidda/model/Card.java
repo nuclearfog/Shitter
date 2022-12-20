@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.model;
 import java.io.Serializable;
 
 /**
- *  This interface represents a link card, containing information about a website
+ * This interface represents a link card, containing information about a website
  *
  * @author nuclearfog
  */

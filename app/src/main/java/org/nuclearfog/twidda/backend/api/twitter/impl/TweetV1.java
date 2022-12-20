@@ -94,7 +94,7 @@ public class TweetV1 implements Status {
 			JSONArray mediaArray = extEntities.optJSONArray("media");
 			if (mediaArray != null && mediaArray.length() > 0) {
 				medias = new Media[mediaArray.length()];
-				for (int i = 0; i < mediaArray.length() ; i++) {
+				for (int i = 0; i < mediaArray.length(); i++) {
 					JSONObject mediaItem = mediaArray.getJSONObject(0);
 					medias[i] = new MediaV1(mediaItem);
 				}
@@ -289,7 +289,7 @@ public class TweetV1 implements Status {
 
 	@Nullable
 	@Override
-	public  Metrics getMetrics() {
+	public Metrics getMetrics() {
 		// Twitter API 1.1 doesn't support metrics
 		return null;
 	}

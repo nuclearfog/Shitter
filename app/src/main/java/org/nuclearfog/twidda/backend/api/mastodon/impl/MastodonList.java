@@ -23,7 +23,7 @@ public class MastodonList implements UserList {
 	private User owner;
 
 	/**
-	 * @param json  userlist json object
+	 * @param json userlist json object
 	 */
 	public MastodonList(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");

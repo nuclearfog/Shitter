@@ -15,6 +15,7 @@ public interface Location extends Serializable {
 	 * @return unique place id
 	 */
 	long getId();
+
 	/**
 	 * @return ID of the place (World ID)
 	 */

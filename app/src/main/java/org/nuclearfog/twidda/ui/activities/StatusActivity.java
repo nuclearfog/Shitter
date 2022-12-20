@@ -51,8 +51,8 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.CardAdapter;
-import org.nuclearfog.twidda.adapter.CardAdapter.OnCardClickListener;
+import org.nuclearfog.twidda.adapter.PreviewAdapter;
+import org.nuclearfog.twidda.adapter.PreviewAdapter.OnCardClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -139,7 +139,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private StatusAction statusAsync;
 	private Picasso picasso;
 
-	private CardAdapter adapter;
+	private PreviewAdapter adapter;
 	private ConfirmDialog confirmDialog;
 	private MetricsDialog metricsDialog;
 
@@ -215,7 +215,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		fragmentTransaction.commit();
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-		adapter = new CardAdapter(this, this);
+		adapter = new PreviewAdapter(this, this);
 
 		settings = GlobalSettings.getInstance(this);
 		ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
@@ -473,7 +473,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (mediaItem.length > 0) {
 					int mediaType = mediaItem[0].getMediaType();
 					Uri[] uris = new Uri[mediaItem.length];
-					for (int i = 0 ; i < uris.length ; i++) {
+					for (int i = 0; i < uris.length; i++) {
 						uris[i] = Uri.parse(mediaItem[i].getUrl());
 					}
 					// open embedded image links
@@ -618,6 +618,28 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
+	public void onMediaClick(Media media) {
+		Uri uri = Uri.parse(media.getUrl());
+		if (media.getMediaType() == Media.PHOTO) {
+			Intent mediaIntent = new Intent(this, ImageViewer.class);
+			mediaIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{uri});
+			mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+			startActivity(mediaIntent);
+		} else if (media.getMediaType() == Media.VIDEO) {
+			Intent mediaIntent = new Intent(this, VideoViewer.class);
+			mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
+			mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+			startActivity(mediaIntent);
+		} else if (media.getMediaType() == Media.GIF) {
+			Intent mediaIntent = new Intent(this, VideoViewer.class);
+			mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
+			mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+			startActivity(mediaIntent);
+		}
+	}
+
+
+	@Override
 	public void onTagClick(String tag) {
 		Intent intent = new Intent(this, SearchActivity.class);
 		intent.putExtra(KEY_SEARCH_QUERY, tag);
@@ -724,31 +746,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			sensitive_media.setVisibility(GONE);
 		}
-		if (status.getMedia().length > 0) {
-			Media mediaItem = status.getMedia()[0];
-			switch (mediaItem.getMediaType()) {
-				case Media.PHOTO:
-					mediaButton.setVisibility(VISIBLE);
-					mediaButton.setImageResource(R.drawable.image);
-					break;
-
-				case Media.VIDEO:
-					mediaButton.setVisibility(VISIBLE);
-					mediaButton.setImageResource(R.drawable.video);
-					break;
-
-				case Media.GIF:
-					mediaButton.setVisibility(VISIBLE);
-					mediaButton.setImageResource(R.drawable.gif);
-					break;
-
-				default:
-					mediaButton.setVisibility(GONE);
-					break;
-			}
-		} else {
-			mediaButton.setVisibility(GONE);
-		}
 		AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
 		String profileImageUrl = author.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
@@ -779,9 +776,34 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			favButton.setVisibility(VISIBLE);
 			ansButton.setVisibility(VISIBLE);
 		}
-		if (settings.linkPreviewEnabled() && status.getCards().length > 0) {
+		if (settings.linkPreviewEnabled() && (status.getCards().length > 0 || status.getMedia().length > 0)) {
 			cardList.setVisibility(VISIBLE);
-			adapter.replaceAll(status.getCards());
+			adapter.replaceAll(status.getCards(), status.getMedia());
+
+		} else if (status.getMedia().length > 0) {
+			Media mediaItem = status.getMedia()[0];
+			switch (mediaItem.getMediaType()) {
+				case Media.PHOTO:
+					mediaButton.setVisibility(VISIBLE);
+					mediaButton.setImageResource(R.drawable.image);
+					break;
+
+				case Media.VIDEO:
+					mediaButton.setVisibility(VISIBLE);
+					mediaButton.setImageResource(R.drawable.video);
+					break;
+
+				case Media.GIF:
+					mediaButton.setVisibility(VISIBLE);
+					mediaButton.setImageResource(R.drawable.gif);
+					break;
+
+				default:
+					mediaButton.setVisibility(GONE);
+					break;
+			}
+		} else {
+			mediaButton.setVisibility(GONE);
 		}
 	}
 

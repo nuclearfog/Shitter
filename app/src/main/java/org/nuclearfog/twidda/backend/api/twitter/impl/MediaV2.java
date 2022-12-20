@@ -17,7 +17,12 @@ public class MediaV2 implements Media {
 	private static final long serialVersionUID = 7109927957743710583L;
 
 	/**
-	 * twitter video/gif MIME
+	 * fields to add extra media information
+	 */
+	public static final String FIELDS_MEDIA = "media_key%2Cpreview_image_url%2Ctype%2Curl%2Cvariants";
+
+	/**
+	 * MIME type for video/gifv format
 	 */
 	private static final String MIME_V_MP4 = "video/mp4";
 
@@ -25,22 +30,25 @@ public class MediaV2 implements Media {
 	private String url = "";
 	private int type = NONE;
 
+	/**
+	 * @param mediaItem Twitter media json format
+	 */
+	public MediaV2(JSONObject mediaItem) throws JSONException {
+		String typeStr = mediaItem.getString("type");
+		preview = mediaItem.optString("preview_image_url", "");
 
-	public MediaV2(JSONObject json) throws JSONException {
-		String typeStr = json.getString("type");
-		preview = json.optString("preview_image_url", "");
 		switch (typeStr) {
 			case "photo":
-				url = json.getString("url");
+				url = mediaItem.optString("url");
+				preview = url; // fixme: currently Twitter doesn't support preview for images.
 				type = PHOTO;
 				break;
 
 			case "video":
 				int maxBitrate = -1;
-				JSONObject video = json.getJSONObject("video_info");
-				JSONArray videoVariants = video.getJSONArray("variants");
-				for (int i = 0; i < videoVariants.length(); i++) {
-					JSONObject variant = videoVariants.getJSONObject(i);
+				JSONArray variants = mediaItem.getJSONArray("variants");
+				for (int i = 0; i < variants.length(); i++) {
+					JSONObject variant = variants.getJSONObject(i);
 					int bitRate = variant.optInt("bitrate", 0);
 					if (bitRate > maxBitrate && MIME_V_MP4.equals(variant.getString("content_type"))) {
 						url = variant.getString("url");
@@ -51,16 +59,8 @@ public class MediaV2 implements Media {
 				break;
 
 			case "animated_gif":
-				JSONObject gif = json.getJSONObject("video_info");
-				JSONArray gifVariants = gif.getJSONArray("variants");
-				for (int i = 0; i < gifVariants.length() ; i++) {
-					JSONObject gifVariant = gifVariants.getJSONObject(i);
-					if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
-						url = gifVariant.getString("url");
-						type = GIF;
-						break;
-					}
-				}
+				url = mediaItem.optString("url");
+				type = GIF;
 				break;
 		}
 	}
@@ -88,21 +88,21 @@ public class MediaV2 implements Media {
 	@Override
 	public String toString() {
 		String tostring;
-		switch(type) {
+		switch (type) {
 			case PHOTO:
-				tostring = "photo ";
+				tostring = "photo";
 				break;
 
 			case VIDEO:
-				tostring = "video ";
+				tostring = "video";
 				break;
 
 			case GIF:
-				tostring = "gif ";
+				tostring = "gif";
 				break;
 
 			default:
-				tostring = "none ";
+				tostring = "none";
 				break;
 		}
 		tostring += "url=\"" + url + "\"";

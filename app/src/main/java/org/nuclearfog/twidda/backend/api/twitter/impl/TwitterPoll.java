@@ -35,7 +35,7 @@ public class TwitterPoll implements Poll {
 		expiredAt = StringTools.getTime(json.optString("end_datetime"), StringTools.TIME_TWITTER_V2);
 		// add options
 		options = new Option[optionsJson.length()];
-		for (int i = 0 ; i < optionsJson.length() ; i++) {
+		for (int i = 0; i < optionsJson.length(); i++) {
 			options[i] = new TwitterPollOption(optionsJson.getJSONObject(i));
 			count += options[i].getVotes();
 		}

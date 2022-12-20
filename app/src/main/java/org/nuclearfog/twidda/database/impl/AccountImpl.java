@@ -137,7 +137,7 @@ public class AccountImpl implements Account {
 	public boolean usingDefaultTokens() {
 		if (apiType != API_TWITTER)
 			return false;
-		 return consumerToken == null || consumerToken.isEmpty() || consumerSecret == null || consumerSecret.isEmpty();
+		return consumerToken == null || consumerToken.isEmpty() || consumerSecret == null || consumerSecret.isEmpty();
 	}
 
 

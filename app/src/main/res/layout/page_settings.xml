@@ -396,7 +396,7 @@
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:singleLine="true"
-						android:text="@string/settings_toggle_link_preview"
+						android:text="@string/settings_toggle_media_preview"
 						android:textSize="@dimen/settings_textsize_small"
 						app:layout_constraintStart_toEndOf="@id/settings_enable_prev"
 						app:layout_constraintTop_toTopOf="@id/settings_enable_prev"

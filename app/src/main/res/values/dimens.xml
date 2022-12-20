@@ -257,4 +257,7 @@
 	<dimen name="item_card_layout_padding">5dp</dimen>
 	<dimen name="item_card_text_padding">5dp</dimen>
 
+	<!--dimens of item_preivew.xml-->
+	<dimen name="item_card_preivew_padding">5dp</dimen>
+
 </resources>

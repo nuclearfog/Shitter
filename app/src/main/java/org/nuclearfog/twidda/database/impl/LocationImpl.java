@@ -19,8 +19,8 @@ public class LocationImpl implements Location {
 	private String coordinates = "";
 
 	/**
-	 * @param name place name
-	 * @param worldId   world id
+	 * @param name    place name
+	 * @param worldId world id
 	 */
 	public LocationImpl(String name, int worldId) {
 		this.name = name;
@@ -28,7 +28,7 @@ public class LocationImpl implements Location {
 	}
 
 	/**
-	 * @param name place name
+	 * @param name        place name
 	 * @param coordinates comma separated gps coordinates
 	 */
 	public LocationImpl(String name, String coordinates) {

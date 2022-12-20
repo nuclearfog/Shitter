@@ -71,7 +71,7 @@
 		app:layout_constraintStart_toEndOf="@id/login_enable_key_input"
 		app:layout_constraintTop_toTopOf="@id/login_enable_key_input"
 		app:layout_constraintBottom_toBottomOf="@id/login_enable_key_input"
-		app:layout_constraintEnd_toStartOf="@id/login_enter_key1"/>
+		app:layout_constraintEnd_toStartOf="@id/login_enter_key1" />
 
 	<EditText
 		android:id="@+id/login_enter_key1"
