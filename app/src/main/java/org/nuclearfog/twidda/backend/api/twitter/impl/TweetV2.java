@@ -27,11 +27,35 @@ public class TweetV2  implements Status {
 
 	private static final long serialVersionUID = -2740140825640061692L;
 
+	/**
+	 * parameter to add user object
+	 */
 	public static final String FIELDS_USER = UserV2.PARAMS;
-	public static final String FIELDS_TWEET = "id%2Ctext%2Cattachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings%2Cgeo%2Csource%2Cpossibly_sensitive";
-	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Cnon_public_metrics";
-	public static final String FIELDS_POLL ="duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
+
+	/**
+	 * fields to enable tweet expansions with extra information
+	 */
 	public static final String FIELDS_EXPANSION = "attachments.poll_ids%2Cauthor_id%2Creferenced_tweets.id%2Cattachments.media_keys";
+
+	/**
+	 * default tweet fields
+	 */
+	public static final String FIELDS_TWEET = "id%2Ctext%2Cattachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings%2Cgeo%2Csource%2Cpossibly_sensitive";
+
+	/**
+	 * default tweet fields with non public metrics
+	 * (only valid if current user is the author of this tweet, the tweet isn't a retweet and the tweet isn't older than 30 days)
+	 */
+	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Cnon_public_metrics";
+
+	/**
+	 * fields to add twitter poll object
+	 */
+	public static final String FIELDS_POLL ="duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
+
+	/**
+	 * fields to add extra media information
+	 */
 	public static final String FIELDS_MEDIA = "media_key%2Cpreview_image_url%2Ctype%2Curl";
 
 	private long id;
@@ -109,11 +133,11 @@ public class TweetV2  implements Status {
 		}
 		// add poll
 		if (polls != null && polls.length() > 0) {
-			poll = new TweetPoll(polls.getJSONObject(0));
+			poll = new TwitterPoll(polls.getJSONObject(0));
 		}
 		// add metrics
 		if (nonPublicMetrics != null) {
-			metrics = new MetricsV2(publicMetrics, nonPublicMetrics, id);
+			metrics = new MetricsV2(publicMetrics, nonPublicMetrics);
 		}
 		// add mentioned usernames
 		if (mentionsJson != null && mentionsJson.length() > 0) {

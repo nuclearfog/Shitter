@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +24,9 @@ public class MastodonPoll implements Poll {
 	private int voteCount;
 	private MastodonOption[] options;
 
-
+	/**
+	 * @param json Mastodon poll jswon format
+	 */
 	public MastodonPoll(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
 		String exTimeStr = json.getString("expires_at");
@@ -89,8 +93,20 @@ public class MastodonPoll implements Poll {
 		return options;
 	}
 
+
+	@NonNull
+	@Override
+	public String toString() {
+		StringBuilder optionsBuf = new StringBuilder(" options=(");
+		for (Option option : options) {
+			optionsBuf.append(option).append(',');
+		}
+		optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
+		return "id=" + id + " expired=" + expired + " options=" + optionsBuf;
+	}
+
 	/**
-	 *
+	 * Mastodon poll option implementation
 	 */
 	private static class MastodonOption implements Option {
 
@@ -100,7 +116,10 @@ public class MastodonPoll implements Poll {
 		private int voteCount;
 		private boolean selected = false;
 
-		MastodonOption(JSONObject json) throws JSONException {
+		/**
+		 * @param json mastodon poll json format
+		 */
+		private MastodonOption(JSONObject json) throws JSONException {
 			voteCount = json.getInt("votes_count");
 			title = json.getString("title");
 		}
@@ -123,10 +142,17 @@ public class MastodonPoll implements Poll {
 			return selected;
 		}
 
+
+		@NonNull
+		@Override
+		public String toString() {
+			return "title=\"" + title + "\" votes=" + voteCount + " selected=" + selected;
+		}
+
 		/**
 		 * mark this option as selected
 		 */
-		void setSelected() {
+		private void setSelected() {
 			selected = true;
 		}
 	}

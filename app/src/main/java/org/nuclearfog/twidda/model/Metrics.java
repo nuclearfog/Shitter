@@ -10,37 +10,11 @@ import java.io.Serializable;
 public interface Metrics extends Serializable {
 
 	/**
-	 * @return Id of the status
-	 */
-	long getStatusId();
-
-	/**
 	 * get view count of the status
 	 *
 	 * @return view count
 	 */
 	int getViews();
-
-	/**
-	 * get repost count
-	 *
-	 * @return repost count
-	 */
-	int getReposts();
-
-	/**
-	 * get like/favorite count
-	 *
-	 * @return like count
-	 */
-	int getFavorits();
-
-	/**
-	 * get reply count
-	 *
-	 * @return reply count
-	 */
-	int getReplies();
 
 	/**
 	 * get number of quotes

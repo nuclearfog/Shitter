@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +13,7 @@ import org.nuclearfog.twidda.model.Poll;
  *
  * @author nuclearfog
  */
-public class TweetPoll implements Poll {
+public class TwitterPoll implements Poll {
 
 	private static final long serialVersionUID = 4587084581361253962L;
 
@@ -23,18 +25,21 @@ public class TweetPoll implements Poll {
 	private Option[] options;
 	private int count = 0;
 
-
-	public TweetPoll(JSONObject json) throws JSONException {
+	/**
+	 * @param json tweet poll json format
+	 */
+	public TwitterPoll(JSONObject json) throws JSONException {
 		JSONArray optionsJson = json.getJSONArray("options");
 		String idStr = json.getString("id");
 		expired = VOTE_CLOSED.equals(json.getString("voting_status"));
 		expiredAt = StringTools.getTime(json.optString("end_datetime"), StringTools.TIME_TWITTER_V2);
-
+		// add options
 		options = new Option[optionsJson.length()];
 		for (int i = 0 ; i < optionsJson.length() ; i++) {
-			options[i] = new TweetOption(optionsJson.getJSONObject(i));
+			options[i] = new TwitterPollOption(optionsJson.getJSONObject(i));
 			count += options[i].getVotes();
 		}
+		// add ID
 		try {
 			id = Long.parseLong(idStr);
 		} catch (NumberFormatException e) {
@@ -79,27 +84,42 @@ public class TweetPoll implements Poll {
 		return options;
 	}
 
+
+	@NonNull
+	@Override
+	public String toString() {
+		StringBuilder optionsBuf = new StringBuilder(" options=(");
+		for (Option option : options) {
+			optionsBuf.append(option).append(',');
+		}
+		optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
+		return "id=" + id + " expired=" + expired + " options=" + optionsBuf;
+	}
+
 	/**
-	 *
+	 * implementation of a poll option
 	 */
-	private static class TweetOption implements Option {
+	private static class TwitterPollOption implements Option {
 
 		private static final long serialVersionUID = -7594109890754209971L;
 
-		private String name;
+		private String title;
 		private int voteCount;
-		private boolean voted;
+		private boolean selected;
 
-		TweetOption(JSONObject json) throws JSONException {
-			name = json.getString("label");
+		/**
+		 * @param json Twitter poll option json
+		 */
+		private TwitterPollOption(JSONObject json) throws JSONException {
+			title = json.getString("label");
 			voteCount = json.getInt("votes");
-			voted = false; // todo implement this
+			selected = false; // todo implement this
 		}
 
 
 		@Override
 		public String getTitle() {
-			return name;
+			return title;
 		}
 
 
@@ -111,7 +131,14 @@ public class TweetPoll implements Poll {
 
 		@Override
 		public boolean selected() {
-			return voted;
+			return selected;
+		}
+
+
+		@NonNull
+		@Override
+		public String toString() {
+			return "title=\"" + title + "\" votes=" + voteCount + " selected=" + selected;
 		}
 	}
 }
