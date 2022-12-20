@@ -778,6 +778,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		if (settings.linkPreviewEnabled() && (status.getCards().length > 0 || status.getMedia().length > 0)) {
 			cardList.setVisibility(VISIBLE);
+			mediaButton.setVisibility(GONE);
 			adapter.replaceAll(status.getCards(), status.getMedia());
 
 		} else if (status.getMedia().length > 0) {

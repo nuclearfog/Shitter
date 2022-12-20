@@ -81,7 +81,7 @@ public class StatusImpl implements Status {
 		reposted = (register & REPOST_MASK) != 0;
 		sensitive = (register & MEDIA_SENS_MASK) != 0;
 		isHidden = (register & HIDDEN_MASK) != 0;
-		if (locationCoordinates != null || locationName != null)
+		if ((locationCoordinates != null && !locationCoordinates.isEmpty()) || (locationName != null && !locationName.isEmpty()))
 			location = new LocationImpl(locationName, locationCoordinates);
 		apiType = account.getApiType();
 	}

@@ -40,7 +40,7 @@ public class TweetV2 implements Status {
 	/**
 	 * default tweet fields
 	 */
-	public static final String FIELDS_TWEET = "id%2Ctext%2Cattachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings%2Cgeo%2Csource%2Cpossibly_sensitive";
+	public static final String FIELDS_TWEET = "id%2Ctext%2Cattachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings%2Cgeo%2Csource%2Cpossibly_sensitive%2Ccreated_at";
 
 	/**
 	 * default tweet fields with non public metrics
@@ -168,13 +168,21 @@ public class TweetV2 implements Status {
 			for (int i = urls.length() - 1; i >= 0; i--) {
 				// expand shortened links
 				JSONObject entry = urls.getJSONObject(i);
-				String link = entry.getString("expanded_url");
+				String expandedUrl = entry.getString("expanded_url");
+				String displayUrl = entry.getString("display_url");
 				String mediaKey = entry.optString("media_key", "");
 				int start = entry.optInt("start", -1);
 				int end = entry.optInt("end", -1);
 				if (start >= 0 && end > start) {
 					int offset = StringTools.calculateIndexOffset(textStr, start);
-					builder.replace(start + offset, end + offset, link);
+					// replace shortened link
+					if (!displayUrl.contains("pic.twitter.com")) {
+						builder.replace(start + offset, end + offset, expandedUrl);
+					}
+					// remove shortened link if it is a media link
+					else {
+						builder.delete(start + offset, end + offset);
+					}
 				}
 				// create Twitter card if link is not a media link
 				if (mediaKey.isEmpty()) {
