@@ -21,13 +21,14 @@ public class TrendV1 implements Trend {
 
 	/**
 	 * @param json       JSON object containing trend information
+	 * @param index      array index of this item
 	 * @param locationId Id of the trend location
 	 */
 	public TrendV1(JSONObject json, int index, int locationId) {
 		name = json.optString("name", "");
 		popularity = json.optInt("tweet_volume", -1);
 		this.locationId = locationId;
-		rank = index + 1;
+		this.rank = index + 1;
 	}
 
 

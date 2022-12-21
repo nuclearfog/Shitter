@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,5 +97,12 @@ public class LocationV2 implements Location {
 	@Override
 	public String getFullName() {
 		return fullName;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=\"" + id + " full_name=" + fullName + " country=\"" + country + "\"";
 	}
 }

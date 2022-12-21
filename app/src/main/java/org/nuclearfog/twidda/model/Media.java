@@ -30,7 +30,6 @@ public interface Media extends Serializable {
 	int GIF = 802;
 
 	/**
-	 *
 	 * @return media key
 	 */
 	String getKey();

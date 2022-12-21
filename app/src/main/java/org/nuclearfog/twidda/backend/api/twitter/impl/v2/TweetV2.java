@@ -49,7 +49,6 @@ public class TweetV2 implements Status {
 	 */
 	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Cnon_public_metrics";
 
-
 	private long id;
 	private long timestamp;
 	private long replyUserId;
@@ -77,14 +76,20 @@ public class TweetV2 implements Status {
 	private Card[] cards = {};
 
 	/**
+	 * @param json    tweet json format
+	 * @param userMap map containing user instances
 	 */
 	public TweetV2(JSONObject json, UserV2Map userMap) throws JSONException {
 		this(json, userMap, null, null, null, null);
 	}
 
 	/**
-	 * @param json        Tweet v2 json
-	 * @param tweetCompat Tweet containing base informations
+	 * @param json        tweet json format
+	 * @param userMap     map containing user instances
+	 * @param mediaMap    map containing media instances
+	 * @param pollMap     map containing poll instances
+	 * @param locationMap map containing location instances
+	 * @param tweetCompat tweet v1.1 object
 	 */
 	public TweetV2(JSONObject json, @NonNull UserV2Map userMap, @Nullable MediaV2Map mediaMap, @Nullable PollV2Map pollMap, @Nullable LocationV2Map locationMap, @Nullable Status tweetCompat) throws JSONException {
 		JSONObject publicMetrics = json.getJSONObject("public_metrics");

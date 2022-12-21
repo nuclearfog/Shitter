@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,5 +32,12 @@ public class LocationV2Map extends TreeMap<Long, Location> {
 				put(location.getId(), location);
 			}
 		}
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "size=" + size();
 	}
 }

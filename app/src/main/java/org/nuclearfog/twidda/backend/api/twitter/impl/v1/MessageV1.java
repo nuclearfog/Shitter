@@ -29,7 +29,6 @@ public class MessageV1 implements Message {
 
 	/**
 	 * @param json JSON object containing directmessage information
-	 * @throws JSONException if some values are missing
 	 */
 	public MessageV1(JSONObject json) throws JSONException {
 		JSONObject message = json.getJSONObject("message_create");

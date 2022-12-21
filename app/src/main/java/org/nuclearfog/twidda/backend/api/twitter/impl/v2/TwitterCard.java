@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
 import android.util.Patterns;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Card;
@@ -20,7 +22,9 @@ public class TwitterCard implements Card {
 	private String description;
 	private String imageUrl = "";
 
-
+	/**
+	 * @param json twitter card json
+	 */
 	public TwitterCard(JSONObject json) {
 		JSONArray images = json.optJSONArray("images");
 		url = json.optString("expanded_url", "");
@@ -60,5 +64,12 @@ public class TwitterCard implements Card {
 	@Override
 	public String getImageUrl() {
 		return imageUrl;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "url=\"" + url + "\" description=\"" + description + "\"";
 	}
 }

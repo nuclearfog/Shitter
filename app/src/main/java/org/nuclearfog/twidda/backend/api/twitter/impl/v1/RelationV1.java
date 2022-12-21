@@ -24,7 +24,6 @@ public class RelationV1 implements Relation {
 
 	/**
 	 * @param json JSON object containing relationship information
-	 * @throws JSONException if values are missing
 	 */
 	public RelationV1(JSONObject json) throws JSONException {
 		JSONObject relationship = json.getJSONObject("relationship");
