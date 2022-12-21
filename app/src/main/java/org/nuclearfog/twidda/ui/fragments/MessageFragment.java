@@ -155,7 +155,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 				case MEDIA:
 					if (message.getMedia() != null) {
 						Intent imageIntent = new Intent(requireContext(), ImageViewer.class);
-						imageIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{message.getMedia()});
+						imageIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(message.getMedia().getUrl())});
 						imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
 						startActivity(imageIntent);
 					}

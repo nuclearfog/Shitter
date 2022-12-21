@@ -1,6 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
-
-import android.net.Uri;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,6 +6,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
@@ -26,27 +25,35 @@ public class MessageV1 implements Message {
 	private long receiver_id;
 	private User sender;
 	private String text;
-	private String mediaLink;
+	private Media media;
 
 	/**
 	 * @param json JSON object containing directmessage information
 	 * @throws JSONException if some values are missing
 	 */
 	public MessageV1(JSONObject json) throws JSONException {
+		JSONObject message = json.getJSONObject("message_create");
+		JSONObject target = message.getJSONObject("target");
+		JSONObject data = message.getJSONObject("message_data");
+		JSONObject attachment = data.optJSONObject("attachment");
 		String idStr = json.getString("id");
+
+		timestamp = Long.parseLong(json.getString("created_timestamp"));
+		sender_id = Long.parseLong(message.getString("sender_id"));
+		receiver_id = Long.parseLong(target.getString("recipient_id"));
+		text = setText(data);
+		if (attachment != null) {
+			JSONObject mediaJson = attachment.optJSONObject("media");
+			if (mediaJson != null) {
+				media = new MediaV1(mediaJson);
+			}
+		}
 		try {
 			id = Long.parseLong(idStr);
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad message ID:" + idStr);
 		}
-		timestamp = Long.parseLong(json.getString("created_timestamp"));
-		JSONObject message = json.getJSONObject("message_create");
-		JSONObject target = message.getJSONObject("target");
-		JSONObject data = message.getJSONObject("message_data");
-		sender_id = Long.parseLong(message.getString("sender_id"));
-		receiver_id = Long.parseLong(target.getString("recipient_id"));
-		mediaLink = setMedia(data);
-		text = setText(data);
+
 	}
 
 
@@ -82,10 +89,8 @@ public class MessageV1 implements Message {
 
 	@Nullable
 	@Override
-	public Uri getMedia() {
-		if (!mediaLink.isEmpty())
-			return Uri.parse(mediaLink);
-		return null;
+	public Media getMedia() {
+		return media;
 	}
 
 
@@ -119,22 +124,6 @@ public class MessageV1 implements Message {
 	 */
 	public void addSender(User sender) {
 		this.sender = sender;
-	}
-
-	/**
-	 * add media links
-	 *
-	 * @param data message data
-	 */
-	private String setMedia(JSONObject data) {
-		JSONObject attachment = data.optJSONObject("attachment");
-		if (attachment != null) {
-			JSONObject urls = attachment.optJSONObject("media");
-			if (urls != null) {
-				return urls.optString("media_url_https", "");
-			}
-		}
-		return "";
 	}
 
 	/**

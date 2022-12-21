@@ -9,8 +9,6 @@ import java.io.Serializable;
  */
 public interface Location extends Serializable {
 
-	String LOCATION_TYPE = "Point";
-
 	/**
 	 * @return unique place id
 	 */

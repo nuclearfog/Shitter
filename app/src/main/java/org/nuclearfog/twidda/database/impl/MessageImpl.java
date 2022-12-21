@@ -1,13 +1,13 @@
 package org.nuclearfog.twidda.database.impl;
 
 import android.database.Cursor;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
@@ -25,7 +25,6 @@ public class MessageImpl implements Message {
 	private long receiverId;
 	private String text;
 	private User sender;
-	private String media;
 
 	/**
 	 * @param cursor  database cursor containing UserTable column
@@ -37,7 +36,6 @@ public class MessageImpl implements Message {
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
 		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
-		media = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));
 	}
 
 
@@ -73,10 +71,8 @@ public class MessageImpl implements Message {
 
 	@Nullable
 	@Override
-	public Uri getMedia() {
-		if (media != null)
-			return Uri.parse(media);
-		return null;
+	public Media getMedia() {
+		return null; // todo implement this
 	}
 
 

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
 import android.util.Patterns;
 
@@ -23,7 +23,8 @@ public class UserV2 implements User {
 	/**
 	 * extra parameters required to fetch additional data
 	 */
-	public static final String PARAMS = "profile_image_url%2Cpublic_metrics%2Cverified%2Cprotected%2Cdescription%2Ccreated_at%2Curl%2Centities";
+	public static final String USER_FIELDS = "user.fields=created_at%2Cdescription%2Centities%2Cid%2Clocation%2Cname%2Cprofile_image_url" +
+			"%2Cprotected%2Cpublic_metrics%2Curl%2Cusername%2Cverified";
 
 	private long id;
 	private long created;
@@ -62,7 +63,6 @@ public class UserV2 implements User {
 
 		url = getUrl(json);
 		description = getDescription(json);
-		isCurrentUser = id == twitterId;
 		if (metrics != null) {
 			following = metrics.optInt("following_count");
 			follower = metrics.optInt("followers_count");
@@ -84,6 +84,7 @@ public class UserV2 implements User {
 		}
 		try {
 			id = Long.parseLong(idStr);
+			isCurrentUser = id == twitterId;
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad user ID: " + idStr);
 		}

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +61,12 @@ public class MediaV1 implements Media {
 				}
 				break;
 		}
+	}
+
+
+	@Override
+	public String getKey() {
+		return url;
 	}
 
 

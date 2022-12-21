@@ -12,17 +12,24 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.twitter.impl.LocationV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.MessageV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.RelationV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.TrendV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.TweetV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterNotification;
-import org.nuclearfog.twidda.backend.api.twitter.impl.UserListV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.UserV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.UserV2;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.LocationV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.MessageV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.RelationV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TrendV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TweetV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.UserListV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.UserV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.LocationV2;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.MediaV2;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.PollV2;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.TweetV2;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.UserV2;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.MediaV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.PollV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
@@ -123,6 +130,7 @@ public class Twitter implements Connection {
 	private static final String TWEET_UNRETWEET = API + "/1.1/statuses/unretweet/";
 	private static final String TWEET_UPLOAD = API + "/1.1/statuses/update.json";
 	private static final String TWEET_DELETE = API + "/1.1/statuses/destroy/";
+	private static final String TWEET_SEARCH_2 = API + "/2/tweets/search/recent";
 	private static final String TWEET_UNI = API + "/2/tweets/";
 
 	// userlist endpoints
@@ -630,9 +638,8 @@ public class Twitter implements Connection {
 			params.add("max_id=" + maxId);
 		if (name.startsWith("@"))
 			name = name.substring(1);
-		params.add("result_type=recent");
-		params.add("q=" + StringTools.encode("to:" + StringTools.encode(name) + " +exclude:retweets"));
-		List<Status> result = getTweets1(TWEET_SEARCH, params);
+		params.add("query=conversation_id:" + id);
+		List<Status> result = getTweets2(TWEET_SEARCH_2, params);
 		List<Status> replies = new LinkedList<>();
 		for (Status reply : result) {
 			if (reply.getRepliedStatusId() == id) {
@@ -1162,6 +1169,42 @@ public class Twitter implements Connection {
 	}
 
 	/**
+	 * get tweets using an endpoint
+	 *
+	 * @param endpoint endpoint url to fetch the tweets
+	 * @param params   additional parameters
+	 * @return list of tweets
+	 */
+	private List<Status> getTweets2(String endpoint, List<String> params) throws TwitterException {
+		try {
+			params.add(TweetV2.FIELDS_TWEET);
+			params.add(TweetV2.FIELDS_EXPANSION);
+			params.add(UserV2.USER_FIELDS);
+			params.add("max_results=" + settings.getListSize());
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (body != null && response.code() == 200) {
+				JSONArray array = new JSONObject(body.string()).getJSONArray("data");
+				long homeId = settings.getLogin().getId();
+				List<Status> tweets = new ArrayList<>(array.length() + 1);
+				for (int i = 0; i < array.length(); i++) {/*
+					try {
+						tweets.add(new TweetV2(array.getJSONObject(i), homeId));
+					} catch (JSONException e) {
+						if (BuildConfig.DEBUG) {
+							Log.w("tweet", e);
+						}
+					}*/
+				}
+				return tweets;
+			}
+			throw new TwitterException(response);
+		} catch (IOException | JSONException err) {
+			throw new TwitterException(err);
+		}
+	}
+
+	/**
 	 * return tweet from API 1.1 endpoint
 	 *
 	 * @param endpoint to use
@@ -1210,13 +1253,15 @@ public class Twitter implements Connection {
 			// add metrics information if tweet is from current user and the tweet is not older than 30 days and not a retweet
 			if (statusCompat.getAuthor().isCurrentUser() && new Date().getTime() - statusCompat.getTimestamp() < 2419200000L
 					&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() <= 0))
-				params.add("tweet.fields=" + TweetV2.FIELDS_TWEET_PRIVATE);
+				params.add(TweetV2.FIELDS_TWEET_PRIVATE);
 			else
-				params.add("tweet.fields=" + TweetV2.FIELDS_TWEET);
-			params.add("poll.fields=" + TweetV2.FIELDS_POLL);
-			params.add("expansions=" + TweetV2.FIELDS_EXPANSION);
-			params.add("user.fields=" + TweetV2.FIELDS_USER);
-			params.add("media.fields=" + TweetV2.FIELDS_MEDIA);
+				params.add(TweetV2.FIELDS_TWEET);
+
+			params.add(TweetV2.FIELDS_EXPANSION);
+			params.add(UserV2.USER_FIELDS);
+			params.add(MediaV2.FIELDS_MEDIA);
+			params.add(PollV2.FIELDS_POLL);
+			params.add(LocationV2.FIELDS_PLACE);
 			if (endpoint.startsWith(TWEET2_LOOKUP)) {
 				response = get(endpoint, params);
 			} else {
@@ -1225,7 +1270,11 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				return new TweetV2(json, statusCompat, settings.getLogin().getId());
+				UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
+				MediaV2Map mediaMap = new MediaV2Map(json);
+				PollV2Map pollMap = new PollV2Map(json);
+				LocationV2Map locationMap = new LocationV2Map(json);
+				return new TweetV2(json, userMap, mediaMap, pollMap, locationMap, statusCompat);
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {
@@ -1337,7 +1386,7 @@ public class Twitter implements Connection {
 	private Users getUsers2(String endpoint) throws TwitterException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("user.fields=" + UserV2.PARAMS);
+			params.add("user.fields=" + UserV2.USER_FIELDS);
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {

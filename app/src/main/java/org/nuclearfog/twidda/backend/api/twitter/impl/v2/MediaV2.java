@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
 import androidx.annotation.NonNull;
 
@@ -19,13 +19,14 @@ public class MediaV2 implements Media {
 	/**
 	 * fields to add extra media information
 	 */
-	public static final String FIELDS_MEDIA = "media_key%2Cpreview_image_url%2Ctype%2Curl%2Cvariants";
+	public static final String FIELDS_MEDIA = "media.fields=media_key%2Cpreview_image_url%2Ctype%2Curl%2Cvariants";
 
 	/**
 	 * MIME type for video/gifv format
 	 */
 	private static final String MIME_V_MP4 = "video/mp4";
 
+	private String key;
 	private String preview;
 	private String url = "";
 	private int type = NONE;
@@ -36,6 +37,7 @@ public class MediaV2 implements Media {
 	public MediaV2(JSONObject mediaItem) throws JSONException {
 		String typeStr = mediaItem.getString("type");
 		preview = mediaItem.optString("preview_image_url", "");
+		key = mediaItem.getString("media_key");
 
 		switch (typeStr) {
 			case "photo":
@@ -63,6 +65,12 @@ public class MediaV2 implements Media {
 				type = GIF;
 				break;
 		}
+	}
+
+
+	@Override
+	public String getKey() {
+		return key;
 	}
 
 

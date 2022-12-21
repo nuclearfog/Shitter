@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,6 +6,10 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.MediaV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.PollV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
@@ -28,19 +32,16 @@ public class TweetV2 implements Status {
 	private static final long serialVersionUID = -2740140825640061692L;
 
 	/**
-	 * parameter to add user object
-	 */
-	public static final String FIELDS_USER = UserV2.PARAMS;
-
-	/**
 	 * fields to enable tweet expansions with extra information
 	 */
-	public static final String FIELDS_EXPANSION = "attachments.poll_ids%2Cauthor_id%2Creferenced_tweets.id%2Cattachments.media_keys";
+	public static final String FIELDS_EXPANSION = "expansions=attachments.poll_ids%2Cattachments.media_keys%2Cauthor_id%2Cgeo.place_id" +
+			"%2Cin_reply_to_user_id%2Centities.mentions.username";
 
 	/**
 	 * default tweet fields
 	 */
-	public static final String FIELDS_TWEET = "id%2Ctext%2Cattachments%2Cconversation_id%2Centities%2Cpublic_metrics%2Creply_settings%2Cgeo%2Csource%2Cpossibly_sensitive%2Ccreated_at";
+	public static final String FIELDS_TWEET = "tweet.fields=attachments%2Cauthor_id%2Cconversation_id%2Ccreated_at%2Centities%2Cgeo%2Cid" +
+			"%2Cin_reply_to_user_id%2Cpossibly_sensitive%2Cpublic_metrics%2Creferenced_tweets%2Creply_settings%2Csource%2Ctext";
 
 	/**
 	 * default tweet fields with non public metrics
@@ -48,20 +49,11 @@ public class TweetV2 implements Status {
 	 */
 	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Cnon_public_metrics";
 
-	/**
-	 * fields to add twitter poll object
-	 */
-	public static final String FIELDS_POLL = "duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
-
-	/**
-	 * fields to add extra media information
-	 */
-	public static final String FIELDS_MEDIA = MediaV2.FIELDS_MEDIA;
 
 	private long id;
 	private long timestamp;
 	private long replyUserId;
-	private long conversationId;
+	private long conversationId = -1L;
 	private long repliedTweetId;
 	private long retweetId;
 	private String tweetText;
@@ -85,55 +77,71 @@ public class TweetV2 implements Status {
 	private Card[] cards = {};
 
 	/**
-	 * @param json      Tweet v2 json
-	 * @param currentId Id of the current user
 	 */
-	public TweetV2(JSONObject json, long currentId) throws JSONException {
-		this(json, null, currentId);
+	public TweetV2(JSONObject json, UserV2Map userMap, MediaV2Map mediaMap, PollV2Map pollMap,  LocationV2Map locationMap) throws JSONException {
+		this(json, userMap, mediaMap, pollMap, locationMap, null);
 	}
 
 	/**
 	 * @param json        Tweet v2 json
 	 * @param tweetCompat Tweet containing base informations
-	 * @param currentId   Id of the current user
 	 */
-	public TweetV2(JSONObject json, @Nullable Status tweetCompat, long currentId) throws JSONException {
-		JSONObject data = json.getJSONObject("data");
-		JSONObject includes = json.getJSONObject("includes");
-		JSONObject publicMetrics = data.getJSONObject("public_metrics");
-		JSONObject nonPublicMetrics = data.optJSONObject("non_public_metrics");
-		JSONObject entities = data.getJSONObject("entities");
-		JSONObject geoJson = data.optJSONObject("geo");
+	public TweetV2(JSONObject json, UserV2Map userMap, MediaV2Map mediaMap, PollV2Map pollMap, LocationV2Map locationMap, @Nullable Status tweetCompat) throws JSONException {
+		JSONObject dataJson = json.getJSONObject("data");
+		JSONObject publicMetrics = dataJson.getJSONObject("public_metrics");
+		JSONObject nonPublicMetrics = dataJson.optJSONObject("non_public_metrics");
+		JSONObject entities = dataJson.getJSONObject("entities");
+		JSONObject geoJson = dataJson.optJSONObject("geo");
+		JSONObject attachments = dataJson.getJSONObject("attachments");
 		JSONArray mentionsJson = entities.optJSONArray("mentions");
-		JSONArray tweetReferences = data.optJSONArray("referenced_tweets");
-		JSONArray users = includes.getJSONArray("users");
+		JSONArray tweetReferences = dataJson.optJSONArray("referenced_tweets");
+		JSONArray pollIds = attachments.optJSONArray("poll_ids");
+		JSONArray mediaKeys = attachments.optJSONArray("media_keys");
 		JSONArray urls = entities.optJSONArray("urls");
-		JSONArray polls = includes.optJSONArray("polls");
-		JSONArray mediaArray = includes.optJSONArray("media");
-		String idStr = data.getString("id");
-		String textStr = data.optString("text", "");
-		String timeStr = data.optString("created_at", "");
-		String replyUserIdStr = data.optString("in_reply_to_user_id", "-1");
-		String conversationIdStr = data.optString("conversation_id", "-1");
+		String idStr = dataJson.getString("id");
+		String textStr = dataJson.optString("text", "");
+		String timeStr = dataJson.optString("created_at", "");
+		String replyUserIdStr = dataJson.optString("in_reply_to_user_id", "-1");
+		String conversationIdStr = dataJson.optString("conversation_id", "-1");
+		String authorId = dataJson.getString("author_id");
 
-		author = new UserV2(users.getJSONObject(0), currentId);
+		// string to long conversion
+		try {
+			id = Long.parseLong(idStr);
+			replyUserId = Long.parseLong(replyUserIdStr);
+			author = userMap.get(Long.parseLong(authorId));
+			if (pollIds != null && pollIds.length() > 0)
+				poll = pollMap.get(Long.parseLong(pollIds.getString(0)));
+			if (geoJson != null) {
+				String locIdStr = geoJson.getString("place_id");
+				location = locationMap.get(Long.parseUnsignedLong(locIdStr, 16));
+			}
+			if (!conversationIdStr.equals("null"))
+				conversationId = Long.parseLong(conversationIdStr);
+		} catch (NumberFormatException e) {
+			throw new JSONException("Bad IDs: " + conversationIdStr + "," + idStr + "," + replyUserIdStr + "," + authorId);
+		}
+
 		replyCount = publicMetrics.getInt("reply_count");
 		retweetCount = publicMetrics.getInt("retweet_count");
 		favoriteCount = publicMetrics.getInt("like_count");
-		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);//fehler
-		source = data.optString("source", "unknown");
-		sensitive = data.optBoolean("possibly_sensitive", false);
-
+		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);
+		source = dataJson.optString("source", "unknown");
+		sensitive = dataJson.optBoolean("possibly_sensitive", false);
 		// add attributes missing from API V2.0
 		if (tweetCompat != null) {
 			replyName = tweetCompat.getReplyName();
 			embedded = tweetCompat.getEmbeddedStatus();
 			retweeted = tweetCompat.isReposted();
 			favorited = tweetCompat.isFavorited();
+			source = tweetCompat.getSource(); // fix for any reason Twitter doesn't return source information anymore
 		}
-		// add poll
-		if (polls != null && polls.length() > 0) {
-			poll = new TwitterPoll(polls.getJSONObject(0));
+		// add media
+		if (mediaKeys != null && mediaKeys.length() > 0) {
+			medias = new Media[mediaKeys.length()];
+			for (int i = 0 ; i < mediaKeys.length() ; i++) {
+				medias[i] = mediaMap.get(mediaKeys.getString(i));
+			}
 		}
 		// add metrics
 		if (nonPublicMetrics != null) {
@@ -147,18 +155,6 @@ public class TweetV2 implements Status {
 				builder.append('@').append(mentionJson.getString("username")).append(' ');
 			}
 			mentions = builder.toString();
-		}
-		// add location
-		if (geoJson != null) {
-			location = new LocationV2(geoJson);
-		}
-		// add media
-		if (mediaArray != null && mediaArray.length() > 0) {
-			medias = new Media[mediaArray.length()];
-			for (int i = 0; i < mediaArray.length(); i++) {
-				JSONObject media = mediaArray.getJSONObject(i);
-				medias[i] = new MediaV2(media);
-			}
 		}
 		// expand urls
 		if (urls != null) {
@@ -193,7 +189,7 @@ public class TweetV2 implements Status {
 			tweetText = StringTools.unescapeString(builder.toString());
 			cards = cardsList.toArray(cards);
 		} else {
-			tweetText = textStr;
+			tweetText = StringTools.unescapeString(textStr);
 		}
 		// add references to other tweets
 		if (tweetReferences != null && tweetReferences.length() > 0) {
@@ -210,18 +206,6 @@ public class TweetV2 implements Status {
 					e.printStackTrace();
 				}
 			}
-		}
-		// add IDs
-		try {
-			id = Long.parseLong(idStr);
-			replyUserId = Long.parseLong(replyUserIdStr);
-			if (!conversationIdStr.equals("null")) {
-				conversationId = Long.parseLong(conversationIdStr);
-			} else {
-				conversationId = -1L;
-			}
-		} catch (NumberFormatException e) {
-			throw new JSONException("Bad IDs: " + conversationIdStr + "," + idStr + "," + replyUserIdStr);
 		}
 	}
 

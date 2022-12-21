@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +18,11 @@ import java.util.Locale;
 public class LocationV1 implements Location {
 
 	private static final long serialVersionUID = 4225779906497681090L;
+
+	/**
+	 * geojson location type
+	 */
+	private static final String LOCATION_TYPE = "Point";
 
 	private int woeid;
 	private String country;

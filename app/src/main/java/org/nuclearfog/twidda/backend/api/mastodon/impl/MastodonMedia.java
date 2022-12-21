@@ -13,6 +13,7 @@ public class MastodonMedia implements Media {
 
 	private static final long serialVersionUID = 8402701358586444094L;
 
+	private String key;
 	private String url;
 	private String preview;
 	private int type = NONE;
@@ -20,6 +21,7 @@ public class MastodonMedia implements Media {
 
 	public MastodonMedia(JSONObject json) throws JSONException {
 		String typeStr = json.getString("type");
+		key = json.getString("id");
 		url = json.optString("url", "");
 		preview = json.optString("preview_url");
 		switch (typeStr) {
@@ -35,6 +37,12 @@ public class MastodonMedia implements Media {
 				type = VIDEO;
 				break;
 		}
+	}
+
+
+	@Override
+	public String getKey() {
+		return key;
 	}
 
 

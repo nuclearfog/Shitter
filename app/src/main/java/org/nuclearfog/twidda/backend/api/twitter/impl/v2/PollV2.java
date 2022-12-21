@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
 import androidx.annotation.NonNull;
 
@@ -13,9 +13,15 @@ import org.nuclearfog.twidda.model.Poll;
  *
  * @author nuclearfog
  */
-public class TwitterPoll implements Poll {
+public class PollV2 implements Poll {
 
 	private static final long serialVersionUID = 4587084581361253962L;
+
+	/**
+	 * fields to add twitter poll object
+	 */
+	public static final String FIELDS_POLL = "poll.fields=duration_minutes%2Cend_datetime%2Cid%2Coptions%2Cvoting_status";
+
 
 	private static final String VOTE_CLOSED = "closed";
 
@@ -28,7 +34,7 @@ public class TwitterPoll implements Poll {
 	/**
 	 * @param json tweet poll json format
 	 */
-	public TwitterPoll(JSONObject json) throws JSONException {
+	public PollV2(JSONObject json) throws JSONException {
 		JSONArray optionsJson = json.getJSONArray("options");
 		String idStr = json.getString("id");
 		expired = VOTE_CLOSED.equals(json.getString("voting_status"));
