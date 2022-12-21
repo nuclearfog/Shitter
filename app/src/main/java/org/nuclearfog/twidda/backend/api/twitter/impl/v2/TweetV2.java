@@ -92,19 +92,19 @@ public class TweetV2 implements Status {
 	 * @param tweetCompat tweet v1.1 object
 	 */
 	public TweetV2(JSONObject json, @NonNull UserV2Map userMap, @Nullable MediaV2Map mediaMap, @Nullable PollV2Map pollMap, @Nullable LocationV2Map locationMap, @Nullable Status tweetCompat) throws JSONException {
-		JSONObject publicMetrics = json.getJSONObject("public_metrics");
-		JSONObject nonPublicMetrics = json.optJSONObject("non_public_metrics");
-		JSONObject entities = json.optJSONObject("entities");
-		JSONObject geoJson = json.optJSONObject("geo");
-		JSONObject attachments = json.optJSONObject("attachments");
-		JSONArray tweetReferences = json.optJSONArray("referenced_tweets");
-		String idStr = json.getString("id");
-		String textStr = json.optString("text", "");
-		String timeStr = json.optString("created_at", "");
-		String replyUserIdStr = json.optString("in_reply_to_user_id", "-1");
-		String conversationIdStr = json.optString("conversation_id", "-1");
-		String authorId = json.getString("author_id");
-
+		JSONObject data = json.getJSONObject("data");
+		JSONObject publicMetrics = data.getJSONObject("public_metrics");
+		JSONObject nonPublicMetrics = data.optJSONObject("non_public_metrics");
+		JSONObject entities = data.optJSONObject("entities");
+		JSONObject geoJson = data.optJSONObject("geo");
+		JSONObject attachments = data.optJSONObject("attachments");
+		JSONArray tweetReferences = data.optJSONArray("referenced_tweets");
+		String idStr = data.getString("id");
+		String textStr = data.optString("text", "");
+		String timeStr = data.optString("created_at", "");
+		String replyUserIdStr = data.optString("in_reply_to_user_id", "-1");
+		String conversationIdStr = data.optString("conversation_id", "-1");
+		String authorId = data.getString("author_id");
 		// string to long conversion
 		try {
 			id = Long.parseLong(idStr);
@@ -128,16 +128,8 @@ public class TweetV2 implements Status {
 		retweetCount = publicMetrics.getInt("retweet_count");
 		favoriteCount = publicMetrics.getInt("like_count");
 		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);
-		source = json.optString("source", "unknown");
-		sensitive = json.optBoolean("possibly_sensitive", false);
-		// add missing attributes using API v1.1
-		if (tweetCompat != null) {
-			replyName = tweetCompat.getReplyName();
-			embedded = tweetCompat.getEmbeddedStatus();
-			retweeted = tweetCompat.isReposted();
-			favorited = tweetCompat.isFavorited();
-			source = tweetCompat.getSource(); // fix for any reason Twitter doesn't return source information anymore
-		}
+		source = data.optString("source", "unknown");
+		sensitive = data.optBoolean("possibly_sensitive", false);
 		// add media
 		if (attachments != null) {
 			JSONArray mediaKeys = attachments.optJSONArray("media_keys");
@@ -217,6 +209,16 @@ public class TweetV2 implements Status {
 					e.printStackTrace();
 				}
 			}
+		}
+		// add/override missing attributes using API v1.1
+		if (tweetCompat != null) {
+			replyName = tweetCompat.getReplyName();
+			embedded = tweetCompat.getEmbeddedStatus();
+			retweeted = tweetCompat.isReposted();
+			favorited = tweetCompat.isFavorited();
+			// fixme: for any reason Twitter API 2.0 doesn't return the attributes below
+			source = tweetCompat.getSource();
+			medias = tweetCompat.getMedia();
 		}
 	}
 

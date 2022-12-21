@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,10 +30,10 @@ public class MediaV1 implements Media {
 	 */
 	public MediaV1(JSONObject json) throws JSONException {
 		String type = json.getString("type");
-		preview = json.optString("expanded_url");
+		preview = json.optString("media_url_https");
 		switch (type) {
 			case "photo":
-				url = json.getString("url");
+				url = json.getString("media_url_https");
 				this.type = PHOTO;
 				break;
 
@@ -85,5 +87,31 @@ public class MediaV1 implements Media {
 	@Override
 	public String getPreviewUrl() {
 		return preview;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		String tostring;
+		switch (type) {
+			case PHOTO:
+				tostring = "photo:";
+				break;
+
+			case VIDEO:
+				tostring = "video:";
+				break;
+
+			case GIF:
+				tostring = "gif:";
+				break;
+
+			default:
+				tostring = "none:";
+				break;
+		}
+		tostring += "url=\"" + url + "\"";
+		return tostring;
 	}
 }

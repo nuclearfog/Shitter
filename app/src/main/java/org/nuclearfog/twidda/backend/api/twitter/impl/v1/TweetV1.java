@@ -95,7 +95,7 @@ public class TweetV1 implements Status {
 			if (mediaArray != null && mediaArray.length() > 0) {
 				medias = new Media[mediaArray.length()];
 				for (int i = 0; i < mediaArray.length(); i++) {
-					JSONObject mediaItem = mediaArray.getJSONObject(0);
+					JSONObject mediaItem = mediaArray.getJSONObject(i);
 					medias[i] = new MediaV1(mediaItem);
 				}
 			}

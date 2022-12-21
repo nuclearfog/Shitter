@@ -1274,12 +1274,11 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				JSONObject data = json.getJSONObject("data");
 				UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
 				MediaV2Map mediaMap = new MediaV2Map(json);
 				PollV2Map pollMap = new PollV2Map(json);
 				LocationV2Map locationMap = new LocationV2Map(json);
-				return new TweetV2(data, userMap, mediaMap, pollMap, locationMap, statusCompat);
+				return new TweetV2(json, userMap, mediaMap, pollMap, locationMap, statusCompat);
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {

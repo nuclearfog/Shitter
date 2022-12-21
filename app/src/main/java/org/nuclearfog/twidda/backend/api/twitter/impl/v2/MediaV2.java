@@ -98,19 +98,19 @@ public class MediaV2 implements Media {
 		String tostring;
 		switch (type) {
 			case PHOTO:
-				tostring = "photo";
+				tostring = "photo:";
 				break;
 
 			case VIDEO:
-				tostring = "video";
+				tostring = "video:";
 				break;
 
 			case GIF:
-				tostring = "gif";
+				tostring = "gif:";
 				break;
 
 			default:
-				tostring = "none";
+				tostring = "none:";
 				break;
 		}
 		tostring += "url=\"" + url + "\"";
