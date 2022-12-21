@@ -159,18 +159,18 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 					if (sinceId == 0 && maxId == 0) {
 						statuses = db.getReplies(id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getStatusReplies(search, id, sinceId, maxId);
+							statuses = connection.getStatusReplies(id, sinceId, maxId);
 							if (!statuses.isEmpty() && db.containsStatus(id)) {
 								db.saveReplyTimeline(statuses);
 							}
 						}
 					} else if (sinceId > 0) {
-						statuses = connection.getStatusReplies(search, id, sinceId, maxId);
+						statuses = connection.getStatusReplies(id, sinceId, maxId);
 						if (!statuses.isEmpty() && db.containsStatus(id)) {
 							db.saveReplyTimeline(statuses);
 						}
 					} else if (maxId > 1) {
-						statuses = connection.getStatusReplies(search, id, sinceId, maxId);
+						statuses = connection.getStatusReplies(id, sinceId, maxId);
 					}
 					break;
 

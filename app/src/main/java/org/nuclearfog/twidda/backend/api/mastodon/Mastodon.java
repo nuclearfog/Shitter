@@ -425,7 +425,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getStatusReplies(String name, long id, long minId, long maxId) {
+	public List<Status> getStatusReplies(long id, long minId, long maxId) {
 		return new ArrayList<>(0); // todo add implementation
 	}
 

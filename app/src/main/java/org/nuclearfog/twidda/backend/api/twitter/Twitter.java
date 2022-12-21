@@ -628,25 +628,22 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public List<Status> getStatusReplies(String name, long id, long minId, long maxId) throws TwitterException {
+	public List<Status> getStatusReplies(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (minId > 0)
 			params.add("since_id=" + minId);
-		else
-			params.add("since_id=" + id);
 		if (maxId > 1)
-			params.add("max_id=" + maxId);
-		if (name.startsWith("@"))
-			name = name.substring(1);
+			params.add("until_id=" + maxId);
 		params.add("query=conversation_id:" + id);
 		List<Status> result = getTweets2(TWEET_SEARCH_2, params);
 		List<Status> replies = new LinkedList<>();
+		// chose only the first tweet of a conversation
 		for (Status reply : result) {
 			if (reply.getRepliedStatusId() == id) {
 				replies.add(reply);
 			}
 		}
-		if (settings.filterResults())
+		if (settings.filterResults() && !replies.isEmpty())
 			filterTweets(replies);
 		return replies;
 	}
@@ -1180,23 +1177,31 @@ public class Twitter implements Connection {
 			params.add(TweetV2.FIELDS_TWEET);
 			params.add(TweetV2.FIELDS_EXPANSION);
 			params.add(UserV2.USER_FIELDS);
+			params.add(MediaV2.FIELDS_MEDIA);
+			params.add(PollV2.FIELDS_POLL);
+			params.add(LocationV2.FIELDS_PLACE);
 			params.add("max_results=" + settings.getListSize());
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
-				JSONArray array = new JSONObject(body.string()).getJSONArray("data");
-				long homeId = settings.getLogin().getId();
-				List<Status> tweets = new ArrayList<>(array.length() + 1);
-				for (int i = 0; i < array.length(); i++) {/*
-					try {
-						tweets.add(new TweetV2(array.getJSONObject(i), homeId));
-					} catch (JSONException e) {
-						if (BuildConfig.DEBUG) {
-							Log.w("tweet", e);
+				JSONObject json = new JSONObject(body.string());
+				JSONArray data = json.optJSONArray("data");
+				if (data != null && data.length() > 0) {
+					List<Status> tweets = new ArrayList<>(data.length() + 1);
+					UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
+					for (int i = 0; i < data.length(); i++) {
+						try {
+							Status item = new TweetV2(data.getJSONObject(i), userMap);
+							tweets.add(item);
+						} catch (JSONException e) {
+							if (BuildConfig.DEBUG) {
+								Log.w("tweet", e);
+							}
 						}
-					}*/
+					}
+					return tweets;
 				}
-				return tweets;
+				return new ArrayList<>(0);
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {
@@ -1256,7 +1261,6 @@ public class Twitter implements Connection {
 				params.add(TweetV2.FIELDS_TWEET_PRIVATE);
 			else
 				params.add(TweetV2.FIELDS_TWEET);
-
 			params.add(TweetV2.FIELDS_EXPANSION);
 			params.add(UserV2.USER_FIELDS);
 			params.add(MediaV2.FIELDS_MEDIA);
@@ -1270,11 +1274,12 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
+				JSONObject data = json.getJSONObject("data");
 				UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
 				MediaV2Map mediaMap = new MediaV2Map(json);
 				PollV2Map pollMap = new PollV2Map(json);
 				LocationV2Map locationMap = new LocationV2Map(json);
-				return new TweetV2(json, userMap, mediaMap, pollMap, locationMap, statusCompat);
+				return new TweetV2(data, userMap, mediaMap, pollMap, locationMap, statusCompat);
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {

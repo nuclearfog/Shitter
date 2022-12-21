@@ -78,41 +78,39 @@ public class TweetV2 implements Status {
 
 	/**
 	 */
-	public TweetV2(JSONObject json, UserV2Map userMap, MediaV2Map mediaMap, PollV2Map pollMap,  LocationV2Map locationMap) throws JSONException {
-		this(json, userMap, mediaMap, pollMap, locationMap, null);
+	public TweetV2(JSONObject json, UserV2Map userMap) throws JSONException {
+		this(json, userMap, null, null, null, null);
 	}
 
 	/**
 	 * @param json        Tweet v2 json
 	 * @param tweetCompat Tweet containing base informations
 	 */
-	public TweetV2(JSONObject json, UserV2Map userMap, MediaV2Map mediaMap, PollV2Map pollMap, LocationV2Map locationMap, @Nullable Status tweetCompat) throws JSONException {
-		JSONObject dataJson = json.getJSONObject("data");
-		JSONObject publicMetrics = dataJson.getJSONObject("public_metrics");
-		JSONObject nonPublicMetrics = dataJson.optJSONObject("non_public_metrics");
-		JSONObject entities = dataJson.getJSONObject("entities");
-		JSONObject geoJson = dataJson.optJSONObject("geo");
-		JSONObject attachments = dataJson.getJSONObject("attachments");
-		JSONArray mentionsJson = entities.optJSONArray("mentions");
-		JSONArray tweetReferences = dataJson.optJSONArray("referenced_tweets");
-		JSONArray pollIds = attachments.optJSONArray("poll_ids");
-		JSONArray mediaKeys = attachments.optJSONArray("media_keys");
-		JSONArray urls = entities.optJSONArray("urls");
-		String idStr = dataJson.getString("id");
-		String textStr = dataJson.optString("text", "");
-		String timeStr = dataJson.optString("created_at", "");
-		String replyUserIdStr = dataJson.optString("in_reply_to_user_id", "-1");
-		String conversationIdStr = dataJson.optString("conversation_id", "-1");
-		String authorId = dataJson.getString("author_id");
+	public TweetV2(JSONObject json, @NonNull UserV2Map userMap, @Nullable MediaV2Map mediaMap, @Nullable PollV2Map pollMap, @Nullable LocationV2Map locationMap, @Nullable Status tweetCompat) throws JSONException {
+		JSONObject publicMetrics = json.getJSONObject("public_metrics");
+		JSONObject nonPublicMetrics = json.optJSONObject("non_public_metrics");
+		JSONObject entities = json.optJSONObject("entities");
+		JSONObject geoJson = json.optJSONObject("geo");
+		JSONObject attachments = json.optJSONObject("attachments");
+		JSONArray tweetReferences = json.optJSONArray("referenced_tweets");
+		String idStr = json.getString("id");
+		String textStr = json.optString("text", "");
+		String timeStr = json.optString("created_at", "");
+		String replyUserIdStr = json.optString("in_reply_to_user_id", "-1");
+		String conversationIdStr = json.optString("conversation_id", "-1");
+		String authorId = json.getString("author_id");
 
 		// string to long conversion
 		try {
 			id = Long.parseLong(idStr);
 			replyUserId = Long.parseLong(replyUserIdStr);
 			author = userMap.get(Long.parseLong(authorId));
-			if (pollIds != null && pollIds.length() > 0)
-				poll = pollMap.get(Long.parseLong(pollIds.getString(0)));
-			if (geoJson != null) {
+			if (attachments != null) {
+				JSONArray pollIds = attachments.optJSONArray("poll_ids");
+				if (pollMap != null && pollIds != null && pollIds.length() > 0)
+					poll = pollMap.get(Long.parseLong(pollIds.getString(0)));
+			}
+			if (locationMap != null && geoJson != null) {
 				String locIdStr = geoJson.getString("place_id");
 				location = locationMap.get(Long.parseUnsignedLong(locIdStr, 16));
 			}
@@ -121,14 +119,13 @@ public class TweetV2 implements Status {
 		} catch (NumberFormatException e) {
 			throw new JSONException("Bad IDs: " + conversationIdStr + "," + idStr + "," + replyUserIdStr + "," + authorId);
 		}
-
 		replyCount = publicMetrics.getInt("reply_count");
 		retweetCount = publicMetrics.getInt("retweet_count");
 		favoriteCount = publicMetrics.getInt("like_count");
 		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);
-		source = dataJson.optString("source", "unknown");
-		sensitive = dataJson.optBoolean("possibly_sensitive", false);
-		// add attributes missing from API V2.0
+		source = json.optString("source", "unknown");
+		sensitive = json.optBoolean("possibly_sensitive", false);
+		// add missing attributes using API v1.1
 		if (tweetCompat != null) {
 			replyName = tweetCompat.getReplyName();
 			embedded = tweetCompat.getEmbeddedStatus();
@@ -137,57 +134,66 @@ public class TweetV2 implements Status {
 			source = tweetCompat.getSource(); // fix for any reason Twitter doesn't return source information anymore
 		}
 		// add media
-		if (mediaKeys != null && mediaKeys.length() > 0) {
-			medias = new Media[mediaKeys.length()];
-			for (int i = 0 ; i < mediaKeys.length() ; i++) {
-				medias[i] = mediaMap.get(mediaKeys.getString(i));
+		if (attachments != null) {
+			JSONArray mediaKeys = attachments.optJSONArray("media_keys");
+			if (mediaMap != null && mediaKeys != null && mediaKeys.length() > 0) {
+				medias = new Media[mediaKeys.length()];
+				for (int i = 0; i < mediaKeys.length(); i++) {
+					medias[i] = mediaMap.get(mediaKeys.getString(i));
+				}
 			}
 		}
 		// add metrics
 		if (nonPublicMetrics != null) {
 			metrics = new MetricsV2(publicMetrics, nonPublicMetrics);
 		}
-		// add mentioned usernames
-		if (mentionsJson != null && mentionsJson.length() > 0) {
-			StringBuilder builder = new StringBuilder();
-			for (int i = 0; i < mentionsJson.length(); i++) {
-				JSONObject mentionJson = mentionsJson.getJSONObject(i);
-				builder.append('@').append(mentionJson.getString("username")).append(' ');
+		if (entities != null) {
+			JSONArray mentionsJson = entities.optJSONArray("mentions");
+			JSONArray urls = entities.optJSONArray("urls");
+			// add mentioned usernames
+			if (mentionsJson != null && mentionsJson.length() > 0) {
+				StringBuilder builder = new StringBuilder();
+				for (int i = 0; i < mentionsJson.length(); i++) {
+					JSONObject mentionJson = mentionsJson.getJSONObject(i);
+					builder.append('@').append(mentionJson.getString("username")).append(' ');
+				}
+				mentions = builder.toString();
 			}
-			mentions = builder.toString();
-		}
-		// expand urls
-		if (urls != null) {
-			// check for shortened urls and replace them with full urls
-			StringBuilder builder = new StringBuilder(textStr);
-			List<Card> cardsList = new LinkedList<>();
-			for (int i = urls.length() - 1; i >= 0; i--) {
-				// expand shortened links
-				JSONObject entry = urls.getJSONObject(i);
-				String expandedUrl = entry.getString("expanded_url");
-				String displayUrl = entry.getString("display_url");
-				String mediaKey = entry.optString("media_key", "");
-				int start = entry.optInt("start", -1);
-				int end = entry.optInt("end", -1);
-				if (start >= 0 && end > start) {
-					int offset = StringTools.calculateIndexOffset(textStr, start);
-					// replace shortened link
-					if (!displayUrl.contains("pic.twitter.com")) {
-						builder.replace(start + offset, end + offset, expandedUrl);
+			// expand urls
+			if (urls != null) {
+				// check for shortened urls and replace them with full urls
+				StringBuilder builder = new StringBuilder(textStr);
+				List<Card> cardsList = new LinkedList<>();
+				for (int i = urls.length() - 1; i >= 0; i--) {
+					// expand shortened links
+					JSONObject entry = urls.getJSONObject(i);
+					String expandedUrl = entry.getString("expanded_url");
+					String displayUrl = entry.getString("display_url");
+					String mediaKey = entry.optString("media_key", "");
+					int start = entry.optInt("start", -1);
+					int end = entry.optInt("end", -1);
+					if (start >= 0 && end > start) {
+						int offset = StringTools.calculateIndexOffset(textStr, start);
+						// replace shortened link
+						if (!displayUrl.contains("pic.twitter.com")) {
+							builder.replace(start + offset, end + offset, expandedUrl);
+						}
+						// remove shortened link if it is a media link
+						else {
+							builder.delete(start + offset, end + offset);
+						}
 					}
-					// remove shortened link if it is a media link
-					else {
-						builder.delete(start + offset, end + offset);
+					// create Twitter card if link is not a media link
+					if (mediaKey.isEmpty()) {
+						TwitterCard item = new TwitterCard(urls.getJSONObject(i));
+						cardsList.add(item);
 					}
 				}
-				// create Twitter card if link is not a media link
-				if (mediaKey.isEmpty()) {
-					TwitterCard item = new TwitterCard(urls.getJSONObject(i));
-					cardsList.add(item);
-				}
+				tweetText = StringTools.unescapeString(builder.toString());
+				cards = cardsList.toArray(cards);
+			} else {
+				tweetText = StringTools.unescapeString(textStr);
 			}
-			tweetText = StringTools.unescapeString(builder.toString());
-			cards = cardsList.toArray(cards);
 		} else {
 			tweetText = StringTools.unescapeString(textStr);
 		}

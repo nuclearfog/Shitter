@@ -298,13 +298,12 @@ public interface Connection {
 	/**
 	 * get replies of a status
 	 *
-	 * @param name  screen name of the status author
 	 * @param id    Id of the status
 	 * @param minId get statuses with ID above the min ID
 	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getStatusReplies(String name, long id, long minId, long maxId) throws ConnectionException;
+	List<Status> getStatusReplies(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * lookup status by ID
