@@ -57,7 +57,7 @@ public class DatabaseAdapter {
 			+ StatusTable.REPLYSTATUS + " INTEGER,"
 			+ StatusTable.REPLYNAME + " TEXT,"
 			+ StatusTable.REPLYUSER + " INTEGER,"
-			+ StatusTable.SINCE + " INTEGER,"
+			+ StatusTable.TIMESTAMP + " INTEGER,"
 			+ StatusTable.TEXT + " TEXT,"
 			+ StatusTable.MEDIA + " TEXT,"
 			+ StatusTable.REPOST + " INTEGER,"
@@ -161,6 +161,16 @@ public class DatabaseAdapter {
 			+ NotificationTable.DATE + " INTEGER,"
 			+ NotificationTable.TYPE + " INTEGER,"
 			+ NotificationTable.ITEM + " INTEGER);";
+
+	/**
+	 * SQL query to create media table
+	 */
+	public static final String TABLE_MEDIA = "CREATE TABLE IF NOT EXISTS "
+			+ MediaTable.NAME + "("
+			+ MediaTable.KEY + " TEXT PRIMARY KEY,"
+			+ MediaTable.TYPE + " INTEGER,"
+			+ MediaTable.URL + " TEXT,"
+			+ MediaTable.PREVIEW + " TEXT);";
 
 	/**
 	 * table index for status table
@@ -296,6 +306,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_STATUS_REGISTER);
 		db.execSQL(TABLE_USER_REGISTER);
 		db.execSQL(TABLE_NOTIFICATION);
+		db.execSQL(TABLE_MEDIA);
 		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
@@ -429,7 +440,7 @@ public class DatabaseAdapter {
 		String TEXT = "tweet";
 
 		/**
-		 * media links attached to the status
+		 * media key
 		 */
 		String MEDIA = "media";
 
@@ -451,7 +462,7 @@ public class DatabaseAdapter {
 		/**
 		 * timestamp of the status
 		 */
-		String SINCE = "time";
+		String TIMESTAMP = "time";
 
 		/**
 		 * API source of the status
@@ -579,7 +590,7 @@ public class DatabaseAdapter {
 		String MESSAGE = "message";
 
 		/**
-		 * media links
+		 * media keys
 		 */
 		String MEDIA = "media";
 	}
@@ -761,5 +772,36 @@ public class DatabaseAdapter {
 		 * {@link org.nuclearfog.twidda.model.Notification}
 		 */
 		String TYPE = "type";
+	}
+
+	/**
+	 * Table for media information
+	 */
+	public interface MediaTable {
+
+		/**
+		 * table name
+		 */
+		String NAME = "media";
+
+		/**
+		 * key to identify the media entry
+		 */
+		String KEY = "media_key";
+
+		/**
+		 * type of media (image,giv or video)
+		 */
+		String TYPE = "media_type";
+
+		/**
+		 * media url of the media
+		 */
+		String URL = "media_url";
+
+		/**
+		 * url for the media thumbnail
+		 */
+		String PREVIEW = "media_preview_url";
 	}
 }

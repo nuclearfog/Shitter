@@ -24,13 +24,15 @@ public class MediaV1 implements Media {
 	private int type = NONE;
 	private String url = "";
 	private String preview;
+	private String key;
 
 	/**
 	 * @param json JSON containing media information (extended_entities)
 	 */
 	public MediaV1(JSONObject json) throws JSONException {
 		String type = json.getString("type");
-		preview = json.optString("media_url_https");
+		preview = json.getString("media_url_https");
+		key = json.getString("id_str");
 		switch (type) {
 			case "photo":
 				url = json.getString("media_url_https");
@@ -68,7 +70,7 @@ public class MediaV1 implements Media {
 
 	@Override
 	public String getKey() {
-		return url;
+		return key;
 	}
 
 

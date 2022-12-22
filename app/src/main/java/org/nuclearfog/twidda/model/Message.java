@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.model;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 
@@ -39,6 +39,6 @@ public interface Message extends Serializable {
 	/**
 	 * @return get attached media link
 	 */
-	@Nullable
-	Media getMedia();
+	@NonNull
+	Media[] getMedia();
 }

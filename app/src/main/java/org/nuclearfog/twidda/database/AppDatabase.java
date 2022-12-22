@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.database;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
@@ -19,12 +20,14 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.lists.Messages;
+import org.nuclearfog.twidda.database.impl.MediaImpl;
 import org.nuclearfog.twidda.database.impl.MessageImpl;
 import org.nuclearfog.twidda.database.impl.NotificationImpl;
 import org.nuclearfog.twidda.database.impl.StatusImpl;
 import org.nuclearfog.twidda.database.impl.TrendImpl;
 import org.nuclearfog.twidda.database.impl.UserImpl;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
@@ -246,6 +249,11 @@ public class AppDatabase {
 	private static final String STATUS_REG_SELECT = StatusRegisterTable.ID + "=? AND " + StatusRegisterTable.OWNER + "=?";
 
 	/**
+	 * selection to get media
+	 */
+	private static final String MEDIA_SELECT = MediaTable.KEY + "=?";
+
+	/**
 	 * selection to get user register
 	 */
 	private static final String USER_REG_SELECT = UserRegisterTable.ID + "=? AND " + UserRegisterTable.OWNER + "=?";
@@ -331,7 +339,7 @@ public class AppDatabase {
 	 */
 	public void saveFavoriteTimeline(List<Status> fav, long ownerId) {
 		SQLiteDatabase db = getDbWrite();
-		removeOldFavorites(db, ownerId);
+		removeFavorits(db, ownerId);
 		for (Status status : fav) {
 			saveStatus(status, db, 0);
 			saveFavorite(status.getId(), ownerId, db);
@@ -357,7 +365,7 @@ public class AppDatabase {
 	 * @param trends List of Trends
 	 */
 	public void saveTrends(List<Trend> trends) {
-		String[] args = {Integer.toString(settings.getTrendLocation().getWorldId())};
+		String[] args = {Long.toString(settings.getTrendLocation().getId())};
 		SQLiteDatabase db = getDbWrite();
 		db.delete(TrendTable.NAME, TREND_SELECT, args);
 		for (Trend trend : trends) {
@@ -434,7 +442,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(HOME_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				Status status = getStatus(cursor);
+				Status status = getStatus(cursor, db);
 				result.add(status);
 			} while (cursor.moveToNext());
 		}
@@ -457,7 +465,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				Status status = getStatus(cursor);
+				Status status = getStatus(cursor, db);
 				result.add(status);
 			} while (cursor.moveToNext());
 		}
@@ -480,7 +488,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(USERFAVORIT_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				Status status = getStatus(cursor);
+				Status status = getStatus(cursor, db);
 				result.add(status);
 			} while (cursor.moveToNext());
 		}
@@ -533,7 +541,7 @@ public class AppDatabase {
 		Status result = null;
 		Cursor cursor = db.rawQuery(SINGLE_STATUS_QUERY, args);
 		if (cursor.moveToFirst())
-			result = getStatus(cursor);
+			result = getStatus(cursor, db);
 		cursor.close();
 		return result;
 	}
@@ -553,7 +561,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				Status status = getStatus(cursor);
+				Status status = getStatus(cursor, db);
 				result.add(status);
 			} while (cursor.moveToNext());
 		}
@@ -621,12 +629,12 @@ public class AppDatabase {
 	}
 
 	/**
-	 * hide or unhide status reply
+	 * hide or unhide status
 	 *
 	 * @param id   ID of the reply
 	 * @param hide true to hide this status
 	 */
-	public void hideReply(long id, boolean hide) {
+	public void hideStatus(long id, boolean hide) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		SQLiteDatabase db = getDbWrite();
@@ -668,7 +676,7 @@ public class AppDatabase {
 	 *
 	 * @param id Direct Message ID
 	 */
-	public void deleteMessage(long id) {
+	public void removeMessage(long id) {
 		String[] messageId = {Long.toString(id)};
 
 		SQLiteDatabase db = getDbWrite();
@@ -682,7 +690,7 @@ public class AppDatabase {
 	 * @return list of trends
 	 */
 	public List<Trend> getTrends() {
-		String[] args = {Integer.toString(settings.getTrendLocation().getWorldId())};
+		String[] args = {Long.toString(settings.getTrendLocation().getId())};
 		SQLiteDatabase db = getDbRead();
 		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, TREND_ORDER);
 		List<Trend> trends = new LinkedList<>();
@@ -709,7 +717,18 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				result.add(new MessageImpl(cursor, login));
+				MessageImpl item = new MessageImpl(cursor, login);
+				result.add(item);
+				if (item.getMediaKeys().length > 0) {
+					List<Media> medias = new LinkedList<>();
+					for (String key : item.getMediaKeys()) {
+						Media media = getMedia(db, key);
+						if (media != null) {
+							medias.add(media);
+						}
+					}
+					item.addMedia(medias.toArray(new Media[0]));
+				}
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -750,62 +769,83 @@ public class AppDatabase {
 	}
 
 	/**
-	 * set register of a status. Update if an entry exists
-	 *
-	 * @param db       database instance
-	 * @param status   status
-	 * @param register status register
-	 */
-	public void saveStatusRegister(SQLiteDatabase db, Status status, int register) {
-		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
-
-		ContentValues values = new ContentValues(4);
-		values.put(StatusRegisterTable.REGISTER, register);
-		values.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
-		values.put(StatusRegisterTable.ID, status.getId());
-		values.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
-
-		int count = db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
-		if (count == 0) {
-			// create new entry if there isn't one
-			db.insert(StatusRegisterTable.NAME, null, values);
-		}
-	}
-
-	/**
-	 * set user register. If entry exists, update it.
-	 *
-	 * @param db       database instance
-	 * @param id       User ID
-	 * @param register status register
-	 */
-	public void saveUserRegister(SQLiteDatabase db, long id, int register) {
-		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
-
-		ContentValues values = new ContentValues(3);
-		values.put(UserRegisterTable.ID, id);
-		values.put(UserRegisterTable.OWNER, settings.getLogin().getId());
-		values.put(UserRegisterTable.REGISTER, register);
-
-		int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
-		if (cnt == 0) {
-			// create new entry if there isn't an entry
-			db.insert(UserRegisterTable.NAME, null, values);
-		}
-	}
-
-	/**
 	 * get status information from database
 	 *
 	 * @param cursor cursor containing status informations
 	 * @return status
 	 */
-	private Status getStatus(Cursor cursor) {
+	private Status getStatus(Cursor cursor, SQLiteDatabase db) {
 		Account login = settings.getLogin();
 		StatusImpl result = new StatusImpl(cursor, login);
 		// check if there is an embedded status
 		if (result.getEmbeddedStatusId() > 1)
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
+		if (result.getMediaKeys().length > 0) {
+			List<Media> mediaList = new LinkedList<>();
+			for (String mediaKey : result.getMediaKeys()) {
+				Media item = getMedia(db, mediaKey);
+				if (item != null) {
+					mediaList.add(item);
+				}
+			}
+			if (!mediaList.isEmpty()) {
+				result.addMedia(mediaList.toArray(new Media[0]));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * get status/message media
+	 *
+	 * @param key media key
+	 * @param db database instance
+	 * @return media item or null
+	 */
+	@Nullable
+	private Media getMedia(SQLiteDatabase db, String key) {
+		String[] args = {key};
+		Cursor c = db.query(MediaTable.NAME, MediaImpl.PROJECTION, MEDIA_SELECT, args, null, null, null, SINGLE_ITEM);
+		Media result = null;
+		if (c.moveToFirst())
+			result = new MediaImpl(c);
+		c.close();
+		return result;
+	}
+
+	/**
+	 * get register of a status or zero if status not found
+	 *
+	 * @param db database instance
+	 * @param id ID of the status
+	 * @return status register
+	 */
+	private int getStatusRegister(SQLiteDatabase db, long id) {
+		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
+
+		Cursor c = db.query(StatusRegisterTable.NAME, STATUS_REG_COLUMN, STATUS_REG_SELECT, args, null, null, null, SINGLE_ITEM);
+		int result = 0;
+		if (c.moveToFirst())
+			result = c.getInt(0);
+		c.close();
+		return result;
+	}
+
+	/**
+	 * get user register or zero if not found
+	 *
+	 * @param db     database instance
+	 * @param userID ID of the user
+	 * @return user flags
+	 */
+	private int getUserRegister(SQLiteDatabase db, long userID) {
+		String[] args = {Long.toString(userID), Long.toString(settings.getLogin().getId())};
+
+		Cursor c = db.query(UserRegisterTable.NAME, USER_REG_COLUMN, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
+		int result = 0;
+		if (c.moveToFirst())
+			result = c.getInt(0);
+		c.close();
 		return result;
 	}
 
@@ -854,7 +894,6 @@ public class AppDatabase {
 		saveUserRegister(db, user.getId(), register);
 	}
 
-
 	/**
 	 * save status into database
 	 *
@@ -886,10 +925,10 @@ public class AppDatabase {
 		} else {
 			statusFlags &= ~MEDIA_SENS_MASK;
 		}
-		ContentValues statusUpdate = new ContentValues(16);
+		ContentValues statusUpdate = new ContentValues(17);
 		statusUpdate.put(StatusTable.ID, status.getId());
 		statusUpdate.put(StatusTable.USER, user.getId());
-		statusUpdate.put(StatusTable.SINCE, status.getTimestamp());
+		statusUpdate.put(StatusTable.TIMESTAMP, status.getTimestamp());
 		statusUpdate.put(StatusTable.TEXT, status.getText());
 		statusUpdate.put(StatusTable.EMBEDDED, rtId);
 		statusUpdate.put(StatusTable.SOURCE, status.getSource());
@@ -904,9 +943,120 @@ public class AppDatabase {
 			statusUpdate.put(StatusTable.PLACE, status.getLocation().getPlace());
 			statusUpdate.put(StatusTable.COORDINATE, status.getLocation().getCoordinates());
 		}
+		if (status.getMedia().length > 0) {
+			StringBuilder mediaBuf = new StringBuilder();
+			saveMedia(status.getMedia(), db);
+			for (Media media: status.getMedia()) {
+				mediaBuf.append(media.getKey()).append(';');
+			}
+			String mediaKeys = mediaBuf.deleteCharAt(mediaBuf.length() - 1).toString();
+			statusUpdate.put(StatusTable.MEDIA, mediaKeys);
+		}
 		db.insertWithOnConflict(StatusTable.NAME, "", statusUpdate, CONFLICT_REPLACE);
 		saveUser(user, db, CONFLICT_IGNORE);
 		saveStatusRegister(db, status, statusFlags);
+	}
+
+	/**
+	 * save media information
+	 *
+	 * @param medias media to save
+	 */
+	private void saveMedia(Media[] medias, SQLiteDatabase db) {
+		for (Media media : medias) {
+			ContentValues mediaColumn = new ContentValues(4);
+			mediaColumn.put(MediaTable.KEY, media.getKey());
+			mediaColumn.put(MediaTable.URL, media.getUrl());
+			mediaColumn.put(MediaTable.PREVIEW, media.getPreviewUrl());
+			mediaColumn.put(MediaTable.TYPE, media.getMediaType());
+			db.insertWithOnConflict(MediaTable.NAME, "", mediaColumn, CONFLICT_REPLACE);
+		}
+	}
+
+	/**
+	 * set register of a status. Update if an entry exists
+	 *
+	 * @param db       database instance
+	 * @param status   status
+	 * @param register status register
+	 */
+	private void saveStatusRegister(SQLiteDatabase db, Status status, int register) {
+		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
+
+		ContentValues values = new ContentValues(4);
+		values.put(StatusRegisterTable.REGISTER, register);
+		values.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
+		values.put(StatusRegisterTable.ID, status.getId());
+		values.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
+
+		int count = db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
+		if (count == 0) {
+			// create new entry if there isn't one
+			db.insert(StatusRegisterTable.NAME, null, values);
+		}
+	}
+
+	/**
+	 * set user register. If entry exists, update it.
+	 *
+	 * @param db       database instance
+	 * @param id       User ID
+	 * @param register status register
+	 */
+	private void saveUserRegister(SQLiteDatabase db, long id, int register) {
+		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
+
+		ContentValues values = new ContentValues(3);
+		values.put(UserRegisterTable.ID, id);
+		values.put(UserRegisterTable.OWNER, settings.getLogin().getId());
+		values.put(UserRegisterTable.REGISTER, register);
+
+		int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
+		if (cnt == 0) {
+			// create new entry if there isn't an entry
+			db.insert(UserRegisterTable.NAME, null, values);
+		}
+	}
+
+	/**
+	 * Store status into favorite table of a user
+	 *
+	 * @param statusId ID of the favored status
+	 * @param ownerId  ID of the favorite list owner
+	 * @param db       database instance
+	 */
+	private void saveFavorite(long statusId, long ownerId, SQLiteDatabase db) {
+		ContentValues favTable = new ContentValues(2);
+		favTable.put(FavoriteTable.STATUS_ID, statusId);
+		favTable.put(FavoriteTable.FAVORITER_ID, ownerId);
+		db.insertWithOnConflict(FavoriteTable.NAME, "", favTable, CONFLICT_REPLACE);
+	}
+
+	/**
+	 * store direct message
+	 *
+	 * @param message direct message information
+	 * @param db      database instance
+	 */
+	private void saveMessages(Message message, SQLiteDatabase db) {
+		// store message information
+		ContentValues messageColumn = new ContentValues(6);
+		messageColumn.put(MessageTable.ID, message.getId());
+		messageColumn.put(MessageTable.SINCE, message.getTimestamp());
+		messageColumn.put(MessageTable.FROM, message.getSender().getId());
+		messageColumn.put(MessageTable.TO, message.getReceiverId());
+		messageColumn.put(MessageTable.MESSAGE, message.getText());
+		if (message.getMedia().length > 0) {
+			StringBuilder keyBuf = new StringBuilder();
+			for (Media media : message.getMedia())
+				keyBuf.append(media.getKey()).append(';');
+			keyBuf.deleteCharAt(keyBuf.length() - 1);
+			messageColumn.put(MessageTable.MEDIA, keyBuf.toString());
+			saveMedia(message.getMedia(), db);
+		}
+		db.insertWithOnConflict(MessageTable.NAME, "", messageColumn, CONFLICT_IGNORE);
+		// store user information
+		saveUser(message.getSender(), db, CONFLICT_IGNORE);
 	}
 
 	/**
@@ -953,85 +1103,14 @@ public class AppDatabase {
 	}
 
 	/**
-	 * Store status into favorite table of a user
-	 *
-	 * @param statusId ID of the favored status
-	 * @param ownerId  ID of the favorite list owner
-	 * @param db       database instance
-	 */
-	private void saveFavorite(long statusId, long ownerId, SQLiteDatabase db) {
-		ContentValues favTable = new ContentValues(2);
-		favTable.put(FavoriteTable.STATUS_ID, statusId);
-		favTable.put(FavoriteTable.FAVORITER_ID, ownerId);
-		db.insertWithOnConflict(FavoriteTable.NAME, "", favTable, CONFLICT_REPLACE);
-	}
-
-	/**
-	 * clear old favorites from table
+	 * remove user favorites from table
 	 *
 	 * @param db     database instance
 	 * @param userId ID of the favorite list owner
 	 */
-	private void removeOldFavorites(SQLiteDatabase db, long userId) {
+	private void removeFavorits(SQLiteDatabase db, long userId) {
 		String[] delArgs = {Long.toString(userId)};
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
-	}
-
-	/**
-	 * store direct message
-	 *
-	 * @param message direct message information
-	 * @param db      database instance
-	 */
-	private void saveMessages(Message message, SQLiteDatabase db) {
-		// store message information
-		ContentValues messageColumn = new ContentValues(6);
-		messageColumn.put(MessageTable.ID, message.getId());
-		messageColumn.put(MessageTable.SINCE, message.getTimestamp());
-		messageColumn.put(MessageTable.FROM, message.getSender().getId());
-		messageColumn.put(MessageTable.TO, message.getReceiverId());
-		messageColumn.put(MessageTable.MESSAGE, message.getText());
-		if (message.getMedia() != null)
-			messageColumn.put(MessageTable.MEDIA, message.getMedia().toString());
-		db.insertWithOnConflict(MessageTable.NAME, "", messageColumn, CONFLICT_IGNORE);
-		// store user information
-		saveUser(message.getSender(), db, CONFLICT_IGNORE);
-	}
-
-	/**
-	 * get register of a status or zero if status not found
-	 *
-	 * @param db database instance
-	 * @param id ID of the status
-	 * @return status register
-	 */
-	private int getStatusRegister(SQLiteDatabase db, long id) {
-		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
-
-		Cursor c = db.query(StatusRegisterTable.NAME, STATUS_REG_COLUMN, STATUS_REG_SELECT, args, null, null, null, SINGLE_ITEM);
-		int result = 0;
-		if (c.moveToFirst())
-			result = c.getInt(0);
-		c.close();
-		return result;
-	}
-
-	/**
-	 * get user register or zero if not found
-	 *
-	 * @param db     database instance
-	 * @param userID ID of the user
-	 * @return user flags
-	 */
-	private int getUserRegister(SQLiteDatabase db, long userID) {
-		String[] args = {Long.toString(userID), Long.toString(settings.getLogin().getId())};
-
-		Cursor c = db.query(UserRegisterTable.NAME, USER_REG_COLUMN, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
-		int result = 0;
-		if (c.moveToFirst())
-			result = c.getInt(0);
-		c.close();
-		return result;
 	}
 
 	/**

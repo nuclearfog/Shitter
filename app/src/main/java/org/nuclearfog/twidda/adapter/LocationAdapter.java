@@ -50,7 +50,7 @@ public class LocationAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int pos) {
-		return getItem(pos).getWorldId();
+		return getItem(pos).getId();
 	}
 
 

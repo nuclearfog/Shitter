@@ -55,12 +55,6 @@ public class LocationV1 implements Location {
 
 	@Override
 	public long getId() {
-		return 0;
-	}
-
-
-	@Override
-	public int getWorldId() {
 		return woeid;
 	}
 
@@ -97,7 +91,7 @@ public class LocationV1 implements Location {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Location))
 			return false;
-		return ((Location) obj).getWorldId() == woeid;
+		return ((Location) obj).getId() == woeid;
 	}
 
 

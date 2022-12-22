@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.model;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
@@ -115,11 +116,13 @@ public interface Status extends Serializable {
 	/**
 	 * @return cards representing link previews
 	 */
+	@NonNull
 	Card[] getCards();
 
 	/**
 	 * @return media links (up to 4) to images and videos
 	 */
+	@NonNull
 	Media[] getMedia();
 
 	/**

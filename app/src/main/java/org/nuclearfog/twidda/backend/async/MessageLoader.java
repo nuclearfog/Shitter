@@ -85,13 +85,13 @@ public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 
 				case DEL:
 					connection.deleteDirectmessage(messageId);
-					db.deleteMessage(messageId);
+					db.removeMessage(messageId);
 					break;
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-				db.deleteMessage(messageId);
+				db.removeMessage(messageId);
 			}
 		}
 		return null;

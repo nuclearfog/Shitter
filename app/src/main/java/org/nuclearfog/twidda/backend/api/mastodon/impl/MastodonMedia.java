@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Media;
@@ -61,5 +63,31 @@ public class MastodonMedia implements Media {
 	@Override
 	public String getPreviewUrl() {
 		return preview;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		String tostring;
+		switch (type) {
+			case PHOTO:
+				tostring = "photo:";
+				break;
+
+			case VIDEO:
+				tostring = "video:";
+				break;
+
+			case GIF:
+				tostring = "gif:";
+				break;
+
+			default:
+				tostring = "none:";
+				break;
+		}
+		tostring += "url=\"" + url + "\"";
+		return tostring;
 	}
 }

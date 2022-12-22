@@ -10,14 +10,9 @@ import java.io.Serializable;
 public interface Location extends Serializable {
 
 	/**
-	 * @return unique place id
-	 */
-	long getId();
-
-	/**
 	 * @return ID of the place (World ID)
 	 */
-	int getWorldId();
+	long getId();
 
 	/**
 	 * @return country name

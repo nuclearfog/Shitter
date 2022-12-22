@@ -361,6 +361,7 @@ public class TweetV2 implements Status {
 	}
 
 
+	@NonNull
 	@Override
 	public Card[] getCards() {
 		return cards;

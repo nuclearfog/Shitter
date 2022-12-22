@@ -245,7 +245,7 @@ public class MastodonStatus implements Status {
 	}
 
 
-	@Nullable
+	@NonNull
 	@Override
 	public Card[] getCards() {
 		return cards;

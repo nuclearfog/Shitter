@@ -16,7 +16,7 @@ public class TrendV1 implements Trend {
 
 	private int rank;
 	private int popularity;
-	private int locationId;
+	private long locationId;
 	private String name;
 
 	/**
@@ -24,7 +24,7 @@ public class TrendV1 implements Trend {
 	 * @param index      array index of this item
 	 * @param locationId Id of the trend location
 	 */
-	public TrendV1(JSONObject json, int index, int locationId) {
+	public TrendV1(JSONObject json, int index, long locationId) {
 		name = json.optString("name", "");
 		popularity = json.optInt("tweet_volume", -1);
 		this.locationId = locationId;
@@ -39,7 +39,7 @@ public class TrendV1 implements Trend {
 
 
 	@Override
-	public int getLocationId() {
+	public long getLocationId() {
 		return locationId;
 	}
 

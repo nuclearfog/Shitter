@@ -43,8 +43,8 @@ public class MastodonTrend implements Trend {
 
 
 	@Override
-	public int getLocationId() {
-		return -1;
+	public long getLocationId() {
+		return -1L;
 	}
 
 

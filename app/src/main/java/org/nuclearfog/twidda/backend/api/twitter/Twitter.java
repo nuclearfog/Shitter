@@ -511,7 +511,7 @@ public class Twitter implements Connection {
 
 	@Override
 	public List<Trend> getTrends() throws TwitterException {
-		int id = settings.getTrendLocation().getWorldId();
+		long id = settings.getTrendLocation().getId();
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
 		try {
@@ -1134,9 +1134,9 @@ public class Twitter implements Connection {
 	 */
 	private List<Status> getTweets1(String endpoint, List<String> params) throws TwitterException {
 		try {
-			params.add(TweetV1.EXT_MODE);
-			params.add(TweetV1.INCL_RT_ID);
-			params.add(TweetV1.INCL_ENTITIES);
+			params.add(TweetV1.PARAM_EXT_MODE);
+			params.add(TweetV1.PARAM_INCL_RETWEET);
+			params.add(TweetV1.PARAM_ENTITIES);
 			params.add("count=" + settings.getListSize());
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
@@ -1217,9 +1217,9 @@ public class Twitter implements Connection {
 	 */
 	private TweetV1 getTweet1(String endpoint, List<String> params) throws TwitterException {
 		try {
-			params.add(TweetV1.EXT_MODE);
-			params.add(TweetV1.INCL_RT_ID);
-			params.add(TweetV1.INCL_ENTITIES);
+			params.add(TweetV1.PARAM_EXT_MODE);
+			params.add(TweetV1.PARAM_INCL_RETWEET);
+			params.add(TweetV1.PARAM_ENTITIES);
 			Response response;
 			if (endpoint.equals(TWEET_LOOKUP)) {
 				response = get(endpoint, params);

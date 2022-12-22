@@ -71,12 +71,6 @@ public class LocationV2 implements Location {
 
 
 	@Override
-	public int getWorldId() {
-		return 0;
-	}
-
-
-	@Override
 	public String getCountry() {
 		return country;
 	}

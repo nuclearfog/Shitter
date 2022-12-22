@@ -11,7 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
@@ -20,6 +21,8 @@ import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
+
+import java.util.regex.Pattern;
 
 /**
  * Implementation of a database STATUS
@@ -30,6 +33,8 @@ public class StatusImpl implements Status {
 
 	private static final long serialVersionUID = -5957556706939766801L;
 
+	private static final Pattern MEDIA_SEPARATOR = Pattern.compile(";");
+
 	private long id;
 	private long time;
 	private long embeddedId;
@@ -37,8 +42,9 @@ public class StatusImpl implements Status {
 	private long replyUserId;
 	private long myRepostId;
 	private long conversationId;
-	@Nullable
 	private Status embedded;
+	private String[] mediaKeys = {};
+	private Media[] medias = {};
 	private User author;
 	private Location location;
 	private int repostCount;
@@ -60,29 +66,34 @@ public class StatusImpl implements Status {
 	 */
 	public StatusImpl(Cursor cursor, Account account) {
 		author = new UserImpl(cursor, account);
-		time = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SINCE));
-		text = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.TEXT));
-		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPOST));
-		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.FAVORITE));
-		replyCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLY));
-		id = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.ID));
-		replyName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYNAME));
-		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYSTATUS));
-		source = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.SOURCE));
-		String locationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.PLACE));
-		String locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.COORDINATE));
+		time = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.TIMESTAMP));
+		text = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.TEXT));
+		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPOST));
+		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.FAVORITE));
+		replyCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPLY));
+		id = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.ID));
+		replyName = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.REPLYNAME));
+		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYSTATUS));
+		source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
+		String locationName = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.PLACE));
+		String locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.COORDINATE));
+		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
-		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.REPLYUSER));
-		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.EMBEDDED));
-		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REPOST_ID));
-		conversationId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusTable.CONVERSATION));
-		int register = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseAdapter.StatusRegisterTable.REGISTER));
+		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYUSER));
+		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.EMBEDDED));
+		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusRegisterTable.REPOST_ID));
+		conversationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.CONVERSATION));
+		int register = cursor.getInt(cursor.getColumnIndexOrThrow(StatusRegisterTable.REGISTER));
+
 		favorited = (register & FAVORITE_MASK) != 0;
 		reposted = (register & REPOST_MASK) != 0;
 		sensitive = (register & MEDIA_SENS_MASK) != 0;
 		isHidden = (register & HIDDEN_MASK) != 0;
 		if ((locationCoordinates != null && !locationCoordinates.isEmpty()) || (locationName != null && !locationName.isEmpty()))
 			location = new LocationImpl(locationName, locationCoordinates);
+		if (mediaKeys != null && !mediaKeys.isEmpty()) {
+			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
+		}
 		apiType = account.getApiType();
 	}
 
@@ -175,7 +186,7 @@ public class StatusImpl implements Status {
 	@NonNull
 	@Override
 	public Media[] getMedia() {
-		return new Media[0]; // todo implement this in a separate table
+		return medias;
 	}
 
 
@@ -229,6 +240,7 @@ public class StatusImpl implements Status {
 	}
 
 
+	@NonNull
 	@Override
 	public Card[] getCards() {
 		return new Card[0];
@@ -273,11 +285,27 @@ public class StatusImpl implements Status {
 	}
 
 	/**
+	 * @return media keys
+	 */
+	public String[] getMediaKeys() {
+		return mediaKeys;
+	}
+
+	/**
 	 * attach status referenced by {@link #embeddedId}
 	 *
 	 * @param embedded embedded status
 	 */
 	public void setEmbeddedStatus(Status embedded) {
 		this.embedded = embedded;
+	}
+
+	/**
+	 * add status media
+	 *
+	 * @param medias media array
+	 */
+	public void addMedia(@NonNull Media[] medias) {
+		this.medias = medias;
 	}
 }

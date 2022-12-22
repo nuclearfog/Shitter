@@ -17,7 +17,7 @@ public interface Trend extends Serializable {
 	/**
 	 * @return ID of the trend location
 	 */
-	int getLocationId();
+	long getLocationId();
 
 	/**
 	 * @return rank of the trend

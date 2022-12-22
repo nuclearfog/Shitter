@@ -149,12 +149,12 @@ public class StatusAction extends AsyncTask<Long, Status, Void> {
 
 				case HIDE:
 					connection.muteConversation(ids[0]);
-					db.hideReply(ids[0], true);
+					db.hideStatus(ids[0], true);
 					break;
 
 				case UNHIDE:
 					connection.unmuteConversation(ids[0]);
-					db.hideReply(ids[0], false);
+					db.hideStatus(ids[0], false);
 					break;
 			}
 		} catch (ConnectionException exception) {

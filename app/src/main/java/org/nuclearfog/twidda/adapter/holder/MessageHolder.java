@@ -137,7 +137,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		} else {
 			lockedIcon.setVisibility(View.GONE);
 		}
-		if (message.getMedia() != null) {
+		if (message.getMedia().length > 0) {
 			mediaButton.setVisibility(View.VISIBLE);
 		} else {
 			mediaButton.setVisibility(View.GONE);

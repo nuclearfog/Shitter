@@ -29,7 +29,7 @@ public class TrendImpl implements Trend {
 	private String name;
 	private int range;
 	private int rank;
-	private int id;
+	private long id;
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
@@ -38,7 +38,7 @@ public class TrendImpl implements Trend {
 		name = cursor.getString(0);
 		range = cursor.getInt(1);
 		rank = cursor.getInt(2);
-		id = cursor.getInt(3);
+		id = cursor.getLong(3);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class TrendImpl implements Trend {
 	}
 
 	@Override
-	public int getLocationId() {
+	public long getLocationId() {
 		return id;
 	}
 

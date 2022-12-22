@@ -28,22 +28,21 @@ public class TweetV1 implements Status {
 	/**
 	 * query parameter to enable extended mode to show tweets with more than 140 characters
 	 */
-	public static final String EXT_MODE = "tweet_mode=extended";
+	public static final String PARAM_EXT_MODE = "tweet_mode=extended";
 
 	/**
 	 * query parameter to include ID of the retweet if available
 	 */
-	public static final String INCL_RT_ID = "include_my_retweet=true";
+	public static final String PARAM_INCL_RETWEET = "include_my_retweet=true";
 
 	/**
 	 * query parameter to include entities like urls, media or user mentions
 	 */
-	public static final String INCL_ENTITIES = "include_entities=true";
+	public static final String PARAM_ENTITIES = "include_entities=true";
 
 	private long id;
 	private long timestamp;
 	private User author;
-	@Nullable
 	private Status embeddedTweet;
 	private Location location;
 	private Media[] medias = {};
@@ -78,7 +77,6 @@ public class TweetV1 implements Status {
 		String replyUsrIdStr = json.optString("in_reply_to_user_id_str", "0");
 		String sourceStr = json.optString("source", "");
 		String textStr = createText(json);
-		String retweetIdStr = null;
 
 		author = new UserV1(json.getJSONObject("user"), twitterId);
 		retweetCount = json.optInt("retweet_count");
@@ -89,26 +87,15 @@ public class TweetV1 implements Status {
 		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		userMentions = StringTools.getUserMentions(textStr, author.getScreenname());
 		source = Jsoup.parse(sourceStr).text();
-
-		if (extEntities != null) {
-			JSONArray mediaArray = extEntities.optJSONArray("media");
-			if (mediaArray != null && mediaArray.length() > 0) {
-				medias = new Media[mediaArray.length()];
-				for (int i = 0; i < mediaArray.length(); i++) {
-					JSONObject mediaItem = mediaArray.getJSONObject(i);
-					medias[i] = new MediaV1(mediaItem);
-				}
-			}
-		}
-		if (currentUserJson != null) {
-			retweetIdStr = currentUserJson.optString("id_str", "0");
-		}
+		// add reply name
 		if (!replyNameStr.isEmpty() && !replyNameStr.equals("null")) {
 			replyName = '@' + replyNameStr;
 		}
+		// add embedded tweet
 		if (embeddedTweetJson != null) {
 			embeddedTweet = new TweetV1(embeddedTweetJson, twitterId);
 		}
+		// add location
 		if (locationJson != null) {
 			location = new LocationV1(locationJson);
 		}
@@ -119,9 +106,26 @@ public class TweetV1 implements Status {
 		} else {
 			text = textStr;
 		}
+		// get retweet ID
+		String retweetIdStr = "-1";
+		if (currentUserJson != null) {
+			retweetIdStr = currentUserJson.optString("id_str", "-1");
+		}
+		// add media
+		if (extEntities != null) {
+			JSONArray mediaArray = extEntities.optJSONArray("media");
+			if (mediaArray != null && mediaArray.length() > 0) {
+				medias = new Media[mediaArray.length()];
+				for (int i = 0; i < mediaArray.length(); i++) {
+					JSONObject mediaItem = mediaArray.getJSONObject(i);
+					medias[i] = new MediaV1(mediaItem);
+				}
+			}
+		}
+		// parse string IDs
 		try {
 			id = Long.parseLong(tweetIdStr);
-			if (retweetIdStr != null && !retweetIdStr.equals("null"))
+			if (!retweetIdStr.equals("null"))
 				retweetId = Long.parseLong(retweetIdStr);
 			if (!replyTweetIdStr.equals("null"))
 				replyTweetId = Long.parseLong(replyTweetIdStr);
@@ -273,7 +277,7 @@ public class TweetV1 implements Status {
 	}
 
 
-	@Nullable
+	@NonNull
 	@Override
 	public Card[] getCards() {
 		return new Card[0];

@@ -566,7 +566,7 @@ public class GlobalSettings {
 		this.location = location;
 
 		Editor edit = settings.edit();
-		edit.putInt(TREND_ID, location.getWorldId());
+		edit.putLong(TREND_ID, location.getId());
 		edit.putString(TREND_LOC, location.getFullName());
 		edit.apply();
 	}

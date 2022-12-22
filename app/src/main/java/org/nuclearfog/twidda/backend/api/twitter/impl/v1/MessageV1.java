@@ -25,7 +25,7 @@ public class MessageV1 implements Message {
 	private long receiver_id;
 	private User sender;
 	private String text;
-	private Media media;
+	private Media[] medias = {};
 
 	/**
 	 * @param json JSON object containing directmessage information
@@ -41,18 +41,20 @@ public class MessageV1 implements Message {
 		sender_id = Long.parseLong(message.getString("sender_id"));
 		receiver_id = Long.parseLong(target.getString("recipient_id"));
 		text = setText(data);
+
+		// add media
 		if (attachment != null) {
 			JSONObject mediaJson = attachment.optJSONObject("media");
 			if (mediaJson != null) {
-				media = new MediaV1(mediaJson);
+				medias = new Media[]{new MediaV1(mediaJson)};
 			}
 		}
+		// parse IDs
 		try {
 			id = Long.parseLong(idStr);
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad message ID:" + idStr);
 		}
-
 	}
 
 
@@ -86,10 +88,10 @@ public class MessageV1 implements Message {
 	}
 
 
-	@Nullable
+	@NonNull
 	@Override
-	public Media getMedia() {
-		return media;
+	public Media[] getMedia() {
+		return medias;
 	}
 
 

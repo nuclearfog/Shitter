@@ -11,6 +11,8 @@ import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 
+import java.util.regex.Pattern;
+
 /**
  * database implementation of a directmessage
  *
@@ -20,10 +22,14 @@ public class MessageImpl implements Message {
 
 	private static final long serialVersionUID = 4089879784295312386L;
 
+	private static final Pattern MEDIA_SEPARATOR = Pattern.compile(";");
+
 	private long id;
 	private long time;
 	private long receiverId;
 	private String text;
+	private String[] mediaKeys = {};
+	private Media[] medias = {};
 	private User sender;
 
 	/**
@@ -36,6 +42,10 @@ public class MessageImpl implements Message {
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
 		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
+		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));
+		if (mediaKeys != null && !mediaKeys.isEmpty()) {
+			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
+		}
 	}
 
 
@@ -69,10 +79,10 @@ public class MessageImpl implements Message {
 	}
 
 
-	@Nullable
+	@NonNull
 	@Override
-	public Media getMedia() {
-		return null; // todo implement this
+	public Media[] getMedia() {
+		return medias;
 	}
 
 
@@ -88,5 +98,19 @@ public class MessageImpl implements Message {
 	@Override
 	public String toString() {
 		return "from=" + sender + " message=\"" + text + "\"";
+	}
+
+	/**
+	 * @return media key array
+	 */
+	public String[] getMediaKeys() {
+		return mediaKeys;
+	}
+
+	/**
+	 * add media
+	 */
+	public void addMedia(@NonNull Media[] medias) {
+		this.medias = medias;
 	}
 }
