@@ -355,16 +355,17 @@ public class TweetV2 implements Status {
 	}
 
 
-	@Override
-	public Location getLocation() {
-		return location;
-	}
-
-
 	@NonNull
 	@Override
 	public Card[] getCards() {
 		return cards;
+	}
+
+
+	@Override
+	@Nullable
+	public Location getLocation() {
+		return location;
 	}
 
 

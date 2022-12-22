@@ -554,7 +554,7 @@ public class GlobalSettings {
 	public Location getTrendLocation() {
 		if (account.getApiType() == Account.API_TWITTER)
 			return location;
-		return new LocationImpl("", -1);
+		return new LocationImpl( -1L, "");
 	}
 
 	/**
@@ -697,13 +697,15 @@ public class GlobalSettings {
 	public void setTwitterAlt(boolean enable) {
 		twitterAlt = enable;
 		Editor edit = settings.edit();
-		if (enable) { // fixme add hostname changes also in account instance and database
+		if (enable) {
 			edit.putString(HOSTNAME, TWITTER_ALT_HOST);
 		} else {
 			edit.putString(HOSTNAME, TWITTER_HOST);
 		}
 		edit.putBoolean(ENABLE_TWITTER_ALT, enable);
 		edit.apply();
+		// re initialize login information
+		initLogin();
 	}
 
 	/**
@@ -986,9 +988,15 @@ public class GlobalSettings {
 		proxyPass = settings.getString(PROXY_PASS, "");
 		String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
 		int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_ID);
-		location = new LocationImpl(place, woeId);
-
+		location = new LocationImpl(woeId, place);
 		// login informations
+		initLogin();
+	}
+
+	/**
+	 * initialize login information
+	 */
+	private void initLogin() {
 		String oauthToken = settings.getString(OAUTH_TOKEN, "");
 		String oauthSecret = settings.getString(OAUTH_SECRET, "");
 		String consumerToken = settings.getString(CONSUMER_TOKEN, "");
@@ -997,6 +1005,8 @@ public class GlobalSettings {
 		String hostname = settings.getString(HOSTNAME, TWITTER_HOST);
 		int apiId = settings.getInt(CURRENT_API, Account.API_TWITTER);
 		long userId = settings.getLong(CURRENT_ID, 0);
+		if (apiId == Account.API_TWITTER && twitterAlt)
+			hostname = TWITTER_ALT_HOST;
 		account = new AccountImpl(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
 	}
 

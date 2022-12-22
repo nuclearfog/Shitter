@@ -256,6 +256,7 @@ public class TweetV1 implements Status {
 
 
 	@Override
+	@Nullable
 	public Location getLocation() {
 		return location;
 	}

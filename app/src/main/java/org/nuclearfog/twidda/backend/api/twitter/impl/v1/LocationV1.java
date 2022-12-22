@@ -24,7 +24,7 @@ public class LocationV1 implements Location {
 	 */
 	private static final String LOCATION_TYPE = "Point";
 
-	private int woeid;
+	private long id;
 	private String country;
 	private String place;
 	private String fullName;
@@ -35,11 +35,22 @@ public class LocationV1 implements Location {
 	 */
 	public LocationV1(JSONObject json) throws JSONException {
 		JSONObject coordinateJson = json.optJSONObject("coordinates");
-		woeid = json.optInt("woeid", 1);
+		String idStr = json.optString("id");
+		int woeId = json.optInt("woeid", 0);
 		place = json.optString("name", "");
 		fullName = json.optString("full_name", "");
 		country = json.optString("country", "");
-
+		// parse ID if any
+		if (!idStr.isEmpty()) {
+			try {
+				id = Long.parseUnsignedLong(idStr, 16);
+			} catch (NumberFormatException e) {
+				throw new JSONException("Bad ID:" + idStr);
+			}
+		} else {
+			id = woeId;
+		}
+		// add coordinates
 		if (coordinateJson != null) {
 			if (LOCATION_TYPE.equals(coordinateJson.optString("type"))) {
 				JSONArray coordinateArray = coordinateJson.optJSONArray("coordinates");
@@ -55,7 +66,7 @@ public class LocationV1 implements Location {
 
 	@Override
 	public long getId() {
-		return woeid;
+		return id;
 	}
 
 
@@ -91,13 +102,13 @@ public class LocationV1 implements Location {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Location))
 			return false;
-		return ((Location) obj).getId() == woeid;
+		return ((Location) obj).getId() == id;
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + woeid + " name=\"" + getFullName() + "\"";
+		return "id=" + id + " name=\"" + getFullName() + "\"";
 	}
 }

@@ -42,6 +42,7 @@ public class StatusImpl implements Status {
 	private long replyUserId;
 	private long myRepostId;
 	private long conversationId;
+	private long locationId;
 	private Status embedded;
 	private String[] mediaKeys = {};
 	private Media[] medias = {};
@@ -75,8 +76,7 @@ public class StatusImpl implements Status {
 		replyName = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.REPLYNAME));
 		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYSTATUS));
 		source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
-		String locationName = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.PLACE));
-		String locationCoordinates = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.COORDINATE));
+		locationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.LOCATION));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYUSER));
@@ -89,8 +89,6 @@ public class StatusImpl implements Status {
 		reposted = (register & REPOST_MASK) != 0;
 		sensitive = (register & MEDIA_SENS_MASK) != 0;
 		isHidden = (register & HIDDEN_MASK) != 0;
-		if ((locationCoordinates != null && !locationCoordinates.isEmpty()) || (locationName != null && !locationName.isEmpty()))
-			location = new LocationImpl(locationName, locationCoordinates);
 		if (mediaKeys != null && !mediaKeys.isEmpty()) {
 			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
 		}
@@ -215,6 +213,7 @@ public class StatusImpl implements Status {
 
 
 	@Override
+	@Nullable
 	public Location getLocation() {
 		return location;
 	}
@@ -292,6 +291,13 @@ public class StatusImpl implements Status {
 	}
 
 	/**
+	 * @return location ID
+	 */
+	public long getLocationId() {
+		return locationId;
+	}
+
+	/**
 	 * attach status referenced by {@link #embeddedId}
 	 *
 	 * @param embedded embedded status
@@ -307,5 +313,14 @@ public class StatusImpl implements Status {
 	 */
 	public void addMedia(@NonNull Media[] medias) {
 		this.medias = medias;
+	}
+
+	/**
+	 * add location information
+	 *
+	 * @param location location item
+	 */
+	public void addLocation(Location location) {
+		this.location = location;
 	}
 }

@@ -1,8 +1,11 @@
 package org.nuclearfog.twidda.database.impl;
 
+import android.database.Cursor;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import org.nuclearfog.twidda.model.Location;
 
 /**
@@ -14,30 +17,39 @@ public class LocationImpl implements Location {
 
 	private static final long serialVersionUID = 3719416358210741464L;
 
-	private int worldId = -1;
-	private String name = "";
+	/**
+	 * SQL projection
+	 */
+	public static final String[] PROJECTION = {
+			LocationTable.ID,
+			LocationTable.PLACE,
+			LocationTable.COUNTRY,
+			LocationTable.FULLNAME,
+			LocationTable.COORDINATES
+	};
+
+	private long id;
+	private String name;
 	private String coordinates = "";
+	private String country = "";
+	private String place = "";
 
 	/**
 	 * @param name    place name
-	 * @param worldId world id
+	 * @param id world id
 	 */
-	public LocationImpl(String name, int worldId) {
+	public LocationImpl(long id, String name) {
 		this.name = name;
-		this.worldId = worldId;
+		this.id = id;
 	}
 
-	/**
-	 * @param name        place name
-	 * @param coordinates comma separated gps coordinates
-	 */
-	public LocationImpl(String name, String coordinates) {
-		if (name != null) {
-			this.name = name;
-		}
-		if (coordinates != null) {
-			this.coordinates = coordinates;
-		}
+
+	public LocationImpl(Cursor cursor) {
+		id = cursor.getLong(0);
+		place = cursor.getString(1);
+		country = cursor.getString(2);
+		name = cursor.getString(3);
+		coordinates = cursor.getString(4);
 	}
 
 
@@ -49,19 +61,19 @@ public class LocationImpl implements Location {
 
 	@Override
 	public long getId() {
-		return worldId;
+		return id;
 	}
 
 
 	@Override
 	public String getCountry() {
-		return "";
+		return country;
 	}
 
 
 	@Override
 	public String getPlace() {
-		return "";
+		return place;
 	}
 
 
@@ -75,13 +87,13 @@ public class LocationImpl implements Location {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Location))
 			return false;
-		return ((Location) obj).getId() == worldId;
+		return ((Location) obj).getId() == id;
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + worldId + " name=\"" + name + "\"";
+		return "id=" + id + " name=\"" + name + "\"";
 	}
 }

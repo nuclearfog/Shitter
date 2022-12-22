@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.database;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
@@ -20,6 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.lists.Messages;
+import org.nuclearfog.twidda.database.impl.LocationImpl;
 import org.nuclearfog.twidda.database.impl.MediaImpl;
 import org.nuclearfog.twidda.database.impl.MessageImpl;
 import org.nuclearfog.twidda.database.impl.NotificationImpl;
@@ -27,6 +29,7 @@ import org.nuclearfog.twidda.database.impl.StatusImpl;
 import org.nuclearfog.twidda.database.impl.TrendImpl;
 import org.nuclearfog.twidda.database.impl.UserImpl;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Notification;
@@ -252,6 +255,11 @@ public class AppDatabase {
 	 * selection to get media
 	 */
 	private static final String MEDIA_SELECT = MediaTable.KEY + "=?";
+
+	/**
+	 * selection to get location
+	 */
+	private static final String LOCATION_SELECT = LocationTable.ID + "=?";
 
 	/**
 	 * selection to get user register
@@ -792,6 +800,12 @@ public class AppDatabase {
 				result.addMedia(mediaList.toArray(new Media[0]));
 			}
 		}
+		if (result.getLocationId() != 0L) {
+			Location location = getLocation(db, result.getLocationId());
+			if (location != null) {
+				result.addLocation(location);
+			}
+		}
 		return result;
 	}
 
@@ -799,7 +813,7 @@ public class AppDatabase {
 	 * get status/message media
 	 *
 	 * @param key media key
-	 * @param db database instance
+	 * @param db database read instance
 	 * @return media item or null
 	 */
 	@Nullable
@@ -809,6 +823,24 @@ public class AppDatabase {
 		Media result = null;
 		if (c.moveToFirst())
 			result = new MediaImpl(c);
+		c.close();
+		return result;
+	}
+
+	/**
+	 * get status/message location
+	 *
+	 * @param db database read instance
+	 * @param id location ID
+	 * @return location item or null
+	 */
+	@Nullable
+	private Location getLocation(SQLiteDatabase db, long id) {
+		String[] args = {Long.toString(id)};
+		Cursor c = db.query(LocationTable.NAME, LocationImpl.PROJECTION, LOCATION_SELECT, args, null, null, null, SINGLE_ITEM);
+		Location result = null;
+		if (c.moveToFirst())
+			result = new LocationImpl(c);
 		c.close();
 		return result;
 	}
@@ -925,7 +957,7 @@ public class AppDatabase {
 		} else {
 			statusFlags &= ~MEDIA_SENS_MASK;
 		}
-		ContentValues statusUpdate = new ContentValues(17);
+		ContentValues statusUpdate = new ContentValues(15);
 		statusUpdate.put(StatusTable.ID, status.getId());
 		statusUpdate.put(StatusTable.USER, user.getId());
 		statusUpdate.put(StatusTable.TIMESTAMP, status.getTimestamp());
@@ -939,9 +971,11 @@ public class AppDatabase {
 		statusUpdate.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		statusUpdate.put(StatusTable.REPLYNAME, status.getReplyName());
 		statusUpdate.put(StatusTable.CONVERSATION, status.getConversationId());
-		if (status.getLocation() != null) {
-			statusUpdate.put(StatusTable.PLACE, status.getLocation().getPlace());
-			statusUpdate.put(StatusTable.COORDINATE, status.getLocation().getCoordinates());
+		if (status.getLocation() != null && status.getLocation().getId() != 0L) {
+			statusUpdate.put(StatusTable.LOCATION, status.getLocation().getId());
+			saveLocation(status.getLocation(), db);
+		} else {
+			statusUpdate.put(StatusTable.LOCATION, 0L);
 		}
 		if (status.getMedia().length > 0) {
 			StringBuilder mediaBuf = new StringBuilder();
@@ -961,6 +995,7 @@ public class AppDatabase {
 	 * save media information
 	 *
 	 * @param medias media to save
+	 * @param db database write instance
 	 */
 	private void saveMedia(Media[] medias, SQLiteDatabase db) {
 		for (Media media : medias) {
@@ -969,8 +1004,24 @@ public class AppDatabase {
 			mediaColumn.put(MediaTable.URL, media.getUrl());
 			mediaColumn.put(MediaTable.PREVIEW, media.getPreviewUrl());
 			mediaColumn.put(MediaTable.TYPE, media.getMediaType());
-			db.insertWithOnConflict(MediaTable.NAME, "", mediaColumn, CONFLICT_REPLACE);
+			db.insertWithOnConflict(MediaTable.NAME, "", mediaColumn, CONFLICT_IGNORE);
 		}
+	}
+
+	/**
+	 * save location information
+	 *
+	 * @param location location information to save
+	 * @param db database write instance
+	 */
+	private void saveLocation(Location location, SQLiteDatabase db) {
+		ContentValues locationColumn = new ContentValues(4);
+		locationColumn.put(LocationTable.ID, location.getId());
+		locationColumn.put(LocationTable.FULLNAME, location.getFullName());
+		locationColumn.put(LocationTable.COORDINATES, location.getCoordinates());
+		locationColumn.put(LocationTable.COUNTRY, location.getCountry());
+		locationColumn.put(LocationTable.PLACE, location.getPlace());
+		db.insertWithOnConflict(LocationTable.NAME, "", locationColumn, CONFLICT_IGNORE);
 	}
 
 	/**

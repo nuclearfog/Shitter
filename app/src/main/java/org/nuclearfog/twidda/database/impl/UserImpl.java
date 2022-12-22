@@ -112,9 +112,7 @@ public class UserImpl implements User {
 
 	@Override
 	public String getOriginalBannerImageUrl() {
-		if (apiType != Account.API_TWITTER || profileBannerUrl.isEmpty())
-			return profileBannerUrl;
-		return profileBannerUrl + "/1500x500";
+		return profileBannerUrl;
 	}
 
 
@@ -122,6 +120,8 @@ public class UserImpl implements User {
 	public String getBannerImageThumbnailUrl() {
 		if (apiType != Account.API_TWITTER || profileBannerUrl.isEmpty())
 			return profileBannerUrl;
+		if (profileBannerUrl.endsWith("/1500x500"))
+			return profileBannerUrl.substring(0, profileBannerUrl.length() - 9) + "/600x200";
 		return profileBannerUrl + "/600x200";
 	}
 

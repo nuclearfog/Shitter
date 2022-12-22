@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 10;
+	private static final int DB_VERSION = 11;
 
 	/**
 	 * database file name
@@ -65,8 +65,7 @@ public class DatabaseAdapter {
 			+ StatusTable.REPLY + " INTEGER,"
 			+ StatusTable.CONVERSATION + " INTEGER,"
 			+ StatusTable.SOURCE + " TEXT,"
-			+ StatusTable.PLACE + " TEXT,"
-			+ StatusTable.COORDINATE + " TEXT,"
+			+ StatusTable.LOCATION + " INTEGER,"
 			+ "FOREIGN KEY(" + StatusTable.USER + ")"
 			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "));";
 
@@ -173,6 +172,17 @@ public class DatabaseAdapter {
 			+ MediaTable.PREVIEW + " TEXT);";
 
 	/**
+	 * SQL query to create location table
+	 */
+	public static final String TABLE_LOCATION = "CREATE TABLE  IF NOT EXISTS "
+			+ LocationTable.NAME + "("
+			+ LocationTable.ID + " INTEGER,"
+			+ LocationTable.COUNTRY + " TEXT,"
+			+ LocationTable.COORDINATES + " TEXT,"
+			+ LocationTable.PLACE + " TEXT,"
+			+ LocationTable.FULLNAME + " TEXT);";
+
+	/**
 	 * table index for status table
 	 */
 	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
@@ -224,6 +234,11 @@ public class DatabaseAdapter {
 	 * update account table to add API client secret
 	 */
 	private static final String UPDATE_ADD_CONVERSATION_ID = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.CONVERSATION + " INTEGER;";
+
+	/**
+	 * update status table add location ID
+	 */
+	private static final String UPDATE_ADD_LOCATION_ID = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LOCATION + " INTEGER;";
 
 	/**
 	 * singleton instance
@@ -307,6 +322,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_USER_REGISTER);
 		db.execSQL(TABLE_NOTIFICATION);
 		db.execSQL(TABLE_MEDIA);
+		db.execSQL(TABLE_LOCATION);
 		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
@@ -333,8 +349,12 @@ public class DatabaseAdapter {
 			db.execSQL(UPDATE_ADD_BEARER);
 			db.setVersion(9);
 		}
-		if (db.getVersion() < DB_VERSION) {
+		if (db.getVersion() < 10) {
 			db.execSQL(UPDATE_ADD_CONVERSATION_ID);
+			db.setVersion(10);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_LOCATION_ID);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -472,12 +492,7 @@ public class DatabaseAdapter {
 		/**
 		 * place name of the status
 		 */
-		String PLACE = "place";
-
-		/**
-		 * GPS coordinate of the status
-		 */
-		String COORDINATE = "geo";
+		String LOCATION = "location_id";
 
 		/**
 		 * ID of the replied status
@@ -535,7 +550,7 @@ public class DatabaseAdapter {
 		String NAME = "trend";
 
 		/**
-		 * ID of the trend location
+		 * Location ID of the trend
 		 */
 		String ID = "woeID";
 
@@ -790,7 +805,7 @@ public class DatabaseAdapter {
 		String KEY = "media_key";
 
 		/**
-		 * type of media (image,giv or video)
+		 * type of media {@link org.nuclearfog.twidda.model.Media}
 		 */
 		String TYPE = "media_type";
 
@@ -803,5 +818,41 @@ public class DatabaseAdapter {
 		 * url for the media thumbnail
 		 */
 		String PREVIEW = "media_preview_url";
+	}
+
+	/**
+	 * Table for location information
+	 */
+	public interface LocationTable {
+
+		/**
+		 * Table name
+		 */
+		String NAME = "location";
+
+		/**
+		 * locaion ID
+		 */
+		String ID = "id";
+
+		/**
+		 * country name
+		 */
+		String COUNTRY = "country";
+
+		/**
+		 * place name
+		 */
+		String PLACE = "place";
+
+		/**
+		 * place coordinates
+		 */
+		String COORDINATES = "coordinates";
+
+		/**
+		 * full name of the location
+		 */
+		String FULLNAME = "full_name";
 	}
 }
