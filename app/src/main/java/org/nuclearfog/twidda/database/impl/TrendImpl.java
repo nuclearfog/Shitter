@@ -41,25 +41,30 @@ public class TrendImpl implements Trend {
 		id = cursor.getLong(3);
 	}
 
+
 	@Override
 	public String getName() {
 		return name;
 	}
+
 
 	@Override
 	public long getLocationId() {
 		return id;
 	}
 
+
 	@Override
 	public int getRank() {
 		return rank;
 	}
 
+
 	@Override
 	public int getPopularity() {
 		return range;
 	}
+
 
 	@NonNull
 	@Override

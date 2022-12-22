@@ -35,8 +35,8 @@ public class LocationImpl implements Location {
 	private String place = "";
 
 	/**
-	 * @param name    place name
-	 * @param id world id
+	 * @param name place name
+	 * @param id   world id
 	 */
 	public LocationImpl(long id, String name) {
 		this.name = name;

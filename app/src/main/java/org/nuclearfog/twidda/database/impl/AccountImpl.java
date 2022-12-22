@@ -45,6 +45,20 @@ public class AccountImpl implements Account {
 	/**
 	 *
 	 */
+	public AccountImpl(Account account) {
+		userId = account.getId();
+		accessToken = account.getOauthToken();
+		tokenSecret = account.getOauthSecret();
+		consumerToken = account.getConsumerToken();
+		consumerSecret = account.getConsumerSecret();
+		bearerToken = account.getBearerToken();
+		host = account.getHostname();
+		apiType = account.getApiType();
+	}
+
+	/**
+	 *
+	 */
 	public AccountImpl(long userId, String accessToken, String tokenSecret, String consumerToken, String consumerSecret, String bearerToken, String host, int apiType) {
 		this.userId = userId;
 		this.accessToken = accessToken;
@@ -154,5 +168,14 @@ public class AccountImpl implements Account {
 	 */
 	public void addUser(@Nullable User user) {
 		this.user = user;
+	}
+
+	/**
+	 * override hostname
+	 *
+	 * @param hostname new hostname
+	 */
+	public void setHost(String hostname) {
+		this.host = hostname;
 	}
 }

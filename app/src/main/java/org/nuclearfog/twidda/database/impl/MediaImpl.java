@@ -17,6 +17,7 @@ public class MediaImpl implements Media {
 	private static final long serialVersionUID = 8895107738679315263L;
 
 	/**
+	 *
 	 */
 	public static final String[] PROJECTION = {
 			MediaTable.KEY,

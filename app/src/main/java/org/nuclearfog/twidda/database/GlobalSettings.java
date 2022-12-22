@@ -554,7 +554,7 @@ public class GlobalSettings {
 	public Location getTrendLocation() {
 		if (account.getApiType() == Account.API_TWITTER)
 			return location;
-		return new LocationImpl( -1L, "");
+		return new LocationImpl(-1L, "");
 	}
 
 	/**
@@ -896,12 +896,12 @@ public class GlobalSettings {
 	/**
 	 * save login information
 	 *
-	 * @param account account information
-	 * @param notify  true to notify that settings changed
+	 * @param login  account information
+	 * @param notify true to notify that settings changed
 	 */
-	public void setLogin(@Nullable Account account, boolean notify) {
+	public void setLogin(@Nullable Account login, boolean notify) {
 		Editor e = settings.edit();
-		if (account == null) {
+		if (login == null) {
 			loggedIn = false;
 			e.remove(LOGGED_IN);
 			e.remove(CURRENT_ID);
@@ -912,18 +912,22 @@ public class GlobalSettings {
 			e.remove(BEARER_TOKEN);
 			e.remove(HOSTNAME);
 		} else {
-			this.account = account;
-			loggedIn = true;
-			twitterAlt = false;
-			e.putBoolean(LOGGED_IN, true);
+			AccountImpl account = new AccountImpl(login);
+			// setup alternative Twitter host
+			if (account.getApiType() == Account.API_TWITTER && twitterAlt) {
+				account.setHost(TWITTER_ALT_HOST);
+			}
+			e.putString(HOSTNAME, account.getHostname());
 			e.putLong(CURRENT_ID, account.getId());
 			e.putString(OAUTH_TOKEN, account.getOauthToken());
 			e.putString(OAUTH_SECRET, account.getOauthSecret());
 			e.putString(CONSUMER_TOKEN, account.getConsumerToken());
 			e.putString(CONSUMER_SECRET, account.getConsumerSecret());
 			e.putString(BEARER_TOKEN, account.getBearerToken());
-			e.putString(HOSTNAME, account.getHostname());
 			e.putInt(CURRENT_API, account.getApiType());
+			e.putBoolean(LOGGED_IN, true);
+			this.account = account;
+			loggedIn = true;
 		}
 		e.apply();
 		if (notify) {

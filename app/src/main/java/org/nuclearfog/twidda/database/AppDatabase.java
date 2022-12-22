@@ -813,7 +813,7 @@ public class AppDatabase {
 	 * get status/message media
 	 *
 	 * @param key media key
-	 * @param db database read instance
+	 * @param db  database read instance
 	 * @return media item or null
 	 */
 	@Nullable
@@ -980,7 +980,7 @@ public class AppDatabase {
 		if (status.getMedia().length > 0) {
 			StringBuilder mediaBuf = new StringBuilder();
 			saveMedia(status.getMedia(), db);
-			for (Media media: status.getMedia()) {
+			for (Media media : status.getMedia()) {
 				mediaBuf.append(media.getKey()).append(';');
 			}
 			String mediaKeys = mediaBuf.deleteCharAt(mediaBuf.length() - 1).toString();
@@ -995,7 +995,7 @@ public class AppDatabase {
 	 * save media information
 	 *
 	 * @param medias media to save
-	 * @param db database write instance
+	 * @param db     database write instance
 	 */
 	private void saveMedia(Media[] medias, SQLiteDatabase db) {
 		for (Media media : medias) {
@@ -1012,7 +1012,7 @@ public class AppDatabase {
 	 * save location information
 	 *
 	 * @param location location information to save
-	 * @param db database write instance
+	 * @param db       database write instance
 	 */
 	private void saveLocation(Location location, SQLiteDatabase db) {
 		ContentValues locationColumn = new ContentValues(4);

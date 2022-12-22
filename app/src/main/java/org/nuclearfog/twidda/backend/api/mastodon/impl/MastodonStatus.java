@@ -36,9 +36,9 @@ public class MastodonStatus implements Status {
 	private String text, source, mentions;
 
 	private User author;
-	private Card[] cards;
-	private Media[] medias;
 	private Poll poll;
+	private Card[] cards = {};
+	private Media[] medias = {};
 
 	/**
 	 * @param json          Mastodon status json object
@@ -92,8 +92,6 @@ public class MastodonStatus implements Status {
 		}
 		if (cardJson != null) {
 			cards = new Card[]{new MastodonCard(cardJson)};
-		} else {
-			cards = new Card[0];
 		}
 		try {
 			id = Long.parseLong(idStr);
@@ -232,7 +230,7 @@ public class MastodonStatus implements Status {
 	@Override
 	public String getLinkPath() {
 		if (!author.getScreenname().isEmpty()) {
-			return '/' + author.getScreenname() + id;
+			return '/' + author.getScreenname() + '/' + id;
 		}
 		return "";
 	}
