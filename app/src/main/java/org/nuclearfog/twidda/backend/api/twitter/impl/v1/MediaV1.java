@@ -54,7 +54,7 @@ public class MediaV1 implements Media {
 				break;
 
 			case "animated_gif":
-				JSONArray gifVariants = json.getJSONArray("variants");
+				JSONArray gifVariants = json.getJSONObject("video_info").getJSONArray("variants");
 				for (int i = 0; i < gifVariants.length(); i++) {
 					JSONObject gifVariant = gifVariants.getJSONObject(i);
 					if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {

@@ -948,8 +948,9 @@ public class Twitter implements Connection {
 	@Override
 	public long uploadMedia(MediaStatus mediaUpdate) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		String state;
 		boolean enableChunk;
+		final long mediaId;
+		String state;
 		int retries = 0;
 		try {
 			// step 1 INIT
@@ -971,7 +972,7 @@ public class Twitter implements Connection {
 			if (response.code() < 200 || response.code() >= 300 || body == null)
 				throw new TwitterException(response);
 			JSONObject jsonResponse = new JSONObject(body.string());
-			final long mediaId = Long.parseLong(jsonResponse.getString("media_id_string"));
+			mediaId = Long.parseLong(jsonResponse.getString("media_id_string"));
 
 			// step 2 APPEND
 			int segmentIndex = 0;
@@ -981,8 +982,9 @@ public class Twitter implements Connection {
 				params.add("segment_index=" + segmentIndex++);
 				params.add("media_id=" + mediaId);
 				response = post(MEDIA_UPLOAD, params, mediaUpdate.getStream(), "media", enableChunk);
-				if (response.code() < 200 || response.code() >= 300)
+				if (response.code() < 200 || response.code() >= 300) {
 					throw new TwitterException(response);
+				}
 			}
 
 			// step 3 FINALIZE
@@ -993,9 +995,9 @@ public class Twitter implements Connection {
 			if (response.code() < 200 || response.code() >= 300)
 				throw new TwitterException(response);
 			// skip step 4 if chunking isn't enabled
-			if (!enableChunk)
+			if (!enableChunk) {
 				return mediaId;
-
+			}
 			// step 4 STATUS
 			params.clear();
 			params.add("command=STATUS");
@@ -1150,7 +1152,8 @@ public class Twitter implements Connection {
 				List<Status> tweets = new ArrayList<>(array.length() + 1);
 				for (int i = 0; i < array.length(); i++) {
 					try {
-						tweets.add(new TweetV1(array.getJSONObject(i), homeId));
+						JSONObject tweetJson = array.getJSONObject(i);
+						tweets.add(new TweetV1(tweetJson, homeId));
 					} catch (JSONException e) {
 						if (BuildConfig.DEBUG) {
 							Log.w("tweet", e);
