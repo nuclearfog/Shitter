@@ -95,6 +95,7 @@
 	<string name="error_corrupt_api_key">Error, corrupt API key!</string>
 	<string name="error_acc_update">Account update failed! Please check your input!</string>
 	<string name="error_api_access_denied">Error, API access denied! Please check your API Keys.</string>
+	<string name="error_api_access_limited">Error, API access limited by Twitter!</string>
 	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
 	<string name="error_mention_exceed">Too much mentions!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>

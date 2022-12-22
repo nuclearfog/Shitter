@@ -242,6 +242,11 @@ public class AppDatabase {
 	private static final String STATUS_SELECT = StatusTable.NAME + "." + StatusTable.ID + "=?";
 
 	/**
+	 * select notification from notification table using status ID
+	 */
+	private static final String NOTIFICATION_SELECT = NotificationTable.NAME + "." + NotificationTable.ITEM + "=?";
+
+	/**
 	 * select user from user table matching user ID
 	 */
 	private static final String USER_SELECT = UserTable.NAME + "." + UserTable.ID + "=?";
@@ -632,6 +637,7 @@ public class AppDatabase {
 
 		SQLiteDatabase db = getDbWrite();
 		db.delete(StatusTable.NAME, STATUS_SELECT, args);
+		db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
 		commit(db);
 	}

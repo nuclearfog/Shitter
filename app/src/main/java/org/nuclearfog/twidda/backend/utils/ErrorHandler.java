@@ -104,11 +104,13 @@ public final class ErrorHandler {
 					return context.getString(R.string.error_invalid_media);
 
 				case ConnectionException.APP_SUSPENDED:
-				case ConnectionException.ERROR_API_ACCESS_DENIED:
 					GlobalSettings settings = GlobalSettings.getInstance(context);
 					if (settings.getLogin().usingDefaultTokens())
 						return context.getString(R.string.error_api_key_expired);
 					return context.getString(R.string.error_api_access_denied);
+
+				case ConnectionException.ERROR_API_ACCESS_DENIED:
+					return context.getString(R.string.error_api_access_limited);
 
 				case ConnectionException.ERROR_NOT_DEFINED:
 					return error.getMessage();

@@ -249,4 +249,5 @@
 	<string name="status_replyname_empty">Antwort</string>
 	<string name="status_metrics_title">Statusmetriken</string>
 	<string name="error_empty_text">Text ist leer!</string>
+	<string name="error_api_access_limited">Fehler! API Zugang wurde von Twitter beschränkt.</string>
 </resources>
