@@ -61,6 +61,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -214,10 +215,10 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
 		if (o instanceof User) {
 			user = (User) o;
-			adapter.setupProfilePage(user.getId());
+			adapter.setupProfilePage(user.getId(), settings.getLogin().getApiType() == Account.API_TWITTER);
 		} else {
 			long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
-			adapter.setupProfilePage(userId);
+			adapter.setupProfilePage(userId, settings.getLogin().getApiType() == Account.API_TWITTER);
 		}
 		if (settings.likeEnabled()) {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
@@ -609,14 +610,18 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		follower.setText(formatter.format(user.getFollower()));
 		username.setText(user.getUsername());
 		screenName.setText(user.getScreenname());
-		if (user.getStatusCount() >= 0)
+		if (user.getStatusCount() >= 0) {
 			tabIndicator[0].setText(formatter.format(user.getStatusCount()));
-		else
+		} else {
 			tabIndicator[0].setText("");
-		if (user.getFavoriteCount() >= 0)
-			tabIndicator[1].setText(formatter.format(user.getFavoriteCount()));
-		else
-			tabIndicator[1].setText("");
+		}
+		if (tabIndicator.length > 1) {
+			if (user.getFavoriteCount() >= 0) {
+				tabIndicator[1].setText(formatter.format(user.getFavoriteCount()));
+			} else {
+				tabIndicator[1].setText("");
+			}
+		}
 		if (user_createdAt.getVisibility() != VISIBLE) {
 			String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
 			user_createdAt.setVisibility(VISIBLE);

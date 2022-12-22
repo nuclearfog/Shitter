@@ -93,15 +93,21 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
 	/**
 	 * setup adapter for the home activity
+	 *
+	 * @param enableMessage true to enable message page
 	 */
-	public void setupForHomePage() {
+	public void setupForHomePage(boolean enableMessage) {
 		Bundle paramHomeTl = new Bundle();
 		paramHomeTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_HOME);
-		fragments = new ListFragment[4];
+		if (enableMessage) {
+			fragments = new ListFragment[4];
+			fragments[3] = new MessageFragment();
+		} else {
+			fragments = new ListFragment[3];
+		}
 		fragments[0] = new StatusFragment();
 		fragments[1] = new TrendFragment();
 		fragments[2] = new NotificationFragment();
-		fragments[3] = new MessageFragment();
 		fragments[0].setArguments(paramHomeTl);
 		notifyDataSetChanged();
 	}
@@ -110,19 +116,24 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * setup adapter for viewing user timeline and favorites
 	 *
 	 * @param userId ID of the user
+	 * @param enableFavorits true to enable favorite page
 	 */
-	public void setupProfilePage(long userId) {
+	public void setupProfilePage(long userId, boolean enableFavorits) {
 		Bundle paramTimeline = new Bundle();
-		Bundle paramFavorite = new Bundle();
 		paramTimeline.putLong(KEY_STATUS_FRAGMENT_ID, userId);
-		paramFavorite.putLong(KEY_STATUS_FRAGMENT_ID, userId);
 		paramTimeline.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USER);
-		paramFavorite.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_FAVORIT);
-		fragments = new ListFragment[2];
+		if (enableFavorits) {
+			Bundle paramFavorite = new Bundle();
+			paramFavorite.putLong(KEY_STATUS_FRAGMENT_ID, userId);
+			paramFavorite.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_FAVORIT);
+			fragments = new ListFragment[2];
+			fragments[1] = new StatusFragment();
+			fragments[1].setArguments(paramFavorite);
+		} else {
+			fragments = new ListFragment[1];
+		}
 		fragments[0] = new StatusFragment();
-		fragments[1] = new StatusFragment();
 		fragments[0].setArguments(paramTimeline);
-		fragments[1].setArguments(paramFavorite);
 		notifyDataSetChanged();
 	}
 

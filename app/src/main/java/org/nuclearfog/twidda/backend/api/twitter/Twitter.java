@@ -1180,7 +1180,7 @@ public class Twitter implements Connection {
 			params.add(MediaV2.FIELDS_MEDIA);
 			params.add(PollV2.FIELDS_POLL);
 			params.add(LocationV2.FIELDS_PLACE);
-			//params.add("max_results=" + settings.getListSize());
+			params.add("max_results=" + settings.getListSize());
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {

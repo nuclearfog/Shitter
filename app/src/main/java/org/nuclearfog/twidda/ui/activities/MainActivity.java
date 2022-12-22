@@ -32,6 +32,7 @@ import org.nuclearfog.twidda.backend.async.LinkLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 
 /**
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		}
 		// initialize lists
 		else if (adapter.isEmpty()) {
-			adapter.setupForHomePage();
+			adapter.setupForHomePage(settings.getLogin().getApiType() == Account.API_TWITTER);
 			AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
 			// check if there is a Twitter link
 			if (getIntent().getData() != null) {
@@ -142,13 +143,15 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				}
 				// check if account changed
 				else if (returnCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
-					adapter.setupForHomePage();
+					adapter.setupForHomePage(settings.getLogin().getApiType() == Account.API_TWITTER);
 				}
 				break;
 
 			case REQUEST_ACCOUNT_CHANGE:
 				// check if account or theme changed
 				if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED || returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
+					adapter.clear();
+					pager.setAdapter(adapter);
 					adapter.notifySettingsChanged();
 				}
 				break;

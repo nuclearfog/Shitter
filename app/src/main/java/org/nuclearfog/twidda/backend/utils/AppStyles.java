@@ -257,8 +257,8 @@ public final class AppStyles {
 	public static TextView[] setTabIconsWithText(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
 		Context context = tabLayout.getContext();
 		TypedArray tArray = context.getResources().obtainTypedArray(array);
-		TextView[] tabs = new TextView[tArray.length()];
-		for (int index = 0; index < tArray.length(); index++) {
+		TextView[] tabs = new TextView[tabLayout.getTabCount()];
+		for (int index = 0; index < tArray.length() && index < tabLayout.getTabCount(); index++) {
 			TabLayout.Tab mTab = tabLayout.getTabAt(index);
 			if (mTab != null) {
 				View tabView;
