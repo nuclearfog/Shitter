@@ -634,7 +634,7 @@ public class Twitter implements Connection {
 			params.add("since_id=" + minId);
 		if (maxId > 1)
 			params.add("until_id=" + maxId);
-		params.add("query=conversation_id:" + id);
+		params.add("query=" + StringTools.encode("conversation_id:" + id));
 		List<Status> result = getTweets2(TWEET_SEARCH_2, params);
 		List<Status> replies = new LinkedList<>();
 		// chose only the first tweet of a conversation
@@ -1180,7 +1180,7 @@ public class Twitter implements Connection {
 			params.add(MediaV2.FIELDS_MEDIA);
 			params.add(PollV2.FIELDS_POLL);
 			params.add(LocationV2.FIELDS_PLACE);
-			params.add("max_results=" + settings.getListSize());
+			//params.add("max_results=" + settings.getListSize());
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
