@@ -105,6 +105,7 @@
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
 	<string name="error_empty_token">please add token key</string>
+	<string name="error_empty_text">Empty text!</string>
 	<string name="error_invalid_url">invalid URL!</string>
 
 	<!-- menu icon strings -->

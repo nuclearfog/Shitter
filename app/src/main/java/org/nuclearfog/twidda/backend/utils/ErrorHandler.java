@@ -91,6 +91,9 @@ public final class ErrorHandler {
 				case ConnectionException.ACCOUNT_UPDATE_FAILED:
 					return context.getString(R.string.error_acc_update);
 
+				case ConnectionException.EMPTY_TEXT:
+					return context.getString(R.string.error_empty_text);
+
 				case ConnectionException.HTTP_TIMEOUT:
 					return context.getString(R.string.error_result_cancelled);
 

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA;
 
@@ -31,6 +32,11 @@ import java.util.List;
  */
 public class NotificationFragment extends ListFragment implements OnNotificationClickListener {
 
+	/**
+	 * request code to check for status changes
+	 */
+	private static final int REQUEST_STATUS_CHANGED = 0x9466;
+
 	private NotificationLoader notificationAsync;
 	private NotificationAdapter adapter;
 
@@ -48,6 +54,27 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (notificationAsync == null) {
 			load(0L, 0L, 0);
 			setRefresh(true);
+		}
+	}
+
+
+	@Override
+	public void onDestroyView() {
+		if (notificationAsync != null && notificationAsync.getStatus() == RUNNING) {
+			notificationAsync.cancel(true);
+		}
+		super.onDestroyView();
+	}
+
+
+	@Override
+	public void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
+		super.onActivityResult(reqCode, returnCode, intent);
+		if (intent != null && reqCode == REQUEST_STATUS_CHANGED) {
+			if (returnCode == StatusActivity.RETURN_STATUS_REMOVED) {
+				long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0);
+				adapter.removeItem(statusId);
+			}
 		}
 	}
 
@@ -74,7 +101,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), StatusActivity.class);
 			intent.putExtra(KEY_STATUS_DATA, status);
-			startActivity(intent); // todo add update
+			startActivityForResult(intent, REQUEST_STATUS_CHANGED);
 		}
 	}
 
@@ -84,7 +111,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), ProfileActivity.class);
 			intent.putExtra(KEY_PROFILE_USER, user);
-			startActivity(intent); // todo add update
+			startActivity(intent);
 		}
 	}
 

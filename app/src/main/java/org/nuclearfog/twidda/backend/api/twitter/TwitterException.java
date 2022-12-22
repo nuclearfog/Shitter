@@ -107,6 +107,9 @@ class TwitterException extends ConnectionException {
 			case 179:
 				return NOT_AUTHORIZED;
 
+			case 170:
+				return EMPTY_TEXT;
+
 			case 186:
 				return STATUS_LENGTH;
 

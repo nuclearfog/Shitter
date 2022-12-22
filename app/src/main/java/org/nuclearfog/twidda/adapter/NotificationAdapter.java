@@ -227,6 +227,22 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	}
 
 	/**
+	 * remove notification
+	 *
+	 * @param statusId sId of the notification's status
+	 */
+	public void removeItem(long statusId) {
+		for (int i = 0 ; i < items.size() ; i++) {
+			Notification item = items.get(i);
+			if (item != null && item.getStatus() != null && item.getStatus().getId() == statusId) {
+				items.remove(i);
+				notifyItemRemoved(i);
+				break;
+			}
+		}
+	}
+
+	/**
 	 * disable placeholder load animation
 	 */
 	public void disableLoading() {
