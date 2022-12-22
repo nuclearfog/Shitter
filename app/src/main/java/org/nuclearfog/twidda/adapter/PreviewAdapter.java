@@ -96,9 +96,9 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	@Override
 	public void onItemClick(int pos, int type) {
 		if (type == OnItemClickListener.TYPE_LINK) {
-			listener.onCardClick(cards[pos], OnCardClickListener.TYPE_LINK);
+			listener.onCardClick(cards[pos - medias.length], OnCardClickListener.TYPE_LINK);
 		} else if (type == OnItemClickListener.TYPE_IMAGE) {
-			listener.onCardClick(cards[pos], OnCardClickListener.TYPE_IMAGE);
+			listener.onCardClick(cards[pos - medias.length], OnCardClickListener.TYPE_IMAGE);
 		}
 	}
 

@@ -609,10 +609,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
-			Intent mediaIntent = new Intent(this, ImageViewer.class);
-			mediaIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(card.getImageUrl())});
-			mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
-			startActivity(mediaIntent);
+			String imageUrl = card.getImageUrl();
+			if (!imageUrl.isEmpty()) {
+				Intent mediaIntent = new Intent(this, ImageViewer.class);
+				mediaIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(card.getImageUrl())});
+				mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+				startActivity(mediaIntent);
+			}
 		}
 	}
 

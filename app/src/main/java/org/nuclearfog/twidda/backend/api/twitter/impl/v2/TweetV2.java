@@ -182,8 +182,8 @@ public class TweetV2 implements Status {
 						}
 					}
 					// create Twitter card if link is not a media link
-					if (mediaKey.isEmpty()) {
-						TwitterCard item = new TwitterCard(urls.getJSONObject(i));
+					if (mediaKey.isEmpty() && entry.has("title")) {
+						TwitterCard item = new TwitterCard(entry);
 						cardsList.add(item);
 					}
 				}

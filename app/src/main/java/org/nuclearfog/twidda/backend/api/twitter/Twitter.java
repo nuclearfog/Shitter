@@ -1060,7 +1060,7 @@ public class Twitter implements Connection {
 				}
 				throw new TwitterException(response);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new TwitterException(e);
 		}
 	}
