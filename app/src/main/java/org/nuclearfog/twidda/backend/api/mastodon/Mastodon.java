@@ -40,6 +40,8 @@ import org.nuclearfog.twidda.model.UserList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -98,6 +100,16 @@ public class Mastodon implements Connection {
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
+
+	/**
+	 * list comparator to sort statuses by ID (from highest ID to the lowest)
+	 */
+	private static final Comparator<Status> STATUS_COMPARATOR = new Comparator<Status>() {
+		@Override
+		public int compare(Status o1, Status o2) {
+			return Long.compare(o2.getId(), o1.getId());
+		}
+	};
 
 
 	private GlobalSettings settings;
@@ -350,8 +362,10 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
 		params.add("type=statuses");
-		params.add("resolve=true");
-		return getStatuses(SEARCH_TIMELINE, params, minId, maxId);
+		List<Status> result = getStatuses(SEARCH_TIMELINE, params, minId, maxId);
+		if (result.size() > 1)
+			Collections.sort(result, STATUS_COMPARATOR);
+		return result;
 	}
 
 
@@ -623,7 +637,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Messages getDirectmessages(String cursor) throws MastodonException {
-		return new Messages("", ""); // todo add implementation
+		throw new MastodonException("not implemented!"); // todo add implementation
 	}
 
 
@@ -795,7 +809,7 @@ public class Mastodon implements Connection {
 	 */
 	private List<Status> getStatuses(String endpoint, List<String> params, long minId, long maxId) throws MastodonException {
 		if (minId > 0)
-			params.add("since_id=" + minId);
+			params.add("min_id=" + minId);
 		if (maxId > minId)
 			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());

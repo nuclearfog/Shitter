@@ -749,7 +749,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			sensitive_media.setVisibility(GONE);
 		}
-		AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
 		String profileImageUrl = author.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(4, 0);
@@ -806,6 +805,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					mediaButton.setVisibility(GONE);
 					break;
 			}
+			AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
 		} else {
 			mediaButton.setVisibility(GONE);
 		}
