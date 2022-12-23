@@ -27,7 +27,7 @@ public class UserV2 implements User {
 			"%2Cprotected%2Cpublic_metrics%2Curl%2Cusername%2Cverified";
 
 	private long id;
-	private long created;
+	private long createdAt;
 	private String username;
 	private String screenName;
 	private String description;
@@ -58,7 +58,7 @@ public class UserV2 implements User {
 		isProtected = json.optBoolean("protected");
 		location = json.optString("location", "");
 		isVerified = json.optBoolean("verified");
-		created = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V2);
+		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V2);
 		defaultImage = profileImageUrl.contains("default_profile_images");
 
 		url = getUrl(json);
@@ -111,7 +111,7 @@ public class UserV2 implements User {
 
 	@Override
 	public long getCreatedAt() {
-		return created;
+		return createdAt;
 	}
 
 
@@ -224,6 +224,12 @@ public class UserV2 implements User {
 		if (!(obj instanceof User))
 			return false;
 		return ((User) obj).getId() == id;
+	}
+
+
+	@Override
+	public int compareTo(User o) {
+		return Long.compare(o.getCreatedAt(), createdAt);
 	}
 
 

@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Media extends Serializable {
+public interface Media extends Serializable, Comparable<Media> {
 
 	/**
 	 * returned when the status doesn't contain any media

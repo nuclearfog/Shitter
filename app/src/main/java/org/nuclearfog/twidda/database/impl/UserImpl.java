@@ -25,7 +25,7 @@ public class UserImpl implements User {
 	private static final long serialVersionUID = 2367055336838212570L;
 
 	private long id;
-	private long created;
+	private long createdAt;
 	private int following;
 	private int follower;
 	private int statusCount;
@@ -57,7 +57,7 @@ public class UserImpl implements User {
 		link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
 		location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
 		profileBannerUrl = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
-		created = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
+		createdAt = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
 		following = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FRIENDS));
 		follower = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FOLLOWER));
 		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.STATUSES));
@@ -92,7 +92,7 @@ public class UserImpl implements User {
 
 	@Override
 	public long getCreatedAt() {
-		return created;
+		return createdAt;
 	}
 
 
@@ -203,6 +203,12 @@ public class UserImpl implements User {
 		if (!(obj instanceof User))
 			return false;
 		return ((User) obj).getId() == id;
+	}
+
+
+	@Override
+	public int compareTo(User o) {
+		return Long.compare(o.getCreatedAt(), createdAt);
 	}
 
 

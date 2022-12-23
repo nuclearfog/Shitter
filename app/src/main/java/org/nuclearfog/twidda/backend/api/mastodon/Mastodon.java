@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -100,16 +99,6 @@ public class Mastodon implements Connection {
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
-
-	/**
-	 * list comparator to sort statuses by ID (from highest ID to the lowest)
-	 */
-	private static final Comparator<Status> STATUS_COMPARATOR = new Comparator<Status>() {
-		@Override
-		public int compare(Status o1, Status o2) {
-			return Long.compare(o2.getId(), o1.getId());
-		}
-	};
 
 
 	private GlobalSettings settings;
@@ -364,7 +353,7 @@ public class Mastodon implements Connection {
 		params.add("type=statuses");
 		List<Status> result = getStatuses(SEARCH_TIMELINE, params, minId, maxId);
 		if (result.size() > 1)
-			Collections.sort(result, STATUS_COMPARATOR);
+			Collections.sort(result);
 		return result;
 	}
 
@@ -392,7 +381,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Location> getLocations() throws MastodonException {
+	public List<Location> getLocations() {
 		return new ArrayList<>(0); // not supported yet
 	}
 

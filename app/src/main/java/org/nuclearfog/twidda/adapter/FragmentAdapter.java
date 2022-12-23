@@ -115,7 +115,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * setup adapter for viewing user timeline and favorites
 	 *
-	 * @param userId ID of the user
+	 * @param userId         ID of the user
 	 * @param enableFavorits true to enable favorite page
 	 */
 	public void setupProfilePage(long userId, boolean enableFavorits) {

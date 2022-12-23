@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Poll extends Serializable {
+public interface Poll extends Serializable, Comparable<Poll> {
 
 	/**
 	 * @return ID of the poll

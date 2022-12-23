@@ -232,7 +232,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 * @param statusId sId of the notification's status
 	 */
 	public void removeItem(long statusId) {
-		for (int i = 0 ; i < items.size() ; i++) {
+		for (int i = 0; i < items.size(); i++) {
 			Notification item = items.get(i);
 			if (item != null && item.getStatus() != null && item.getStatus().getId() == statusId) {
 				items.remove(i);

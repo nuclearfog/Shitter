@@ -94,6 +94,12 @@ public class LocationV2 implements Location {
 	}
 
 
+	@Override
+	public int compareTo(Location o) {
+		return Long.compare(id, o.getId());
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {

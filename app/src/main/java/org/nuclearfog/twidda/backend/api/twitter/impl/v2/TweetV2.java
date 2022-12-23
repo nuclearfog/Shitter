@@ -385,6 +385,12 @@ public class TweetV2 implements Status {
 
 
 	@Override
+	public int compareTo(Status o) {
+		return Long.compare(o.getId(), id);
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Status))
 			return false;

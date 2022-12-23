@@ -308,6 +308,12 @@ public class TweetV1 implements Status {
 	}
 
 
+	@Override
+	public int compareTo(Status o) {
+		return Long.compare(o.getId(), id);
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {

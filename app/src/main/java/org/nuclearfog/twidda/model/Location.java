@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Location extends Serializable {
+public interface Location extends Serializable, Comparable<Location> {
 
 	/**
 	 * @return ID of the place (World ID)

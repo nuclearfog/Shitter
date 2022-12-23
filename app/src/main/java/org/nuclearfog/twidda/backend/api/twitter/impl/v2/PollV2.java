@@ -91,6 +91,12 @@ public class PollV2 implements Poll {
 	}
 
 
+	@Override
+	public int compareTo(Poll o) {
+		return Long.compare(id, o.getId());
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {

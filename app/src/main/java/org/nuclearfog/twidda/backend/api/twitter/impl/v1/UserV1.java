@@ -21,7 +21,7 @@ public class UserV1 implements User {
 	public static final long serialVersionUID = 7893496988800499358L;
 
 	private long id;
-	private long created;
+	private long createdAt;
 	private String username;
 	private String screenName;
 	private String description;
@@ -68,7 +68,7 @@ public class UserV1 implements User {
 		favoriteCount = json.optInt("favourites_count");
 		followReqSent = json.optBoolean("follow_request_sent");
 		defaultImage = json.optBoolean("default_profile_image");
-		created = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
+		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		description = getDescription(json);
 		url = getUrl(json);
 
@@ -116,7 +116,7 @@ public class UserV1 implements User {
 
 	@Override
 	public long getCreatedAt() {
-		return created;
+		return createdAt;
 	}
 
 
@@ -227,6 +227,12 @@ public class UserV1 implements User {
 		if (!(obj instanceof User))
 			return false;
 		return ((User) obj).getId() == id;
+	}
+
+
+	@Override
+	public int compareTo(User o) {
+		return Long.compare(o.getCreatedAt(), createdAt);
 	}
 
 

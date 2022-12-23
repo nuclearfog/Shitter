@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Status extends Serializable {
+public interface Status extends Serializable, Comparable<Status> {
 
 	/**
 	 * @return status ID

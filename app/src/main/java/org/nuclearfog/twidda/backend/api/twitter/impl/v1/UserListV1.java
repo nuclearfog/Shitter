@@ -56,50 +56,60 @@ public class UserListV1 implements UserList {
 		}
 	}
 
+
 	@Override
 	public long getId() {
 		return id;
 	}
+
 
 	@Override
 	public long getTimestamp() {
 		return createdAt;
 	}
 
+
 	@Override
 	public String getTitle() {
 		return title;
 	}
+
 
 	@Override
 	public String getDescription() {
 		return description;
 	}
 
+
 	@Override
 	public User getListOwner() {
 		return owner;
 	}
+
 
 	@Override
 	public boolean isPrivate() {
 		return isPrivate;
 	}
 
+
 	@Override
 	public boolean isFollowing() {
 		return following;
 	}
+
 
 	@Override
 	public int getMemberCount() {
 		return memberCount;
 	}
 
+
 	@Override
 	public int getSubscriberCount() {
 		return subscriberCount;
 	}
+
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
@@ -107,6 +117,7 @@ public class UserListV1 implements UserList {
 			return false;
 		return ((UserList) obj).getId() == id;
 	}
+
 
 	@NonNull
 	@Override

@@ -187,6 +187,12 @@ public class MastodonUser implements User {
 	}
 
 
+	@Override
+	public int compareTo(User o) {
+		return Long.compare(o.getCreatedAt(), createdAt);
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {
