@@ -15,7 +15,7 @@ public class TwitterAccount implements Account {
 
 	private static final long serialVersionUID = 2013001328542861179L;
 
-	private static final String TWITTER_LINK = "https://twitter.com";
+	private static final String TWITTER_HOST = "https://twitter.com";
 
 	private long date;
 
@@ -100,7 +100,7 @@ public class TwitterAccount implements Account {
 
 	@Override
 	public String getHostname() {
-		return TWITTER_LINK;
+		return TWITTER_HOST;
 	}
 
 

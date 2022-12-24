@@ -132,7 +132,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		View trend_card = findViewById(R.id.settings_trend_card);
 		View user_card = findViewById(R.id.settings_data_card);
 		SwitchButton toggleImg = findViewById(R.id.toggleImg);
-		SwitchButton toggleAns = findViewById(R.id.toggleAns);
 		SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
 		SwitchButton enablePreview = findViewById(R.id.settings_enable_prev);
 		SwitchButton enableLike = findViewById(R.id.enable_like);
@@ -212,7 +211,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_fav);
 		}
 		toggleImg.setCheckedImmediately(settings.imagesEnabled());
-		toggleAns.setCheckedImmediately(settings.replyLoadingEnabled());
 		enablePreview.setCheckedImmediately(settings.linkPreviewEnabled());
 		toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
 		enableLike.setCheckedImmediately(settings.likeEnabled());
@@ -233,7 +231,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		logout.setOnClickListener(this);
 		delButton.setOnClickListener(this);
 		toggleImg.setOnCheckedChangeListener(this);
-		toggleAns.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
 		enableTwitterAlt.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
@@ -475,10 +472,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// toggle image loading
 		if (c.getId() == R.id.toggleImg) {
 			settings.setImageLoad(checked);
-		}
-		// toggle automatic answer load
-		else if (c.getId() == R.id.toggleAns) {
-			settings.setAnswerLoad(checked);
 		}
 		// enable toolbar overlap
 		else if (c.getId() == R.id.settings_toolbar_ov) {

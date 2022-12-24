@@ -82,7 +82,6 @@ public class GlobalSettings {
 	private static final String INDEX_SCALE = "index_scale";
 	private static final String LIST_SIZE = "preload";
 	private static final String IMAGE_LOAD = "image_load";
-	private static final String ANSWER_LOAD = "answer_load";
 	private static final String TWEET_INDICATOR = "tweet_indicator";
 	private static final String PROFILE_OVERLAP = "profile_toolbar_overlap";
 	private static final String PROXY_SET = "proxy_enabled";
@@ -134,11 +133,9 @@ public class GlobalSettings {
 
 	private Location location;
 	private Account account;
-
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
 	private boolean loadImage;
-	private boolean loadAnswer;
 	private boolean loggedIn;
 	private boolean isProxyEnabled;
 	private boolean isProxyAuthSet;
@@ -501,28 +498,6 @@ public class GlobalSettings {
 
 		Editor edit = settings.edit();
 		edit.putBoolean(FILTER_RESULTS, enable);
-		edit.apply();
-	}
-
-	/**
-	 * answer loading enabled
-	 *
-	 * @return true if enabled
-	 */
-	public boolean replyLoadingEnabled() {
-		return loadAnswer;
-	}
-
-	/**
-	 * enable/disable answer load load
-	 *
-	 * @param loadAnswer true if enabled
-	 */
-	public void setAnswerLoad(boolean loadAnswer) {
-		this.loadAnswer = loadAnswer;
-
-		Editor edit = settings.edit();
-		edit.putBoolean(ANSWER_LOAD, loadAnswer);
 		edit.apply();
 	}
 
@@ -979,7 +954,6 @@ public class GlobalSettings {
 		ignoreProxyWarning = settings.getBoolean(PROXY_IGNORE, false);
 		loggedIn = settings.getBoolean(LOGGED_IN, false);
 		loadImage = settings.getBoolean(IMAGE_LOAD, true);
-		loadAnswer = settings.getBoolean(ANSWER_LOAD, false);
 		tweetIndicators = settings.getBoolean(TWEET_INDICATOR, true);
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
 		linkPreview = settings.getBoolean(LINK_PREVIEW, false);
