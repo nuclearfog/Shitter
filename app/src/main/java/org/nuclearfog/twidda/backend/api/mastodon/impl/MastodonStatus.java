@@ -31,12 +31,13 @@ public class MastodonStatus implements Status {
 	private long createdAt;
 
 	private int replyCount, favoriteCount, reblogCount;
-	private boolean favorited, reblogged, sensitive;
+	private boolean favorited, reblogged, sensitive, muted;
 
 	private String text, source, mentions;
 
 	private User author;
 	private Poll poll;
+	private Status embeddedStatus;
 	private Card[] cards = {};
 	private Media[] medias = {};
 
@@ -45,26 +46,31 @@ public class MastodonStatus implements Status {
 	 * @param currentUserId Id of the current user
 	 */
 	public MastodonStatus(JSONObject json, long currentUserId) throws JSONException {
+		JSONObject embeddedJson = json.optJSONObject("reblog");
 		JSONObject appJson = json.optJSONObject("application");
 		JSONObject cardJson = json.optJSONObject("card");
 		JSONObject pollJson = json.optJSONObject("poll");
 		JSONArray mentionsJson = json.optJSONArray("mentions");
 		JSONArray mediaArray = json.optJSONArray("media_attachments");
-		String idStr = json.getString("id");
 		String replyIdStr = json.optString("in_reply_to_id", "0");
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
+		String idStr = json.getString("id");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 		createdAt = StringTools.getTime(json.optString("created_at"), StringTools.TIME_MASTODON);
 		replyCount = json.optInt("replies_count");
 		reblogCount = json.optInt("reblogs_count");
 		favoriteCount = json.optInt("favourites_count");
-		favorited = json.optBoolean("favourited");
-		reblogged = json.optBoolean("reblogged");
+		muted = json.optBoolean("muted", false);
+		favorited = json.optBoolean("favourited", false);
+		reblogged = json.optBoolean("reblogged", false);
+		sensitive = json.optBoolean("sensitive", false);
 		text = json.optString("content", "");
 		text = Jsoup.parse(text).text();
-		sensitive = json.optBoolean("sensitive", false);
 
+		if (embeddedJson != null) {
+			embeddedStatus = new MastodonStatus(embeddedJson, currentUserId);
+		}
 		if (pollJson != null) {
 			poll = new MastodonPoll(pollJson);
 		}
@@ -138,7 +144,7 @@ public class MastodonStatus implements Status {
 	@Nullable
 	@Override
 	public Status getEmbeddedStatus() {
-		return null;
+		return embeddedStatus;
 	}
 
 
@@ -223,7 +229,7 @@ public class MastodonStatus implements Status {
 
 	@Override
 	public boolean isHidden() {
-		return false;
+		return muted;
 	}
 
 
@@ -239,7 +245,7 @@ public class MastodonStatus implements Status {
 	@Override
 	@Nullable
 	public Location getLocation() {
-		return null; // todo add implementation
+		return null; // todo add implementation if supported by API
 	}
 
 

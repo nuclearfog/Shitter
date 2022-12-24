@@ -56,6 +56,7 @@
 	<dimen name="profile_button_background_padding">5dp</dimen>
 	<dimen name="profile_textsize_big">14sp</dimen>
 	<dimen name="profile_textsize_small">12sp</dimen>
+	<dimen name="profile_tabitem_min_width">120sp</dimen>
 	<integer name="profile_text_bio_lines">3</integer>
 
 	<!--dimens of page_editprofile.xml-->

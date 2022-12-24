@@ -241,7 +241,8 @@
 				android:id="@+id/profile_tab"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:background="@android:color/transparent" />
+				android:background="@android:color/transparent"
+				app:tabMinWidth="@dimen/profile_tabitem_min_width" />
 
 			<androidx.viewpager.widget.ViewPager
 				android:id="@+id/profile_pager"
