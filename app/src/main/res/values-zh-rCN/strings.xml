@@ -44,7 +44,6 @@
 	<string name="confirm_discard">取消更改？</string>
 	<string name="user_data">用户数据</string>
 	<string name="follows_you">关注了你</string>
-	<string name="settings_enable_ans_load">自动加载推文回复</string>
 	<string name="settings_connections">连接设置</string>
 	<string name="settings_hint_proxy_ip">输入代理地址</string>
 	<string name="proxy_port">端口</string>

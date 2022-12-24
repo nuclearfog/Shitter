@@ -76,7 +76,6 @@
 	<string name="error_image_save">Fehler beim Speichern!</string>
 	<string name="error_not_authorized">Keine Berechtigung!</string>
 	<string name="error_file_format">Dateiformat nicht unterstützt!</string>
-	<string name="settings_enable_ans_load">Tweet-Replies automatisch laden</string>
 	<string name="info_tweet_retweeted">Status reposted!</string>
 	<string name="info_tweet_unretweeted">Repost entfernt!</string>
 	<string name="info_tweet_favored">Status favorisiert!</string>

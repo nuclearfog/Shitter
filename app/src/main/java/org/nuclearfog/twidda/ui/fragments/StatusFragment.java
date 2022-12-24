@@ -243,7 +243,10 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				break;
 
 			case STATUS_FRAGMENT_REPLY:
-				statusAsync = new StatusLoader(this, StatusLoader.REPLIES_OFFLINE, id, search, index);
+				if (index == CLEAR_LIST)
+					statusAsync = new StatusLoader(this, StatusLoader.REPLIES_OFFLINE, id, search, index);
+				else
+					statusAsync = new StatusLoader(this, StatusLoader.REPLIES, id, search, index);
 				statusAsync.execute(sinceId, maxId);
 				break;
 

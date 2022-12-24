@@ -214,7 +214,6 @@
 	<string name="confirm_discard">discard changes?</string>
 	<string name="user_data">User data</string>
 	<string name="follows_you">follows you</string>
-	<string name="settings_enable_ans_load">load status replies automatically</string>
 	<string name="settings_connections">Connection settings</string>
 	<string name="settings_hint_proxy_ip">enter IP address</string>
 	<string name="proxy_port">Port</string>
