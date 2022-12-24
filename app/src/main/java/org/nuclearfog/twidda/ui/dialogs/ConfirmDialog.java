@@ -146,7 +146,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 *
 	 */
 	public ConfirmDialog(Context context) {
-		super(context);
+		super(context, R.style.ConfirmDialog);
 		setContentView(R.layout.dialog_confirm);
 		root = findViewById(R.id.confirm_rootview);
 		confirm = findViewById(R.id.confirm_yes);

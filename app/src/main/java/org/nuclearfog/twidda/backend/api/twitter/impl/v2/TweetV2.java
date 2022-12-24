@@ -129,7 +129,7 @@ public class TweetV2 implements Status {
 		retweetCount = publicMetrics.getInt("retweet_count");
 		favoriteCount = publicMetrics.getInt("like_count");
 		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);
-		source = json.optString("source", "unknown");
+		source = json.optString("source", "");
 		sensitive = json.optBoolean("possibly_sensitive", false);
 		// add media
 		if (attachments != null) {

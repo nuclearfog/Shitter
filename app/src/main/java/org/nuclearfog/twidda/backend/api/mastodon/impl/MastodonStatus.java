@@ -93,6 +93,8 @@ public class MastodonStatus implements Status {
 		}
 		if (appJson != null) {
 			source = appJson.optString("name", "");
+		} else if (embeddedStatus != null) {
+			source = embeddedStatus.getSource();
 		} else {
 			source = "";
 		}

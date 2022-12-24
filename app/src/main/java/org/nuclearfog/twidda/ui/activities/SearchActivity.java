@@ -27,6 +27,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 
 /**
  * search Activity for statuses and users
@@ -50,6 +51,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	private Toolbar toolbar;
 
 	private String search = "";
+
 
 	@Override
 	protected void attachBaseContext(Context newBase) {
@@ -100,7 +102,11 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		MenuItem searchItem = m.findItem(R.id.new_search);
 		MenuItem searchFilter = m.findItem(R.id.search_filter);
 		SearchView searchView = (SearchView) searchItem.getActionView();
-		searchFilter.setChecked(settings.filterResults());
+		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+			searchFilter.setChecked(settings.filterResults());
+		} else {
+			searchFilter.setVisible(false);
+		}
 		searchView.setQueryHint(search);
 		searchView.setOnQueryTextListener(this);
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);

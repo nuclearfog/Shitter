@@ -671,7 +671,7 @@ public class Mastodon implements Connection {
 		}
 		if (update.getBannerImageStream() != null) {
 			streams.add(update.getBannerImageStream());
-			keys.add("header");
+			keys.add("header"); // fixme: banner upload not working
 		}
 		try {
 			Response response = patch(ENDPOINT_UPDATE_CREDENTIALS, params, streams, keys);

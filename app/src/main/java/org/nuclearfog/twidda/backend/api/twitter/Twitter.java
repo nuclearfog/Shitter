@@ -39,7 +39,7 @@ import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.FilterDatabase;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
@@ -180,7 +180,7 @@ public class Twitter implements Connection {
 
 	private OkHttpClient client;
 	private GlobalSettings settings;
-	private FilterDatabase filterDatabase;
+	private AppDatabase db;
 	private Tokens tokens;
 
 	/**
@@ -191,8 +191,8 @@ public class Twitter implements Connection {
 	public Twitter(Context context) {
 		settings = GlobalSettings.getInstance(context);
 		tokens = Tokens.getInstance(context);
-		filterDatabase = new FilterDatabase(context);
 		client = ConnectionBuilder.create(context, 0);
+		db = new AppDatabase(context);
 	}
 
 	/**
@@ -443,8 +443,7 @@ public class Twitter implements Connection {
 	public void blockUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		User user = getUser1(USER_BLOCK, params);
-		filterDatabase.addUser(user.getId());
+		getUser1(USER_BLOCK, params);
 	}
 
 
@@ -454,8 +453,7 @@ public class Twitter implements Connection {
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
-		User user = getUser1(USER_BLOCK, params);
-		filterDatabase.addUser(user.getId());
+		getUser1(USER_BLOCK, params);
 	}
 
 
@@ -1583,7 +1581,7 @@ public class Twitter implements Connection {
 	 * filter tweets from blocked users
 	 */
 	private void filterTweets(List<Status> tweets) {
-		Set<Long> excludedIds = filterDatabase.getFilteredUserIds();
+		Set<Long> excludedIds = db.getFilterlistUserIds();
 		for (int pos = tweets.size() - 1; pos >= 0; pos--) {
 			long authorId = tweets.get(pos).getAuthor().getId();
 			Status embeddedTweet = tweets.get(pos).getEmbeddedStatus();
@@ -1602,7 +1600,7 @@ public class Twitter implements Connection {
 	 * remove blocked users from list
 	 */
 	private void filterUsers(List<User> users) {
-		Set<Long> exclude = filterDatabase.getFilteredUserIds();
+		Set<Long> exclude = db.getFilterlistUserIds();
 		for (int pos = users.size() - 1; pos >= 0; pos--) {
 			if (exclude.contains(users.get(pos).getId())) {
 				users.remove(pos);

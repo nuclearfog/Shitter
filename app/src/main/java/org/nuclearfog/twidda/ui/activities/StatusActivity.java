@@ -725,9 +725,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		ansButton.setText(buttonNumber.format(status.getReplyCount()));
 		favButton.setText(buttonNumber.format(status.getFavoriteCount()));
 		rtwButton.setText(buttonNumber.format(status.getRepostCount()));
-		statusApi.setText(R.string.tweet_sent_from);
-		statusApi.append(status.getSource());
-
+		if (!status.getSource().isEmpty()) {
+			statusApi.setText(R.string.tweet_sent_from);
+			statusApi.append(status.getSource());
+			statusApi.setVisibility(VISIBLE);
+		} else {
+			statusApi.setVisibility(GONE);
+		}
 		if (!status.getText().isEmpty()) {
 			Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
 			statusText.setVisibility(VISIBLE);

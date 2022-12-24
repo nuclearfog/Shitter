@@ -11,6 +11,7 @@ import static org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.UserExcludeTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 
@@ -42,6 +43,8 @@ import org.nuclearfog.twidda.model.User;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * SQLite database class to store and load status, messages, trends and user information
@@ -290,6 +293,21 @@ public class AppDatabase {
 	private static final String[] STATUS_REG_COLUMN = {StatusRegisterTable.REGISTER};
 
 	/**
+	 * column to fetch from the database
+	 */
+	private static final String[] LIST_ID_COL = {UserExcludeTable.ID};
+
+	/**
+	 * selection to get the exclude list of the current user
+	 */
+	private static final String LIST_SELECT = UserExcludeTable.OWNER + "=?";
+
+	/**
+	 * selection to get a column
+	 */
+	private static final String FILTER_SELECT = LIST_SELECT + " AND " + UserExcludeTable.ID + "=?";
+
+	/**
 	 * default order for trend rows
 	 */
 	private static final String TREND_ORDER = TrendTable.INDEX + " ASC";
@@ -481,6 +499,40 @@ public class AppDatabase {
 	}
 
 	/**
+	 * create a new filterlist containing user IDs
+	 *
+	 * @param ids list of user IDs
+	 */
+	public void setFilterlistUserIds(List<Long> ids) {
+		long homeId = settings.getLogin().getId();
+		String[] args = {Long.toString(homeId)};
+		SQLiteDatabase db = getDbWrite();
+
+		db.delete(UserExcludeTable.NAME, LIST_SELECT, args);
+		for (long id : ids) {
+			ContentValues column = new ContentValues(2);
+			column.put(UserExcludeTable.ID, id);
+			column.put(UserExcludeTable.OWNER, homeId);
+			db.insertWithOnConflict(UserExcludeTable.NAME, null, column, SQLiteDatabase.CONFLICT_IGNORE);
+		}
+		commit(db);
+	}
+
+	/**
+	 * add user to the exclude database
+	 *
+	 * @param userId ID of the user
+	 */
+	public void addUserToFilterlist(long userId) {
+		SQLiteDatabase db = getDbWrite();
+		ContentValues column = new ContentValues(2);
+		column.put(UserExcludeTable.ID, userId);
+		column.put(UserExcludeTable.OWNER, settings.getLogin().getId());
+		db.insert(UserExcludeTable.NAME, null, column);
+		commit(db);
+	}
+
+	/**
 	 * load home timeline
 	 *
 	 * @return home timeline
@@ -667,21 +719,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * remove status from database
-	 *
-	 * @param id status ID
-	 */
-	public void removeStatus(long id) {
-		String[] args = {Long.toString(id)};
-
-		SQLiteDatabase db = getDbWrite();
-		db.delete(StatusTable.NAME, STATUS_SELECT, args);
-		db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
-		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
-		commit(db);
-	}
-
-	/**
 	 * hide or unhide status
 	 *
 	 * @param id   ID of the reply
@@ -700,6 +737,21 @@ public class AppDatabase {
 		ContentValues values = new ContentValues(3);
 		values.put(StatusRegisterTable.REGISTER, register);
 		db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
+		commit(db);
+	}
+
+	/**
+	 * remove status from database
+	 *
+	 * @param id status ID
+	 */
+	public void removeStatus(long id) {
+		String[] args = {Long.toString(id)};
+
+		SQLiteDatabase db = getDbWrite();
+		db.delete(StatusTable.NAME, STATUS_SELECT, args);
+		db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
+		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
 		commit(db);
 	}
 
@@ -746,7 +798,7 @@ public class AppDatabase {
 		String[] args = {Long.toString(id)};
 
 		SQLiteDatabase db = getDbWrite();
-		db.delete(DatabaseAdapter.AccountTable.NAME, ACCOUNT_SELECTION, args);
+		db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
 	}
 
 	/**
@@ -801,6 +853,39 @@ public class AppDatabase {
 	}
 
 	/**
+	 * return the current filterlist containing user IDs
+	 *
+	 * @return a set of user IDs
+	 */
+	public Set<Long> getFilterlistUserIds() {
+		String[] args = {Long.toString(settings.getLogin().getId())};
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.query(UserExcludeTable.NAME, LIST_ID_COL, LIST_SELECT, args, null, null, null, null);
+
+		Set<Long> result = new TreeSet<>();
+		if (cursor.moveToFirst()) {
+			do {
+				long id = cursor.getLong(0);
+				result.add(id);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
+	 * remove user from the exclude database
+	 *
+	 * @param userId ID of the user
+	 */
+	public void removeUserFromFilterlist(long userId) {
+		String[] args = {Long.toString(settings.getLogin().getId()), Long.toString(userId)};
+		SQLiteDatabase db = getDbWrite();
+		db.delete(UserExcludeTable.NAME, FILTER_SELECT, args);
+		commit(db);
+	}
+
+	/**
 	 * check if status exists in database
 	 *
 	 * @param id status ID
@@ -842,7 +927,7 @@ public class AppDatabase {
 		ArrayList<Account> result = new ArrayList<>();
 
 		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.query(DatabaseAdapter.AccountTable.NAME, AccountImpl.COLUMNS, null, null, null, null, SORT_BY_CREATION);
+		Cursor cursor = db.query(AccountTable.NAME, AccountImpl.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 		if (cursor.moveToFirst()) {
 			result.ensureCapacity(cursor.getCount());
 			do {

@@ -39,6 +39,12 @@
 		<item name="android:backgroundDimEnabled">true</item>
 	</style>
 
+	<style name="ConfirmDialog" parent="Theme.AppCompat.Dialog">
+		<item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:background">@android:color/transparent</item>
+		<item name="android:backgroundDimEnabled">true</item>
+	</style>
+
 	<style name="MetricsDialog" parent="Theme.AppCompat.Dialog">
 		<item name="android:windowMinWidthMinor">80%</item>
 	</style>

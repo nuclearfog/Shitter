@@ -6,7 +6,6 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.FilterDatabase;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -65,8 +64,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 	private ConnectionException error;
 	private WeakReference<ProfileActivity> weakRef;
 	private Connection connection;
-	private FilterDatabase filterDatabase;
-	private AppDatabase appDB;
+	private AppDatabase db;
 	private long userId;
 	private int action;
 
@@ -77,8 +75,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 	public UserAction(ProfileActivity activity, int action, long userId) {
 		super();
 		connection = ConnectionManager.get(activity);
-		appDB = new AppDatabase(activity);
-		filterDatabase = new FilterDatabase(activity);
+		db = new AppDatabase(activity);
 		this.weakRef = new WeakReference<>(activity);
 		this.userId = userId;
 		this.action = action;
@@ -93,7 +90,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					// load user information from database
 					User user;
 					if (userId > 0) {
-						user = appDB.getUser(userId);
+						user = db.getUser(userId);
 						if (user != null) {
 							publishProgress(user);
 						}
@@ -103,12 +100,12 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					// load user information from twitter
 					user = connection.showUser(userId);
 					publishProgress(user);
-					appDB.saveUser(user);
+					db.saveUser(user);
 					// load user relations from twitter
 					Relation relation = connection.getUserRelationship(userId);
 					if (!relation.isCurrentUser()) {
 						boolean muteUser = relation.isBlocked() || relation.isMuted();
-						appDB.muteUser(userId, muteUser);
+						db.muteUser(userId, muteUser);
 					}
 					return relation;
 
@@ -122,7 +119,8 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 
 				case ACTION_BLOCK:
 					connection.blockUser(userId);
-					appDB.muteUser(userId, true);
+					db.muteUser(userId, true);
+					db.addUserToFilterlist(userId);
 					break;
 
 				case ACTION_UNBLOCK:
@@ -130,14 +128,14 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					// remove from exclude list only if user is not muted
 					relation = connection.getUserRelationship(userId);
 					if (!relation.isMuted()) {
-						appDB.muteUser(userId, false);
-						filterDatabase.removeUser(userId);
+						db.muteUser(userId, false);
+						db.removeUserFromFilterlist(userId);
 					}
 					return relation;
 
 				case ACTION_MUTE:
 					connection.muteUser(userId);
-					appDB.muteUser(userId, true);
+					db.muteUser(userId, true);
 					break;
 
 				case ACTION_UNMUTE:
@@ -145,8 +143,8 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					// remove from exclude list only if user is not blocked
 					relation = connection.getUserRelationship(userId);
 					if (!relation.isBlocked()) {
-						appDB.muteUser(userId, false);
-						filterDatabase.removeUser(userId);
+						db.muteUser(userId, false);
+						db.removeUserFromFilterlist(userId);
 					}
 					return relation;
 			}
