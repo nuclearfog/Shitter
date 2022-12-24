@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.database.AccountDatabase;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.fragments.AccountFragment;
 
@@ -26,7 +26,7 @@ public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
 	 */
 	public static final int MODE_DELETE = 2;
 
-	private AccountDatabase accountDatabase;
+	private AppDatabase db;
 	private WeakReference<AccountFragment> weakRef;
 
 	private int mode;
@@ -38,7 +38,7 @@ public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
 	public AccountLoader(AccountFragment fragment, int mode) {
 		super();
 		weakRef = new WeakReference<>(fragment);
-		accountDatabase = new AccountDatabase(fragment.requireContext());
+		db = new AppDatabase(fragment.requireContext());
 		this.mode = mode;
 	}
 
@@ -47,11 +47,11 @@ public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
 	protected List<Account> doInBackground(Long... param) {
 		// get all logins
 		if (mode == MODE_LOAD) {
-			return accountDatabase.getLogins();
+			return db.getLogins();
 		}
 		// delete login
 		else if (mode == MODE_DELETE) {
-			accountDatabase.removeLogin(param[0]);
+			db.removeLogin(param[0]);
 			deleteId = param[0];
 		}
 		return null;

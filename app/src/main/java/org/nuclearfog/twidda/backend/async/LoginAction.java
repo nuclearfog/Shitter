@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
@@ -43,7 +42,6 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	public static final int LOGIN_MASTODON = 11;
 
 	private WeakReference<LoginActivity> weakRef;
-	private AccountDatabase accountDB;
 	private AppDatabase database;
 	private Connection connection;
 	@Nullable
@@ -61,7 +59,6 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	public LoginAction(LoginActivity activity, int network, int mode) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		accountDB = new AccountDatabase(activity);
 		database = new AppDatabase(activity);
 		this.mode = mode;
 
@@ -86,8 +83,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 					// login with pin and access token
 					Account account = connection.loginApp(param);
 					// save new user information
-					database.saveUser(account.getUser());
-					accountDB.saveLogin(account);
+					database.saveLogin(account);
 					return "";
 			}
 		} catch (ConnectionException exception) {

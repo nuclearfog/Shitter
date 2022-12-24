@@ -47,7 +47,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.AccountDatabase;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
@@ -300,8 +300,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// confirm log out
 		if (type == ConfirmDialog.APP_LOG_OUT) {
 			// remove account from database
-			AccountDatabase accountDB = new AccountDatabase(this);
-			accountDB.removeLogin(settings.getLogin().getId());
+			AppDatabase db = new AppDatabase(this);
+			db.removeLogin(settings.getLogin().getId());
 			settings.setLogin(null, true);
 			setResult(RETURN_APP_LOGOUT);
 			finish();

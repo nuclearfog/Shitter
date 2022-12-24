@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.database;
 
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
@@ -21,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.lists.Messages;
+import org.nuclearfog.twidda.database.impl.AccountImpl;
 import org.nuclearfog.twidda.database.impl.LocationImpl;
 import org.nuclearfog.twidda.database.impl.MediaImpl;
 import org.nuclearfog.twidda.database.impl.MessageImpl;
@@ -37,6 +39,7 @@ import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -272,6 +275,11 @@ public class AppDatabase {
 	private static final String USER_REG_SELECT = UserRegisterTable.ID + "=? AND " + UserRegisterTable.OWNER + "=?";
 
 	/**
+	 * selection for account entry
+	 */
+	private static final String ACCOUNT_SELECTION = AccountTable.ID + "=?";
+
+	/**
 	 * column projection for user register
 	 */
 	private static final String[] USER_REG_COLUMN = {UserRegisterTable.REGISTER};
@@ -285,6 +293,11 @@ public class AppDatabase {
 	 * default order for trend rows
 	 */
 	private static final String TREND_ORDER = TrendTable.INDEX + " ASC";
+
+	/**
+	 * default sort order for logins
+	 */
+	private static final String SORT_BY_CREATION = AccountTable.DATE + " DESC";
 
 	/**
 	 * limit for accessing a single row
@@ -439,6 +452,32 @@ public class AppDatabase {
 		for (Message message : messages)
 			saveMessages(message, db);
 		commit(db);
+	}
+
+	/**
+	 * save user login
+	 *
+	 * @param account login information
+	 */
+	public void saveLogin(Account account) {
+		ContentValues values = new ContentValues(9);
+		values.put(AccountTable.ID, account.getId());
+		values.put(AccountTable.DATE, account.getLoginDate());
+		values.put(AccountTable.HOSTNAME, account.getHostname());
+		values.put(AccountTable.CLIENT_ID, account.getConsumerToken());
+		values.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
+		values.put(AccountTable.API, account.getApiType());
+		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
+		values.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
+		values.put(AccountTable.BEARER, account.getBearerToken());
+		SQLiteDatabase db = getDbWrite();
+		db.beginTransaction();
+		db.insertWithOnConflict(AccountTable.NAME, "", values, CONFLICT_REPLACE);
+		if (account.getUser() != null) {
+			saveUser(account.getUser(), db, CONFLICT_IGNORE);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
 	}
 
 	/**
@@ -699,6 +738,18 @@ public class AppDatabase {
 	}
 
 	/**
+	 * remove login information from database
+	 *
+	 * @param id account ID to remove
+	 */
+	public void removeLogin(long id) {
+		String[] args = {Long.toString(id)};
+
+		SQLiteDatabase db = getDbWrite();
+		db.delete(DatabaseAdapter.AccountTable.NAME, ACCOUNT_SELECTION, args);
+	}
+
+	/**
 	 * Load trend List
 	 *
 	 * @return list of trends
@@ -780,6 +831,28 @@ public class AppDatabase {
 		}
 		saveUserRegister(db, id, register);
 		commit(db);
+	}
+
+	/**
+	 * get all user logins
+	 *
+	 * @return list of all logins
+	 */
+	public List<Account> getLogins() {
+		ArrayList<Account> result = new ArrayList<>();
+
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.query(DatabaseAdapter.AccountTable.NAME, AccountImpl.COLUMNS, null, null, null, null, SORT_BY_CREATION);
+		if (cursor.moveToFirst()) {
+			result.ensureCapacity(cursor.getCount());
+			do {
+				AccountImpl account = new AccountImpl(cursor);
+				account.addUser(getUser(account.getId(), account));
+				result.add(account);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
 	}
 
 	/**
@@ -1154,8 +1227,8 @@ public class AppDatabase {
 		userUpdate.put(UserTable.FRIENDS, user.getFollowing());
 		userUpdate.put(UserTable.FOLLOWER, user.getFollower());
 
-		db.update(StatusTable.NAME, statusUpdate, STATUS_SELECT, statusIdArg);
-		db.update(UserTable.NAME, userUpdate, USER_SELECT, userIdArg);
+		db.updateWithOnConflict(StatusTable.NAME, statusUpdate, STATUS_SELECT, statusIdArg, CONFLICT_REPLACE);
+		db.updateWithOnConflict(UserTable.NAME, userUpdate, USER_SELECT, userIdArg, CONFLICT_IGNORE);
 		saveStatusRegister(db, status, register);
 	}
 
