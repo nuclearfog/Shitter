@@ -74,7 +74,7 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 
 		toolbar.setTitle(R.string.list_appbar);
 		setSupportActionBar(toolbar);
-		adapter = new FragmentAdapter(getSupportFragmentManager());
+		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		tabLayout.setupWithViewPager(pager);
 
 		settings = GlobalSettings.getInstance(this);

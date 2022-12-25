@@ -59,6 +59,12 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 	 */
 	public static final int USERLIST = 8;
 
+	/**
+	 * public timeline
+	 */
+	public static final int PUBLIC = 9;
+
+
 	private WeakReference<StatusFragment> weakRef;
 	private Connection connection;
 	private AppDatabase db;
@@ -180,6 +186,10 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 
 				case USERLIST:
 					statuses = connection.getUserlistStatuses(id, sinceId, maxId);
+					break;
+
+				case PUBLIC:
+					statuses = connection.getPublicTimeline(sinceId, maxId);
 					break;
 			}
 		} catch (ConnectionException exception) {

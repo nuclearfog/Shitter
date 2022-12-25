@@ -68,6 +68,7 @@ public class AccountImpl implements Account {
 		this.bearerToken = bearerToken;
 		this.host = host;
 		this.apiType = apiType;
+		loginDate = System.currentTimeMillis();
 	}
 
 	/**

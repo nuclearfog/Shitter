@@ -30,7 +30,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	/**
 	 * Key to define what type of status should be loaded
 	 * possible values are {@link #STATUS_FRAGMENT_HOME,#STATUS_FRAGMENT_MENTION,#STATUS_FRAGMENT_USER}
-	 * and {@link #STATUS_FRAGMENT_FAVORIT,#STATUS_FRAGMENT_REPLY,#STATUS_FRAGMENT_SEARCH,#STATUS_FRAGMENT_USERLIST}
+	 * and {@link #STATUS_FRAGMENT_FAVORIT,#STATUS_FRAGMENT_REPLY,#STATUS_FRAGMENT_SEARCH,#STATUS_FRAGMENT_USERLIST,#STATUS_FRAGMENT_PUBLIC}
 	 */
 	public static final String KEY_STATUS_FRAGMENT_MODE = "status_mode";
 
@@ -87,6 +87,13 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 * @see #KEY_STATUS_FRAGMENT_MODE
 	 */
 	public static final int STATUS_FRAGMENT_USERLIST = 0x43F518F7;
+
+	/**
+	 * setup list for public timeline
+	 *
+	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 */
+	public static final int STATUS_FRAGMENT_PUBLIC = 0x6125C6D6;
 
 	/**
 	 * replace all items from list
@@ -257,6 +264,11 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 			case STATUS_FRAGMENT_USERLIST:
 				statusAsync = new StatusLoader(this, StatusLoader.USERLIST, id, search, index);
+				statusAsync.execute(sinceId, maxId);
+				break;
+
+			case STATUS_FRAGMENT_PUBLIC:
+				statusAsync = new StatusLoader(this, StatusLoader.PUBLIC, id, search, index);
 				statusAsync.execute(sinceId, maxId);
 				break;
 		}

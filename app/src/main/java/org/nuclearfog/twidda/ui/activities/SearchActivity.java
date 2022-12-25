@@ -72,7 +72,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		setSupportActionBar(toolbar);
 
 		settings = GlobalSettings.getInstance(this);
-		adapter = new FragmentAdapter(getSupportFragmentManager());
+		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		tabLayout.setupWithViewPager(pager);
 		tabLayout.addOnTabSelectedListener(this);
 		pager.setAdapter(adapter);

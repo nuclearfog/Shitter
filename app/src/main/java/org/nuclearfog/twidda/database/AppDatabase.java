@@ -901,6 +901,21 @@ public class AppDatabase {
 	}
 
 	/**
+	 * check if status exists in database
+	 *
+	 * @param id status ID
+	 * @return true if found
+	 */
+	public boolean containsLogin(long id) {
+		String[] args = {Long.toString(id)};
+		SQLiteDatabase db = getDbRead();
+		Cursor c = db.query(AccountTable.NAME, null, ACCOUNT_SELECTION, args, null, null, SINGLE_ITEM);
+		boolean result = c.moveToFirst();
+		c.close();
+		return result;
+	}
+
+	/**
 	 * remove user from mention results
 	 *
 	 * @param id   user ID

@@ -5,6 +5,7 @@ import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGM
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_FAVORIT;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_HOME;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_PUBLIC;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USER;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USERLIST;
@@ -29,6 +30,7 @@ import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_OWNS;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_SUBSCR_TO;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -36,6 +38,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.MessageFragment;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
@@ -51,14 +55,15 @@ import org.nuclearfog.twidda.ui.fragments.UserListFragment;
  */
 public class FragmentAdapter extends FragmentStatePagerAdapter {
 
-	private ListFragment[] fragments;
+	private ListFragment[] fragments = {};
+	private GlobalSettings settings;
 
 	/**
 	 * @param fManager Activity Fragment Manager
 	 */
-	public FragmentAdapter(FragmentManager fManager) {
+	public FragmentAdapter(Context context, FragmentManager fManager) {
 		super(fManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-		fragments = new ListFragment[0];
+		settings = GlobalSettings.getInstance(context);
 	}
 
 
@@ -94,20 +99,23 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * setup adapter for the home activity
 	 *
-	 * @param enableMessage true to enable message page
 	 */
-	public void setupForHomePage(boolean enableMessage) {
+	public void setupForHomePage() {
 		Bundle paramHomeTl = new Bundle();
 		paramHomeTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_HOME);
-		if (enableMessage) {
-			fragments = new ListFragment[4];
-			fragments[3] = new MessageFragment();
-		} else {
-			fragments = new ListFragment[3];
-		}
+		fragments = new ListFragment[4];
 		fragments[0] = new StatusFragment();
 		fragments[1] = new TrendFragment();
-		fragments[2] = new NotificationFragment();
+		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+			fragments[2] = new NotificationFragment();
+			fragments[3] = new MessageFragment();
+		} else {
+			fragments[2] = new StatusFragment();
+			fragments[3] = new NotificationFragment();
+			Bundle parampublicTl = new Bundle();
+			parampublicTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_PUBLIC);
+			fragments[2].setArguments(parampublicTl);
+		}
 		fragments[0].setArguments(paramHomeTl);
 		notifyDataSetChanged();
 	}

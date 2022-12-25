@@ -205,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
-		adapter = new FragmentAdapter(getSupportFragmentManager());
+		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		tabPages.setAdapter(adapter);
 		tabPages.setOffscreenPageLimit(2);
 		tabLayout.setupWithViewPager(tabPages);

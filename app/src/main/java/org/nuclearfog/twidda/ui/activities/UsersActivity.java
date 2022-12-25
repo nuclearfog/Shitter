@@ -126,7 +126,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		tablayout = findViewById(R.id.page_exclude_tab);
 		pager = findViewById(R.id.page_exclude_pager);
 
-		adapter = new FragmentAdapter(getSupportFragmentManager());
+		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		pager.setAdapter(adapter);
 
 		settings = GlobalSettings.getInstance(this);

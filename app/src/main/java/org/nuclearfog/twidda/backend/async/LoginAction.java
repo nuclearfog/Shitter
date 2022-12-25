@@ -8,6 +8,7 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
 
@@ -43,6 +44,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 
 	private WeakReference<LoginActivity> weakRef;
 	private AppDatabase database;
+	private GlobalSettings settings;
 	private Connection connection;
 	@Nullable
 	private ConnectionException exception;
@@ -60,6 +62,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 		super();
 		weakRef = new WeakReference<>(activity);
 		database = new AppDatabase(activity);
+		settings = GlobalSettings.getInstance(activity);
 		this.mode = mode;
 
 		if (network == LOGIN_TWITTER) {
@@ -77,6 +80,9 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 		try {
 			switch (mode) {
 				case MODE_REQUEST:
+					Account login = settings.getLogin();
+					if (!database.containsLogin(login.getId()))
+						database.saveLogin(login);
 					return connection.getAuthorisationLink(param);
 
 				case MODE_LOGIN:

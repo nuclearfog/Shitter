@@ -127,7 +127,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		pager = findViewById(R.id.listdetail_pager);
 
 		confirmDialog = new ConfirmDialog(this);
-		adapter = new FragmentAdapter(getSupportFragmentManager());
+		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
 		tablayout.setupWithViewPager(pager);

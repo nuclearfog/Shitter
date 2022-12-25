@@ -96,6 +96,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_UPLOAD_MEDIA = "/api/v2/media";
 	private static final String ENDPOINT_MEDIA_STATUS = "/api/v1/media/";
 	private static final String ENDPOINT_UPDATE_CREDENTIALS = "/api/v1/accounts/update_credentials";
+	private static final String ENDPOINT_PUBLIC_TIMELINE = "/api/v1/timelines/public";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -352,6 +353,16 @@ public class Mastodon implements Connection {
 		params.add("q=" + StringTools.encode(search));
 		params.add("type=statuses");
 		List<Status> result = getStatuses(SEARCH_TIMELINE, params, minId, maxId);
+		if (result.size() > 1)
+			Collections.sort(result);
+		return result;
+	}
+
+
+	@Override
+	public List<Status> getPublicTimeline(long minId, long maxId) throws MastodonException {
+		List<String> params = new ArrayList<>();
+		List<Status> result = getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
 		if (result.size() > 1)
 			Collections.sort(result);
 		return result;

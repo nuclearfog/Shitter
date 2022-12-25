@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 		settings = GlobalSettings.getInstance(this);
 		tabLayout.setupWithViewPager(pager);
-		adapter = new FragmentAdapter(getSupportFragmentManager());
+		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
 		AppStyles.setTheme(root);
@@ -113,8 +113,12 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		}
 		// initialize lists
 		else if (adapter.isEmpty()) {
-			adapter.setupForHomePage(settings.getLogin().getApiType() == Account.API_TWITTER);
-			AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
+			adapter.setupForHomePage();
+			if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+				AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
+			} else if (settings.getLogin().getApiType() == Account.API_MASTODON) {
+				AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
+			}
 			// check if there is a Twitter link
 			if (getIntent().getData() != null) {
 				LinkLoader linkLoader = new LinkLoader(this);
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				}
 				// check if account changed
 				else if (returnCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
-					adapter.setupForHomePage(settings.getLogin().getApiType() == Account.API_TWITTER);
+					adapter.setupForHomePage();
 				}
 				break;
 
@@ -170,7 +174,11 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				break;
 		}
 		AppStyles.setTheme(root);
-		AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
+		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+			AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
+		} else if (settings.getLogin().getApiType() == Account.API_MASTODON) {
+			AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
+		}
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}
 

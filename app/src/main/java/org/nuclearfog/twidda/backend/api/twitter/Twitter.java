@@ -508,6 +508,12 @@ public class Twitter implements Connection {
 
 
 	@Override
+	public List<Status> getPublicTimeline(long minId, long maxId) throws ConnectionException {
+		throw new TwitterException("not supported");
+	}
+
+
+	@Override
 	public List<Trend> getTrends() throws TwitterException {
 		long id = settings.getTrendLocation().getId();
 		List<String> params = new ArrayList<>();
