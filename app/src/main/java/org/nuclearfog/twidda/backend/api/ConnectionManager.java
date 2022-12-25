@@ -72,8 +72,7 @@ public class ConnectionManager {
 				} else if (login.getApiType() == Account.API_MASTODON) {
 					connection = new Mastodon(context);
 				} else {
-					connection = new Twitter(context);
-					//throw new RuntimeException("no connection selected!");
+					throw new RuntimeException("no connection selected!");
 				}
 			}
 			settings.addSettingsChangeListener(new OnSettingsChangeListener() {

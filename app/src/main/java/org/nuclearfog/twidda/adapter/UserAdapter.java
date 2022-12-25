@@ -93,6 +93,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_USER) {
 			UserHolder vh = new UserHolder(parent, settings, picasso);
+			vh.setDeleteButton(enableDelete);
 			vh.setOnUserClickListener(this);
 			return vh;
 		} else {
@@ -140,7 +141,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 
 			case OnHolderClickListener.USER_REMOVE:
 				user = users.get(position);
-				if (enableDelete && user != null) {
+				if (user != null) {
 					listener.onDelete(user);
 				}
 				break;

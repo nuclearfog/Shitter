@@ -318,7 +318,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				AppStyles.setMenuItemColor(followIcon, settings.getFollowPendingColor());
 				followIcon.setTitle(R.string.menu_follow_requested);
 			}
-			if (user.isCurrentUser() || !user.isProtected()) {
+			if (user.isCurrentUser() || (!user.isProtected() && settings.getLogin().getApiType() == Account.API_TWITTER)) {
 				MenuItem listItem = m.findItem(R.id.profile_lists);
 				listItem.setVisible(true);
 			}

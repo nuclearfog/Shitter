@@ -20,7 +20,6 @@ public class MastodonList implements UserList {
 
 	private long id;
 	private String title;
-	private User owner;
 
 	/**
 	 * @param json userlist json object
@@ -63,13 +62,20 @@ public class MastodonList implements UserList {
 
 	@Override
 	public User getListOwner() {
-		return owner;
+		return null;
+	}
+
+
+	@Override
+	public boolean isEdiatable() {
+		// Mastodon only shows lists of the current user, so all lists are editable
+		return true;
 	}
 
 
 	@Override
 	public boolean isPrivate() {
-		return true;
+		return false;
 	}
 
 
@@ -103,14 +109,5 @@ public class MastodonList implements UserList {
 		if (!(obj instanceof UserList))
 			return false;
 		return ((UserList) obj).getId() == id;
-	}
-
-	/**
-	 * setup list owner
-	 *
-	 * @param owner owner of this list
-	 */
-	public void setOwner(User owner) {
-		this.owner = owner;
 	}
 }

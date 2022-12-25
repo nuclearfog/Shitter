@@ -34,7 +34,7 @@ public class MastodonException extends ConnectionException {
 		super(response.message());
 		switch (response.code()) {
 			case 401:
-				errorCode = NOT_AUTHORIZED;
+				errorCode = ERROR_NOT_DEFINED;
 				break;
 
 			case 403:

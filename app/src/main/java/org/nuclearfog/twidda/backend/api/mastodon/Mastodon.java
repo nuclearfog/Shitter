@@ -87,12 +87,11 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_STATUS = "/api/v1/statuses/";
 	private static final String ENDPOINT_ACCOUNTS = "/api/v1/accounts/";
 	private static final String ENDPOINT_SEARCH_ACCOUNTS = "/api/v1/accounts/search";
-	private static final String ENDPOINT_LIST = "/api/v1/lists/";
 	private static final String ENDPOINT_BLOCKS = "/api/v1/blocks";
 	private static final String ENDPOINT_MUTES = "/api/v1/mutes";
 	private static final String ENDPOINT_INCOMIN_REQUESTS = "/api/v1/follow_requests";
 	private static final String ENDPOINT_LOOKUP_USER = "/api/v1/accounts/lookup";
-	private static final String ENDPOINT_USERLIST = "/api/v1/lists";
+	private static final String ENDPOINT_USERLIST = "/api/v1/lists/";
 	private static final String ENDPOINT_NOTIFICATION = "/api/v1/notifications";
 	private static final String ENDPOINT_UPLOAD_MEDIA = "/api/v2/media";
 	private static final String ENDPOINT_MEDIA_STATUS = "/api/v1/media/";
@@ -240,7 +239,7 @@ public class Mastodon implements Connection {
 	public Users getListMember(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("limit=" + settings.getListSize());
-		return getUsers(ENDPOINT_LIST + id + "/accounts", params);
+		return getUsers(ENDPOINT_USERLIST + id + "/accounts", params);
 	}
 
 
@@ -548,10 +547,9 @@ public class Mastodon implements Connection {
 	@Override
 	public UserList updateUserlist(UserListUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("id=" + update.getId());
 		params.add("title=" + update.getTitle());
 		try {
-			return createUserlist(put(ENDPOINT_USERLIST, params));
+			return createUserlist(put(ENDPOINT_USERLIST + update.getId(), params));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -561,7 +559,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserList getUserlist(long id) throws MastodonException {
 		try {
-			return createUserlist(get(ENDPOINT_USERLIST + '/' + id, new ArrayList<>()));
+			return createUserlist(get(ENDPOINT_USERLIST + id, new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -583,7 +581,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserList deleteUserlist(long id) throws MastodonException {
 		try {
-			return createUserlist(delete(ENDPOINT_USERLIST + '/' + id, new ArrayList<>()));
+			return createUserlist(delete(ENDPOINT_USERLIST + id, new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -591,8 +589,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public UserLists getUserlistOwnerships(long id, String name, long cursor) {
-		return new UserLists(0L, 0L); // not implemented yet in the official API
+	public UserLists getUserlistOwnerships(long id, String name, long cursor) throws MastodonException {
+		List<String> params = new ArrayList<>();
+		if (cursor > 0)
+			params.add("since_id=" + cursor);
+		return getUserLists(ENDPOINT_USERLIST, params);
 	}
 
 
@@ -601,16 +602,17 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		if (cursor > 0)
 			params.add("since_id=" + cursor);
-		return getUserLists(ENDPOINT_ACCOUNTS + '/' + id + "/lists", params);
+		return getUserLists(ENDPOINT_ACCOUNTS + id + "/lists", params);
 	}
 
 
 	@Override
 	public void addUserToList(long id, String name) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("account_ids[]=\"" + name + "\"");
+		User user = showUser(name);
+		params.add("account_ids[]=" + user.getId());
 		try {
-			Response response = post(ENDPOINT_USERLIST + '/' + id + "/accounts", params);
+			Response response = post(ENDPOINT_USERLIST + id + "/accounts", params);
 			if (response.code() != 200) {
 				throw new MastodonException(response);
 			}
@@ -623,9 +625,10 @@ public class Mastodon implements Connection {
 	@Override
 	public void removeUserFromList(long id, String name) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("account_ids[]=\"" + name + "\"");
+		User user = showUser(name);
+		params.add("account_ids[]=" + user.getId());
 		try {
-			Response response = delete(ENDPOINT_USERLIST + '/' + id + "/accounts", params);
+			Response response = delete(ENDPOINT_USERLIST + id + "/accounts", params);
 			if (response.code() != 200) {
 				throw new MastodonException(response);
 			}
@@ -694,7 +697,7 @@ public class Mastodon implements Connection {
 		}
 		if (update.getBannerImageStream() != null) {
 			streams.add(update.getBannerImageStream());
-			keys.add("header"); // fixme: banner upload not working
+			keys.add("header");
 		}
 		try {
 			Response response = patch(ENDPOINT_UPDATE_CREDENTIALS, params, streams, keys);
@@ -753,16 +756,6 @@ public class Mastodon implements Connection {
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
-	}
-
-	/**
-	 * get information about the current user
-	 *
-	 * @return current user information
-	 */
-	private User getCredentials() throws MastodonException {
-		Account login = settings.getLogin();
-		return getCredentials(login.getHostname(), login.getBearerToken());
 	}
 
 	/**
@@ -946,9 +939,7 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				MastodonList result = new MastodonList(json);
-				result.setOwner(getCredentials());
-				return result;
+				return new MastodonList(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

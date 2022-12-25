@@ -30,14 +30,15 @@ public class UserImpl implements User {
 	private int follower;
 	private int statusCount;
 	private int favorCount;
-	private int apiType;
 	private String username;
 	private String screenName;
 	private String bio;
 	private String location;
 	private String link;
-	private String profileImageUrl;
-	private String profileBannerUrl;
+	private String profileImageSmall;
+	private String profileImageOrig;
+	private String profileBannerSmall;
+	private String profileBannerOrig;
 	private boolean isCurrentUser;
 	private boolean isVerified;
 	private boolean isLocked;
@@ -52,11 +53,11 @@ public class UserImpl implements User {
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.ID));
 		username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
 		screenName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));
-		profileImageUrl = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
+		profileImageOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
 		bio = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.DESCRIPTION));
 		link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
 		location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
-		profileBannerUrl = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
+		profileBannerOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
 		createdAt = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
 		following = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FRIENDS));
 		follower = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FOLLOWER));
@@ -68,7 +69,19 @@ public class UserImpl implements User {
 		followReqSent = (register & FOLLOW_REQUEST_MASK) != 0;
 		defaultImage = (register & DEFAULT_IMAGE_MASK) != 0;
 		isCurrentUser = account.getId() == id;
-		this.apiType = account.getApiType();
+
+		if (account.getApiType() != Account.API_TWITTER || defaultImage || profileImageOrig.isEmpty()) {
+			profileImageSmall = profileImageOrig;
+		} else{
+			profileImageSmall = profileImageOrig + "_bigger";
+		}
+		if (account.getApiType() != Account.API_TWITTER || profileBannerOrig.isEmpty()) {
+			profileBannerSmall = profileBannerOrig;
+		} else if (profileBannerOrig.endsWith("/1500x500")) {
+			profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
+		} else {
+			profileBannerSmall = profileBannerOrig + "/600x200";
+		}
 	}
 
 
@@ -98,31 +111,25 @@ public class UserImpl implements User {
 
 	@Override
 	public String getOriginalProfileImageUrl() {
-		return profileImageUrl;
+		return profileImageOrig;
 	}
 
 
 	@Override
 	public String getProfileImageThumbnailUrl() {
-		if (apiType != Account.API_TWITTER || defaultImage || profileImageUrl.isEmpty())
-			return profileImageUrl;
-		return profileImageUrl + "_bigger";
+		return profileImageSmall;
 	}
 
 
 	@Override
 	public String getOriginalBannerImageUrl() {
-		return profileBannerUrl;
+		return profileBannerOrig;
 	}
 
 
 	@Override
 	public String getBannerImageThumbnailUrl() {
-		if (apiType != Account.API_TWITTER || profileBannerUrl.isEmpty())
-			return profileBannerUrl;
-		if (profileBannerUrl.endsWith("/1500x500"))
-			return profileBannerUrl.substring(0, profileBannerUrl.length() - 9) + "/600x200";
-		return profileBannerUrl + "/600x200";
+		return profileBannerSmall;
 	}
 
 

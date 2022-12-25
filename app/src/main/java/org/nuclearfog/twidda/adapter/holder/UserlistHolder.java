@@ -20,6 +20,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -37,7 +38,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 
 	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
-	private ImageView profile, verified, locked, privateList, follow;
+	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon, dateIcon, memberIcon, subscriberIcon;
 	private TextView title, description, username, screenname, date, member, subscriber, followList;
 
 	private GlobalSettings settings;
@@ -52,11 +53,14 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_list_container);
-		profile = itemView.findViewById(R.id.item_list_profile);
-		verified = itemView.findViewById(R.id.item_list_user_verified);
-		locked = itemView.findViewById(R.id.item_list_user_locked);
-		privateList = itemView.findViewById(R.id.item_list_private);
-		follow = itemView.findViewById(R.id.item_list_follow_icon);
+		profileImage = itemView.findViewById(R.id.item_list_profile);
+		userVerified = itemView.findViewById(R.id.item_list_user_verified);
+		userLocked = itemView.findViewById(R.id.item_list_user_locked);
+		privateIcon = itemView.findViewById(R.id.item_list_private);
+		followIcon = itemView.findViewById(R.id.item_list_follow_icon);
+		dateIcon = itemView.findViewById(R.id.item_list_date_icon);
+		memberIcon = itemView.findViewById(R.id.item_list_member_icon);
+		subscriberIcon = itemView.findViewById(R.id.item_list_subscriber_icon);
 		title = itemView.findViewById(R.id.item_list_title);
 		description = itemView.findViewById(R.id.item_list_description);
 		username = itemView.findViewById(R.id.item_list_username);
@@ -71,9 +75,8 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
-
 		itemView.setOnClickListener(this);
-		profile.setOnClickListener(this);
+		profileImage.setOnClickListener(this);
 	}
 
 
@@ -83,7 +86,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		if (position != NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnHolderClickListener.LIST_CLICK);
-			} else if (v == profile) {
+			} else if (v == profileImage) {
 				listener.onItemClick(position, OnHolderClickListener.LIST_PROFILE);
 			}
 		}
@@ -96,50 +99,58 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		User owner = userlist.getListOwner();
 		title.setText(userlist.getTitle());
 		description.setText(userlist.getDescription());
-		date.setText(StringTools.formatCreationTime(itemView.getResources(), userlist.getTimestamp()));
-		member.setText(NUM_FORMAT.format(userlist.getMemberCount()));
-		subscriber.setText(NUM_FORMAT.format(userlist.getSubscriberCount()));
-
+		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+			date.setText(StringTools.formatCreationTime(itemView.getResources(), userlist.getTimestamp()));
+			member.setText(NUM_FORMAT.format(userlist.getMemberCount()));
+			subscriber.setText(NUM_FORMAT.format(userlist.getSubscriberCount()));
+		} else {
+			date.setVisibility(View.GONE);
+			dateIcon.setVisibility(View.GONE);
+			member.setVisibility(View.GONE);
+			subscriber.setVisibility(View.GONE);
+			memberIcon.setVisibility(View.GONE);
+			subscriberIcon.setVisibility(View.GONE);
+		}
 		if (owner != null) {
 			username.setText(owner.getUsername());
 			screenname.setText(owner.getScreenname());
 			String profileImageUrl = owner.getProfileImageThumbnailUrl();
 			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(3, 0);
-				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
+				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
 			} else {
-				profile.setImageResource(0);
+				profileImage.setImageResource(0);
 			}
 			if (!owner.isCurrentUser() && userlist.isFollowing()) {
-				follow.setVisibility(View.VISIBLE);
+				followIcon.setVisibility(View.VISIBLE);
 				followList.setVisibility(View.VISIBLE);
 			} else {
-				follow.setVisibility(View.GONE);
+				followIcon.setVisibility(View.GONE);
 				followList.setVisibility(View.GONE);
 			}
 			if (owner.isVerified()) {
-				verified.setVisibility(View.VISIBLE);
+				userVerified.setVisibility(View.VISIBLE);
 			} else {
-				verified.setVisibility(View.GONE);
+				userVerified.setVisibility(View.GONE);
 			}
 			if (owner.isProtected()) {
-				locked.setVisibility(View.VISIBLE);
+				userLocked.setVisibility(View.VISIBLE);
 			} else {
-				locked.setVisibility(View.GONE);
+				userLocked.setVisibility(View.GONE);
 			}
 		} else {
-			locked.setVisibility(View.GONE);
-			verified.setVisibility(View.GONE);
-			follow.setVisibility(View.GONE);
+			userLocked.setVisibility(View.GONE);
+			userVerified.setVisibility(View.GONE);
+			followIcon.setVisibility(View.GONE);
 			followList.setVisibility(View.GONE);
-			profile.setVisibility(View.GONE);
+			profileImage.setVisibility(View.GONE);
 			username.setVisibility(View.GONE);
 			screenname.setVisibility(View.GONE);
 		}
 		if (userlist.isPrivate()) {
-			privateList.setVisibility(View.VISIBLE);
+			privateIcon.setVisibility(View.VISIBLE);
 		} else {
-			privateList.setVisibility(View.GONE);
+			privateIcon.setVisibility(View.GONE);
 		}
 	}
 }

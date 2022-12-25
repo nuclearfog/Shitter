@@ -113,13 +113,12 @@ public final class ErrorHandler {
 					return context.getString(R.string.error_api_access_limited);
 
 				case ConnectionException.ERROR_NOT_DEFINED:
-					return error.getMessage();
-
-				default:
-					return context.getString(R.string.error_not_defined);
+					if (error.getMessage() != null && !error.getMessage().isEmpty()) {
+						return error.getMessage();
+					}
+					break;
 			}
-		} else {
-			return context.getString(R.string.error_not_defined);
 		}
+		return context.getString(R.string.error_not_defined);
 	}
 }

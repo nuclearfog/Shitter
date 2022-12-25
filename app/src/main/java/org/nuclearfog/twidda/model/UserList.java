@@ -38,6 +38,11 @@ public interface UserList extends Serializable {
 	User getListOwner();
 
 	/**
+	 * @return true if list is owned by the current user or the user can edit/delete the list
+	 */
+	boolean isEdiatable();
+
+	/**
 	 * @return true if list is private
 	 */
 	boolean isPrivate();

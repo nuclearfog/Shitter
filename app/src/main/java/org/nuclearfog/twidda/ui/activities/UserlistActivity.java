@@ -131,23 +131,22 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
 		tablayout.setupWithViewPager(pager);
-		tablayout.addOnTabSelectedListener(this);
+		settings = GlobalSettings.getInstance(this);
 
 		Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
 		if (data instanceof UserList) {
 			userList = (UserList) data;
 			toolbar.setTitle(userList.getTitle());
 			toolbar.setSubtitle(userList.getDescription());
-			boolean isOwner = userList.getListOwner() != null && userList.getListOwner().isCurrentUser();
-			adapter.setupListContentPage(userList.getId(), isOwner);
+			adapter.setupListContentPage(userList.getId(), userList.isEdiatable());
 		}
 
 		setSupportActionBar(toolbar);
-		settings = GlobalSettings.getInstance(this);
 		AppStyles.setTheme(root);
 		AppStyles.setTabIcons(tablayout, settings, R.array.list_tab_icons);
 
 		confirmDialog.setConfirmListener(this);
+		tablayout.addOnTabSelectedListener(this);
 	}
 
 
@@ -192,7 +191,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		SearchView searchUser = (SearchView) search.getActionView();
 		AppStyles.setTheme(searchUser, Color.TRANSPARENT);
 		if (userList != null) {
-			if (userList.getListOwner() != null && userList.getListOwner().isCurrentUser()) {
+			if (userList.isEdiatable()) {
 				searchUser.setQueryHint(getString(R.string.menu_add_user));
 				searchUser.setOnQueryTextListener(this);
 				editList.setVisible(true);

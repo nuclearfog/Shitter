@@ -183,11 +183,16 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		}
 		paramUserlistOwnership.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
 		paramUserlistSubscription.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
-		fragments = new ListFragment[2];
+
+		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+			fragments = new ListFragment[2];
+			fragments[1] = new UserListFragment();
+			fragments[1].setArguments(paramUserlistSubscription);
+		} else {
+			fragments = new ListFragment[1];
+		}
 		fragments[0] = new UserListFragment();
-		fragments[1] = new UserListFragment();
 		fragments[0].setArguments(paramUserlistOwnership);
-		fragments[1].setArguments(paramUserlistSubscription);
 		notifyDataSetChanged();
 	}
 
@@ -208,13 +213,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		paramUserlistMember.putLong(KEY_FRAG_USER_ID, listId);
 		paramUserlistSubscriber.putLong(KEY_FRAG_USER_ID, listId);
 		paramUserlistSubscriber.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_SUBSCRIBER);
-		fragments = new ListFragment[3];
+		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+			fragments = new ListFragment[3];
+			fragments[2] = new UserFragment();
+			fragments[2].setArguments(paramUserlistSubscriber);
+		} else {
+			fragments = new ListFragment[2];
+		}
 		fragments[0] = new StatusFragment();
 		fragments[1] = new UserFragment();
-		fragments[2] = new UserFragment();
 		fragments[0].setArguments(paramUserlistTl);
 		fragments[1].setArguments(paramUserlistMember);
-		fragments[2].setArguments(paramUserlistSubscriber);
 		notifyDataSetChanged();
 	}
 

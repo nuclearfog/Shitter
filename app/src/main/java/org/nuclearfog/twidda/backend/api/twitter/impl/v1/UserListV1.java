@@ -82,6 +82,12 @@ public class UserListV1 implements UserList {
 
 
 	@Override
+	public boolean isEdiatable() {
+		return owner.isCurrentUser();
+	}
+
+
+	@Override
 	public User getListOwner() {
 		return owner;
 	}

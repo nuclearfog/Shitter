@@ -159,4 +159,17 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
 		label.setText(text);
 	}
+
+	/**
+	 * enable/disable delete button
+	 *
+	 * @param enable true to enable delete button
+	 */
+	public void setDeleteButton(boolean enable) {
+		if (enable){
+			delete.setVisibility(VISIBLE);
+		} else {
+			delete.setVisibility(GONE);
+		}
+	}
 }
