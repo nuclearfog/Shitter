@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.api.mastodon;
 
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 
+import java.net.UnknownHostException;
+
 import okhttp3.Response;
 
 /**
@@ -20,6 +22,9 @@ public class MastodonException extends ConnectionException {
 	 */
 	public MastodonException(Exception e) {
 		super(e);
+		if (e instanceof UnknownHostException) {
+			errorCode = NO_CONNECTION;
+		}
 	}
 
 	/**

@@ -43,7 +43,7 @@ public class MastodonPoll implements Poll {
 			options[i] = new MastodonOption(option);
 		}
 		if (votesJson != null) {
-			for (int i = 0; i < optionsJson.length(); i++) {
+			for (int i = 0; i < votesJson.length(); i++) {
 				int index = votesJson.getInt(i);
 				if (index >= 0 && index < options.length) {
 					options[index].setSelected();
