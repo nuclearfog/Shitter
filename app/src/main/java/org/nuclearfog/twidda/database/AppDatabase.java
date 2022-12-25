@@ -489,13 +489,11 @@ public class AppDatabase {
 		values.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 		values.put(AccountTable.BEARER, account.getBearerToken());
 		SQLiteDatabase db = getDbWrite();
-		db.beginTransaction();
 		db.insertWithOnConflict(AccountTable.NAME, "", values, CONFLICT_REPLACE);
 		if (account.getUser() != null) {
 			saveUser(account.getUser(), db, CONFLICT_IGNORE);
 		}
-		db.setTransactionSuccessful();
-		db.endTransaction();
+		commit(db);
 	}
 
 	/**
