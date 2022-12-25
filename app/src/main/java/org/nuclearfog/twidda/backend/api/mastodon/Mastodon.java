@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -439,8 +440,19 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getStatusReplies(long id, long minId, long maxId) {
-		return new ArrayList<>(0); // todo add implementation
+	public List<Status> getStatusReplies(long id, long minId, long maxId) throws MastodonException {
+		List<Status> statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
+		List<Status> result = new LinkedList<>();
+		for (Status status : statusThreads) {
+			// Mastodon doesn't support min/max ID.
+			if (status.getRepliedStatusId() == id && (minId == 0 || status.getId() > minId) && (maxId == 0 || status.getId() < maxId)) {
+				result.add(status);
+			}
+		}
+		if (result.size() > 1) {
+			Collections.sort(result);
+		}
+		return result;
 	}
 
 
@@ -956,10 +968,15 @@ public class Mastodon implements Connection {
 			if (response.code() == 200 && body != null) {
 				JSONArray statuses;
 				String jsonStr = body.string();
-				if (jsonStr.startsWith("{"))
-					statuses = new JSONObject(jsonStr).getJSONArray("statuses");
-				else
+				if (jsonStr.startsWith("{")) {
+					JSONObject json = new JSONObject(jsonStr);
+					if (json.has("descendants"))
+						statuses = json.getJSONArray("descendants");
+					else
+						statuses = json.getJSONArray("statuses");
+				} else {
 					statuses = new JSONArray(jsonStr);
+				}
 				List<Status> result = new ArrayList<>(statuses.length());
 				long currentId = settings.getLogin().getId();
 				for (int i = 0; i < statuses.length(); i++) {
