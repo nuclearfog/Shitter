@@ -291,4 +291,24 @@ public class MastodonStatus implements Status {
 			return false;
 		return ((Status) obj).getId() == id;
 	}
+
+	/**
+	 * correct retweet count
+	 */
+	public void unreblog() {
+		if (reblogCount > 0) {
+			reblogCount--;
+		}
+		reblogged = false;
+	}
+
+	/**
+	 * correct favorite count
+	 */
+	public void unfavorite() {
+		if (favoriteCount > 0) {
+			favoriteCount--;
+		}
+		favorited = false;
+	}
 }

@@ -469,7 +469,9 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Status unfavoriteStatus(long id) throws MastodonException {
-		return postStatus(ENDPOINT_STATUS + id + "/unfavourite", new ArrayList<>());
+		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unfavourite", new ArrayList<>());
+		status.unfavorite();
+		return status;
 	}
 
 
@@ -481,7 +483,9 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Status removeRepost(long id) throws MastodonException {
-		return postStatus(ENDPOINT_STATUS + id + "/unreblog", new ArrayList<>());
+		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unreblog", new ArrayList<>());
+		status.unreblog();
+		return status;
 	}
 
 
@@ -795,7 +799,7 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return status
 	 */
-	private Status postStatus(String endpoint, List<String> params) throws MastodonException {
+	private MastodonStatus postStatus(String endpoint, List<String> params) throws MastodonException {
 		try {
 			return createStatus(post(endpoint, params));
 		} catch (IOException e) {
@@ -915,7 +919,7 @@ public class Mastodon implements Connection {
 	 * @param response endpoint response
 	 * @return status
 	 */
-	private Status createStatus(Response response) throws MastodonException {
+	private MastodonStatus createStatus(Response response) throws MastodonException {
 		try {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
