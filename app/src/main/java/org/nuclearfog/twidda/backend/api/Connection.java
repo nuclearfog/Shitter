@@ -225,8 +225,8 @@ public interface Connection {
 	/**
 	 * get public timeline
 	 *
-	 * @param minId  get statuses with ID above the min ID
-	 * @param maxId  get statuses with ID under the max ID
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
 	 * @return statuses of the public timeline
 	 */
 	List<Status> getPublicTimeline(long minId, long maxId) throws ConnectionException;

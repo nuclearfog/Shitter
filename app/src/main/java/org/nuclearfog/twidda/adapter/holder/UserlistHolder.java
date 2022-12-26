@@ -38,13 +38,13 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 
 	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
-	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon, dateIcon, memberIcon, subscriberIcon;
+	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon;
 	private TextView title, description, username, screenname, date, member, subscriber, followList;
 
-	private GlobalSettings settings;
 	private Picasso picasso;
-
 	private OnHolderClickListener listener;
+
+	private boolean enableExtras, enableImages;
 
 	/**
 	 * @param parent Parent view from adapter
@@ -53,14 +53,14 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_list_container);
+		View dateIcon = itemView.findViewById(R.id.item_list_date_icon);
+		View memberIcon = itemView.findViewById(R.id.item_list_member_icon);
+		View subscriberIcon = itemView.findViewById(R.id.item_list_subscriber_icon);
 		profileImage = itemView.findViewById(R.id.item_list_profile);
 		userVerified = itemView.findViewById(R.id.item_list_user_verified);
 		userLocked = itemView.findViewById(R.id.item_list_user_locked);
 		privateIcon = itemView.findViewById(R.id.item_list_private);
 		followIcon = itemView.findViewById(R.id.item_list_follow_icon);
-		dateIcon = itemView.findViewById(R.id.item_list_date_icon);
-		memberIcon = itemView.findViewById(R.id.item_list_member_icon);
-		subscriberIcon = itemView.findViewById(R.id.item_list_subscriber_icon);
 		title = itemView.findViewById(R.id.item_list_title);
 		description = itemView.findViewById(R.id.item_list_description);
 		username = itemView.findViewById(R.id.item_list_username);
@@ -69,14 +69,29 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		member = itemView.findViewById(R.id.item_list_member);
 		subscriber = itemView.findViewById(R.id.item_list_subscriber);
 		followList = itemView.findViewById(R.id.item_list_following_indicator);
-		this.settings = settings;
-		this.picasso = picasso;
-		this.listener = listener;
 
+		enableExtras = settings.getLogin().getApiType() == Account.API_TWITTER;
+		enableImages = settings.imagesEnabled();
+
+		if (!enableExtras) {
+			// disable extra views
+			date.setVisibility(View.GONE);
+			dateIcon.setVisibility(View.GONE);
+			member.setVisibility(View.GONE);
+			subscriber.setVisibility(View.GONE);
+			description.setVisibility(View.GONE);
+			memberIcon.setVisibility(View.GONE);
+			subscriberIcon.setVisibility(View.GONE);
+			// add title icon
+			privateIcon.setImageResource(R.drawable.list);
+		}
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
 		itemView.setOnClickListener(this);
 		profileImage.setOnClickListener(this);
+
+		this.picasso = picasso;
+		this.listener = listener;
 	}
 
 
@@ -98,24 +113,17 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	public void setContent(UserList userlist) {
 		User owner = userlist.getListOwner();
 		title.setText(userlist.getTitle());
-		description.setText(userlist.getDescription());
-		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+		if (enableExtras) {
+			description.setText(userlist.getDescription());
 			date.setText(StringTools.formatCreationTime(itemView.getResources(), userlist.getTimestamp()));
 			member.setText(NUM_FORMAT.format(userlist.getMemberCount()));
 			subscriber.setText(NUM_FORMAT.format(userlist.getSubscriberCount()));
-		} else {
-			date.setVisibility(View.GONE);
-			dateIcon.setVisibility(View.GONE);
-			member.setVisibility(View.GONE);
-			subscriber.setVisibility(View.GONE);
-			memberIcon.setVisibility(View.GONE);
-			subscriberIcon.setVisibility(View.GONE);
 		}
 		if (owner != null) {
 			username.setText(owner.getUsername());
 			screenname.setText(owner.getScreenname());
 			String profileImageUrl = owner.getProfileImageThumbnailUrl();
-			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+			if (enableImages && !profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(3, 0);
 				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
 			} else {
@@ -147,7 +155,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 			username.setVisibility(View.GONE);
 			screenname.setVisibility(View.GONE);
 		}
-		if (userlist.isPrivate()) {
+		if (userlist.isPrivate() || !enableExtras) {
 			privateIcon.setVisibility(View.VISIBLE);
 		} else {
 			privateIcon.setVisibility(View.GONE);

@@ -98,7 +98,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
 	/**
 	 * setup adapter for the home activity
-	 *
 	 */
 	public void setupForHomePage() {
 		Bundle paramHomeTl = new Bundle();

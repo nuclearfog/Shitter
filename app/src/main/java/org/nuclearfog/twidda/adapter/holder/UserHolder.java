@@ -166,7 +166,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 	 * @param enable true to enable delete button
 	 */
 	public void setDeleteButton(boolean enable) {
-		if (enable){
+		if (enable) {
 			delete.setVisibility(VISIBLE);
 		} else {
 			delete.setVisibility(GONE);

@@ -72,7 +72,7 @@ public class UserImpl implements User {
 
 		if (account.getApiType() != Account.API_TWITTER || defaultImage || profileImageOrig.isEmpty()) {
 			profileImageSmall = profileImageOrig;
-		} else{
+		} else {
 			profileImageSmall = profileImageOrig + "_bigger";
 		}
 		if (account.getApiType() != Account.API_TWITTER || profileBannerOrig.isEmpty()) {

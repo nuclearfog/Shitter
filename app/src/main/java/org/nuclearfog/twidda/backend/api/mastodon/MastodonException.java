@@ -42,7 +42,7 @@ public class MastodonException extends ConnectionException {
 	/**
 	 *
 	 */
-	public MastodonException(Exception e) {
+	MastodonException(Exception e) {
 		super(e);
 		if (e instanceof UnknownHostException) {
 			errorCode = ERROR_NETWORK;
@@ -52,7 +52,7 @@ public class MastodonException extends ConnectionException {
 	/**
 	 * @param response response containing error information
 	 */
-	public MastodonException(Response response) {
+	MastodonException(Response response) {
 		super(response.message());
 		errorCode = response.code();
 		ResponseBody body = response.body();
@@ -75,7 +75,7 @@ public class MastodonException extends ConnectionException {
 	/**
 	 * @param message error message
 	 */
-	public MastodonException(String message) {
+	MastodonException(String message) {
 		super(message);
 		errorMessage = message;
 	}
