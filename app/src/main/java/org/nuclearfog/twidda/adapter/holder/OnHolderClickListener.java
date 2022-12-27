@@ -47,6 +47,8 @@ public interface OnHolderClickListener {
 
 	int POLL_ITEM = 19;
 
+	int POLL_OPTION = 20;
+
 	/**
 	 * called when an item was clicked
 	 *

@@ -3,7 +3,10 @@ package org.nuclearfog.twidda.adapter.holder;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -23,14 +26,14 @@ import org.nuclearfog.twidda.model.Poll;
  *
  * @author nuclearfog
  */
-public class Optionholder extends ViewHolder implements View.OnClickListener {
+public class Optionholder extends ViewHolder implements OnClickListener, OnTouchListener {
 
-	private SeekBar count;
+	private SeekBar voteProgress;
 	private TextView name, votes;
 	private ImageView checked;
 
 	@Nullable
-	private OnOptionItemClick listener;
+	private OnHolderClickListener listener;
 	private GlobalSettings settings;
 
 	/**
@@ -40,14 +43,15 @@ public class Optionholder extends ViewHolder implements View.OnClickListener {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_option, parent, false));
 		name = itemView.findViewById(R.id.item_option_name);
 		checked = itemView.findViewById(R.id.item_option_voted_icon);
-		count = itemView.findViewById(R.id.item_option_count_bar);
+		voteProgress = itemView.findViewById(R.id.item_option_count_bar);
 		votes = itemView.findViewById(R.id.item_option_count_text);
 
 		name.setTextColor(settings.getFontColor());
 		votes.setTextColor(settings.getFontColor());
-		AppStyles.setSeekBarColor(count, settings);
+		AppStyles.setSeekBarColor(voteProgress, settings);
 
 		checked.setOnClickListener(this);
+		voteProgress.setOnTouchListener(this);
 		this.settings = settings;
 	}
 
@@ -57,15 +61,21 @@ public class Optionholder extends ViewHolder implements View.OnClickListener {
 		int position = getLayoutPosition();
 		if (position != NO_POSITION && listener != null) {
 			if (v == checked) {
-				listener.onOptionClick(position);
+				listener.onItemClick(position, OnHolderClickListener.POLL_OPTION);
 			}
 		}
+	}
+
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		return v == voteProgress;
 	}
 
 	/**
 	 * set viewholder click listener
 	 */
-	public void setOnOptionItemClickListener(OnOptionItemClick listener) {
+	public void setOnOptionItemClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -80,23 +90,10 @@ public class Optionholder extends ViewHolder implements View.OnClickListener {
 			checked.setImageResource(R.drawable.check);
 		else
 			checked.setImageResource(R.drawable.circle);
+		voteProgress.setMax(Math.max(totalCount, 1));
 		AppStyles.setDrawableColor(checked, settings.getIconColor());
 		name.setText(option.getTitle());
-		count.setMax(totalCount);
-		count.setProgress(option.getVotes());
+		voteProgress.setProgress(option.getVotes());
 		votes.setText(StringTools.NUMBER_FORMAT.format(option.getVotes()));
-	}
-
-	/**
-	 * viewholder click listener
-	 */
-	public interface OnOptionItemClick {
-
-		/**
-		 * called on item click
-		 *
-		 * @param pos adapter position of the item
-		 */
-		void onOptionClick(int pos);
 	}
 }

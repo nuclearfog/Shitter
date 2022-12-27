@@ -5,8 +5,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.Optionholder;
-import org.nuclearfog.twidda.adapter.holder.Optionholder.OnOptionItemClick;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Poll;
@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.Poll;
  *
  * @author nuclearfog
  */
-public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implements OnOptionItemClick {
+public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implements OnHolderClickListener {
 
 	private Poll.Option[] options = {};
 	private int totalVotes = 1;
@@ -59,8 +59,16 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 
 
 	@Override
-	public void onOptionClick(int pos) {
-		listener.onOptionClick(pos);
+	public void onItemClick(int pos, int type, int... extras) {
+		if (type == OnHolderClickListener.POLL_OPTION) {
+			listener.onOptionClick(pos);
+		}
+	}
+
+
+	@Override
+	public boolean onPlaceholderClick(int position) {
+		return false;
 	}
 
 	/**

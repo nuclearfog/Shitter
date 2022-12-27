@@ -36,7 +36,6 @@
 		android:id="@+id/item_option_voted_icon"
 		android:layout_width="@dimen/item_option_icon_size"
 		android:layout_height="@dimen/item_option_icon_size"
-		android:src="@drawable/check"
 		android:layout_margin="@dimen/item_option_layout_margin"
 		android:contentDescription="@string/description_poll_vote_icon" />
 
