@@ -22,11 +22,10 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
-
-import java.text.NumberFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -37,11 +36,6 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @see org.nuclearfog.twidda.adapter.UserAdapter
  */
 public class UserHolder extends ViewHolder implements OnClickListener {
-
-	/**
-	 * locale specific number formatter
-	 */
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private TextView username, screenname, followingCount, followerCount, label;
 	private ImageView profileImg, verifyIcon, lockedIcon;
@@ -106,8 +100,8 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 	public void setContent(User user) {
 		username.setText(user.getUsername());
 		screenname.setText(user.getScreenname());
-		followingCount.setText(NUM_FORMAT.format(user.getFollowing()));
-		followerCount.setText(NUM_FORMAT.format(user.getFollower()));
+		followingCount.setText(StringTools.NUMBER_FORMAT.format(user.getFollowing()));
+		followerCount.setText(StringTools.NUMBER_FORMAT.format(user.getFollower()));
 		if (user.isVerified()) {
 			verifyIcon.setVisibility(VISIBLE);
 		} else {

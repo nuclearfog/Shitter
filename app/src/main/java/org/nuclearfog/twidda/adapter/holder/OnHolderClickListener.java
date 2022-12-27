@@ -39,13 +39,22 @@ public interface OnHolderClickListener {
 
 	int IMAGE_SAVE = 15;
 
+	int PREVIEW_CLICK = 16;
+
+	int CARD_IMAGE = 17;
+
+	int CARD_LINK = 18;
+
+	int POLL_ITEM = 19;
+
 	/**
 	 * called when an item was clicked
 	 *
 	 * @param position adapter position of the item
 	 * @param type     type of click
+	 * @param extras   extra information
 	 */
-	void onItemClick(int position, int type);
+	void onItemClick(int position, int type, int... extras);
 
 	/**
 	 * called when a placeholder item was clicked

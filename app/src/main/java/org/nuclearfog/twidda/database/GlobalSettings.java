@@ -93,7 +93,6 @@ public class GlobalSettings {
 	private static final String PROXY_IGNORE = "ignore_proxy_set";
 	private static final String TREND_LOC = "location";
 	private static final String TREND_ID = "world_id";
-	private static final String LINK_PREVIEW = "link_preview";
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
@@ -141,7 +140,6 @@ public class GlobalSettings {
 	private boolean isProxyAuthSet;
 	private boolean ignoreProxyWarning;
 	private boolean toolbarOverlap;
-	private boolean linkPreview;
 	private boolean tweetIndicators;
 	private boolean filterResults;
 	private boolean enableLike;
@@ -456,26 +454,6 @@ public class GlobalSettings {
 
 		Editor edit = settings.edit();
 		edit.putBoolean(PROFILE_OVERLAP, enable);
-		edit.apply();
-	}
-
-	/**
-	 * check if link preview is enabled
-	 */
-	public boolean linkPreviewEnabled() {
-		return linkPreview;
-	}
-
-	/**
-	 * enable/disable link preview
-	 *
-	 * @param enable true enables link preview
-	 */
-	public void setLinkPreview(boolean enable) {
-		linkPreview = enable;
-
-		Editor edit = settings.edit();
-		edit.putBoolean(LINK_PREVIEW, enable);
 		edit.apply();
 	}
 
@@ -956,7 +934,6 @@ public class GlobalSettings {
 		loadImage = settings.getBoolean(IMAGE_LOAD, true);
 		tweetIndicators = settings.getBoolean(TWEET_INDICATOR, true);
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
-		linkPreview = settings.getBoolean(LINK_PREVIEW, false);
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);

@@ -155,7 +155,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		if (type == OnHolderClickListener.STATUS_CLICK) {
 			Status status = items.get(position);
 			if (status != null) {

@@ -105,7 +105,7 @@
 	<string name="confirm_delete_list">Liste löschen?</string>
 	<string name="confirm_delete_message">Nachricht löschen?</string>
 	<string name="confirm_unfollow_list">Liste entfolgen?</string>
-	<string name="trend_range">Posts</string>
+	<string name="trend_range">\u0020Posts</string>
 	<string name="error_connection_failed">Verbindung fehlgeschlagen!</string>
 	<string name="enter_username">Nutzernamen eingeben</string>
 	<string name="profile_banner">Profilbanner</string>
@@ -179,7 +179,6 @@
 	<string name="button_share">Videolink teilen</string>
 	<string name="settings_look">Aussehen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
-	<string name="settings_toggle_media_preview">Medienvorschau aktivieren</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
 	<string name="menu_select_account">Logins</string>
 	<string name="menu_add_account">Account hinzufügen</string>
@@ -250,4 +249,5 @@
 	<string name="error_empty_text">Text ist leer!</string>
 	<string name="error_api_access_limited">Fehler! API Zugang wurde von Twitter beschränkt.</string>
 	<string name="poll_total_votes">"Gesamtstimmen:\u0020"</string>
+	<string name="description_poll_vote_icon">abgestimmt</string>
 </resources>

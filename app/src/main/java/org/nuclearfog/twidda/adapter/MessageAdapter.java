@@ -113,7 +113,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		Message message = messages.get(position);
 		if (message != null) {
 			switch (type) {

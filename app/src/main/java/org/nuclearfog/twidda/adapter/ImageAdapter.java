@@ -93,7 +93,7 @@ public class ImageAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		switch (type) {
 			case OnHolderClickListener.IMAGE_CLICK:
 				itemClickListener.onImageClick(imageLinks.get(position));

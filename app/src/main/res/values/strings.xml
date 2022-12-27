@@ -233,14 +233,13 @@
 	<string name="confirm_delete_list">delete userlist?</string>
 	<string name="confirm_delete_message">delete message?</string>
 	<string name="confirm_unfollow_list">unfollow list?</string>
-	<string name="trend_range">Posts</string>
+	<string name="trend_range">\u0020Posts</string>
 	<string name="enter_username">enter username</string>
 	<string name="profile_banner">Banner Image</string>
 	<string name="editprofile_add_banner">add banner</string>
 	<string name="settings_app_information">App source code:</string>
 	<string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
 	<string name="settings_look">Look</string>
-	<string name="settings_toggle_media_preview">enable media preview</string>
 	<string name="settings_description_enable_twitter_alt">use nitter.net for links</string>
 	<string name="item_load_more">load more</string>
 	<string name="item_image_save">save image</string>
@@ -287,5 +286,6 @@
 	<string name="status_media_preview">Media preview</string>
 	<string name="status_media_preview_button">Video preview button</string>
 	<string name="poll_total_votes">Total votes:\u0020</string>
+	<string name="description_poll_vote_icon">voted</string>
 
 </resources>

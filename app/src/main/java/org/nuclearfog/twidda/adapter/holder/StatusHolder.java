@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter.holder;
 
-
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
@@ -30,8 +29,6 @@ import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
-import java.text.NumberFormat;
-
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
@@ -41,8 +38,6 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @see StatusAdapter
  */
 public class StatusHolder extends ViewHolder implements OnClickListener {
-
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private ImageView profile, rpUser, verifiedIcon, lockedIcon, rtIcon, favIcon, media, location, replyIcon;
 	private TextView username, screenname, text, repost, favorite, reposter, created, replyname, label;
@@ -125,8 +120,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		}
 		username.setText(user.getUsername());
 		screenname.setText(user.getScreenname());
-		repost.setText(NUM_FORMAT.format(status.getRepostCount()));
-		favorite.setText(NUM_FORMAT.format(status.getFavoriteCount()));
+		repost.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
+		favorite.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
 		created.setText(StringTools.formatCreationTime(itemView.getResources(), status.getTimestamp()));
 		if (!status.getText().isEmpty()) {
 			Spanned textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());

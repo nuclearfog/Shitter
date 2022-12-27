@@ -16,10 +16,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
-
-import java.text.NumberFormat;
 
 /**
  * ViewHolder for a trend item
@@ -28,11 +27,6 @@ import java.text.NumberFormat;
  * @see org.nuclearfog.twidda.adapter.TrendAdapter
  */
 public class TrendHolder extends ViewHolder implements OnClickListener {
-
-	/**
-	 * Locale specific number format
-	 */
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private TextView name, rank, vol;
 
@@ -82,7 +76,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 		name.setText(trend.getName());
 		if (trend.getPopularity() > 0) {
 			Resources resources = vol.getResources();
-			String trendVol = NUM_FORMAT.format(trend.getPopularity()) + " " + resources.getString(R.string.trend_range);
+			String trendVol = StringTools.NUMBER_FORMAT.format(trend.getPopularity()) + resources.getString(R.string.trend_range);
 			vol.setText(trendVol);
 			vol.setVisibility(View.VISIBLE);
 		} else {

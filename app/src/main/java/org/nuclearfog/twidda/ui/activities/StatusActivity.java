@@ -58,6 +58,7 @@ import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
@@ -70,7 +71,6 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -592,15 +592,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
 			startActivity(mediaIntent);
 		} else if (media.getMediaType() == Media.VIDEO) {
-			Intent mediaIntent = new Intent(this, VideoViewer.class);
-			mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
-			mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-			startActivity(mediaIntent);
+			if (settings.ignoreProxyWarning()) {
+				Intent mediaIntent = new Intent(this, VideoViewer.class);
+				mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
+				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+				startActivity(mediaIntent);
+			} else {
+				confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
+			}
 		} else if (media.getMediaType() == Media.GIF) {
-			Intent mediaIntent = new Intent(this, VideoViewer.class);
-			mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
-			mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
-			startActivity(mediaIntent);
+			if (settings.ignoreProxyWarning()) {
+				Intent mediaIntent = new Intent(this, VideoViewer.class);
+				mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
+				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+				startActivity(mediaIntent);
+			} else {
+				confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
+			}
 		}
 	}
 
@@ -664,7 +672,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		Location location = status.getLocation();
 		invalidateOptionsMenu();
 
-		NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
 		if (status.isReposted()) {
 			AppStyles.setDrawableColor(rtwButton, settings.getRepostIconColor());
 		} else {
@@ -690,9 +697,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		userName.setText(author.getUsername());
 		screenName.setText(author.getScreenname());
 		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
-		ansButton.setText(buttonNumber.format(status.getReplyCount()));
-		favButton.setText(buttonNumber.format(status.getFavoriteCount()));
-		rtwButton.setText(buttonNumber.format(status.getRepostCount()));
+		ansButton.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
+		favButton.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
+		rtwButton.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
 		if (!status.getSource().isEmpty()) {
 			statusApi.setText(R.string.tweet_sent_from);
 			statusApi.append(status.getSource());

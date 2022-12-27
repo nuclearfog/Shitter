@@ -13,24 +13,27 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OptionsAdapter;
 import org.nuclearfog.twidda.adapter.OptionsAdapter.OnOptionClickListener;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
 
-import java.text.NumberFormat;
-
-
+/**
+ * View holder for status polls
+ *
+ * @author nuclearfog
+ */
 public class PollHolder extends ViewHolder implements OnOptionClickListener {
-
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private TextView votesCount;
 
 	private OptionsAdapter adapter;
 
 	@Nullable
-	private OnPollOptionClickListener listener;
+	private OnHolderClickListener listener;
 
-
+	/**
+	 *
+	 */
 	public PollHolder(ViewGroup parent, GlobalSettings settings) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poll, parent, false));
 
@@ -53,25 +56,25 @@ public class PollHolder extends ViewHolder implements OnOptionClickListener {
 	public void onOptionClick(int index) {
 		int pos = getLayoutPosition();
 		if (pos != RecyclerView.NO_POSITION && listener != null) {
-			listener.onPollOptionClick(pos, index);
+			listener.onItemClick(pos, OnHolderClickListener.POLL_ITEM, index);
 		}
 	}
 
-
+	/**
+	 * set view content
+	 *
+	 * @param poll poll information
+	 */
 	public void setContent(Poll poll) {
 		votesCount.setText(R.string.poll_total_votes);
-		votesCount.append(NUM_FORMAT.format(poll.voteCount()));
+		votesCount.append(StringTools.NUMBER_FORMAT.format(poll.voteCount()));
 		adapter.addAll(poll);
 	}
 
-
-	public void setOnPollOptionClickListener(OnPollOptionClickListener listener) {
+	/**
+	 * set item click lsitener
+	 */
+	public void setOnPollOptionClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
-	}
-
-
-	public interface OnPollOptionClickListener {
-
-		void onPollOptionClick(int position, int selection);
 	}
 }

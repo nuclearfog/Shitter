@@ -14,15 +14,16 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
 
-import java.text.NumberFormat;
-
-
+/**
+ * This holder if for a single poll option
+ *
+ * @author nuclearfog
+ */
 public class Optionholder extends ViewHolder implements View.OnClickListener {
-
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private SeekBar count;
 	private TextView name, votes;
@@ -32,10 +33,11 @@ public class Optionholder extends ViewHolder implements View.OnClickListener {
 	private OnOptionItemClick listener;
 	private GlobalSettings settings;
 
-
+	/**
+	 *
+	 */
 	public Optionholder(ViewGroup parent, GlobalSettings settings) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_option, parent, false));
-
 		name = itemView.findViewById(R.id.item_option_name);
 		checked = itemView.findViewById(R.id.item_option_voted_icon);
 		count = itemView.findViewById(R.id.item_option_count_bar);
@@ -60,12 +62,19 @@ public class Optionholder extends ViewHolder implements View.OnClickListener {
 		}
 	}
 
-
+	/**
+	 * set viewholder click listener
+	 */
 	public void setOnOptionItemClickListener(OnOptionItemClick listener) {
 		this.listener = listener;
 	}
 
-
+	/**
+	 * set viewholder content
+	 *
+	 * @param option     poll option content
+	 * @param totalCount total vote count
+	 */
 	public void setContent(Poll.Option option, int totalCount) {
 		if (option.selected())
 			checked.setImageResource(R.drawable.check);
@@ -75,12 +84,19 @@ public class Optionholder extends ViewHolder implements View.OnClickListener {
 		name.setText(option.getTitle());
 		count.setMax(totalCount);
 		count.setProgress(option.getVotes());
-		votes.setText(NUM_FORMAT.format(option.getVotes()));
+		votes.setText(StringTools.NUMBER_FORMAT.format(option.getVotes()));
 	}
 
-
+	/**
+	 * viewholder click listener
+	 */
 	public interface OnOptionItemClick {
 
+		/**
+		 * called on item click
+		 *
+		 * @param pos adapter position of the item
+		 */
 		void onOptionClick(int pos);
 	}
 }

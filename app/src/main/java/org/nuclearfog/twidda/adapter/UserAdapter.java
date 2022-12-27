@@ -130,7 +130,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		switch (type) {
 			case OnHolderClickListener.USER_CLICK:
 				User user = users.get(position);

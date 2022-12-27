@@ -11,17 +11,23 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Poll;
 
-
+/**
+ * RecyclerView adapter for poll options
+ *
+ * @author nuclearfog
+ */
 public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implements OnOptionItemClick {
 
-	private Poll.Option[] options;
+	private Poll.Option[] options = {};
 	private int totalVotes = 1;
 
 	private GlobalSettings settings;
 	private OnOptionClickListener listener;
-	private boolean enableVote = false;
+	private boolean enableVote;
 
-
+	/**
+	 *
+	 */
 	public OptionsAdapter(GlobalSettings settings, OnOptionClickListener listener) {
 		// currently Twitter doesn't support vote over API
 		enableVote = settings.getLogin().getApiType() != Account.API_TWITTER;
@@ -57,15 +63,27 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 		listener.onOptionClick(pos);
 	}
 
-
+	/**
+	 * set poll information and options
+	 *
+	 * @param poll poll information
+	 */
 	public void addAll(Poll poll) {
 		this.options = poll.getOptions();
 		totalVotes = poll.voteCount();
+		notifyDataSetChanged();
 	}
 
-
+	/**
+	 * Listener for poll options
+	 */
 	public interface OnOptionClickListener {
 
+		/**
+		 * called on poll option select
+		 *
+		 * @param index index of the poll option
+		 */
 		void onOptionClick(int index);
 	}
 }

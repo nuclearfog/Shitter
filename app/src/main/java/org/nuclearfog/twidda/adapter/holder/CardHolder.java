@@ -48,7 +48,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 
 	private Picasso picasso;
 	private GlobalSettings settings;
-	private OnItemClickListener listener;
+	private OnHolderClickListener listener;
 
 
 	public CardHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
@@ -75,9 +75,9 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 		int pos = getLayoutPosition();
 		if (pos != RecyclerView.NO_POSITION && listener != null) {
 			if (v == linkText) {
-				listener.onCardItemClick(pos, OnItemClickListener.TYPE_LINK);
+				listener.onItemClick(pos, OnHolderClickListener.CARD_LINK);
 			} else if (v == preview) {
-				listener.onCardItemClick(pos, OnItemClickListener.TYPE_IMAGE);
+				listener.onItemClick(pos, OnHolderClickListener.CARD_IMAGE);
 			}
 		}
 	}
@@ -109,29 +109,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * add viewholder click listener
 	 */
-	public void setOnCardClickListener(OnItemClickListener listener) {
+	public void setOnCardClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
-	}
-
-	/**
-	 * custom viewholder click listener
-	 */
-	public interface OnItemClickListener {
-
-		/**
-		 * indicates a link click
-		 */
-		int TYPE_LINK = 1;
-
-		/**
-		 * indicates a click on the image
-		 */
-		int TYPE_IMAGE = 2;
-
-		/**
-		 * @param pos  index of the item
-		 * @param type type of click {@link #TYPE_IMAGE,#TYPE_LINK}
-		 */
-		void onCardItemClick(int pos, int type);
 	}
 }

@@ -27,7 +27,7 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 
 	private Picasso picasso;
 	private GlobalSettings settings;
-	private OnPreviewClickListener listener;
+	private OnHolderClickListener listener;
 
 
 	public PreviewHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
@@ -47,7 +47,7 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 		int pos = getLayoutPosition();
 		if (pos != RecyclerView.NO_POSITION && listener != null) {
 			if (v == previewImage) {
-				listener.onPreviewClick(pos);
+				listener.onItemClick(pos, OnHolderClickListener.PREVIEW_CLICK);
 			}
 		}
 	}
@@ -78,20 +78,7 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	 *
 	 * @param listener listener for the holder
 	 */
-	public void setOnPreviewClickListener(OnPreviewClickListener listener) {
+	public void setOnPreviewClickListener(OnHolderClickListener listener) {
 		this.listener = listener;
-	}
-
-	/**
-	 * holder click lsitener
-	 */
-	public interface OnPreviewClickListener {
-
-		/**
-		 * called on holder click
-		 *
-		 * @param pos list position of the holder
-		 */
-		void onPreviewClick(int pos);
 	}
 }

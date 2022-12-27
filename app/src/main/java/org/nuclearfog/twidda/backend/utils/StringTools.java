@@ -8,6 +8,7 @@ import org.nuclearfog.twidda.R;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,11 @@ import javax.crypto.spec.SecretKeySpec;
  * @author nuclearfog
  */
 public final class StringTools {
+
+	/**
+	 * global number formatter
+	 */
+	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 
 	/**
 	 * regex pattern used to get user mentions

@@ -181,7 +181,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		Notification item = items.get(position);
 		switch (type) {
 			case OnHolderClickListener.USER_CLICK:

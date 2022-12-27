@@ -60,6 +60,7 @@ import org.nuclearfog.twidda.backend.async.UserAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Relation;
@@ -67,7 +68,6 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -603,21 +603,20 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 */
 	public void setUser(User user) {
 		this.user = user;
-		NumberFormat formatter = NumberFormat.getIntegerInstance();
-		Spanned bio = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
 
-		following.setText(formatter.format(user.getFollowing()));
-		follower.setText(formatter.format(user.getFollower()));
+		Spanned bio = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
+		following.setText(StringTools.NUMBER_FORMAT.format(user.getFollowing()));
+		follower.setText(StringTools.NUMBER_FORMAT.format(user.getFollower()));
 		username.setText(user.getUsername());
 		screenName.setText(user.getScreenname());
 		if (user.getStatusCount() >= 0) {
-			tabIndicator[0].setText(formatter.format(user.getStatusCount()));
+			tabIndicator[0].setText(StringTools.NUMBER_FORMAT.format(user.getStatusCount()));
 		} else {
 			tabIndicator[0].setText("");
 		}
 		if (tabIndicator.length > 1) {
 			if (user.getFavoriteCount() >= 0) {
-				tabIndicator[1].setText(formatter.format(user.getFavoriteCount()));
+				tabIndicator[1].setText(StringTools.NUMBER_FORMAT.format(user.getFavoriteCount()));
 			} else {
 				tabIndicator[1].setText("");
 			}

@@ -132,7 +132,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		View user_card = findViewById(R.id.settings_data_card);
 		SwitchButton toggleImg = findViewById(R.id.toggleImg);
 		SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
-		SwitchButton enablePreview = findViewById(R.id.settings_enable_prev);
 		SwitchButton enableLike = findViewById(R.id.enable_like);
 		SwitchButton enableTwitterAlt = findViewById(R.id.settings_enable_twitter_alt);
 		View EnableTwitterAltDescr = findViewById(R.id.settings_enable_twitter_alt_descr);
@@ -210,7 +209,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_fav);
 		}
 		toggleImg.setCheckedImmediately(settings.imagesEnabled());
-		enablePreview.setCheckedImmediately(settings.linkPreviewEnabled());
 		toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
 		enableLike.setCheckedImmediately(settings.likeEnabled());
 		enableTwitterAlt.setCheckedImmediately(settings.twitterAltSet());
@@ -233,7 +231,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLike.setOnCheckedChangeListener(this);
 		enableTwitterAlt.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
-		enablePreview.setOnCheckedChangeListener(this);
 		enableProxy.setOnCheckedChangeListener(this);
 		enableAuth.setOnCheckedChangeListener(this);
 		toolbarOverlap.setOnCheckedChangeListener(this);
@@ -490,10 +487,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable status indicators
 		else if (c.getId() == R.id.enable_status_indicators) {
 			settings.enableStatusIndicators(checked);
-		}
-		// enable link preview
-		else if (c.getId() == R.id.settings_enable_prev) {
-			settings.setLinkPreview(checked);
 		}
 		// enable proxy settings
 		else if (c.getId() == R.id.settings_enable_proxy) {

@@ -66,7 +66,7 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		itemClickListener.onTrendClick(trends.get(position));
 	}
 

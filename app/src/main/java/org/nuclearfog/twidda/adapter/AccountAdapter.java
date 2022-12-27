@@ -65,7 +65,7 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		Account account = accounts.get(position);
 		if (type == OnHolderClickListener.ACCOUNT_SELECT) {
 			listener.onAccountClick(account);

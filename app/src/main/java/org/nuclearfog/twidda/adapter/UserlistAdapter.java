@@ -107,7 +107,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 
 	@Override
-	public void onItemClick(int position, int type) {
+	public void onItemClick(int position, int type, int... extras) {
 		UserList item = userlists.get(position);
 		if (item != null) {
 			switch (type) {

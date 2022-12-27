@@ -24,8 +24,6 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
-import java.text.NumberFormat;
-
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
@@ -35,8 +33,6 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @see org.nuclearfog.twidda.adapter.UserlistAdapter
  */
 public class UserlistHolder extends ViewHolder implements OnClickListener {
-
-	private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
 	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon;
 	private TextView title, description, username, screenname, date, member, subscriber, followList;
@@ -116,8 +112,8 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		if (enableExtras) {
 			description.setText(userlist.getDescription());
 			date.setText(StringTools.formatCreationTime(itemView.getResources(), userlist.getTimestamp()));
-			member.setText(NUM_FORMAT.format(userlist.getMemberCount()));
-			subscriber.setText(NUM_FORMAT.format(userlist.getSubscriberCount()));
+			member.setText(StringTools.NUMBER_FORMAT.format(userlist.getMemberCount()));
+			subscriber.setText(StringTools.NUMBER_FORMAT.format(userlist.getSubscriberCount()));
 		}
 		if (owner != null) {
 			username.setText(owner.getUsername());

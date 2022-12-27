@@ -311,7 +311,9 @@ public final class AppStyles {
 	 */
 	public static void setSeekBarColor(SeekBar seekBar, GlobalSettings settings) {
 		seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
-		seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
+		if (seekBar.getThumb() != null) {
+			seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
+		}
 	}
 
 	/**
