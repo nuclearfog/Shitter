@@ -261,4 +261,12 @@
 	<!--dimens of item_preivew.xml-->
 	<dimen name="item_card_preivew_padding">5dp</dimen>
 
+	<!-- dimens of item_poll.xml -->
+	<dimen name="item_poll_layout_padding">5dp</dimen>
+
+	<!-- dimens of item_option -->
+	<dimen name="item_option_icon_size">12sp</dimen>
+	<dimen name="item_option_text_size">11sp</dimen>
+	<dimen name="item_option_layout_margin">3dp</dimen>
+
 </resources>

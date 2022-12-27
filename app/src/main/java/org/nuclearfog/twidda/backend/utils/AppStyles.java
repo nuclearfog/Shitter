@@ -306,10 +306,10 @@ public final class AppStyles {
 	/**
 	 * set up seek bar color
 	 *
-	 * @param settings global settings instance
 	 * @param seekBar  seek bar to color
+	 * @param settings global settings instance
 	 */
-	public static void setSeekBarColor(GlobalSettings settings, SeekBar seekBar) {
+	public static void setSeekBarColor(SeekBar seekBar, GlobalSettings settings) {
 		seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
 		seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
 	}
@@ -374,7 +374,7 @@ public final class AppStyles {
 				sw.setThumbColor(new ColorStateList(SWITCH_STATES, color));
 			} else if (child instanceof SeekBar) {
 				SeekBar seekBar = (SeekBar) child;
-				setSeekBarColor(settings, seekBar);
+				setSeekBarColor(seekBar, settings);
 			} else if (child instanceof Spinner) {
 				Spinner dropdown = (Spinner) child;
 				setDrawableColor(dropdown.getBackground(), settings.getIconColor());

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	android:gravity="center_vertical">
+
+	<TextView
+		android:id="@+id/item_option_name"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:textSize="@dimen/item_option_text_size"
+		android:lines="1"
+		android:layout_margin="@dimen/item_option_layout_margin"/>
+
+	<SeekBar
+		android:id="@+id/item_option_count_bar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="3"
+		android:layout_margin="@dimen/item_option_layout_margin"/>
+
+	<TextView
+		android:id="@+id/item_option_count_text"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:gravity="end"
+		android:textSize="@dimen/item_option_text_size"
+		android:lines="1"
+		android:layout_margin="@dimen/item_option_layout_margin"/>
+
+	<ImageView
+		android:id="@+id/item_option_voted_icon"
+		android:layout_width="@dimen/item_option_icon_size"
+		android:layout_height="@dimen/item_option_icon_size"
+		android:src="@drawable/check"
+		android:layout_margin="@dimen/item_option_layout_margin"/>
+
+</LinearLayout>

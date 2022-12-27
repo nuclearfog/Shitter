@@ -286,5 +286,6 @@
 	<string name="status_metrics_title">Status metrics</string>
 	<string name="status_media_preview">Media preview</string>
 	<string name="status_media_preview_button">Video preview button</string>
+	<string name="poll_total_votes">Total votes:\u0020</string>
 
 </resources>

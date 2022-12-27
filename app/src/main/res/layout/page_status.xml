@@ -152,28 +152,14 @@
 					<androidx.recyclerview.widget.RecyclerView
 						android:id="@+id/page_status_cards"
 						android:layout_width="0dp"
-						android:layout_height="@dimen/page_status_cards_list_height"
-						android:visibility="gone"
+						android:layout_height="0dp"
 						android:foregroundGravity="center"
 						android:layout_margin="@dimen/page_status_cards_list_margin"
+						app:layout_constraintHeight_percent="0.5"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/page_status_text"
-						app:layout_constraintBottom_toTopOf="@id/page_status_media_attach"
+						app:layout_constraintBottom_toTopOf="@id/page_status_sensitive"
 						app:layout_constraintEnd_toEndOf="parent" />
-
-					<ImageButton
-						android:id="@+id/page_status_media_attach"
-						android:layout_width="@dimen/page_status_button_media_width"
-						android:layout_height="@dimen/page_status_button_media_height"
-						android:visibility="invisible"
-						android:layout_marginTop="@dimen/page_status_button_margin"
-						android:contentDescription="@string/image_preview"
-						android:scaleType="fitCenter"
-						android:padding="@dimen/page_status_button_drawable_padding"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_cards"
-						app:layout_constraintEnd_toEndOf="parent"
-						style="@style/RoundButton" />
 
 					<TextView
 						android:id="@+id/page_status_sensitive"
@@ -188,7 +174,7 @@
 						android:text="@string/tweet_sensitive_media"
 						android:textSize="@dimen/page_status_textsize_small"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_media_attach"
+						app:layout_constraintTop_toBottomOf="@id/page_status_cards"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintHorizontal_bias="0.0" />
 

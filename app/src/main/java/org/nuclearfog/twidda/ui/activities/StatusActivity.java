@@ -62,6 +62,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -145,7 +146,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
 	private Button ansButton, rtwButton, favButton, replyName, coordinates, repostName;
-	private ImageView profileImage, mediaButton;
+	private ImageView profileImage;
 	private RecyclerView cardList;
 	private Toolbar toolbar;
 
@@ -179,7 +180,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		statusApi = findViewById(R.id.page_status_api);
 		locationName = findViewById(R.id.page_status_location_name);
 		coordinates = findViewById(R.id.page_status_location_coordinates);
-		mediaButton = findViewById(R.id.page_status_media_attach);
 		sensitive_media = findViewById(R.id.page_status_sensitive);
 		repostName = findViewById(R.id.page_status_reposter_reference);
 		cardList = findViewById(R.id.page_status_cards);
@@ -248,7 +248,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		favButton.setOnClickListener(this);
 		profileImage.setOnClickListener(this);
 		coordinates.setOnClickListener(this);
-		mediaButton.setOnClickListener(this);
 		rtwButton.setOnLongClickListener(this);
 		favButton.setOnLongClickListener(this);
 		repostName.setOnLongClickListener(this);
@@ -467,42 +466,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					}
 				}
 			}
-			// open status media
-			else if (v.getId() == R.id.page_status_media_attach) {
-				Media[] mediaItem = status.getMedia();
-				if (mediaItem.length > 0) {
-					int mediaType = mediaItem[0].getMediaType();
-					Uri[] uris = new Uri[mediaItem.length];
-					for (int i = 0; i < uris.length; i++) {
-						uris[i] = Uri.parse(mediaItem[i].getUrl());
-					}
-					// open embedded image links
-					if (mediaType == Media.PHOTO) {
-						Intent mediaIntent = new Intent(this, ImageViewer.class);
-						mediaIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
-						mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
-						startActivity(mediaIntent);
-					}
-					// open embedded video link
-					else if (mediaType == Media.VIDEO) {
-						if (!settings.isProxyEnabled() || (settings.isProxyEnabled() && settings.ignoreProxyWarning())) {
-							Intent mediaIntent = new Intent(this, VideoViewer.class);
-							mediaIntent.putExtra(VideoViewer.VIDEO_URI, uris[0]);
-							mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-							startActivity(mediaIntent);
-						} else {
-							confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
-						}
-					}
-					// open embedded gif link
-					else if (mediaType == Media.GIF) {
-						Intent mediaIntent = new Intent(this, VideoViewer.class);
-						mediaIntent.putExtra(VideoViewer.VIDEO_URI, uris[0]);
-						mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
-						startActivity(mediaIntent);
-					}
-				}
-			}
 			// go to user reposting this status
 			else if (v.getId() == R.id.page_status_reposter_reference) {
 				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -678,6 +641,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	}
 
 
+	@Override
+	public void onPollOptionClick(Poll poll, int selection) {
+		// todo add implementation
+	}
+
 	/**
 	 * load status into UI
 	 *
@@ -782,36 +750,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			favButton.setVisibility(VISIBLE);
 			ansButton.setVisibility(VISIBLE);
 		}
-		if (settings.linkPreviewEnabled() && (status.getCards().length > 0 || status.getMedia().length > 0)) {
+		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
 			cardList.setVisibility(VISIBLE);
-			mediaButton.setVisibility(GONE);
-			adapter.replaceAll(status.getCards(), status.getMedia());
-
-		} else if (status.getMedia().length > 0) {
-			Media mediaItem = status.getMedia()[0];
-			switch (mediaItem.getMediaType()) {
-				case Media.PHOTO:
-					mediaButton.setVisibility(VISIBLE);
-					mediaButton.setImageResource(R.drawable.image);
-					break;
-
-				case Media.VIDEO:
-					mediaButton.setVisibility(VISIBLE);
-					mediaButton.setImageResource(R.drawable.video);
-					break;
-
-				case Media.GIF:
-					mediaButton.setVisibility(VISIBLE);
-					mediaButton.setImageResource(R.drawable.gif);
-					break;
-
-				default:
-					mediaButton.setVisibility(GONE);
-					break;
-			}
-			AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
+			adapter.replaceAll(status.getCards(), status.getMedia(), status.getPoll());
 		} else {
-			mediaButton.setVisibility(GONE);
+			cardList.setVisibility(GONE);
 		}
 	}
 

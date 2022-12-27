@@ -21,6 +21,7 @@ public class MastodonPoll implements Poll {
 	private long exTime;
 	private boolean expired;
 	private boolean voted;
+	private boolean multipleChoice;
 	private int voteCount;
 	private MastodonOption[] options;
 
@@ -36,6 +37,7 @@ public class MastodonPoll implements Poll {
 		expired = json.getBoolean("expired");
 		voted = json.optBoolean("voted", false);
 		voteCount = json.getInt("voters_count");
+		multipleChoice = json.getBoolean("multiple");
 
 		options = new MastodonOption[optionsJson.length()];
 		for (int i = 0; i < optionsJson.length(); i++) {
@@ -73,6 +75,12 @@ public class MastodonPoll implements Poll {
 	@Override
 	public boolean closed() {
 		return expired;
+	}
+
+
+	@Override
+	public boolean multipleChoice() {
+		return multipleChoice;
 	}
 
 

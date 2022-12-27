@@ -25,6 +25,11 @@ public interface Poll extends Serializable, Comparable<Poll> {
 	boolean closed();
 
 	/**
+	 * @return true if multiple choice is allowed
+	 */
+	boolean multipleChoice();
+
+	/**
 	 * @return time where the poll expires
 	 */
 	long expirationTime();

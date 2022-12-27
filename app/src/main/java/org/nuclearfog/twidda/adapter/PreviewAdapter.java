@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -11,21 +12,26 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.adapter.holder.CardHolder;
 import org.nuclearfog.twidda.adapter.holder.CardHolder.OnItemClickListener;
+import org.nuclearfog.twidda.adapter.holder.PollHolder;
+import org.nuclearfog.twidda.adapter.holder.PollHolder.OnPollOptionClickListener;
 import org.nuclearfog.twidda.adapter.holder.PreviewHolder;
 import org.nuclearfog.twidda.adapter.holder.PreviewHolder.OnPreviewClickListener;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Media;
+import org.nuclearfog.twidda.model.Poll;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Recyclerview Adapter used for link preview "Cards" or media previews
  *
  * @author nuclearfog
  */
-public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements OnItemClickListener, OnPreviewClickListener {
+public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements OnItemClickListener, OnPreviewClickListener, OnPollOptionClickListener {
 
 	/**
 	 * ID used for media preview
@@ -37,12 +43,18 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	 */
 	private static final int ITEM_CARD = 1;
 
+	private static final int INVALID_ID = -1;
+
+	/**
+	 * ID used for {@link org.nuclearfog.twidda.adapter.holder.PollHolder}
+	 */
+	private static final int ITEM_POLL = 2;
+
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private OnCardClickListener listener;
 
-	private Card[] cards = {};
-	private Media[] medias = {};
+	private List<Object> items = new ArrayList<>();
 
 	/**
 	 *
@@ -58,12 +70,16 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_PREVIEW) {
-			PreviewHolder holder = new PreviewHolder(parent, picasso);
+			PreviewHolder holder = new PreviewHolder(parent, settings, picasso);
 			holder.setOnPreviewClickListener(this);
 			return holder;
-		} else {
+		} else if (viewType == ITEM_CARD) {
 			CardHolder holder = new CardHolder(parent, settings, picasso);
-			holder.setClickListener(this);
+			holder.setOnCardClickListener(this);
+			return holder;
+		} else {
+			PollHolder holder = new PollHolder(parent, settings);
+			holder.setOnPollOptionClickListener(this);
 			return holder;
 		}
 	}
@@ -71,41 +87,73 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-		if (holder instanceof PreviewHolder) {
-			((PreviewHolder) holder).setContent(medias[position]);
-		} else {
-			((CardHolder) holder).setContent(cards[position - medias.length]);
+		Object item = items.get(position);
+		if (holder instanceof PreviewHolder && item instanceof Media) {
+			PreviewHolder previewHolder = ((PreviewHolder) holder);
+			Media media = (Media) item;
+			previewHolder.setContent(media);
+		} else if (holder instanceof CardHolder && item instanceof Card) {
+			CardHolder cardHolder = (CardHolder) holder;
+			Card card = (Card) item;
+			cardHolder.setContent(card);
+		} else if (holder instanceof PollHolder && item instanceof Poll) {
+			PollHolder pollHolder = (PollHolder) holder;
+			Poll poll = (Poll) item;
+			pollHolder.setContent(poll);
 		}
 	}
 
 
 	@Override
 	public int getItemCount() {
-		return cards.length + medias.length;
+		return items.size();
 	}
 
 
 	@Override
 	public int getItemViewType(int position) {
-		if (position < medias.length)
+		Object item = items.get(position);
+		if (item instanceof Poll)
+			return ITEM_POLL;
+		if (item instanceof Media)
 			return ITEM_PREVIEW;
-		return ITEM_CARD;
+		if (item instanceof Card)
+			return ITEM_CARD;
+		return INVALID_ID;
 	}
 
 
 	@Override
-	public void onItemClick(int pos, int type) {
-		if (type == OnItemClickListener.TYPE_LINK) {
-			listener.onCardClick(cards[pos - medias.length], OnCardClickListener.TYPE_LINK);
-		} else if (type == OnItemClickListener.TYPE_IMAGE) {
-			listener.onCardClick(cards[pos - medias.length], OnCardClickListener.TYPE_IMAGE);
+	public void onCardItemClick(int pos, int type) {
+		Object item = items.get(pos);
+		if (item instanceof Card) {
+			Card card = (Card) item;
+			if (type == OnItemClickListener.TYPE_LINK) {
+				listener.onCardClick(card, OnCardClickListener.TYPE_LINK);
+			} else if (type == OnItemClickListener.TYPE_IMAGE) {
+				listener.onCardClick(card, OnCardClickListener.TYPE_IMAGE);
+			}
 		}
 	}
 
 
 	@Override
 	public void onPreviewClick(int pos) {
-		listener.onMediaClick(medias[pos]);
+		Object item = items.get(pos);
+		if (item instanceof Media) {
+			Media media = (Media) item;
+			listener.onMediaClick(media);
+		}
+	}
+
+
+	@Override
+	public void onPollOptionClick(int position, int selection) {
+		Object item = items.get(position);
+		if (item instanceof Poll) {
+			Poll poll = (Poll) item;
+			listener.onPollOptionClick(poll, selection);
+		}
 	}
 
 	/**
@@ -114,9 +162,12 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	 * @param medias new media items to insert
 	 * @param cards  new cards to insert
 	 */
-	public void replaceAll(@NonNull Card[] cards, @NonNull Media[] medias) {
-		this.cards = Arrays.copyOf(cards, cards.length);
-		this.medias = Arrays.copyOf(medias, medias.length);
+	public void replaceAll(@NonNull Card[] cards, @NonNull Media[] medias, @Nullable Poll poll) {
+		items.clear();
+		if (poll != null)
+			items.add(poll);
+		items.addAll(Arrays.asList(medias));
+		items.addAll(Arrays.asList(cards));
 		notifyDataSetChanged();
 	}
 
@@ -149,5 +200,8 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 		 * @param media media item
 		 */
 		void onMediaClick(Media media);
+
+
+		void onPollOptionClick(Poll poll, int selection);
 	}
 }

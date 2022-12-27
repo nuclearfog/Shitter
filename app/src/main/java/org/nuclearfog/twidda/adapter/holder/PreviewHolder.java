@@ -13,6 +13,7 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
 
 /**
@@ -25,15 +26,17 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	private ImageView previewImage, playIcon;
 
 	private Picasso picasso;
+	private GlobalSettings settings;
 	private OnPreviewClickListener listener;
 
 
-	public PreviewHolder(ViewGroup parent, Picasso picasso) {
+	public PreviewHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_preview, parent, false));
 		previewImage = itemView.findViewById(R.id.item_preview_image);
 		playIcon = itemView.findViewById(R.id.item_preview_play);
 		previewImage.getLayoutParams().width = parent.getMeasuredHeight();
 		this.picasso = picasso;
+		this.settings = settings;
 
 		previewImage.setOnClickListener(this);
 	}
@@ -55,11 +58,13 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	 * @param media media content
 	 */
 	public void setContent(Media media) {
-		if (!media.getPreviewUrl().isEmpty()) {
-			picasso.load(media.getPreviewUrl()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).error(R.drawable.no_image).into(previewImage);
-		} else {
-			previewImage.setImageResource(R.drawable.no_image);
-		}
+		if (settings.imagesEnabled()) {
+			if (!media.getPreviewUrl().isEmpty()) {
+				picasso.load(media.getPreviewUrl()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).error(R.drawable.no_image).into(previewImage);
+			} else {
+				previewImage.setImageResource(R.drawable.no_image);
+			}
+		}// todo add placeholder if image load is disabled
 		if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF) {
 			playIcon.setVisibility(View.VISIBLE);
 		} else {

@@ -74,6 +74,12 @@ public class PollV2 implements Poll {
 
 
 	@Override
+	public boolean multipleChoice() {
+		return false; // Twitter dosn't support this
+	}
+
+
+	@Override
 	public long expirationTime() {
 		return expiredAt;
 	}
