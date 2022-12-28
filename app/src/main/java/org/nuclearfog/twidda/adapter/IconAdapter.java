@@ -9,13 +9,11 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import org.nuclearfog.twidda.adapter.holder.IconHolder;
 import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Status;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,17 +23,17 @@ import java.util.List;
  */
 public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickListener {
 
-	private GlobalSettings settings;
-
 	@Nullable
 	private OnMediaClickListener listener;
-	private List<Object> items = new ArrayList<>();
+	private GlobalSettings settings;
+	private List<Integer> items;
 
 	/**
 	 *
 	 */
 	public IconAdapter(GlobalSettings settings) {
 		this.settings = settings;
+		items = new ArrayList<>();
 	}
 
 
@@ -51,32 +49,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 
 	@Override
 	public void onBindViewHolder(@NonNull IconHolder holder, int position) {
-		Object item = items.get(position);
-		if (item instanceof Media) {
-			Media media = (Media) item;
-			switch (media.getMediaType()) {
-				case Media.PHOTO:
-					holder.setIconType(IconHolder.TYPE_IMAGE);
-					break;
-
-				case Media.VIDEO:
-					holder.setIconType(IconHolder.TYPE_VIDEO);
-					break;
-
-				case Media.GIF:
-					holder.setIconType(IconHolder.TYPE_GIF);
-					break;
-
-				default:
-				case Media.NONE:
-					holder.setIconType(IconHolder.TYPE_EMPTY);
-					break;
-			}
-		} else if (item instanceof Location) {
-			holder.setIconType(IconHolder.TYPE_LOCATION);
-		} else {
-			holder.setIconType(IconHolder.TYPE_EMPTY);
-		}
+		holder.setIconType(items.get(position));
 	}
 
 
@@ -88,9 +61,11 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		Object item = items.get(position);
-		if (listener != null && item instanceof Media) {
-			listener.onMediaClick(position);
+		if (listener != null) {
+			Integer item = items.get(position);
+			if (item == IconHolder.TYPE_IMAGE || item == IconHolder.TYPE_GIF || item == IconHolder.TYPE_VIDEO) {
+				listener.onMediaClick(position);
+			}
 		}
 	}
 
@@ -107,10 +82,13 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	public void addItems(Status status) {
 		items.clear();
 		if (status.getMedia().length > 0) {
-			items.addAll(Arrays.asList(status.getMedia()));
+			addMediaIcons(status.getMedia());
 		}
 		if (status.getLocation() != null) {
-			items.add(status.getLocation());
+			items.add(IconHolder.TYPE_LOCATION);
+		}
+		if (status.getPoll() != null) {
+			items.add(IconHolder.TYPE_POLL);
 		}
 		notifyDataSetChanged();
 	}
@@ -121,17 +99,30 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	public void addItems(Message message) {
 		items.clear();
 		if (message.getMedia().length > 0) {
-			items.addAll(Arrays.asList(message.getMedia()));
+			addMediaIcons(message.getMedia());
 		}
 		notifyDataSetChanged();
 	}
 
 	/**
-	 * clear previous icons
+	 * add media iconsdepending on type
 	 */
-	public void clear() {
-		items.clear();
-		notifyDataSetChanged();
+	private void addMediaIcons(Media[] medias) {
+		for (Media media : medias) {
+			switch (media.getMediaType()) {
+				case Media.PHOTO:
+					items.add(IconHolder.TYPE_IMAGE);
+					break;
+
+				case Media.GIF:
+					items.add(IconHolder.TYPE_GIF);
+					break;
+
+				case Media.VIDEO:
+					items.add(IconHolder.TYPE_VIDEO);
+					break;
+			}
+		}
 	}
 
 	/**

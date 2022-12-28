@@ -29,7 +29,6 @@ import org.nuclearfog.twidda.adapter.StatusAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -180,14 +179,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			replyname.setVisibility(View.GONE);
 		}
 		if (settings.statusIndicatorsEnabled()) {
-			Media[] medias = status.getMedia();
-			if (medias.length > 0) {
-				iconList.setVisibility(View.VISIBLE);
-				adapter.addItems(status);
-			} else {
-				iconList.setVisibility(View.GONE);
-				adapter.clear();
-			}
+			iconList.setVisibility(View.VISIBLE);
+			adapter.addItems(status);
 		} else {
 			iconList.setVisibility(View.GONE);
 		}

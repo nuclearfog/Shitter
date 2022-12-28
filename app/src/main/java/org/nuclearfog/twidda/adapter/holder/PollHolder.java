@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.adapter.holder;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import org.nuclearfog.twidda.model.Poll;
 public class PollHolder extends ViewHolder implements OnOptionClickListener {
 
 	private TextView votesCount;
+	private TextView expiresAt;
 
 	private OptionsAdapter adapter;
 
@@ -40,9 +42,11 @@ public class PollHolder extends ViewHolder implements OnOptionClickListener {
 		CardView cardBackground = (CardView) itemView;
 		RecyclerView optionsList = itemView.findViewById(R.id.item_poll_options_list);
 		votesCount = itemView.findViewById(R.id.item_poll_votes_count);
+		expiresAt = itemView.findViewById(R.id.item_poll_expiration_date);
 
 		cardBackground.setCardBackgroundColor(settings.getCardColor());
 		votesCount.setTextColor(settings.getFontColor());
+		expiresAt.setTextColor(settings.getFontColor());
 		itemView.getLayoutParams().width = parent.getMeasuredHeight() * 2;
 
 		adapter = new OptionsAdapter(settings, this);
@@ -68,6 +72,11 @@ public class PollHolder extends ViewHolder implements OnOptionClickListener {
 	public void setContent(Poll poll) {
 		votesCount.setText(R.string.poll_total_votes);
 		votesCount.append(StringTools.NUMBER_FORMAT.format(poll.voteCount()));
+		if (poll.closed()) {
+			expiresAt.setText(R.string.poll_finished);
+		} else {
+			expiresAt.setVisibility(View.GONE);
+		}
 		adapter.addAll(poll);
 	}
 

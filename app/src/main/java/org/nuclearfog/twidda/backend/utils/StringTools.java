@@ -220,7 +220,7 @@ public final class StringTools {
 
 				case TIME_MASTODON:
 					result = dateFormat2.parse(timeStr);
-					if (result != null) // temporary fix: Mastodon time depends on timezone
+					if (result != null) // fixme some servers use summer time causing an offset
 						return result.getTime() + TIME_ZONE.getOffset(new Date().getTime());
 					break;
 			}

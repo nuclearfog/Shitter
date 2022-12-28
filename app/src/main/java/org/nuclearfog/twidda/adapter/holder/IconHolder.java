@@ -22,11 +22,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 public class IconHolder extends ViewHolder implements OnClickListener {
 
 	/**
-	 * icon type used for empty icon
-	 */
-	public static final int TYPE_EMPTY = 0;
-
-	/**
 	 * icon type used for image item
 	 */
 	public static final int TYPE_IMAGE = 1;
@@ -42,9 +37,14 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 	public static final int TYPE_GIF = 3;
 
 	/**
+	 * icon type used for poll
+	 */
+	public static final int TYPE_POLL = 4;
+
+	/**
 	 * item type used for location item
 	 */
-	public static final int TYPE_LOCATION = 4;
+	public static final int TYPE_LOCATION = 5;
 
 	private ImageButton button;
 
@@ -76,7 +76,7 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * define icon type
 	 *
-	 * @param iconType icon type {@link #TYPE_EMPTY,#TYPE_GIF,#TYPE_IMAGE,#TYPE_LOCATION,#TYPE_VIDEO}
+	 * @param iconType icon type {@link #TYPE_GIF,#TYPE_IMAGE,#TYPE_LOCATION,#TYPE_VIDEO}
 	 */
 	public void setIconType(int iconType) {
 		switch (iconType) {
@@ -94,6 +94,10 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 
 			case TYPE_LOCATION:
 				button.setImageResource(R.drawable.location);
+				break;
+
+			case TYPE_POLL:
+				button.setImageResource(R.drawable.poll);
 				break;
 
 			default:

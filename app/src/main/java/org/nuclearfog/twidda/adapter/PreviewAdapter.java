@@ -1,10 +1,8 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -14,11 +12,11 @@ import org.nuclearfog.twidda.adapter.holder.CardHolder;
 import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.PollHolder;
 import org.nuclearfog.twidda.adapter.holder.PreviewHolder;
-import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Poll;
+import org.nuclearfog.twidda.model.Status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,17 +32,17 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	private static final int INVALID_ID = -1;
 
 	/**
-	 * ID used for media preview
+	 * ID used for {@link PreviewHolder}
 	 */
 	private static final int ITEM_PREVIEW = 0;
 
 	/**
-	 * ID used for card preview
+	 * ID used for {@link CardHolder}
 	 */
 	private static final int ITEM_CARD = 1;
 
 	/**
-	 * ID used for {@link org.nuclearfog.twidda.adapter.holder.PollHolder}
+	 * ID used for {@link PollHolder}
 	 */
 	private static final int ITEM_POLL = 2;
 
@@ -57,9 +55,9 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	/**
 	 *
 	 */
-	public PreviewAdapter(Context context, OnCardClickListener listener) {
-		settings = GlobalSettings.getInstance(context);
-		picasso = PicassoBuilder.get(context);
+	public PreviewAdapter(GlobalSettings settings, Picasso picasso, OnCardClickListener listener) {
+		this.settings = settings;
+		this.picasso = picasso;
 		this.listener = listener;
 	}
 
@@ -137,13 +135,17 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 				break;
 
 			case OnHolderClickListener.CARD_LINK:
-				if (item instanceof Card)
-					listener.onCardClick((Card) item, OnCardClickListener.TYPE_LINK);
+				if (item instanceof Card) {
+					Card card = (Card) item;
+					listener.onCardClick(card, OnCardClickListener.TYPE_LINK);
+				}
 				break;
 
 			case OnHolderClickListener.CARD_IMAGE:
-				if (item instanceof Card)
-					listener.onCardClick((Card) item, OnCardClickListener.TYPE_IMAGE);
+				if (item instanceof Card) {
+					Card card = (Card) item;
+					listener.onCardClick(card, OnCardClickListener.TYPE_IMAGE);
+				}
 				break;
 
 			case OnHolderClickListener.POLL_ITEM:
@@ -165,15 +167,16 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	/**
 	 * replace all items
 	 *
-	 * @param medias new media items to insert
-	 * @param cards  new cards to insert
+	 * @param status status information with attachments
 	 */
-	public void replaceAll(@NonNull Card[] cards, @NonNull Media[] medias, @Nullable Poll poll) {
+	public void replaceAll(Status status) {
 		items.clear();
-		if (poll != null)
-			items.add(poll);
-		items.addAll(Arrays.asList(medias));
-		items.addAll(Arrays.asList(cards));
+		if (status.getPoll() != null)
+			items.add(status.getPoll());
+		if (status.getMedia().length > 0)
+			items.addAll(Arrays.asList(status.getMedia()));
+		if (status.getCards().length > 0)
+			items.addAll(Arrays.asList(status.getCards()));
 		notifyDataSetChanged();
 	}
 

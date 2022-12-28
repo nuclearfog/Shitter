@@ -10,7 +10,7 @@ import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.TWITTER_LINK_PATTERN;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
 import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
@@ -465,7 +465,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
 		// open status link
-		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+		if (TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(this, StatusActivity.class);
 			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));

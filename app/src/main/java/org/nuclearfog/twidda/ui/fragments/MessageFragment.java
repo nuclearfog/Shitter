@@ -7,7 +7,7 @@ import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_US
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.TWITTER_LINK_PATTERN;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -109,7 +109,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
 		// open status link
-		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+		if (TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(requireContext(), StatusActivity.class);
 			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));

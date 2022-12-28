@@ -15,7 +15,6 @@ import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FAVORIT;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REPOST;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_ID;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_MODE;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_REPLY;
 
 import android.content.ActivityNotFoundException;
@@ -131,7 +130,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * regex pattern of a status URL
 	 */
-	public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
+	public static final Pattern TWITTER_LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
 	private static final int MENU_GROUP_COPY = 0x157426;
 
@@ -185,29 +184,26 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repostName = findViewById(R.id.page_status_reposter_reference);
 		cardList = findViewById(R.id.page_status_cards);
 
+		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
 		// get parameter
 		Object data = getIntent().getSerializableExtra(KEY_STATUS_DATA);
-		String username;
 		if (data instanceof Status) {
 			status = (Status) data;
 			Status embedded = status.getEmbeddedStatus();
 			if (embedded != null) {
-				username = embedded.getAuthor().getScreenname();
 				id = embedded.getId();
 			} else {
-				username = status.getAuthor().getScreenname();
 				id = status.getId();
 				hidden = status.isHidden();
 			}
 		} else {
-			username = getIntent().getStringExtra(KEY_STATUS_NAME);
 			id = getIntent().getLongExtra(KEY_STATUS_ID, -1);
 		}
 
 		// create list fragment for status replies
 		Bundle param = new Bundle();
 		param.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_REPLY);
-		param.putString(KEY_STATUS_FRAGMENT_SEARCH, username);
 		param.putLong(KEY_STATUS_FRAGMENT_ID, id);
 
 		// insert fragment into view
@@ -215,10 +211,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
 		fragmentTransaction.commit();
 
-		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-		adapter = new PreviewAdapter(this, this);
-
+		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
+		adapter = new PreviewAdapter(settings, picasso, this);
 		ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		coordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
@@ -237,7 +232,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
-		picasso = PicassoBuilder.get(this);
 
 		confirmDialog = new ConfirmDialog(this);
 		metricsDialog = new MetricsDialog(this);
@@ -594,7 +588,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
 			startActivity(mediaIntent);
 		} else if (media.getMediaType() == Media.VIDEO) {
-			if (settings.ignoreProxyWarning()) {
+			if (!settings.isProxyEnabled() || settings.ignoreProxyWarning()) {
 				Intent mediaIntent = new Intent(this, VideoViewer.class);
 				mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
 				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
@@ -603,7 +597,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
 			}
 		} else if (media.getMediaType() == Media.GIF) {
-			if (settings.ignoreProxyWarning()) {
+			if (!settings.isProxyEnabled() || settings.ignoreProxyWarning()) {
 				Intent mediaIntent = new Intent(this, VideoViewer.class);
 				mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
 				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
@@ -631,7 +625,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
 		// check if the link points to another status
-		if (LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+		if (TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(this, StatusActivity.class);
 			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
@@ -761,7 +755,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
 			cardList.setVisibility(VISIBLE);
-			adapter.replaceAll(status.getCards(), status.getMedia(), status.getPoll());
+			adapter.replaceAll(status);
 		} else {
 			cardList.setVisibility(GONE);
 		}

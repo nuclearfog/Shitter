@@ -285,6 +285,7 @@
 	<string name="status_media_preview">Media preview</string>
 	<string name="status_media_preview_button">Video preview button</string>
 	<string name="poll_total_votes">Total votes:\u0020</string>
+	<string name="poll_finished">final results</string>
 	<string name="description_poll_vote_icon">voted</string>
 	<string name="description_attachment_icon">Status/Message attachment</string>
 

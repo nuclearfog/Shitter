@@ -247,6 +247,7 @@
 	<string name="status_metrics_title">Statusmetriken</string>
 	<string name="error_empty_text">Text ist leer!</string>
 	<string name="error_api_access_limited">Fehler! API Zugang wurde von Twitter beschränkt.</string>
-	<string name="poll_total_votes">"Gesamtstimmen:\u0020"</string>
+	<string name="poll_total_votes">"Total:\u0020"</string>
 	<string name="description_poll_vote_icon">abgestimmt</string>
+	<string name="poll_finished">Resultat</string>
 </resources>
