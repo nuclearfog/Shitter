@@ -40,6 +40,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -80,12 +81,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	private ConfirmDialog confirmDialog;
 
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
-	private EditText name, link, loc, bio;
+	private EditText username, profileUrl, location, userDescription;
 	private Button addBannerBtn;
 
+	@Nullable
 	private User user;
-
-	ProfileUpdate holder = new ProfileUpdate();
+	private ProfileUpdate holder = new ProfileUpdate();
 
 
 	@Override
@@ -98,17 +99,19 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_editprofile);
-		Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
+		Toolbar toolbar = findViewById(R.id.edit_profile_toolbar);
 		ConstraintLayout root = findViewById(R.id.page_edit);
-		profile_image = findViewById(R.id.edit_pb);
-		profile_banner = findViewById(R.id.edit_banner);
-		addBannerBtn = findViewById(R.id.edit_add_banner);
-		changeBannerBtn = findViewById(R.id.edit_change_banner);
-		toolbar_background = findViewById(R.id.editprofile_toolbar_background);
-		name = findViewById(R.id.edit_name);
-		link = findViewById(R.id.edit_link);
-		loc = findViewById(R.id.edit_location);
-		bio = findViewById(R.id.edit_bio);
+		View locationDescription = findViewById(R.id.profile_edit_change_location_label);
+		View urlDescription = findViewById(R.id.profile_edit_change_url_label);
+		profile_image = findViewById(R.id.edit_profile_image);
+		profile_banner = findViewById(R.id.profile_edit_banner);
+		addBannerBtn = findViewById(R.id.profile_edit_add_banner);
+		changeBannerBtn = findViewById(R.id.profile_edit_change_banner);
+		toolbar_background = findViewById(R.id.profile_edit_toolbar_background);
+		username = findViewById(R.id.profile_edit_change_name);
+		profileUrl = findViewById(R.id.profile_edit_change_url);
+		location = findViewById(R.id.profile_edit_change_location);
+		userDescription = findViewById(R.id.profile_edit_change_description);
 
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
@@ -120,9 +123,15 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
 			constraints.clone(root);
-			constraints.connect(R.id.edit_banner, ConstraintSet.TOP, R.id.editprofile_toolbar, ConstraintSet.BOTTOM);
-			constraints.connect(R.id.edit_add_banner, ConstraintSet.TOP, R.id.edit_banner, ConstraintSet.TOP);
+			constraints.connect(R.id.profile_edit_banner, ConstraintSet.TOP, R.id.edit_profile_toolbar, ConstraintSet.BOTTOM);
+			constraints.connect(R.id.profile_edit_add_banner, ConstraintSet.TOP, R.id.profile_edit_banner, ConstraintSet.TOP);
 			constraints.applyTo(root);
+		}
+		if (settings.getLogin().getApiType() != Account.API_TWITTER) {
+			profileUrl.setVisibility(View.GONE);
+			location.setVisibility(View.GONE);
+			locationDescription.setVisibility(View.GONE);
+			urlDescription.setVisibility(View.GONE);
 		}
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
 		profile_banner.setDrawingCacheEnabled(true);
@@ -131,8 +140,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 		Object data = getIntent().getSerializableExtra(KEY_PROFILE_DATA);
 		if (data instanceof User) {
-			user = (User) data;
-			setUser();
+			setUser((User) data);
 		}
 		profile_image.setOnClickListener(this);
 		profile_banner.setOnClickListener(this);
@@ -153,10 +161,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 	@Override
 	public void onBackPressed() {
-		String username = name.getText().toString();
-		String userLink = link.getText().toString();
-		String userLoc = loc.getText().toString();
-		String userBio = bio.getText().toString();
+		String username = this.username.getText().toString();
+		String userLink = profileUrl.getText().toString();
+		String userLoc = location.getText().toString();
+		String userBio = userDescription.getText().toString();
 		if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
 				&& userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !holder.imageAdded()) {
 			finish();
@@ -218,11 +226,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	@Override
 	public void onClick(View v) {
 		// select net profile image
-		if (v.getId() == R.id.edit_pb) {
+		if (v.getId() == R.id.edit_profile_image) {
 			getMedia(REQUEST_PROFILE);
 		}
 		// select new banner image
-		else if (v.getId() == R.id.edit_add_banner || v.getId() == R.id.edit_banner) {
+		else if (v.getId() == R.id.profile_edit_add_banner || v.getId() == R.id.profile_edit_banner) {
 			getMedia(REQUEST_BANNER);
 		}
 	}
@@ -289,16 +297,16 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	 */
 	private void updateUser() {
 		if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
-			String username = name.getText().toString();
-			String userLink = link.getText().toString();
-			String userLoc = loc.getText().toString();
-			String userBio = bio.getText().toString();
+			String username = this.username.getText().toString();
+			String userLink = profileUrl.getText().toString();
+			String userLoc = location.getText().toString();
+			String userBio = userDescription.getText().toString();
 			if (username.trim().isEmpty()) {
 				String errMsg = getString(R.string.error_empty_name);
-				name.setError(errMsg);
+				this.username.setError(errMsg);
 			} else if (!userLink.isEmpty() && !Patterns.WEB_URL.matcher(userLink).matches()) {
 				String errMsg = getString(R.string.error_invalid_link);
-				link.setError(errMsg);
+				profileUrl.setError(errMsg);
 			} else if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
 				holder.setProfile(username, userLink, userBio, userLoc);
 				if (holder.prepare(getContentResolver())) {
@@ -315,7 +323,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	/**
 	 * Set current user's information
 	 */
-	private void setUser() {
+	private void setUser(User user) {
 		String profileImageUrl = user.getProfileImageThumbnailUrl();
 		String bannerImageUrl = user.getBannerImageThumbnailUrl();
 		if (!profileImageUrl.isEmpty()) {
@@ -330,9 +338,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 			addBannerBtn.setVisibility(VISIBLE);
 			changeBannerBtn.setVisibility(INVISIBLE);
 		}
-		name.setText(user.getUsername());
-		link.setText(user.getProfileUrl());
-		loc.setText(user.getLocation());
-		bio.setText(user.getDescription());
+		username.setText(user.getUsername());
+		profileUrl.setText(user.getProfileUrl());
+		location.setText(user.getLocation());
+		userDescription.setText(user.getDescription());
+		this.user = user;
 	}
 }

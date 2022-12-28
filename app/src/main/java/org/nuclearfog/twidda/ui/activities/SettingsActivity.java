@@ -187,9 +187,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (settings.getLogin().getApiType() != Account.API_TWITTER) {
 			enableTwitterAlt.setVisibility(GONE);
 			EnableTwitterAltDescr.setVisibility(GONE);
+			trend_card.setVisibility(GONE);
 		}
 		if (!settings.isLoggedIn()) {
-			trend_card.setVisibility(GONE);
 			user_card.setVisibility(GONE);
 		}
 		if (!settings.isProxyEnabled()) {
@@ -244,7 +244,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (settings.isLoggedIn() && locationAsync == null) {
+		if (settings.getLogin().getApiType() == Account.API_TWITTER && locationAsync == null) {
 			locationAsync = new LocationLoader(this);
 			locationAsync.execute();
 		}

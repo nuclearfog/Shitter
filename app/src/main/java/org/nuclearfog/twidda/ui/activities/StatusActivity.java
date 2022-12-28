@@ -60,6 +60,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
@@ -324,7 +325,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		if (status.getAuthor().isCurrentUser()) {
 			optDelete.setVisible(true);
-			if (new Date().getTime() - status.getTimestamp() < 2419200000L) {
+			long currentTime = new Date().getTime();
+			if (settings.getLogin().getApiType() == Account.API_TWITTER && currentTime - status.getTimestamp() < 2419200000L) {
 				optMetrics.setVisible(true);
 			}
 		}
