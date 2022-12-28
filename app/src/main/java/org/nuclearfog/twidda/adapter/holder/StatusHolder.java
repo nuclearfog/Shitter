@@ -221,6 +221,11 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 				text = resources.getString(R.string.info_user_favorited, name);
 				iconRes = R.drawable.favorite;
 				break;
+
+			case Notification.TYPE_POLL:
+				text = resources.getString(R.string.notification_status_poll);
+				iconRes = R.drawable.poll;
+				break;
 		}
 		label.setVisibility(View.VISIBLE);
 		label.setText(text);

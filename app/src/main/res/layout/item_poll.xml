@@ -24,16 +24,13 @@
 			<TextView
 				android:id="@+id/item_poll_votes_count"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:textSize="@dimen/tiem_poll_text_size"
+				android:lines="1"/>
 
 			<!--todo add vote button here-->
 
 		</LinearLayout>
-
-		<TextView
-			android:id="@+id/item_poll_expiration_date"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
 
 	</LinearLayout>
 

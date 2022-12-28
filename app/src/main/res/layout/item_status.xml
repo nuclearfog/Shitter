@@ -165,6 +165,7 @@
 			android:id="@+id/item_status_text"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/item_status_layout_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_status_text_barrier"
 			app:layout_constraintEnd_toEndOf="parent" />
@@ -173,6 +174,7 @@
 			android:id="@+id/item_status_attachment_list"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/item_status_layout_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_status_text"
 			app:layout_constraintEnd_toEndOf="parent" />
@@ -181,6 +183,7 @@
 			android:id="@+id/item_status_indicator_placeholder"
 			android:layout_width="0dp"
 			android:layout_height="@dimen/item_status_icon_size"
+			android:layout_marginTop="@dimen/item_status_layout_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_status_attachment_list"
 			app:layout_constraintEnd_toStartOf="@id/item_status_repost_icon" />
@@ -190,6 +193,7 @@
 			android:layout_width="@dimen/item_status_icon_size"
 			android:layout_height="@dimen/item_status_icon_size"
 			android:src="@drawable/repost"
+			android:layout_marginTop="@dimen/item_status_layout_margin"
 			app:layout_constraintStart_toEndOf="@id/item_status_indicator_placeholder"
 			app:layout_constraintTop_toBottomOf="@id/item_status_attachment_list"
 			app:layout_constraintEnd_toStartOf="@id/item_status_repost_count"
@@ -213,6 +217,7 @@
 			android:layout_width="@dimen/item_status_icon_size"
 			android:layout_height="@dimen/item_status_icon_size"
 			android:src="@drawable/favorite"
+			android:layout_marginTop="@dimen/item_status_layout_margin"
 			app:layout_constraintStart_toEndOf="@id/item_status_repost_count"
 			app:layout_constraintTop_toBottomOf="@id/item_status_attachment_list"
 			app:layout_constraintEnd_toStartOf="@id/item_status_favorite_count"

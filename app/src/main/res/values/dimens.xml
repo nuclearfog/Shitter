@@ -72,6 +72,7 @@
 	<!--dimens of item_status.xml-->
 	<dimen name="item_status_profile_size">36sp</dimen>
 	<dimen name="item_status_layout_padding">5dp</dimen>
+	<dimen name="item_status_layout_margin">3dp</dimen>
 	<dimen name="item_status_text_margin">5dp</dimen>
 	<dimen name="item_status_label_margin">8dp</dimen>
 	<dimen name="item_status_drawable_margin">5dp</dimen>
@@ -246,7 +247,7 @@
 	<dimen name="controller_text_width">36sp</dimen>
 
 	<!--dimens of item_card.xml-->
-	<dimen name="item_card_textsize">12sp</dimen>
+	<dimen name="item_card_textsize">11sp</dimen>
 	<dimen name="item_card_layout_padding">5dp</dimen>
 	<dimen name="item_card_text_padding">5dp</dimen>
 
@@ -255,6 +256,7 @@
 
 	<!-- dimens of item_poll.xml -->
 	<dimen name="item_poll_layout_padding">5dp</dimen>
+	<dimen name="tiem_poll_text_size">11sp</dimen>
 
 	<!-- dimens of item_attachment.xml -->
 	<dimen name="item_attachment_indicator_size">28sp</dimen>
