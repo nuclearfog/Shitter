@@ -92,7 +92,7 @@ public class GlobalSettings {
 	private static final String PROXY_PASS = "proxy_pass";
 	private static final String PROXY_IGNORE = "ignore_proxy_set";
 	private static final String TREND_LOC = "location";
-	private static final String TREND_ID = "world_id";
+	private static final String TREND_ID = "world_id_long";
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
@@ -942,7 +942,7 @@ public class GlobalSettings {
 		proxyUser = settings.getString(PROXY_USER, "");
 		proxyPass = settings.getString(PROXY_PASS, "");
 		String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
-		int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_ID);
+		long woeId = settings.getLong(TREND_ID, DEFAULT_LOCATION_ID);
 		location = new LocationImpl(woeId, place);
 		// login informations
 		initLogin();

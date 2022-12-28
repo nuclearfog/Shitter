@@ -169,51 +169,20 @@
 			app:layout_constraintTop_toBottomOf="@id/item_status_text_barrier"
 			app:layout_constraintEnd_toEndOf="parent" />
 
-		<ImageButton
-			android:id="@+id/item_status_media"
-			android:layout_width="@dimen/item_status_indicator_size"
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/item_status_media_scroll"
+			android:layout_width="wrap_content"
 			android:layout_height="@dimen/item_status_indicator_size"
-			android:background="@drawable/round"
-			android:src="@drawable/image"
-			android:layout_margin="@dimen/item_status_indicator_margin"
-			android:padding="@dimen/item_status_indicator_padding"
-			android:scaleType="fitCenter"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_status_text"
-			app:layout_constraintBottom_toTopOf="@id/item_status_icon_barrier"
-			app:layout_constraintEnd_toStartOf="@id/item_status_location"
-			app:layout_constraintHorizontal_chainStyle="packed"
-			tools:ignore="ContentDescription" />
-
-		<ImageButton
-			android:id="@+id/item_status_location"
-			android:layout_width="@dimen/item_status_indicator_size"
-			android:layout_height="@dimen/item_status_indicator_size"
-			android:background="@drawable/round"
-			android:src="@drawable/location"
-			android:layout_margin="@dimen/item_status_indicator_margin"
-			android:padding="@dimen/item_status_indicator_padding"
-			android:scaleType="fitCenter"
-			app:layout_constraintStart_toEndOf="@id/item_status_media"
-			app:layout_constraintTop_toBottomOf="@id/item_status_text"
-			app:layout_constraintBottom_toTopOf="@id/item_status_icon_barrier"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_chainStyle="packed"
-			tools:ignore="ContentDescription" />
-
-		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/item_status_icon_barrier"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			app:barrierDirection="bottom"
-			app:constraint_referenced_ids="item_status_media,item_status_location" />
+			app:layout_constraintEnd_toEndOf="parent"/>
 
 		<View
 			android:id="@+id/item_status_indicator_placeholder"
 			android:layout_width="0dp"
 			android:layout_height="@dimen/item_status_icon_size"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/item_status_icon_barrier"
+			app:layout_constraintTop_toBottomOf="@id/item_status_media_scroll"
 			app:layout_constraintEnd_toStartOf="@id/item_status_repost_icon" />
 
 		<ImageView
@@ -222,7 +191,7 @@
 			android:layout_height="@dimen/item_status_icon_size"
 			android:src="@drawable/repost"
 			app:layout_constraintStart_toEndOf="@id/item_status_indicator_placeholder"
-			app:layout_constraintTop_toBottomOf="@id/item_status_icon_barrier"
+			app:layout_constraintTop_toBottomOf="@id/item_status_media_scroll"
 			app:layout_constraintEnd_toStartOf="@id/item_status_repost_count"
 			tools:ignore="ContentDescription" />
 
@@ -245,7 +214,7 @@
 			android:layout_height="@dimen/item_status_icon_size"
 			android:src="@drawable/favorite"
 			app:layout_constraintStart_toEndOf="@id/item_status_repost_count"
-			app:layout_constraintTop_toBottomOf="@id/item_status_icon_barrier"
+			app:layout_constraintTop_toBottomOf="@id/item_status_media_scroll"
 			app:layout_constraintEnd_toStartOf="@id/item_status_favorite_count"
 			tools:ignore="ContentDescription" />
 

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter.holder;
 
+import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
@@ -12,7 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
@@ -20,6 +24,7 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.IconAdapter;
 import org.nuclearfog.twidda.adapter.StatusAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -39,12 +44,15 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class StatusHolder extends ViewHolder implements OnClickListener {
 
-	private ImageView profile, rpUser, verifiedIcon, lockedIcon, rtIcon, favIcon, media, location, replyIcon;
+	private ImageView profile, rpUser, verifiedIcon, lockedIcon, rtIcon, favIcon, replyIcon;
 	private TextView username, screenname, text, repost, favorite, reposter, created, replyname, label;
+	private RecyclerView iconList;
 
 	private GlobalSettings settings;
 	private Picasso picasso;
+	private IconAdapter adapter;
 
+	@Nullable
 	private OnHolderClickListener listener;
 
 	/**
@@ -62,8 +70,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		rpUser = itemView.findViewById(R.id.item_status_reposter_icon);
 		rtIcon = itemView.findViewById(R.id.item_status_repost_icon);
 		favIcon = itemView.findViewById(R.id.item_status_favorite_icon);
-		media = itemView.findViewById(R.id.item_status_media);
-		location = itemView.findViewById(R.id.item_status_location);
+		iconList = itemView.findViewById(R.id.item_status_media_scroll);
 		replyIcon = itemView.findViewById(R.id.item_status_reply);
 		username = itemView.findViewById(R.id.item_status_author_username);
 		screenname = itemView.findViewById(R.id.item_status_author_screenname);
@@ -73,6 +80,10 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		reposter = itemView.findViewById(R.id.item_status_reposter_name);
 		created = itemView.findViewById(R.id.item_status_created_at);
 		replyname = itemView.findViewById(R.id.item_status_reply_name);
+
+		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
+		adapter = new IconAdapter(settings);
+		iconList.setAdapter(adapter);
 		this.settings = settings;
 		this.picasso = picasso;
 
@@ -169,35 +180,16 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			replyname.setVisibility(View.GONE);
 		}
 		if (settings.statusIndicatorsEnabled()) {
-			// use first media item to determine icon
-			// todo add more icons for the case there are different media items
 			Media[] medias = status.getMedia();
 			if (medias.length > 0) {
-				Media item = medias[0];
-				if (item.getMediaType() == Media.PHOTO) {
-					media.setImageResource(R.drawable.image);
-					media.setVisibility(View.VISIBLE);
-				} else if (item.getMediaType() == Media.VIDEO) {
-					media.setImageResource(R.drawable.video);
-					media.setVisibility(View.VISIBLE);
-				} else if (item.getMediaType() == Media.GIF) {
-					media.setImageResource(R.drawable.gif);
-					media.setVisibility(View.VISIBLE);
-				} else {
-					media.setVisibility(View.GONE);
-				}
-				media.setColorFilter(settings.getIconColor());
+				iconList.setVisibility(View.VISIBLE);
+				adapter.addItems(status);
 			} else {
-				media.setVisibility(View.GONE);
-			}
-			if (status.getLocation() != null) {
-				location.setVisibility(View.VISIBLE);
-			} else {
-				location.setVisibility(View.GONE);
+				iconList.setVisibility(View.GONE);
+				adapter.clear();
 			}
 		} else {
-			location.setVisibility(View.GONE);
-			media.setVisibility(View.GONE);
+			iconList.setVisibility(View.GONE);
 		}
 	}
 

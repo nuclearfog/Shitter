@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/item_status_media"
+	android:layout_width="@dimen/item_status_indicator_size"
+	android:layout_height="@dimen/item_status_indicator_size"
+	android:background="@drawable/round"
+	android:src="@drawable/image"
+	android:layout_margin="@dimen/item_status_indicator_margin"
+	android:padding="@dimen/item_status_indicator_padding"
+	android:scaleType="fitCenter"/>

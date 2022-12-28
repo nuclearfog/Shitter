@@ -155,10 +155,9 @@
 						android:layout_height="0dp"
 						android:foregroundGravity="center"
 						android:layout_margin="@dimen/page_status_cards_list_margin"
-						app:layout_constraintHeight_percent="0.5"
+						app:layout_constraintDimensionRatio="3"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/page_status_text"
-						app:layout_constraintBottom_toTopOf="@id/page_status_sensitive"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<TextView
