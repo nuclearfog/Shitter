@@ -130,7 +130,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onClick(Message message, int action) {
+	public void onClick(Message message, int action, int... extras) {
 		if (!isRefreshing()) {
 			switch (action) {
 				case ANSWER:
@@ -153,11 +153,14 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 					break;
 
 				case MEDIA:
-					if (message.getMedia().length > 0) {
-						Intent imageIntent = new Intent(requireContext(), ImageViewer.class);
-						imageIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(message.getMedia()[0].getUrl())});
-						imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
-						startActivity(imageIntent);
+					if (extras.length == 1) {
+						int mediaIndex = extras[0];
+						if (mediaIndex >= 0 && mediaIndex < message.getMedia().length) {
+							Intent imageIntent = new Intent(requireContext(), ImageViewer.class);
+							imageIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(message.getMedia()[mediaIndex].getUrl())});
+							imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+							startActivity(imageIntent);
+						}
 					}
 					break;
 			}

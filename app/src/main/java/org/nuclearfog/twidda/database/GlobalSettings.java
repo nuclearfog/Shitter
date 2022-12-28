@@ -125,7 +125,7 @@ public class GlobalSettings {
 	private static final int DEFAULT_FV_ICON_COLOR = Color.YELLOW;
 	private static final int DEFAULT_FR_ICON_COLOR = Color.YELLOW;
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
-	private static final int DEFAULT_LOCATION_ID = 1;
+	private static final long DEFAULT_LOCATION_ID = 1L;
 	private static final String DEFAULT_LOCATION_NAME = "Worldwide";
 
 	private SharedPreferences settings;

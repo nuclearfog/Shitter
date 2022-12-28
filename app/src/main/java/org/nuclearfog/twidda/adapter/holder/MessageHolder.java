@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter.holder;
 
+import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.graphics.Color;
@@ -10,11 +11,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
@@ -23,6 +25,8 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.IconAdapter;
+import org.nuclearfog.twidda.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -37,15 +41,15 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.adapter.MessageAdapter
  */
-public class MessageHolder extends ViewHolder implements OnClickListener, OnTagClickListener {
+public class MessageHolder extends ViewHolder implements OnClickListener, OnTagClickListener, OnMediaClickListener {
 
 	private TextView username, screenname, time, text;
 	private ImageView profile, verifiedIcon, lockedIcon;
-	private ImageButton mediaButton;
 	private Button answer, delete;
 
 	private GlobalSettings settings;
 	private Picasso picasso;
+	private IconAdapter adapter;
 
 	private OnItemClickListener listener;
 
@@ -56,10 +60,10 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false));
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_message_container);
+		RecyclerView attachments = itemView.findViewById(R.id.item_message_attachment_list);
 		profile = itemView.findViewById(R.id.item_message_profile);
 		verifiedIcon = itemView.findViewById(R.id.item_message_verified);
 		lockedIcon = itemView.findViewById(R.id.item_message_private);
-		mediaButton = itemView.findViewById(R.id.item_message_media);
 		username = itemView.findViewById(R.id.item_message_username);
 		screenname = itemView.findViewById(R.id.item_message_screenname);
 		time = itemView.findViewById(R.id.item_message_time);
@@ -71,6 +75,10 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		background.setCardBackgroundColor(settings.getCardColor());
 		text.setMovementMethod(LinkMovementMethod.getInstance());
 
+		adapter = new IconAdapter(settings);
+		adapter.addOnMediaClickListener(this);
+		attachments.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
+		attachments.setAdapter(adapter);
 		this.settings = settings;
 		this.picasso = picasso;
 
@@ -78,7 +86,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		profile.setOnClickListener(this);
 		answer.setOnClickListener(this);
 		delete.setOnClickListener(this);
-		mediaButton.setOnClickListener(this);
 	}
 
 
@@ -94,8 +101,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 				listener.onItemClick(position, OnItemClickListener.MESSAGE_DELETE);
 			} else if (v == profile) {
 				listener.onItemClick(position, OnItemClickListener.MESSAGE_PROFILE);
-			} else if (v == mediaButton) {
-				listener.onItemClick(position, OnItemClickListener.MESSAGE_MEDIA);
 			}
 		}
 	}
@@ -113,6 +118,15 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	public void onLinkClick(String link) {
 		if (listener != null) {
 			listener.onTextClick(link, false);
+		}
+	}
+
+
+	@Override
+	public void onMediaClick(int index) {
+		int position = getLayoutPosition();
+		if (position != NO_POSITION && listener != null) {
+			listener.onItemClick(position, OnHolderClickListener.MESSAGE_MEDIA, index);
 		}
 	}
 
@@ -137,11 +151,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		} else {
 			lockedIcon.setVisibility(View.GONE);
 		}
-		if (message.getMedia().length > 0) {
-			mediaButton.setVisibility(View.VISIBLE);
-		} else {
-			mediaButton.setVisibility(View.GONE);
-		}
+		adapter.addItems(message);
 		String profileImageUrl = sender.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);

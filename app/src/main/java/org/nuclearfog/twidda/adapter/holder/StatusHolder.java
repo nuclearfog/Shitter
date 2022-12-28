@@ -70,7 +70,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		rpUser = itemView.findViewById(R.id.item_status_reposter_icon);
 		rtIcon = itemView.findViewById(R.id.item_status_repost_icon);
 		favIcon = itemView.findViewById(R.id.item_status_favorite_icon);
-		iconList = itemView.findViewById(R.id.item_status_media_scroll);
+		iconList = itemView.findViewById(R.id.item_status_attachment_list);
 		replyIcon = itemView.findViewById(R.id.item_status_reply);
 		username = itemView.findViewById(R.id.item_status_author_username);
 		screenname = itemView.findViewById(R.id.item_status_author_screenname);

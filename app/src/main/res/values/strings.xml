@@ -192,7 +192,6 @@
 	<string name="confirm_delete_tweet">delete status?</string>
 	<string name="confirm_delete_database">clear app data?</string>
 	<string name="tweet_sent_from">"sent from: "</string>
-	<string name="directmessage_media_button">media attachment</string>
 	<string name="username">Username</string>
 	<string name="dm_message">Message</string>
 	<string name="confirm_cancel_message">discard message?</string>
@@ -287,5 +286,6 @@
 	<string name="status_media_preview_button">Video preview button</string>
 	<string name="poll_total_votes">Total votes:\u0020</string>
 	<string name="description_poll_vote_icon">voted</string>
+	<string name="description_attachment_icon">Status/Message attachment</string>
 
 </resources>

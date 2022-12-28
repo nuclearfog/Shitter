@@ -1,41 +1,85 @@
 package org.nuclearfog.twidda.adapter.holder;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+/**
+ * viewholder for {@link org.nuclearfog.twidda.adapter.IconAdapter}
+ *
+ * @author nuclearfog
+ */
+public class IconHolder extends ViewHolder implements OnClickListener {
 
-public class IconHolder extends RecyclerView.ViewHolder {
-
+	/**
+	 * icon type used for empty icon
+	 */
 	public static final int TYPE_EMPTY = 0;
 
+	/**
+	 * icon type used for image item
+	 */
 	public static final int TYPE_IMAGE = 1;
 
+	/**
+	 * icon type used for video item
+	 */
 	public static final int TYPE_VIDEO = 2;
 
+	/**
+	 * icon type used for GIF item
+	 */
 	public static final int TYPE_GIF = 3;
 
+	/**
+	 * item type used for location item
+	 */
 	public static final int TYPE_LOCATION = 4;
 
 	private ImageButton button;
 
 	private GlobalSettings settings;
+	@Nullable
+	private OnHolderClickListener listener;
 
-
+	/**
+	 *
+	 */
 	public IconHolder(ViewGroup parent, GlobalSettings settings) {
-		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mediabutton, parent, false));
+		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_attachment, parent, false));
 		button = (ImageButton) itemView;
+		button.setOnClickListener(this);
 		this.settings = settings;
 	}
 
 
-	public void setContent(int iconType) {
-		switch(iconType) {
+	@Override
+	public void onClick(View v) {
+		int position = getLayoutPosition();
+		if (position != NO_POSITION && listener != null) {
+			if (v == button) {
+				listener.onItemClick(position, OnHolderClickListener.NO_TYPE);
+			}
+		}
+	}
+
+	/**
+	 * define icon type
+	 *
+	 * @param iconType icon type {@link #TYPE_EMPTY,#TYPE_GIF,#TYPE_IMAGE,#TYPE_LOCATION,#TYPE_VIDEO}
+	 */
+	public void setIconType(int iconType) {
+		switch (iconType) {
 			case TYPE_IMAGE:
 				button.setImageResource(R.drawable.image);
 				break;
@@ -57,5 +101,12 @@ public class IconHolder extends RecyclerView.ViewHolder {
 				break;
 		}
 		button.setColorFilter(settings.getIconColor());
+	}
+
+	/**
+	 * add listener
+	 */
+	public void addOnHolderClickListener(OnHolderClickListener listener) {
+		this.listener = listener;
 	}
 }

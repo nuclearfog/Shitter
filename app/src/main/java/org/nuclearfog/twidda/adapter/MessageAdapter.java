@@ -126,7 +126,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 					break;
 
 				case OnItemClickListener.MESSAGE_MEDIA:
-					itemClickListener.onClick(message, OnMessageClickListener.MEDIA);
+					itemClickListener.onClick(message, OnMessageClickListener.MEDIA, extras);
 					break;
 
 				case OnItemClickListener.MESSAGE_PROFILE:
@@ -241,8 +241,9 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 		 *
 		 * @param message Message information
 		 * @param action  what button was clicked {@link #ANSWER,#DELETE,#PROFILE,#MEDIA}
+		 * @param extras  additional parameter
 		 */
-		void onClick(Message message, int action);
+		void onClick(Message message, int action, int... extras);
 
 		/**
 		 * called when the placeholder was clicked
