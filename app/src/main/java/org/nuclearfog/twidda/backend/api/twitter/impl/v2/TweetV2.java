@@ -57,7 +57,7 @@ public class TweetV2 implements Status {
 	private long retweetId;
 	private String tweetText;
 	private String source;
-	private String mentions = "";
+	private String mentions;
 	private String replyName = "";
 	private Location location;
 
@@ -123,6 +123,7 @@ public class TweetV2 implements Status {
 		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);
 		source = json.optString("source", "");
 		sensitive = json.optBoolean("possibly_sensitive", false);
+		mentions = author.getScreenname() + ' ';
 		// add media
 		if (attachments != null) {
 			JSONArray mediaKeys = attachments.optJSONArray("media_keys");
@@ -142,10 +143,13 @@ public class TweetV2 implements Status {
 			JSONArray urls = entities.optJSONArray("urls");
 			// add mentioned usernames
 			if (mentionsJson != null && mentionsJson.length() > 0) {
-				StringBuilder builder = new StringBuilder();
+				StringBuilder builder = new StringBuilder(mentions);
 				for (int i = 0; i < mentionsJson.length(); i++) {
 					JSONObject mentionJson = mentionsJson.getJSONObject(i);
-					builder.append('@').append(mentionJson.getString("username")).append(' ');
+					String mention_name = '@' + mentionJson.getString("username");
+					if (!author.getScreenname().equals(mention_name)) {
+						builder.append(mention_name).append(' ');
+					}
 				}
 				mentions = builder.toString();
 			}
