@@ -797,6 +797,7 @@ public class AppDatabase {
 
 		SQLiteDatabase db = getDbWrite();
 		db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
+		commit(db);
 	}
 
 	/**

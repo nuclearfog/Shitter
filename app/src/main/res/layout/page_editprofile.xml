@@ -117,7 +117,7 @@
 				android:importantForAutofill="no"
 				android:inputType="textNoSuggestions"
 				android:maxLength="@integer/editprofile_username_max_length"
-				android:singleLine="true"
+				android:lines="1"
 				style="@style/TextInput" />
 
 			<TextView
@@ -134,7 +134,7 @@
 				android:hint="@string/edit_location_hint"
 				android:importantForAutofill="no"
 				android:inputType="text"
-				android:singleLine="true"
+				android:lines="1"
 				style="@style/TextInput" />
 
 			<TextView
@@ -151,7 +151,7 @@
 				android:hint="@string/edit_hint_link"
 				android:importantForAutofill="no"
 				android:inputType="textUri"
-				android:singleLine="true"
+				android:lines="1"
 				style="@style/TextInput" />
 
 			<TextView

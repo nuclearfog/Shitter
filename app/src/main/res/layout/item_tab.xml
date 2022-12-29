@@ -22,7 +22,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:gravity="center"
-		android:singleLine="true"
+		android:lines="1"
 		android:textSize="@dimen/tabitem_textsize"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/tab_icon"

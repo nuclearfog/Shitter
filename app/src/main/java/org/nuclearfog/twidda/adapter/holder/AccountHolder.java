@@ -34,6 +34,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class AccountHolder extends ViewHolder implements OnClickListener {
 
+	private static final String ACCOUNT_TWITTER = " @twitter.com";
+
 	private ImageView profile;
 	private ImageButton remove;
 	private TextView username, screenname, date;
@@ -103,6 +105,14 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			username.setText(R.string.account_user_unnamed);
 			screenname.setText(R.string.account_user_id_prefix);
 			screenname.append(Long.toString(account.getId()));
+		}
+		if (account.getApiType() == Account.API_TWITTER) {
+			screenname.append(ACCOUNT_TWITTER);
+		} else if (account.getApiType() == Account.API_MASTODON) {
+			String host = account.getHostname();
+			if (host.startsWith("https://"))
+				host = host.substring(8);
+			screenname.append(" @" + host);
 		}
 	}
 

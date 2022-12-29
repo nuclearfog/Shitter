@@ -30,7 +30,7 @@
 		android:hint="@string/username"
 		android:importantForAutofill="no"
 		android:inputType="text"
-		android:singleLine="true"
+		android:lines="1"
 		android:digits="abcdefghijklmnopqrstuvwxyz_0123456789@"
 		android:maxLength="16"
 		app:layout_constraintStart_toStartOf="@id/popup_message_background"
