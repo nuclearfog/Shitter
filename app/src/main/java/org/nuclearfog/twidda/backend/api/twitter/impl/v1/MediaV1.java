@@ -23,7 +23,6 @@ public class MediaV1 implements Media {
 
 	private int type = NONE;
 	private String url = "";
-	private String preview;
 	private String key;
 
 	/**
@@ -31,7 +30,6 @@ public class MediaV1 implements Media {
 	 */
 	public MediaV1(JSONObject json) throws JSONException {
 		String type = json.getString("type");
-		preview = json.getString("media_url_https");
 		key = json.getString("id_str");
 		switch (type) {
 			case "photo":
@@ -88,7 +86,7 @@ public class MediaV1 implements Media {
 
 	@Override
 	public String getPreviewUrl() {
-		return preview;
+		return "";
 	}
 
 

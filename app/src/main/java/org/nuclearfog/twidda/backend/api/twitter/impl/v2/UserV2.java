@@ -23,7 +23,7 @@ public class UserV2 implements User {
 	/**
 	 * extra parameters required to fetch additional data
 	 */
-	public static final String USER_FIELDS = "user.fields=created_at%2Cdescription%2Centities%2Cid%2Clocation%2Cname%2Cprofile_image_url" +
+	public static final String FIELDS_USER = "user.fields=created_at%2Cdescription%2Centities%2Cid%2Clocation%2Cname%2Cprofile_image_url" +
 			"%2Cprotected%2Cpublic_metrics%2Curl%2Cusername%2Cverified";
 
 	private long id;

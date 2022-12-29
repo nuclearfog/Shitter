@@ -42,7 +42,8 @@ public class MediaV2 implements Media {
 		switch (typeStr) {
 			case "photo":
 				url = mediaItem.optString("url");
-				preview = url; // fixme: currently Twitter doesn't support preview for images.
+				if (preview.isEmpty())// fixme: currently Twitter doesn't support preview for images.
+					preview = url;
 				type = PHOTO;
 				break;
 

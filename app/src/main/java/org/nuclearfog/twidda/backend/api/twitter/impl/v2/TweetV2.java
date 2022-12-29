@@ -76,14 +76,6 @@ public class TweetV2 implements Status {
 	private Card[] cards = {};
 
 	/**
-	 * @param json    tweet json format
-	 * @param userMap map containing user instances
-	 */
-	public TweetV2(JSONObject json, UserV2Map userMap) throws JSONException {
-		this(json, userMap, null, null, null, null);
-	}
-
-	/**
 	 * @param json        tweet json format
 	 * @param userMap     map containing user instances
 	 * @param mediaMap    map containing media instances
@@ -219,7 +211,6 @@ public class TweetV2 implements Status {
 			favorited = tweetCompat.isFavorited();
 			// fixme: for any reason Twitter API 2.0 doesn't return the attributes below
 			source = tweetCompat.getSource();
-			medias = tweetCompat.getMedia();
 		}
 	}
 

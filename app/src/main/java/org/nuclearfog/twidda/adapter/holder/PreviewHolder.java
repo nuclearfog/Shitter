@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter.holder;
 
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
@@ -23,6 +25,11 @@ import org.nuclearfog.twidda.model.Media;
  */
 public class PreviewHolder extends ViewHolder implements OnClickListener {
 
+	/**
+	 * empty placeholder image color
+	 */
+	private static final int EMPTY_COLOR = 0x1f000000;
+
 	private ImageView previewImage, playIcon;
 
 	private Picasso picasso;
@@ -32,12 +39,12 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 
 	public PreviewHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_preview, parent, false));
-		previewImage = itemView.findViewById(R.id.item_preview_image);
-		playIcon = itemView.findViewById(R.id.item_preview_play);
-		previewImage.getLayoutParams().width = parent.getMeasuredHeight();
 		this.picasso = picasso;
 		this.settings = settings;
 
+		previewImage = itemView.findViewById(R.id.item_preview_image);
+		playIcon = itemView.findViewById(R.id.item_preview_play);
+		previewImage.getLayoutParams().width = parent.getMeasuredHeight();
 		previewImage.setOnClickListener(this);
 	}
 
@@ -60,9 +67,9 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	public void setContent(Media media) {
 		if (settings.imagesEnabled()) {
 			if (!media.getPreviewUrl().isEmpty()) {
-				picasso.load(media.getPreviewUrl()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).error(R.drawable.no_image).into(previewImage);
+				picasso.load(media.getPreviewUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).error(R.drawable.no_image).into(previewImage);
 			} else {
-				previewImage.setImageResource(R.drawable.no_image);
+				previewImage.setImageDrawable(new ColorDrawable(EMPTY_COLOR));
 			}
 		}// todo add placeholder if image load is disabled
 		if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF) {

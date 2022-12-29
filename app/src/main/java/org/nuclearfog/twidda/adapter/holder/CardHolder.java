@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.adapter.holder;
 
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
@@ -27,6 +29,11 @@ import org.nuclearfog.twidda.model.Card;
  * @author nuclearfog
  */
 public class CardHolder extends ViewHolder implements OnClickListener {
+
+	/**
+	 * empty placeholder image color
+	 */
+	private static final int EMPTY_COLOR = 0x1f000000;
 
 	/**
 	 * link text background transparency
@@ -102,8 +109,10 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 			textSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, Math.min(textStr.length() - 1, TITLE_MAX_LEN), 0);
 		linkText.setText(textSpan);
 		if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
-			picasso.load(card.getImageUrl()).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(preview);
-		} // todo add placeholder if image loading is disabled
+			picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).into(preview);
+		} else {
+			preview.setImageDrawable(new ColorDrawable(EMPTY_COLOR));
+		}
 	}
 
 	/**

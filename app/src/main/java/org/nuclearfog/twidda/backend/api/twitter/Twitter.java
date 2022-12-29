@@ -1183,7 +1183,7 @@ public class Twitter implements Connection {
 		try {
 			params.add(TweetV2.FIELDS_TWEET);
 			params.add(TweetV2.FIELDS_EXPANSION);
-			params.add(UserV2.USER_FIELDS);
+			params.add(UserV2.FIELDS_USER);
 			params.add(MediaV2.FIELDS_MEDIA);
 			params.add(PollV2.FIELDS_POLL);
 			params.add(LocationV2.FIELDS_PLACE);
@@ -1196,9 +1196,12 @@ public class Twitter implements Connection {
 				if (data != null && data.length() > 0) {
 					List<Status> tweets = new ArrayList<>(data.length() + 1);
 					UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
+					MediaV2Map mediaMap = new MediaV2Map(json);
+					PollV2Map pollMap = new PollV2Map(json);
+					LocationV2Map locationMap = new LocationV2Map(json);
 					for (int i = 0; i < data.length(); i++) {
 						try {
-							Status item = new TweetV2(data.getJSONObject(i), userMap);
+							Status item = new TweetV2(data.getJSONObject(i), userMap, mediaMap, pollMap, locationMap, null);
 							tweets.add(item);
 						} catch (JSONException e) {
 							if (BuildConfig.DEBUG) {
@@ -1269,7 +1272,7 @@ public class Twitter implements Connection {
 			else
 				params.add(TweetV2.FIELDS_TWEET);
 			params.add(TweetV2.FIELDS_EXPANSION);
-			params.add(UserV2.USER_FIELDS);
+			params.add(UserV2.FIELDS_USER);
 			params.add(MediaV2.FIELDS_MEDIA);
 			params.add(PollV2.FIELDS_POLL);
 			params.add(LocationV2.FIELDS_PLACE);
@@ -1397,7 +1400,7 @@ public class Twitter implements Connection {
 	private Users getUsers2(String endpoint) throws TwitterException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("user.fields=" + UserV2.USER_FIELDS);
+			params.add("user.fields=" + UserV2.FIELDS_USER);
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
