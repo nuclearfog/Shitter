@@ -106,7 +106,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 			textStr += '\n' + card.getDescription();
 		SpannableString textSpan = new SpannableString(textStr);
 		if (!title.isEmpty())
-			textSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, Math.min(textStr.length() - 1, TITLE_MAX_LEN), 0);
+			textSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, Math.min(title.length(), TITLE_MAX_LEN), 0);
 		linkText.setText(textSpan);
 		if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
 			picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).into(preview);

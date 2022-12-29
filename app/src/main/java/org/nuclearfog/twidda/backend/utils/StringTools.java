@@ -84,7 +84,7 @@ public final class StringTools {
 	 * @return time string showing the time difference
 	 */
 	public static String formatCreationTime(Resources resources, long time) {
-		long diff = new Date().getTime() - time;
+		long diff = System.currentTimeMillis() - time;
 		if (diff > 2419200000L) { // more than 4 weeks
 			return SimpleDateFormat.getDateInstance().format(time);
 		}
@@ -213,15 +213,10 @@ public final class StringTools {
 					break;
 
 				case TIME_TWITTER_V2:
-					result = dateFormat2.parse(timeStr);
-					if (result != null)
-						return result.getTime();
-					break;
-
 				case TIME_MASTODON:
 					result = dateFormat2.parse(timeStr);
-					if (result != null) // fixme some servers use summer time causing an offset
-						return result.getTime() + TIME_ZONE.getOffset(new Date().getTime());
+					if (result != null)
+						return result.getTime() + TIME_ZONE.getOffset(System.currentTimeMillis());
 					break;
 			}
 		} catch (ParseException e) {
@@ -231,9 +226,9 @@ public final class StringTools {
 	}
 
 	/**
-	 * calculate index offset caused by emojies
+	 * calculate index offset caused by emojis
 	 *
-	 * @param text  twitter test
+	 * @param text  twitter text
 	 * @param limit maximum char index
 	 * @return offset value
 	 */
@@ -255,7 +250,7 @@ public final class StringTools {
 	 * @return timestamp string
 	 */
 	public static String getTimestamp() {
-		return Long.toString(new Date().getTime() / 1000);
+		return Long.toString(System.currentTimeMillis() / 1000);
 	}
 
 	/**

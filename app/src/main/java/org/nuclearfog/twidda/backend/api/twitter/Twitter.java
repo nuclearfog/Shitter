@@ -54,7 +54,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1265,8 +1264,8 @@ public class Twitter implements Connection {
 	private TweetV2 getTweet2(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
 		try {
 			Response response;
-			// add metrics information if tweet is from current user and the tweet is not older than 30 days and not a retweet
-			if (statusCompat.getAuthor().isCurrentUser() && new Date().getTime() - statusCompat.getTimestamp() < 2419200000L
+			// add metrics information if the author is the current user and the tweet is not older than 28 days and not a retweet/quote
+			if (statusCompat.getAuthor().isCurrentUser() && System.currentTimeMillis() - statusCompat.getTimestamp() < 2419200000L
 					&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() <= 0))
 				params.add(TweetV2.FIELDS_TWEET_PRIVATE);
 			else
