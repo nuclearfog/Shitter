@@ -352,20 +352,14 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
 		params.add("type=statuses");
-		List<Status> result = getStatuses(SEARCH_TIMELINE, params, minId, maxId);
-		if (result.size() > 1)
-			Collections.sort(result);
-		return result;
+		return getStatuses(SEARCH_TIMELINE, params, minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getPublicTimeline(long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		List<Status> result = getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
-		if (result.size() > 1)
-			Collections.sort(result);
-		return result;
+		return getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
 	}
 
 
@@ -447,9 +441,6 @@ public class Mastodon implements Connection {
 			if (status.getRepliedStatusId() == id && (minId == 0 || status.getId() > minId) && (maxId == 0 || status.getId() < maxId)) {
 				result.add(status);
 			}
-		}
-		if (result.size() > 1) {
-			Collections.sort(result);
 		}
 		return result;
 	}
@@ -823,7 +814,10 @@ public class Mastodon implements Connection {
 			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());
 		try {
-			return createStatuses(get(endpoint, params));
+			List<Status> result = createStatuses(get(endpoint, params));
+			if (result.size() > 1)
+				Collections.sort(result);
+			return result;
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}

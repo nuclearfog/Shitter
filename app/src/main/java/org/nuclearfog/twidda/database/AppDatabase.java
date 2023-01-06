@@ -143,8 +143,8 @@ public class AppDatabase {
 			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + HOME_TIMELINE_MASK + " IS NOT 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " ORDER BY " + StatusTable.ID
-			+ " DESC LIMIT ?;";
+			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get status of an user
@@ -154,8 +154,8 @@ public class AppDatabase {
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " AND " + StatusTable.NAME + "." + StatusTable.USER + "=?"
-			+ " ORDER BY " + StatusTable.ID
-			+ " DESC LIMIT ?;";
+			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get status favored by an user
@@ -166,8 +166,8 @@ public class AppDatabase {
 			+ " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.FAVORITER_ID + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " ORDER BY " + StatusTable.ID
-			+ " DESC LIMIT ?;";
+			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get a single status specified by an ID
@@ -182,7 +182,8 @@ public class AppDatabase {
 	 * query to get user information
 	 */
 	private static final String SINGLE_USER_QUERY = "SELECT * FROM " + USER_SUBQUERY
-			+ " WHERE " + UserTable.NAME + "." + UserTable.ID + "=? LIMIT 1;";
+			+ " WHERE " + UserTable.NAME + "." + UserTable.ID + "=?"
+			+ " LIMIT 1;";
 
 	/**
 	 * SQL query to get replies of a status specified by a status ID
@@ -194,7 +195,8 @@ public class AppDatabase {
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + STATUS_REPLY_MASK + " IS NOT 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + HIDDEN_MASK + " IS 0"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCLUDE_MASK + " IS 0"
-			+ " ORDER BY " + StatusTable.ID + " DESC LIMIT ?;";
+			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get current user's messages
@@ -205,7 +207,8 @@ public class AppDatabase {
 			+ " INNER JOIN " + UserRegisterTable.NAME
 			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID
 			+ " WHERE " + MessageTable.FROM + "=? OR " + MessageTable.TO + "=?"
-			+ " ORDER BY " + MessageTable.SINCE + " DESC LIMIT ?;";
+			+ " ORDER BY " + MessageTable.TIME + " DESC"
+			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get notifications
@@ -214,7 +217,8 @@ public class AppDatabase {
 			+ " INNER JOIN(" + USER_SUBQUERY + ")" + UserTable.NAME
 			+ " ON " + NotificationTable.NAME + "." + NotificationTable.USER + "=" + UserTable.NAME + "." + UserTable.ID
 			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.OWNER + "=?"
-			+ " ORDER BY " + NotificationTable.ID + " DESC LIMIT ?;";
+			+ " ORDER BY " + NotificationTable.TIME + " DESC"
+			+ " LIMIT ?;";
 
 	/**
 	 * select status entries from favorite table matching status ID
@@ -445,7 +449,7 @@ public class AppDatabase {
 		for (Notification notification : notifications) {
 			ContentValues column = new ContentValues();
 			column.put(NotificationTable.ID, notification.getId());
-			column.put(NotificationTable.DATE, notification.getCreatedAt());
+			column.put(NotificationTable.TIME, notification.getCreatedAt());
 			column.put(NotificationTable.TYPE, notification.getType());
 			column.put(NotificationTable.OWNER, settings.getLogin().getId());
 			column.put(NotificationTable.USER, notification.getUser().getId());
@@ -1138,7 +1142,7 @@ public class AppDatabase {
 		ContentValues statusUpdate = new ContentValues(15);
 		statusUpdate.put(StatusTable.ID, status.getId());
 		statusUpdate.put(StatusTable.USER, user.getId());
-		statusUpdate.put(StatusTable.TIMESTAMP, status.getTimestamp());
+		statusUpdate.put(StatusTable.TIME, status.getTimestamp());
 		statusUpdate.put(StatusTable.TEXT, status.getText());
 		statusUpdate.put(StatusTable.EMBEDDED, rtId);
 		statusUpdate.put(StatusTable.SOURCE, status.getSource());
@@ -1271,7 +1275,7 @@ public class AppDatabase {
 		// store message information
 		ContentValues messageColumn = new ContentValues(6);
 		messageColumn.put(MessageTable.ID, message.getId());
-		messageColumn.put(MessageTable.SINCE, message.getTimestamp());
+		messageColumn.put(MessageTable.TIME, message.getTimestamp());
 		messageColumn.put(MessageTable.FROM, message.getSender().getId());
 		messageColumn.put(MessageTable.TO, message.getReceiverId());
 		messageColumn.put(MessageTable.MESSAGE, message.getText());

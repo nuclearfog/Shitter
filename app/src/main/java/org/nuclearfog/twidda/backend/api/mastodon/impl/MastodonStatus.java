@@ -272,12 +272,6 @@ public class MastodonStatus implements Status {
 	}
 
 
-	@Override
-	public int compareTo(Status o) {
-		return Long.compare(o.getId(), id);
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {
@@ -286,10 +280,17 @@ public class MastodonStatus implements Status {
 
 
 	@Override
+	public int compareTo(Status status) {
+		return Long.compare(status.getTimestamp(), createdAt);
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Status))
 			return false;
-		return ((Status) obj).getId() == id;
+		Status status = ((Status) obj);
+		return status.getId() == id && status.getTimestamp() == createdAt && status.getAuthor().equals(author);
 	}
 
 	/**

@@ -229,11 +229,11 @@ public class Twitter implements Connection {
 	 */
 	@Override
 	public Account loginApp(String... paramsStr) throws TwitterException {
+		List<String> params = new ArrayList<>();
+		String tempOauthToken = Uri.parse(paramsStr[0]).getQueryParameter("oauth_token");
+		params.add("oauth_verifier=" + paramsStr[1]);
+		params.add("oauth_token=" + tempOauthToken);
 		try {
-			List<String> params = new ArrayList<>();
-			String tempOauthToken = Uri.parse(paramsStr[0]).getQueryParameter("oauth_token");
-			params.add("oauth_verifier=" + paramsStr[1]);
-			params.add("oauth_token=" + tempOauthToken);
 			Response response;
 			if (paramsStr.length == 4)
 				response = post(OAUTH_VERIFIER, params, paramsStr[2], paramsStr[3]);
@@ -310,14 +310,14 @@ public class Twitter implements Connection {
 	@Override
 	public Users getRepostingUsers(long tweetId) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
-		return getUsers2(endpoint);
+		return getUsers2(endpoint, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getFavoritingUsers(long tweetId) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/liking_users";
-		return getUsers2(endpoint);
+		return getUsers2(endpoint, new ArrayList<>());
 	}
 
 
@@ -493,13 +493,9 @@ public class Twitter implements Connection {
 	@Override
 	public List<Status> searchStatuses(String search, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
 		params.add("q=" + StringTools.encode(search + " +exclude:retweets"));
 		params.add("result_type=recent");
-		List<Status> result = getTweets1(TWEET_SEARCH, params);
+		List<Status> result = getTweets1(TWEET_SEARCH, params, minId, maxId);
 		if (settings.filterResults())
 			filterTweets(result);
 		return result;
@@ -561,88 +557,60 @@ public class Twitter implements Connection {
 
 	@Override
 	public List<Status> getHomeTimeline(long minId, long maxId) throws TwitterException {
-		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 0)
-			params.add("max_id=" + maxId);
-		return getTweets1(TWEETS_HOME_TIMELINE, params);
+		return getTweets1(TWEETS_HOME_TIMELINE, new ArrayList<>(), minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getUserTimeline(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
 		params.add("user_id=" + id);
-		return getTweets1(TWEETS_USER, params);
+		return getTweets1(TWEETS_USER, params, minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getUserTimeline(String name, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
 		params.add("screen_name=" + StringTools.encode(name));
-		return getTweets1(TWEETS_USER, params);
+		return getTweets1(TWEETS_USER, params, minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getUserFavorits(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
 		params.add("user_id=" + id);
-		return getTweets1(TWEETS_USER_FAVORITS, params);
+		return getTweets1(TWEETS_USER_FAVORITS, params, minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getUserFavorits(String name, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
 		params.add("screen_name=" + StringTools.encode(name));
-		return getTweets1(TWEETS_USER_FAVORITS, params);
+		return getTweets1(TWEETS_USER_FAVORITS, params, minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
 		params.add("list_id=" + id);
-		return getTweets1(TWEETS_LIST, params);
+		return getTweets1(TWEETS_LIST, params, minId, maxId);
 	}
 
 
 	@Override
 	public List<Status> getStatusReplies(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("until_id=" + maxId);
 		params.add("query=" + StringTools.encode("conversation_id:" + id));
-		List<Status> result = getTweets2(TWEET_SEARCH_2, params);
+		// Note: minId disabled! Twitter refuses API request containing minId of a tweet older than one week
+		List<Status> result = getTweets2(TWEET_SEARCH_2, params, 0, maxId);
 		List<Status> replies = new LinkedList<>();
 		// chose only the first tweet of a conversation
 		for (Status reply : result) {
-			if (reply.getRepliedStatusId() == id) {
+			if (reply.getRepliedStatusId() == id && reply.getId() > minId) {
 				replies.add(reply);
 			}
 		}
@@ -1117,12 +1085,7 @@ public class Twitter implements Connection {
 
 	@Override
 	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
-		List<String> params = new ArrayList<>();
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("max_id=" + maxId);
-		List<Status> mentions = getTweets1(TWEETS_MENTIONS, params);
+		List<Status> mentions = getTweets1(TWEETS_MENTIONS, new ArrayList<>(), minId, maxId);
 		List<Notification> result = new ArrayList<>(mentions.size());
 		for (Status status : mentions) {
 			result.add(new TwitterNotification(status));
@@ -1135,14 +1098,22 @@ public class Twitter implements Connection {
 	 *
 	 * @param endpoint endpoint url to fetch the tweets
 	 * @param params   additional parameters
+	 * @param minId    minimum tweet ID
+	 * @param maxId    maximum tweet ID
 	 * @return list of tweets
 	 */
-	private List<Status> getTweets1(String endpoint, List<String> params) throws TwitterException {
+	private List<Status> getTweets1(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
+		// enable extended tweet mode
+		params.add(TweetV1.PARAM_EXT_MODE);
+		params.add(TweetV1.PARAM_INCL_RETWEET);
+		params.add(TweetV1.PARAM_ENTITIES);
+		// set tweet range
+		if (minId > 0)
+			params.add("since_id=" + minId);
+		if (maxId > 1)
+			params.add("max_id=" + maxId);
+		params.add("count=" + settings.getListSize());
 		try {
-			params.add(TweetV1.PARAM_EXT_MODE);
-			params.add(TweetV1.PARAM_INCL_RETWEET);
-			params.add(TweetV1.PARAM_ENTITIES);
-			params.add("count=" + settings.getListSize());
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
@@ -1176,17 +1147,25 @@ public class Twitter implements Connection {
 	 *
 	 * @param endpoint endpoint url to fetch the tweets
 	 * @param params   additional parameters
+	 * @param minId    minimum tweet ID
+	 * @param maxId    maximum tweet ID
 	 * @return list of tweets
 	 */
-	private List<Status> getTweets2(String endpoint, List<String> params) throws TwitterException {
+	private List<Status> getTweets2(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
+		// enable additional tweet fields
+		params.add(TweetV2.FIELDS_TWEET);
+		params.add(TweetV2.FIELDS_EXPANSION);
+		params.add(UserV2.FIELDS_USER);
+		params.add(MediaV2.FIELDS_MEDIA);
+		params.add(PollV2.FIELDS_POLL);
+		params.add(LocationV2.FIELDS_PLACE);
+		// set tweet range
+		if (minId > 0)
+			params.add("since_id=" + minId);
+		if (maxId > 1)
+			params.add("until_id=" + maxId);
+		params.add("max_results=" + settings.getListSize());
 		try {
-			params.add(TweetV2.FIELDS_TWEET);
-			params.add(TweetV2.FIELDS_EXPANSION);
-			params.add(UserV2.FIELDS_USER);
-			params.add(MediaV2.FIELDS_MEDIA);
-			params.add(PollV2.FIELDS_POLL);
-			params.add(LocationV2.FIELDS_PLACE);
-			params.add("max_results=" + settings.getListSize());
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
@@ -1225,10 +1204,11 @@ public class Twitter implements Connection {
 	 * @param params   additional parameter
 	 */
 	private TweetV1 getTweet1(String endpoint, List<String> params) throws TwitterException {
+		// use extended mode and add additional fields
+		params.add(TweetV1.PARAM_EXT_MODE);
+		params.add(TweetV1.PARAM_INCL_RETWEET);
+		params.add(TweetV1.PARAM_ENTITIES);
 		try {
-			params.add(TweetV1.PARAM_EXT_MODE);
-			params.add(TweetV1.PARAM_INCL_RETWEET);
-			params.add(TweetV1.PARAM_ENTITIES);
 			Response response;
 			if (endpoint.equals(TWEET_LOOKUP)) {
 				response = get(endpoint, params);
@@ -1262,19 +1242,21 @@ public class Twitter implements Connection {
 	 * @param params   additional parameter
 	 */
 	private TweetV2 getTweet2(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
+		// enable additional tweet fields
+		params.add(TweetV2.FIELDS_EXPANSION);
+		params.add(UserV2.FIELDS_USER);
+		params.add(MediaV2.FIELDS_MEDIA);
+		params.add(PollV2.FIELDS_POLL);
+		params.add(LocationV2.FIELDS_PLACE);
+		// add metrics information if the author is the current user and the tweet is not older than 28 days and not a retweet/quote
+		if (statusCompat.getAuthor().isCurrentUser() && System.currentTimeMillis() - statusCompat.getTimestamp() < 2419200000L
+			&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() <= 0)) {
+			params.add(TweetV2.FIELDS_TWEET_PRIVATE);
+		} else {
+			params.add(TweetV2.FIELDS_TWEET);
+		}
 		try {
 			Response response;
-			// add metrics information if the author is the current user and the tweet is not older than 28 days and not a retweet/quote
-			if (statusCompat.getAuthor().isCurrentUser() && System.currentTimeMillis() - statusCompat.getTimestamp() < 2419200000L
-					&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() <= 0))
-				params.add(TweetV2.FIELDS_TWEET_PRIVATE);
-			else
-				params.add(TweetV2.FIELDS_TWEET);
-			params.add(TweetV2.FIELDS_EXPANSION);
-			params.add(UserV2.FIELDS_USER);
-			params.add(MediaV2.FIELDS_MEDIA);
-			params.add(PollV2.FIELDS_POLL);
-			params.add(LocationV2.FIELDS_PLACE);
 			if (endpoint.startsWith(TWEET2_LOOKUP)) {
 				response = get(endpoint, params);
 			} else {
@@ -1303,9 +1285,9 @@ public class Twitter implements Connection {
 	 * @return an array of user IDs + the list cursor on the last array index
 	 */
 	private long[] getUserIDs(String endpoint, long cursor) throws TwitterException {
+		List<String> params = new ArrayList<>();
+		params.add("cursor=" + cursor);
 		try {
-			List<String> params = new ArrayList<>();
-			params.add("cursor=" + cursor);
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
@@ -1358,7 +1340,7 @@ public class Twitter implements Connection {
 			if (USERS_LOOKUP.equals(endpoint)) {
 				response = post(endpoint, params);
 			} else {
-				params.add("skip_status=true");
+				params.add(UserV1.PARAM_SKIP_STATUS);
 				params.add("count=" + settings.getListSize());
 				response = get(endpoint, params);
 			}
@@ -1394,12 +1376,13 @@ public class Twitter implements Connection {
 	 * create a list of users using API v 2
 	 *
 	 * @param endpoint endpoint url to get the user data from
+	 * @param params   additional parameters
 	 * @return user list
 	 */
-	private Users getUsers2(String endpoint) throws TwitterException {
+	private Users getUsers2(String endpoint, List<String> params) throws TwitterException {
+		// enable additional user fields
+		params.add("user.fields=" + UserV2.FIELDS_USER);
 		try {
-			List<String> params = new ArrayList<>();
-			params.add("user.fields=" + UserV2.FIELDS_USER);
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
@@ -1435,9 +1418,10 @@ public class Twitter implements Connection {
 	 * @return user information
 	 */
 	private User getUser1(String endpoint, List<String> params) throws TwitterException {
+		// enable entities/disable pinned status
+		params.add(UserV1.PARAM_SKIP_STATUS);
+		params.add(UserV1.PARAM_INCLUDE_ENTITIES);
 		try {
-			params.add("skip_status=true");
-			params.add("include_entities=true");
 			Response response;
 			if (endpoint.equals(USER_LOOKUP))
 				response = get(endpoint, params);
@@ -1487,7 +1471,7 @@ public class Twitter implements Connection {
 	 * @return list of userlists
 	 */
 	private UserLists getUserlists(String endpoint, List<String> params) throws TwitterException {
-		params.add("include_entities=true");
+		params.add(UserV1.PARAM_INCLUDE_ENTITIES);
 		try {
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
@@ -1525,7 +1509,7 @@ public class Twitter implements Connection {
 	}
 
 	/**
-	 * update profile images
+	 * update current user's images (profile/banner image)
 	 *
 	 * @param endpoint endpoint to use
 	 * @param input    inputstream of the image file
@@ -1533,10 +1517,7 @@ public class Twitter implements Connection {
 	 */
 	private void updateImage(String endpoint, InputStream input, String key) throws TwitterException {
 		try {
-			List<String> params = new ArrayList<>();
-			params.add("skip_status=true");
-			params.add("include_entities=false");
-			Response response = post(endpoint, params, input, key, false);
+			Response response = post(endpoint, new ArrayList<>(), input, key, false);
 			if (response.code() < 200 || response.code() >= 300) {
 				throw new TwitterException(response);
 			}
@@ -1555,15 +1536,10 @@ public class Twitter implements Connection {
 		try {
 			RequestBody request = RequestBody.create("{\"hidden\":" + hide + "}", TYPE_JSON);
 			Response response = put(TWEET_UNI + id + "/hidden", new ArrayList<>(), request);
-			ResponseBody body = response.body();
-			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string());
-				if (json.getJSONObject("data").getBoolean("hidden") == hide) {
-					return; // successfull if result equals request
-				}
+			if (response.code() != 200) {
+				throw new TwitterException(response);
 			}
-			throw new TwitterException(response);
-		} catch (IOException | JSONException e) {
+		} catch (IOException e) {
 			throw new TwitterException(e);
 		}
 	}

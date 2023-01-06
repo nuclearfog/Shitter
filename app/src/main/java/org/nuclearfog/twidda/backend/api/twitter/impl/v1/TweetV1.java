@@ -309,8 +309,8 @@ public class TweetV1 implements Status {
 
 
 	@Override
-	public int compareTo(Status o) {
-		return Long.compare(o.getId(), id);
+	public int compareTo(Status status) {
+		return Long.compare(status.getTimestamp(), timestamp);
 	}
 
 

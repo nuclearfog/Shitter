@@ -39,7 +39,7 @@ public class MessageImpl implements Message {
 	public MessageImpl(Cursor cursor, Account account) {
 		sender = new UserImpl(cursor, account);
 		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
-		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.SINCE));
+		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TIME));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
 		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));

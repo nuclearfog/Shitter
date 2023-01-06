@@ -67,7 +67,7 @@ public class StatusImpl implements Status {
 	 */
 	public StatusImpl(Cursor cursor, Account account) {
 		author = new UserImpl(cursor, account);
-		time = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.TIMESTAMP));
+		time = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.TIME));
 		text = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.TEXT));
 		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPOST));
 		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.FAVORITE));
@@ -264,13 +264,14 @@ public class StatusImpl implements Status {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Status))
 			return false;
-		return ((Status) obj).getId() == id;
+		Status status = ((Status) obj);
+		return status.getId() == id && status.getTimestamp() == time && status.getAuthor().equals(author);
 	}
 
 
 	@Override
-	public int compareTo(Status o) {
-		return Long.compare(o.getId(), id);
+	public int compareTo(Status status) {
+		return Long.compare(status.getTimestamp(), time);
 	}
 
 

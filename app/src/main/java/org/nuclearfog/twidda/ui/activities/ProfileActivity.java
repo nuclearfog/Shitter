@@ -486,58 +486,62 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	@Override
 	public void onClick(View v) {
-		// open following page
-		if (v.getId() == R.id.following) {
-			if (user != null && relation != null) {
-				if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
-					Intent usersIntent = new Intent(this, UsersActivity.class);
-					usersIntent.putExtra(KEY_USERS_ID, user.getId());
-					usersIntent.putExtra(KEY_USERS_MODE, USERS_FRIENDS);
-					startActivity(usersIntent);
+		if (user != null) {
+			// open following page
+			if (v.getId() == R.id.following) {
+				if (relation != null) {
+					if ((settings.getLogin().getApiType() != Account.API_TWITTER || !user.isProtected())
+						|| user.isCurrentUser() || relation.isFollowing()) {
+						Intent usersIntent = new Intent(this, UsersActivity.class);
+						usersIntent.putExtra(KEY_USERS_ID, user.getId());
+						usersIntent.putExtra(KEY_USERS_MODE, USERS_FRIENDS);
+						startActivity(usersIntent);
+					}
 				}
 			}
-		}
-		// open follower page
-		else if (v.getId() == R.id.follower) {
-			if (user != null && relation != null) {
-				if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
-					Intent usersIntent = new Intent(this, UsersActivity.class);
-					usersIntent.putExtra(KEY_USERS_ID, user.getId());
-					usersIntent.putExtra(KEY_USERS_MODE, USERS_FOLLOWER);
-					startActivity(usersIntent);
+			// open follower page
+			else if (v.getId() == R.id.follower) {
+				if (relation != null) {
+					if ((settings.getLogin().getApiType() != Account.API_TWITTER || !user.isProtected())
+						|| user.isCurrentUser() || relation.isFollowing()) {
+						Intent usersIntent = new Intent(this, UsersActivity.class);
+						usersIntent.putExtra(KEY_USERS_ID, user.getId());
+						usersIntent.putExtra(KEY_USERS_MODE, USERS_FOLLOWER);
+						startActivity(usersIntent);
+					}
 				}
 			}
-		}
-		// open link added to profile
-		else if (v.getId() == R.id.links) {
-			if (user != null && !user.getProfileUrl().isEmpty()) {
-				String link = user.getProfileUrl();
-				Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
-				try {
-					startActivity(browserIntent);
-				} catch (ActivityNotFoundException err) {
-					Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+			// open link added to profile
+			else if (v.getId() == R.id.links) {
+				if (!user.getProfileUrl().isEmpty()) {
+					String link = user.getProfileUrl();
+					Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
+					try {
+						startActivity(browserIntent);
+					} catch (ActivityNotFoundException err) {
+						Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+					}
 				}
 			}
-		}
-		// open profile image
-		else if (v.getId() == R.id.profile_img) {
-			if (user != null && !user.getOriginalProfileImageUrl().isEmpty()) {
-				Uri[] uris = {Uri.parse(user.getOriginalProfileImageUrl())};
-				Intent imageIntent = new Intent(this, ImageViewer.class);
-				imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
-				imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
-				startActivity(imageIntent);
+			// open profile image
+			else if (v.getId() == R.id.profile_img) {
+				if (!user.getOriginalProfileImageUrl().isEmpty()) {
+					Uri[] uris = {Uri.parse(user.getOriginalProfileImageUrl())};
+					Intent imageIntent = new Intent(this, ImageViewer.class);
+					imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
+					imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+					startActivity(imageIntent);
+				}
 			}
-		}
-		// open banner image
-		else if (v.getId() == R.id.profile_banner) {
-			if (user != null && !user.getOriginalBannerImageUrl().isEmpty()) {
-				Uri[] uris = {Uri.parse(user.getOriginalBannerImageUrl())};
-				Intent imageIntent = new Intent(this, ImageViewer.class);
-				imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
-				imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
-				startActivity(imageIntent);
+			// open banner image
+			else if (v.getId() == R.id.profile_banner) {
+				if (!user.getOriginalBannerImageUrl().isEmpty()) {
+					Uri[] uris = {Uri.parse(user.getOriginalBannerImageUrl())};
+					Intent imageIntent = new Intent(this, ImageViewer.class);
+					imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
+					imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+					startActivity(imageIntent);
+				}
 			}
 		}
 	}

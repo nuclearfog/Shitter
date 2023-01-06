@@ -57,7 +57,7 @@ public class DatabaseAdapter {
 			+ StatusTable.REPLYSTATUS + " INTEGER,"
 			+ StatusTable.REPLYNAME + " TEXT,"
 			+ StatusTable.REPLYUSER + " INTEGER,"
-			+ StatusTable.TIMESTAMP + " INTEGER,"
+			+ StatusTable.TIME + " INTEGER,"
 			+ StatusTable.TEXT + " TEXT,"
 			+ StatusTable.MEDIA + " TEXT,"
 			+ StatusTable.REPOST + " INTEGER,"
@@ -97,7 +97,7 @@ public class DatabaseAdapter {
 	private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS "
 			+ MessageTable.NAME + "("
 			+ MessageTable.ID + " INTEGER PRIMARY KEY,"
-			+ MessageTable.SINCE + " INTEGER,"
+			+ MessageTable.TIME + " INTEGER,"
 			+ MessageTable.FROM + " INTEGER,"
 			+ MessageTable.TO + " INTEGER,"
 			+ MessageTable.MESSAGE + " TEXT,"
@@ -157,7 +157,7 @@ public class DatabaseAdapter {
 			+ NotificationTable.ID + " INTEGER PRIMARY KEY,"
 			+ NotificationTable.OWNER + " INTEGER,"
 			+ NotificationTable.USER + " INTEGER,"
-			+ NotificationTable.DATE + " INTEGER,"
+			+ NotificationTable.TIME + " INTEGER,"
 			+ NotificationTable.TYPE + " INTEGER,"
 			+ NotificationTable.ITEM + " INTEGER);";
 
@@ -482,7 +482,7 @@ public class DatabaseAdapter {
 		/**
 		 * timestamp of the status
 		 */
-		String TIMESTAMP = "time";
+		String TIME = "time";
 
 		/**
 		 * API source of the status
@@ -587,7 +587,7 @@ public class DatabaseAdapter {
 		/**
 		 * date of the message
 		 */
-		String SINCE = "time";
+		String TIME = "time";
 
 		/**
 		 * User ID of the sender
@@ -770,7 +770,7 @@ public class DatabaseAdapter {
 		/**
 		 * creation time of the notification
 		 */
-		String DATE = "timestamp";
+		String TIME = "timestamp";
 
 		/**
 		 * ID of the notification sender (user ID)
