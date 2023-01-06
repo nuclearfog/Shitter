@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
+	private Intent loginIntent;
 
 	private Dialog loadingCircle;
 	private TabLayout tabLayout;
@@ -107,8 +108,9 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	protected void onStart() {
 		super.onStart();
 		// open login page if there isn't any account selected
-		if (!settings.isLoggedIn()) {
-			Intent loginIntent = new Intent(this, LoginActivity.class);
+		if (!settings.isLoggedIn() && loginIntent == null) {
+			// prevent creating login activity twice
+			loginIntent = new Intent(this, LoginActivity.class);
 			startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
 		}
 		// initialize lists

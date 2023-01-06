@@ -1,7 +1,10 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.ACCESS_MEDIA_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.Intent.EXTRA_MIME_TYPES;
@@ -17,6 +20,7 @@ import static android.provider.MediaStore.Images.Media.RELATIVE_PATH;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
@@ -52,13 +56,29 @@ import java.util.Locale;
 public abstract class MediaActivity extends AppCompatActivity implements LocationListener {
 
 	/**
-	 * permissions used by the app
+	 * permission type for location
 	 */
-	private static final String[][] PERMISSIONS = {
-			{READ_EXTERNAL_STORAGE},
-			{ACCESS_FINE_LOCATION},
-			{WRITE_EXTERNAL_STORAGE}
-	};
+	private static final String[] PERMISSION_LOCATION = {ACCESS_FINE_LOCATION};
+
+	/**
+	 * permission type to write media files
+	 */
+	private static final String[] PERMISSION_WRITE = {WRITE_EXTERNAL_STORAGE};
+
+	/**
+	 * permission type to read media (images/videos)
+	 */
+	private static final String[] PERMISSIONS_READ;
+
+	static {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			PERMISSIONS_READ = new String[]{READ_MEDIA_IMAGES, READ_MEDIA_VIDEO};
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			PERMISSIONS_READ = new String[]{ACCESS_MEDIA_LOCATION, READ_EXTERNAL_STORAGE};
+		} else {
+			PERMISSIONS_READ = new String[]{READ_EXTERNAL_STORAGE};
+		}
+	}
 
 	private static final String MIME_ALL_READ = "*/*";
 	private static final String MIME_IMAGE_READ = "image/*";
@@ -67,7 +87,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	/**
 	 * image name prefix used to save images
 	 */
-	private static final String IMAGE_PREFIX = "twitter_";
+	private static final String IMAGE_PREFIX = "shitter_";
 
 	/**
 	 * mime types for videos and images
@@ -77,7 +97,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	/**
 	 * request code to check permissions
 	 */
-	private static final int REQ_CHECK_PERM = 0xF233;
+	private static final int REQUEST_LOCATION = 0xF233;
 
 	/**
 	 * request code to pick an image
@@ -104,6 +124,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	 */
 	protected static final int REQUEST_STORE_IMG = 0x58D3;
 
+
 	@Nullable
 	private ImageSaver imageTask;
 	private boolean locationPending = false;
@@ -127,20 +148,25 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
 
 	@Override
-	public final void onRequestPermissionsResult(final int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+	public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (permissions.length > 0 && grantResults.length > 0) {
+		if (grantResults.length > 0 && permissions.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
 			// read storage permission granted
-			if (PERMISSIONS[0][0].equals(permissions[0]) && grantResults[0] == PERMISSION_GRANTED) {
-				openMediaPicker(requestCode);
-			}
-			// location permission granted
-			else if (PERMISSIONS[1][0].equals(permissions[0])) {
-				getLocation(false);
-			}
-			// Write storage permissions granted
-			else if (PERMISSIONS[2][0].equals(permissions[0]) && grantResults[0] == PERMISSION_GRANTED) {
-				saveImage();
+			switch(permissions[0]) {
+				case ACCESS_FINE_LOCATION:
+					startLocating();
+					break;
+
+				case WRITE_EXTERNAL_STORAGE:
+					saveImage();
+					break;
+
+				case READ_EXTERNAL_STORAGE:
+				case ACCESS_MEDIA_LOCATION:
+				case READ_MEDIA_IMAGES:
+				case READ_MEDIA_VIDEO:
+					openMediaPicker(requestCode);
+					break;
 			}
 		}
 	}
@@ -237,24 +263,16 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
 	/**
 	 * Ask for GPS location
-	 *
-	 * @param ask set true to ask for permission
 	 */
-	protected void getLocation(boolean ask) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(PERMISSIONS[1][0]) == PERMISSION_GRANTED) {
-			LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-				locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
-				locationPending = true;
-				return;
-			}
-		} else if (ask) {
-			if (shouldShowRequestPermissionRationale(PERMISSIONS[1][0]))
+	protected void getLocation() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
+			startLocating();
+		} else {
+			if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
 				Toast.makeText(this, R.string.info_permission_location, LENGTH_LONG).show();
-			requestPermissions(PERMISSIONS[1], REQ_CHECK_PERM);
-			return;
+			}
+			requestPermissions(PERMISSION_LOCATION, REQUEST_LOCATION);
 		}
-		onAttachLocation(null);
 	}
 
 	/**
@@ -263,12 +281,30 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	 * @param requestCode media type
 	 */
 	protected void getMedia(int requestCode) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(PERMISSIONS[0][0]) == PERMISSION_GRANTED) {
+		// open media picker directly without permission
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
 			openMediaPicker(requestCode);
-		} else {
-			if (shouldShowRequestPermissionRationale(PERMISSIONS[0][0]))
-				Toast.makeText(this, R.string.info_permission_read, LENGTH_LONG).show();
-			requestPermissions(PERMISSIONS[0], requestCode);
+		}
+		// ask for permission
+		else {
+			boolean requiresPermission = false;
+			for (String permission : PERMISSIONS_READ) {
+				if (checkSelfPermission(permission) != PERMISSION_GRANTED) {
+					requiresPermission = true;
+					break;
+				}
+			}
+			if (requiresPermission) {
+				for (String permission : PERMISSIONS_READ) {
+					if (shouldShowRequestPermissionRationale(permission)) {
+						Toast.makeText(this, R.string.info_permission_read, LENGTH_LONG).show();
+						break;
+					}
+				}
+				requestPermissions(PERMISSIONS_READ, requestCode);
+			} else {
+				openMediaPicker(requestCode);
+			}
 		}
 	}
 
@@ -281,12 +317,12 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 		selectedImage = uri;
 		imageName = IMAGE_PREFIX + uri.getLastPathSegment();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-				|| checkSelfPermission(PERMISSIONS[2][0]) == PERMISSION_GRANTED) {
+				|| checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
 			saveImage();
 		} else {
-			if (shouldShowRequestPermissionRationale(PERMISSIONS[2][0]))
+			if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))
 				Toast.makeText(this, R.string.info_permission_write, LENGTH_LONG).show();
-			requestPermissions(PERMISSIONS[2], REQUEST_STORE_IMG);
+			requestPermissions(PERMISSION_WRITE, REQUEST_STORE_IMG);
 		}
 	}
 
@@ -297,6 +333,18 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	 */
 	protected boolean isLocating() {
 		return locationPending;
+	}
+
+
+	@SuppressLint("MissingPermission")
+	private void startLocating() {
+		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
+			locationPending = true;
+		} else {
+			onAttachLocation(null);
+		}
 	}
 
 	/**

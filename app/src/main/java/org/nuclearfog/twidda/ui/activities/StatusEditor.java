@@ -236,7 +236,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		else if (v.getId() == R.id.popup_status_add_location) {
 			locationPending.setVisibility(VISIBLE);
 			locationBtn.setVisibility(INVISIBLE);
-			getLocation(true);
+			getLocation();
 		}
 	}
 
