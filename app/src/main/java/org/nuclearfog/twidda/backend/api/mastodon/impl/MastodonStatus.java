@@ -67,6 +67,7 @@ public class MastodonStatus implements Status {
 		sensitive = json.optBoolean("sensitive", false);
 		text = json.optString("content", "");
 		text = Jsoup.parse(text).text();
+		mentions = author.getScreenname() + ' ';
 
 		if (embeddedJson != null) {
 			embeddedStatus = new MastodonStatus(embeddedJson, currentUserId);
@@ -82,14 +83,14 @@ public class MastodonStatus implements Status {
 			}
 		}
 		if (mentionsJson != null) {
-			StringBuilder mentionsBuilder = new StringBuilder();
+			StringBuilder mentionsBuilder = new StringBuilder(mentions);
 			for (int i = 0; i < mentionsJson.length(); i++) {
-				String item = mentionsJson.getJSONObject(i).optString("acct", "");
-				mentionsBuilder.append('@').append(item).append(' ');
+				String mention = '@' + mentionsJson.getJSONObject(i).getString("acct");
+				if (!mention.equals(author.getScreenname())) {
+					mentionsBuilder.append(mention).append(' ');
+				}
 			}
 			mentions = mentionsBuilder.toString();
-		} else {
-			mentions = "";
 		}
 		if (appJson != null) {
 			source = appJson.optString("name", "");

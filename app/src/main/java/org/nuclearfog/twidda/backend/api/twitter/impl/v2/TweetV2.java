@@ -45,7 +45,7 @@ public class TweetV2 implements Status {
 
 	/**
 	 * default tweet fields with non public metrics
-	 * (only valid if current user is the author of this tweet, the tweet isn't a retweet and the tweet isn't older than 30 days)
+	 * (only valid if current user is the author of this tweet, the tweet isn't a retweet and the tweet isn't older than 28 days)
 	 */
 	public static final String FIELDS_TWEET_PRIVATE = FIELDS_TWEET + "%2Cnon_public_metrics";
 
