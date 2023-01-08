@@ -151,11 +151,9 @@
 
 					<androidx.recyclerview.widget.RecyclerView
 						android:id="@+id/page_status_cards"
-						android:layout_width="0dp"
-						android:layout_height="0dp"
-						android:foregroundGravity="center"
+						android:layout_width="wrap_content"
+						android:layout_height="@dimen/page_status_card_height"
 						android:layout_margin="@dimen/page_status_cards_list_margin"
-						app:layout_constraintDimensionRatio="3"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/page_status_text"
 						app:layout_constraintEnd_toEndOf="parent" />

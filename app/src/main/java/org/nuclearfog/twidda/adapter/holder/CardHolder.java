@@ -41,11 +41,6 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	private static final int TEXT_TRANSPARENCY = 0xafffffff;
 
 	/**
-	 * how much views should be fit in the window
-	 */
-	private static final int COLUMN_COUNT = 2;
-
-	/**
 	 * maximum char count of the title before truncating
 	 */
 	private static final int TITLE_MAX_LEN = 30;
@@ -66,8 +61,8 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 		linkText = itemView.findViewById(R.id.link_preview_text);
 		preview = itemView.findViewById(R.id.link_preview_image);
 
-		itemView.getLayoutParams().width = parent.getMeasuredWidth() / COLUMN_COUNT;
-		itemView.getLayoutParams().height = parent.getMeasuredHeight();
+		itemView.getLayoutParams().width = parent.getMeasuredHeight() * 16 / 9;
+
 		linkText.setTypeface(settings.getTypeFace());
 		linkText.setTextColor(settings.getFontColor());
 		linkText.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);

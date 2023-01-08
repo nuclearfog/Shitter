@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -20,11 +22,15 @@ public class MastodonUser implements User {
 
 	private long id;
 	private long createdAt;
-	private String screenname, username;
-	private String profileUrl, bannerUrl;
-	private String description, url;
+	private String url;
+	private String screenname;
+	private String username;
+	private String profileUrl = "";
+	private String bannerUrl = "";
+	private String description = "";
 
-	private int following, follower;
+	private int following;
+	private int follower;
 	private int statusCount;
 	private boolean locked;
 	private boolean isCurrentUser = true;
@@ -44,11 +50,12 @@ public class MastodonUser implements User {
 	public MastodonUser(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
 		String description = json.optString("note", "");
+		String profileUrl = json.optString("avatar", "");
+		String bannerUrl = json.optString("header", "");
+		String createdAtStr = json.optString("created_at", "");
 		screenname = '@' + json.optString("acct", "");
 		username = json.optString("display_name", "");
-		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_MASTODON);
-		profileUrl = json.optString("avatar", "");
-		bannerUrl = json.optString("header", "");
+		createdAt = StringTools.getTime(createdAtStr, StringTools.TIME_MASTODON);
 		url = json.optString("url", "");
 		following = json.optInt("following_count");
 		follower = json.optInt("followers_count");
@@ -56,8 +63,12 @@ public class MastodonUser implements User {
 		locked = json.optBoolean("locked");
 		if (!description.isEmpty()) {
 			this.description = Jsoup.parse(description).text();
-		} else {
-			this.description = "";
+		}
+		if (Patterns.WEB_URL.matcher(profileUrl).matches()) {
+			this.profileUrl = profileUrl;
+		}
+		if (Patterns.WEB_URL.matcher(bannerUrl).matches()) {
+			this.bannerUrl = bannerUrl;
 		}
 		try {
 			id = Long.parseLong(idStr);

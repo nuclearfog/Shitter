@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
 
+import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
@@ -21,6 +23,21 @@ public class MediaV1 implements Media {
 	 */
 	private static final String MIME_V_MP4 = "video/mp4";
 
+	/**
+	 * Twitter media type for animated image
+	 */
+	private static final String TYPE_GIF = "animated_gif";
+
+	/**
+	 * Twitter media type for image
+	 */
+	private static final String TYPE_IMAGE = "photo";
+
+	/**
+	 * Twitter media type for video
+	 */
+	private static final String TYPE_VIDEO = "video";
+
 	private int type = NONE;
 	private String url = "";
 	private String key;
@@ -32,12 +49,17 @@ public class MediaV1 implements Media {
 		String type = json.getString("type");
 		key = json.getString("id_str");
 		switch (type) {
-			case "photo":
-				url = json.getString("media_url_https");
+			case TYPE_IMAGE:
+				String url = json.getString("media_url_https");
+				if (Patterns.WEB_URL.matcher(url).matches()) {
+					this.url = url;
+				} else {
+					throw new JSONException("invalid url: \"" + url + "\"");
+				}
 				this.type = PHOTO;
 				break;
 
-			case "video":
+			case TYPE_VIDEO:
 				int maxBitrate = -1;
 				JSONArray videoVariants = json.getJSONObject("video_info").getJSONArray("variants");
 				for (int i = 0; i < videoVariants.length(); i++) {
@@ -45,18 +67,28 @@ public class MediaV1 implements Media {
 					int bitRate = variant.optInt("bitrate", 0);
 					if (bitRate > maxBitrate && MIME_V_MP4.equals(variant.getString("content_type"))) {
 						url = variant.getString("url");
+						if (Patterns.WEB_URL.matcher(url).matches()) {
+							this.url = url;
+						} else {
+							throw new JSONException("invalid url: \"" + url + "\"");
+						}
 						maxBitrate = bitRate;
 						this.type = VIDEO;
 					}
 				}
 				break;
 
-			case "animated_gif":
+			case TYPE_GIF:
 				JSONArray gifVariants = json.getJSONObject("video_info").getJSONArray("variants");
 				for (int i = 0; i < gifVariants.length(); i++) {
 					JSONObject gifVariant = gifVariants.getJSONObject(i);
 					if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
 						url = gifVariant.getString("url");
+						if (Patterns.WEB_URL.matcher(url).matches()) {
+							this.url = url;
+						} else {
+							throw new JSONException("invalid url: \"" + url + "\"");
+						}
 						this.type = GIF;
 						break;
 					}

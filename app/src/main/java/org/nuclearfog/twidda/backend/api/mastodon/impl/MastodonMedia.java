@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
@@ -15,29 +17,55 @@ public class MastodonMedia implements Media {
 
 	private static final long serialVersionUID = 8402701358586444094L;
 
+	/**
+	 * Mastodon image type
+	 */
+	private static final String TYPE_IMAGE = "image";
+
+	/**
+	 * Mastodon animated image type
+	 */
+	private static final String TYPE_GIF = "gifv";
+
+	/**
+	 * Mastodon video type
+	 */
+	private static final String TYPE_VIDEO = "video";
+
 	private String key;
 	private String url;
-	private String preview;
+	private String preview = "";
 	private int type = NONE;
 
-
+	/**
+	 * @param json Mastodon status JSON format
+	 */
 	public MastodonMedia(JSONObject json) throws JSONException {
 		String typeStr = json.getString("type");
+		String url = json.getString("url");
+		String preview = json.optString("preview_url", "");
 		key = json.getString("id");
-		url = json.optString("url", "");
-		preview = json.optString("preview_url");
+
 		switch (typeStr) {
-			case "image":
+			case TYPE_IMAGE:
 				type = PHOTO;
 				break;
 
-			case "gifv":
+			case TYPE_GIF:
 				type = GIF;
 				break;
 
-			case "video":
+			case TYPE_VIDEO:
 				type = VIDEO;
 				break;
+		}
+		if (Patterns.WEB_URL.matcher(url).matches()) {
+			this.url = url;
+		} else {
+			throw new JSONException("invalid url: \"" + url + "\"");
+		}
+		if (Patterns.WEB_URL.matcher(preview).matches()) {
+			this.preview = preview;
 		}
 	}
 

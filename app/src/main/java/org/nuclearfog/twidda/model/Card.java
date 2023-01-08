@@ -25,7 +25,7 @@ public interface Card extends Serializable {
 	String getUrl();
 
 	/**
-	 * @return preview image link
+	 * @return preview image link (may be empty)
 	 */
 	String getImageUrl();
 }

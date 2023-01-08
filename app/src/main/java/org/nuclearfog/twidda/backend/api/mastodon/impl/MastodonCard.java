@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import android.util.Patterns;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Card;
 
@@ -17,12 +20,19 @@ public class MastodonCard implements Card {
 	private String url;
 	private String imageLink;
 
-
-	public MastodonCard(JSONObject json) {
+	/**
+	 * @param json Mastodon card json
+	 */
+	public MastodonCard(JSONObject json) throws JSONException {
+		String imageLink = json.optString("image", "");
+		url = json.getString("url");
 		title = json.optString("title", "");
 		description = json.optString("description", "");
-		imageLink = json.optString("image", "");
-		url = json.optString("url");
+		if (Patterns.WEB_URL.matcher(imageLink).matches()) {
+			this.imageLink = imageLink;
+		} else {
+			this.imageLink = "";
+		}
 	}
 
 

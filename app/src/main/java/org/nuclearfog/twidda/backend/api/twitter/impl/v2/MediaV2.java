@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
+import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
@@ -26,6 +28,21 @@ public class MediaV2 implements Media {
 	 */
 	private static final String MIME_V_MP4 = "video/mp4";
 
+	/**
+	 * Twitter media type for image
+	 */
+	private static final String TYPE_IMAGE = "photo";
+
+	/**
+	 * Twitter media type for video
+	 */
+	private static final String TYPE_VIDEO = "video";
+
+	/**
+	 * Twitter media type for animated image
+	 */
+	private static final String TYPE_GIF = "animated_gif";
+
 	private String key;
 	private String preview;
 	private String url = "";
@@ -40,14 +57,19 @@ public class MediaV2 implements Media {
 		key = mediaItem.getString("media_key");
 
 		switch (typeStr) {
-			case "photo":
-				url = mediaItem.optString("url");
+			case TYPE_IMAGE:
+				String url = mediaItem.optString("url");
+				if (Patterns.WEB_URL.matcher(url).matches()) {
+					this.url = url;
+				} else {
+					throw new JSONException("invalid url: \"" + url + "\"");
+				}
 				if (preview.isEmpty())// fixme: currently Twitter doesn't support preview for images.
 					preview = url;
 				type = PHOTO;
 				break;
 
-			case "video":
+			case TYPE_VIDEO:
 				int maxBitrate = -1;
 				JSONArray variants = mediaItem.getJSONArray("variants");
 				for (int i = 0; i < variants.length(); i++) {
@@ -55,14 +77,24 @@ public class MediaV2 implements Media {
 					int bitRate = variant.optInt("bitrate", 0);
 					if (bitRate > maxBitrate && MIME_V_MP4.equals(variant.getString("content_type"))) {
 						url = variant.getString("url");
+						if (Patterns.WEB_URL.matcher(url).matches()) {
+							this.url = url;
+						} else {
+							throw new JSONException("invalid url: \"" + url + "\"");
+						}
 						maxBitrate = bitRate;
 						type = VIDEO;
 					}
 				}
 				break;
 
-			case "animated_gif":
+			case TYPE_GIF:
 				url = mediaItem.optString("url");
+				if (Patterns.WEB_URL.matcher(url).matches()) {
+					this.url = url;
+				} else {
+					throw new JSONException("invalid url: \"" + url + "\"");
+				}
 				type = GIF;
 				break;
 		}

@@ -33,8 +33,8 @@ public class UserV2 implements User {
 	private String description;
 	private String location;
 	private String url;
-	private String profileImageUrl;
-	private String profileBannerUrl;
+	private String profileImageUrl = "";
+	private String profileBannerUrl = "";
 	private int following;
 	private int follower;
 	private int tweetCount;
@@ -48,39 +48,33 @@ public class UserV2 implements User {
 	 * @param twitterId ID of the current user
 	 */
 	public UserV2(JSONObject json, long twitterId) throws JSONException {
-		JSONObject metrics = json.optJSONObject("public_metrics");
-
+		JSONObject metrics = json.getJSONObject("public_metrics");
 		String idStr = json.getString("id");
 		String profileImageUrl = json.optString("profile_image_url", "");
 		String profileBannerUrl = json.optString("profile_banner_url", "");
+		String createdAtStr = json.optString("created_at", "");
 		username = json.optString("name", "");
 		screenName = '@' + json.optString("username", "");
 		isProtected = json.optBoolean("protected");
 		location = json.optString("location", "");
 		isVerified = json.optBoolean("verified");
-		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V2);
+		createdAt = StringTools.getTime(createdAtStr, StringTools.TIME_TWITTER_V2);
 		defaultImage = profileImageUrl.contains("default_profile_images");
-
 		url = getUrl(json);
 		description = getDescription(json);
-		if (metrics != null) {
-			following = metrics.optInt("following_count");
-			follower = metrics.optInt("followers_count");
-			tweetCount = metrics.optInt("tweet_count");
-		}
+		following = metrics.optInt("following_count");
+		follower = metrics.optInt("followers_count");
+		tweetCount = metrics.optInt("tweet_count");
+
 		if (Patterns.WEB_URL.matcher(profileImageUrl).matches()) {
 			if (defaultImage) {
 				this.profileImageUrl = profileImageUrl;
 			} else {
 				this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
 			}
-		} else {
-			this.profileImageUrl = "";
 		}
 		if (Patterns.WEB_URL.matcher(profileBannerUrl).matches()) {
 			this.profileBannerUrl = profileBannerUrl;
-		} else {
-			this.profileBannerUrl = "";
 		}
 		try {
 			id = Long.parseLong(idStr);

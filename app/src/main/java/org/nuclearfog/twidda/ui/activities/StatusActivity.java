@@ -482,11 +482,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				} else {
 					statusAsync = new StatusAction(this, StatusAction.REPOST);
 				}
-
-				if (status.getEmbeddedStatus() != null)
+				if (status.getEmbeddedStatus() != null) {
 					statusAsync.execute(status.getId(), status.getEmbeddedStatus().getRepostId());
-				else
+				} else {
 					statusAsync.execute(status.getId());
+				}
 				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}

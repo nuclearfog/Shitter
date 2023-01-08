@@ -138,7 +138,6 @@
 	<string name="error_dm_send">无法给该用户发送消息！</string>
 	<string name="error_image_save">无法保存该图片</string>
 	<string name="error_not_authorized">未取得授权！</string>
-	<string name="error_file_format">不支持该文件格式！</string>
 	<string name="error_empty_name">用户名为空！</string>
 	<string name="error_user_not_found">未找到该用户！</string>
 	<string name="error_accesstoken">无效访问！请重新登录！</string>

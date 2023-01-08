@@ -32,8 +32,8 @@ public class UserV1 implements User {
 	private String description;
 	private String location;
 	private String url;
-	private String profileImageUrl;
-	private String profileBannerUrl;
+	private String profileImageUrl = "";
+	private String profileBannerUrl = "";
 	private int following;
 	private int follower;
 	private int tweetCount;
@@ -77,21 +77,15 @@ public class UserV1 implements User {
 		description = getDescription(json);
 		url = getUrl(json);
 
-		//
 		if (Patterns.WEB_URL.matcher(profileImageUrl).matches()) {
-			this.profileImageUrl = profileImageUrl;
-		} else {
-			this.profileImageUrl = "";
+			if (defaultImage) {
+				this.profileImageUrl = profileImageUrl;
+			} else {
+				this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
+			}
 		}
 		if (Patterns.WEB_URL.matcher(profileBannerUrl).matches()) {
 			this.profileBannerUrl = profileBannerUrl;
-		} else {
-			this.profileBannerUrl = "";
-		}
-		if (defaultImage) {
-			this.profileImageUrl = profileImageUrl;
-		} else {
-			this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
 		}
 		try {
 			id = Long.parseLong(idStr);
