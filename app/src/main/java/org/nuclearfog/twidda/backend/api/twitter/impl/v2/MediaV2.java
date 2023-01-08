@@ -89,13 +89,20 @@ public class MediaV2 implements Media {
 				break;
 
 			case TYPE_GIF:
-				url = mediaItem.optString("url");
-				if (Patterns.WEB_URL.matcher(url).matches()) {
-					this.url = url;
-				} else {
-					throw new JSONException("invalid url: \"" + url + "\"");
+				variants = mediaItem.getJSONArray("variants");
+				for (int i = 0 ; i < variants.length() ; i++) {
+					JSONObject gifVariant = variants.getJSONObject(i);
+					if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
+						url = gifVariant.getString("url");
+						if (Patterns.WEB_URL.matcher(url).matches()) {
+							this.url = url;
+						} else {
+							throw new JSONException("invalid url: \"" + url + "\"");
+						}
+						this.type = GIF;
+						break;
+					}
 				}
-				type = GIF;
 				break;
 		}
 	}
