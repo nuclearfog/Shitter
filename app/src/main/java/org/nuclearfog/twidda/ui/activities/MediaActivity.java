@@ -152,7 +152,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		if (grantResults.length > 0 && permissions.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
 			// read storage permission granted
-			switch(permissions[0]) {
+			switch (permissions[0]) {
 				case ACCESS_FINE_LOCATION:
 					startLocating();
 					break;

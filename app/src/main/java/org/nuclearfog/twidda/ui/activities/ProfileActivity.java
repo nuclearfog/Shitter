@@ -491,7 +491,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			if (v.getId() == R.id.following) {
 				if (relation != null) {
 					if ((settings.getLogin().getApiType() != Account.API_TWITTER || !user.isProtected())
-						|| user.isCurrentUser() || relation.isFollowing()) {
+							|| user.isCurrentUser() || relation.isFollowing()) {
 						Intent usersIntent = new Intent(this, UsersActivity.class);
 						usersIntent.putExtra(KEY_USERS_ID, user.getId());
 						usersIntent.putExtra(KEY_USERS_MODE, USERS_FRIENDS);
@@ -503,7 +503,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			else if (v.getId() == R.id.follower) {
 				if (relation != null) {
 					if ((settings.getLogin().getApiType() != Account.API_TWITTER || !user.isProtected())
-						|| user.isCurrentUser() || relation.isFollowing()) {
+							|| user.isCurrentUser() || relation.isFollowing()) {
 						Intent usersIntent = new Intent(this, UsersActivity.class);
 						usersIntent.putExtra(KEY_USERS_ID, user.getId());
 						usersIntent.putExtra(KEY_USERS_MODE, USERS_FOLLOWER);

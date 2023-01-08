@@ -26,7 +26,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:textSize="@dimen/tiem_poll_text_size"
-				android:lines="1"/>
+				android:lines="1" />
 
 			<!--todo add vote button here-->
 

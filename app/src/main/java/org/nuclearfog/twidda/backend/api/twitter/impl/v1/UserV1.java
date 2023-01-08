@@ -25,7 +25,6 @@ public class UserV1 implements User {
 	public static final String PARAM_INCLUDE_ENTITIES = "include_entities=true";
 
 
-
 	private long id;
 	private long createdAt;
 	private String username;

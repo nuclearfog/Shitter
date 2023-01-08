@@ -42,26 +42,18 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:barrierDirection="top"
-		app:constraint_referenced_ids="popup_status_prev_media,popup_status_add_media,popup_status_add_location,popup_status_send,popup_status_close" />
+		app:constraint_referenced_ids="popup_status_media_icons,popup_status_add_media,popup_status_add_location,popup_status_send,popup_status_close" />
 
-	<ImageButton
-		android:id="@+id/popup_status_prev_media"
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/popup_status_media_icons"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:visibility="invisible"
-		android:padding="@dimen/popup_status_button_padding"
-		android:layout_marginBottom="@dimen/popup_status_margin_layout"
-		android:layout_marginEnd="@dimen/popup_status_button_margin"
-		android:contentDescription="@string/image_preview"
-		android:scaleType="fitCenter"
+		android:layout_marginStart="@dimen/popup_status_icon_list_margin"
+		android:layout_marginEnd="@dimen/popup_status_icon_list_margin"
 		app:layout_constraintStart_toStartOf="@id/popup_status_background"
-		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
-		app:layout_constraintEnd_toStartOf="@id/popup_status_add_media"
-		app:layout_constraintHorizontal_bias="1.0"
-		app:layout_constraintHorizontal_chainStyle="packed"
-		app:layout_constraintDimensionRatio="1.0"
-		app:layout_constraintWidth_percent="0.1"
-		style="@style/RoundButton" />
+		app:layout_constraintTop_toTopOf="@id/popup_status_send"
+		app:layout_constraintBottom_toBottomOf="@id/popup_status_send"
+		app:layout_constraintEnd_toStartOf="@id/popup_status_add_media" />
 
 	<ImageButton
 		android:id="@+id/popup_status_add_media"
@@ -73,7 +65,7 @@
 		android:contentDescription="@string/tweet_add_image"
 		android:scaleType="fitCenter"
 		android:src="@drawable/attachment"
-		app:layout_constraintStart_toEndOf="@id/popup_status_prev_media"
+		app:layout_constraintStart_toEndOf="@id/popup_status_media_icons"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_add_location"
 		app:layout_constraintHorizontal_chainStyle="packed"

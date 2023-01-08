@@ -80,8 +80,8 @@
 	<dimen name="item_status_textsize_button">12sp</dimen>
 	<dimen name="item_status_textsize_date">12sp</dimen>
 	<dimen name="item_status_icon_size">14sp</dimen>
-	<dimen name="item_status_indicator_margin">3dp</dimen>
 	<dimen name="item_status_indicator_padding">6sp</dimen>
+	<dimen name="item_status_indicator_size">30sp</dimen>
 
 	<!--dimens of item_trend.xml-->
 	<dimen name="trenditem_layout_padding">5dp</dimen>
@@ -156,6 +156,7 @@
 	<!--dimens of popup_status.xml-->
 	<dimen name="popup_status_margin_layout">10dp</dimen>
 	<dimen name="popup_status_button_margin">7dp</dimen>
+	<dimen name="popup_status_icon_list_margin">7dp</dimen>
 	<dimen name="popup_status_button_padding">7dp</dimen>
 
 	<!--dimens of popup_message.xml-->
@@ -259,7 +260,7 @@
 	<dimen name="tiem_poll_text_size">11sp</dimen>
 
 	<!-- dimens of item_attachment.xml -->
-	<dimen name="item_attachment_indicator_size">28sp</dimen>
+	<dimen name="item_attachment_indicator_margin">2dp</dimen>
 
 	<!-- dimens of item_option -->
 	<dimen name="item_option_icon_size">12sp</dimen>

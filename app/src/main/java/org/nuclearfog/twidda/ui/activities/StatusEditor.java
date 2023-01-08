@@ -20,11 +20,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.IconAdapter;
+import org.nuclearfog.twidda.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
@@ -42,7 +45,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
  *
  * @author nuclearfog
  */
-public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener {
+public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener, OnMediaClickListener {
 
 	/**
 	 * key to add a statusd ID to reply
@@ -56,47 +59,23 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 */
 	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
 
-	private static final String MIME_GIF = "image/gif";
-	private static final String MIME_IMAGE_ALL = "image/";
-	private static final String MIME_VIDEO_ALL = "video/";
-
-	/**
-	 * image limit of a status
-	 */
-	private static final int MAX_IMAGES = 4;
-
-	/**
-	 * video limit of a status
-	 */
-	private static final int MAX_VIDEOS = 1;
-
-	/**
-	 * gif limit of a status
-	 */
-	private static final int MAX_GIF = 1;
-
 	/**
 	 * mention limit of a status
 	 */
 	private static final int MAX_MENTIONS = 10;
 
-	private static final int MEDIA_NONE = 0;
-	private static final int MEDIA_IMAGE = 1;
-	private static final int MEDIA_VIDEO = 2;
-	private static final int MEDIA_GIF = 3;
 
 	private StatusUpdater uploaderAsync;
-	private GlobalSettings settings;
 
 	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
+	private IconAdapter adapter;
 
-	private ImageButton mediaBtn, previewBtn, locationBtn;
+	private ImageButton mediaBtn, locationBtn;
 	private EditText statusText;
 	private View locationPending;
 
 	private StatusUpdate statusUpdate = new StatusUpdate();
-	private int selectedFormat = MEDIA_NONE;
 
 
 	@Override
@@ -113,13 +92,13 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		ImageView background = findViewById(R.id.popup_status_background);
 		ImageButton statusButton = findViewById(R.id.popup_status_send);
 		ImageButton closeButton = findViewById(R.id.popup_status_close);
+		RecyclerView iconList = findViewById(R.id.popup_status_media_icons);
 		locationBtn = findViewById(R.id.popup_status_add_location);
 		mediaBtn = findViewById(R.id.popup_status_add_media);
-		previewBtn = findViewById(R.id.popup_status_prev_media);
 		statusText = findViewById(R.id.popup_status_input);
 		locationPending = findViewById(R.id.popup_status_location_loading);
 
-		settings = GlobalSettings.getInstance(this);
+		GlobalSettings settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
 		AppStyles.setEditorTheme(root, background);
@@ -131,14 +110,18 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (prefix != null) {
 			statusText.append(prefix);
 		}
+		adapter = new IconAdapter(settings);
+		adapter.addOnMediaClickListener(this);
+		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
+		iconList.setAdapter(adapter);
 
 		closeButton.setOnClickListener(this);
 		statusButton.setOnClickListener(this);
 		mediaBtn.setOnClickListener(this);
-		previewBtn.setOnClickListener(this);
 		locationBtn.setOnClickListener(this);
 		confirmDialog.setConfirmListener(this);
 		loadingCircle.addOnProgressStopListener(this);
+		adapter.addOnMediaClickListener(this);
 	}
 
 
@@ -198,38 +181,12 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		}
 		// Add media to the status
 		else if (v.getId() == R.id.popup_status_add_media) {
-			if (selectedFormat == MEDIA_NONE) {
+			if (statusUpdate.getMediaType() == StatusUpdate.MEDIA_NONE) {
 				// request images/videos
 				getMedia(REQUEST_IMG_VID);
 			} else {
 				// request images only
 				getMedia(REQUEST_IMAGE);
-			}
-		}
-		// open media preview
-		else if (v.getId() == R.id.popup_status_prev_media) {
-			Uri[] uris = statusUpdate.getMediaUris();
-			//
-			if (selectedFormat == MEDIA_VIDEO) {
-				Intent mediaViewer = new Intent(this, VideoViewer.class);
-				mediaViewer.putExtra(VideoViewer.VIDEO_URI, uris[0]);
-				mediaViewer.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-				startActivity(mediaViewer);
-			}
-			//
-			else if (selectedFormat == MEDIA_IMAGE) {
-				Intent mediaViewer = new Intent(this, ImageViewer.class);
-				mediaViewer.putExtra(ImageViewer.IMAGE_URIS, uris);
-				mediaViewer.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
-				startActivity(mediaViewer);
-			}
-			//
-			else if (selectedFormat == MEDIA_GIF) {
-				// todo add support for local gif animation
-				Intent mediaViewer = new Intent(this, ImageViewer.class);
-				mediaViewer.putExtra(ImageViewer.IMAGE_URIS, uris);
-				mediaViewer.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
-				startActivity(mediaViewer);
 			}
 		}
 		// add location to the status
@@ -256,41 +213,26 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
-		int mediaCount = 0;
-		String mime = getContentResolver().getType(uri);
-		if (mime == null) {
-			Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
+		int mediaType = statusUpdate.addMedia(this, uri);
+		switch (mediaType) {
+			case StatusUpdate.MEDIA_IMAGE:
+				adapter.addImageItem();
+				break;
+
+			case StatusUpdate.MEDIA_GIF:
+				adapter.addGifItem();
+				break;
+
+			case StatusUpdate.MEDIA_VIDEO:
+				adapter.addVideoItem();
+				break;
+
+			case StatusUpdate.MEDIA_ERROR:
+				Toast.makeText(this, R.string.error_adding_media, LENGTH_SHORT).show();
+				break;
 		}
-		// check if file is a 'gif' image
-		else if (mime.equals(MIME_GIF)) {
-			if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_GIF) {
-				mediaCount = addStatusMedia(uri, R.drawable.gif, MAX_GIF);
-				if (mediaCount > 0) {
-					selectedFormat = MEDIA_GIF;
-				}
-			}
-		}
-		// check if file is an image
-		else if (mime.startsWith(MIME_IMAGE_ALL)) {
-			if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_IMAGE) {
-				mediaCount = addStatusMedia(uri, R.drawable.image, MAX_IMAGES);
-				if (mediaCount > 0) {
-					selectedFormat = MEDIA_IMAGE;
-				}
-			}
-		}
-		// check if file is a video
-		else if (mime.startsWith(MIME_VIDEO_ALL)) {
-			if (selectedFormat == MEDIA_NONE || selectedFormat == MEDIA_VIDEO) {
-				mediaCount = addStatusMedia(uri, R.drawable.video, MAX_VIDEOS);
-				if (mediaCount > 0) {
-					selectedFormat = MEDIA_VIDEO;
-				}
-			}
-		}
-		// check if media was successfully added
-		if (mediaCount <= 0) {
-			Toast.makeText(this, R.string.error_adding_media, LENGTH_SHORT).show();
+		if (statusUpdate.mediaLimitReached()) {
+			mediaBtn.setVisibility(GONE);
 		}
 	}
 
@@ -312,6 +254,28 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		// leave editor
 		else if (type == ConfirmDialog.STATUS_EDITOR_LEAVE) {
 			finish();
+		}
+	}
+
+
+	@Override
+	public void onMediaClick(int index) {
+		Uri[] uris = statusUpdate.getMediaUris();
+		switch (statusUpdate.getMediaType()) {
+			case StatusUpdate.MEDIA_IMAGE:
+			case StatusUpdate.MEDIA_GIF:
+				Intent mediaViewer = new Intent(this, ImageViewer.class);
+				mediaViewer.putExtra(ImageViewer.IMAGE_URIS, uris);
+				mediaViewer.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
+				startActivity(mediaViewer);
+				break;
+
+			case StatusUpdate.MEDIA_VIDEO:
+				mediaViewer = new Intent(this, VideoViewer.class);
+				mediaViewer.putExtra(VideoViewer.VIDEO_URI, uris[0]);
+				mediaViewer.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+				startActivity(mediaViewer);
+				break;
 		}
 	}
 
@@ -341,27 +305,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		} else {
 			finish();
 		}
-	}
-
-	/**
-	 * attach media to the status
-	 *
-	 * @param uri   Uri link of the media
-	 * @param icon  icon of the preview button
-	 * @param limit limit of the media count
-	 * @return media count or -1 if adding failed
-	 */
-	private int addStatusMedia(Uri uri, @DrawableRes int icon, int limit) {
-		previewBtn.setImageResource(icon);
-		AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
-		int mediaCount = statusUpdate.addMedia(this, uri);
-		if (mediaCount > 0)
-			previewBtn.setVisibility(VISIBLE);
-		// if limit reached, remove mediaselect button
-		if (mediaCount == limit) {
-			mediaBtn.setVisibility(GONE);
-		}
-		return mediaCount;
 	}
 
 	/**

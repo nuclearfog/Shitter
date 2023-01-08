@@ -126,14 +126,16 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 		long sinceId = 0;
 		long maxId = 0;
 		if (position == 0) {
-			Status status = items.get(position + 1);
-			if (status != null) {
-				sinceId = status.getId();
+			if (items.size() > 1) {
+				Status status = items.get(1);
+				if (status != null) {
+					sinceId = status.getId();
+				}
 			}
 		} else if (position == items.size() - 1) {
 			Status status = items.get(position - 1);
 			if (status != null) {
-				maxId = status.getId() - 1;
+				maxId = status.getId() - 1L;
 			}
 		} else {
 			Status status = items.get(position + 1);
@@ -142,7 +144,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 			}
 			status = items.get(position - 1);
 			if (status != null) {
-				maxId = status.getId() - 1;
+				maxId = status.getId() - 1L;
 			}
 		}
 		boolean success = listener.onPlaceholderClick(sinceId, maxId, position);

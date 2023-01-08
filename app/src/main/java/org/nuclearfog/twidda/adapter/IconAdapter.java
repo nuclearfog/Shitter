@@ -105,6 +105,30 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	}
 
 	/**
+	 * add a single image icon
+	 */
+	public void addImageItem() {
+		items.add(IconHolder.TYPE_IMAGE);
+		notifyItemInserted(items.size() - 1);
+	}
+
+	/**
+	 * add a single gif item
+	 */
+	public void addGifItem() {
+		items.add(IconHolder.TYPE_GIF);
+		notifyItemInserted(items.size() - 1);
+	}
+
+	/**
+	 * add a single video item
+	 */
+	public void addVideoItem() {
+		items.add(IconHolder.TYPE_VIDEO);
+		notifyItemInserted(items.size() - 1);
+	}
+
+	/**
 	 * add media iconsdepending on type
 	 */
 	private void addMediaIcons(Media[] medias) {
