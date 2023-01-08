@@ -35,19 +35,15 @@ public interface OnHolderClickListener {
 
 	int ACCOUNT_REMOVE = 13;
 
-	int IMAGE_CLICK = 14;
+	int PREVIEW_CLICK = 14;
 
-	int IMAGE_SAVE = 15;
+	int CARD_IMAGE = 15;
 
-	int PREVIEW_CLICK = 16;
+	int CARD_LINK = 16;
 
-	int CARD_IMAGE = 17;
+	int POLL_ITEM = 17;
 
-	int CARD_LINK = 18;
-
-	int POLL_ITEM = 19;
-
-	int POLL_OPTION = 20;
+	int POLL_OPTION = 18;
 
 	/**
 	 * called when an item was clicked

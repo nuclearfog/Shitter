@@ -14,7 +14,7 @@
 		android:layout_height="@dimen/mediapage_toolbar_height"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<org.nuclearfog.zoomview.ZoomView
 		android:id="@+id/page_image_viewer"

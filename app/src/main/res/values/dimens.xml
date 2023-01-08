@@ -187,12 +187,6 @@
 	<!--dimens of item_placeholder.xml-->
 	<dimen name="item_placeholder_margin">8dp</dimen>
 
-	<!--dimens of item_image.xml-->
-	<dimen name="imageitem_button_margin">5dp</dimen>
-	<dimen name="imageitem_drawable_padding">7dp</dimen>
-	<dimen name="imageitem_button_size">30dp</dimen>
-	<dimen name="imageitem_layout_margin">2dp</dimen>
-
 	<!--dimens of page_search.xml-->
 	<dimen name="searchpage_toolbar_height">@dimen/toolbar_height</dimen>
 
