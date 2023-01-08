@@ -382,7 +382,9 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		videoView.seekTo(seekBar.getProgress());
-		videoView.start();
+		if (playStatus == PLAY) {
+			videoView.start();
+		}
 	}
 
 
@@ -397,7 +399,6 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 					startActivity(intent);
 				} catch (ActivityNotFoundException err) {
 					Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-					finish();
 				}
 			}
 		}

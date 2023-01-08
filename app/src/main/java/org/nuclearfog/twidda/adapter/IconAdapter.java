@@ -75,6 +75,12 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 		return false;
 	}
 
+	/**
+	 * @return true if adapter does not contain any elements
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
+	}
 
 	/**
 	 * add icons using status information

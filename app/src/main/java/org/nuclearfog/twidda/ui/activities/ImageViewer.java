@@ -2,22 +2,20 @@ package org.nuclearfog.twidda.ui.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.ImageAdapter;
-import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ImageLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -26,27 +24,19 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Activity to show online and local images
  *
  * @author nuclearfog
  */
-public class ImageViewer extends MediaActivity implements OnImageClickListener {
+public class ImageViewer extends MediaActivity {
 
 	/**
 	 * key to add URI of the image (online or local)
 	 * value type is {@link Uri}
 	 */
-	public static final String IMAGE_URIS = "image-uri";
-
-	/**
-	 * key to define where the images are located (online or local)
-	 * value type is Boolean
-	 */
-	public static final String IMAGE_DOWNLOAD = "image-download";
+	public static final String IMAGE_URI = "image-uri";
 
 	/**
 	 * name of the cache folder where online images will be stored
@@ -54,52 +44,44 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 	 */
 	private static final String CACHE_FOLDER = "imagecache";
 
-	@Nullable
-	private ImageLoader imageAsync;
-	private ImageAdapter adapter;
-	private File cacheFolder;
-
 	private ZoomView zoomImage;
 	private ProgressBar loadingCircle;
+
+	@Nullable
+	private Uri cacheUri;
+	@Nullable
+	private ImageLoader imageAsync;
+	private GlobalSettings settings;
+	private File cacheFolder;
+	private boolean enableSave = false;
 
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_image);
-		loadingCircle = findViewById(R.id.media_progress);
-		zoomImage = findViewById(R.id.image_full);
-		RecyclerView imageList = findViewById(R.id.image_list);
+		Toolbar toolbar = findViewById(R.id.page_image_toolbar);
+		loadingCircle = findViewById(R.id.page_image_progress);
+		zoomImage = findViewById(R.id.page_image_viewer);
 
-		GlobalSettings settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.getInstance(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
+		toolbar.setTitle("");
+		setSupportActionBar(toolbar);
 
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
 		cacheFolder.mkdirs();
-		adapter = new ImageAdapter(getApplicationContext(), this);
-		imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-		imageList.setAdapter(adapter);
 
-		Parcelable[] links = getIntent().getParcelableArrayExtra(IMAGE_URIS);
-		boolean online = getIntent().getBooleanExtra(IMAGE_DOWNLOAD, true);
-
-		if (links != null) {
-			List<Uri> uris = new LinkedList<>();
-			for (Parcelable link : links) {
-				if (link instanceof Uri) {
-					uris.add((Uri) link);
-				}
-			}
-			if (!uris.isEmpty()) {
-				if (online) {
-					imageAsync = new ImageLoader(this, cacheFolder);
-					imageAsync.execute(uris.toArray(new Uri[0]));
-				} else {
-					adapter.replaceItems(uris);
-					adapter.disableSaveButton();
-					zoomImage.setImageURI(uris.get(0));
-					loadingCircle.setVisibility(INVISIBLE);
-				}
+		Parcelable data = getIntent().getParcelableExtra(IMAGE_URI);
+		if (data instanceof Uri) {
+			Uri uri = (Uri) data;
+			if (uri.getScheme().startsWith("http")) {
+				imageAsync = new ImageLoader(this, cacheFolder);
+				imageAsync.execute(uri);
+				enableSave = true;
+			} else {
+				zoomImage.setImageURI(uri);
+				loadingCircle.setVisibility(INVISIBLE);
 			}
 		}
 	}
@@ -107,23 +89,31 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 
 	@Override
 	protected void onDestroy() {
-		if (imageAsync != null && imageAsync.getStatus() == RUNNING)
+		if (imageAsync != null && imageAsync.getStatus() == RUNNING) {
 			imageAsync.cancel(true);
-		clearCache();
+			clearCache();
+		}
 		super.onDestroy();
 	}
 
 
 	@Override
-	public void onImageClick(Uri uri) {
-		zoomImage.reset();
-		zoomImage.setImageURI(uri);
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.image, menu);
+		AppStyles.setMenuIconColor(menu, settings.getIconColor());
+		menu.findItem(R.id.menu_image_save).setVisible(enableSave);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 
 	@Override
-	public void onImageSave(Uri uri) {
-		storeImage(uri);
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		if (item.getItemId() == R.id.menu_image_save) {
+			if (cacheUri != null) {
+				storeImage(cacheUri);
+			}
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 
@@ -137,30 +127,19 @@ public class ImageViewer extends MediaActivity implements OnImageClickListener {
 	}
 
 	/**
-	 * set downloaded image into preview list
-	 *
-	 * @param imageUri Image Uri
-	 */
-	public void setImage(Uri imageUri) {
-		if (adapter.isEmpty()) {
-			zoomImage.reset();
-			zoomImage.setImageURI(imageUri);
-			loadingCircle.setVisibility(INVISIBLE);
-		}
-		adapter.addItem(imageUri);
-	}
-
-	/**
 	 * Called from {@link ImageLoader} when all images are downloaded successfully
+	 *
+	 * @param uri Uri of the cached image file
 	 */
-	public void onSuccess() {
-		adapter.disableLoading();
+	public void onSuccess(Uri uri) {
+		cacheUri = uri;
+		zoomImage.reset();
+		zoomImage.setImageURI(uri);
+		loadingCircle.setVisibility(INVISIBLE);
 	}
 
 	/**
 	 * Called from {@link ImageLoader} when an error occurs
-	 *
-	 * @param err Exception caught by {@link ImageLoader}
 	 */
 	public void onError(ConnectionException err) {
 		ErrorHandler.handleFailure(getApplicationContext(), err);

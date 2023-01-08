@@ -361,8 +361,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
-			String link = settings.getLogin().getHostname() + status.getLinkPath();
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(status.getUrl()));
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
@@ -380,8 +379,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// copy status link to clipboard
 		else if (item.getItemId() == R.id.menu_status_copy_link) {
 			if (clip != null) {
-				String link = settings.getLogin().getHostname() + status.getLinkPath();
-				ClipData linkClip = ClipData.newPlainText("status link", link);
+				ClipData linkClip = ClipData.newPlainText("status link", status.getUrl());
 				clip.setPrimaryClip(linkClip);
 				Toast.makeText(this, R.string.info_tweet_link_copied, LENGTH_SHORT).show();
 			}
@@ -571,8 +569,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
 				Intent mediaIntent = new Intent(this, ImageViewer.class);
-				mediaIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(card.getImageUrl())});
-				mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+				mediaIntent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(card.getImageUrl()));
 				startActivity(mediaIntent);
 			}
 		}
@@ -584,8 +581,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		Uri uri = Uri.parse(media.getUrl());
 		if (media.getMediaType() == Media.PHOTO) {
 			Intent mediaIntent = new Intent(this, ImageViewer.class);
-			mediaIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{uri});
-			mediaIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+			mediaIntent.putExtra(ImageViewer.IMAGE_URI, uri);
 			startActivity(mediaIntent);
 		} else if (media.getMediaType() == Media.VIDEO) {
 			if (!settings.isProxyEnabled() || settings.ignoreProxyWarning()) {

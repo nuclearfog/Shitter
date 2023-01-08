@@ -2,44 +2,35 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/page_image_root"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
 	tools:context=".ui.activities.ImageViewer">
 
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/page_image_toolbar"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/mediapage_toolbar_height"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
 	<org.nuclearfog.zoomview.ZoomView
-		android:id="@+id/image_full"
+		android:id="@+id/page_image_viewer"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:scaleType="fitCenter"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:enable_move="true"
 		app:max_zoom_in="10.0"
 		app:max_zoom_out="0.5" />
 
-	<LinearLayout
-		android:id="@+id/image_preview_list"
-		android:orientation="horizontal"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:layout_margin="@dimen/mediapage_preview_margin"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHeight_percent="0.2">
-
-		<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/image_list"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:scrollbars="horizontal" />
-
-	</LinearLayout>
-
 	<ProgressBar
-		android:id="@+id/media_progress"
+		android:id="@+id/page_image_progress"
 		android:layout_width="@dimen/mediapage_circle_size"
 		android:layout_height="@dimen/mediapage_circle_size"
 		android:layout_marginTop="@dimen/mediapage_preview_margin"

@@ -109,9 +109,9 @@ public interface Status extends Serializable, Comparable<Status> {
 	boolean isHidden();
 
 	/**
-	 * @return path of the social media link
+	 * @return url of the status
 	 */
-	String getLinkPath();
+	String getUrl();
 
 	/**
 	 * @return cards representing link previews

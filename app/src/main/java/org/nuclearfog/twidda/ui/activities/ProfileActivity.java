@@ -526,20 +526,16 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			// open profile image
 			else if (v.getId() == R.id.profile_img) {
 				if (!user.getOriginalProfileImageUrl().isEmpty()) {
-					Uri[] uris = {Uri.parse(user.getOriginalProfileImageUrl())};
 					Intent imageIntent = new Intent(this, ImageViewer.class);
-					imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
-					imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+					imageIntent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(user.getOriginalProfileImageUrl()));
 					startActivity(imageIntent);
 				}
 			}
 			// open banner image
 			else if (v.getId() == R.id.profile_banner) {
 				if (!user.getOriginalBannerImageUrl().isEmpty()) {
-					Uri[] uris = {Uri.parse(user.getOriginalBannerImageUrl())};
 					Intent imageIntent = new Intent(this, ImageViewer.class);
-					imageIntent.putExtra(ImageViewer.IMAGE_URIS, uris);
-					imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+					imageIntent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(user.getOriginalBannerImageUrl()));
 					startActivity(imageIntent);
 				}
 			}

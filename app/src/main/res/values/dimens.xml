@@ -179,9 +179,10 @@
 	<dimen name="dropdown_text_size">18sp</dimen>
 
 	<!--dimens of page_media.xml-->
+	<dimen name="mediapage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="mediapage_preview_margin">10dp</dimen>
 	<dimen name="mediapage_circle_size">64dp</dimen>
-	<dimen name="mediapage_controller_bottom_margin">20dp</dimen>
+	<dimen name="mediapage_controller_layout_margin">10dp</dimen>
 
 	<!--dimens of item_placeholder.xml-->
 	<dimen name="item_placeholder_margin">8dp</dimen>

@@ -157,8 +157,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 						int mediaIndex = extras[0];
 						if (mediaIndex >= 0 && mediaIndex < message.getMedia().length) {
 							Intent imageIntent = new Intent(requireContext(), ImageViewer.class);
-							imageIntent.putExtra(ImageViewer.IMAGE_URIS, new Uri[]{Uri.parse(message.getMedia()[mediaIndex].getUrl())});
-							imageIntent.putExtra(ImageViewer.IMAGE_DOWNLOAD, true);
+							imageIntent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(message.getMedia()[mediaIndex].getUrl()));
 							startActivity(imageIntent);
 						}
 					}

@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 11;
+	private static final int DB_VERSION = 12;
 
 	/**
 	 * database file name
@@ -241,6 +241,11 @@ public class DatabaseAdapter {
 	private static final String UPDATE_ADD_LOCATION_ID = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LOCATION + " INTEGER;";
 
 	/**
+	 * update status table add location ID
+	 */
+	private static final String UPDATE_ADD_STATUS_URL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.URL + " TEXT;";
+
+	/**
 	 * singleton instance
 	 */
 	private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
@@ -353,8 +358,12 @@ public class DatabaseAdapter {
 			db.execSQL(UPDATE_ADD_CONVERSATION_ID);
 			db.setVersion(10);
 		}
-		if (db.getVersion() < DB_VERSION) {
+		if (db.getVersion() < 11) {
 			db.execSQL(UPDATE_ADD_LOCATION_ID);
+			db.setVersion(11);
+		}
+		if (db.getVersion() < DB_VERSION) {
+			db.execSQL(UPDATE_ADD_STATUS_URL);
 			db.setVersion(DB_VERSION);
 		}
 	}
@@ -488,6 +497,11 @@ public class DatabaseAdapter {
 		 * API source of the status
 		 */
 		String SOURCE = "source";
+
+		/**
+		 * URL of the status
+		 */
+		String URL = "url";
 
 		/**
 		 * place name of the status

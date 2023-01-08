@@ -25,7 +25,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see ImageViewer
  */
-public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
+public class ImageLoader extends AsyncTask<Uri, Void, Uri> {
 
 	private WeakReference<ImageViewer> weakRef;
 	private Connection connection;
@@ -47,57 +47,44 @@ public class ImageLoader extends AsyncTask<Uri, Uri, Boolean> {
 
 
 	@Override
-	protected Boolean doInBackground(Uri... links) {
+	protected Uri doInBackground(Uri... links) {
 		try {
-			// download imaged to a local cache folder
-			for (Uri link : links) {
-				// get input stream
-				MediaStatus mediaUpdate = connection.downloadImage(link.toString());
-				InputStream input = mediaUpdate.getStream();
-				String mimeType = mediaUpdate.getMimeType();
+			// get input stream
+			MediaStatus mediaUpdate = connection.downloadImage(links[0].toString());
+			InputStream input = mediaUpdate.getStream();
+			String mimeType = mediaUpdate.getMimeType();
 
-				// create file
-				String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
-				File imageFile = new File(cacheFolder, StringTools.getRandomString() + ext);
-				imageFile.createNewFile();
+			// create file
+			String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
+			File imageFile = new File(cacheFolder, StringTools.getRandomString() + ext);
+			imageFile.createNewFile();
 
-				// copy image to cache folder
-				FileOutputStream output = new FileOutputStream(imageFile);
-				int length;
-				byte[] buffer = new byte[4096];
-				while ((length = input.read(buffer)) > 0)
-					output.write(buffer, 0, length);
-				input.close();
-				output.close();
+			// copy image to cache folder
+			FileOutputStream output = new FileOutputStream(imageFile);
+			int length;
+			byte[] buffer = new byte[4096];
+			while ((length = input.read(buffer)) > 0)
+				output.write(buffer, 0, length);
+			input.close();
+			output.close();
 
-				// create a new uri
-				publishProgress(Uri.fromFile(imageFile));
-			}
-			return true;
+			// create Uri from cached image
+			return Uri.fromFile(imageFile);
 		} catch (ConnectionException exception) {
 			this.exception = exception;
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 
 
 	@Override
-	protected void onProgressUpdate(Uri[] uris) {
+	protected void onPostExecute(Uri localUri) {
 		ImageViewer activity = weakRef.get();
 		if (activity != null) {
-			activity.setImage(uris[0]);
-		}
-	}
-
-
-	@Override
-	protected void onPostExecute(Boolean success) {
-		ImageViewer activity = weakRef.get();
-		if (activity != null) {
-			if (success) {
-				activity.onSuccess();
+			if (localUri != null) {
+				activity.onSuccess(localUri);
 			} else {
 				activity.onError(exception);
 			}

@@ -51,11 +51,11 @@ public class StatusImpl implements Status {
 	private int repostCount;
 	private int favoriteCount;
 	private int replyCount;
-	private int apiType;
 	private String replyName;
 	private String text;
 	private String source;
 	private String userMentions;
+	private String statusUrl;
 	private boolean reposted;
 	private boolean favorited;
 	private boolean sensitive;
@@ -83,6 +83,7 @@ public class StatusImpl implements Status {
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusRegisterTable.REPOST_ID));
 		conversationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.CONVERSATION));
+		statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.URL));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(StatusRegisterTable.REGISTER));
 
 		favorited = (register & FAVORITE_MASK) != 0;
@@ -92,7 +93,6 @@ public class StatusImpl implements Status {
 		if (mediaKeys != null && !mediaKeys.isEmpty()) {
 			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
 		}
-		apiType = account.getApiType();
 	}
 
 
@@ -226,16 +226,8 @@ public class StatusImpl implements Status {
 
 
 	@Override
-	public String getLinkPath() {
-		if (!author.getScreenname().isEmpty()) {
-			if (apiType == Account.API_TWITTER) {
-				String username = '/' + author.getScreenname().substring(1);
-				return username + "/status/" + id;
-			} else if (apiType == Account.API_MASTODON) {
-				return '/' + author.getScreenname() + id;
-			}
-		}
-		return "";
+	public String getUrl() {
+		return statusUrl;
 	}
 
 

@@ -342,10 +342,9 @@ public class TweetV2 implements Status {
 
 
 	@Override
-	public String getLinkPath() {
-		if (!author.getScreenname().isEmpty()) {
-			String username = '/' + author.getScreenname().substring(1);
-			return username + "/status/" + id;
+	public String getUrl() {
+		if (author.getScreenname().length() > 1) {
+			return "https://twitter.com/" + author.getScreenname().substring(1) + "/status/" + id;
 		}
 		return "";
 	}

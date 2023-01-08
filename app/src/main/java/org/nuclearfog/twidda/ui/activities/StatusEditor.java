@@ -265,8 +265,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			case StatusUpdate.MEDIA_IMAGE:
 			case StatusUpdate.MEDIA_GIF:
 				Intent mediaViewer = new Intent(this, ImageViewer.class);
-				mediaViewer.putExtra(ImageViewer.IMAGE_URIS, uris);
-				mediaViewer.putExtra(ImageViewer.IMAGE_DOWNLOAD, false);
+				mediaViewer.putExtra(ImageViewer.IMAGE_URI, uris[index]);
 				startActivity(mediaViewer);
 				break;
 

@@ -4,6 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
 	tools:context=".ui.activities.VideoViewer">
 
 	<VideoView
@@ -31,7 +32,9 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:visibility="invisible"
-		android:layout_marginBottom="@dimen/mediapage_controller_bottom_margin"
+		android:layout_marginStart="@dimen/mediapage_controller_layout_margin"
+		android:layout_marginBottom="@dimen/mediapage_controller_layout_margin"
+		android:layout_marginEnd="@dimen/mediapage_controller_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent">

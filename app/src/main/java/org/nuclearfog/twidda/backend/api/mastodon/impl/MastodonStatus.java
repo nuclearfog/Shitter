@@ -33,7 +33,10 @@ public class MastodonStatus implements Status {
 	private int replyCount, favoriteCount, reblogCount;
 	private boolean favorited, reblogged, sensitive, muted;
 
-	private String text, source, mentions;
+	private String text;
+	private String mentions;
+	private String source = "";
+	private String url = "";
 
 	private User author;
 	private Poll poll;
@@ -55,6 +58,7 @@ public class MastodonStatus implements Status {
 		String replyIdStr = json.optString("in_reply_to_id", "0");
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
 		String idStr = json.getString("id");
+		String url = json.optString("url", "");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 		createdAt = StringTools.getTime(json.optString("created_at"), StringTools.TIME_MASTODON);
@@ -71,6 +75,9 @@ public class MastodonStatus implements Status {
 
 		if (embeddedJson != null) {
 			embeddedStatus = new MastodonStatus(embeddedJson, currentUserId);
+			this.url = embeddedStatus.getUrl();
+		} else if (!url.equals("null")) {
+			this.url = url;
 		}
 		if (pollJson != null) {
 			poll = new MastodonPoll(pollJson);
@@ -96,8 +103,6 @@ public class MastodonStatus implements Status {
 			source = appJson.optString("name", "");
 		} else if (embeddedStatus != null) {
 			source = embeddedStatus.getSource();
-		} else {
-			source = "";
 		}
 		if (cardJson != null) {
 			cards = new Card[]{new MastodonCard(cardJson)};
@@ -237,11 +242,8 @@ public class MastodonStatus implements Status {
 
 
 	@Override
-	public String getLinkPath() {
-		if (!author.getScreenname().isEmpty()) {
-			return '/' + author.getScreenname() + '/' + id;
-		}
-		return "";
+	public String getUrl() {
+		return url;
 	}
 
 

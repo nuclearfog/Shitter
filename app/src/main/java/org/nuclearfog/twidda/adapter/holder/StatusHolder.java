@@ -179,8 +179,12 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			replyname.setVisibility(View.GONE);
 		}
 		if (settings.statusIndicatorsEnabled()) {
-			iconList.setVisibility(View.VISIBLE);
 			adapter.addItems(status);
+			if (adapter.isEmpty()) {
+				iconList.setVisibility(View.GONE);
+			} else {
+				iconList.setVisibility(View.VISIBLE);
+			}
 		} else {
 			iconList.setVisibility(View.GONE);
 		}
