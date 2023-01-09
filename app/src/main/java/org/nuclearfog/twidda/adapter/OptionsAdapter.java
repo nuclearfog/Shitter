@@ -39,10 +39,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 	@NonNull
 	@Override
 	public Optionholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		Optionholder holder = new Optionholder(parent, settings);
-		if (enableVote)
-			holder.setOnOptionItemClickListener(this);
-		return holder;
+		return new Optionholder(parent, settings, this);
 	}
 
 
@@ -60,8 +57,10 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 
 	@Override
 	public void onItemClick(int pos, int type, int... extras) {
-		if (type == OnHolderClickListener.POLL_OPTION) {
-			listener.onOptionClick(pos);
+		if (enableVote) {
+			if (type == OnHolderClickListener.POLL_OPTION) {
+				listener.onOptionClick(pos);
+			}
 		}
 	}
 

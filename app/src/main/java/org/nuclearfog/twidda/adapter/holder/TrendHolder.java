@@ -32,11 +32,11 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 
 	private OnHolderClickListener listener;
 
-	/**
-	 * @param parent Parent view from adapter
-	 */
-	public TrendHolder(ViewGroup parent, GlobalSettings settings) {
+
+	public TrendHolder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false));
+		this.listener = listener;
+
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_trend_container);
 		rank = itemView.findViewById(R.id.item_trend_rank);
@@ -53,17 +53,10 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 	public void onClick(View v) {
 		if (v == itemView) {
 			int position = getLayoutPosition();
-			if (position != NO_POSITION && listener != null) {
+			if (position != NO_POSITION) {
 				listener.onItemClick(position, OnHolderClickListener.NO_TYPE);
 			}
 		}
-	}
-
-	/**
-	 * set item click listener
-	 */
-	public void setOnTrendClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 
 	/**

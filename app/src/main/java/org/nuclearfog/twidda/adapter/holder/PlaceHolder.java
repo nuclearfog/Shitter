@@ -34,18 +34,20 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 	 * @param parent     Parent view from adapter
 	 * @param horizontal true if placeholder orientation is horizontal
 	 */
-	public PlaceHolder(ViewGroup parent, GlobalSettings settings, boolean horizontal) {
+	public PlaceHolder(ViewGroup parent, GlobalSettings settings, boolean horizontal, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false));
-		// get views
+		this.listener = listener;
+
 		CardView background = (CardView) itemView;
 		loadCircle = itemView.findViewById(R.id.placeholder_loading);
 		loadBtn = itemView.findViewById(R.id.placeholder_button);
-		// theme views
+
 		background.setCardBackgroundColor(settings.getCardColor());
 		loadBtn.setTextColor(settings.getFontColor());
 		loadBtn.setTypeface(settings.getTypeFace());
 		AppStyles.setButtonColor(loadBtn, settings.getFontColor());
 		AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
+
 		// enable extra views
 		if (horizontal) {
 			loadBtn.setVisibility(View.INVISIBLE);
@@ -61,7 +63,7 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 	public void onClick(View v) {
 		if (v == loadBtn) {
 			int position = getLayoutPosition();
-			if (position != NO_POSITION && listener != null) {
+			if (position != NO_POSITION) {
 				boolean enableLoading = listener.onPlaceholderClick(position);
 				setLoading(enableLoading);
 			}
@@ -81,12 +83,5 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 			loadCircle.setVisibility(View.INVISIBLE);
 			loadBtn.setVisibility(View.VISIBLE);
 		}
-	}
-
-	/**
-	 * set click listener for this item
-	 */
-	public void setOnHolderClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 }

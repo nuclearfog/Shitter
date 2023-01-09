@@ -84,9 +84,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 		if (viewType == ITEM_LIST) {
 			return new UserlistHolder(parent, settings, picasso, this);
 		} else {
-			PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
-			placeHolder.setOnHolderClickListener(this);
-			return placeHolder;
+			return new PlaceHolder(parent, settings, false, this);
 		}
 	}
 

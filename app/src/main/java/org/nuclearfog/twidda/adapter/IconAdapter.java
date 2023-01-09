@@ -40,10 +40,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	@NonNull
 	@Override
 	public IconHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		IconHolder holder = new IconHolder(parent, settings);
-		if (listener != null)
-			holder.addOnHolderClickListener(this);
-		return holder;
+		return new IconHolder(parent, settings, this);
 	}
 
 

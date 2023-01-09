@@ -8,7 +8,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
@@ -49,26 +48,25 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 	private ImageButton button;
 
 	private GlobalSettings settings;
-	@Nullable
 	private OnHolderClickListener listener;
 
-	/**
-	 *
-	 */
-	public IconHolder(ViewGroup parent, GlobalSettings settings) {
+
+	public IconHolder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_attachment, parent, false));
+		this.settings = settings;
+		this.listener = listener;
+
 		button = itemView.findViewById(R.id.item_status_media);
 		itemView.getLayoutParams().width = parent.getMeasuredHeight();
 		itemView.getLayoutParams().height = parent.getMeasuredHeight();
 		button.setOnClickListener(this);
-		this.settings = settings;
 	}
 
 
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION && listener != null) {
+		if (position != NO_POSITION) {
 			if (v == button) {
 				listener.onItemClick(position, OnHolderClickListener.NO_TYPE);
 			}
@@ -107,12 +105,5 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 				break;
 		}
 		button.setColorFilter(settings.getIconColor());
-	}
-
-	/**
-	 * add listener
-	 */
-	public void addOnHolderClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 }

@@ -56,6 +56,7 @@ public class TweetV1 implements Status {
 	private String userMentions;
 	private String text;
 	private String source;
+	private String host;
 
 	private long replyUserId;
 	private long replyTweetId;
@@ -66,7 +67,7 @@ public class TweetV1 implements Status {
 	 * @param twitterId ID of the current user
 	 * @throws JSONException if values are missing
 	 */
-	public TweetV1(JSONObject json, long twitterId) throws JSONException {
+	public TweetV1(JSONObject json, String host, long twitterId) throws JSONException {
 		JSONObject locationJson = json.optJSONObject("place");
 		JSONObject currentUserJson = json.optJSONObject("current_user_retweet");
 		JSONObject embeddedTweetJson = json.optJSONObject("retweeted_status");
@@ -87,13 +88,14 @@ public class TweetV1 implements Status {
 		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		userMentions = StringTools.getUserMentions(textStr, author.getScreenname());
 		source = Jsoup.parse(sourceStr).text();
+		this.host = host;
 		// add reply name
 		if (!replyNameStr.isEmpty() && !replyNameStr.equals("null")) {
 			replyName = '@' + replyNameStr;
 		}
 		// add embedded tweet
 		if (embeddedTweetJson != null) {
-			embeddedTweet = new TweetV1(embeddedTweetJson, twitterId);
+			embeddedTweet = new TweetV1(embeddedTweetJson, host, twitterId);
 		}
 		// add location
 		if (locationJson != null) {
@@ -271,7 +273,7 @@ public class TweetV1 implements Status {
 	@Override
 	public String getUrl() {
 		if (author.getScreenname().length() > 1) {
-			return "https://twitter.com/" + author.getScreenname().substring(1) + "/status/" + id;
+			return host + '/' + author.getScreenname().substring(1) + "/status/" + id;
 		}
 		return "";
 	}

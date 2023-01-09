@@ -68,19 +68,13 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 		switch (viewType) {
 			default:
 			case ITEM_PREVIEW:
-				PreviewHolder previewHolder = new PreviewHolder(parent, settings, picasso);
-				previewHolder.setOnPreviewClickListener(this);
-				return previewHolder;
+				return new PreviewHolder(parent, settings, picasso, this);
 
 			case ITEM_CARD:
-				CardHolder cardHolder = new CardHolder(parent, settings, picasso);
-				cardHolder.setOnCardClickListener(this);
-				return cardHolder;
+				return new CardHolder(parent, settings, picasso, this);
 
 			case ITEM_POLL:
-				PollHolder pollHolder = new PollHolder(parent, settings);
-				pollHolder.setOnPollOptionClickListener(this);
-				return pollHolder;
+				return new PollHolder(parent, settings, this);
 		}
 	}
 

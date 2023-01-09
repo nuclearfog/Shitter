@@ -47,17 +47,18 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	private ImageView profile, verifiedIcon, lockedIcon;
 	private Button answer, delete;
 
+	private OnItemClickListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private IconAdapter adapter;
 
-	private OnItemClickListener listener;
 
-	/**
-	 * @param parent Parent view from adapter
-	 */
-	public MessageHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
+	public MessageHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnItemClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false));
+		this.settings = settings;
+		this.picasso = picasso;
+		this.listener = listener;
+
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_message_container);
 		RecyclerView attachments = itemView.findViewById(R.id.item_message_attachment_list);
@@ -79,8 +80,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		adapter.addOnMediaClickListener(this);
 		attachments.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
 		attachments.setAdapter(adapter);
-		this.settings = settings;
-		this.picasso = picasso;
 
 		itemView.setOnClickListener(this);
 		profile.setOnClickListener(this);
@@ -92,7 +91,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION && listener != null) {
+		if (position != NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnItemClickListener.MESSAGE_VIEW);
 			} else if (v == answer) {
@@ -159,13 +158,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		} else {
 			profile.setImageResource(0);
 		}
-	}
-
-	/**
-	 * set item click listener
-	 */
-	public void setOnMessageClickListener(OnItemClickListener listener) {
-		this.listener = listener;
 	}
 
 	/**

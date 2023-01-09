@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,16 +49,15 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private IconAdapter adapter;
-
-	@Nullable
 	private OnHolderClickListener listener;
 
-	/**
-	 * @param parent   Parent view from adapter
-	 * @param settings app settings to set theme
-	 */
-	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
+
+	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
+		this.settings = settings;
+		this.picasso = picasso;
+		this.listener = listener;
+
 		CardView cardLayout = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_status_container);
 		label = itemView.findViewById(R.id.item_status_label);
@@ -83,8 +81,6 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
 		adapter = new IconAdapter(settings);
 		iconList.setAdapter(adapter);
-		this.settings = settings;
-		this.picasso = picasso;
 
 		if (settings.likeEnabled()) {
 			favIcon.setImageResource(R.drawable.like);
@@ -102,7 +98,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION && listener != null) {
+		if (position != NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnHolderClickListener.STATUS_CLICK);
 			} else if (v == label) {
@@ -235,12 +231,5 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		label.setText(text);
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
 		AppStyles.setDrawableColor(label, settings.getIconColor());
-	}
-
-	/**
-	 * set item click listener
-	 */
-	public void setOnStatusClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 }

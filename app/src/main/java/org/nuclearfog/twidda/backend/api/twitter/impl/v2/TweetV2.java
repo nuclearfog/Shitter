@@ -59,6 +59,7 @@ public class TweetV2 implements Status {
 	private String source;
 	private String mentions;
 	private String replyName = "";
+	private String host;
 	private Location location;
 
 	private boolean retweeted;
@@ -83,7 +84,7 @@ public class TweetV2 implements Status {
 	 * @param locationMap map containing location instances
 	 * @param tweetCompat tweet v1.1 object
 	 */
-	public TweetV2(JSONObject json, @NonNull UserV2Map userMap, @Nullable MediaV2Map mediaMap, @Nullable PollV2Map pollMap, @Nullable LocationV2Map locationMap, @Nullable Status tweetCompat) throws JSONException {
+	public TweetV2(JSONObject json, @NonNull UserV2Map userMap, @Nullable MediaV2Map mediaMap, @Nullable PollV2Map pollMap, @Nullable LocationV2Map locationMap, String host, @Nullable Status tweetCompat) throws JSONException {
 		if (json.has("data"))
 			json = json.getJSONObject("data");
 		JSONObject publicMetrics = json.getJSONObject("public_metrics");
@@ -124,6 +125,7 @@ public class TweetV2 implements Status {
 		source = json.optString("source", "");
 		sensitive = json.optBoolean("possibly_sensitive", false);
 		mentions = author.getScreenname() + ' ';
+		this.host = host;
 		// add media
 		if (attachments != null) {
 			JSONArray mediaKeys = attachments.optJSONArray("media_keys");
@@ -344,7 +346,7 @@ public class TweetV2 implements Status {
 	@Override
 	public String getUrl() {
 		if (author.getScreenname().length() > 1) {
-			return "https://twitter.com/" + author.getScreenname().substring(1) + "/status/" + id;
+			return host + '/' + author.getScreenname().substring(1) + "/status/" + id;
 		}
 		return "";
 	}

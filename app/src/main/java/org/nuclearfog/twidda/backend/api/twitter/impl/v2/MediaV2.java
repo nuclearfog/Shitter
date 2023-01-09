@@ -90,7 +90,7 @@ public class MediaV2 implements Media {
 
 			case TYPE_GIF:
 				variants = mediaItem.getJSONArray("variants");
-				for (int i = 0 ; i < variants.length() ; i++) {
+				for (int i = 0; i < variants.length(); i++) {
 					JSONObject gifVariant = variants.getJSONObject(i);
 					if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
 						url = gifVariant.getString("url");

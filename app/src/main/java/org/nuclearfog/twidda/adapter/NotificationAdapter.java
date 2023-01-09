@@ -73,17 +73,11 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_STATUS) {
-			StatusHolder holder = new StatusHolder(parent, settings, picasso);
-			holder.setOnStatusClickListener(this);
-			return holder;
+			return new StatusHolder(parent, settings, picasso, this);
 		} else if (viewType == TYPE_USER) {
-			UserHolder holder = new UserHolder(parent, settings, picasso);
-			holder.setOnUserClickListener(this);
-			return holder;
+			return new UserHolder(parent, settings, picasso, this, false);
 		} else {
-			PlaceHolder placeHolder = new PlaceHolder(parent, settings, false);
-			placeHolder.setOnHolderClickListener(this);
-			return placeHolder;
+			return new PlaceHolder(parent, settings, false, this);
 		}
 	}
 

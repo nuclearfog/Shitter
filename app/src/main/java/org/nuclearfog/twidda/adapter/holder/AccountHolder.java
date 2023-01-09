@@ -40,16 +40,17 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	private ImageButton remove;
 	private TextView username, screenname, date;
 
+	private OnHolderClickListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private OnHolderClickListener listener;
 
-	/**
-	 *
-	 */
-	public AccountHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
+	public AccountHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account, parent, false));
+		this.settings = settings;
+		this.picasso = picasso;
+		this.listener = listener;
+
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_account_container);
 		username = itemView.findViewById(R.id.item_account_username);
@@ -60,8 +61,6 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
-		this.settings = settings;
-		this.picasso = picasso;
 
 		itemView.setOnClickListener(this);
 		remove.setOnClickListener(this);
@@ -71,7 +70,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION && listener != null) {
+		if (position != NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnHolderClickListener.ACCOUNT_SELECT);
 			} else if (v == remove) {
@@ -114,12 +113,5 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 				host = host.substring(8);
 			screenname.append(" @" + host);
 		}
-	}
-
-	/**
-	 * set item click listener
-	 */
-	public void setOnAccountClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 }

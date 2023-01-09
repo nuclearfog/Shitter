@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,15 +26,14 @@ public class PollHolder extends ViewHolder implements OnOptionClickListener {
 	private TextView votesCount;
 
 	private OptionsAdapter adapter;
-
-	@Nullable
 	private OnHolderClickListener listener;
 
 	/**
 	 *
 	 */
-	public PollHolder(ViewGroup parent, GlobalSettings settings) {
+	public PollHolder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poll, parent, false));
+		this.listener = listener;
 
 		CardView cardBackground = (CardView) itemView;
 		RecyclerView optionsList = itemView.findViewById(R.id.item_poll_options_list);
@@ -55,7 +53,7 @@ public class PollHolder extends ViewHolder implements OnOptionClickListener {
 	@Override
 	public void onOptionClick(int index) {
 		int pos = getLayoutPosition();
-		if (pos != RecyclerView.NO_POSITION && listener != null) {
+		if (pos != RecyclerView.NO_POSITION) {
 			listener.onItemClick(pos, OnHolderClickListener.POLL_ITEM, index);
 		}
 	}
@@ -73,12 +71,5 @@ public class PollHolder extends ViewHolder implements OnOptionClickListener {
 		}
 		votesCount.append(StringTools.NUMBER_FORMAT.format(poll.voteCount()));
 		adapter.addAll(poll);
-	}
-
-	/**
-	 * set item click lsitener
-	 */
-	public void setOnPollOptionClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 }

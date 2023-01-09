@@ -46,11 +46,13 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 
 	private OnHolderClickListener listener;
 
-	/**
-	 * @param parent Parent view from adapter
-	 */
-	public UserHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
+
+	public UserHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener, boolean enableDelete) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false));
+		this.settings = settings;
+		this.picasso = picasso;
+		this.listener = listener;
+
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_user_container);
 		label = itemView.findViewById(R.id.item_user_label);
@@ -65,8 +67,11 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
-		this.settings = settings;
-		this.picasso = picasso;
+		if (enableDelete) {
+			delete.setVisibility(VISIBLE);
+		} else {
+			delete.setVisibility(GONE);
+		}
 
 		itemView.setOnClickListener(this);
 		delete.setOnClickListener(this);
@@ -76,20 +81,13 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (listener != null && position != NO_POSITION) {
+		if (position != NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnHolderClickListener.USER_CLICK);
 			} else if (v == delete) {
 				listener.onItemClick(position, OnHolderClickListener.USER_REMOVE);
 			}
 		}
-	}
-
-	/**
-	 * set item click listener
-	 */
-	public void setOnUserClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 
 	/**
@@ -152,18 +150,5 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		label.setVisibility(VISIBLE);
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
 		label.setText(text);
-	}
-
-	/**
-	 * enable/disable delete button
-	 *
-	 * @param enable true to enable delete button
-	 */
-	public void setDeleteButton(boolean enable) {
-		if (enable) {
-			delete.setVisibility(VISIBLE);
-		} else {
-			delete.setVisibility(GONE);
-		}
 	}
 }

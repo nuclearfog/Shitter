@@ -3,16 +3,13 @@ package org.nuclearfog.twidda.adapter.holder;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
@@ -26,21 +23,21 @@ import org.nuclearfog.twidda.model.Poll;
  *
  * @author nuclearfog
  */
-public class Optionholder extends ViewHolder implements OnClickListener, OnTouchListener {
+public class Optionholder extends ViewHolder implements OnClickListener {
 
 	private SeekBar voteProgress;
 	private TextView name, votes;
 	private ImageView checked;
 
-	@Nullable
 	private OnHolderClickListener listener;
 	private GlobalSettings settings;
 
-	/**
-	 *
-	 */
-	public Optionholder(ViewGroup parent, GlobalSettings settings) {
+
+	public Optionholder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_option, parent, false));
+		this.settings = settings;
+		this.listener = listener;
+
 		name = itemView.findViewById(R.id.item_option_name);
 		checked = itemView.findViewById(R.id.item_option_voted_icon);
 		voteProgress = itemView.findViewById(R.id.item_option_count_bar);
@@ -51,7 +48,6 @@ public class Optionholder extends ViewHolder implements OnClickListener, OnTouch
 		AppStyles.setSeekBarColor(voteProgress, settings);
 
 		checked.setOnClickListener(this);
-		voteProgress.setOnTouchListener(this);
 		this.settings = settings;
 	}
 
@@ -59,24 +55,11 @@ public class Optionholder extends ViewHolder implements OnClickListener, OnTouch
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION && listener != null) {
+		if (position != NO_POSITION) {
 			if (v == checked) {
 				listener.onItemClick(position, OnHolderClickListener.POLL_OPTION);
 			}
 		}
-	}
-
-
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		return v == voteProgress;
-	}
-
-	/**
-	 * set viewholder click listener
-	 */
-	public void setOnOptionItemClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 
 	/**

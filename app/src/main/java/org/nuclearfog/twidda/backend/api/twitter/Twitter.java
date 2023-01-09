@@ -1123,11 +1123,12 @@ public class Twitter implements Connection {
 				else
 					array = new JSONArray(body.string());
 				long homeId = settings.getLogin().getId();
+				String host = settings.getLogin().getHostname();
 				List<Status> tweets = new ArrayList<>(array.length() + 1);
 				for (int i = 0; i < array.length(); i++) {
 					try {
 						JSONObject tweetJson = array.getJSONObject(i);
-						tweets.add(new TweetV1(tweetJson, homeId));
+						tweets.add(new TweetV1(tweetJson, host, homeId));
 					} catch (JSONException e) {
 						if (BuildConfig.DEBUG) {
 							Log.w("tweet", e);
@@ -1177,9 +1178,10 @@ public class Twitter implements Connection {
 					MediaV2Map mediaMap = new MediaV2Map(json);
 					PollV2Map pollMap = new PollV2Map(json);
 					LocationV2Map locationMap = new LocationV2Map(json);
+					String host = settings.getLogin().getHostname();
 					for (int i = 0; i < data.length(); i++) {
 						try {
-							Status item = new TweetV2(data.getJSONObject(i), userMap, mediaMap, pollMap, locationMap, null);
+							Status item = new TweetV2(data.getJSONObject(i), userMap, mediaMap, pollMap, locationMap, host, null);
 							tweets.add(item);
 						} catch (JSONException e) {
 							if (BuildConfig.DEBUG) {
@@ -1218,7 +1220,9 @@ public class Twitter implements Connection {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				TweetV1 result = new TweetV1(json, settings.getLogin().getId());
+				String host = settings.getLogin().getHostname();
+				long currentId = settings.getLogin().getId();
+				TweetV1 result = new TweetV1(json, host, currentId);
 				// fix: embedded tweet information doesn't match with the parent tweet
 				//      re-downloading embedded tweet information
 				if (result.getEmbeddedStatus() != null) {
@@ -1269,7 +1273,8 @@ public class Twitter implements Connection {
 				MediaV2Map mediaMap = new MediaV2Map(json);
 				PollV2Map pollMap = new PollV2Map(json);
 				LocationV2Map locationMap = new LocationV2Map(json);
-				return new TweetV2(json, userMap, mediaMap, pollMap, locationMap, statusCompat);
+				String host = settings.getLogin().getHostname();
+				return new TweetV2(json, userMap, mediaMap, pollMap, locationMap, host, statusCompat);
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {

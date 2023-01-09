@@ -45,9 +45,7 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	@NonNull
 	@Override
 	public AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		AccountHolder holder = new AccountHolder(parent, settings, picasso);
-		holder.setOnAccountClickListener(this);
-		return holder;
+		return new AccountHolder(parent, settings, picasso, this);
 	}
 
 

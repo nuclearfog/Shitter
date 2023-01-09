@@ -37,10 +37,11 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	private OnHolderClickListener listener;
 
 
-	public PreviewHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
+	public PreviewHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_preview, parent, false));
 		this.picasso = picasso;
 		this.settings = settings;
+		this.listener = listener;
 
 		previewImage = itemView.findViewById(R.id.item_preview_image);
 		playIcon = itemView.findViewById(R.id.item_preview_play);
@@ -52,7 +53,7 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int pos = getLayoutPosition();
-		if (pos != RecyclerView.NO_POSITION && listener != null) {
+		if (pos != RecyclerView.NO_POSITION) {
 			if (v == previewImage) {
 				listener.onItemClick(pos, OnHolderClickListener.PREVIEW_CLICK);
 			}
@@ -77,15 +78,5 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 		} else {
 			playIcon.setVisibility(View.GONE);
 		}
-	}
-
-
-	/**
-	 * set holder click lsitener
-	 *
-	 * @param listener listener for the holder
-	 */
-	public void setOnPreviewClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 }

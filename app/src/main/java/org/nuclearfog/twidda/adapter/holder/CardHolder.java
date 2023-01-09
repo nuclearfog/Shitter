@@ -53,10 +53,11 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	private OnHolderClickListener listener;
 
 
-	public CardHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso) {
+	public CardHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false));
 		this.picasso = picasso;
 		this.settings = settings;
+		this.listener = listener;
 
 		linkText = itemView.findViewById(R.id.link_preview_text);
 		preview = itemView.findViewById(R.id.link_preview_image);
@@ -75,7 +76,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int pos = getLayoutPosition();
-		if (pos != RecyclerView.NO_POSITION && listener != null) {
+		if (pos != RecyclerView.NO_POSITION) {
 			if (v == linkText) {
 				listener.onItemClick(pos, OnHolderClickListener.CARD_LINK);
 			} else if (v == preview) {
@@ -108,12 +109,5 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 		} else {
 			preview.setImageDrawable(new ColorDrawable(EMPTY_COLOR));
 		}
-	}
-
-	/**
-	 * add viewholder click listener
-	 */
-	public void setOnCardClickListener(OnHolderClickListener listener) {
-		this.listener = listener;
 	}
 }

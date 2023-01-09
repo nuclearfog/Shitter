@@ -1313,13 +1313,14 @@ public class AppDatabase {
 		else
 			register &= ~FAVORITE_MASK;
 
-		ContentValues statusUpdate = new ContentValues(6);
+		ContentValues statusUpdate = new ContentValues(7);
 		statusUpdate.put(StatusTable.TEXT, status.getText());
 		statusUpdate.put(StatusTable.REPOST, status.getRepostCount());
 		statusUpdate.put(StatusTable.FAVORITE, status.getFavoriteCount());
 		statusUpdate.put(StatusTable.REPLY, status.getReplyCount());
 		statusUpdate.put(StatusTable.REPLYNAME, status.getReplyName());
 		statusUpdate.put(StatusTable.SOURCE, status.getSource());
+		statusUpdate.put(StatusTable.URL, status.getUrl());
 
 		ContentValues userUpdate = new ContentValues(9);
 		userUpdate.put(UserTable.USERNAME, user.getUsername());
