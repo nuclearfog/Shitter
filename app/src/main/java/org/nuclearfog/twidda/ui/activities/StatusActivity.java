@@ -752,8 +752,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
 			cardList.setVisibility(VISIBLE);
 			adapter.replaceAll(status);
+			statusText.setMaxLines(5);
 		} else {
 			cardList.setVisibility(GONE);
+			statusText.setMaxLines(10);
 		}
 	}
 

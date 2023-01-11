@@ -44,6 +44,8 @@ public class ImageViewer extends MediaActivity {
 	 */
 	private static final String CACHE_FOLDER = "imagecache";
 
+	private static final int TOOLBAR_COLOR_MASK = 0xcfa0a0a0;
+
 	private ZoomView zoomImage;
 	private ProgressBar loadingCircle;
 
@@ -67,6 +69,7 @@ public class ImageViewer extends MediaActivity {
 		settings = GlobalSettings.getInstance(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
 		toolbar.setTitle("");
+		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_COLOR_MASK);
 		setSupportActionBar(toolbar);
 
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);

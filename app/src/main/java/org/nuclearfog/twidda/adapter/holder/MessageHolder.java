@@ -45,6 +45,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 
 	private TextView username, screenname, time, text;
 	private ImageView profile, verifiedIcon, lockedIcon;
+	private RecyclerView iconList;
 	private Button answer, delete;
 
 	private OnItemClickListener listener;
@@ -61,7 +62,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_message_container);
-		RecyclerView attachments = itemView.findViewById(R.id.item_message_attachment_list);
+		iconList = itemView.findViewById(R.id.item_message_attachment_list);
 		profile = itemView.findViewById(R.id.item_message_profile);
 		verifiedIcon = itemView.findViewById(R.id.item_message_verified);
 		lockedIcon = itemView.findViewById(R.id.item_message_private);
@@ -78,8 +79,8 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 
 		adapter = new IconAdapter(settings);
 		adapter.addOnMediaClickListener(this);
-		attachments.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
-		attachments.setAdapter(adapter);
+		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
+		iconList.setAdapter(adapter);
 
 		itemView.setOnClickListener(this);
 		profile.setOnClickListener(this);
@@ -134,12 +135,19 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	 */
 	public void setContent(Message message) {
 		User sender = message.getSender();
-		Spanned textSpan = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), this);
 
 		username.setText(sender.getUsername());
 		screenname.setText(sender.getScreenname());
 		time.setText(StringTools.formatCreationTime(itemView.getResources(), message.getTimestamp()));
-		text.setText(textSpan);
+		adapter.addItems(message);
+
+		if (!message.getText().trim().isEmpty()) {
+			Spanned textSpan = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), this);
+			text.setText(textSpan);
+			text.setVisibility(View.VISIBLE);
+		} else {
+			text.setVisibility(View.GONE);
+		}
 		if (sender.isVerified()) {
 			verifiedIcon.setVisibility(View.VISIBLE);
 		} else {
@@ -150,7 +158,11 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		} else {
 			lockedIcon.setVisibility(View.GONE);
 		}
-		adapter.addItems(message);
+		if (adapter.isEmpty()) {
+			iconList.setVisibility(View.GONE);
+		} else {
+			iconList.setVisibility(View.VISIBLE);
+		}
 		String profileImageUrl = sender.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);

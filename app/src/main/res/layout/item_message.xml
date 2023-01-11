@@ -94,6 +94,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="@dimen/dmitem_text_margin"
 			android:linksClickable="true"
+			android:maxLines="@integer/dmitem_text_lines_max"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_message_profile_barrier"
 			app:layout_constraintBottom_toTopOf="@id/item_message_attachment_list"
@@ -102,7 +103,7 @@
 		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/item_message_attachment_list"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_height="@dimen/dmitem_indicator_size"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_message_text"
 			app:layout_constraintEnd_toEndOf="parent" />

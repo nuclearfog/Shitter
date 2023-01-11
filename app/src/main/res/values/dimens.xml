@@ -128,6 +128,8 @@
 	<dimen name="dmitem_button_margin">5dp</dimen>
 	<dimen name="dmitem_margin_layout">5dp</dimen>
 	<dimen name="dmitem_icon_size">16sp</dimen>
+	<dimen name="dmitem_indicator_size">30sp</dimen>
+	<integer name="dmitem_text_lines_max">10</integer>
 
 	<!--dimens of item_account.xml-->
 	<dimen name="login_name_textsize_big">14sp</dimen>

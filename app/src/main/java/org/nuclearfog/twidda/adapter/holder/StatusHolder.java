@@ -129,7 +129,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		repost.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
 		favorite.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
 		created.setText(StringTools.formatCreationTime(itemView.getResources(), status.getTimestamp()));
-		if (!status.getText().isEmpty()) {
+		if (!status.getText().trim().isEmpty()) {
 			Spanned textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
 			text.setText(textSpan);
 			text.setVisibility(View.VISIBLE);
