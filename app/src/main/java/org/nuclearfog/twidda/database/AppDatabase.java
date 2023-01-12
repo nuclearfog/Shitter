@@ -1146,6 +1146,7 @@ public class AppDatabase {
 		statusUpdate.put(StatusTable.TEXT, status.getText());
 		statusUpdate.put(StatusTable.EMBEDDED, rtId);
 		statusUpdate.put(StatusTable.SOURCE, status.getSource());
+		statusUpdate.put(StatusTable.URL, status.getUrl());
 		statusUpdate.put(StatusTable.REPLYSTATUS, status.getRepliedStatusId());
 		statusUpdate.put(StatusTable.REPOST, status.getRepostCount());
 		statusUpdate.put(StatusTable.FAVORITE, status.getFavoriteCount());

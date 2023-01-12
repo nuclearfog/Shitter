@@ -194,6 +194,8 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return statuses;
 	}
