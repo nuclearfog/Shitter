@@ -53,6 +53,7 @@ public class DatabaseAdapter {
 			+ StatusTable.NAME + "("
 			+ StatusTable.ID + " INTEGER PRIMARY KEY,"
 			+ StatusTable.USER + " INTEGER,"
+			+ StatusTable.URL + " TEXT,"
 			+ StatusTable.EMBEDDED + " INTEGER,"
 			+ StatusTable.REPLYSTATUS + " INTEGER,"
 			+ StatusTable.REPLYNAME + " TEXT,"
@@ -335,36 +336,37 @@ public class DatabaseAdapter {
 		// set initial version
 		if (db.getVersion() == 0) {
 			db.setVersion(DB_VERSION);
-		}
-		if (db.getVersion() < 6) {
-			db.execSQL(UPDATE_ADD_HOST);
-			db.execSQL(UPDATE_ADD_CLIENT_ID);
-			db.execSQL(UPDATE_ADD_CLIENT_SEC);
-			db.setVersion(6);
-		}
-		if (db.getVersion() < 7) {
-			db.execSQL(UPDATE_ADD_API_ID);
-			db.setVersion(7);
-		}
-		if (db.getVersion() < 8) {
-			db.execSQL(UPDATE_ADD_REPLY_COUNT);
-			db.setVersion(8);
-		}
-		if (db.getVersion() < 9) {
-			db.execSQL(UPDATE_ADD_BEARER);
-			db.setVersion(9);
-		}
-		if (db.getVersion() < 10) {
-			db.execSQL(UPDATE_ADD_CONVERSATION_ID);
-			db.setVersion(10);
-		}
-		if (db.getVersion() < 11) {
-			db.execSQL(UPDATE_ADD_LOCATION_ID);
-			db.setVersion(11);
-		}
-		if (db.getVersion() < DB_VERSION) {
-			db.execSQL(UPDATE_ADD_STATUS_URL);
-			db.setVersion(DB_VERSION);
+		} else {
+			if (db.getVersion() < 6) {
+				db.execSQL(UPDATE_ADD_HOST);
+				db.execSQL(UPDATE_ADD_CLIENT_ID);
+				db.execSQL(UPDATE_ADD_CLIENT_SEC);
+				db.setVersion(6);
+			}
+			if (db.getVersion() < 7) {
+				db.execSQL(UPDATE_ADD_API_ID);
+				db.setVersion(7);
+			}
+			if (db.getVersion() < 8) {
+				db.execSQL(UPDATE_ADD_REPLY_COUNT);
+				db.setVersion(8);
+			}
+			if (db.getVersion() < 9) {
+				db.execSQL(UPDATE_ADD_BEARER);
+				db.setVersion(9);
+			}
+			if (db.getVersion() < 10) {
+				db.execSQL(UPDATE_ADD_CONVERSATION_ID);
+				db.setVersion(10);
+			}
+			if (db.getVersion() < 11) {
+				db.execSQL(UPDATE_ADD_LOCATION_ID);
+				db.setVersion(11);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_ADD_STATUS_URL);
+				db.setVersion(DB_VERSION);
+			}
 		}
 	}
 
