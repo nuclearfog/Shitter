@@ -1,6 +1,6 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
-# Lightweight Android Twitter app
+# Lightweight Android Twitter/Mastodon app
 
 
 <img src="/images/shitter_1.jpg" height="360"/> <img src="/images/shitter_2.jpg" height="360"/> <img src="/images/shitter_3.jpg" height="360"/> <img src="/images/shitter_4.jpg" height="360"/>
@@ -12,9 +12,9 @@
 - real timeline (chronological order)
 - status, list and profile editor
 - customizable theme
-- media preview
+- media, link and poll viewer
 - GPS locale support
-- multi account support (experimental support for Mastodon)
+- multi account support
 - no ads, no app tracking, proxy support
 
 
