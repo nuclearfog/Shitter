@@ -572,7 +572,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 *
 	 * @param data location data
 	 */
-	public void setLocationData(List<Location> data) {
+	public void setLocationData(@NonNull List<Location> data) {
 		locationAdapter.replaceItems(data);
 		int position = locationAdapter.indexOf(settings.getTrendLocation());
 		if (position > 0)
@@ -585,7 +585,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 *
 	 * @param err exception from twitter
 	 */
-	public void onError(ConnectionException err) {
+	public void onError(@Nullable ConnectionException err) {
 		ErrorHandler.handleFailure(this, err);
 	}
 

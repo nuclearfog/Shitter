@@ -207,7 +207,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 * @param statuses List of statuses
 	 * @param pos      position where statuses should be added
 	 */
-	public void setData(List<Status> statuses, int pos) {
+	public void setData(@NonNull List<Status> statuses, int pos) {
 		if (pos == CLEAR_LIST) {
 			adapter.replaceItems(statuses);
 		} else {
@@ -219,7 +219,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	/**
 	 * called from {@link StatusLoader} if an error occurs
 	 */
-	public void onError(@Nullable ConnectionException error) {
+	public void onError(ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);
 		adapter.disableLoading();
 		setRefresh(false);

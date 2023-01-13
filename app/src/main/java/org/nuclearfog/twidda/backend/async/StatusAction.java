@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see StatusActivity
  */
-public class StatusAction extends AsyncTask<Long, Status, Void> {
+public class StatusAction extends AsyncTask<Long, Status, Boolean> {
 
 	/**
 	 * Load status
@@ -92,7 +92,7 @@ public class StatusAction extends AsyncTask<Long, Status, Void> {
 	 * @param ids first value is the status ID. The second value is the repost status ID. Required for delete operations
 	 */
 	@Override
-	protected Void doInBackground(Long... ids) {
+	protected Boolean doInBackground(Long... ids) {
 		org.nuclearfog.twidda.model.Status status;
 		try {
 			switch (action) {
@@ -110,21 +110,21 @@ public class StatusAction extends AsyncTask<Long, Status, Void> {
 						// update status if there is a database entry
 						db.updateStatus(status);
 					}
-					break;
+					return true;
 
 				case DELETE:
 					connection.deleteStatus(ids[0]);
 					db.removeStatus(ids[0]);
 					// removing repost reference to this status
 					db.removeStatus(ids[1]);
-					break;
+					return true;
 
 				case REPOST:
 					status = connection.repostStatus(ids[0]);
 					if (status.getEmbeddedStatus() != null)
 						publishProgress(status.getEmbeddedStatus());
 					db.updateStatus(status);
-					break;
+					return true;
 
 				case REMOVE_REPOST:
 					status = connection.removeRepost(ids[0]);
@@ -133,29 +133,29 @@ public class StatusAction extends AsyncTask<Long, Status, Void> {
 					// removing repost reference to this status
 					if (ids.length == 2)
 						db.removeStatus(ids[1]);
-					break;
+					return true;
 
 				case FAVORITE:
 					status = connection.favoriteStatus(ids[0]);
 					publishProgress(status);
 					db.saveToFavorites(status);
-					break;
+					return true;
 
 				case UNFAVORITE:
 					status = connection.unfavoriteStatus(ids[0]);
 					publishProgress(status);
 					db.removeFavorite(status);
-					break;
+					return true;
 
 				case HIDE:
 					connection.muteConversation(ids[0]);
 					db.hideStatus(ids[0], true);
-					break;
+					return true;
 
 				case UNHIDE:
 					connection.unmuteConversation(ids[0]);
 					db.hideStatus(ids[0], false);
-					break;
+					return true;
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
@@ -167,8 +167,10 @@ public class StatusAction extends AsyncTask<Long, Status, Void> {
 					db.removeStatus(ids[1]);
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		return false;
 	}
 
 
@@ -182,10 +184,10 @@ public class StatusAction extends AsyncTask<Long, Status, Void> {
 
 
 	@Override
-	protected void onPostExecute(Void v) {
+	protected void onPostExecute(Boolean success) {
 		StatusActivity activity = weakRef.get();
 		if (activity != null) {
-			if (exception == null) {
+			if (success) {
 				activity.OnSuccess(action);
 			} else {
 				activity.onError(exception);

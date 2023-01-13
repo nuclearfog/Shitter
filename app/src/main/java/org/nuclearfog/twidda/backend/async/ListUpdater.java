@@ -48,13 +48,15 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 			return connection.createUserlist(update);
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(UserList result) {
+	protected void onPostExecute(@Nullable UserList result) {
 		UserlistEditor activity = weakRef.get();
 		if (activity != null) {
 			if (result != null) {

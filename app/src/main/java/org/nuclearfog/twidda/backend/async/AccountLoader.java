@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.fragments.AccountFragment;
@@ -45,27 +47,39 @@ public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
 
 	@Override
 	protected List<Account> doInBackground(Long... param) {
-		// get all logins
-		if (mode == MODE_LOAD) {
-			return db.getLogins();
-		}
-		// delete login
-		else if (mode == MODE_DELETE) {
-			db.removeLogin(param[0]);
-			deleteId = param[0];
+		try {
+			// get all logins
+			if (mode == MODE_LOAD) {
+				return db.getLogins();
+			}
+			// delete login
+			else if (mode == MODE_DELETE) {
+				db.removeLogin(param[0]);
+				deleteId = param[0];
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(List<Account> accounts) {
+	protected void onPostExecute(@Nullable List<Account> accounts) {
 		AccountFragment fragment = weakRef.get();
 		if (fragment != null) {
 			if (mode == MODE_LOAD) {
-				fragment.onSuccess(accounts);
+				if (accounts != null) {
+					fragment.onSuccess(accounts);
+				} else {
+					fragment.onError();
+				}
 			} else if (mode == MODE_DELETE) {
-				fragment.onDelete(deleteId);
+				if (deleteId > 0) {
+					fragment.onDelete(deleteId);
+				} else {
+					fragment.onError();
+				}
 			}
 		}
 	}

@@ -192,7 +192,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 *
 	 * @param data list of direct messages
 	 */
-	public void setData(Messages data) {
+	public void setData(@NonNull Messages data) {
 		adapter.addItems(data);
 		setRefresh(false);
 	}
@@ -212,9 +212,9 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 *
 	 * @param messageId ID of the message assosiated with the error
 	 */
-	public void onError(@NonNull ConnectionException error, long messageId) {
+	public void onError(@Nullable ConnectionException error, long messageId) {
 		ErrorHandler.handleFailure(requireContext(), error);
-		if (error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+		if (error != null && error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 			adapter.removeItem(messageId);
 		}
 		setRefresh(false);

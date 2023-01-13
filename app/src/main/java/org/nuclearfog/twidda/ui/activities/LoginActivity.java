@@ -329,7 +329,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	/**
 	 * Called when the app is registered successfully
 	 */
-	public void onSuccess(int mode, String result) {
+	public void onSuccess(int mode, @NonNull String result) {
 		switch (mode) {
 			case LoginAction.MODE_LOGIN:
 				setResult(RETURN_LOGIN_SUCCESSFUL);

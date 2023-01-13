@@ -156,19 +156,21 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(DataHolder result) {
+	protected void onPostExecute(@Nullable DataHolder result) {
 		MainActivity activity = weakRef.get();
 		if (activity != null) {
-			if (exception != null) {
-				activity.onError(exception);
-			} else {
+			if (result != null) {
 				activity.onSuccess(result);
+			} else {
+				activity.onError(exception);
 			}
 		}
 	}

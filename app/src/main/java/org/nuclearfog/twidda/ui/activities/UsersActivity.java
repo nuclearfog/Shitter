@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
@@ -313,7 +314,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	/**
 	 * called from {@link FilterLoader} if an error occurs
 	 */
-	public void onError(ConnectionException err) {
+	public void onError(@Nullable ConnectionException err) {
 		ErrorHandler.handleFailure(this, err);
 	}
 }

@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListManager extends AsyncTask<Void, Void, Void> {
+public class ListManager extends AsyncTask<Void, Void, Boolean> {
 
 	/**
 	 * add user to list
@@ -57,29 +57,31 @@ public class ListManager extends AsyncTask<Void, Void, Void> {
 
 
 	@Override
-	protected Void doInBackground(Void... v) {
+	protected Boolean doInBackground(Void... v) {
 		try {
 			switch (action) {
 				case ADD_USER:
 					connection.addUserToList(listId, username);
-					break;
+					return true;
 
 				case DEL_USER:
 					connection.removeUserFromList(listId, username);
-					break;
+					return true;
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		return false;
 	}
 
 
 	@Override
-	protected void onPostExecute(Void v) {
+	protected void onPostExecute(Boolean success) {
 		UserlistActivity callback = weakRef.get();
 		if (callback != null) {
-			if (exception == null) {
+			if (success) {
 				callback.onSuccess(action, username);
 			} else {
 				callback.onFailure(exception);

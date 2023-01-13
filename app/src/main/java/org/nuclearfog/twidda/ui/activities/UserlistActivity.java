@@ -395,7 +395,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	 *
 	 * @param userList userlist update
 	 */
-	public void onSuccess(UserList userList, int action) {
+	public void onSuccess(@NonNull UserList userList, int action) {
 		this.userList = userList;
 		switch (action) {
 			case ListAction.LOAD:

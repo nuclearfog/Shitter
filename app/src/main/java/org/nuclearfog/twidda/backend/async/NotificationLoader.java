@@ -62,18 +62,21 @@ public class NotificationLoader extends AsyncTask<Long, Void, List<Notification>
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return result;
 	}
 
 
 	@Override
-	protected void onPostExecute(List<Notification> notifications) {
+	protected void onPostExecute(@Nullable List<Notification> notifications) {
 		NotificationFragment fragment = callback.get();
 		if (fragment != null) {
 			if (notifications != null) {
 				fragment.onSuccess(notifications, pos);
-			} else {
+			}
+			if (exception != null) {
 				fragment.onError(exception);
 			}
 		}

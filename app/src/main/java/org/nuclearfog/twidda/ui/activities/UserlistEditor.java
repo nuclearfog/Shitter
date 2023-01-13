@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -164,17 +165,11 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	/**
 	 * called when a list was updated successfully
 	 */
-	public void onSuccess(UserList result) {
-		if (userList != null) {
-			Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
-			Intent data = new Intent();
-			data.putExtra(KEY_UPDATED_USERLIST, result);
-			setResult(RETURN_LIST_CHANGED, data);
-		} else {
-			// it's a new list, if no list is defined
-			Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();
-			setResult(RETURN_LIST_CREATED);
-		}
+	public void onSuccess(@NonNull UserList result) {
+		Toast.makeText(getApplicationContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();
+		Intent data = new Intent();
+		data.putExtra(KEY_UPDATED_USERLIST, result);
+		setResult(RETURN_LIST_CHANGED, data);
 		finish();
 	}
 

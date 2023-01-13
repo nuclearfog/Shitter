@@ -59,18 +59,21 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 			return trends;
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(List<Trend> trends) {
+	protected void onPostExecute(@Nullable List<Trend> trends) {
 		TrendFragment fragment = weakRef.get();
 		if (fragment != null) {
 			if (trends != null) {
 				fragment.setData(trends);
-			} else {
+			}
+			if (exception != null) {
 				fragment.onError(exception);
 			}
 		}

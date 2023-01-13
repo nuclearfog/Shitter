@@ -273,7 +273,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	/**
 	 * called after user profile was updated successfully
 	 */
-	public void onSuccess(User user) {
+	public void onSuccess(@NonNull User user) {
 		Intent data = new Intent();
 		data.putExtra(KEY_UPDATED_PROFILE, user);
 		Toast.makeText(this, R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
@@ -286,7 +286,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	 *
 	 * @param err Engine Exception
 	 */
-	public void onError(ConnectionException err) {
+	public void onError(@Nullable ConnectionException err) {
 		String message = ErrorHandler.getErrorMessage(this, err);
 		confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		loadingCircle.dismiss();

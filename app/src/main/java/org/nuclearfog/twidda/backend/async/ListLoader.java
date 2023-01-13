@@ -71,13 +71,15 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(UserLists result) {
+	protected void onPostExecute(@Nullable UserLists result) {
 		UserListFragment fragment = weakRef.get();
 		if (fragment != null) {
 			if (result != null) {

@@ -651,7 +651,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param status Tweet information
 	 */
-	public void setStatus(Status status) {
+	public void setStatus(@NonNull Status status) {
 		this.status = status;
 		if (status.getEmbeddedStatus() != null) {
 			repostName.setVisibility(VISIBLE);

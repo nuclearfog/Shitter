@@ -134,7 +134,7 @@ public class ImageViewer extends MediaActivity {
 	 *
 	 * @param uri Uri of the cached image file
 	 */
-	public void onSuccess(Uri uri) {
+	public void onSuccess(@NonNull Uri uri) {
 		cacheUri = uri;
 		zoomImage.reset();
 		zoomImage.setImageURI(uri);
@@ -144,7 +144,7 @@ public class ImageViewer extends MediaActivity {
 	/**
 	 * Called from {@link ImageLoader} when an error occurs
 	 */
-	public void onError(ConnectionException err) {
+	public void onError(@Nullable ConnectionException err) {
 		ErrorHandler.handleFailure(getApplicationContext(), err);
 		finish();
 	}

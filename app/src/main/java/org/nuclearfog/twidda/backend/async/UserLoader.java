@@ -143,13 +143,15 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(Users users) {
+	protected void onPostExecute(@Nullable Users users) {
 		UserFragment fragment = weakRef.get();
 		if (fragment != null) {
 			if (users != null) {

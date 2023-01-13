@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -91,9 +93,7 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 					User user;
 					if (userId > 0) {
 						user = db.getUser(userId);
-						if (user != null) {
-							publishProgress(user);
-						}
+						publishProgress(user);
 					}
 
 				case PROFILE_lOAD:
@@ -151,6 +151,8 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 			return connection.getUserRelationship(userId);
 		} catch (ConnectionException exception) {
 			this.error = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -159,14 +161,14 @@ public class UserAction extends AsyncTask<Void, User, Relation> {
 	@Override
 	protected void onProgressUpdate(User[] users) {
 		ProfileActivity activity = weakRef.get();
-		if (activity != null) {
+		if (activity != null && users[0] != null) {
 			activity.setUser(users[0]);
 		}
 	}
 
 
 	@Override
-	protected void onPostExecute(Relation relation) {
+	protected void onPostExecute(@Nullable Relation relation) {
 		ProfileActivity activity = weakRef.get();
 		if (activity != null) {
 			if (relation != null) {

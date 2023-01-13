@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class FilterLoader extends AsyncTask<String, Void, Void> {
+public class FilterLoader extends AsyncTask<String, Void, Boolean> {
 
 	/**
 	 * refresh exclude list
@@ -55,34 +55,36 @@ public class FilterLoader extends AsyncTask<String, Void, Void> {
 
 
 	@Override
-	protected Void doInBackground(String... names) {
+	protected Boolean doInBackground(String... names) {
 		try {
 			switch (mode) {
 				case REFRESH:
 					List<Long> ids = connection.getIdBlocklist();
 					db.setFilterlistUserIds(ids);
-					break;
+					return true;
 
 				case MUTE_USER:
 					connection.muteUser(names[0]);
-					break;
+					return true;
 
 				case BLOCK_USER:
 					connection.blockUser(names[0]);
-					break;
+					return true;
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		return false;
 	}
 
 
 	@Override
-	protected void onPostExecute(Void v) {
+	protected void onPostExecute(Boolean success) {
 		UsersActivity activity = weakRef.get();
 		if (activity != null) {
-			if (exception == null) {
+			if (success) {
 				activity.onSuccess(mode);
 			} else {
 				activity.onError(exception);

@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.ui.activities.MediaActivity;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
@@ -43,11 +42,11 @@ public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
 			}
 			mediaStream.close();
 			fileStream.close();
-		} catch (IOException err) {
-			err.printStackTrace();
-			return false;
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
 

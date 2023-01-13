@@ -41,13 +41,15 @@ public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
 			return connection.getLocations();
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(List<Location> locations) {
+	protected void onPostExecute(@Nullable List<Location> locations) {
 		SettingsActivity activity = weakRef.get();
 		if (activity != null) {
 			if (locations != null) {

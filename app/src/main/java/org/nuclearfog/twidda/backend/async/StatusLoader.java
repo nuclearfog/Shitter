@@ -202,12 +202,13 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 
 
 	@Override
-	protected void onPostExecute(List<org.nuclearfog.twidda.model.Status> statuses) {
+	protected void onPostExecute(@Nullable List<org.nuclearfog.twidda.model.Status> statuses) {
 		StatusFragment fragment = weakRef.get();
 		if (fragment != null) {
 			if (statuses != null) {
 				fragment.setData(statuses, pos);
-			} else {
+			}
+			if (exception != null) {
 				fragment.onError(exception);
 			}
 		}

@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.ui.activities.ImageViewer;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
@@ -72,15 +71,15 @@ public class ImageLoader extends AsyncTask<Uri, Void, Uri> {
 			return Uri.fromFile(imageFile);
 		} catch (ConnectionException exception) {
 			this.exception = exception;
-		} catch (IOException exception) {
-			exception.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(Uri localUri) {
+	protected void onPostExecute(@Nullable Uri localUri) {
 		ImageViewer activity = weakRef.get();
 		if (activity != null) {
 			if (localUri != null) {

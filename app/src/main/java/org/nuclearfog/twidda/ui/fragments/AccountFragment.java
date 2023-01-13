@@ -118,7 +118,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	 *
 	 * @param result login information
 	 */
-	public void onSuccess(List<Account> result) {
+	public void onSuccess(@NonNull List<Account> result) {
 		adapter.replaceItems(result);
 		setRefresh(false);
 	}
@@ -130,5 +130,12 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	 */
 	public void onDelete(long id) {
 		adapter.removeItem(id);
+	}
+
+	/**
+	 * called from {@link AccountLoader} when an error occurs
+	 */
+	public void onError() {
+		Toast.makeText(requireContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
 	}
 }

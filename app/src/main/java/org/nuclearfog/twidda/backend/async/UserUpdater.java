@@ -30,6 +30,7 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 	private ConnectionException exception;
 	private ProfileUpdate profile;
 
+
 	public UserUpdater(ProfileEditor activity, ProfileUpdate profile) {
 		super();
 		db = new AppDatabase(activity);
@@ -48,6 +49,8 @@ public class UserUpdater extends AsyncTask<Void, Void, User> {
 			return user;
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			// close image streams
 			profile.close();

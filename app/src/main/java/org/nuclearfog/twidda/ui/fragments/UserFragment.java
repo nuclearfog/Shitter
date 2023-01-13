@@ -239,7 +239,7 @@ public class UserFragment extends ListFragment implements UserClickListener {
 	 *
 	 * @param data list of users
 	 */
-	public void setData(Users data) {
+	public void setData(@NonNull Users data) {
 		adapter.addItems(data);
 		setRefresh(false);
 	}
@@ -247,7 +247,7 @@ public class UserFragment extends ListFragment implements UserClickListener {
 	/**
 	 * called when an error occurs
 	 */
-	public void onError(ConnectionException exception) {
+	public void onError(@Nullable ConnectionException exception) {
 		ErrorHandler.handleFailure(requireContext(), exception);
 		adapter.disableLoading();
 		setRefresh(false);

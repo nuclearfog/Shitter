@@ -94,13 +94,15 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(String result) {
+	protected void onPostExecute(@Nullable String result) {
 		LoginActivity activity = weakRef.get();
 		if (activity != null) {
 			if (result != null) {

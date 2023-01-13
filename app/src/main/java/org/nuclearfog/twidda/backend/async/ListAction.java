@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.async;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -77,13 +79,15 @@ public class ListAction extends AsyncTask<Void, Void, UserList> {
 			}
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 
 	@Override
-	protected void onPostExecute(UserList userList) {
+	protected void onPostExecute(@Nullable UserList userList) {
 		UserlistActivity callback = this.weakRef.get();
 		if (callback != null) {
 			if (userList != null) {

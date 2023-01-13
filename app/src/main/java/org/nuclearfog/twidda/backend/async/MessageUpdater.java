@@ -58,6 +58,8 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 			return true;
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			// close all streams
 			message.close();

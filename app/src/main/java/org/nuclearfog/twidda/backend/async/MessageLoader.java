@@ -93,6 +93,8 @@ public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				db.removeMessage(messageId);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -102,16 +104,23 @@ public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 	protected void onPostExecute(@Nullable Messages messages) {
 		MessageFragment fragment = weakRef.get();
 		if (fragment != null) {
-			if (exception != null) {
-				fragment.onError(exception, messageId);
-			} else {
-				if (action == DB || action == LOAD) {
+			switch (action) {
+				case DB:
+				case LOAD:
 					if (messages != null) {
 						fragment.setData(messages);
+					} else {
+						fragment.onError(exception, messageId);
 					}
-				} else if (action == DEL) {
-					fragment.removeItem(messageId);
-				}
+					break;
+
+				case DEL:
+					if (exception == null) {
+						fragment.removeItem(messageId);
+					} else {
+						fragment.onError(exception, messageId);
+					}
+					break;
 			}
 		}
 	}

@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see StatusEditor
  */
-public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Void> {
+public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Boolean> {
 
 	private Connection connection;
 	private ConnectionException exception;
@@ -36,7 +36,7 @@ public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Void> {
 
 
 	@Override
-	protected Void doInBackground(StatusUpdate... statusUpdates) {
+	protected Boolean doInBackground(StatusUpdate... statusUpdates) {
 		StatusUpdate statusUpdate = statusUpdates[0];
 		try {
 			// upload media first
@@ -50,21 +50,24 @@ public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Void> {
 			if (!isCancelled()) {
 				connection.uploadStatus(statusUpdate, mediaIds);
 			}
+			return true;
 		} catch (ConnectionException exception) {
 			this.exception = exception;
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			// close inputstreams
 			statusUpdate.close();
 		}
-		return null;
+		return false;
 	}
 
 
 	@Override
-	protected void onPostExecute(Void v) {
+	protected void onPostExecute(Boolean success) {
 		StatusEditor activity = weakRef.get();
 		if (activity != null) {
-			if (exception == null) {
+			if (success) {
 				activity.onSuccess();
 			} else {
 				activity.onError(exception);

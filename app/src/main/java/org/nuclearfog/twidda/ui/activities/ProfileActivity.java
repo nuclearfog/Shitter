@@ -689,7 +689,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 *
 	 * @param relation relation to an user
 	 */
-	public void onAction(Relation relation) {
+	public void onAction(@NonNull Relation relation) {
 		if (this.relation != null) {
 			// check if block status changed
 			if (relation.isBlocked() != this.relation.isBlocked()) {

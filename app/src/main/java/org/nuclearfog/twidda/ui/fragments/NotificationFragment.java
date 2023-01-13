@@ -131,7 +131,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * @param notifications new items
 	 * @param position      index where to insert the new items
 	 */
-	public void onSuccess(List<Notification> notifications, int position) {
+	public void onSuccess(@NonNull List<Notification> notifications, int position) {
 		adapter.addItems(notifications, position);
 		setRefresh(false);
 	}
@@ -139,7 +139,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	/**
 	 * called from {@link NotificationLoader} if an error occurs
 	 */
-	public void onError(@Nullable ConnectionException exception) {
+	public void onError(ConnectionException exception) {
 		ErrorHandler.handleFailure(requireContext(), exception);
 		adapter.disableLoading();
 		setRefresh(false);

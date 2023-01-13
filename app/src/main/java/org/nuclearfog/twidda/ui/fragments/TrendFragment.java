@@ -85,16 +85,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 	}
 
 	/**
-	 * set trend data to list
-	 *
-	 * @param data Trend data
-	 */
-	public void setData(List<Trend> data) {
-		adapter.replaceItems(data);
-		setRefresh(false);
-	}
-
-	/**
 	 * check if list is empty
 	 *
 	 * @return true if list is empty
@@ -104,9 +94,19 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 	}
 
 	/**
+	 * set trend data to list
+	 *
+	 * @param data Trend data
+	 */
+	public void setData(@NonNull List<Trend> data) {
+		adapter.replaceItems(data);
+		setRefresh(false);
+	}
+
+	/**
 	 * called from {@link TrendLoader} if an error occurs
 	 */
-	public void onError(@Nullable ConnectionException error) {
+	public void onError(ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);
 		setRefresh(false);
 	}
