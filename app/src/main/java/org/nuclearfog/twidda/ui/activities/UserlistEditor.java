@@ -163,10 +163,17 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	}
 
 	/**
-	 * called when a list was updated successfully
+	 * called when a list was created successfully
+	 *
+	 *  @param result new created list
+	 *  @param updated true if an existing list was updated
 	 */
-	public void onSuccess(@NonNull UserList result) {
-		Toast.makeText(getApplicationContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();
+	public void onSuccess(@NonNull UserList result, boolean updated) {
+		if (updated) {
+			Toast.makeText(getApplicationContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(getApplicationContext(), R.string.info_list_created, Toast.LENGTH_SHORT).show();
+		}
 		Intent data = new Intent();
 		data.putExtra(KEY_UPDATED_USERLIST, result);
 		setResult(RETURN_LIST_CHANGED, data);

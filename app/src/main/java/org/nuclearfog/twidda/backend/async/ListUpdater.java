@@ -60,7 +60,7 @@ public class ListUpdater extends AsyncTask<Void, Void, UserList> {
 		UserlistEditor activity = weakRef.get();
 		if (activity != null) {
 			if (result != null) {
-				activity.onSuccess(result);
+				activity.onSuccess(result, update.exists());
 			} else {
 				activity.onError(exception);
 			}
