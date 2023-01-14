@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:layout_marginStart="@dimen/item_attachment_indicator_margin"
-	android:layout_marginEnd="@dimen/item_attachment_indicator_margin">
+	android:layout_width="@dimen/item_icon_indicator_size"
+	android:layout_height="@dimen/item_icon_indicator_size"
+	android:layout_marginStart="@dimen/item_icon_indicator_margin"
+	android:layout_marginEnd="@dimen/item_icon_indicator_margin">
 
 	<ImageButton
-		android:id="@+id/item_status_media"
+		android:id="@+id/item_icon_media"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:background="@drawable/round"

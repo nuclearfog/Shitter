@@ -257,8 +257,10 @@
 	<dimen name="item_poll_layout_padding">5dp</dimen>
 	<dimen name="tiem_poll_text_size">11sp</dimen>
 
-	<!-- dimens of item_attachment.xml -->
-	<dimen name="item_attachment_indicator_margin">2dp</dimen>
+	<!-- dimens of item_icon.xml -->
+	<dimen name="item_icon_indicator_margin">2dp</dimen>
+	<dimen name="item_icon_indicator_size">@dimen/item_status_indicator_size</dimen>
+
 
 	<!-- dimens of item_option -->
 	<dimen name="item_option_icon_size">12sp</dimen>
