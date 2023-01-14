@@ -80,9 +80,12 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 		try {
 			switch (mode) {
 				case MODE_REQUEST:
-					Account login = settings.getLogin();
-					if (!database.containsLogin(login.getId()))
-						database.saveLogin(login);
+					if (settings.isLoggedIn()) {
+						Account login = settings.getLogin();
+						if (!database.containsLogin(login.getId())) {
+							database.saveLogin(login);
+						}
+					}
 					return connection.getAuthorisationLink(param);
 
 				case MODE_LOGIN:
