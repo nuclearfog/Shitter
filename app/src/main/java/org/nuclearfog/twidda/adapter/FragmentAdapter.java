@@ -9,6 +9,7 @@ import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USER;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USERLIST;
+import static org.nuclearfog.twidda.ui.fragments.TrendFragment.KEY_HASHTAG_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
@@ -147,16 +148,25 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * setup adapter for search for status and user search
 	 *
-	 * @param search Search string
+	 * @param search         Search string
+	 * @param includeHashtag add hashtag search fragment
 	 */
-	public void setupSearchPage(String search) {
+	public void setupSearchPage(String search, boolean includeHashtag) {
 		Bundle paramStatuses = new Bundle();
 		Bundle paramUsers = new Bundle();
+		Bundle paramTrend = new Bundle();
 		paramStatuses.putString(KEY_STATUS_FRAGMENT_SEARCH, search);
 		paramUsers.putString(KEY_FRAG_USER_SEARCH, search);
 		paramStatuses.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_SEARCH);
 		paramUsers.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
-		fragments = new ListFragment[2];
+		paramTrend.putString(KEY_HASHTAG_SEARCH, search);
+		if (includeHashtag) {
+			fragments = new ListFragment[3];
+			fragments[2] = new TrendFragment();
+			fragments[2].setArguments(paramTrend);
+		} else {
+			fragments = new ListFragment[2];
+		}
 		fragments[0] = new StatusFragment();
 		fragments[1] = new UserFragment();
 		fragments[0].setArguments(paramStatuses);

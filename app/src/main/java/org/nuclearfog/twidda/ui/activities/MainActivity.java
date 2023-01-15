@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 			search.putExtra(KEY_SEARCH_QUERY, s);
 			startActivity(search);
 		} else {
-			Toast.makeText(this, R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
 		}
 		return false;
 	}
@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		if (error != null) {
 			ErrorHandler.handleFailure(this, error);
 		} else {
-			Toast.makeText(this, R.string.error_open_link, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
 		}
 		loadingCircle.dismiss();
 	}

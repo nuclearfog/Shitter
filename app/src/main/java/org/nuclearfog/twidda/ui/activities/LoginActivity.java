@@ -208,14 +208,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 					else {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
-						Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
 						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_REQUEST);
 						loginAsync.execute(apiTxt1, apiTxt2);
 					}
 				}
 				// use system tokens
 				else if (Tokens.USE_DEFAULT_KEYS) {
-					Toast.makeText(this, R.string.info_open_twitter_login, LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
 					loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_REQUEST);
 					loginAsync.execute();
 				}
@@ -223,9 +223,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			// generate Mastodon login
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
 				if (apiHost.length() > 0 && !Patterns.WEB_URL.matcher(apiHost.getText()).matches()) {
-					Toast.makeText(this, R.string.error_invalid_url, LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.error_invalid_url, LENGTH_LONG).show();
 				} else {
-					Toast.makeText(this, R.string.info_open_mastodon_login, LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
 					loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_REQUEST);
 					if (apiHost.length() > 0) {
 						String link = apiHost.getText().toString();
@@ -245,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			String code = pinInput.getText().toString();
 			// check if user clicked on PIN button
 			if (loginLink == null) {
-				Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_get_link, LENGTH_LONG).show();
 			} else if (code.isEmpty()) {
 				pinInput.setError(getString(R.string.error_enter_code));
 			}
@@ -259,21 +259,21 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 					else {
 						String apiTxt1 = apiKey1.getText().toString();
 						String apiTxt2 = apiKey2.getText().toString();
-						Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
 						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_LOGIN);
 						loginAsync.execute(loginLink, code, apiTxt1, apiTxt2);
 					}
 				}
 				// use system tokens
 				else if (Tokens.USE_DEFAULT_KEYS) {
-					Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
 					loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_LOGIN);
 					loginAsync.execute(loginLink, code);
 				}
 			}
 			// login to mastodon
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
-				Toast.makeText(this, R.string.info_login_to_mastodon, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, LENGTH_LONG).show();
 				loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_LOGIN);
 				loginAsync.execute(loginLink, code);
 			}
@@ -358,7 +358,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		try {
 			startActivity(loginIntent);
 		} catch (ActivityNotFoundException err) {
-			Toast.makeText(this, R.string.error_open_link, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_open_link, LENGTH_SHORT).show();
 		}
 	}
 

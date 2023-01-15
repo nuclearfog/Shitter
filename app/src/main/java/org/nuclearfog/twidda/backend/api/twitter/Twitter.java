@@ -535,6 +535,12 @@ public class Twitter implements Connection {
 
 
 	@Override
+	public List<Trend> searchHashtags(String search) throws TwitterException {
+		throw new TwitterException("not implemented!");
+	}
+
+
+	@Override
 	public List<Location> getLocations() throws TwitterException {
 		try {
 			Response response = get(LOCATIONS, new ArrayList<>(0));

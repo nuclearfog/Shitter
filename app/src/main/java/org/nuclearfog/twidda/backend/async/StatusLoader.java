@@ -208,7 +208,7 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 			if (statuses != null) {
 				fragment.setData(statuses, pos);
 			}
-			if (exception != null) {
+			if (statuses == null || exception != null) {
 				fragment.onError(exception);
 			}
 		}

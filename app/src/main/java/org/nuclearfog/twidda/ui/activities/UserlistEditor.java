@@ -165,8 +165,8 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	/**
 	 * called when a list was created successfully
 	 *
-	 *  @param result new created list
-	 *  @param updated true if an existing list was updated
+	 * @param result  new created list
+	 * @param updated true if an existing list was updated
 	 */
 	public void onSuccess(@NonNull UserList result, boolean updated) {
 		if (updated) {
@@ -197,7 +197,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		String descrStr = subTitleInput.getText().toString();
 		boolean isPublic = visibility.isChecked();
 		if (titleStr.trim().isEmpty()) {
-			Toast.makeText(this, R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
 		} else {
 			UserListUpdate mHolder;
 			if (userList != null) {

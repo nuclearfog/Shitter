@@ -160,15 +160,15 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			String statusText = this.statusText.getText().toString();
 			// check if status is empty
 			if (statusText.trim().isEmpty() && statusUpdate.mediaCount() == 0) {
-				Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_empty_tweet, LENGTH_SHORT).show();
 			}
 			// check if mentions exceed the limit
 			else if (StringTools.countMentions(statusText) > MAX_MENTIONS) {
-				Toast.makeText(this, R.string.error_mention_exceed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_mention_exceed, LENGTH_SHORT).show();
 			}
 			// check if GPS location is pending
 			else if (isLocating()) {
-				Toast.makeText(this, R.string.info_location_pending, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_location_pending, LENGTH_SHORT).show();
 			}
 			// check if gps locating is not pending
 			else if (uploaderAsync == null || uploaderAsync.getStatus() != RUNNING) {
@@ -202,9 +202,9 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	protected void onAttachLocation(@Nullable Location location) {
 		if (location != null) {
 			statusUpdate.setLocation(location);
-			Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.info_gps_attached, LENGTH_LONG).show();
 		} else {
-			Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.error_gps, LENGTH_LONG).show();
 		}
 		locationPending.setVisibility(INVISIBLE);
 		locationBtn.setVisibility(VISIBLE);
@@ -228,7 +228,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				break;
 
 			case StatusUpdate.MEDIA_ERROR:
-				Toast.makeText(this, R.string.error_adding_media, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_adding_media, LENGTH_SHORT).show();
 				break;
 		}
 		if (statusUpdate.mediaLimitReached()) {
@@ -282,7 +282,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 * called if status was updated successfully
 	 */
 	public void onSuccess() {
-		Toast.makeText(this, R.string.info_tweet_sent, LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(), R.string.info_tweet_sent, LENGTH_LONG).show();
 		finish();
 	}
 
@@ -321,7 +321,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			// show progress dialog
 			loadingCircle.show();
 		} else {
-			Toast.makeText(this, R.string.error_media_init, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_media_init, LENGTH_SHORT).show();
 		}
 	}
 }

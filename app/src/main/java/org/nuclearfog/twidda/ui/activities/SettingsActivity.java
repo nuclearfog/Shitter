@@ -534,7 +534,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		else if (parent.getId() == R.id.spinner_scale) {
 			settings.setScaleIndex(position);
 			AppStyles.setFontStyle(root);
-			Toast.makeText(this, R.string.info_restart_app_on_change, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.info_restart_app_on_change, Toast.LENGTH_SHORT).show();
 		}
 	}
 

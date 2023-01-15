@@ -239,6 +239,14 @@ public interface Connection {
 	List<Trend> getTrends() throws ConnectionException;
 
 	/**
+	 * search hashtags matching search string
+	 *
+	 * @param search text to search hashtags
+	 * @return list of trends (Hashtags)
+	 */
+	List<Trend> searchHashtags(String search) throws ConnectionException;
+
+	/**
 	 * get available locations for trends
 	 *
 	 * @return list of locations

@@ -201,6 +201,7 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
 		params.add("limit=" + settings.getListSize());
+		params.add("type=accounts");
 		return getUsers(ENDPOINT_SEARCH_ACCOUNTS, params);
 	}
 
@@ -351,6 +352,7 @@ public class Mastodon implements Connection {
 	public List<Status> searchStatuses(String search, long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
+		params.add("limit=" + settings.getListSize());
 		params.add("type=statuses");
 		return getStatuses(SEARCH_TIMELINE, params, minId, maxId);
 	}
@@ -372,6 +374,30 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONArray(body.string());
+				List<Trend> result = new ArrayList<>(array.length());
+				for (int i = 0; i < array.length(); i++) {
+					result.add(new MastodonTrend(array.getJSONObject(i), i));
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public List<Trend> searchHashtags(String search) throws MastodonException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("q=" + StringTools.encode(search));
+			params.add("limit=" + settings.getListSize());
+			params.add("type=hashtags");
+			Response response = get(SEARCH_TIMELINE, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONObject(body.string()).getJSONArray("hashtags");
 				List<Trend> result = new ArrayList<>(array.length());
 				for (int i = 0; i < array.length(); i++) {
 					result.add(new MastodonTrend(array.getJSONObject(i), i));

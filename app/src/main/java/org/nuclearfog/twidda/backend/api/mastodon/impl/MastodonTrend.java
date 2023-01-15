@@ -25,7 +25,7 @@ public class MastodonTrend implements Trend {
 	 */
 	public MastodonTrend(JSONObject json, int pos) {
 		JSONArray history = json.optJSONArray("history");
-		name = json.optString("name", "");
+		name = '#' + json.optString("name", "");
 		rank = pos + 1;
 		if (history != null && history.length() > 0) {
 			JSONObject latest = history.optJSONObject(0);

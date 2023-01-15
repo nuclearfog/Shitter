@@ -65,10 +65,11 @@ public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 
 	@Override
 	protected Messages doInBackground(Void... v) {
+		Messages messages = null;
 		try {
 			switch (action) {
 				case DB:
-					Messages messages = db.getMessages();
+					messages = db.getMessages();
 					if (messages.isEmpty()) {
 						messages = connection.getDirectmessages("");
 						// merge online messages with offline messages
@@ -95,8 +96,9 @@ public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			messageId = -1L; // remove ID of the message
 		}
-		return null;
+		return messages;
 	}
 
 
@@ -109,16 +111,17 @@ public class MessageLoader extends AsyncTask<Void, Void, Messages> {
 				case LOAD:
 					if (messages != null) {
 						fragment.setData(messages);
-					} else {
+					}
+					if (messages == null || exception != null) {
 						fragment.onError(exception, messageId);
 					}
 					break;
 
 				case DEL:
-					if (exception == null) {
-						fragment.removeItem(messageId);
-					} else {
+					if (exception != null || messageId != -1L) {
 						fragment.onError(exception, messageId);
+					} else {
+						fragment.removeItem(messageId);
 					}
 					break;
 			}

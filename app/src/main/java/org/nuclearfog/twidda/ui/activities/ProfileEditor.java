@@ -205,7 +205,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 			if (holder.setImage(this, uri)) {
 				profile_image.setImageURI(uri);
 			} else {
-				Toast.makeText(this, R.string.error_adding_media, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 			}
 		}
 		// Add image as banner image
@@ -217,7 +217,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 				addBannerBtn.setVisibility(INVISIBLE);
 				changeBannerBtn.setVisibility(VISIBLE);
 			} else {
-				Toast.makeText(this, R.string.error_adding_media, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -276,7 +276,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	public void onSuccess(@NonNull User user) {
 		Intent data = new Intent();
 		data.putExtra(KEY_UPDATED_PROFILE, user);
-		Toast.makeText(this, R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
 		setResult(RETURN_PROFILE_CHANGED, data);
 		finish();
 	}
@@ -314,7 +314,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 					editorAsync.execute();
 					loadingCircle.show();
 				} else {
-					Toast.makeText(this, R.string.error_media_init, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();
 				}
 			}
 		}

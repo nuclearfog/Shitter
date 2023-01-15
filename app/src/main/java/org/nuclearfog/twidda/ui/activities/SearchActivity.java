@@ -78,9 +78,12 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		pager.setAdapter(adapter);
 		pager.setOffscreenPageLimit(2);
 
-		search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
-		adapter.setupSearchPage(search);
-		AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
+		String search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
+		if (search != null) {
+			this.search = search;
+			adapter.setupSearchPage(search, !search.startsWith("#") && settings.getLogin().getApiType() == Account.API_MASTODON);
+			AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
+		}
 		AppStyles.setTheme(root);
 	}
 
@@ -146,7 +149,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			search.putExtra(KEY_SEARCH_QUERY, s);
 			startActivity(search);
 		} else {
-			Toast.makeText(this, R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
 		}
 		return true;
 	}

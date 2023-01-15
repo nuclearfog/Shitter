@@ -329,13 +329,13 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			return false;
 		if (USERNAME_PATTERN.matcher(query).matches()) {
 			if (listManagerAsync == null || listManagerAsync.getStatus() != RUNNING) {
-				Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
 				listManagerAsync = new ListManager(this, userList.getId(), ListManager.ADD_USER, query, this);
 				listManagerAsync.execute();
 				return true;
 			}
 		} else {
-			Toast.makeText(this, R.string.error_username_format, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
 		}
 		return false;
 	}
@@ -352,14 +352,14 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 				if (!name.startsWith("@"))
 					name = '@' + name;
 				String info = getString(R.string.info_user_added_to_list, name);
-				Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
 			case ListManager.DEL_USER:
 				if (user != null) {
 					info = getString(R.string.info_user_removed, user.getScreenname());
-					Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
 					// remove user from list member page
 					Fragment fragment = adapter.getItem(1);
 					if (fragment instanceof UserFragment) {
@@ -405,12 +405,12 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 				break;
 
 			case ListAction.FOLLOW:
-				Toast.makeText(this, R.string.info_list_followed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_list_followed, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
 			case ListAction.UNFOLLOW:
-				Toast.makeText(this, R.string.info_list_unfollowed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_list_unfollowed, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
@@ -418,7 +418,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 				Intent result = new Intent();
 				result.putExtra(RESULT_REMOVED_LIST_ID, userList.getId());
 				setResult(RETURN_LIST_REMOVED, result);
-				Toast.makeText(this, R.string.info_list_removed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_list_removed, Toast.LENGTH_SHORT).show();
 				finish();
 				break;
 		}

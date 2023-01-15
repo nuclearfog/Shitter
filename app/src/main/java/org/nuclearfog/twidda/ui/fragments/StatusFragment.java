@@ -219,7 +219,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	/**
 	 * called from {@link StatusLoader} if an error occurs
 	 */
-	public void onError(ConnectionException error) {
+	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);
 		adapter.disableLoading();
 		setRefresh(false);

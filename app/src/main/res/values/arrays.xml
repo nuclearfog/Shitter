@@ -18,6 +18,7 @@
 	<integer-array name="search_tab_icons">
 		<item>@drawable/search</item>
 		<item>@drawable/user</item>
+		<item>@drawable/hash</item>
 	</integer-array>
 
 	<integer-array name="list_tab_icons">

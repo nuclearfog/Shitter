@@ -247,7 +247,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	 * called when an image was successfully saved to external storage
 	 */
 	public void onImageSaved() {
-		Toast.makeText(this, R.string.info_image_saved, LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), R.string.info_image_saved, LENGTH_SHORT).show();
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 			// start media scanner to scan for new image
 			MediaScannerConnection.scanFile(this, new String[]{imageName}, null, null);
@@ -258,7 +258,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	 * called when an error occurs while storing image
 	 */
 	public void onError() {
-		Toast.makeText(this, R.string.error_image_save, Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -269,7 +269,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 			startLocating();
 		} else {
 			if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
-				Toast.makeText(this, R.string.info_permission_location, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_permission_location, LENGTH_LONG).show();
 			}
 			requestPermissions(PERMISSION_LOCATION, REQUEST_LOCATION);
 		}
@@ -297,7 +297,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 			if (requiresPermission) {
 				for (String permission : PERMISSIONS_READ) {
 					if (shouldShowRequestPermissionRationale(permission)) {
-						Toast.makeText(this, R.string.info_permission_read, LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), R.string.info_permission_read, LENGTH_LONG).show();
 						break;
 					}
 				}
@@ -321,7 +321,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 			saveImage();
 		} else {
 			if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))
-				Toast.makeText(this, R.string.info_permission_write, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_permission_write, LENGTH_LONG).show();
 			requestPermissions(PERMISSION_WRITE, REQUEST_STORE_IMG);
 		}
 	}
@@ -371,7 +371,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 		try {
 			startActivityForResult(mediaSelect, requestCode);
 		} catch (ActivityNotFoundException err) {
-			Toast.makeText(this, R.string.error_no_media_app, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
 		}
 	}
 

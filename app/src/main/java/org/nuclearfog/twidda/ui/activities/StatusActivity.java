@@ -365,7 +365,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
-				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
 		}
 		// copy status link to clipboard
@@ -373,7 +373,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("status text", status.getText());
 				clip.setPrimaryClip(linkClip);
-				Toast.makeText(this, R.string.info_tweet_text_copied, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_tweet_text_copied, LENGTH_SHORT).show();
 			}
 		}
 		// copy status link to clipboard
@@ -381,7 +381,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("status link", status.getUrl());
 				clip.setPrimaryClip(linkClip);
-				Toast.makeText(this, R.string.info_tweet_link_copied, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_tweet_link_copied, LENGTH_SHORT).show();
 			}
 		}
 		// open status metrics page
@@ -398,7 +398,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (clip != null) {
 					ClipData linkClip = ClipData.newPlainText("status media link", medias[index].getUrl());
 					clip.setPrimaryClip(linkClip);
-					Toast.makeText(this, R.string.info_tweet_medialink_copied, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_tweet_medialink_copied, LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -485,7 +485,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				} else {
 					statusAsync.execute(status.getId());
 				}
-				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
 			// favorite this status
@@ -496,7 +496,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					statusAsync = new StatusAction(this, StatusAction.FAVORITE);
 				}
 				statusAsync.execute(status.getId());
-				Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
 			// go to original status
@@ -519,7 +519,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (clip != null && location != null) {
 					ClipData linkClip = ClipData.newPlainText("Status location coordinates", location.getCoordinates());
 					clip.setPrimaryClip(linkClip);
-					Toast.makeText(this, R.string.info_tweet_location_copied, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_tweet_location_copied, LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -563,7 +563,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
-				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
@@ -635,7 +635,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
-				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -767,43 +767,43 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void OnSuccess(int action) {
 		switch (action) {
 			case StatusAction.REPOST:
-				Toast.makeText(this, R.string.info_tweet_retweeted, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_tweet_retweeted, LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.REMOVE_REPOST:
-				Toast.makeText(this, R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
 				// todo remove old retweet from list fragment
 				break;
 
 			case StatusAction.FAVORITE:
 				if (settings.likeEnabled())
-					Toast.makeText(this, R.string.info_tweet_liked, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_tweet_liked, LENGTH_SHORT).show();
 				else
-					Toast.makeText(this, R.string.info_tweet_favored, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_tweet_favored, LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.UNFAVORITE:
 				if (settings.likeEnabled())
-					Toast.makeText(this, R.string.info_tweet_unliked, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_tweet_unliked, LENGTH_SHORT).show();
 				else
-					Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_tweet_unfavored, LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.HIDE:
 				hidden = true;
 				invalidateOptionsMenu();
-				Toast.makeText(this, R.string.info_reply_hidden, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_reply_hidden, LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.UNHIDE:
 				hidden = false;
 				invalidateOptionsMenu();
-				Toast.makeText(this, R.string.info_reply_unhidden, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_reply_unhidden, LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.DELETE:
 				if (status != null) {
-					Toast.makeText(this, R.string.info_tweet_removed, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_tweet_removed, LENGTH_SHORT).show();
 					Intent returnData = new Intent();
 					if (status.getEmbeddedStatus() != null)
 						returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());

@@ -478,7 +478,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
-				Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -519,7 +519,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 					try {
 						startActivity(browserIntent);
 					} catch (ActivityNotFoundException err) {
-						Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
 					}
 				}
 			}
@@ -694,25 +694,25 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			// check if block status changed
 			if (relation.isBlocked() != this.relation.isBlocked()) {
 				if (relation.isBlocked()) {
-					Toast.makeText(this, R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(this, R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
 				}
 			}
 			// check if following status changed
 			else if (relation.isFollowing() != this.relation.isFollowing()) {
 				if (relation.isFollowing()) {
-					Toast.makeText(this, R.string.info_followed, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_followed, Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(this, R.string.info_unfollowed, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_unfollowed, Toast.LENGTH_SHORT).show();
 				}
 			}
 			// check if mute status changed
 			else if (relation.isMuted() != this.relation.isMuted()) {
 				if (relation.isMuted()) {
-					Toast.makeText(this, R.string.info_user_muted, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(this, R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
 				}
 			}
 		}

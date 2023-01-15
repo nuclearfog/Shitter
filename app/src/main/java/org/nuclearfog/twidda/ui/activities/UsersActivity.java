@@ -235,7 +235,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_exclude_refresh) {
 			if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
-				Toast.makeText(this, R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
 				userExclTask = new FilterLoader(this, REFRESH);
 				userExclTask.execute();
 			}
@@ -279,7 +279,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				}
 			}
 		} else {
-			Toast.makeText(this, R.string.error_username_format, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
 		}
 		return false;
 	}
@@ -296,17 +296,17 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public void onSuccess(int mode) {
 		switch (mode) {
 			case MUTE_USER:
-				Toast.makeText(this, R.string.info_user_muted, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
 			case BLOCK_USER:
-				Toast.makeText(this, R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
 			case REFRESH:
-				Toast.makeText(this, R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
 				break;
 		}
 	}

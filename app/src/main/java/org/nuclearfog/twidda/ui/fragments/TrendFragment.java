@@ -27,8 +27,15 @@ import java.util.List;
  */
 public class TrendFragment extends ListFragment implements TrendClickListener {
 
+	/**
+	 * additional bundle key to set search string for hashtags
+	 */
+	public static final String KEY_HASHTAG_SEARCH = "trend_search_hashtags";
+
 	private TrendLoader trendTask;
 	private TrendAdapter adapter;
+
+	private String search = "";
 
 
 	@Override
@@ -36,6 +43,10 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 		super.onViewCreated(view, savedInstanceState);
 		adapter = new TrendAdapter(settings, this);
 		setAdapter(adapter);
+		Bundle args = getArguments();
+		if (args != null) {
+			search = args.getString(KEY_HASHTAG_SEARCH, "");
+		}
 	}
 
 
@@ -106,7 +117,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 	/**
 	 * called from {@link TrendLoader} if an error occurs
 	 */
-	public void onError(ConnectionException error) {
+	public void onError(@Nullable ConnectionException error) {
 		ErrorHandler.handleFailure(requireContext(), error);
 		setRefresh(false);
 	}
@@ -116,6 +127,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 	 */
 	private void load() {
 		trendTask = new TrendLoader(this);
-		trendTask.execute();
+		trendTask.execute(search);
 	}
 }

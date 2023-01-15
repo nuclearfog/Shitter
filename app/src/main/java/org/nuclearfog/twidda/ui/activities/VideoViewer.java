@@ -228,7 +228,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 				try {
 					startActivity(intent);
 				} catch (ActivityNotFoundException err) {
-					Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -350,7 +350,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 			if (link.getScheme().startsWith("http")) {
 				confirmDialog.show(ConfirmDialog.VIDEO_ERROR);
 			} else {
-				Toast.makeText(this, R.string.error_cant_load_video, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_cant_load_video, LENGTH_SHORT).show();
 				finish();
 			}
 			return true;
@@ -398,7 +398,7 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 				try {
 					startActivity(intent);
 				} catch (ActivityNotFoundException err) {
-					Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
 				}
 			}
 		}

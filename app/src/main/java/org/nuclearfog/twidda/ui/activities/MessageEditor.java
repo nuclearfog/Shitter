@@ -124,7 +124,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 				preview.setVisibility(VISIBLE);
 				media.setVisibility(GONE);
 			} else {
-				Toast.makeText(this, R.string.error_adding_media, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_adding_media, LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -177,7 +177,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	 * called when direct message is sent
 	 */
 	public void onSuccess() {
-		Toast.makeText(this, R.string.info_dm_send, Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
 		finish();
 	}
 
@@ -206,10 +206,10 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 				messageAsync.execute();
 				loadingCircle.show();
 			} else {
-				Toast.makeText(this, R.string.error_media_init, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_media_init, LENGTH_SHORT).show();
 			}
 		} else {
-			Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_dm, LENGTH_SHORT).show();
 		}
 	}
 }

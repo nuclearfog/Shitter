@@ -20,7 +20,7 @@ import java.util.List;
  * @author nuclearfog
  * @see TrendFragment
  */
-public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
+public class TrendLoader extends AsyncTask<String, Void, List<Trend>> {
 
 	private WeakReference<TrendFragment> weakRef;
 	private Connection connection;
@@ -43,10 +43,12 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
 
 	@Override
-	protected List<Trend> doInBackground(Void... v) {
-		List<Trend> trends;
+	protected List<Trend> doInBackground(String... params) {
+		List<Trend> trends = null;
 		try {
-			if (isEmpty) {
+			if (params.length == 1 && params[0] != null && !params[0].trim().isEmpty()) {
+				trends = connection.searchHashtags(params[0]);
+			} else if (isEmpty) {
 				trends = db.getTrends();
 				if (trends.isEmpty()) {
 					trends = connection.getTrends();
@@ -56,13 +58,12 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 				trends = connection.getTrends();
 				db.saveTrends(trends);
 			}
-			return trends;
 		} catch (ConnectionException exception) {
 			this.exception = exception;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return trends;
 	}
 
 
@@ -73,7 +74,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 			if (trends != null) {
 				fragment.setData(trends);
 			}
-			if (exception != null) {
+			if (trends == null || exception != null) {
 				fragment.onError(exception);
 			}
 		}
