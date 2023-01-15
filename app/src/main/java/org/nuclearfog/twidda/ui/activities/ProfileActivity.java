@@ -213,12 +213,15 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 		Intent i = getIntent();
 		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
+		Account login = settings.getLogin();
 		if (o instanceof User) {
 			user = (User) o;
-			adapter.setupProfilePage(user.getId(), settings.getLogin().getApiType() == Account.API_TWITTER);
+			boolean enableFavs = login.getApiType() == Account.API_TWITTER || login.getId() == user.getId();
+			adapter.setupProfilePage(user.getId(), enableFavs);
 		} else {
 			long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
-			adapter.setupProfilePage(userId, settings.getLogin().getApiType() == Account.API_TWITTER);
+			boolean enableFavs = login.getApiType() == Account.API_TWITTER || login.getId() == userId;
+			adapter.setupProfilePage(userId, enableFavs);
 		}
 		if (settings.likeEnabled()) {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
