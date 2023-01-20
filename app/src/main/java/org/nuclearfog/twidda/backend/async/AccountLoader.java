@@ -75,7 +75,7 @@ public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
 					fragment.onError();
 				}
 			} else if (mode == MODE_DELETE) {
-				if (deleteId > 0) {
+				if (deleteId >= 0) {
 					fragment.onDelete(deleteId);
 				} else {
 					fragment.onError();
