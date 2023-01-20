@@ -1,13 +1,10 @@
-<p><i>Shitter</i> is a lightweight Android client for Twitter.</p>
+<p><i>Shitter</i> is a lightweight Android client for Twitter and Mastodon.</p>
 <p><br><b>Features:</b></p>
 <ul>
-    <li>fast access to tweets and userprofiles</li>
-    <li>customizable look</li>
-    <li>image/video upload & preview</li>
-    <li>twitter trends and search</li>
-    <li>Directmessage</li>
-    <li>Userlist editor</li>
-    <li>Profile editor</li>
-    <li>Multi Account Support</li>
-    <li>Proxy setup</li>
+    <li>access to statuses, users and trends</li>
+    <li>real timeline (chronological order)</li>
+    <li>customizable theme</li>
+    <li>media, link and poll viewer</li>
+    <li>multi account support</li>
+    <li>no ads, no app tracking, proxy support</li>
 </ul>

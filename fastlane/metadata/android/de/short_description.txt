@@ -1,1 +1,1 @@
-einfacher Twitter-Client
+Einfacher Twitter/Mastodon-Client
