@@ -207,13 +207,13 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Users getRepostingUsers(long id) throws MastodonException {
+	public Users getRepostingUsers(long id, long cursor) throws MastodonException {
 		return getUsers(ENDPOINT_STATUS + id + "/reblogged_by", new ArrayList<>());
 	}
 
 
 	@Override
-	public Users getFavoritingUsers(long id) throws MastodonException {
+	public Users getFavoritingUsers(long id, long cursor) throws MastodonException {
 		return getUsers(ENDPOINT_STATUS + id + "/favourited_by", new ArrayList<>());
 	}
 
@@ -459,7 +459,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getStatusReplies(long id, long minId, long maxId) throws MastodonException {
+	public List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws MastodonException {
 		List<Status> statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
 		List<Status> result = new LinkedList<>();
 		for (Status status : statusThreads) {

@@ -19,17 +19,22 @@ public class Tokens {
 	 * false means there are no API keys available
 	 * set to true when {@link #CONSUMER_TOKEN} and {@link #TOKEN_SECRET} are set
 	 */
-	public static final boolean USE_DEFAULT_KEYS = false;
+	public static final boolean USE_DEFAULT_KEYS = true;
+
+	/**
+	 * for compability mode disable Twitter API version 2.0 (use only version 1.1) if the API access don't support this.
+	 */
+	public static final boolean DISABLE_API_V2 = true;
 
 	/**
 	 * add here your consumer token
 	 */
-	private static final String CONSUMER_TOKEN = "xxx";
+	private static final String CONSUMER_TOKEN = "";
 
 	/**
 	 * add here your token secret
 	 */
-	private static final String TOKEN_SECRET = "xxx";
+	private static final String TOKEN_SECRET = "";
 
 
 	private static Tokens instance;

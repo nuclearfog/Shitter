@@ -115,10 +115,10 @@ public class UserLoader extends AsyncTask<Long, Void, Users> {
 					return connection.getFollowing(id, cursor);
 
 				case REPOST:
-					return connection.getRepostingUsers(id);
+					return connection.getRepostingUsers(id, cursor);
 
 				case FAVORIT:
-					return connection.getFavoritingUsers(id);
+					return connection.getFavoritingUsers(id, cursor);
 
 				case SEARCH:
 					return connection.searchUsers(search, cursor);

@@ -53,7 +53,6 @@ import org.nuclearfog.twidda.model.UserList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +129,7 @@ public class Twitter implements Connection {
 	private static final String TWEET_UPLOAD = API + "/1.1/statuses/update.json";
 	private static final String TWEET_DELETE = API + "/1.1/statuses/destroy/";
 	private static final String TWEET_SEARCH_2 = API + "/2/tweets/search/recent";
+	private static final String TWEET_GET_RETWEETERS = API + "/1.1/statuses/retweeters/ids.json";
 	private static final String TWEET_UNI = API + "/2/tweets/";
 
 	// userlist endpoints
@@ -308,16 +308,32 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public Users getRepostingUsers(long tweetId) throws TwitterException {
-		String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
-		return getUsers2(endpoint, new ArrayList<>());
+	public Users getRepostingUsers(long tweetId, long cursor) throws TwitterException {
+		List<String> params = new ArrayList<>();
+		if (!Tokens.DISABLE_API_V2) {
+			String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
+			return getUsers2(endpoint, params);
+		} else {
+			params.add("id=" + tweetId);
+			params.add("count=" + settings.getListSize());
+			long[] ids = getUserIDs(TWEET_GET_RETWEETERS, params, cursor);
+			Users result = getUsers1(ids);
+			result.setPrevCursor(cursor);
+			result.setNextCursor(ids[ids.length - 1]); // Twitter bug: next cursor is always zero!
+			return result;
+		}
 	}
 
 
 	@Override
-	public Users getFavoritingUsers(long tweetId) throws TwitterException {
-		String endpoint = TWEET_UNI + tweetId + "/liking_users";
-		return getUsers2(endpoint, new ArrayList<>());
+	public Users getFavoritingUsers(long tweetId, long cursor) throws TwitterException {
+		if (!Tokens.DISABLE_API_V2) {
+			String endpoint = TWEET_UNI + tweetId + "/liking_users";
+			return getUsers2(endpoint, new ArrayList<>());
+		} else {
+			// API v1.1 doesn't support this!
+			return new Users(0L, 0L);
+		}
 	}
 
 
@@ -389,17 +405,15 @@ public class Twitter implements Connection {
 
 	@Override
 	public Users getIncomingFollowRequests(long cursor) throws TwitterException {
-		long[] ids = getUserIDs(USERS_FOLLOW_INCOMING, cursor);
-		// remove last array entry (cursor) from ID list
-		return getUsers1(Arrays.copyOf(ids, ids.length - 1));
+		long[] ids = getUserIDs(USERS_FOLLOW_INCOMING, new ArrayList<>(), cursor);
+		return getUsers1(ids);
 	}
 
 
 	@Override
 	public Users getOutgoingFollowRequests(long cursor) throws TwitterException {
-		long[] ids = getUserIDs(USERS_FOLLOW_OUTGOING, cursor);
-		// remove last array entry (cursor) from ID list
-		return getUsers1(Arrays.copyOf(ids, ids.length - 1));
+		long[] ids = getUserIDs(USERS_FOLLOW_OUTGOING, new ArrayList<>(), cursor);
+		return getUsers1(ids);
 	}
 
 
@@ -608,20 +622,35 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public List<Status> getStatusReplies(long id, long minId, long maxId) throws TwitterException {
+	public List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("query=" + StringTools.encode("conversation_id:" + id));
-		// Note: minId disabled! Twitter refuses API request containing minId of a tweet older than one week
-		List<Status> result = getTweets2(TWEET_SEARCH_2, params, 0, maxId);
 		List<Status> replies = new LinkedList<>();
-		// chose only the first tweet of a conversation
-		for (Status reply : result) {
-			if (reply.getRepliedStatusId() == id && reply.getId() > minId) {
-				replies.add(reply);
+		if (!Tokens.DISABLE_API_V2) {
+			params.add("query=" + StringTools.encode("conversation_id:" + id));
+			// Note: minId disabled! Twitter refuses API request containing minId of a tweet older than one week
+			List<Status> result = getTweets2(TWEET_SEARCH_2, params, 0, maxId);
+			// chose only the first tweet of a conversation
+			for (Status reply : result) {
+				if (reply.getRepliedStatusId() == id && reply.getId() > minId) {
+					replies.add(reply);
+				}
+			}
+		} else {
+			String replyUsername = extras[0];
+			if (replyUsername.startsWith("@")) {
+				replyUsername = replyUsername.substring(1);
+			}
+			params.add("q=" + StringTools.encode("to:" + replyUsername + " -filter:retweets"));
+			List<Status> result = getTweets1(TWEET_SEARCH, params, Math.max(id, minId), maxId);
+			for (Status reply : result) {
+				if (reply.getRepliedStatusId() == id) {
+					replies.add(reply);
+				}
 			}
 		}
-		if (settings.filterResults() && !replies.isEmpty())
+		if (settings.filterResults() && !replies.isEmpty()) {
 			filterTweets(replies);
+		}
 		return replies;
 	}
 
@@ -631,11 +660,13 @@ public class Twitter implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
 		Status status = getTweet1(TWEET_LOOKUP, params);
-		try {
-			params.clear();
-			return getTweet2(TWEET2_LOOKUP + id, params, status);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!Tokens.DISABLE_API_V2) {
+			try {
+				params.clear();
+				return getTweet2(TWEET2_LOOKUP + id, params, status);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return status;
 	}
@@ -1070,7 +1101,7 @@ public class Twitter implements Connection {
 		// add blocked user IDs
 		long cursor = -1;
 		for (int i = 0; i < 10 && cursor != 0; i++) {
-			long[] ids = getUserIDs(IDS_BLOCKED_USERS, cursor);
+			long[] ids = getUserIDs(IDS_BLOCKED_USERS, new ArrayList<>(), cursor);
 			for (int pos = 0; pos < ids.length - 2; pos++) {
 				result.add(ids[pos]);
 			}
@@ -1079,7 +1110,7 @@ public class Twitter implements Connection {
 		// add muted user IDs
 		cursor = -1;
 		for (int i = 0; i < 10 && cursor != 0; i++) {
-			long[] ids = getUserIDs(IDS_MUTED_USERS, cursor);
+			long[] ids = getUserIDs(IDS_MUTED_USERS, new ArrayList<>(), cursor);
 			for (int pos = 0; pos < ids.length - 2; pos++) {
 				result.add(ids[pos]);
 			}
@@ -1295,8 +1326,7 @@ public class Twitter implements Connection {
 	 * @param cursor   cursor value to parse the ID pages
 	 * @return an array of user IDs + the list cursor on the last array index
 	 */
-	private long[] getUserIDs(String endpoint, long cursor) throws TwitterException {
-		List<String> params = new ArrayList<>();
+	private long[] getUserIDs(String endpoint, List<String> params, long cursor) throws TwitterException {
 		params.add("cursor=" + cursor);
 		try {
 			Response response = get(endpoint, params);
@@ -1322,15 +1352,15 @@ public class Twitter implements Connection {
 	/**
 	 * lookup a list of user IDs
 	 *
-	 * @param ids User IDs
+	 * @param ids User IDs (last entry is ignored)
 	 * @return a list of users
 	 */
 	private Users getUsers1(long[] ids) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (ids.length > 0) {
 			StringBuilder idBuf = new StringBuilder("user_id=");
-			for (long id : ids) {
-				idBuf.append(id).append("%2C");
+			for (int i = 0 ; i < ids.length - 1 ; i++) {
+				idBuf.append(ids[i]).append("%2C");
 			}
 			params.add(idBuf.substring(0, idBuf.length() - 3));
 			return getUsers1(USERS_LOOKUP, params);

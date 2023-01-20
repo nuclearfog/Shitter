@@ -15,6 +15,7 @@ import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FAVORIT;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REPOST;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_ID;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_MODE;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_REPLY;
 
 import android.content.ActivityNotFoundException;
@@ -187,15 +188,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
 		// get parameter
+		String replyUsername = "";
 		Object data = getIntent().getSerializableExtra(KEY_STATUS_DATA);
 		if (data instanceof Status) {
 			status = (Status) data;
 			Status embedded = status.getEmbeddedStatus();
 			if (embedded != null) {
 				id = embedded.getId();
+				replyUsername = embedded.getAuthor().getScreenname();
 			} else {
 				id = status.getId();
 				hidden = status.isHidden();
+				replyUsername = status.getAuthor().getScreenname();
 			}
 		} else {
 			id = getIntent().getLongExtra(KEY_STATUS_ID, -1);
@@ -204,6 +208,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// create list fragment for status replies
 		Bundle param = new Bundle();
 		param.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_REPLY);
+		param.putString(KEY_STATUS_FRAGMENT_SEARCH, replyUsername);
 		param.putLong(KEY_STATUS_FRAGMENT_ID, id);
 
 		// insert fragment into view

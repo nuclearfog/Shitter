@@ -196,8 +196,8 @@ public class TweetV1 implements Status {
 
 	@Override
 	public long getConversationId() {
-		// not implemented in API V1.1
-		return 0;
+		// note: does not show the root tweet of the conversation
+		return replyTweetId;
 	}
 
 

@@ -70,7 +70,7 @@ public interface Connection {
 	 * @param id ID of the status
 	 * @return user list
 	 */
-	Users getRepostingUsers(long id) throws ConnectionException;
+	Users getRepostingUsers(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * get users liking a status
@@ -78,7 +78,7 @@ public interface Connection {
 	 * @param id ID of the status
 	 * @return user list
 	 */
-	Users getFavoritingUsers(long id) throws ConnectionException;
+	Users getFavoritingUsers(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * create a list of users a specified user is following
@@ -315,12 +315,13 @@ public interface Connection {
 	/**
 	 * get replies of a status
 	 *
-	 * @param id    Id of the status
-	 * @param minId get statuses with ID above the min ID
-	 * @param maxId get statuses with ID under the max ID
+	 * @param id     Id of the status
+	 * @param minId  get statuses with ID above the min ID
+	 * @param maxId  get statuses with ID under the max ID
+	 * @param extras additional information like screen name of the status author
 	 * @return list of statuses
 	 */
-	List<Status> getStatusReplies(long id, long minId, long maxId) throws ConnectionException;
+	List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws ConnectionException;
 
 	/**
 	 * lookup status by ID
