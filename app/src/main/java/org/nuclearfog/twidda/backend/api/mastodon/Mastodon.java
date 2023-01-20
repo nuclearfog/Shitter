@@ -711,7 +711,7 @@ public class Mastodon implements Connection {
 		List<String> keys = new ArrayList<>();
 
 		params.add("display_name=" + update.getName());
-		params.add("note=" + update.getDescription());
+		params.add("note=" + update.getDescription().replace('\n', ' '));
 		if (update.getProfileImageStream() != null) {
 			streams.add(update.getProfileImageStream());
 			keys.add("avatar");
