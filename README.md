@@ -1,6 +1,6 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
-# Lightweight Android Twitter/Mastodon app
+# Lightweight Android client for Twitter & Mastodon
 
 
 <img src="/images/shitter_1.jpg" height="360"/> <img src="/images/shitter_2.jpg" height="360"/> <img src="/images/shitter_3.jpg" height="360"/> <img src="/images/shitter_4.jpg" height="360"/>
