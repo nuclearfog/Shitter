@@ -7,6 +7,7 @@ plugins {
 android {
 	compileSdkVersion 33
 	buildToolsVersion '33.0.0'
+	namespace 'org.nuclearfog.twidda'
 
 	defaultConfig {
 		applicationId 'org.nuclearfog.twidda'
@@ -32,16 +33,12 @@ android {
 	}
 
 	packagingOptions {
-		exclude '/META-INF/CHANGES'
-		exclude '/META-INF/DEPENDENCIES'
-		exclude '/META-INF/README.md'
-		exclude '/META-INF/androidx.*'
-		exclude '/META-INF/kotlin*'
-		exclude '/META-INF/com.*'
-		exclude '/META-INF/services/**'
-		exclude '/META-INF/com/**'
-		exclude '/kotlin/**'
-		exclude '/Debug*'
+		jniLibs {
+			excludes += ['/META-INF/androidx.*', '/META-INF/kotlin*', '/META-INF/com.*', '/META-INF/services/**', '/META-INF/com/**', '/kotlin/**', '/Debug*']
+		}
+		resources {
+			excludes += ['/META-INF/CHANGES', '/META-INF/DEPENDENCIES', '/META-INF/README.md', '/META-INF/androidx.*', '/META-INF/kotlin*', '/META-INF/com.*', '/META-INF/services/**', '/META-INF/com/**', '/kotlin/**', '/Debug*']
+		}
 	}
 
 	paranoid {
