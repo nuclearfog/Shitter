@@ -60,7 +60,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
@@ -73,7 +72,6 @@ import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -324,10 +322,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		if (status.getAuthor().isCurrentUser()) {
 			optDelete.setVisible(true);
-			long currentTime = new Date().getTime();
-			if (settings.getLogin().getApiType() == Account.API_TWITTER && currentTime - status.getTimestamp() < 2419200000L) {
-				optMetrics.setVisible(true);
-			}
+		}
+		if (status.getMetrics() != null) {
+			optMetrics.setVisible(true);
 		}
 		// add media link items
 		// check if menu doesn't contain media links already

@@ -333,7 +333,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 */
 	public void notifySettingsChanged() {
 		for (ListFragment fragment : fragments) {
-			fragment.reset();
+			if (!fragment.isDetached()) {
+				fragment.reset();
+			}
 		}
 	}
 
@@ -343,6 +345,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * @param index tab position of page
 	 */
 	public void scrollToTop(int index) {
-		fragments[index].onTabChange();
+		if (!fragments[index].isDetached()) {
+			fragments[index].onTabChange();
+		}
 	}
 }

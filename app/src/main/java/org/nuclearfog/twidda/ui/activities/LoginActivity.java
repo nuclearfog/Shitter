@@ -11,21 +11,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,8 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.NetworkAdapter;
@@ -44,7 +38,6 @@ import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
 
 /**
  * Account Activity of the App
@@ -52,7 +45,7 @@ import org.nuclearfog.twidda.model.Account;
  *
  * @author nuclearfog
  */
-public class LoginActivity extends AppCompatActivity implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener, TextWatcher {
+public class LoginActivity extends AppCompatActivity implements OnClickListener, OnItemSelectedListener {
 
 	/**
 	 * request code to open {@link AccountActivity}
@@ -78,15 +71,15 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	private LoginAction loginAsync;
 	private GlobalSettings settings;
 
-	private EditText apiHost;
-	private EditText pinInput, apiKey1, apiKey2;
-	private SwitchButton apiSwitch;
+	private EditText pinInput;
 	private Spinner hostSelector;
-	private View switchLabel;
 	private ViewGroup root;
 
 	@Nullable
 	private String loginLink;
+
+	private String mastodonHost;
+	private String apiKey1, apiKey2;
 
 
 	@Override
@@ -102,19 +95,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		Toolbar toolbar = findViewById(R.id.login_toolbar);
 		Button linkButton = findViewById(R.id.login_get_link);
 		Button loginButton = findViewById(R.id.login_verifier);
-		apiHost = findViewById(R.id.login_enter_hostname);
-		switchLabel = findViewById(R.id.login_enable_key_input_label);
+		ImageView settingsButton = findViewById(R.id.login_network_settings);
 		hostSelector = findViewById(R.id.login_network_selector);
-		apiSwitch = findViewById(R.id.login_enable_key_input);
 		root = findViewById(R.id.login_root);
 		pinInput = findViewById(R.id.login_enter_code);
-		apiKey1 = findViewById(R.id.login_enter_key1);
-		apiKey2 = findViewById(R.id.login_enter_key2);
 
 		settings = GlobalSettings.getInstance(this);
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
-		pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
 		NetworkAdapter adapter = new NetworkAdapter(this);
 		hostSelector.setAdapter(adapter);
 		hostSelector.setSelection(0);
@@ -123,16 +111,11 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
+		settingsButton.setOnClickListener(this);
 		hostSelector.setOnItemSelectedListener(this);
-		apiSwitch.setOnCheckedChangeListener(this);
-		apiKey1.addTextChangedListener(this);
-		apiKey2.addTextChangedListener(this);
-		apiHost.addTextChangedListener(this);
 
 		// set default result code
 		setResult(RESULT_CANCELED);
-		// set input layout
-		setInput();
 	}
 
 
@@ -200,17 +183,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			// generate Twitter login link
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
 				// use user defined token keys
-				if (apiSwitch.isChecked()) {
-					if (apiKey1.length() == 0)
-						apiKey1.setError(getString(R.string.error_empty_token));
-					else if (apiKey2.length() == 0)
-						apiKey2.setError(getString(R.string.error_empty_token));
-					else {
-						String apiTxt1 = apiKey1.getText().toString();
-						String apiTxt2 = apiKey2.getText().toString();
+				if (apiKey1 != null && apiKey2 != null) {
+					if (apiKey1.trim().isEmpty() || apiKey2.trim().isEmpty()) {
+						Toast.makeText(getApplicationContext(), R.string.error_empty_token, LENGTH_SHORT).show();
+					} else {
 						Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
 						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_REQUEST);
-						loginAsync.execute(apiTxt1, apiTxt2);
+						loginAsync.execute(apiKey1, apiKey2);
 					}
 				}
 				// use system tokens
@@ -222,21 +201,23 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// generate Mastodon login
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
-				if (apiHost.length() > 0 && !Patterns.WEB_URL.matcher(apiHost.getText()).matches()) {
-					Toast.makeText(getApplicationContext(), R.string.error_invalid_url, LENGTH_LONG).show();
-				} else {
+				if (mastodonHost == null || Patterns.WEB_URL.matcher(mastodonHost).matches()){
 					Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
 					loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_REQUEST);
-					if (apiHost.length() > 0) {
-						String link = apiHost.getText().toString();
+					if (mastodonHost != null) {
+						// open userdefined url
+						String link = mastodonHost;
 						if (!link.startsWith("https://"))
 							link = "https://" + link;
 						if (link.endsWith("/"))
 							link = link.substring(0, link.length() - 1);
 						loginAsync.execute(link);
 					} else {
+						// use default Mastodon url (mastodon.social)
 						loginAsync.execute();
 					}
+				} else {
+					Toast.makeText(getApplicationContext(), R.string.error_invalid_url, LENGTH_LONG).show();
 				}
 			}
 		}
@@ -251,17 +232,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// login to Twitter
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
-				if (apiSwitch.isChecked()) {
-					if (apiKey1.length() == 0)
-						apiKey1.setError(getString(R.string.error_empty_token));
-					else if (apiKey2.length() == 0)
-						apiKey2.setError(getString(R.string.error_empty_token));
-					else {
-						String apiTxt1 = apiKey1.getText().toString();
-						String apiTxt2 = apiKey2.getText().toString();
+				if (apiKey1 != null && apiKey2 != null) {
+					if (apiKey1.trim().isEmpty() || apiKey2.trim().isEmpty()) {
+						Toast.makeText(getApplicationContext(), R.string.error_empty_token, LENGTH_SHORT).show();
+					} else {
 						Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
 						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_LOGIN);
-						loginAsync.execute(loginLink, code, apiTxt1, apiTxt2);
+						loginAsync.execute(loginLink, code, apiKey1, apiKey2);
 					}
 				}
 				// use system tokens
@@ -282,48 +259,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 
 	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if (buttonView.getId() == R.id.login_enable_key_input) {
-			if (isChecked) {
-				apiKey1.setVisibility(View.VISIBLE);
-				apiKey2.setVisibility(View.VISIBLE);
-			} else {
-				apiKey1.setVisibility(View.INVISIBLE);
-				apiKey2.setVisibility(View.INVISIBLE);
-			}
-			// reset login link
-			loginLink = null;
-		}
-	}
-
-
-	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		// reset login link after provider change
 		loginLink = null;
-		setInput();
 	}
 
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
-	}
-
-
-	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-	}
-
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count) {
-	}
-
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		// remove login link if API keys or host changes
-		loginLink = null;
 	}
 
 	/**
@@ -359,53 +302,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			startActivity(loginIntent);
 		} catch (ActivityNotFoundException err) {
 			Toast.makeText(getApplicationContext(), R.string.error_open_link, LENGTH_SHORT).show();
-		}
-	}
-
-
-	private void setInput() {
-		long id = hostSelector.getSelectedItemId();
-		if (id == NetworkAdapter.ID_TWITTER) {
-			// disable Mastodon input
-			apiHost.setVisibility(View.GONE);
-			pinInput.setInputType(EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
-			// check if app contains default API keys
-			if (Tokens.USE_DEFAULT_KEYS) {
-				apiSwitch.setVisibility(View.VISIBLE);
-				switchLabel.setVisibility(View.VISIBLE);
-				// set key input visibility depending on API switch
-				if (apiSwitch.isChecked()) {
-					apiKey1.setVisibility(View.VISIBLE);
-					apiKey2.setVisibility(View.VISIBLE);
-				} else {
-					apiKey1.setVisibility(View.INVISIBLE);
-					apiKey2.setVisibility(View.INVISIBLE);
-				}
-			}
-			// if not, force Twitter API key input
-			else {
-				apiKey1.setVisibility(View.VISIBLE);
-				apiKey2.setVisibility(View.VISIBLE);
-				apiSwitch.setVisibility(View.GONE);
-				switchLabel.setVisibility(View.GONE);
-			}
-			// add API keys from previous Twitter login if exists
-			Account login = settings.getLogin();
-			if (!login.usingDefaultTokens()) {
-				apiKey1.setText(login.getConsumerToken());
-				apiKey2.setText(login.getConsumerSecret());
-			}
-		}
-		// mastodon selected
-		else if (id == NetworkAdapter.ID_MASTODON) {
-			// setup Mastodon input
-			pinInput.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-			apiHost.setVisibility(View.VISIBLE);
-			// disable Twitter input
-			apiSwitch.setVisibility(View.GONE);
-			switchLabel.setVisibility(View.GONE);
-			apiKey1.setVisibility(View.GONE);
-			apiKey2.setVisibility(View.GONE);
 		}
 	}
 }

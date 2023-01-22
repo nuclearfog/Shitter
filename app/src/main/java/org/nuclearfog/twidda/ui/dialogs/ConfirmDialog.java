@@ -181,17 +181,15 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 * @param messageTxt override default message text
 	 */
 	public void show(int type, @NonNull String messageTxt) {
-		if (isShowing())
+		if (isShowing()) {
 			return;
-
+		}
 		// attach type to the view
 		confirm.setTag(type);
-
 		// default visibility values
 		int titleVis = View.GONE;
 		int confirmVis = View.INVISIBLE;
 		int cancelVis = View.VISIBLE;
-
 		// default resource values
 		int titleRes = R.string.info_error;
 		int messageRes = R.string.confirm_unknown_error;
@@ -199,7 +197,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		int confirmIconRes = R.drawable.check;
 		int cancelRes = android.R.string.cancel;
 		int cancelIconRes = R.drawable.cross;
-
+		// override values depending on type
 		switch (type) {
 			case MESSAGE_DELETE:
 				messageRes = R.string.confirm_delete_message;
@@ -287,24 +285,25 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				messageRes = R.string.dialog_warning_videoview;
 				break;
 		}
+		// setup title
 		title.setVisibility(titleVis);
 		title.setText(titleRes);
-
+		// setup cancel button
 		cancel.setVisibility(cancelVis);
 		cancel.setText(cancelRes);
 		cancel.setCompoundDrawablesWithIntrinsicBounds(cancelIconRes, 0, 0, 0);
-
-		confirmCheck.setVisibility(confirmVis);
-		confirmDescr.setVisibility(confirmVis);
-
+		// setup confirm button
 		confirm.setText(confirmRes);
 		confirm.setCompoundDrawablesWithIntrinsicBounds(confirmIconRes, 0, 0, 0);
-
-		if (messageTxt.isEmpty())
+		// setup remember choice checkbox
+		confirmCheck.setVisibility(confirmVis);
+		confirmDescr.setVisibility(confirmVis);
+		// setup message
+		if (messageTxt.isEmpty()) {
 			message.setText(messageRes);
-		else
+		} else {
 			message.setText(messageTxt);
-
+		}
 		AppStyles.setTheme(root);
 		super.show();
 	}

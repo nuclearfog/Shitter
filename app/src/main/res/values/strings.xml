@@ -165,6 +165,7 @@
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
 	<string name="login_key_enable">add keys</string>
+	<string name="login_key_enable_v2">use API v2</string>
 	<string name="login_verifier">login</string>
 	<string name="popup_tweet_hint">Status</string>
 	<string name="title_settings">Settings</string>
@@ -220,6 +221,8 @@
 	<string name="proxy_password">Password</string>
 	<string name="settings_key1_hint">Consumer key</string>
 	<string name="settings_key2_hint">Consumer secret</string>
+	<string name="dialog_connection_custom_host">use custom hostname</string>
+	<string name="dialog_connection_apply">apply changes</string>
 	<string name="settings_mastodon_hint" translatable="false">mastodon.social</string>
 	<string name="confirm_mute">mute user?</string>
 	<string name="item_list_pb_desc">Profile of the list owner</string>
@@ -289,5 +292,7 @@
 	<string name="description_poll_vote_icon">voted</string>
 	<string name="description_attachment_icon">Status/Message attachment</string>
 	<string name="notification_status_poll">vote finished</string>
+	<string name="login_network_selector_label">select network</string>
+	<string name="login_network_settings">network settings</string>
 
 </resources>

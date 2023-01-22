@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	tools:ignore="UseSwitchCompatOrMaterialXml">
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_connection_custom_api"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_api_label"/>
+
+	<TextView
+		android:id="@+id/dialog_connection_custom_api_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/login_key_enable"
+		android:lines="1"
+		android:layout_weight="1"
+		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_api"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_custom_api"
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_use_v2" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_connection_use_v2"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_api_label"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_use_v2_label"/>
+
+	<TextView
+		android:id="@+id/dialog_connection_use_v2_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/login_key_enable_v2"
+		android:lines="1"
+		android:layout_weight="1"
+		app:layout_constraintStart_toEndOf="@id/dialog_connection_use_v2"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_use_v2"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
+	<EditText
+		android:id="@+id/dialog_connection_api1"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent"
+		android:hint="@string/settings_key1_hint"
+		android:lines="1"
+		android:layout_weight="1"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_api2"/>
+
+	<EditText
+		android:id="@+id/dialog_connection_api2"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent"
+		android:hint="@string/settings_key2_hint"
+		android:lines="1"
+		android:layout_weight="1"
+		app:layout_constraintStart_toEndOf="@id/dialog_connection_api1"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_connection_custom_host"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_api1"
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_host_label"/>
+
+	<TextView
+		android:id="@+id/dialog_connection_custom_host_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_connection_custom_host"
+		android:lines="1"
+		android:layout_weight="1"
+		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_host"
+		app:layout_constraintTop_toTopOf="@id/dialog_connection_custom_host"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_custom_host"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
+	<EditText
+		android:id="@+id/dialog_connection_hostname"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent"
+		android:hint="@string/settings_mastodon_hint"
+		android:lines="1"
+		android:layout_weight="1"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_host"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<Button
+		android:id="@+id/dialog_connection_confirm"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/dialog_connection_button_height"
+		android:text="@string/dialog_connection_apply"
+		android:lines="1"
+		android:padding="@dimen/dialog_connection_button_padding"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
+		style="@style/FeedbackButton"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
