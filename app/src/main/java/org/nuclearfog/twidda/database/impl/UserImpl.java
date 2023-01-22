@@ -70,12 +70,14 @@ public class UserImpl implements User {
 		defaultImage = (register & DEFAULT_IMAGE_MASK) != 0;
 		isCurrentUser = account.getId() == id;
 
-		if (account.getApiType() != Account.API_TWITTER || defaultImage || profileImageOrig.isEmpty()) {
+		if ((account.getApiType() != Account.API_TWITTER_1 && account.getApiType() != Account.API_TWITTER_2)
+				|| defaultImage || profileImageOrig.isEmpty()) {
 			profileImageSmall = profileImageOrig;
 		} else {
 			profileImageSmall = profileImageOrig + "_bigger";
 		}
-		if (account.getApiType() != Account.API_TWITTER || profileBannerOrig.isEmpty()) {
+		if ((account.getApiType() != Account.API_TWITTER_1 && account.getApiType() != Account.API_TWITTER_2)
+				|| profileBannerOrig.isEmpty()) {
 			profileBannerSmall = profileBannerOrig;
 		} else if (profileBannerOrig.endsWith("/1500x500")) {
 			profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";

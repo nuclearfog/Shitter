@@ -67,7 +67,7 @@ public class ConnectionManager {
 			// select automatically
 			else {
 				Account login = settings.getLogin();
-				if (login.getApiType() == Account.API_TWITTER) {
+				if (login.getApiType() == Account.API_TWITTER_1 || login.getApiType() == Account.API_TWITTER_2) {
 					connection = new Twitter(context);
 				} else if (login.getApiType() == Account.API_MASTODON) {
 					connection = new Mastodon(context);

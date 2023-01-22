@@ -30,7 +30,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 	 */
 	public OptionsAdapter(GlobalSettings settings, OnOptionClickListener listener) {
 		// currently Twitter doesn't support vote over API
-		enableVote = settings.getLogin().getApiType() != Account.API_TWITTER;
+		enableVote = settings.getLogin().getApiType() == Account.API_MASTODON;
 		this.settings = settings;
 		this.listener = listener;
 	}

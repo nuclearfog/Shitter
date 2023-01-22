@@ -127,7 +127,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 			constraints.connect(R.id.profile_edit_add_banner, ConstraintSet.TOP, R.id.profile_edit_banner, ConstraintSet.TOP);
 			constraints.applyTo(root);
 		}
-		if (settings.getLogin().getApiType() != Account.API_TWITTER) {
+		if (settings.getLogin().getApiType() != Account.API_TWITTER_1 || settings.getLogin().getApiType() != Account.API_TWITTER_2) {
 			profileUrl.setVisibility(View.GONE);
 			location.setVisibility(View.GONE);
 			locationDescription.setVisibility(View.GONE);

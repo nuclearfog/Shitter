@@ -83,4 +83,13 @@ public class Tokens {
 			return TOKEN_SECRET;
 		return login.getConsumerSecret();
 	}
+
+	/**
+	 * @return true to use Twitte rAPI v2
+	 */
+	public boolean useAPIv2() {
+		if (USE_DEFAULT_KEYS)
+			return !DISABLE_API_V2;
+		return settings.isTwitterV2Enabled();
+	}
 }

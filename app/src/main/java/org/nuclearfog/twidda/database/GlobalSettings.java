@@ -100,6 +100,7 @@ public class GlobalSettings {
 	private static final String CONSUMER_SECRET = "api_key2";
 	private static final String BEARER_TOKEN = "bearer";
 	private static final String CURRENT_API = "current_api_id";
+	private static final String ENABLE_V2 = "enable_twitter_v2";
 	private static final String HOSTNAME = "mastodon_host";
 
 	// login specific preference names
@@ -144,6 +145,7 @@ public class GlobalSettings {
 	private boolean filterResults;
 	private boolean enableLike;
 	private boolean twitterAlt;
+	private boolean enableV2;
 	private int background_color;
 	private int font_color;
 	private int highlight_color;
@@ -505,7 +507,7 @@ public class GlobalSettings {
 	 * @return saved location information
 	 */
 	public Location getTrendLocation() {
-		if (account.getApiType() == Account.API_TWITTER)
+		if (account.getApiType() == Account.API_TWITTER_1 || account.getApiType() == Account.API_TWITTER_2)
 			return location;
 		return new LocationImpl(-1L, "");
 	}
@@ -659,6 +661,13 @@ public class GlobalSettings {
 		edit.apply();
 		// re initialize login information
 		initLogin();
+	}
+
+	/**
+	 * @return true if Twitter API v2 is enabled
+	 */
+	public boolean isTwitterV2Enabled() {
+		return enableV2;
 	}
 
 	/**
@@ -866,8 +875,11 @@ public class GlobalSettings {
 			e.remove(HOSTNAME);
 		} else {
 			AccountImpl account = new AccountImpl(login);
+			enableV2 = account.getApiType() == Account.API_TWITTER_2;
+			this.account = account;
+			loggedIn = true;
 			// setup alternative Twitter host
-			if (account.getApiType() == Account.API_TWITTER && twitterAlt) {
+			if ((account.getApiType() == Account.API_TWITTER_1 || account.getApiType() == Account.API_TWITTER_2) && twitterAlt) {
 				account.setHost(TWITTER_ALT_HOST);
 			}
 			e.putString(HOSTNAME, account.getHostname());
@@ -879,8 +891,7 @@ public class GlobalSettings {
 			e.putString(BEARER_TOKEN, account.getBearerToken());
 			e.putInt(CURRENT_API, account.getApiType());
 			e.putBoolean(LOGGED_IN, true);
-			this.account = account;
-			loggedIn = true;
+			e.putBoolean(ENABLE_V2, enableV2);
 		}
 		e.apply();
 		if (notify) {
@@ -937,6 +948,7 @@ public class GlobalSettings {
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
+		enableV2 = settings.getBoolean(ENABLE_V2, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
@@ -958,9 +970,9 @@ public class GlobalSettings {
 		String consumerSecret = settings.getString(CONSUMER_SECRET, "");
 		String bearerToken = settings.getString(BEARER_TOKEN, "");
 		String hostname = settings.getString(HOSTNAME, TWITTER_HOST);
-		int apiId = settings.getInt(CURRENT_API, Account.API_TWITTER);
+		int apiId = settings.getInt(CURRENT_API, Account.API_TWITTER_1);
 		long userId = settings.getLong(CURRENT_ID, 0);
-		if (apiId == Account.API_TWITTER && twitterAlt)
+		if ((apiId == Account.API_TWITTER_1 || apiId == Account.API_TWITTER_2) && twitterAlt)
 			hostname = TWITTER_ALT_HOST;
 		account = new AccountImpl(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
 	}

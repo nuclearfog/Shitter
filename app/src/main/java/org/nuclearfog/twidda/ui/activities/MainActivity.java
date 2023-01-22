@@ -116,10 +116,15 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		// initialize lists
 		else if (adapter.isEmpty()) {
 			adapter.setupForHomePage();
-			if (settings.getLogin().getApiType() == Account.API_TWITTER) {
-				AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
-			} else if (settings.getLogin().getApiType() == Account.API_MASTODON) {
-				AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
+			switch (settings.getLogin().getApiType()) {
+				case Account.API_TWITTER_1:
+				case Account.API_TWITTER_2:
+					AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
+					break;
+
+				case Account.API_MASTODON:
+					AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
+					break;
 			}
 			// check if there is a Twitter link
 			if (getIntent().getData() != null) {
@@ -176,10 +181,15 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				break;
 		}
 		AppStyles.setTheme(root);
-		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
-			AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
-		} else if (settings.getLogin().getApiType() == Account.API_MASTODON) {
-			AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
+		switch (settings.getLogin().getApiType()) {
+			case Account.API_TWITTER_1:
+			case Account.API_TWITTER_2:
+				AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
+				break;
+
+			case Account.API_MASTODON:
+				AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
+				break;
 		}
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}

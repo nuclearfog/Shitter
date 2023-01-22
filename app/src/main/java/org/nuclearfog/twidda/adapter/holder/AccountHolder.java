@@ -105,7 +105,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			screenname.setText(R.string.account_user_id_prefix);
 			screenname.append(Long.toString(account.getId()));
 		}
-		if (account.getApiType() == Account.API_TWITTER) {
+		if (account.getApiType() == Account.API_TWITTER_1 || account.getApiType() == Account.API_TWITTER_2) {
 			screenname.append(ACCOUNT_TWITTER);
 		} else if (account.getApiType() == Account.API_MASTODON) {
 			String host = account.getHostname();

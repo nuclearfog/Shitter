@@ -18,6 +18,7 @@
 	<string name="info_list_updated">Userlist updated</string>
 	<string name="info_list_created">Userlist created</string>
 	<string name="info_open_twitter_login">redirecting to Twitter login website. Please wait</string>
+	<string name="info_missing_api_keys">please add API tokens first before proceeding</string>
 	<string name="info_open_mastodon_login">redirecting to Mastodon login website. Please wait</string>
 	<string name="info_login_to_twitter">login to Twitter, please wait</string>
 	<string name="info_login_to_mastodon">login to Mastodon, please wait</string>

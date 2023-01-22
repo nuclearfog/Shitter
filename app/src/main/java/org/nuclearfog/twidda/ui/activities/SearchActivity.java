@@ -105,7 +105,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		MenuItem searchItem = m.findItem(R.id.new_search);
 		MenuItem searchFilter = m.findItem(R.id.search_filter);
 		SearchView searchView = (SearchView) searchItem.getActionView();
-		if (settings.getLogin().getApiType() == Account.API_TWITTER) {
+		if (settings.getLogin().getApiType() == Account.API_TWITTER_1 || settings.getLogin().getApiType() == Account.API_TWITTER_2) {
 			searchFilter.setChecked(settings.filterResults());
 		} else {
 			searchFilter.setVisible(false);

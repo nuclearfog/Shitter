@@ -150,7 +150,7 @@ public class AccountImpl implements Account {
 
 	@Override
 	public boolean usingDefaultTokens() {
-		if (apiType != API_TWITTER)
+		if (apiType != API_TWITTER_1 && apiType != Account.API_TWITTER_2)
 			return false;
 		return consumerToken == null || consumerToken.isEmpty() || consumerSecret == null || consumerSecret.isEmpty();
 	}

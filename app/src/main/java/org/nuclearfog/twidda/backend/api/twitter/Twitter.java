@@ -310,7 +310,7 @@ public class Twitter implements Connection {
 	@Override
 	public Users getRepostingUsers(long tweetId, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (!Tokens.DISABLE_API_V2) {
+		if (tokens.useAPIv2()) {
 			String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
 			return getUsers2(endpoint, params);
 		} else {
@@ -327,7 +327,7 @@ public class Twitter implements Connection {
 
 	@Override
 	public Users getFavoritingUsers(long tweetId, long cursor) throws TwitterException {
-		if (!Tokens.DISABLE_API_V2) {
+		if (tokens.useAPIv2()) {
 			String endpoint = TWEET_UNI + tweetId + "/liking_users";
 			return getUsers2(endpoint, new ArrayList<>());
 		} else {
@@ -625,7 +625,7 @@ public class Twitter implements Connection {
 	public List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		List<Status> replies = new LinkedList<>();
-		if (!Tokens.DISABLE_API_V2) {
+		if (tokens.useAPIv2()) {
 			params.add("query=" + StringTools.encode("conversation_id:" + id));
 			// Note: minId disabled! Twitter refuses API request containing minId of a tweet older than one week
 			List<Status> result = getTweets2(TWEET_SEARCH_2, params, 0, maxId);
@@ -660,7 +660,7 @@ public class Twitter implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
 		Status status = getTweet1(TWEET_LOOKUP, params);
-		if (!Tokens.DISABLE_API_V2) {
+		if (tokens.useAPIv2()) {
 			try {
 				params.clear();
 				return getTweet2(TWEET2_LOOKUP + id, params, status);

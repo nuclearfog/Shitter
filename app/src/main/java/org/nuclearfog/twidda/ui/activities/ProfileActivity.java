@@ -214,14 +214,13 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		Intent i = getIntent();
 		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
 		Account login = settings.getLogin();
+		boolean enableFavs = login.getApiType() == Account.API_TWITTER_1 || login.getApiType() == Account.API_TWITTER_2;
 		if (o instanceof User) {
 			user = (User) o;
-			boolean enableFavs = login.getApiType() == Account.API_TWITTER || login.getId() == user.getId();
-			adapter.setupProfilePage(user.getId(), enableFavs);
+			adapter.setupProfilePage(user.getId(), enableFavs || login.getId() == user.getId());
 		} else {
 			long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
-			boolean enableFavs = login.getApiType() == Account.API_TWITTER || login.getId() == userId;
-			adapter.setupProfilePage(userId, enableFavs);
+			adapter.setupProfilePage(userId, enableFavs || login.getId() == userId);
 		}
 		if (settings.likeEnabled()) {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
@@ -321,7 +320,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				AppStyles.setMenuItemColor(followIcon, settings.getFollowPendingColor());
 				followIcon.setTitle(R.string.menu_follow_requested);
 			}
-			if (user.isCurrentUser() || (!user.isProtected() && settings.getLogin().getApiType() == Account.API_TWITTER)) {
+			if (user.isCurrentUser() || (!user.isProtected() && (settings.getLogin().getApiType() == Account.API_TWITTER_1
+					|| settings.getLogin().getApiType() == Account.API_TWITTER_2))) {
 				MenuItem listItem = m.findItem(R.id.profile_lists);
 				listItem.setVisible(true);
 			}
@@ -493,8 +493,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			// open following page
 			if (v.getId() == R.id.following) {
 				if (relation != null) {
-					if ((settings.getLogin().getApiType() != Account.API_TWITTER || !user.isProtected())
-							|| user.isCurrentUser() || relation.isFollowing()) {
+					int apiType = settings.getLogin().getApiType();
+					if (((apiType != Account.API_TWITTER_1 && settings.getLogin().getApiType() != Account.API_TWITTER_2)
+							|| !user.isProtected()) || user.isCurrentUser() || relation.isFollowing()) {
 						Intent usersIntent = new Intent(this, UsersActivity.class);
 						usersIntent.putExtra(KEY_USERS_ID, user.getId());
 						usersIntent.putExtra(KEY_USERS_MODE, USERS_FRIENDS);
@@ -505,8 +506,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			// open follower page
 			else if (v.getId() == R.id.follower) {
 				if (relation != null) {
-					if ((settings.getLogin().getApiType() != Account.API_TWITTER || !user.isProtected())
-							|| user.isCurrentUser() || relation.isFollowing()) {
+					int apiType = settings.getLogin().getApiType();
+					if (((apiType != Account.API_TWITTER_1 && settings.getLogin().getApiType() != Account.API_TWITTER_2)
+							|| !user.isProtected()) || user.isCurrentUser() || relation.isFollowing()) {
 						Intent usersIntent = new Intent(this, UsersActivity.class);
 						usersIntent.putExtra(KEY_USERS_ID, user.getId());
 						usersIntent.putExtra(KEY_USERS_MODE, USERS_FOLLOWER);

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
@@ -35,12 +36,17 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	/**
 	 * use Twitter account to login
 	 */
-	public static final int LOGIN_TWITTER = 10;
+	public static final int LOGIN_TWITTER_1 = 10;
+
+	/**
+	 * use Twitter account to login
+	 */
+	public static final int LOGIN_TWITTER_2 = 11;
 
 	/**
 	 * use Mastodon account to login
 	 */
-	public static final int LOGIN_MASTODON = 11;
+	public static final int LOGIN_MASTODON = 20;
 
 	private WeakReference<LoginActivity> weakRef;
 	private AppDatabase database;
@@ -49,7 +55,7 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	@Nullable
 	private ConnectionException exception;
 
-	private int mode;
+	private int mode, network;
 
 	/**
 	 * Account to twitter with PIN
@@ -64,8 +70,9 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 		database = new AppDatabase(activity);
 		settings = GlobalSettings.getInstance(activity);
 		this.mode = mode;
+		this.network = network;
 
-		if (network == LOGIN_TWITTER) {
+		if (network == LOGIN_TWITTER_1 || network == LOGIN_TWITTER_2) {
 			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER);
 		} else if (network == LOGIN_MASTODON) {
 			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_MASTODON);
@@ -91,6 +98,9 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 				case MODE_LOGIN:
 					// login with pin and access token
 					Account account = connection.loginApp(param);
+					if (network == LOGIN_TWITTER_2 && account instanceof TwitterAccount) {
+						((TwitterAccount) account).enableV2();
+					}
 					// save new user information
 					database.saveLogin(account);
 					return "";

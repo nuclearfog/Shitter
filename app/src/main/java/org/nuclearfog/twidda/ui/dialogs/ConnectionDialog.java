@@ -88,10 +88,10 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 						}
 						dismiss();
 					} else if (!enableApi.isChecked()) {
-						if (!Tokens.DISABLE_API_V2) {
-							callback.onConnectionSet(null, null, OnConnectionSetCallback.TWITTER_V2);
-						} else {
+						if (Tokens.DISABLE_API_V2) {
 							callback.onConnectionSet(null, null, OnConnectionSetCallback.TWITTER_V1);
+						} else {
+							callback.onConnectionSet(null, null, OnConnectionSetCallback.TWITTER_V2);
 						}
 						dismiss();
 					} else {

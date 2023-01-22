@@ -13,9 +13,14 @@ import java.io.Serializable;
 public interface Account extends Serializable {
 
 	/**
-	 * API ID used for Twitter accounts
+	 * API ID for twitter version 1.1
 	 */
-	int API_TWITTER = 1;
+	int API_TWITTER_1 = 1;
+
+	/**
+	 * API ID for twitter version 2.0
+	 */
+	int API_TWITTER_2 = 3;
 
 	/**
 	 * API ID used for Mastodon accounts
@@ -69,7 +74,7 @@ public interface Account extends Serializable {
 	String getHostname();
 
 	/**
-	 * @return type of the ID {@link #API_TWITTER,#API_MASTODON}
+	 * @return type of the ID {@link #API_TWITTER_1,#API_TWITTER_2,#API_MASTODON}
 	 */
 	int getApiType();
 

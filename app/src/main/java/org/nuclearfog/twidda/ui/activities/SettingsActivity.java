@@ -184,7 +184,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 
-		if (settings.getLogin().getApiType() != Account.API_TWITTER) {
+		if (settings.getLogin().getApiType() != Account.API_TWITTER_1
+		&& settings.getLogin().getApiType() != Account.API_TWITTER_2) {
 			enableTwitterAlt.setVisibility(GONE);
 			EnableTwitterAltDescr.setVisibility(GONE);
 			trend_card.setVisibility(GONE);
@@ -244,7 +245,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (settings.getLogin().getApiType() == Account.API_TWITTER && locationAsync == null) {
+		int apiType = settings.getLogin().getApiType();
+		if ((apiType == Account.API_TWITTER_1 || apiType == Account.API_TWITTER_2) && locationAsync == null) {
 			locationAsync = new LocationLoader(this);
 			locationAsync.execute();
 		}

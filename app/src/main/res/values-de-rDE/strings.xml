@@ -267,4 +267,5 @@
 	<string name="login_network_settings">Verbindungseinstellungen</string>
 	<string name="info_missing_key">bitte Schlüssel eingeben</string>
 	<string name="info_missing_host">bitte gültigen Hostnamen eingeben</string>
+	<string name="info_missing_api_keys">Bitte API-Schlüssel hinzufügen</string>
 </resources>

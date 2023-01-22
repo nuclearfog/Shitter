@@ -66,7 +66,8 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		subscriber = itemView.findViewById(R.id.item_list_subscriber);
 		followList = itemView.findViewById(R.id.item_list_following_indicator);
 
-		enableExtras = settings.getLogin().getApiType() == Account.API_TWITTER;
+		int apiType = settings.getLogin().getApiType();
+		enableExtras = apiType == Account.API_TWITTER_1 || apiType == Account.API_TWITTER_2;
 		enableImages = settings.imagesEnabled();
 
 		if (!enableExtras) {

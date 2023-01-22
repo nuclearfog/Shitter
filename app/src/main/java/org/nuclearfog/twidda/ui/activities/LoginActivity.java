@@ -185,21 +185,26 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// generate Twitter login link
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+				int network = TWITTER_V1.equals(hostname) ? LoginAction.LOGIN_TWITTER_1 : LoginAction.LOGIN_TWITTER_2;
 				// use user defined token keys
 				if (key1 != null && key2 != null) {
 					if (key1.trim().isEmpty() || key2.trim().isEmpty()) {
 						Toast.makeText(getApplicationContext(), R.string.error_empty_token, LENGTH_SHORT).show();
 					} else {
 						Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_REQUEST);
+						loginAsync = new LoginAction(this, network, LoginAction.MODE_REQUEST);
 						loginAsync.execute(key1, key2);
 					}
 				}
 				// use system tokens
 				else if (Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_REQUEST);
+					loginAsync = new LoginAction(this, network, LoginAction.MODE_REQUEST);
 					loginAsync.execute();
+				}
+				// no tokens are set, print error message
+				else {
+					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, LENGTH_SHORT).show();
 				}
 			}
 			// generate Mastodon login
@@ -235,20 +240,25 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// login to Twitter
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+				int network = TWITTER_V1.equals(hostname) ? LoginAction.LOGIN_TWITTER_1 : LoginAction.LOGIN_TWITTER_2;
 				if (key1 != null && key2 != null) {
 					if (key1.trim().isEmpty() || key2.trim().isEmpty()) {
 						Toast.makeText(getApplicationContext(), R.string.error_empty_token, LENGTH_SHORT).show();
 					} else {
 						Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_LOGIN);
+						loginAsync = new LoginAction(this, network, LoginAction.MODE_LOGIN);
 						loginAsync.execute(loginLink, code, key1, key2);
 					}
 				}
 				// use system tokens
 				else if (Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, LoginAction.LOGIN_TWITTER, LoginAction.MODE_LOGIN);
+					loginAsync = new LoginAction(this, network, LoginAction.MODE_LOGIN);
 					loginAsync.execute(loginLink, code);
+				}
+				// no tokens are set
+				else {
+					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, LENGTH_SHORT).show();
 				}
 			}
 			// login to mastodon

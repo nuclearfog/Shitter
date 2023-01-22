@@ -18,6 +18,7 @@ public class TwitterAccount implements Account {
 	private static final String TWITTER_HOST = "https://twitter.com";
 
 	private long date;
+	private int type;
 
 	private String oauthToken, oauthSecret;
 	private String consumerToken, consumerSecret;
@@ -47,6 +48,7 @@ public class TwitterAccount implements Account {
 		this.consumerSecret = consumerSecret;
 		this.user = user;
 		date = System.currentTimeMillis();
+		type = API_TWITTER_1;
 	}
 
 
@@ -106,7 +108,7 @@ public class TwitterAccount implements Account {
 
 	@Override
 	public int getApiType() {
-		return Account.API_TWITTER;
+		return type;
 	}
 
 
@@ -128,5 +130,12 @@ public class TwitterAccount implements Account {
 		if (!(obj instanceof Account))
 			return false;
 		return user.equals(((Account) obj).getUser());
+	}
+
+	/**
+	 * override API version
+	 */
+	public void enableV2() {
+		type = API_TWITTER_2;
 	}
 }
