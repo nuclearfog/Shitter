@@ -211,6 +211,7 @@
 	<string name="close_dm">close directmessage</string>
 	<string name="profile_location">Location</string>
 	<string name="profile_bio">Bio</string>
+	<string name="connection_discard">discard</string>
 	<string name="confirm_discard">discard changes?</string>
 	<string name="user_data">User data</string>
 	<string name="follows_you">follows you</string>

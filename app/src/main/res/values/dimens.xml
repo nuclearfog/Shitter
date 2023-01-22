@@ -236,6 +236,8 @@
 	<!--dimens of dialog_connection.xml-->
 	<dimen name="dialog_connection_button_height">24sp</dimen>
 	<dimen name="dialog_connection_button_padding">5dp</dimen>
+	<dimen name="dialog_connection_layout_margin">5dp</dimen>
+	<dimen name="dialog_connection_textsizte_normal">13sp</dimen>
 
 	<!--dimens of tabitem.xml-->
 	<dimen name="tabitem_icon_size">22sp</dimen>

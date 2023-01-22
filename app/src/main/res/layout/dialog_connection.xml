@@ -2,15 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/dialog_connection_root"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical"
 	tools:ignore="UseSwitchCompatOrMaterialXml">
 
 	<com.kyleduo.switchbutton.SwitchButton
 		android:id="@+id/dialog_connection_custom_api"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_api_label"/>
@@ -22,6 +23,7 @@
 		android:text="@string/login_key_enable"
 		android:lines="1"
 		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_api"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_custom_api"
@@ -31,6 +33,8 @@
 		android:id="@+id/dialog_connection_use_v2"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		android:visibility="invisible"
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_api_label"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/dialog_connection_use_v2_label"/>
@@ -42,6 +46,8 @@
 		android:text="@string/login_key_enable_v2"
 		android:lines="1"
 		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		android:visibility="invisible"
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_use_v2"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_use_v2"
@@ -55,6 +61,8 @@
 		android:hint="@string/settings_key1_hint"
 		android:lines="1"
 		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		android:visibility="invisible"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
 		app:layout_constraintEnd_toStartOf="@id/dialog_connection_api2"/>
@@ -67,6 +75,8 @@
 		android:hint="@string/settings_key2_hint"
 		android:lines="1"
 		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		android:visibility="invisible"
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_api1"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
 		app:layout_constraintEnd_toEndOf="parent"/>
@@ -75,6 +85,7 @@
 		android:id="@+id/dialog_connection_custom_host"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_api1"
 		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_host_label"/>
@@ -86,6 +97,7 @@
 		android:text="@string/dialog_connection_custom_host"
 		android:lines="1"
 		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_host"
 		app:layout_constraintTop_toTopOf="@id/dialog_connection_custom_host"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_custom_host"
@@ -99,6 +111,8 @@
 		android:hint="@string/settings_mastodon_hint"
 		android:lines="1"
 		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		android:visibility="invisible"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_host"
 		app:layout_constraintEnd_toEndOf="parent" />
@@ -110,8 +124,25 @@
 		android:text="@string/dialog_connection_apply"
 		android:lines="1"
 		android:padding="@dimen/dialog_connection_button_padding"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_discard"
+		style="@style/FeedbackButton"/>
+
+	<Button
+		android:id="@+id/dialog_connection_discard"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/dialog_connection_button_height"
+		android:text="@string/connection_discard"
+		android:lines="1"
+		android:padding="@dimen/dialog_connection_button_padding"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		app:layout_constraintStart_toEndOf="@id/dialog_connection_confirm"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
 		style="@style/FeedbackButton"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
