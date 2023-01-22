@@ -135,10 +135,10 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	 */
 	public void setContent(Message message) {
 		User sender = message.getSender();
-
 		username.setText(sender.getUsername());
 		screenname.setText(sender.getScreenname());
 		time.setText(StringTools.formatCreationTime(itemView.getResources(), message.getTimestamp()));
+		iconList.setVisibility(View.VISIBLE);
 		adapter.addItems(message);
 
 		if (!message.getText().trim().isEmpty()) {
@@ -160,8 +160,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		}
 		if (adapter.isEmpty()) {
 			iconList.setVisibility(View.GONE);
-		} else {
-			iconList.setVisibility(View.VISIBLE);
 		}
 		String profileImageUrl = sender.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {

@@ -57,6 +57,12 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 		this.settings = settings;
 		this.listener = listener;
 
+		int size = parent.getLayoutParams().height;
+		if (size == 0)
+			size = parent.getMeasuredHeight();
+		itemView.getLayoutParams().height = size;
+		itemView.getLayoutParams().width = size;
+
 		button.setOnClickListener(this);
 	}
 

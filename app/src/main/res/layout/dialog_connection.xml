@@ -5,6 +5,7 @@
 	android:id="@+id/dialog_connection_root"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:padding="@dimen/dialog_connection_root_padding"
 	tools:ignore="UseSwitchCompatOrMaterialXml">
 
 	<com.kyleduo.switchbutton.SwitchButton
@@ -14,7 +15,7 @@
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_api_label"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_api_label" />
 
 	<TextView
 		android:id="@+id/dialog_connection_custom_api_label"
@@ -37,7 +38,7 @@
 		android:visibility="invisible"
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_api_label"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_use_v2_label"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_use_v2_label" />
 
 	<TextView
 		android:id="@+id/dialog_connection_use_v2_label"
@@ -51,7 +52,7 @@
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_use_v2"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_use_v2"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<EditText
 		android:id="@+id/dialog_connection_api1"
@@ -63,9 +64,11 @@
 		android:layout_weight="1"
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		android:visibility="invisible"
+		android:inputType="textPassword"
+		android:importantForAutofill="no"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_api2"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_api2" />
 
 	<EditText
 		android:id="@+id/dialog_connection_api2"
@@ -77,9 +80,11 @@
 		android:layout_weight="1"
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		android:visibility="invisible"
+		android:inputType="textPassword"
+		android:importantForAutofill="no"
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_api1"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<com.kyleduo.switchbutton.SwitchButton
 		android:id="@+id/dialog_connection_custom_host"
@@ -88,7 +93,7 @@
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_api1"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_host_label"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_host_label" />
 
 	<TextView
 		android:id="@+id/dialog_connection_custom_host_label"
@@ -101,7 +106,7 @@
 		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_host"
 		app:layout_constraintTop_toTopOf="@id/dialog_connection_custom_host"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_custom_host"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<EditText
 		android:id="@+id/dialog_connection_hostname"
@@ -113,6 +118,8 @@
 		android:layout_weight="1"
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		android:visibility="invisible"
+		android:inputType="textUri"
+		android:importantForAutofill="no"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_host"
 		app:layout_constraintEnd_toEndOf="parent" />
@@ -129,7 +136,7 @@
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/dialog_connection_discard"
-		style="@style/FeedbackButton"/>
+		style="@style/FeedbackButton" />
 
 	<Button
 		android:id="@+id/dialog_connection_discard"
@@ -143,6 +150,6 @@
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		style="@style/FeedbackButton"/>
+		style="@style/FeedbackButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

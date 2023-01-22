@@ -175,6 +175,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			replyname.setVisibility(View.GONE);
 		}
 		if (settings.statusIndicatorsEnabled()) {
+			// set visibility first so iconholder can measure the listview height
+			iconList.setVisibility(View.VISIBLE);
 			adapter.addItems(status);
 			if (adapter.isEmpty()) {
 				iconList.setVisibility(View.GONE);

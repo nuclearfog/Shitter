@@ -204,7 +204,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// generate Mastodon login
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
-				if (hostname == null || Patterns.WEB_URL.matcher(hostname).matches()){
+				if (hostname == null || Patterns.WEB_URL.matcher(hostname).matches()) {
 					Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
 					loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_REQUEST);
 					if (hostname != null) {

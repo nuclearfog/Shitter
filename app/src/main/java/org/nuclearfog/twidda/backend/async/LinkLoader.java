@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * This class handles deep links and starts activities to show the content
- * When the user clicks on a link (e.g. https://twitter.com/Twitter/status/1480571976414543875)
+ * When the user clicks on a link (e.g. "twitter.com/Twitter/status/1480571976414543875")
  * this class extracts information of the link and open an activity tp show the content
  * When a link type isn't supported, the {@link MainActivity} will be opened instead
  *

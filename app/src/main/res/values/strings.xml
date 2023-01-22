@@ -59,9 +59,11 @@
 	<string name="info_account_selected">%1$s selected</string>
 	<string name="info_user_favorited">%1$s favorited your status</string>
 	<string name="info_user_follow">%1$s followed you</string>
-	<string name="info_user_follow_request">%1$s request to follow you</string>
+	<string name="info_user_follow_request">follow request from %1$s</string>
 	<string name="info_user_mention">%1$s mentioned you</string>
 	<string name="info_user_repost">%1$s reposted your status</string>
+	<string name="info_missing_key">please enter key</string>
+	<string name="info_missing_host">please enter correct hostname</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -294,6 +296,6 @@
 	<string name="description_attachment_icon">Status/Message attachment</string>
 	<string name="notification_status_poll">vote finished</string>
 	<string name="login_network_selector_label">select network</string>
-	<string name="login_network_settings">network settings</string>
+	<string name="login_network_settings">connection settings</string>
 
 </resources>

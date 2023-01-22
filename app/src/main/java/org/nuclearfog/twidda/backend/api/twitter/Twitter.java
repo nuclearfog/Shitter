@@ -1357,7 +1357,7 @@ public class Twitter implements Connection {
 	 */
 	private Users getUsers1(long[] ids) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (ids.length > 0) {
+		if (ids.length > 1) {
 			StringBuilder idBuf = new StringBuilder("user_id=");
 			for (int i = 0 ; i < ids.length - 1 ; i++) {
 				idBuf.append(ids[i]).append("%2C");

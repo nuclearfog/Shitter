@@ -62,7 +62,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		api1 = findViewById(R.id.dialog_connection_api1);
 		api2 = findViewById(R.id.dialog_connection_api2);
 
-		int width = (int)(context.getResources().getDisplayMetrics().widthPixels*0.9);
+		int width = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.9);
 		getWindow().setLayout(width, WRAP_CONTENT);
 		AppStyles.setTheme(root);
 		enableApi.setOnCheckedChangeListener(this);
@@ -95,7 +95,12 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 						}
 						dismiss();
 					} else {
-						// todo error message
+						if (api1Text.trim().isEmpty()) {
+							api1.setError(getContext().getString(R.string.info_missing_key));
+						}
+						if (api2Text.trim().isEmpty()) {
+							api2.setError(getContext().getString(R.string.info_missing_key));
+						}
 					}
 					break;
 
@@ -107,7 +112,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 						callback.onConnectionSet(null, null, null);
 						dismiss();
 					} else {
-						// todo error message
+						host.setError(getContext().getString(R.string.info_missing_host));
 					}
 					break;
 			}
@@ -132,8 +137,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 				api1.setVisibility(View.INVISIBLE);
 				api2.setVisibility(View.INVISIBLE);
 			}
-		}
-		else if (buttonView.getId() == R.id.dialog_connection_custom_host) {
+		} else if (buttonView.getId() == R.id.dialog_connection_custom_host) {
 			if (isChecked) {
 				host.setVisibility(View.VISIBLE);
 			} else {
@@ -150,9 +154,10 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 
 
 	public void show(int type) {
-		switch(type) {
+		switch (type) {
 			case TYPE_TWITTER:
-				enableHost.setCheckedImmediately(false);
+				enableApi.setCheckedImmediately(false);
+				enableV2.setCheckedImmediately(false);
 				enableApi.setVisibility(View.VISIBLE);
 				apiLabel.setVisibility(View.VISIBLE);
 				api1.setVisibility(View.INVISIBLE);
@@ -163,8 +168,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 				break;
 
 			case TYPE_MASTODON:
-				enableApi.setCheckedImmediately(false);
-				enableV2.setCheckedImmediately(false);
+				enableHost.setCheckedImmediately(false);
 				hostLabel.setVisibility(View.VISIBLE);
 				enableHost.setVisibility(View.VISIBLE);
 				host.setVisibility(View.INVISIBLE);
@@ -176,6 +180,12 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 				api2.setVisibility(View.GONE);
 				break;
 		}
+		if (api1.getError() != null)
+			api1.setError(null);
+		if (api2.getError() != null)
+			api2.setError(null);
+		if (host.getError() != null)
+			host.setError(null);
 		this.type = type;
 		super.show();
 	}
@@ -190,8 +200,8 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		String TWITTER_V2 = "api-v2";
 
 		/**
-		 * @param key1 first API key
-		 * @param key2 second API key
+		 * @param key1     first API key
+		 * @param key2     second API key
 		 * @param hostname hostname or type of API {@link #TWITTER_V1,#TWITTER_V2}
 		 */
 		void onConnectionSet(@Nullable String key1, @Nullable String key2, @Nullable String hostname);

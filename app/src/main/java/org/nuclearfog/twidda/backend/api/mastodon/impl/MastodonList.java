@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.model.UserList;
 
 /**
  * userlist implementation
- * https://docs.joinmastodon.org/entities/List/
+ * <a href="https://docs.joinmastodon.org/entities/List/">Mastodon documentation</a>
  *
  * @author nuclearfog
  */

@@ -207,6 +207,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	/**
 	 * save image to external storage
 	 */
+	@SuppressWarnings("IOStreamConstructor")
 	private void saveImage() {
 		try {
 			if (imageTask == null || imageTask.getStatus() != RUNNING) {
