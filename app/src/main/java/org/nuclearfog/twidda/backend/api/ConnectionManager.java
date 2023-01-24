@@ -3,7 +3,8 @@ package org.nuclearfog.twidda.backend.api;
 import android.content.Context;
 
 import org.nuclearfog.twidda.backend.api.mastodon.Mastodon;
-import org.nuclearfog.twidda.backend.api.twitter.Twitter;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
+import org.nuclearfog.twidda.backend.api.twitter.impl.v2.TwitterV2;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.database.GlobalSettings.OnSettingsChangeListener;
 import org.nuclearfog.twidda.model.Account;
@@ -23,12 +24,17 @@ public class ConnectionManager {
 	/**
 	 * select Twitter connection
 	 */
-	public static final int SELECT_TWITTER = 1;
+	public static final int SELECT_TWITTER_1 = 1;
+
+	/**
+	 * select Twitter connection
+	 */
+	public static final int SELECT_TWITTER_2 = 2;
 
 	/**
 	 * select Mastodon connection
 	 */
-	public static final int SELECT_MASTODON = 2;
+	public static final int SELECT_MASTODON = 3;
 
 	private static Connection connection;
 	private static boolean notifySettingsChange = false;
@@ -56,23 +62,41 @@ public class ConnectionManager {
 		if (notifySettingsChange || connection == null || select != SELECT_AUTO) {
 			notifySettingsChange = false;
 			GlobalSettings settings = GlobalSettings.getInstance(context);
-			// create Twitter instance
-			if (select == SELECT_TWITTER) {
-				connection = new Twitter(context);
-			}
-			// create Mastodon isntance
-			else if (select == SELECT_MASTODON) {
-				connection = new Mastodon(context);
-			}
 			// select automatically
-			else {
-				Account login = settings.getLogin();
-				if (login.getApiType() == Account.API_TWITTER_1 || login.getApiType() == Account.API_TWITTER_2) {
-					connection = new Twitter(context);
-				} else if (login.getApiType() == Account.API_MASTODON) {
-					connection = new Mastodon(context);
-				} else {
-					throw new RuntimeException("no connection selected!");
+			if (select == SELECT_AUTO) {
+				int apiType = settings.getLogin().getApiType();
+				switch(apiType) {
+					case Account.API_TWITTER_1:
+						connection = new TwitterV1(context);
+						break;
+
+					case Account.API_TWITTER_2:
+						connection = new TwitterV2(context);
+						break;
+
+					case Account.API_MASTODON:
+						connection = new Mastodon(context);
+						break;
+
+					default:
+						throw new RuntimeException("no connection selected!");
+				}
+			} else {
+				switch(select) {
+					case SELECT_TWITTER_1:
+						connection = new TwitterV1(context);
+						break;
+
+					case SELECT_TWITTER_2:
+						connection = new TwitterV2(context);
+						break;
+
+					case SELECT_MASTODON:
+						connection = new Mastodon(context);
+						break;
+
+					default:
+						throw new RuntimeException("no connection selected!");
 				}
 			}
 			settings.addSettingsChangeListener(new OnSettingsChangeListener() {

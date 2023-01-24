@@ -92,9 +92,9 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 		settings = GlobalSettings.getInstance(this);
 		tabLayout.setupWithViewPager(pager);
+		pager.setOffscreenPageLimit(4);
 		adapter = new FragmentAdapter(this, getSupportFragmentManager());
-		pager.setOffscreenPageLimit(3);
-		pager.setAdapter(adapter);
+
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
@@ -115,17 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		}
 		// initialize lists
 		else if (adapter.isEmpty()) {
-			adapter.setupForHomePage();
-			switch (settings.getLogin().getApiType()) {
-				case Account.API_TWITTER_1:
-				case Account.API_TWITTER_2:
-					AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
-					break;
-
-				case Account.API_MASTODON:
-					AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
-					break;
-			}
+			setupAdapter();
 			// check if there is a Twitter link
 			if (getIntent().getData() != null) {
 				LinkLoader linkLoader = new LinkLoader(this);
@@ -154,16 +144,16 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				}
 				// check if account changed
 				else if (returnCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
-					adapter.setupForHomePage();
+					setupAdapter();
 				}
 				break;
 
 			case REQUEST_ACCOUNT_CHANGE:
 				// check if account or theme changed
-				if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED || returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
-					adapter.clear();
-					pager.setAdapter(adapter);
+				if (returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
 					adapter.notifySettingsChanged();
+				} else if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
+					setupAdapter();
 				}
 				break;
 
@@ -181,16 +171,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				break;
 		}
 		AppStyles.setTheme(root);
-		switch (settings.getLogin().getApiType()) {
-			case Account.API_TWITTER_1:
-			case Account.API_TWITTER_2:
-				AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
-				break;
-
-			case Account.API_MASTODON:
-				AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
-				break;
-		}
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}
 
@@ -315,5 +295,23 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 			Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
 		}
 		loadingCircle.dismiss();
+	}
+
+	/**
+	 * initialize pager content
+	 */
+	private void setupAdapter() {
+		adapter.setupForHomePage();
+		pager.setAdapter(adapter);
+		switch (settings.getLogin().getApiType()) {
+			case Account.API_TWITTER_1:
+			case Account.API_TWITTER_2:
+				AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
+				break;
+
+			case Account.API_MASTODON:
+				AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
+				break;
+		}
 	}
 }

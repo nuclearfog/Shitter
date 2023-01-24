@@ -49,7 +49,8 @@ public class AccountActivity extends AppCompatActivity {
 
 	private GlobalSettings settings;
 	private ListFragment fragment;
-	private Toolbar tool;
+
+	private ViewGroup root;
 
 
 	@Override
@@ -62,8 +63,8 @@ public class AccountActivity extends AppCompatActivity {
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_fragment);
-		ViewGroup root = findViewById(R.id.fragment_root);
-		tool = findViewById(R.id.fragment_toolbar);
+		Toolbar tool = findViewById(R.id.fragment_toolbar);
+		root = findViewById(R.id.fragment_root);
 		fragment = new AccountFragment();
 
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -113,7 +114,7 @@ public class AccountActivity extends AppCompatActivity {
 			}
 			// check if setting page was opened and reload theme
 			else if (resultCode == LoginActivity.RETURN_SETTINGS_CHANGED) {
-				AppStyles.setTheme(tool);
+				AppStyles.setTheme(root);
 				setResult(RETURN_SETTINGS_CHANGED);
 				fragment.reset();
 			}

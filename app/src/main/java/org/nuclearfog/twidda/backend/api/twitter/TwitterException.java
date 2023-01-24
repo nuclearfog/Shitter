@@ -16,7 +16,7 @@ import okhttp3.ResponseBody;
  *
  * @author nuclearfog
  */
-class TwitterException extends ConnectionException {
+public class TwitterException extends ConnectionException {
 
 	private static final long serialVersionUID = -7760582201674916919L;
 
@@ -28,7 +28,7 @@ class TwitterException extends ConnectionException {
 	/**
 	 * @param message exception message
 	 */
-	TwitterException(String message) {
+	public TwitterException(String message) {
 		super(message);
 		this.message = message;
 	}
@@ -36,7 +36,7 @@ class TwitterException extends ConnectionException {
 	/**
 	 * create exception caused by another exception
 	 */
-	TwitterException(Exception e) {
+	public TwitterException(Exception e) {
 		super(e);
 		message = e.getMessage();
 	}
@@ -46,7 +46,7 @@ class TwitterException extends ConnectionException {
 	 *
 	 * @param response response from API containing additional error information
 	 */
-	TwitterException(Response response) {
+	public TwitterException(Response response) {
 		super(response.message());
 		// basic information
 		this.httpCode = response.code();

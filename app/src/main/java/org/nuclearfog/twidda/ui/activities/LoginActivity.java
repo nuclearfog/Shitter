@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,11 +34,11 @@ import org.nuclearfog.twidda.adapter.NetworkAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.async.LoginAction;
+import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog;
-import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog.OnConnectionSetCallback;
 
 /**
  * Account Activity of the App
@@ -47,7 +46,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog.OnConnectionSetCallback
  *
  * @author nuclearfog
  */
-public class LoginActivity extends AppCompatActivity implements OnClickListener, OnItemSelectedListener, OnConnectionSetCallback {
+public class LoginActivity extends AppCompatActivity implements OnClickListener, OnItemSelectedListener {
 
 	/**
 	 * request code to open {@link AccountActivity}
@@ -80,8 +79,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 	@Nullable
 	private String loginLink;
-	@Nullable
-	private String hostname, key1, key2;
+	private ConnectionConfig connection = new ConnectionConfig(ConnectionConfig.API_TWITTER_2);
 
 
 	@Override
@@ -106,7 +104,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
 		NetworkAdapter adapter = new NetworkAdapter(this);
-		connectionDialog = new ConnectionDialog(this, this);
+		connectionDialog = new ConnectionDialog(this);
 		hostSelector.setAdapter(adapter);
 		hostSelector.setSelection(0);
 
@@ -175,8 +173,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	public void onClick(View v) {
-		if (loginAsync != null && loginAsync.getStatus() == RUNNING)
+		if (loginAsync != null && loginAsync.getStatus() == RUNNING) {
 			return;
+		}
 		// get login request token
 		if (v.getId() == R.id.login_get_link) {
 			// re use login link
@@ -185,21 +184,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// generate Twitter login link
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
-				int network = TWITTER_V1.equals(hostname) ? LoginAction.LOGIN_TWITTER_1 : LoginAction.LOGIN_TWITTER_2;
-				// use user defined token keys
-				if (key1 != null && key2 != null) {
-					if (key1.trim().isEmpty() || key2.trim().isEmpty()) {
-						Toast.makeText(getApplicationContext(), R.string.error_empty_token, LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, network, LoginAction.MODE_REQUEST);
-						loginAsync.execute(key1, key2);
-					}
-				}
-				// use system tokens
-				else if (Tokens.USE_DEFAULT_KEYS) {
+				// use userdefined or default token keys
+				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, network, LoginAction.MODE_REQUEST);
+					loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST_TWITTER, connection);
 					loginAsync.execute();
 				}
 				// no tokens are set, print error message
@@ -209,24 +197,9 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// generate Mastodon login
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
-				if (hostname == null || Patterns.WEB_URL.matcher(hostname).matches()) {
-					Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_REQUEST);
-					if (hostname != null) {
-						// open userdefined url
-						String link = hostname;
-						if (!link.startsWith("https://"))
-							link = "https://" + link;
-						if (link.endsWith("/"))
-							link = link.substring(0, link.length() - 1);
-						loginAsync.execute(link);
-					} else {
-						// use default Mastodon url (mastodon.social)
-						loginAsync.execute();
-					}
-				} else {
-					Toast.makeText(getApplicationContext(), R.string.error_invalid_url, LENGTH_LONG).show();
-				}
+				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
+				loginAsync = new LoginAction(this, LoginAction.MODE_REQUEST_MASTODON, connection);
+				loginAsync.execute();
 			}
 		}
 		// verify login credentials
@@ -240,40 +213,27 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 			}
 			// login to Twitter
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
-				int network = TWITTER_V1.equals(hostname) ? LoginAction.LOGIN_TWITTER_1 : LoginAction.LOGIN_TWITTER_2;
-				if (key1 != null && key2 != null) {
-					if (key1.trim().isEmpty() || key2.trim().isEmpty()) {
-						Toast.makeText(getApplicationContext(), R.string.error_empty_token, LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
-						loginAsync = new LoginAction(this, network, LoginAction.MODE_LOGIN);
-						loginAsync.execute(loginLink, code, key1, key2);
-					}
-				}
-				// use system tokens
-				else if (Tokens.USE_DEFAULT_KEYS) {
+				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, network, LoginAction.MODE_LOGIN);
+					loginAsync = new LoginAction(this, LoginAction.MODE_LOGIN_TWITTER, connection);
 					loginAsync.execute(loginLink, code);
-				}
-				// no tokens are set
-				else {
+				} else {
 					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, LENGTH_SHORT).show();
 				}
 			}
 			// login to mastodon
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, LENGTH_LONG).show();
-				loginAsync = new LoginAction(this, LoginAction.LOGIN_MASTODON, LoginAction.MODE_LOGIN);
+				loginAsync = new LoginAction(this, LoginAction.MODE_LOGIN_MASTODON, connection);
 				loginAsync.execute(loginLink, code);
 			}
 		}
 		// open API settings dialog
 		else if (v.getId() == R.id.login_network_settings) {
 			if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
-				connectionDialog.show(ConnectionDialog.TYPE_TWITTER);
+				connectionDialog.show(connection);
 			} else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
-				connectionDialog.show(ConnectionDialog.TYPE_MASTODON);
+				connectionDialog.show(connection);
 			}
 		}
 	}
@@ -283,6 +243,11 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		// reset login link after provider change
 		loginLink = null;
+		if (id == NetworkAdapter.ID_TWITTER) {
+			connection.setApiType(ConnectionConfig.API_TWITTER_2);
+		} else if (id  == NetworkAdapter.ID_MASTODON) {
+			connection.setApiType(ConnectionConfig.API_MASTODON);
+		}
 	}
 
 
@@ -290,25 +255,19 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
-
-	@Override
-	public void onConnectionSet(@Nullable String key1, @Nullable String key2, @Nullable String hostname) {
-		this.hostname = hostname;
-		this.key1 = key1;
-		this.key2 = key2;
-	}
-
 	/**
 	 * Called when the app is registered successfully
 	 */
 	public void onSuccess(int mode, @NonNull String result) {
 		switch (mode) {
-			case LoginAction.MODE_LOGIN:
+			case LoginAction.MODE_LOGIN_MASTODON:
+			case LoginAction.MODE_LOGIN_TWITTER:
 				setResult(RETURN_LOGIN_SUCCESSFUL);
 				finish();
 				break;
 
-			case LoginAction.MODE_REQUEST:
+			case LoginAction.MODE_REQUEST_MASTODON:
+				case LoginAction.MODE_REQUEST_TWITTER:
 				loginLink = result;
 				connect();
 				break;

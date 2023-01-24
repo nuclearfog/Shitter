@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
@@ -115,17 +116,18 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public String getAuthorisationLink(String... paramsStr) throws MastodonException {
+	public String getAuthorisationLink(ConnectionConfig connection) throws MastodonException {
 		String hostname;
 		List<String> params = new ArrayList<>();
 		params.add("scopes=" + AUTH_SCOPES);
 		params.add("redirect_uris=" + REDIRECT_URI);
 		params.add("client_name=" + AUTH_NAME);
 		params.add("website=" + AUTH_WEBSITE);
-		if (paramsStr.length == 0)
+		if (connection.useHost()) {
+			hostname = connection.getHostname();
+		} else {
 			hostname = DEFAULT_HOST;
-		else
-			hostname = paramsStr[0];
+		}
 		try {
 			Response response = post(hostname, REGISTER_APP, null, params);
 			ResponseBody body = response.body();
@@ -133,8 +135,8 @@ public class Mastodon implements Connection {
 				JSONObject json = new JSONObject(body.string());
 				String client_id = json.getString("client_id");
 				String client_secret = json.getString("client_secret");
-				return hostname + AUTHORIZE_APP + "?scope=read%20write%20follow&response_type=code&redirect_uri=" + REDIRECT_URI
-						+ "&client_id=" + client_id + "&client_secret=" + client_secret;
+				connection.setOauthTokens(client_id, client_secret);
+				return hostname + AUTHORIZE_APP + "?scope=read%20write%20follow&response_type=code&redirect_uri=" + REDIRECT_URI + "&client_id=" + client_id;
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
@@ -144,16 +146,14 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Account loginApp(String... paramsStr) throws MastodonException {
-		Uri link = Uri.parse(paramsStr[0]);
+	public Account loginApp(ConnectionConfig connection, String url, String pin) throws MastodonException {
+		Uri link = Uri.parse(url);
 		List<String> params = new ArrayList<>();
 		String host = link.getScheme() + "://" + link.getHost();
-		String client_id = link.getQueryParameter("client_id");
-		String clientSecret = link.getQueryParameter("client_secret");
-		params.add("client_id=" + client_id);
-		params.add("client_secret=" + clientSecret);
+		params.add("client_id=" + connection.getOauthToken());
+		params.add("client_secret=" + connection.getOauthTokenSecret());
 		params.add("grant_type=authorization_code");
-		params.add("code=" + paramsStr[1]);
+		params.add("code=" + pin);
 		params.add("redirect_uri=" + REDIRECT_URI);
 		params.add("scope=" + AUTH_SCOPES);
 		try {
@@ -163,7 +163,7 @@ public class Mastodon implements Connection {
 				JSONObject json = new JSONObject(body.string());
 				String bearer = json.getString("access_token");
 				User user = getCredentials(host, bearer);
-				Account account = new MastodonAccount(user, host, bearer, client_id, clientSecret);
+				Account account = new MastodonAccount(user, host, bearer, connection.getOauthToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
 				return account;
 			}

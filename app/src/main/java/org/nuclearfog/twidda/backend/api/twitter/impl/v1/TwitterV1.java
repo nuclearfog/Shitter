@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,16 +11,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.api.twitter.Tokens;
+import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterNotification;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.LocationV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.MessageV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.RelationV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TrendV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TweetV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.UserListV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.UserV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.LocationV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.MediaV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.PollV2;
@@ -33,6 +27,7 @@ import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
@@ -41,7 +36,6 @@ import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
@@ -71,11 +65,11 @@ import okio.BufferedSink;
 import okio.Okio;
 
 /**
- * Twitter API 1.1/2.0 implementation
+ * Twitter API 1.1 implementation
  *
  * @author nuclearfog
  */
-public class Twitter implements Connection {
+public class TwitterV1 implements Connection {
 
 	private static final String OAUTH = "1.0";
 
@@ -120,7 +114,7 @@ public class Twitter implements Connection {
 	private static final String TWEETS_USER_FAVORITS = API + "/1.1/favorites/list.json";
 	private static final String TWEETS_LIST = API + "/1.1/lists/statuses.json";
 	private static final String TWEET_LOOKUP = API + "/1.1/statuses/show.json";
-	private static final String TWEET2_LOOKUP = API + "/2/tweets/";
+
 	private static final String TWEET_SEARCH = API + "/1.1/search/tweets.json";
 	private static final String TWEET_FAVORITE = API + "/1.1/favorites/create.json";
 	private static final String TWEET_UNFAVORITE = API + "/1.1/favorites/destroy.json";
@@ -128,9 +122,7 @@ public class Twitter implements Connection {
 	private static final String TWEET_UNRETWEET = API + "/1.1/statuses/unretweet/";
 	private static final String TWEET_UPLOAD = API + "/1.1/statuses/update.json";
 	private static final String TWEET_DELETE = API + "/1.1/statuses/destroy/";
-	private static final String TWEET_SEARCH_2 = API + "/2/tweets/search/recent";
 	private static final String TWEET_GET_RETWEETERS = API + "/1.1/statuses/retweeters/ids.json";
-	private static final String TWEET_UNI = API + "/2/tweets/";
 
 	// userlist endpoints
 	private static final String USERLIST_SHOW = API + "/1.1/lists/show.json";
@@ -161,7 +153,7 @@ public class Twitter implements Connection {
 	private static final String MEDIA_UPLOAD = UPLOAD + "/1.1/media/upload.json";
 
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
-	private static final MediaType TYPE_JSON = MediaType.parse("application/json");
+	protected static final MediaType TYPE_JSON = MediaType.parse("application/json");
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 
 	private static final String JSON = ".json";
@@ -177,8 +169,8 @@ public class Twitter implements Connection {
 	 */
 	private static final int POLLING_MAX_RETRIES = 12;
 
+	protected GlobalSettings settings;
 	private OkHttpClient client;
-	private GlobalSettings settings;
 	private AppDatabase db;
 	private Tokens tokens;
 
@@ -187,25 +179,20 @@ public class Twitter implements Connection {
 	 *
 	 * @param context context used to initiate databases
 	 */
-	public Twitter(Context context) {
+	public TwitterV1(Context context) {
 		settings = GlobalSettings.getInstance(context);
 		tokens = Tokens.getInstance(context);
 		client = ConnectionBuilder.create(context, 0);
 		db = new AppDatabase(context);
 	}
 
-	/**
-	 * create authorisation link
-	 *
-	 * @param params optional string parameters containing oauth token, token secret
-	 * @return a temporary oauth token created by Twitter
-	 */
+
 	@Override
-	public String getAuthorisationLink(String... params) throws TwitterException {
+	public String getAuthorisationLink(ConnectionConfig connection) throws TwitterException {
 		try {
 			Response response;
-			if (params.length == 2)
-				response = post(REQUEST_TOKEN, new ArrayList<>(), params[0], params[1]);
+			if (connection.useTokens())
+				response = post(REQUEST_TOKEN, new ArrayList<>(), connection.getOauthToken(), connection.getOauthTokenSecret());
 			else
 				response = post(REQUEST_TOKEN, new ArrayList<>(), tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
 			ResponseBody body = response.body();
@@ -214,7 +201,7 @@ public class Twitter implements Connection {
 				// extract oauth_token from url
 				Uri uri = Uri.parse(AUTHENTICATE + "?" + res);
 				String requestToken = uri.getQueryParameter("oauth_token");
-				return Twitter.AUTHENTICATE + "?oauth_token=" + requestToken;
+				return TwitterV1.AUTHENTICATE + "?oauth_token=" + requestToken;
 			}
 			throw new TwitterException(response);
 		} catch (IOException e) {
@@ -222,23 +209,20 @@ public class Twitter implements Connection {
 		}
 	}
 
-	/**
-	 * login to twitter using pin and add store access tokens
-	 *
-	 * @param paramsStr parameters (oauth pin & authorisation link required, oauth token, token secret optional)
-	 */
+
 	@Override
-	public Account loginApp(String... paramsStr) throws TwitterException {
+	public TwitterAccount loginApp(ConnectionConfig connection, String url, String pin) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		String tempOauthToken = Uri.parse(paramsStr[0]).getQueryParameter("oauth_token");
-		params.add("oauth_verifier=" + paramsStr[1]);
+		String tempOauthToken = Uri.parse(url).getQueryParameter("oauth_token");
+		params.add("oauth_verifier=" + pin);
 		params.add("oauth_token=" + tempOauthToken);
 		try {
 			Response response;
-			if (paramsStr.length == 4)
-				response = post(OAUTH_VERIFIER, params, paramsStr[2], paramsStr[3]);
-			else
+			if (connection.useTokens()) {
+				response = post(OAUTH_VERIFIER, params, connection.getOauthToken(), connection.getOauthTokenSecret());
+			} else {
 				response = post(OAUTH_VERIFIER, params, tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
+			}
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				// extract tokens from link
@@ -248,10 +232,10 @@ public class Twitter implements Connection {
 				String tokenSecret = uri.getQueryParameter("oauth_token_secret");
 				// check if login works
 				User user;
-				Account account;
-				if (paramsStr.length == 4) { // use custom API keys
-					user = getCredentials(paramsStr[2], paramsStr[3], oauthToken, tokenSecret);
-					account = new TwitterAccount(oauthToken, tokenSecret, paramsStr[2], paramsStr[3], user);
+				TwitterAccount account;
+				if (connection.useTokens()) {
+					user = getCredentials( connection.getOauthToken(), connection.getOauthTokenSecret(), oauthToken, tokenSecret);
+					account = new TwitterAccount(oauthToken, tokenSecret, connection.getOauthToken(), connection.getOauthTokenSecret(), user);
 				} else { // use default API keys
 					user = getCredentials(tokens.getConsumerKey(true), tokens.getConsumerSecret(true), oauthToken, tokenSecret);
 					account = new TwitterAccount(oauthToken, tokenSecret, user);
@@ -310,30 +294,20 @@ public class Twitter implements Connection {
 	@Override
 	public Users getRepostingUsers(long tweetId, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (tokens.useAPIv2()) {
-			String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
-			return getUsers2(endpoint, params);
-		} else {
-			params.add("id=" + tweetId);
-			params.add("count=" + settings.getListSize());
-			long[] ids = getUserIDs(TWEET_GET_RETWEETERS, params, cursor);
-			Users result = getUsers1(ids);
-			result.setPrevCursor(cursor);
-			result.setNextCursor(ids[ids.length - 1]); // Twitter bug: next cursor is always zero!
-			return result;
-		}
+		params.add("id=" + tweetId);
+		params.add("count=" + settings.getListSize());
+		long[] ids = getUserIDs(TWEET_GET_RETWEETERS, params, cursor);
+		Users result = getUsers1(ids);
+		result.setPrevCursor(cursor);
+		result.setNextCursor(ids[ids.length - 1]); // Twitter bug: next cursor is always zero!
+		return result;
 	}
 
 
 	@Override
 	public Users getFavoritingUsers(long tweetId, long cursor) throws TwitterException {
-		if (tokens.useAPIv2()) {
-			String endpoint = TWEET_UNI + tweetId + "/liking_users";
-			return getUsers2(endpoint, new ArrayList<>());
-		} else {
-			// API v1.1 doesn't support this!
-			return new Users(0L, 0L);
-		}
+		// API v1.1 doesn't support this!
+		return new Users(0L, 0L);
 	}
 
 
@@ -517,7 +491,7 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public List<Status> getPublicTimeline(long minId, long maxId) throws ConnectionException {
+	public List<Status> getPublicTimeline(long minId, long maxId) throws TwitterException {
 		throw new TwitterException("not supported");
 	}
 
@@ -625,27 +599,15 @@ public class Twitter implements Connection {
 	public List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		List<Status> replies = new LinkedList<>();
-		if (tokens.useAPIv2()) {
-			params.add("query=" + StringTools.encode("conversation_id:" + id));
-			// Note: minId disabled! Twitter refuses API request containing minId of a tweet older than one week
-			List<Status> result = getTweets2(TWEET_SEARCH_2, params, 0, maxId);
-			// chose only the first tweet of a conversation
-			for (Status reply : result) {
-				if (reply.getRepliedStatusId() == id && reply.getId() > minId) {
-					replies.add(reply);
-				}
-			}
-		} else {
-			String replyUsername = extras[0];
-			if (replyUsername.startsWith("@")) {
-				replyUsername = replyUsername.substring(1);
-			}
-			params.add("q=" + StringTools.encode("to:" + replyUsername + " -filter:retweets"));
-			List<Status> result = getTweets1(TWEET_SEARCH, params, Math.max(id, minId), maxId);
-			for (Status reply : result) {
-				if (reply.getRepliedStatusId() == id) {
-					replies.add(reply);
-				}
+		String replyUsername = extras[0];
+		if (replyUsername.startsWith("@")) {
+			replyUsername = replyUsername.substring(1);
+		}
+		params.add("q=" + StringTools.encode("to:" + replyUsername + " -filter:retweets"));
+		List<Status> result = getTweets1(TWEET_SEARCH, params, Math.max(id, minId), maxId);
+		for (Status reply : result) {
+			if (reply.getRepliedStatusId() == id) {
+				replies.add(reply);
 			}
 		}
 		if (settings.filterResults() && !replies.isEmpty()) {
@@ -659,16 +621,7 @@ public class Twitter implements Connection {
 	public Status showStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
-		Status status = getTweet1(TWEET_LOOKUP, params);
-		if (tokens.useAPIv2()) {
-			try {
-				params.clear();
-				return getTweet2(TWEET2_LOOKUP + id, params, status);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return status;
+		return getTweet1(TWEET_LOOKUP, params);
 	}
 
 
@@ -710,13 +663,12 @@ public class Twitter implements Connection {
 
 	@Override
 	public void muteConversation(long id) throws TwitterException {
-		muteStatus(id, true);
 	}
 
 
 	@Override
-	public void unmuteConversation(long id) throws ConnectionException {
-		muteStatus(id, false);
+	public void unmuteConversation(long id) throws TwitterException {
+		// not supported in API version 1.1
 	}
 
 
@@ -1121,13 +1073,51 @@ public class Twitter implements Connection {
 
 
 	@Override
-	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
+	public List<Notification> getNotifications(long minId, long maxId) throws TwitterException {
 		List<Status> mentions = getTweets1(TWEETS_MENTIONS, new ArrayList<>(), minId, maxId);
 		List<Notification> result = new ArrayList<>(mentions.size());
 		for (Status status : mentions) {
 			result.add(new TwitterNotification(status));
 		}
 		return result;
+	}
+
+	/**
+	 * create a list of users using API v 2
+	 *
+	 * @param endpoint endpoint url to get the user data from
+	 * @param params   additional parameters
+	 * @return user list
+	 */
+	protected Users getUsers2(String endpoint, List<String> params) throws TwitterException {
+		// enable additional user fields
+		params.add("user.fields=" + UserV2.FIELDS_USER);
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (body != null && response.code() == 200) {
+				JSONObject json = new JSONObject(body.string());
+				Users users = new Users(0L, 0L);
+				// check if result is not empty
+				if (json.has("data")) {
+					JSONArray array = json.getJSONArray("data");
+					long homeId = settings.getLogin().getId();
+					for (int i = 0; i < array.length(); i++) {
+						try {
+							users.add(new UserV2(array.getJSONObject(i), homeId));
+						} catch (JSONException err) {
+							if (BuildConfig.DEBUG) {
+								Log.w("user-v2", err);
+							}
+						}
+					}
+				}
+				return users;
+			}
+			throw new TwitterException(response);
+		} catch (IOException | JSONException err) {
+			throw new TwitterException(err);
+		}
 	}
 
 	/**
@@ -1189,7 +1179,7 @@ public class Twitter implements Connection {
 	 * @param maxId    maximum tweet ID
 	 * @return list of tweets
 	 */
-	private List<Status> getTweets2(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
+	protected List<Status> getTweets2(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
 		// enable additional tweet fields
 		params.add(TweetV2.FIELDS_TWEET);
 		params.add(TweetV2.FIELDS_EXPANSION);
@@ -1276,48 +1266,7 @@ public class Twitter implements Connection {
 		}
 	}
 
-	/**
-	 * return tweet from API 2.0 endpoint
-	 *
-	 * @param endpoint to use
-	 * @param params   additional parameter
-	 */
-	private TweetV2 getTweet2(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
-		// enable additional tweet fields
-		params.add(TweetV2.FIELDS_EXPANSION);
-		params.add(UserV2.FIELDS_USER);
-		params.add(MediaV2.FIELDS_MEDIA);
-		params.add(PollV2.FIELDS_POLL);
-		params.add(LocationV2.FIELDS_PLACE);
-		// add metrics information if the author is the current user and the tweet is not older than 28 days and not a retweet/quote
-		if (statusCompat.getAuthor().isCurrentUser() && System.currentTimeMillis() - statusCompat.getTimestamp() < 2419200000L
-				&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() <= 0L)) {
-			params.add(TweetV2.FIELDS_TWEET_PRIVATE);
-		} else {
-			params.add(TweetV2.FIELDS_TWEET);
-		}
-		try {
-			Response response;
-			if (endpoint.startsWith(TWEET2_LOOKUP)) {
-				response = get(endpoint, params);
-			} else {
-				response = post(endpoint, params);
-			}
-			ResponseBody body = response.body();
-			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string());
-				UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
-				MediaV2Map mediaMap = new MediaV2Map(json);
-				PollV2Map pollMap = new PollV2Map(json);
-				LocationV2Map locationMap = new LocationV2Map(json);
-				String host = settings.getLogin().getHostname();
-				return new TweetV2(json, userMap, mediaMap, pollMap, locationMap, host, statusCompat);
-			}
-			throw new TwitterException(response);
-		} catch (IOException | JSONException err) {
-			throw new TwitterException(err);
-		}
-	}
+
 
 	/**
 	 * returns an array of user IDs from a given endpoint
@@ -1409,44 +1358,6 @@ public class Twitter implements Connection {
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException | NumberFormatException err) {
-			throw new TwitterException(err);
-		}
-	}
-
-	/**
-	 * create a list of users using API v 2
-	 *
-	 * @param endpoint endpoint url to get the user data from
-	 * @param params   additional parameters
-	 * @return user list
-	 */
-	private Users getUsers2(String endpoint, List<String> params) throws TwitterException {
-		// enable additional user fields
-		params.add("user.fields=" + UserV2.FIELDS_USER);
-		try {
-			Response response = get(endpoint, params);
-			ResponseBody body = response.body();
-			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string());
-				Users users = new Users(0L, 0L);
-				// check if result is not empty
-				if (json.has("data")) {
-					JSONArray array = json.getJSONArray("data");
-					long homeId = settings.getLogin().getId();
-					for (int i = 0; i < array.length(); i++) {
-						try {
-							users.add(new UserV2(array.getJSONObject(i), homeId));
-						} catch (JSONException err) {
-							if (BuildConfig.DEBUG) {
-								Log.w("user-v2", err);
-							}
-						}
-					}
-				}
-				return users;
-			}
-			throw new TwitterException(response);
-		} catch (IOException | JSONException err) {
 			throw new TwitterException(err);
 		}
 	}
@@ -1568,24 +1479,6 @@ public class Twitter implements Connection {
 	}
 
 	/**
-	 * mute a status from conversation
-	 *
-	 * @param id   ID of the status
-	 * @param hide true to hide the status
-	 */
-	private void muteStatus(long id, boolean hide) throws TwitterException {
-		try {
-			RequestBody request = RequestBody.create("{\"hidden\":" + hide + "}", TYPE_JSON);
-			Response response = put(TWEET_UNI + id + "/hidden", new ArrayList<>(), request);
-			if (response.code() != 200) {
-				throw new TwitterException(response);
-			}
-		} catch (IOException e) {
-			throw new TwitterException(e);
-		}
-	}
-
-	/**
 	 * send post without return value
 	 *
 	 * @param endpoint endpoint to use
@@ -1605,7 +1498,7 @@ public class Twitter implements Connection {
 	/**
 	 * filter tweets from blocked users
 	 */
-	private void filterTweets(List<Status> tweets) {
+	protected void filterTweets(List<Status> tweets) {
 		Set<Long> excludedIds = db.getFilterlistUserIds();
 		for (int pos = tweets.size() - 1; pos >= 0; pos--) {
 			long authorId = tweets.get(pos).getAuthor().getId();
@@ -1661,7 +1554,7 @@ public class Twitter implements Connection {
 	 * @param keys     optional API keys
 	 * @return http response
 	 */
-	private Response post(String endpoint, List<String> params, String... keys) throws IOException {
+	protected Response post(String endpoint, List<String> params, String... keys) throws IOException {
 		RequestBody body = RequestBody.create("", TYPE_TEXT);
 		return post(endpoint, params, body, keys);
 	}
@@ -1736,7 +1629,7 @@ public class Twitter implements Connection {
 	 * @param keys     optional oauth keys (consumer key, secret & optional oauth tokens)
 	 * @return http response
 	 */
-	private Response get(String endpoint, List<String> params, String... keys) throws IOException {
+	protected Response get(String endpoint, List<String> params, String... keys) throws IOException {
 		String authHeader = buildHeader("GET", endpoint, params, keys);
 		String url = appendParams(endpoint, params);
 		Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).get().build();
@@ -1749,7 +1642,7 @@ public class Twitter implements Connection {
 	 * @param endpoint endpoint url
 	 * @return http response
 	 */
-	private Response put(String endpoint, List<String> params, RequestBody body) throws IOException {
+	protected Response put(String endpoint, List<String> params, RequestBody body) throws IOException {
 		String authHeader = buildHeader("PUT", endpoint, params);
 		String url = appendParams(endpoint, params);
 		Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).put(body).build();

@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
+import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
@@ -26,27 +26,22 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	/**
 	 * request login page
 	 */
-	public static final int MODE_REQUEST = 1;
+	public static final int MODE_REQUEST_TWITTER = 1;
+
+	/**
+	 * request login page
+	 */
+	public static final int MODE_REQUEST_MASTODON = 2;
 
 	/**
 	 * login with pin and ans save auth keys
 	 */
-	public static final int MODE_LOGIN = 2;
-
-	/**
-	 * use Twitter account to login
-	 */
-	public static final int LOGIN_TWITTER_1 = 10;
-
-	/**
-	 * use Twitter account to login
-	 */
-	public static final int LOGIN_TWITTER_2 = 11;
+	public static final int MODE_LOGIN_TWITTER = 3;
 
 	/**
 	 * use Mastodon account to login
 	 */
-	public static final int LOGIN_MASTODON = 20;
+	public static final int MODE_LOGIN_MASTODON = 4;
 
 	private WeakReference<LoginActivity> weakRef;
 	private AppDatabase database;
@@ -55,52 +50,61 @@ public class LoginAction extends AsyncTask<String, Void, String> {
 	@Nullable
 	private ConnectionException exception;
 
-	private int mode, network;
+	private ConnectionConfig configuration;
+	private int mode;
 
 	/**
 	 * Account to twitter with PIN
 	 *
-	 * @param activity Activity Context
-	 * @param network  network type {@link #LOGIN_MASTODON,#LOGIN_TWITTER}
-	 * @param mode     indicating login step
+	 * @param activity      Activity Context
+	 * @param configuration network type {@link #MODE_LOGIN_MASTODON ,#LOGIN_TWITTER}
+	 * @param mode          indicating login step
 	 */
-	public LoginAction(LoginActivity activity, int network, int mode) {
+	public LoginAction(LoginActivity activity, int mode, ConnectionConfig configuration) {
 		super();
 		weakRef = new WeakReference<>(activity);
 		database = new AppDatabase(activity);
 		settings = GlobalSettings.getInstance(activity);
+		this.configuration = configuration;
 		this.mode = mode;
-		this.network = network;
+		switch (mode) {
+			case MODE_REQUEST_TWITTER:
+			case MODE_LOGIN_TWITTER:
+				if (configuration.getApiType() == ConnectionConfig.API_TWITTER_2)
+					connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER_2);
+				else
+					connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER_1);
+				break;
 
-		if (network == LOGIN_TWITTER_1 || network == LOGIN_TWITTER_2) {
-			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER);
-		} else if (network == LOGIN_MASTODON) {
-			connection = ConnectionManager.get(activity, ConnectionManager.SELECT_MASTODON);
-		} else {
-			throw new RuntimeException("no connection selected: " + mode);
+			case MODE_REQUEST_MASTODON:
+			case MODE_LOGIN_MASTODON:
+				connection = ConnectionManager.get(activity, ConnectionManager.SELECT_MASTODON);
+				break;
+
+			default:
+				throw new RuntimeException("connection type not found: " + mode);
 		}
 	}
 
 
 	@Override
-	protected String doInBackground(String... param) {
+	protected String doInBackground(String... params) {
 		try {
 			switch (mode) {
-				case MODE_REQUEST:
+				case MODE_REQUEST_TWITTER:
+				case MODE_REQUEST_MASTODON:
 					if (settings.isLoggedIn()) {
 						Account login = settings.getLogin();
 						if (!database.containsLogin(login.getId())) {
 							database.saveLogin(login);
 						}
 					}
-					return connection.getAuthorisationLink(param);
+					return connection.getAuthorisationLink(configuration);
 
-				case MODE_LOGIN:
+				case MODE_LOGIN_TWITTER:
+				case MODE_LOGIN_MASTODON:
 					// login with pin and access token
-					Account account = connection.loginApp(param);
-					if (network == LOGIN_TWITTER_2 && account instanceof TwitterAccount) {
-						((TwitterAccount) account).enableV2();
-					}
+					Account account = connection.loginApp(configuration, params[0], params[1]);
 					// save new user information
 					database.saveLogin(account);
 					return "";

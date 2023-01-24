@@ -111,6 +111,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		if (reload != null && list != null && settings != null) {
 			// reset colors
 			AppStyles.setSwipeRefreshColor(reload, settings);
+			list.setBackgroundColor(settings.getBackgroundColor());
 			// force redrawing list to apply colors
 			list.setAdapter(list.getAdapter());
 			onReset();

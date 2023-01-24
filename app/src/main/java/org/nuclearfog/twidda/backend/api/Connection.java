@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.backend.update.MediaStatus;
 import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.update.StatusUpdate;
@@ -28,16 +29,18 @@ public interface Connection {
 	/**
 	 * create authorisation link to open the login page of the social network
 	 *
-	 * @param paramsStr see javadoc of the implementations
+	 * @param connection connection configuration
 	 * @return authorisation link to open in a browser
 	 */
-	String getAuthorisationLink(String... paramsStr) throws ConnectionException;
+	String getAuthorisationLink(ConnectionConfig connection) throws ConnectionException;
 
 	/**
-	 * @param paramsStr see javadoc of the implementations
+	 * @param connection connection configuration
+	 * @param url        URL used to login
+	 * @param code       verification code to login
 	 * @return account information of the created login
 	 */
-	Account loginApp(String... paramsStr) throws ConnectionException;
+	Account loginApp(ConnectionConfig connection, String url, String code) throws ConnectionException;
 
 	/**
 	 * lookup user and return user information

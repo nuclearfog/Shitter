@@ -100,7 +100,6 @@ public class GlobalSettings {
 	private static final String CONSUMER_SECRET = "api_key2";
 	private static final String BEARER_TOKEN = "bearer";
 	private static final String CURRENT_API = "current_api_id";
-	private static final String ENABLE_V2 = "enable_twitter_v2";
 	private static final String HOSTNAME = "mastodon_host";
 
 	// login specific preference names
@@ -145,7 +144,6 @@ public class GlobalSettings {
 	private boolean filterResults;
 	private boolean enableLike;
 	private boolean twitterAlt;
-	private boolean enableV2;
 	private int background_color;
 	private int font_color;
 	private int highlight_color;
@@ -664,13 +662,6 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * @return true if Twitter API v2 is enabled
-	 */
-	public boolean isTwitterV2Enabled() {
-		return enableV2;
-	}
-
-	/**
 	 * set proxy address
 	 *
 	 * @param proxyHost address of proxy
@@ -875,7 +866,6 @@ public class GlobalSettings {
 			e.remove(HOSTNAME);
 		} else {
 			AccountImpl account = new AccountImpl(login);
-			enableV2 = account.getApiType() == Account.API_TWITTER_2;
 			this.account = account;
 			loggedIn = true;
 			// setup alternative Twitter host
@@ -891,7 +881,6 @@ public class GlobalSettings {
 			e.putString(BEARER_TOKEN, account.getBearerToken());
 			e.putInt(CURRENT_API, account.getApiType());
 			e.putBoolean(LOGGED_IN, true);
-			e.putBoolean(ENABLE_V2, enableV2);
 		}
 		e.apply();
 		if (notify) {
@@ -948,7 +937,6 @@ public class GlobalSettings {
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
-		enableV2 = settings.getBoolean(ENABLE_V2, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
