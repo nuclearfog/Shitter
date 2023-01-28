@@ -48,8 +48,7 @@ import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -184,11 +183,19 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 
-		if (settings.getLogin().getApiType() != Account.API_TWITTER_1
-		&& settings.getLogin().getApiType() != Account.API_TWITTER_2) {
-			enableTwitterAlt.setVisibility(GONE);
-			EnableTwitterAltDescr.setVisibility(GONE);
-			trend_card.setVisibility(GONE);
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				enableTwitterAlt.setVisibility(VISIBLE);
+				EnableTwitterAltDescr.setVisibility(VISIBLE);
+				trend_card.setVisibility(VISIBLE);
+				break;
+
+			case MASTODON:
+				enableTwitterAlt.setVisibility(GONE);
+				EnableTwitterAltDescr.setVisibility(GONE);
+				trend_card.setVisibility(GONE);
+				break;
 		}
 		if (!settings.isLoggedIn()) {
 			user_card.setVisibility(GONE);
@@ -245,8 +252,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		int apiType = settings.getLogin().getApiType();
-		if ((apiType == Account.API_TWITTER_1 || apiType == Account.API_TWITTER_2) && locationAsync == null) {
+		if (locationAsync == null || locationAsync.getStatus() != RUNNING) {
 			locationAsync = new LocationLoader(this);
 			locationAsync.execute();
 		}

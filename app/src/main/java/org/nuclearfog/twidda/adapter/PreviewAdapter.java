@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.adapter.holder.CardHolder;
 import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.PollHolder;
 import org.nuclearfog.twidda.adapter.holder.PreviewHolder;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Poll;

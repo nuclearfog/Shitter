@@ -39,7 +39,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.MessageFragment;
@@ -102,42 +102,49 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 */
 	public void setupForHomePage() {
 		Bundle paramHomeTl = new Bundle();
+		Bundle parampublicTl = new Bundle();
 		paramHomeTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_HOME);
-		fragments = new ListFragment[4];
-		fragments[0] = new StatusFragment();
-		fragments[1] = new TrendFragment();
+		parampublicTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_PUBLIC);
 
-		switch (settings.getLogin().getApiType()) {
-			case Account.API_TWITTER_1:
-			case Account.API_TWITTER_2:
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				fragments = new ListFragment[4];
+				fragments[0] = new StatusFragment();
+				fragments[1] = new TrendFragment();
 				fragments[2] = new NotificationFragment();
 				fragments[3] = new MessageFragment();
+				fragments[0].setArguments(paramHomeTl);
+				break;
+
+			case MASTODON:
+				fragments = new ListFragment[4];
+				fragments[0] = new StatusFragment();
+				fragments[1] = new TrendFragment();
+				fragments[2] = new StatusFragment();
+				fragments[3] = new NotificationFragment();
+				fragments[0].setArguments(paramHomeTl);
+				fragments[2].setArguments(parampublicTl);
 				break;
 
 			default:
-			case Account.API_MASTODON:
-				fragments[2] = new StatusFragment();
-				fragments[3] = new NotificationFragment();
-				Bundle parampublicTl = new Bundle();
-				parampublicTl.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_PUBLIC);
-				fragments[2].setArguments(parampublicTl);
+				fragments = new ListFragment[0];
 				break;
 		}
-		fragments[0].setArguments(paramHomeTl);
 		notifyDataSetChanged();
 	}
 
 	/**
 	 * setup adapter for viewing user timeline and favorites
 	 *
-	 * @param userId         ID of the user
-	 * @param enableFavorits true to enable favorite page
+	 * @param userId ID of the user
+	 * @param account true to enable favorite page
 	 */
-	public void setupProfilePage(long userId, boolean enableFavorits) {
+	public void setupProfilePage(long userId, Account account) {
 		Bundle paramTimeline = new Bundle();
 		paramTimeline.putLong(KEY_STATUS_FRAGMENT_ID, userId);
 		paramTimeline.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USER);
-		if (enableFavorits) {
+		if (account.getId() == userId || account.getConfiguration().favoritsEnabled()) {
 			Bundle paramFavorite = new Bundle();
 			paramFavorite.putLong(KEY_STATUS_FRAGMENT_ID, userId);
 			paramFavorite.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_FAVORIT);
@@ -200,21 +207,26 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		paramUserlistOwnership.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
 		paramUserlistSubscription.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
 
-		switch (settings.getLogin().getApiType()) {
-			case Account.API_TWITTER_1:
-			case Account.API_TWITTER_2:
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
 				fragments = new ListFragment[2];
+				fragments[0] = new UserListFragment();
 				fragments[1] = new UserListFragment();
+				fragments[0].setArguments(paramUserlistOwnership);
 				fragments[1].setArguments(paramUserlistSubscription);
 				break;
 
-			default:
-			case Account.API_MASTODON:
+			case MASTODON:
 				fragments = new ListFragment[1];
+				fragments[0] = new UserListFragment();
+				fragments[0].setArguments(paramUserlistOwnership);
+				break;
+
+			default:
+				fragments = new ListFragment[0];
 				break;
 		}
-		fragments[0] = new UserListFragment();
-		fragments[0].setArguments(paramUserlistOwnership);
 		notifyDataSetChanged();
 	}
 
@@ -235,23 +247,31 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		paramUserlistMember.putLong(KEY_FRAG_USER_ID, listId);
 		paramUserlistSubscriber.putLong(KEY_FRAG_USER_ID, listId);
 		paramUserlistSubscriber.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LIST_SUBSCRIBER);
-		switch (settings.getLogin().getApiType()) {
-			case Account.API_TWITTER_1:
-			case Account.API_TWITTER_2:
+
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
 				fragments = new ListFragment[3];
+				fragments[0] = new StatusFragment();
+				fragments[1] = new UserFragment();
 				fragments[2] = new UserFragment();
+				fragments[0].setArguments(paramUserlistTl);
+				fragments[1].setArguments(paramUserlistMember);
 				fragments[2].setArguments(paramUserlistSubscriber);
 				break;
 
-			default:
-			case Account.API_MASTODON:
+			case MASTODON:
 				fragments = new ListFragment[2];
+				fragments[0] = new StatusFragment();
+				fragments[1] = new UserFragment();
+				fragments[0].setArguments(paramUserlistTl);
+				fragments[1].setArguments(paramUserlistMember);
+				break;
+
+			default:
+				fragments = new ListFragment[0];
 				break;
 		}
-		fragments[0] = new StatusFragment();
-		fragments[1] = new UserFragment();
-		fragments[0].setArguments(paramUserlistTl);
-		fragments[1].setArguments(paramUserlistMember);
 		notifyDataSetChanged();
 	}
 

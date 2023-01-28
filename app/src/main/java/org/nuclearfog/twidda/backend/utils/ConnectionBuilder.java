@@ -4,7 +4,7 @@ import android.content.Context;
 
 import org.nuclearfog.twidda.backend.proxy.ProxyAuthenticator;
 import org.nuclearfog.twidda.backend.proxy.UserProxy;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

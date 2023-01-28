@@ -20,7 +20,7 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
@@ -105,13 +105,18 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			screenname.setText(R.string.account_user_id_prefix);
 			screenname.append(Long.toString(account.getId()));
 		}
-		if (account.getApiType() == Account.API_TWITTER_1 || account.getApiType() == Account.API_TWITTER_2) {
-			screenname.append(ACCOUNT_TWITTER);
-		} else if (account.getApiType() == Account.API_MASTODON) {
-			String host = account.getHostname();
-			if (host.startsWith("https://"))
-				host = host.substring(8);
-			screenname.append(" @" + host);
+		switch(account.getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				screenname.append(ACCOUNT_TWITTER);
+				break;
+
+			case MASTODON:
+				String host = account.getHostname();
+				if (host.startsWith("https://"))
+					host = host.substring(8);
+				screenname.append(" @" + host);
+				break;
 		}
 	}
 }

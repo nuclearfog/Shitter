@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api.mastodon.impl;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
@@ -98,8 +99,8 @@ public class MastodonAccount implements Account {
 
 
 	@Override
-	public int getApiType() {
-		return API_MASTODON;
+	public Configuration getConfiguration() {
+		return Configuration.MASTODON;
 	}
 
 

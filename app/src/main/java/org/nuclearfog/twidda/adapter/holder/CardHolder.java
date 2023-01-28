@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.PreviewAdapter;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 
 /**

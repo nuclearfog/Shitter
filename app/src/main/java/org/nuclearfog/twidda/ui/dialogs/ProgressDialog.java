@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * dialog to show a rotating circle with a cross button inside

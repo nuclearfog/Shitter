@@ -29,7 +29,7 @@ import org.nuclearfog.twidda.adapter.IconAdapter;
 import org.nuclearfog.twidda.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
 

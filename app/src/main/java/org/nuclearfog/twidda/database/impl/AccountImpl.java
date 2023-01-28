@@ -5,6 +5,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
@@ -53,7 +54,20 @@ public class AccountImpl implements Account {
 		consumerSecret = account.getConsumerSecret();
 		bearerToken = account.getBearerToken();
 		host = account.getHostname();
-		apiType = account.getApiType();
+
+		switch (account.getConfiguration()) {
+			case TWITTER1:
+				apiType = API_TWITTER_1;
+				break;
+
+			case TWITTER2:
+				apiType = API_TWITTER_2;
+				break;
+
+			case MASTODON:
+				apiType = API_MASTODON;
+				break;
+		}
 	}
 
 	/**
@@ -143,8 +157,20 @@ public class AccountImpl implements Account {
 
 
 	@Override
-	public int getApiType() {
-		return apiType;
+	public Configuration getConfiguration() {
+		switch (apiType) {
+			case API_TWITTER_1:
+				return Configuration.TWITTER1;
+
+			case API_TWITTER_2:
+				return Configuration.TWITTER2;
+
+			case API_MASTODON:
+				return Configuration.MASTODON;
+
+			default:
+				return Configuration.NONE;
+		}
 	}
 
 

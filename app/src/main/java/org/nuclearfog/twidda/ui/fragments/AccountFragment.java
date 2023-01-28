@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;

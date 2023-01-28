@@ -47,7 +47,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import jp.wasabeef.picasso.transformations.CropTransformation;

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.database;
+package org.nuclearfog.twidda.config;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Typeface.DEFAULT;
@@ -505,9 +505,14 @@ public class GlobalSettings {
 	 * @return saved location information
 	 */
 	public Location getTrendLocation() {
-		if (account.getApiType() == Account.API_TWITTER_1 || account.getApiType() == Account.API_TWITTER_2)
-			return location;
-		return new LocationImpl(-1L, "");
+		switch(account.getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				return location;
+
+			default:
+				return new LocationImpl(-1L, "");
+		}
 	}
 
 	/**
@@ -869,8 +874,12 @@ public class GlobalSettings {
 			this.account = account;
 			loggedIn = true;
 			// setup alternative Twitter host
-			if ((account.getApiType() == Account.API_TWITTER_1 || account.getApiType() == Account.API_TWITTER_2) && twitterAlt) {
-				account.setHost(TWITTER_ALT_HOST);
+			switch (account.getConfiguration()) {
+				case TWITTER1:
+				case TWITTER2:
+					if (twitterAlt)
+						account.setHost(TWITTER_ALT_HOST);
+					break;
 			}
 			e.putString(HOSTNAME, account.getHostname());
 			e.putLong(CURRENT_ID, account.getId());
@@ -879,7 +888,7 @@ public class GlobalSettings {
 			e.putString(CONSUMER_TOKEN, account.getConsumerToken());
 			e.putString(CONSUMER_SECRET, account.getConsumerSecret());
 			e.putString(BEARER_TOKEN, account.getBearerToken());
-			e.putInt(CURRENT_API, account.getApiType());
+			e.putInt(CURRENT_API, account.getConfiguration().getAccountType());
 			e.putBoolean(LOGGED_IN, true);
 		}
 		e.apply();

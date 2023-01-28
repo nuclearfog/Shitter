@@ -23,7 +23,7 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
 

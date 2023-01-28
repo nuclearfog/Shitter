@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * This class handles {@link ConnectionException}

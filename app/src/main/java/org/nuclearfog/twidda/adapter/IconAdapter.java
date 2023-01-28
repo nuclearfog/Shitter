@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import org.nuclearfog.twidda.adapter.holder.IconHolder;
 import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Status;

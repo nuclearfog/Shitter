@@ -26,8 +26,8 @@ import com.google.android.material.tabs.TabLayout.Tab;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.config.Configuration;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * search Activity for statuses and users
@@ -81,7 +81,8 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		String search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
 		if (search != null) {
 			this.search = search;
-			adapter.setupSearchPage(search, !search.startsWith("#") && settings.getLogin().getApiType() == Account.API_MASTODON);
+			boolean enableHashtags = !search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON;
+			adapter.setupSearchPage(search, enableHashtags);
 			AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
 		}
 		AppStyles.setTheme(root);
@@ -105,10 +106,15 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		MenuItem searchItem = m.findItem(R.id.new_search);
 		MenuItem searchFilter = m.findItem(R.id.search_filter);
 		SearchView searchView = (SearchView) searchItem.getActionView();
-		if (settings.getLogin().getApiType() == Account.API_TWITTER_1 || settings.getLogin().getApiType() == Account.API_TWITTER_2) {
-			searchFilter.setChecked(settings.filterResults());
-		} else {
-			searchFilter.setVisible(false);
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				searchFilter.setChecked(settings.filterResults());
+				break;
+
+			case MASTODON:
+				searchFilter.setVisible(false);
+				break;
 		}
 		searchView.setQueryHint(search);
 		searchView.setOnQueryTextListener(this);

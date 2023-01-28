@@ -14,7 +14,7 @@ import org.nuclearfog.twidda.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.adapter.holder.UserlistHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 

@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.adapter.IconAdapter;
 import org.nuclearfog.twidda.adapter.StatusAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;

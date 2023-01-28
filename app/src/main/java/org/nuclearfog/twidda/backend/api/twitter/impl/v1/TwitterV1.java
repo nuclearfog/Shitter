@@ -13,7 +13,6 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterNotification;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.LocationV2;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.MediaV2;
@@ -35,7 +34,8 @@ import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
@@ -211,7 +211,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public TwitterAccount loginApp(ConnectionConfig connection, String url, String pin) throws TwitterException {
+	public Account loginApp(ConnectionConfig connection, String url, String pin) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		String tempOauthToken = Uri.parse(url).getQueryParameter("oauth_token");
 		params.add("oauth_verifier=" + pin);
@@ -232,13 +232,13 @@ public class TwitterV1 implements Connection {
 				String tokenSecret = uri.getQueryParameter("oauth_token_secret");
 				// check if login works
 				User user;
-				TwitterAccount account;
+				AccountV1 account;
 				if (connection.useTokens()) {
 					user = getCredentials( connection.getOauthToken(), connection.getOauthTokenSecret(), oauthToken, tokenSecret);
-					account = new TwitterAccount(oauthToken, tokenSecret, connection.getOauthToken(), connection.getOauthTokenSecret(), user);
+					account = new AccountV1(oauthToken, tokenSecret, connection.getOauthToken(), connection.getOauthTokenSecret(), user);
 				} else { // use default API keys
 					user = getCredentials(tokens.getConsumerKey(true), tokens.getConsumerSecret(true), oauthToken, tokenSecret);
-					account = new TwitterAccount(oauthToken, tokenSecret, user);
+					account = new AccountV1(oauthToken, tokenSecret, user);
 				}
 				// save login credentials
 				settings.setLogin(account, false);

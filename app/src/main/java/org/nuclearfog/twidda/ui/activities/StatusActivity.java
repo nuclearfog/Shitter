@@ -59,7 +59,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;

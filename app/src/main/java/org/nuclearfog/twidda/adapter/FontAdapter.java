@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.adapter;
 
-import static org.nuclearfog.twidda.database.GlobalSettings.FONT_NAMES;
-import static org.nuclearfog.twidda.database.GlobalSettings.FONT_TYPES;
+import static org.nuclearfog.twidda.config.GlobalSettings.FONT_NAMES;
+import static org.nuclearfog.twidda.config.GlobalSettings.FONT_TYPES;
 
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 
 /**

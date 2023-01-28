@@ -23,6 +23,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.lists.Messages;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.AccountImpl;
 import org.nuclearfog.twidda.database.impl.LocationImpl;
 import org.nuclearfog.twidda.database.impl.MediaImpl;
@@ -488,7 +489,7 @@ public class AppDatabase {
 		values.put(AccountTable.HOSTNAME, account.getHostname());
 		values.put(AccountTable.CLIENT_ID, account.getConsumerToken());
 		values.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
-		values.put(AccountTable.API, account.getApiType());
+		values.put(AccountTable.API, account.getConfiguration().getAccountType());
 		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
 		values.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 		values.put(AccountTable.BEARER, account.getBearerToken());

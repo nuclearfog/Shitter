@@ -18,7 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * this fragment class hosts a list view inside a swipe view

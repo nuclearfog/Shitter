@@ -1,8 +1,9 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl;
+package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 
@@ -11,14 +12,13 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclearfog
  */
-public class TwitterAccount implements Account {
+public class AccountV1 implements Account {
 
 	private static final long serialVersionUID = 2013001328542861179L;
 
 	private static final String TWITTER_HOST = "https://twitter.com";
 
 	private long date;
-	private int type;
 
 	private String oauthToken, oauthSecret;
 	private String consumerToken, consumerSecret;
@@ -30,7 +30,7 @@ public class TwitterAccount implements Account {
 	 * @param tokenSecret oauth token secret
 	 * @param user        user information
 	 */
-	public TwitterAccount(String oauthToken, String tokenSecret, User user) {
+	public AccountV1(String oauthToken, String tokenSecret, User user) {
 		this(oauthToken, tokenSecret, "", "", user);
 	}
 
@@ -41,14 +41,13 @@ public class TwitterAccount implements Account {
 	 * @param tokenSecret    oauth token secret
 	 * @param user           user information
 	 */
-	public TwitterAccount(String oauthToken, String tokenSecret, String consumerToken, String consumerSecret, User user) {
+	public AccountV1(String oauthToken, String tokenSecret, String consumerToken, String consumerSecret, User user) {
 		this.oauthToken = oauthToken;
 		this.oauthSecret = tokenSecret;
 		this.consumerToken = consumerToken;
 		this.consumerSecret = consumerSecret;
 		this.user = user;
 		date = System.currentTimeMillis();
-		type = API_TWITTER_1;
 	}
 
 
@@ -107,8 +106,8 @@ public class TwitterAccount implements Account {
 
 
 	@Override
-	public int getApiType() {
-		return type;
+	public Configuration getConfiguration() {
+		return Configuration.TWITTER1;
 	}
 
 
@@ -130,12 +129,5 @@ public class TwitterAccount implements Account {
 		if (!(obj instanceof Account))
 			return false;
 		return user.equals(((Account) obj).getUser());
-	}
-
-	/**
-	 * override API version
-	 */
-	public void enableV2() {
-		type = API_TWITTER_2;
 	}
 }

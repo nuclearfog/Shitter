@@ -19,8 +19,7 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -66,8 +65,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		subscriber = itemView.findViewById(R.id.item_list_subscriber);
 		followList = itemView.findViewById(R.id.item_list_following_indicator);
 
-		int apiType = settings.getLogin().getApiType();
-		enableExtras = apiType == Account.API_TWITTER_1 || apiType == Account.API_TWITTER_2;
+		enableExtras = settings.getLogin().getConfiguration().showListExtras();
 		enableImages = settings.imagesEnabled();
 
 		if (!enableExtras) {

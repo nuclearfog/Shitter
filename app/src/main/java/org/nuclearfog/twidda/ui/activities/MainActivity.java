@@ -31,8 +31,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LinkLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 
 /**
@@ -303,13 +302,13 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	private void setupAdapter() {
 		adapter.setupForHomePage();
 		pager.setAdapter(adapter);
-		switch (settings.getLogin().getApiType()) {
-			case Account.API_TWITTER_1:
-			case Account.API_TWITTER_2:
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
 				AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
 				break;
 
-			case Account.API_MASTODON:
+			case MASTODON:
 				AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
 				break;
 		}

@@ -5,9 +5,8 @@ import android.content.Context;
 import org.nuclearfog.twidda.backend.api.mastodon.Mastodon;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.TwitterV2;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.database.GlobalSettings.OnSettingsChangeListener;
-import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;
 
 /**
  * this class manages multiple API implementations depending on settings
@@ -64,17 +63,16 @@ public class ConnectionManager {
 			GlobalSettings settings = GlobalSettings.getInstance(context);
 			// select automatically
 			if (select == SELECT_AUTO) {
-				int apiType = settings.getLogin().getApiType();
-				switch(apiType) {
-					case Account.API_TWITTER_1:
+				switch(settings.getLogin().getConfiguration()) {
+					case TWITTER1:
 						connection = new TwitterV1(context);
 						break;
 
-					case Account.API_TWITTER_2:
+					case TWITTER2:
 						connection = new TwitterV2(context);
 						break;
 
-					case Account.API_MASTODON:
+					case MASTODON:
 						connection = new Mastodon(context);
 						break;
 

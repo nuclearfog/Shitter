@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.backend.async.ListAction;
 import org.nuclearfog.twidda.backend.async.ListManager;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;

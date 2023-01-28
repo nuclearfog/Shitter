@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
 

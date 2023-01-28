@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.FilterLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 import java.util.regex.Pattern;
 

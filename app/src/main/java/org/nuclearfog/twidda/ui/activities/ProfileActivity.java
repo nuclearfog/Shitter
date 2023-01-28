@@ -61,8 +61,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -213,14 +212,12 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 		Intent i = getIntent();
 		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
-		Account login = settings.getLogin();
-		boolean enableFavs = login.getApiType() == Account.API_TWITTER_1 || login.getApiType() == Account.API_TWITTER_2;
 		if (o instanceof User) {
 			user = (User) o;
-			adapter.setupProfilePage(user.getId(), enableFavs || login.getId() == user.getId());
+			adapter.setupProfilePage(user.getId(), settings.getLogin());
 		} else {
 			long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
-			adapter.setupProfilePage(userId, enableFavs || login.getId() == userId);
+			adapter.setupProfilePage(userId, settings.getLogin());
 		}
 		if (settings.likeEnabled()) {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
@@ -316,19 +313,20 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	public boolean onPrepareOptionsMenu(@NonNull Menu m) {
 		if (user != null) {
 			MenuItem listItem = m.findItem(R.id.profile_lists);
-			switch (settings.getLogin().getApiType()) {
-				case Account.API_TWITTER_1:
-				case Account.API_TWITTER_2:
+
+			switch (settings.getLogin().getConfiguration()) {
+				case TWITTER1:
+				case TWITTER2:
 					if (user.isCurrentUser()) {
 						MenuItem requestItem = m.findItem(R.id.profile_requests);
 						requestItem.setVisible(true);
 						listItem.setVisible(true);
-					} else if (!user.isProtected()) {
+					} else if (!user.isProtected() || (relation != null && relation.isFollowing())) {
 						listItem.setVisible(true);
 					}
 					break;
 
-				case Account.API_MASTODON:
+				case MASTODON:
 					if (user.isCurrentUser()) {
 						listItem.setVisible(true);
 					}
@@ -354,10 +352,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		if (relation != null) {
 			if (relation.isFollowing()) {
 				MenuItem followIcon = m.findItem(R.id.profile_follow);
-				MenuItem listItem = m.findItem(R.id.profile_lists);
 				AppStyles.setMenuItemColor(followIcon, settings.getFollowIconColor());
 				followIcon.setTitle(R.string.menu_user_unfollow);
-				listItem.setVisible(true);
 			}
 			if (relation.isBlocked()) {
 				MenuItem blockIcon = m.findItem(R.id.profile_block);
@@ -508,15 +504,15 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			Intent intent = new Intent(this, UsersActivity.class);
 			intent.putExtra(KEY_USERS_ID, user.getId());
 			intent.putExtra(KEY_USERS_MODE, USERS_FRIENDS);
-			switch (settings.getLogin().getApiType()) {
-				case Account.API_TWITTER_1:
-				case Account.API_TWITTER_2:
+			switch (settings.getLogin().getConfiguration()) {
+				case TWITTER1:
+				case TWITTER2:
 					if (!user.isProtected() || user.isCurrentUser() || (relation != null && relation.isFollowing())) {
 						startActivity(intent);
 					}
 					break;
 
-				case Account.API_MASTODON:
+				case MASTODON:
 					startActivity(intent);
 					break;
 			}
@@ -526,15 +522,15 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			Intent intent = new Intent(this, UsersActivity.class);
 			intent.putExtra(KEY_USERS_ID, user.getId());
 			intent.putExtra(KEY_USERS_MODE, USERS_FOLLOWER);
-			switch (settings.getLogin().getApiType()) {
-				case Account.API_TWITTER_1:
-				case Account.API_TWITTER_2:
+			switch (settings.getLogin().getConfiguration()) {
+				case TWITTER1:
+				case TWITTER2:
 					if (!user.isProtected() || user.isCurrentUser() || (relation != null && relation.isFollowing())) {
 						startActivity(intent);
 					}
 					break;
 
-				case Account.API_MASTODON:
+				case MASTODON:
 					startActivity(intent);
 					break;
 			}

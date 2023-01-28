@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.model;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.config.Configuration;
+
 import java.io.Serializable;
 
 /**
@@ -74,9 +76,9 @@ public interface Account extends Serializable {
 	String getHostname();
 
 	/**
-	 * @return type of the ID {@link #API_TWITTER_1,#API_TWITTER_2,#API_MASTODON}
+	 * @return login configuration
 	 */
-	int getApiType();
+	Configuration getConfiguration();
 
 	/**
 	 * return true if the account uses the app default API tokens

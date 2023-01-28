@@ -22,7 +22,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * Activity to show userlists of an user

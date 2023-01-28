@@ -28,7 +28,7 @@ import org.nuclearfog.twidda.backend.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;

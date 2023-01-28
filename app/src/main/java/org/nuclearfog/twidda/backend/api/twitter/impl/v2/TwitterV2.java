@@ -5,7 +5,6 @@ import android.content.Context;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterAccount;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.MediaV2Map;
@@ -14,6 +13,7 @@ import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Status;
 
 import java.io.IOException;
@@ -47,10 +47,9 @@ public class TwitterV2 extends TwitterV1 {
 
 
 	@Override
-	public TwitterAccount loginApp(ConnectionConfig connection, String url, String pin) throws TwitterException {
-		TwitterAccount account = super.loginApp(connection, url, pin);
-		account.enableV2();
-		return account;
+	public Account loginApp(ConnectionConfig connection, String url, String pin) throws TwitterException {
+		Account account = super.loginApp(connection, url, pin);
+		return new AccountV2(account);
 	}
 
 

@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.fragments.AccountFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 

@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.backend.proxy;
 
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;

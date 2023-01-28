@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * viewholder for {@link org.nuclearfog.twidda.adapter.IconAdapter}

@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend.proxy;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;

@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.adapter.holder.AccountHolder;
 import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 
 import java.util.ArrayList;

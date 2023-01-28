@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * Adapter used to show a list of social networks for the selector

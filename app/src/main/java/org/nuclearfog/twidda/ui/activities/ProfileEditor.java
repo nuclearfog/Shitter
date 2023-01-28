@@ -39,8 +39,7 @@ import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -127,11 +126,14 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 			constraints.connect(R.id.profile_edit_add_banner, ConstraintSet.TOP, R.id.profile_edit_banner, ConstraintSet.TOP);
 			constraints.applyTo(root);
 		}
-		if (settings.getLogin().getApiType() != Account.API_TWITTER_1 || settings.getLogin().getApiType() != Account.API_TWITTER_2) {
-			profileUrl.setVisibility(View.GONE);
-			location.setVisibility(View.GONE);
-			locationDescription.setVisibility(View.GONE);
-			urlDescription.setVisibility(View.GONE);
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				profileUrl.setVisibility(View.GONE);
+				location.setVisibility(View.GONE);
+				locationDescription.setVisibility(View.GONE);
+				urlDescription.setVisibility(View.GONE);
+				break;
 		}
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
 		profile_banner.setDrawingCacheEnabled(true);

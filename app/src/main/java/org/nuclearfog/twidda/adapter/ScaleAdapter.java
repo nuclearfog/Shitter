@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
-import static org.nuclearfog.twidda.database.GlobalSettings.FONT_SCALES;
+import static org.nuclearfog.twidda.config.GlobalSettings.FONT_SCALES;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 
 import java.util.Locale;

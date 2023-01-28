@@ -70,19 +70,32 @@ public class UserImpl implements User {
 		defaultImage = (register & DEFAULT_IMAGE_MASK) != 0;
 		isCurrentUser = account.getId() == id;
 
-		if ((account.getApiType() != Account.API_TWITTER_1 && account.getApiType() != Account.API_TWITTER_2)
-				|| defaultImage || profileImageOrig.isEmpty()) {
-			profileImageSmall = profileImageOrig;
-		} else {
-			profileImageSmall = profileImageOrig + "_bigger";
-		}
-		if ((account.getApiType() != Account.API_TWITTER_1 && account.getApiType() != Account.API_TWITTER_2)
-				|| profileBannerOrig.isEmpty()) {
-			profileBannerSmall = profileBannerOrig;
-		} else if (profileBannerOrig.endsWith("/1500x500")) {
-			profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
-		} else {
-			profileBannerSmall = profileBannerOrig + "/600x200";
+		switch (account.getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				if (defaultImage || profileImageOrig.isEmpty()) {
+					profileImageSmall = profileImageOrig;
+				} else {
+					profileImageSmall = profileImageOrig + "_bigger";
+				}
+				if (profileBannerOrig.isEmpty()) {
+					profileBannerSmall = profileBannerOrig;
+				} else if (profileBannerOrig.endsWith("/1500x500")) {
+					profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
+				} else {
+					profileBannerSmall = profileBannerOrig + "/600x200";
+				}
+				break;
+
+			case MASTODON:
+				profileImageSmall = profileImageOrig;
+				profileBannerSmall = profileBannerOrig;
+				break;
+
+			default:
+				profileImageSmall = "";
+				profileBannerSmall = "";
+				break;
 		}
 	}
 

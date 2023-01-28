@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * ViewHolder class for a placeholder view

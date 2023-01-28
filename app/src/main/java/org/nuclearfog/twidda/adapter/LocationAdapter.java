@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 

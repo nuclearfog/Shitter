@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OptionsAdapter;
 import org.nuclearfog.twidda.adapter.OptionsAdapter.OnOptionClickListener;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
 
 /**

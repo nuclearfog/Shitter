@@ -37,7 +37,7 @@ import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.update.ConnectionConfig;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog;
 
 /**

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.adapter.holder.TrendHolder;
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
 
 import java.util.ArrayList;
