@@ -66,6 +66,7 @@ public class ConnectionConfig {
 
 	/**
 	 * get configured API type
+	 *
 	 * @return API type {@link #API_MASTODON,#API_TWITTER_1,#API_TWITTER_2}
 	 */
 	public int getApiType() {

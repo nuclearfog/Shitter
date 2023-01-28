@@ -248,8 +248,6 @@
 	<string name="info_login_to_mastodon">in Mastodon einloggen</string>
 	<string name="error_service_unavailable">Service zur Zeit nicht verfügbar!</string>
 	<string name="popup_tweet_hint">Status</string>
-	<string name="error_invalid_url">Url ungültig!</string>
-	<string name="error_empty_token">Bitte Schlüssel hinzufügen</string>
 	<string name="info_account_selected">%1$s ausgewählt</string>
 	<string name="menu_message">Nachricht schreiben</string>
 	<string name="status_replyname_empty">Antwort</string>

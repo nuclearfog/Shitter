@@ -505,7 +505,7 @@ public class GlobalSettings {
 	 * @return saved location information
 	 */
 	public Location getTrendLocation() {
-		switch(account.getConfiguration()) {
+		switch (account.getConfiguration()) {
 			case TWITTER1:
 			case TWITTER2:
 				return location;

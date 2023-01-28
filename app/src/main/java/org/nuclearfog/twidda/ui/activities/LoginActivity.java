@@ -245,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		loginLink = null;
 		if (id == NetworkAdapter.ID_TWITTER) {
 			connection.setApiType(ConnectionConfig.API_TWITTER_2);
-		} else if (id  == NetworkAdapter.ID_MASTODON) {
+		} else if (id == NetworkAdapter.ID_MASTODON) {
 			connection.setApiType(ConnectionConfig.API_MASTODON);
 		}
 	}
@@ -267,7 +267,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 				break;
 
 			case LoginAction.MODE_REQUEST_MASTODON:
-				case LoginAction.MODE_REQUEST_TWITTER:
+			case LoginAction.MODE_REQUEST_TWITTER:
 				loginLink = result;
 				connect();
 				break;

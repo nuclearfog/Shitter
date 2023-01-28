@@ -105,7 +105,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			screenname.setText(R.string.account_user_id_prefix);
 			screenname.append(Long.toString(account.getId()));
 		}
-		switch(account.getConfiguration()) {
+		switch (account.getConfiguration()) {
 			case TWITTER1:
 			case TWITTER2:
 				screenname.append(ACCOUNT_TWITTER);

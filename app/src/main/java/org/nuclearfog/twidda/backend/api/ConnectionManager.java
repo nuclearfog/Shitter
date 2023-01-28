@@ -63,7 +63,7 @@ public class ConnectionManager {
 			GlobalSettings settings = GlobalSettings.getInstance(context);
 			// select automatically
 			if (select == SELECT_AUTO) {
-				switch(settings.getLogin().getConfiguration()) {
+				switch (settings.getLogin().getConfiguration()) {
 					case TWITTER1:
 						connection = new TwitterV1(context);
 						break;
@@ -80,7 +80,7 @@ public class ConnectionManager {
 						throw new RuntimeException("no connection selected!");
 				}
 			} else {
-				switch(select) {
+				switch (select) {
 					case SELECT_TWITTER_1:
 						connection = new TwitterV1(context);
 						break;
