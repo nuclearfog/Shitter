@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend.api.twitter;
 
 import android.content.Context;
 
-import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 
 import io.michaelrocks.paranoid.Obfuscate;
