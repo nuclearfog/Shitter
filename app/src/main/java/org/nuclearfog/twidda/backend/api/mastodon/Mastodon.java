@@ -556,7 +556,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserList createUserlist(UserListUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("title=" + update.getTitle());
+		params.add("title=" + StringTools.encode(update.getTitle()));
 		try {
 			return createUserlist(post(ENDPOINT_USERLIST, params));
 		} catch (IOException e) {
@@ -568,7 +568,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserList updateUserlist(UserListUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("title=" + update.getTitle());
+		params.add("title=" + StringTools.encode(update.getTitle()));
 		try {
 			return createUserlist(put(ENDPOINT_USERLIST + update.getId(), params));
 		} catch (IOException e) {
@@ -661,19 +661,19 @@ public class Mastodon implements Connection {
 
 	@Override
 	public void sendDirectmessage(long id, String message, long mediaId) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
 	@Override
 	public void deleteDirectmessage(long id) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
 	@Override
 	public Messages getDirectmessages(String cursor) throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 
@@ -710,8 +710,8 @@ public class Mastodon implements Connection {
 		List<InputStream> streams = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 
-		params.add("display_name=" + update.getName());
-		params.add("note=" + update.getDescription().replace('\n', ' '));
+		params.add("display_name=" + StringTools.encode(update.getName()));
+		params.add("note=" + StringTools.encode(update.getDescription()));
 		if (update.getProfileImageStream() != null) {
 			streams.add(update.getProfileImageStream());
 			keys.add("avatar");
