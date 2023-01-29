@@ -39,6 +39,7 @@ import org.nuclearfog.twidda.backend.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -80,7 +81,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	private ConfirmDialog confirmDialog;
 
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
-	private EditText username, profileUrl, location, userDescription;
+	private EditText username, profileUrl, profileLocation, userDescription;
 	private Button addBannerBtn;
 
 	@Nullable
@@ -100,8 +101,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		setContentView(R.layout.page_editprofile);
 		Toolbar toolbar = findViewById(R.id.edit_profile_toolbar);
 		ConstraintLayout root = findViewById(R.id.page_edit);
-		View locationDescription = findViewById(R.id.profile_edit_change_location_label);
-		View urlDescription = findViewById(R.id.profile_edit_change_url_label);
+		View profileLocationLabel = findViewById(R.id.profile_edit_change_location_label);
+		View profileUrlLabel = findViewById(R.id.profile_edit_change_url_label);
 		profile_image = findViewById(R.id.edit_profile_image);
 		profile_banner = findViewById(R.id.profile_edit_banner);
 		addBannerBtn = findViewById(R.id.profile_edit_add_banner);
@@ -109,7 +110,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		toolbar_background = findViewById(R.id.profile_edit_toolbar_background);
 		username = findViewById(R.id.profile_edit_change_name);
 		profileUrl = findViewById(R.id.profile_edit_change_url);
-		location = findViewById(R.id.profile_edit_change_location);
+		profileLocation = findViewById(R.id.profile_edit_change_location);
 		userDescription = findViewById(R.id.profile_edit_change_description);
 
 		loadingCircle = new ProgressDialog(this);
@@ -126,14 +127,15 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 			constraints.connect(R.id.profile_edit_add_banner, ConstraintSet.TOP, R.id.profile_edit_banner, ConstraintSet.TOP);
 			constraints.applyTo(root);
 		}
-		switch (settings.getLogin().getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				profileUrl.setVisibility(View.GONE);
-				location.setVisibility(View.GONE);
-				locationDescription.setVisibility(View.GONE);
-				urlDescription.setVisibility(View.GONE);
-				break;
+
+		Configuration config = settings.getLogin().getConfiguration();
+		if (!config.profileUrlEnabled()) {
+			profileUrl.setVisibility(View.GONE);
+			profileUrlLabel.setVisibility(View.GONE);
+		}
+		if (!config.profileLocationEnabled()) {
+			profileLocation.setVisibility(View.GONE);
+			profileLocationLabel.setVisibility(View.GONE);
 		}
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
 		profile_banner.setDrawingCacheEnabled(true);
@@ -165,7 +167,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	public void onBackPressed() {
 		String username = this.username.getText().toString();
 		String userLink = profileUrl.getText().toString();
-		String userLoc = location.getText().toString();
+		String userLoc = profileLocation.getText().toString();
 		String userBio = userDescription.getText().toString();
 		if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
 				&& userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !holder.imageAdded()) {
@@ -301,7 +303,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
 			String username = this.username.getText().toString();
 			String userLink = profileUrl.getText().toString();
-			String userLoc = location.getText().toString();
+			String userLoc = profileLocation.getText().toString();
 			String userBio = userDescription.getText().toString();
 			if (username.trim().isEmpty()) {
 				String errMsg = getString(R.string.error_empty_name);
@@ -342,7 +344,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		}
 		username.setText(user.getUsername());
 		profileUrl.setText(user.getProfileUrl());
-		location.setText(user.getLocation());
+		profileLocation.setText(user.getLocation());
 		userDescription.setText(user.getDescription());
 		this.user = user;
 	}

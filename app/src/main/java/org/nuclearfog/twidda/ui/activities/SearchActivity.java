@@ -102,23 +102,17 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.search, m);
-		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		MenuItem searchItem = m.findItem(R.id.new_search);
 		MenuItem searchFilter = m.findItem(R.id.search_filter);
 		SearchView searchView = (SearchView) searchItem.getActionView();
-		switch (settings.getLogin().getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				searchFilter.setChecked(settings.filterResults());
-				break;
 
-			case MASTODON:
-				searchFilter.setVisible(false);
-				break;
-		}
+		boolean enableSearchFilter = settings.getLogin().getConfiguration().filterEnabled();
+		searchFilter.setChecked(settings.filterResults() & enableSearchFilter);
 		searchView.setQueryHint(search);
 		searchView.setOnQueryTextListener(this);
+		// set theme
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);
+		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);
 	}

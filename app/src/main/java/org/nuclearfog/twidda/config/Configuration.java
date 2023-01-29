@@ -30,9 +30,12 @@ public enum Configuration {
 	NONE(0);
 
 	private final int accountType;
-	private boolean enableVote = false;
-	private boolean userlistExtended = false;
-	private boolean favoritsEnabled = false;
+	private final boolean enableVote;
+	private final boolean userlistExtended;
+	private final boolean favoritsEnabled;
+	private final boolean searchFilterEnabled;
+	private final boolean profileLocationEnabled;
+	private final boolean profileUrlEnabled;
 
 	/**
 	 * @param accountType account login type, see {@link Account}
@@ -44,10 +47,28 @@ public enum Configuration {
 			case Account.API_TWITTER_2:
 				userlistExtended = true;
 				favoritsEnabled = true;
+				enableVote = false;
+				searchFilterEnabled = true;
+				profileLocationEnabled = true;
+				profileUrlEnabled = true;
 				break;
 
 			case Account.API_MASTODON:
 				enableVote = true;
+				userlistExtended = false;
+				favoritsEnabled = false;
+				searchFilterEnabled = false;
+				profileLocationEnabled = false;
+				profileUrlEnabled = false;
+				break;
+
+			default:
+				userlistExtended = false;
+				favoritsEnabled = false;
+				enableVote = false;
+				searchFilterEnabled = false;
+				profileLocationEnabled = false;
+				profileUrlEnabled = false;
 				break;
 		}
 	}
@@ -78,5 +99,26 @@ public enum Configuration {
 	 */
 	public boolean favoritsEnabled() {
 		return favoritsEnabled;
+	}
+
+	/**
+	 * @return true if search filter option is enabled
+	 */
+	public boolean filterEnabled() {
+		return searchFilterEnabled;
+	}
+
+	/**
+	 * @return true if network supports profile location information
+	 */
+	public boolean profileLocationEnabled() {
+		return profileLocationEnabled;
+	}
+
+	/**
+	 * @return true if network supports profile url information
+	 */
+	public boolean profileUrlEnabled() {
+		return profileUrlEnabled;
 	}
 }

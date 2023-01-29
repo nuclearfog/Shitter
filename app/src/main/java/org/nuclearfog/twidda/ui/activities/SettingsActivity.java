@@ -47,6 +47,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.model.Location;
@@ -93,6 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private static final int COLOR_FOLLOWING = 9;
 
 	private GlobalSettings settings;
+	private Configuration configuration;
 
 	private LocationLoader locationAsync;
 	private LocationAdapter locationAdapter;
@@ -163,6 +165,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		setSupportActionBar(toolbar);
 
 		settings = GlobalSettings.getInstance(this);
+		configuration = settings.getLogin().getConfiguration();
 		locationAdapter = new LocationAdapter(settings);
 		locationAdapter.addItem(settings.getTrendLocation());
 		locationSpinner.setAdapter(locationAdapter);
@@ -183,19 +186,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 
-		switch (settings.getLogin().getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				enableTwitterAlt.setVisibility(VISIBLE);
-				EnableTwitterAltDescr.setVisibility(VISIBLE);
-				trend_card.setVisibility(VISIBLE);
-				break;
-
-			case MASTODON:
-				enableTwitterAlt.setVisibility(GONE);
-				EnableTwitterAltDescr.setVisibility(GONE);
-				trend_card.setVisibility(GONE);
-				break;
+		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
+			enableTwitterAlt.setVisibility(GONE);
+			EnableTwitterAltDescr.setVisibility(GONE);
+			trend_card.setVisibility(GONE);
 		}
 		if (!settings.isLoggedIn()) {
 			user_card.setVisibility(GONE);
@@ -252,9 +246,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (locationAsync == null || locationAsync.getStatus() != RUNNING) {
-			locationAsync = new LocationLoader(this);
-			locationAsync.execute();
+		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
+			if (locationAsync == null || locationAsync.getStatus() != RUNNING) {
+				locationAsync = new LocationLoader(this);
+				locationAsync.execute();
+			}
 		}
 	}
 
