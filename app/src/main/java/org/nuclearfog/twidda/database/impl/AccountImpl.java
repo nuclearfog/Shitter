@@ -67,6 +67,10 @@ public class AccountImpl implements Account {
 			case MASTODON:
 				apiType = API_MASTODON;
 				break;
+
+			default:
+				apiType = API_NONE;
+				break;
 		}
 	}
 

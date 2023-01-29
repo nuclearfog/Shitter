@@ -103,12 +103,22 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		settings = GlobalSettings.getInstance(this);
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
+		AppStyles.setTheme(root);
+
 		NetworkAdapter adapter = new NetworkAdapter(this);
 		connectionDialog = new ConnectionDialog(this);
 		hostSelector.setAdapter(adapter);
-		hostSelector.setSelection(0);
 
-		AppStyles.setTheme(root);
+		switch (settings.getLogin().getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				hostSelector.setSelection(1);
+				break;
+
+			case MASTODON:
+				hostSelector.setSelection(0);
+				break;
+		}
 
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);

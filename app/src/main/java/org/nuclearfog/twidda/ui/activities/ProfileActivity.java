@@ -686,17 +686,17 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			user_website.setVisibility(GONE);
 		}
 		if (settings.imagesEnabled()) {
-			String profileImageUrl = user.getBannerImageThumbnailUrl();
-			String bannerImageUrl = user.getProfileImageThumbnailUrl();
-			if (!profileImageUrl.isEmpty()) {
-				picasso.load(profileImageUrl).error(R.drawable.no_banner).into(bannerImage, this);
+			String bannerImageUrl = user.getBannerImageThumbnailUrl();
+			String profileImageUrl = user.getProfileImageThumbnailUrl();
+			if (!bannerImageUrl.isEmpty()) {
+				picasso.load(bannerImageUrl).error(R.drawable.no_banner).into(bannerImage, this);
 			} else {
 				bannerImage.setImageResource(0);
 				toolbarBackground.setImageResource(0);
 			}
-			if (!bannerImageUrl.isEmpty()) {
+			if (!profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(5, 0);
-				picasso.load(bannerImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
+				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
 			} else {
 				profileImage.setImageResource(0);
 			}

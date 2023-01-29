@@ -15,6 +15,11 @@ import java.io.Serializable;
 public interface Account extends Serializable {
 
 	/**
+	 * API ID if undefined
+	 */
+	int API_NONE = 0;
+
+	/**
 	 * API ID for twitter version 1.1
 	 */
 	int API_TWITTER_1 = 1;

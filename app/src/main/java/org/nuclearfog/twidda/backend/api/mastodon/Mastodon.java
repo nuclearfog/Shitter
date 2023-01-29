@@ -73,13 +73,14 @@ public class Mastodon implements Connection {
 	private static final String AUTH_NAME = "SH1TT3R";
 
 	// Mastodon endpoints see https://docs.joinmastodon.org/methods/
-	private static final String REGISTER_APP = "/api/v1/apps";
-	private static final String AUTHORIZE_APP = "/oauth/authorize";
-	private static final String LOGIN_APP = "/oauth/token";
-	private static final String VERIFY_CREDENTIALS = "/api/v1/accounts/verify_credentials";
-	private static final String HOME_TIMELINE = "/api/v1/timelines/home";
-	private static final String LIST_TIMELINE = "/api/v1/timelines/list/";
-	private static final String SEARCH_TIMELINE = "/api/v2/search";
+	private static final String ENDPOINT_REGISTER_APP = "/api/v1/apps";
+	private static final String ENDPOINT_AUTHORIZE_APP = "/oauth/authorize";
+	private static final String ENDPOINT_LOGIN_APP = "/oauth/token";
+	private static final String ENDPOINT_VERIFY_CREDENTIALS = "/api/v1/accounts/verify_credentials";
+	private static final String ENDPOINT_HOME_TIMELINE = "/api/v1/timelines/home";
+	private static final String ENDPOINT_LIST_TIMELINE = "/api/v1/timelines/list/";
+	private static final String ENDPOINT_SEARCH_TIMELINE = "/api/v2/search";
+	private static final String ENDPOINT_HASHTAG_TIMELINE = "/api/v1/timelines/tag/";
 	private static final String ENDPOINT_USER_TIMELINE = "/api/v1/accounts/";
 	private static final String ENDPOINT_USER_FAVORITS = "/api/v1/favourites";
 	private static final String ENDPOINT_TRENDS = "/api/v1/trends/tags";
@@ -129,14 +130,14 @@ public class Mastodon implements Connection {
 			hostname = DEFAULT_HOST;
 		}
 		try {
-			Response response = post(hostname, REGISTER_APP, null, params);
+			Response response = post(hostname, ENDPOINT_REGISTER_APP, null, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
 				String client_id = json.getString("client_id");
 				String client_secret = json.getString("client_secret");
 				connection.setOauthTokens(client_id, client_secret);
-				return hostname + AUTHORIZE_APP + "?scope=read%20write%20follow&response_type=code&redirect_uri=" + REDIRECT_URI + "&client_id=" + client_id;
+				return hostname + ENDPOINT_AUTHORIZE_APP + "?scope=read%20write%20follow&response_type=code&redirect_uri=" + REDIRECT_URI + "&client_id=" + client_id;
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
@@ -157,7 +158,7 @@ public class Mastodon implements Connection {
 		params.add("redirect_uri=" + REDIRECT_URI);
 		params.add("scope=" + AUTH_SCOPES);
 		try {
-			Response response = post(host, LOGIN_APP, null, params);
+			Response response = post(host, ENDPOINT_LOGIN_APP, null, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
@@ -200,7 +201,6 @@ public class Mastodon implements Connection {
 	public Users searchUsers(String search, long page) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
-		params.add("limit=" + settings.getListSize());
 		params.add("type=accounts");
 		return getUsers(ENDPOINT_SEARCH_ACCOUNTS, params);
 	}
@@ -239,7 +239,6 @@ public class Mastodon implements Connection {
 	@Override
 	public Users getListMember(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("limit=" + settings.getListSize());
 		return getUsers(ENDPOINT_USERLIST + id + "/accounts", params);
 	}
 
@@ -253,7 +252,6 @@ public class Mastodon implements Connection {
 	@Override
 	public Users getBlockedUsers(long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("limit=" + settings.getListSize());
 		return getUsers(ENDPOINT_BLOCKS, params);
 	}
 
@@ -261,7 +259,6 @@ public class Mastodon implements Connection {
 	@Override
 	public Users getMutedUsers(long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("limit=" + settings.getListSize());
 		return getUsers(ENDPOINT_MUTES, params);
 	}
 
@@ -269,7 +266,7 @@ public class Mastodon implements Connection {
 	@Override
 	public Users getIncomingFollowRequests(long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("limit=" + settings.getListSize());
+
 		return getUsers(ENDPOINT_INCOMIN_REQUESTS, params);
 	}
 
@@ -351,10 +348,13 @@ public class Mastodon implements Connection {
 	@Override
 	public List<Status> searchStatuses(String search, long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("q=" + StringTools.encode(search));
-		params.add("limit=" + settings.getListSize());
-		params.add("type=statuses");
-		return getStatuses(SEARCH_TIMELINE, params, minId, maxId);
+		if (search.startsWith("#")) {
+			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + search.substring(1), params, minId, maxId);
+		} else {
+			params.add("q=" + StringTools.encode(search));
+			params.add("type=statuses");
+			return getStatuses(ENDPOINT_SEARCH_TIMELINE, params, minId, maxId);
+		}
 	}
 
 
@@ -394,7 +394,7 @@ public class Mastodon implements Connection {
 			params.add("q=" + StringTools.encode(search));
 			params.add("limit=" + settings.getListSize());
 			params.add("type=hashtags");
-			Response response = get(SEARCH_TIMELINE, params);
+			Response response = get(ENDPOINT_SEARCH_TIMELINE, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONObject(body.string()).getJSONArray("hashtags");
@@ -419,7 +419,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getHomeTimeline(long minId, long maxId) throws MastodonException {
-		return getStatuses(HOME_TIMELINE, new ArrayList<>(0), minId, maxId);
+		return getStatuses(ENDPOINT_HOME_TIMELINE, new ArrayList<>(0), minId, maxId);
 	}
 
 
@@ -454,7 +454,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws MastodonException {
-		return getStatuses(LIST_TIMELINE + id, new ArrayList<>(0), minId, maxId);
+		return getStatuses(ENDPOINT_LIST_TIMELINE + id, new ArrayList<>(0), minId, maxId);
 	}
 
 
@@ -788,7 +788,7 @@ public class Mastodon implements Connection {
 	 */
 	private User getCredentials(String host, @NonNull String bearer) throws MastodonException {
 		try {
-			return createUser(get(host, VERIFY_CREDENTIALS, bearer, new ArrayList<>()));
+			return createUser(get(host, ENDPOINT_VERIFY_CREDENTIALS, bearer, new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -858,6 +858,7 @@ public class Mastodon implements Connection {
 	 */
 	private Users getUsers(String endpoint, List<String> params) throws MastodonException {
 		try {
+			params.add("limit=" + settings.getListSize());
 			return createUsers(get(endpoint, params));
 		} catch (IOException e) {
 			throw new MastodonException(e);

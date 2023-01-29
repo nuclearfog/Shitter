@@ -31,17 +31,17 @@ public class NetworkAdapter extends BaseAdapter {
 	/**
 	 * social network icons
 	 */
-	private static final int[] ICONS = {R.drawable.twitter, R.drawable.mastodon};
+	private static final int[] ICONS = {R.drawable.mastodon, R.drawable.twitter};
 
 	/**
 	 * social network names
 	 */
-	private static final int[] STRINGS = {R.string.twitter, R.string.mastodon};
+	private static final int[] STRINGS = {R.string.mastodon, R.string.twitter};
 
 	/**
 	 * social network IDs
 	 */
-	private static final int[] IDS = {ID_TWITTER, ID_MASTODON};
+	private static final int[] IDS = {ID_MASTODON, ID_TWITTER};
 
 	private GlobalSettings settings;
 
