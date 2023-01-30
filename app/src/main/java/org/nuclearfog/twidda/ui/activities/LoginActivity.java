@@ -24,6 +24,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,17 +50,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog;
  *
  * @author nuclearfog
  */
-public class LoginActivity extends AppCompatActivity implements OnClickListener, OnItemSelectedListener {
-
-	/**
-	 * request code to open {@link AccountActivity}
-	 */
-	private static final int REQUEST_ACCOUNT_SELECT = 0x384F;
-
-	/**
-	 * request code to open {@link SettingsActivity}
-	 */
-	private static final int REQUEST_SETTINGS = 0x123;
+public class LoginActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnClickListener, OnItemSelectedListener {
 
 	/**
 	 * return code to notify if a login process was successful
@@ -64,9 +58,16 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 	public static final int RETURN_LOGIN_SUCCESSFUL = 0x145;
 
 	/**
+	 * return code to notify if a login process was successful
+	 */
+	public static final int RETURN_LOGIN_CANCELED = 0x2485;
+
+	/**
 	 * return code to notify if settings may changed
 	 */
 	public static final int RETURN_SETTINGS_CHANGED = 0x227;
+
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	@Nullable
 	private LoginAction loginAsync;
@@ -126,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		hostSelector.setOnItemSelectedListener(this);
 
 		// set default result code
-		setResult(RESULT_CANCELED);
+		setResult(RETURN_LOGIN_CANCELED);
 	}
 
 
@@ -152,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		// open settings page
 		if (item.getItemId() == R.id.login_setting) {
 			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivityForResult(intent, REQUEST_SETTINGS);
+			activityResultLauncher.launch(intent);
 			// notify MainActivity that settings may changed
 			setResult(RETURN_SETTINGS_CHANGED);
 		}
@@ -160,22 +161,19 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 		else if (item.getItemId() == R.id.login_select_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
 			accountManager.putExtra(KEY_DISABLE_SELECTOR, true);
-			startActivityForResult(accountManager, REQUEST_ACCOUNT_SELECT);
+			activityResultLauncher.launch(accountManager);
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == REQUEST_ACCOUNT_SELECT) {
-			if (resultCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
-				// account selected, return to MainActivity
-				setResult(RETURN_LOGIN_SUCCESSFUL);
-				finish();
-			}
-		} else if (requestCode == REQUEST_SETTINGS) {
+	public void onActivityResult(ActivityResult result) {
+		if (result.getResultCode() == AccountActivity.RETURN_ACCOUNT_CHANGED) {
+			// account selected, return to MainActivity
+			setResult(RETURN_LOGIN_SUCCESSFUL);
+			finish();
+		} else {
 			AppStyles.setTheme(root);
 		}
 	}

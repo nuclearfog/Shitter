@@ -9,6 +9,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -28,7 +32,7 @@ import org.nuclearfog.twidda.ui.activities.UserlistActivity;
  *
  * @author nuclearfog
  */
-public class UserListFragment extends ListFragment implements ListClickListener {
+public class UserListFragment extends ListFragment implements ListClickListener, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Key for the owner ID
@@ -63,10 +67,8 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 	 */
 	public static final int LIST_USER_SUBSCR_TO = 0xAA7386AA;
 
-	/**
-	 * request code to open an user list to check for changes
-	 */
-	private static final int REQUEST_OPEN_LIST = 0x9541;
+
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private ListLoader listTask;
 	private UserlistAdapter adapter;
@@ -116,19 +118,19 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (data != null && requestCode == REQUEST_OPEN_LIST) {
+	public void onActivityResult(ActivityResult result) {
+		Intent intent = result.getData();
+		if (intent != null) {
 			// check if userlist was removed
-			if (resultCode == UserlistActivity.RETURN_LIST_REMOVED) {
-				long removedListId = data.getLongExtra(UserlistActivity.RESULT_REMOVED_LIST_ID, 0);
+			if (result.getResultCode() == UserlistActivity.RETURN_LIST_REMOVED) {
+				long removedListId = intent.getLongExtra(UserlistActivity.RESULT_REMOVED_LIST_ID, 0);
 				adapter.removeItem(removedListId);
 			}
 			// check if userlist was updated
-			else if (resultCode == UserlistActivity.RETURN_LIST_UPDATED) {
-				Object result = data.getSerializableExtra(UserlistActivity.RESULT_UPDATE_LIST);
-				if (result instanceof UserList) {
-					UserList update = (UserList) result;
+			else if (result.getResultCode() == UserlistActivity.RETURN_LIST_UPDATED) {
+				Object object = intent.getSerializableExtra(UserlistActivity.RESULT_UPDATE_LIST);
+				if (object instanceof UserList) {
+					UserList update = (UserList) object;
 					adapter.updateItem(update);
 				}
 			}
@@ -146,7 +148,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 	public void onListClick(UserList listItem) {
 		Intent listIntent = new Intent(requireContext(), UserlistActivity.class);
 		listIntent.putExtra(KEY_LIST_DATA, listItem);
-		startActivityForResult(listIntent, REQUEST_OPEN_LIST);
+		activityResultLauncher.launch(listIntent);
 	}
 
 

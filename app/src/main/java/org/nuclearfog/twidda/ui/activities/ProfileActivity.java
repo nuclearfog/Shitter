@@ -35,6 +35,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -77,8 +81,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileActivity extends AppCompatActivity implements OnClickListener, OnTagClickListener,
-		OnTabSelectedListener, OnConfirmListener, Callback {
+public class ProfileActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>,
+		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback {
 
 	/**
 	 * Key for the user ID
@@ -111,11 +115,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	public static final String KEY_USER_UPDATE = "user_update";
 
 	/**
-	 * request code for {@link ProfileEditor}
-	 */
-	public static final int REQUEST_PROFILE_CHANGED = 0x322F;
-
-	/**
 	 * Return code to update user information
 	 */
 	public static final int RETURN_USER_UPDATED = 0x9996498C;
@@ -129,6 +128,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 * background color transparency mask for toolbar background
 	 */
 	public static final int TOOLBAR_TRANSPARENCY = 0x5fffffff;
+
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
@@ -283,11 +284,10 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 
 	@Override
-	public void onActivityResult(int reqCode, int returnCode, @Nullable Intent i) {
-		super.onActivityResult(reqCode, returnCode, i);
-		if (i != null && reqCode == REQUEST_PROFILE_CHANGED) {
-			if (returnCode == ProfileEditor.RETURN_PROFILE_CHANGED) {
-				Object data = i.getSerializableExtra(ProfileEditor.KEY_UPDATED_PROFILE);
+	public void onActivityResult(ActivityResult result) {
+		if (result.getData() != null) {
+			if (result.getResultCode() == ProfileEditor.RETURN_PROFILE_CHANGED) {
+				Object data = result.getData().getSerializableExtra(ProfileEditor.KEY_UPDATED_PROFILE);
 				if (data instanceof User) {
 					// remove blur background
 					toolbarBackground.setImageResource(0);
@@ -424,7 +424,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		else if (item.getItemId() == R.id.profile_settings) {
 			Intent editProfile = new Intent(this, ProfileEditor.class);
 			editProfile.putExtra(ProfileEditor.KEY_PROFILE_DATA, user);
-			startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
+			activityResultLauncher.launch(editProfile);
 		}
 		// open direct message
 		else if (item.getItemId() == R.id.profile_message) {

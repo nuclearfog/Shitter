@@ -78,6 +78,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public static final int RETURN_DATA_CLEARED = 0x955;
 
 	/**
+	 * return code to recognize {@link MainActivity} that settings may changed
+	 */
+	public static final int RETURN_SETTINGS_CHANGED = 0xA3E8;
+
+	/**
 	 * total count of all colors defined
 	 */
 	private static final int COLOR_COUNT = 10;
@@ -246,6 +251,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	protected void onStart() {
 		super.onStart();
+		setResult(RETURN_SETTINGS_CHANGED);
 		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
 			if (locationAsync == null || locationAsync.getStatus() != RUNNING) {
 				locationAsync = new LocationLoader(this);

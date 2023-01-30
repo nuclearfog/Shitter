@@ -7,6 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,12 +28,7 @@ import org.nuclearfog.twidda.ui.fragments.ListFragment;
  *
  * @author nuclearfog
  */
-public class AccountActivity extends AppCompatActivity {
-
-	/**
-	 * request code to start {@link LoginActivity}
-	 */
-	private static final int REQUEST_LOGIN = 0xDF14;
+public class AccountActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * return code to notify that a new account was selected
@@ -46,6 +45,8 @@ public class AccountActivity extends AppCompatActivity {
 	 * value type is Boolean
 	 */
 	public static final String KEY_DISABLE_SELECTOR = "disable-acc-manager";
+
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private GlobalSettings settings;
 	private ListFragment fragment;
@@ -96,7 +97,7 @@ public class AccountActivity extends AppCompatActivity {
 		if (item.getItemId() == R.id.action_add_account) {
 			// open login page to add new account
 			Intent loginIntent = new Intent(this, LoginActivity.class);
-			startActivityForResult(loginIntent, REQUEST_LOGIN);
+			activityResultLauncher.launch(loginIntent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -104,20 +105,19 @@ public class AccountActivity extends AppCompatActivity {
 
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == REQUEST_LOGIN) {
-			// new account registered, reload fragment
-			if (resultCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
+	public void onActivityResult(ActivityResult result) {
+		switch (result.getResultCode()) {
+			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
+				// new account registered, reload fragment
 				setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
 				fragment.reset();
-			}
-			// check if setting page was opened and reload theme
-			else if (resultCode == LoginActivity.RETURN_SETTINGS_CHANGED) {
+				break;
+
+			case LoginActivity.RETURN_SETTINGS_CHANGED:
 				AppStyles.setTheme(root);
 				setResult(RETURN_SETTINGS_CHANGED);
 				fragment.reset();
-			}
+				break;
 		}
 	}
 }

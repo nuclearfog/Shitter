@@ -9,6 +9,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -30,15 +34,13 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class NotificationFragment extends ListFragment implements OnNotificationClickListener {
+public class NotificationFragment extends ListFragment implements OnNotificationClickListener, ActivityResultCallback<ActivityResult> {
 
-	/**
-	 * request code to check for status changes
-	 */
-	private static final int REQUEST_STATUS_CHANGED = 0x9466;
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private NotificationLoader notificationAsync;
 	private NotificationAdapter adapter;
+
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -68,18 +70,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	@Override
-	public void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
-		super.onActivityResult(reqCode, returnCode, intent);
-		if (intent != null && reqCode == REQUEST_STATUS_CHANGED) {
-			if (returnCode == StatusActivity.RETURN_STATUS_REMOVED) {
-				long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0);
-				adapter.removeItem(statusId);
-			}
-		}
-	}
-
-
-	@Override
 	protected void onReload() {
 		long sinceId = 0;
 		if (!adapter.isEmpty())
@@ -101,7 +91,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), StatusActivity.class);
 			intent.putExtra(KEY_STATUS_DATA, status);
-			startActivityForResult(intent, REQUEST_STATUS_CHANGED);
+			activityResultLauncher.launch(intent);
 		}
 	}
 
@@ -123,6 +113,19 @@ public class NotificationFragment extends ListFragment implements OnNotification
 			return true;
 		}
 		return false;
+	}
+
+
+	@Override
+	public void onActivityResult(ActivityResult result) {
+		Intent intent = result.getData();
+		if (intent != null) {
+			if (result.getResultCode() == StatusActivity.RETURN_STATUS_REMOVED) {
+				long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0);
+				adapter.removeItem(statusId);
+			}
+			// todo update status (like in StatusFragment)
+		}
 	}
 
 	/**

@@ -370,6 +370,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 				break;
 		}
 		try {
+			// todo replace this
 			startActivityForResult(mediaSelect, requestCode);
 		} catch (ActivityNotFoundException err) {
 			Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();

@@ -13,6 +13,10 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,7 +43,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
  *
  * @author nuclearfog
  */
-public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener {
 
 	/**
 	 * key used to set the tab page
@@ -47,20 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	 */
 	public static final String KEY_TAB_PAGE = "tab_pos";
 
-	/**
-	 * request code to start {@link LoginActivity}
-	 */
-	private static final int REQUEST_APP_LOGIN = 0x6A89;
-
-	/**
-	 * Request code to start {@link AccountActivity}
-	 */
-	private static final int REQUEST_ACCOUNT_CHANGE = 0x345;
-
-	/**
-	 * Request code to start {@link SettingsActivity}
-	 */
-	private static final int REQUEST_APP_SETTINGS = 0x54AD;
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
@@ -108,9 +99,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		super.onStart();
 		// open login page if there isn't any account selected
 		if (!settings.isLoggedIn() && loginIntent == null) {
-			// prevent creating login activity twice
 			loginIntent = new Intent(this, LoginActivity.class);
-			startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
+			activityResultLauncher.launch(loginIntent);
 		}
 		// initialize lists
 		else if (adapter.isEmpty()) {
@@ -133,42 +123,29 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
 	@Override
-	protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
-		super.onActivityResult(reqCode, returnCode, intent);
-		switch (reqCode) {
-			case REQUEST_APP_LOGIN:
-				// check if app login cancelled
-				if (returnCode == RESULT_CANCELED) {
-					finish();
-				}
-				// check if account changed
-				else if (returnCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
-					setupAdapter(true);
-				}
+	public void onActivityResult(ActivityResult result) {
+		switch (result.getResultCode()) {
+			case LoginActivity.RETURN_LOGIN_CANCELED:
+				finish();
 				break;
 
-			case REQUEST_ACCOUNT_CHANGE:
-				// check if account or theme changed
-				if (returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
-					adapter.notifySettingsChanged();
-				}
-				// check if a new account is selected
-				else if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
-					setupAdapter(true);
-				}
+			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
+			case AccountActivity.RETURN_ACCOUNT_CHANGED:
+				setupAdapter(true);
 				break;
 
-			case REQUEST_APP_SETTINGS:
-				// check if current login is closed
-				if (returnCode == SettingsActivity.RETURN_APP_LOGOUT) {
-					adapter.clear();
-					pager.setAdapter(adapter);
-				}
-				// reset fragments to apply changes
-				else {
-					adapter.notifySettingsChanged();
-					setupAdapter(false);
-				}
+			case SettingsActivity.RETURN_APP_LOGOUT:
+				adapter.clear();
+				pager.setAdapter(adapter);
+				loginIntent = new Intent(this, LoginActivity.class);
+				activityResultLauncher.launch(loginIntent);
+				break;
+
+			default:
+			case SettingsActivity.RETURN_SETTINGS_CHANGED:
+			case AccountActivity.RETURN_SETTINGS_CHANGED:
+				adapter.notifySettingsChanged();
+				setupAdapter(false);
 				break;
 		}
 	}
@@ -201,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		// open app settings
 		else if (item.getItemId() == R.id.menu_settings) {
 			Intent settings = new Intent(this, SettingsActivity.class);
-			startActivityForResult(settings, REQUEST_APP_SETTINGS);
+			activityResultLauncher.launch(settings);
 		}
 		// theme expanded search view
 		else if (item.getItemId() == R.id.menu_search) {
@@ -216,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		// open account manager
 		else if (item.getItemId() == R.id.menu_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
-			startActivityForResult(accountManager, REQUEST_ACCOUNT_CHANGE);
+			activityResultLauncher.launch(accountManager);
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -25,7 +29,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class StatusFragment extends ListFragment implements StatusSelectListener {
+public class StatusFragment extends ListFragment implements StatusSelectListener, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Key to define what type of status should be loaded
@@ -100,10 +104,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 */
 	public static final int CLEAR_LIST = -1;
 
-	/**
-	 * request code to check for status changes
-	 */
-	private static final int REQUEST_STATUS_CHANGED = 0xB90D;
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private StatusLoader statusAsync;
 	private StatusAdapter adapter;
@@ -156,16 +157,16 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 
 	@Override
-	public void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
-		super.onActivityResult(reqCode, returnCode, intent);
-		if (intent != null && reqCode == REQUEST_STATUS_CHANGED) {
-			if (returnCode == StatusActivity.RETURN_STATUS_UPDATE) {
+	public void onActivityResult(ActivityResult result) {
+		Intent intent = result.getData();
+		if (intent != null) {
+			if (result.getResultCode() == StatusActivity.RETURN_STATUS_UPDATE) {
 				Object data = intent.getSerializableExtra(StatusActivity.INTENT_STATUS_UPDATE_DATA);
 				if (data instanceof Status) {
 					Status statusUpdate = (Status) data;
 					adapter.updateItem(statusUpdate);
 				}
-			} else if (returnCode == StatusActivity.RETURN_STATUS_REMOVED) {
+			} else if (result.getResultCode() == StatusActivity.RETURN_STATUS_REMOVED) {
 				long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0);
 				adapter.removeItem(statusId);
 			}
@@ -187,7 +188,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), StatusActivity.class);
 			intent.putExtra(KEY_STATUS_DATA, status);
-			startActivityForResult(intent, REQUEST_STATUS_CHANGED);
+			activityResultLauncher.launch(intent);
 		}
 	}
 

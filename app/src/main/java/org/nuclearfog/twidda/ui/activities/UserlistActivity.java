@@ -12,6 +12,10 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,7 +51,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class UserlistActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, OnConfirmListener {
+public class UserlistActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener, OnConfirmListener {
 
 	/**
 	 * key to add list information
@@ -74,11 +78,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	public static final String RESULT_UPDATE_LIST = "update-user-list";
 
 	/**
-	 * Request code for {@link UserlistEditor}
-	 */
-	private static final int REQUEST_LIST_UPDATED = 0x7518;
-
-	/**
 	 * return code when an user list was deleted
 	 */
 	public static final int RETURN_LIST_REMOVED = 0xDAD518B4;
@@ -92,6 +91,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 	 * regex pattern to validate username
 	 */
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
+
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private FragmentAdapter adapter;
 	private ListAction listLoaderAsync;
@@ -217,7 +218,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			if (item.getItemId() == R.id.menu_list_edit) {
 				Intent editList = new Intent(this, UserlistEditor.class);
 				editList.putExtra(KEY_LIST_EDITOR_DATA, userList);
-				startActivityForResult(editList, REQUEST_LIST_UPDATED);
+				activityResultLauncher.launch(editList);
 			}
 			// delete user list
 			else if (item.getItemId() == R.id.menu_delete_list) {
@@ -256,11 +257,10 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 
 	@Override
-	public void onActivityResult(int reqCode, int returnCode, @Nullable Intent result) {
-		super.onActivityResult(reqCode, returnCode, result);
-		if (reqCode == REQUEST_LIST_UPDATED && result != null) {
-			if (returnCode == UserlistEditor.RETURN_LIST_CHANGED) {
-				Object data = result.getSerializableExtra(UserlistEditor.KEY_UPDATED_USERLIST);
+	public void onActivityResult(ActivityResult result) {
+		if (result.getData() != null) {
+			if (result.getResultCode() == UserlistEditor.RETURN_LIST_CHANGED) {
+				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_UPDATED_USERLIST);
 				if (data instanceof UserList) {
 					userList = (UserList) data;
 					toolbar.setTitle(userList.getTitle());

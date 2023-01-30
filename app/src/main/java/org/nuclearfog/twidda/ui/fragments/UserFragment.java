@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -26,7 +30,7 @@ import org.nuclearfog.twidda.ui.activities.UserlistActivity;
  *
  * @author nuclearfog
  */
-public class UserFragment extends ListFragment implements UserClickListener {
+public class UserFragment extends ListFragment implements UserClickListener, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * key to set the type of user list to show
@@ -132,13 +136,10 @@ public class UserFragment extends ListFragment implements UserClickListener {
 	 */
 	public static final int USER_FRAG_FOLLOW_OUTGOING = 0x72544f17;
 
-	/**
-	 * Request code to update user information
-	 */
-	private static final int REQ_USER_UPDATE = 0x3F29;
+
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private UserLoader userAsync;
-
 	private UserAdapter adapter;
 
 	private String search = "";
@@ -187,12 +188,12 @@ public class UserFragment extends ListFragment implements UserClickListener {
 
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == REQ_USER_UPDATE && resultCode == ProfileActivity.RETURN_USER_UPDATED && data != null) {
-			Object result = data.getSerializableExtra(ProfileActivity.KEY_USER_UPDATE);
-			if (result instanceof User) {
-				User update = (User) result;
+	public void onActivityResult(ActivityResult result) {
+		Intent intent = result.getData();
+		if (result.getResultCode() == ProfileActivity.RETURN_USER_UPDATED && intent != null) {
+			Object object = intent.getSerializableExtra(ProfileActivity.KEY_USER_UPDATE);
+			if (object instanceof User) {
+				User update = (User) object;
 				adapter.updateItem(update);
 			}
 		}
@@ -210,7 +211,7 @@ public class UserFragment extends ListFragment implements UserClickListener {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), ProfileActivity.class);
 			intent.putExtra(KEY_PROFILE_USER, user);
-			startActivityForResult(intent, REQ_USER_UPDATE);
+			activityResultLauncher.launch(intent);
 		}
 	}
 

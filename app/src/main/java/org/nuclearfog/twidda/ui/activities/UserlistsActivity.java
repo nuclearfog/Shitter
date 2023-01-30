@@ -10,6 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
@@ -29,7 +34,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class UserlistsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class UserlistsActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener {
 
 	/**
 	 * Key for the ID the list owner
@@ -43,11 +48,8 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 	 */
 	public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
-	/**
-	 * request code for {@link UserlistEditor} OnTabSelectedListener
-	 */
-	private static final int REQUEST_CREATE_LIST = 0x9D8E;
 
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
@@ -94,9 +96,8 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 
 
 	@Override
-	protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
-		super.onActivityResult(reqCode, returnCode, intent);
-		if (reqCode == REQUEST_CREATE_LIST && returnCode == UserlistEditor.RETURN_LIST_CREATED) {
+	public void onActivityResult(ActivityResult result) {
+		if (result.getResultCode() == UserlistEditor.RETURN_LIST_CREATED) {
 			adapter.notifySettingsChanged();
 		}
 	}
@@ -127,7 +128,7 @@ public class UserlistsActivity extends AppCompatActivity implements TabLayout.On
 		// open list editor
 		if (item.getItemId() == R.id.list_create) {
 			Intent createList = new Intent(this, UserlistEditor.class);
-			startActivityForResult(createList, REQUEST_CREATE_LIST);
+			activityResultLauncher.launch(createList);
 		}
 		// open mute/block list
 		else if (item.getItemId() == R.id.list_blocklists) {
