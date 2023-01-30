@@ -55,15 +55,13 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 
 	public CardHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false));
+		linkText = itemView.findViewById(R.id.link_preview_text);
+		preview = itemView.findViewById(R.id.link_preview_image);
 		this.picasso = picasso;
 		this.settings = settings;
 		this.listener = listener;
 
-		linkText = itemView.findViewById(R.id.link_preview_text);
-		preview = itemView.findViewById(R.id.link_preview_image);
-
 		itemView.getLayoutParams().width = parent.getMeasuredHeight() * 16 / 9;
-
 		linkText.setTypeface(settings.getTypeFace());
 		linkText.setTextColor(settings.getFontColor());
 		linkText.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);

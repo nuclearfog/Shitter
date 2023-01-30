@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 		}
 		// initialize lists
 		else if (adapter.isEmpty()) {
-			setupAdapter();
+			setupAdapter(true);
 			// check if there is a Twitter link
 			if (getIntent().getData() != null) {
 				LinkLoader linkLoader = new LinkLoader(this);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				}
 				// check if account changed
 				else if (returnCode == LoginActivity.RETURN_LOGIN_SUCCESSFUL) {
-					setupAdapter();
+					setupAdapter(true);
 				}
 				break;
 
@@ -151,26 +151,26 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 				// check if account or theme changed
 				if (returnCode == AccountActivity.RETURN_SETTINGS_CHANGED) {
 					adapter.notifySettingsChanged();
-				} else if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
-					setupAdapter();
+				}
+				// check if a new account is selected
+				else if (returnCode == AccountActivity.RETURN_ACCOUNT_CHANGED) {
+					setupAdapter(true);
 				}
 				break;
 
 			case REQUEST_APP_SETTINGS:
-				// check if an account was removed
+				// check if current login is closed
 				if (returnCode == SettingsActivity.RETURN_APP_LOGOUT) {
-					// clear old login fragments
 					adapter.clear();
 					pager.setAdapter(adapter);
 				}
 				// reset fragments to apply changes
 				else {
 					adapter.notifySettingsChanged();
+					setupAdapter(false);
 				}
 				break;
 		}
-		AppStyles.setTheme(root);
-		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}
 
 
@@ -299,9 +299,13 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 	/**
 	 * initialize pager content
 	 */
-	private void setupAdapter() {
-		adapter.setupForHomePage();
-		pager.setAdapter(adapter);
+	private void setupAdapter(boolean resetFragments) {
+		AppStyles.setTheme(root);
+		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+		if (resetFragments) {
+			adapter.setupForHomePage();
+			pager.setAdapter(adapter);
+		}
 		switch (settings.getLogin().getConfiguration()) {
 			case TWITTER1:
 			case TWITTER2:
