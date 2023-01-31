@@ -14,15 +14,6 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterNotification;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.LocationV2;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.MediaV2;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.PollV2;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.TweetV2;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.UserV2;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.MediaV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.PollV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.lists.Messages;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.lists.Users;
@@ -255,7 +246,7 @@ public class TwitterV1 implements Connection {
 	public User showUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getUser1(USER_LOOKUP, params);
+		return getUser(USER_LOOKUP, params);
 	}
 
 
@@ -265,7 +256,7 @@ public class TwitterV1 implements Connection {
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
-		return getUser1(USER_LOOKUP, params);
+		return getUser(USER_LOOKUP, params);
 	}
 
 
@@ -278,7 +269,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
 		params.add("page=" + currentPage);
-		Users result = getUsers1(USERS_SEARCH, params);
+		Users result = getUsers(USERS_SEARCH, params);
 		// notice that there are no more results
 		// if result size is less than the requested size
 		if (result.size() < settings.getListSize())
@@ -297,7 +288,7 @@ public class TwitterV1 implements Connection {
 		params.add("id=" + tweetId);
 		params.add("count=" + settings.getListSize());
 		long[] ids = getUserIDs(TWEET_GET_RETWEETERS, params, cursor);
-		Users result = getUsers1(ids);
+		Users result = getUsers(ids);
 		result.setPrevCursor(cursor);
 		result.setNextCursor(ids[ids.length - 1]); // Twitter bug: next cursor is always zero!
 		return result;
@@ -316,7 +307,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		params.add("cursor=" + cursor);
-		return getUsers1(USERS_FOLLOWING, params);
+		return getUsers(USERS_FOLLOWING, params);
 	}
 
 
@@ -325,7 +316,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		params.add("cursor=" + cursor);
-		return getUsers1(USERS_FOLLOWER, params);
+		return getUsers(USERS_FOLLOWER, params);
 	}
 
 
@@ -334,7 +325,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
 		params.add("cursor=" + cursor);
-		Users result = getUsers1(USERS_LIST_MEMBER, params);
+		Users result = getUsers(USERS_LIST_MEMBER, params);
 		// fix API returns zero previous_cursor when the end of the list is reached
 		// override previous cursor
 		if (cursor == -1L)
@@ -350,7 +341,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
 		params.add("cursor=" + cursor);
-		Users result = getUsers1(USERS_LIST_SUBSCRIBER, params);
+		Users result = getUsers(USERS_LIST_SUBSCRIBER, params);
 		// fix API returns zero previous_cursor when the end of the list is reached
 		// override previous cursor
 		if (cursor == -1L)
@@ -365,7 +356,7 @@ public class TwitterV1 implements Connection {
 	public Users getBlockedUsers(long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("cursor=" + cursor);
-		return getUsers1(USERS_BLOCKED_LIST, params);
+		return getUsers(USERS_BLOCKED_LIST, params);
 	}
 
 
@@ -373,21 +364,21 @@ public class TwitterV1 implements Connection {
 	public Users getMutedUsers(long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("cursor=" + cursor);
-		return getUsers1(USERS_MUTES, params);
+		return getUsers(USERS_MUTES, params);
 	}
 
 
 	@Override
 	public Users getIncomingFollowRequests(long cursor) throws TwitterException {
 		long[] ids = getUserIDs(USERS_FOLLOW_INCOMING, new ArrayList<>(), cursor);
-		return getUsers1(ids);
+		return getUsers(ids);
 	}
 
 
 	@Override
 	public Users getOutgoingFollowRequests(long cursor) throws TwitterException {
 		long[] ids = getUserIDs(USERS_FOLLOW_OUTGOING, new ArrayList<>(), cursor);
-		return getUsers1(ids);
+		return getUsers(ids);
 	}
 
 
@@ -414,7 +405,7 @@ public class TwitterV1 implements Connection {
 	public void followUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		getUser1(USER_FOLLOW, params);
+		getUser(USER_FOLLOW, params);
 	}
 
 
@@ -422,7 +413,7 @@ public class TwitterV1 implements Connection {
 	public void unfollowUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		getUser1(USER_UNFOLLOW, params);
+		getUser(USER_UNFOLLOW, params);
 	}
 
 
@@ -430,7 +421,7 @@ public class TwitterV1 implements Connection {
 	public void blockUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		getUser1(USER_BLOCK, params);
+		getUser(USER_BLOCK, params);
 	}
 
 
@@ -440,7 +431,7 @@ public class TwitterV1 implements Connection {
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
-		getUser1(USER_BLOCK, params);
+		getUser(USER_BLOCK, params);
 	}
 
 
@@ -448,7 +439,7 @@ public class TwitterV1 implements Connection {
 	public void unblockUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		getUser1(USER_UNBLOCK, params);
+		getUser(USER_UNBLOCK, params);
 	}
 
 
@@ -456,7 +447,7 @@ public class TwitterV1 implements Connection {
 	public void muteUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		getUser1(USER_MUTE, params);
+		getUser(USER_MUTE, params);
 	}
 
 
@@ -466,7 +457,7 @@ public class TwitterV1 implements Connection {
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
-		getUser1(USER_MUTE, params);
+		getUser(USER_MUTE, params);
 	}
 
 
@@ -474,7 +465,7 @@ public class TwitterV1 implements Connection {
 	public void unmuteUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		getUser1(USER_UNMUTE, params);
+		getUser(USER_UNMUTE, params);
 	}
 
 
@@ -483,7 +474,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search + " +exclude:retweets"));
 		params.add("result_type=recent");
-		List<Status> result = getTweets1(TWEET_SEARCH, params, minId, maxId);
+		List<Status> result = getTweets(TWEET_SEARCH, params, minId, maxId);
 		if (settings.filterResults())
 			filterTweets(result);
 		return result;
@@ -551,7 +542,7 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public List<Status> getHomeTimeline(long minId, long maxId) throws TwitterException {
-		return getTweets1(TWEETS_HOME_TIMELINE, new ArrayList<>(), minId, maxId);
+		return getTweets(TWEETS_HOME_TIMELINE, new ArrayList<>(), minId, maxId);
 	}
 
 
@@ -559,7 +550,7 @@ public class TwitterV1 implements Connection {
 	public List<Status> getUserTimeline(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getTweets1(TWEETS_USER, params, minId, maxId);
+		return getTweets(TWEETS_USER, params, minId, maxId);
 	}
 
 
@@ -567,7 +558,7 @@ public class TwitterV1 implements Connection {
 	public List<Status> getUserTimeline(String name, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("screen_name=" + StringTools.encode(name));
-		return getTweets1(TWEETS_USER, params, minId, maxId);
+		return getTweets(TWEETS_USER, params, minId, maxId);
 	}
 
 
@@ -575,7 +566,7 @@ public class TwitterV1 implements Connection {
 	public List<Status> getUserFavorits(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getTweets1(TWEETS_USER_FAVORITS, params, minId, maxId);
+		return getTweets(TWEETS_USER_FAVORITS, params, minId, maxId);
 	}
 
 
@@ -583,7 +574,7 @@ public class TwitterV1 implements Connection {
 	public List<Status> getUserFavorits(String name, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("screen_name=" + StringTools.encode(name));
-		return getTweets1(TWEETS_USER_FAVORITS, params, minId, maxId);
+		return getTweets(TWEETS_USER_FAVORITS, params, minId, maxId);
 	}
 
 
@@ -591,7 +582,7 @@ public class TwitterV1 implements Connection {
 	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		return getTweets1(TWEETS_LIST, params, minId, maxId);
+		return getTweets(TWEETS_LIST, params, minId, maxId);
 	}
 
 
@@ -604,7 +595,7 @@ public class TwitterV1 implements Connection {
 			replyUsername = replyUsername.substring(1);
 		}
 		params.add("q=" + StringTools.encode("to:" + replyUsername + " -filter:retweets"));
-		List<Status> result = getTweets1(TWEET_SEARCH, params, Math.max(id, minId), maxId);
+		List<Status> result = getTweets(TWEET_SEARCH, params, Math.max(id, minId), maxId);
 		for (Status reply : result) {
 			if (reply.getRepliedStatusId() == id) {
 				replies.add(reply);
@@ -621,7 +612,7 @@ public class TwitterV1 implements Connection {
 	public Status showStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
-		return getTweet1(TWEET_LOOKUP, params);
+		return getTweet(TWEET_LOOKUP, params);
 	}
 
 
@@ -629,7 +620,7 @@ public class TwitterV1 implements Connection {
 	public Status favoriteStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
-		TweetV1 result = getTweet1(TWEET_FAVORITE, params);
+		TweetV1 result = getTweet(TWEET_FAVORITE, params);
 		result.setFavorite(true);
 		return result;
 	}
@@ -639,7 +630,7 @@ public class TwitterV1 implements Connection {
 	public Status unfavoriteStatus(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
-		TweetV1 result = getTweet1(TWEET_UNFAVORITE, params);
+		TweetV1 result = getTweet(TWEET_UNFAVORITE, params);
 		result.setFavorite(false);
 		return result;
 	}
@@ -647,7 +638,7 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public Status repostStatus(long id) throws TwitterException {
-		TweetV1 result = getTweet1(TWEET_RETWEET + id + JSON, new ArrayList<>());
+		TweetV1 result = getTweet(TWEET_RETWEET + id + JSON, new ArrayList<>());
 		result.setRetweet(true);
 		return result;
 	}
@@ -655,7 +646,7 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public Status removeRepost(long id) throws TwitterException {
-		TweetV1 result = getTweet1(TWEET_UNRETWEET + id + JSON, new ArrayList<>());
+		TweetV1 result = getTweet(TWEET_UNRETWEET + id + JSON, new ArrayList<>());
 		result.setRetweet(false);
 		return result;
 	}
@@ -674,7 +665,7 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public void deleteStatus(long id) throws TwitterException {
-		getTweet1(TWEET_DELETE + id + JSON, new ArrayList<>());
+		getTweet(TWEET_DELETE + id + JSON, new ArrayList<>());
 	}
 
 
@@ -697,7 +688,7 @@ public class TwitterV1 implements Connection {
 			params.add("lat=" + StringTools.encode(lat));
 			params.add("long=" + StringTools.encode(lon));
 		}
-		getTweet1(TWEET_UPLOAD, params);
+		getTweet(TWEET_UPLOAD, params);
 	}
 
 
@@ -710,7 +701,7 @@ public class TwitterV1 implements Connection {
 			params.add("mode=public");
 		else
 			params.add("mode=private");
-		return getUserlist1(USERLIST_CREATE, params);
+		return getUserlist(USERLIST_CREATE, params);
 	}
 
 
@@ -724,7 +715,7 @@ public class TwitterV1 implements Connection {
 			params.add("mode=public");
 		else
 			params.add("mode=private");
-		return getUserlist1(USERLIST_UPDATE, params);
+		return getUserlist(USERLIST_UPDATE, params);
 	}
 
 
@@ -732,7 +723,7 @@ public class TwitterV1 implements Connection {
 	public UserList getUserlist(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		return getUserlist1(USERLIST_SHOW, params);
+		return getUserlist(USERLIST_SHOW, params);
 	}
 
 
@@ -740,7 +731,7 @@ public class TwitterV1 implements Connection {
 	public UserList followUserlist(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		UserListV1 result = getUserlist1(USERLIST_FOLLOW, params);
+		UserListV1 result = getUserlist(USERLIST_FOLLOW, params);
 		result.setFollowing(true);
 		return result;
 	}
@@ -750,7 +741,7 @@ public class TwitterV1 implements Connection {
 	public UserList unfollowUserlist(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		UserListV1 result = getUserlist1(USERLIST_UNFOLLOW, params);
+		UserListV1 result = getUserlist(USERLIST_UNFOLLOW, params);
 		result.setFollowing(false);
 		return result;
 	}
@@ -760,7 +751,7 @@ public class TwitterV1 implements Connection {
 	public UserList deleteUserlist(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		return getUserlist1(USERLIST_DESTROY, params);
+		return getUserlist(USERLIST_DESTROY, params);
 	}
 
 
@@ -1041,7 +1032,7 @@ public class TwitterV1 implements Connection {
 		if (update.getBannerImageStream() != null) {
 			updateImage(PROFILE_UPDATE_BANNER, update.getBannerImageStream(), "banner");
 		}
-		return getUser1(PROFILE_UPDATE, params);
+		return getUser(PROFILE_UPDATE, params);
 	}
 
 
@@ -1074,50 +1065,12 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public List<Notification> getNotifications(long minId, long maxId) throws TwitterException {
-		List<Status> mentions = getTweets1(TWEETS_MENTIONS, new ArrayList<>(), minId, maxId);
+		List<Status> mentions = getTweets(TWEETS_MENTIONS, new ArrayList<>(), minId, maxId);
 		List<Notification> result = new ArrayList<>(mentions.size());
 		for (Status status : mentions) {
 			result.add(new TwitterNotification(status));
 		}
 		return result;
-	}
-
-	/**
-	 * create a list of users using API v 2
-	 *
-	 * @param endpoint endpoint url to get the user data from
-	 * @param params   additional parameters
-	 * @return user list
-	 */
-	protected Users getUsers2(String endpoint, List<String> params) throws TwitterException {
-		// enable additional user fields
-		params.add("user.fields=" + UserV2.FIELDS_USER);
-		try {
-			Response response = get(endpoint, params);
-			ResponseBody body = response.body();
-			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string());
-				Users users = new Users(0L, 0L);
-				// check if result is not empty
-				if (json.has("data")) {
-					JSONArray array = json.getJSONArray("data");
-					long homeId = settings.getLogin().getId();
-					for (int i = 0; i < array.length(); i++) {
-						try {
-							users.add(new UserV2(array.getJSONObject(i), homeId));
-						} catch (JSONException err) {
-							if (BuildConfig.DEBUG) {
-								Log.w("user-v2", err);
-							}
-						}
-					}
-				}
-				return users;
-			}
-			throw new TwitterException(response);
-		} catch (IOException | JSONException err) {
-			throw new TwitterException(err);
-		}
 	}
 
 	/**
@@ -1129,7 +1082,7 @@ public class TwitterV1 implements Connection {
 	 * @param maxId    maximum tweet ID
 	 * @return list of tweets
 	 */
-	private List<Status> getTweets1(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
+	private List<Status> getTweets(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
 		// enable extended tweet mode
 		params.add(TweetV1.PARAM_EXT_MODE);
 		params.add(TweetV1.PARAM_INCL_RETWEET);
@@ -1171,68 +1124,12 @@ public class TwitterV1 implements Connection {
 	}
 
 	/**
-	 * get tweets using an endpoint
-	 *
-	 * @param endpoint endpoint url to fetch the tweets
-	 * @param params   additional parameters
-	 * @param minId    minimum tweet ID
-	 * @param maxId    maximum tweet ID
-	 * @return list of tweets
-	 */
-	protected List<Status> getTweets2(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
-		// enable additional tweet fields
-		params.add(TweetV2.FIELDS_TWEET);
-		params.add(TweetV2.FIELDS_EXPANSION);
-		params.add(UserV2.FIELDS_USER);
-		params.add(MediaV2.FIELDS_MEDIA);
-		params.add(PollV2.FIELDS_POLL);
-		params.add(LocationV2.FIELDS_PLACE);
-		// set tweet range
-		if (minId > 0)
-			params.add("since_id=" + minId);
-		if (maxId > 1)
-			params.add("until_id=" + maxId);
-		params.add("max_results=" + settings.getListSize());
-		try {
-			Response response = get(endpoint, params);
-			ResponseBody body = response.body();
-			if (body != null && response.code() == 200) {
-				JSONObject json = new JSONObject(body.string());
-				JSONArray data = json.optJSONArray("data");
-				if (data != null && data.length() > 0) {
-					List<Status> tweets = new ArrayList<>(data.length() + 1);
-					UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
-					MediaV2Map mediaMap = new MediaV2Map(json);
-					PollV2Map pollMap = new PollV2Map(json);
-					LocationV2Map locationMap = new LocationV2Map(json);
-					String host = settings.getLogin().getHostname();
-					for (int i = 0; i < data.length(); i++) {
-						try {
-							Status item = new TweetV2(data.getJSONObject(i), userMap, mediaMap, pollMap, locationMap, host, null);
-							tweets.add(item);
-						} catch (JSONException e) {
-							if (BuildConfig.DEBUG) {
-								Log.w("tweet", e);
-							}
-						}
-					}
-					return tweets;
-				}
-				return new ArrayList<>(0);
-			}
-			throw new TwitterException(response);
-		} catch (IOException | JSONException err) {
-			throw new TwitterException(err);
-		}
-	}
-
-	/**
 	 * return tweet from API 1.1 endpoint
 	 *
 	 * @param endpoint to use
 	 * @param params   additional parameter
 	 */
-	private TweetV1 getTweet1(String endpoint, List<String> params) throws TwitterException {
+	private TweetV1 getTweet(String endpoint, List<String> params) throws TwitterException {
 		// use extended mode and add additional fields
 		params.add(TweetV1.PARAM_EXT_MODE);
 		params.add(TweetV1.PARAM_INCL_RETWEET);
@@ -1255,7 +1152,7 @@ public class TwitterV1 implements Connection {
 				if (result.getEmbeddedStatus() != null) {
 					params.clear();
 					params.add("id=" + result.getEmbeddedStatus().getId());
-					Status status = getTweet1(TWEET_LOOKUP, params);
+					Status status = getTweet(TWEET_LOOKUP, params);
 					result.setEmbeddedTweet(status);
 				}
 				return result;
@@ -1304,7 +1201,7 @@ public class TwitterV1 implements Connection {
 	 * @param ids User IDs (last entry is ignored)
 	 * @return a list of users
 	 */
-	private Users getUsers1(long[] ids) throws TwitterException {
+	private Users getUsers(long[] ids) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (ids.length > 1) {
 			StringBuilder idBuf = new StringBuilder("user_id=");
@@ -1312,7 +1209,7 @@ public class TwitterV1 implements Connection {
 				idBuf.append(ids[i]).append("%2C");
 			}
 			params.add(idBuf.substring(0, idBuf.length() - 3));
-			return getUsers1(USERS_LOOKUP, params);
+			return getUsers(USERS_LOOKUP, params);
 		}
 		return new Users(0L, 0L);
 	}
@@ -1324,7 +1221,7 @@ public class TwitterV1 implements Connection {
 	 * @param params   additional parameters
 	 * @return user list
 	 */
-	private Users getUsers1(String endpoint, List<String> params) throws TwitterException {
+	private Users getUsers(String endpoint, List<String> params) throws TwitterException {
 		try {
 			Response response;
 			if (USERS_LOOKUP.equals(endpoint)) {
@@ -1369,7 +1266,7 @@ public class TwitterV1 implements Connection {
 	 * @param params   additional parameters
 	 * @return user information
 	 */
-	private User getUser1(String endpoint, List<String> params) throws TwitterException {
+	private User getUser(String endpoint, List<String> params) throws TwitterException {
 		// enable entities/disable pinned status
 		params.add(UserV1.PARAM_SKIP_STATUS);
 		params.add(UserV1.PARAM_INCLUDE_ENTITIES);
@@ -1397,7 +1294,7 @@ public class TwitterV1 implements Connection {
 	 * @param params   additional parameters
 	 * @return userlist information
 	 */
-	private UserListV1 getUserlist1(String endpoint, List<String> params) throws TwitterException {
+	private UserListV1 getUserlist(String endpoint, List<String> params) throws TwitterException {
 		try {
 			Response response;
 			if (endpoint.equals(USERLIST_SHOW))
@@ -1567,7 +1464,7 @@ public class TwitterV1 implements Connection {
 	 * @return http response
 	 */
 	@SuppressWarnings("SameParameterValue")
-	private Response post(String endpoint, List<String> params, JSONObject json) throws IOException {
+	protected Response post(String endpoint, List<String> params, JSONObject json) throws IOException {
 		RequestBody body = RequestBody.create(json.toString(), TYPE_JSON);
 		return post(endpoint, params, body);
 	}
@@ -1581,7 +1478,7 @@ public class TwitterV1 implements Connection {
 	 * @param addToKey    key to add the file
 	 * @return http response
 	 */
-	private Response post(String endpoint, List<String> params, InputStream is, String addToKey, boolean enableChunk) throws IOException {
+	protected Response post(String endpoint, List<String> params, InputStream is, String addToKey, boolean enableChunk) throws IOException {
 		RequestBody data = new RequestBody() {
 			@Override
 			public MediaType contentType() {
@@ -1610,7 +1507,7 @@ public class TwitterV1 implements Connection {
 	 * @param keys     optional oauth keys (consumer key & secret, optional oauth tokens)
 	 * @return http response
 	 */
-	private Response post(String endpoint, List<String> params, RequestBody body, String... keys) throws IOException {
+	protected Response post(String endpoint, List<String> params, RequestBody body, String... keys) throws IOException {
 		String authHeader;
 		if (keys.length == 2)
 			authHeader = buildHeader("POST", endpoint, params, keys);
@@ -1656,7 +1553,7 @@ public class TwitterV1 implements Connection {
 	 * @return http response
 	 */
 	@SuppressWarnings("SameParameterValue")
-	private Response delete(String endpoint, List<String> params) throws IOException {
+	protected Response delete(String endpoint, List<String> params) throws IOException {
 		String authHeader = buildHeader("DELETE", endpoint, params);
 		String url = appendParams(endpoint, params);
 		Request request = new Request.Builder().url(url).addHeader("Authorization", authHeader).delete().build();

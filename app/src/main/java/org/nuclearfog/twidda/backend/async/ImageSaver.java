@@ -17,18 +17,18 @@ import java.lang.ref.WeakReference;
 public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
 
 	private WeakReference<MediaActivity> weakRef;
-	private InputStream mediaStream;
-	private OutputStream fileStream;
+	private InputStream inputStream;
+	private OutputStream outputStream;
 
 	/**
-	 * @param mediaStream inputstream of a cached image file
-	 * @param fileStream  destiny output stream of a file
+	 * @param inputStream inputstream of a cached image file
+	 * @param outputStream  destiny output stream of a file
 	 */
-	public ImageSaver(MediaActivity activity, InputStream mediaStream, OutputStream fileStream) {
+	public ImageSaver(MediaActivity activity, InputStream inputStream, OutputStream outputStream) {
 		super();
 		weakRef = new WeakReference<>(activity);
-		this.mediaStream = mediaStream;
-		this.fileStream = fileStream;
+		this.inputStream = inputStream;
+		this.outputStream = outputStream;
 	}
 
 
@@ -37,11 +37,11 @@ public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
 		try {
 			int length;
 			byte[] buffer = new byte[4096];
-			while ((length = mediaStream.read(buffer)) > 0) {
-				fileStream.write(buffer, 0, length);
+			while ((length = inputStream.read(buffer)) > 0) {
+				outputStream.write(buffer, 0, length);
 			}
-			mediaStream.close();
-			fileStream.close();
+			inputStream.close();
+			outputStream.close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

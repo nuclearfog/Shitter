@@ -35,6 +35,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +57,7 @@ import java.util.Locale;
  *
  * @author nuclearfog
  */
-public abstract class MediaActivity extends AppCompatActivity implements LocationListener {
+public abstract class MediaActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, LocationListener {
 
 	/**
 	 * permission type for location
@@ -125,11 +129,17 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	protected static final int REQUEST_STORE_IMG = 0x58D3;
 
 
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
+
 	@Nullable
 	private ImageSaver imageTask;
+	@Nullable
+	private Uri srcMediaUri;
+	@Nullable
+	private File destMediaFile;
+
 	private boolean locationPending = false;
-	private Uri selectedImage;
-	private String imageName;
+	private int requestCode = 0;
 
 
 	@Override
@@ -173,10 +183,10 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
 
 	@Override
-	protected final void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
-		super.onActivityResult(reqCode, returnCode, intent);
-		if (returnCode == RESULT_OK && intent != null && intent.getData() != null) {
-			onMediaFetched(reqCode, intent.getData());
+	public final void onActivityResult(ActivityResult result) {
+		Intent intent = result.getData();
+		if (result.getResultCode() == RESULT_OK && intent != null && intent.getData() != null) {
+			onMediaFetched(requestCode, intent.getData());
 		}
 	}
 
@@ -210,28 +220,26 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	@SuppressWarnings("IOStreamConstructor")
 	private void saveImage() {
 		try {
-			if (imageTask == null || imageTask.getStatus() != RUNNING) {
+			if ((imageTask == null || imageTask.getStatus() != RUNNING) && destMediaFile != null && srcMediaUri != null) {
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 					// store images directly
-					File imageFolder = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
-					File imageFile = new File(imageFolder, imageName);
-					InputStream src = getContentResolver().openInputStream(selectedImage);
-					OutputStream dest = new FileOutputStream(imageFile);
+					InputStream src = getContentResolver().openInputStream(srcMediaUri);
+					OutputStream dest = new FileOutputStream(destMediaFile);
 					imageTask = new ImageSaver(this, src, dest);
 					imageTask.execute();
 				} else {
 					// use scoped storage
-					String ext = selectedImage.getLastPathSegment();
+					String ext = srcMediaUri.getLastPathSegment();
 					ext = ext.substring(ext.indexOf('.') + 1).toLowerCase(Locale.ENGLISH);
 					String mime = "image/" + ext;
 					ContentValues values = new ContentValues();
-					values.put(DISPLAY_NAME, imageName);
+					values.put(DISPLAY_NAME, destMediaFile.getName());
 					values.put(DATE_TAKEN, System.currentTimeMillis());
 					values.put(RELATIVE_PATH, DIRECTORY_PICTURES);
 					values.put(MIME_TYPE, mime);
 					Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
 					if (imageUri != null) {
-						InputStream src = getContentResolver().openInputStream(selectedImage);
+						InputStream src = getContentResolver().openInputStream(srcMediaUri);
 						OutputStream dest = getContentResolver().openOutputStream(imageUri);
 						imageTask = new ImageSaver(this, src, dest);
 						imageTask.execute();
@@ -249,9 +257,9 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	 */
 	public void onImageSaved() {
 		Toast.makeText(getApplicationContext(), R.string.info_image_saved, LENGTH_SHORT).show();
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && destMediaFile != null) {
 			// start media scanner to scan for new image
-			MediaScannerConnection.scanFile(this, new String[]{imageName}, null, null);
+			MediaScannerConnection.scanFile(this, new String[]{destMediaFile.getPath()}, null, null);
 		}
 	}
 
@@ -315,8 +323,11 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 	 * @param uri Uri of the image
 	 */
 	protected void storeImage(Uri uri) {
-		selectedImage = uri;
-		imageName = IMAGE_PREFIX + uri.getLastPathSegment();
+		String imageName = IMAGE_PREFIX + uri.getLastPathSegment();
+		File imageFolder = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
+		destMediaFile = new File(imageFolder, imageName);
+		srcMediaUri = uri;
+
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 				|| checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
 			saveImage();
@@ -370,10 +381,11 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 				break;
 		}
 		try {
-			// todo replace this
-			startActivityForResult(mediaSelect, requestCode);
+			activityResultLauncher.launch(mediaSelect);
+			this.requestCode = requestCode;
 		} catch (ActivityNotFoundException err) {
 			Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
+			this.requestCode = 0;
 		}
 	}
 

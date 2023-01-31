@@ -1,9 +1,12 @@
 package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
 
 import android.content.Context;
+import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
@@ -56,26 +59,21 @@ public class TwitterV2 extends TwitterV1 {
 	@Override
 	public Status showStatus(long id) throws TwitterException {
 		Status status = super.showStatus(id);
-		try {
-			return getTweet2(TWEET2_LOOKUP + id, new ArrayList<>(), status);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return status;
+		return getTweet(TWEET2_LOOKUP + id, new ArrayList<>(), status);
 	}
 
 
 	@Override
 	public Users getRepostingUsers(long tweetId, long cursor) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
-		return getUsers2(endpoint, new ArrayList<>());
+		return getUsers(endpoint, new ArrayList<>(), cursor);
 	}
 
 
 	@Override
 	public Users getFavoritingUsers(long tweetId, long cursor) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/liking_users";
-		return getUsers2(endpoint, new ArrayList<>());
+		return getUsers(endpoint, new ArrayList<>(), cursor);
 	}
 
 
@@ -97,7 +95,7 @@ public class TwitterV2 extends TwitterV1 {
 		List<Status> replies = new LinkedList<>();
 		params.add("query=" + StringTools.encode("conversation_id:" + id));
 		// Note: minId disabled! Twitter refuses API request containing minId of a tweet older than one week
-		List<Status> result = getTweets2(TWEET_SEARCH_2, params, 0, maxId);
+		List<Status> result = getTweets(TWEET_SEARCH_2, params, 0, maxId);
 		// chose only the first tweet of a conversation
 		for (Status reply : result) {
 			if (reply.getRepliedStatusId() == id && reply.getId() > minId) {
@@ -134,7 +132,7 @@ public class TwitterV2 extends TwitterV1 {
 	 * @param endpoint to use
 	 * @param params   additional parameter
 	 */
-	private TweetV2 getTweet2(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
+	private Status getTweet(String endpoint, List<String> params, Status statusCompat) throws TwitterException {
 		// enable additional tweet fields
 		params.add(TweetV2.FIELDS_EXPANSION);
 		params.add(UserV2.FIELDS_USER);
@@ -166,9 +164,106 @@ public class TwitterV2 extends TwitterV1 {
 				return new TweetV2(json, userMap, mediaMap, pollMap, locationMap, host, statusCompat);
 			}
 			throw new TwitterException(response);
-		} catch (
-				IOException |
-				JSONException err) {
+		} catch (IOException | JSONException err) {
+			throw new TwitterException(err);
+		}
+	}
+
+
+	/**
+	 * get tweets using an endpoint
+	 *
+	 * @param endpoint endpoint url to fetch the tweets
+	 * @param params   additional parameters
+	 * @param minId    minimum tweet ID
+	 * @param maxId    maximum tweet ID
+	 * @return list of tweets
+	 */
+	private List<Status> getTweets(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
+		// enable additional tweet fields
+		params.add(TweetV2.FIELDS_TWEET);
+		params.add(TweetV2.FIELDS_EXPANSION);
+		params.add(UserV2.FIELDS_USER);
+		params.add(MediaV2.FIELDS_MEDIA);
+		params.add(PollV2.FIELDS_POLL);
+		params.add(LocationV2.FIELDS_PLACE);
+		// set tweet range
+		if (minId > 0)
+			params.add("since_id=" + minId);
+		if (maxId > 1)
+			params.add("until_id=" + maxId);
+		params.add("max_results=" + settings.getListSize());
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (body != null && response.code() == 200) {
+				JSONObject json = new JSONObject(body.string());
+				JSONArray data = json.optJSONArray("data");
+				if (data != null && data.length() > 0) {
+					List<Status> tweets = new ArrayList<>(data.length() + 1);
+					UserV2Map userMap = new UserV2Map(json, settings.getLogin().getId());
+					MediaV2Map mediaMap = new MediaV2Map(json);
+					PollV2Map pollMap = new PollV2Map(json);
+					LocationV2Map locationMap = new LocationV2Map(json);
+					String host = settings.getLogin().getHostname();
+					for (int i = 0; i < data.length(); i++) {
+						try {
+							Status item = new TweetV2(data.getJSONObject(i), userMap, mediaMap, pollMap, locationMap, host, null);
+							tweets.add(item);
+						} catch (JSONException e) {
+							if (BuildConfig.DEBUG) {
+								Log.w("tweet-v2", e);
+							}
+						}
+					}
+					return tweets;
+				}
+				return new ArrayList<>(0);
+			}
+			throw new TwitterException(response);
+		} catch (IOException | JSONException err) {
+			throw new TwitterException(err);
+		}
+	}
+
+
+	/**
+	 * create a list of users using API v 2
+	 *
+	 * @param endpoint endpoint url to get the user data from
+	 * @param params   additional parameters
+	 * @param cursor   cursor to parse multiple pages
+	 * @return user list
+	 */
+	private Users getUsers(String endpoint, List<String> params, long cursor) throws TwitterException {
+		// enable additional user fields
+		params.add("user.fields=" + UserV2.FIELDS_USER);
+		params.add("max_results=" + settings.getListSize());
+		// todo implement cursor
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (body != null && response.code() == 200) {
+				JSONObject json = new JSONObject(body.string());
+				Users users = new Users(0L, 0L);
+				// check if result is not empty
+				if (json.has("data")) {
+					JSONArray array = json.getJSONArray("data");
+					long homeId = settings.getLogin().getId();
+					for (int i = 0; i < array.length(); i++) {
+						try {
+							users.add(new UserV2(array.getJSONObject(i), homeId));
+						} catch (JSONException err) {
+							if (BuildConfig.DEBUG) {
+								Log.w("user-v2", err);
+							}
+						}
+					}
+				}
+				return users;
+			}
+			throw new TwitterException(response);
+		} catch (IOException | JSONException err) {
 			throw new TwitterException(err);
 		}
 	}
