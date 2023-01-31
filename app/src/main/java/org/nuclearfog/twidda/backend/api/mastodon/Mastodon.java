@@ -348,7 +348,7 @@ public class Mastodon implements Connection {
 	@Override
 	public List<Status> searchStatuses(String search, long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		if (search.startsWith("#")) {
+		if (search.matches("#\\S+")) {
 			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + search.substring(1), params, minId, maxId);
 		} else {
 			params.add("q=" + StringTools.encode(search));
@@ -679,7 +679,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public List<Long> getIdBlocklist() throws MastodonException {
-		throw new MastodonException("not implemented!"); // todo add implementation
+		throw new MastodonException("not supported!");
 	}
 
 

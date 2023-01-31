@@ -203,7 +203,9 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		if (mode == USERS_EXCLUDED) {
 			getMenuInflater().inflate(R.menu.excludelist, m);
 			MenuItem search = m.findItem(R.id.menu_exclude_user);
+			MenuItem refresh = m.findItem(R.id.menu_exclude_refresh);
 			SearchView searchView = (SearchView) search.getActionView();
+			refresh.setVisible(settings.getLogin().getConfiguration().filterlistEnabled());
 			searchView.setOnQueryTextListener(this);
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
 			AppStyles.setMenuIconColor(m, settings.getIconColor());

@@ -36,6 +36,7 @@ public enum Configuration {
 	private final boolean searchFilterEnabled;
 	private final boolean profileLocationEnabled;
 	private final boolean profileUrlEnabled;
+	private final boolean idBlocklistEnabled;
 
 	/**
 	 * @param accountType account login type, see {@link Account}
@@ -51,6 +52,7 @@ public enum Configuration {
 				searchFilterEnabled = true;
 				profileLocationEnabled = true;
 				profileUrlEnabled = true;
+				idBlocklistEnabled = true;
 				break;
 
 			case Account.API_MASTODON:
@@ -60,6 +62,7 @@ public enum Configuration {
 				searchFilterEnabled = false;
 				profileLocationEnabled = false;
 				profileUrlEnabled = false;
+				idBlocklistEnabled = false;
 				break;
 
 			default:
@@ -69,6 +72,7 @@ public enum Configuration {
 				searchFilterEnabled = false;
 				profileLocationEnabled = false;
 				profileUrlEnabled = false;
+				idBlocklistEnabled = false;
 				break;
 		}
 	}
@@ -120,5 +124,12 @@ public enum Configuration {
 	 */
 	public boolean profileUrlEnabled() {
 		return profileUrlEnabled;
+	}
+
+	/**
+	 * @return true to enable user ID filtering
+	 */
+	public boolean filterlistEnabled() {
+		return idBlocklistEnabled;
 	}
 }
