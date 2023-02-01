@@ -57,7 +57,7 @@ import jp.wasabeef.picasso.transformations.CropTransformation;
  *
  * @author nuclearfog
  */
-public final class AppStyles {
+public class AppStyles {
 
 	/**
 	 * transparency mask for hint text color

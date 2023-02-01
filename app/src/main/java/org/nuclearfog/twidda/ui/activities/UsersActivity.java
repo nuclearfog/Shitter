@@ -27,7 +27,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.FilterLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -316,7 +316,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	/**
 	 * called from {@link FilterLoader} if an error occurs
 	 */
-	public void onError(@Nullable ConnectionException err) {
-		ErrorHandler.handleFailure(this, err);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
 }

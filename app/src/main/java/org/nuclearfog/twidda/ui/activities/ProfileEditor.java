@@ -35,7 +35,7 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.UserUpdater;
-import org.nuclearfog.twidda.backend.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -288,10 +288,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	/**
 	 * called after an error occurs
 	 *
-	 * @param err Engine Exception
+	 * @param exception Engine Exception
 	 */
-	public void onError(@Nullable ConnectionException err) {
-		String message = ErrorHandler.getErrorMessage(this, err);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
 		confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}

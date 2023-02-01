@@ -6,6 +6,7 @@ import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -14,8 +15,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.adapter.StatusAdapter;
-import org.nuclearfog.twidda.adapter.StatusAdapter.StatusSelectListener;
+import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
+import org.nuclearfog.twidda.ui.adapter.StatusAdapter.StatusSelectListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -220,8 +221,9 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	/**
 	 * called from {@link StatusLoader} if an error occurs
 	 */
-	public void onError(@Nullable ConnectionException error) {
-		ErrorHandler.handleFailure(requireContext(), error);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
+		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 		adapter.disableLoading();
 		setRefresh(false);
 	}

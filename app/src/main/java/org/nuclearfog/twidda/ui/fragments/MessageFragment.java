@@ -20,11 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.MessageAdapter;
-import org.nuclearfog.twidda.adapter.MessageAdapter.OnMessageClickListener;
+import org.nuclearfog.twidda.ui.adapter.MessageAdapter;
+import org.nuclearfog.twidda.ui.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
-import org.nuclearfog.twidda.backend.lists.Messages;
+import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
@@ -212,9 +212,10 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 *
 	 * @param messageId ID of the message assosiated with the error
 	 */
-	public void onError(@Nullable ConnectionException error, long messageId) {
-		ErrorHandler.handleFailure(requireContext(), error);
-		if (error != null && error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+	public void onError(@Nullable ConnectionException exception, long messageId) {
+		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
+		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+		if (exception != null && exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 			adapter.removeItem(messageId);
 		}
 		setRefresh(false);

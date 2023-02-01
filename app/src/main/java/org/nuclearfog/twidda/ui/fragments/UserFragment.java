@@ -7,6 +7,7 @@ import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_US
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -15,11 +16,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.adapter.UserAdapter;
-import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
+import org.nuclearfog.twidda.ui.adapter.UserAdapter;
+import org.nuclearfog.twidda.ui.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.UserLoader;
-import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -249,7 +250,8 @@ public class UserFragment extends ListFragment implements UserClickListener, Act
 	 * called when an error occurs
 	 */
 	public void onError(@Nullable ConnectionException exception) {
-		ErrorHandler.handleFailure(requireContext(), exception);
+		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
+		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 		adapter.disableLoading();
 		setRefresh(false);
 	}

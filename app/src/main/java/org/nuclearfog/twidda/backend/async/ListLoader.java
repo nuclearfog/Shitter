@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.lists.UserLists;
+import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
 import java.lang.ref.WeakReference;

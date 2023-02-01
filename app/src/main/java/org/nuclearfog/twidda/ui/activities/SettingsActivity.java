@@ -40,9 +40,9 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FontAdapter;
-import org.nuclearfog.twidda.adapter.LocationAdapter;
-import org.nuclearfog.twidda.adapter.ScaleAdapter;
+import org.nuclearfog.twidda.ui.adapter.FontAdapter;
+import org.nuclearfog.twidda.ui.adapter.LocationAdapter;
+import org.nuclearfog.twidda.ui.adapter.ScaleAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -593,10 +593,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	/**
 	 * called when an error occurs
 	 *
-	 * @param err exception from twitter
+	 * @param exception exception from twitter
 	 */
-	public void onError(@Nullable ConnectionException err) {
-		ErrorHandler.handleFailure(this, err);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
 
 	/**

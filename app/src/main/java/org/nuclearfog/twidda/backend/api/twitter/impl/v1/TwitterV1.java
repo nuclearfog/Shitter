@@ -13,15 +13,14 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.api.twitter.impl.TwitterNotification;
-import org.nuclearfog.twidda.backend.lists.Messages;
-import org.nuclearfog.twidda.backend.lists.UserLists;
-import org.nuclearfog.twidda.backend.lists.Users;
-import org.nuclearfog.twidda.backend.update.ConnectionConfig;
-import org.nuclearfog.twidda.backend.update.MediaStatus;
-import org.nuclearfog.twidda.backend.update.ProfileUpdate;
-import org.nuclearfog.twidda.backend.update.StatusUpdate;
-import org.nuclearfog.twidda.backend.update.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.Messages;
+import org.nuclearfog.twidda.backend.helper.UserLists;
+import org.nuclearfog.twidda.backend.helper.Users;
+import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.StatusUpdate;
+import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -1068,7 +1067,7 @@ public class TwitterV1 implements Connection {
 		List<Status> mentions = getTweets(TWEETS_MENTIONS, new ArrayList<>(), minId, maxId);
 		List<Notification> result = new ArrayList<>(mentions.size());
 		for (Status status : mentions) {
-			result.add(new TwitterNotification(status));
+			result.add(new NotificationV1(status));
 		}
 		return result;
 	}

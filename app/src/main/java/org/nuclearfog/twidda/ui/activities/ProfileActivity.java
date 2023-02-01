@@ -58,7 +58,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.UserAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -746,13 +746,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	/**
 	 * called if an error occurs
 	 *
-	 * @param err Engine Exception
+	 * @param exception Engine Exception
 	 */
-	public void onError(@Nullable ConnectionException err) {
-		ErrorHandler.handleFailure(this, err);
-		if (user == null || (err != null
-				&& (err.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND
-				|| err.getErrorCode() == ConnectionException.USER_NOT_FOUND))) {
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+		if (user == null || (exception != null
+				&& (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND
+				|| exception.getErrorCode() == ConnectionException.USER_NOT_FOUND))) {
 			finish();
 		}
 	}

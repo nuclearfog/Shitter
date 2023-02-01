@@ -30,7 +30,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListAction;
 import org.nuclearfog.twidda.backend.async.ListManager;
@@ -375,7 +375,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	 * called from {@link ListManager} when an error occurs
 	 */
 	public void onFailure(@Nullable ConnectionException exception) {
-		ErrorHandler.handleFailure(this, exception);
+		String message = ErrorHandler.getErrorMessage(this, exception);
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -427,12 +428,13 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	/**
 	 * called from {@link ListAction} if an error occurs
 	 *
-	 * @param err    error information
+	 * @param exception    error information
 	 * @param listId ID of the list where an error occurred
 	 */
-	public void onFailure(@Nullable ConnectionException err, long listId) {
-		ErrorHandler.handleFailure(this, err);
-		if (err != null && err.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+	public void onFailure(@Nullable ConnectionException exception, long listId) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+		if (exception != null && exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 			// List does not exist
 			Intent result = new Intent();
 			result.putExtra(RESULT_REMOVED_LIST_ID, listId);

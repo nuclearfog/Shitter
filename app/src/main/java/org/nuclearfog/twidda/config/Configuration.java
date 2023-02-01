@@ -37,6 +37,7 @@ public enum Configuration {
 	private final boolean profileLocationEnabled;
 	private final boolean profileUrlEnabled;
 	private final boolean idBlocklistEnabled;
+	private final boolean postLocationSupported;
 
 	/**
 	 * @param accountType account login type, see {@link Account}
@@ -53,6 +54,7 @@ public enum Configuration {
 				profileLocationEnabled = true;
 				profileUrlEnabled = true;
 				idBlocklistEnabled = true;
+				postLocationSupported = true;
 				break;
 
 			case Account.API_MASTODON:
@@ -63,6 +65,7 @@ public enum Configuration {
 				profileLocationEnabled = false;
 				profileUrlEnabled = false;
 				idBlocklistEnabled = false;
+				postLocationSupported = false;
 				break;
 
 			default:
@@ -73,6 +76,7 @@ public enum Configuration {
 				profileLocationEnabled = false;
 				profileUrlEnabled = false;
 				idBlocklistEnabled = false;
+				postLocationSupported = false;
 				break;
 		}
 	}
@@ -131,5 +135,12 @@ public enum Configuration {
 	 */
 	public boolean filterlistEnabled() {
 		return idBlocklistEnabled;
+	}
+
+	/**
+	 * @return true if posting location is supported
+	 */
+	public boolean locationSupported() {
+		return postLocationSupported;
 	}
 }

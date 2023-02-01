@@ -22,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListUpdater;
-import org.nuclearfog.twidda.backend.update.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.UserList;
@@ -183,8 +183,8 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	/**
 	 * called when an error occurs while updating a list
 	 */
-	public void onError(@Nullable ConnectionException err) {
-		String message = ErrorHandler.getErrorMessage(this, err);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
 		confirmDialog.show(ConfirmDialog.LIST_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}

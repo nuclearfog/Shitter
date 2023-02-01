@@ -22,7 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.lists.Messages;
+import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.AccountImpl;
 import org.nuclearfog.twidda.database.impl.LocationImpl;

@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MessageUpdater;
-import org.nuclearfog.twidda.backend.update.MessageUpdate;
+import org.nuclearfog.twidda.backend.helper.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -184,10 +184,10 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	/**
 	 * called when an error occurs
 	 *
-	 * @param error Engine Exception
+	 * @param exception Engine Exception
 	 */
-	public void onError(@Nullable ConnectionException error) {
-		String message = ErrorHandler.getErrorMessage(this, error);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
 		confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}

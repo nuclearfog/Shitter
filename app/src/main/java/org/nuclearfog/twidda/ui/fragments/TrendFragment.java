@@ -6,12 +6,13 @@ import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUER
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.adapter.TrendAdapter;
-import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
+import org.nuclearfog.twidda.ui.adapter.TrendAdapter;
+import org.nuclearfog.twidda.ui.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -117,8 +118,9 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 	/**
 	 * called from {@link TrendLoader} if an error occurs
 	 */
-	public void onError(@Nullable ConnectionException error) {
-		ErrorHandler.handleFailure(requireContext(), error);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
+		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 		setRefresh(false);
 	}
 

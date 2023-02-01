@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.AccountAdapter;
-import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
+import org.nuclearfog.twidda.ui.adapter.AccountAdapter;
+import org.nuclearfog.twidda.ui.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;

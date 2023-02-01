@@ -1,9 +1,6 @@
 package org.nuclearfog.twidda.backend.utils;
 
 import android.content.Context;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
@@ -16,20 +13,9 @@ import org.nuclearfog.twidda.config.GlobalSettings;
  *
  * @author nuclearfog
  */
-public final class ErrorHandler {
+public class ErrorHandler {
 
 	private ErrorHandler() {
-	}
-
-	/**
-	 * show error messages and handle failures
-	 *
-	 * @param context current activity context
-	 * @param error   Error exception thrown by TwitterEngine
-	 */
-	public static void handleFailure(@NonNull Context context, @Nullable ConnectionException error) {
-		String message = getErrorMessage(context, error);
-		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 	}
 
 	/**

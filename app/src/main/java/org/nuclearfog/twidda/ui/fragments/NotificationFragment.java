@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -16,8 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.adapter.NotificationAdapter;
-import org.nuclearfog.twidda.adapter.NotificationAdapter.OnNotificationClickListener;
+import org.nuclearfog.twidda.ui.adapter.NotificationAdapter;
+import org.nuclearfog.twidda.ui.adapter.NotificationAdapter.OnNotificationClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -143,7 +144,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * called from {@link NotificationLoader} if an error occurs
 	 */
 	public void onError(ConnectionException exception) {
-		ErrorHandler.handleFailure(requireContext(), exception);
+		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
+		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 		adapter.disableLoading();
 		setRefresh(false);
 	}

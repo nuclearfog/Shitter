@@ -5,8 +5,8 @@ import android.os.AsyncTask;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.update.MediaStatus;
-import org.nuclearfog.twidda.backend.update.StatusUpdate;
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.ui.activities.StatusEditor;
 
 import java.lang.ref.WeakReference;

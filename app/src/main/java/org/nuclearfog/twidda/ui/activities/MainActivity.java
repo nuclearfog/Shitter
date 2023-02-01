@@ -30,7 +30,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LinkLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -264,9 +264,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	/**
 	 * called from {@link LinkLoader} when an error occurs
 	 */
-	public void onError(@Nullable ConnectionException error) {
-		if (error != null) {
-			ErrorHandler.handleFailure(this, error);
+	public void onError(@Nullable ConnectionException exception) {
+		if (exception != null) {
+			String message = ErrorHandler.getErrorMessage(this, exception);
+			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
 		}

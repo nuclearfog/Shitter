@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -144,8 +145,9 @@ public class ImageViewer extends MediaActivity {
 	/**
 	 * Called from {@link ImageLoader} when an error occurs
 	 */
-	public void onError(@Nullable ConnectionException err) {
-		ErrorHandler.handleFailure(getApplicationContext(), err);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		finish();
 	}
 

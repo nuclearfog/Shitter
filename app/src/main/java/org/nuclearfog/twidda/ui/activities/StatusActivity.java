@@ -51,8 +51,8 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.PreviewAdapter;
-import org.nuclearfog.twidda.adapter.PreviewAdapter.OnCardClickListener;
+import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
+import org.nuclearfog.twidda.ui.adapter.PreviewAdapter.OnCardClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -821,20 +821,19 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * called when an error occurs
 	 *
-	 * @param error Error information
+	 * @param exception Error information
 	 */
-	public void onError(@Nullable ConnectionException error) {
-		ErrorHandler.handleFailure(this, error);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		if (status == null) {
 			finish();
-		} else {
-			if (error != null && error.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-				// Mark status as removed, so it can be removed from the list
-				Intent returnData = new Intent();
-				returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
-				setResult(RETURN_STATUS_REMOVED, returnData);
-				finish();
-			}
+		} else if (exception != null && exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+			// Mark status as removed, so it can be removed from the list
+			Intent returnData = new Intent();
+			returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+			setResult(RETURN_STATUS_REMOVED, returnData);
+			finish();
 		}
 	}
 }

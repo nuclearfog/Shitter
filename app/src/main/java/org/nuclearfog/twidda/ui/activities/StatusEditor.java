@@ -26,11 +26,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.IconAdapter;
-import org.nuclearfog.twidda.adapter.IconAdapter.OnMediaClickListener;
+import org.nuclearfog.twidda.ui.adapter.IconAdapter;
+import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
-import org.nuclearfog.twidda.backend.update.StatusUpdate;
+import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -64,17 +64,17 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 */
 	private static final int MAX_MENTIONS = 10;
 
-
-	private StatusUpdater uploaderAsync;
-
-	private ConfirmDialog confirmDialog;
-	private ProgressDialog loadingCircle;
-	private IconAdapter adapter;
-
 	private ImageButton mediaBtn, locationBtn;
 	private EditText statusText;
 	private View locationPending;
 
+	@Nullable
+	private StatusUpdater uploaderAsync;
+	private GlobalSettings settings;
+
+	private ConfirmDialog confirmDialog;
+	private ProgressDialog loadingCircle;
+	private IconAdapter adapter;
 	private StatusUpdate statusUpdate = new StatusUpdate();
 
 
@@ -98,14 +98,16 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		statusText = findViewById(R.id.popup_status_input);
 		locationPending = findViewById(R.id.popup_status_location_loading);
 
-		GlobalSettings settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
 		AppStyles.setEditorTheme(root, background);
 
+		if (!settings.getLogin().getConfiguration().locationSupported()) {
+			locationBtn.setVisibility(GONE);
+		}
 		long inReplyId = getIntent().getLongExtra(KEY_STATUS_EDITOR_REPLYID, 0);
 		String prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
-
 		statusUpdate.setReplyId(inReplyId);
 		if (prefix != null) {
 			statusText.append(prefix);
@@ -128,12 +130,14 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (isLocating()) {
-			locationPending.setVisibility(VISIBLE);
-			locationBtn.setVisibility(INVISIBLE);
-		} else {
-			locationPending.setVisibility(INVISIBLE);
-			locationBtn.setVisibility(VISIBLE);
+		if (settings.getLogin().getConfiguration().locationSupported()) {
+			if (isLocating()) {
+				locationPending.setVisibility(VISIBLE);
+				locationBtn.setVisibility(INVISIBLE);
+			} else {
+				locationPending.setVisibility(INVISIBLE);
+				locationBtn.setVisibility(VISIBLE);
+			}
 		}
 	}
 
@@ -289,8 +293,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	/**
 	 * Show confirmation dialog if an error occurs while sending status
 	 */
-	public void onError(@Nullable ConnectionException error) {
-		String message = ErrorHandler.getErrorMessage(this, error);
+	public void onError(@Nullable ConnectionException exception) {
+		String message = ErrorHandler.getErrorMessage(this, exception);
 		confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
 		loadingCircle.dismiss();
 	}
