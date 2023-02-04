@@ -96,17 +96,18 @@ public class GlobalSettings {
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
+	private static final String MASTODON_LOCAL_TIMELINE = "mastodon_local_timeline";
+
+	// current login preferences
+	private static final String LOGGED_IN = "login";
+	private static final String CURRENT_ID = "userID";
+	private static final String OAUTH_TOKEN = "key1";
+	private static final String OAUTH_SECRET = "key2";
 	private static final String CONSUMER_TOKEN = "api_key1";
 	private static final String CONSUMER_SECRET = "api_key2";
 	private static final String BEARER_TOKEN = "bearer";
 	private static final String CURRENT_API = "current_api_id";
 	private static final String HOSTNAME = "mastodon_host";
-
-	// login specific preference names
-	private static final String LOGGED_IN = "login";
-	private static final String CURRENT_ID = "userID";
-	private static final String OAUTH_TOKEN = "key1";
-	private static final String OAUTH_SECRET = "key2";
 
 	// file name of the preferences
 	private static final String APP_SETTINGS = "settings";
@@ -144,6 +145,7 @@ public class GlobalSettings {
 	private boolean filterResults;
 	private boolean enableLike;
 	private boolean twitterAlt;
+	private boolean localOnly;
 	private int background_color;
 	private int font_color;
 	private int highlight_color;
@@ -667,6 +669,27 @@ public class GlobalSettings {
 	}
 
 	/**
+	 * use public Mastodon timeline of the local server only
+	 *
+	 * @return true to use local timeline only
+	 */
+	public boolean useLocalTimeline() {
+		return localOnly;
+	}
+
+	/**
+	 * set public Mastodon timeline
+	 *
+	 * @param enable true to use local timeline only
+	 */
+	public void setLocalTimeline(boolean enable) {
+		localOnly = enable;
+		Editor edit = settings.edit();
+		edit.putBoolean(MASTODON_LOCAL_TIMELINE, enable);
+		edit.apply();
+	}
+
+	/**
 	 * set proxy address
 	 *
 	 * @param proxyHost address of proxy
@@ -946,6 +969,7 @@ public class GlobalSettings {
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
+		localOnly = settings.getBoolean(MASTODON_LOCAL_TIMELINE, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");

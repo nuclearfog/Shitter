@@ -348,6 +348,7 @@ public class Mastodon implements Connection {
 	@Override
 	public List<Status> searchStatuses(String search, long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
+		params.add("local=" + settings.useLocalTimeline());
 		if (search.matches("#\\S+")) {
 			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + search.substring(1), params, minId, maxId);
 		} else {
@@ -361,6 +362,7 @@ public class Mastodon implements Connection {
 	@Override
 	public List<Status> getPublicTimeline(long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
+		params.add("local=" + settings.useLocalTimeline());
 		return getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
 	}
 

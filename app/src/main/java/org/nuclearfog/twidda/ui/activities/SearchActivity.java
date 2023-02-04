@@ -134,7 +134,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		}
 		// enable/disable search filter
 		else if (item.getItemId() == R.id.search_filter) {
-			boolean enable = !item.isChecked();
+			boolean enable = !settings.filterResults();
 			settings.setFilterResults(enable);
 			item.setChecked(enable);
 		}

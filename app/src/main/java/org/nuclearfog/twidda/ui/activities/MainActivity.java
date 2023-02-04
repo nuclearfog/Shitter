@@ -30,6 +30,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LinkLoader;
@@ -156,7 +157,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		getMenuInflater().inflate(R.menu.home, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		MenuItem search = m.findItem(R.id.menu_search);
+		MenuItem localTl = m.findItem(R.id.menu_local_timeline);
 		SearchView searchView = (SearchView) search.getActionView();
+		localTl.setVisible(settings.getLogin().getConfiguration() == Configuration.MASTODON);
+		localTl.setChecked(settings.useLocalTimeline());
 		searchView.setOnQueryTextListener(this);
 		return super.onCreateOptionsMenu(m);
 	}
@@ -194,6 +198,13 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		else if (item.getItemId() == R.id.menu_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
 			activityResultLauncher.launch(accountManager);
+		}
+		// enable disable Mastodon local timeline
+		else if (item.getItemId() == R.id.menu_local_timeline) {
+			boolean toggle = !settings.useLocalTimeline();
+			settings.setLocalTimeline(toggle);
+			adapter.notifySettingsChanged();
+			item.setChecked(toggle);
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -10,6 +10,11 @@
 		app:showAsAction="always|collapseActionView" />
 
 	<item
+		android:id="@+id/menu_local_timeline"
+		android:title="@string/menu_show_local_timeline"
+		android:checkable="true" />
+
+	<item
 		android:id="@+id/menu_profile"
 		android:title="@string/menu_open_home_profile"
 		android:icon="@drawable/user"

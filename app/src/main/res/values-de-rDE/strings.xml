@@ -147,7 +147,7 @@
 	<string name="info_user_removed">%1$s von der Liste entfernt!</string>
 	<string name="descr_remove_user">Nutzer von der Liste entfernen</string>
 	<string name="menu_tweet">Status posten</string>
-	<string name="menu_open_home_profile">Profil</string>
+	<string name="menu_open_home_profile">Profil anzeigen</string>
 	<string name="menu_open_twitter_search">Twitter suche</string>
 	<string name="menu_open_settings">Einstellungen</string>
 	<string name="menu_create_list">erstelle Nutzerliste</string>
@@ -264,4 +264,5 @@
 	<string name="info_missing_key">bitte Schlüssel eingeben</string>
 	<string name="info_missing_host">bitte gültigen Hostnamen eingeben</string>
 	<string name="info_missing_api_keys">Bitte API-Schlüssel hinzufügen</string>
+	<string name="menu_show_local_timeline">zeige lokale Timeline</string>
 </resources>
