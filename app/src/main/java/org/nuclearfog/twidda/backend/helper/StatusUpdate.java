@@ -8,6 +8,9 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
+import org.nuclearfog.twidda.config.Configuration;
+import org.nuclearfog.twidda.config.GlobalSettings;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,20 +47,6 @@ public class StatusUpdate {
 	 */
 	public static final int MEDIA_GIF = 3;
 
-	/**
-	 * image limit of a status
-	 */
-	private static final int MAX_IMAGES = 4;
-
-	/**
-	 * video limit of a status
-	 */
-	private static final int MAX_VIDEOS = 1;
-
-	/**
-	 * gif limit of a status
-	 */
-	private static final int MAX_GIF = 1;
 
 	private static final String MIME_GIF = "image/gif";
 	private static final String MIME_IMAGE_ALL = "image/";
@@ -98,6 +87,7 @@ public class StatusUpdate {
 	 */
 	public int addMedia(Context context, Uri mediaUri) {
 		String mime = context.getContentResolver().getType(mediaUri);
+		Configuration configuration = GlobalSettings.getInstance(context).getLogin().getConfiguration();
 		if (mime == null) {
 			return MEDIA_ERROR;
 		}
@@ -111,7 +101,7 @@ public class StatusUpdate {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
-						if (mediaUris.size() == MAX_GIF) {
+						if (mediaUris.size() == configuration.getGifLimit()) {
 							mediaLimitReached = true;
 						}
 						return MEDIA_GIF;
@@ -130,7 +120,7 @@ public class StatusUpdate {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
-						if (mediaUris.size() == MAX_IMAGES) {
+						if (mediaUris.size() == configuration.getImageLimit()) {
 							mediaLimitReached = true;
 						}
 						return MEDIA_IMAGE;
@@ -144,11 +134,11 @@ public class StatusUpdate {
 				case MEDIA_NONE:
 					mediaType = MEDIA_VIDEO;
 
-				case MAX_VIDEOS:
+				case MEDIA_VIDEO:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
-						if (mediaUris.size() == MAX_VIDEOS) {
+						if (mediaUris.size() == configuration.getVideoLimit()) {
 							mediaLimitReached = true;
 						}
 						return MEDIA_VIDEO;

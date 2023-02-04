@@ -100,7 +100,6 @@
 	<string name="error_api_access_denied">Error, API access denied! Please check your API Keys.</string>
 	<string name="error_api_access_limited">Error, API access limited by Twitter!</string>
 	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
-	<string name="error_mention_exceed">Too much mentions!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>
 	<string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
 	<string name="error_invalid_media">Invalid media file!</string>

@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.0'
+        classpath 'com.android.tools.build:gradle:7.4.1'
         classpath 'io.michaelrocks:paranoid-gradle-plugin:0.3.7' // fixme Find replacement
         classpath 'gradle.plugin.ru.cleverpumpkin.proguard-dictionaries-generator:plugin:1.0.8'
     }

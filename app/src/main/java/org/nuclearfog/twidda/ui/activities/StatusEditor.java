@@ -33,7 +33,6 @@ import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -58,11 +57,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 * value type is String
 	 */
 	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
-
-	/**
-	 * mention limit of a status
-	 */
-	private static final int MAX_MENTIONS = 10;
 
 	private ImageButton mediaBtn, locationBtn;
 	private EditText statusText;
@@ -165,10 +159,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			// check if status is empty
 			if (statusText.trim().isEmpty() && statusUpdate.mediaCount() == 0) {
 				Toast.makeText(getApplicationContext(), R.string.error_empty_tweet, LENGTH_SHORT).show();
-			}
-			// check if mentions exceed the limit
-			else if (StringTools.countMentions(statusText) > MAX_MENTIONS) {
-				Toast.makeText(getApplicationContext(), R.string.error_mention_exceed, LENGTH_SHORT).show();
 			}
 			// check if GPS location is pending
 			else if (isLocating()) {

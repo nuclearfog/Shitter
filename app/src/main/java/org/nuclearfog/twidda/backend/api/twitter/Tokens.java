@@ -19,7 +19,7 @@ public class Tokens {
 	 * false means there are no API keys available
 	 * set to true when {@link #CONSUMER_TOKEN} and {@link #TOKEN_SECRET} are set
 	 */
-	public static final boolean USE_DEFAULT_KEYS = true;
+	public static final boolean USE_DEFAULT_KEYS = false;
 
 	/**
 	 * for compability mode disable Twitter API version 2.0 (use only version 1.1) if the API access don't support this.

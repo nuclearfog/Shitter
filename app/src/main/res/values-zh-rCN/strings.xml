@@ -151,7 +151,6 @@
 	<string name="error_acc_update">用户信息更新失败！请检查您输入的内容！</string>
 	<string name="error_api_access_denied">错误，API 访问被拒绝！请检察您的 API 密钥。</string>
 	<string name="error_api_key_expired">错误，API 密钥已过期！请更新应用！</string>
-	<string name="error_mention_exceed">提及用户过多！</string>
 	<string name="error_not_defined">未定义错误！</string>
 
 	<!-- menu icon strings -->

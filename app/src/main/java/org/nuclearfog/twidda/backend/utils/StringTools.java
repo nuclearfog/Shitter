@@ -182,21 +182,6 @@ public class StringTools {
 	}
 
 	/**
-	 * count @username mentions in a string
-	 *
-	 * @param text text
-	 * @return username count
-	 */
-	public static int countMentions(String text) {
-		int result = 0;
-		Matcher m = MENTION.matcher(text);
-		while (m.find()) {
-			result++;
-		}
-		return result;
-	}
-
-	/**
 	 * convert time strings from different APIs to the local format
 	 *
 	 * @param timeStr    Twitter time string
