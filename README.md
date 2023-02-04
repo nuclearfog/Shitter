@@ -24,12 +24,6 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](../../releases/latest/download/SH1TT3R.apk)
 
 
-## Information
-
-App releases may contain private API keys belonging to the repository owner. Please check the Twitter rules <a href="https://support.twitter.com/articles/18311-the-twitter-rules">here</a> and <a href="https://help.twitter.com/rules-and-policies/twitter-api">here</a>.
-If you have any questions or if you have found a bug, please open an issue.
-
-
 ## 3rd party libraries and licenses
 
 - <a href="https://github.com/square/picasso">picasso 2.8</a>
