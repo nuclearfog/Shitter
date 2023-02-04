@@ -84,7 +84,6 @@
 	<string name="info_list_followed">已关注列表</string>
 	<string name="info_list_unfollowed">已取消关注列表</string>
 	<string name="descr_add_profile_image">更换头像</string>
-	<string name="app_info_twitter_rules">Twitter 用户守则：</string>
 	<string name="button_backward">后退</string>
 	<string name="button_forward">快进</string>
 	<string name="button_play_pause">暂停/播放</string>

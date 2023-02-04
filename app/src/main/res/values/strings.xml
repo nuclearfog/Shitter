@@ -4,10 +4,6 @@
 	<string name="app_name" translatable="false">Shitter</string>
 	<string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
 
-	<!-- app links and resources-->
-	<string name="app_info_twitter_link_1" translatable="false">https://support.twitter.com/articles/18311-the-twitter-rules</string>
-	<string name="app_info_twitter_link_2" translatable="false">https://help.twitter.com/rules-and-policies/twitter-api</string>
-
 	<!-- toast messages to inform user -->
 	<string name="info_list_removed">Userlist removed</string>
 	<string name="info_list_followed">Userlist followed</string>
@@ -266,7 +262,6 @@
 	<string name="confirm_unknown_error">unknown error!</string>
 	<string name="list_following_indicator">following list</string>
 	<string name="descr_add_profile_image">change profile image</string>
-	<string name="app_info_twitter_rules">The Twitter rules:</string>
 	<string name="button_backward">Rewind</string>
 	<string name="button_forward">Fast forward</string>
 	<string name="button_play_pause">Pause/Play</string>
