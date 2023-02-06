@@ -30,13 +30,12 @@ public class ConnectionConfig {
 	private int apiType;
 
 	/**
-	 * @param apiType default API type
 	 */
-	public ConnectionConfig(int apiType) {
+	public ConnectionConfig() {
 		hostname = "";
 		consumerKey = "";
 		consumerSecret = "";
-		this.apiType = apiType;
+		apiType = -1;
 	}
 
 	/**

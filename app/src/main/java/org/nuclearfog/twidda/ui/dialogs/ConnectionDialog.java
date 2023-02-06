@@ -40,7 +40,6 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		super(context, R.style.ConfirmDialog);
 		requestWindowFeature(FEATURE_NO_TITLE);
 		setCanceledOnTouchOutside(false);
-		setCancelable(false);
 		setContentView(R.layout.dialog_connection);
 		ViewGroup root = findViewById(R.id.dialog_connection_root);
 		Button confirm = findViewById(R.id.dialog_connection_confirm);
@@ -189,6 +188,9 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 				api1.setVisibility(View.GONE);
 				api2.setVisibility(View.GONE);
 				break;
+
+			default:
+				return;
 		}
 		// erase all error messages
 		if (api1.getError() != null)

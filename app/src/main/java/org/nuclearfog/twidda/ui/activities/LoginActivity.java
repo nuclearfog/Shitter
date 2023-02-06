@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Nullable
 	private String loginLink;
-	private ConnectionConfig connection = new ConnectionConfig(ConnectionConfig.API_TWITTER_2);
+	private ConnectionConfig connection;
 
 
 	@Override
@@ -108,19 +108,25 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 		NetworkAdapter adapter = new NetworkAdapter(this);
 		connectionDialog = new ConnectionDialog(this);
+		connection = new ConnectionConfig();
 		hostSelector.setAdapter(adapter);
 
 		switch (settings.getLogin().getConfiguration()) {
 			case TWITTER1:
+				hostSelector.setSelection(1);
+				connection.setApiType(ConnectionConfig.API_TWITTER_1);
+				break;
+
 			case TWITTER2:
 				hostSelector.setSelection(1);
+				connection.setApiType(ConnectionConfig.API_TWITTER_2);
 				break;
 
 			case MASTODON:
 				hostSelector.setSelection(0);
+				connection.setApiType(ConnectionConfig.API_MASTODON);
 				break;
 		}
-
 		linkButton.setOnClickListener(this);
 		loginButton.setOnClickListener(this);
 		settingsButton.setOnClickListener(this);
@@ -243,19 +249,19 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			} else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
 				connectionDialog.show(connection);
 			}
+			loginLink = null;
 		}
 	}
 
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		// reset login link after provider change
-		loginLink = null;
 		if (id == NetworkAdapter.ID_TWITTER) {
 			connection.setApiType(ConnectionConfig.API_TWITTER_2);
 		} else if (id == NetworkAdapter.ID_MASTODON) {
 			connection.setApiType(ConnectionConfig.API_MASTODON);
 		}
+		loginLink = null;
 	}
 
 
