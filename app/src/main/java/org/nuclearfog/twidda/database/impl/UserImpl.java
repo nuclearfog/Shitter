@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
 /**
@@ -217,6 +218,12 @@ public class UserImpl implements User {
 	@Override
 	public boolean isCurrentUser() {
 		return isCurrentUser;
+	}
+
+
+	@Override
+	public Emoji[] getEmojis() {
+		return new Emoji[0];
 	}
 
 

@@ -47,6 +47,7 @@ public class StatusImpl implements Status {
 	private long locationId;
 	private Status embedded;
 	private String[] mediaKeys = {};
+	private String[] emojiKeys = {};
 	private Media[] medias = {};
 	private Emoji[] emojis = {};
 	private User author;
@@ -82,6 +83,7 @@ public class StatusImpl implements Status {
 		source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
 		locationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.LOCATION));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
+		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.EMOJI));
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.EMBEDDED));
@@ -97,6 +99,9 @@ public class StatusImpl implements Status {
 		bookmarked = (register & BOOKMARK_MASK) != 0;
 		if (mediaKeys != null && !mediaKeys.isEmpty()) {
 			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
+		}
+		if (emojiKeys != null && !emojiKeys.isEmpty()) {
+			this.emojiKeys = MEDIA_SEPARATOR.split(emojiKeys);
 		}
 	}
 
@@ -308,6 +313,13 @@ public class StatusImpl implements Status {
 	}
 
 	/**
+	 * @return emoji keys
+	 */
+	public String[] getEmojiKeys() {
+		return emojiKeys;
+	}
+
+	/**
 	 * @return location ID
 	 */
 	public long getLocationId() {
@@ -330,6 +342,15 @@ public class StatusImpl implements Status {
 	 */
 	public void addMedia(@NonNull Media[] medias) {
 		this.medias = medias;
+	}
+
+	/**
+	 * add status media
+	 *
+	 * @param emojis media array
+	 */
+	public void addEmojis(@NonNull Emoji[] emojis) {
+		this.emojis = emojis;
 	}
 
 	/**

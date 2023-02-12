@@ -39,6 +39,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 
+			<!-- DEPRECATED
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 
@@ -55,7 +56,7 @@
 					android:scheme="https"
 					android:host="mobile.twitter.com" />
 			</intent-filter>
-
+			-->
 		</activity>
 
 		<activity

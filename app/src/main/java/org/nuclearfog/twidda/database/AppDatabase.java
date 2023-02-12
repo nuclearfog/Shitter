@@ -15,6 +15,7 @@ import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserExcludeTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,6 +27,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.AccountImpl;
+import org.nuclearfog.twidda.database.impl.EmojiImpl;
 import org.nuclearfog.twidda.database.impl.LocationImpl;
 import org.nuclearfog.twidda.database.impl.MediaImpl;
 import org.nuclearfog.twidda.database.impl.MessageImpl;
@@ -34,6 +36,7 @@ import org.nuclearfog.twidda.database.impl.StatusImpl;
 import org.nuclearfog.twidda.database.impl.TrendImpl;
 import org.nuclearfog.twidda.database.impl.UserImpl;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
@@ -302,9 +305,14 @@ public class AppDatabase {
 	private static final String STATUS_REG_SELECT = StatusRegisterTable.ID + "=? AND " + StatusRegisterTable.OWNER + "=?";
 
 	/**
-	 * selection to get media
+	 * selection to get a single media entry
 	 */
 	private static final String MEDIA_SELECT = MediaTable.KEY + "=?";
+
+	/**
+	 * selection to get a single emoji entry
+	 */
+	private static final String EMOJI_SELECT = EmojiTable.CODE + "=?";
 
 	/**
 	 * selection to get location
@@ -1043,8 +1051,9 @@ public class AppDatabase {
 		Account login = settings.getLogin();
 		StatusImpl result = new StatusImpl(cursor, login);
 		// check if there is an embedded status
-		if (result.getEmbeddedStatusId() > 1)
+		if (result.getEmbeddedStatusId() > 1L) {
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
+		}
 		if (result.getMediaKeys().length > 0) {
 			List<Media> mediaList = new LinkedList<>();
 			for (String mediaKey : result.getMediaKeys()) {
@@ -1055,6 +1064,18 @@ public class AppDatabase {
 			}
 			if (!mediaList.isEmpty()) {
 				result.addMedia(mediaList.toArray(new Media[0]));
+			}
+		}
+		if (result.getEmojiKeys().length > 0) {
+			List<Emoji> emojiList = new LinkedList<>();
+			for (String emojiKey : result.getEmojiKeys()) {
+				Emoji item = getEmoji(db, emojiKey);
+				if (item != null) {
+					emojiList.add(item);
+				}
+			}
+			if (!emojiList.isEmpty()) {
+				result.addEmojis(emojiList.toArray(new Emoji[0]));
 			}
 		}
 		if (result.getLocationId() != 0L) {
@@ -1098,6 +1119,24 @@ public class AppDatabase {
 		Media result = null;
 		if (c.moveToFirst())
 			result = new MediaImpl(c);
+		c.close();
+		return result;
+	}
+
+	/**
+	 * get emoji information
+	 *
+	 * @param key emoji key
+	 * @param db  database read instance
+	 * @return emoji item or null
+	 */
+	@Nullable
+	private Emoji getEmoji(SQLiteDatabase db, String key) {
+		String[] args = {key};
+		Cursor c = db.query(EmojiTable.NAME, EmojiImpl.PROJECTION, EMOJI_SELECT, args, null, null, null, SINGLE_ITEM);
+		Emoji result = null;
+		if (c.moveToFirst())
+			result = new EmojiImpl(c);
 		c.close();
 		return result;
 	}
@@ -1240,7 +1279,7 @@ public class AppDatabase {
 		} else {
 			flags &= ~BOOKMARK_MASK;
 		}
-		ContentValues statusUpdate = new ContentValues(15);
+		ContentValues statusUpdate = new ContentValues(18);
 		statusUpdate.put(StatusTable.ID, status.getId());
 		statusUpdate.put(StatusTable.USER, user.getId());
 		statusUpdate.put(StatusTable.TIME, status.getTimestamp());
@@ -1269,6 +1308,15 @@ public class AppDatabase {
 			}
 			String mediaKeys = mediaBuf.deleteCharAt(mediaBuf.length() - 1).toString();
 			statusUpdate.put(StatusTable.MEDIA, mediaKeys);
+		}
+		if (status.getEmojis().length > 0) {
+			StringBuilder emojiBuf = new StringBuilder();
+			saveMedia(status.getMedia(), db);
+			for (Emoji emoji : status.getEmojis()) {
+				emojiBuf.append(emoji.getCode()).append(';');
+			}
+			String emojiKeys = emojiBuf.deleteCharAt(emojiBuf.length() - 1).toString();
+			statusUpdate.put(StatusTable.EMOJI, emojiKeys);
 		}
 		db.insertWithOnConflict(StatusTable.NAME, "", statusUpdate, CONFLICT_REPLACE);
 		saveUser(user, db, CONFLICT_IGNORE);

@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 12;
+	private static final int DB_VERSION = 13;
 
 	/**
 	 * database file name
@@ -61,6 +61,7 @@ public class DatabaseAdapter {
 			+ StatusTable.TIME + " INTEGER,"
 			+ StatusTable.TEXT + " TEXT,"
 			+ StatusTable.MEDIA + " TEXT,"
+			+ StatusTable.EMOJI + " TEXT,"
 			+ StatusTable.REPOST + " INTEGER,"
 			+ StatusTable.FAVORITE + " INTEGER,"
 			+ StatusTable.REPLY + " INTEGER,"
@@ -196,6 +197,15 @@ public class DatabaseAdapter {
 			+ LocationTable.FULLNAME + " TEXT);";
 
 	/**
+	 * SQL query to create the emoji table
+	 */
+	public static final String TABLE_EMOJI = "CREATE TABLE IF NOT EXISTS "
+			+ EmojiTable.NAME + "("
+			+ EmojiTable.CODE + " TEXT PRIMARY KEY,"
+			+ EmojiTable.CATEGORY + " TEXT,"
+			+ EmojiTable.URL + " TEXT);";
+
+	/**
 	 * table index for status table
 	 */
 	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
@@ -257,6 +267,11 @@ public class DatabaseAdapter {
 	 * update status table add location ID
 	 */
 	private static final String UPDATE_ADD_STATUS_URL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.URL + " TEXT;";
+
+	/**
+	 * update status table add emoji keys
+	 */
+	private static final String UPDATE_ADD_STATUS_EMOJI = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.EMOJI + " TEXT;";
 
 	/**
 	 * singleton instance
@@ -342,6 +357,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_NOTIFICATION);
 		db.execSQL(TABLE_MEDIA);
 		db.execSQL(TABLE_LOCATION);
+		db.execSQL(TABLE_EMOJI);
 		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
@@ -376,8 +392,12 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_ADD_LOCATION_ID);
 				db.setVersion(11);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 12) {
 				db.execSQL(UPDATE_ADD_STATUS_URL);
+				db.setVersion(12);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_ADD_STATUS_EMOJI);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -484,9 +504,14 @@ public class DatabaseAdapter {
 		String TEXT = "tweet";
 
 		/**
-		 * media key
+		 * media keys
 		 */
 		String MEDIA = "media";
+
+		/**
+		 * emoji keys
+		 */
+		String EMOJI = "emoji";
 
 		/**
 		 * repost count
@@ -903,5 +928,31 @@ public class DatabaseAdapter {
 		 * full name of the location
 		 */
 		String FULLNAME = "full_name";
+	}
+
+	/**
+	 * Table for custom empji information
+	 */
+	public interface EmojiTable {
+
+		/**
+		 * table name
+		 */
+		String NAME = "emoji";
+
+		/**
+		 * emoji code
+		 */
+		String CODE  = "code";
+
+		/**
+		 * emoji category
+		 */
+		String CATEGORY = "category";
+
+		/**
+		 * emoji image url
+		 */
+		String URL = "url";
 	}
 }

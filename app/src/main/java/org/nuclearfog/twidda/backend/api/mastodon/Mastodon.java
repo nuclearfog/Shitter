@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.CustomEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
@@ -31,6 +32,7 @@ import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
@@ -106,6 +108,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_MEDIA_STATUS = "/api/v1/media/";
 	private static final String ENDPOINT_UPDATE_CREDENTIALS = "/api/v1/accounts/update_credentials";
 	private static final String ENDPOINT_PUBLIC_TIMELINE = "/api/v1/timelines/public";
+	private static final String ENDPOINT_CUSTOM_EMOJIS = "/api/v1/custom_emojis";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -706,6 +709,27 @@ public class Mastodon implements Connection {
 	@Override
 	public Messages getDirectmessages(String cursor) throws MastodonException {
 		throw new MastodonException("not supported!");
+	}
+
+
+	@Override
+	public List<Emoji> getEmojis() throws MastodonException {
+		try {
+			Response response = get(ENDPOINT_CUSTOM_EMOJIS, new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray json = new JSONArray(body.string());
+				List<Emoji> result = new ArrayList<>(json.length());
+				for (int i = 0 ; i < json.length() ; i++) {
+					Emoji item = new CustomEmoji(json.getJSONObject(i));
+					result.add(item);
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 

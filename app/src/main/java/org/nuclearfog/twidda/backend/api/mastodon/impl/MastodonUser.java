@@ -5,10 +5,12 @@ import android.util.Patterns;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
 /**
@@ -34,6 +36,7 @@ public class MastodonUser implements User {
 	private int statusCount;
 	private boolean locked;
 	private boolean isCurrentUser = true;
+	private Emoji[] emojis = {};
 
 	/**
 	 * @param json          json object used by Mastodon API
@@ -48,6 +51,7 @@ public class MastodonUser implements User {
 	 * @param json json object used by Mastodon API
 	 */
 	public MastodonUser(JSONObject json) throws JSONException {
+		JSONArray emojiArray = json.optJSONArray("emojis");
 		String idStr = json.getString("id");
 		String description = json.optString("note", "");
 		String profileUrl = json.optString("avatar", "");
@@ -69,6 +73,13 @@ public class MastodonUser implements User {
 		}
 		if (Patterns.WEB_URL.matcher(bannerUrl).matches()) {
 			this.bannerUrl = bannerUrl;
+		}
+		if (emojiArray != null && emojiArray.length() > 0) {
+			emojis = new Emoji[emojiArray.length()];
+			for ( int i = 0 ; i < emojis.length; i++) {
+				JSONObject emojiJson = emojiArray.getJSONObject(i);
+				emojis[i] = new CustomEmoji(emojiJson);
+			}
 		}
 		try {
 			id = Long.parseLong(idStr);
@@ -199,6 +210,12 @@ public class MastodonUser implements User {
 
 
 	@Override
+	public Emoji[] getEmojis() {
+		return emojis;
+	}
+
+
+	@Override
 	public int compareTo(User o) {
 		return Long.compare(o.getCreatedAt(), createdAt);
 	}
@@ -207,7 +224,7 @@ public class MastodonUser implements User {
 	@NonNull
 	@Override
 	public String toString() {
-		return "name=\"" + screenname + "\"";
+		return "id=" + id + " name=\"" + screenname + "\"";
 	}
 
 

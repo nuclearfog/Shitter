@@ -1,32 +1,40 @@
-package org.nuclearfog.twidda.backend.api.mastodon.impl;
+package org.nuclearfog.twidda.database.impl;
+
+import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
 import org.nuclearfog.twidda.model.Emoji;
 
 /**
- * Mastododn implementation of emoji
+ * Emoji datrabase implementation
  *
  * @author nuclearfog
  */
-public class CustomEmoji implements Emoji {
+public class EmojiImpl implements Emoji {
+
+	/**
+	 * projection of the emoji table columns
+	 */
+	public static final String[] PROJECTION = {
+			EmojiTable.CODE,
+			EmojiTable.URL,
+			EmojiTable.CATEGORY
+	};
 
 	private String code;
 	private String url;
 	private String category;
-	private boolean visibleInPicker;
 
 	/**
-	 * @param json CustomEmoji json format
+	 * @param cursor database cursor
 	 */
-	public CustomEmoji(JSONObject json) throws JSONException {
-		code = json.getString("shortcode");
-		url = json.getString("url");
-		category = json.optString("category", "");
-		visibleInPicker = json.optBoolean("visible_in_picker", true);
+	public EmojiImpl(Cursor cursor) {
+		code = cursor.getString(0);
+		url = cursor.getString(1);
+		category = cursor.getString(2);
 	}
 
 
@@ -60,10 +68,5 @@ public class CustomEmoji implements Emoji {
 	@Override
 	public String toString() {
 		return "code=\"" + code + "\" category=\"" + category + "\" url=\"" + url + "\"";
-	}
-
-
-	public boolean visible() {
-		return visibleInPicker;
 	}
 }

@@ -27,6 +27,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
@@ -912,6 +913,12 @@ public class TwitterV1 implements Connection {
 		} catch (IOException | JSONException err) {
 			throw new TwitterException(err);
 		}
+	}
+
+
+	@Override
+	public List<Emoji> getEmojis() throws ConnectionException {
+		throw new TwitterException("not supported!");
 	}
 
 

@@ -108,4 +108,9 @@ public interface User extends Serializable, Comparable<User> {
 	 * @return true if the user is the same as the current user
 	 */
 	boolean isCurrentUser();
+
+	/**
+	 * @return custom emojis used in the profile
+	 */
+	Emoji[] getEmojis();
 }

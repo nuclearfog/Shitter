@@ -118,7 +118,7 @@ public class MediaV1 implements Media {
 
 	@Override
 	public String getPreviewUrl() {
-		return "";
+		return url;
 	}
 
 

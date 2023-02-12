@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
 /**
@@ -210,6 +211,12 @@ public class UserV2 implements User {
 	@Override
 	public boolean isCurrentUser() {
 		return isCurrentUser;
+	}
+
+
+	@Override
+	public Emoji[] getEmojis() {
+		return new Emoji[0];
 	}
 
 

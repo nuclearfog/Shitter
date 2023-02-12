@@ -9,6 +9,7 @@ import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Relation;
@@ -527,6 +528,13 @@ public interface Connection {
 	 * @return list of direct messages
 	 */
 	Messages getDirectmessages(String cursor) throws ConnectionException;
+
+	/**
+	 * get all custom emojis used by the network
+	 *
+	 * @return array of emojis
+	 */
+	List<Emoji> getEmojis() throws ConnectionException;
 
 	/**
 	 * returns a list of blocked user IDs
