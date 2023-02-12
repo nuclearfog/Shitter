@@ -816,6 +816,7 @@ public class AppDatabase {
 		db.delete(StatusTable.NAME, STATUS_SELECT, args);
 		db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
+		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_STATUS, args);
 		commit(db);
 	}
 
@@ -1301,21 +1302,21 @@ public class AppDatabase {
 			statusUpdate.put(StatusTable.LOCATION, 0L);
 		}
 		if (status.getMedia().length > 0) {
-			StringBuilder mediaBuf = new StringBuilder();
+			StringBuilder buf = new StringBuilder();
 			saveMedia(status.getMedia(), db);
 			for (Media media : status.getMedia()) {
-				mediaBuf.append(media.getKey()).append(';');
+				buf.append(media.getKey()).append(';');
 			}
-			String mediaKeys = mediaBuf.deleteCharAt(mediaBuf.length() - 1).toString();
+			String mediaKeys = buf.deleteCharAt(buf.length() - 1).toString();
 			statusUpdate.put(StatusTable.MEDIA, mediaKeys);
 		}
 		if (status.getEmojis().length > 0) {
-			StringBuilder emojiBuf = new StringBuilder();
-			saveMedia(status.getMedia(), db);
+			StringBuilder buf = new StringBuilder();
+			saveEmojis(status.getEmojis(), db);
 			for (Emoji emoji : status.getEmojis()) {
-				emojiBuf.append(emoji.getCode()).append(';');
+				buf.append(emoji.getCode()).append(';');
 			}
-			String emojiKeys = emojiBuf.deleteCharAt(emojiBuf.length() - 1).toString();
+			String emojiKeys = buf.deleteCharAt(buf.length() - 1).toString();
 			statusUpdate.put(StatusTable.EMOJI, emojiKeys);
 		}
 		db.insertWithOnConflict(StatusTable.NAME, "", statusUpdate, CONFLICT_REPLACE);
@@ -1331,12 +1332,28 @@ public class AppDatabase {
 	 */
 	private void saveMedia(Media[] medias, SQLiteDatabase db) {
 		for (Media media : medias) {
-			ContentValues mediaColumn = new ContentValues(4);
-			mediaColumn.put(MediaTable.KEY, media.getKey());
-			mediaColumn.put(MediaTable.URL, media.getUrl());
-			mediaColumn.put(MediaTable.PREVIEW, media.getPreviewUrl());
-			mediaColumn.put(MediaTable.TYPE, media.getMediaType());
-			db.insertWithOnConflict(MediaTable.NAME, "", mediaColumn, CONFLICT_IGNORE);
+			ContentValues column = new ContentValues(4);
+			column.put(MediaTable.KEY, media.getKey());
+			column.put(MediaTable.URL, media.getUrl());
+			column.put(MediaTable.PREVIEW, media.getPreviewUrl());
+			column.put(MediaTable.TYPE, media.getMediaType());
+			db.insertWithOnConflict(MediaTable.NAME, "", column, CONFLICT_IGNORE);
+		}
+	}
+
+	/**
+	 * save media information
+	 *
+	 * @param emojis emojis to save
+	 * @param db     database write instance
+	 */
+	private void saveEmojis(Emoji[] emojis, SQLiteDatabase db) {
+		for (Emoji emoji : emojis) {
+			ContentValues column = new ContentValues(3);
+			column.put(EmojiTable.CODE, emoji.getCode());
+			column.put(EmojiTable.URL, emoji.getUrl());
+			column.put(EmojiTable.CATEGORY, emoji.getCategory());
+			db.insertWithOnConflict(EmojiTable.NAME, "", column, CONFLICT_IGNORE);
 		}
 	}
 
@@ -1347,7 +1364,7 @@ public class AppDatabase {
 	 * @param db       database write instance
 	 */
 	private void saveLocation(Location location, SQLiteDatabase db) {
-		ContentValues locationColumn = new ContentValues(4);
+		ContentValues locationColumn = new ContentValues(5);
 		locationColumn.put(LocationTable.ID, location.getId());
 		locationColumn.put(LocationTable.FULLNAME, location.getFullName());
 		locationColumn.put(LocationTable.COORDINATES, location.getCoordinates());
