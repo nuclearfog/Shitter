@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Trend extends Serializable {
+public interface Trend extends Serializable, Comparable<Trend> {
 
 	/**
 	 * @return trend name

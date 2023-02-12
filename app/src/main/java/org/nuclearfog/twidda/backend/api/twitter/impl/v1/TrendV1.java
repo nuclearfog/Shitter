@@ -56,6 +56,12 @@ public class TrendV1 implements Trend {
 	}
 
 
+	@Override
+	public int compareTo(Trend trend) {
+		return Integer.compare(rank, trend.getRank());
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {

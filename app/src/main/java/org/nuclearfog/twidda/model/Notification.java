@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Notification extends Serializable {
+public interface Notification extends Serializable, Comparable<Notification> {
 
 	/**
 	 * mention
@@ -70,7 +70,7 @@ public interface Notification extends Serializable {
 	 *
 	 * @return time
 	 */
-	long getCreatedAt();
+	long getTimestamp();
 
 	/**
 	 * get user from the notification

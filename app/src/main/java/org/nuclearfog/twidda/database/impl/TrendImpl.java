@@ -27,7 +27,7 @@ public class TrendImpl implements Trend {
 	};
 
 	private String name;
-	private int range;
+	private int popularity;
 	private int rank;
 	private long id;
 
@@ -36,7 +36,7 @@ public class TrendImpl implements Trend {
 	 */
 	public TrendImpl(Cursor cursor) {
 		name = cursor.getString(0);
-		range = cursor.getInt(1);
+		popularity = cursor.getInt(1);
 		rank = cursor.getInt(2);
 		id = cursor.getLong(3);
 	}
@@ -62,7 +62,7 @@ public class TrendImpl implements Trend {
 
 	@Override
 	public int getPopularity() {
-		return range;
+		return popularity;
 	}
 
 
@@ -70,5 +70,19 @@ public class TrendImpl implements Trend {
 	@Override
 	public String toString() {
 		return "rank=" + rank + " name=\"" + name + "\"";
+	}
+
+
+	@Override
+	public int compareTo(Trend trend) {
+		if (trend.getRank() > 0 && rank > 0)
+			return Integer.compare(rank, trend.getRank());
+		if (trend.getPopularity() > 0 && popularity > 0)
+			return Integer.compare(trend.getPopularity(), popularity);
+		if (trend.getPopularity() > 0)
+			return 1;
+		if (popularity > 0)
+			return -1;
+		return String.CASE_INSENSITIVE_ORDER.compare(name, trend.getName());
 	}
 }

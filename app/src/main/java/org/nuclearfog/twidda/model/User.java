@@ -27,7 +27,7 @@ public interface User extends Serializable, Comparable<User> {
 	/**
 	 * @return date of account creation
 	 */
-	long getCreatedAt();
+	long getTimestamp();
 
 	/**
 	 * @return profile image url

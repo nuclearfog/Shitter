@@ -112,7 +112,7 @@ public class AccountImpl implements Account {
 
 
 	@Override
-	public long getLoginDate() {
+	public long getTimestamp() {
 		return loginDate;
 	}
 

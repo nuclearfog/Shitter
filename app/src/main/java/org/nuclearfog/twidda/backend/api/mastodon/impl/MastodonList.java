@@ -105,6 +105,12 @@ public class MastodonList implements UserList {
 
 
 	@Override
+	public int compareTo(UserList userlist) {
+		return Long.compare(userlist.getId(), id);
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof UserList))
 			return false;

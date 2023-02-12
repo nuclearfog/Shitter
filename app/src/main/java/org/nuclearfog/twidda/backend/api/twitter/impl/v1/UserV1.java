@@ -27,7 +27,7 @@ public class UserV1 implements User {
 
 
 	private long id;
-	private long createdAt;
+	private long timestamp;
 	private String username;
 	private String screenName;
 	private String description;
@@ -74,7 +74,7 @@ public class UserV1 implements User {
 		favoriteCount = json.optInt("favourites_count");
 		followReqSent = json.optBoolean("follow_request_sent");
 		defaultImage = json.optBoolean("default_profile_image");
-		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
+		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		description = getDescription(json);
 		url = getUrl(json);
 
@@ -115,8 +115,8 @@ public class UserV1 implements User {
 
 
 	@Override
-	public long getCreatedAt() {
-		return createdAt;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 
@@ -238,7 +238,7 @@ public class UserV1 implements User {
 
 	@Override
 	public int compareTo(User o) {
-		return Long.compare(o.getCreatedAt(), createdAt);
+		return Long.compare(o.getTimestamp(), timestamp);
 	}
 
 

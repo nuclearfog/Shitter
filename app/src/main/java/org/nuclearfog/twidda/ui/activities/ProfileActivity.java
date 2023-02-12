@@ -645,7 +645,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			}
 		}
 		if (user_createdAt.getVisibility() != VISIBLE) {
-			String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
+			String date = SimpleDateFormat.getDateTimeInstance().format(user.getTimestamp());
 			user_createdAt.setVisibility(VISIBLE);
 			user_createdAt.setText(date);
 		}

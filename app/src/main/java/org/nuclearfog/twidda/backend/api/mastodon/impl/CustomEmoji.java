@@ -14,6 +14,8 @@ import org.nuclearfog.twidda.model.Emoji;
  */
 public class CustomEmoji implements Emoji {
 
+	private static final long serialVersionUID = 2848675481626033993L;
+
 	private String code;
 	private String url;
 	private String category;
@@ -63,6 +65,14 @@ public class CustomEmoji implements Emoji {
 	}
 
 
+	@Override
+	public int compareTo(Emoji emoji) {
+		return String.CASE_INSENSITIVE_ORDER.compare(code, emoji.getCode());
+	}
+
+	/**
+	 * @return true if emoji is visible for picker
+	 */
 	public boolean visible() {
 		return visibleInPicker;
 	}

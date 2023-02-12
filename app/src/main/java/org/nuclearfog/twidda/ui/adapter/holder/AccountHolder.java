@@ -85,7 +85,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	 * @param account content
 	 */
 	public void setContent(Account account) {
-		date.setText(StringTools.formatCreationTime(itemView.getResources(), account.getLoginDate()));
+		date.setText(StringTools.formatCreationTime(itemView.getResources(), account.getTimestamp()));
 		User user = account.getUser();
 		if (user != null) {
 			// set profile information

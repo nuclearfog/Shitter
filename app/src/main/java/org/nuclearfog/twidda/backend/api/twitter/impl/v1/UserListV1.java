@@ -24,7 +24,7 @@ public class UserListV1 implements UserList {
 	private static final String PRIVATE = "private";
 
 	private long id;
-	private long createdAt;
+	private long timestamp;
 	private String title;
 	private String description;
 	private int memberCount;
@@ -42,7 +42,7 @@ public class UserListV1 implements UserList {
 		String idStr = json.getString("id_str");
 
 		owner = new UserV1(json.getJSONObject("user"), currentId);
-		createdAt = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
+		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
 		title = json.optString("name", "");
 		description = json.optString("description", "");
 		memberCount = json.optInt("member_count");
@@ -65,7 +65,7 @@ public class UserListV1 implements UserList {
 
 	@Override
 	public long getTimestamp() {
-		return createdAt;
+		return timestamp;
 	}
 
 
@@ -129,6 +129,12 @@ public class UserListV1 implements UserList {
 	@Override
 	public String toString() {
 		return "title=\"" + title + "\" description=\"" + description + "\"";
+	}
+
+
+	@Override
+	public int compareTo(UserList userlist) {
+		return Long.compare(userlist.getTimestamp(), timestamp);
 	}
 
 	/**

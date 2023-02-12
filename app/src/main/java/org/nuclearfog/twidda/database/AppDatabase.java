@@ -46,6 +46,7 @@ import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -355,11 +356,6 @@ public class AppDatabase {
 	private static final String FILTER_SELECT = LIST_SELECT + " AND " + UserExcludeTable.ID + "=?";
 
 	/**
-	 * default order for trend rows
-	 */
-	private static final String TREND_ORDER = TrendTable.INDEX + " ASC";
-
-	/**
 	 * default sort order for logins
 	 */
 	private static final String SORT_BY_CREATION = AccountTable.DATE + " DESC";
@@ -528,7 +524,7 @@ public class AppDatabase {
 		for (Notification notification : notifications) {
 			ContentValues column = new ContentValues();
 			column.put(NotificationTable.ID, notification.getId());
-			column.put(NotificationTable.TIME, notification.getCreatedAt());
+			column.put(NotificationTable.TIME, notification.getTimestamp());
 			column.put(NotificationTable.TYPE, notification.getType());
 			column.put(NotificationTable.OWNER, settings.getLogin().getId());
 			column.put(NotificationTable.USER, notification.getUser().getId());
@@ -563,7 +559,7 @@ public class AppDatabase {
 	public void saveLogin(Account account) {
 		ContentValues values = new ContentValues(9);
 		values.put(AccountTable.ID, account.getId());
-		values.put(AccountTable.DATE, account.getLoginDate());
+		values.put(AccountTable.DATE, account.getTimestamp());
 		values.put(AccountTable.HOSTNAME, account.getHostname());
 		values.put(AccountTable.CLIENT_ID, account.getConsumerToken());
 		values.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
@@ -896,7 +892,7 @@ public class AppDatabase {
 	public List<Trend> getTrends() {
 		String[] args = {Long.toString(settings.getTrendLocation().getId())};
 		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, TREND_ORDER);
+		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, null);
 		List<Trend> trends = new LinkedList<>();
 		if (cursor.moveToFirst()) {
 			do {
@@ -904,6 +900,7 @@ public class AppDatabase {
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
+		Collections.sort(trends);
 		return trends;
 	}
 
@@ -1234,7 +1231,7 @@ public class AppDatabase {
 		userColumn.put(UserTable.LINK, user.getProfileUrl());
 		userColumn.put(UserTable.LOCATION, user.getLocation());
 		userColumn.put(UserTable.BANNER, user.getOriginalBannerImageUrl());
-		userColumn.put(UserTable.SINCE, user.getCreatedAt());
+		userColumn.put(UserTable.SINCE, user.getTimestamp());
 		userColumn.put(UserTable.FRIENDS, user.getFollowing());
 		userColumn.put(UserTable.FOLLOWER, user.getFollower());
 		userColumn.put(UserTable.STATUSES, user.getStatusCount());

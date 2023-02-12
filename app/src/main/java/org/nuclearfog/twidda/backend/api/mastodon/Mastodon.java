@@ -391,8 +391,9 @@ public class Mastodon implements Connection {
 				JSONArray array = new JSONArray(body.string());
 				List<Trend> result = new ArrayList<>(array.length());
 				for (int i = 0; i < array.length(); i++) {
-					result.add(new MastodonTrend(array.getJSONObject(i), i));
+					result.add(new MastodonTrend(array.getJSONObject(i)));
 				}
+				Collections.sort(result);
 				return result;
 			}
 			throw new MastodonException(response);
@@ -415,8 +416,9 @@ public class Mastodon implements Connection {
 				JSONArray array = new JSONObject(body.string()).getJSONArray("hashtags");
 				List<Trend> result = new ArrayList<>(array.length());
 				for (int i = 0; i < array.length(); i++) {
-					result.add(new MastodonTrend(array.getJSONObject(i), i));
+					result.add(new MastodonTrend(array.getJSONObject(i)));
 				}
+				Collections.sort(result);
 				return result;
 			}
 			throw new MastodonException(response);

@@ -20,7 +20,7 @@ public class MastodonNotification implements Notification {
 	private static final long serialVersionUID = 4113306729125959429L;
 
 	private long id;
-	private long createdAt;
+	private long timestamp;
 	private int type;
 	private User user;
 	private Status status;
@@ -34,7 +34,7 @@ public class MastodonNotification implements Notification {
 		String typeStr = json.getString("type");
 		JSONObject statusJson = json.optJSONObject("status");
 		JSONObject userJson = json.getJSONObject("account");
-		createdAt = StringTools.getTime(json.getString("created_at"), StringTools.TIME_MASTODON);
+		timestamp = StringTools.getTime(json.getString("created_at"), StringTools.TIME_MASTODON);
 		user = new MastodonUser(userJson);
 
 		switch (typeStr) {
@@ -94,8 +94,8 @@ public class MastodonNotification implements Notification {
 
 
 	@Override
-	public long getCreatedAt() {
-		return createdAt;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 
@@ -116,6 +116,12 @@ public class MastodonNotification implements Notification {
 	@Override
 	public String toString() {
 		return "id=" + id + " " + user;
+	}
+
+
+	@Override
+	public int compareTo(Notification notification) {
+		return Long.compare(notification.getTimestamp(), timestamp);
 	}
 
 

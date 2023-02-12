@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.model;
 
+import java.io.Serializable;
+
 /**
  * Interface used for "custom emoji" implementation
  *
  * @author nuclearfog
  */
-public interface Emoji {
+public interface Emoji extends Serializable, Comparable<Emoji> {
 
 	/**
 	 * short code of an emoji used by the server

@@ -15,18 +15,15 @@ public class MastodonTrend implements Trend {
 
 	private static final long serialVersionUID = 4328931229081239280L;
 
-	private int rank;
 	private int popularity;
 	private String name;
 
 	/**
 	 * @param json trend json object
-	 * @param pos  array index
 	 */
-	public MastodonTrend(JSONObject json, int pos) {
+	public MastodonTrend(JSONObject json) {
 		JSONArray history = json.optJSONArray("history");
 		name = '#' + json.optString("name", "");
-		rank = pos + 1;
 		if (history != null && history.length() > 0) {
 			JSONObject latest = history.optJSONObject(0);
 			if (latest != null) {
@@ -50,7 +47,7 @@ public class MastodonTrend implements Trend {
 
 	@Override
 	public int getRank() {
-		return rank;
+		return -1;
 	}
 
 
@@ -60,9 +57,21 @@ public class MastodonTrend implements Trend {
 	}
 
 
+	@Override
+	public int compareTo(Trend trend) {
+		if (trend.getPopularity() > 0 && popularity > 0)
+			return Integer.compare(trend.getPopularity(), popularity);
+		if (trend.getPopularity() > 0)
+			return 1;
+		if (popularity > 0)
+			return -1;
+		return String.CASE_INSENSITIVE_ORDER.compare(name, trend.getName());
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {
-		return "name=\"" + name + " rank=" + rank;
+		return "name=\"" + name;
 	}
 }

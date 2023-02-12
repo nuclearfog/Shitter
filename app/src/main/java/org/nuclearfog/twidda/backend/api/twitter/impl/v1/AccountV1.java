@@ -58,7 +58,7 @@ public class AccountV1 implements Account {
 
 
 	@Override
-	public long getLoginDate() {
+	public long getTimestamp() {
 		return date;
 	}
 

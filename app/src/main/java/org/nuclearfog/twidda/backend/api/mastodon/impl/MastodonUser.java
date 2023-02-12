@@ -108,7 +108,7 @@ public class MastodonUser implements User {
 
 
 	@Override
-	public long getCreatedAt() {
+	public long getTimestamp() {
 		return createdAt;
 	}
 
@@ -217,7 +217,7 @@ public class MastodonUser implements User {
 
 	@Override
 	public int compareTo(User o) {
-		return Long.compare(o.getCreatedAt(), createdAt);
+		return Long.compare(o.getTimestamp(), createdAt);
 	}
 
 

@@ -53,7 +53,7 @@ public class NotificationImpl implements Notification {
 
 
 	@Override
-	public long getCreatedAt() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 
@@ -94,6 +94,12 @@ public class NotificationImpl implements Notification {
 		if (!(obj instanceof Notification))
 			return false;
 		return ((Notification) obj).getId() == id;
+	}
+
+
+	@Override
+	public int compareTo(Notification notification) {
+		return Long.compare(notification.getTimestamp(), timestamp);
 	}
 
 

@@ -63,9 +63,10 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 	 * set view content
 	 *
 	 * @param trend content information
+	 * @param index index of the item
 	 */
-	public void setContent(Trend trend) {
-		rank.setText(trend.getRank() + ".");
+	public void setContent(Trend trend, int index) {
+		rank.setText(index + 1 + ".");
 		name.setText(trend.getName());
 		if (trend.getPopularity() > 0) {
 			Resources resources = vol.getResources();

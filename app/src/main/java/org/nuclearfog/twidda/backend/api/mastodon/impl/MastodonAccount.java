@@ -17,7 +17,7 @@ public class MastodonAccount implements Account {
 	private static final long serialVersionUID = -3212031070966866336L;
 
 	private long id;
-	private long createdAt;
+	private long timestamp;
 
 	private String hostname;
 	private String bearer;
@@ -38,7 +38,7 @@ public class MastodonAccount implements Account {
 		this.bearer = bearer;
 		this.client_id = client_id;
 		this.client_secret = client_secret;
-		createdAt = System.currentTimeMillis();
+		timestamp = System.currentTimeMillis();
 		id = user.getId();
 	}
 
@@ -50,8 +50,8 @@ public class MastodonAccount implements Account {
 
 
 	@Override
-	public long getLoginDate() {
-		return createdAt;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 

@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Message extends Serializable {
+public interface Message extends Serializable, Comparable<Message> {
 
 	/**
 	 * @return ID of the direct message

@@ -15,6 +15,8 @@ import org.nuclearfog.twidda.model.Emoji;
  */
 public class EmojiImpl implements Emoji {
 
+	private static final long serialVersionUID = 4915542258264850899L;
+
 	/**
 	 * projection of the emoji table columns
 	 */
@@ -68,5 +70,11 @@ public class EmojiImpl implements Emoji {
 	@Override
 	public String toString() {
 		return "code=\"" + code + "\" category=\"" + category + "\" url=\"" + url + "\"";
+	}
+
+
+	@Override
+	public int compareTo(Emoji emoji) {
+		return String.CASE_INSENSITIVE_ORDER.compare(code, emoji.getCode());
 	}
 }

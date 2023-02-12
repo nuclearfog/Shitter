@@ -59,7 +59,7 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
 		TrendHolder holder = (TrendHolder) vh;
 		Trend trend = trends.get(index);
-		holder.setContent(trend);
+		holder.setContent(trend, index);
 	}
 
 

@@ -109,6 +109,12 @@ public class MessageV1 implements Message {
 		return "from=" + sender + " message=\"" + text + "\"";
 	}
 
+
+	@Override
+	public int compareTo(Message message) {
+		return Long.compare(message.getTimestamp(), timestamp);
+	}
+
 	/**
 	 * get ID of the sender
 	 *

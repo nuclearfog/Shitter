@@ -100,6 +100,12 @@ public class MessageImpl implements Message {
 		return "from=" + sender + " message=\"" + text + "\"";
 	}
 
+
+	@Override
+	public int compareTo(Message message) {
+		return Long.compare(message.getTimestamp(), time);
+	}
+
 	/**
 	 * @return media key array
 	 */

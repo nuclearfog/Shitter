@@ -39,7 +39,7 @@ public class NotificationV1 implements Notification {
 
 
 	@Override
-	public long getCreatedAt() {
+	public long getTimestamp() {
 		return status.getTimestamp();
 	}
 
@@ -69,5 +69,11 @@ public class NotificationV1 implements Notification {
 			return false;
 		Notification notification = ((Notification) obj);
 		return status.equals(notification.getStatus());
+	}
+
+
+	@Override
+	public int compareTo(Notification notification) {
+		return Long.compare(notification.getTimestamp(), getTimestamp());
 	}
 }

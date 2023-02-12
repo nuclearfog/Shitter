@@ -42,7 +42,7 @@ public interface Account extends Serializable {
 	/**
 	 * @return date of the first login
 	 */
-	long getLoginDate();
+	long getTimestamp();
 
 	/**
 	 * @return user information of the account

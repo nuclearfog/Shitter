@@ -120,7 +120,7 @@ public class UserImpl implements User {
 
 
 	@Override
-	public long getCreatedAt() {
+	public long getTimestamp() {
 		return createdAt;
 	}
 
@@ -237,7 +237,7 @@ public class UserImpl implements User {
 
 	@Override
 	public int compareTo(User o) {
-		return Long.compare(o.getCreatedAt(), createdAt);
+		return Long.compare(o.getTimestamp(), createdAt);
 	}
 
 
