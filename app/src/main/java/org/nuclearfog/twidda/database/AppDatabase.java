@@ -4,6 +4,7 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
@@ -95,6 +96,11 @@ public class AppDatabase {
 	public static final int HIDDEN_MASK = 1 << 9;
 
 	/**
+	 * flag indicated that a status is bookmarked by the current user
+	 */
+	public static final int BOOKMARK_MASK = 1 << 10;
+
+	/**
 	 * flag indicates that an user is verified
 	 */
 	public static final int VERIFIED_MASK = 1;
@@ -161,10 +167,22 @@ public class AppDatabase {
 	/**
 	 * SQL query to get status favored by an user
 	 */
-	private static final String USERFAVORIT_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
+	private static final String USER_FAVORIT_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
 			+ " INNER JOIN " + FavoriteTable.NAME
 			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + FavoriteTable.NAME + "." + FavoriteTable.STATUS_ID
-			+ " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.FAVORITER_ID + "=?"
+			+ " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.OWNER_ID + "=?"
+			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
+			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
+			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " LIMIT ?;";
+
+	/**
+	 * SQL query to get status favored by an user
+	 */
+	private static final String USER_BOOKMARKS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
+			+ " INNER JOIN " + BookmarkTable.NAME
+			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + BookmarkTable.NAME + "." + BookmarkTable.STATUS_ID
+			+ " WHERE " + BookmarkTable.NAME + "." + BookmarkTable.OWNER_ID + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.TIME + " DESC"
@@ -230,12 +248,28 @@ public class AppDatabase {
 	/**
 	 * select all statuses from favorite table favored by given user
 	 */
-	private static final String FAVORITE_SELECT_OWNER = FavoriteTable.FAVORITER_ID + "=?";
+	private static final String FAVORITE_SELECT_OWNER = FavoriteTable.OWNER_ID + "=?";
+
+	/**
+	 * select status entries from favorite table matching status ID
+	 * this status can be favored by multiple users
+	 */
+	private static final String BOOKMARK_SELECT_STATUS = BookmarkTable.STATUS_ID + "=?";
+
+	/**
+	 * select all statuses from favorite table favored by given user
+	 */
+	private static final String BOOKMARK_SELECT_OWNER = BookmarkTable.OWNER_ID + "=?";
 
 	/**
 	 * select specific status from favorite table
 	 */
 	private static final String FAVORITE_SELECT = FAVORITE_SELECT_STATUS + " AND " + FAVORITE_SELECT_OWNER;
+
+	/**
+	 * select specific status from favorite table
+	 */
+	private static final String BOOKMARK_SELECT = BOOKMARK_SELECT_STATUS + " AND " + BOOKMARK_SELECT_OWNER;
 
 	/**
 	 * select message from message table with ID
@@ -263,7 +297,7 @@ public class AppDatabase {
 	private static final String USER_SELECT = UserTable.NAME + "." + UserTable.ID + "=?";
 
 	/**
-	 * selection to get status register
+	 * selection to get status flag register
 	 */
 	private static final String STATUS_REG_SELECT = StatusRegisterTable.ID + "=? AND " + StatusRegisterTable.OWNER + "=?";
 
@@ -278,7 +312,7 @@ public class AppDatabase {
 	private static final String LOCATION_SELECT = LocationTable.ID + "=?";
 
 	/**
-	 * selection to get user register
+	 * selection to get user flag register
 	 */
 	private static final String USER_REG_SELECT = UserRegisterTable.ID + "=? AND " + UserRegisterTable.OWNER + "=?";
 
@@ -288,12 +322,12 @@ public class AppDatabase {
 	private static final String ACCOUNT_SELECTION = AccountTable.ID + "=?";
 
 	/**
-	 * column projection for user register
+	 * column projection for user flag register
 	 */
 	private static final String[] USER_REG_COLUMN = {UserRegisterTable.REGISTER};
 
 	/**
-	 * column projection for status register
+	 * column projection for status flag register
 	 */
 	private static final String[] STATUS_REG_COLUMN = {StatusRegisterTable.REGISTER};
 
@@ -383,15 +417,37 @@ public class AppDatabase {
 	/**
 	 * save user favorite timeline
 	 *
-	 * @param fav     status favored by user
-	 * @param ownerId user ID
+	 * @param statuses status favored by user
+	 * @param ownerId  user ID
 	 */
-	public void saveFavoriteTimeline(List<Status> fav, long ownerId) {
+	public void saveFavoriteTimeline(List<Status> statuses, long ownerId) {
 		SQLiteDatabase db = getDbWrite();
-		removeFavorits(db, ownerId);
-		for (Status status : fav) {
+		// delete old favorits
+		String[] delArgs = {Long.toString(ownerId)};
+		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
+		// save new favorits
+		for (Status status : statuses) {
 			saveStatus(status, db, 0);
 			saveFavorite(status.getId(), ownerId, db);
+		}
+		commit(db);
+	}
+
+	/**
+	 * save user bookmark timeline
+	 *
+	 * @param statuses bookmarked statuses
+	 * @param ownerId  id of the owner
+	 */
+	public void saveBookmarkTimeline(List<Status> statuses, long ownerId) {
+		SQLiteDatabase db = getDbWrite();
+		// delete old favorits
+		String[] delArgs = {Long.toString(ownerId)};
+		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_OWNER, delArgs);
+		// save new bookmarks
+		for (Status status : statuses) {
+			saveStatus(status, db, 0);
+			saveBookmark(status.getId(), ownerId, db);
 		}
 		commit(db);
 	}
@@ -433,12 +489,26 @@ public class AppDatabase {
 	 *
 	 * @param status favorited status
 	 */
-	public void saveToFavorites(Status status) {
+	public void addToFavorits(Status status) {
 		if (status.getEmbeddedStatus() != null)
 			status = status.getEmbeddedStatus();
 		SQLiteDatabase db = getDbWrite();
 		saveStatus(status, db, 0);
 		saveFavorite(status.getId(), settings.getLogin().getId(), db);
+		commit(db);
+	}
+
+	/**
+	 * store ID of a status to the current users bookmarks
+	 *
+	 * @param status favorited status
+	 */
+	public void addToBookmarks(Status status) {
+		if (status.getEmbeddedStatus() != null)
+			status = status.getEmbeddedStatus();
+		SQLiteDatabase db = getDbWrite();
+		saveStatus(status, db, 0);
+		saveBookmark(status.getId(), settings.getLogin().getId(), db);
 		commit(db);
 	}
 
@@ -545,16 +615,8 @@ public class AppDatabase {
 		String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
-		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(HOME_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				Status status = getStatus(cursor, db);
-				result.add(status);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
+		return getStatuses(cursor, db);
 	}
 
 	/**
@@ -568,16 +630,8 @@ public class AppDatabase {
 		String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
-		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				Status status = getStatus(cursor, db);
-				result.add(status);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
+		return getStatuses(cursor, db);
 	}
 
 	/**
@@ -591,16 +645,23 @@ public class AppDatabase {
 		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
-		List<Status> result = new LinkedList<>();
-		Cursor cursor = db.rawQuery(USERFAVORIT_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				Status status = getStatus(cursor, db);
-				result.add(status);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
+		Cursor cursor = db.rawQuery(USER_FAVORIT_QUERY, args);
+		return getStatuses(cursor, db);
+	}
+
+	/**
+	 * load status bookmarks
+	 *
+	 * @param ownerID user ID
+	 * @return bookmark timeline
+	 */
+	public List<Status> getUserBookmarks(long ownerID) {
+		String homeStr = Long.toString(settings.getLogin().getId());
+		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
+
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.rawQuery(USER_BOOKMARKS_QUERY, args);
+		return getStatuses(cursor, db);
 	}
 
 	/**
@@ -664,16 +725,8 @@ public class AppDatabase {
 		String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 		SQLiteDatabase db = getDbRead();
-		List<Status> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				Status status = getStatus(cursor, db);
-				result.add(status);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
+		return getStatuses(cursor, db);
 	}
 
 	/**
@@ -731,14 +784,14 @@ public class AppDatabase {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		SQLiteDatabase db = getDbWrite();
-		int register = getStatusRegister(db, id);
-		if (hide)
-			register |= HIDDEN_MASK;
-		else
-			register &= ~HIDDEN_MASK;
-
+		int flags = getStatusFlags(db, id);
+		if (hide) {
+			flags |= HIDDEN_MASK;
+		} else {
+			flags &= ~HIDDEN_MASK;
+		}
 		ContentValues values = new ContentValues(3);
-		values.put(StatusRegisterTable.REGISTER, register);
+		values.put(StatusRegisterTable.REGISTER, flags);
 		db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
 		commit(db);
 	}
@@ -763,19 +816,40 @@ public class AppDatabase {
 	 *
 	 * @param status status to remove from the favorites
 	 */
-	public void removeFavorite(Status status) {
+	public void removeFromFavorite(Status status) {
 		String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 		if (status.getEmbeddedStatus() != null) {
 			status = status.getEmbeddedStatus();
 		}
 		SQLiteDatabase db = getDbWrite();
-		// get status register
-		int register = getStatusRegister(db, status.getId());
-		register &= ~FAVORITE_MASK; // unset favorite flag
+		// get status flags
+		int flags = getStatusFlags(db, status.getId());
+		flags &= ~FAVORITE_MASK; // unset favorite flag
 		// update database
-		saveStatusRegister(db, status, register);
+		saveStatusFlags(db, status, flags);
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
+		commit(db);
+	}
+
+	/**
+	 * remove status from bookmarks
+	 *
+	 * @param status status to remove from the bookmarks
+	 */
+	public void removeFromBookmarks(Status status) {
+		String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
+
+		if (status.getEmbeddedStatus() != null) {
+			status = status.getEmbeddedStatus();
+		}
+		SQLiteDatabase db = getDbWrite();
+		// get status flags
+		int flags = getStatusFlags(db, status.getId());
+		flags &= ~BOOKMARK_MASK; // unset bookmark flag
+		// update database
+		saveStatusFlags(db, status, flags);
+		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT, delArgs);
 		commit(db);
 	}
 
@@ -927,13 +1001,13 @@ public class AppDatabase {
 	 */
 	public void muteUser(long id, boolean mute) {
 		SQLiteDatabase db = getDbWrite();
-		int register = getUserRegister(db, id);
+		int flags = getUserFlags(db, id);
 		if (mute) {
-			register |= EXCLUDE_MASK;
+			flags |= EXCLUDE_MASK;
 		} else {
-			register &= ~EXCLUDE_MASK;
+			flags &= ~EXCLUDE_MASK;
 		}
-		saveUserRegister(db, id, register);
+		saveUserFlags(db, id, flags);
 		commit(db);
 	}
 
@@ -993,6 +1067,24 @@ public class AppDatabase {
 	}
 
 	/**
+	 * create a list of statuses from a cursor
+	 *
+	 * @param cursor cursor with statuses
+	 * @return status list
+	 */
+	private List<Status> getStatuses(Cursor cursor, SQLiteDatabase db) {
+		List<Status> result = new LinkedList<>();
+		if (cursor.moveToFirst()) {
+			do {
+				Status status = getStatus(cursor, db);
+				result.add(status);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
 	 * get status/message media
 	 *
 	 * @param key media key
@@ -1029,13 +1121,13 @@ public class AppDatabase {
 	}
 
 	/**
-	 * get register of a status or zero if status not found
+	 * get status flags or zero if status not found
 	 *
 	 * @param db database instance
 	 * @param id ID of the status
-	 * @return status register
+	 * @return status flags
 	 */
-	private int getStatusRegister(SQLiteDatabase db, long id) {
+	private int getStatusFlags(SQLiteDatabase db, long id) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		Cursor c = db.query(StatusRegisterTable.NAME, STATUS_REG_COLUMN, STATUS_REG_SELECT, args, null, null, null, SINGLE_ITEM);
@@ -1053,7 +1145,7 @@ public class AppDatabase {
 	 * @param userID ID of the user
 	 * @return user flags
 	 */
-	private int getUserRegister(SQLiteDatabase db, long userID) {
+	private int getUserFlags(SQLiteDatabase db, long userID) {
 		String[] args = {Long.toString(userID), Long.toString(settings.getLogin().getId())};
 
 		Cursor c = db.query(UserRegisterTable.NAME, USER_REG_COLUMN, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
@@ -1072,24 +1164,27 @@ public class AppDatabase {
 	 * @param mode SQLITE mode {@link SQLiteDatabase#CONFLICT_IGNORE,SQLiteDatabase#CONFLICT_REPLACE}
 	 */
 	private void saveUser(User user, SQLiteDatabase db, int mode) {
-		int register = getUserRegister(db, user.getId());
-		if (user.isVerified())
-			register |= VERIFIED_MASK;
-		else
-			register &= ~VERIFIED_MASK;
-		if (user.isProtected())
-			register |= LOCKED_MASK;
-		else
-			register &= ~LOCKED_MASK;
-		if (user.followRequested())
-			register |= FOLLOW_REQUEST_MASK;
-		else
-			register &= ~FOLLOW_REQUEST_MASK;
-		if (user.hasDefaultProfileImage())
-			register |= DEFAULT_IMAGE_MASK;
-		else
-			register &= ~DEFAULT_IMAGE_MASK;
-
+		int flags = getUserFlags(db, user.getId());
+		if (user.isVerified()) {
+			flags |= VERIFIED_MASK;
+		} else {
+			flags &= ~VERIFIED_MASK;
+		}
+		if (user.isProtected()) {
+			flags |= LOCKED_MASK;
+		} else {
+			flags &= ~LOCKED_MASK;
+		}
+		if (user.followRequested()) {
+			flags |= FOLLOW_REQUEST_MASK;
+		} else {
+			flags &= ~FOLLOW_REQUEST_MASK;
+		}
+		if (user.hasDefaultProfileImage()) {
+			flags |= DEFAULT_IMAGE_MASK;
+		} else {
+			flags &= ~DEFAULT_IMAGE_MASK;
+		}
 		ContentValues userColumn = new ContentValues(13);
 		userColumn.put(UserTable.ID, user.getId());
 		userColumn.put(UserTable.USERNAME, user.getUsername());
@@ -1106,17 +1201,17 @@ public class AppDatabase {
 		userColumn.put(UserTable.FAVORITS, user.getFavoriteCount());
 
 		db.insertWithOnConflict(UserTable.NAME, "", userColumn, mode);
-		saveUserRegister(db, user.getId(), register);
+		saveUserFlags(db, user.getId(), flags);
 	}
 
 	/**
 	 * save status into database
 	 *
-	 * @param status      status information
-	 * @param statusFlags predefined status status register or zero if there isn't one
-	 * @param db          SQLite database
+	 * @param status status information
+	 * @param flags  predefined status status flags or zero if there isn't one
+	 * @param db     SQLite database
 	 */
-	private void saveStatus(Status status, SQLiteDatabase db, int statusFlags) {
+	private void saveStatus(Status status, SQLiteDatabase db, int flags) {
 		User user = status.getAuthor();
 		Status rtStat = status.getEmbeddedStatus();
 		long rtId = -1L;
@@ -1124,21 +1219,26 @@ public class AppDatabase {
 			saveStatus(rtStat, db, 0);
 			rtId = rtStat.getId();
 		}
-		statusFlags |= getStatusRegister(db, status.getId());
+		flags |= getStatusFlags(db, status.getId());
 		if (status.isFavorited()) {
-			statusFlags |= FAVORITE_MASK;
+			flags |= FAVORITE_MASK;
 		} else {
-			statusFlags &= ~FAVORITE_MASK;
+			flags &= ~FAVORITE_MASK;
 		}
 		if (status.isReposted()) {
-			statusFlags |= REPOST_MASK;
+			flags |= REPOST_MASK;
 		} else {
-			statusFlags &= ~REPOST_MASK;
+			flags &= ~REPOST_MASK;
 		}
 		if (status.isSensitive()) {
-			statusFlags |= MEDIA_SENS_MASK;
+			flags |= MEDIA_SENS_MASK;
 		} else {
-			statusFlags &= ~MEDIA_SENS_MASK;
+			flags &= ~MEDIA_SENS_MASK;
+		}
+		if (status.isBookmarked()) {
+			flags |= BOOKMARK_MASK;
+		} else {
+			flags &= ~BOOKMARK_MASK;
 		}
 		ContentValues statusUpdate = new ContentValues(15);
 		statusUpdate.put(StatusTable.ID, status.getId());
@@ -1172,7 +1272,7 @@ public class AppDatabase {
 		}
 		db.insertWithOnConflict(StatusTable.NAME, "", statusUpdate, CONFLICT_REPLACE);
 		saveUser(user, db, CONFLICT_IGNORE);
-		saveStatusRegister(db, status, statusFlags);
+		saveStatusFlags(db, status, flags);
 	}
 
 	/**
@@ -1211,15 +1311,15 @@ public class AppDatabase {
 	/**
 	 * set register of a status. Update if an entry exists
 	 *
-	 * @param db       database instance
-	 * @param status   status
-	 * @param register status register
+	 * @param db     database instance
+	 * @param status status
+	 * @param flags  status flags
 	 */
-	private void saveStatusRegister(SQLiteDatabase db, Status status, int register) {
+	private void saveStatusFlags(SQLiteDatabase db, Status status, int flags) {
 		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 		ContentValues values = new ContentValues(4);
-		values.put(StatusRegisterTable.REGISTER, register);
+		values.put(StatusRegisterTable.REGISTER, flags);
 		values.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
 		values.put(StatusRegisterTable.ID, status.getId());
 		values.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
@@ -1234,17 +1334,17 @@ public class AppDatabase {
 	/**
 	 * set user register. If entry exists, update it.
 	 *
-	 * @param db       database instance
-	 * @param id       User ID
-	 * @param register status register
+	 * @param db    database instance
+	 * @param id    User ID
+	 * @param flags status flags
 	 */
-	private void saveUserRegister(SQLiteDatabase db, long id, int register) {
+	private void saveUserFlags(SQLiteDatabase db, long id, int flags) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		ContentValues values = new ContentValues(3);
 		values.put(UserRegisterTable.ID, id);
 		values.put(UserRegisterTable.OWNER, settings.getLogin().getId());
-		values.put(UserRegisterTable.REGISTER, register);
+		values.put(UserRegisterTable.REGISTER, flags);
 
 		int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
 		if (cnt == 0) {
@@ -1254,17 +1354,31 @@ public class AppDatabase {
 	}
 
 	/**
-	 * Store status into favorite table of a user
+	 * store status ID to the favorite table
 	 *
-	 * @param statusId ID of the favored status
-	 * @param ownerId  ID of the favorite list owner
+	 * @param statusId ID of the status
+	 * @param ownerId  ID of the list owner
 	 * @param db       database instance
 	 */
 	private void saveFavorite(long statusId, long ownerId, SQLiteDatabase db) {
-		ContentValues favTable = new ContentValues(2);
-		favTable.put(FavoriteTable.STATUS_ID, statusId);
-		favTable.put(FavoriteTable.FAVORITER_ID, ownerId);
-		db.insertWithOnConflict(FavoriteTable.NAME, "", favTable, CONFLICT_REPLACE);
+		ContentValues column = new ContentValues(2);
+		column.put(FavoriteTable.STATUS_ID, statusId);
+		column.put(FavoriteTable.OWNER_ID, ownerId);
+		db.insertWithOnConflict(FavoriteTable.NAME, "", column, CONFLICT_REPLACE);
+	}
+
+	/**
+	 * store status ID to the bookmark table
+	 *
+	 * @param statusId ID of the status
+	 * @param ownerId  ID of the list owner
+	 * @param db       database instance
+	 */
+	private void saveBookmark(long statusId, long ownerId, SQLiteDatabase db) {
+		ContentValues column = new ContentValues(2);
+		column.put(BookmarkTable.STATUS_ID, statusId);
+		column.put(BookmarkTable.OWNER_ID, ownerId);
+		db.insertWithOnConflict(BookmarkTable.NAME, "", column, CONFLICT_REPLACE);
 	}
 
 	/**
@@ -1305,16 +1419,22 @@ public class AppDatabase {
 		String[] userIdArg = {Long.toString(status.getAuthor().getId())};
 
 		User user = status.getAuthor();
-		int register = getStatusRegister(db, status.getId());
-		if (status.isReposted())
-			register |= REPOST_MASK;
-		else
-			register &= ~REPOST_MASK;
-		if (status.isFavorited())
-			register |= FAVORITE_MASK;
-		else
-			register &= ~FAVORITE_MASK;
-
+		int flags = getStatusFlags(db, status.getId());
+		if (status.isReposted()) {
+			flags |= REPOST_MASK;
+		} else {
+			flags &= ~REPOST_MASK;
+		}
+		if (status.isFavorited()) {
+			flags |= FAVORITE_MASK;
+		} else {
+			flags &= ~FAVORITE_MASK;
+		}
+		if (status.isBookmarked()) {
+			flags |= BOOKMARK_MASK;
+		} else {
+			flags &= ~BOOKMARK_MASK;
+		}
 		ContentValues statusUpdate = new ContentValues(7);
 		statusUpdate.put(StatusTable.TEXT, status.getText());
 		statusUpdate.put(StatusTable.REPOST, status.getRepostCount());
@@ -1337,18 +1457,7 @@ public class AppDatabase {
 
 		db.updateWithOnConflict(StatusTable.NAME, statusUpdate, STATUS_SELECT, statusIdArg, CONFLICT_REPLACE);
 		db.updateWithOnConflict(UserTable.NAME, userUpdate, USER_SELECT, userIdArg, CONFLICT_IGNORE);
-		saveStatusRegister(db, status, register);
-	}
-
-	/**
-	 * remove user favorites from table
-	 *
-	 * @param db     database instance
-	 * @param userId ID of the favorite list owner
-	 */
-	private void removeFavorits(SQLiteDatabase db, long userId) {
-		String[] delArgs = {Long.toString(userId)};
-		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
+		saveStatusFlags(db, status, flags);
 	}
 
 	/**

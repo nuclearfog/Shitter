@@ -51,6 +51,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter.OnCardClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -144,7 +145,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private MetricsDialog metricsDialog;
 
 	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
-	private Button ansButton, rtwButton, favButton, replyName, coordinates, repostName;
+	private Button replyButton, repostButton, likeButton, replyName, locationButton, repostNameButton, bookmarkButton;
 	private ImageView profileImage;
 	private RecyclerView cardList;
 	private Toolbar toolbar;
@@ -167,9 +168,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		setContentView(R.layout.page_status);
 		ViewGroup root = findViewById(R.id.page_status_root);
 		toolbar = findViewById(R.id.page_status_toolbar);
-		ansButton = findViewById(R.id.page_status_reply);
-		rtwButton = findViewById(R.id.page_status_repost);
-		favButton = findViewById(R.id.page_status_favorite);
+		replyButton = findViewById(R.id.page_status_reply);
+		repostButton = findViewById(R.id.page_status_repost);
+		likeButton = findViewById(R.id.page_status_favorite);
+		bookmarkButton = findViewById(R.id.page_status_bookmark);
 		userName = findViewById(R.id.page_status_username);
 		screenName = findViewById(R.id.page_status_screenname);
 		profileImage = findViewById(R.id.page_status_profile);
@@ -178,13 +180,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		createdAt = findViewById(R.id.page_status_date);
 		statusApi = findViewById(R.id.page_status_api);
 		locationName = findViewById(R.id.page_status_location_name);
-		coordinates = findViewById(R.id.page_status_location_coordinates);
+		locationButton = findViewById(R.id.page_status_location_coordinates);
 		sensitive_media = findViewById(R.id.page_status_sensitive);
-		repostName = findViewById(R.id.page_status_reposter_reference);
+		repostNameButton = findViewById(R.id.page_status_reposter_reference);
 		cardList = findViewById(R.id.page_status_cards);
 
+		picasso = PicassoBuilder.get(this);
+		settings = GlobalSettings.getInstance(this);
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
+		adapter = new PreviewAdapter(settings, picasso, this);
 		// get parameter
 		String replyUsername = "";
 		Object data = getIntent().getSerializableExtra(KEY_STATUS_DATA);
@@ -202,35 +206,30 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			id = getIntent().getLongExtra(KEY_STATUS_ID, -1);
 		}
-
-		// create list fragment for status replies
+		// initialize status reply list
 		Bundle param = new Bundle();
 		param.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_REPLY);
 		param.putString(KEY_STATUS_FRAGMENT_SEARCH, replyUsername);
 		param.putLong(KEY_STATUS_FRAGMENT_ID, id);
-
-		// insert fragment into view
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
 		fragmentTransaction.commit();
 
-		picasso = PicassoBuilder.get(this);
-		settings = GlobalSettings.getInstance(this);
-		adapter = new PreviewAdapter(settings, picasso, this);
-		ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
-		rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
-		coordinates.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
+		replyButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
+		repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
+		locationButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
 		sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
 		replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
-		repostName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
+		repostNameButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
+		bookmarkButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.bookmark, 0, 0, 0);
 		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		statusText.setLinkTextColor(settings.getHighlightColor());
 		cardList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
 		cardList.setAdapter(adapter);
 		if (settings.likeEnabled()) {
-			favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like, 0, 0, 0);
+			likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like, 0, 0, 0);
 		} else {
-			favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
+			likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
 		}
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
@@ -239,17 +238,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		confirmDialog = new ConfirmDialog(this);
 		metricsDialog = new MetricsDialog(this);
 		confirmDialog.setConfirmListener(this);
-		repostName.setOnClickListener(this);
+		repostNameButton.setOnClickListener(this);
 		replyName.setOnClickListener(this);
-		ansButton.setOnClickListener(this);
-		rtwButton.setOnClickListener(this);
-		favButton.setOnClickListener(this);
+		replyButton.setOnClickListener(this);
+		repostButton.setOnClickListener(this);
+		likeButton.setOnClickListener(this);
 		profileImage.setOnClickListener(this);
-		coordinates.setOnClickListener(this);
-		rtwButton.setOnLongClickListener(this);
-		favButton.setOnLongClickListener(this);
-		repostName.setOnLongClickListener(this);
-		coordinates.setOnLongClickListener(this);
+		locationButton.setOnClickListener(this);
+		repostButton.setOnLongClickListener(this);
+		likeButton.setOnLongClickListener(this);
+		repostNameButton.setOnLongClickListener(this);
+		locationButton.setOnLongClickListener(this);
+		bookmarkButton.setOnLongClickListener(this);
 	}
 
 
@@ -509,6 +509,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					intent.putExtra(KEY_STATUS_DATA, embeddedStatus);
 					startActivity(intent);
 				}
+				return true;
 			}
 			// copy status coordinates
 			else if (v.getId() == R.id.page_status_location_coordinates) {
@@ -523,6 +524,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					clip.setPrimaryClip(linkClip);
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_location_copied, LENGTH_SHORT).show();
 				}
+				return true;
+			}
+			// bookmark status
+			else if (v.getId() == R.id.page_status_bookmark) {
+				if (status.isBookmarked()) {
+					statusAsync = new StatusAction(this, StatusAction.UNBOOKMARK);
+				} else {
+					statusAsync = new StatusAction(this, StatusAction.BOOKMARK);
+				}
+				statusAsync.execute(status.getId());
+				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
+				return true;
 			}
 		}
 		return false;
@@ -656,25 +669,30 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void setStatus(@NonNull Status status) {
 		this.status = status;
 		if (status.getEmbeddedStatus() != null) {
-			repostName.setVisibility(VISIBLE);
-			repostName.setText(status.getAuthor().getScreenname());
+			repostNameButton.setVisibility(VISIBLE);
+			repostNameButton.setText(status.getAuthor().getScreenname());
 			status = status.getEmbeddedStatus();
 		} else {
-			repostName.setVisibility(GONE);
+			repostNameButton.setVisibility(GONE);
 		}
 		User author = status.getAuthor();
 		Location location = status.getLocation();
 		invalidateOptionsMenu();
 
 		if (status.isReposted()) {
-			AppStyles.setDrawableColor(rtwButton, settings.getRepostIconColor());
+			AppStyles.setDrawableColor(repostButton, settings.getRepostIconColor());
 		} else {
-			AppStyles.setDrawableColor(rtwButton, settings.getIconColor());
+			AppStyles.setDrawableColor(repostButton, settings.getIconColor());
 		}
 		if (status.isFavorited()) {
-			AppStyles.setDrawableColor(favButton, settings.getFavoriteIconColor());
+			AppStyles.setDrawableColor(likeButton, settings.getFavoriteIconColor());
 		} else {
-			AppStyles.setDrawableColor(favButton, settings.getIconColor());
+			AppStyles.setDrawableColor(likeButton, settings.getIconColor());
+		}
+		if (status.isBookmarked()) {
+			AppStyles.setDrawableColor(bookmarkButton, settings.getBookmarkColor());
+		} else {
+			AppStyles.setDrawableColor(bookmarkButton, settings.getIconColor());
 		}
 		if (author.isVerified()) {
 			userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
@@ -691,9 +709,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		userName.setText(author.getUsername());
 		screenName.setText(author.getScreenname());
 		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
-		ansButton.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
-		favButton.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
-		rtwButton.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
+		replyButton.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
+		likeButton.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
+		repostButton.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
 		if (!status.getSource().isEmpty()) {
 			statusApi.setText(R.string.tweet_sent_from);
 			statusApi.append(status.getSource());
@@ -737,19 +755,24 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				locationName.setVisibility(GONE);
 			}
 			if (!location.getCoordinates().isEmpty()) {
-				coordinates.setVisibility(VISIBLE);
-				coordinates.setText(location.getCoordinates());
+				locationButton.setVisibility(VISIBLE);
+				locationButton.setText(location.getCoordinates());
 			} else {
-				coordinates.setVisibility(GONE);
+				locationButton.setVisibility(GONE);
 			}
 		} else {
 			locationName.setVisibility(GONE);
-			coordinates.setVisibility(GONE);
+			locationButton.setVisibility(GONE);
 		}
-		if (rtwButton.getVisibility() != VISIBLE) {
-			rtwButton.setVisibility(VISIBLE);
-			favButton.setVisibility(VISIBLE);
-			ansButton.setVisibility(VISIBLE);
+		if (repostButton.getVisibility() != VISIBLE) {
+			if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
+				bookmarkButton.setVisibility(VISIBLE);
+			} else {
+				bookmarkButton.setVisibility(GONE);
+			}
+			repostButton.setVisibility(VISIBLE);
+			likeButton.setVisibility(VISIBLE);
+			replyButton.setVisibility(VISIBLE);
 		}
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
 			cardList.setVisibility(VISIBLE);
@@ -789,6 +812,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_unliked, LENGTH_SHORT).show();
 				else
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+				break;
+
+			case StatusAction.BOOKMARK:
+				Toast.makeText(getApplicationContext(), R.string.info_tweet_bookmarked, LENGTH_SHORT).show();
+				break;
+
+			case StatusAction.UNBOOKMARK:
+				Toast.makeText(getApplicationContext(), R.string.info_tweet_unbookmarked, LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.HIDE:

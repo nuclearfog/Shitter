@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.helper.Messages;
@@ -578,6 +579,12 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
+	public List<Status> getUserBookmarks(long minId, long maxId) throws ConnectionException {
+		throw new TwitterException("not implemented!");
+	}
+
+
+	@Override
 	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
@@ -648,6 +655,18 @@ public class TwitterV1 implements Connection {
 		TweetV1 result = getTweet(TWEET_UNRETWEET + id + JSON, new ArrayList<>());
 		result.setRetweet(false);
 		return result;
+	}
+
+
+	@Override
+	public Status bookmarkStatus(long id) throws ConnectionException {
+		return null;
+	}
+
+
+	@Override
+	public Status removeBookmark(long id) throws ConnectionException {
+		return null;
 	}
 
 

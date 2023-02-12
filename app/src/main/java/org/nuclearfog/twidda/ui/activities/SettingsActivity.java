@@ -85,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	/**
 	 * total count of all colors defined
 	 */
-	private static final int COLOR_COUNT = 10;
+	private static final int COLOR_COUNT = 11;
 	// app colors
 	private static final int COLOR_BACKGROUND = 0;
 	private static final int COLOR_TEXT = 1;
@@ -97,6 +97,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private static final int COLOR_FAVORITE = 7;
 	private static final int COLOR_FOLLOW_REQUEST = 8;
 	private static final int COLOR_FOLLOWING = 9;
+	private static final int COLOR_BOOKMARK = 10;
 
 	private GlobalSettings settings;
 	private Configuration configuration;
@@ -159,6 +160,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		colorButtons[COLOR_FAVORITE] = findViewById(R.id.color_fav);
 		colorButtons[COLOR_FOLLOW_REQUEST] = findViewById(R.id.color_f_req);
 		colorButtons[COLOR_FOLLOWING] = findViewById(R.id.color_follow);
+		colorButtons[COLOR_BOOKMARK] = findViewById(R.id.color_bookmark);
 		proxyAddr = findViewById(R.id.edit_proxy_address);
 		proxyPort = findViewById(R.id.edit_proxy_port);
 		proxyUser = findViewById(R.id.edit_proxyuser);

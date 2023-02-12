@@ -104,6 +104,11 @@ public interface Status extends Serializable, Comparable<Status> {
 	boolean isFavorited();
 
 	/**
+	 * @return true if status is bookmarked by the current user
+	 */
+	boolean isBookmarked();
+
+	/**
 	 * @return true if status is hidden by current user
 	 */
 	boolean isHidden();
@@ -124,6 +129,13 @@ public interface Status extends Serializable, Comparable<Status> {
 	 */
 	@NonNull
 	Media[] getMedia();
+
+	/**
+	 *
+	 * @return array of custom emojis
+	 */
+	@NonNull
+	Emoji[] getEmojis();
 
 	/**
 	 * @return name of the location if attached

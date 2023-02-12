@@ -95,6 +95,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_LOOKUP_USER = "/api/v1/accounts/lookup";
 	private static final String ENDPOINT_USERLIST = "/api/v1/lists/";
 	private static final String ENDPOINT_NOTIFICATION = "/api/v1/notifications";
+	private static final String ENDPOINT_BOOKMARKS = "/api/v1/bookmarks";
 	private static final String ENDPOINT_UPLOAD_MEDIA = "/api/v2/media";
 	private static final String ENDPOINT_MEDIA_STATUS = "/api/v1/media/";
 	private static final String ENDPOINT_UPDATE_CREDENTIALS = "/api/v1/accounts/update_credentials";
@@ -455,6 +456,12 @@ public class Mastodon implements Connection {
 
 
 	@Override
+	public List<Status> getUserBookmarks(long minId, long maxId) throws MastodonException {
+		return getStatuses(ENDPOINT_BOOKMARKS, new ArrayList<>(), minId, maxId);
+	}
+
+
+	@Override
 	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws MastodonException {
 		return getStatuses(ENDPOINT_LIST_TIMELINE + id, new ArrayList<>(0), minId, maxId);
 	}
@@ -504,6 +511,20 @@ public class Mastodon implements Connection {
 	public Status removeRepost(long id) throws MastodonException {
 		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unreblog", new ArrayList<>());
 		status.unreblog();
+		return status;
+	}
+
+
+	@Override
+	public Status bookmarkStatus(long id) throws ConnectionException {
+		return postStatus(ENDPOINT_STATUS + id + "/bookmark", new ArrayList<>());
+	}
+
+
+	@Override
+	public Status removeBookmark(long id) throws ConnectionException {
+		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unbookmark", new ArrayList<>());
+		status.removeBookmark();
 		return status;
 	}
 

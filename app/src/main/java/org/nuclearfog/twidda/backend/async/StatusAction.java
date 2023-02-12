@@ -63,10 +63,20 @@ public class StatusAction extends AsyncTask<Long, Status, Boolean> {
 	public static final int UNHIDE = 8;
 
 	/**
+	 * bookmark status
+	 */
+	public static final int BOOKMARK = 9;
+
+	/**
+	 * remove bookmark from status
+	 */
+	public static final int UNBOOKMARK = 10;
+
+	/**
 	 * delete status
 	 * (delete operation, "status ID" required)
 	 */
-	public static final int DELETE = 9;
+	public static final int DELETE = 20;
 
 	private Connection connection;
 	private WeakReference<StatusActivity> weakRef;
@@ -138,13 +148,25 @@ public class StatusAction extends AsyncTask<Long, Status, Boolean> {
 				case FAVORITE:
 					status = connection.favoriteStatus(ids[0]);
 					publishProgress(status);
-					db.saveToFavorites(status);
+					db.addToFavorits(status);
 					return true;
 
 				case UNFAVORITE:
 					status = connection.unfavoriteStatus(ids[0]);
 					publishProgress(status);
-					db.removeFavorite(status);
+					db.removeFromFavorite(status);
+					return true;
+
+				case BOOKMARK:
+					status = connection.bookmarkStatus(ids[0]);
+					publishProgress(status);
+					db.addToBookmarks(status);
+					return true;
+
+				case UNBOOKMARK:
+					status = connection.removeBookmark(ids[0]);
+					publishProgress(status);
+					db.removeFromBookmarks(status);
 					return true;
 
 				case HIDE:

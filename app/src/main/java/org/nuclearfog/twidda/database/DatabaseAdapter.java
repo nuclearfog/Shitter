@@ -75,11 +75,23 @@ public class DatabaseAdapter {
 	 */
 	private static final String TABLE_FAVORITES = "CREATE TABLE IF NOT EXISTS "
 			+ FavoriteTable.NAME + "("
-			+ FavoriteTable.FAVORITER_ID + " INTEGER,"
+			+ FavoriteTable.OWNER_ID + " INTEGER,"
 			+ FavoriteTable.STATUS_ID + " INTEGER,"
-			+ "FOREIGN KEY(" + FavoriteTable.FAVORITER_ID + ")"
+			+ "FOREIGN KEY(" + FavoriteTable.OWNER_ID + ")"
 			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "),"
 			+ "FOREIGN KEY(" + FavoriteTable.STATUS_ID + ")"
+			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
+
+	/**
+	 * SQL query to create a table for favorite list
+	 */
+	private static final String TABLE_BOOKMARKS = "CREATE TABLE IF NOT EXISTS "
+			+ BookmarkTable.NAME + "("
+			+ BookmarkTable.OWNER_ID + " INTEGER,"
+			+ BookmarkTable.STATUS_ID + " INTEGER,"
+			+ "FOREIGN KEY(" + BookmarkTable.OWNER_ID + ")"
+			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "),"
+			+ "FOREIGN KEY(" + BookmarkTable.STATUS_ID + ")"
 			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
 
 	/**
@@ -320,6 +332,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_USER);
 		db.execSQL(TABLE_STATUS);
 		db.execSQL(TABLE_FAVORITES);
+		db.execSQL(TABLE_BOOKMARKS);
 		db.execSQL(TABLE_TRENDS);
 		db.execSQL(TABLE_MESSAGES);
 		db.execSQL(TABLE_ACCOUNTS);
@@ -553,7 +566,27 @@ public class DatabaseAdapter {
 		/**
 		 * ID of the user of this favored status
 		 */
-		String FAVORITER_ID = "ownerID";
+		String OWNER_ID = "ownerID";
+	}
+
+	/**
+	 * status bookmark table
+	 */
+	public interface BookmarkTable {
+		/**
+		 * table name
+		 */
+		String NAME = "bookmarks";
+
+		/**
+		 * ID of the status
+		 */
+		String STATUS_ID = "tweetID";
+
+		/**
+		 * ID of the user of this bookmarks
+		 */
+		String OWNER_ID = "ownerID";
 	}
 
 	/**

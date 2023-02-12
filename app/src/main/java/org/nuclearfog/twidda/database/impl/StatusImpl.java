@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.database.impl;
 
+import static org.nuclearfog.twidda.database.AppDatabase.BOOKMARK_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.FAVORITE_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.HIDDEN_MASK;
 import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_SENS_MASK;
@@ -15,6 +16,7 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
@@ -46,6 +48,7 @@ public class StatusImpl implements Status {
 	private Status embedded;
 	private String[] mediaKeys = {};
 	private Media[] medias = {};
+	private Emoji[] emojis = {};
 	private User author;
 	private Location location;
 	private int repostCount;
@@ -58,6 +61,7 @@ public class StatusImpl implements Status {
 	private String statusUrl;
 	private boolean reposted;
 	private boolean favorited;
+	private boolean bookmarked;
 	private boolean sensitive;
 	private boolean isHidden;
 
@@ -90,6 +94,7 @@ public class StatusImpl implements Status {
 		reposted = (register & REPOST_MASK) != 0;
 		sensitive = (register & MEDIA_SENS_MASK) != 0;
 		isHidden = (register & HIDDEN_MASK) != 0;
+		bookmarked = (register & BOOKMARK_MASK) != 0;
 		if (mediaKeys != null && !mediaKeys.isEmpty()) {
 			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
 		}
@@ -188,6 +193,13 @@ public class StatusImpl implements Status {
 	}
 
 
+	@NonNull
+	@Override
+	public Emoji[] getEmojis() {
+		return emojis;
+	}
+
+
 	@Override
 	public String getUserMentions() {
 		return userMentions;
@@ -209,6 +221,12 @@ public class StatusImpl implements Status {
 	@Override
 	public boolean isFavorited() {
 		return favorited;
+	}
+
+
+	@Override
+	public boolean isBookmarked() {
+		return bookmarked;
 	}
 
 

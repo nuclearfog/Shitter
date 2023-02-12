@@ -64,6 +64,11 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 	 */
 	public static final int PUBLIC = 9;
 
+	/**
+	 * bookmark timeline
+	 */
+	public static final int BOOKMARKS = 10;
+
 
 	private WeakReference<StatusFragment> weakRef;
 	private Connection connection;
@@ -104,32 +109,32 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 		try {
 			switch (listType) {
 				case HOME:
-					if (sinceId == 0 && maxId == 0) {
+					if (sinceId == 0L && maxId == 0L) {
 						statuses = db.getHomeTimeline();
 						if (statuses.isEmpty()) {
 							statuses = connection.getHomeTimeline(sinceId, maxId);
 							db.saveHomeTimeline(statuses);
 						}
-					} else if (sinceId > 0) {
+					} else if (sinceId > 0L) {
 						statuses = connection.getHomeTimeline(sinceId, maxId);
 						db.saveHomeTimeline(statuses);
-					} else if (maxId > 1) {
+					} else if (maxId > 1L) {
 						statuses = connection.getHomeTimeline(sinceId, maxId);
 					}
 					break;
 
 				case USER:
-					if (id > 0) {
-						if (sinceId == 0 && maxId == 0) {
+					if (id > 0L) {
+						if (sinceId == 0L && maxId == 0L) {
 							statuses = db.getUserTimeline(id);
 							if (statuses.isEmpty()) {
-								statuses = connection.getUserTimeline(id, 0, maxId);
+								statuses = connection.getUserTimeline(id, 0L, maxId);
 								db.saveUserTimeline(statuses);
 							}
-						} else if (sinceId > 0) {
+						} else if (sinceId > 0L) {
 							statuses = connection.getUserTimeline(id, sinceId, maxId);
 							db.saveUserTimeline(statuses);
-						} else if (maxId > 1) {
+						} else if (maxId > 1L) {
 							statuses = connection.getUserTimeline(id, sinceId, maxId);
 						}
 					} else if (search != null) {
@@ -138,22 +143,39 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 					break;
 
 				case FAVORIT:
-					if (id > 0) {
-						if (sinceId == 0 && maxId == 0) {
+					if (id > 0L) {
+						if (sinceId == 0L && maxId == 0L) {
 							statuses = db.getUserFavorites(id);
 							if (statuses.isEmpty()) {
-								statuses = connection.getUserFavorits(id, 0, maxId);
+								statuses = connection.getUserFavorits(id, 0L, maxId);
 								db.saveFavoriteTimeline(statuses, id);
 							}
-						} else if (sinceId > 0) {
-							statuses = connection.getUserFavorits(id, 0, maxId);
+						} else if (sinceId > 0L) {
+							statuses = connection.getUserFavorits(id, 0L, maxId);
 							db.saveFavoriteTimeline(statuses, id);
 							pos = CLEAR_LIST; // set flag to clear previous data
-						} else if (maxId > 1) {
+						} else if (maxId > 1L) {
 							statuses = connection.getUserFavorits(id, sinceId, maxId);
 						}
 					} else if (search != null) {
 						statuses = connection.getUserFavorits(search, sinceId, maxId);
+					}
+					break;
+
+				case BOOKMARKS:
+					if (id > 0L) {
+						if (sinceId == 0L && maxId == 0L) {
+							statuses = db.getUserBookmarks(id);
+							if (statuses.isEmpty()) {
+								statuses = connection.getUserBookmarks(0L, maxId);
+								db.saveBookmarkTimeline(statuses, id);
+							}
+						} else if (sinceId > 0L) {
+							statuses = connection.getUserBookmarks(sinceId, maxId);
+							db.saveBookmarkTimeline(statuses, id);
+						} else if (maxId > 1L) {
+							statuses = connection.getUserBookmarks(sinceId, maxId);
+						}
 					}
 					break;
 
@@ -162,7 +184,7 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 					break;
 
 				case REPLIES:
-					if (sinceId == 0 && maxId == 0) {
+					if (sinceId == 0L && maxId == 0L) {
 						statuses = db.getReplies(id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getStatusReplies(id, sinceId, maxId, search);
@@ -170,12 +192,12 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 								db.saveReplyTimeline(statuses);
 							}
 						}
-					} else if (sinceId > 0) {
+					} else if (sinceId > 0L) {
 						statuses = connection.getStatusReplies(id, sinceId, maxId, search);
 						if (!statuses.isEmpty() && db.containsStatus(id)) {
 							db.saveReplyTimeline(statuses);
 						}
-					} else if (maxId > 1) {
+					} else if (maxId > 1L) {
 						statuses = connection.getStatusReplies(id, sinceId, maxId, search);
 					}
 					break;

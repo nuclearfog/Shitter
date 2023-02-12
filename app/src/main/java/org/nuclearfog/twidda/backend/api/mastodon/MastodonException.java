@@ -85,8 +85,10 @@ public class MastodonException extends ConnectionException {
 	public int getErrorCode() {
 		switch (errorCode) {
 			case 404:
-				if (errorMessage.startsWith(MESSAGE_NOT_FOUND))
+				if (errorMessage.startsWith(MESSAGE_NOT_FOUND)) {
 					return RESOURCE_NOT_FOUND;
+				}
+				// fall through
 
 			case 401:
 			case 403:
@@ -94,9 +96,6 @@ public class MastodonException extends ConnectionException {
 
 			case 429:
 				return RATE_LIMIT_EX;
-
-			case 422:
-				return INVALID_MEDIA;
 
 			case 503:
 				return SERVICE_UNAVAILABLE;

@@ -306,6 +306,15 @@ public interface Connection {
 	List<Status> getUserFavorits(String name, long minId, long maxId) throws ConnectionException;
 
 	/**
+	 * show statuses with bookmarks
+	 *
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
+	 * @return list of statuses
+	 */
+	List<Status> getUserBookmarks(long minId, long maxId) throws ConnectionException;
+
+	/**
 	 * return timeline from an user list
 	 *
 	 * @param id    ID of the list
@@ -361,22 +370,38 @@ public interface Connection {
 	/**
 	 * remove repost
 	 *
-	 * @param id ID of the reposted status
+	 * @param id status ID
 	 * @return updated status
 	 */
 	Status removeRepost(long id) throws ConnectionException;
 
 	/**
+	 * bookmark status
+	 *
+	 * @param id status ID
+	 * @return updated status
+	 */
+	Status bookmarkStatus(long id) throws ConnectionException;
+
+	/**
+	 * remove status from the bookmarks
+	 *
+	 * @param id status ID
+	 * @return updated status
+	 */
+	Status removeBookmark(long id) throws ConnectionException;
+
+	/**
 	 * mute a status from conversation
 	 *
-	 * @param id ID of the status
+	 * @param id status ID
 	 */
 	void muteConversation(long id) throws ConnectionException;
 
 	/**
 	 * unmute a status from conversation
 	 *
-	 * @param id ID of the status
+	 * @param id status ID
 	 */
 	void unmuteConversation(long id) throws ConnectionException;
 

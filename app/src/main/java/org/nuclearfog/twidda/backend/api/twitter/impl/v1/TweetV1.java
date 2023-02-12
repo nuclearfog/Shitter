@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
@@ -196,7 +197,6 @@ public class TweetV1 implements Status {
 
 	@Override
 	public long getConversationId() {
-		// note: does not show the root tweet of the conversation
 		return replyTweetId;
 	}
 
@@ -233,6 +233,13 @@ public class TweetV1 implements Status {
 	}
 
 
+	@NonNull
+	@Override
+	public Emoji[] getEmojis() {
+		return new Emoji[0];
+	}
+
+
 	@Override
 	public String getUserMentions() {
 		return userMentions;
@@ -254,6 +261,12 @@ public class TweetV1 implements Status {
 	@Override
 	public boolean isFavorited() {
 		return isFavorited;
+	}
+
+
+	@Override
+	public boolean isBookmarked() {
+		return false;
 	}
 
 

@@ -160,7 +160,7 @@
 						android:text="@string/settings_follow_req_color"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/color_rt"
-						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintBottom_toTopOf="@id/color_bookmark"
 						app:layout_constraintEnd_toStartOf="@id/color_follow"
 						style="@style/ColorButton" />
 
@@ -172,9 +172,31 @@
 						android:text="@string/settings_follow_color"
 						app:layout_constraintStart_toEndOf="@id/color_f_req"
 						app:layout_constraintTop_toBottomOf="@id/color_fav"
-						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintBottom_toTopOf="@id/color_placeholder"
 						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/ColorButton" />
+
+					<Button
+						android:id="@+id/color_bookmark"
+						android:layout_width="0dp"
+						android:layout_height="@dimen/settings_color_button_height"
+						android:layout_margin="@dimen/settings_color_button_margin"
+						android:text="@string/settings_bookmark_color"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/color_f_req"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toStartOf="@id/color_placeholder"
+						style="@style/ColorButton" />
+
+					<View
+						android:id="@+id/color_placeholder"
+						android:layout_width="0dp"
+						android:layout_height="@dimen/settings_color_button_height"
+						android:layout_margin="@dimen/settings_color_button_margin"
+						app:layout_constraintStart_toEndOf="@id/color_bookmark"
+						app:layout_constraintTop_toBottomOf="@id/color_follow"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toEndOf="parent" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
 

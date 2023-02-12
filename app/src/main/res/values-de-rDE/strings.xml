@@ -265,4 +265,7 @@
 	<string name="info_missing_host">bitte gültigen Hostnamen eingeben</string>
 	<string name="info_missing_api_keys">Bitte API-Schlüssel hinzufügen</string>
 	<string name="menu_show_local_timeline">zeige lokale Timeline</string>
+	<string name="info_tweet_bookmarked">Status zu Lesezeichen hinzugefügt</string>
+	<string name="info_tweet_unbookmarked">Status aus Lesezeichen entfernt</string>
+	<string name="settings_bookmark_color">Lesezeichen symbol</string>
 </resources>

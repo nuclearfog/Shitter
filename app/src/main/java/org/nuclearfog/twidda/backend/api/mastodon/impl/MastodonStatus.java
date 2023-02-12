@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
@@ -30,8 +31,14 @@ public class MastodonStatus implements Status {
 	private long replyUserId;
 	private long createdAt;
 
-	private int replyCount, favoriteCount, reblogCount;
-	private boolean favorited, reblogged, sensitive, muted;
+	private int replyCount;
+	private int favoriteCount;
+	private int reblogCount;
+	private boolean favorited;
+	private boolean reblogged;
+	private boolean bookmarked;
+	private boolean sensitive;
+	private boolean muted;
 
 	private String text;
 	private String mentions;
@@ -43,6 +50,7 @@ public class MastodonStatus implements Status {
 	private Status embeddedStatus;
 	private Card[] cards = {};
 	private Media[] medias = {};
+	private Emoji[] emojis = {};
 
 	/**
 	 * @param json          Mastodon status json object
@@ -55,6 +63,7 @@ public class MastodonStatus implements Status {
 		JSONObject pollJson = json.optJSONObject("poll");
 		JSONArray mentionsJson = json.optJSONArray("mentions");
 		JSONArray mediaArray = json.optJSONArray("media_attachments");
+		JSONArray emojiArray = json.optJSONArray("emojis");
 		String replyIdStr = json.optString("in_reply_to_id", "0");
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
 		String idStr = json.getString("id");
@@ -69,6 +78,7 @@ public class MastodonStatus implements Status {
 		favorited = json.optBoolean("favourited", false);
 		reblogged = json.optBoolean("reblogged", false);
 		sensitive = json.optBoolean("sensitive", false);
+		bookmarked = json.optBoolean("bookmarked", false);
 		text = json.optString("content", "");
 		text = Jsoup.parse(text).text();
 		mentions = author.getScreenname() + ' ';
@@ -89,7 +99,7 @@ public class MastodonStatus implements Status {
 				medias[i] = new MastodonMedia(mediaItem);
 			}
 		}
-		if (mentionsJson != null) {
+		if (mentionsJson != null && mentionsJson.length() > 0) {
 			StringBuilder mentionsBuilder = new StringBuilder(mentions);
 			for (int i = 0; i < mentionsJson.length(); i++) {
 				String mention = '@' + mentionsJson.getJSONObject(i).getString("acct");
@@ -98,6 +108,13 @@ public class MastodonStatus implements Status {
 				}
 			}
 			mentions = mentionsBuilder.toString();
+		}
+		if (emojiArray != null && emojiArray.length() > 0) {
+			emojis = new Emoji[emojiArray.length()];
+			for ( int i = 0 ; i < emojis.length; i++) {
+				JSONObject emojiJson = emojiArray.getJSONObject(i);
+				emojis[i] = new CustomEmoji(emojiJson);
+			}
 		}
 		if (appJson != null) {
 			source = appJson.optString("name", "");
@@ -176,7 +193,7 @@ public class MastodonStatus implements Status {
 
 	@Override
 	public long getConversationId() {
-		return 0; // todo add implementation
+		return replyId;
 	}
 
 
@@ -211,6 +228,13 @@ public class MastodonStatus implements Status {
 	}
 
 
+	@NonNull
+	@Override
+	public Emoji[] getEmojis() {
+		return emojis;
+	}
+
+
 	@Override
 	public String getUserMentions() {
 		return mentions;
@@ -232,6 +256,12 @@ public class MastodonStatus implements Status {
 	@Override
 	public boolean isFavorited() {
 		return favorited;
+	}
+
+
+	@Override
+	public boolean isBookmarked() {
+		return bookmarked;
 	}
 
 
@@ -300,6 +330,9 @@ public class MastodonStatus implements Status {
 	 * correct retweet count
 	 */
 	public void unreblog() {
+		if (embeddedStatus instanceof MastodonStatus) {
+			((MastodonStatus) embeddedStatus).unreblog();
+		}
 		if (reblogCount > 0) {
 			reblogCount--;
 		}
@@ -310,9 +343,22 @@ public class MastodonStatus implements Status {
 	 * correct favorite count
 	 */
 	public void unfavorite() {
+		if (embeddedStatus instanceof MastodonStatus) {
+			((MastodonStatus) embeddedStatus).unfavorite();
+		}
 		if (favoriteCount > 0) {
 			favoriteCount--;
 		}
 		favorited = false;
+	}
+
+	/**
+	 * remove status bookmark
+	 */
+	public void removeBookmark() {
+		if (embeddedStatus instanceof MastodonStatus) {
+			((MastodonStatus) embeddedStatus).removeBookmark();
+		}
+		bookmarked = false;
 	}
 }

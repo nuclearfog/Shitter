@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.PollV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Metrics;
@@ -313,6 +314,13 @@ public class TweetV2 implements Status {
 	}
 
 
+	@NonNull
+	@Override
+	public Emoji[] getEmojis() {
+		return new Emoji[0];
+	}
+
+
 	@Override
 	public String getUserMentions() {
 		return mentions;
@@ -334,6 +342,12 @@ public class TweetV2 implements Status {
 	@Override
 	public boolean isFavorited() {
 		return favorited;
+	}
+
+
+	@Override
+	public boolean isBookmarked() {
+		return false;
 	}
 
 
