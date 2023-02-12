@@ -34,8 +34,8 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	/**
 	 * Key to define what type of status should be loaded
-	 * possible values are {@link #STATUS_FRAGMENT_HOME,#STATUS_FRAGMENT_MENTION,#STATUS_FRAGMENT_USER}
-	 * and {@link #STATUS_FRAGMENT_FAVORIT,#STATUS_FRAGMENT_REPLY,#STATUS_FRAGMENT_SEARCH,#STATUS_FRAGMENT_USERLIST,#STATUS_FRAGMENT_PUBLIC}
+	 * possible values are {@link #STATUS_FRAGMENT_HOME,#STATUS_FRAGMENT_MENTION,#STATUS_FRAGMENT_USER,#STATUS_FRAGMENT_FAVORIT}
+	 * and {@link #STATUS_FRAGMENT_REPLY,#STATUS_FRAGMENT_SEARCH,#STATUS_FRAGMENT_USERLIST,#STATUS_FRAGMENT_PUBLIC,#STATUS_FRAGMENT_BOOKMARK}
 	 */
 	public static final String KEY_STATUS_FRAGMENT_MODE = "status_mode";
 
@@ -99,6 +99,13 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 * @see #KEY_STATUS_FRAGMENT_MODE
 	 */
 	public static final int STATUS_FRAGMENT_PUBLIC = 0x6125C6D6;
+
+	/**
+	 * setup list for bookmark timeline
+	 *
+	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 */
+	public static final int STATUS_FRAGMENT_BOOKMARK = 0x7F493A4C;
 
 	/**
 	 * replace all items from list
@@ -272,6 +279,11 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 			case STATUS_FRAGMENT_PUBLIC:
 				statusAsync = new StatusLoader(this, StatusLoader.PUBLIC, id, search, index);
+				statusAsync.execute(sinceId, maxId);
+				break;
+
+			case STATUS_FRAGMENT_BOOKMARK:
+				statusAsync = new StatusLoader(this, StatusLoader.BOOKMARKS, id, search, index);
 				statusAsync.execute(sinceId, maxId);
 				break;
 		}

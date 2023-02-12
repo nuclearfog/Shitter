@@ -173,7 +173,7 @@ public class TwitterV1 implements Connection {
 	public TwitterV1(Context context) {
 		settings = GlobalSettings.getInstance(context);
 		tokens = Tokens.getInstance(context);
-		client = ConnectionBuilder.create(context, 0);
+		client = ConnectionBuilder.create(context);
 		db = new AppDatabase(context);
 	}
 
@@ -660,24 +660,25 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public Status bookmarkStatus(long id) throws ConnectionException {
-		return null;
+		throw new TwitterException("not supported!");
 	}
 
 
 	@Override
 	public Status removeBookmark(long id) throws ConnectionException {
-		return null;
+		throw new TwitterException("not supported!");
 	}
 
 
 	@Override
 	public void muteConversation(long id) throws TwitterException {
+		throw new TwitterException("not supported!");
 	}
 
 
 	@Override
 	public void unmuteConversation(long id) throws TwitterException {
-		// not supported in API version 1.1
+		throw new TwitterException("not supported!");
 	}
 
 

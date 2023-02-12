@@ -182,7 +182,7 @@ public class MastodonUser implements User {
 
 	@Override
 	public int getFavoriteCount() {
-		return 0;
+		return -1;
 	}
 
 

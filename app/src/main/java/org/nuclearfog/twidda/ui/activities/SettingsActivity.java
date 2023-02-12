@@ -336,61 +336,66 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		else if (v.getId() == R.id.color_background) {
 			mode = COLOR_BACKGROUND;
 			color = settings.getBackgroundColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set font color
 		else if (v.getId() == R.id.color_text) {
 			mode = COLOR_TEXT;
 			color = settings.getFontColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set popup color
 		else if (v.getId() == R.id.color_window) {
 			mode = COLOR_WINDOW;
 			color = settings.getPopupColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set highlight color
 		else if (v.getId() == R.id.highlight_color) {
 			mode = COLOR_HIGHLIGHT;
 			color = settings.getHighlightColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set card color
 		else if (v.getId() == R.id.color_card) {
 			mode = COLOR_CARD;
 			color = settings.getCardColor();
-			setColor(color, true);
+			showColorPicker(color, true);
 		}
 		// set icon color
 		else if (v.getId() == R.id.color_icon) {
 			mode = COLOR_ICON;
 			color = settings.getIconColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set repost icon color
 		else if (v.getId() == R.id.color_rt) {
 			mode = COLOR_REPOST;
 			color = settings.getRepostIconColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set favorite icon color
 		else if (v.getId() == R.id.color_fav) {
 			mode = COLOR_FAVORITE;
 			color = settings.getFavoriteIconColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set follow icon color
 		else if (v.getId() == R.id.color_f_req) {
 			mode = COLOR_FOLLOW_REQUEST;
 			color = settings.getFollowPendingColor();
-			setColor(color, false);
+			showColorPicker(color, false);
 		}
 		// set follow icon color
 		else if (v.getId() == R.id.color_follow) {
 			mode = COLOR_FOLLOWING;
 			color = settings.getFollowIconColor();
-			setColor(color, false);
+			showColorPicker(color, false);
+		}
+		else if (v.getId() == R.id.color_bookmark) {
+			mode = COLOR_BOOKMARK;
+			color = settings.getBookmarkColor();
+			showColorPicker(color, false);
 		}
 	}
 
@@ -467,6 +472,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				case COLOR_FOLLOWING:
 					settings.setFollowIconColor(color);
 					AppStyles.setColorButton(colorButtons[COLOR_FOLLOWING], color);
+					break;
+
+				case COLOR_BOOKMARK:
+					settings.setbookmarkColor(color);
+					AppStyles.setColorButton(colorButtons[COLOR_BOOKMARK], color);
 					break;
 			}
 		}
@@ -608,7 +618,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 * @param preColor    preselected color
 	 * @param enableAlpha true to enable alpha slider
 	 */
-	private void setColor(int preColor, boolean enableAlpha) {
+	private void showColorPicker(int preColor, boolean enableAlpha) {
 		if (color_dialog_selector == null || !color_dialog_selector.isShowing()) {
 			color_dialog_selector = ColorPickerDialogBuilder.with(this)
 					.showAlphaSlider(enableAlpha).initialColor(preColor)

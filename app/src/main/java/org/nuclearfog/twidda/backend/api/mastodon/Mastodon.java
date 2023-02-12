@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
@@ -67,10 +68,15 @@ public class Mastodon implements Connection {
 	 */
 	private static final String DEFAULT_HOST = "https://mastodon.social";
 
+	/**
+	 * scopes used by this app
+	 */
 	private static final String AUTH_SCOPES = "read%20write%20follow";
+
+	/**
+	 * oauth no redirect (oob)
+	 */
 	private static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
-	private static final String AUTH_WEBSITE = "https://github.com/nuclearfog/Shitter";
-	private static final String AUTH_NAME = "SH1TT3R";
 
 	// Mastodon endpoints see https://docs.joinmastodon.org/methods/
 	private static final String ENDPOINT_REGISTER_APP = "/api/v1/apps";
@@ -104,16 +110,19 @@ public class Mastodon implements Connection {
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
 
-
 	private GlobalSettings settings;
 	private OkHttpClient client;
+	private String app_name;
+	private String app_website;
 
 	/**
 	 *
 	 */
 	public Mastodon(Context context) {
 		settings = GlobalSettings.getInstance(context);
-		client = ConnectionBuilder.create(context, 0);
+		client = ConnectionBuilder.create(context);
+		app_name = context.getString(R.string.app_name_api);
+		app_website = context.getString(R.string.app_website);
 	}
 
 
@@ -123,8 +132,8 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("scopes=" + AUTH_SCOPES);
 		params.add("redirect_uris=" + REDIRECT_URI);
-		params.add("client_name=" + AUTH_NAME);
-		params.add("website=" + AUTH_WEBSITE);
+		params.add("client_name=" + app_name);
+		params.add("website=" + app_website);
 		if (connection.useHost()) {
 			hostname = connection.getHostname();
 		} else {

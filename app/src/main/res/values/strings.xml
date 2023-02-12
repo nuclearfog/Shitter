@@ -2,7 +2,8 @@
 <resources>
 	<!--app/repository dependent strings-->
 	<string name="app_name" translatable="false">Shitter</string>
-	<string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
+	<string name="app_name_api" translatable="false">SH1TT3R</string>
+	<string name="app_website" translatable="false">https://github.com/nuclearfog/Shitter</string>
 
 	<!-- toast messages to inform user -->
 	<string name="info_list_removed">Userlist removed</string>

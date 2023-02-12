@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.ui.adapter;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_ID;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_MODE;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_BOOKMARK;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_FAVORIT;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_HOME;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_PUBLIC;
@@ -138,24 +139,47 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * setup adapter for viewing user timeline and favorites
 	 *
 	 * @param userId  ID of the user
-	 * @param account true to enable favorite page
 	 */
-	public void setupProfilePage(long userId, Account account) {
+	public void setupProfilePage(long userId) {
 		Bundle paramTimeline = new Bundle();
+		Bundle paramFavorite = new Bundle();
+		Bundle paramBookmark = new Bundle();
 		paramTimeline.putLong(KEY_STATUS_FRAGMENT_ID, userId);
+		paramFavorite.putLong(KEY_STATUS_FRAGMENT_ID, userId);
+		paramBookmark.putLong(KEY_STATUS_FRAGMENT_ID, userId);
 		paramTimeline.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_USER);
-		if (account.getId() == userId || account.getConfiguration().favoritsEnabled()) {
-			Bundle paramFavorite = new Bundle();
-			paramFavorite.putLong(KEY_STATUS_FRAGMENT_ID, userId);
-			paramFavorite.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_FAVORIT);
-			fragments = new ListFragment[2];
-			fragments[1] = new StatusFragment();
-			fragments[1].setArguments(paramFavorite);
-		} else {
-			fragments = new ListFragment[1];
+		paramFavorite.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_FAVORIT);
+		paramBookmark.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_BOOKMARK);
+
+		Account login = settings.getLogin();
+		switch(login.getConfiguration()) {
+			case MASTODON:
+				if (login.getId() == userId) {
+					fragments = new ListFragment[3];
+					fragments[1] = new StatusFragment();
+					fragments[2] = new StatusFragment();
+					fragments[1].setArguments(paramFavorite);
+					fragments[2].setArguments(paramBookmark);
+				} else {
+					fragments = new ListFragment[1];
+				}
+				fragments[0] = new StatusFragment();
+				fragments[0].setArguments(paramTimeline);
+				break;
+
+			case TWITTER1:
+			case TWITTER2:
+				fragments = new ListFragment[2];
+				fragments[0] = new StatusFragment();
+				fragments[0].setArguments(paramTimeline);
+				fragments[1] = new StatusFragment();
+				fragments[1].setArguments(paramFavorite);
+				break;
+
+			default:
+				fragments = new ListFragment[0];
+				break;
 		}
-		fragments[0] = new StatusFragment();
-		fragments[0].setArguments(paramTimeline);
 		notifyDataSetChanged();
 	}
 

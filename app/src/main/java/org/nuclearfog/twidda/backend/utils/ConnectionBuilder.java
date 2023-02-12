@@ -29,7 +29,17 @@ public class ConnectionBuilder {
 	}
 
 	/**
-	 * create OkHttpClient instance
+	 * create OkHttp instance
+	 *
+	 * @param context   application context to initialize
+	 * @return OkHttpClient instance
+	 */
+	public static OkHttpClient create(Context context) {
+		return create(context, 0);
+	}
+
+	/**
+	 * create OkHttpClient instance with cache enabled
 	 *
 	 * @param context   application context to initialize
 	 * @param cacheSize cache size

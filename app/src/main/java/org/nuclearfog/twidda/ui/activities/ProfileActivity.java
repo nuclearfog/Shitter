@@ -215,10 +215,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
 		if (o instanceof User) {
 			user = (User) o;
-			adapter.setupProfilePage(user.getId(), settings.getLogin());
+			adapter.setupProfilePage(user.getId());
 		} else {
 			long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
-			adapter.setupProfilePage(userId, settings.getLogin());
+			adapter.setupProfilePage(userId);
 		}
 		if (settings.likeEnabled()) {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);

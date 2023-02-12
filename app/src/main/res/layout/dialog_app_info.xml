@@ -27,7 +27,7 @@
 		android:padding="@dimen/infopopup_text_padding"
 		android:autoLink="web"
 		android:linksClickable="true"
-		android:text="@string/settings_info_link" />
+		android:text="@string/app_website" />
 
 	<TextView
 		android:layout_width="match_parent"
