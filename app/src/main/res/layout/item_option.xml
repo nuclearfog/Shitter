@@ -1,42 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="horizontal"
-	android:gravity="center_vertical">
-
-	<TextView
-		android:id="@+id/item_option_name"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:textSize="@dimen/item_option_text_size"
-		android:lines="1"
-		android:layout_margin="@dimen/item_option_layout_margin" />
-
-	<SeekBar
-		android:id="@+id/item_option_count_bar"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_weight="3"
-		android:layout_margin="@dimen/item_option_layout_margin"
-		android:thumb="@null" />
-
-	<TextView
-		android:id="@+id/item_option_count_text"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:gravity="end"
-		android:textSize="@dimen/item_option_text_size"
-		android:lines="1"
-		android:layout_margin="@dimen/item_option_layout_margin" />
+	android:padding="@dimen/item_option_layout_padding">
 
 	<ImageView
 		android:id="@+id/item_option_voted_icon"
 		android:layout_width="@dimen/item_option_icon_size"
 		android:layout_height="@dimen/item_option_icon_size"
-		android:layout_margin="@dimen/item_option_layout_margin"
-		android:contentDescription="@string/description_poll_vote_icon" />
+		android:contentDescription="@string/description_poll_vote_icon"
+		android:layout_marginEnd="@dimen/item_option_button_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/item_option_button_barrier"/>
 
-</LinearLayout>
+	<androidx.constraintlayout.widget.Barrier
+		android:id="@+id/item_option_button_barrier"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:barrierDirection="start"
+		app:constraint_referenced_ids="item_option_count_bar,item_option_name" />
+
+	<TextView
+		android:id="@+id/item_option_name"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:textSize="@dimen/item_option_text_size"
+		android:lines="1"
+		android:layout_marginEnd="@dimen/item_option_layout_padding"
+		app:layout_constraintStart_toEndOf="@id/item_option_button_barrier"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/item_option_count_text" />
+
+	<SeekBar
+		android:id="@+id/item_option_count_bar"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:thumb="@android:color/transparent"
+		android:layout_marginEnd="@dimen/item_option_layout_padding"
+		app:layout_constraintHorizontal_weight="3"
+		app:layout_constraintStart_toEndOf="@id/item_option_button_barrier"
+		app:layout_constraintTop_toBottomOf="@id/item_option_name"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/item_option_count_text" />
+
+	<TextView
+		android:id="@+id/item_option_count_text"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:textSize="@dimen/item_option_text_size"
+		android:lines="1"
+		app:layout_constraintHorizontal_weight="1"
+		app:layout_constraintStart_toEndOf="@id/item_option_count_bar"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -153,16 +153,22 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public boolean onCreateOptionsMenu(@NonNull Menu m) {
-		getMenuInflater().inflate(R.menu.home, m);
-		AppStyles.setMenuIconColor(m, settings.getIconColor());
-		MenuItem search = m.findItem(R.id.menu_search);
-		MenuItem localTl = m.findItem(R.id.menu_local_timeline);
+	public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+		getMenuInflater().inflate(R.menu.home, menu);
+		AppStyles.setMenuIconColor(menu, settings.getIconColor());
+		MenuItem search = menu.findItem(R.id.menu_search);
 		SearchView searchView = (SearchView) search.getActionView();
+		searchView.setOnQueryTextListener(this);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem localTl = menu.findItem(R.id.menu_local_timeline);
 		localTl.setVisible(settings.getLogin().getConfiguration() == Configuration.MASTODON);
 		localTl.setChecked(settings.useLocalTimeline());
-		searchView.setOnQueryTextListener(this);
-		return super.onCreateOptionsMenu(m);
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 
