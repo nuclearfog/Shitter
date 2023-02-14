@@ -132,7 +132,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	}
 
 	/**
-	 * add media iconsdepending on type
+	 * add media icons depending on type
 	 */
 	private void addMediaIcons(Media[] medias) {
 		for (Media media : medias) {

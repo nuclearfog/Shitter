@@ -16,11 +16,13 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.CustomEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPoll;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.Messages;
+import org.nuclearfog.twidda.backend.helper.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
@@ -28,6 +30,7 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -35,6 +38,7 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
@@ -109,6 +113,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_UPDATE_CREDENTIALS = "/api/v1/accounts/update_credentials";
 	private static final String ENDPOINT_PUBLIC_TIMELINE = "/api/v1/timelines/public";
 	private static final String ENDPOINT_CUSTOM_EMOJIS = "/api/v1/custom_emojis";
+	private static final String ENDPOINT_POLL = "/api/v1/polls/";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -571,14 +576,23 @@ public class Mastodon implements Connection {
 	@Override
 	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("status=" + StringTools.encode(update.getText()));
 		// add identifier to prevent duplicate posts
 		params.add("Idempotency-Key=" + System.currentTimeMillis() / 5000);
 		params.add("visibility=public");
+		if (update.getText() != null)
+			params.add("status=" + StringTools.encode(update.getText()));
 		if (update.getReplyId() > 0)
 			params.add("in_reply_to_id=" + update.getReplyId());
 		for (long mediaId : mediaIds)
 			params.add("media_ids[]=" + mediaId);
+		if (update.getPoll() != null) {
+			PollUpdate poll = update.getPoll();
+			for (String option : poll.getOptions())
+				params.add("poll[options][]=" + StringTools.encode(option));
+			params.add("poll[expires_in]=" + poll.getValidity());
+			params.add("poll[multiple]=" + poll.multipleChoiceEnabled());
+			params.add("poll[hide_totals]=" + poll.hideTotalVotes());
+		}
 		try {
 			Response response = post(ENDPOINT_STATUS, params);
 			if (response.code() != 200) {
@@ -727,6 +741,26 @@ public class Mastodon implements Connection {
 					result.add(item);
 				}
 				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public Poll vote(VoteUpdate update) throws ConnectionException {
+		List<String> params = new ArrayList<>();
+		for (int choice : update.getSelected()) {
+			params.add("choices[]=" + choice);
+		}
+		try {
+			Response response = post(ENDPOINT_POLL + update.getPollId() + "/votes", params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonPoll(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

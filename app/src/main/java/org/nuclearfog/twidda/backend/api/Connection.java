@@ -8,10 +8,12 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
@@ -535,6 +537,13 @@ public interface Connection {
 	 * @return array of emojis
 	 */
 	List<Emoji> getEmojis() throws ConnectionException;
+
+	/**
+	 * send a vote to a poll
+	 *
+	 * @return updated poll
+	 */
+	Poll vote(VoteUpdate update) throws ConnectionException;
 
 	/**
 	 * returns a list of blocked user IDs

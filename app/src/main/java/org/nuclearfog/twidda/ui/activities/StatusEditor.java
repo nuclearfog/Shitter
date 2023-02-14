@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -44,7 +46,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
  *
  * @author nuclearfog
  */
-public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener, OnMediaClickListener {
+public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener, OnMediaClickListener, TextWatcher {
 
 	/**
 	 * key to add a statusd ID to reply
@@ -59,7 +61,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
 
 	private ImageButton mediaBtn, locationBtn;
-	private EditText statusText;
 	private View locationPending;
 
 	@Nullable
@@ -87,9 +88,9 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		ImageButton statusButton = findViewById(R.id.popup_status_send);
 		ImageButton closeButton = findViewById(R.id.popup_status_close);
 		RecyclerView iconList = findViewById(R.id.popup_status_media_icons);
+		EditText statusText = findViewById(R.id.popup_status_input);
 		locationBtn = findViewById(R.id.popup_status_add_location);
 		mediaBtn = findViewById(R.id.popup_status_add_media);
-		statusText = findViewById(R.id.popup_status_input);
 		locationPending = findViewById(R.id.popup_status_location_loading);
 
 		settings = GlobalSettings.getInstance(this);
@@ -102,7 +103,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		}
 		long inReplyId = getIntent().getLongExtra(KEY_STATUS_EDITOR_REPLYID, 0);
 		String prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
-		statusUpdate.setReplyId(inReplyId);
+		statusUpdate.addReplyStatusId(inReplyId);
 		if (prefix != null) {
 			statusText.append(prefix);
 		}
@@ -118,6 +119,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		confirmDialog.setConfirmListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		adapter.addOnMediaClickListener(this);
+		statusText.addTextChangedListener(this);
 	}
 
 
@@ -155,9 +157,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	public void onClick(View v) {
 		// send status
 		if (v.getId() == R.id.popup_status_send) {
-			String statusText = this.statusText.getText().toString();
 			// check if status is empty
-			if (statusText.trim().isEmpty() && statusUpdate.mediaCount() == 0) {
+			if (statusUpdate.isEmpty()) {
 				Toast.makeText(getApplicationContext(), R.string.error_empty_tweet, LENGTH_SHORT).show();
 			}
 			// check if GPS location is pending
@@ -175,7 +176,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		}
 		// Add media to the status
 		else if (v.getId() == R.id.popup_status_add_media) {
-			if (statusUpdate.getMediaType() == StatusUpdate.MEDIA_NONE) {
+			if (statusUpdate.getAttachmentType() == StatusUpdate.EMPTY) {
 				// request images/videos
 				getMedia(REQUEST_IMG_VID);
 			} else {
@@ -193,9 +194,25 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 
 	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	}
+
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		statusUpdate.addText(s.toString());
+	}
+
+
+	@Override
 	protected void onAttachLocation(@Nullable Location location) {
 		if (location != null) {
-			statusUpdate.setLocation(location);
+			statusUpdate.addLocation(location);
 			Toast.makeText(getApplicationContext(), R.string.info_gps_attached, LENGTH_LONG).show();
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_gps, LENGTH_LONG).show();
@@ -255,7 +272,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	public void onMediaClick(int index) {
 		Uri[] uris = statusUpdate.getMediaUris();
-		switch (statusUpdate.getMediaType()) {
+		switch (statusUpdate.getAttachmentType()) {
 			case StatusUpdate.MEDIA_IMAGE:
 			case StatusUpdate.MEDIA_GIF:
 				Intent mediaViewer = new Intent(this, ImageViewer.class);
@@ -293,10 +310,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 * show confirmation dialog when closing edited status
 	 */
 	private void showClosingMsg() {
-		if (statusText.length() > 0 || statusUpdate.mediaCount() > 0 || statusUpdate.hasLocation()) {
-			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_LEAVE);
-		} else {
+		if (statusUpdate.isEmpty()) {
 			finish();
+		} else {
+			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_LEAVE);
 		}
 	}
 
@@ -306,9 +323,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private void updateStatus() {
 		// first initialize filestreams of the media files
 		if (statusUpdate.prepare(getContentResolver())) {
-			String statusText = this.statusText.getText().toString();
-			// add media
-			statusUpdate.setText(statusText);
 			// send status
 			uploaderAsync = new StatusUpdater(this);
 			uploaderAsync.execute(statusUpdate);

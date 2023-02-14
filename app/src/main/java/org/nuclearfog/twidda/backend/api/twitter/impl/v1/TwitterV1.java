@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
+import org.nuclearfog.twidda.backend.helper.LocationUpdate;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
@@ -22,6 +23,7 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -30,6 +32,7 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
@@ -692,7 +695,8 @@ public class TwitterV1 implements Connection {
 	@Override
 	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("status=" + StringTools.encode(update.getText()));
+		if (update.getText() != null)
+			params.add("status=" + StringTools.encode(update.getText()));
 		if (update.getReplyId() > 0)
 			params.add("in_reply_to_status_id=" + update.getReplyId());
 		if (mediaIds != null && mediaIds.length > 0) {
@@ -702,9 +706,9 @@ public class TwitterV1 implements Connection {
 			String idStr = buf.substring(0, buf.length() - 3);
 			params.add("media_ids=" + idStr);
 		}
-		if (update.hasLocation()) {
-			String lat = Double.toString(update.getLatitude());
-			String lon = Double.toString(update.getLongitude());
+		if (update.getLocation() != null) {
+			String lat = Double.toString(update.getLocation().getLatitude());
+			String lon = Double.toString(update.getLocation().getLongitude());
 			params.add("lat=" + StringTools.encode(lat));
 			params.add("long=" + StringTools.encode(lon));
 		}
@@ -918,6 +922,12 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public List<Emoji> getEmojis() throws ConnectionException {
+		throw new TwitterException("not supported!");
+	}
+
+
+	@Override
+	public Poll vote(VoteUpdate update) throws ConnectionException {
 		throw new TwitterException("not supported!");
 	}
 

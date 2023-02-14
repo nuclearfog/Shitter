@@ -6,6 +6,7 @@ import android.location.Location;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import org.nuclearfog.twidda.config.Configuration;
@@ -23,14 +24,14 @@ import java.util.List;
 public class StatusUpdate {
 
 	/**
-	 * returned if attaching media failed
+	 * returned if an error occured while attaching item
 	 */
 	public static final int MEDIA_ERROR = -1;
 
 	/**
-	 * indicates that there is no media attached
+	 * indicates that there is no attachment
 	 */
-	public static final int MEDIA_NONE = 0;
+	public static final int EMPTY = 0;
 
 	/**
 	 * returned if image is attached
@@ -47,35 +48,42 @@ public class StatusUpdate {
 	 */
 	public static final int MEDIA_GIF = 3;
 
+	/**
+	 * returned if a poll is attached
+	 */
+	public static final int POLL = 4;
 
 	private static final String MIME_GIF = "image/gif";
 	private static final String MIME_IMAGE_ALL = "image/";
 	private static final String MIME_VIDEO_ALL = "video/";
 
-	private String text;
-	private long replyId;
-	private double longitude;
-	private double latitude;
 
-	private int mediaType = MEDIA_NONE;
+	private long replyId;
+	@Nullable
+	private String text;
+	@Nullable
+	private PollUpdate poll;
+	@Nullable
+	private LocationUpdate location;
+
+	private int attachment = EMPTY;
 	private List<Uri> mediaUris = new ArrayList<>(5);
 	private MediaStatus[] mediaUpdates = {};
-	private boolean hasLocation = false;
-	private boolean mediaLimitReached = false;
+	private boolean attachmentLimitReached = false;
 
 	/**
 	 * set ID of the replied status
 	 *
 	 * @param replyId status ID to reply
 	 */
-	public void setReplyId(long replyId) {
+	public void addReplyStatusId(long replyId) {
 		this.replyId = replyId;
 	}
 
 	/**
 	 * add status text
 	 */
-	public void setText(String text) {
+	public void addText(String text) {
 		this.text = text;
 	}
 
@@ -93,16 +101,16 @@ public class StatusUpdate {
 		}
 		// check if file is a 'gif' image
 		else if (mime.equals(MIME_GIF)) {
-			switch (mediaType) {
-				case MEDIA_NONE:
-					mediaType = MEDIA_GIF;
+			switch (attachment) {
+				case EMPTY:
+					attachment = MEDIA_GIF;
 
 				case MEDIA_GIF:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
 						if (mediaUris.size() == configuration.getGifLimit()) {
-							mediaLimitReached = true;
+							attachmentLimitReached = true;
 						}
 						return MEDIA_GIF;
 					}
@@ -112,16 +120,16 @@ public class StatusUpdate {
 		}
 		// check if file is an image
 		else if (mime.startsWith(MIME_IMAGE_ALL)) {
-			switch (mediaType) {
-				case MEDIA_NONE:
-					mediaType = MEDIA_IMAGE;
+			switch (attachment) {
+				case EMPTY:
+					attachment = MEDIA_IMAGE;
 
 				case MEDIA_IMAGE:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
 						if (mediaUris.size() == configuration.getImageLimit()) {
-							mediaLimitReached = true;
+							attachmentLimitReached = true;
 						}
 						return MEDIA_IMAGE;
 					}
@@ -130,16 +138,16 @@ public class StatusUpdate {
 		}
 		// check if file is a video
 		else if (mime.startsWith(MIME_VIDEO_ALL)) {
-			switch (mediaType) {
-				case MEDIA_NONE:
-					mediaType = MEDIA_VIDEO;
+			switch (attachment) {
+				case EMPTY:
+					attachment = MEDIA_VIDEO;
 
 				case MEDIA_VIDEO:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
 						if (mediaUris.size() == configuration.getVideoLimit()) {
-							mediaLimitReached = true;
+							attachmentLimitReached = true;
 						}
 						return MEDIA_VIDEO;
 					}
@@ -150,42 +158,25 @@ public class StatusUpdate {
 	}
 
 	/**
-	 * Add location to a status
+	 * add poll to status
+	 *
+	 * @param poll poll information
+	 */
+	public void addPoll(@NonNull PollUpdate poll) {
+		if (attachment == EMPTY) {
+			this.poll = poll;
+			attachment = POLL;
+			attachmentLimitReached = true;
+		}
+	}
+
+	/**
+	 * add location to status
 	 *
 	 * @param location location information
 	 */
-	public void setLocation(@NonNull Location location) {
-		this.latitude = location.getLatitude();
-		this.longitude = location.getLongitude();
-		hasLocation = true;
-	}
-
-	/**
-	 * get type of attached media
-	 * currently there is only one type of media used at once
-	 *
-	 * @return media type {@link #MEDIA_NONE,#MEDIA_VIDEO,#MEDIA_IMAGE,#MEDIA_GIF}
-	 */
-	public int getMediaType() {
-		return mediaType;
-	}
-
-	/**
-	 * check if media limit is reached
-	 *
-	 * @return true if media limit is reached
-	 */
-	public boolean mediaLimitReached() {
-		return mediaLimitReached;
-	}
-
-	/**
-	 * get status text
-	 *
-	 * @return status text
-	 */
-	public String getText() {
-		return text;
+	public void addLocation(@NonNull Location location) {
+		this.location = new LocationUpdate(location);
 	}
 
 	/**
@@ -195,6 +186,26 @@ public class StatusUpdate {
 	 */
 	public long getReplyId() {
 		return replyId;
+	}
+
+	/**
+	 * get status text
+	 *
+	 * @return status text
+	 */
+	@Nullable
+	public String getText() {
+		return text;
+	}
+
+	/**
+	 * get type of attachment
+	 * currently there is only one type of media used at once
+	 *
+	 * @return media type {@link #EMPTY ,#MEDIA_VIDEO,#MEDIA_IMAGE,#MEDIA_GIF}
+	 */
+	public int getAttachmentType() {
+		return attachment;
 	}
 
 	/**
@@ -216,30 +227,32 @@ public class StatusUpdate {
 	}
 
 	/**
-	 * get longitude of the location
+	 * get attached poll if any
 	 *
-	 * @return longitude
+	 * @return attached poll or null
 	 */
-	public double getLongitude() {
-		return longitude;
+	@Nullable
+	public PollUpdate getPoll() {
+		return poll;
 	}
 
 	/**
-	 * get latitude of the location
+	 * get attached location update
 	 *
-	 * @return latitude
+	 * @return attached location or null
 	 */
-	public double getLatitude() {
-		return latitude;
+	@Nullable
+	public LocationUpdate getLocation() {
+		return location;
 	}
 
 	/**
-	 * check if location informaton is attached
+	 * check if media limit is reached
 	 *
-	 * @return true if location is attached
+	 * @return true if media limit is reached
 	 */
-	public boolean hasLocation() {
-		return hasLocation;
+	public boolean mediaLimitReached() {
+		return attachmentLimitReached;
 	}
 
 	/**
@@ -247,8 +260,8 @@ public class StatusUpdate {
 	 *
 	 * @return true if media is attached
 	 */
-	public int mediaCount() {
-		return mediaUris.size();
+	public boolean isEmpty() {
+		return mediaUris.isEmpty() && location == null && poll == null && getText() == null;
 	}
 
 	/**
