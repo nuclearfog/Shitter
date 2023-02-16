@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Poll;
+import org.nuclearfog.twidda.model.Poll.Option;
 
 /**
  * This holder if for a single poll option
@@ -26,31 +26,33 @@ import org.nuclearfog.twidda.model.Poll;
 public class Optionholder extends ViewHolder implements OnClickListener {
 
 	private SeekBar voteProgress;
-	private TextView name, votes;
-	private ImageView checked;
+	private TextView optionName, optionVotes;
+	private ImageView checkIcon;
 
 	private OnHolderClickListener listener;
 	private GlobalSettings settings;
 
-
+	/**
+	 *
+	 */
 	public Optionholder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_option, parent, false));
-		name = itemView.findViewById(R.id.item_option_name);
-		checked = itemView.findViewById(R.id.item_option_voted_icon);
+		optionName = itemView.findViewById(R.id.item_option_name);
+		checkIcon = itemView.findViewById(R.id.item_option_voted_icon);
 		voteProgress = itemView.findViewById(R.id.item_option_count_bar);
-		votes = itemView.findViewById(R.id.item_option_count_text);
+		optionVotes = itemView.findViewById(R.id.item_option_count_text);
 		this.settings = settings;
 		this.listener = listener;
 
-		name.setTextColor(settings.getFontColor());
-		name.setTypeface(settings.getTypeFace());
-		votes.setTextColor(settings.getFontColor());
-		votes.setTypeface(settings.getTypeFace());
+		optionName.setTextColor(settings.getFontColor());
+		optionName.setTypeface(settings.getTypeFace());
+		optionVotes.setTextColor(settings.getFontColor());
+		optionVotes.setTypeface(settings.getTypeFace());
 		AppStyles.setSeekBarColor(voteProgress, settings);
-		checked.setColorFilter(settings.getIconColor());
+		checkIcon.setColorFilter(settings.getIconColor());
 		voteProgress.setPadding(0, 0, 0, 0);
 
-		checked.setOnClickListener(this);
+		checkIcon.setOnClickListener(this);
 	}
 
 
@@ -58,7 +60,7 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 	public void onClick(View v) {
 		int position = getLayoutPosition();
 		if (position != NO_POSITION) {
-			if (v == checked) {
+			if (v == checkIcon) {
 				listener.onItemClick(position, OnHolderClickListener.POLL_OPTION);
 			}
 		}
@@ -68,17 +70,19 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 	 * set viewholder content
 	 *
 	 * @param option     poll option content
+	 * @param selected   true if option is selected
 	 * @param totalCount total vote count
 	 */
-	public void setContent(Poll.Option option, int totalCount) {
-		if (option.selected())
-			checked.setImageResource(R.drawable.check);
-		else
-			checked.setImageResource(R.drawable.circle);
+	public void setContent(Option option, boolean selected, int totalCount) {
+		if (option.selected() | selected) {
+			checkIcon.setImageResource(R.drawable.check);
+		} else {
+			checkIcon.setImageResource(R.drawable.circle);
+		}
 		voteProgress.setMax(Math.max(totalCount, 1));
-		AppStyles.setDrawableColor(checked, settings.getIconColor());
-		name.setText(option.getTitle());
+		AppStyles.setDrawableColor(checkIcon, settings.getIconColor());
+		optionName.setText(option.getTitle());
 		voteProgress.setProgress(option.getVotes());
-		votes.setText(StringTools.NUMBER_FORMAT.format(option.getVotes()));
+		optionVotes.setText(StringTools.NUMBER_FORMAT.format(option.getVotes()));
 	}
 }

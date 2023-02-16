@@ -30,6 +30,7 @@
 		android:textSize="@dimen/item_option_text_size"
 		android:lines="1"
 		android:layout_marginEnd="@dimen/item_option_layout_padding"
+		app:layout_constraintHorizontal_weight="3"
 		app:layout_constraintStart_toEndOf="@id/item_option_button_barrier"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/item_option_count_text" />
@@ -39,12 +40,11 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:thumb="@android:color/transparent"
-		android:layout_marginEnd="@dimen/item_option_layout_padding"
 		app:layout_constraintHorizontal_weight="3"
 		app:layout_constraintStart_toEndOf="@id/item_option_button_barrier"
 		app:layout_constraintTop_toBottomOf="@id/item_option_name"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/item_option_count_text" />
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
 		android:id="@+id/item_option_count_text"
@@ -52,9 +52,10 @@
 		android:layout_height="wrap_content"
 		android:textSize="@dimen/item_option_text_size"
 		android:lines="1"
+		android:gravity="end"
 		app:layout_constraintHorizontal_weight="1"
-		app:layout_constraintStart_toEndOf="@id/item_option_count_bar"
-		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toEndOf="@id/item_option_name"
+		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

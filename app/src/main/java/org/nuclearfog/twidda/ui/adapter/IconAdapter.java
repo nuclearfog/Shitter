@@ -27,13 +27,15 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	private OnMediaClickListener listener;
 	private GlobalSettings settings;
 	private List<Integer> items;
+	private boolean invert;
 
 	/**
-	 *
+	 * @param invert true to invert item order
 	 */
-	public IconAdapter(GlobalSettings settings) {
+	public IconAdapter(GlobalSettings settings, boolean invert) {
 		this.settings = settings;
 		items = new ArrayList<>();
+		this.invert = invert;
 	}
 
 
@@ -61,7 +63,11 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 		if (listener != null) {
 			Integer item = items.get(position);
 			if (item == IconHolder.TYPE_IMAGE || item == IconHolder.TYPE_GIF || item == IconHolder.TYPE_VIDEO) {
-				listener.onMediaClick(position);
+				if (invert) {
+					listener.onMediaClick(items.size() - position - 1);
+				} else {
+					listener.onMediaClick(position);
+				}
 			}
 		}
 	}
@@ -111,24 +117,39 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	 * add a single image icon
 	 */
 	public void addImageItem() {
-		items.add(IconHolder.TYPE_IMAGE);
-		notifyItemInserted(items.size() - 1);
+		if (invert) {
+			items.add(0, IconHolder.TYPE_IMAGE);
+			notifyItemInserted(0);
+		} else {
+			items.add(IconHolder.TYPE_IMAGE);
+			notifyItemInserted(items.size() - 1);
+		}
 	}
 
 	/**
 	 * add a single gif item
 	 */
 	public void addGifItem() {
-		items.add(IconHolder.TYPE_GIF);
-		notifyItemInserted(items.size() - 1);
+		if (invert) {
+			items.add(0, IconHolder.TYPE_GIF);
+			notifyItemInserted(0);
+		} else {
+			items.add(IconHolder.TYPE_GIF);
+			notifyItemInserted(items.size() - 1);
+		}
 	}
 
 	/**
 	 * add a single video item
 	 */
 	public void addVideoItem() {
-		items.add(IconHolder.TYPE_VIDEO);
-		notifyItemInserted(items.size() - 1);
+		if (invert) {
+			items.add(0, IconHolder.TYPE_VIDEO);
+			notifyItemInserted(0);
+		} else {
+			items.add(IconHolder.TYPE_VIDEO);
+			notifyItemInserted(items.size() - 1);
+		}
 	}
 
 	/**

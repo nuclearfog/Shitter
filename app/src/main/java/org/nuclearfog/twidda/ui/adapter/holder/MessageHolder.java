@@ -77,7 +77,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		background.setCardBackgroundColor(settings.getCardColor());
 		text.setMovementMethod(LinkMovementMethod.getInstance());
 
-		adapter = new IconAdapter(settings);
+		adapter = new IconAdapter(settings, false);
 		adapter.addOnMediaClickListener(this);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
 		iconList.setAdapter(adapter);

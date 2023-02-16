@@ -74,8 +74,8 @@ public class PollV2 implements Poll {
 
 
 	@Override
-	public boolean multipleChoice() {
-		return false; // Twitter dosn't support this
+	public int getLimit() {
+		return 0;
 	}
 
 

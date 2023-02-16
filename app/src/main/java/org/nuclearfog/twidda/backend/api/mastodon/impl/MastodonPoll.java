@@ -79,8 +79,14 @@ public class MastodonPoll implements Poll {
 
 
 	@Override
-	public boolean multipleChoice() {
-		return multipleChoice;
+	public int getLimit() {
+		if (voted || expired) {
+			return 0;
+		}
+		if (multipleChoice) {
+			return options.length;
+		}
+		return 1;
 	}
 
 

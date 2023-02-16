@@ -107,7 +107,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (prefix != null) {
 			statusText.append(prefix);
 		}
-		adapter = new IconAdapter(settings);
+		adapter = new IconAdapter(settings, true);
 		adapter.addOnMediaClickListener(this);
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 		iconList.setAdapter(adapter);

@@ -79,7 +79,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		replyname = itemView.findViewById(R.id.item_status_reply_name);
 
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
-		adapter = new IconAdapter(settings);
+		adapter = new IconAdapter(settings, false);
 		iconList.setAdapter(adapter);
 
 		if (settings.likeEnabled()) {

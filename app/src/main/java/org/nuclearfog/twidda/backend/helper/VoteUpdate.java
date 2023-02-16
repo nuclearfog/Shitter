@@ -23,7 +23,7 @@ public class VoteUpdate {
 	 */
 	public VoteUpdate(Poll poll) {
 		id = poll.getId();
-		multipleChoice = poll.multipleChoice();
+		multipleChoice = poll.getLimit() > 1;
 		choices = new TreeSet<>();
 	}
 

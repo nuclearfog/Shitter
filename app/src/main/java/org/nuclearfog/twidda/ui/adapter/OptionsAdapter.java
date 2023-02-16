@@ -10,6 +10,9 @@ import org.nuclearfog.twidda.ui.adapter.holder.Optionholder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * RecyclerView adapter for poll options
  *
@@ -18,20 +21,19 @@ import org.nuclearfog.twidda.model.Poll;
 public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implements OnHolderClickListener {
 
 	private Poll.Option[] options = {};
+	private Set<Integer> selection;
+
 	private int totalVotes = 1;
+	private int limitVotes = 1;
 
 	private GlobalSettings settings;
-	private OnOptionClickListener listener;
-	private boolean enableVote;
 
 	/**
 	 *
 	 */
-	public OptionsAdapter(GlobalSettings settings, OnOptionClickListener listener) {
-		// currently Twitter doesn't support vote over API
-		enableVote = settings.getLogin().getConfiguration().voteEnabled();
+	public OptionsAdapter(GlobalSettings settings) {
 		this.settings = settings;
-		this.listener = listener;
+		selection = new TreeSet<>();
 	}
 
 
@@ -44,7 +46,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 
 	@Override
 	public void onBindViewHolder(@NonNull Optionholder holder, int position) {
-		holder.setContent(options[position], totalVotes);
+		holder.setContent(options[position], selection.contains(position), totalVotes);
 	}
 
 
@@ -56,9 +58,13 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 
 	@Override
 	public void onItemClick(int pos, int type, int... extras) {
-		if (enableVote) {
-			if (type == OnHolderClickListener.POLL_OPTION) {
-				listener.onOptionClick(pos);
+		if (type == OnHolderClickListener.POLL_OPTION) {
+			if (selection.contains(pos)) {
+				selection.remove(pos);
+				notifyItemChanged(pos);
+			} else if (selection.size() < limitVotes) {
+				selection.add(pos);
+				notifyItemChanged(pos);
 			}
 		}
 	}
@@ -75,21 +81,15 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 	 * @param poll poll information
 	 */
 	public void addAll(Poll poll) {
-		this.options = poll.getOptions();
+		options = poll.getOptions();
+		for (int i = 0 ; i < options.length ; i++) {
+			Poll.Option option = options[i];
+			if (option.selected()) {
+				selection.add(i);
+			}
+		}
 		totalVotes = poll.voteCount();
+		limitVotes = poll.getLimit();
 		notifyDataSetChanged();
-	}
-
-	/**
-	 * Listener for poll options
-	 */
-	public interface OnOptionClickListener {
-
-		/**
-		 * called on poll option select
-		 *
-		 * @param index index of the poll option
-		 */
-		void onOptionClick(int index);
 	}
 }
