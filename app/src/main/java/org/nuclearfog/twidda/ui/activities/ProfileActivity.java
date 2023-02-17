@@ -45,6 +45,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.widget.NestedScrollView;
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -81,7 +83,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>,
+public class ProfileActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnScrollChangeListener,
 		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback {
 
 	/**
@@ -138,6 +140,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	private ConfirmDialog confirmDialog;
 
+	private NestedScrollView root;
+	private ConstraintLayout header;
+	private ViewGroup body;
 	private TextView[] tabIndicator;
 	private TextView user_location, user_createdAt, user_website, user_bio, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
@@ -162,21 +167,22 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_profile);
-		ViewGroup root = findViewById(R.id.user_view);
-		ConstraintLayout profileView = findViewById(R.id.profile_content);
-		toolbar = profileView.findViewById(R.id.profile_toolbar);
-		user_bio = profileView.findViewById(R.id.bio);
-		following = profileView.findViewById(R.id.following);
-		follower = profileView.findViewById(R.id.follower);
-		user_website = profileView.findViewById(R.id.links);
-		profileImage = profileView.findViewById(R.id.profile_img);
-		bannerImage = profileView.findViewById(R.id.profile_banner);
-		toolbarBackground = profileView.findViewById(R.id.profile_toolbar_background);
-		username = profileView.findViewById(R.id.profile_username);
-		screenName = profileView.findViewById(R.id.profile_screenname);
-		user_location = profileView.findViewById(R.id.location);
-		user_createdAt = profileView.findViewById(R.id.profile_date);
-		follow_back = profileView.findViewById(R.id.follow_back);
+		header = findViewById(R.id.page_profile_header);
+		body = findViewById(R.id.page_profile_body);
+		root = findViewById(R.id.user_view);
+		toolbar = findViewById(R.id.profile_toolbar);
+		user_bio = findViewById(R.id.bio);
+		following = findViewById(R.id.following);
+		follower = findViewById(R.id.follower);
+		user_website = findViewById(R.id.links);
+		profileImage = findViewById(R.id.profile_img);
+		bannerImage = findViewById(R.id.profile_banner);
+		toolbarBackground = findViewById(R.id.profile_toolbar_background);
+		username = findViewById(R.id.profile_username);
+		screenName = findViewById(R.id.profile_screenname);
+		user_location = findViewById(R.id.location);
+		user_createdAt = findViewById(R.id.profile_date);
+		follow_back = findViewById(R.id.follow_back);
 		tabLayout = findViewById(R.id.profile_tab);
 		tabPages = findViewById(R.id.profile_pager);
 
@@ -184,9 +190,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		settings = GlobalSettings.getInstance(this);
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
-			constraints.clone(profileView);
+			constraints.clone(header);
 			constraints.connect(R.id.profile_banner, ConstraintSet.TOP, R.id.profile_toolbar, ConstraintSet.BOTTOM);
-			constraints.applyTo(profileView);
+			constraints.applyTo(header);
 		}
 		following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
 		follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
@@ -232,6 +238,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		bannerImage.setOnClickListener(this);
 		user_website.setOnClickListener(this);
 		confirmDialog.setConfirmListener(this);
+		root.setOnScrollChangeListener(this);
 	}
 
 
@@ -280,6 +287,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (profileAsync != null && profileAsync.getStatus() == RUNNING)
 			profileAsync.cancel(true);
 		super.onDestroy();
+	}
+
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		body.getLayoutParams().height = root.getMeasuredHeight();
+		root.scrollTo(0, 0);
 	}
 
 
@@ -602,6 +617,16 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	@Override
 	public void onTabReselected(Tab tab) {
 		adapter.scrollToTop(tab.getPosition());
+	}
+
+
+	@Override
+	public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+		if (scrollY == header.getMeasuredHeight()) {
+			// unlock child scrolling
+		} else {
+			// lock child view from scrolling
+		}
 	}
 
 

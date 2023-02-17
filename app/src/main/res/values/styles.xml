@@ -6,7 +6,7 @@
 		<item name="android:colorBackground">@color/background</item>
 		<item name="android:navigationBarColor">@android:color/black</item>
 		<item name="android:windowAnimationStyle">@style/TransactionPending</item>
-		<item name="android:windowTranslucentStatus">true</item>
+		<item name="android:windowTranslucentStatus">false</item>
 		<item name="android:textAllCaps">false</item>
 	</style>
 

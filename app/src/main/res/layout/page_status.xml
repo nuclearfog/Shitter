@@ -14,239 +14,230 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/page_status_toolbar_height" />
 
-	<androidx.coordinatorlayout.widget.CoordinatorLayout
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/page_status_scroll"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:nextFocusUp="@id/page_status_header"
+		android:nextFocusDown="@id/page_status_body">
 
-		<com.google.android.material.appbar.AppBarLayout
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@android:color/transparent">
-
-			<com.google.android.material.appbar.CollapsingToolbarLayout
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-				<androidx.constraintlayout.widget.ConstraintLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content">
-
-					<ImageView
-						android:id="@+id/page_status_profile"
-						android:layout_width="@dimen/page_status_profile"
-						android:layout_height="@dimen/page_status_profile"
-						android:layout_marginStart="@dimen/page_status_profileimage_margin"
-						android:layout_marginTop="@dimen/page_status_profileimage_margin"
-						android:contentDescription="@string/profile_image"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toTopOf="parent" />
-
-					<TextView
-						android:id="@+id/page_status_username"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:drawablePadding="@dimen/page_status_padding_drawable"
-						android:layout_marginStart="@dimen/page_status_textview_margin"
-						android:layout_marginEnd="@dimen/page_status_textview_margin"
-						android:lines="1"
-						app:layout_constraintStart_toEndOf="@id/page_status_profile"
-						app:layout_constraintTop_toTopOf="@id/page_status_profile"
-						app:layout_constraintBottom_toTopOf="@id/page_status_screenname"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintVertical_chainStyle="packed" />
-
-					<TextView
-						android:id="@+id/page_status_screenname"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:drawablePadding="@dimen/page_status_padding_drawable"
-						android:layout_marginStart="@dimen/page_status_textview_margin"
-						android:layout_marginEnd="@dimen/page_status_textview_margin"
-						android:lines="1"
-						app:layout_constraintStart_toEndOf="@id/page_status_profile"
-						app:layout_constraintTop_toBottomOf="@id/page_status_username"
-						app:layout_constraintBottom_toTopOf="@id/page_status_date"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintVertical_chainStyle="packed" />
-
-					<TextView
-						android:id="@+id/page_status_date"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_marginStart="@dimen/page_status_textview_margin"
-						android:layout_marginEnd="@dimen/page_status_textview_margin"
-						android:lines="1"
-						android:textSize="@dimen/page_status_textsize_small"
-						app:layout_constraintStart_toEndOf="@id/page_status_profile"
-						app:layout_constraintTop_toBottomOf="@id/page_status_screenname"
-						app:layout_constraintBottom_toBottomOf="@id/page_status_profile"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintVertical_chainStyle="packed" />
-
-					<androidx.constraintlayout.widget.Barrier
-						android:id="@+id/page_status_profile_barrier"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						app:barrierDirection="bottom"
-						app:constraint_referenced_ids="page_status_profile, page_status_date" />
-
-					<Button
-						android:id="@+id/page_status_reply_reference"
-						android:layout_width="wrap_content"
-						android:layout_height="@dimen/page_status_button_height"
-						android:visibility="invisible"
-						android:paddingLeft="@dimen/page_status_button_padding"
-						android:paddingRight="@dimen/page_status_button_padding"
-						android:drawablePadding="@dimen/page_status_padding_drawable"
-						android:layout_margin="@dimen/page_status_textview_margin"
-						android:minWidth="0dp"
-						android:textSize="@dimen/page_status_textsize_small"
-						android:lines="1"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_profile_barrier"
-						app:layout_constraintEnd_toStartOf="@id/page_status_reposter_reference"
-						app:layout_constraintHorizontal_bias="0.0"
-						app:layout_constraintHorizontal_chainStyle="packed"
-						style="@style/FeedbackButton" />
-
-					<Button
-						android:id="@+id/page_status_reposter_reference"
-						android:layout_width="wrap_content"
-						android:layout_height="@dimen/page_status_button_height"
-						android:visibility="invisible"
-						android:paddingLeft="@dimen/page_status_button_padding"
-						android:paddingRight="@dimen/page_status_button_padding"
-						android:drawablePadding="@dimen/page_status_padding_drawable"
-						android:layout_margin="@dimen/page_status_textview_margin"
-						android:minWidth="0dp"
-						android:textSize="@dimen/page_status_textsize_small"
-						android:lines="1"
-						app:layout_constraintStart_toEndOf="@id/page_status_reply_reference"
-						app:layout_constraintTop_toBottomOf="@id/page_status_profile_barrier"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintHorizontal_chainStyle="packed"
-						style="@style/FeedbackButton" />
-
-					<androidx.constraintlayout.widget.Barrier
-						android:id="@+id/page_status_text_barrier"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						app:barrierDirection="bottom"
-						app:constraint_referenced_ids="page_status_reposter_reference, page_status_reply_reference" />
-
-					<TextView
-						android:id="@+id/page_status_text"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_marginStart="@dimen/page_status_textview_margin"
-						android:layout_marginTop="@dimen/page_status_textview_margin"
-						android:layout_marginEnd="@dimen/page_status_textview_margin"
-						android:fadeScrollbars="false"
-						android:linksClickable="true"
-						android:maxLines="@integer/page_status_text_max_lines"
-						android:scrollbars="vertical"
-						android:textSize="@dimen/page_status_textsize"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_text_barrier"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-					<androidx.recyclerview.widget.RecyclerView
-						android:id="@+id/page_status_cards"
-						android:layout_width="wrap_content"
-						android:layout_height="@dimen/page_status_card_height"
-						android:layout_margin="@dimen/page_status_cards_list_margin"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_text"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-					<TextView
-						android:id="@+id/page_status_sensitive"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:visibility="invisible"
-						android:drawablePadding="@dimen/page_status_padding_drawable"
-						android:layout_marginStart="@dimen/page_status_textview_margin"
-						android:layout_marginTop="@dimen/page_status_textview_margin"
-						android:layout_marginEnd="@dimen/page_status_textview_margin"
-						android:lines="1"
-						android:text="@string/tweet_sensitive_media"
-						android:textSize="@dimen/page_status_textsize_small"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_cards"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintHorizontal_bias="0.0" />
-
-					<TextView
-						android:id="@+id/page_status_location_name"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:visibility="invisible"
-						android:drawablePadding="@dimen/page_status_padding_drawable"
-						android:layout_marginStart="@dimen/page_status_textview_margin"
-						android:layout_marginTop="@dimen/page_status_textview_margin"
-						android:lines="1"
-						android:textSize="@dimen/page_status_textsize_locale"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_sensitive"
-						app:layout_constraintEnd_toStartOf="@id/page_status_location_coordinates"
-						app:layout_constraintHorizontal_bias="0.0"
-						app:layout_constraintHorizontal_chainStyle="packed" />
-
-					<Button
-						android:id="@+id/page_status_location_coordinates"
-						android:layout_width="wrap_content"
-						android:layout_height="@dimen/page_status_button_height"
-						android:visibility="invisible"
-						android:paddingLeft="@dimen/page_status_button_padding"
-						android:paddingRight="@dimen/page_status_button_padding"
-						android:layout_marginStart="@dimen/page_status_button_margin"
-						android:layout_marginTop="@dimen/page_status_textview_margin"
-						android:lines="1"
-						android:textSize="@dimen/page_status_textsize_locale"
-						app:layout_constraintStart_toEndOf="@id/page_status_location_name"
-						app:layout_constraintTop_toBottomOf="@id/page_status_sensitive"
-						app:layout_constraintEnd_toEndOf="parent"
-						app:layout_constraintHorizontal_chainStyle="packed"
-						style="@style/FeedbackButton" />
-
-					<androidx.constraintlayout.widget.Barrier
-						android:id="@+id/page_status_api_barrier"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						app:barrierDirection="bottom"
-						app:constraint_referenced_ids="page_status_location_coordinates, page_status_location_name" />
-
-					<TextView
-						android:id="@+id/page_status_api"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_marginStart="@dimen/page_status_textview_margin"
-						android:layout_marginEnd="@dimen/page_status_textview_margin"
-						android:linksClickable="false"
-						android:lines="1"
-						android:textSize="@dimen/page_status_textsize_small"
-						android:layout_marginTop="@dimen/page_status_textview_margin"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_status_api_barrier"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-				</androidx.constraintlayout.widget.ConstraintLayout>
-
-			</com.google.android.material.appbar.CollapsingToolbarLayout>
-
-		</com.google.android.material.appbar.AppBarLayout>
-
-		<androidx.core.widget.NestedScrollView
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:fillViewport="true"
-			app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+			android:orientation="vertical">
 
 			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/page_status_header"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<ImageView
+					android:id="@+id/page_status_profile"
+					android:layout_width="@dimen/page_status_profile"
+					android:layout_height="@dimen/page_status_profile"
+					android:layout_marginStart="@dimen/page_status_profileimage_margin"
+					android:layout_marginTop="@dimen/page_status_profileimage_margin"
+					android:contentDescription="@string/profile_image"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<TextView
+					android:id="@+id/page_status_username"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:lines="1"
+					app:layout_constraintStart_toEndOf="@id/page_status_profile"
+					app:layout_constraintTop_toTopOf="@id/page_status_profile"
+					app:layout_constraintBottom_toTopOf="@id/page_status_screenname"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintVertical_chainStyle="packed" />
+
+				<TextView
+					android:id="@+id/page_status_screenname"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:lines="1"
+					app:layout_constraintStart_toEndOf="@id/page_status_profile"
+					app:layout_constraintTop_toBottomOf="@id/page_status_username"
+					app:layout_constraintBottom_toTopOf="@id/page_status_date"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintVertical_chainStyle="packed" />
+
+				<TextView
+					android:id="@+id/page_status_date"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:lines="1"
+					android:textSize="@dimen/page_status_textsize_small"
+					app:layout_constraintStart_toEndOf="@id/page_status_profile"
+					app:layout_constraintTop_toBottomOf="@id/page_status_screenname"
+					app:layout_constraintBottom_toBottomOf="@id/page_status_profile"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintVertical_chainStyle="packed" />
+
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/page_status_profile_barrier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:barrierDirection="bottom"
+					app:constraint_referenced_ids="page_status_profile, page_status_date" />
+
+				<Button
+					android:id="@+id/page_status_reply_reference"
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/page_status_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/page_status_button_padding"
+					android:paddingRight="@dimen/page_status_button_padding"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_margin="@dimen/page_status_textview_margin"
+					android:minWidth="0dp"
+					android:textSize="@dimen/page_status_textsize_small"
+					android:lines="1"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_status_profile_barrier"
+					app:layout_constraintEnd_toStartOf="@id/page_status_reposter_reference"
+					app:layout_constraintHorizontal_bias="0.0"
+					app:layout_constraintHorizontal_chainStyle="packed"
+					style="@style/FeedbackButton" />
+
+				<Button
+					android:id="@+id/page_status_reposter_reference"
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/page_status_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/page_status_button_padding"
+					android:paddingRight="@dimen/page_status_button_padding"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_margin="@dimen/page_status_textview_margin"
+					android:minWidth="0dp"
+					android:textSize="@dimen/page_status_textsize_small"
+					android:lines="1"
+					app:layout_constraintStart_toEndOf="@id/page_status_reply_reference"
+					app:layout_constraintTop_toBottomOf="@id/page_status_profile_barrier"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_chainStyle="packed"
+					style="@style/FeedbackButton" />
+
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/page_status_text_barrier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:barrierDirection="bottom"
+					app:constraint_referenced_ids="page_status_reposter_reference, page_status_reply_reference" />
+
+				<TextView
+					android:id="@+id/page_status_text"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginTop="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:fadeScrollbars="false"
+					android:linksClickable="true"
+					android:maxLines="@integer/page_status_text_max_lines"
+					android:scrollbars="vertical"
+					android:textSize="@dimen/page_status_textsize"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_status_text_barrier"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/page_status_cards"
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/page_status_card_height"
+					android:layout_margin="@dimen/page_status_cards_list_margin"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_status_text"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+				<TextView
+					android:id="@+id/page_status_sensitive"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginTop="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:lines="1"
+					android:text="@string/tweet_sensitive_media"
+					android:textSize="@dimen/page_status_textsize_small"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_status_cards"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_bias="0.0" />
+
+				<TextView
+					android:id="@+id/page_status_location_name"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginTop="@dimen/page_status_textview_margin"
+					android:lines="1"
+					android:textSize="@dimen/page_status_textsize_locale"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_status_sensitive"
+					app:layout_constraintEnd_toStartOf="@id/page_status_location_coordinates"
+					app:layout_constraintHorizontal_bias="0.0"
+					app:layout_constraintHorizontal_chainStyle="packed" />
+
+				<Button
+					android:id="@+id/page_status_location_coordinates"
+					android:layout_width="wrap_content"
+					android:layout_height="@dimen/page_status_button_height"
+					android:visibility="invisible"
+					android:paddingLeft="@dimen/page_status_button_padding"
+					android:paddingRight="@dimen/page_status_button_padding"
+					android:layout_marginStart="@dimen/page_status_button_margin"
+					android:layout_marginTop="@dimen/page_status_textview_margin"
+					android:lines="1"
+					android:textSize="@dimen/page_status_textsize_locale"
+					app:layout_constraintStart_toEndOf="@id/page_status_location_name"
+					app:layout_constraintTop_toBottomOf="@id/page_status_sensitive"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintHorizontal_chainStyle="packed"
+					style="@style/FeedbackButton" />
+
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/page_status_api_barrier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:barrierDirection="bottom"
+					app:constraint_referenced_ids="page_status_location_coordinates, page_status_location_name" />
+
+				<TextView
+					android:id="@+id/page_status_api"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:linksClickable="false"
+					android:lines="1"
+					android:textSize="@dimen/page_status_textsize_small"
+					android:layout_marginTop="@dimen/page_status_textview_margin"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_status_api_barrier"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/page_status_body"
 				android:orientation="vertical"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent">
+				android:layout_height="400dp">
 
 				<Button
 					android:id="@+id/page_status_bookmark"
@@ -327,8 +318,8 @@
 
 			</androidx.constraintlayout.widget.ConstraintLayout>
 
-		</androidx.core.widget.NestedScrollView>
+		</LinearLayout>
 
-	</androidx.coordinatorlayout.widget.CoordinatorLayout>
+	</androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

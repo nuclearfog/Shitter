@@ -40,6 +40,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,7 +85,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class StatusActivity extends AppCompatActivity implements OnClickListener,
+public class StatusActivity extends AppCompatActivity implements OnClickListener, OnScrollChangeListener,
 		OnLongClickListener, OnTagClickListener, OnConfirmListener, OnCardClickListener {
 
 	/**
@@ -144,6 +146,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private ConfirmDialog confirmDialog;
 	private MetricsDialog metricsDialog;
 
+	private NestedScrollView container;
+	private ViewGroup root, header, body;
 	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
 	private Button replyButton, repostButton, likeButton, replyName, locationButton, repostNameButton, bookmarkButton;
 	private ImageView profileImage;
@@ -166,7 +170,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_status);
-		ViewGroup root = findViewById(R.id.page_status_root);
+		root = findViewById(R.id.page_status_root);
+		header = findViewById(R.id.page_status_header);
+		body = findViewById(R.id.page_status_body);
+		container = findViewById(R.id.page_status_scroll);
 		toolbar = findViewById(R.id.page_status_toolbar);
 		replyButton = findViewById(R.id.page_status_reply);
 		repostButton = findViewById(R.id.page_status_repost);
@@ -250,6 +257,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repostNameButton.setOnLongClickListener(this);
 		locationButton.setOnLongClickListener(this);
 		bookmarkButton.setOnLongClickListener(this);
+		container.setOnScrollChangeListener(this);
 	}
 
 
@@ -286,6 +294,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		returnData.putExtra(INTENT_STATUS_UPDATE_DATA, status);
 		setResult(RETURN_STATUS_UPDATE, returnData);
 		super.onBackPressed();
+	}
+
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		body.getLayoutParams().height = root.getMeasuredHeight() - toolbar.getMeasuredHeight();
+		container.scrollTo(0, 0);
 	}
 
 
@@ -539,6 +555,16 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		}
 		return false;
+	}
+
+
+	@Override
+	public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+		if (scrollY == header.getMeasuredHeight()) {
+			// unlock child scrolling
+		} else {
+			// lock child view from scrolling
+		}
 	}
 
 
