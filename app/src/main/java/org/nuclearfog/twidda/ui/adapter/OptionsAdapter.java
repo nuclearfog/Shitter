@@ -92,4 +92,15 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 		limitVotes = poll.getLimit();
 		notifyDataSetChanged();
 	}
+
+	/**
+	 * @return a set of selection position
+	 */
+	public int[] getSelection() {
+		int pos = 0;
+		int[] result = new int[selection.size()];
+		for (Integer index : selection)
+			result[pos++] = index;
+		return result;
+	}
 }

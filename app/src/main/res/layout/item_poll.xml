@@ -14,7 +14,10 @@
 			android:id="@+id/item_poll_options_list"
 			android:layout_width="match_parent"
 			android:layout_height="0dp"
-			android:layout_weight="1" />
+			android:layout_weight="1"
+			android:layout_marginBottom="@dimen/item_poll_layout_margin"
+			android:descendantFocusability="blocksDescendants"
+			android:nestedScrollingEnabled="true"/>
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -23,18 +26,22 @@
 
 			<TextView
 				android:id="@+id/item_poll_votes_count"
-				android:layout_width="match_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:textSize="@dimen/item_poll_text_size"
-				android:lines="1" />
+				android:lines="1"
+				android:layout_weight="1" />
 
 			<Button
 				android:id="@+id/item_poll_vote_button"
-				android:layout_width="wrap_content"
+				android:layout_width="0dp"
 				android:layout_height="@dimen/item_poll_button_height"
 				android:visibility="invisible"
 				android:drawablePadding="@dimen/item_poll_drawable_padding"
 				android:lines="1"
+				android:textSize="@dimen/item_poll_text_size"
+				android:layout_weight="1"
+				android:text="@string/item_poll_option_vote"
 				style="@style/FeedbackButton" />
 
 		</LinearLayout>

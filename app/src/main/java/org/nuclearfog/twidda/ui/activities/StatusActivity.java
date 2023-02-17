@@ -657,7 +657,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onPollOptionClick(Poll poll, int selection) {
+	public void onVoteClick(Poll poll, int[] selection) {
 		// todo add implementation
 	}
 

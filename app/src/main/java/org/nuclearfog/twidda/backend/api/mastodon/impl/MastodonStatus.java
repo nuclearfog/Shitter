@@ -67,7 +67,6 @@ public class MastodonStatus implements Status {
 		String replyIdStr = json.optString("in_reply_to_id", "0");
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
 		String idStr = json.getString("id");
-		String url = json.optString("url", "");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 		createdAt = StringTools.getTime(json.optString("created_at"), StringTools.TIME_MASTODON);
@@ -86,8 +85,8 @@ public class MastodonStatus implements Status {
 		if (embeddedJson != null) {
 			embeddedStatus = new MastodonStatus(embeddedJson, currentUserId);
 			this.url = embeddedStatus.getUrl();
-		} else if (!url.equals("null")) {
-			this.url = url;
+		} else if (!json.isNull("url")) {
+			this.url = json.optString("url", "");
 		}
 		if (pollJson != null) {
 			poll = new MastodonPoll(pollJson);

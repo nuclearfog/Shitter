@@ -41,11 +41,9 @@ public interface OnHolderClickListener {
 
 	int CARD_LINK = 16;
 
-	int POLL_ITEM = 17;
+	int POLL_OPTION = 17;
 
-	int POLL_OPTION = 18;
-
-	int POLL_VOTE = 19;
+	int POLL_VOTE = 18;
 
 	/**
 	 * called when an item was clicked

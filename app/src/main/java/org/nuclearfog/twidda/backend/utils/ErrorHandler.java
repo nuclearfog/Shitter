@@ -38,6 +38,7 @@ public class ErrorHandler {
 					}
 					return context.getString(R.string.error_rate_limit);
 
+				case ConnectionException.NETWORK_CONNECTION:
 				case ConnectionException.SERVICE_UNAVAILABLE:
 					return context.getString(R.string.error_service_unavailable);
 
@@ -97,6 +98,9 @@ public class ErrorHandler {
 
 				case ConnectionException.ERROR_API_ACCESS_DENIED:
 					return context.getString(R.string.error_api_access_limited);
+
+				case ConnectionException.JSON_FORMAT:
+					return context.getString(R.string.error_json_format);
 
 				case ConnectionException.ERROR_NOT_DEFINED:
 					if (error.getMessage() != null && !error.getMessage().isEmpty()) {

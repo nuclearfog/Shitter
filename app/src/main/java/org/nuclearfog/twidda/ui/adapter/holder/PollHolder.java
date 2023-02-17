@@ -60,7 +60,10 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 		if (v.getId() == R.id.item_poll_vote_button) {
 			int pos = getLayoutPosition();
 			if (pos != RecyclerView.NO_POSITION) {
-				listener.onItemClick(pos, OnHolderClickListener.POLL_VOTE);
+				int[] selection = adapter.getSelection();
+				if (selection.length > 0) {
+					listener.onItemClick(pos, OnHolderClickListener.POLL_VOTE, selection);
+				}
 			}
 		}
 	}

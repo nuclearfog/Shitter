@@ -98,6 +98,7 @@
 	<string name="error_acc_loading">Error while loading login information!</string>
 	<string name="error_api_access_denied">Error, API access denied! Please check your API Keys.</string>
 	<string name="error_api_access_limited">Error, API access limited by Twitter!</string>
+	<string name="error_json_format">Error while parsing JSON response!</string>
 	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>
 	<string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
@@ -246,6 +247,7 @@
 	<string name="settings_description_enable_twitter_alt">use nitter.net for links</string>
 	<string name="item_load_more">load more</string>
 	<string name="item_image_save">save image</string>
+	<string name="item_poll_option_vote">vote</string>
 	<string name="settings_enable_proxy">enable proxy</string>
 	<string name="settings_enable_proxy_auth">enable proxy authentication</string>
 	<string name="tweet_sensitive_media">sensitive content</string>

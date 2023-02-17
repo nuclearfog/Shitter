@@ -115,6 +115,16 @@ public abstract class ConnectionException extends Exception {
 	public static final int SERVICE_UNAVAILABLE = 20;
 
 	/**
+	 * network connection not available
+	 */
+	public static final int NETWORK_CONNECTION = 21;
+
+	/**
+	 * error parsing json format
+	 */
+	public static final int JSON_FORMAT = 22;
+
+	/**
 	 *
 	 */
 	protected ConnectionException(Exception e) {

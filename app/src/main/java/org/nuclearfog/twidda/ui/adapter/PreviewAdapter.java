@@ -142,10 +142,10 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 				}
 				break;
 
-			case OnHolderClickListener.POLL_ITEM:
+			case OnHolderClickListener.POLL_VOTE:
 				if (item instanceof Poll && extras.length == 1) {
 					Poll poll = (Poll) item;
-					listener.onPollOptionClick(poll, extras[0]);
+					listener.onVoteClick(poll, extras);
 				}
 				break;
 
@@ -208,8 +208,8 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 		 * called on poll option click
 		 *
 		 * @param poll      poll containing the clicked option
-		 * @param selection poll option index
+		 * @param selection selected poll options
 		 */
-		void onPollOptionClick(Poll poll, int selection);
+		void onVoteClick(Poll poll, int[] selection);
 	}
 }

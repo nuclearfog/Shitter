@@ -34,6 +34,11 @@ public class MastodonException extends ConnectionException {
 	 */
 	private static final int ERROR_NETWORK = -2;
 
+	/**
+	 * error caused by parsing json format
+	 */
+	private static final int ERROR_JSON = -3;
+
 
 	private int errorCode = UNKNOWN_ERROR;
 	private String errorMessage = "";
@@ -46,6 +51,8 @@ public class MastodonException extends ConnectionException {
 		super(e);
 		if (e instanceof UnknownHostException) {
 			errorCode = ERROR_NETWORK;
+		} else if (e instanceof JSONException) {
+			errorCode = ERROR_JSON;
 		}
 	}
 
@@ -101,7 +108,10 @@ public class MastodonException extends ConnectionException {
 				return SERVICE_UNAVAILABLE;
 
 			case ERROR_NETWORK:
-				return ERROR_NETWORK;
+				return NETWORK_CONNECTION;
+
+			case ERROR_JSON:
+				return JSON_FORMAT;
 
 			default:
 			case UNKNOWN_ERROR:
