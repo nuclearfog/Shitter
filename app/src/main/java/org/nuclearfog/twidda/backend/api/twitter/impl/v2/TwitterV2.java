@@ -50,8 +50,8 @@ public class TwitterV2 extends TwitterV1 {
 
 
 	@Override
-	public Account loginApp(ConnectionConfig connection, String url, String pin) throws TwitterException {
-		Account account = super.loginApp(connection, url, pin);
+	public Account loginApp(ConnectionConfig connection, String pin) throws TwitterException {
+		Account account = super.loginApp(connection, pin);
 		return new AccountV2(account);
 	}
 
@@ -66,14 +66,14 @@ public class TwitterV2 extends TwitterV1 {
 	@Override
 	public Users getRepostingUsers(long tweetId, long cursor) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/retweeted_by";
-		return getUsers(endpoint, new ArrayList<>(), cursor);
+		return getUsers(endpoint, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getFavoritingUsers(long tweetId, long cursor) throws TwitterException {
 		String endpoint = TWEET_UNI + tweetId + "/liking_users";
-		return getUsers(endpoint, new ArrayList<>(), cursor);
+		return getUsers(endpoint, new ArrayList<>());
 	}
 
 
@@ -232,10 +232,9 @@ public class TwitterV2 extends TwitterV1 {
 	 *
 	 * @param endpoint endpoint url to get the user data from
 	 * @param params   additional parameters
-	 * @param cursor   cursor to parse multiple pages
 	 * @return user list
 	 */
-	private Users getUsers(String endpoint, List<String> params, long cursor) throws TwitterException {
+	private Users getUsers(String endpoint, List<String> params) throws TwitterException {
 		// enable additional user fields
 		params.add("user.fields=" + UserV2.FIELDS_USER);
 		params.add("max_results=" + settings.getListSize());

@@ -140,7 +140,8 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 				// e.g. twitter.com/{screenname}/lists
 				else if (pathSeg.size() == 2 && pathSeg.get(1).equals("lists")) {
 					String screenname = pathSeg.get(0);
-					data.putString(UserlistsActivity.KEY_USERLIST_OWNER_NAME, screenname);
+					User user = connection.showUser(screenname);
+					data.putLong(UserlistsActivity.KEY_USERLIST_OWNER_ID, user.getId());
 					return new DataHolder(data, UserlistsActivity.class);
 				}
 				// show user profile

@@ -1,10 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.async.FilterLoader.BLOCK_USER;
-import static org.nuclearfog.twidda.backend.async.FilterLoader.MUTE_USER;
-import static org.nuclearfog.twidda.backend.async.FilterLoader.REFRESH;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
@@ -27,9 +21,11 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.FilterLoader;
+import org.nuclearfog.twidda.backend.async.FilterLoader.FilterParam;
+import org.nuclearfog.twidda.backend.async.FilterLoader.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -41,7 +37,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class UsersActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
+public class UsersActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, AsyncCallback<FilterResult> {
 
 	/**
 	 * type of users to get from the source
@@ -236,10 +232,11 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_exclude_refresh) {
-			if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
+			if (userExclTask == null || userExclTask.idle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
-				userExclTask = new FilterLoader(this, REFRESH);
-				userExclTask.execute();
+				userExclTask = new FilterLoader(this);
+				FilterParam param = new FilterParam(FilterLoader.MODE_RELOAD);
+				userExclTask.execute(param, this);
 			}
 		}
 		return super.onOptionsItemSelected(item);
@@ -268,15 +265,15 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
+			if (userExclTask == null || userExclTask.idle()) {
 				if (tablayout.getSelectedTabPosition() == 0) {
-					userExclTask = new FilterLoader(this, MUTE_USER);
-					userExclTask.execute(query);
+					userExclTask = new FilterLoader(this);
+					FilterParam param = new FilterParam(FilterLoader.MODE_MUTE, query);
+					userExclTask.execute(param, this);
 					return true;
-				}
-				if (tablayout.getSelectedTabPosition() == 1) {
-					userExclTask = new FilterLoader(this, BLOCK_USER);
-					userExclTask.execute(query);
+				} else if (tablayout.getSelectedTabPosition() == 1) {
+					FilterParam param = new FilterParam(FilterLoader.MODE_BLOCK, query);
+					userExclTask.execute(param, this);
 					return true;
 				}
 			}
@@ -292,32 +289,29 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		return false;
 	}
 
-	/**
-	 * called from {@link FilterLoader} if task finished successfully
-	 */
-	public void onSuccess(int mode) {
-		switch (mode) {
-			case MUTE_USER:
+
+	@Override
+	public void onResult(FilterResult res) {
+		switch (res.mode) {
+			case FilterLoader.MODE_MUTE:
 				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case BLOCK_USER:
+			case FilterLoader.MODE_BLOCK:
 				Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case REFRESH:
+			case FilterLoader.MODE_RELOAD:
 				Toast.makeText(getApplicationContext(), R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
 				break;
-		}
-	}
 
-	/**
-	 * called from {@link FilterLoader} if an error occurs
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+			default:
+			case FilterLoader.MODE_ERROR:
+				String message = ErrorHandler.getErrorMessage(this, res.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				break;
+		}
 	}
 }

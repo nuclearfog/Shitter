@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend.api.mastodon;
 
 import android.content.Context;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -165,24 +164,22 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Account loginApp(ConnectionConfig connection, String url, String pin) throws MastodonException {
-		Uri link = Uri.parse(url);
+	public Account loginApp(ConnectionConfig connection, String pin) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		String host = link.getScheme() + "://" + link.getHost();
-		params.add("client_id=" + connection.getOauthToken());
+		params.add("client_id=" + connection.getOauthConsumerToken());
 		params.add("client_secret=" + connection.getOauthTokenSecret());
 		params.add("grant_type=authorization_code");
 		params.add("code=" + pin);
 		params.add("redirect_uri=" + REDIRECT_URI);
 		params.add("scope=" + AUTH_SCOPES);
 		try {
-			Response response = post(host, ENDPOINT_LOGIN_APP, null, params);
+			Response response = post(connection.getHostname(), ENDPOINT_LOGIN_APP, null, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
 				String bearer = json.getString("access_token");
-				User user = getCredentials(host, bearer);
-				Account account = new MastodonAccount(user, host, bearer, connection.getOauthToken(), connection.getOauthTokenSecret());
+				User user = getCredentials(connection.getHostname(), bearer);
+				Account account = new MastodonAccount(user, connection.getHostname(), bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
 				return account;
 			}
@@ -453,24 +450,10 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getUserTimeline(String name, long minId, long maxId) throws MastodonException {
-		User user = showUser(name);
-		return getUserTimeline(user.getId(), minId, maxId);
-	}
-
-
-	@Override
 	public List<Status> getUserFavorits(long id, long minId, long maxId) throws MastodonException {
 		if (id == settings.getLogin().getId()) // mastodon only returns favorits of the authenticating user
 			return getStatuses(ENDPOINT_USER_FAVORITS, new ArrayList<>(), minId, maxId);
 		return new ArrayList<>(0);
-	}
-
-
-	@Override
-	public List<Status> getUserFavorits(String name, long minId, long maxId) throws MastodonException {
-		User user = showUser(name);
-		return getUserFavorits(user.getId(), minId, maxId);
 	}
 
 
@@ -661,7 +644,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public UserLists getUserlistOwnerships(long id, String name, long cursor) throws MastodonException {
+	public UserLists getUserlistOwnerships(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		if (cursor > 0)
 			params.add("since_id=" + cursor);
@@ -670,7 +653,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public UserLists getUserlistMemberships(long id, String name, long cursor) throws MastodonException {
+	public UserLists getUserlistMemberships(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		if (cursor > 0)
 			params.add("since_id=" + cursor);

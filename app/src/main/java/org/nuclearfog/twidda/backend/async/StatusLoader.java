@@ -2,18 +2,18 @@ package org.nuclearfog.twidda.backend.async;
 
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.CLEAR_LIST;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ import java.util.List;
  * @author nuclearfog
  * @see StatusFragment
  */
-public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
+public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, StatusLoader.StatusResult> {
 
 	/**
 	 * home timeline
@@ -69,170 +69,155 @@ public class StatusLoader extends AsyncTask<Long, Void, List<Status>> {
 	 */
 	public static final int BOOKMARKS = 10;
 
-
-	private WeakReference<StatusFragment> weakRef;
 	private Connection connection;
 	private AppDatabase db;
 
-	@Nullable
-	private ConnectionException exception;
-	private int listType;
-	private String search;
-	private long id;
-	private int pos;
 
-	/**
-	 * @param fragment callback
-	 * @param listType type of timeline to load
-	 * @param id       ID, depending on what list type should be loaded
-	 * @param search   search string if any
-	 * @param pos      index of the list where new items should be inserted
-	 */
-	public StatusLoader(StatusFragment fragment, int listType, long id, String search, int pos) {
-		super();
-		db = new AppDatabase(fragment.getContext());
-		connection = ConnectionManager.get(fragment.getContext());
-		weakRef = new WeakReference<>(fragment);
-
-		this.listType = listType;
-		this.search = search;
-		this.id = id;
-		this.pos = pos;
+	public StatusLoader(Context context) {
+		db = new AppDatabase(context);
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected List<org.nuclearfog.twidda.model.Status> doInBackground(Long... param) {
-		List<org.nuclearfog.twidda.model.Status> statuses = null;
-		long sinceId = param[0];
-		long maxId = param[1];
+	protected StatusResult doInBackground(StatusParameter request) {
+		List<Status> statuses = null;
+		int position = request.pos;
 		try {
-			switch (listType) {
+			switch (request.type) {
 				case HOME:
-					if (sinceId == 0L && maxId == 0L) {
+					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getHomeTimeline();
 						if (statuses.isEmpty()) {
-							statuses = connection.getHomeTimeline(sinceId, maxId);
+							statuses = connection.getHomeTimeline(request.minId, request.maxId);
 							db.saveHomeTimeline(statuses);
 						}
-					} else if (sinceId > 0L) {
-						statuses = connection.getHomeTimeline(sinceId, maxId);
+					} else if (request.minId > 0L) {
+						statuses = connection.getHomeTimeline(request.minId, request.maxId);
 						db.saveHomeTimeline(statuses);
-					} else if (maxId > 1L) {
-						statuses = connection.getHomeTimeline(sinceId, maxId);
+					} else if (request.maxId > 1L) {
+						statuses = connection.getHomeTimeline(request.minId, request.maxId);
 					}
 					break;
 
 				case USER:
-					if (id > 0L) {
-						if (sinceId == 0L && maxId == 0L) {
-							statuses = db.getUserTimeline(id);
-							if (statuses.isEmpty()) {
-								statuses = connection.getUserTimeline(id, 0L, maxId);
-								db.saveUserTimeline(statuses);
-							}
-						} else if (sinceId > 0L) {
-							statuses = connection.getUserTimeline(id, sinceId, maxId);
+					if (request.minId == 0L && request.maxId == 0L) {
+						statuses = db.getUserTimeline(request.id);
+						if (statuses.isEmpty()) {
+							statuses = connection.getUserTimeline(request.id, 0L, request.maxId);
 							db.saveUserTimeline(statuses);
-						} else if (maxId > 1L) {
-							statuses = connection.getUserTimeline(id, sinceId, maxId);
 						}
-					} else if (search != null) {
-						statuses = connection.getUserTimeline(search, sinceId, maxId);
+					} else if (request.minId > 0L) {
+						statuses = connection.getUserTimeline(request.id, request.minId, request.maxId);
+						db.saveUserTimeline(statuses);
+					} else if (request.maxId > 1L) {
+						statuses = connection.getUserTimeline(request.id, request.minId, request.maxId);
 					}
 					break;
 
 				case FAVORIT:
-					if (id > 0L) {
-						if (sinceId == 0L && maxId == 0L) {
-							statuses = db.getUserFavorites(id);
-							if (statuses.isEmpty()) {
-								statuses = connection.getUserFavorits(id, 0L, maxId);
-								db.saveFavoriteTimeline(statuses, id);
-							}
-						} else if (sinceId > 0L) {
-							statuses = connection.getUserFavorits(id, 0L, maxId);
-							db.saveFavoriteTimeline(statuses, id);
-							pos = CLEAR_LIST; // set flag to clear previous data
-						} else if (maxId > 1L) {
-							statuses = connection.getUserFavorits(id, sinceId, maxId);
+					if (request.minId == 0L && request.maxId == 0L) {
+						statuses = db.getUserFavorites(request.id);
+						if (statuses.isEmpty()) {
+							statuses = connection.getUserFavorits(request.id, 0L, request.maxId);
+							db.saveFavoriteTimeline(statuses, request.id);
 						}
-					} else if (search != null) {
-						statuses = connection.getUserFavorits(search, sinceId, maxId);
+					} else if (request.minId > 0L) {
+						statuses = connection.getUserFavorits(request.id, 0L, request.maxId);
+						db.saveFavoriteTimeline(statuses, request.id);
+						position = CLEAR_LIST; // set flag to clear previous data
+					} else if (request.maxId > 1L) {
+						statuses = connection.getUserFavorits(request.id, request.minId, request.maxId);
 					}
 					break;
 
 				case BOOKMARKS:
-					if (id > 0L) {
-						if (sinceId == 0L && maxId == 0L) {
-							statuses = db.getUserBookmarks(id);
+					if (request.id > 0L) {
+						if (request.minId == 0L && request.maxId == 0L) {
+							statuses = db.getUserBookmarks(request.id);
 							if (statuses.isEmpty()) {
-								statuses = connection.getUserBookmarks(0L, maxId);
-								db.saveBookmarkTimeline(statuses, id);
+								statuses = connection.getUserBookmarks(0L, request.maxId);
+								db.saveBookmarkTimeline(statuses, request.id);
 							}
-						} else if (sinceId > 0L) {
-							statuses = connection.getUserBookmarks(sinceId, maxId);
-							db.saveBookmarkTimeline(statuses, id);
-						} else if (maxId > 1L) {
-							statuses = connection.getUserBookmarks(sinceId, maxId);
+						} else if (request.minId > 0L) {
+							statuses = connection.getUserBookmarks(request.minId, request.maxId);
+							db.saveBookmarkTimeline(statuses, request.id);
+						} else if (request.maxId > 1L) {
+							statuses = connection.getUserBookmarks(request.minId, request.maxId);
 						}
 					}
 					break;
 
 				case REPLIES_OFFLINE:
-					statuses = db.getReplies(id);
+					statuses = db.getReplies(request.id);
 					break;
 
 				case REPLIES:
-					if (sinceId == 0L && maxId == 0L) {
-						statuses = db.getReplies(id);
+					if (request.minId == 0L && request.maxId == 0L) {
+						statuses = db.getReplies(request.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getStatusReplies(id, sinceId, maxId, search);
-							if (!statuses.isEmpty() && db.containsStatus(id)) {
+							statuses = connection.getStatusReplies(request.id, request.minId, request.maxId, request.search);
+							if (!statuses.isEmpty() && db.containsStatus(request.id)) {
 								db.saveReplyTimeline(statuses);
 							}
 						}
-					} else if (sinceId > 0L) {
-						statuses = connection.getStatusReplies(id, sinceId, maxId, search);
-						if (!statuses.isEmpty() && db.containsStatus(id)) {
+					} else if (request.minId > 0L) {
+						statuses = connection.getStatusReplies(request.id, request.minId, request.maxId, request.search);
+						if (!statuses.isEmpty() && db.containsStatus(request.id)) {
 							db.saveReplyTimeline(statuses);
 						}
-					} else if (maxId > 1L) {
-						statuses = connection.getStatusReplies(id, sinceId, maxId, search);
+					} else if (request.maxId > 1L) {
+						statuses = connection.getStatusReplies(request.id, request.minId, request.maxId, request.search);
 					}
 					break;
 
 				case SEARCH:
-					statuses = connection.searchStatuses(search, sinceId, maxId);
+					statuses = connection.searchStatuses(request.search, request.minId, request.maxId);
 					break;
 
 				case USERLIST:
-					statuses = connection.getUserlistStatuses(id, sinceId, maxId);
+					statuses = connection.getUserlistStatuses(request.id, request.minId, request.maxId);
 					break;
 
 				case PUBLIC:
-					statuses = connection.getPublicTimeline(sinceId, maxId);
+					statuses = connection.getPublicTimeline(request.minId, request.maxId);
 					break;
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new StatusResult(null, position, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return statuses;
+		return new StatusResult(statuses, position, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable List<org.nuclearfog.twidda.model.Status> statuses) {
-		StatusFragment fragment = weakRef.get();
-		if (fragment != null) {
-			if (statuses != null) {
-				fragment.setData(statuses, pos);
-			}
-			if (statuses == null || exception != null) {
-				fragment.onError(exception);
-			}
+	public static class StatusParameter {
+		public final String search;
+		public final int type, pos;
+		public final long id, minId, maxId;
+
+		public StatusParameter(int type, long id, long minId, long maxId, int pos, String search) {
+			this.type = type;
+			this.id = id;
+			this.minId = minId;
+			this.maxId = maxId;
+			this.pos = pos;
+			this.search = search;
+		}
+	}
+
+
+	public static class StatusResult {
+		public final List<Status> statuses;
+		public final int position;
+		public final ConnectionException exception;
+
+		public StatusResult(List<Status> statuses, int position, ConnectionException exception) {
+			this.statuses = statuses;
+			this.position = position;
+			this.exception = exception;
 		}
 	}
 }

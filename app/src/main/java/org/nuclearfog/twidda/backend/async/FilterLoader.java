@@ -1,16 +1,17 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.ui.activities.UsersActivity;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -20,75 +21,92 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class FilterLoader extends AsyncTask<String, Void, Boolean> {
+public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, FilterLoader.FilterResult> {
 
 	/**
 	 * refresh exclude list
 	 */
-	public static final int REFRESH = 1;
+	public static final int MODE_RELOAD = 1;
 
 	/**
 	 * mute specified user
 	 */
-	public static final int MUTE_USER = 2;
+	public static final int MODE_MUTE = 2;
 
 	/**
 	 * block specified user
 	 */
-	public static final int BLOCK_USER = 3;
+	public static final int MODE_BLOCK = 3;
 
-	private WeakReference<UsersActivity> weakRef;
+	/**
+	 * error occured
+	 */
+	public static final int MODE_ERROR = -1;
+
+
 	private Connection connection;
 	private AppDatabase db;
 
-	@Nullable
-	private ConnectionException exception;
-	private int mode;
-
-	public FilterLoader(UsersActivity activity, int mode) {
-		super();
-		connection = ConnectionManager.get(activity);
-		weakRef = new WeakReference<>(activity);
-		db = new AppDatabase(activity);
-		this.mode = mode;
+	public FilterLoader(Context context) {
+		connection = ConnectionManager.get(context);
+		db = new AppDatabase(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected Boolean doInBackground(String... names) {
+	protected FilterResult doInBackground(FilterParam param) {
 		try {
-			switch (mode) {
-				case REFRESH:
+			switch (param.mode) {
+				case MODE_RELOAD:
 					List<Long> ids = connection.getIdBlocklist();
 					db.setFilterlistUserIds(ids);
-					return true;
+					break;
 
-				case MUTE_USER:
-					connection.muteUser(names[0]);
-					return true;
+				case MODE_MUTE:
+					connection.muteUser(param.name);
+					break;
 
-				case BLOCK_USER:
-					connection.blockUser(names[0]);
-					return true;
+				case MODE_BLOCK:
+					connection.blockUser(param.name);
+					break;
 			}
+			return new FilterResult(param.mode, null);
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new FilterResult(MODE_ERROR, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return new FilterResult(MODE_ERROR, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(Boolean success) {
-		UsersActivity activity = weakRef.get();
-		if (activity != null) {
-			if (success) {
-				activity.onSuccess(mode);
-			} else {
-				activity.onError(exception);
-			}
+	public static class FilterParam {
+
+		public final String name;
+		public final int mode;
+
+		public FilterParam(int mode) {
+			this.mode = mode;
+			name = "";
+		}
+
+		public FilterParam(int mode, String name) {
+			this.mode = mode;
+			this.name = name;
+		}
+	}
+
+
+	public static class FilterResult {
+
+		public final int mode;
+		@Nullable
+		public final ConnectionException exception;
+
+		FilterResult(int mode, @Nullable ConnectionException exception) {
+			this.mode = mode;
+			this.exception = exception;
 		}
 	}
 }

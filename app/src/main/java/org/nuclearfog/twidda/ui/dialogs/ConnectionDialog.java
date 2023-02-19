@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.config.Configuration;
 
 /**
  * API connection setup dialog
@@ -71,21 +72,21 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 			String api2Text = api2.getText().toString();
 			String hostText = host.getText().toString();
 			switch (connection.getApiType()) {
-				case ConnectionConfig.API_TWITTER_1:
-				case ConnectionConfig.API_TWITTER_2:
+				case TWITTER1:
+				case TWITTER2:
 					if (enableApi.isChecked() && !api1Text.trim().isEmpty() && !api2Text.trim().isEmpty()) {
 						if (enableV2.isChecked()) {
-							connection.setApiType(ConnectionConfig.API_TWITTER_2);
+							connection.setApiType(Configuration.TWITTER2);
 						} else {
-							connection.setApiType(ConnectionConfig.API_TWITTER_1);
+							connection.setApiType(Configuration.TWITTER1);
 						}
 						connection.setOauthTokens(api1Text, api2Text);
 						dismiss();
 					} else if (!enableApi.isChecked()) {
 						if (Tokens.DISABLE_API_V2) {
-							connection.setApiType(ConnectionConfig.API_TWITTER_1);
+							connection.setApiType(Configuration.TWITTER1);
 						} else {
-							connection.setApiType(ConnectionConfig.API_TWITTER_2);
+							connection.setApiType(Configuration.TWITTER2);
 						}
 						dismiss();
 					} else {
@@ -98,7 +99,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 					}
 					break;
 
-				case ConnectionConfig.API_MASTODON:
+				case MASTODON:
 					if (enableHost.isChecked() && Patterns.WEB_URL.matcher(hostText).matches()) {
 						connection.setHost(hostText);
 						dismiss();
@@ -149,14 +150,14 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 
 	public void show(ConnectionConfig connection) {
 		switch (connection.getApiType()) {
-			case ConnectionConfig.API_TWITTER_2:
+			case TWITTER2:
 				enableV2.setCheckedImmediately(true);
-			case ConnectionConfig.API_TWITTER_1:
+			case TWITTER1:
 				if (connection.useTokens()) {
 					enableApi.setCheckedImmediately(true);
 					api1.setVisibility(View.VISIBLE);
 					api2.setVisibility(View.VISIBLE);
-					api1.setText(connection.getOauthToken());
+					api1.setText(connection.getOauthConsumerToken());
 					api2.setText(connection.getOauthTokenSecret());
 				} else {
 					enableApi.setCheckedImmediately(false);
@@ -170,7 +171,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 				host.setVisibility(View.GONE);
 				break;
 
-			case ConnectionConfig.API_MASTODON:
+			case MASTODON:
 				if (connection.useHost()) {
 					enableHost.setCheckedImmediately(true);
 					host.setVisibility(View.VISIBLE);

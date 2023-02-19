@@ -39,11 +39,10 @@ public interface Connection {
 
 	/**
 	 * @param connection connection configuration
-	 * @param url        URL used to login
 	 * @param code       verification code to login
 	 * @return account information of the created login
 	 */
-	Account loginApp(ConnectionConfig connection, String url, String code) throws ConnectionException;
+	Account loginApp(ConnectionConfig connection, String code) throws ConnectionException;
 
 	/**
 	 * lookup user and return user information
@@ -279,16 +278,6 @@ public interface Connection {
 	List<Status> getUserTimeline(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * show the timeline of an user
-	 *
-	 * @param name  screen name of the user (without '@')
-	 * @param minId get statuses with ID above the min ID
-	 * @param maxId get statuses with ID under the max ID
-	 * @return list of statuses
-	 */
-	List<Status> getUserTimeline(String name, long minId, long maxId) throws ConnectionException;
-
-	/**
 	 * show the favorite timeline of an user
 	 *
 	 * @param id    ID of the user
@@ -297,16 +286,6 @@ public interface Connection {
 	 * @return list of statuses
 	 */
 	List<Status> getUserFavorits(long id, long minId, long maxId) throws ConnectionException;
-
-	/**
-	 * show the favorite timeline of an user
-	 *
-	 * @param name  screen name of the user (without '@')
-	 * @param minId get statuses with ID above the min ID
-	 * @param maxId get statuses with ID under the max ID
-	 * @return list of statuses
-	 */
-	List<Status> getUserFavorits(String name, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * show statuses with bookmarks
@@ -475,21 +454,19 @@ public interface Connection {
 	 * return userlists an user is owning or following
 	 *
 	 * @param id     ID of the user
-	 * @param name   screen name of the user (without '@')
 	 * @param cursor list cursor
 	 * @return list of userlists
 	 */
-	UserLists getUserlistOwnerships(long id, String name, long cursor) throws ConnectionException;
+	UserLists getUserlistOwnerships(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * return userlists an user is added to
 	 *
 	 * @param id     ID of the user
-	 * @param name   screen name of the user (without '@')
 	 * @param cursor list cursor
 	 * @return list of userlists
 	 */
-	UserLists getUserlistMemberships(long id, String name, long cursor) throws ConnectionException;
+	UserLists getUserlistMemberships(long id, long cursor) throws ConnectionException;
 
 	/**
 	 * add user to existing userlist

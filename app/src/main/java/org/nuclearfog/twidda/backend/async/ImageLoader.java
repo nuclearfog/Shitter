@@ -1,21 +1,22 @@
 package org.nuclearfog.twidda.backend.async;
 
+import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 
 /**
  * This AsyncTask class downloads images to a local cache folder
@@ -24,38 +25,30 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see ImageViewer
  */
-public class ImageLoader extends AsyncTask<Uri, Void, Uri> {
+public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, ImageLoader.ImageResult> {
 
-	private WeakReference<ImageViewer> weakRef;
 	private Connection connection;
 
-	@Nullable
-	private ConnectionException exception;
-	private File cacheFolder;
-
 	/**
-	 * @param activity    Activity context
-	 * @param cacheFolder cache folder where to store image files
+	 * @param context Activity context
 	 */
-	public ImageLoader(ImageViewer activity, File cacheFolder) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		connection = ConnectionManager.get(activity);
-		this.cacheFolder = cacheFolder;
+	public ImageLoader(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected Uri doInBackground(Uri... links) {
+	protected ImageResult doInBackground(ImageParameter request) {
 		try {
 			// get input stream
-			MediaStatus mediaUpdate = connection.downloadImage(links[0].toString());
+			MediaStatus mediaUpdate = connection.downloadImage(request.uri.toString());
 			InputStream input = mediaUpdate.getStream();
 			String mimeType = mediaUpdate.getMimeType();
 
 			// create file
 			String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
-			File imageFile = new File(cacheFolder, StringTools.getRandomString() + ext);
+			File imageFile = new File(request.cache, StringTools.getRandomString() + ext);
 			imageFile.createNewFile();
 
 			// copy image to cache folder
@@ -68,25 +61,46 @@ public class ImageLoader extends AsyncTask<Uri, Void, Uri> {
 			output.close();
 
 			// create Uri from cached image
-			return Uri.fromFile(imageFile);
+			return new ImageResult(Uri.fromFile(imageFile), null);
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new ImageResult(null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ImageResult(null, null);
+	}
+
+	/**
+	 * Async request class to send information required to execute the task
+	 */
+	public static class ImageParameter {
+
+		public final File cache;
+		public final Uri uri;
+
+		public ImageParameter(Uri uri, File cache) {
+			this.cache = cache;
+			this.uri = uri;
+		}
+	}
+
+	/**
+	 * Async result class
+	 */
+	public static class ImageResult {
+
+		@Nullable
+		public final  Uri uri;
+		@Nullable
+		public final  ConnectionException exception;
+
+		ImageResult(@Nullable Uri uri, @Nullable ConnectionException exception) {
+			this.exception = exception;
+			this.uri = uri;
+		}
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable Uri localUri) {
-		ImageViewer activity = weakRef.get();
-		if (activity != null) {
-			if (localUri != null) {
-				activity.onSuccess(localUri);
-			} else {
-				activity.onError(exception);
-			}
-		}
+	public interface ImageCallback extends AsyncCallback<ImageResult> {
 	}
 }

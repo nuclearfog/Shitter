@@ -1,17 +1,17 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -19,66 +19,68 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class NotificationLoader extends AsyncTask<Long, Void, List<Notification>> {
+public class NotificationLoader extends AsyncExecutor<NotificationLoader.NotificationParam, NotificationLoader.NotificationResult> {
 
-	private WeakReference<NotificationFragment> callback;
 	private Connection connection;
 	private AppDatabase db;
 
-	@Nullable
-	private ConnectionException exception;
-	private int pos;
-
 	/**
-	 * @param fragment callback to fragment
-	 * @param pos      index where to insert the new items in the lsit
 	 */
-	public NotificationLoader(NotificationFragment fragment, int pos) {
-		super();
-		callback = new WeakReference<>(fragment);
-		connection = ConnectionManager.get(fragment.getContext());
-		db = new AppDatabase(fragment.getContext());
-		this.pos = pos;
+	public NotificationLoader(Context context) {
+		connection = ConnectionManager.get(context);
+		db = new AppDatabase(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected List<Notification> doInBackground(Long... ids) {
-		long minId = ids[0];
-		long maxId = ids[1];
+	protected NotificationResult doInBackground(NotificationParam params) {
 		List<Notification> result = null;
 		try {
-			if (minId == 0 && maxId == 0) {
+			if (params.minId == 0 && params.maxId == 0) {
 				result = db.getNotifications();
 				if (result.isEmpty()) {
 					result = connection.getNotifications(0, 0);
 					db.saveNotifications(result);
 				}
 			} else {
-				result = connection.getNotifications(minId, maxId);
-				if (maxId == 0) {
+				result = connection.getNotifications(params.minId, params.maxId);
+				if (params.maxId == 0) {
 					db.saveNotifications(result);
 				}
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new NotificationResult(null, params.position, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return new NotificationResult(result, params.position, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable List<Notification> notifications) {
-		NotificationFragment fragment = callback.get();
-		if (fragment != null) {
-			if (notifications != null) {
-				fragment.onSuccess(notifications, pos);
-			}
-			if (exception != null) {
-				fragment.onError(exception);
-			}
+	public static class NotificationParam {
+
+		public final int position;
+		public final long minId, maxId;
+
+		public NotificationParam(int position, long minId, long maxId) {
+			this.position = position;
+			this.minId = minId;
+			this.maxId = maxId;
+		}
+	}
+
+
+	public static class NotificationResult {
+
+		public final List<Notification> notifications;
+		public final ConnectionException exception;
+		public final int position;
+
+		public NotificationResult(List<Notification> notifications, int position, ConnectionException exception) {
+			this.notifications = notifications;
+			this.exception = exception;
+			this.position = position;
 		}
 	}
 }

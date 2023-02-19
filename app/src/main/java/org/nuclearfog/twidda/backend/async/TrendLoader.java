@@ -1,17 +1,18 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -20,63 +21,75 @@ import java.util.List;
  * @author nuclearfog
  * @see TrendFragment
  */
-public class TrendLoader extends AsyncTask<String, Void, List<Trend>> {
+public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, TrendLoader.TrendResult> {
 
-	private WeakReference<TrendFragment> weakRef;
+	public static final int DATABASE = 1;
+	public static final int ONLINE = 2;
+	public static final int SEARCH = 3;
+
 	private Connection connection;
 	private AppDatabase db;
 
-	@Nullable
-	private ConnectionException exception;
-	private boolean isEmpty;
-
 	/**
-	 * @param fragment callback to update data
 	 */
-	public TrendLoader(TrendFragment fragment) {
-		super();
-		weakRef = new WeakReference<>(fragment);
-		db = new AppDatabase(fragment.getContext());
-		connection = ConnectionManager.get(fragment.getContext());
-		isEmpty = fragment.isEmpty();
+	public TrendLoader(Context context) {
+		connection = ConnectionManager.get(context);
+		db = new AppDatabase(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected List<Trend> doInBackground(String... params) {
-		List<Trend> trends = null;
+	protected TrendResult doInBackground(TrendParameter param) {
 		try {
-			if (params.length == 1 && params[0] != null && !params[0].trim().isEmpty()) {
-				trends = connection.searchHashtags(params[0]);
-			} else if (isEmpty) {
-				trends = db.getTrends();
-				if (trends.isEmpty()) {
+			switch(param.mode) {
+				case DATABASE:
+					List<Trend> trends = db.getTrends();
+					if (!trends.isEmpty()) {
+						return new TrendResult(trends, null);
+					}
+					// fall through
+
+				case ONLINE:
 					trends = connection.getTrends();
 					db.saveTrends(trends);
-				}
-			} else {
-				trends = connection.getTrends();
-				db.saveTrends(trends);
+					return new TrendResult(trends, null);
+
+				case SEARCH:
+					trends = connection.searchHashtags(param.trend);
+					return new TrendResult(trends, null);
 			}
+
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new TrendResult(null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return trends;
+		return new TrendResult(null, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable List<Trend> trends) {
-		TrendFragment fragment = weakRef.get();
-		if (fragment != null) {
-			if (trends != null) {
-				fragment.setData(trends);
-			}
-			if (trends == null || exception != null) {
-				fragment.onError(exception);
-			}
+	public static class TrendParameter {
+		public final String trend;
+		public final int mode;
+
+		public TrendParameter(int mode, String trend) {
+			this.mode = mode;
+			this.trend = trend;
+		}
+	}
+
+
+	public static class TrendResult {
+
+		@Nullable
+		public final List<Trend> trends;
+		@Nullable
+		public final ConnectionException exception;
+
+		public TrendResult(@Nullable List<Trend> trends, @Nullable ConnectionException exception) {
+			this.trends = trends;
+			this.exception = exception;
 		}
 	}
 }

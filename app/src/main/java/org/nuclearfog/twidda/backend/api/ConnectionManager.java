@@ -2,9 +2,12 @@ package org.nuclearfog.twidda.backend.api;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.api.mastodon.Mastodon;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.TwitterV2;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;
 
@@ -47,55 +50,38 @@ public class ConnectionManager {
 	 * @return singleton instance
 	 */
 	public static Connection get(Context context) {
-		return get(context, SELECT_AUTO);
+		return get(context, null);
 	}
 
 	/**
 	 * get singleton class of a connection
+	 * @param config Network selection or null to choose automatically
 	 *
-	 * @param select select instance type to create {@link #SELECT_AUTO,#SELECT_TWITTER}
 	 * @return singleton instance
 	 */
-	public static Connection get(Context context, int select) {
+	public static Connection get(Context context, @Nullable Configuration config) {
 		// create new singleton instance if there is none or if settings change
-		if (notifySettingsChange || connection == null || select != SELECT_AUTO) {
+		if (notifySettingsChange || connection == null) {
 			notifySettingsChange = false;
 			GlobalSettings settings = GlobalSettings.getInstance(context);
 			// select automatically
-			if (select == SELECT_AUTO) {
-				switch (settings.getLogin().getConfiguration()) {
-					case TWITTER1:
-						connection = new TwitterV1(context);
-						break;
+			if (config == null)
+				config = settings.getLogin().getConfiguration();
+			switch (config) {
+				case TWITTER1:
+					connection = new TwitterV1(context);
+					break;
 
-					case TWITTER2:
-						connection = new TwitterV2(context);
-						break;
+				case TWITTER2:
+					connection = new TwitterV2(context);
+					break;
 
-					case MASTODON:
-						connection = new Mastodon(context);
-						break;
+				case MASTODON:
+					connection = new Mastodon(context);
+					break;
 
-					default:
-						throw new RuntimeException("no connection selected!");
-				}
-			} else {
-				switch (select) {
-					case SELECT_TWITTER_1:
-						connection = new TwitterV1(context);
-						break;
-
-					case SELECT_TWITTER_2:
-						connection = new TwitterV2(context);
-						break;
-
-					case SELECT_MASTODON:
-						connection = new Mastodon(context);
-						break;
-
-					default:
-						throw new RuntimeException("no connection selected!");
-				}
+				default:
+					throw new RuntimeException("no connection selected!");
 			}
 			settings.addSettingsChangeListener(new OnSettingsChangeListener() {
 				@Override

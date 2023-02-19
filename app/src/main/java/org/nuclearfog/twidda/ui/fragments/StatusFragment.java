@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA;
 
 import android.content.Intent;
@@ -15,22 +14,22 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
 import org.nuclearfog.twidda.ui.adapter.StatusAdapter.StatusSelectListener;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusLoader;
+import org.nuclearfog.twidda.backend.async.StatusLoader.StatusParameter;
+import org.nuclearfog.twidda.backend.async.StatusLoader.StatusResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
-
-import java.util.List;
 
 /**
  * fragment class to show a status list
  *
  * @author nuclearfog
  */
-public class StatusFragment extends ListFragment implements StatusSelectListener, ActivityResultCallback<ActivityResult> {
+public class StatusFragment extends ListFragment implements StatusSelectListener, AsyncCallback<StatusResult>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Key to define what type of status should be loaded
@@ -157,8 +156,8 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public void onDestroy() {
-		if (statusAsync != null && statusAsync.getStatus() == RUNNING) {
-			statusAsync.cancel(true);
+		if (statusAsync != null && !statusAsync.idle()) {
+			statusAsync.kill();
 		}
 		super.onDestroy();
 	}
@@ -203,36 +202,29 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public boolean onPlaceholderClick(long minId, long maxId, int pos) {
-		if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
+		if (statusAsync != null && statusAsync.idle()) {
 			load(minId, maxId, pos);
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * Set status data to list
-	 *
-	 * @param statuses List of statuses
-	 * @param pos      position where statuses should be added
-	 */
-	public void setData(@NonNull List<Status> statuses, int pos) {
-		if (pos == CLEAR_LIST) {
-			adapter.replaceItems(statuses);
-		} else {
-			adapter.addItems(statuses, pos);
-		}
-		setRefresh(false);
-	}
 
-	/**
-	 * called from {@link StatusLoader} if an error occurs
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
-		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-		adapter.disableLoading();
+	@Override
+	public void onResult(StatusResult res) {
 		setRefresh(false);
+		if (res.statuses != null) {
+			if (res.position == CLEAR_LIST) {
+				adapter.replaceItems(res.statuses);
+			} else {
+				adapter.addItems(res.statuses, res.position);
+			}
+		} else {
+			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+			adapter.disableLoading();
+			setRefresh(false);
+		}
 	}
 
 	/**
@@ -243,49 +235,47 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 * @param index   index where status list should be added
 	 */
 	private void load(long sinceId, long maxId, int index) {
+		StatusParameter request;
+		statusAsync = new StatusLoader(requireContext());
 		switch (mode) {
 			case STATUS_FRAGMENT_HOME:
-				statusAsync = new StatusLoader(this, StatusLoader.HOME, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+				request = new StatusParameter(StatusLoader.HOME, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_USER:
-				statusAsync = new StatusLoader(this, StatusLoader.USER, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+				request = new StatusParameter(StatusLoader.USER, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_FAVORIT:
-				statusAsync = new StatusLoader(this, StatusLoader.FAVORIT, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+				request = new StatusParameter(StatusLoader.FAVORIT, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_REPLY:
 				if (index == CLEAR_LIST)
-					statusAsync = new StatusLoader(this, StatusLoader.REPLIES_OFFLINE, id, search, index);
+					request = new StatusParameter(StatusLoader.REPLIES_OFFLINE, id, sinceId, maxId, index, search);
 				else
-					statusAsync = new StatusLoader(this, StatusLoader.REPLIES, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+					request = new StatusParameter(StatusLoader.REPLIES, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_SEARCH:
-				statusAsync = new StatusLoader(this, StatusLoader.SEARCH, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+				request = new StatusParameter(StatusLoader.SEARCH, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_USERLIST:
-				statusAsync = new StatusLoader(this, StatusLoader.USERLIST, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+				request = new StatusParameter(StatusLoader.USERLIST, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_PUBLIC:
-				statusAsync = new StatusLoader(this, StatusLoader.PUBLIC, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+				request = new StatusParameter(StatusLoader.PUBLIC, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_BOOKMARK:
-				statusAsync = new StatusLoader(this, StatusLoader.BOOKMARKS, id, search, index);
-				statusAsync.execute(sinceId, maxId);
+				request = new StatusLoader.StatusParameter(StatusLoader.BOOKMARKS, id, sinceId, maxId, index, search);
 				break;
+
+			default:
+				return;
 		}
+		statusAsync.execute(request, this);
 	}
 }

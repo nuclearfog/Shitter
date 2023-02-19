@@ -1,19 +1,20 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Background task to connect to social network
@@ -21,112 +22,97 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see LoginActivity
  */
-public class LoginAction extends AsyncTask<String, Void, String> {
+public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginAction.LoginResult> {
 
-	/**
-	 * request login page
-	 */
-	public static final int MODE_REQUEST_TWITTER = 1;
-
-	/**
-	 * request login page
-	 */
-	public static final int MODE_REQUEST_MASTODON = 2;
-
-	/**
-	 * login with pin and ans save auth keys
-	 */
-	public static final int MODE_LOGIN_TWITTER = 3;
-
-	/**
-	 * use Mastodon account to login
-	 */
-	public static final int MODE_LOGIN_MASTODON = 4;
-
-	private WeakReference<LoginActivity> weakRef;
 	private AppDatabase database;
 	private GlobalSettings settings;
 	private Connection connection;
-	@Nullable
-	private ConnectionException exception;
 
-	private ConnectionConfig configuration;
-	private int mode;
 
-	/**
-	 * Account to twitter with PIN
-	 *
-	 * @param activity      Activity Context
-	 * @param configuration network type {@link #MODE_LOGIN_MASTODON ,#LOGIN_TWITTER}
-	 * @param mode          indicating login step
-	 */
-	public LoginAction(LoginActivity activity, int mode, ConnectionConfig configuration) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		database = new AppDatabase(activity);
-		settings = GlobalSettings.getInstance(activity);
-		this.configuration = configuration;
-		this.mode = mode;
-		switch (mode) {
-			case MODE_REQUEST_TWITTER:
-			case MODE_LOGIN_TWITTER:
-				if (configuration.getApiType() == ConnectionConfig.API_TWITTER_2)
-					connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER_2);
-				else
-					connection = ConnectionManager.get(activity, ConnectionManager.SELECT_TWITTER_1);
-				break;
-
-			case MODE_REQUEST_MASTODON:
-			case MODE_LOGIN_MASTODON:
-				connection = ConnectionManager.get(activity, ConnectionManager.SELECT_MASTODON);
-				break;
-
-			default:
-				throw new RuntimeException("connection type not found: " + mode);
-		}
+	public LoginAction(Context context, Configuration configuration) {
+		database = new AppDatabase(context);
+		settings = GlobalSettings.getInstance(context);
+		connection = ConnectionManager.get(context, configuration);
 	}
 
 
+	@NonNull
 	@Override
-	protected String doInBackground(String... params) {
+	protected LoginResult doInBackground(LoginParam param) {
 		try {
-			switch (mode) {
-				case MODE_REQUEST_TWITTER:
-				case MODE_REQUEST_MASTODON:
+			switch (param.mode) {
+				case LoginParam.MODE_REQUEST:
 					if (settings.isLoggedIn()) {
 						Account login = settings.getLogin();
 						if (!database.containsLogin(login.getId())) {
 							database.saveLogin(login);
 						}
 					}
-					return connection.getAuthorisationLink(configuration);
+					String redirectUrl = connection.getAuthorisationLink(param.config);
+					return new LoginResult(LoginResult.MODE_REQUEST, redirectUrl, null);
 
-				case MODE_LOGIN_TWITTER:
-				case MODE_LOGIN_MASTODON:
+				case LoginParam.MODE_LOGIN:
 					// login with pin and access token
-					Account account = connection.loginApp(configuration, params[0], params[1]);
+					Account account = connection.loginApp(param.config, param.code);
 					// save new user information
 					database.saveLogin(account);
-					return "";
+					return new LoginResult(LoginResult.MODE_LOGIN, null, null);
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new LoginResult(LoginResult.MODE_ERROR, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new LoginResult(LoginResult.MODE_ERROR, null, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable String result) {
-		LoginActivity activity = weakRef.get();
-		if (activity != null) {
-			if (result != null) {
-				activity.onSuccess(mode, result);
-			} else {
-				activity.onError(exception);
-			}
+	public static class LoginParam {
+
+		/**
+		 * request login page
+		 */
+		public static final int MODE_REQUEST = 1;
+
+		/**
+		 * request login access
+		 */
+		public static final int MODE_LOGIN = 2;
+
+		public final ConnectionConfig config;
+		public final String code;
+		public final int mode;
+
+		public LoginParam(int mode, ConnectionConfig config) {
+			this(mode, config, "");
+		}
+
+		public LoginParam(int mode, ConnectionConfig config, String code) {
+			this.mode = mode;
+			this.config = config;
+			this.code = code;
+		}
+	}
+
+
+	public static class LoginResult {
+
+		public static final int MODE_REQUEST = 3;
+
+		public static final int MODE_LOGIN = 4;
+
+		public static final int MODE_ERROR = -1;
+
+		@Nullable
+		public final ConnectionException exception;
+		@Nullable
+		public final String redirectUrl;
+		public final int mode;
+
+		LoginResult(int mode, @Nullable String redirectUrl, @Nullable ConnectionException exception) {
+			this.redirectUrl = redirectUrl;
+			this.exception = exception;
+			this.mode = mode;
 		}
 	}
 }

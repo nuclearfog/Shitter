@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.helper;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.config.Configuration;
+
 /**
  * Configuration class for {@link org.nuclearfog.twidda.backend.api.Connection}
  *
@@ -9,25 +11,11 @@ import androidx.annotation.NonNull;
  */
 public class ConnectionConfig {
 
-	/**
-	 * Twitter API version 1.1
-	 */
-	public static final int API_TWITTER_1 = 1;
-
-	/**
-	 * Twitter API version 2.0
-	 */
-	public static final int API_TWITTER_2 = 2;
-
-	/**
-	 * Mastodon API
-	 */
-	public static final int API_MASTODON = 3;
-
 	private String consumerKey;
 	private String consumerSecret;
 	private String hostname;
-	private int apiType;
+	private String tempOauth;
+	private Configuration apiConfig;
 
 	/**
 	 */
@@ -35,7 +23,6 @@ public class ConnectionConfig {
 		hostname = "";
 		consumerKey = "";
 		consumerSecret = "";
-		apiType = -1;
 	}
 
 	/**
@@ -48,11 +35,20 @@ public class ConnectionConfig {
 	}
 
 	/**
+	 * get temporary oauth token
+	 *
+	 * @return oauth token
+	 */
+	public String getTempOauthToken() {
+		return tempOauth;
+	}
+
+	/**
 	 * get oauth consumer token
 	 *
-	 * @return consumer token
+	 * @return oauth token
 	 */
-	public String getOauthToken() {
+	public String getOauthConsumerToken() {
 		return consumerKey;
 	}
 
@@ -68,19 +64,17 @@ public class ConnectionConfig {
 	/**
 	 * get configured API type
 	 *
-	 * @return API type {@link #API_MASTODON,#API_TWITTER_1,#API_TWITTER_2}
+	 * @return API type
 	 */
-	public int getApiType() {
-		return apiType;
+	public Configuration getApiType() {
+		return apiConfig;
 	}
 
 	/**
 	 * override default API type
-	 *
-	 * @param apiType API type {@link #API_MASTODON,#API_TWITTER_1,#API_TWITTER_2}
 	 */
-	public void setApiType(int apiType) {
-		this.apiType = apiType;
+	public void setApiType(Configuration apiConfig) {
+		this.apiConfig = apiConfig;
 	}
 
 	/**
@@ -125,21 +119,30 @@ public class ConnectionConfig {
 		}
 	}
 
+	/**
+	 * set temporary oauth token
+	 *
+	 * @param tempOauth oauth token
+	 */
+	public void setTempOauthToken(String tempOauth) {
+		this.tempOauth = tempOauth;
+	}
+
 
 	@NonNull
 	@Override
 	public String toString() {
 		String result= "network=\"";
-		switch (apiType) {
-			case API_MASTODON:
+		switch (apiConfig) {
+			case MASTODON:
 				result = "Mastodon\"";
 				break;
 
-			case API_TWITTER_1:
+			case TWITTER1:
 				result = "Twitter V1.1\"";
 				break;
 
-			case API_TWITTER_2:
+			case TWITTER2:
 				result = "Twitter V2.0\"";
 				break;
 		}

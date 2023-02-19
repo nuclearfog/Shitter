@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.helper.LocationUpdate;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
@@ -187,7 +186,7 @@ public class TwitterV1 implements Connection {
 		try {
 			Response response;
 			if (connection.useTokens())
-				response = post(REQUEST_TOKEN, new ArrayList<>(), connection.getOauthToken(), connection.getOauthTokenSecret());
+				response = post(REQUEST_TOKEN, new ArrayList<>(), connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 			else
 				response = post(REQUEST_TOKEN, new ArrayList<>(), tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
 			ResponseBody body = response.body();
@@ -195,8 +194,9 @@ public class TwitterV1 implements Connection {
 				String res = body.string();
 				// extract oauth_token from url
 				Uri uri = Uri.parse(AUTHENTICATE + "?" + res);
-				String requestToken = uri.getQueryParameter("oauth_token");
-				return TwitterV1.AUTHENTICATE + "?oauth_token=" + requestToken;
+				String tempOauthToken = uri.getQueryParameter("oauth_token");
+				connection.setTempOauthToken(tempOauthToken);
+				return TwitterV1.AUTHENTICATE + "?oauth_token=" + tempOauthToken;
 			}
 			throw new TwitterException(response);
 		} catch (IOException e) {
@@ -206,15 +206,14 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Account loginApp(ConnectionConfig connection, String url, String pin) throws TwitterException {
+	public Account loginApp(ConnectionConfig connection, String pin) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		String tempOauthToken = Uri.parse(url).getQueryParameter("oauth_token");
 		params.add("oauth_verifier=" + pin);
-		params.add("oauth_token=" + tempOauthToken);
+		params.add("oauth_token=" + connection.getTempOauthToken());
 		try {
 			Response response;
 			if (connection.useTokens()) {
-				response = post(OAUTH_VERIFIER, params, connection.getOauthToken(), connection.getOauthTokenSecret());
+				response = post(OAUTH_VERIFIER, params, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 			} else {
 				response = post(OAUTH_VERIFIER, params, tokens.getConsumerKey(true), tokens.getConsumerSecret(true));
 			}
@@ -229,8 +228,8 @@ public class TwitterV1 implements Connection {
 				User user;
 				AccountV1 account;
 				if (connection.useTokens()) {
-					user = getCredentials( connection.getOauthToken(), connection.getOauthTokenSecret(), oauthToken, tokenSecret);
-					account = new AccountV1(oauthToken, tokenSecret, connection.getOauthToken(), connection.getOauthTokenSecret(), user);
+					user = getCredentials( connection.getOauthConsumerToken(), connection.getOauthTokenSecret(), oauthToken, tokenSecret);
+					account = new AccountV1(oauthToken, tokenSecret, connection.getOauthConsumerToken(), connection.getOauthTokenSecret(), user);
 				} else { // use default API keys
 					user = getCredentials(tokens.getConsumerKey(true), tokens.getConsumerSecret(true), oauthToken, tokenSecret);
 					account = new AccountV1(oauthToken, tokenSecret, user);
@@ -559,25 +558,9 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Status> getUserTimeline(String name, long minId, long maxId) throws TwitterException {
-		List<String> params = new ArrayList<>();
-		params.add("screen_name=" + StringTools.encode(name));
-		return getTweets(TWEETS_USER, params, minId, maxId);
-	}
-
-
-	@Override
 	public List<Status> getUserFavorits(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		return getTweets(TWEETS_USER_FAVORITS, params, minId, maxId);
-	}
-
-
-	@Override
-	public List<Status> getUserFavorits(String name, long minId, long maxId) throws TwitterException {
-		List<String> params = new ArrayList<>();
-		params.add("screen_name=" + StringTools.encode(name));
 		return getTweets(TWEETS_USER_FAVORITS, params, minId, maxId);
 	}
 
@@ -780,23 +763,17 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public UserLists getUserlistOwnerships(long id, String name, long cursor) throws TwitterException {
+	public UserLists getUserlistOwnerships(long id, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (id > 0)
-			params.add("user_id=" + id);
-		else
-			params.add("screen_name=" + StringTools.encode(name));
+		params.add("user_id=" + id);
 		return getUserlists(USERLIST_OWNERSHIP, params);
 	}
 
 
 	@Override
-	public UserLists getUserlistMemberships(long id, String name, long cursor) throws TwitterException {
+	public UserLists getUserlistMemberships(long id, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		if (id > 0)
-			params.add("user_id=" + id);
-		else
-			params.add("screen_name=" + StringTools.encode(name));
+		params.add("user_id=" + id);
 		params.add("count=" + settings.getListSize());
 		params.add("cursor=" + cursor);
 		return getUserlists(USERLIST_MEMBERSHIP, params);

@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static android.os.AsyncTask.Status.RUNNING;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -10,23 +8,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.AccountAdapter;
 import org.nuclearfog.twidda.ui.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
+import org.nuclearfog.twidda.backend.async.AccountLoader.AccountParameter;
+import org.nuclearfog.twidda.backend.async.AccountLoader.AccountResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
-import java.util.List;
-
 /**
  * fragment class to show registered accounts
  *
  * @author nuclearfog
  */
-public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener {
+public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
 
 	@Nullable
 	private AccountLoader loginTask;
@@ -34,7 +33,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	private AccountAdapter adapter;
 	private ConfirmDialog dialog;
 
-	private Account selection;
+	private long selectedId;
 
 
 	@Override
@@ -54,32 +53,29 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		super.onStart();
 		if (loginTask == null) {
 			setRefresh(true);
-			loginTask = new AccountLoader(this, AccountLoader.MODE_LOAD);
-			loginTask.execute();
+			load(AccountLoader.MODE_LOAD);
 		}
 	}
 
 
 	@Override
 	public void onDestroy() {
-		if (loginTask != null && loginTask.getStatus() == RUNNING)
-			loginTask.cancel(true);
+		if (loginTask != null && !loginTask.idle())
+			loginTask.kill();
 		super.onDestroy();
 	}
 
 
 	@Override
 	protected void onReload() {
-		loginTask = new AccountLoader(this, AccountLoader.MODE_LOAD);
-		loginTask.execute();
+		load(AccountLoader.MODE_LOAD);
 	}
 
 
 	@Override
 	protected void onReset() {
-		loginTask = new AccountLoader(this, AccountLoader.MODE_LOAD);
-		loginTask.execute();
 		setRefresh(true);
+		load(AccountLoader.MODE_LOAD);
 	}
 
 
@@ -99,7 +95,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onAccountRemove(Account account) {
 		if (!dialog.isShowing()) {
-			selection = account;
+			selectedId = account.getId();
 			dialog.show(ConfirmDialog.REMOVE_ACCOUNT);
 		}
 	}
@@ -108,34 +104,35 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
 		if (type == ConfirmDialog.REMOVE_ACCOUNT) {
-			loginTask = new AccountLoader(this, AccountLoader.MODE_DELETE);
-			loginTask.execute(selection.getId());
+			load(AccountLoader.MODE_DELETE);
+		}
+	}
+
+
+	@Override
+	public void onResult(AccountResult res) {
+		switch(res.mode) {
+			case AccountLoader.MODE_LOAD:
+				if (res.accounts != null) {
+					adapter.replaceItems(res.accounts);
+					setRefresh(false);
+				} else {
+					Toast.makeText(requireContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
+				}
+				break;
+
+			case AccountLoader.MODE_DELETE:
+				if (res.id > 0)
+					adapter.removeItem(res.id);
+				break;
 		}
 	}
 
 	/**
-	 * called from {@link AccountLoader} to add accounts to list
-	 *
-	 * @param result login information
 	 */
-	public void onSuccess(@NonNull List<Account> result) {
-		adapter.replaceItems(result);
-		setRefresh(false);
-	}
-
-	/**
-	 * called from {@link AccountLoader} to remove account from list
-	 *
-	 * @param id ID of the account to delete
-	 */
-	public void onDelete(long id) {
-		adapter.removeItem(id);
-	}
-
-	/**
-	 * called from {@link AccountLoader} when an error occurs
-	 */
-	public void onError() {
-		Toast.makeText(requireContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
+	public void load(int mode) {
+		loginTask = new AccountLoader(requireContext());
+		AccountParameter request = new AccountParameter(mode, selectedId);
+		loginTask.execute(request, this);
 	}
 }

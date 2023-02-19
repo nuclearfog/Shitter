@@ -1,14 +1,13 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
-import org.nuclearfog.twidda.ui.fragments.AccountFragment;
-
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -16,7 +15,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
+public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter, AccountLoader.AccountResult> {
 
 	/**
 	 * load all saved logins
@@ -29,58 +28,56 @@ public class AccountLoader extends AsyncTask<Long, Void, List<Account>> {
 	public static final int MODE_DELETE = 2;
 
 	private AppDatabase db;
-	private WeakReference<AccountFragment> weakRef;
 
-	private int mode;
-	private long deleteId;
 
-	/**
-	 * @param mode action to take {@link #MODE_LOAD,#MODE_DELETE}
-	 */
-	public AccountLoader(AccountFragment fragment, int mode) {
-		super();
-		weakRef = new WeakReference<>(fragment);
-		db = new AppDatabase(fragment.requireContext());
-		this.mode = mode;
+	public AccountLoader(Context context) {
+		db = new AppDatabase(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected List<Account> doInBackground(Long... param) {
+	protected AccountResult doInBackground(AccountParameter request) {
 		try {
-			// get all logins
-			if (mode == MODE_LOAD) {
-				return db.getLogins();
-			}
-			// delete login
-			else if (mode == MODE_DELETE) {
-				db.removeLogin(param[0]);
-				deleteId = param[0];
+			switch (request.mode) {
+				case MODE_LOAD:
+					List<Account> accounts = db.getLogins();
+					return new AccountResult(request.mode, 0L, accounts);
+
+				case MODE_DELETE:
+					db.removeLogin(request.id);
+					return new AccountResult(request.mode, request.id, null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new AccountResult(request.mode, 0L, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable List<Account> accounts) {
-		AccountFragment fragment = weakRef.get();
-		if (fragment != null) {
-			if (mode == MODE_LOAD) {
-				if (accounts != null) {
-					fragment.onSuccess(accounts);
-				} else {
-					fragment.onError();
-				}
-			} else if (mode == MODE_DELETE) {
-				if (deleteId >= 0) {
-					fragment.onDelete(deleteId);
-				} else {
-					fragment.onError();
-				}
-			}
+	public static class AccountParameter {
+
+		public final int mode;
+		public final long id;
+
+		public AccountParameter(int mode, long id) {
+			this.mode = mode;
+			this.id = id;
+		}
+	}
+
+
+	public static class AccountResult {
+
+		@Nullable
+		public final List<Account> accounts;
+		public final int mode;
+		public final long id;
+
+		AccountResult(int mode, long id, @Nullable List<Account> accounts) {
+			this.accounts = accounts;
+			this.mode = mode;
+			this.id = id;
 		}
 	}
 }

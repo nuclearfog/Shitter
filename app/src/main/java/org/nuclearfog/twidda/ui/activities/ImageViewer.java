@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 
 import android.location.Location;
@@ -17,9 +16,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ImageLoader;
+import org.nuclearfog.twidda.backend.async.ImageLoader.ImageParameter;
+import org.nuclearfog.twidda.backend.async.ImageLoader.ImageResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
@@ -31,7 +32,7 @@ import java.io.File;
  *
  * @author nuclearfog
  */
-public class ImageViewer extends MediaActivity {
+public class ImageViewer extends MediaActivity implements AsyncCallback<ImageResult> {
 
 	/**
 	 * key to add URI of the image (online or local)
@@ -80,8 +81,9 @@ public class ImageViewer extends MediaActivity {
 		if (data instanceof Uri) {
 			Uri uri = (Uri) data;
 			if (uri.getScheme().startsWith("http")) {
-				imageAsync = new ImageLoader(this, cacheFolder);
-				imageAsync.execute(uri);
+				ImageParameter request = new ImageParameter(uri, cacheFolder);
+				imageAsync = new ImageLoader(this);
+				imageAsync.execute(request, this);
 				enableSave = true;
 			} else {
 				zoomImage.setImageURI(uri);
@@ -93,8 +95,8 @@ public class ImageViewer extends MediaActivity {
 
 	@Override
 	protected void onDestroy() {
-		if (imageAsync != null && imageAsync.getStatus() == RUNNING) {
-			imageAsync.cancel(true);
+		if (imageAsync != null && !imageAsync.idle()) {
+			imageAsync.kill();
 			clearCache();
 		}
 		super.onDestroy();
@@ -130,25 +132,19 @@ public class ImageViewer extends MediaActivity {
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
 	}
 
-	/**
-	 * Called from {@link ImageLoader} when all images are downloaded successfully
-	 *
-	 * @param uri Uri of the cached image file
-	 */
-	public void onSuccess(@NonNull Uri uri) {
-		cacheUri = uri;
-		zoomImage.reset();
-		zoomImage.setImageURI(uri);
-		loadingCircle.setVisibility(INVISIBLE);
-	}
 
-	/**
-	 * Called from {@link ImageLoader} when an error occurs
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-		finish();
+	@Override
+	public void onResult(ImageResult res) {
+		if (res.uri != null) {
+			cacheUri = res.uri;
+			zoomImage.reset();
+			zoomImage.setImageURI(cacheUri);
+			loadingCircle.setVisibility(INVISIBLE);
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, res.exception);
+			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+			finish();
+		}
 	}
 
 	/**

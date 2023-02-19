@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.TOOLBAR_TRANSPARENCY;
@@ -33,10 +32,11 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.UserUpdater;
+import org.nuclearfog.twidda.backend.async.UserUpdater.UserUpdateResult;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.Configuration;
@@ -45,7 +45,6 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
-import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -54,7 +53,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, AsyncCallback<UserUpdateResult>, OnConfirmListener, Callback {
 
 	/**
 	 * key to preload user data
@@ -149,7 +148,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		profile_image.setOnClickListener(this);
 		profile_banner.setOnClickListener(this);
 		addBannerBtn.setOnClickListener(this);
-		loadingCircle.addOnProgressStopListener(this);
 		confirmDialog.setConfirmListener(this);
 	}
 
@@ -157,8 +155,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
-		if (editorAsync != null && editorAsync.getStatus() == RUNNING)
-			editorAsync.cancel(true);
+		if (editorAsync != null && !editorAsync.idle())
+			editorAsync.kill();
 		super.onDestroy();
 	}
 
@@ -241,14 +239,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 
 	@Override
-	public void stopProgress() {
-		if (editorAsync != null && editorAsync.getStatus() == RUNNING) {
-			editorAsync.cancel(true);
-		}
-	}
-
-
-	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
 		// leave without settings
 		if (type == ConfirmDialog.PROFILE_EDITOR_LEAVE) {
@@ -257,6 +247,22 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 		// retry
 		else if (type == ConfirmDialog.PROFILE_EDITOR_ERROR) {
 			updateUser();
+		}
+	}
+
+
+	@Override
+	public void onResult(UserUpdateResult res) {
+		if (res.user != null) {
+			Intent data = new Intent();
+			data.putExtra(KEY_UPDATED_PROFILE, res.user);
+			Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
+			setResult(RETURN_PROFILE_CHANGED, data);
+			finish();
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, res.exception);
+			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
+			loadingCircle.dismiss();
 		}
 	}
 
@@ -275,32 +281,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 	}
 
 	/**
-	 * called after user profile was updated successfully
-	 */
-	public void onSuccess(@NonNull User user) {
-		Intent data = new Intent();
-		data.putExtra(KEY_UPDATED_PROFILE, user);
-		Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
-		setResult(RETURN_PROFILE_CHANGED, data);
-		finish();
-	}
-
-	/**
-	 * called after an error occurs
-	 *
-	 * @param exception Engine Exception
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
-		loadingCircle.dismiss();
-	}
-
-	/**
 	 * update user information
 	 */
 	private void updateUser() {
-		if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
+		if (editorAsync == null || editorAsync.idle()) {
 			String username = this.username.getText().toString();
 			String userLink = profileUrl.getText().toString();
 			String userLoc = profileLocation.getText().toString();
@@ -311,11 +295,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 			} else if (!userLink.isEmpty() && !Patterns.WEB_URL.matcher(userLink).matches()) {
 				String errMsg = getString(R.string.error_invalid_link);
 				profileUrl.setError(errMsg);
-			} else if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
+			} else if (editorAsync == null || editorAsync.idle()) {
 				holder.setProfile(username, userLink, userBio, userLoc);
 				if (holder.prepare(getContentResolver())) {
-					editorAsync = new UserUpdater(this, holder);
-					editorAsync.execute();
+					editorAsync = new UserUpdater(this);
+					editorAsync.execute(holder, this);
 					loadingCircle.show();
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();

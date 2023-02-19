@@ -42,12 +42,6 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	 */
 	public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
 
-	/**
-	 * alternative key for the screen name of the owner
-	 * value type is String
-	 */
-	public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
-
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -86,10 +80,9 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		tabLayout.addOnTabSelectedListener(this);
 
 		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, -1);
-		String ownerName = getIntent().getStringExtra(KEY_USERLIST_OWNER_NAME);
 
 		isHome = ownerId == settings.getLogin().getId();
-		adapter.setupListPage(ownerId, ownerName);
+		adapter.setupListPage(ownerId);
 		AppStyles.setTabIcons(tabLayout, settings, R.array.userlist_tab_icons);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}

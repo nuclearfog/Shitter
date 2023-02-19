@@ -28,7 +28,6 @@ import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_REPOST;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
-import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_NAME;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_OWNS;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_SUBSCR_TO;
 
@@ -216,18 +215,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	 * setup adapter for a list of user lists created by an user
 	 *
 	 * @param userId   ID of the user
-	 * @param username screen name of the owner
 	 */
-	public void setupListPage(long userId, String username) {
+	public void setupListPage(long userId) {
 		Bundle paramUserlistOwnership = new Bundle();
 		Bundle paramUserlistSubscription = new Bundle();
-		if (userId > 0) {
-			paramUserlistOwnership.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
-			paramUserlistSubscription.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
-		} else {
-			paramUserlistOwnership.putString(KEY_FRAG_LIST_OWNER_NAME, username);
-			paramUserlistSubscription.putString(KEY_FRAG_LIST_OWNER_NAME, username);
-		}
+		paramUserlistOwnership.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+		paramUserlistSubscription.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
 		paramUserlistOwnership.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
 		paramUserlistSubscription.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
 

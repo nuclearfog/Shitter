@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.backend.async.ListLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_LIST_DATA;
@@ -17,11 +16,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.UserlistAdapter;
 import org.nuclearfog.twidda.ui.adapter.UserlistAdapter.ListClickListener;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListLoader;
-import org.nuclearfog.twidda.backend.helper.UserLists;
+import org.nuclearfog.twidda.backend.async.ListLoader.UserlistParam;
+import org.nuclearfog.twidda.backend.async.ListLoader.UserlistResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -33,20 +33,13 @@ import org.nuclearfog.twidda.ui.activities.UserlistActivity;
  *
  * @author nuclearfog
  */
-public class UserListFragment extends ListFragment implements ListClickListener, ActivityResultCallback<ActivityResult> {
+public class UserListFragment extends ListFragment implements ListClickListener, AsyncCallback<UserlistResult>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Key for the owner ID
 	 * value type is Long
 	 */
 	public static final String KEY_FRAG_LIST_OWNER_ID = "list_owner_id";
-
-	/**
-	 * key for the owner screenname
-	 * alternative to {@link #KEY_FRAG_LIST_OWNER_ID}
-	 * value type is String
-	 */
-	public static final String KEY_FRAG_LIST_OWNER_NAME = "list_owner_name";
 
 	/**
 	 * key to define the type of the list
@@ -74,7 +67,6 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	private ListLoader listTask;
 	private UserlistAdapter adapter;
 
-	private String ownerName = "";
 	private long id = 0;
 	private int type = 0;
 
@@ -85,7 +77,6 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		Bundle param = getArguments();
 		if (param != null) {
 			id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
-			ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
 			type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
 		}
 		adapter = new UserlistAdapter(requireContext(), this);
@@ -112,8 +103,8 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public void onDestroy() {
-		if (listTask != null && listTask.getStatus() == RUNNING)
-			listTask.cancel(true);
+		if (listTask != null && !listTask.idle())
+			listTask.kill();
 		super.onDestroy();
 	}
 
@@ -163,41 +154,44 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (listTask != null && listTask.getStatus() != RUNNING) {
+		if (listTask != null && listTask.idle()) {
 			load(cursor);
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * set data to list
-	 */
-	public void setData(@NonNull UserLists data) {
-		adapter.addItems(data);
-		setRefresh(false);
-	}
 
-	/**
-	 * called from {@link ListLoader} if an error occurs
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
-		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-		adapter.disableLoading();
+	@Override
+	public void onResult(UserlistResult res) {
 		setRefresh(false);
+		if (res.userlists != null) {
+			adapter.addItems(res.userlists);
+		} else {
+			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+			adapter.disableLoading();
+		}
 	}
 
 	/**
 	 * load content into the list
 	 */
 	private void load(long cursor) {
-		if (type == LIST_USER_OWNS) {
-			listTask = new ListLoader(this, ListLoader.LOAD_USERLISTS, id, ownerName);
-			listTask.execute(cursor);
-		} else if (type == LIST_USER_SUBSCR_TO) {
-			listTask = new ListLoader(this, ListLoader.LOAD_MEMBERSHIPS, id, ownerName);
-			listTask.execute(cursor);
+		UserlistParam param;
+		listTask = new ListLoader(requireContext());
+		switch(type) {
+			case LIST_USER_OWNS:
+				param = new UserlistParam(ListLoader.LOAD_USERLISTS, id, cursor);
+				break;
+
+			case LIST_USER_SUBSCR_TO:
+				param = new UserlistParam(ListLoader.LOAD_MEMBERSHIPS, id, cursor);
+				break;
+
+			default:
+				return;
 		}
+		listTask.execute(param, this);
 	}
 }

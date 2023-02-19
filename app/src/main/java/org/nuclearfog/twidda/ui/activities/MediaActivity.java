@@ -10,7 +10,6 @@ import static android.content.Intent.ACTION_PICK;
 import static android.content.Intent.EXTRA_MIME_TYPES;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.provider.MediaStore.Images.Media.DATE_TAKEN;
 import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
@@ -45,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.ImageSaver;
+import org.nuclearfog.twidda.backend.async.ImageSaver.ImageParam;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -150,8 +150,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 				locationManager.removeUpdates(this);
 			}
 		}
-		if (imageTask != null && imageTask.getStatus() == RUNNING) {
-			imageTask.cancel(true);
+		if (imageTask != null && !imageTask.idle()) {
+			imageTask.kill();
 		}
 		super.onDestroy();
 	}
@@ -214,19 +214,33 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	public final void onStatusChanged(String provider, int status, Bundle extras) {
 	}
 
+
+	private void setResult(Boolean res) {
+		if (res) {
+			Toast.makeText(getApplicationContext(), R.string.info_image_saved, LENGTH_SHORT).show();
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && destMediaFile != null) {
+				// start media scanner to scan for new image
+				MediaScannerConnection.scanFile(getApplicationContext(), new String[]{destMediaFile.getPath()}, null, null);
+			}
+		} else {
+			Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	/**
 	 * save image to external storage
 	 */
 	@SuppressWarnings("IOStreamConstructor")
 	private void saveImage() {
 		try {
-			if ((imageTask == null || imageTask.getStatus() != RUNNING) && destMediaFile != null && srcMediaUri != null) {
+			if ((imageTask == null || imageTask.idle()) && destMediaFile != null && srcMediaUri != null) {
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 					// store images directly
 					InputStream src = getContentResolver().openInputStream(srcMediaUri);
 					OutputStream dest = new FileOutputStream(destMediaFile);
-					imageTask = new ImageSaver(this, src, dest);
-					imageTask.execute();
+					ImageParam param = new ImageParam(src, dest);
+					imageTask = new ImageSaver();
+					imageTask.execute(param, this::setResult);
 				} else {
 					// use scoped storage
 					String ext = srcMediaUri.getLastPathSegment();
@@ -241,33 +255,15 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 					if (imageUri != null) {
 						InputStream src = getContentResolver().openInputStream(srcMediaUri);
 						OutputStream dest = getContentResolver().openOutputStream(imageUri);
-						imageTask = new ImageSaver(this, src, dest);
-						imageTask.execute();
+						ImageParam param = new ImageParam(src, dest);
+						imageTask = new ImageSaver();
+						imageTask.execute(param, this::setResult);
 					}
 				}
 			}
 		} catch (Exception err) {
-			err.printStackTrace();
-			onError();
+			Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
 		}
-	}
-
-	/**
-	 * called when an image was successfully saved to external storage
-	 */
-	public void onImageSaved() {
-		Toast.makeText(getApplicationContext(), R.string.info_image_saved, LENGTH_SHORT).show();
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && destMediaFile != null) {
-			// start media scanner to scan for new image
-			MediaScannerConnection.scanFile(this, new String[]{destMediaFile.getPath()}, null, null);
-		}
-	}
-
-	/**
-	 * called when an error occurs while storing image
-	 */
-	public void onError() {
-		Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
 	}
 
 	/**

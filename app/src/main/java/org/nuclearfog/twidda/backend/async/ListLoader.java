@@ -1,16 +1,16 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.UserLists;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Background task for downloading twitter lists created by a user
@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see UserListFragment
  */
-public class ListLoader extends AsyncTask<Long, Void, UserLists> {
+public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoader.UserlistResult> {
 
 	public static final long NO_CURSOR = -1;
 
@@ -32,61 +32,62 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 	 */
 	public static final int LOAD_MEMBERSHIPS = 2;
 
-
-	@Nullable
-	private ConnectionException exception;
-	private WeakReference<UserListFragment> weakRef;
 	private Connection connection;
 
-	private int listType;
-	private long userId;
-	private String ownerName;
-
 	/**
-	 * @param fragment  callback to update information
-	 * @param listType  type of list to load
-	 * @param userId    ID of the userlist
-	 * @param ownerName alternative if user id is not defined
+	 *
 	 */
-	public ListLoader(UserListFragment fragment, int listType, long userId, String ownerName) {
-		super();
-		connection = ConnectionManager.get(fragment.getContext());
-		weakRef = new WeakReference<>(fragment);
-
-		this.listType = listType;
-		this.userId = userId;
-		this.ownerName = ownerName;
+	public ListLoader(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected UserLists doInBackground(Long... param) {
+	protected UserlistResult doInBackground(UserlistParam param) {
+		UserLists userlists = null;
 		try {
-			switch (listType) {
+			switch (param.type) {
 				case LOAD_USERLISTS:
-					return connection.getUserlistOwnerships(userId, ownerName, 0L);
+					userlists = connection.getUserlistOwnerships(param.id, param.cursor);
+					break;
 
 				case LOAD_MEMBERSHIPS:
-					return connection.getUserlistMemberships(userId, ownerName, param[0]);
+					userlists = connection.getUserlistMemberships(param.id, param.cursor);
+					break;
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new UserlistResult(null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new UserlistResult(userlists, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable UserLists result) {
-		UserListFragment fragment = weakRef.get();
-		if (fragment != null) {
-			if (result != null) {
-				fragment.setData(result);
-			} else {
-				fragment.onError(exception);
-			}
+	public static class UserlistParam {
+
+		public final int type;
+		public final long id, cursor;
+
+		public UserlistParam(int type, long id, long cursor) {
+			this.type = type;
+			this.id = id;
+			this.cursor = cursor;
+		}
+	}
+
+
+	public static class UserlistResult {
+
+		@Nullable
+		public final UserLists userlists;
+		@Nullable
+		public final ConnectionException exception;
+
+		UserlistResult(@Nullable UserLists userlists, @Nullable ConnectionException exception) {
+			this.userlists = userlists;
+			this.exception = exception;
 		}
 	}
 }

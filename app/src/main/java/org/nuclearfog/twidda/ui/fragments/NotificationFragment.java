@@ -1,11 +1,9 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -17,25 +15,25 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.NotificationAdapter;
 import org.nuclearfog.twidda.ui.adapter.NotificationAdapter.OnNotificationClickListener;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
+import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationParam;
+import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
 
-import java.util.List;
 
 /**
  * fragment to show notifications
  *
  * @author nuclearfog
  */
-public class NotificationFragment extends ListFragment implements OnNotificationClickListener, ActivityResultCallback<ActivityResult> {
+public class NotificationFragment extends ListFragment implements OnNotificationClickListener, AsyncCallback<NotificationResult>, ActivityResultCallback<ActivityResult> {
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -63,8 +61,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public void onDestroyView() {
-		if (notificationAsync != null && notificationAsync.getStatus() == RUNNING) {
-			notificationAsync.cancel(true);
+		if (notificationAsync != null && !notificationAsync.idle()) {
+			notificationAsync.kill();
 		}
 		super.onDestroyView();
 	}
@@ -109,7 +107,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public boolean onPlaceholderClick(long sinceId, long maxId, int position) {
-		if (notificationAsync != null && notificationAsync.getStatus() != AsyncTask.Status.RUNNING) {
+		if (notificationAsync != null && notificationAsync.idle()) {
 			load(sinceId, maxId, position);
 			return true;
 		}
@@ -129,25 +127,17 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		}
 	}
 
-	/**
-	 * called from {@link NotificationLoader} when notifications were loaded successfully
-	 *
-	 * @param notifications new items
-	 * @param position      index where to insert the new items
-	 */
-	public void onSuccess(@NonNull List<Notification> notifications, int position) {
-		adapter.addItems(notifications, position);
-		setRefresh(false);
-	}
 
-	/**
-	 * called from {@link NotificationLoader} if an error occurs
-	 */
-	public void onError(ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
-		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-		adapter.disableLoading();
+	@Override
+	public void onResult(NotificationResult res) {
 		setRefresh(false);
+		if (res.notifications != null) {
+			adapter.addItems(res.notifications, res.position);
+		} else {
+			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+			adapter.disableLoading();
+		}
 	}
 
 	/**
@@ -156,7 +146,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * @param pos   index to insert the new items
 	 */
 	private void load(long minId, long maxId, int pos) {
-		notificationAsync = new NotificationLoader(this, pos);
-		notificationAsync.execute(minId, maxId);
+		notificationAsync = new NotificationLoader(requireContext());
+		NotificationParam param = new NotificationParam(pos, minId, maxId);
+		notificationAsync.execute(param, this);
 	}
 }

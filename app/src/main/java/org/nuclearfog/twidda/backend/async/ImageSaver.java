@@ -1,12 +1,12 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.ui.activities.MediaActivity;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 
 /**
  * This AsyncTask class moves a cached image to the destiny folder
@@ -14,34 +14,20 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MediaActivity
  */
-public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
-
-	private WeakReference<MediaActivity> weakRef;
-	private InputStream inputStream;
-	private OutputStream outputStream;
-
-	/**
-	 * @param inputStream inputstream of a cached image file
-	 * @param outputStream  destiny output stream of a file
-	 */
-	public ImageSaver(MediaActivity activity, InputStream inputStream, OutputStream outputStream) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		this.inputStream = inputStream;
-		this.outputStream = outputStream;
-	}
+public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
 
 
+	@NonNull
 	@Override
-	protected Boolean doInBackground(Void... v) {
+	protected Boolean doInBackground(ImageParam param) {
 		try {
 			int length;
 			byte[] buffer = new byte[4096];
-			while ((length = inputStream.read(buffer)) > 0) {
-				outputStream.write(buffer, 0, length);
+			while ((length = param.inputStream.read(buffer)) > 0) {
+				param.outputStream.write(buffer, 0, length);
 			}
-			inputStream.close();
-			outputStream.close();
+			param.inputStream.close();
+			param.outputStream.close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,15 +36,13 @@ public class ImageSaver extends AsyncTask<Void, Void, Boolean> {
 	}
 
 
-	@Override
-	protected void onPostExecute(Boolean success) {
-		MediaActivity activity = weakRef.get();
-		if (activity != null) {
-			if (success) {
-				activity.onImageSaved();
-			} else {
-				activity.onError();
-			}
+	public static class ImageParam {
+		public final InputStream inputStream;
+		public final OutputStream outputStream;
+
+		public ImageParam(InputStream inputStream, OutputStream outputStream) {
+			this.inputStream = inputStream;
+			this.outputStream = outputStream;
 		}
 	}
 }

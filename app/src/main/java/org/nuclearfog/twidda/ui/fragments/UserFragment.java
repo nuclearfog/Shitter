@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.async.UserLoader.NO_CURSOR;
+import static org.nuclearfog.twidda.backend.async.UsersLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 
 import android.content.Intent;
@@ -16,11 +15,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.UserAdapter;
 import org.nuclearfog.twidda.ui.adapter.UserAdapter.UserClickListener;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.async.UserLoader;
-import org.nuclearfog.twidda.backend.helper.Users;
+import org.nuclearfog.twidda.backend.async.UsersLoader;
+import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
+import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.ui.activities.UserlistActivity;
  *
  * @author nuclearfog
  */
-public class UserFragment extends ListFragment implements UserClickListener, ActivityResultCallback<ActivityResult> {
+public class UserFragment extends ListFragment implements UserClickListener, AsyncCallback<UserResult>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * key to set the type of user list to show
@@ -140,7 +140,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Act
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private UserLoader userAsync;
+	private UsersLoader userAsync;
 	private UserAdapter adapter;
 
 	private String search = "";
@@ -182,8 +182,8 @@ public class UserFragment extends ListFragment implements UserClickListener, Act
 
 	@Override
 	public void onDestroy() {
-		if (userAsync != null && userAsync.getStatus() == RUNNING)
-			userAsync.cancel(true);
+		if (userAsync != null && !userAsync.idle())
+			userAsync.kill();
 		super.onDestroy();
 	}
 
@@ -219,7 +219,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Act
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (userAsync != null && userAsync.getStatus() != RUNNING) {
+		if (userAsync != null && userAsync.idle()) {
 			load(cursor);
 			return true;
 		}
@@ -236,24 +236,17 @@ public class UserFragment extends ListFragment implements UserClickListener, Act
 		}
 	}
 
-	/**
-	 * set List data
-	 *
-	 * @param data list of users
-	 */
-	public void setData(@NonNull Users data) {
-		adapter.addItems(data);
-		setRefresh(false);
-	}
 
-	/**
-	 * called when an error occurs
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(requireContext(), exception);
-		Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-		adapter.disableLoading();
+	@Override
+	public void onResult(UserResult res) {
 		setRefresh(false);
+		if (res.users != null) {
+			adapter.addItems(res.users);
+		} else {
+			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+			adapter.disableLoading();
+		}
 	}
 
 	/**
@@ -269,58 +262,60 @@ public class UserFragment extends ListFragment implements UserClickListener, Act
 	/**
 	 * load content into the list
 	 *
-	 * @param cursor cursor of the list or {@link UserLoader#NO_CURSOR} if there is none
+	 * @param cursor cursor of the list or {@link UsersLoader#NO_CURSOR} if there is none
 	 */
 	private void load(long cursor) {
+		UserParam param;
+		userAsync = new UsersLoader(requireContext());
 		switch (mode) {
 			case USER_FRAG_FOLLOWER:
-				userAsync = new UserLoader(this, UserLoader.FOLLOWS, id, search);
+				param = new UserParam(UsersLoader.FOLLOWS, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOWING:
-				userAsync = new UserLoader(this, UserLoader.FRIENDS, id, search);
+				param = new UserParam(UsersLoader.FRIENDS, id, cursor, search);
 				break;
 
 			case USER_FRAG_REPOST:
-				userAsync = new UserLoader(this, UserLoader.REPOST, id, search);
+				param = new UserParam(UsersLoader.REPOST, id, cursor, search);
 				break;
 
 			case USER_FRAG_FAVORIT:
-				userAsync = new UserLoader(this, UserLoader.FAVORIT, id, search);
+				param = new UserParam(UsersLoader.FAVORIT, id, cursor, search);
 				break;
 
 			case USER_FRAG_SEARCH:
-				userAsync = new UserLoader(this, UserLoader.SEARCH, id, search);
+				param = new UserParam(UsersLoader.SEARCH, id, cursor, search);
 				break;
 
 			case USER_FRAG_LIST_SUBSCRIBER:
-				userAsync = new UserLoader(this, UserLoader.SUBSCRIBER, id, search);
+				param = new UserParam(UsersLoader.SUBSCRIBER, id, cursor, search);
 				break;
 
 			case USER_FRAG_LIST_MEMBERS:
-				userAsync = new UserLoader(this, UserLoader.LISTMEMBER, id, search);
+				param = new UserParam(UsersLoader.LISTMEMBER, id, cursor, search);
 				break;
 
 			case USER_FRAG_BLOCKED_USERS:
-				userAsync = new UserLoader(this, UserLoader.BLOCK, id, search);
+				param = new UserParam(UsersLoader.BLOCK, id, cursor, search);
 				break;
 
 			case USER_FRAG_MUTED_USERS:
-				userAsync = new UserLoader(this, UserLoader.MUTE, id, search);
+				param = new UserParam(UsersLoader.MUTE, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOW_OUTGOING:
-				userAsync = new UserLoader(this, UserLoader.INCOMING_REQ, id, search);
+				param = new UserParam(UsersLoader.INCOMING_REQ, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOW_INCOMING:
-				userAsync = new UserLoader(this, UserLoader.OUTGOING_REQ, id, search);
+				param = new UserParam(UsersLoader.OUTGOING_REQ, id, cursor, search);
 				break;
 
 			default:
 				return;
 		}
-		userAsync.execute(cursor);
+		userAsync.execute(param, this);
 		if (cursor == NO_CURSOR) {
 			setRefresh(true);
 		}
