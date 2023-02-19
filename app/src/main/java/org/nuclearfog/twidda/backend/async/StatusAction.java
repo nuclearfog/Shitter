@@ -1,17 +1,16 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Background task to download a status informations and to take actions
@@ -19,201 +18,151 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see StatusActivity
  */
-public class StatusAction extends AsyncTask<Long, Status, Boolean> {
-
-	/**
-	 * Load status
-	 */
-	public static final int LOAD_ONLINE = 1;
-
-	/**
-	 * load status from database first
-	 */
-	public static final int LOAD_DATABASE = 2;
-
-	/**
-	 * repsot status
-	 */
-	public static final int REPOST = 3;
-
-	/**
-	 * remove repost
-	 * (delete operation, "status ID" required)
-	 */
-	public static final int REMOVE_REPOST = 4;
-
-	/**
-	 * favorite status
-	 */
-	public static final int FAVORITE = 5;
-
-	/**
-	 * remove status from favorites
-	 */
-	public static final int UNFAVORITE = 6;
-
-	/**
-	 * hide reply
-	 */
-	public static final int HIDE = 7;
-
-	/**
-	 * unhide reply
-	 */
-	public static final int UNHIDE = 8;
-
-	/**
-	 * bookmark status
-	 */
-	public static final int BOOKMARK = 9;
-
-	/**
-	 * remove bookmark from status
-	 */
-	public static final int UNBOOKMARK = 10;
-
-	/**
-	 * delete status
-	 * (delete operation, "status ID" required)
-	 */
-	public static final int DELETE = 20;
+public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, StatusAction.StatusResult> {
 
 	private Connection connection;
-	private WeakReference<StatusActivity> weakRef;
 	private AppDatabase db;
 
-	@Nullable
-	private ConnectionException exception;
-	private int action;
-
 	/**
-	 * @param action action for a given status
+	 *
 	 */
-	public StatusAction(StatusActivity activity, int action) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		connection = ConnectionManager.get(activity);
-		db = new AppDatabase(activity);
-
-		this.action = action;
+	public StatusAction(Context context) {
+		connection = ConnectionManager.get(context);
+		db = new AppDatabase(context);
 	}
 
-	/**
-	 * @param ids first value is the status ID. The second value is the repost status ID. Required for delete operations
-	 */
+
+	@NonNull
 	@Override
-	protected Boolean doInBackground(Long... ids) {
-		org.nuclearfog.twidda.model.Status status;
+	protected StatusResult doInBackground(StatusParam param) {
 		try {
-			switch (action) {
-				case LOAD_DATABASE:
-					status = db.getStatus(ids[0]);
+			switch (param.mode) {
+				case StatusParam.DATABASE:
+					Status status = db.getStatus(param.id);
 					if (status != null) {
-						publishProgress(status);
+						return new StatusResult(StatusResult.DATABASE, status);
 					}
 					// fall through
 
-				case LOAD_ONLINE:
-					status = connection.showStatus(ids[0]);
-					publishProgress(status);
-					if (db.containsStatus(ids[0])) {
+				case StatusParam.ONLINE:
+					status = connection.showStatus(param.id);
+					if (db.containsStatus(param.id)) {
 						// update status if there is a database entry
 						db.updateStatus(status);
 					}
-					return true;
+					return new StatusResult(StatusResult.ONLINE, status);
 
-				case DELETE:
-					connection.deleteStatus(ids[0]);
-					db.removeStatus(ids[0]);
-					// removing repost reference to this status
-					db.removeStatus(ids[1]);
-					return true;
+				case StatusParam.DELETE:
+					connection.deleteStatus(param.id);
+					db.removeStatus(param.id);
+					return new StatusResult(StatusResult.DELETE, null);
 
-				case REPOST:
-					status = connection.repostStatus(ids[0]);
+				case StatusParam.REPOST:
+					status = connection.repostStatus(param.id);
+					db.updateStatus(status);
 					if (status.getEmbeddedStatus() != null)
-						publishProgress(status.getEmbeddedStatus());
-					db.updateStatus(status);
-					return true;
+						return new StatusResult(StatusResult.REPOST, status.getEmbeddedStatus());
+					return new StatusResult(StatusResult.REPOST, status);
 
-				case REMOVE_REPOST:
-					status = connection.removeRepost(ids[0]);
-					publishProgress(status);
+				case StatusParam.UNREPOST:
+					status = connection.removeRepost(param.id);
 					db.updateStatus(status);
-					// removing repost reference to this status
-					if (ids.length == 2)
-						db.removeStatus(ids[1]);
-					return true;
+					return new StatusResult(StatusResult.UNREPOST, status);
 
-				case FAVORITE:
-					status = connection.favoriteStatus(ids[0]);
-					publishProgress(status);
+				case StatusParam.FAVORITE:
+					status = connection.favoriteStatus(param.id);
 					db.addToFavorits(status);
-					return true;
+					return new StatusResult(StatusResult.FAVORITE, status);
 
-				case UNFAVORITE:
-					status = connection.unfavoriteStatus(ids[0]);
-					publishProgress(status);
+				case StatusParam.UNFAVORITE:
+					status = connection.unfavoriteStatus(param.id);
 					db.removeFromFavorite(status);
-					return true;
+					return new StatusResult(StatusResult.UNFAVORITE, status);
 
-				case BOOKMARK:
-					status = connection.bookmarkStatus(ids[0]);
-					publishProgress(status);
+				case StatusParam.BOOKMARK:
+					status = connection.bookmarkStatus(param.id);
 					db.addToBookmarks(status);
-					return true;
+					return new StatusResult(StatusResult.BOOKMARK, status);
 
-				case UNBOOKMARK:
-					status = connection.removeBookmark(ids[0]);
-					publishProgress(status);
+				case StatusParam.UNBOOKMARK:
+					status = connection.removeBookmark(param.id);
 					db.removeFromBookmarks(status);
-					return true;
+					return new StatusResult(StatusResult.UNBOOKMARK, status);
 
-				case HIDE:
-					connection.muteConversation(ids[0]);
-					db.hideStatus(ids[0], true);
-					return true;
+				case StatusParam.HIDE:
+					connection.muteConversation(param.id);
+					db.hideStatus(param.id, true);
+					return new StatusResult(StatusResult.HIDE, null);
 
-				case UNHIDE:
-					connection.unmuteConversation(ids[0]);
-					db.hideStatus(ids[0], false);
-					return true;
+				case StatusParam.UNHIDE:
+					connection.unmuteConversation(param.id);
+					db.hideStatus(param.id, false);
+					return new StatusResult(StatusResult.UNHIDE, null);
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				// delete database entry if status was not found
-				db.removeStatus(ids[0]);
-				if (ids.length > 1) {
-					// also remove reference to this status
-					db.removeStatus(ids[1]);
-				}
+				db.removeStatus(param.id);
 			}
+			return new StatusResult(StatusResult.ERROR, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return new StatusResult(StatusResult.ERROR, null, null);
 	}
 
 
-	@Override
-	protected void onProgressUpdate(org.nuclearfog.twidda.model.Status... statuses) {
-		StatusActivity activity = weakRef.get();
-		if (activity != null && statuses.length > 0 && statuses[0] != null) {
-			activity.setStatus(statuses[0]);
+	public static class StatusParam {
+
+		public static final int ONLINE = 1;
+		public static final int DATABASE = 2;
+		public static final int REPOST = 3;
+		public static final int UNREPOST = 4;
+		public static final int FAVORITE = 5;
+		public static final int UNFAVORITE = 6;
+		public static final int HIDE = 7;
+		public static final int UNHIDE = 8;
+		public static final int BOOKMARK = 9;
+		public static final int UNBOOKMARK = 10;
+		public static final int DELETE = 11;
+
+		public final int mode;
+		public final long id;
+
+		public StatusParam(int mode, long id) {
+			this.mode = mode;
+			this.id = id;
 		}
 	}
 
 
-	@Override
-	protected void onPostExecute(Boolean success) {
-		StatusActivity activity = weakRef.get();
-		if (activity != null) {
-			if (success) {
-				activity.OnSuccess(action);
-			} else {
-				activity.onError(exception);
-			}
+	public static class StatusResult {
+
+		public static final int ERROR = -1;
+		public static final int ONLINE = 12;
+		public static final int DATABASE = 13;
+		public static final int REPOST = 14;
+		public static final int UNREPOST = 15;
+		public static final int FAVORITE = 16;
+		public static final int UNFAVORITE = 17;
+		public static final int HIDE = 18;
+		public static final int UNHIDE = 19;
+		public static final int BOOKMARK = 20;
+		public static final int UNBOOKMARK = 21;
+		public static final int DELETE = 22;
+
+		public final int mode;
+		public final Status status;
+		public final ConnectionException exception;
+
+		StatusResult(int mode, Status status) {
+			this(mode, status, null);
+		}
+
+		StatusResult(int mode, Status status, ConnectionException exception) {
+			this.mode = mode;
+			this.status = status;
+			this.exception = exception;
 		}
 	}
 }

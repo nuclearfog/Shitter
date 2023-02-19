@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.OnClickListener;
 import static android.view.View.VISIBLE;
@@ -22,10 +21,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MessageUpdater;
+import org.nuclearfog.twidda.backend.async.MessageUpdater.MessageUpdateResult;
 import org.nuclearfog.twidda.backend.helper.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -37,7 +37,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
  *
  * @author nuclearfog
  */
-public class MessageEditor extends MediaActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
+public class MessageEditor extends MediaActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<MessageUpdateResult> {
 
 	/**
 	 * key for the screenname if any
@@ -102,8 +102,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	protected void onDestroy() {
-		if (messageAsync != null && messageAsync.getStatus() == RUNNING)
-			messageAsync.cancel(true);
+		if (messageAsync != null && !messageAsync.isIdle())
+			messageAsync.cancel();
 		loadingCircle.dismiss();
 		if (holder != null) {
 			holder.close();
@@ -134,7 +134,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	public void onClick(View v) {
 		// send direct message
 		if (v.getId() == R.id.popup_message_send) {
-			if (messageAsync == null || messageAsync.getStatus() != RUNNING) {
+			if (messageAsync == null || messageAsync.isIdle()) {
 				sendMessage();
 			}
 		}
@@ -155,8 +155,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	public void stopProgress() {
-		if (messageAsync != null && messageAsync.getStatus() == RUNNING) {
-			messageAsync.cancel(true);
+		if (messageAsync != null && !messageAsync.isIdle()) {
+			messageAsync.cancel();
 		}
 	}
 
@@ -173,23 +173,17 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		}
 	}
 
-	/**
-	 * called when direct message is sent
-	 */
-	public void onSuccess() {
-		Toast.makeText(getApplicationContext(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
-		finish();
-	}
 
-	/**
-	 * called when an error occurs
-	 *
-	 * @param exception Engine Exception
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_ERROR, message);
-		loadingCircle.dismiss();
+	@Override
+	public void onResult(MessageUpdateResult result) {
+		if (result.success) {
+			Toast.makeText(getApplicationContext(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
+			finish();
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_ERROR, message);
+			loadingCircle.dismiss();
+		}
 	}
 
 	/**
@@ -202,8 +196,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 			if (holder.prepare(getContentResolver())) {
 				holder.setReceiver(username);
 				holder.setText(message);
-				messageAsync = new MessageUpdater(this, holder);
-				messageAsync.execute();
+				messageAsync = new MessageUpdater(this);
+				messageAsync.execute(holder, this);
 				loadingCircle.show();
 			} else {
 				Toast.makeText(getApplicationContext(), R.string.error_media_init, LENGTH_SHORT).show();

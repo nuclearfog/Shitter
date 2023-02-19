@@ -61,8 +61,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public void onDestroyView() {
-		if (notificationAsync != null && !notificationAsync.idle()) {
-			notificationAsync.kill();
+		if (notificationAsync != null && !notificationAsync.isIdle()) {
+			notificationAsync.cancel();
 		}
 		super.onDestroyView();
 	}
@@ -107,7 +107,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public boolean onPlaceholderClick(long sinceId, long maxId, int position) {
-		if (notificationAsync != null && notificationAsync.idle()) {
+		if (notificationAsync != null && notificationAsync.isIdle()) {
 			load(sinceId, maxId, position);
 			return true;
 		}
@@ -129,12 +129,12 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	@Override
-	public void onResult(NotificationResult res) {
+	public void onResult(NotificationResult result) {
 		setRefresh(false);
-		if (res.notifications != null) {
-			adapter.addItems(res.notifications, res.position);
+		if (result.notifications != null) {
+			adapter.addItems(result.notifications, result.position);
 		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}

@@ -165,57 +165,65 @@ public interface Connection {
 	 * follow a specific user
 	 *
 	 * @param id ID of the user
+	 * @return updated relation to the user
 	 */
-	void followUser(long id) throws ConnectionException;
+	Relation followUser(long id) throws ConnectionException;
 
 	/**
 	 * unfollow a specific user
 	 *
 	 * @param id ID of the user
+	 * @return updated relation to the user
 	 */
-	void unfollowUser(long id) throws ConnectionException;
+	Relation unfollowUser(long id) throws ConnectionException;
 
 	/**
 	 * block specific user
 	 *
 	 * @param id ID of the user
+	 * @return updated relation to the user
 	 */
-	void blockUser(long id) throws ConnectionException;
+	Relation blockUser(long id) throws ConnectionException;
 
 	/**
 	 * block specific user
 	 *
 	 * @param name screen name of the user
+	 * @return updated relation to the user
 	 */
-	void blockUser(String name) throws ConnectionException;
+	Relation blockUser(String name) throws ConnectionException;
 
 	/**
 	 * unblock specific user
 	 *
 	 * @param id ID of the user
+	 * @return updated relation to the user
 	 */
-	void unblockUser(long id) throws ConnectionException;
+	Relation unblockUser(long id) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
 	 * @param id ID of the user
+	 * @return updated relation to the user
 	 */
-	void muteUser(long id) throws ConnectionException;
+	Relation muteUser(long id) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
 	 * @param name screen name of the user
+	 * @return updated relation to the user
 	 */
-	void muteUser(String name) throws ConnectionException;
+	Relation muteUser(String name) throws ConnectionException;
 
 	/**
 	 * mute specific user
 	 *
 	 * @param id ID of the user
+	 * @return updated relation to the user
 	 */
-	void unmuteUser(long id) throws ConnectionException;
+	Relation unmuteUser(long id) throws ConnectionException;
 
 	/**
 	 * search statuses matching a search string

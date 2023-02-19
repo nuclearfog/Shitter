@@ -17,19 +17,11 @@ import java.util.List;
  */
 public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter, AccountLoader.AccountResult> {
 
-	/**
-	 * load all saved logins
-	 */
-	public static final int MODE_LOAD = 1;
-
-	/**
-	 * delete specific login
-	 */
-	public static final int MODE_DELETE = 2;
-
 	private AppDatabase db;
 
-
+	/**
+	 *
+	 */
 	public AccountLoader(Context context) {
 		db = new AppDatabase(context);
 	}
@@ -40,13 +32,13 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 	protected AccountResult doInBackground(AccountParameter request) {
 		try {
 			switch (request.mode) {
-				case MODE_LOAD:
+				case AccountParameter.LOAD:
 					List<Account> accounts = db.getLogins();
-					return new AccountResult(request.mode, 0L, accounts);
+					return new AccountResult(AccountResult.LOAD, 0L, accounts);
 
-				case MODE_DELETE:
+				case AccountParameter.DELETE:
 					db.removeLogin(request.id);
-					return new AccountResult(request.mode, request.id, null);
+					return new AccountResult(AccountResult.DELETE, request.id, null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,6 +48,9 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 
 
 	public static class AccountParameter {
+
+		public static final int LOAD = 1;
+		public static final int DELETE = 2;
 
 		public final int mode;
 		public final long id;
@@ -68,6 +63,9 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 
 
 	public static class AccountResult {
+
+		public static final int LOAD = 3;
+		public static final int DELETE = 4;
 
 		@Nullable
 		public final List<Account> accounts;

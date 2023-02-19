@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.backend.async;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.MainActivity;
@@ -21,7 +22,6 @@ import org.nuclearfog.twidda.ui.activities.StatusEditor;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistsActivity;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -33,26 +33,23 @@ import java.util.List;
  * @author nuclearfog
  * @see MainActivity
  */
-public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
+public class LinkLoader extends AsyncExecutor<Uri, LinkLoader.LinkResult> {
 
-	private WeakReference<MainActivity> weakRef;
+
 	private Connection connection;
 
-	@Nullable
-	private ConnectionException exception;
-
-
-	public LinkLoader(MainActivity activity) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		connection = ConnectionManager.get(activity);
+	/**
+	 *
+	 */
+	public LinkLoader(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected DataHolder doInBackground(Uri... links) {
+	protected LinkResult doInBackground(Uri link) {
 		try {
-			Uri link = links[0];
 			List<String> pathSeg = link.getPathSegments();
 			Bundle data = new Bundle();
 			if (!pathSeg.isEmpty()) {
@@ -60,26 +57,26 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 				// e.g. twitter.com/home
 				if (pathSeg.get(0).equals("home")) {
 					data.putInt(MainActivity.KEY_TAB_PAGE, 0);
-					return new DataHolder(data, MainActivity.class);
+					return new LinkResult(data, MainActivity.class);
 				}
 				// open trend tab
 				// e.g. twitter.com/trends , twitter.com/explore or twitter.com/i/trends
 				else if (pathSeg.get(0).equals("trends") || pathSeg.get(0).equals("explore") ||
 						(pathSeg.size() == 2 && pathSeg.get(0).equals("i") && pathSeg.get(1).equals("trends"))) {
 					data.putInt(MainActivity.KEY_TAB_PAGE, 1);
-					return new DataHolder(data, MainActivity.class);
+					return new LinkResult(data, MainActivity.class);
 				}
 				// open mentions timeline
 				// e.g. twitter.com/notifications
 				else if (pathSeg.get(0).equals("notifications")) {
 					data.putInt(MainActivity.KEY_TAB_PAGE, 2);
-					return new DataHolder(data, MainActivity.class);
+					return new LinkResult(data, MainActivity.class);
 				}
 				// open directmessage page
 				// e.g. twitter.com/messages
 				else if (pathSeg.get(0).equals("messages")) {
 					data.putInt(MainActivity.KEY_TAB_PAGE, 3);
-					return new DataHolder(data, MainActivity.class);
+					return new LinkResult(data, MainActivity.class);
 				}
 				// open twitter search
 				// e.g. twitter.com/search?q={search string}
@@ -88,7 +85,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 						String search = link.getQueryParameter("q");
 						if (search != null) {
 							data.putString(SearchActivity.KEY_SEARCH_QUERY, search);
-							return new DataHolder(data, SearchActivity.class);
+							return new LinkResult(data, SearchActivity.class);
 						}
 					}
 				}
@@ -108,7 +105,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 						if (via != null)
 							status += "via @" + via;
 						data.putString(StatusEditor.KEY_STATUS_EDITOR_TEXT, status);
-						return new DataHolder(data, StatusEditor.class);
+						return new LinkResult(data, StatusEditor.class);
 					}
 				}
 				// open hashtag search
@@ -116,7 +113,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 				else if (pathSeg.size() == 2 && pathSeg.get(0).equals("hashtag")) {
 					String search = '#' + pathSeg.get(1);
 					data.putString(SearchActivity.KEY_SEARCH_QUERY, search);
-					return new DataHolder(data, SearchActivity.class);
+					return new LinkResult(data, SearchActivity.class);
 				}
 				// open an userlist
 				// e.g. twitter.com/i/lists/{list id}
@@ -125,7 +122,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 					UserList list = connection.getUserlist(listId);
 					data.putSerializable(UserlistActivity.KEY_LIST_DATA, list);
 					data.putBoolean(UserlistActivity.KEY_LIST_NO_UPDATE, true);
-					return new DataHolder(data, UserlistActivity.class);
+					return new LinkResult(data, UserlistActivity.class);
 				}
 				// show status
 				// e.g. twitter.com/{screenname}/status/{tweet ID}
@@ -134,7 +131,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 					long Id = Long.parseLong(pathSeg.get(2));
 					data.putLong(StatusActivity.KEY_STATUS_ID, Id);
 					data.putString(StatusActivity.KEY_STATUS_NAME, screenname);
-					return new DataHolder(data, StatusActivity.class);
+					return new LinkResult(data, StatusActivity.class);
 				}
 				// show userlists
 				// e.g. twitter.com/{screenname}/lists
@@ -142,7 +139,7 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 					String screenname = pathSeg.get(0);
 					User user = connection.showUser(screenname);
 					data.putLong(UserlistsActivity.KEY_USERLIST_OWNER_ID, user.getId());
-					return new DataHolder(data, UserlistsActivity.class);
+					return new LinkResult(data, UserlistsActivity.class);
 				}
 				// show user profile
 				// e.g. twitter.com/{screenname}
@@ -151,43 +148,37 @@ public class LinkLoader extends AsyncTask<Uri, Void, LinkLoader.DataHolder> {
 					String screenname = pathSeg.get(0);
 					User user = connection.showUser(screenname);
 					data.putSerializable(ProfileActivity.KEY_PROFILE_USER, user);
-					data.putBoolean(ProfileActivity.KEY_PROFILE_DISABLE_RELOAD, true);
-					return new DataHolder(data, ProfileActivity.class);
+					return new LinkResult(data, ProfileActivity.class);
 				}
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new LinkResult(null, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new LinkResult(null, null, null);
 	}
-
-
-	@Override
-	protected void onPostExecute(@Nullable DataHolder result) {
-		MainActivity activity = weakRef.get();
-		if (activity != null) {
-			if (result != null) {
-				activity.onSuccess(result);
-			} else {
-				activity.onError(exception);
-			}
-		}
-	}
-
 
 	/**
 	 * Holder class for information to start an activity
 	 */
-	public static class DataHolder {
-		@NonNull
-		public final Bundle data;
-		public final Class<? extends Activity> activity;
+	public static class LinkResult {
 
-		DataHolder(@NonNull Bundle data, Class<? extends Activity> activity) {
+		@Nullable
+		public final Bundle data;
+		@Nullable
+		public final Class<? extends Activity> activity;
+		@Nullable
+		public final ConnectionException exception;
+
+		public LinkResult(@NonNull Bundle data, @Nullable Class<? extends Activity> activity) {
+			this(data, activity, null);
+		}
+
+		LinkResult(@Nullable Bundle data, @Nullable Class<? extends Activity> activity, @Nullable ConnectionException exception) {
 			this.data = data;
 			this.activity = activity;
+			this.exception = exception;
 		}
 	}
 }

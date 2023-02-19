@@ -1,100 +1,100 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.model.UserList;
-import org.nuclearfog.twidda.ui.activities.UserlistActivity;
-
-import java.lang.ref.WeakReference;
 
 /**
  * async task to load list information and take action to the list
  *
  * @author nuclearfog
  */
-public class ListAction extends AsyncTask<Void, Void, UserList> {
+public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAction.ListActionResult> {
 
-	/**
-	 * load userlist information
-	 */
-	public static final int LOAD = 1;
-
-	/**
-	 * unfollow user list
-	 */
-	public static final int FOLLOW = 2;
-
-	/**
-	 * unfollow user list
-	 */
-	public static final int UNFOLLOW = 3;
-
-	/**
-	 * delete user list
-	 */
-	public static final int DELETE = 4;
-
-
-	private WeakReference<UserlistActivity> weakRef;
 	private Connection connection;
-	private ConnectionException exception;
-
-	private long listId;
-	private int action;
 
 	/**
-	 * @param activity Callback to update list information
-	 * @param listId   ID of the list to process
-	 * @param action   what action should be performed
+	 *
 	 */
-	public ListAction(UserlistActivity activity, long listId, int action) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		connection = ConnectionManager.get(activity);
-		this.listId = listId;
-		this.action = action;
+	public ListAction(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected UserList doInBackground(Void... v) {
+	protected ListActionResult doInBackground(ListActionParam param) {
 		try {
-			switch (action) {
-				case LOAD:
-					return connection.getUserlist(listId);
+			switch (param.mode) {
+				case ListActionParam.LOAD:
+					UserList result = connection.getUserlist(param.id);
+					return new ListActionResult(ListActionResult.LOAD, param.id, result, null);
 
-				case FOLLOW:
-					return connection.followUserlist(listId);
+				case ListActionParam.FOLLOW:
+					result = connection.followUserlist(param.id);
+					return new ListActionResult(ListActionResult.FOLLOW, param.id, result, null);
 
-				case UNFOLLOW:
-					return connection.unfollowUserlist(listId);
+				case ListActionParam.UNFOLLOW:
+					result = connection.unfollowUserlist(param.id);
+					return new ListActionResult(ListActionResult.UNFOLLOW, param.id, result, null);
 
-				case DELETE:
-					return connection.deleteUserlist(listId);
+				case ListActionParam.DELETE:
+					result = connection.deleteUserlist(param.id);
+					return new ListActionResult(ListActionResult.DELETE, param.id, result, null);
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new ListActionResult(ListActionResult.ERROR, param.id, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ListActionResult(ListActionResult.ERROR, param.id, null, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable UserList userList) {
-		UserlistActivity callback = this.weakRef.get();
-		if (callback != null) {
-			if (userList != null) {
-				callback.onSuccess(userList, action);
-			} else {
-				callback.onFailure(exception, listId);
-			}
+	public static class ListActionParam {
+
+		public static final int LOAD = 1;
+		public static final int FOLLOW = 2;
+		public static final int UNFOLLOW = 3;
+		public static final int DELETE = 4;
+
+		public final int mode;
+		public final long id;
+
+		public ListActionParam(int mode, long id) {
+			this.mode = mode;
+			this.id = id;
+		}
+	}
+
+
+	public static class ListActionResult {
+
+		public static final int LOAD = 5;
+		public static final int FOLLOW = 6;
+		public static final int UNFOLLOW = 7;
+		public static final int DELETE = 8;
+		public static final int ERROR = -1;
+
+		public final int mode;
+		public final long id;
+		@Nullable
+		public final UserList userlist;
+		@Nullable
+		public final ConnectionException exception;
+
+		ListActionResult(int mode, long id, @Nullable UserList userlist, @Nullable ConnectionException exception) {
+			this.userlist = userlist;
+			this.exception = exception;
+			this.mode = mode;
+			this.id = id;
 		}
 	}
 }

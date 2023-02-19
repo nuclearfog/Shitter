@@ -232,10 +232,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_exclude_refresh) {
-			if (userExclTask == null || userExclTask.idle()) {
+			if (userExclTask == null || userExclTask.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
 				userExclTask = new FilterLoader(this);
-				FilterParam param = new FilterParam(FilterLoader.MODE_RELOAD);
+				FilterParam param = new FilterParam(FilterParam.RELOAD);
 				userExclTask.execute(param, this);
 			}
 		}
@@ -265,14 +265,14 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (userExclTask == null || userExclTask.idle()) {
+			if (userExclTask == null || userExclTask.isIdle()) {
 				if (tablayout.getSelectedTabPosition() == 0) {
 					userExclTask = new FilterLoader(this);
-					FilterParam param = new FilterParam(FilterLoader.MODE_MUTE, query);
+					FilterParam param = new FilterParam(FilterParam.MUTE, query);
 					userExclTask.execute(param, this);
 					return true;
 				} else if (tablayout.getSelectedTabPosition() == 1) {
-					FilterParam param = new FilterParam(FilterLoader.MODE_BLOCK, query);
+					FilterParam param = new FilterParam(FilterParam.BLOCK, query);
 					userExclTask.execute(param, this);
 					return true;
 				}
@@ -291,25 +291,25 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	public void onResult(FilterResult res) {
-		switch (res.mode) {
-			case FilterLoader.MODE_MUTE:
+	public void onResult(FilterResult result) {
+		switch (result.mode) {
+			case FilterResult.MUTE:
 				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case FilterLoader.MODE_BLOCK:
+			case FilterResult.BLOCK:
 				Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case FilterLoader.MODE_RELOAD:
+			case FilterResult.RELOAD:
 				Toast.makeText(getApplicationContext(), R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
 				break;
 
 			default:
-			case FilterLoader.MODE_ERROR:
-				String message = ErrorHandler.getErrorMessage(this, res.exception);
+			case FilterResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				break;
 		}

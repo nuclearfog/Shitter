@@ -30,10 +30,11 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LinkLoader;
+import org.nuclearfog.twidda.backend.async.LinkLoader.LinkResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -44,7 +45,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
  *
  * @author nuclearfog
  */
-public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener, AsyncCallback<LinkResult> {
 
 	/**
 	 * key used to set the tab page
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			// check if there is a Twitter link
 			if (getIntent().getData() != null) {
 				LinkLoader linkLoader = new LinkLoader(this);
-				linkLoader.execute(getIntent().getData());
+				linkLoader.execute(getIntent().getData(), this);
 				loadingCircle.show();
 			}
 		}
@@ -261,34 +262,27 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		adapter.scrollToTop(tab.getPosition());
 	}
 
-	/**
-	 * called from {@link LinkLoader} when link information were successfully loaded
-	 *
-	 * @param holder holder with activity information and extras
-	 */
-	public void onSuccess(@NonNull LinkLoader.DataHolder holder) {
-		loadingCircle.dismiss();
-		if (holder.activity == MainActivity.class) {
-			int page = holder.data.getInt(KEY_TAB_PAGE, 0);
-			pager.setCurrentItem(page);
-		} else {
-			Intent intent = new Intent(this, holder.activity);
-			intent.putExtras(holder.data);
-			startActivity(intent);
-		}
-	}
 
-	/**
-	 * called from {@link LinkLoader} when an error occurs
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		if (exception != null) {
-			String message = ErrorHandler.getErrorMessage(this, exception);
-			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
-		}
+	@Override
+	public void onResult(LinkResult linkResult) {
 		loadingCircle.dismiss();
+		if (linkResult.data != null && linkResult.activity != null) {
+			if (linkResult.activity == MainActivity.class) {
+				int page = linkResult.data.getInt(KEY_TAB_PAGE, 0);
+				pager.setCurrentItem(page);
+			} else {
+				Intent intent = new Intent(this, linkResult.activity);
+				intent.putExtras(linkResult.data);
+				startActivity(intent);
+			}
+		} else {
+			if (linkResult.exception != null) {
+				String message = ErrorHandler.getErrorMessage(this, linkResult.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 
 	/**

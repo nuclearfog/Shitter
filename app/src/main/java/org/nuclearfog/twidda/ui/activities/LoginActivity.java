@@ -136,8 +136,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Override
 	protected void onDestroy() {
-		if (loginAsync != null && !loginAsync.idle())
-			loginAsync.kill();
+		if (loginAsync != null && !loginAsync.isIdle())
+			loginAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Override
 	public void onClick(View v) {
-		if (loginAsync != null && !loginAsync.idle()) {
+		if (loginAsync != null && !loginAsync.isIdle()) {
 			return;
 		}
 		// get login request token
@@ -275,20 +275,20 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 
 	@Override
-	public void onResult(LoginResult res) {
-		switch (res.mode) {
+	public void onResult(LoginResult result) {
+		switch (result.mode) {
 			case LoginResult.MODE_LOGIN:
 				setResult(RETURN_LOGIN_SUCCESSFUL);
 				finish();
 				break;
 
 			case LoginResult.MODE_REQUEST:
-				loginLink = res.redirectUrl;
+				loginLink = result.redirectUrl;
 				connect();
 				break;
 
 			case LoginResult.MODE_ERROR:
-				String message = ErrorHandler.getErrorMessage(this, res.exception);
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				break;
 		}

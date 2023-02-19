@@ -1,17 +1,17 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.UserlistEditor;
-
-import java.lang.ref.WeakReference;
 
 /**
  * This class creates and updates user lists
@@ -19,51 +19,49 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListUpdater extends AsyncTask<Void, Void, UserList> {
+public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListUpdateResult> {
 
-	private WeakReference<UserlistEditor> weakRef;
 	private Connection connection;
 
-	@Nullable
-	private ConnectionException exception;
-	private UserListUpdate update;
-
 	/**
-	 * @param activity callback to {@link UserlistEditor}
-	 * @param update   userlist to update
+	 *
 	 */
-	public ListUpdater(UserlistEditor activity, UserListUpdate update) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		connection = ConnectionManager.get(activity);
-		this.update = update;
+	public ListUpdater(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected UserList doInBackground(Void... v) {
+	protected ListUpdateResult doInBackground(UserListUpdate update) {
 		try {
+			UserList result;
 			if (update.exists())
-				return connection.updateUserlist(update);
-			return connection.createUserlist(update);
+				result = connection.updateUserlist(update);
+			else
+				result = connection.createUserlist(update);
+			return new ListUpdateResult(result, update.exists(), null);
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new ListUpdateResult(null, update.exists(), exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ListUpdateResult(null, update.exists(), null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable UserList result) {
-		UserlistEditor activity = weakRef.get();
-		if (activity != null) {
-			if (result != null) {
-				activity.onSuccess(result, update.exists());
-			} else {
-				activity.onError(exception);
-			}
+	public static class ListUpdateResult {
+
+		public final boolean updated;
+		@Nullable
+		public final UserList userlist;
+		@Nullable
+		public final ConnectionException exception;
+
+		ListUpdateResult(@Nullable UserList userlist, boolean updated, @Nullable ConnectionException exception) {
+			this.userlist = userlist;
+			this.updated = updated;
+			this.exception = exception;
 		}
 	}
 }

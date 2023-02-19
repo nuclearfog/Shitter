@@ -103,8 +103,8 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public void onDestroy() {
-		if (listTask != null && !listTask.idle())
-			listTask.kill();
+		if (listTask != null && !listTask.isIdle())
+			listTask.cancel();
 		super.onDestroy();
 	}
 
@@ -154,7 +154,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (listTask != null && listTask.idle()) {
+		if (listTask != null && listTask.isIdle()) {
 			load(cursor);
 			return true;
 		}
@@ -163,12 +163,12 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 
 	@Override
-	public void onResult(UserlistResult res) {
+	public void onResult(UserlistResult result) {
 		setRefresh(false);
-		if (res.userlists != null) {
-			adapter.addItems(res.userlists);
+		if (result.userlists != null) {
+			adapter.addItems(result.userlists);
 		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}

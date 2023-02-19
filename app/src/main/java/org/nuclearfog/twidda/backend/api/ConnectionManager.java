@@ -18,26 +18,6 @@ import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;
  */
 public class ConnectionManager {
 
-	/**
-	 * select connection to a social network automatically
-	 */
-	public static final int SELECT_AUTO = 0;
-
-	/**
-	 * select Twitter connection
-	 */
-	public static final int SELECT_TWITTER_1 = 1;
-
-	/**
-	 * select Twitter connection
-	 */
-	public static final int SELECT_TWITTER_2 = 2;
-
-	/**
-	 * select Mastodon connection
-	 */
-	public static final int SELECT_MASTODON = 3;
-
 	private static Connection connection;
 	private static boolean notifySettingsChange = false;
 

@@ -150,8 +150,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 				locationManager.removeUpdates(this);
 			}
 		}
-		if (imageTask != null && !imageTask.idle()) {
-			imageTask.kill();
+		if (imageTask != null && !imageTask.isIdle()) {
+			imageTask.cancel();
 		}
 		super.onDestroy();
 	}
@@ -233,7 +233,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	@SuppressWarnings("IOStreamConstructor")
 	private void saveImage() {
 		try {
-			if ((imageTask == null || imageTask.idle()) && destMediaFile != null && srcMediaUri != null) {
+			if ((imageTask == null || imageTask.isIdle()) && destMediaFile != null && srcMediaUri != null) {
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 					// store images directly
 					InputStream src = getContentResolver().openInputStream(srcMediaUri);

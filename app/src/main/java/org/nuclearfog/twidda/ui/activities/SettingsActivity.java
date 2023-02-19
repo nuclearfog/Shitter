@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.OnClickListener;
 import static android.view.View.VISIBLE;
@@ -40,23 +39,22 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.FontAdapter;
 import org.nuclearfog.twidda.ui.adapter.LocationAdapter;
 import org.nuclearfog.twidda.ui.adapter.ScaleAdapter;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
+import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.InfoDialog;
 import org.nuclearfog.twidda.ui.dialogs.LicenseDialog;
 
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -65,7 +63,7 @@ import java.util.regex.Matcher;
  * @author nuclearfog
  */
 public class SettingsActivity extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
-		OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener {
+		OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener, AsyncCallback<LocationLoaderResult> {
 
 	/**
 	 * return code to recognize {@link MainActivity} that the current account was removed from login
@@ -255,9 +253,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		super.onStart();
 		setResult(RETURN_SETTINGS_CHANGED);
 		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
-			if (locationAsync == null || locationAsync.getStatus() != RUNNING) {
+			if (locationAsync == null || locationAsync.isIdle()) {
 				locationAsync = new LocationLoader(this);
-				locationAsync.execute();
+				locationAsync.execute(null, this);
 			}
 		}
 	}
@@ -275,8 +273,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	protected void onDestroy() {
-		if (locationAsync != null && locationAsync.getStatus() == RUNNING)
-			locationAsync.cancel(true);
+		if (locationAsync != null && !locationAsync.isIdle())
+			locationAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -589,27 +587,19 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		settings.setListSize((seekBar.getProgress() + 1) * 10);
 	}
 
-	/**
-	 * set location information from twitter
-	 *
-	 * @param data location data
-	 */
-	public void setLocationData(@NonNull List<Location> data) {
-		locationAdapter.replaceItems(data);
-		int position = locationAdapter.indexOf(settings.getTrendLocation());
-		if (position > 0)
-			locationSpinner.setSelection(position, false);
-		locationSpinner.setOnItemSelectedListener(this);
-	}
 
-	/**
-	 * called when an error occurs
-	 *
-	 * @param exception exception from twitter
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+	@Override
+	public void onResult(LocationLoaderResult result) {
+		if (result.locations != null) {
+			locationAdapter.replaceItems(result.locations);
+			int position = locationAdapter.indexOf(settings.getTrendLocation());
+			if (position > 0)
+				locationSpinner.setSelection(position, false);
+			locationSpinner.setOnItemSelectedListener(this);
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	/**

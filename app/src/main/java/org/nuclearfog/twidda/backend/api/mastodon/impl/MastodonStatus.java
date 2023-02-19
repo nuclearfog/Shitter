@@ -35,7 +35,7 @@ public class MastodonStatus implements Status {
 	private int favoriteCount;
 	private int reblogCount;
 	private boolean favorited;
-	private boolean reblogged;
+	private boolean reposted;
 	private boolean bookmarked;
 	private boolean sensitive;
 	private boolean muted;
@@ -75,7 +75,7 @@ public class MastodonStatus implements Status {
 		favoriteCount = json.optInt("favourites_count");
 		muted = json.optBoolean("muted", false);
 		favorited = json.optBoolean("favourited", false);
-		reblogged = json.optBoolean("reblogged", false);
+		reposted = json.optBoolean("reblogged", false);
 		sensitive = json.optBoolean("sensitive", false);
 		bookmarked = json.optBoolean("bookmarked", false);
 		text = json.optString("content", "");
@@ -248,7 +248,7 @@ public class MastodonStatus implements Status {
 
 	@Override
 	public boolean isReposted() {
-		return reblogged;
+		return reposted;
 	}
 
 
@@ -326,38 +326,38 @@ public class MastodonStatus implements Status {
 	}
 
 	/**
-	 * correct retweet count
+	 * set repost status
 	 */
-	public void unreblog() {
+	public void setRepost(boolean reposted) {
+		this.reposted = reposted;
 		if (embeddedStatus instanceof MastodonStatus) {
-			((MastodonStatus) embeddedStatus).unreblog();
+			((MastodonStatus) embeddedStatus).setRepost(reposted);
 		}
-		if (reblogCount > 0) {
+		if (!reposted && reblogCount > 0) {
 			reblogCount--;
 		}
-		reblogged = false;
 	}
 
 	/**
-	 * correct favorite count
+	 * set favorite status
 	 */
-	public void unfavorite() {
+	public void setFavorite(boolean favorited) {
+		this.favorited = favorited;
 		if (embeddedStatus instanceof MastodonStatus) {
-			((MastodonStatus) embeddedStatus).unfavorite();
+			((MastodonStatus) embeddedStatus).setFavorite(favorited);
 		}
-		if (favoriteCount > 0) {
+		if (!favorited && favoriteCount > 0) {
 			favoriteCount--;
 		}
-		favorited = false;
 	}
 
 	/**
-	 * remove status bookmark
+	 * set bookmark status
 	 */
-	public void removeBookmark() {
+	public void setBookmark(boolean bookmarked) {
+		this.bookmarked = bookmarked;
 		if (embeddedStatus instanceof MastodonStatus) {
-			((MastodonStatus) embeddedStatus).removeBookmark();
+			((MastodonStatus) embeddedStatus).setBookmark(bookmarked);
 		}
-		bookmarked = false;
 	}
 }

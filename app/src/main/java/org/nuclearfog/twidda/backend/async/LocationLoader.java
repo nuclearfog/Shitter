@@ -1,16 +1,17 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.ui.activities.SettingsActivity;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -19,44 +20,41 @@ import java.util.List;
  * @author nuclearfog
  * @see SettingsActivity
  */
-public class LocationLoader extends AsyncTask<Void, Void, List<Location>> {
+public class LocationLoader extends AsyncExecutor<Void, LocationLoader.LocationLoaderResult> {
 
-	private WeakReference<SettingsActivity> weakRef;
 	private Connection connection;
 
-	@Nullable
-	private ConnectionException exception;
 
-
-	public LocationLoader(SettingsActivity activity) {
-		super();
-		weakRef = new WeakReference<>(activity);
-		connection = ConnectionManager.get(activity);
+	public LocationLoader(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected List<Location> doInBackground(Void... v) {
+	protected LocationLoaderResult doInBackground(Void v) {
 		try {
-			return connection.getLocations();
+			List<Location> locations = connection.getLocations();
+			return new LocationLoaderResult(locations, null);
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new LocationLoaderResult(null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new LocationLoaderResult(null, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable List<Location> locations) {
-		SettingsActivity activity = weakRef.get();
-		if (activity != null) {
-			if (locations != null) {
-				activity.setLocationData(locations);
-			} else {
-				activity.onError(exception);
-			}
+	public static class LocationLoaderResult {
+
+		@Nullable
+		public final List<Location> locations;
+		@Nullable
+		public final ConnectionException exception;
+
+		public LocationLoaderResult(@Nullable List<Location> locations, @Nullable ConnectionException exception) {
+			this.locations = locations;
+			this.exception = exception;
 		}
 	}
 }

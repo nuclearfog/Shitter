@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.OnClickListener;
 import static android.view.View.VISIBLE;
@@ -60,9 +59,14 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.UserLoader;
+import org.nuclearfog.twidda.backend.async.UserLoader.UserParam;
+import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.async.UserAction;
+import org.nuclearfog.twidda.backend.async.RelationLoader;
+import org.nuclearfog.twidda.backend.async.RelationLoader.RelationParam;
+import org.nuclearfog.twidda.backend.async.RelationLoader.RelationResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -105,12 +109,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private static final String KEY_PROFILE_RELATION = "profile_relation";
 
 	/**
-	 * key to prevent this activity to reload profile information as they are up to date
-	 * value type is Boolean
-	 */
-	public static final String KEY_PROFILE_DISABLE_RELOAD = "profile_no_reload";
-
-	/**
 	 * key to send updated user data
 	 * value type is {@link User}
 	 */
@@ -135,9 +133,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
-	private UserAction profileAsync;
 	private Picasso picasso;
-
 	private ConfirmDialog confirmDialog;
 
 	private NestedScrollView root;
@@ -152,9 +148,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private Toolbar toolbar;
 
 	@Nullable
+	private RelationLoader relationLoader;
+	@Nullable
+	private UserLoader userLoader;
+	@Nullable
 	private Relation relation;
 	@Nullable
 	private User user;
+	private long userId;
 
 
 	@Override
@@ -221,9 +222,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
 		if (o instanceof User) {
 			user = (User) o;
+			userId = user.getId();
 			adapter.setupProfilePage(user.getId());
 		} else {
-			long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
+			userId = i.getLongExtra(KEY_PROFILE_ID, 0);
 			adapter.setupProfilePage(userId);
 		}
 		if (settings.likeEnabled()) {
@@ -245,19 +247,21 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (profileAsync == null) {
-			Intent data = getIntent();
+		if (userLoader == null) {
+			UserParam param;
+			userLoader = new UserLoader(this);
 			if (user == null) {
-				long userId = data.getLongExtra(KEY_PROFILE_ID, 0);
-				profileAsync = new UserAction(this, UserAction.PROFILE_DB, userId);
-				profileAsync.execute();
-			} else if (relation == null) {
+				param = new UserParam(UserParam.DATABASE, userId);
+			} else {
+				param = new UserParam(UserParam.ONLINE, userId);
 				setUser(user);
-				if (!data.getBooleanExtra(KEY_PROFILE_DISABLE_RELOAD, false)) {
-					profileAsync = new UserAction(this, UserAction.PROFILE_lOAD, user.getId());
-					profileAsync.execute();
-				}
 			}
+			userLoader.execute(param, this::setUserResult);
+		}
+		if (relationLoader == null && userId != settings.getLogin().getId()) {
+			relationLoader = new RelationLoader(this);
+			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
+			relationLoader.execute(param, this::setRelationResult);
 		}
 	}
 
@@ -284,8 +288,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	protected void onDestroy() {
-		if (profileAsync != null && profileAsync.getStatus() == RUNNING)
-			profileAsync.cancel(true);
+		if (relationLoader != null && !relationLoader.isIdle())
+			relationLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -405,9 +409,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// follow / unfollow user
 		else if (item.getItemId() == R.id.profile_follow) {
 			if (relation != null && user != null) {
-				if (!relation.isFollowing() && (profileAsync == null || profileAsync.getStatus() != RUNNING)) {
-					profileAsync = new UserAction(this, UserAction.ACTION_FOLLOW, user.getId());
-					profileAsync.execute();
+				if (!relation.isFollowing() && (relationLoader == null || relationLoader.isIdle())) {
+					RelationParam param = new RelationParam(user.getId(), RelationParam.FOLLOW);
+					relationLoader = new RelationLoader(this);
+					relationLoader.execute(param, this::setRelationResult);
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_UNFOLLOW);
 				}
@@ -416,9 +421,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// mute user
 		else if (item.getItemId() == R.id.profile_mute) {
 			if (relation != null && user != null) {
-				if (relation.isMuted() && (profileAsync == null || profileAsync.getStatus() != RUNNING)) {
-					profileAsync = new UserAction(this, UserAction.ACTION_UNMUTE, user.getId());
-					profileAsync.execute();
+				if (relation.isMuted() && (relationLoader == null || relationLoader.isIdle())) {
+					RelationParam param = new RelationParam(user.getId(), RelationParam.UNMUTE);
+					relationLoader = new RelationLoader(this);
+					relationLoader.execute(param, this::setRelationResult);
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_MUTE);
 				}
@@ -427,9 +433,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// block user
 		else if (item.getItemId() == R.id.profile_block) {
 			if (relation != null && user != null) {
-				if (relation.isBlocked() && (profileAsync == null || profileAsync.getStatus() != RUNNING)) {
-					profileAsync = new UserAction(this, UserAction.ACTION_UNBLOCK, user.getId());
-					profileAsync.execute();
+				if (relation.isBlocked() && (relationLoader == null ||  relationLoader.isIdle())) {
+					RelationParam param = new RelationParam(user.getId(), RelationParam.UNBLOCK);
+					relationLoader = new RelationLoader(this);
+					relationLoader.execute(param, this::setRelationResult);
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_BLOCK);
 				}
@@ -587,18 +594,21 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			return;
 		// confirmed unfollowing user
 		if (type == ConfirmDialog.PROFILE_UNFOLLOW) {
-			profileAsync = new UserAction(this, UserAction.ACTION_UNFOLLOW, user.getId());
-			profileAsync.execute();
+			RelationParam param = new RelationParam(user.getId(), RelationParam.UNFOLLOW);
+			relationLoader = new RelationLoader(this);
+			relationLoader.execute(param, this::setRelationResult);
 		}
 		// confirmed blocking user
 		else if (type == ConfirmDialog.PROFILE_BLOCK) {
-			profileAsync = new UserAction(this, UserAction.ACTION_BLOCK, user.getId());
-			profileAsync.execute();
+			RelationParam param = new RelationParam(user.getId(), RelationParam.BLOCK);
+			relationLoader = new RelationLoader(this);
+			relationLoader.execute(param, this::setRelationResult);
 		}
 		// confirmed muting user
 		else if (type == ConfirmDialog.PROFILE_MUTE) {
-			profileAsync = new UserAction(this, UserAction.ACTION_MUTE, user.getId());
-			profileAsync.execute();
+			RelationParam param = new RelationParam(user.getId(), RelationParam.MUTE);
+			relationLoader = new RelationLoader(this);
+			relationLoader.execute(param, this::setRelationResult);
 		}
 	}
 
@@ -643,13 +653,85 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	public void onError(Exception e) {
 	}
 
+	/**
+	 * set user result information
+	 *
+	 * @param result user result from async executor
+	 */
+	private void setUserResult(UserResult result) {
+		switch(result.mode) {
+			case UserResult.DATABASE:
+				userLoader = new UserLoader(this);
+				UserParam param = new UserParam(UserParam.ONLINE, userId);
+				userLoader.execute(param, this::setUserResult);
+				// fall through
+
+			case UserResult.ONLINE:
+				if (result.user != null) {
+					setUser(result.user);
+				}
+				break;
+
+			case UserResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				if (user == null || (result.exception != null
+						&& (result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND
+						|| result.exception.getErrorCode() == ConnectionException.USER_NOT_FOUND))) {
+					finish();
+				}
+				break;
+		}
+	}
+
+	/**
+	 * set user relation information
+	 *
+	 * @param result relation result from async executor
+	 */
+	private void setRelationResult(RelationResult result) {
+		switch (result.mode) {
+			case RelationResult.BLOCK:
+				Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
+				break;
+
+			case RelationResult.UNBLOCK:
+				Toast.makeText(getApplicationContext(), R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
+				break;
+
+			case RelationResult.MUTE:
+				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
+				break;
+
+			case RelationResult.UNMUTE:
+				Toast.makeText(getApplicationContext(), R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
+				break;
+
+			case RelationResult.FOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_followed, Toast.LENGTH_SHORT).show();
+				break;
+
+			case RelationResult.UNFOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_unfollowed, Toast.LENGTH_SHORT).show();
+				break;
+
+			case RelationResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				break;
+		}
+		if (result.relation != null) {
+			relation = result.relation;
+			invalidateOptionsMenu();
+		}
+	}
 
 	/**
 	 * Set User Information
 	 *
 	 * @param user User data
 	 */
-	public void setUser(User user) {
+	private void setUser(@NonNull User user) {
 		this.user = user;
 
 		Spanned bio = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
@@ -729,57 +811,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (following.getVisibility() != VISIBLE) {
 			following.setVisibility(VISIBLE);
 			follower.setVisibility(VISIBLE);
-		}
-	}
-
-	/**
-	 * sets user relation information and checks for status changes
-	 *
-	 * @param relation relation to an user
-	 */
-	public void onAction(@NonNull Relation relation) {
-		if (this.relation != null) {
-			// check if block status changed
-			if (relation.isBlocked() != this.relation.isBlocked()) {
-				if (relation.isBlocked()) {
-					Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(getApplicationContext(), R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
-				}
-			}
-			// check if following status changed
-			else if (relation.isFollowing() != this.relation.isFollowing()) {
-				if (relation.isFollowing()) {
-					Toast.makeText(getApplicationContext(), R.string.info_followed, Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(getApplicationContext(), R.string.info_unfollowed, Toast.LENGTH_SHORT).show();
-				}
-			}
-			// check if mute status changed
-			else if (relation.isMuted() != this.relation.isMuted()) {
-				if (relation.isMuted()) {
-					Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(getApplicationContext(), R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
-				}
-			}
-		}
-		this.relation = relation;
-		invalidateOptionsMenu();
-	}
-
-	/**
-	 * called if an error occurs
-	 *
-	 * @param exception Engine Exception
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-		if (user == null || (exception != null
-				&& (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND
-				|| exception.getErrorCode() == ConnectionException.USER_NOT_FOUND))) {
-			finish();
 		}
 	}
 }

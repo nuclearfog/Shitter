@@ -10,9 +10,9 @@ import java.io.Serializable;
 public interface Relation extends Serializable {
 
 	/**
-	 * @return true if the relation points to the current user
+	 * @return User ID
 	 */
-	boolean isCurrentUser();
+	long getId();
 
 	/**
 	 * @return true if current user is following this user

@@ -1,16 +1,13 @@
 package org.nuclearfog.twidda.backend.async;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.ui.activities.UserlistActivity;
-
-import java.lang.ref.WeakReference;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 
 /**
  * Backend async task to manage users on lists
@@ -18,74 +15,72 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListManager extends AsyncTask<Void, Void, Boolean> {
-
-	/**
-	 * add user to list
-	 */
-	public static final int ADD_USER = 1;
-
-	/**
-	 * remove user from list
-	 */
-	public static final int DEL_USER = 2;
+public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, ListManager.ListManagerResult> {
 
 	private Connection connection;
-	private WeakReference<UserlistActivity> weakRef;
-
-	@Nullable
-	private ConnectionException exception;
-	private long listId;
-	private String username;
-	private int action;
 
 	/**
-	 * @param c        activity context
-	 * @param listId   ID of the user list
-	 * @param action   what action should be performed
-	 * @param username name of the user to add or remove
-	 * @param callback callback to update information
+	 *
 	 */
-	public ListManager(Context c, long listId, int action, String username, UserlistActivity callback) {
-		super();
-		weakRef = new WeakReference<>(callback);
-		connection = ConnectionManager.get(c);
-		this.listId = listId;
-		this.action = action;
-		this.username = username;
+	public ListManager(Context context) {
+		connection = ConnectionManager.get(context);
+
 	}
 
 
+	@NonNull
 	@Override
-	protected Boolean doInBackground(Void... v) {
+	protected ListManagerResult doInBackground(ListManagerParam param) {
 		try {
-			switch (action) {
-				case ADD_USER:
-					connection.addUserToList(listId, username);
-					return true;
+			switch (param.mode) {
+				case ListManagerParam.ADD_USER:
+					connection.addUserToList(param.id, param.username);
+					return new ListManagerResult(ListManagerResult.ADD_USER, param.username, null);
 
-				case DEL_USER:
-					connection.removeUserFromList(listId, username);
-					return true;
+				case ListManagerParam.DEL_USER:
+					connection.removeUserFromList(param.id, param.username);
+					return new ListManagerResult(ListManagerResult.DEL_USER, param.username, null);
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new ListManagerResult(ListManagerResult.ERROR, param.username, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return new ListManagerResult(ListManagerResult.ERROR, param.username, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(Boolean success) {
-		UserlistActivity callback = weakRef.get();
-		if (callback != null) {
-			if (success) {
-				callback.onSuccess(action, username);
-			} else {
-				callback.onFailure(exception);
-			}
+	public static class ListManagerParam {
+
+		public static final int ADD_USER = 1;
+		public static final int DEL_USER = 2;
+
+		public final long id;
+		public final String username;
+		public final int mode;
+
+		public ListManagerParam(int mode, long id, String username) {
+			this.id = id;
+			this.mode = mode;
+			this.username = username;
+		}
+	}
+
+
+	public static class ListManagerResult {
+
+		public static final int ERROR = -1;
+		public static final int ADD_USER = 3;
+		public static final int DEL_USER = 4;
+
+		public final int mode;
+		public final String name;
+		public final ConnectionException exception;
+
+		ListManagerResult(int mode, String name, ConnectionException exception) {
+			this.mode = mode;
+			this.name = name;
+			this.exception = exception;
 		}
 	}
 }

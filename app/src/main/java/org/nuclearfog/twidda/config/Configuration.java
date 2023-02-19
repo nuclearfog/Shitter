@@ -30,9 +30,7 @@ public enum Configuration {
 	NONE(0);
 
 	private final int accountType;
-	private final boolean enableVote;
 	private final boolean userlistExtended;
-	private final boolean favoritsEnabled;
 	private final boolean searchFilterEnabled;
 	private final boolean profileLocationEnabled;
 	private final boolean profileUrlEnabled;
@@ -51,8 +49,6 @@ public enum Configuration {
 			case Account.API_TWITTER_1:
 			case Account.API_TWITTER_2:
 				userlistExtended = true;
-				favoritsEnabled = true;
-				enableVote = false;
 				searchFilterEnabled = true;
 				profileLocationEnabled = true;
 				profileUrlEnabled = true;
@@ -63,24 +59,9 @@ public enum Configuration {
 				maxVideos = 1;
 				break;
 
-			case Account.API_MASTODON:
-				enableVote = true;
-				userlistExtended = false;
-				favoritsEnabled = false;
-				searchFilterEnabled = false;
-				profileLocationEnabled = false;
-				profileUrlEnabled = false;
-				idBlocklistEnabled = false;
-				postLocationSupported = false;
-				maxImages = 4;
-				maxGifs = 1;
-				maxVideos = 1;
-				break;
-
 			default:
+			case Account.API_MASTODON:
 				userlistExtended = false;
-				favoritsEnabled = false;
-				enableVote = false;
 				searchFilterEnabled = false;
 				profileLocationEnabled = false;
 				profileUrlEnabled = false;
@@ -101,24 +82,10 @@ public enum Configuration {
 	}
 
 	/**
-	 * @return true if network supports voting
-	 */
-	public boolean voteEnabled() {
-		return enableVote;
-	}
-
-	/**
 	 * @return true to show extra userlist information
 	 */
 	public boolean showListExtras() {
 		return userlistExtended;
-	}
-
-	/**
-	 * @return true to enable favorite timeline for users
-	 */
-	public boolean favoritsEnabled() {
-		return favoritsEnabled;
 	}
 
 	/**

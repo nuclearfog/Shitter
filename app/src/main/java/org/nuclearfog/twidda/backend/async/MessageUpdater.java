@@ -1,17 +1,15 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MessageUpdate;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Background task to send a direct messages to a user
@@ -19,64 +17,53 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MessageEditor
  */
-public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
+public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.MessageUpdateResult> {
 
-	private WeakReference<MessageEditor> weakRef;
 	private Connection connection;
 
-	@Nullable
-	private ConnectionException exception;
-	private MessageUpdate message;
-
 	/**
-	 * send direct message
 	 *
-	 * @param activity Activity context
 	 */
-	public MessageUpdater(@NonNull MessageEditor activity, MessageUpdate message) {
-		super();
-		connection = ConnectionManager.get(activity);
-		weakRef = new WeakReference<>(activity);
-		this.message = message;
+	public MessageUpdater(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected Boolean doInBackground(Void... v) {
+	protected MessageUpdateResult doInBackground(MessageUpdate update) {
 		try {
 			// first check if user exists
-			long id = connection.showUser(message.getReceiver()).getId();
+			long id = connection.showUser(update.getReceiver()).getId();
 			// upload media if any
 			long mediaId = -1;
-			if (message.getMediaUpdate() != null) {
-				mediaId = connection.uploadMedia(message.getMediaUpdate());
+			if (update.getMediaUpdate() != null) {
+				mediaId = connection.uploadMedia(update.getMediaUpdate());
 			}
 			// upload message and media ID
 			if (!isCancelled()) {
-				connection.sendDirectmessage(id, message.getMessage(), mediaId);
+				connection.sendDirectmessage(id, update.getMessage(), mediaId);
 			}
-			return true;
+			return new MessageUpdateResult(true, null);
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new MessageUpdateResult(false, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			// close all streams
-			message.close();
+			update.close();
 		}
-		return false;
+		return new MessageUpdateResult(false, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(Boolean success) {
-		MessageEditor activity = weakRef.get();
-		if (activity != null) {
-			if (success) {
-				activity.onSuccess();
-			} else {
-				activity.onError(exception);
-			}
+	public static class MessageUpdateResult {
+
+		public final boolean success;
+		public final ConnectionException exception;
+
+		public MessageUpdateResult(boolean success, ConnectionException exception) {
+			this.exception = exception;
+			this.success = success;
 		}
 	}
 }

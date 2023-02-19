@@ -386,7 +386,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Relation getUserRelationship(long id) throws TwitterException {
+	public RelationV1 getUserRelationship(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("source_id=" + settings.getLogin().getId());
 		params.add("target_id=" + id);
@@ -405,70 +405,94 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public void followUser(long id) throws TwitterException {
+	public Relation followUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		getUser(USER_FOLLOW, params);
+		RelationV1 relation = getUserRelationship(id);
+		relation.setFollowing(true);
+		return relation;
 	}
 
 
 	@Override
-	public void unfollowUser(long id) throws TwitterException {
+	public Relation unfollowUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		getUser(USER_UNFOLLOW, params);
+		RelationV1 relation = getUserRelationship(id);
+		relation.setFollowing(false);
+		return relation;
 	}
 
 
 	@Override
-	public void blockUser(long id) throws TwitterException {
+	public Relation blockUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		getUser(USER_BLOCK, params);
+		RelationV1 relation = getUserRelationship(id);
+		relation.setBlocked(true);
+		return relation;
 	}
 
 
 	@Override
-	public void blockUser(String name) throws TwitterException {
+	public Relation blockUser(String name) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
-		getUser(USER_BLOCK, params);
+		User user = getUser(USER_BLOCK, params);
+		RelationV1 relation = getUserRelationship(user.getId());
+		relation.setBlocked(true);
+		return relation;
 	}
 
 
 	@Override
-	public void unblockUser(long id) throws TwitterException {
+	public Relation unblockUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		getUser(USER_UNBLOCK, params);
+		RelationV1 relation = getUserRelationship(id);
+		relation.setBlocked(false);
+		return relation;
 	}
 
 
 	@Override
-	public void muteUser(long id) throws TwitterException {
+	public Relation muteUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		getUser(USER_MUTE, params);
+		RelationV1 relation = getUserRelationship(id);
+		relation.setMuted(true);
+		return relation;
 	}
 
 
 	@Override
-	public void muteUser(String name) throws TwitterException {
+	public Relation muteUser(String name) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("screen_name=" + StringTools.encode(name));
-		getUser(USER_MUTE, params);
+		User user = getUser(USER_MUTE, params);
+		RelationV1 relation = getUserRelationship(user.getId());
+		relation.setMuted(true);
+		return relation;
 	}
 
 
 	@Override
-	public void unmuteUser(long id) throws TwitterException {
+	public Relation unmuteUser(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		getUser(USER_UNMUTE, params);
+		RelationV1 relation = getUserRelationship(id);
+		relation.setMuted(false);
+		return relation;
 	}
 
 

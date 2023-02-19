@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 /**
- * This AsyncTask class downloads images to a local cache folder
+ * This class downloads images to a local cache folder
  * and creates Uri of the images.
  *
  * @author nuclearfog
@@ -98,9 +98,5 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 			this.exception = exception;
 			this.uri = uri;
 		}
-	}
-
-
-	public interface ImageCallback extends AsyncCallback<ImageResult> {
 	}
 }

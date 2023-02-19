@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * This AsyncTask class moves a cached image to the destiny folder
+ * This class moves a downloaded image to the destiny folder
  *
  * @author nuclearfog
  * @see MediaActivity

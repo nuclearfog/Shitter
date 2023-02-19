@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.ui.activities.UserlistEditor.KEY_LIST_EDITOR_DATA;
 
 import android.content.Context;
@@ -33,7 +32,11 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListAction;
+import org.nuclearfog.twidda.backend.async.ListAction.ListActionParam;
+import org.nuclearfog.twidda.backend.async.ListAction.ListActionResult;
 import org.nuclearfog.twidda.backend.async.ListManager;
+import org.nuclearfog.twidda.backend.async.ListManager.ListManagerParam;
+import org.nuclearfog.twidda.backend.async.ListManager.ListManagerResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -158,8 +161,9 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			boolean blockUpdate = getIntent().getBooleanExtra(KEY_LIST_NO_UPDATE, false);
 			if (!blockUpdate) {
 				// update list information
-				listLoaderAsync = new ListAction(this, userList.getId(), ListAction.LOAD);
-				listLoaderAsync.execute();
+				listLoaderAsync = new ListAction(this);
+				ListActionParam param = new ListActionParam(ListActionParam.LOAD, userList.getId());
+				listLoaderAsync.execute(param, this::setList);
 			}
 		}
 	}
@@ -167,8 +171,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Override
 	protected void onDestroy() {
-		if (listLoaderAsync != null && listLoaderAsync.getStatus() == RUNNING) {
-			listLoaderAsync.cancel(true);
+		if (listLoaderAsync != null && !listLoaderAsync.isIdle()) {
+			listLoaderAsync.cancel();
 		}
 		super.onDestroy();
 	}
@@ -213,7 +217,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (userList != null && (listLoaderAsync == null || listLoaderAsync.getStatus() != RUNNING)) {
+		if (userList != null && (listLoaderAsync == null || listLoaderAsync.isIdle())) {
 			// open user list editor
 			if (item.getItemId() == R.id.menu_list_edit) {
 				Intent editList = new Intent(this, UserlistEditor.class);
@@ -229,8 +233,9 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				if (userList.isFollowing()) {
 					confirmDialog.show(ConfirmDialog.LIST_UNFOLLOW);
 				} else {
-					listLoaderAsync = new ListAction(this, userList.getId(), ListAction.FOLLOW);
-					listLoaderAsync.execute();
+					listLoaderAsync = new ListAction(this);
+					ListActionParam param = new ListActionParam(ListActionParam.FOLLOW, userList.getId());
+					listLoaderAsync.execute(param, this::setList);
 				}
 			}
 			// theme expanded search view
@@ -277,23 +282,26 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (userList != null) {
 			// delete user list
 			if (type == ConfirmDialog.LIST_DELETE) {
-				if (listLoaderAsync == null || listLoaderAsync.getStatus() != RUNNING) {
-					listLoaderAsync = new ListAction(this, userList.getId(), ListAction.DELETE);
-					listLoaderAsync.execute();
+				if (listLoaderAsync == null || listLoaderAsync.isIdle()) {
+					ListActionParam param = new ListActionParam(ListActionParam.DELETE, userList.getId());
+					listLoaderAsync = new ListAction(this);
+					listLoaderAsync.execute(param, this::setList);
 				}
 			}
 			// unfollow user list
 			else if (type == ConfirmDialog.LIST_UNFOLLOW) {
-				if (listLoaderAsync == null || listLoaderAsync.getStatus() != RUNNING) {
-					listLoaderAsync = new ListAction(this, userList.getId(), ListAction.UNFOLLOW);
-					listLoaderAsync.execute();
+				if (listLoaderAsync == null || listLoaderAsync.isIdle()) {
+					ListActionParam param = new ListActionParam(ListActionParam.UNFOLLOW, userList.getId());
+					listLoaderAsync = new ListAction(this);
+					listLoaderAsync.execute(param, this::setList);
 				}
 			}
 			// remove user from list
 			else if (type == ConfirmDialog.LIST_REMOVE_USER) {
-				if ((listManagerAsync == null || listManagerAsync.getStatus() != RUNNING) && user != null) {
-					listManagerAsync = new ListManager(this, userList.getId(), ListManager.DEL_USER, user.getScreenname(), this);
-					listManagerAsync.execute();
+				if ((listManagerAsync == null || listManagerAsync.isIdle()) && user != null) {
+					ListManagerParam param = new ListManagerParam(ListManagerParam.DEL_USER, userList.getId(), user.getScreenname());
+					listManagerAsync = new ListManager(this);
+					listManagerAsync.execute(param, this::updateList);
 				}
 			}
 		}
@@ -328,10 +336,11 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (userList == null)
 			return false;
 		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (listManagerAsync == null || listManagerAsync.getStatus() != RUNNING) {
+			if (listManagerAsync == null || listManagerAsync.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-				listManagerAsync = new ListManager(this, userList.getId(), ListManager.ADD_USER, query, this);
-				listManagerAsync.execute();
+				ListManagerParam param = new ListManagerParam(ListManagerParam.ADD_USER, userList.getId(), query);
+				listManagerAsync = new ListManager(this);
+				listManagerAsync.execute(param, this::updateList);
 				return true;
 			}
 		} else {
@@ -340,44 +349,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		return false;
 	}
 
-	/**
-	 * called from {@link ListManager}
-	 *
-	 * @param action what action was taken
-	 * @param name   screen name of the list member
-	 */
-	public void onSuccess(int action, String name) {
-		switch (action) {
-			case ListManager.ADD_USER:
-				if (!name.startsWith("@"))
-					name = '@' + name;
-				String info = getString(R.string.info_user_added_to_list, name);
-				Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-				invalidateOptionsMenu();
-				break;
-
-			case ListManager.DEL_USER:
-				if (user != null) {
-					info = getString(R.string.info_user_removed, user.getScreenname());
-					Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-					// remove user from list member page
-					Fragment fragment = adapter.getItem(1);
-					if (fragment instanceof UserFragment) {
-						UserFragment callback = (UserFragment) fragment;
-						callback.removeUser(user);
-					}
-				}
-				break;
-		}
-	}
-
-	/**
-	 * called from {@link ListManager} when an error occurs
-	 */
-	public void onFailure(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-	}
 
 	/**
 	 * called from {@link org.nuclearfog.twidda.ui.fragments.UserFragment} when an user should be removed from a list
@@ -392,54 +363,86 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	}
 
 	/**
-	 * called from {@link ListAction} to update userlist information
-	 *
-	 * @param userList userlist update
+	 * update userlist member
 	 */
-	public void onSuccess(@NonNull UserList userList, int action) {
-		this.userList = userList;
-		switch (action) {
-			case ListAction.LOAD:
-				toolbar.setTitle(userList.getTitle());
-				toolbar.setSubtitle(userList.getDescription());
+	public void updateList(ListManagerResult result) {
+		switch (result.mode) {
+			case ListManagerResult.ADD_USER:
+				String name;
+				if (!result.name.startsWith("@"))
+					name = '@' + result.name;
+				else
+					name = result.name;
+				String info = getString(R.string.info_user_added_to_list, name);
+				Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case ListAction.FOLLOW:
-				Toast.makeText(getApplicationContext(), R.string.info_list_followed, Toast.LENGTH_SHORT).show();
-				invalidateOptionsMenu();
+			case ListManagerResult.DEL_USER:
+				if (user != null) {
+					info = getString(R.string.info_user_removed, user.getScreenname());
+					Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+					// remove user from list member page
+					Fragment fragment = adapter.getItem(1);
+					if (fragment instanceof UserFragment) {
+						UserFragment callback = (UserFragment) fragment;
+						callback.removeUser(user);
+					}
+				}
 				break;
 
-			case ListAction.UNFOLLOW:
-				Toast.makeText(getApplicationContext(), R.string.info_list_unfollowed, Toast.LENGTH_SHORT).show();
-				invalidateOptionsMenu();
-				break;
-
-			case ListAction.DELETE:
-				Intent result = new Intent();
-				result.putExtra(RESULT_REMOVED_LIST_ID, userList.getId());
-				setResult(RETURN_LIST_REMOVED, result);
-				Toast.makeText(getApplicationContext(), R.string.info_list_removed, Toast.LENGTH_SHORT).show();
-				finish();
+			case ListManagerResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				break;
 		}
 	}
 
 	/**
-	 * called from {@link ListAction} if an error occurs
-	 *
-	 * @param exception    error information
-	 * @param listId ID of the list where an error occurred
+	 * update userlist content
 	 */
-	public void onFailure(@Nullable ConnectionException exception, long listId) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-		if (exception != null && exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-			// List does not exist
-			Intent result = new Intent();
-			result.putExtra(RESULT_REMOVED_LIST_ID, listId);
-			setResult(RETURN_LIST_REMOVED, result);
-			finish();
+	private void setList(ListActionResult result) {
+		switch (result.mode) {
+			case ListActionResult.LOAD:
+				if (result.userlist != null) {
+					toolbar.setTitle(result.userlist.getTitle());
+					toolbar.setSubtitle(result.userlist.getDescription());
+					invalidateOptionsMenu();
+				}
+				break;
+
+			case ListActionResult.FOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_list_followed, Toast.LENGTH_SHORT).show();
+				invalidateOptionsMenu();
+				break;
+
+			case ListActionResult.UNFOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_list_unfollowed, Toast.LENGTH_SHORT).show();
+				invalidateOptionsMenu();
+				break;
+
+			case ListActionResult.DELETE:
+				Intent intent = new Intent();
+				intent.putExtra(RESULT_REMOVED_LIST_ID, result.userlist);
+				setResult(RETURN_LIST_REMOVED, intent);
+				Toast.makeText(getApplicationContext(), R.string.info_list_removed, Toast.LENGTH_SHORT).show();
+				finish();
+				break;
+
+			case ListActionResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+					// List does not exist
+					intent = new Intent();
+					intent.putExtra(RESULT_REMOVED_LIST_ID, result.id);
+					setResult(RETURN_LIST_REMOVED, intent);
+					finish();
+				}
+				break;
+		}
+		if (result.userlist != null) {
+			this.userList = result.userlist;
 		}
 	}
 }

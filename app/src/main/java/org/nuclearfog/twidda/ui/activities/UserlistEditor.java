@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,15 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.ListUpdater;
+import org.nuclearfog.twidda.backend.async.ListUpdater.ListUpdateResult;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -36,7 +34,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
  *
  * @author nuclearfog
  */
-public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
+public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<ListUpdateResult> {
 
 	/**
 	 * Key for the list ID if an existing list should be updated
@@ -135,7 +133,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onClick(View view) {
 		if (view.getId() == R.id.userlist_create_list) {
-			if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
+			if (updaterAsync == null || updaterAsync.isIdle()) {
 				updateList();
 			}
 		}
@@ -144,8 +142,8 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void stopProgress() {
-		if (updaterAsync != null && updaterAsync.getStatus() == RUNNING) {
-			updaterAsync.cancel(true);
+		if (updaterAsync != null && !updaterAsync.isIdle()) {
+			updaterAsync.cancel();
 		}
 	}
 
@@ -162,31 +160,24 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		}
 	}
 
-	/**
-	 * called when a list was created successfully
-	 *
-	 * @param result  new created list
-	 * @param updated true if an existing list was updated
-	 */
-	public void onSuccess(@NonNull UserList result, boolean updated) {
-		if (updated) {
-			Toast.makeText(getApplicationContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.info_list_created, Toast.LENGTH_SHORT).show();
-		}
-		Intent data = new Intent();
-		data.putExtra(KEY_UPDATED_USERLIST, result);
-		setResult(RETURN_LIST_CHANGED, data);
-		finish();
-	}
 
-	/**
-	 * called when an error occurs while updating a list
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		confirmDialog.show(ConfirmDialog.LIST_EDITOR_ERROR, message);
-		loadingCircle.dismiss();
+	@Override
+	public void onResult(ListUpdateResult result) {
+		if (result.userlist != null) {
+			if (result.updated) {
+				Toast.makeText(getApplicationContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getApplicationContext(), R.string.info_list_created, Toast.LENGTH_SHORT).show();
+			}
+			Intent intent = new Intent();
+			intent.putExtra(KEY_UPDATED_USERLIST, result.userlist);
+			setResult(RETURN_LIST_CHANGED, intent);
+			finish();
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			confirmDialog.show(ConfirmDialog.LIST_EDITOR_ERROR, message);
+			loadingCircle.dismiss();
+		}
 	}
 
 	/**
@@ -207,8 +198,8 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 				// create new one
 				mHolder = new UserListUpdate(titleStr, descrStr, isPublic, UserListUpdate.NEW_LIST);
 			}
-			updaterAsync = new ListUpdater(this, mHolder);
-			updaterAsync.execute();
+			updaterAsync = new ListUpdater(this);
+			updaterAsync.execute(mHolder, this);
 			loadingCircle.show();
 		}
 	}

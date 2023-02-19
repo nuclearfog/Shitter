@@ -15,24 +15,23 @@ public class MastodonRelation implements Relation {
 
 	private static final long serialVersionUID = -3824807644551732407L;
 
-	private boolean currentUser;
-	private boolean following;
-	private boolean follower;
-	private boolean blocked;
-	private boolean muted;
+	private long id;
+	private boolean isFollowing;
+	private boolean isFollower;
+	private boolean isBlocked;
+	private boolean isMuted;
 
 	/**
 	 * @param json      Relation json object
-	 * @param currentId ID of the current user
 	 */
-	public MastodonRelation(JSONObject json, long currentId) throws JSONException {
+	public MastodonRelation(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
-		following = json.optBoolean("following");
-		follower = json.optBoolean("followed_by");
-		blocked = json.optBoolean("blocking");
-		muted = json.optBoolean("muting");
+		isFollowing = json.optBoolean("following");
+		isFollower = json.optBoolean("followed_by");
+		isBlocked = json.optBoolean("blocking");
+		isMuted = json.optBoolean("muting");
 		try {
-			currentUser = currentId == Long.parseLong(idStr);
+			id = Long.parseLong(idStr);
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad ID:" + idStr);
 		}
@@ -40,32 +39,32 @@ public class MastodonRelation implements Relation {
 
 
 	@Override
-	public boolean isCurrentUser() {
-		return currentUser;
+	public long getId() {
+		return id;
 	}
 
 
 	@Override
 	public boolean isFollowing() {
-		return following;
+		return isFollowing;
 	}
 
 
 	@Override
 	public boolean isFollower() {
-		return follower;
+		return isFollower;
 	}
 
 
 	@Override
 	public boolean isBlocked() {
-		return blocked;
+		return isBlocked;
 	}
 
 
 	@Override
 	public boolean isMuted() {
-		return muted;
+		return isMuted;
 	}
 
 
@@ -75,10 +74,25 @@ public class MastodonRelation implements Relation {
 	}
 
 
+	public void setFollowing(boolean isFollowing) {
+		this.isFollowing = isFollowing;
+	}
+
+
+	public void setBlocked(boolean isBlocked) {
+		this.isBlocked = isBlocked;
+	}
+
+
+	public void setMuted(boolean isMuted) {
+		this.isMuted = isMuted;
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {
-		return "following=" + following + " follower=" + follower +
-				" blocked=" + blocked + " muted=" + muted;
+		return "following=" + isFollowing + " follower=" + isFollower +
+				" blocked=" + isBlocked + " muted=" + isMuted;
 	}
 }

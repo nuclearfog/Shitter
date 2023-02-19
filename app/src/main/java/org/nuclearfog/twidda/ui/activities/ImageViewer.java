@@ -95,8 +95,8 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 
 	@Override
 	protected void onDestroy() {
-		if (imageAsync != null && !imageAsync.idle()) {
-			imageAsync.kill();
+		if (imageAsync != null && !imageAsync.isIdle()) {
+			imageAsync.cancel();
 			clearCache();
 		}
 		super.onDestroy();
@@ -134,14 +134,14 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 
 
 	@Override
-	public void onResult(ImageResult res) {
-		if (res.uri != null) {
-			cacheUri = res.uri;
+	public void onResult(ImageResult result) {
+		if (result.uri != null) {
+			cacheUri = result.uri;
 			zoomImage.reset();
 			zoomImage.setImageURI(cacheUri);
 			loadingCircle.setVisibility(INVISIBLE);
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, res.exception);
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 			finish();
 		}

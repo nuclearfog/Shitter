@@ -1,17 +1,18 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.Messages;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.ui.fragments.MessageFragment;
 
-import java.lang.ref.WeakReference;
 
 /**
  * task to download a direct message list from twitter and handle message actions
@@ -19,112 +20,95 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MessageFragment
  */
-public class MessageLoader extends AsyncTask<Void, Void, Messages> {
+public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderParam, MessageLoader.MessageLoaderResult> {
 
-	/**
-	 * load messages from database
-	 */
-	public static final int DB = 1;
-
-	/**
-	 * load messages online
-	 */
-	public static final int LOAD = 2;
-
-	/**
-	 * delete message
-	 */
-	public static final int DEL = 3;
-
-	private WeakReference<MessageFragment> weakRef;
 	private Connection connection;
 	private AppDatabase db;
-	private int action;
-
-	@Nullable
-	private ConnectionException exception;
-	private String cursor;
-	private long messageId;
 
 	/**
-	 * @param fragment  Callback to update data
-	 * @param action    what action should be performed
-	 * @param cursor    list cursor provided by twitter
-	 * @param messageId if {@link #DEL} is selected this ID is used to delete the message
+	 *
 	 */
-	public MessageLoader(MessageFragment fragment, int action, String cursor, long messageId) {
-		super();
-		weakRef = new WeakReference<>(fragment);
-		db = new AppDatabase(fragment.getContext());
-		connection = ConnectionManager.get(fragment.getContext());
-		this.action = action;
-		this.cursor = cursor;
-		this.messageId = messageId;
+	public MessageLoader(Context context) {
+		db = new AppDatabase(context);
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected Messages doInBackground(Void... v) {
-		Messages messages = null;
+	protected MessageLoaderResult doInBackground(MessageLoaderParam param) {
 		try {
-			switch (action) {
-				case DB:
-					messages = db.getMessages();
+			switch (param.mode) {
+				case MessageLoaderParam.DATABASE:
+					Messages messages = db.getMessages();
 					if (messages.isEmpty()) {
 						messages = connection.getDirectmessages("");
 						// merge online messages with offline messages
 						db.saveMessages(messages);
 						messages = db.getMessages();
 					}
-					return messages;
+					return new MessageLoaderResult(MessageLoaderResult.DATABASE, param.id, messages, null);
 
-				case LOAD:
-					messages = connection.getDirectmessages(cursor);
+				case MessageLoaderParam.ONLINE:
+					messages = connection.getDirectmessages(param.cursor);
 					// merge online messages with offline messages
 					db.saveMessages(messages);
-					return db.getMessages();
+					messages = db.getMessages();
+					return new MessageLoaderResult(MessageLoaderResult.ONLINE, param.id, messages, null);
 
-				case DEL:
-					connection.deleteDirectmessage(messageId);
-					db.removeMessage(messageId);
-					break;
+				case MessageLoaderParam.DELETE:
+					connection.deleteDirectmessage(param.id);
+					db.removeMessage(param.id);
+					return new MessageLoaderResult(MessageLoaderResult.DELETE, param.id, null, null);
 			}
 		} catch (ConnectionException exception) {
-			this.exception = exception;
-			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-				db.removeMessage(messageId);
-			}
+			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND)
+				db.removeMessage(param.id);
+			return new MessageLoaderResult(MessageLoaderResult.ERROR, param.id, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
-			messageId = -1L; // remove ID of the message
 		}
-		return messages;
+		return new MessageLoaderResult(MessageLoaderResult.ERROR, param.id, null, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(@Nullable Messages messages) {
-		MessageFragment fragment = weakRef.get();
-		if (fragment != null) {
-			switch (action) {
-				case DB:
-				case LOAD:
-					if (messages != null) {
-						fragment.setData(messages);
-					}
-					if (messages == null || exception != null) {
-						fragment.onError(exception, messageId);
-					}
-					break;
+	public static class MessageLoaderParam {
 
-				case DEL:
-					if (exception != null || messageId != -1L) {
-						fragment.onError(exception, messageId);
-					} else {
-						fragment.removeItem(messageId);
-					}
-					break;
-			}
+		public static final int DATABASE = 1;
+		public static final int ONLINE = 2;
+		public static final int DELETE = 3;
+
+		public final int mode;
+		public final long id;
+		public final String cursor;
+
+		public MessageLoaderParam(int mode, long id, String cursor) {
+			this.mode = mode;
+			this.id = id;
+			this.cursor = cursor;
+		}
+	}
+
+
+	public static class MessageLoaderResult {
+
+		public static final int ERROR = -1;
+		public static final int DATABASE = 4;
+		public static final int ONLINE = 5;
+		public static final int DELETE = 6;
+
+		public final int mode;
+		public final long id;
+		@Nullable
+		public final Messages messages;
+		@Nullable
+		public final ConnectionException exception;
+
+		MessageLoaderResult(int mode, long id, @Nullable Messages messages, @Nullable ConnectionException exception) {
+			this.mode = mode;
+			this.id = id;
+			this.messages = messages;
+			this.exception = exception;
 		}
 	}
 }

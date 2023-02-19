@@ -1,15 +1,16 @@
 package org.nuclearfog.twidda.backend.async;
 
-import android.os.AsyncTask;
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.ui.activities.StatusEditor;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Background task for posting a status
@@ -17,30 +18,23 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see StatusEditor
  */
-public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Boolean> {
+public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.StatusUpdateResult> {
 
 	private Connection connection;
-	private ConnectionException exception;
-	private WeakReference<StatusEditor> weakRef;
 
 	/**
-	 * initialize task
-	 *
-	 * @param activity Activity context
 	 */
-	public StatusUpdater(StatusEditor activity) {
-		super();
-		connection = ConnectionManager.get(activity);
-		weakRef = new WeakReference<>(activity);
+	public StatusUpdater(Context context) {
+		connection = ConnectionManager.get(context);
 	}
 
 
+	@NonNull
 	@Override
-	protected Boolean doInBackground(StatusUpdate... statusUpdates) {
-		StatusUpdate statusUpdate = statusUpdates[0];
+	protected StatusUpdateResult doInBackground(StatusUpdate update) {
 		try {
 			// upload media first
-			MediaStatus[] mediaUpdates = statusUpdate.getMediaUpdates();
+			MediaStatus[] mediaUpdates = update.getMediaUpdates();
 			long[] mediaIds = new long[mediaUpdates.length];
 			for (int pos = 0; pos < mediaUpdates.length; pos++) {
 				// upload media file and save media ID
@@ -48,30 +42,28 @@ public class StatusUpdater extends AsyncTask<StatusUpdate, Void, Boolean> {
 			}
 			// upload status
 			if (!isCancelled()) {
-				connection.uploadStatus(statusUpdate, mediaIds);
+				connection.uploadStatus(update, mediaIds);
 			}
-			return true;
+			return new StatusUpdateResult(true, null);
 		} catch (ConnectionException exception) {
-			this.exception = exception;
+			return new StatusUpdateResult(false, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			// close inputstreams
-			statusUpdate.close();
+			update.close();
 		}
-		return false;
+		return new StatusUpdateResult(false, null);
 	}
 
 
-	@Override
-	protected void onPostExecute(Boolean success) {
-		StatusEditor activity = weakRef.get();
-		if (activity != null) {
-			if (success) {
-				activity.onSuccess();
-			} else {
-				activity.onError(exception);
-			}
+	public static class StatusUpdateResult {
+
+		public final boolean success;
+		public final ConnectionException exception;
+
+		StatusUpdateResult(boolean success, ConnectionException exception) {
+			this.success = success;
+			this.exception = exception;
 		}
 	}
 }

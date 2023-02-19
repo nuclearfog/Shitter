@@ -53,29 +53,29 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		super.onStart();
 		if (loginTask == null) {
 			setRefresh(true);
-			load(AccountLoader.MODE_LOAD);
+			load(AccountParameter.LOAD);
 		}
 	}
 
 
 	@Override
 	public void onDestroy() {
-		if (loginTask != null && !loginTask.idle())
-			loginTask.kill();
+		if (loginTask != null && !loginTask.isIdle())
+			loginTask.cancel();
 		super.onDestroy();
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(AccountLoader.MODE_LOAD);
+		load(AccountParameter.LOAD);
 	}
 
 
 	@Override
 	protected void onReset() {
 		setRefresh(true);
-		load(AccountLoader.MODE_LOAD);
+		load(AccountParameter.LOAD);
 	}
 
 
@@ -104,26 +104,26 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
 		if (type == ConfirmDialog.REMOVE_ACCOUNT) {
-			load(AccountLoader.MODE_DELETE);
+			load(AccountParameter.DELETE);
 		}
 	}
 
 
 	@Override
-	public void onResult(AccountResult res) {
-		switch(res.mode) {
-			case AccountLoader.MODE_LOAD:
-				if (res.accounts != null) {
-					adapter.replaceItems(res.accounts);
+	public void onResult(AccountResult result) {
+		switch(result.mode) {
+			case AccountResult.LOAD:
+				if (result.accounts != null) {
+					adapter.replaceItems(result.accounts);
 					setRefresh(false);
 				} else {
 					Toast.makeText(requireContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
 				}
 				break;
 
-			case AccountLoader.MODE_DELETE:
-				if (res.id > 0)
-					adapter.removeItem(res.id);
+			case AccountResult.DELETE:
+				if (result.id > 0)
+					adapter.removeItem(result.id);
 				break;
 		}
 	}

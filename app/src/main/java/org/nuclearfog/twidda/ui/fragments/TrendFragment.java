@@ -71,8 +71,8 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 	@Override
 	public void onDestroy() {
-		if (trendTask != null && !trendTask.idle())
-			trendTask.kill();
+		if (trendTask != null && !trendTask.isIdle())
+			trendTask.cancel();
 		super.onDestroy();
 	}
 
@@ -97,12 +97,12 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 
 	@Override
-	public void onResult(TrendResult res) {
+	public void onResult(TrendResult result) {
 		setRefresh(false);
-		if (res.trends != null) {
-			adapter.replaceItems(res.trends);
+		if (result.trends != null) {
+			adapter.replaceItems(result.trends);
 		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 			setRefresh(false);
 		}

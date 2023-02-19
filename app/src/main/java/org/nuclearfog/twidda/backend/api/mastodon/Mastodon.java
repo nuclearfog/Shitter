@@ -293,7 +293,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Relation getUserRelationship(long id) throws MastodonException {
+	public MastodonRelation getUserRelationship(long id) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("id[]=" + id);
 		try {
@@ -301,7 +301,7 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONArray(body.string());
-				return new MastodonRelation(array.getJSONObject(0), settings.getLogin().getId());
+				return new MastodonRelation(array.getJSONObject(0));
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
@@ -311,52 +311,76 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public void followUser(long id) throws MastodonException {
+	public Relation followUser(long id) throws MastodonException {
 		createPost(ENDPOINT_ACCOUNTS + id + "/follow", new ArrayList<>());
+		MastodonRelation relation = getUserRelationship(id);
+		relation.setFollowing(true);
+		return relation;
 	}
 
 
 	@Override
-	public void unfollowUser(long id) throws MastodonException {
+	public Relation unfollowUser(long id) throws MastodonException {
 		createPost(ENDPOINT_ACCOUNTS + id + "/unfollow", new ArrayList<>());
+		MastodonRelation relation = getUserRelationship(id);
+		relation.setFollowing(false);
+		return relation;
 	}
 
 
 	@Override
-	public void blockUser(long id) throws MastodonException {
+	public Relation blockUser(long id) throws MastodonException {
 		createPost(ENDPOINT_ACCOUNTS + id + "/block", new ArrayList<>());
+		MastodonRelation relation = getUserRelationship(id);
+		relation.setBlocked(true);
+		return relation;
 	}
 
 
 	@Override
-	public void blockUser(String name) throws MastodonException {
+	public Relation blockUser(String name) throws MastodonException {
 		User user = showUser(name);
 		blockUser(user.getId());
+		MastodonRelation relation = getUserRelationship(user.getId());
+		relation.setBlocked(true);
+		return relation;
 	}
 
 
 	@Override
-	public void unblockUser(long id) throws MastodonException {
+	public Relation unblockUser(long id) throws MastodonException {
 		createPost(ENDPOINT_ACCOUNTS + id + "/unblock", new ArrayList<>());
+		MastodonRelation relation = getUserRelationship(id);
+		relation.setBlocked(false);
+		return relation;
 	}
 
 
 	@Override
-	public void muteUser(long id) throws MastodonException {
+	public Relation muteUser(long id) throws MastodonException {
 		createPost(ENDPOINT_ACCOUNTS + id + "/mute", new ArrayList<>());
+		MastodonRelation relation = getUserRelationship(id);
+		relation.setMuted(true);
+		return relation;
 	}
 
 
 	@Override
-	public void muteUser(String name) throws MastodonException {
+	public Relation muteUser(String name) throws MastodonException {
 		User user = showUser(name);
 		muteUser(user.getId());
+		MastodonRelation relation = getUserRelationship(user.getId());
+		relation.setMuted(false);
+		return relation;
 	}
 
 
 	@Override
-	public void unmuteUser(long id) throws MastodonException {
+	public Relation unmuteUser(long id) throws MastodonException {
 		createPost(ENDPOINT_ACCOUNTS + id + "/unmute", new ArrayList<>());
+		MastodonRelation relation = getUserRelationship(id);
+		relation.setMuted(false);
+		return relation;
 	}
 
 
@@ -491,42 +515,48 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Status favoriteStatus(long id) throws MastodonException {
-		return postStatus(ENDPOINT_STATUS + id + "/favourite", new ArrayList<>());
+		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/favourite", new ArrayList<>());
+		status.setFavorite(true);
+		return status;
 	}
 
 
 	@Override
 	public Status unfavoriteStatus(long id) throws MastodonException {
 		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unfavourite", new ArrayList<>());
-		status.unfavorite();
+		status.setFavorite(false);
 		return status;
 	}
 
 
 	@Override
 	public Status repostStatus(long id) throws MastodonException {
-		return postStatus(ENDPOINT_STATUS + id + "/reblog", new ArrayList<>());
+		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/reblog", new ArrayList<>());
+		status.setRepost(true);
+		return status;
 	}
 
 
 	@Override
 	public Status removeRepost(long id) throws MastodonException {
 		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unreblog", new ArrayList<>());
-		status.unreblog();
+		status.setRepost(false);
 		return status;
 	}
 
 
 	@Override
 	public Status bookmarkStatus(long id) throws ConnectionException {
-		return postStatus(ENDPOINT_STATUS + id + "/bookmark", new ArrayList<>());
+		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/bookmark", new ArrayList<>());
+		status.setBookmark(true);
+		return status;
 	}
 
 
 	@Override
 	public Status removeBookmark(long id) throws ConnectionException {
 		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unbookmark", new ArrayList<>());
-		status.removeBookmark();
+		status.setBookmark(false);
 		return status;
 	}
 

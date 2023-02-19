@@ -155,8 +155,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
-		if (editorAsync != null && !editorAsync.idle())
-			editorAsync.kill();
+		if (editorAsync != null && !editorAsync.isIdle())
+			editorAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -252,15 +252,15 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 
 	@Override
-	public void onResult(UserUpdateResult res) {
-		if (res.user != null) {
+	public void onResult(UserUpdateResult result) {
+		if (result.user != null) {
 			Intent data = new Intent();
-			data.putExtra(KEY_UPDATED_PROFILE, res.user);
+			data.putExtra(KEY_UPDATED_PROFILE, result.user);
 			Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
 			setResult(RETURN_PROFILE_CHANGED, data);
 			finish();
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, res.exception);
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
 		}
@@ -284,7 +284,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	 * update user information
 	 */
 	private void updateUser() {
-		if (editorAsync == null || editorAsync.idle()) {
+		if (editorAsync == null || editorAsync.isIdle()) {
 			String username = this.username.getText().toString();
 			String userLink = profileUrl.getText().toString();
 			String userLoc = profileLocation.getText().toString();
@@ -295,7 +295,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			} else if (!userLink.isEmpty() && !Patterns.WEB_URL.matcher(userLink).matches()) {
 				String errMsg = getString(R.string.error_invalid_link);
 				profileUrl.setError(errMsg);
-			} else if (editorAsync == null || editorAsync.idle()) {
+			} else if (editorAsync == null || editorAsync.isIdle()) {
 				holder.setProfile(username, userLink, userBio, userLoc);
 				if (holder.prepare(getContentResolver())) {
 					editorAsync = new UserUpdater(this);

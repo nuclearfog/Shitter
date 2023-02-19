@@ -156,8 +156,8 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public void onDestroy() {
-		if (statusAsync != null && !statusAsync.idle()) {
-			statusAsync.kill();
+		if (statusAsync != null && !statusAsync.isIdle()) {
+			statusAsync.cancel();
 		}
 		super.onDestroy();
 	}
@@ -202,7 +202,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public boolean onPlaceholderClick(long minId, long maxId, int pos) {
-		if (statusAsync != null && statusAsync.idle()) {
+		if (statusAsync != null && statusAsync.isIdle()) {
 			load(minId, maxId, pos);
 			return true;
 		}
@@ -211,16 +211,16 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 
 	@Override
-	public void onResult(StatusResult res) {
+	public void onResult(StatusResult result) {
 		setRefresh(false);
-		if (res.statuses != null) {
-			if (res.position == CLEAR_LIST) {
-				adapter.replaceItems(res.statuses);
+		if (result.statuses != null) {
+			if (result.position == CLEAR_LIST) {
+				adapter.replaceItems(result.statuses);
 			} else {
-				adapter.addItems(res.statuses, res.position);
+				adapter.addItems(result.statuses, result.position);
 			}
 		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), res.exception);
+			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 			setRefresh(false);

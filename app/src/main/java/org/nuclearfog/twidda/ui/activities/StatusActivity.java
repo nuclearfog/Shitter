@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.OnClickListener;
 import static android.view.View.OnLongClickListener;
@@ -53,11 +52,14 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter.OnCardClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusAction;
+import org.nuclearfog.twidda.backend.async.StatusAction.StatusParam;
+import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -85,7 +87,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class StatusActivity extends AppCompatActivity implements OnClickListener, OnScrollChangeListener,
+public class StatusActivity extends AppCompatActivity implements OnClickListener, OnScrollChangeListener, AsyncCallback<StatusResult>,
 		OnLongClickListener, OnTagClickListener, OnConfirmListener, OnCardClickListener {
 
 	/**
@@ -211,7 +213,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				replyUsername = status.getAuthor().getScreenname();
 			}
 		} else {
-			id = getIntent().getLongExtra(KEY_STATUS_ID, -1);
+			id = getIntent().getLongExtra(KEY_STATUS_ID, -1L);
 		}
 		// initialize status reply list
 		Bundle param = new Bundle();
@@ -265,16 +267,17 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	protected void onStart() {
 		super.onStart();
 		if (statusAsync == null) {
+			statusAsync = new StatusAction(this);
 			// print status object and get and update it
 			if (status != null) {
-				statusAsync = new StatusAction(this, StatusAction.LOAD_ONLINE);
-				statusAsync.execute(status.getId());
 				setStatus(status);
+				StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
+				statusAsync.execute(param, this);
 			}
 			// Load status from database first if no status is defined
 			else {
-				statusAsync = new StatusAction(this, StatusAction.LOAD_DATABASE);
-				statusAsync.execute(id);
+				StatusParam param = new StatusParam(StatusParam.ONLINE, id);
+				statusAsync.execute(param, this);
 			}
 		}
 	}
@@ -282,8 +285,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	protected void onDestroy() {
-		if (statusAsync != null && statusAsync.getStatus() == RUNNING)
-			statusAsync.cancel(true);
+		if (statusAsync != null && !statusAsync.isIdle())
+			statusAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -370,12 +373,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// hide status
 		else if (item.getItemId() == R.id.menu_status_hide) {
+			StatusParam param;
 			if (hidden) {
-				statusAsync = new StatusAction(this, StatusAction.UNHIDE);
+				param = new StatusParam(StatusParam.UNHIDE, status.getId());
 			} else {
-				statusAsync = new StatusAction(this, StatusAction.HIDE);
+				param = new StatusParam(StatusParam.HIDE, status.getId());
 			}
-			statusAsync.execute(this.status.getId());
+			statusAsync = new StatusAction(this);
+			statusAsync.execute(param, this);
 		}
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
@@ -490,30 +495,30 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onLongClick(View v) {
-		if (status != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
+		if (status != null && (statusAsync == null || statusAsync.isIdle())) {
 			// repost this status
 			if (v.getId() == R.id.page_status_repost) {
+				StatusParam param;
 				if (status.isReposted()) {
-					statusAsync = new StatusAction(this, StatusAction.REMOVE_REPOST);
+					param = new StatusParam(StatusParam.UNREPOST, status.getId());
 				} else {
-					statusAsync = new StatusAction(this, StatusAction.REPOST);
+					param = new StatusParam(StatusParam.REPOST, status.getId());
 				}
-				if (status.getEmbeddedStatus() != null) {
-					statusAsync.execute(status.getId(), status.getEmbeddedStatus().getRepostId());
-				} else {
-					statusAsync.execute(status.getId());
-				}
+				statusAsync = new StatusAction(this);
+				statusAsync.execute(param, this);
 				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
 			// favorite this status
 			else if (v.getId() == R.id.page_status_favorite) {
+				StatusParam param;
 				if (status.isFavorited()) {
-					statusAsync = new StatusAction(this, StatusAction.UNFAVORITE);
+					param = new StatusParam(StatusParam.UNFAVORITE, status.getId());
 				} else {
-					statusAsync = new StatusAction(this, StatusAction.FAVORITE);
+					param = new StatusParam(StatusParam.FAVORITE, status.getId());
 				}
-				statusAsync.execute(status.getId());
+				statusAsync = new StatusAction(this);
+				statusAsync.execute(param, this);
 				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
@@ -544,12 +549,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// bookmark status
 			else if (v.getId() == R.id.page_status_bookmark) {
+				StatusParam param;
 				if (status.isBookmarked()) {
-					statusAsync = new StatusAction(this, StatusAction.UNBOOKMARK);
+					param = new StatusParam(StatusParam.UNBOOKMARK, status.getId());
 				} else {
-					statusAsync = new StatusAction(this, StatusAction.BOOKMARK);
+					param = new StatusParam(StatusParam.BOOKMARK, status.getId());
 				}
-				statusAsync.execute(status.getId());
+				statusAsync = new StatusAction(this);
+				statusAsync.execute(param, this);
 				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
 				return true;
 			}
@@ -577,8 +584,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// delete status
 			if (type == ConfirmDialog.DELETE_STATUS) {
-				statusAsync = new StatusAction(this, StatusAction.DELETE);
-				statusAsync.execute(status.getId(), status.getRepostId());
+				StatusParam param = new StatusParam(StatusParam.DELETE, status.getId());
+				statusAsync = new StatusAction(this);
+				statusAsync.execute(param, this);
 			}
 			// confirm playing video without proxy
 			else if (type == ConfirmDialog.PROXY_CONFIRM) {
@@ -810,57 +818,62 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 	}
 
-	/**
-	 * called after a status action
-	 *
-	 * @param action action type
-	 */
-	public void OnSuccess(int action) {
-		switch (action) {
-			case StatusAction.REPOST:
+
+	@Override
+	public void onResult(StatusResult result) {
+		if (result.status != null) {
+			setStatus(result.status);
+		}
+		switch (result.mode) {
+			case StatusResult.DATABASE: // update database status
+				StatusParam param = new StatusParam(StatusParam.ONLINE, id);
+				statusAsync.execute(param, this);
+				break;
+
+			case StatusResult.REPOST:
 				Toast.makeText(getApplicationContext(), R.string.info_tweet_retweeted, LENGTH_SHORT).show();
 				break;
 
-			case StatusAction.REMOVE_REPOST:
+			case StatusResult.UNREPOST:
 				Toast.makeText(getApplicationContext(), R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
 				// todo remove old retweet from list fragment
 				break;
 
-			case StatusAction.FAVORITE:
+			case StatusResult.FAVORITE:
 				if (settings.likeEnabled())
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_liked, LENGTH_SHORT).show();
 				else
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_favored, LENGTH_SHORT).show();
 				break;
 
-			case StatusAction.UNFAVORITE:
+			case StatusResult.UNFAVORITE:
 				if (settings.likeEnabled())
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_unliked, LENGTH_SHORT).show();
 				else
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_unfavored, LENGTH_SHORT).show();
 				break;
 
-			case StatusAction.BOOKMARK:
+			case StatusResult.BOOKMARK:
 				Toast.makeText(getApplicationContext(), R.string.info_tweet_bookmarked, LENGTH_SHORT).show();
 				break;
 
-			case StatusAction.UNBOOKMARK:
+			case StatusResult.UNBOOKMARK:
 				Toast.makeText(getApplicationContext(), R.string.info_tweet_unbookmarked, LENGTH_SHORT).show();
 				break;
 
-			case StatusAction.HIDE:
+			case StatusResult.HIDE:
 				hidden = true;
 				invalidateOptionsMenu();
 				Toast.makeText(getApplicationContext(), R.string.info_reply_hidden, LENGTH_SHORT).show();
 				break;
 
-			case StatusAction.UNHIDE:
+			case StatusResult.UNHIDE:
 				hidden = false;
 				invalidateOptionsMenu();
 				Toast.makeText(getApplicationContext(), R.string.info_reply_unhidden, LENGTH_SHORT).show();
 				break;
 
-			case StatusAction.DELETE:
+			case StatusResult.DELETE:
 				if (status != null) {
 					Toast.makeText(getApplicationContext(), R.string.info_tweet_removed, LENGTH_SHORT).show();
 					Intent returnData = new Intent();
@@ -872,25 +885,20 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					finish();
 				}
 				break;
-		}
-	}
 
-	/**
-	 * called when an error occurs
-	 *
-	 * @param exception Error information
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-		if (status == null) {
-			finish();
-		} else if (exception != null && exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-			// Mark status as removed, so it can be removed from the list
-			Intent returnData = new Intent();
-			returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
-			setResult(RETURN_STATUS_REMOVED, returnData);
-			finish();
+			case StatusResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				if (status == null) {
+					finish();
+				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+					// Mark status as removed, so it can be removed from the list
+					Intent returnData = new Intent();
+					returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+					setResult(RETURN_STATUS_REMOVED, returnData);
+					finish();
+				}
+				break;
 		}
 	}
 }

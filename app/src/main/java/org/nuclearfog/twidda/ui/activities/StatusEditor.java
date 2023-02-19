@@ -1,12 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.OnClickListener;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,10 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
+import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -46,7 +41,8 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
  *
  * @author nuclearfog
  */
-public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener, OnMediaClickListener, TextWatcher {
+public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener,
+		OnMediaClickListener, AsyncCallback<StatusUpdateResult>, TextWatcher {
 
 	/**
 	 * key to add a statusd ID to reply
@@ -99,7 +95,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		AppStyles.setEditorTheme(root, background);
 
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
-			locationBtn.setVisibility(GONE);
+			locationBtn.setVisibility(View.GONE);
 		}
 		long inReplyId = getIntent().getLongExtra(KEY_STATUS_EDITOR_REPLYID, 0);
 		String prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
@@ -128,11 +124,11 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		super.onResume();
 		if (settings.getLogin().getConfiguration().locationSupported()) {
 			if (isLocating()) {
-				locationPending.setVisibility(VISIBLE);
-				locationBtn.setVisibility(INVISIBLE);
+				locationPending.setVisibility(View.VISIBLE);
+				locationBtn.setVisibility(View.INVISIBLE);
 			} else {
-				locationPending.setVisibility(INVISIBLE);
-				locationBtn.setVisibility(VISIBLE);
+				locationPending.setVisibility(View.INVISIBLE);
+				locationBtn.setVisibility(View.VISIBLE);
 			}
 		}
 	}
@@ -141,8 +137,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
-		if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
-			uploaderAsync.cancel(true);
+		if (uploaderAsync != null && !uploaderAsync.isIdle())
+			uploaderAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -159,14 +155,14 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (v.getId() == R.id.popup_status_send) {
 			// check if status is empty
 			if (statusUpdate.isEmpty()) {
-				Toast.makeText(getApplicationContext(), R.string.error_empty_tweet, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_empty_tweet, Toast.LENGTH_SHORT).show();
 			}
 			// check if GPS location is pending
 			else if (isLocating()) {
-				Toast.makeText(getApplicationContext(), R.string.info_location_pending, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_location_pending, Toast.LENGTH_SHORT).show();
 			}
 			// check if gps locating is not pending
-			else if (uploaderAsync == null || uploaderAsync.getStatus() != RUNNING) {
+			else if (uploaderAsync == null || uploaderAsync.isIdle()) {
 				updateStatus();
 			}
 		}
@@ -186,8 +182,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		}
 		// add location to the status
 		else if (v.getId() == R.id.popup_status_add_location) {
-			locationPending.setVisibility(VISIBLE);
-			locationBtn.setVisibility(INVISIBLE);
+			locationPending.setVisibility(View.VISIBLE);
+			locationBtn.setVisibility(View.INVISIBLE);
 			getLocation();
 		}
 	}
@@ -213,12 +209,12 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	protected void onAttachLocation(@Nullable Location location) {
 		if (location != null) {
 			statusUpdate.addLocation(location);
-			Toast.makeText(getApplicationContext(), R.string.info_gps_attached, LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.info_gps_attached, Toast.LENGTH_LONG).show();
 		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_gps, LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.error_gps, Toast.LENGTH_LONG).show();
 		}
-		locationPending.setVisibility(INVISIBLE);
-		locationBtn.setVisibility(VISIBLE);
+		locationPending.setVisibility(View.INVISIBLE);
+		locationBtn.setVisibility(View.VISIBLE);
 	}
 
 
@@ -239,19 +235,19 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				break;
 
 			case StatusUpdate.MEDIA_ERROR:
-				Toast.makeText(getApplicationContext(), R.string.error_adding_media, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 				break;
 		}
 		if (statusUpdate.mediaLimitReached()) {
-			mediaBtn.setVisibility(GONE);
+			mediaBtn.setVisibility(View.GONE);
 		}
 	}
 
 
 	@Override
 	public void stopProgress() {
-		if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING) {
-			uploaderAsync.cancel(true);
+		if (uploaderAsync != null && !uploaderAsync.isIdle()) {
+			uploaderAsync.cancel();
 		}
 	}
 
@@ -289,21 +285,17 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		}
 	}
 
-	/**
-	 * called if status was updated successfully
-	 */
-	public void onSuccess() {
-		Toast.makeText(getApplicationContext(), R.string.info_tweet_sent, LENGTH_LONG).show();
-		finish();
-	}
 
-	/**
-	 * Show confirmation dialog if an error occurs while sending status
-	 */
-	public void onError(@Nullable ConnectionException exception) {
-		String message = ErrorHandler.getErrorMessage(this, exception);
-		confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
-		loadingCircle.dismiss();
+	@Override
+	public void onResult(StatusUpdateResult result) {
+		if (result.success) {
+			Toast.makeText(getApplicationContext(), R.string.info_tweet_sent, Toast.LENGTH_LONG).show();
+			finish();
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
+			loadingCircle.dismiss();
+		}
 	}
 
 	/**
@@ -325,11 +317,11 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (statusUpdate.prepare(getContentResolver())) {
 			// send status
 			uploaderAsync = new StatusUpdater(this);
-			uploaderAsync.execute(statusUpdate);
+			uploaderAsync.execute(statusUpdate, this);
 			// show progress dialog
 			loadingCircle.show();
 		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_media_init, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();
 		}
 	}
 }
