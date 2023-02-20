@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileEditor;
 
 /**
- * Background task for loading and editing profile information
+ * Async loader to update user profile
  *
  * @author nuclearfog
  * @see ProfileEditor
@@ -25,7 +25,9 @@ public class UserUpdater extends AsyncExecutor<ProfileUpdate, UserUpdater.UserUp
 	private Connection connection;
 	private AppDatabase db;
 
-
+	/**
+	 *
+	 */
 	public UserUpdater(Context context) {
 		db = new AppDatabase(context);
 		connection = ConnectionManager.get(context);
@@ -35,24 +37,25 @@ public class UserUpdater extends AsyncExecutor<ProfileUpdate, UserUpdater.UserUp
 	@NonNull
 	@Override
 	protected UserUpdateResult doInBackground(ProfileUpdate param) {
-		User user = null;
 		try {
-			user = connection.updateProfile(param);
-			// save new user information
+			User user = connection.updateProfile(param);
 			db.saveUser(user);
+			return new UserUpdateResult(user, null);
 		} catch (ConnectionException exception) {
 			return new UserUpdateResult(null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			// close image streams
 			param.close();
 		}
-		return new UserUpdateResult(user, null);
+		return new UserUpdateResult(null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class UserUpdateResult {
+
 		@Nullable
 		public final User user;
 		@Nullable

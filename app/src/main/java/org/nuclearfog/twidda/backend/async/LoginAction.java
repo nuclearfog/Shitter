@@ -28,7 +28,9 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 	private GlobalSettings settings;
 	private Connection connection;
 
-
+	/**
+	 *
+	 */
 	public LoginAction(Context context, Configuration configuration) {
 		database = new AppDatabase(context);
 		settings = GlobalSettings.getInstance(context);
@@ -66,17 +68,12 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		return new LoginResult(LoginResult.MODE_ERROR, null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class LoginParam {
 
-		/**
-		 * request login page
-		 */
 		public static final int MODE_REQUEST = 1;
-
-		/**
-		 * request login access
-		 */
 		public static final int MODE_LOGIN = 2;
 
 		public final ConnectionConfig config;
@@ -94,20 +91,20 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class LoginResult {
 
+		public static final int MODE_ERROR = -1;
 		public static final int MODE_REQUEST = 3;
-
 		public static final int MODE_LOGIN = 4;
 
-		public static final int MODE_ERROR = -1;
-
+		public final int mode;
 		@Nullable
 		public final ConnectionException exception;
 		@Nullable
 		public final String redirectUrl;
-		public final int mode;
 
 		LoginResult(int mode, @Nullable String redirectUrl, @Nullable ConnectionException exception) {
 			this.redirectUrl = redirectUrl;

@@ -5,6 +5,7 @@ import static org.nuclearfog.twidda.ui.fragments.StatusFragment.CLEAR_LIST;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -24,55 +25,12 @@ import java.util.List;
  */
 public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, StatusLoader.StatusResult> {
 
-	/**
-	 * home timeline
-	 */
-	public static final int HOME = 2;
-
-	/**
-	 * user timeline
-	 */
-	public static final int USER = 3;
-
-	/**
-	 * favorite timeline
-	 */
-	public static final int FAVORIT = 4;
-
-	/**
-	 * reply timeline
-	 */
-	public static final int REPLIES = 5;
-
-	/**
-	 * reply timeline (offline database)
-	 */
-	public static final int REPLIES_OFFLINE = 6;
-
-	/**
-	 * search timeline
-	 */
-	public static final int SEARCH = 7;
-
-	/**
-	 * userlist timeline
-	 */
-	public static final int USERLIST = 8;
-
-	/**
-	 * public timeline
-	 */
-	public static final int PUBLIC = 9;
-
-	/**
-	 * bookmark timeline
-	 */
-	public static final int BOOKMARKS = 10;
-
 	private Connection connection;
 	private AppDatabase db;
 
-
+	/**
+	 *
+	 */
 	public StatusLoader(Context context) {
 		db = new AppDatabase(context);
 		connection = ConnectionManager.get(context);
@@ -86,7 +44,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 		int position = request.pos;
 		try {
 			switch (request.type) {
-				case HOME:
+				case StatusParameter.HOME:
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getHomeTimeline();
 						if (statuses.isEmpty()) {
@@ -101,7 +59,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					}
 					break;
 
-				case USER:
+				case StatusParameter.USER:
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getUserTimeline(request.id);
 						if (statuses.isEmpty()) {
@@ -116,7 +74,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					}
 					break;
 
-				case FAVORIT:
+				case StatusParameter.FAVORIT:
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getUserFavorites(request.id);
 						if (statuses.isEmpty()) {
@@ -132,7 +90,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					}
 					break;
 
-				case BOOKMARKS:
+				case StatusParameter.BOOKMARKS:
 					if (request.id > 0L) {
 						if (request.minId == 0L && request.maxId == 0L) {
 							statuses = db.getUserBookmarks(request.id);
@@ -149,11 +107,11 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					}
 					break;
 
-				case REPLIES_OFFLINE:
+				case StatusParameter.REPLIES_OFFLINE:
 					statuses = db.getReplies(request.id);
 					break;
 
-				case REPLIES:
+				case StatusParameter.REPLIES:
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getReplies(request.id);
 						if (statuses.isEmpty()) {
@@ -172,15 +130,15 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					}
 					break;
 
-				case SEARCH:
+				case StatusParameter.SEARCH:
 					statuses = connection.searchStatuses(request.search, request.minId, request.maxId);
 					break;
 
-				case USERLIST:
+				case StatusParameter.USERLIST:
 					statuses = connection.getUserlistStatuses(request.id, request.minId, request.maxId);
 					break;
 
-				case PUBLIC:
+				case StatusParameter.PUBLIC:
 					statuses = connection.getPublicTimeline(request.minId, request.maxId);
 					break;
 			}
@@ -192,8 +150,21 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 		return new StatusResult(statuses, position, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class StatusParameter {
+
+		public static final int HOME = 1;
+		public static final int USER = 2;
+		public static final int FAVORIT = 3;
+		public static final int REPLIES = 4;
+		public static final int REPLIES_OFFLINE = 5;
+		public static final int SEARCH = 6;
+		public static final int USERLIST = 7;
+		public static final int PUBLIC = 8;
+		public static final int BOOKMARKS = 9;
+
 		public final String search;
 		public final int type, pos;
 		public final long id, minId, maxId;
@@ -208,13 +179,18 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class StatusResult {
-		public final List<Status> statuses;
+
 		public final int position;
+		@Nullable
+		public final List<Status> statuses;
+		@Nullable
 		public final ConnectionException exception;
 
-		public StatusResult(List<Status> statuses, int position, ConnectionException exception) {
+		StatusResult(@Nullable List<Status> statuses, int position, @Nullable ConnectionException exception) {
 			this.statuses = statuses;
 			this.position = position;
 			this.exception = exception;

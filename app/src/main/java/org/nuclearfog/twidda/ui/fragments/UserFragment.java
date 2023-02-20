@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static org.nuclearfog.twidda.backend.async.UsersLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 
 import android.content.Intent;
@@ -168,14 +167,14 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	public void onStart() {
 		super.onStart();
 		if (userAsync == null) {
-			load(NO_CURSOR);
+			load(-1L);
 		}
 	}
 
 
 	@Override
 	protected void onReset() {
-		load(NO_CURSOR);
+		load(-1L);
 		setRefresh(true);
 	}
 
@@ -203,7 +202,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	protected void onReload() {
-		load(NO_CURSOR);
+		load(-1L);
 	}
 
 
@@ -262,61 +261,61 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	/**
 	 * load content into the list
 	 *
-	 * @param cursor cursor of the list or {@link UsersLoader#NO_CURSOR} if there is none
+	 * @param cursor cursor of the list
 	 */
 	private void load(long cursor) {
 		UserParam param;
 		userAsync = new UsersLoader(requireContext());
 		switch (mode) {
 			case USER_FRAG_FOLLOWER:
-				param = new UserParam(UsersLoader.FOLLOWS, id, cursor, search);
+				param = new UserParam(UserParam.FOLLOWS, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOWING:
-				param = new UserParam(UsersLoader.FRIENDS, id, cursor, search);
+				param = new UserParam(UserParam.FRIENDS, id, cursor, search);
 				break;
 
 			case USER_FRAG_REPOST:
-				param = new UserParam(UsersLoader.REPOST, id, cursor, search);
+				param = new UserParam(UserParam.REPOST, id, cursor, search);
 				break;
 
 			case USER_FRAG_FAVORIT:
-				param = new UserParam(UsersLoader.FAVORIT, id, cursor, search);
+				param = new UserParam(UserParam.FAVORIT, id, cursor, search);
 				break;
 
 			case USER_FRAG_SEARCH:
-				param = new UserParam(UsersLoader.SEARCH, id, cursor, search);
+				param = new UserParam(UserParam.SEARCH, id, cursor, search);
 				break;
 
 			case USER_FRAG_LIST_SUBSCRIBER:
-				param = new UserParam(UsersLoader.SUBSCRIBER, id, cursor, search);
+				param = new UserParam(UserParam.SUBSCRIBER, id, cursor, search);
 				break;
 
 			case USER_FRAG_LIST_MEMBERS:
-				param = new UserParam(UsersLoader.LISTMEMBER, id, cursor, search);
+				param = new UserParam(UserParam.LISTMEMBER, id, cursor, search);
 				break;
 
 			case USER_FRAG_BLOCKED_USERS:
-				param = new UserParam(UsersLoader.BLOCK, id, cursor, search);
+				param = new UserParam(UserParam.BLOCK, id, cursor, search);
 				break;
 
 			case USER_FRAG_MUTED_USERS:
-				param = new UserParam(UsersLoader.MUTE, id, cursor, search);
+				param = new UserParam(UserParam.MUTE, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOW_OUTGOING:
-				param = new UserParam(UsersLoader.INCOMING_REQ, id, cursor, search);
+				param = new UserParam(UserParam.REQUEST_OUT, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOW_INCOMING:
-				param = new UserParam(UsersLoader.OUTGOING_REQ, id, cursor, search);
+				param = new UserParam(UserParam.REQUEST_IN, id, cursor, search);
 				break;
 
 			default:
 				return;
 		}
 		userAsync.execute(param, this);
-		if (cursor == NO_CURSOR) {
+		if (cursor == 0) {
 			setRefresh(true);
 		}
 	}

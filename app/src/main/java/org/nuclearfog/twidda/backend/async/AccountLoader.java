@@ -43,10 +43,12 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new AccountResult(request.mode, 0L, null);
+		return new AccountResult(AccountResult.ERROR, 0L, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class AccountParameter {
 
 		public static final int LOAD = 1;
@@ -61,9 +63,12 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class AccountResult {
 
+		public static final int ERROR = -1;
 		public static final int LOAD = 3;
 		public static final int DELETE = 4;
 

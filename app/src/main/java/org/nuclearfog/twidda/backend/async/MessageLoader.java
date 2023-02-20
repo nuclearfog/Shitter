@@ -41,13 +41,10 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 			switch (param.mode) {
 				case MessageLoaderParam.DATABASE:
 					Messages messages = db.getMessages();
-					if (messages.isEmpty()) {
-						messages = connection.getDirectmessages("");
-						// merge online messages with offline messages
-						db.saveMessages(messages);
-						messages = db.getMessages();
+					if (!messages.isEmpty()) {
+						return new MessageLoaderResult(MessageLoaderResult.DATABASE, param.id, messages, null);
 					}
-					return new MessageLoaderResult(MessageLoaderResult.DATABASE, param.id, messages, null);
+					// fall through
 
 				case MessageLoaderParam.ONLINE:
 					messages = connection.getDirectmessages(param.cursor);
@@ -71,7 +68,9 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 		return new MessageLoaderResult(MessageLoaderResult.ERROR, param.id, null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class MessageLoaderParam {
 
 		public static final int DATABASE = 1;
@@ -89,7 +88,9 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class MessageLoaderResult {
 
 		public static final int ERROR = -1;

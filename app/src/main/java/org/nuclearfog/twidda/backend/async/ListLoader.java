@@ -20,18 +20,6 @@ import org.nuclearfog.twidda.ui.fragments.UserListFragment;
  */
 public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoader.UserlistResult> {
 
-	public static final long NO_CURSOR = -1;
-
-	/**
-	 * load userlists of an user
-	 */
-	public static final int LOAD_USERLISTS = 1;
-
-	/**
-	 * load userlists the specified user is on
-	 */
-	public static final int LOAD_MEMBERSHIPS = 2;
-
 	private Connection connection;
 
 	/**
@@ -48,11 +36,11 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 		UserLists userlists = null;
 		try {
 			switch (param.type) {
-				case LOAD_USERLISTS:
+				case UserlistParam.LOAD_USERLISTS:
 					userlists = connection.getUserlistOwnerships(param.id, param.cursor);
 					break;
 
-				case LOAD_MEMBERSHIPS:
+				case UserlistParam.LOAD_MEMBERSHIPS:
 					userlists = connection.getUserlistMemberships(param.id, param.cursor);
 					break;
 			}
@@ -64,8 +52,13 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 		return new UserlistResult(userlists, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class UserlistParam {
+
+		public static final int LOAD_USERLISTS = 1;
+		public static final int LOAD_MEMBERSHIPS = 2;
 
 		public final int type;
 		public final long id, cursor;
@@ -77,7 +70,9 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class UserlistResult {
 
 		@Nullable

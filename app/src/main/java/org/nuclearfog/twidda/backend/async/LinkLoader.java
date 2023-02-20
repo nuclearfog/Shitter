@@ -35,7 +35,6 @@ import java.util.List;
  */
 public class LinkLoader extends AsyncExecutor<Uri, LinkLoader.LinkResult> {
 
-
 	private Connection connection;
 
 	/**
@@ -171,7 +170,7 @@ public class LinkLoader extends AsyncExecutor<Uri, LinkLoader.LinkResult> {
 		@Nullable
 		public final ConnectionException exception;
 
-		public LinkResult(@NonNull Bundle data, @Nullable Class<? extends Activity> activity) {
+		LinkResult(@NonNull Bundle data, @Nullable Class<? extends Activity> activity) {
 			this(data, activity, null);
 		}
 

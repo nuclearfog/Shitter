@@ -111,19 +111,21 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	public void onResult(AccountResult result) {
+		setRefresh(false);
 		switch(result.mode) {
 			case AccountResult.LOAD:
 				if (result.accounts != null) {
 					adapter.replaceItems(result.accounts);
-					setRefresh(false);
-				} else {
-					Toast.makeText(requireContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
 				}
 				break;
 
 			case AccountResult.DELETE:
 				if (result.id > 0)
 					adapter.removeItem(result.id);
+				break;
+
+			case AccountResult.ERROR:
+				Toast.makeText(requireContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
 				break;
 		}
 	}

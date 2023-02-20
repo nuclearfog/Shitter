@@ -49,7 +49,9 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 		return new ListUpdateResult(null, update.exists(), null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class ListUpdateResult {
 
 		public final boolean updated;

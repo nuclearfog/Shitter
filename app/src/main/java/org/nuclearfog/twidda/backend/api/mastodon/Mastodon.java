@@ -236,7 +236,7 @@ public class Mastodon implements Connection {
 	@Override
 	public Users getFollowing(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		if (cursor > 0)
+		if (cursor != -1L)
 			params.add("since_id=" + cursor);
 		return getUsers(ENDPOINT_ACCOUNTS + id + "/following", params);
 	}
@@ -245,7 +245,7 @@ public class Mastodon implements Connection {
 	@Override
 	public Users getFollower(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		if (cursor > 0)
+		if (cursor != -1L)
 			params.add("since_id=" + cursor);
 		return getUsers(ENDPOINT_ACCOUNTS + id + "/followers", params);
 	}
@@ -281,7 +281,6 @@ public class Mastodon implements Connection {
 	@Override
 	public Users getIncomingFollowRequests(long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-
 		return getUsers(ENDPOINT_INCOMIN_REQUESTS, params);
 	}
 
@@ -676,7 +675,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserLists getUserlistOwnerships(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		if (cursor > 0)
+		if (cursor != -1L)
 			params.add("since_id=" + cursor);
 		return getUserLists(ENDPOINT_USERLIST, params);
 	}
@@ -685,7 +684,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserLists getUserlistMemberships(long id, long cursor) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		if (cursor > 0)
+		if (cursor != -1L)
 			params.add("since_id=" + cursor);
 		return getUserLists(ENDPOINT_ACCOUNTS + id + "/lists", params);
 	}

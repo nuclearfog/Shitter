@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.async;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -43,8 +44,8 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 			// upload message and media ID
 			if (!isCancelled()) {
 				connection.sendDirectmessage(id, update.getMessage(), mediaId);
+				return new MessageUpdateResult(true, null);
 			}
-			return new MessageUpdateResult(true, null);
 		} catch (ConnectionException exception) {
 			return new MessageUpdateResult(false, exception);
 		} catch (Exception e) {
@@ -55,13 +56,16 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 		return new MessageUpdateResult(false, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class MessageUpdateResult {
 
 		public final boolean success;
+		@Nullable
 		public final ConnectionException exception;
 
-		public MessageUpdateResult(boolean success, ConnectionException exception) {
+		MessageUpdateResult(boolean success, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.success = success;
 		}

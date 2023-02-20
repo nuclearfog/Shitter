@@ -20,63 +20,6 @@ import org.nuclearfog.twidda.ui.fragments.UserFragment;
  */
 public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoader.UserResult> {
 
-	public static final long NO_CURSOR = -1;
-
-	/**
-	 * load follower list
-	 */
-	public static final int FOLLOWS = 1;
-
-	/**
-	 * load following list
-	 */
-	public static final int FRIENDS = 2;
-
-	/**
-	 * load users reposting a status
-	 */
-	public static final int REPOST = 3;
-
-	/**
-	 * load users favoriting a status
-	 */
-	public static final int FAVORIT = 4;
-
-	/**
-	 * list users of a search result
-	 */
-	public static final int SEARCH = 5;
-
-	/**
-	 * load users subscribing an userlist
-	 */
-	public static final int SUBSCRIBER = 6;
-
-	/**
-	 * load members of an userlist
-	 */
-	public static final int LISTMEMBER = 7;
-
-	/**
-	 * create a list of blocked users
-	 */
-	public static final int BLOCK = 8;
-
-	/**
-	 * create a list of muted users
-	 */
-	public static final int MUTE = 9;
-
-	/**
-	 * create a list with outgoing follow requests
-	 */
-	public static final int OUTGOING_REQ = 10;
-
-	/**
-	 * create a list with incoming follow requests
-	 */
-	public static final int INCOMING_REQ = 11;
-
 	private Connection connection;
 
 	/**
@@ -93,47 +36,47 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 		Users users = null;
 		try {
 			switch (param.type) {
-				case FOLLOWS:
+				case UserParam.FOLLOWS:
 					users = connection.getFollower(param.id, param.cursor);
 					break;
 
-				case FRIENDS:
+				case UserParam.FRIENDS:
 					users = connection.getFollowing(param.id, param.cursor);
 					break;
 
-				case REPOST:
+				case UserParam.REPOST:
 					users = connection.getRepostingUsers(param.id, param.cursor);
 					break;
 
-				case FAVORIT:
+				case UserParam.FAVORIT:
 					users = connection.getFavoritingUsers(param.id, param.cursor);
 					break;
 
-				case SEARCH:
+				case UserParam.SEARCH:
 					users = connection.searchUsers(param.search, param.cursor);
 					break;
 
-				case SUBSCRIBER:
+				case UserParam.SUBSCRIBER:
 					users = connection.getListSubscriber(param.id, param.cursor);
 					break;
 
-				case LISTMEMBER:
+				case UserParam.LISTMEMBER:
 					users = connection.getListMember(param.id, param.cursor);
 					break;
 
-				case BLOCK:
+				case UserParam.BLOCK:
 					users = connection.getBlockedUsers(param.cursor);
 					break;
 
-				case MUTE:
+				case UserParam.MUTE:
 					users = connection.getMutedUsers(param.cursor);
 					break;
 
-				case INCOMING_REQ:
+				case UserParam.REQUEST_IN:
 					users =  connection.getIncomingFollowRequests(param.cursor);
 					break;
 
-				case OUTGOING_REQ:
+				case UserParam.REQUEST_OUT:
 					users =  connection.getOutgoingFollowRequests(param.cursor);
 					break;
 			}
@@ -145,8 +88,22 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 		return new UserResult(users, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class UserParam {
+
+		public static final int FOLLOWS = 1;
+		public static final int FRIENDS = 2;
+		public static final int REPOST = 3;
+		public static final int FAVORIT = 4;
+		public static final int SEARCH = 5;
+		public static final int SUBSCRIBER = 6;
+		public static final int LISTMEMBER = 7;
+		public static final int BLOCK = 8;
+		public static final int MUTE = 9;
+		public static final int REQUEST_OUT = 10;
+		public static final int REQUEST_IN = 11;
 
 		public final int type;
 		public final String search;
@@ -160,7 +117,9 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class UserResult {
 
 		@Nullable
@@ -168,7 +127,7 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 		@Nullable
 		public final ConnectionException exception;
 
-		public UserResult(@Nullable Users users, @Nullable ConnectionException exception) {
+		UserResult(@Nullable Users users, @Nullable ConnectionException exception) {
 			this.users = users;
 			this.exception = exception;
 		}

@@ -87,7 +87,9 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 		return new RelationResult(RelationResult.ERROR, null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class RelationParam {
 
 		public static final int LOAD = 1;
@@ -107,7 +109,9 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class RelationResult {
 
 		public static final int LOAD = 8;

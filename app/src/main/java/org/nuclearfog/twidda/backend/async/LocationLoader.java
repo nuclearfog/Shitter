@@ -24,7 +24,9 @@ public class LocationLoader extends AsyncExecutor<Void, LocationLoader.LocationL
 
 	private Connection connection;
 
-
+	/**
+	 *
+	 */
 	public LocationLoader(Context context) {
 		connection = ConnectionManager.get(context);
 	}
@@ -44,7 +46,9 @@ public class LocationLoader extends AsyncExecutor<Void, LocationLoader.LocationL
 		return new LocationLoaderResult(null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class LocationLoaderResult {
 
 		@Nullable
@@ -52,7 +56,7 @@ public class LocationLoader extends AsyncExecutor<Void, LocationLoader.LocationL
 		@Nullable
 		public final ConnectionException exception;
 
-		public LocationLoaderResult(@Nullable List<Location> locations, @Nullable ConnectionException exception) {
+		LocationLoaderResult(@Nullable List<Location> locations, @Nullable ConnectionException exception) {
 			this.locations = locations;
 			this.exception = exception;
 		}

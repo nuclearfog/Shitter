@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.async;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -111,7 +112,9 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 		return new StatusResult(StatusResult.ERROR, null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class StatusParam {
 
 		public static final int ONLINE = 1;
@@ -135,7 +138,9 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class StatusResult {
 
 		public static final int ERROR = -1;
@@ -152,14 +157,16 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 		public static final int DELETE = 22;
 
 		public final int mode;
+		@Nullable
 		public final Status status;
+		@Nullable
 		public final ConnectionException exception;
 
 		StatusResult(int mode, Status status) {
 			this(mode, status, null);
 		}
 
-		StatusResult(int mode, Status status, ConnectionException exception) {
+		StatusResult(int mode, @Nullable Status status, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.status = status;
 			this.exception = exception;

@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.async;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -49,7 +50,9 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 		return new ListManagerResult(ListManagerResult.ERROR, param.username, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class ListManagerParam {
 
 		public static final int ADD_USER = 1;
@@ -66,7 +69,9 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class ListManagerResult {
 
 		public static final int ERROR = -1;
@@ -75,9 +80,10 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 
 		public final int mode;
 		public final String name;
+		@Nullable
 		public final ConnectionException exception;
 
-		ListManagerResult(int mode, String name, ConnectionException exception) {
+		ListManagerResult(int mode, String name, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.name = name;
 			this.exception = exception;

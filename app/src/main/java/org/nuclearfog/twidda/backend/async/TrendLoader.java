@@ -59,7 +59,6 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 					trends = connection.searchHashtags(param.trend);
 					return new TrendResult(trends, null);
 			}
-
 		} catch (ConnectionException exception) {
 			return new TrendResult(null, exception);
 		} catch (Exception e) {
@@ -68,8 +67,11 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		return new TrendResult(null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class TrendParameter {
+
 		public final String trend;
 		public final int mode;
 
@@ -79,7 +81,9 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class TrendResult {
 
 		@Nullable
@@ -87,7 +91,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		@Nullable
 		public final ConnectionException exception;
 
-		public TrendResult(@Nullable List<Trend> trends, @Nullable ConnectionException exception) {
+		TrendResult(@Nullable List<Trend> trends, @Nullable ConnectionException exception) {
 			this.trends = trends;
 			this.exception = exception;
 		}

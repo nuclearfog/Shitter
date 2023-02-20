@@ -239,38 +239,38 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		statusAsync = new StatusLoader(requireContext());
 		switch (mode) {
 			case STATUS_FRAGMENT_HOME:
-				request = new StatusParameter(StatusLoader.HOME, id, sinceId, maxId, index, search);
+				request = new StatusParameter(StatusParameter.HOME, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_USER:
-				request = new StatusParameter(StatusLoader.USER, id, sinceId, maxId, index, search);
+				request = new StatusParameter(StatusParameter.USER, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_FAVORIT:
-				request = new StatusParameter(StatusLoader.FAVORIT, id, sinceId, maxId, index, search);
+				request = new StatusParameter(StatusParameter.FAVORIT, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_REPLY:
 				if (index == CLEAR_LIST)
-					request = new StatusParameter(StatusLoader.REPLIES_OFFLINE, id, sinceId, maxId, index, search);
+					request = new StatusParameter(StatusParameter.REPLIES_OFFLINE, id, sinceId, maxId, index, search);
 				else
-					request = new StatusParameter(StatusLoader.REPLIES, id, sinceId, maxId, index, search);
+					request = new StatusParameter(StatusParameter.REPLIES, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_SEARCH:
-				request = new StatusParameter(StatusLoader.SEARCH, id, sinceId, maxId, index, search);
+				request = new StatusParameter(StatusParameter.SEARCH, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_USERLIST:
-				request = new StatusParameter(StatusLoader.USERLIST, id, sinceId, maxId, index, search);
+				request = new StatusParameter(StatusParameter.USERLIST, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_PUBLIC:
-				request = new StatusParameter(StatusLoader.PUBLIC, id, sinceId, maxId, index, search);
+				request = new StatusParameter(StatusParameter.PUBLIC, id, sinceId, maxId, index, search);
 				break;
 
 			case STATUS_FRAGMENT_BOOKMARK:
-				request = new StatusLoader.StatusParameter(StatusLoader.BOOKMARKS, id, sinceId, maxId, index, search);
+				request = new StatusLoader.StatusParameter(StatusParameter.BOOKMARKS, id, sinceId, maxId, index, search);
 				break;
 
 			default:

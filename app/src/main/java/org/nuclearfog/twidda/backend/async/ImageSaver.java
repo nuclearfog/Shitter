@@ -35,7 +35,9 @@ public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
 		return false;
 	}
 
-
+	/**
+	 *
+	 */
 	public static class ImageParam {
 		public final InputStream inputStream;
 		public final OutputStream outputStream;

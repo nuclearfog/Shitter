@@ -57,7 +57,9 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 		return new ListActionResult(ListActionResult.ERROR, param.id, null, null);
 	}
 
-
+	/**
+	 * 
+	 */
 	public static class ListActionParam {
 
 		public static final int LOAD = 1;
@@ -74,7 +76,9 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class ListActionResult {
 
 		public static final int LOAD = 5;

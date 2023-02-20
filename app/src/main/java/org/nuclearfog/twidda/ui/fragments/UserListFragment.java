@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static org.nuclearfog.twidda.backend.async.ListLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_LIST_DATA;
 
@@ -89,14 +88,14 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		super.onStart();
 		if (listTask == null) {
 			setRefresh(true);
-			load(NO_CURSOR);
+			load(0);
 		}
 	}
 
 
 	@Override
 	protected void onReset() {
-		load(NO_CURSOR);
+		load(0);
 		setRefresh(true);
 	}
 
@@ -132,7 +131,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	protected void onReload() {
-		load(NO_CURSOR);
+		load(0);
 	}
 
 
@@ -182,11 +181,11 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		listTask = new ListLoader(requireContext());
 		switch(type) {
 			case LIST_USER_OWNS:
-				param = new UserlistParam(ListLoader.LOAD_USERLISTS, id, cursor);
+				param = new UserlistParam(UserlistParam.LOAD_USERLISTS, id, cursor);
 				break;
 
 			case LIST_USER_SUBSCR_TO:
-				param = new UserlistParam(ListLoader.LOAD_MEMBERSHIPS, id, cursor);
+				param = new UserlistParam(UserlistParam.LOAD_MEMBERSHIPS, id, cursor);
 				break;
 
 			default:

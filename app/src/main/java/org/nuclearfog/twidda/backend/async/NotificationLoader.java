@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.async;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -25,6 +26,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	private AppDatabase db;
 
 	/**
+	 *
 	 */
 	public NotificationLoader(Context context) {
 		connection = ConnectionManager.get(context);
@@ -57,7 +59,9 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 		return new NotificationResult(result, params.position, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class NotificationParam {
 
 		public final int position;
@@ -70,14 +74,18 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class NotificationResult {
 
-		public final List<Notification> notifications;
-		public final ConnectionException exception;
 		public final int position;
+		@Nullable
+		public final List<Notification> notifications;
+		@Nullable
+		public final ConnectionException exception;
 
-		public NotificationResult(List<Notification> notifications, int position, ConnectionException exception) {
+		NotificationResult(@Nullable List<Notification> notifications, int position, @Nullable ConnectionException exception) {
 			this.notifications = notifications;
 			this.exception = exception;
 			this.position = position;

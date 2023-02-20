@@ -22,7 +22,9 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 	private Connection connection;
 	private AppDatabase db;
 
-
+	/**
+	 *
+	 */
 	public UserLoader(Context context) {
 		connection = ConnectionManager.get(context);
 		db = new AppDatabase(context);
@@ -35,18 +37,17 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 		try {
 			switch(param.mode) {
 				case UserParam.DATABASE:
-					if (param.id > 0) {
-						User user = db.getUser(param.id);
+					User user = db.getUser(param.id);
+					if (user != null) {
 						return new UserResult(UserResult.DATABASE, user, null);
 					}
+					// fall through
 
 				case UserParam.ONLINE:
-					// load user information from twitter
-					User user = connection.showUser(param.id);
+					user = connection.showUser(param.id);
 					db.saveUser(user);
 					return new UserResult(UserResult.ONLINE, user, null);
 			}
-
 		}catch (ConnectionException exception) {
 			return new UserResult(UserResult.ERROR, null, exception);
 		} catch (Exception e) {
@@ -55,7 +56,9 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 		return new UserResult(UserResult.ERROR, null, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class UserParam {
 
 		public static final int DATABASE = 1;
@@ -70,7 +73,9 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class UserResult {
 
 		public static final int ERROR = -1;

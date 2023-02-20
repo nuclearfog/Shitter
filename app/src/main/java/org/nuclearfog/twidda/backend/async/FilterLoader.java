@@ -64,7 +64,9 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 		return new FilterResult(FilterResult.ERROR, null);
 	}
 
-
+	/**
+	 *
+	 */
 	public static class FilterParam {
 
 		public static final int RELOAD = 1;
@@ -85,13 +87,15 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 		}
 	}
 
-
+	/**
+	 *
+	 */
 	public static class FilterResult {
 
+		public static final int ERROR = -1;
 		public static final int RELOAD = 4;
 		public static final int MUTE = 5;
 		public static final int BLOCK = 6;
-		public static final int ERROR = -1;
 
 		public final int mode;
 		@Nullable
