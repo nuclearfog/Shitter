@@ -8,7 +8,6 @@ import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
-import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
@@ -526,9 +525,11 @@ public interface Connection {
 	/**
 	 * send a vote to a poll
 	 *
+	 * @param poll      poll tovote
+	 * @param selection selected poll choices
 	 * @return updated poll
 	 */
-	Poll vote(VoteUpdate update) throws ConnectionException;
+	Poll vote(Poll poll, int[] selection) throws ConnectionException;
 
 	/**
 	 * returns a list of blocked user IDs

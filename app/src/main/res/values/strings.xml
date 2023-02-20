@@ -56,6 +56,7 @@
 	<string name="info_tweet_text_copied">Status text copied</string>
 	<string name="info_tweet_location_copied">Location coordinates copied</string>
 	<string name="info_tweet_medialink_copied">Media link copied</string>
+	<string name="info_poll_voted">vote sent!</string>
 	<string name="info_account_selected">%1$s selected</string>
 	<string name="info_user_favorited">%1$s favorited your status</string>
 	<string name="info_user_follow">%1$s followed you</string>

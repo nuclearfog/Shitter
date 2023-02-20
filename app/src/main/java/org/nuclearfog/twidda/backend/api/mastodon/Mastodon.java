@@ -29,7 +29,6 @@ import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
-import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -762,13 +761,13 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Poll vote(VoteUpdate update) throws ConnectionException {
+	public Poll vote(Poll poll, int[] selection) throws ConnectionException {
 		List<String> params = new ArrayList<>();
-		for (int choice : update.getSelected()) {
+		for (int choice : selection) {
 			params.add("choices[]=" + choice);
 		}
 		try {
-			Response response = post(ENDPOINT_POLL + update.getPollId() + "/votes", params);
+			Response response = post(ENDPOINT_POLL + poll.getId() + "/votes", params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());

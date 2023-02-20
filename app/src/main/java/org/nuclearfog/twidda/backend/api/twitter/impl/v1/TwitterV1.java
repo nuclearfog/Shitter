@@ -22,7 +22,6 @@ import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
-import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -928,7 +927,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Poll vote(VoteUpdate update) throws ConnectionException {
+	public Poll vote(Poll poll, int[] choices) throws ConnectionException {
 		throw new TwitterException("not supported!");
 	}
 

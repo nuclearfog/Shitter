@@ -123,6 +123,7 @@
 	<string name="item_load_more">Mehr laden</string>
 	<string name="item_image_save">Bild speichern</string>
 	<string name="error_cant_load_video">Video kann nicht abgespielt werden!</string>
+	<string name="item_poll_option_vote">abstimmen</string>
 	<string name="settings_enable_proxy">Proxy aktivieren</string>
 	<string name="settings_enable_proxy_auth">Proxy Authentifizierung aktivieren</string>
 	<string name="error_wrong_connection_settings">Falsche Proxykonfiguration! Änderung verwerfen?</string>
@@ -268,4 +269,5 @@
 	<string name="info_tweet_bookmarked">Status zu Lesezeichen hinzugefügt</string>
 	<string name="info_tweet_unbookmarked">Status aus Lesezeichen entfernt</string>
 	<string name="settings_bookmark_color">Lesezeichen symbol</string>
+	<string name="info_poll_voted">Umfrage abgestimmt!</string>
 </resources>

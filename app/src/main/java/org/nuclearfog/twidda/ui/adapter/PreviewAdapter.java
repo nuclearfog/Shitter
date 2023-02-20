@@ -175,6 +175,21 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	}
 
 	/**
+	 * update existing poll item
+	 *
+	 * @param poll updated poll item
+	 */
+	public void updatePoll(Poll poll) {
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i) instanceof Poll && ((Poll)items.get(i)).getId() == poll.getId()) {
+				items.set(i, poll);
+				notifyItemChanged(i);
+				break;
+			}
+		}
+	}
+
+	/**
 	 * item click listener
 	 */
 	public interface OnCardClickListener {
