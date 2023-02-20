@@ -22,15 +22,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.IconAdapter;
-import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.ui.adapter.IconAdapter;
+import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;

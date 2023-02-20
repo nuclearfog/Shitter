@@ -389,6 +389,7 @@ public class GlobalSettings {
 		edit.putInt(BOOKMARK_COLOR, color);
 		edit.apply();
 	}
+
 	/**
 	 * set icon color of the follow button
 	 *

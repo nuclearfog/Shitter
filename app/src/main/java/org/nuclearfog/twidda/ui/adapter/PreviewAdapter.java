@@ -8,15 +8,15 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
-import org.nuclearfog.twidda.ui.adapter.holder.CardHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
-import org.nuclearfog.twidda.ui.adapter.holder.PollHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.PreviewHolder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.ui.adapter.holder.CardHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
+import org.nuclearfog.twidda.ui.adapter.holder.PollHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.PreviewHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;

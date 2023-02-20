@@ -35,7 +35,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 	@Override
 	protected UserResult doInBackground(UserParam param) {
 		try {
-			switch(param.mode) {
+			switch (param.mode) {
 				case UserParam.DATABASE:
 					User user = db.getUser(param.id);
 					if (user != null) {
@@ -48,7 +48,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 					db.saveUser(user);
 					return new UserResult(UserResult.ONLINE, user, null);
 			}
-		}catch (ConnectionException exception) {
+		} catch (ConnectionException exception) {
 			return new UserResult(UserResult.ERROR, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();

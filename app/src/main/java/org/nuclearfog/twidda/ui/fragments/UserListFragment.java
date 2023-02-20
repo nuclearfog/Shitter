@@ -15,17 +15,17 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.UserlistAdapter;
-import org.nuclearfog.twidda.ui.adapter.UserlistAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.async.ListLoader;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistParam;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistResult;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
+import org.nuclearfog.twidda.ui.adapter.UserlistAdapter;
+import org.nuclearfog.twidda.ui.adapter.UserlistAdapter.ListClickListener;
 
 /**
  * Fragment class to show userlists
@@ -179,7 +179,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	private void load(long cursor) {
 		UserlistParam param;
 		listTask = new ListLoader(requireContext());
-		switch(type) {
+		switch (type) {
 			case LIST_USER_OWNS:
 				param = new UserlistParam(UserlistParam.LOAD_USERLISTS, id, cursor);
 				break;

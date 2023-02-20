@@ -6,12 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import org.nuclearfog.twidda.ui.adapter.holder.IconHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.ui.adapter.holder.IconHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 
 import java.util.ArrayList;
 import java.util.List;

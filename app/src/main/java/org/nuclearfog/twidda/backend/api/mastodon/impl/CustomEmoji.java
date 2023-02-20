@@ -54,7 +54,7 @@ public class CustomEmoji implements Emoji {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Emoji))
 			return false;
-		return ((Emoji)obj).getCode().equals(code);
+		return ((Emoji) obj).getCode().equals(code);
 	}
 
 

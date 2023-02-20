@@ -58,7 +58,7 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public static class ListActionParam {
 

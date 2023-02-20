@@ -20,15 +20,15 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
-import org.nuclearfog.twidda.backend.helper.Messages;
-import org.nuclearfog.twidda.backend.helper.PollUpdate;
-import org.nuclearfog.twidda.backend.helper.UserLists;
-import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.Messages;
+import org.nuclearfog.twidda.backend.helper.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.UserLists;
+import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
@@ -748,7 +748,7 @@ public class Mastodon implements Connection {
 			if (response.code() == 200 && body != null) {
 				JSONArray json = new JSONArray(body.string());
 				List<Emoji> result = new ArrayList<>(json.length());
-				for (int i = 0 ; i < json.length() ; i++) {
+				for (int i = 0; i < json.length(); i++) {
 					Emoji item = new CustomEmoji(json.getJSONObject(i));
 					result.add(item);
 				}

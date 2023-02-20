@@ -33,17 +33,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.config.Configuration;
-import org.nuclearfog.twidda.ui.adapter.NetworkAdapter;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.async.LoginAction.LoginParam;
 import org.nuclearfog.twidda.backend.async.LoginAction.LoginResult;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.ui.adapter.NetworkAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog;
 
 /**

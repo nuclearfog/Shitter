@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.squareup.picasso.Picasso;
 
-import org.nuclearfog.twidda.ui.adapter.holder.AccountHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.ui.adapter.holder.AccountHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 
 import java.util.ArrayList;
 import java.util.List;

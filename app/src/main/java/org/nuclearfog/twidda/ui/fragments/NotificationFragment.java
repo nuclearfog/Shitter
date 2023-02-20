@@ -15,17 +15,17 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.NotificationAdapter;
-import org.nuclearfog.twidda.ui.adapter.NotificationAdapter.OnNotificationClickListener;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationParam;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationResult;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
+import org.nuclearfog.twidda.ui.adapter.NotificationAdapter;
+import org.nuclearfog.twidda.ui.adapter.NotificationAdapter.OnNotificationClickListener;
 
 
 /**

@@ -21,14 +21,14 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.async.FilterLoader;
 import org.nuclearfog.twidda.backend.async.FilterLoader.FilterParam;
 import org.nuclearfog.twidda.backend.async.FilterLoader.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 
 import java.util.regex.Pattern;
 

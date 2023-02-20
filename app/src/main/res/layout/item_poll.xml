@@ -17,7 +17,7 @@
 			android:layout_weight="1"
 			android:layout_marginBottom="@dimen/item_poll_layout_margin"
 			android:descendantFocusability="blocksDescendants"
-			android:nestedScrollingEnabled="true"/>
+			android:nestedScrollingEnabled="true" />
 
 		<LinearLayout
 			android:layout_width="match_parent"

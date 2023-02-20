@@ -22,7 +22,7 @@ public class MastodonRelation implements Relation {
 	private boolean isMuted;
 
 	/**
-	 * @param json      Relation json object
+	 * @param json Relation json object
 	 */
 	public MastodonRelation(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");

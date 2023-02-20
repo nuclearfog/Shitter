@@ -7,9 +7,9 @@ import java.util.List;
 
 /**
  * This class is used to create a status poll
- * @see StatusUpdate
  *
  * @author nuclearfog
+ * @see StatusUpdate
  */
 public class PollUpdate {
 

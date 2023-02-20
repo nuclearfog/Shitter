@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.ui.adapter.holder.MessageHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.MessageHolder.OnItemClickListener;
-import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
+import org.nuclearfog.twidda.ui.adapter.holder.MessageHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.MessageHolder.OnItemClickListener;
+import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show directmessages

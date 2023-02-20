@@ -90,9 +90,9 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 	public static class ImageResult {
 
 		@Nullable
-		public final  Uri uri;
+		public final Uri uri;
 		@Nullable
-		public final  ConnectionException exception;
+		public final ConnectionException exception;
 
 		ImageResult(@Nullable Uri uri, @Nullable ConnectionException exception) {
 			this.exception = exception;

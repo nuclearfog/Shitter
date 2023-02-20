@@ -3,8 +3,9 @@ package org.nuclearfog.twidda.database;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
@@ -15,7 +16,6 @@ import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserExcludeTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
 
 import android.content.ContentValues;
 import android.content.Context;

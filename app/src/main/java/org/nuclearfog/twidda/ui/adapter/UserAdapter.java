@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
-import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
-import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.UserHolder;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
+import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.UserHolder;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show users

@@ -35,8 +35,8 @@ public class ConnectionManager {
 
 	/**
 	 * get singleton class of a connection
-	 * @param config Network selection or null to choose automatically
 	 *
+	 * @param config Network selection or null to choose automatically
 	 * @return singleton instance
 	 */
 	public static Connection get(Context context, @Nullable Configuration config) {

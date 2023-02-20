@@ -1,9 +1,9 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ui.adapter.OptionsAdapter;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
+import org.nuclearfog.twidda.ui.adapter.OptionsAdapter;
 
 /**
  * View holder for status polls

@@ -19,9 +19,9 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
 
 /**
  * adapter item for {@link PreviewAdapter}

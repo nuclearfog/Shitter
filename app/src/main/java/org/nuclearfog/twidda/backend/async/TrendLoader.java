@@ -31,6 +31,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	private AppDatabase db;
 
 	/**
+	 *
 	 */
 	public TrendLoader(Context context) {
 		connection = ConnectionManager.get(context);
@@ -42,7 +43,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	@Override
 	protected TrendResult doInBackground(TrendParameter param) {
 		try {
-			switch(param.mode) {
+			switch (param.mode) {
 				case DATABASE:
 					List<Trend> trends = db.getTrends();
 					if (!trends.isEmpty()) {

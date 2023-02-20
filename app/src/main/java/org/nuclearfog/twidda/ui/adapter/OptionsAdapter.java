@@ -5,10 +5,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
-import org.nuclearfog.twidda.ui.adapter.holder.Optionholder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
+import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
+import org.nuclearfog.twidda.ui.adapter.holder.Optionholder;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -82,7 +82,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 	 */
 	public void addAll(Poll poll) {
 		options = poll.getOptions();
-		for (int i = 0 ; i < options.length ; i++) {
+		for (int i = 0; i < options.length; i++) {
 			Poll.Option option = options[i];
 			if (option.selected()) {
 				selection.add(i);

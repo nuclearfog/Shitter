@@ -6,10 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
-import org.nuclearfog.twidda.ui.adapter.holder.TrendHolder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
+import org.nuclearfog.twidda.ui.adapter.holder.TrendHolder;
 
 import java.util.ArrayList;
 import java.util.List;

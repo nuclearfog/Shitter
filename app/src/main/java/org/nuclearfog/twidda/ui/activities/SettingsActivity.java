@@ -39,17 +39,17 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.FontAdapter;
-import org.nuclearfog.twidda.ui.adapter.LocationAdapter;
-import org.nuclearfog.twidda.ui.adapter.ScaleAdapter;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.ui.adapter.FontAdapter;
+import org.nuclearfog.twidda.ui.adapter.LocationAdapter;
+import org.nuclearfog.twidda.ui.adapter.ScaleAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.InfoDialog;
@@ -389,8 +389,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			mode = COLOR_FOLLOWING;
 			color = settings.getFollowIconColor();
 			showColorPicker(color, false);
-		}
-		else if (v.getId() == R.id.color_bookmark) {
+		} else if (v.getId() == R.id.color_bookmark) {
 			mode = COLOR_BOOKMARK;
 			color = settings.getBookmarkColor();
 			showColorPicker(color, false);

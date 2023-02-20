@@ -943,7 +943,7 @@ public class DatabaseAdapter {
 		/**
 		 * emoji code
 		 */
-		String CODE  = "code";
+		String CODE = "code";
 
 		/**
 		 * emoji category

@@ -19,13 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.MessageAdapter;
-import org.nuclearfog.twidda.ui.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
@@ -33,6 +31,8 @@ import org.nuclearfog.twidda.ui.activities.MessageEditor;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
+import org.nuclearfog.twidda.ui.adapter.MessageAdapter;
+import org.nuclearfog.twidda.ui.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 

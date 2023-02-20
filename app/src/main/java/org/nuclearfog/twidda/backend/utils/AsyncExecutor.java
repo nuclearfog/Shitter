@@ -105,7 +105,6 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	public interface AsyncCallback<Result> {
 
 		/**
-		 *
 		 * @param result result of the task
 		 */
 		void onResult(Result result);

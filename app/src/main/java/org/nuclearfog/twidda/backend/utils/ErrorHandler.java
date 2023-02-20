@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.utils;
 
 import android.content.Context;
+
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;

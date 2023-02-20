@@ -25,13 +25,13 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ui.adapter.IconAdapter;
-import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.adapter.IconAdapter;
+import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 

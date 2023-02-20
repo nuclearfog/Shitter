@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.AccountAdapter;
-import org.nuclearfog.twidda.ui.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
 import org.nuclearfog.twidda.backend.async.AccountLoader.AccountParameter;
 import org.nuclearfog.twidda.backend.async.AccountLoader.AccountResult;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
+import org.nuclearfog.twidda.ui.adapter.AccountAdapter;
+import org.nuclearfog.twidda.ui.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
@@ -112,7 +112,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onResult(AccountResult result) {
 		setRefresh(false);
-		switch(result.mode) {
+		switch (result.mode) {
 			case AccountResult.LOAD:
 				if (result.accounts != null) {
 					adapter.replaceItems(result.accounts);
@@ -131,6 +131,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	}
 
 	/**
+	 *
 	 */
 	public void load(int mode) {
 		loginTask = new AccountLoader(requireContext());

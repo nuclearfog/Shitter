@@ -59,14 +59,13 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.async.UserLoader;
-import org.nuclearfog.twidda.backend.async.UserLoader.UserParam;
-import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
-import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.RelationLoader;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationParam;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationResult;
+import org.nuclearfog.twidda.backend.async.UserLoader;
+import org.nuclearfog.twidda.backend.async.UserLoader.UserParam;
+import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -74,6 +73,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
@@ -433,7 +433,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// block user
 		else if (item.getItemId() == R.id.profile_block) {
 			if (relation != null && user != null) {
-				if (relation.isBlocked() && (relationLoader == null ||  relationLoader.isIdle())) {
+				if (relation.isBlocked() && (relationLoader == null || relationLoader.isIdle())) {
 					RelationParam param = new RelationParam(user.getId(), RelationParam.UNBLOCK);
 					relationLoader = new RelationLoader(this);
 					relationLoader.execute(param, this::setRelationResult);
@@ -659,7 +659,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 * @param result user result from async executor
 	 */
 	private void setUserResult(UserResult result) {
-		switch(result.mode) {
+		switch (result.mode) {
 			case UserResult.DATABASE:
 				userLoader = new UserLoader(this);
 				UserParam param = new UserParam(UserParam.ONLINE, userId);

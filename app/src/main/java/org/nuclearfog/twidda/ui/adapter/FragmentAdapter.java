@@ -137,7 +137,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * setup adapter for viewing user timeline and favorites
 	 *
-	 * @param userId  ID of the user
+	 * @param userId ID of the user
 	 */
 	public void setupProfilePage(long userId) {
 		Bundle paramTimeline = new Bundle();
@@ -151,7 +151,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 		paramBookmark.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_BOOKMARK);
 
 		Account login = settings.getLogin();
-		switch(login.getConfiguration()) {
+		switch (login.getConfiguration()) {
 			case MASTODON:
 				if (login.getId() == userId) {
 					fragments = new ListFragment[3];
@@ -214,7 +214,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * setup adapter for a list of user lists created by an user
 	 *
-	 * @param userId   ID of the user
+	 * @param userId ID of the user
 	 */
 	public void setupListPage(long userId) {
 		Bundle paramUserlistOwnership = new Bundle();

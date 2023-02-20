@@ -24,6 +24,7 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 	private Connection connection;
 
 	/**
+	 *
 	 */
 	public StatusUpdater(Context context) {
 		connection = ConnectionManager.get(context);

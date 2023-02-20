@@ -14,16 +14,16 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.UserAdapter;
-import org.nuclearfog.twidda.ui.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.async.UsersLoader;
-import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
+import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
+import org.nuclearfog.twidda.ui.adapter.UserAdapter;
+import org.nuclearfog.twidda.ui.adapter.UserAdapter.UserClickListener;
 
 /**
  * fragment class to show a list of users

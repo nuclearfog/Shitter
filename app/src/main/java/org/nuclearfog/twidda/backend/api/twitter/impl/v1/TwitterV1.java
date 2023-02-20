@@ -14,19 +14,19 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.helper.Messages;
-import org.nuclearfog.twidda.backend.helper.UserLists;
-import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.UserLists;
+import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.helper.VoteUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
@@ -228,7 +228,7 @@ public class TwitterV1 implements Connection {
 				User user;
 				AccountV1 account;
 				if (connection.useTokens()) {
-					user = getCredentials( connection.getOauthConsumerToken(), connection.getOauthTokenSecret(), oauthToken, tokenSecret);
+					user = getCredentials(connection.getOauthConsumerToken(), connection.getOauthTokenSecret(), oauthToken, tokenSecret);
 					account = new AccountV1(oauthToken, tokenSecret, connection.getOauthConsumerToken(), connection.getOauthTokenSecret(), user);
 				} else { // use default API keys
 					user = getCredentials(tokens.getConsumerKey(true), tokens.getConsumerSecret(true), oauthToken, tokenSecret);
@@ -1201,7 +1201,6 @@ public class TwitterV1 implements Connection {
 	}
 
 
-
 	/**
 	 * returns an array of user IDs from a given endpoint
 	 *
@@ -1242,7 +1241,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		if (ids.length > 1) {
 			StringBuilder idBuf = new StringBuilder("user_id=");
-			for (int i = 0 ; i < ids.length - 1 ; i++) {
+			for (int i = 0; i < ids.length - 1; i++) {
 				idBuf.append(ids[i]).append("%2C");
 			}
 			params.add(idBuf.substring(0, idBuf.length() - 3));

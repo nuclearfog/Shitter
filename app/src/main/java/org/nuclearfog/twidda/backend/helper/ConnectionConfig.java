@@ -18,6 +18,7 @@ public class ConnectionConfig {
 	private Configuration apiConfig;
 
 	/**
+	 *
 	 */
 	public ConnectionConfig() {
 		hostname = "";
@@ -107,7 +108,7 @@ public class ConnectionConfig {
 	/**
 	 * set oauth token key pair
 	 *
-	 * @param consumerKey oauth token
+	 * @param consumerKey    oauth token
 	 * @param consumerSecret oauth token secret
 	 */
 	public void setOauthTokens(String consumerKey, String consumerSecret) {
@@ -132,7 +133,7 @@ public class ConnectionConfig {
 	@NonNull
 	@Override
 	public String toString() {
-		String result= "network=\"";
+		String result = "network=\"";
 		switch (apiConfig) {
 			case MASTODON:
 				result = "Mastodon\"";

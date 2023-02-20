@@ -14,15 +14,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
-import org.nuclearfog.twidda.ui.adapter.StatusAdapter.StatusSelectListener;
 import org.nuclearfog.twidda.backend.async.StatusLoader;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusParameter;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusResult;
+import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
+import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
+import org.nuclearfog.twidda.ui.adapter.StatusAdapter.StatusSelectListener;
 
 /**
  * fragment class to show a status list

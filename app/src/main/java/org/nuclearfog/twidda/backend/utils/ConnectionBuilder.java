@@ -31,7 +31,7 @@ public class ConnectionBuilder {
 	/**
 	 * create OkHttp instance
 	 *
-	 * @param context   application context to initialize
+	 * @param context application context to initialize
 	 * @return OkHttpClient instance
 	 */
 	public static OkHttpClient create(Context context) {

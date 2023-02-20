@@ -131,7 +131,6 @@ public interface Status extends Serializable, Comparable<Status> {
 	Media[] getMedia();
 
 	/**
-	 *
 	 * @return array of custom emojis
 	 */
 	@NonNull

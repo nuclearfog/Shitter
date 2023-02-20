@@ -73,11 +73,11 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 					break;
 
 				case UserParam.REQUEST_IN:
-					users =  connection.getIncomingFollowRequests(param.cursor);
+					users = connection.getIncomingFollowRequests(param.cursor);
 					break;
 
 				case UserParam.REQUEST_OUT:
-					users =  connection.getOutgoingFollowRequests(param.cursor);
+					users = connection.getOutgoingFollowRequests(param.cursor);
 					break;
 			}
 		} catch (ConnectionException exception) {
