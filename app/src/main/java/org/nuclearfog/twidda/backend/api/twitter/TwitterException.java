@@ -145,6 +145,8 @@ public class TwitterException extends ConnectionException {
 					return HTTP_TIMEOUT;
 				} else if (getCause() instanceof IOException) {
 					return NO_CONNECTION;
+				} else if (getCause() instanceof InterruptedException) {
+					return INTERRUPTED;
 				} else {
 					return ERROR_NOT_DEFINED;
 				}

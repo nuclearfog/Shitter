@@ -9,7 +9,6 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -31,9 +30,16 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 	/**
 	 *
 	 */
-	public LoginAction(Context context, Configuration configuration) {
+	public LoginAction(Context context) {
 		database = new AppDatabase(context);
 		settings = GlobalSettings.getInstance(context);
+		connection = ConnectionManager.get(context);
+	}
+
+	/**
+	 * setup connection manually
+	 */
+	public void setConnection(Context context, Configuration configuration) {
 		connection = ConnectionManager.get(context, configuration);
 	}
 
@@ -79,10 +85,6 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		public final ConnectionConfig config;
 		public final String code;
 		public final int mode;
-
-		public LoginParam(int mode, ConnectionConfig config) {
-			this(mode, config, "");
-		}
 
 		public LoginParam(int mode, ConnectionConfig config, String code) {
 			this.mode = mode;

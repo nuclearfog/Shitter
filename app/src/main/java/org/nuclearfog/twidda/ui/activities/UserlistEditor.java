@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.backend.async.ListUpdater;
 import org.nuclearfog.twidda.backend.async.ListUpdater.ListUpdateResult;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -88,6 +88,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
+		updaterAsync = new ListUpdater(this);
 
 		AppStyles.setEditorTheme(root, background);
 
@@ -126,6 +127,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
+		updaterAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -133,7 +135,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onClick(View view) {
 		if (view.getId() == R.id.userlist_create_list) {
-			if (updaterAsync == null || updaterAsync.isIdle()) {
+			if (updaterAsync.isIdle()) {
 				updateList();
 			}
 		}
@@ -142,9 +144,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void stopProgress() {
-		if (updaterAsync != null && !updaterAsync.isIdle()) {
-			updaterAsync.cancel();
-		}
+		updaterAsync.cancel();
 	}
 
 
@@ -198,7 +198,6 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 				// create new one
 				mHolder = new UserListUpdate(titleStr, descrStr, isPublic, UserListUpdate.NEW_LIST);
 			}
-			updaterAsync = new ListUpdater(this);
 			updaterAsync.execute(mHolder, this);
 			loadingCircle.show();
 		}

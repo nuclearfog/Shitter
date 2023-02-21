@@ -132,12 +132,11 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	@Nullable
-	private ImageSaver imageTask;
-	@Nullable
 	private Uri srcMediaUri;
 	@Nullable
 	private File destMediaFile;
 
+	private final ImageSaver imageTask = new ImageSaver();
 	private boolean locationPending = false;
 	private int requestCode = 0;
 
@@ -150,9 +149,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 				locationManager.removeUpdates(this);
 			}
 		}
-		if (imageTask != null && !imageTask.isIdle()) {
-			imageTask.cancel();
-		}
+		imageTask.cancel();
 		super.onDestroy();
 	}
 
@@ -233,13 +230,12 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	@SuppressWarnings("IOStreamConstructor")
 	private void saveImage() {
 		try {
-			if ((imageTask == null || imageTask.isIdle()) && destMediaFile != null && srcMediaUri != null) {
+			if (imageTask.isIdle() && destMediaFile != null && srcMediaUri != null) {
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 					// store images directly
 					InputStream src = getContentResolver().openInputStream(srcMediaUri);
 					OutputStream dest = new FileOutputStream(destMediaFile);
 					ImageParam param = new ImageParam(src, dest);
-					imageTask = new ImageSaver();
 					imageTask.execute(param, this::setResult);
 				} else {
 					// use scoped storage
@@ -256,7 +252,6 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 						InputStream src = getContentResolver().openInputStream(srcMediaUri);
 						OutputStream dest = getContentResolver().openOutputStream(imageUri);
 						ImageParam param = new ImageParam(src, dest);
-						imageTask = new ImageSaver();
 						imageTask.execute(param, this::setResult);
 					}
 				}

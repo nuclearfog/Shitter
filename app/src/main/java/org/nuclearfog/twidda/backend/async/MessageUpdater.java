@@ -9,7 +9,6 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MessageUpdate;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 
 /**
@@ -42,10 +41,8 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 				mediaId = connection.uploadMedia(update.getMediaUpdate());
 			}
 			// upload message and media ID
-			if (!isCancelled()) {
-				connection.sendDirectmessage(id, update.getMessage(), mediaId);
-				return new MessageUpdateResult(true, null);
-			}
+			connection.sendDirectmessage(id, update.getMessage(), mediaId);
+			return new MessageUpdateResult(true, null);
 		} catch (ConnectionException exception) {
 			return new MessageUpdateResult(false, exception);
 		} catch (Exception e) {

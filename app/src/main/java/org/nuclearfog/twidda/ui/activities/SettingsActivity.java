@@ -42,7 +42,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -190,6 +190,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		confirmDialog = new ConfirmDialog(this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
+		locationAsync = new LocationLoader(this);
 
 		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
 			enableTwitterAlt.setVisibility(GONE);
@@ -253,8 +254,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		super.onStart();
 		setResult(RETURN_SETTINGS_CHANGED);
 		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
-			if (locationAsync == null || locationAsync.isIdle()) {
-				locationAsync = new LocationLoader(this);
+			if (locationSpinner.getCount() <= 1) {
 				locationAsync.execute(null, this);
 			}
 		}
@@ -273,8 +273,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	protected void onDestroy() {
-		if (locationAsync != null && !locationAsync.isIdle())
-			locationAsync.cancel();
+		locationAsync.cancel();
 		super.onDestroy();
 	}
 

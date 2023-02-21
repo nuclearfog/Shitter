@@ -134,17 +134,12 @@ public class Mastodon implements Connection {
 
 	@Override
 	public String getAuthorisationLink(ConnectionConfig connection) throws MastodonException {
-		String hostname;
 		List<String> params = new ArrayList<>();
 		params.add("scopes=" + AUTH_SCOPES);
 		params.add("redirect_uris=" + REDIRECT_URI);
 		params.add("client_name=" + app_name);
 		params.add("website=" + app_website);
-		if (connection.useHost()) {
-			hostname = connection.getHostname();
-		} else {
-			hostname = DEFAULT_HOST;
-		}
+		String hostname = connection.useHost() ? connection.getHostname() : DEFAULT_HOST;
 		try {
 			Response response = post(hostname, ENDPOINT_REGISTER_APP, null, params);
 			ResponseBody body = response.body();
@@ -171,14 +166,15 @@ public class Mastodon implements Connection {
 		params.add("code=" + pin);
 		params.add("redirect_uri=" + REDIRECT_URI);
 		params.add("scope=" + AUTH_SCOPES);
+		String hostname = connection.useHost() ? connection.getHostname() : DEFAULT_HOST;
 		try {
-			Response response = post(connection.getHostname(), ENDPOINT_LOGIN_APP, null, params);
+			Response response = post(hostname, ENDPOINT_LOGIN_APP, null, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
 				String bearer = json.getString("access_token");
-				User user = getCredentials(connection.getHostname(), bearer);
-				Account account = new MastodonAccount(user, connection.getHostname(), bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
+				User user = getCredentials(hostname, bearer);
+				Account account = new MastodonAccount(user, hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
 				return account;
 			}

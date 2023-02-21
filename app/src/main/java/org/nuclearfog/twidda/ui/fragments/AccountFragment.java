@@ -11,7 +11,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
 import org.nuclearfog.twidda.backend.async.AccountLoader.AccountParameter;
 import org.nuclearfog.twidda.backend.async.AccountLoader.AccountResult;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
@@ -27,7 +27,6 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
  */
 public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
 
-	@Nullable
 	private AccountLoader loginTask;
 	private GlobalSettings settings;
 	private AccountAdapter adapter;
@@ -42,6 +41,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		dialog = new ConfirmDialog(requireContext());
 		settings = GlobalSettings.getInstance(requireContext());
 		adapter = new AccountAdapter(requireContext(), this);
+		loginTask = new AccountLoader(requireContext());
 
 		setAdapter(adapter);
 		dialog.setConfirmListener(this);
@@ -51,7 +51,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (loginTask == null) {
+		if (adapter.isEmpty()) {
 			setRefresh(true);
 			load(AccountParameter.LOAD);
 		}
@@ -60,8 +60,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	public void onDestroy() {
-		if (loginTask != null && !loginTask.isIdle())
-			loginTask.cancel();
+		loginTask.cancel();
 		super.onDestroy();
 	}
 
@@ -125,7 +124,8 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 				break;
 
 			case AccountResult.ERROR:
-				Toast.makeText(requireContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
+				if (getContext() != null)
+					Toast.makeText(getContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
 				break;
 		}
 	}
@@ -134,7 +134,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	 *
 	 */
 	public void load(int mode) {
-		loginTask = new AccountLoader(requireContext());
 		AccountParameter request = new AccountParameter(mode, selectedId);
 		loginTask.execute(request, this);
 	}

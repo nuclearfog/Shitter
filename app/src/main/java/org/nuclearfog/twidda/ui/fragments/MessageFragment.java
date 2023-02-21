@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
@@ -57,6 +57,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 		super.onViewCreated(view, savedInstanceState);
 		confirmDialog = new ConfirmDialog(requireContext());
 		adapter = new MessageAdapter(requireContext(), this);
+		messageTask = new MessageLoader(requireContext());
 		setAdapter(adapter);
 
 		confirmDialog.setConfirmListener(this);
@@ -66,7 +67,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (messageTask == null) {
+		if (adapter.isEmpty()) {
 			loadMessages(false, null);
 		}
 	}
@@ -81,8 +82,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	public void onDestroy() {
-		if (messageTask != null && !messageTask.isIdle())
-			messageTask.cancel();
+		messageTask.cancel();
 		super.onDestroy();
 	}
 
@@ -138,7 +138,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 					break;
 
 				case DELETE:
-					if (!confirmDialog.isShowing() && messageTask != null && messageTask.isIdle()) {
+					if (!confirmDialog.isShowing() && messageTask.isIdle()) {
 						deleteId = message.getId();
 						confirmDialog.show(ConfirmDialog.MESSAGE_DELETE);
 					}
@@ -167,7 +167,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	public boolean onPlaceholderClick(String cursor) {
-		if (messageTask != null && messageTask.isIdle()) {
+		if (messageTask.isIdle()) {
 			loadMessages(false, cursor);
 			return true;
 		}
@@ -178,11 +178,8 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
 		if (type == ConfirmDialog.MESSAGE_DELETE) {
-			if (messageTask != null && messageTask.isIdle()) {
-				MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, deleteId, "");
-				messageTask = new MessageLoader(requireContext());
-				messageTask.execute(param, this);
-			}
+			MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, deleteId, "");
+			messageTask.execute(param, this);
 		}
 	}
 
@@ -199,13 +196,17 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 				break;
 
 			case MessageLoaderResult.DELETE:
-				Toast.makeText(requireContext(), R.string.info_dm_removed, LENGTH_SHORT).show();
+				if (getContext() != null) {
+					Toast.makeText(getContext(), R.string.info_dm_removed, LENGTH_SHORT).show();
+				}
 				adapter.removeItem(result.id);
 				break;
 
 			case MessageLoaderResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
-				Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+				if (getContext() != null) {
+					String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+					Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+				}
 				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					adapter.removeItem(result.id);
 				}
@@ -218,13 +219,8 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 * @param cursor list cursor
 	 */
 	private void loadMessages(boolean local, String cursor) {
-		MessageLoaderParam param;
-		if (local) {
-			param = new MessageLoaderParam(MessageLoaderParam.ONLINE, 0L, cursor);
-		} else {
-			param = new MessageLoaderParam(MessageLoaderParam.DATABASE, 0L, cursor);
-		}
-		messageTask = new MessageLoader(requireContext());
+		int mode = local ? MessageLoaderParam.DATABASE : MessageLoaderParam.ONLINE;
+		MessageLoaderParam param = new MessageLoaderParam(mode, 0L, cursor);
 		messageTask.execute(param, this);
 		setRefresh(true);
 	}

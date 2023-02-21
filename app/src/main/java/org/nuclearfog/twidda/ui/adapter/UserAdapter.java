@@ -208,6 +208,13 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	}
 
 	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return users.isEmpty();
+	}
+
+	/**
 	 * disable placeholder view loading animation
 	 */
 	public void disableLoading() {

@@ -65,6 +65,7 @@ import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.database.impl.StatusImpl;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
@@ -142,13 +143,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Nullable
 	private ClipboardManager clip;
-	@Nullable
 	private StatusAction statusAsync;
-	@Nullable
 	private VoteUpdater voteAsync;
 	private GlobalSettings settings;
 	private Picasso picasso;
-
 	private PreviewAdapter adapter;
 	private ConfirmDialog confirmDialog;
 	private MetricsDialog metricsDialog;
@@ -199,6 +197,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repostNameButton = findViewById(R.id.page_status_reposter_reference);
 		cardList = findViewById(R.id.page_status_cards);
 
+		statusAsync = new StatusAction(this);
+		voteAsync = new VoteUpdater(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -271,27 +271,22 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (statusAsync == null) {
-			statusAsync = new StatusAction(this);
-			// print status object and get and update it
-			if (status != null) {
-				setStatus(status);
-				StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
-				statusAsync.execute(param, this::onStatusResult);
-			}
-			// Load status from database first if no status is defined
-			else {
-				StatusParam param = new StatusParam(StatusParam.ONLINE, id);
-				statusAsync.execute(param, this::onStatusResult);
-			}
+		if (status == null) {
+			StatusParam param = new StatusParam(StatusParam.ONLINE, id);
+			statusAsync.execute(param, this::onStatusResult);
+		} else if (status instanceof StatusImpl) {
+			StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
+			statusAsync.execute(param, this::onStatusResult);
+			setStatus(status);
+		} else {
+			setStatus(status);
 		}
 	}
 
 
 	@Override
 	protected void onDestroy() {
-		if (statusAsync != null && !statusAsync.isIdle())
-			statusAsync.cancel();
+		statusAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -378,13 +373,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// hide status
 		else if (item.getItemId() == R.id.menu_status_hide) {
-			StatusParam param;
-			if (hidden) {
-				param = new StatusParam(StatusParam.UNHIDE, status.getId());
-			} else {
-				param = new StatusParam(StatusParam.HIDE, status.getId());
-			}
-			statusAsync = new StatusAction(this);
+			int mode = hidden ? StatusParam.UNHIDE : StatusParam.HIDE;
+			StatusParam param = new StatusParam(mode, status.getId());
 			statusAsync.execute(param, this::onStatusResult);
 		}
 		// get status link
@@ -500,31 +490,29 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onLongClick(View v) {
-		if (status != null && (statusAsync == null || statusAsync.isIdle())) {
+		if (status != null && statusAsync.isIdle()) {
 			// repost this status
 			if (v.getId() == R.id.page_status_repost) {
-				StatusParam param;
-				if (status.isReposted()) {
-					param = new StatusParam(StatusParam.UNREPOST, status.getId());
-				} else {
-					param = new StatusParam(StatusParam.REPOST, status.getId());
-				}
-				statusAsync = new StatusAction(this);
-				statusAsync.execute(param, this::onStatusResult);
 				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
+				int mode = status.isReposted() ? StatusParam.UNREPOST : StatusParam.REPOST;
+				StatusParam param = new StatusParam(mode, status.getId());
+				statusAsync.execute(param, this::onStatusResult);
 				return true;
 			}
 			// favorite this status
 			else if (v.getId() == R.id.page_status_favorite) {
-				StatusParam param;
-				if (status.isFavorited()) {
-					param = new StatusParam(StatusParam.UNFAVORITE, status.getId());
-				} else {
-					param = new StatusParam(StatusParam.FAVORITE, status.getId());
-				}
-				statusAsync = new StatusAction(this);
-				statusAsync.execute(param, this::onStatusResult);
 				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
+				int mode = status.isFavorited() ? StatusParam.UNFAVORITE : StatusParam.FAVORITE;
+				StatusParam param = new StatusParam(mode, status.getId());
+				statusAsync.execute(param, this::onStatusResult);
+				return true;
+			}
+			// bookmark status
+			else if (v.getId() == R.id.page_status_bookmark) {
+				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
+				int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
+				StatusParam param = new StatusParam(mode, status.getId());
+				statusAsync.execute(param, this::onStatusResult);
 				return true;
 			}
 			// go to original status
@@ -552,19 +540,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				}
 				return true;
 			}
-			// bookmark status
-			else if (v.getId() == R.id.page_status_bookmark) {
-				StatusParam param;
-				if (status.isBookmarked()) {
-					param = new StatusParam(StatusParam.UNBOOKMARK, status.getId());
-				} else {
-					param = new StatusParam(StatusParam.BOOKMARK, status.getId());
-				}
-				statusAsync = new StatusAction(this);
-				statusAsync.execute(param, this::onStatusResult);
-				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
-				return true;
-			}
 		}
 		return false;
 	}
@@ -590,7 +565,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// delete status
 			if (type == ConfirmDialog.DELETE_STATUS) {
 				StatusParam param = new StatusParam(StatusParam.DELETE, status.getId());
-				statusAsync = new StatusAction(this);
 				statusAsync.execute(param, this::onStatusResult);
 			}
 			// confirm playing video without proxy
@@ -699,7 +673,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onVoteClick(Poll poll, int[] selection) {
 		if (voteAsync == null || voteAsync.isIdle()) {
 			VoteParam param = new VoteParam(poll, selection);
-			voteAsync = new VoteUpdater(this);
 			voteAsync.execute(param, this::setPollResult);
 		}
 	}
@@ -835,9 +808,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			setStatus(result.status);
 		}
 		switch (result.mode) {
-			case StatusResult.DATABASE: // update database status
+			case StatusResult.DATABASE:
 				StatusParam param = new StatusParam(StatusParam.ONLINE, id);
-				statusAsync = new StatusAction(this);
 				statusAsync.execute(param, this::onStatusResult);
 				break;
 

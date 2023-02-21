@@ -79,6 +79,13 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	}
 
 	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return accounts.isEmpty();
+	}
+
+	/**
 	 * sets login data
 	 *
 	 * @param newAccounts list with login items

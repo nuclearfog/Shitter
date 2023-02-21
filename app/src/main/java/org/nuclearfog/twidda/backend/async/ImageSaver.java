@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend.async;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor;
 import org.nuclearfog.twidda.ui.activities.MediaActivity;
 
 import java.io.InputStream;

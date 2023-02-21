@@ -10,6 +10,11 @@ public abstract class ConnectionException extends Exception {
 	private static final long serialVersionUID = 8532776434582161546L;
 
 	/**
+	 * indicates a task interrupt
+	 */
+	public static final int INTERRUPTED = -1;
+
+	/**
 	 * defines an error which is not listed here
 	 */
 	public static final int ERROR_NOT_DEFINED = 0;

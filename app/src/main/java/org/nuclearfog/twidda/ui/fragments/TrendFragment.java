@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendParameter;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendResult;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
@@ -42,6 +42,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		adapter = new TrendAdapter(settings, this);
+		trendTask = new TrendLoader(requireContext());
 		setAdapter(adapter);
 		Bundle args = getArguments();
 		if (args != null) {
@@ -53,7 +54,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (trendTask == null) {
+		if (adapter.isEmpty()) {
 			load();
 			setRefresh(true);
 		}
@@ -71,8 +72,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 	@Override
 	public void onDestroy() {
-		if (trendTask != null && !trendTask.isIdle())
-			trendTask.cancel();
+		trendTask.cancel();
 		super.onDestroy();
 	}
 
@@ -101,9 +101,9 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 		setRefresh(false);
 		if (result.trends != null) {
 			adapter.replaceItems(result.trends);
-		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
-			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+		} else if (getContext() != null) {
+			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			setRefresh(false);
 		}
 	}
@@ -113,7 +113,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	 */
 	private void load() {
 		TrendParameter param;
-		trendTask = new TrendLoader(requireContext());
 		if (!search.trim().isEmpty())
 			param = new TrendParameter(TrendLoader.SEARCH, search);
 		else if (adapter.isEmpty())

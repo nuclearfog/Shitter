@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.backend.async.FilterLoader;
 import org.nuclearfog.twidda.backend.async.FilterLoader.FilterParam;
 import org.nuclearfog.twidda.backend.async.FilterLoader.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
@@ -99,7 +99,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
 	private GlobalSettings settings;
-	private FilterLoader userExclTask;
+	private FilterLoader filterAsync;
 	private FragmentAdapter adapter;
 
 	private Toolbar toolbar;
@@ -107,6 +107,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private ViewPager pager;
 
 	private int mode;
+
 
 	@Override
 	protected void attachBaseContext(Context newBase) {
@@ -123,10 +124,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		tablayout = findViewById(R.id.page_exclude_tab);
 		pager = findViewById(R.id.page_exclude_pager);
 
+		filterAsync = new FilterLoader(this);
+		settings = GlobalSettings.getInstance(this);
 		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		pager.setAdapter(adapter);
-
-		settings = GlobalSettings.getInstance(this);
 
 		mode = getIntent().getIntExtra(KEY_USERS_MODE, 0);
 		long id = getIntent().getLongExtra(KEY_USERS_ID, -1);
@@ -232,11 +233,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_exclude_refresh) {
-			if (userExclTask == null || userExclTask.isIdle()) {
+			if (filterAsync.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
-				userExclTask = new FilterLoader(this);
 				FilterParam param = new FilterParam(FilterParam.RELOAD);
-				userExclTask.execute(param, this);
+				filterAsync.execute(param, this);
 			}
 		}
 		return super.onOptionsItemSelected(item);
@@ -265,17 +265,15 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (userExclTask == null || userExclTask.isIdle()) {
+			if (filterAsync.isIdle()) {
 				if (tablayout.getSelectedTabPosition() == 0) {
-					userExclTask = new FilterLoader(this);
 					FilterParam param = new FilterParam(FilterParam.MUTE, query);
-					userExclTask.execute(param, this);
-					return true;
+					filterAsync.execute(param, this);
 				} else if (tablayout.getSelectedTabPosition() == 1) {
 					FilterParam param = new FilterParam(FilterParam.BLOCK, query);
-					userExclTask.execute(param, this);
-					return true;
+					filterAsync.execute(param, this);
 				}
+				return true;
 			}
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();

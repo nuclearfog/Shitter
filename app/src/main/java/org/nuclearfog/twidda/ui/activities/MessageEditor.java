@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.backend.async.MessageUpdater;
 import org.nuclearfog.twidda.backend.async.MessageUpdater.MessageUpdateResult;
 import org.nuclearfog.twidda.backend.helper.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -74,6 +74,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		message = findViewById(R.id.popup_message_text);
 		AppStyles.setEditorTheme(root, background);
 
+		messageAsync = new MessageUpdater(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
 
@@ -81,7 +82,6 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		if (prefix != null) {
 			receiver.append(prefix);
 		}
-
 		send.setOnClickListener(this);
 		media.setOnClickListener(this);
 		preview.setOnClickListener(this);
@@ -93,6 +93,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	@Override
 	public void onBackPressed() {
 		if (receiver.getText().length() == 0 && message.getText().length() == 0 && holder.getMediaUri() == null) {
+			loadingCircle.dismiss();
 			super.onBackPressed();
 		} else {
 			confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_LEAVE);
@@ -102,12 +103,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	protected void onDestroy() {
-		if (messageAsync != null && !messageAsync.isIdle())
-			messageAsync.cancel();
-		loadingCircle.dismiss();
-		if (holder != null) {
+		messageAsync.cancel();
+		if (holder != null)
 			holder.close();
-		}
 		super.onDestroy();
 	}
 
@@ -134,7 +132,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	public void onClick(View v) {
 		// send direct message
 		if (v.getId() == R.id.popup_message_send) {
-			if (messageAsync == null || messageAsync.isIdle()) {
+			if (messageAsync.isIdle()) {
 				sendMessage();
 			}
 		}
@@ -155,9 +153,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	public void stopProgress() {
-		if (messageAsync != null && !messageAsync.isIdle()) {
-			messageAsync.cancel();
-		}
+		messageAsync.cancel();
 	}
 
 
@@ -196,7 +192,6 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 			if (holder.prepare(getContentResolver())) {
 				holder.setReceiver(username);
 				holder.setText(message);
-				messageAsync = new MessageUpdater(this);
 				messageAsync.execute(holder, this);
 				loadingCircle.show();
 			} else {

@@ -39,7 +39,7 @@ import org.nuclearfog.twidda.backend.async.LoginAction.LoginParam;
 import org.nuclearfog.twidda.backend.async.LoginAction.LoginResult;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -71,7 +71,6 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	@Nullable
 	private LoginAction loginAsync;
 	private GlobalSettings settings;
 	private ConnectionDialog connectionDialog;
@@ -110,6 +109,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 		NetworkAdapter adapter = new NetworkAdapter(this);
 		connectionDialog = new ConnectionDialog(this);
+		loginAsync = new LoginAction(this);
 		connection = new ConnectionConfig();
 		hostSelector.setAdapter(adapter);
 
@@ -136,8 +136,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Override
 	protected void onDestroy() {
-		if (loginAsync != null && !loginAsync.isIdle())
-			loginAsync.cancel();
+		loginAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -184,7 +183,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Override
 	public void onClick(View v) {
-		if (loginAsync != null && !loginAsync.isIdle()) {
+		if (!loginAsync.isIdle()) {
 			return;
 		}
 		// get login request token
@@ -198,8 +197,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				// use userdefined or default token keys
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, connection.getApiType());
-					LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection);
+					LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection, "");
+					loginAsync.setConnection(this, connection.getApiType());
 					loginAsync.execute(param, this);
 				}
 				// no tokens are set, print error message
@@ -210,8 +209,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// generate Mastodon login
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
-				loginAsync = new LoginAction(this, connection.getApiType());
-				LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection);
+				LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection, "");
+				loginAsync.setConnection(this, connection.getApiType());
 				loginAsync.execute(param, this);
 			}
 		}
@@ -228,8 +227,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
-					loginAsync = new LoginAction(this, connection.getApiType());
-					LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection);
+					LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection, code);
+					loginAsync.setConnection(this, connection.getApiType());
 					loginAsync.execute(param, this);
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, LENGTH_SHORT).show();
@@ -238,8 +237,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// login to mastodon
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, LENGTH_LONG).show();
-				loginAsync = new LoginAction(this, connection.getApiType());
-				LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection);
+				LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection, code);
+				loginAsync.setConnection(this, connection.getApiType());
 				loginAsync.execute(param, this);
 			}
 		}

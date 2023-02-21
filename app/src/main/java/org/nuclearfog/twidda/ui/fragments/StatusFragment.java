@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.async.StatusLoader;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusParameter;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusResult;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
@@ -130,6 +130,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			id = param.getLong(KEY_STATUS_FRAGMENT_ID, 0);
 			search = param.getString(KEY_STATUS_FRAGMENT_SEARCH, "");
 		}
+		statusAsync = new StatusLoader(requireContext());
 		adapter = new StatusAdapter(requireContext(), this);
 		setAdapter(adapter);
 	}
@@ -138,7 +139,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (statusAsync == null) {
+		if (adapter.isEmpty()) {
 			load(0L, 0L, CLEAR_LIST);
 			setRefresh(true);
 		}
@@ -156,9 +157,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public void onDestroy() {
-		if (statusAsync != null && !statusAsync.isIdle()) {
-			statusAsync.cancel();
-		}
+		statusAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -202,7 +201,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public boolean onPlaceholderClick(long minId, long maxId, int pos) {
-		if (statusAsync != null && statusAsync.isIdle()) {
+		if (statusAsync.isIdle()) {
 			load(minId, maxId, pos);
 			return true;
 		}
@@ -219,9 +218,9 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			} else {
 				adapter.addItems(result.statuses, result.position);
 			}
-		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
-			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+		} else if (getContext() != null) {
+			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 			setRefresh(false);
 		}
@@ -236,7 +235,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 */
 	private void load(long sinceId, long maxId, int index) {
 		StatusParameter request;
-		statusAsync = new StatusLoader(requireContext());
 		switch (mode) {
 			case STATUS_FRAGMENT_HOME:
 				request = new StatusParameter(StatusParameter.HOME, id, sinceId, maxId, index, search);

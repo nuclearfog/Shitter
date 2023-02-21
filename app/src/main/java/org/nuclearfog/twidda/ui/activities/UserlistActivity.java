@@ -131,6 +131,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		pager = findViewById(R.id.listdetail_pager);
 
 		confirmDialog = new ConfirmDialog(this);
+		listLoaderAsync = new ListAction(this);
+		listManagerAsync = new ListManager(this);
 		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		pager.setOffscreenPageLimit(3);
 		pager.setAdapter(adapter);
@@ -157,11 +159,10 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (listLoaderAsync == null && userList != null) {
+		if (userList != null) {
 			boolean blockUpdate = getIntent().getBooleanExtra(KEY_LIST_NO_UPDATE, false);
 			if (!blockUpdate) {
 				// update list information
-				listLoaderAsync = new ListAction(this);
 				ListActionParam param = new ListActionParam(ListActionParam.LOAD, userList.getId());
 				listLoaderAsync.execute(param, this::setList);
 			}
@@ -171,9 +172,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Override
 	protected void onDestroy() {
-		if (listLoaderAsync != null && !listLoaderAsync.isIdle()) {
-			listLoaderAsync.cancel();
-		}
+		listLoaderAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -217,7 +216,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (userList != null && (listLoaderAsync == null || listLoaderAsync.isIdle())) {
+		if (userList != null && listLoaderAsync.isIdle()) {
 			// open user list editor
 			if (item.getItemId() == R.id.menu_list_edit) {
 				Intent editList = new Intent(this, UserlistEditor.class);
@@ -233,7 +232,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				if (userList.isFollowing()) {
 					confirmDialog.show(ConfirmDialog.LIST_UNFOLLOW);
 				} else {
-					listLoaderAsync = new ListAction(this);
 					ListActionParam param = new ListActionParam(ListActionParam.FOLLOW, userList.getId());
 					listLoaderAsync.execute(param, this::setList);
 				}
@@ -279,30 +277,25 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
-		if (userList != null) {
-			// delete user list
-			if (type == ConfirmDialog.LIST_DELETE) {
-				if (listLoaderAsync == null || listLoaderAsync.isIdle()) {
-					ListActionParam param = new ListActionParam(ListActionParam.DELETE, userList.getId());
-					listLoaderAsync = new ListAction(this);
-					listLoaderAsync.execute(param, this::setList);
-				}
+		// delete user list
+		if (type == ConfirmDialog.LIST_DELETE && userList != null) {
+			if (listLoaderAsync.isIdle()) {
+				ListActionParam param = new ListActionParam(ListActionParam.DELETE, userList.getId());
+				listLoaderAsync.execute(param, this::setList);
 			}
-			// unfollow user list
-			else if (type == ConfirmDialog.LIST_UNFOLLOW) {
-				if (listLoaderAsync == null || listLoaderAsync.isIdle()) {
-					ListActionParam param = new ListActionParam(ListActionParam.UNFOLLOW, userList.getId());
-					listLoaderAsync = new ListAction(this);
-					listLoaderAsync.execute(param, this::setList);
-				}
+		}
+		// unfollow user list
+		else if (type == ConfirmDialog.LIST_UNFOLLOW) {
+			if (listLoaderAsync.isIdle() && userList != null) {
+				ListActionParam param = new ListActionParam(ListActionParam.UNFOLLOW, userList.getId());
+				listLoaderAsync.execute(param, this::setList);
 			}
-			// remove user from list
-			else if (type == ConfirmDialog.LIST_REMOVE_USER) {
-				if ((listManagerAsync == null || listManagerAsync.isIdle()) && user != null) {
-					ListManagerParam param = new ListManagerParam(ListManagerParam.DEL_USER, userList.getId(), user.getScreenname());
-					listManagerAsync = new ListManager(this);
-					listManagerAsync.execute(param, this::updateList);
-				}
+		}
+		// remove user from list
+		else if (type == ConfirmDialog.LIST_REMOVE_USER) {
+			if (listManagerAsync.isIdle() && userList != null && user != null) {
+				ListManagerParam param = new ListManagerParam(ListManagerParam.DEL_USER, userList.getId(), user.getScreenname());
+				listManagerAsync.execute(param, this::updateList);
 			}
 		}
 	}
@@ -336,10 +329,9 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (userList == null)
 			return false;
 		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (listManagerAsync == null || listManagerAsync.isIdle()) {
+			if (listManagerAsync.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
 				ListManagerParam param = new ListManagerParam(ListManagerParam.ADD_USER, userList.getId(), query);
-				listManagerAsync = new ListManager(this);
 				listManagerAsync.execute(param, this::updateList);
 				return true;
 			}

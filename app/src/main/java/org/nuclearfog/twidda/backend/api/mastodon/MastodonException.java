@@ -39,6 +39,11 @@ public class MastodonException extends ConnectionException {
 	 */
 	private static final int ERROR_JSON = -3;
 
+	/**
+	 * caused by interrupt
+	 */
+	private static final int ERRO_INTERRUPTED = -4;
+
 
 	private int errorCode = UNKNOWN_ERROR;
 	private String errorMessage = "";
@@ -53,6 +58,8 @@ public class MastodonException extends ConnectionException {
 			errorCode = ERROR_NETWORK;
 		} else if (e instanceof JSONException) {
 			errorCode = ERROR_JSON;
+		} else if (getCause() instanceof InterruptedException) {
+			errorCode = ERRO_INTERRUPTED;
 		}
 	}
 
@@ -112,6 +119,9 @@ public class MastodonException extends ConnectionException {
 
 			case ERROR_JSON:
 				return JSON_FORMAT;
+
+			case ERRO_INTERRUPTED:
+				return INTERRUPTED;
 
 			default:
 			case UNKNOWN_ERROR:

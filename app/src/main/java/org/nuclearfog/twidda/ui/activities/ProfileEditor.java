@@ -36,7 +36,7 @@ import org.nuclearfog.twidda.backend.async.UserUpdater;
 import org.nuclearfog.twidda.backend.async.UserUpdater.UserUpdateResult;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.Configuration;
@@ -114,6 +114,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
+		editorAsync = new UserUpdater(this);
 
 		toolbar.setTitle(R.string.page_profile_editor);
 		setSupportActionBar(toolbar);
@@ -155,8 +156,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
-		if (editorAsync != null && !editorAsync.isIdle())
-			editorAsync.cancel();
+		editorAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -284,7 +284,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	 * update user information
 	 */
 	private void updateUser() {
-		if (editorAsync == null || editorAsync.isIdle()) {
+		if (editorAsync.isIdle()) {
 			String username = this.username.getText().toString();
 			String userLink = profileUrl.getText().toString();
 			String userLoc = profileLocation.getText().toString();
@@ -295,10 +295,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			} else if (!userLink.isEmpty() && !Patterns.WEB_URL.matcher(userLink).matches()) {
 				String errMsg = getString(R.string.error_invalid_link);
 				profileUrl.setError(errMsg);
-			} else if (editorAsync == null || editorAsync.isIdle()) {
+			} else {
 				holder.setProfile(username, userLink, userBio, userLoc);
 				if (holder.prepare(getContentResolver())) {
-					editorAsync = new UserUpdater(this);
 					editorAsync.execute(holder, this);
 					loadingCircle.show();
 				} else {

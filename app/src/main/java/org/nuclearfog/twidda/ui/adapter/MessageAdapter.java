@@ -153,6 +153,13 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	}
 
 	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return messages.isEmpty();
+	}
+
+	/**
 	 * set messages
 	 *
 	 * @param newData new message list

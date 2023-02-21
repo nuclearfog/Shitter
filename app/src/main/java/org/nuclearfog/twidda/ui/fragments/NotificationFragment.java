@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationParam;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationResult;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -45,6 +45,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		adapter = new NotificationAdapter(requireContext(), this);
+		notificationAsync = new NotificationLoader(requireContext());
 		setAdapter(adapter);
 	}
 
@@ -52,7 +53,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (notificationAsync == null) {
+		if (adapter.isEmpty()) {
 			load(0L, 0L, 0);
 			setRefresh(true);
 		}
@@ -61,9 +62,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public void onDestroyView() {
-		if (notificationAsync != null && !notificationAsync.isIdle()) {
-			notificationAsync.cancel();
-		}
+		notificationAsync.cancel();
 		super.onDestroyView();
 	}
 
@@ -107,7 +106,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public boolean onPlaceholderClick(long sinceId, long maxId, int position) {
-		if (notificationAsync != null && notificationAsync.isIdle()) {
+		if (notificationAsync.isIdle()) {
 			load(sinceId, maxId, position);
 			return true;
 		}
@@ -133,9 +132,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		setRefresh(false);
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
-		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
-			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+		} else if (getContext() != null) {
+			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}
 	}
@@ -146,7 +145,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * @param pos   index to insert the new items
 	 */
 	private void load(long minId, long maxId, int pos) {
-		notificationAsync = new NotificationLoader(requireContext());
 		NotificationParam param = new NotificationParam(pos, minId, maxId);
 		notificationAsync.execute(param, this);
 	}

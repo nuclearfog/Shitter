@@ -26,7 +26,7 @@ import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
@@ -59,7 +59,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private ImageButton mediaBtn, locationBtn;
 	private View locationPending;
 
-	@Nullable
 	private StatusUpdater uploaderAsync;
 	private GlobalSettings settings;
 
@@ -89,6 +88,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		mediaBtn = findViewById(R.id.popup_status_add_media);
 		locationPending = findViewById(R.id.popup_status_location_loading);
 
+		uploaderAsync = new StatusUpdater(this);
 		settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
@@ -137,8 +137,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
-		if (uploaderAsync != null && !uploaderAsync.isIdle())
-			uploaderAsync.cancel();
+		uploaderAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -162,7 +161,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				Toast.makeText(getApplicationContext(), R.string.info_location_pending, Toast.LENGTH_SHORT).show();
 			}
 			// check if gps locating is not pending
-			else if (uploaderAsync == null || uploaderAsync.isIdle()) {
+			else if (uploaderAsync.isIdle()) {
 				updateStatus();
 			}
 		}
@@ -246,9 +245,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	public void stopProgress() {
-		if (uploaderAsync != null && !uploaderAsync.isIdle()) {
-			uploaderAsync.cancel();
-		}
+		uploaderAsync.cancel();
 	}
 
 
@@ -316,7 +313,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		// first initialize filestreams of the media files
 		if (statusUpdate.prepare(getContentResolver())) {
 			// send status
-			uploaderAsync = new StatusUpdater(this);
 			uploaderAsync.execute(statusUpdate, this);
 			// show progress dialog
 			loadingCircle.show();

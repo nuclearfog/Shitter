@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.async.ListLoader;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistParam;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistResult;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -78,6 +78,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 			id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
 			type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
 		}
+		listTask = new ListLoader(requireContext());
 		adapter = new UserlistAdapter(requireContext(), this);
 		setAdapter(adapter);
 	}
@@ -86,24 +87,23 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (listTask == null) {
+		if (adapter.isEmtpy()) {
 			setRefresh(true);
-			load(0);
+			load(-1L);
 		}
 	}
 
 
 	@Override
 	protected void onReset() {
-		load(0);
+		load(-1L);
 		setRefresh(true);
 	}
 
 
 	@Override
 	public void onDestroy() {
-		if (listTask != null && !listTask.isIdle())
-			listTask.cancel();
+		listTask.cancel();
 		super.onDestroy();
 	}
 
@@ -131,7 +131,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	protected void onReload() {
-		load(0);
+		load(-1L);
 	}
 
 
@@ -153,7 +153,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (listTask != null && listTask.isIdle()) {
+		if (listTask.isIdle()) {
 			load(cursor);
 			return true;
 		}
@@ -166,9 +166,9 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		setRefresh(false);
 		if (result.userlists != null) {
 			adapter.addItems(result.userlists);
-		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
-			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+		} else if (getContext() != null) {
+			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}
 	}
@@ -178,7 +178,6 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	 */
 	private void load(long cursor) {
 		UserlistParam param;
-		listTask = new ListLoader(requireContext());
 		switch (type) {
 			case LIST_USER_OWNS:
 				param = new UserlistParam(UserlistParam.LOAD_USERLISTS, id, cursor);

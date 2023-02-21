@@ -188,6 +188,13 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	}
 
 	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmtpy() {
+		return userlists.isEmpty();
+	}
+
+	/**
 	 * disable placeholder view loading animation
 	 */
 	public void disableLoading() {

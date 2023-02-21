@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.utils;
+package org.nuclearfog.twidda.backend.async;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,9 +6,11 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Executor for tasks running in the bnackground
@@ -17,15 +19,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AsyncExecutor<Parameter, Result> {
 
-	private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+	/**
+	 * Thread count used to parallelize background tasks
+	 */
+	private static final int N_THREAD = 2;
+
+	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(N_THREAD);
 
 	private Handler uiHandler = new Handler(Looper.getMainLooper());
-
 	private WeakReference<AsyncCallback<Result>> callback;
 
-	private AtomicBoolean idle = new AtomicBoolean(true);
-	private AtomicBoolean cancel = new AtomicBoolean(false);
-
+	/**
+	 * contains all tasks used by an instance
+	 */
+	private Queue<Future<?>> queue = new LinkedBlockingQueue<>();
 
 	/**
 	 * start packground task
@@ -35,41 +42,33 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 */
 	public final void execute(final Parameter parameter, AsyncCallback<Result> callback) {
 		this.callback = new WeakReference<>(callback);
-
-		EXECUTOR.submit(new Runnable() {
+		Future<?> future = EXECUTOR.submit(new Runnable() {
 			@Override
 			public void run() {
-				idle.set(false);
 				Result result = doInBackground(parameter);
 				onPostExecute(result);
-				idle.set(true);
 			}
 		});
+		queue.add(future);
 	}
 
 	/**
-	 * stop running and scheduled tasks
+	 * send signal to the tasks executed by this instance
 	 */
 	public final void cancel() {
-		cancel.set(true);
+		while (!queue.isEmpty()) {
+			Future<?> future = queue.remove();
+			future.cancel(true);
+		}
 	}
 
 	/**
-	 * check if there aren't any active tasks
+	 * check if this instance is executing a background task
 	 *
 	 * @return true if there aren't any tasks
 	 */
 	public final boolean isIdle() {
-		return idle.get();
-	}
-
-	/**
-	 * check if current instance's thread is cancelled
-	 *
-	 * @return true if the thread of the current instance is cancelled
-	 */
-	public boolean isCancelled() {
-		return cancel.get();
+		return queue.isEmpty();
 	}
 
 	/**
@@ -81,6 +80,8 @@ public abstract class AsyncExecutor<Parameter, Result> {
 		uiHandler.post(new Runnable() {
 			@Override
 			public void run() {
+				if (!queue.isEmpty())
+					queue.remove();
 				AsyncCallback<Result> reference = callback.get();
 				if (reference != null) {
 					reference.onResult(result);

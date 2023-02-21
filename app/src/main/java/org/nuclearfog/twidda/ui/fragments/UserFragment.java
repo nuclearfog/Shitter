@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.async.UsersLoader;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
-import org.nuclearfog.twidda.backend.utils.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -158,6 +158,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 			search = param.getString(KEY_FRAG_USER_SEARCH, "");
 			delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
 		}
+		userAsync = new UsersLoader(requireContext());
 		adapter = new UserAdapter(requireContext(), this, delUser);
 		setAdapter(adapter);
 	}
@@ -166,7 +167,8 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	@Override
 	public void onStart() {
 		super.onStart();
-		if (userAsync == null) {
+		if (adapter.isEmpty()) {
+			setRefresh(true);
 			load(-1L);
 		}
 	}
@@ -174,15 +176,14 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	protected void onReset() {
-		load(-1L);
 		setRefresh(true);
+		load(-1L);
 	}
 
 
 	@Override
 	public void onDestroy() {
-		if (userAsync != null && !userAsync.isIdle())
-			userAsync.cancel();
+		userAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -218,7 +219,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (userAsync != null && userAsync.isIdle()) {
+		if (userAsync.isIdle()) {
 			load(cursor);
 			return true;
 		}
@@ -241,9 +242,9 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 		setRefresh(false);
 		if (result.users != null) {
 			adapter.addItems(result.users);
-		} else {
-			String message = ErrorHandler.getErrorMessage(requireContext(), result.exception);
-			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+		} else if (getContext() != null) {
+			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}
 	}
@@ -265,7 +266,6 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	 */
 	private void load(long cursor) {
 		UserParam param;
-		userAsync = new UsersLoader(requireContext());
 		switch (mode) {
 			case USER_FRAG_FOLLOWER:
 				param = new UserParam(UserParam.FOLLOWS, id, cursor, search);
@@ -315,8 +315,5 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 				return;
 		}
 		userAsync.execute(param, this);
-		if (cursor == 0) {
-			setRefresh(true);
-		}
 	}
 }

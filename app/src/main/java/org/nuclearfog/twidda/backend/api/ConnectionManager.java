@@ -41,7 +41,7 @@ public class ConnectionManager {
 	 */
 	public static Connection get(Context context, @Nullable Configuration config) {
 		// create new singleton instance if there is none or if settings change
-		if (notifySettingsChange || connection == null) {
+		if (notifySettingsChange || connection == null || config != null) {
 			notifySettingsChange = false;
 			GlobalSettings settings = GlobalSettings.getInstance(context);
 			// select automatically

@@ -11,20 +11,11 @@ import org.nuclearfog.twidda.config.Configuration;
  */
 public class ConnectionConfig {
 
-	private String consumerKey;
-	private String consumerSecret;
-	private String hostname;
-	private String tempOauth;
 	private Configuration apiConfig;
-
-	/**
-	 *
-	 */
-	public ConnectionConfig() {
-		hostname = "";
-		consumerKey = "";
-		consumerSecret = "";
-	}
+	private String consumerKey = "";
+	private String consumerSecret = "";
+	private String hostname = "";
+	private String tempOauth = "";
 
 	/**
 	 * get host url used by the API
@@ -133,19 +124,23 @@ public class ConnectionConfig {
 	@NonNull
 	@Override
 	public String toString() {
-		String result = "network=\"";
-		switch (apiConfig) {
-			case MASTODON:
-				result = "Mastodon\"";
-				break;
+		String result = "";
+		if (apiConfig != null) {
+			switch (apiConfig) {
+				case MASTODON:
+					result = "network=\"Mastodon\"";
+					break;
 
-			case TWITTER1:
-				result = "Twitter V1.1\"";
-				break;
+				case TWITTER1:
+					result = "network=\"Twitter V1.1\"";
+					break;
 
-			case TWITTER2:
-				result = "Twitter V2.0\"";
-				break;
+				case TWITTER2:
+					result = "network=\"Twitter V2.0\"";
+					break;
+			}
+		} else {
+			result = "network=\"none\"";
 		}
 		if (useHost()) {
 			result = " hostname=\"" + hostname + "\"";

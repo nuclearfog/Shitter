@@ -71,6 +71,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.database.impl.UserImpl;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
@@ -135,6 +136,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private ConfirmDialog confirmDialog;
+	private RelationLoader relationLoader;
+	private UserLoader userLoader;
 
 	private NestedScrollView root;
 	private ConstraintLayout header;
@@ -147,10 +150,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private TabLayout tabLayout;
 	private Toolbar toolbar;
 
-	@Nullable
-	private RelationLoader relationLoader;
-	@Nullable
-	private UserLoader userLoader;
 	@Nullable
 	private Relation relation;
 	@Nullable
@@ -187,6 +186,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		tabLayout = findViewById(R.id.profile_tab);
 		tabPages = findViewById(R.id.profile_pager);
 
+		relationLoader = new RelationLoader(this);
+		userLoader = new UserLoader(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
 		if (!settings.toolbarOverlapEnabled()) {
@@ -247,19 +248,17 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (userLoader == null) {
-			UserParam param;
-			userLoader = new UserLoader(this);
-			if (user == null) {
-				param = new UserParam(UserParam.DATABASE, userId);
-			} else {
-				param = new UserParam(UserParam.ONLINE, userId);
-				setUser(user);
-			}
+		if (user == null) {
+			UserParam param = new UserParam(UserParam.DATABASE, userId);
 			userLoader.execute(param, this::setUserResult);
+		} else if (user instanceof UserImpl) {
+			UserParam param = new UserParam(UserParam.ONLINE, userId);
+			userLoader.execute(param, this::setUserResult);
+			setUser(user);
+		} else {
+			setUser(user);
 		}
-		if (relationLoader == null && userId != settings.getLogin().getId()) {
-			relationLoader = new RelationLoader(this);
+		if (relation == null && userId != settings.getLogin().getId()) {
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
 			relationLoader.execute(param, this::setRelationResult);
 		}
@@ -288,8 +287,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	protected void onDestroy() {
-		if (relationLoader != null && !relationLoader.isIdle())
-			relationLoader.cancel();
+		relationLoader.cancel();
+		userLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -409,10 +408,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// follow / unfollow user
 		else if (item.getItemId() == R.id.profile_follow) {
 			if (relation != null && user != null) {
-				if (!relation.isFollowing() && (relationLoader == null || relationLoader.isIdle())) {
-					RelationParam param = new RelationParam(user.getId(), RelationParam.FOLLOW);
-					relationLoader = new RelationLoader(this);
-					relationLoader.execute(param, this::setRelationResult);
+				if (!relation.isFollowing()) {
+					if (relationLoader.isIdle()) {
+						RelationParam param = new RelationParam(user.getId(), RelationParam.FOLLOW);
+						relationLoader.execute(param, this::setRelationResult);
+					}
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_UNFOLLOW);
 				}
@@ -421,10 +421,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// mute user
 		else if (item.getItemId() == R.id.profile_mute) {
 			if (relation != null && user != null) {
-				if (relation.isMuted() && (relationLoader == null || relationLoader.isIdle())) {
-					RelationParam param = new RelationParam(user.getId(), RelationParam.UNMUTE);
-					relationLoader = new RelationLoader(this);
-					relationLoader.execute(param, this::setRelationResult);
+				if (relation.isMuted()) {
+					if (relationLoader.isIdle()) {
+						RelationParam param = new RelationParam(user.getId(), RelationParam.UNMUTE);
+						relationLoader.execute(param, this::setRelationResult);
+					}
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_MUTE);
 				}
@@ -433,10 +434,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// block user
 		else if (item.getItemId() == R.id.profile_block) {
 			if (relation != null && user != null) {
-				if (relation.isBlocked() && (relationLoader == null || relationLoader.isIdle())) {
-					RelationParam param = new RelationParam(user.getId(), RelationParam.UNBLOCK);
-					relationLoader = new RelationLoader(this);
-					relationLoader.execute(param, this::setRelationResult);
+				if (relation.isBlocked()) {
+					if (relationLoader.isIdle()) {
+						RelationParam param = new RelationParam(user.getId(), RelationParam.UNBLOCK);
+						relationLoader.execute(param, this::setRelationResult);
+					}
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_BLOCK);
 				}
@@ -590,25 +592,22 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
-		if (user == null)
-			return;
-		// confirmed unfollowing user
-		if (type == ConfirmDialog.PROFILE_UNFOLLOW) {
-			RelationParam param = new RelationParam(user.getId(), RelationParam.UNFOLLOW);
-			relationLoader = new RelationLoader(this);
-			relationLoader.execute(param, this::setRelationResult);
-		}
-		// confirmed blocking user
-		else if (type == ConfirmDialog.PROFILE_BLOCK) {
-			RelationParam param = new RelationParam(user.getId(), RelationParam.BLOCK);
-			relationLoader = new RelationLoader(this);
-			relationLoader.execute(param, this::setRelationResult);
-		}
-		// confirmed muting user
-		else if (type == ConfirmDialog.PROFILE_MUTE) {
-			RelationParam param = new RelationParam(user.getId(), RelationParam.MUTE);
-			relationLoader = new RelationLoader(this);
-			relationLoader.execute(param, this::setRelationResult);
+		if (user != null) {
+			// confirmed unfollowing user
+			if (type == ConfirmDialog.PROFILE_UNFOLLOW) {
+				RelationParam param = new RelationParam(user.getId(), RelationParam.UNFOLLOW);
+				relationLoader.execute(param, this::setRelationResult);
+			}
+			// confirmed blocking user
+			else if (type == ConfirmDialog.PROFILE_BLOCK) {
+				RelationParam param = new RelationParam(user.getId(), RelationParam.BLOCK);
+				relationLoader.execute(param, this::setRelationResult);
+			}
+			// confirmed muting user
+			else if (type == ConfirmDialog.PROFILE_MUTE) {
+				RelationParam param = new RelationParam(user.getId(), RelationParam.MUTE);
+				relationLoader.execute(param, this::setRelationResult);
+			}
 		}
 	}
 
@@ -661,7 +660,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private void setUserResult(UserResult result) {
 		switch (result.mode) {
 			case UserResult.DATABASE:
-				userLoader = new UserLoader(this);
 				UserParam param = new UserParam(UserParam.ONLINE, userId);
 				userLoader.execute(param, this::setUserResult);
 				// fall through
