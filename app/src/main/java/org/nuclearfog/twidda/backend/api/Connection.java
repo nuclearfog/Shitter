@@ -523,13 +523,21 @@ public interface Connection {
 	List<Emoji> getEmojis() throws ConnectionException;
 
 	/**
+	 * get poll of a status
+	 *
+	 * @param id ID of the poll
+	 * @return poll instance
+	 */
+	Poll getPoll(long id) throws ConnectionException;
+
+	/**
 	 * send a vote to a poll
 	 *
 	 * @param poll      poll tovote
 	 * @param selection selected poll choices
 	 * @return updated poll
 	 */
-	Poll vote(Poll poll, int[] selection) throws ConnectionException;
+	Poll votePoll(Poll poll, int[] selection) throws ConnectionException;
 
 	/**
 	 * returns a list of blocked user IDs

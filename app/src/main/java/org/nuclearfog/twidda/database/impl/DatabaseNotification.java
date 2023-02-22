@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclerfog
  */
-public class NotificationImpl implements Notification {
+public class DatabaseNotification implements Notification {
 
 	private static final long serialVersionUID = 436155941776152806L;
 
@@ -31,8 +31,8 @@ public class NotificationImpl implements Notification {
 	 * @param cursor  database cursor containing Notification table column
 	 * @param account current user information
 	 */
-	public NotificationImpl(Cursor cursor, Account account) {
-		user = new UserImpl(cursor, account);
+	public DatabaseNotification(Cursor cursor, Account account) {
+		user = new DatabaseUser(cursor, account);
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ID));
 		itemId = cursor.getLong(cursor.getColumnIndexOrThrow(NotificationTable.ITEM));
 		type = cursor.getInt(cursor.getColumnIndexOrThrow(NotificationTable.TYPE));

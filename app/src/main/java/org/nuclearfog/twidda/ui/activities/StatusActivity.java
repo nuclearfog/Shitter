@@ -65,7 +65,7 @@ import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.database.impl.StatusImpl;
+import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
@@ -274,12 +274,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (status == null) {
 			StatusParam param = new StatusParam(StatusParam.ONLINE, id);
 			statusAsync.execute(param, this::onStatusResult);
-		} else if (status instanceof StatusImpl) {
-			StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
-			statusAsync.execute(param, this::onStatusResult);
-			setStatus(status);
 		} else {
-			setStatus(status);
+			if (status instanceof DatabaseStatus) {
+				setStatus(status);
+				StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
+				statusAsync.execute(param, this::onStatusResult);
+			} else {
+				setStatus(status);
+				if (status.getPoll() != null) {
+					VoteParam param = new VoteParam(VoteParam.LOAD, status.getPoll(), new int[0]);
+					voteAsync.execute(param, this::setPollResult);
+				}
+			}
 		}
 	}
 
@@ -671,8 +677,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onVoteClick(Poll poll, int[] selection) {
-		if (voteAsync == null || voteAsync.isIdle()) {
-			VoteParam param = new VoteParam(poll, selection);
+		if (voteAsync.isIdle()) {
+			VoteParam param = new VoteParam(VoteParam.VOTE, poll, selection);
 			voteAsync.execute(param, this::setPollResult);
 		}
 	}
@@ -891,12 +897,24 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * @param result poll result
 	 */
 	public void setPollResult(VoteResult result) {
-		if (result.poll != null) {
-			adapter.updatePoll(result.poll);
-			Toast.makeText(getApplicationContext(), R.string.info_poll_voted, Toast.LENGTH_SHORT).show();
-		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
-			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+		switch (result.mode) {
+			case VoteResult.LOAD:
+				if (result.poll != null) {
+					adapter.updatePoll(result.poll);
+				}
+				break;
+
+			case VoteResult.VOTE:
+				if (result.poll != null) {
+					adapter.updatePoll(result.poll);
+					Toast.makeText(getApplicationContext(), R.string.info_poll_voted, Toast.LENGTH_SHORT).show();
+				}
+				break;
+
+			case VoteResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				break;
 		}
 	}
 }

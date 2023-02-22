@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.model.Trend;
  *
  * @author nuclearfog
  */
-public class TrendImpl implements Trend {
+public class DatabaseTrend implements Trend {
 
 	private static final long serialVersionUID = 1799880502954768985L;
 
@@ -34,7 +34,7 @@ public class TrendImpl implements Trend {
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
 	 */
-	public TrendImpl(Cursor cursor) {
+	public DatabaseTrend(Cursor cursor) {
 		name = cursor.getString(0);
 		popularity = cursor.getInt(1);
 		rank = cursor.getInt(2);

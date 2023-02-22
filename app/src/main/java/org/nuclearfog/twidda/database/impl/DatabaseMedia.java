@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.model.Media;
  *
  * @author nuclearfog
  */
-public class MediaImpl implements Media {
+public class DatabaseMedia implements Media {
 
 	private static final long serialVersionUID = 8895107738679315263L;
 
@@ -34,7 +34,7 @@ public class MediaImpl implements Media {
 	/**
 	 * @param cursor database cursor containing media table
 	 */
-	public MediaImpl(Cursor cursor) {
+	public DatabaseMedia(Cursor cursor) {
 		key = cursor.getString(0);
 		url = cursor.getString(1);
 		preview = cursor.getString(2);

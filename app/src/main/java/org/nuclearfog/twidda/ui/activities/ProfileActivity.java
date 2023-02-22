@@ -71,7 +71,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.database.impl.UserImpl;
+import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
@@ -251,7 +251,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (user == null) {
 			UserParam param = new UserParam(UserParam.DATABASE, userId);
 			userLoader.execute(param, this::setUserResult);
-		} else if (user instanceof UserImpl) {
+		} else if (user instanceof DatabaseUser) {
 			UserParam param = new UserParam(UserParam.ONLINE, userId);
 			userLoader.execute(param, this::setUserResult);
 			setUser(user);

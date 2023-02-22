@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
@@ -17,6 +18,7 @@ import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 
 import java.io.IOException;
@@ -106,6 +108,12 @@ public class TwitterV2 extends TwitterV1 {
 			filterTweets(replies);
 		}
 		return replies;
+	}
+
+
+	@Override
+	public Poll getPoll(long id) throws ConnectionException {
+		return null; // todo implement this
 	}
 
 	/**

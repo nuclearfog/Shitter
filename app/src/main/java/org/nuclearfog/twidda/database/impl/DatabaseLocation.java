@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.model.Location;
  *
  * @author nuclearfog
  */
-public class LocationImpl implements Location {
+public class DatabaseLocation implements Location {
 
 	private static final long serialVersionUID = 3719416358210741464L;
 
@@ -30,21 +30,12 @@ public class LocationImpl implements Location {
 
 	private long id;
 	private String name;
-	private String coordinates = "";
-	private String country = "";
-	private String place = "";
-
-	/**
-	 * @param name place name
-	 * @param id   world id
-	 */
-	public LocationImpl(long id, String name) {
-		this.name = name;
-		this.id = id;
-	}
+	private String coordinates;
+	private String country;
+	private String place;
 
 
-	public LocationImpl(Cursor cursor) {
+	public DatabaseLocation(Cursor cursor) {
 		id = cursor.getLong(0);
 		place = cursor.getString(1);
 		country = cursor.getString(2);

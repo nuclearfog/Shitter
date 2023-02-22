@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class StatusImpl implements Status {
+public class DatabaseStatus implements Status {
 
 	private static final long serialVersionUID = -5957556706939766801L;
 
@@ -70,8 +70,8 @@ public class StatusImpl implements Status {
 	 * @param cursor  database cursor
 	 * @param account current user login information
 	 */
-	public StatusImpl(Cursor cursor, Account account) {
-		author = new UserImpl(cursor, account);
+	public DatabaseStatus(Cursor cursor, Account account) {
+		author = new DatabaseUser(cursor, account);
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.TIME));
 		text = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.TEXT));
 		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPOST));

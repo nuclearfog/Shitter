@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.model.Emoji;
  *
  * @author nuclearfog
  */
-public class EmojiImpl implements Emoji {
+public class DatabaseEmoji implements Emoji {
 
 	private static final long serialVersionUID = 4915542258264850899L;
 
@@ -33,7 +33,7 @@ public class EmojiImpl implements Emoji {
 	/**
 	 * @param cursor database cursor
 	 */
-	public EmojiImpl(Cursor cursor) {
+	public DatabaseEmoji(Cursor cursor) {
 		code = cursor.getString(0);
 		url = cursor.getString(1);
 		category = cursor.getString(2);

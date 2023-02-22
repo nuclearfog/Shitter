@@ -119,12 +119,16 @@ public class MastodonPoll implements Poll {
 	@NonNull
 	@Override
 	public String toString() {
-		StringBuilder optionsBuf = new StringBuilder(" options=(");
-		for (Option option : options) {
-			optionsBuf.append(option).append(',');
+		StringBuilder optionsBuf = new StringBuilder();
+		optionsBuf.append("id=").append(id).append(" voted=").append(voted);
+		if (options.length > 0) {
+			optionsBuf.append(" options=(");
+			for (Option option : options) {
+				optionsBuf.append(option).append(',');
+			}
+			optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
 		}
-		optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
-		return "id=" + id + " expired=" + expired + " options=" + optionsBuf;
+		return optionsBuf.toString();
 	}
 
 	/**

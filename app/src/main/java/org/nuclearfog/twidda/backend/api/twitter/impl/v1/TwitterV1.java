@@ -927,7 +927,13 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Poll vote(Poll poll, int[] choices) throws ConnectionException {
+	public Poll getPoll(long id) throws ConnectionException {
+		throw new TwitterException("not supported!");
+	}
+
+
+	@Override
+	public Poll votePoll(Poll poll, int[] choices) throws ConnectionException {
 		throw new TwitterException("not supported!");
 	}
 

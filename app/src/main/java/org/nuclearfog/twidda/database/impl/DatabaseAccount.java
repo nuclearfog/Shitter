@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclearfog
  */
-public class AccountImpl implements Account {
+public class DatabaseAccount implements Account {
 
 	private static final long serialVersionUID = -2276274593772105348L;
 
@@ -44,55 +44,9 @@ public class AccountImpl implements Account {
 	private User user;
 
 	/**
-	 *
-	 */
-	public AccountImpl(Account account) {
-		userId = account.getId();
-		accessToken = account.getOauthToken();
-		tokenSecret = account.getOauthSecret();
-		consumerToken = account.getConsumerToken();
-		consumerSecret = account.getConsumerSecret();
-		bearerToken = account.getBearerToken();
-		host = account.getHostname();
-
-		switch (account.getConfiguration()) {
-			case TWITTER1:
-				apiType = API_TWITTER_1;
-				break;
-
-			case TWITTER2:
-				apiType = API_TWITTER_2;
-				break;
-
-			case MASTODON:
-				apiType = API_MASTODON;
-				break;
-
-			default:
-				apiType = API_NONE;
-				break;
-		}
-	}
-
-	/**
-	 *
-	 */
-	public AccountImpl(long userId, String accessToken, String tokenSecret, String consumerToken, String consumerSecret, String bearerToken, String host, int apiType) {
-		this.userId = userId;
-		this.accessToken = accessToken;
-		this.tokenSecret = tokenSecret;
-		this.consumerToken = consumerToken;
-		this.consumerSecret = consumerSecret;
-		this.bearerToken = bearerToken;
-		this.host = host;
-		this.apiType = apiType;
-		loginDate = System.currentTimeMillis();
-	}
-
-	/**
 	 * @param cursor database cursor using this {@link #COLUMNS}
 	 */
-	public AccountImpl(Cursor cursor) {
+	public DatabaseAccount(Cursor cursor) {
 		userId = cursor.getLong(0);
 		loginDate = cursor.getLong(1);
 		accessToken = cursor.getString(2);
@@ -199,14 +153,5 @@ public class AccountImpl implements Account {
 	 */
 	public void addUser(@Nullable User user) {
 		this.user = user;
-	}
-
-	/**
-	 * override hostname
-	 *
-	 * @param hostname new hostname
-	 */
-	public void setHost(String hostname) {
-		this.host = hostname;
 	}
 }

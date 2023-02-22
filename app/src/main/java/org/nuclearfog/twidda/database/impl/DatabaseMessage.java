@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class MessageImpl implements Message {
+public class DatabaseMessage implements Message {
 
 	private static final long serialVersionUID = 4089879784295312386L;
 
@@ -36,8 +36,8 @@ public class MessageImpl implements Message {
 	 * @param cursor  database cursor containing UserTable column
 	 * @param account current user information
 	 */
-	public MessageImpl(Cursor cursor, Account account) {
-		sender = new UserImpl(cursor, account);
+	public DatabaseMessage(Cursor cursor, Account account) {
+		sender = new DatabaseUser(cursor, account);
 		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TIME));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));

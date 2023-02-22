@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclearfog
  */
-public class UserImpl implements User {
+public class DatabaseUser implements User {
 
 	private static final long serialVersionUID = 2367055336838212570L;
 
@@ -50,7 +50,7 @@ public class UserImpl implements User {
 	 * @param cursor  database cursor containing user column
 	 * @param account current user login
 	 */
-	public UserImpl(Cursor cursor, Account account) {
+	public DatabaseUser(Cursor cursor, Account account) {
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.ID));
 		username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
 		screenName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));

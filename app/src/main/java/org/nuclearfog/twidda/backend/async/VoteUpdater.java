@@ -33,14 +33,21 @@ public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdate
 	@Override
 	protected VoteResult doInBackground(VoteParam param) {
 		try {
-			Poll poll = connection.vote(param.poll, param.selection);
-			return new VoteResult(poll, null);
+			switch (param.mode) {
+				case VoteParam.LOAD:
+					Poll poll = connection.getPoll(param.poll.getId());
+					return new VoteResult(VoteResult.LOAD, poll, null);
+
+				case VoteParam.VOTE:
+					poll = connection.votePoll(param.poll, param.selection);
+					return new VoteResult(VoteResult.VOTE, poll, null);
+			}
 		} catch (ConnectionException exception) {
-			return new VoteResult(null, exception);
+			return new VoteResult(VoteResult.ERROR, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new VoteResult(null, null);
+		return new VoteResult(VoteResult.ERROR, null, null);
 	}
 
 	/**
@@ -48,10 +55,15 @@ public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdate
 	 */
 	public static class VoteParam {
 
+		public static final int LOAD = 1;
+		public static final int VOTE = 2;
+
+		public final int mode;
 		public final Poll poll;
 		public final int[] selection;
 
-		public VoteParam(Poll poll, int[] selection) {
+		public VoteParam(int mode, Poll poll, int[] selection) {
+			this.mode = mode;
 			this.poll = poll;
 			this.selection = Arrays.copyOf(selection, selection.length);
 		}
@@ -62,12 +74,18 @@ public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdate
 	 */
 	public static class VoteResult {
 
+		public static final int ERROR = -1;
+		public static final int LOAD = 3;
+		public static final int VOTE = 4;
+
+		public final int mode;
 		@Nullable
 		public final Poll poll;
 		@Nullable
 		public final ConnectionException exception;
 
-		VoteResult(@Nullable Poll poll, @Nullable ConnectionException exception) {
+		VoteResult(int mode, @Nullable Poll poll, @Nullable ConnectionException exception) {
+			this.mode = mode;
 			this.poll = poll;
 			this.exception = exception;
 		}

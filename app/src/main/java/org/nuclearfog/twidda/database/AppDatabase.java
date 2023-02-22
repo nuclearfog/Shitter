@@ -26,15 +26,15 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.database.impl.AccountImpl;
-import org.nuclearfog.twidda.database.impl.EmojiImpl;
-import org.nuclearfog.twidda.database.impl.LocationImpl;
-import org.nuclearfog.twidda.database.impl.MediaImpl;
-import org.nuclearfog.twidda.database.impl.MessageImpl;
-import org.nuclearfog.twidda.database.impl.NotificationImpl;
-import org.nuclearfog.twidda.database.impl.StatusImpl;
-import org.nuclearfog.twidda.database.impl.TrendImpl;
-import org.nuclearfog.twidda.database.impl.UserImpl;
+import org.nuclearfog.twidda.database.impl.DatabaseAccount;
+import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
+import org.nuclearfog.twidda.database.impl.DatabaseLocation;
+import org.nuclearfog.twidda.database.impl.DatabaseMedia;
+import org.nuclearfog.twidda.database.impl.DatabaseMessage;
+import org.nuclearfog.twidda.database.impl.DatabaseNotification;
+import org.nuclearfog.twidda.database.impl.DatabaseStatus;
+import org.nuclearfog.twidda.database.impl.DatabaseTrend;
+import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
@@ -693,7 +693,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
 		User user = null;
 		if (cursor.moveToFirst())
-			user = new UserImpl(cursor, account);
+			user = new DatabaseUser(cursor, account);
 		cursor.close();
 		return user;
 	}
@@ -746,7 +746,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				NotificationImpl notification = new NotificationImpl(cursor, login);
+				DatabaseNotification notification = new DatabaseNotification(cursor, login);
 				switch (notification.getType()) {
 					case Notification.TYPE_FAVORITE:
 					case Notification.TYPE_REPOST:
@@ -892,11 +892,11 @@ public class AppDatabase {
 	public List<Trend> getTrends() {
 		String[] args = {Long.toString(settings.getTrendLocation().getId())};
 		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.query(TrendTable.NAME, TrendImpl.COLUMNS, TREND_SELECT, args, null, null, null);
+		Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
 		List<Trend> trends = new LinkedList<>();
 		if (cursor.moveToFirst()) {
 			do {
-				trends.add(new TrendImpl(cursor));
+				trends.add(new DatabaseTrend(cursor));
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -918,7 +918,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				MessageImpl item = new MessageImpl(cursor, login);
+				DatabaseMessage item = new DatabaseMessage(cursor, login);
 				result.add(item);
 				if (item.getMediaKeys().length > 0) {
 					List<Media> medias = new LinkedList<>();
@@ -1026,11 +1026,11 @@ public class AppDatabase {
 		ArrayList<Account> result = new ArrayList<>();
 
 		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.query(AccountTable.NAME, AccountImpl.COLUMNS, null, null, null, null, SORT_BY_CREATION);
+		Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 		if (cursor.moveToFirst()) {
 			result.ensureCapacity(cursor.getCount());
 			do {
-				AccountImpl account = new AccountImpl(cursor);
+				DatabaseAccount account = new DatabaseAccount(cursor);
 				account.addUser(getUser(account.getId(), account));
 				result.add(account);
 			} while (cursor.moveToNext());
@@ -1047,7 +1047,7 @@ public class AppDatabase {
 	 */
 	private Status getStatus(Cursor cursor, SQLiteDatabase db) {
 		Account login = settings.getLogin();
-		StatusImpl result = new StatusImpl(cursor, login);
+		DatabaseStatus result = new DatabaseStatus(cursor, login);
 		// check if there is an embedded status
 		if (result.getEmbeddedStatusId() > 1L) {
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
@@ -1113,10 +1113,10 @@ public class AppDatabase {
 	@Nullable
 	private Media getMedia(SQLiteDatabase db, String key) {
 		String[] args = {key};
-		Cursor c = db.query(MediaTable.NAME, MediaImpl.PROJECTION, MEDIA_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(MediaTable.NAME, DatabaseMedia.PROJECTION, MEDIA_SELECT, args, null, null, null, SINGLE_ITEM);
 		Media result = null;
 		if (c.moveToFirst())
-			result = new MediaImpl(c);
+			result = new DatabaseMedia(c);
 		c.close();
 		return result;
 	}
@@ -1131,10 +1131,10 @@ public class AppDatabase {
 	@Nullable
 	private Emoji getEmoji(SQLiteDatabase db, String key) {
 		String[] args = {key};
-		Cursor c = db.query(EmojiTable.NAME, EmojiImpl.PROJECTION, EMOJI_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(EmojiTable.NAME, DatabaseEmoji.PROJECTION, EMOJI_SELECT, args, null, null, null, SINGLE_ITEM);
 		Emoji result = null;
 		if (c.moveToFirst())
-			result = new EmojiImpl(c);
+			result = new DatabaseEmoji(c);
 		c.close();
 		return result;
 	}
@@ -1149,10 +1149,10 @@ public class AppDatabase {
 	@Nullable
 	private Location getLocation(SQLiteDatabase db, long id) {
 		String[] args = {Long.toString(id)};
-		Cursor c = db.query(LocationTable.NAME, LocationImpl.PROJECTION, LOCATION_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(LocationTable.NAME, DatabaseLocation.PROJECTION, LOCATION_SELECT, args, null, null, null, SINGLE_ITEM);
 		Location result = null;
 		if (c.moveToFirst())
-			result = new LocationImpl(c);
+			result = new DatabaseLocation(c);
 		c.close();
 		return result;
 	}

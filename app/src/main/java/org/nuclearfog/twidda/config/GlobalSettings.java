@@ -17,8 +17,8 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.database.impl.AccountImpl;
-import org.nuclearfog.twidda.database.impl.LocationImpl;
+import org.nuclearfog.twidda.config.impl.ConfigAccount;
+import org.nuclearfog.twidda.config.impl.ConfigLocation;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 
@@ -538,7 +538,7 @@ public class GlobalSettings {
 				return location;
 
 			default:
-				return new LocationImpl(-1L, "");
+				return new ConfigLocation(-1L, "");
 		}
 	}
 
@@ -918,7 +918,7 @@ public class GlobalSettings {
 			e.remove(BEARER_TOKEN);
 			e.remove(HOSTNAME);
 		} else {
-			AccountImpl account = new AccountImpl(login);
+			ConfigAccount account = new ConfigAccount(login);
 			this.account = account;
 			loggedIn = true;
 			// setup alternative Twitter host
@@ -1002,7 +1002,7 @@ public class GlobalSettings {
 		proxyPass = settings.getString(PROXY_PASS, "");
 		String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
 		long woeId = settings.getLong(TREND_ID, DEFAULT_LOCATION_ID);
-		location = new LocationImpl(woeId, place);
+		location = new ConfigLocation(woeId, place);
 		// login informations
 		initLogin();
 	}
@@ -1021,7 +1021,7 @@ public class GlobalSettings {
 		long userId = settings.getLong(CURRENT_ID, 0);
 		if ((apiId == Account.API_TWITTER_1 || apiId == Account.API_TWITTER_2) && twitterAlt)
 			hostname = TWITTER_ALT_HOST;
-		account = new AccountImpl(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
+		account = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
 	}
 
 	/**
