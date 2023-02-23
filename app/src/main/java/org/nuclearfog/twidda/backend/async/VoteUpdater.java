@@ -25,7 +25,7 @@ public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdate
 	 *
 	 */
 	public VoteUpdater(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 

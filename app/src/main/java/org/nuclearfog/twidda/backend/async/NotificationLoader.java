@@ -28,7 +28,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	 *
 	 */
 	public NotificationLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -38,15 +38,15 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	protected NotificationResult doInBackground(NotificationParam params) {
 		List<Notification> result = null;
 		try {
-			if (params.minId == 0 && params.maxId == 0) {
+			if (params.minId == 0L && params.maxId == 0L) {
 				result = db.getNotifications();
 				if (result.isEmpty()) {
-					result = connection.getNotifications(0, 0);
+					result = connection.getNotifications(0L, 0L);
 					db.saveNotifications(result);
 				}
 			} else {
 				result = connection.getNotifications(params.minId, params.maxId);
-				if (params.maxId == 0) {
+				if (params.maxId == 0L) {
 					db.saveNotifications(result);
 				}
 			}

@@ -197,8 +197,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				// use userdefined or default token keys
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
-					LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection, "");
-					loginAsync.setConnection(this, connection.getApiType());
+					LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection.getApiType(), connection, "");
 					loginAsync.execute(param, this);
 				}
 				// no tokens are set, print error message
@@ -209,8 +208,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// generate Mastodon login
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
-				LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection, "");
-				loginAsync.setConnection(this, connection.getApiType());
+				LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection.getApiType(), connection, "");
 				loginAsync.execute(param, this);
 			}
 		}
@@ -227,8 +225,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
-					LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection, code);
-					loginAsync.setConnection(this, connection.getApiType());
+					LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection.getApiType(), connection, code);
 					loginAsync.execute(param, this);
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, LENGTH_SHORT).show();
@@ -237,8 +234,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// login to mastodon
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, LENGTH_LONG).show();
-				LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection, code);
-				loginAsync.setConnection(this, connection.getApiType());
+				LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection.getApiType(), connection, code);
 				loginAsync.execute(param, this);
 			}
 		}

@@ -250,7 +250,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 			case STATUS_FRAGMENT_REPLY:
 				if (index == CLEAR_LIST)
-					request = new StatusParameter(StatusParameter.REPLIES_OFFLINE, id, sinceId, maxId, index, search);
+					request = new StatusParameter(StatusParameter.REPLIES_LOCAL, id, sinceId, maxId, index, search);
 				else
 					request = new StatusParameter(StatusParameter.REPLIES, id, sinceId, maxId, index, search);
 				break;

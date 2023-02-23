@@ -296,11 +296,6 @@ public class AppDatabase {
 	private static final String NOTIFICATION_SELECT = NotificationTable.NAME + "." + NotificationTable.ITEM + "=?";
 
 	/**
-	 * select user from user table matching user ID
-	 */
-	private static final String USER_SELECT = UserTable.NAME + "." + UserTable.ID + "=?";
-
-	/**
 	 * selection to get status flag register
 	 */
 	private static final String STATUS_REG_SELECT = StatusRegisterTable.ID + "=? AND " + StatusRegisterTable.OWNER + "=?";
@@ -384,38 +379,31 @@ public class AppDatabase {
 	}
 
 	/**
-	 * Store user information
-	 *
-	 * @param user Twitter user
-	 */
-	public void saveUser(User user) {
-		SQLiteDatabase db = getDbWrite();
-		saveUser(user, db, CONFLICT_REPLACE);
-		commit(db);
-	}
-
-	/**
 	 * save home timeline
 	 *
-	 * @param home status from home timeline
+	 * @param statuses status from home timeline
 	 */
-	public void saveHomeTimeline(List<Status> home) {
-		SQLiteDatabase db = getDbWrite();
-		for (Status status : home)
-			saveStatus(status, db, HOME_TIMELINE_MASK);
-		commit(db);
+	public void saveHomeTimeline(List<Status> statuses) {
+		if (!statuses.isEmpty()) {
+			SQLiteDatabase db = getDbWrite();
+			for (Status status : statuses)
+				saveStatus(status, db, HOME_TIMELINE_MASK);
+			commit(db);
+		}
 	}
 
 	/**
 	 * save user timeline
 	 *
-	 * @param stats user timeline
+	 * @param statuses user timeline
 	 */
-	public void saveUserTimeline(List<Status> stats) {
-		SQLiteDatabase db = getDbWrite();
-		for (Status status : stats)
-			saveStatus(status, db, USER_TIMELINE_MASK);
-		commit(db);
+	public void saveUserTimeline(List<Status> statuses) {
+		if (!statuses.isEmpty()) {
+			SQLiteDatabase db = getDbWrite();
+			for (Status status : statuses)
+				saveStatus(status, db, USER_TIMELINE_MASK);
+			commit(db);
+		}
 	}
 
 	/**
@@ -429,10 +417,12 @@ public class AppDatabase {
 		// delete old favorits
 		String[] delArgs = {Long.toString(ownerId)};
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
-		// save new favorits
-		for (Status status : statuses) {
-			saveStatus(status, db, 0);
-			saveFavorite(status.getId(), ownerId, db);
+
+		if (!statuses.isEmpty()) {
+			for (Status status : statuses) {
+				saveStatus(status, db, 0);
+				saveFavorite(status.getId(), ownerId, db);
+			}
 		}
 		commit(db);
 	}
@@ -448,10 +438,12 @@ public class AppDatabase {
 		// delete old favorits
 		String[] delArgs = {Long.toString(ownerId)};
 		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_OWNER, delArgs);
-		// save new bookmarks
-		for (Status status : statuses) {
-			saveStatus(status, db, 0);
-			saveBookmark(status.getId(), ownerId, db);
+
+		if (!statuses.isEmpty()) {
+			for (Status status : statuses) {
+				saveStatus(status, db, 0);
+				saveBookmark(status.getId(), ownerId, db);
+			}
 		}
 		commit(db);
 	}
@@ -459,12 +451,75 @@ public class AppDatabase {
 	/**
 	 * store replies of a status
 	 *
-	 * @param replies status replies
+	 * @param statuses status replies
 	 */
-	public void saveReplyTimeline(List<Status> replies) {
+	public void saveReplyTimeline(List<Status> statuses) {
+		if (!statuses.isEmpty()) {
+			SQLiteDatabase db = getDbWrite();
+			for (Status status : statuses)
+				saveStatus(status, db, STATUS_REPLY_MASK);
+			commit(db);
+		}
+	}
+
+	/**
+	 * save notifications to database
+	 */
+	public void saveNotifications(List<Notification> notifications) {
+		if (!notifications.isEmpty()) {
+			SQLiteDatabase db = getDbWrite();
+			for (Notification notification : notifications) {
+				ContentValues column = new ContentValues();
+				column.put(NotificationTable.ID, notification.getId());
+				column.put(NotificationTable.TIME, notification.getTimestamp());
+				column.put(NotificationTable.TYPE, notification.getType());
+				column.put(NotificationTable.OWNER, settings.getLogin().getId());
+				column.put(NotificationTable.USER, notification.getUser().getId());
+				saveUser(notification.getUser(), db, CONFLICT_IGNORE);
+				// add status
+				if (notification.getStatus() != null) {
+					saveStatus(notification.getStatus(), db, NOTIFICATION_MASK);
+					column.put(NotificationTable.ITEM, notification.getStatus().getId());
+				}
+				db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
+			}
+			commit(db);
+		}
+	}
+
+	/**
+	 * store direct messages
+	 *
+	 * @param messages list of direct messages
+	 */
+	public void saveMessages(List<Message> messages) {
+		if (!messages.isEmpty()) {
+			SQLiteDatabase db = getDbWrite();
+			for (Message message : messages)
+				saveMessages(message, db);
+			commit(db);
+		}
+	}
+
+	/**
+	 * create a new filterlist containing user IDs
+	 *
+	 * @param ids list of user IDs
+	 */
+	public void saveFilterlist(List<Long> ids) {
+		long homeId = settings.getLogin().getId();
+		String[] args = {Long.toString(homeId)};
 		SQLiteDatabase db = getDbWrite();
-		for (Status status : replies)
-			saveStatus(status, db, STATUS_REPLY_MASK);
+		db.delete(UserExcludeTable.NAME, LIST_SELECT, args);
+
+		if (!ids.isEmpty()) {
+			for (long id : ids) {
+				ContentValues column = new ContentValues(2);
+				column.put(UserExcludeTable.ID, id);
+				column.put(UserExcludeTable.OWNER, homeId);
+				db.insertWithOnConflict(UserExcludeTable.NAME, null, column, SQLiteDatabase.CONFLICT_IGNORE);
+			}
+		}
 		commit(db);
 	}
 
@@ -478,12 +533,12 @@ public class AppDatabase {
 		SQLiteDatabase db = getDbWrite();
 		db.delete(TrendTable.NAME, TREND_SELECT, args);
 		for (Trend trend : trends) {
-			ContentValues trendColumn = new ContentValues(4);
-			trendColumn.put(TrendTable.ID, trend.getLocationId());
-			trendColumn.put(TrendTable.VOL, trend.getPopularity());
-			trendColumn.put(TrendTable.TREND, trend.getName());
-			trendColumn.put(TrendTable.INDEX, trend.getRank());
-			db.insert(TrendTable.NAME, null, trendColumn);
+			ContentValues column = new ContentValues(4);
+			column.put(TrendTable.ID, trend.getLocationId());
+			column.put(TrendTable.VOL, trend.getPopularity());
+			column.put(TrendTable.TREND, trend.getName());
+			column.put(TrendTable.INDEX, trend.getRank());
+			db.insert(TrendTable.NAME, null, column);
 		}
 		commit(db);
 	}
@@ -517,80 +572,25 @@ public class AppDatabase {
 	}
 
 	/**
-	 * save notifications to database
-	 */
-	public void saveNotifications(List<Notification> notifications) {
-		SQLiteDatabase db = getDbWrite();
-		for (Notification notification : notifications) {
-			ContentValues column = new ContentValues();
-			column.put(NotificationTable.ID, notification.getId());
-			column.put(NotificationTable.TIME, notification.getTimestamp());
-			column.put(NotificationTable.TYPE, notification.getType());
-			column.put(NotificationTable.OWNER, settings.getLogin().getId());
-			column.put(NotificationTable.USER, notification.getUser().getId());
-			saveUser(notification.getUser(), db, CONFLICT_IGNORE);
-			// add status
-			if (notification.getStatus() != null) {
-				saveStatus(notification.getStatus(), db, NOTIFICATION_MASK);
-				column.put(NotificationTable.ITEM, notification.getStatus().getId());
-			}
-			db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
-		}
-		commit(db);
-	}
-
-	/**
-	 * store direct messages
-	 *
-	 * @param messages list of direct messages
-	 */
-	public void saveMessages(List<Message> messages) {
-		SQLiteDatabase db = getDbWrite();
-		for (Message message : messages)
-			saveMessages(message, db);
-		commit(db);
-	}
-
-	/**
 	 * save user login
 	 *
 	 * @param account login information
 	 */
 	public void saveLogin(Account account) {
-		ContentValues values = new ContentValues(9);
-		values.put(AccountTable.ID, account.getId());
-		values.put(AccountTable.DATE, account.getTimestamp());
-		values.put(AccountTable.HOSTNAME, account.getHostname());
-		values.put(AccountTable.CLIENT_ID, account.getConsumerToken());
-		values.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
-		values.put(AccountTable.API, account.getConfiguration().getAccountType());
-		values.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
-		values.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
-		values.put(AccountTable.BEARER, account.getBearerToken());
+		ContentValues column = new ContentValues(9);
+		column.put(AccountTable.ID, account.getId());
+		column.put(AccountTable.DATE, account.getTimestamp());
+		column.put(AccountTable.HOSTNAME, account.getHostname());
+		column.put(AccountTable.CLIENT_ID, account.getConsumerToken());
+		column.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
+		column.put(AccountTable.API, account.getConfiguration().getAccountType());
+		column.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
+		column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
+		column.put(AccountTable.BEARER, account.getBearerToken());
 		SQLiteDatabase db = getDbWrite();
-		db.insertWithOnConflict(AccountTable.NAME, "", values, CONFLICT_REPLACE);
+		db.insertWithOnConflict(AccountTable.NAME, "", column, CONFLICT_REPLACE);
 		if (account.getUser() != null) {
 			saveUser(account.getUser(), db, CONFLICT_IGNORE);
-		}
-		commit(db);
-	}
-
-	/**
-	 * create a new filterlist containing user IDs
-	 *
-	 * @param ids list of user IDs
-	 */
-	public void setFilterlistUserIds(List<Long> ids) {
-		long homeId = settings.getLogin().getId();
-		String[] args = {Long.toString(homeId)};
-		SQLiteDatabase db = getDbWrite();
-
-		db.delete(UserExcludeTable.NAME, LIST_SELECT, args);
-		for (long id : ids) {
-			ContentValues column = new ContentValues(2);
-			column.put(UserExcludeTable.ID, id);
-			column.put(UserExcludeTable.OWNER, homeId);
-			db.insertWithOnConflict(UserExcludeTable.NAME, null, column, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 		commit(db);
 	}
@@ -669,6 +669,127 @@ public class AppDatabase {
 	}
 
 	/**
+	 * get reply timeline
+	 *
+	 * @param id status ID
+	 * @return status reply timeline
+	 */
+	public List<Status> getReplies(long id) {
+		String homeStr = Long.toString(settings.getLogin().getId());
+		String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
+
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
+		return getStatuses(cursor, db);
+	}
+
+	/**
+	 * get notifiactions
+	 *
+	 * @return notification lsit
+	 */
+	public List<Notification> getNotifications() {
+		Account login = settings.getLogin();
+		String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
+		SQLiteDatabase db = getDbRead();
+		List<Notification> result = new LinkedList<>();
+		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
+		if (cursor.moveToFirst()) {
+			do {
+				DatabaseNotification notification = new DatabaseNotification(cursor, login);
+				switch (notification.getType()) {
+					case Notification.TYPE_FAVORITE:
+					case Notification.TYPE_REPOST:
+					case Notification.TYPE_MENTION:
+					case Notification.TYPE_POLL:
+					case Notification.TYPE_STATUS:
+					case Notification.TYPE_UPDATE:
+						Status status = getStatus(notification.getItemId());
+						notification.addStatus(status);
+						break;
+				}
+				result.add(notification);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
+	 * Load trend List
+	 *
+	 * @return list of trends
+	 */
+	public List<Trend> getTrends() {
+		String[] args = {Long.toString(settings.getTrendLocation().getId())};
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
+		List<Trend> trends = new LinkedList<>();
+		if (cursor.moveToFirst()) {
+			do {
+				trends.add(new DatabaseTrend(cursor));
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		Collections.sort(trends);
+		return trends;
+	}
+
+	/**
+	 * load direct messages
+	 *
+	 * @return list of direct messages
+	 */
+	public Messages getMessages() {
+		Account login = settings.getLogin();
+		String homeIdStr = Long.toString(login.getId());
+		String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
+		Messages result = new Messages(null, null);
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
+		if (cursor.moveToFirst()) {
+			do {
+				DatabaseMessage item = new DatabaseMessage(cursor, login);
+				result.add(item);
+				if (item.getMediaKeys().length > 0) {
+					List<Media> medias = new LinkedList<>();
+					for (String key : item.getMediaKeys()) {
+						Media media = getMedia(db, key);
+						if (media != null) {
+							medias.add(media);
+						}
+					}
+					item.addMedia(medias.toArray(new Media[0]));
+				}
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
+	 * get all user logins
+	 *
+	 * @return list of all logins
+	 */
+	public List<Account> getLogins() {
+		ArrayList<Account> result = new ArrayList<>();
+
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
+		if (cursor.moveToFirst()) {
+			result.ensureCapacity(cursor.getCount());
+			do {
+				DatabaseAccount account = new DatabaseAccount(cursor);
+				account.addUser(getUser(account.getId(), account));
+				result.add(account);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
 	 * get user information
 	 *
 	 * @param userId ID of user
@@ -719,50 +840,14 @@ public class AppDatabase {
 	}
 
 	/**
-	 * get reply timeline
+	 * Store user information
 	 *
-	 * @param id status ID
-	 * @return status reply timeline
+	 * @param user Twitter user
 	 */
-	public List<Status> getReplies(long id) {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
-
-		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
-		return getStatuses(cursor, db);
-	}
-
-	/**
-	 * get notifiactions
-	 *
-	 * @return notification lsit
-	 */
-	public List<Notification> getNotifications() {
-		Account login = settings.getLogin();
-		String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
-		SQLiteDatabase db = getDbRead();
-		List<Notification> result = new LinkedList<>();
-		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				DatabaseNotification notification = new DatabaseNotification(cursor, login);
-				switch (notification.getType()) {
-					case Notification.TYPE_FAVORITE:
-					case Notification.TYPE_REPOST:
-					case Notification.TYPE_MENTION:
-					case Notification.TYPE_POLL:
-					case Notification.TYPE_STATUS:
-					case Notification.TYPE_UPDATE:
-						Status status = getStatus(notification.getItemId());
-						notification.addStatus(status);
-						break;
-				}
-				result.add(notification);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
+	public void saveUser(User user) {
+		SQLiteDatabase db = getDbWrite();
+		saveUser(user, db, CONFLICT_REPLACE);
+		commit(db);
 	}
 
 	/**
@@ -770,11 +855,11 @@ public class AppDatabase {
 	 *
 	 * @param status status to update
 	 */
-	public void updateStatus(Status status) {
+	public void saveStatus(Status status) {
 		SQLiteDatabase db = getDbWrite();
-		updateStatus(status, db);
+		saveStatus(status, db, CONFLICT_REPLACE);
 		if (status.getEmbeddedStatus() != null)
-			updateStatus(status.getEmbeddedStatus(), db);
+			saveStatus(status.getEmbeddedStatus(), db, CONFLICT_REPLACE);
 		commit(db);
 	}
 
@@ -794,9 +879,9 @@ public class AppDatabase {
 		} else {
 			flags &= ~HIDDEN_MASK;
 		}
-		ContentValues values = new ContentValues(3);
-		values.put(StatusRegisterTable.REGISTER, flags);
-		db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
+		ContentValues column = new ContentValues(1);
+		column.put(StatusRegisterTable.REGISTER, flags);
+		db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
 		commit(db);
 	}
 
@@ -885,58 +970,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * Load trend List
-	 *
-	 * @return list of trends
-	 */
-	public List<Trend> getTrends() {
-		String[] args = {Long.toString(settings.getTrendLocation().getId())};
-		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
-		List<Trend> trends = new LinkedList<>();
-		if (cursor.moveToFirst()) {
-			do {
-				trends.add(new DatabaseTrend(cursor));
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		Collections.sort(trends);
-		return trends;
-	}
-
-	/**
-	 * load direct messages
-	 *
-	 * @return list of direct messages
-	 */
-	public Messages getMessages() {
-		Account login = settings.getLogin();
-		String homeIdStr = Long.toString(login.getId());
-		String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
-		Messages result = new Messages(null, null);
-		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				DatabaseMessage item = new DatabaseMessage(cursor, login);
-				result.add(item);
-				if (item.getMediaKeys().length > 0) {
-					List<Media> medias = new LinkedList<>();
-					for (String key : item.getMediaKeys()) {
-						Media media = getMedia(db, key);
-						if (media != null) {
-							medias.add(media);
-						}
-					}
-					item.addMedia(medias.toArray(new Media[0]));
-				}
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
-	}
-
-	/**
 	 * return the current filterlist containing user IDs
 	 *
 	 * @return a set of user IDs
@@ -1015,28 +1048,6 @@ public class AppDatabase {
 		}
 		saveUserFlags(db, id, flags);
 		commit(db);
-	}
-
-	/**
-	 * get all user logins
-	 *
-	 * @return list of all logins
-	 */
-	public List<Account> getLogins() {
-		ArrayList<Account> result = new ArrayList<>();
-
-		SQLiteDatabase db = getDbRead();
-		Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
-		if (cursor.moveToFirst()) {
-			result.ensureCapacity(cursor.getCount());
-			do {
-				DatabaseAccount account = new DatabaseAccount(cursor);
-				account.addUser(getUser(account.getId(), account));
-				result.add(account);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return result;
 	}
 
 	/**
@@ -1222,22 +1233,22 @@ public class AppDatabase {
 		} else {
 			flags &= ~DEFAULT_IMAGE_MASK;
 		}
-		ContentValues userColumn = new ContentValues(13);
-		userColumn.put(UserTable.ID, user.getId());
-		userColumn.put(UserTable.USERNAME, user.getUsername());
-		userColumn.put(UserTable.SCREENNAME, user.getScreenname());
-		userColumn.put(UserTable.IMAGE, user.getOriginalProfileImageUrl());
-		userColumn.put(UserTable.DESCRIPTION, user.getDescription());
-		userColumn.put(UserTable.LINK, user.getProfileUrl());
-		userColumn.put(UserTable.LOCATION, user.getLocation());
-		userColumn.put(UserTable.BANNER, user.getOriginalBannerImageUrl());
-		userColumn.put(UserTable.SINCE, user.getTimestamp());
-		userColumn.put(UserTable.FRIENDS, user.getFollowing());
-		userColumn.put(UserTable.FOLLOWER, user.getFollower());
-		userColumn.put(UserTable.STATUSES, user.getStatusCount());
-		userColumn.put(UserTable.FAVORITS, user.getFavoriteCount());
+		ContentValues column = new ContentValues(13);
+		column.put(UserTable.ID, user.getId());
+		column.put(UserTable.USERNAME, user.getUsername());
+		column.put(UserTable.SCREENNAME, user.getScreenname());
+		column.put(UserTable.IMAGE, user.getOriginalProfileImageUrl());
+		column.put(UserTable.DESCRIPTION, user.getDescription());
+		column.put(UserTable.LINK, user.getProfileUrl());
+		column.put(UserTable.LOCATION, user.getLocation());
+		column.put(UserTable.BANNER, user.getOriginalBannerImageUrl());
+		column.put(UserTable.SINCE, user.getTimestamp());
+		column.put(UserTable.FRIENDS, user.getFollowing());
+		column.put(UserTable.FOLLOWER, user.getFollower());
+		column.put(UserTable.STATUSES, user.getStatusCount());
+		column.put(UserTable.FAVORITS, user.getFavoriteCount());
 
-		db.insertWithOnConflict(UserTable.NAME, "", userColumn, mode);
+		db.insertWithOnConflict(UserTable.NAME, "", column, mode);
 		saveUserFlags(db, user.getId(), flags);
 	}
 
@@ -1277,26 +1288,26 @@ public class AppDatabase {
 		} else {
 			flags &= ~BOOKMARK_MASK;
 		}
-		ContentValues statusUpdate = new ContentValues(18);
-		statusUpdate.put(StatusTable.ID, status.getId());
-		statusUpdate.put(StatusTable.USER, user.getId());
-		statusUpdate.put(StatusTable.TIME, status.getTimestamp());
-		statusUpdate.put(StatusTable.TEXT, status.getText());
-		statusUpdate.put(StatusTable.EMBEDDED, rtId);
-		statusUpdate.put(StatusTable.SOURCE, status.getSource());
-		statusUpdate.put(StatusTable.URL, status.getUrl());
-		statusUpdate.put(StatusTable.REPLYSTATUS, status.getRepliedStatusId());
-		statusUpdate.put(StatusTable.REPOST, status.getRepostCount());
-		statusUpdate.put(StatusTable.FAVORITE, status.getFavoriteCount());
-		statusUpdate.put(StatusTable.REPLYUSER, status.getRepliedUserId());
-		statusUpdate.put(StatusTable.REPLYUSER, status.getRepliedUserId());
-		statusUpdate.put(StatusTable.REPLYNAME, status.getReplyName());
-		statusUpdate.put(StatusTable.CONVERSATION, status.getConversationId());
+		ContentValues column = new ContentValues(17);
+		column.put(StatusTable.ID, status.getId());
+		column.put(StatusTable.USER, user.getId());
+		column.put(StatusTable.TIME, status.getTimestamp());
+		column.put(StatusTable.TEXT, status.getText());
+		column.put(StatusTable.EMBEDDED, rtId);
+		column.put(StatusTable.SOURCE, status.getSource());
+		column.put(StatusTable.URL, status.getUrl());
+		column.put(StatusTable.REPLYSTATUS, status.getRepliedStatusId());
+		column.put(StatusTable.REPOST, status.getRepostCount());
+		column.put(StatusTable.FAVORITE, status.getFavoriteCount());
+		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
+		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
+		column.put(StatusTable.REPLYNAME, status.getReplyName());
+		column.put(StatusTable.CONVERSATION, status.getConversationId());
 		if (status.getLocation() != null && status.getLocation().getId() != 0L) {
-			statusUpdate.put(StatusTable.LOCATION, status.getLocation().getId());
+			column.put(StatusTable.LOCATION, status.getLocation().getId());
 			saveLocation(status.getLocation(), db);
 		} else {
-			statusUpdate.put(StatusTable.LOCATION, 0L);
+			column.put(StatusTable.LOCATION, 0L);
 		}
 		if (status.getMedia().length > 0) {
 			StringBuilder buf = new StringBuilder();
@@ -1305,7 +1316,7 @@ public class AppDatabase {
 				buf.append(media.getKey()).append(';');
 			}
 			String mediaKeys = buf.deleteCharAt(buf.length() - 1).toString();
-			statusUpdate.put(StatusTable.MEDIA, mediaKeys);
+			column.put(StatusTable.MEDIA, mediaKeys);
 		}
 		if (status.getEmojis().length > 0) {
 			StringBuilder buf = new StringBuilder();
@@ -1314,9 +1325,9 @@ public class AppDatabase {
 				buf.append(emoji.getCode()).append(';');
 			}
 			String emojiKeys = buf.deleteCharAt(buf.length() - 1).toString();
-			statusUpdate.put(StatusTable.EMOJI, emojiKeys);
+			column.put(StatusTable.EMOJI, emojiKeys);
 		}
-		db.insertWithOnConflict(StatusTable.NAME, "", statusUpdate, CONFLICT_REPLACE);
+		db.insertWithOnConflict(StatusTable.NAME, "", column, CONFLICT_REPLACE);
 		saveUser(user, db, CONFLICT_IGNORE);
 		saveStatusFlags(db, status, flags);
 	}
@@ -1361,13 +1372,13 @@ public class AppDatabase {
 	 * @param db       database write instance
 	 */
 	private void saveLocation(Location location, SQLiteDatabase db) {
-		ContentValues locationColumn = new ContentValues(5);
-		locationColumn.put(LocationTable.ID, location.getId());
-		locationColumn.put(LocationTable.FULLNAME, location.getFullName());
-		locationColumn.put(LocationTable.COORDINATES, location.getCoordinates());
-		locationColumn.put(LocationTable.COUNTRY, location.getCountry());
-		locationColumn.put(LocationTable.PLACE, location.getPlace());
-		db.insertWithOnConflict(LocationTable.NAME, "", locationColumn, CONFLICT_IGNORE);
+		ContentValues column = new ContentValues(5);
+		column.put(LocationTable.ID, location.getId());
+		column.put(LocationTable.FULLNAME, location.getFullName());
+		column.put(LocationTable.COORDINATES, location.getCoordinates());
+		column.put(LocationTable.COUNTRY, location.getCountry());
+		column.put(LocationTable.PLACE, location.getPlace());
+		db.insertWithOnConflict(LocationTable.NAME, "", column, CONFLICT_IGNORE);
 	}
 
 	/**
@@ -1380,16 +1391,16 @@ public class AppDatabase {
 	private void saveStatusFlags(SQLiteDatabase db, Status status, int flags) {
 		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
-		ContentValues values = new ContentValues(4);
-		values.put(StatusRegisterTable.REGISTER, flags);
-		values.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
-		values.put(StatusRegisterTable.ID, status.getId());
-		values.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
+		ContentValues column = new ContentValues(4);
+		column.put(StatusRegisterTable.REGISTER, flags);
+		column.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
+		column.put(StatusRegisterTable.ID, status.getId());
+		column.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
 
-		int count = db.update(StatusRegisterTable.NAME, values, STATUS_REG_SELECT, args);
+		int count = db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
 		if (count == 0) {
 			// create new entry if there isn't one
-			db.insert(StatusRegisterTable.NAME, null, values);
+			db.insert(StatusRegisterTable.NAME, null, column);
 		}
 	}
 
@@ -1403,15 +1414,15 @@ public class AppDatabase {
 	private void saveUserFlags(SQLiteDatabase db, long id, int flags) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
-		ContentValues values = new ContentValues(3);
-		values.put(UserRegisterTable.ID, id);
-		values.put(UserRegisterTable.OWNER, settings.getLogin().getId());
-		values.put(UserRegisterTable.REGISTER, flags);
+		ContentValues column = new ContentValues(3);
+		column.put(UserRegisterTable.ID, id);
+		column.put(UserRegisterTable.OWNER, settings.getLogin().getId());
+		column.put(UserRegisterTable.REGISTER, flags);
 
-		int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
+		int cnt = db.update(UserRegisterTable.NAME, column, USER_REG_SELECT, args);
 		if (cnt == 0) {
 			// create new entry if there isn't an entry
-			db.insert(UserRegisterTable.NAME, null, values);
+			db.insert(UserRegisterTable.NAME, null, column);
 		}
 	}
 
@@ -1451,75 +1462,23 @@ public class AppDatabase {
 	 */
 	private void saveMessages(Message message, SQLiteDatabase db) {
 		// store message information
-		ContentValues messageColumn = new ContentValues(6);
-		messageColumn.put(MessageTable.ID, message.getId());
-		messageColumn.put(MessageTable.TIME, message.getTimestamp());
-		messageColumn.put(MessageTable.FROM, message.getSender().getId());
-		messageColumn.put(MessageTable.TO, message.getReceiverId());
-		messageColumn.put(MessageTable.MESSAGE, message.getText());
+		ContentValues column = new ContentValues(6);
+		column.put(MessageTable.ID, message.getId());
+		column.put(MessageTable.TIME, message.getTimestamp());
+		column.put(MessageTable.FROM, message.getSender().getId());
+		column.put(MessageTable.TO, message.getReceiverId());
+		column.put(MessageTable.MESSAGE, message.getText());
 		if (message.getMedia().length > 0) {
 			StringBuilder keyBuf = new StringBuilder();
 			for (Media media : message.getMedia())
 				keyBuf.append(media.getKey()).append(';');
 			keyBuf.deleteCharAt(keyBuf.length() - 1);
-			messageColumn.put(MessageTable.MEDIA, keyBuf.toString());
+			column.put(MessageTable.MEDIA, keyBuf.toString());
 			saveMedia(message.getMedia(), db);
 		}
-		db.insertWithOnConflict(MessageTable.NAME, "", messageColumn, CONFLICT_IGNORE);
+		db.insertWithOnConflict(MessageTable.NAME, "", column, CONFLICT_IGNORE);
 		// store user information
 		saveUser(message.getSender(), db, CONFLICT_IGNORE);
-	}
-
-	/**
-	 * updates existing status
-	 *
-	 * @param status update of the status
-	 * @param db     database instance
-	 */
-	private void updateStatus(Status status, SQLiteDatabase db) {
-		String[] statusIdArg = {Long.toString(status.getId())};
-		String[] userIdArg = {Long.toString(status.getAuthor().getId())};
-
-		User user = status.getAuthor();
-		int flags = getStatusFlags(db, status.getId());
-		if (status.isReposted()) {
-			flags |= REPOST_MASK;
-		} else {
-			flags &= ~REPOST_MASK;
-		}
-		if (status.isFavorited()) {
-			flags |= FAVORITE_MASK;
-		} else {
-			flags &= ~FAVORITE_MASK;
-		}
-		if (status.isBookmarked()) {
-			flags |= BOOKMARK_MASK;
-		} else {
-			flags &= ~BOOKMARK_MASK;
-		}
-		ContentValues statusUpdate = new ContentValues(7);
-		statusUpdate.put(StatusTable.TEXT, status.getText());
-		statusUpdate.put(StatusTable.REPOST, status.getRepostCount());
-		statusUpdate.put(StatusTable.FAVORITE, status.getFavoriteCount());
-		statusUpdate.put(StatusTable.REPLY, status.getReplyCount());
-		statusUpdate.put(StatusTable.REPLYNAME, status.getReplyName());
-		statusUpdate.put(StatusTable.SOURCE, status.getSource());
-		statusUpdate.put(StatusTable.URL, status.getUrl());
-
-		ContentValues userUpdate = new ContentValues(9);
-		userUpdate.put(UserTable.USERNAME, user.getUsername());
-		userUpdate.put(UserTable.SCREENNAME, user.getScreenname());
-		userUpdate.put(UserTable.IMAGE, user.getOriginalProfileImageUrl());
-		userUpdate.put(UserTable.DESCRIPTION, user.getDescription());
-		userUpdate.put(UserTable.LINK, user.getProfileUrl());
-		userUpdate.put(UserTable.LOCATION, user.getLocation());
-		userUpdate.put(UserTable.BANNER, user.getOriginalBannerImageUrl());
-		userUpdate.put(UserTable.FRIENDS, user.getFollowing());
-		userUpdate.put(UserTable.FOLLOWER, user.getFollower());
-
-		db.updateWithOnConflict(StatusTable.NAME, statusUpdate, STATUS_SELECT, statusIdArg, CONFLICT_REPLACE);
-		db.updateWithOnConflict(UserTable.NAME, userUpdate, USER_SELECT, userIdArg, CONFLICT_IGNORE);
-		saveStatusFlags(db, status, flags);
 	}
 
 	/**

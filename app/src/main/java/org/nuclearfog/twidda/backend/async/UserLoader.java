@@ -25,7 +25,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 	 *
 	 */
 	public UserLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 		db = new AppDatabase(context);
 	}
 

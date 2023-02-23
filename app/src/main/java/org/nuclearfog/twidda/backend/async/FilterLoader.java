@@ -30,7 +30,7 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 	 *
 	 */
 	public FilterLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -42,7 +42,7 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 			switch (param.mode) {
 				case FilterParam.RELOAD:
 					List<Long> ids = connection.getIdBlocklist();
-					db.setFilterlistUserIds(ids);
+					db.saveFilterlist(ids);
 					return new FilterResult(FilterResult.RELOAD, null);
 
 				case FilterParam.MUTE:

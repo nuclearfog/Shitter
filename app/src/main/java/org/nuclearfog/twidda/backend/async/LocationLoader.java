@@ -27,7 +27,7 @@ public class LocationLoader extends AsyncExecutor<Void, LocationLoader.LocationL
 	 *
 	 */
 	public LocationLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 

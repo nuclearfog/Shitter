@@ -127,7 +127,7 @@ public class DatabaseAccount implements Account {
 				return Configuration.MASTODON;
 
 			default:
-				return Configuration.NONE;
+				return Configuration.FALLBACK_CONFIG;
 		}
 	}
 

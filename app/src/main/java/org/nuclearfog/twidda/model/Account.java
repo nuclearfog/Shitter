@@ -15,22 +15,20 @@ import java.io.Serializable;
 public interface Account extends Serializable {
 
 	/**
-	 * API ID if undefined
-	 */
-	int API_NONE = 0;
-
-	/**
 	 * API ID for twitter version 1.1
+	 * used in database tables!
 	 */
 	int API_TWITTER_1 = 1;
 
 	/**
 	 * API ID for twitter version 2.0
+	 * used in database tables!
 	 */
 	int API_TWITTER_2 = 3;
 
 	/**
 	 * API ID used for Mastodon accounts
+	 * used in database tables!
 	 */
 	int API_MASTODON = 2;
 

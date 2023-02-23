@@ -27,7 +27,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 	 *
 	 */
 	public StatusAction(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -48,7 +48,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 					status = connection.showStatus(param.id);
 					if (db.containsStatus(param.id)) {
 						// update status if there is a database entry
-						db.updateStatus(status);
+						db.saveStatus(status);
 					}
 					return new StatusResult(StatusResult.ONLINE, status);
 
@@ -59,14 +59,14 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 
 				case StatusParam.REPOST:
 					status = connection.repostStatus(param.id);
-					db.updateStatus(status);
+					db.saveStatus(status);
 					if (status.getEmbeddedStatus() != null)
 						return new StatusResult(StatusResult.REPOST, status.getEmbeddedStatus());
 					return new StatusResult(StatusResult.REPOST, status);
 
 				case StatusParam.UNREPOST:
 					status = connection.removeRepost(param.id);
-					db.updateStatus(status);
+					db.saveStatus(status);
 					return new StatusResult(StatusResult.UNREPOST, status);
 
 				case StatusParam.FAVORITE:

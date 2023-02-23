@@ -32,7 +32,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 	 */
 	public StatusLoader(Context context) {
 		db = new AppDatabase(context);
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 
@@ -47,14 +47,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getHomeTimeline();
 						if (statuses.isEmpty()) {
-							statuses = connection.getHomeTimeline(request.minId, request.maxId);
+							statuses = connection.getHomeTimeline(0L, 0L);
 							db.saveHomeTimeline(statuses);
 						}
-					} else if (request.minId > 0L) {
+					} else {
 						statuses = connection.getHomeTimeline(request.minId, request.maxId);
-						db.saveHomeTimeline(statuses);
-					} else if (request.maxId > 1L) {
-						statuses = connection.getHomeTimeline(request.minId, request.maxId);
+						if (request.maxId == 0L) {
+							db.saveHomeTimeline(statuses);
+						}
 					}
 					break;
 
@@ -62,14 +62,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getUserTimeline(request.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getUserTimeline(request.id, 0L, request.maxId);
+							statuses = connection.getUserTimeline(request.id, 0L, 0L);
 							db.saveUserTimeline(statuses);
 						}
-					} else if (request.minId > 0L) {
+					} else {
 						statuses = connection.getUserTimeline(request.id, request.minId, request.maxId);
-						db.saveUserTimeline(statuses);
-					} else if (request.maxId > 1L) {
-						statuses = connection.getUserTimeline(request.id, request.minId, request.maxId);
+						if (request.maxId == 0L) {
+							db.saveUserTimeline(statuses);
+						}
 					}
 					break;
 
@@ -77,36 +77,34 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getUserFavorites(request.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getUserFavorits(request.id, 0L, request.maxId);
+							statuses = connection.getUserFavorits(request.id, 0L, 0L);
 							db.saveFavoriteTimeline(statuses, request.id);
 						}
-					} else if (request.minId > 0L) {
+					} else {
 						statuses = connection.getUserFavorits(request.id, 0L, request.maxId);
-						db.saveFavoriteTimeline(statuses, request.id);
-						position = CLEAR_LIST; // set flag to clear previous data
-					} else if (request.maxId > 1L) {
-						statuses = connection.getUserFavorits(request.id, request.minId, request.maxId);
+						if (request.maxId == 0L) {
+							db.saveFavoriteTimeline(statuses, request.id);
+							position = CLEAR_LIST; // set flag to clear previous data
+						}
 					}
 					break;
 
 				case StatusParameter.BOOKMARKS:
-					if (request.id > 0L) {
-						if (request.minId == 0L && request.maxId == 0L) {
-							statuses = db.getUserBookmarks(request.id);
-							if (statuses.isEmpty()) {
-								statuses = connection.getUserBookmarks(0L, request.maxId);
-								db.saveBookmarkTimeline(statuses, request.id);
-							}
-						} else if (request.minId > 0L) {
-							statuses = connection.getUserBookmarks(request.minId, request.maxId);
+					if (request.minId == 0L && request.maxId == 0L) {
+						statuses = db.getUserBookmarks(request.id);
+						if (statuses.isEmpty()) {
+							statuses = connection.getUserBookmarks(0L, 0L);
 							db.saveBookmarkTimeline(statuses, request.id);
-						} else if (request.maxId > 1L) {
-							statuses = connection.getUserBookmarks(request.minId, request.maxId);
+						}
+					} else {
+						statuses = connection.getUserBookmarks(request.minId, request.maxId);
+						if (request.maxId == 0L) {
+							db.saveBookmarkTimeline(statuses, request.id);
 						}
 					}
 					break;
 
-				case StatusParameter.REPLIES_OFFLINE:
+				case StatusParameter.REPLIES_LOCAL:
 					statuses = db.getReplies(request.id);
 					break;
 
@@ -114,18 +112,16 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					if (request.minId == 0L && request.maxId == 0L) {
 						statuses = db.getReplies(request.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getStatusReplies(request.id, request.minId, request.maxId, request.search);
-							if (!statuses.isEmpty() && db.containsStatus(request.id)) {
+							statuses = connection.getStatusReplies(request.id, 0L, 0L, request.search);
+							if (db.containsStatus(request.id)) {
 								db.saveReplyTimeline(statuses);
 							}
 						}
-					} else if (request.minId > 0L) {
+					} else {
 						statuses = connection.getStatusReplies(request.id, request.minId, request.maxId, request.search);
-						if (!statuses.isEmpty() && db.containsStatus(request.id)) {
+						if (request.maxId == 0L && db.containsStatus(request.id)) {
 							db.saveReplyTimeline(statuses);
 						}
-					} else if (request.maxId > 1L) {
-						statuses = connection.getStatusReplies(request.id, request.minId, request.maxId, request.search);
 					}
 					break;
 
@@ -158,7 +154,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 		public static final int USER = 2;
 		public static final int FAVORIT = 3;
 		public static final int REPLIES = 4;
-		public static final int REPLIES_OFFLINE = 5;
+		public static final int REPLIES_LOCAL = 5;
 		public static final int SEARCH = 6;
 		public static final int USERLIST = 7;
 		public static final int PUBLIC = 8;

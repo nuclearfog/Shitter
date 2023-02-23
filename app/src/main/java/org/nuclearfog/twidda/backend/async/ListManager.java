@@ -23,7 +23,7 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 	 *
 	 */
 	public ListManager(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 
 	}
 
@@ -33,11 +33,11 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 	protected ListManagerResult doInBackground(ListManagerParam param) {
 		try {
 			switch (param.mode) {
-				case ListManagerParam.ADD_USER:
+				case ListManagerParam.ADD:
 					connection.addUserToList(param.id, param.username);
 					return new ListManagerResult(ListManagerResult.ADD_USER, param.username, null);
 
-				case ListManagerParam.DEL_USER:
+				case ListManagerParam.REMOVE:
 					connection.removeUserFromList(param.id, param.username);
 					return new ListManagerResult(ListManagerResult.DEL_USER, param.username, null);
 			}
@@ -54,8 +54,8 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 	 */
 	public static class ListManagerParam {
 
-		public static final int ADD_USER = 1;
-		public static final int DEL_USER = 2;
+		public static final int ADD = 1;
+		public static final int REMOVE = 2;
 
 		public final long id;
 		public final String username;

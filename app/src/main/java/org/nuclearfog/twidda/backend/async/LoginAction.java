@@ -25,7 +25,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 
 	private AppDatabase database;
 	private GlobalSettings settings;
-	private Connection connection;
+	private ConnectionManager manager;
 
 	/**
 	 *
@@ -33,20 +33,14 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 	public LoginAction(Context context) {
 		database = new AppDatabase(context);
 		settings = GlobalSettings.getInstance(context);
-		connection = ConnectionManager.get(context);
-	}
-
-	/**
-	 * setup connection manually
-	 */
-	public void setConnection(Context context, Configuration configuration) {
-		connection = ConnectionManager.get(context, configuration);
+		manager = ConnectionManager.getInstance(context);
 	}
 
 
 	@NonNull
 	@Override
 	protected LoginResult doInBackground(LoginParam param) {
+		Connection connection = manager.getConnection(param.configuration);
 		try {
 			switch (param.mode) {
 				case LoginParam.MODE_REQUEST:
@@ -56,12 +50,12 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 							database.saveLogin(login);
 						}
 					}
-					String redirectUrl = connection.getAuthorisationLink(param.config);
+					String redirectUrl = connection.getAuthorisationLink(param.connection);
 					return new LoginResult(LoginResult.MODE_REQUEST, redirectUrl, null);
 
 				case LoginParam.MODE_LOGIN:
 					// login with pin and access token
-					Account account = connection.loginApp(param.config, param.code);
+					Account account = connection.loginApp(param.connection, param.code);
 					// save new user information
 					database.saveLogin(account);
 					return new LoginResult(LoginResult.MODE_LOGIN, null, null);
@@ -82,13 +76,15 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		public static final int MODE_REQUEST = 1;
 		public static final int MODE_LOGIN = 2;
 
-		public final ConnectionConfig config;
+		public final ConnectionConfig connection;
+		public final Configuration configuration;
 		public final String code;
 		public final int mode;
 
-		public LoginParam(int mode, ConnectionConfig config, String code) {
+		public LoginParam(int mode, Configuration configuration, ConnectionConfig connection, String code) {
+			this.connection = connection;
+			this.configuration = configuration;
 			this.mode = mode;
-			this.config = config;
 			this.code = code;
 		}
 	}

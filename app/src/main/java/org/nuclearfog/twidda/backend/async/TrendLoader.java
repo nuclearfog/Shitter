@@ -33,7 +33,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	 *
 	 */
 	public TrendLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 		db = new AppDatabase(context);
 	}
 

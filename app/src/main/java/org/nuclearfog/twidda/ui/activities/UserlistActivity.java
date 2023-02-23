@@ -294,7 +294,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		// remove user from list
 		else if (type == ConfirmDialog.LIST_REMOVE_USER) {
 			if (listManagerAsync.isIdle() && userList != null && user != null) {
-				ListManagerParam param = new ListManagerParam(ListManagerParam.DEL_USER, userList.getId(), user.getScreenname());
+				ListManagerParam param = new ListManagerParam(ListManagerParam.REMOVE, userList.getId(), user.getScreenname());
 				listManagerAsync.execute(param, this::updateList);
 			}
 		}
@@ -331,7 +331,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (USERNAME_PATTERN.matcher(query).matches()) {
 			if (listManagerAsync.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-				ListManagerParam param = new ListManagerParam(ListManagerParam.ADD_USER, userList.getId(), query);
+				ListManagerParam param = new ListManagerParam(ListManagerParam.ADD, userList.getId(), query);
 				listManagerAsync.execute(param, this::updateList);
 				return true;
 			}

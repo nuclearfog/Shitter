@@ -27,7 +27,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 	 *
 	 */
 	public RelationLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 		db = new AppDatabase(context);
 	}
 

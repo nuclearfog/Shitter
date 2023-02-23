@@ -113,7 +113,7 @@ public class TwitterV2 extends TwitterV1 {
 
 	@Override
 	public Poll getPoll(long id) throws ConnectionException {
-		return null; // todo implement this
+		throw new TwitterException("not implemented!");
 	}
 
 	/**

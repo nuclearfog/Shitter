@@ -29,7 +29,7 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 	 */
 	public MessageLoader(Context context) {
 		db = new AppDatabase(context);
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 

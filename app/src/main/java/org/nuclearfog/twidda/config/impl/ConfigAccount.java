@@ -46,10 +46,6 @@ public class ConfigAccount implements Account {
 			case MASTODON:
 				type = API_MASTODON;
 				break;
-
-			default:
-				type = API_NONE;
-				break;
 		}
 	}
 
@@ -137,7 +133,7 @@ public class ConfigAccount implements Account {
 				return Configuration.MASTODON;
 
 			default:
-				return Configuration.NONE;
+				return Configuration.FALLBACK_CONFIG;
 		}
 	}
 

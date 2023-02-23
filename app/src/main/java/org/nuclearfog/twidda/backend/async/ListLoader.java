@@ -25,30 +25,29 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 	 *
 	 */
 	public ListLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 
 	@NonNull
 	@Override
 	protected UserlistResult doInBackground(UserlistParam param) {
-		UserLists userlists = null;
 		try {
-			switch (param.type) {
-				case UserlistParam.LOAD_USERLISTS:
-					userlists = connection.getUserlistOwnerships(param.id, param.cursor);
-					break;
+			switch (param.mode) {
+				case UserlistParam.OWNERSHIP:
+					UserLists userlists = connection.getUserlistOwnerships(param.id, param.cursor);
+					return new UserlistResult(UserlistResult.OWNERSHIP, userlists, null);
 
-				case UserlistParam.LOAD_MEMBERSHIPS:
+				case UserlistParam.MEMBERSHIP:
 					userlists = connection.getUserlistMemberships(param.id, param.cursor);
-					break;
+					return new UserlistResult(UserlistResult.MEMBERSHIP, userlists, null);
 			}
 		} catch (ConnectionException exception) {
-			return new UserlistResult(null, exception);
+			return new UserlistResult(UserlistResult.ERROR, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new UserlistResult(userlists, null);
+		return new UserlistResult(UserlistResult.ERROR, null, null);
 	}
 
 	/**
@@ -56,14 +55,14 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 	 */
 	public static class UserlistParam {
 
-		public static final int LOAD_USERLISTS = 1;
-		public static final int LOAD_MEMBERSHIPS = 2;
+		public static final int OWNERSHIP = 1;
+		public static final int MEMBERSHIP = 2;
 
-		public final int type;
+		public final int mode;
 		public final long id, cursor;
 
-		public UserlistParam(int type, long id, long cursor) {
-			this.type = type;
+		public UserlistParam(int mode, long id, long cursor) {
+			this.mode = mode;
 			this.id = id;
 			this.cursor = cursor;
 		}
@@ -74,14 +73,20 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 	 */
 	public static class UserlistResult {
 
+		public static final int ERROR = -1;
+		public static final int OWNERSHIP = 3;
+		public static final int MEMBERSHIP = 4;
+
+		public final int mode;
 		@Nullable
 		public final UserLists userlists;
 		@Nullable
 		public final ConnectionException exception;
 
-		UserlistResult(@Nullable UserLists userlists, @Nullable ConnectionException exception) {
+		UserlistResult(int mode, @Nullable UserLists userlists, @Nullable ConnectionException exception) {
 			this.userlists = userlists;
 			this.exception = exception;
+			this.mode = mode;
 		}
 	}
 }

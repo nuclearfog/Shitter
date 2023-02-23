@@ -22,12 +22,12 @@ public enum Configuration {
 	/**
 	 * configurations for Mastodon
 	 */
-	MASTODON(Account.API_MASTODON),
+	MASTODON(Account.API_MASTODON);
 
 	/**
-	 * dummy configuration
+	 * fallback configuration to use when there is no network selected
 	 */
-	NONE(0);
+	public static final Configuration FALLBACK_CONFIG = MASTODON;
 
 	private final int accountType;
 	private final boolean userlistExtended;

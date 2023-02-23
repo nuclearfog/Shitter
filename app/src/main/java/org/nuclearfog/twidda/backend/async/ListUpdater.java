@@ -26,7 +26,7 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 	 *
 	 */
 	public ListUpdater(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 
@@ -34,12 +34,13 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 	@Override
 	protected ListUpdateResult doInBackground(UserListUpdate update) {
 		try {
-			UserList result;
-			if (update.exists())
-				result = connection.updateUserlist(update);
-			else
-				result = connection.createUserlist(update);
-			return new ListUpdateResult(result, update.exists(), null);
+			if (update.exists()) {
+				UserList result = connection.updateUserlist(update);
+				return new ListUpdateResult(result, true, null);
+			} else {
+				UserList result = connection.createUserlist(update);
+				return new ListUpdateResult(result, false, null);
+			}
 		} catch (ConnectionException exception) {
 			return new ListUpdateResult(null, update.exists(), exception);
 		} catch (Exception e) {

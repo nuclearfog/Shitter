@@ -13,14 +13,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Executor for tasks running in the bnackground
+ * Executor implementation used to run tasks asynchronously
  *
  * @author nuclearfog
  */
 public abstract class AsyncExecutor<Parameter, Result> {
 
 	/**
-	 * Thread count used to parallelize background tasks
+	 * maximum task count to run in the background
 	 */
 	private static final int N_THREAD = 2;
 
@@ -89,7 +89,6 @@ public abstract class AsyncExecutor<Parameter, Result> {
 			}
 		});
 	}
-
 
 	/**
 	 * This method is called in a background thread

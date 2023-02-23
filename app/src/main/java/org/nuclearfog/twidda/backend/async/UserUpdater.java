@@ -29,7 +29,7 @@ public class UserUpdater extends AsyncExecutor<ProfileUpdate, UserUpdater.UserUp
 	 */
 	public UserUpdater(Context context) {
 		db = new AppDatabase(context);
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 

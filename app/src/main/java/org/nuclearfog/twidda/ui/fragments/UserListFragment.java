@@ -163,14 +163,21 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public void onResult(UserlistResult result) {
-		setRefresh(false);
-		if (result.userlists != null) {
-			adapter.addItems(result.userlists);
-		} else if (getContext() != null) {
-			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-			adapter.disableLoading();
+		switch (result.mode) {
+			case UserlistResult.MEMBERSHIP:
+			case UserlistResult.OWNERSHIP:
+				if (result.userlists != null) {
+					adapter.addItems(result.userlists);
+				}
+				break;
+
+			case UserlistResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+				Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+				adapter.disableLoading();
+				break;
 		}
+		setRefresh(false);
 	}
 
 	/**
@@ -180,11 +187,11 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		UserlistParam param;
 		switch (type) {
 			case LIST_USER_OWNS:
-				param = new UserlistParam(UserlistParam.LOAD_USERLISTS, id, cursor);
+				param = new UserlistParam(UserlistParam.OWNERSHIP, id, cursor);
 				break;
 
 			case LIST_USER_SUBSCR_TO:
-				param = new UserlistParam(UserlistParam.LOAD_MEMBERSHIPS, id, cursor);
+				param = new UserlistParam(UserlistParam.MEMBERSHIP, id, cursor);
 				break;
 
 			default:

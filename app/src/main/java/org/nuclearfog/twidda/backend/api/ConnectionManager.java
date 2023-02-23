@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.api;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.mastodon.Mastodon;
@@ -16,21 +17,68 @@ import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;
  *
  * @author nuclearfog
  */
-public class ConnectionManager {
+public class ConnectionManager implements OnSettingsChangeListener {
 
-	private static Connection connection;
-	private static boolean notifySettingsChange = false;
+	private static final int IDX_MASTODON = 0;
+	private static final int IDX_TWITTER1 = 1;
+	private static final int IDX_TWITTER2 = 2;
 
-	private ConnectionManager() {
+	private static ConnectionManager instance;
+
+	private Connection[] connections;
+	private GlobalSettings settings;
+	private boolean notifyChanged = false;
+
+	/**
+	 *
+	 */
+	private ConnectionManager(Context context) {
+		connections = new Connection[3];
+		connections[IDX_MASTODON] = new Mastodon(context);
+		connections[IDX_TWITTER1] = new TwitterV1(context);
+		connections[IDX_TWITTER2] = new TwitterV2(context);
+
+		settings = GlobalSettings.getInstance(context);
+		settings.addSettingsChangeListener(this);
+	}
+
+
+	@Override
+	public void onSettingsChange() {
+		notifyChanged = true;
 	}
 
 	/**
-	 * get singleton class of a connection
+	 * creates a connection to an online service
 	 *
-	 * @return singleton instance
+	 * @return connection
 	 */
-	public static Connection get(Context context) {
-		return get(context, null);
+	@NonNull
+	public static Connection getConnection(Context context) {
+		return getConnection(context, null);
+	}
+
+	/**
+	 * creates a connection to an online service
+	 *
+	 * @param config configuration to use, null to choose automatically
+	 * @return connection
+	 */
+	@NonNull
+	public static Connection getConnection(Context context, @Nullable Configuration config) {
+		ConnectionManager manager = ConnectionManager.getInstance(context);
+		return manager.getConnection(config);
+	}
+
+	/**
+	 * @return singleton instance of this class
+	 */
+	@NonNull
+	public static ConnectionManager getInstance(Context context) {
+		if (instance == null || instance.notifyChanged) {
+			instance = new ConnectionManager(context);
+		}
+		return instance;
 	}
 
 	/**
@@ -39,37 +87,22 @@ public class ConnectionManager {
 	 * @param config Network selection or null to choose automatically
 	 * @return singleton instance
 	 */
-	public static Connection get(Context context, @Nullable Configuration config) {
+	@NonNull
+	public Connection getConnection(@Nullable Configuration config) {
 		// create new singleton instance if there is none or if settings change
-		if (notifySettingsChange || connection == null || config != null) {
-			notifySettingsChange = false;
-			GlobalSettings settings = GlobalSettings.getInstance(context);
-			// select automatically
-			if (config == null)
-				config = settings.getLogin().getConfiguration();
-			switch (config) {
-				case TWITTER1:
-					connection = new TwitterV1(context);
-					break;
-
-				case TWITTER2:
-					connection = new TwitterV2(context);
-					break;
-
-				case MASTODON:
-					connection = new Mastodon(context);
-					break;
-
-				default:
-					throw new RuntimeException("no connection selected!");
-			}
-			settings.addSettingsChangeListener(new OnSettingsChangeListener() {
-				@Override
-				public void onSettingsChange() {
-					notifySettingsChange = true;
-				}
-			});
+		if (config == null) {
+			config = instance.settings.getLogin().getConfiguration();
 		}
-		return connection;
+		switch (config) {
+			default:
+			case MASTODON:
+				return instance.connections[IDX_MASTODON];
+
+			case TWITTER1:
+				return instance.connections[IDX_TWITTER1];
+
+			case TWITTER2:
+				return instance.connections[IDX_TWITTER2];
+		}
 	}
 }

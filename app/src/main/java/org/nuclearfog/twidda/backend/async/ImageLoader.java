@@ -32,7 +32,7 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 	 * @param context Activity context
 	 */
 	public ImageLoader(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 

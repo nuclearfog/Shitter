@@ -23,7 +23,7 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 	 *
 	 */
 	public ListAction(Context context) {
-		connection = ConnectionManager.get(context);
+		connection = ConnectionManager.getConnection(context);
 	}
 
 

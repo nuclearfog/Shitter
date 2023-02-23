@@ -12,15 +12,28 @@ public class UserListUpdate {
 	/**
 	 * this ID indicates that the list isn't created yet
 	 */
-	public static final long NEW_LIST = -1;
+	private static final long NEW_LIST = -1;
 
 	private long listId;
 	private String title;
 	private String description;
 	private boolean isPublic;
 
+	/**
+	 * Constructor used for newly created userlist
+	 *
+	 * @param title       Title of the list
+	 * @param description short description of the list
+	 * @param isPublic    true if list should be public
+	 */
+	public UserListUpdate(String title, String description, boolean isPublic) {
+		this(title, description, isPublic, NEW_LIST);
+	}
+
 
 	/**
+	 * Constructor used to update existing userlist
+	 *
 	 * @param title       Title of the list
 	 * @param description short description of the list
 	 * @param isPublic    true if list should be public

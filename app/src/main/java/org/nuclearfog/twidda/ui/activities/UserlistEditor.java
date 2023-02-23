@@ -196,7 +196,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 				mHolder = new UserListUpdate(titleStr, descrStr, isPublic, userList.getId());
 			} else {
 				// create new one
-				mHolder = new UserListUpdate(titleStr, descrStr, isPublic, UserListUpdate.NEW_LIST);
+				mHolder = new UserListUpdate(titleStr, descrStr, isPublic);
 			}
 			updaterAsync.execute(mHolder, this);
 			loadingCircle.show();
