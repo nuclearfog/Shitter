@@ -141,11 +141,18 @@ public class AppDatabase {
 			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + StatusRegisterTable.NAME + "." + StatusRegisterTable.ID;
 
 	/**
-	 * query to get user information
+	 * subquery to get user information
 	 */
 	private static final String USER_SUBQUERY = UserTable.NAME
 			+ " INNER JOIN " + UserRegisterTable.NAME
 			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID;
+
+	/**
+	 * subquery used to get notification
+	 */
+	private static final String NOTIFICATION_SUBQUERY = NotificationTable.NAME
+			+ " INNER JOIN(" + USER_SUBQUERY + ")" + UserTable.NAME
+			+ " ON " + NotificationTable.NAME + "." + NotificationTable.USER + "=" + UserTable.NAME + "." + UserTable.ID;
 
 	/**
 	 * SQL query to get home timeline status
@@ -236,12 +243,17 @@ public class AppDatabase {
 	/**
 	 * SQL query to get notifications
 	 */
-	private static final String NOTIFICATION_QUERY = "SELECT * FROM " + NotificationTable.NAME
-			+ " INNER JOIN(" + USER_SUBQUERY + ")" + UserTable.NAME
-			+ " ON " + NotificationTable.NAME + "." + NotificationTable.USER + "=" + UserTable.NAME + "." + UserTable.ID
+	private static final String NOTIFICATION_QUERY = "SELECT * FROM " + NOTIFICATION_SUBQUERY
 			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.OWNER + "=?"
 			+ " ORDER BY " + NotificationTable.TIME + " DESC"
 			+ " LIMIT ?;";
+
+	/**
+	 * SQL Query to get a single notification
+	 */
+	private static final String SINGLE_NOTIFICATION_QUERY = "SELECT * FROM " + NOTIFICATION_SUBQUERY
+			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.ID + "=?"
+			+ " LIMIT 1;";
 
 	/**
 	 * select status entries from favorite table matching status ID
@@ -696,19 +708,7 @@ public class AppDatabase {
 		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
-				DatabaseNotification notification = new DatabaseNotification(cursor, login);
-				switch (notification.getType()) {
-					case Notification.TYPE_FAVORITE:
-					case Notification.TYPE_REPOST:
-					case Notification.TYPE_MENTION:
-					case Notification.TYPE_POLL:
-					case Notification.TYPE_STATUS:
-					case Notification.TYPE_UPDATE:
-						Status status = getStatus(notification.getItemId());
-						notification.addStatus(status);
-						break;
-				}
-				result.add(notification);
+				result.add(getNotification(cursor, login));
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -798,6 +798,23 @@ public class AppDatabase {
 	@Nullable
 	public User getUser(long userId) {
 		return getUser(userId, settings.getLogin());
+	}
+
+	/**
+	 * get a single notification by ID
+	 * @param id notification ID
+	 * @return notification
+	 */
+	@Nullable
+	public Notification getNotification(long id) {
+		String[] args = {Long.toString(id)};
+		SQLiteDatabase db = getDbRead();
+		Cursor cursor = db.rawQuery(SINGLE_NOTIFICATION_QUERY, args);
+		Notification notification = null;
+		if (cursor.moveToFirst())
+			notification = new DatabaseNotification(cursor, settings.getLogin());
+		cursor.close();
+		return notification;
 	}
 
 	/**
@@ -1166,6 +1183,29 @@ public class AppDatabase {
 			result = new DatabaseLocation(c);
 		c.close();
 		return result;
+	}
+
+	/**
+	 * create database notification
+	 *
+	 * @param cursor database cursor containing notification columns
+	 * @param login  information about the current login
+	 * @return notification
+	 */
+	private Notification getNotification(Cursor cursor, Account login) {
+		DatabaseNotification notification = new DatabaseNotification(cursor, login);
+		switch (notification.getType()) {
+			case Notification.TYPE_FAVORITE:
+			case Notification.TYPE_REPOST:
+			case Notification.TYPE_MENTION:
+			case Notification.TYPE_POLL:
+			case Notification.TYPE_STATUS:
+			case Notification.TYPE_UPDATE:
+				Status status = getStatus(notification.getItemId());
+				notification.addStatus(status);
+				break;
+		}
+		return notification;
 	}
 
 	/**

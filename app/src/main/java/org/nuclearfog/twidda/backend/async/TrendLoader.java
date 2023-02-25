@@ -40,7 +40,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 
 	@NonNull
 	@Override
-	protected TrendResult doInBackground(TrendParameter param) {
+	protected TrendResult doInBackground(@NonNull TrendParameter param) {
 		try {
 			switch (param.mode) {
 				case DATABASE:

@@ -97,7 +97,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @return result of the background task
 	 */
 	@NonNull
-	protected abstract Result doInBackground(Parameter param);
+	protected abstract Result doInBackground(@NonNull Parameter param);
 
 	/**
 	 * Callback used to send task result to main thread

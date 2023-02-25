@@ -34,7 +34,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 
 	@NonNull
 	@Override
-	protected StatusResult doInBackground(StatusParam param) {
+	protected StatusResult doInBackground(@NonNull StatusParam param) {
 		try {
 			switch (param.mode) {
 				case StatusParam.DATABASE:

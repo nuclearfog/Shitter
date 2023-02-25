@@ -35,7 +35,7 @@ public class UserUpdater extends AsyncExecutor<ProfileUpdate, UserUpdater.UserUp
 
 	@NonNull
 	@Override
-	protected UserUpdateResult doInBackground(ProfileUpdate param) {
+	protected UserUpdateResult doInBackground(@NonNull ProfileUpdate param) {
 		try {
 			User user = connection.updateProfile(param);
 			db.saveUser(user);

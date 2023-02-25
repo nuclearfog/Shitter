@@ -34,7 +34,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 
 	@NonNull
 	@Override
-	protected RelationResult doInBackground(RelationParam param) {
+	protected RelationResult doInBackground(@NonNull RelationParam param) {
 		try {
 			switch (param.mode) {
 				case RelationParam.LOAD:

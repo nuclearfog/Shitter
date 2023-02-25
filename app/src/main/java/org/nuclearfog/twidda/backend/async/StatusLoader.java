@@ -38,7 +38,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 
 	@NonNull
 	@Override
-	protected StatusResult doInBackground(StatusParameter request) {
+	protected StatusResult doInBackground(@NonNull StatusParameter request) {
 		List<Status> statuses = null;
 		int position = request.pos;
 		try {

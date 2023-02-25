@@ -166,15 +166,19 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onActivityResult(ActivityResult result) {
 		Intent intent = result.getData();
 		if (intent != null) {
-			if (result.getResultCode() == StatusActivity.RETURN_STATUS_UPDATE) {
-				Object data = intent.getSerializableExtra(StatusActivity.INTENT_STATUS_UPDATE_DATA);
-				if (data instanceof Status) {
-					Status statusUpdate = (Status) data;
-					adapter.updateItem(statusUpdate);
-				}
-			} else if (result.getResultCode() == StatusActivity.RETURN_STATUS_REMOVED) {
-				long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0);
-				adapter.removeItem(statusId);
+			switch (result.getResultCode()) {
+				case StatusActivity.RETURN_STATUS_UPDATE:
+					Object data = intent.getSerializableExtra(StatusActivity.INTENT_STATUS_UPDATE_DATA);
+					if (data instanceof Status) {
+						Status statusUpdate = (Status) data;
+						adapter.updateItem(statusUpdate);
+					}
+					break;
+
+				case StatusActivity.RETURN_STATUS_REMOVED:
+					long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0L);
+					adapter.removeItem(statusId);
+					break;
 			}
 		}
 	}

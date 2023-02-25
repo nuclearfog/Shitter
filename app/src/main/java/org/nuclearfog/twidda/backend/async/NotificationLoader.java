@@ -35,7 +35,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 
 	@NonNull
 	@Override
-	protected NotificationResult doInBackground(NotificationParam params) {
+	protected NotificationResult doInBackground(@NonNull NotificationParam params) {
 		List<Notification> result = null;
 		try {
 			if (params.minId == 0L && params.maxId == 0L) {

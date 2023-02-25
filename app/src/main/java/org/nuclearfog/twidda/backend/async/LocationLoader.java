@@ -33,7 +33,7 @@ public class LocationLoader extends AsyncExecutor<Void, LocationLoader.LocationL
 
 	@NonNull
 	@Override
-	protected LocationLoaderResult doInBackground(Void v) {
+	protected LocationLoaderResult doInBackground(@NonNull Void v) {
 		try {
 			List<Location> locations = connection.getLocations();
 			return new LocationLoaderResult(locations, null);

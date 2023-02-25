@@ -30,7 +30,7 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 
 	@NonNull
 	@Override
-	protected ListManagerResult doInBackground(ListManagerParam param) {
+	protected ListManagerResult doInBackground(@NonNull ListManagerParam param) {
 		try {
 			switch (param.mode) {
 				case ListManagerParam.ADD:

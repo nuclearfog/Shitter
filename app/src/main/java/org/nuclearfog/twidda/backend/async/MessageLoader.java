@@ -35,7 +35,7 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 
 	@NonNull
 	@Override
-	protected MessageLoaderResult doInBackground(MessageLoaderParam param) {
+	protected MessageLoaderResult doInBackground(@NonNull MessageLoaderParam param) {
 		try {
 			switch (param.mode) {
 				case MessageLoaderParam.DATABASE:

@@ -32,7 +32,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 
 	@NonNull
 	@Override
-	protected UserResult doInBackground(UserParam param) {
+	protected UserResult doInBackground(@NonNull UserParam param) {
 		try {
 			switch (param.mode) {
 				case UserParam.DATABASE:

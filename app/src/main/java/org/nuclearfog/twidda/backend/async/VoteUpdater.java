@@ -31,7 +31,7 @@ public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdate
 
 	@NonNull
 	@Override
-	protected VoteResult doInBackground(VoteParam param) {
+	protected VoteResult doInBackground(@NonNull VoteParam param) {
 		try {
 			switch (param.mode) {
 				case VoteParam.LOAD:

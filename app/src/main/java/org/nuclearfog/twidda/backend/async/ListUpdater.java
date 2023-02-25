@@ -32,7 +32,7 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 
 	@NonNull
 	@Override
-	protected ListUpdateResult doInBackground(UserListUpdate update) {
+	protected ListUpdateResult doInBackground(@NonNull UserListUpdate update) {
 		try {
 			if (update.exists()) {
 				UserList result = connection.updateUserlist(update);

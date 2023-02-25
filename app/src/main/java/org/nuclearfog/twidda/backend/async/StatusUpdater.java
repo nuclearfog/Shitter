@@ -32,7 +32,7 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 
 	@NonNull
 	@Override
-	protected StatusUpdateResult doInBackground(StatusUpdate update) {
+	protected StatusUpdateResult doInBackground(@NonNull StatusUpdate update) {
 		try {
 			// upload media first
 			MediaStatus[] mediaUpdates = update.getMediaUpdates();

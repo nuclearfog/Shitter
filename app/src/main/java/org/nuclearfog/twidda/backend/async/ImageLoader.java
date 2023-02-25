@@ -38,7 +38,7 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 
 	@NonNull
 	@Override
-	protected ImageResult doInBackground(ImageParameter request) {
+	protected ImageResult doInBackground(@NonNull ImageParameter request) {
 		try {
 			// get input stream
 			MediaStatus mediaUpdate = connection.downloadImage(request.uri.toString());

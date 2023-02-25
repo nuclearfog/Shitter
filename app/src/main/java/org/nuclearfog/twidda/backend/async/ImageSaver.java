@@ -18,7 +18,7 @@ public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
 
 	@NonNull
 	@Override
-	protected Boolean doInBackground(ImageParam param) {
+	protected Boolean doInBackground(@NonNull ImageParam param) {
 		try {
 			int length;
 			byte[] buffer = new byte[4096];

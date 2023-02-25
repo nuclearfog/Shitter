@@ -1115,6 +1115,12 @@ public class TwitterV1 implements Connection {
 		return result;
 	}
 
+
+	@Override
+	public Notification getNotification(long id) throws ConnectionException {
+		return new NotificationV1(showStatus(id));
+	}
+
 	/**
 	 * get tweets using an endpoint
 	 *

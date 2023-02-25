@@ -894,6 +894,16 @@ public class Mastodon implements Connection {
 		}
 	}
 
+
+	@Override
+	public Notification getNotification(long id) throws ConnectionException {
+		try {
+			return createNotification(get(ENDPOINT_NOTIFICATION + '/' + id, new ArrayList<>()));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
 	/**
 	 * get information about the current user
 	 *
@@ -1124,7 +1134,7 @@ public class Mastodon implements Connection {
 	/**
 	 * create notification from response
 	 *
-	 * @return notification
+	 * @return a list of notification
 	 */
 	private List<Notification> createNotifications(Response response) throws MastodonException {
 		try {
@@ -1136,6 +1146,25 @@ public class Mastodon implements Connection {
 				for (int i = 0; i < json.length(); i++)
 					result.add(new MastodonNotification(json.getJSONObject(i), currentId));
 				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
+	 * create a single notification from response
+	 *
+	 * @return notification
+	 */
+	private Notification createNotification(Response response) throws MastodonException {
+		try {
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				long currentId = settings.getLogin().getId();
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonNotification(json, currentId);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

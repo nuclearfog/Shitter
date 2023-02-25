@@ -29,7 +29,7 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 
 	@NonNull
 	@Override
-	protected AccountResult doInBackground(AccountParameter request) {
+	protected AccountResult doInBackground(@NonNull AccountParameter request) {
 		try {
 			switch (request.mode) {
 				case AccountParameter.LOAD:

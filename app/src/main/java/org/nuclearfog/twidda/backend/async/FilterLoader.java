@@ -37,7 +37,7 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 
 	@NonNull
 	@Override
-	protected FilterResult doInBackground(FilterParam param) {
+	protected FilterResult doInBackground(@NonNull FilterParam param) {
 		try {
 			switch (param.mode) {
 				case FilterParam.RELOAD:

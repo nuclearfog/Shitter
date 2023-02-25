@@ -39,7 +39,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 
 	@NonNull
 	@Override
-	protected LoginResult doInBackground(LoginParam param) {
+	protected LoginResult doInBackground(@NonNull LoginParam param) {
 		Connection connection = manager.getConnection(param.configuration);
 		try {
 			switch (param.mode) {

@@ -31,7 +31,7 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 
 	@NonNull
 	@Override
-	protected UserlistResult doInBackground(UserlistParam param) {
+	protected UserlistResult doInBackground(@NonNull UserlistParam param) {
 		try {
 			switch (param.mode) {
 				case UserlistParam.OWNERSHIP:

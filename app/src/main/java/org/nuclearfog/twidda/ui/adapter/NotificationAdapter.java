@@ -13,7 +13,6 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
-import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
@@ -186,8 +185,8 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 				break;
 
 			case OnHolderClickListener.STATUS_CLICK:
-				if (item != null && item.getStatus() != null) {
-					listener.onStatusClick(item.getStatus());
+				if (item != null) {
+					listener.onNotificationClick(item);
 				}
 				break;
 		}
@@ -217,6 +216,19 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 		if (!newItems.isEmpty()) {
 			items.addAll(index, newItems);
 			notifyItemRangeInserted(index, newItems.size());
+		}
+	}
+
+	/**
+	 * update single item
+	 *
+	 * @param update notification to update
+	 */
+	public void updateItem(Notification update) {
+		int index = items.indexOf(update);
+		if (index >= 0) {
+			items.set(index, update);
+			notifyItemChanged(index);
 		}
 	}
 
@@ -260,11 +272,11 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public interface OnNotificationClickListener {
 
 		/**
-		 * called on status item click
+		 * called on notification click
 		 *
-		 * @param status clicked status
+		 * @param notification clicked notification
 		 */
-		void onStatusClick(Status status);
+		void onNotificationClick(Notification notification);
 
 		/**
 		 * called on user item click

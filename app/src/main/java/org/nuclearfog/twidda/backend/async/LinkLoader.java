@@ -46,7 +46,7 @@ public class LinkLoader extends AsyncExecutor<Uri, LinkLoader.LinkResult> {
 
 	@NonNull
 	@Override
-	protected LinkResult doInBackground(Uri link) {
+	protected LinkResult doInBackground(@NonNull Uri link) {
 		try {
 			List<String> pathSeg = link.getPathSegments();
 			Bundle data = new Bundle();

@@ -29,7 +29,7 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 
 	@NonNull
 	@Override
-	protected ListActionResult doInBackground(ListActionParam param) {
+	protected ListActionResult doInBackground(@NonNull ListActionParam param) {
 		try {
 			switch (param.mode) {
 				case ListActionParam.LOAD:

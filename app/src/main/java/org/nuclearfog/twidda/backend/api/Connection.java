@@ -578,4 +578,12 @@ public interface Connection {
 	 * @return notification list
 	 */
 	List<Notification> getNotifications(long minId, long maxId) throws ConnectionException;
+
+	/**
+	 * get aa single notification by ID
+	 *
+	 * @param id notification ID
+	 * @return notification
+	 */
+	Notification getNotification(long id) throws ConnectionException;
 }

@@ -53,6 +53,9 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.async.NotificationAction;
+import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationParam;
+import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationResult;
 import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.async.StatusAction.StatusParam;
 import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
@@ -65,10 +68,12 @@ import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
+import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -104,6 +109,16 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public static final int RETURN_STATUS_REMOVED = 0x8B03DB84;
 
 	/**
+	 * Activity return code to update a notification
+	 */
+	public static final int RETURN_NOTIFICATION_UPDATE = 0x30BC261D;
+
+	/**
+	 * Activity return code if a notification was not found
+	 */
+	public static final int RETURN_NOTIFICATION_REMOVED = 0x99BB4149;
+
+	/**
 	 * key used for status information
 	 * value type is {@link Status}
 	 * If no status object exists, {@link #KEY_STATUS_ID} and {@link #KEY_STATUS_NAME} will be used instead
@@ -111,10 +126,22 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public static final String KEY_STATUS_DATA = "status_data";
 
 	/**
+	 * key uused for notification information, containing a status
+	 * value type is {@link Notification}
+	 */
+	public static final String KEY_NOTIFICATION_DATA = "notification_data";
+
+	/**
 	 * key for the status ID value, alternative to {@link #KEY_STATUS_DATA}
 	 * value type is Long
 	 */
 	public static final String KEY_STATUS_ID = "status_id";
+
+	/**
+	 * key for the notification ID value, alternative to {@link #KEY_NOTIFICATION_DATA}
+	 * value type is long
+	 */
+	public static final String KEY_NOTIFICATION_ID = "notification_id";
 
 	/**
 	 * key for the status author's name. alternative to {@link #KEY_STATUS_DATA}
@@ -129,10 +156,22 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public static final String INTENT_STATUS_UPDATE_DATA = "status_update_data";
 
 	/**
+	 * key to return updated notification information
+	 * value type is {@link Status}
+	 */
+	public static final String INTENT_NOTIFICATION_UPDATE_DATA = "notification_update_data";
+
+	/**
 	 * key to return an ID if status was deleted
 	 * value type is Long
 	 */
 	public static final String INTENT_STATUS_REMOVED_ID = "status_removed_id";
+
+	/**
+	 * key to return an ID if notification was deleted
+	 * value type is Long
+	 */
+	public static final String INTENT_NOTIFICATION_REMOVED_ID = "notification_removed_id";
 
 	/**
 	 * regex pattern of a status URL
@@ -145,6 +184,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private ClipboardManager clip;
 	private StatusAction statusAsync;
 	private VoteUpdater voteAsync;
+	private NotificationAction notificationAsync;
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private PreviewAdapter adapter;
@@ -161,7 +201,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Nullable
 	private Status status;
-	private long id;
+	@Nullable
+	private Notification notification;
 	private boolean hidden;
 
 
@@ -199,15 +240,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 		statusAsync = new StatusAction(this);
 		voteAsync = new VoteUpdater(this);
+		notificationAsync = new NotificationAction(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		adapter = new PreviewAdapter(settings, picasso, this);
 		// get parameter
+		long id = 0;
 		String replyUsername = "";
-		Object data = getIntent().getSerializableExtra(KEY_STATUS_DATA);
-		if (data instanceof Status) {
-			status = (Status) data;
+		Object statusObject = getIntent().getSerializableExtra(KEY_STATUS_DATA);
+		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
+		if (statusObject instanceof Status) {
+			status = (Status) statusObject;
 			Status embedded = status.getEmbeddedStatus();
 			if (embedded != null) {
 				id = embedded.getId();
@@ -217,8 +261,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				hidden = status.isHidden();
 				replyUsername = status.getAuthor().getScreenname();
 			}
-		} else {
-			id = getIntent().getLongExtra(KEY_STATUS_ID, -1L);
+		} else if (notificationObject instanceof Notification) {
+			notification = (Notification) notificationObject;
 		}
 		// initialize status reply list
 		Bundle param = new Bundle();
@@ -271,20 +315,32 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (status == null) {
-			StatusParam param = new StatusParam(StatusParam.ONLINE, id);
-			statusAsync.execute(param, this::onStatusResult);
-		} else {
+		if (status != null) {
+			setStatus(status);
 			if (status instanceof DatabaseStatus) {
-				setStatus(status);
 				StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
 				statusAsync.execute(param, this::onStatusResult);
-			} else {
-				setStatus(status);
-				if (status.getPoll() != null) {
-					VoteParam param = new VoteParam(VoteParam.LOAD, status.getPoll(), new int[0]);
-					voteAsync.execute(param, this::setPollResult);
-				}
+			} else if (status.getPoll() != null) {
+				VoteParam param = new VoteParam(VoteParam.LOAD, status.getPoll(), new int[0]);
+				voteAsync.execute(param, this::setPollResult);
+			}
+		} else if (notification != null) {
+			if (notification.getStatus() != null) {
+				setStatus(notification.getStatus());
+			}
+			if (notification instanceof DatabaseNotification) {
+				NotificationParam param = new NotificationParam(NotificationParam.ONLINE, notification.getId());
+				notificationAsync.execute(param, this::onNotificationResult);
+			}
+		} else {
+			long statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
+			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
+			if (statusId != 0) {
+				StatusParam param = new StatusParam(StatusParam.DATABASE, statusId);
+				statusAsync.execute(param, this::onStatusResult);
+			} else if (notificationId != 0) {
+				NotificationParam param = new NotificationParam(NotificationParam.ONLINE, notificationId);
+				notificationAsync.execute(param, this::onNotificationResult);
 			}
 		}
 	}
@@ -300,8 +356,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onBackPressed() {
 		Intent returnData = new Intent();
-		returnData.putExtra(INTENT_STATUS_UPDATE_DATA, status);
-		setResult(RETURN_STATUS_UPDATE, returnData);
+		if (notification != null) {
+			returnData.putExtra(INTENT_NOTIFICATION_UPDATE_DATA, notification);
+			setResult(RETURN_NOTIFICATION_UPDATE, returnData);
+		} else {
+			returnData.putExtra(INTENT_STATUS_UPDATE_DATA, status);
+			setResult(RETURN_STATUS_UPDATE, returnData);
+		}
 		super.onBackPressed();
 	}
 
@@ -815,8 +876,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		switch (result.mode) {
 			case StatusResult.DATABASE:
-				StatusParam param = new StatusParam(StatusParam.ONLINE, id);
-				statusAsync.execute(param, this::onStatusResult);
+				if (result.status != null) {
+					StatusParam param = new StatusParam(StatusParam.ONLINE, result.status.getId());
+					statusAsync.execute(param, this::onStatusResult);
+				}
 				break;
 
 			case StatusResult.REPOST:
@@ -885,6 +948,39 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					Intent returnData = new Intent();
 					returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
 					setResult(RETURN_STATUS_REMOVED, returnData);
+					finish();
+				}
+				break;
+		}
+	}
+
+	/**
+	 * update notification
+	 *
+	 * @param result notification containing status information
+	 */
+	public void onNotificationResult(NotificationResult result) {
+		if (result.notification != null && result.notification.getStatus() != null) {
+			notification = result.notification;
+			setStatus(result.notification.getStatus());
+		}
+		switch (result.mode) {
+			case NotificationResult.DATABASE:
+				if (result.notification != null) {
+					NotificationParam param = new NotificationParam(NotificationParam.ONLINE, result.notification.getId());
+					notificationAsync.execute(param, this::onNotificationResult);
+				}
+				break;
+
+			case NotificationResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				if (notification == null) {
+					finish();
+				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+					Intent returnData = new Intent();
+					returnData.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
+					setResult(RETURN_NOTIFICATION_REMOVED, returnData);
 					finish();
 				}
 				break;
