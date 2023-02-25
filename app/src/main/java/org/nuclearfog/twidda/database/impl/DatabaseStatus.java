@@ -45,11 +45,14 @@ public class DatabaseStatus implements Status {
 	private long myRepostId;
 	private long conversationId;
 	private long locationId;
+	private long pollId;
 	private Status embedded;
 	private String[] mediaKeys = {};
 	private String[] emojiKeys = {};
 	private Media[] medias = {};
 	private Emoji[] emojis = {};
+	private Card[] cards = {};
+	private Poll poll;
 	private User author;
 	private Location location;
 	private int repostCount;
@@ -82,6 +85,7 @@ public class DatabaseStatus implements Status {
 		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYSTATUS));
 		source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
 		locationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.LOCATION));
+		pollId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.POLL));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
 		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.EMOJI));
 		userMentions = StringTools.getUserMentions(text, author.getScreenname());
@@ -257,14 +261,14 @@ public class DatabaseStatus implements Status {
 	@NonNull
 	@Override
 	public Card[] getCards() {
-		return new Card[0];
+		return cards;
 	}
 
 
 	@Nullable
 	@Override
 	public Poll getPoll() {
-		return null;
+		return poll;
 	}
 
 
@@ -327,6 +331,13 @@ public class DatabaseStatus implements Status {
 	}
 
 	/**
+	 * @return ID of an attached poll or '0'
+	 */
+	public long getPollId() {
+		return pollId;
+	}
+
+	/**
 	 * attach status referenced by {@link #embeddedId}
 	 *
 	 * @param embedded embedded status
@@ -360,5 +371,14 @@ public class DatabaseStatus implements Status {
 	 */
 	public void addLocation(Location location) {
 		this.location = location;
+	}
+
+	/**
+	 * add poll
+	 *
+	 * @param poll poll item
+	 */
+	public void addPoll(@Nullable Poll poll) {
+		this.poll = poll;
 	}
 }

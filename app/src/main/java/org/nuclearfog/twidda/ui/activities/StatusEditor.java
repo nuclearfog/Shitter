@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
@@ -97,7 +97,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
 			locationBtn.setVisibility(View.GONE);
 		}
-		long inReplyId = getIntent().getLongExtra(KEY_STATUS_EDITOR_REPLYID, 0);
+		long inReplyId = getIntent().getLongExtra(KEY_STATUS_EDITOR_REPLYID, 0L);
 		String prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
 		statusUpdate.addReplyStatusId(inReplyId);
 		if (prefix != null) {

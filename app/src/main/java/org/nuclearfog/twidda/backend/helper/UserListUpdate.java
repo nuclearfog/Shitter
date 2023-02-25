@@ -12,7 +12,7 @@ public class UserListUpdate {
 	/**
 	 * this ID indicates that the list isn't created yet
 	 */
-	private static final long NEW_LIST = -1;
+	private static final long NEW_LIST = -1L;
 
 	private long listId;
 	private String title;

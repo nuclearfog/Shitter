@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 13;
+	private static final int DB_VERSION = 14;
 
 	/**
 	 * database file name
@@ -62,6 +62,7 @@ public class DatabaseAdapter {
 			+ StatusTable.TEXT + " TEXT,"
 			+ StatusTable.MEDIA + " TEXT,"
 			+ StatusTable.EMOJI + " TEXT,"
+			+ StatusTable.POLL + " INTEGER,"
 			+ StatusTable.REPOST + " INTEGER,"
 			+ StatusTable.FAVORITE + " INTEGER,"
 			+ StatusTable.REPLY + " INTEGER,"
@@ -206,6 +207,17 @@ public class DatabaseAdapter {
 			+ EmojiTable.URL + " TEXT);";
 
 	/**
+	 * SQL query to create a poll table
+	 */
+	public static final String TABLE_POLL = "CREATE TABLE IF NOT EXISTS "
+			+ PollTable.NAME + "("
+			+ PollTable.ID + " INTEGER PRIMARY KEY,"
+			+ PollTable.NAME + " TEXT,"
+			+ PollTable.LIMIT + " INTEGER,"
+			+ PollTable.EXPIRATION + " INTEGER,"
+			+ PollTable.OPTIONS + " TEXT);";
+
+	/**
 	 * table index for status table
 	 */
 	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
@@ -272,6 +284,11 @@ public class DatabaseAdapter {
 	 * update status table add emoji keys
 	 */
 	private static final String UPDATE_ADD_STATUS_EMOJI = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.EMOJI + " TEXT;";
+
+	/**
+	 * update status table add emoji keys
+	 */
+	private static final String UPDATE_ADD_STATUS_POLL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.POLL + " INTEGER;";
 
 	/**
 	 * singleton instance
@@ -358,6 +375,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_MEDIA);
 		db.execSQL(TABLE_LOCATION);
 		db.execSQL(TABLE_EMOJI);
+		db.execSQL(TABLE_POLL);
 		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
@@ -396,8 +414,12 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_ADD_STATUS_URL);
 				db.setVersion(12);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 13) {
 				db.execSQL(UPDATE_ADD_STATUS_EMOJI);
+				db.setVersion(13);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_ADD_STATUS_POLL);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -512,6 +534,11 @@ public class DatabaseAdapter {
 		 * emoji keys
 		 */
 		String EMOJI = "emoji";
+
+		/**
+		 * ID of a {@link org.nuclearfog.twidda.model.Poll}
+		 */
+		String POLL = "pollID";
 
 		/**
 		 * repost count
@@ -954,5 +981,36 @@ public class DatabaseAdapter {
 		 * emoji image url
 		 */
 		String URL = "url";
+	}
+
+	/**
+	 * Table for status poll
+	 */
+	public interface PollTable {
+
+		/**
+		 * table name
+		 */
+		String NAME = "poll";
+
+		/**
+		 * poll ID
+		 */
+		String ID = "poll_id";
+
+		/**
+		 * expiration time
+		 */
+		String EXPIRATION = "expires_at";
+
+		/**
+		 * maximum selection count
+		 */
+		String LIMIT = "select_limit";
+
+		/**
+		 * poll options titles separated by ';'
+		 */
+		String OPTIONS = "options";
 	}
 }

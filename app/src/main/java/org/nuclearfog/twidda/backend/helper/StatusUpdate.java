@@ -304,7 +304,7 @@ public class StatusUpdate {
 	@NonNull
 	@Override
 	public String toString() {
-		if (replyId > 0)
+		if (replyId != 0)
 			return "to=" + replyId + " tweet=\"" + text + "\"";
 		return "tweet=\"" + text + "\"";
 	}

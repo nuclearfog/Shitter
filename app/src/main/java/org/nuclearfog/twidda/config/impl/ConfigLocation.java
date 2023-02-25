@@ -16,6 +16,11 @@ public class ConfigLocation implements Location {
 	private long id;
 	private String name;
 
+
+	public ConfigLocation() {
+		this(NO_ID, "");
+	}
+
 	/**
 	 * @param name place name
 	 * @param id   world id

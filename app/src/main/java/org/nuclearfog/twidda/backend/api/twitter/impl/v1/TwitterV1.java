@@ -703,7 +703,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		if (update.getText() != null)
 			params.add("status=" + StringTools.encode(update.getText()));
-		if (update.getReplyId() > 0)
+		if (update.getReplyId() != 0)
 			params.add("in_reply_to_status_id=" + update.getReplyId());
 		if (mediaIds != null && mediaIds.length > 0) {
 			StringBuilder buf = new StringBuilder();
@@ -842,7 +842,7 @@ public class TwitterV1 implements Connection {
 			root.put("event", event);
 			if (!message.isEmpty())
 				data.put("text", message);
-			if (mediaId > 0) {
+			if (mediaId != 0) {
 				JSONObject attachment = new JSONObject();
 				JSONObject media = new JSONObject();
 				attachment.put("type", "media");
@@ -1084,7 +1084,7 @@ public class TwitterV1 implements Connection {
 		// but for bigger lists, we have to parse the whole list
 		Set<Long> result = new TreeSet<>();
 		// add blocked user IDs
-		long cursor = -1;
+		long cursor = -1L;
 		for (int i = 0; i < 10 && cursor != 0; i++) {
 			long[] ids = getUserIDs(IDS_BLOCKED_USERS, new ArrayList<>(), cursor);
 			for (int pos = 0; pos < ids.length - 2; pos++) {
@@ -1093,7 +1093,7 @@ public class TwitterV1 implements Connection {
 			cursor = ids[ids.length - 1];
 		}
 		// add muted user IDs
-		cursor = -1;
+		cursor = -1L;
 		for (int i = 0; i < 10 && cursor != 0; i++) {
 			long[] ids = getUserIDs(IDS_MUTED_USERS, new ArrayList<>(), cursor);
 			for (int pos = 0; pos < ids.length - 2; pos++) {
@@ -1136,9 +1136,9 @@ public class TwitterV1 implements Connection {
 		params.add(TweetV1.PARAM_INCL_RETWEET);
 		params.add(TweetV1.PARAM_ENTITIES);
 		// set tweet range
-		if (minId > 0)
+		if (minId != 0L)
 			params.add("since_id=" + minId);
-		if (maxId > 1)
+		if (maxId != 0L)
 			params.add("max_id=" + maxId);
 		params.add("count=" + settings.getListSize());
 		try {

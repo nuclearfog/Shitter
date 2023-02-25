@@ -10,6 +10,7 @@ import static org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
@@ -32,6 +33,7 @@ import org.nuclearfog.twidda.database.impl.DatabaseLocation;
 import org.nuclearfog.twidda.database.impl.DatabaseMedia;
 import org.nuclearfog.twidda.database.impl.DatabaseMessage;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
+import org.nuclearfog.twidda.database.impl.DatabasePoll;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.database.impl.DatabaseTrend;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
@@ -41,6 +43,7 @@ import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Notification;
+import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
@@ -128,6 +131,11 @@ public class AppDatabase {
 	 * flag indicates that the user has a default profile image
 	 */
 	public static final int DEFAULT_IMAGE_MASK = 1 << 4;
+
+	/**
+	 * used if no ID is defined
+	 */
+	public static final long NO_ID = -1L;
 
 	/**
 	 * query to create status table with user and register columns
@@ -336,6 +344,11 @@ public class AppDatabase {
 	 * selection for account entry
 	 */
 	private static final String ACCOUNT_SELECTION = AccountTable.ID + "=?";
+
+	/**
+	 * selection for poll entry
+	 */
+	private static final String POLL_SELECTION = PollTable.ID + "=?";
 
 	/**
 	 * column projection for user flag register
@@ -802,6 +815,7 @@ public class AppDatabase {
 
 	/**
 	 * get a single notification by ID
+	 *
 	 * @param id notification ID
 	 * @return notification
 	 */
@@ -1077,8 +1091,11 @@ public class AppDatabase {
 		Account login = settings.getLogin();
 		DatabaseStatus result = new DatabaseStatus(cursor, login);
 		// check if there is an embedded status
-		if (result.getEmbeddedStatusId() > 1L) {
+		if (result.getEmbeddedStatusId() != NO_ID) {
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
+		}
+		if (result.getPollId() != NO_ID) {
+			result.addPoll(getPoll(db, result.getPollId()));
 		}
 		if (result.getMediaKeys().length > 0) {
 			List<Media> mediaList = new LinkedList<>();
@@ -1104,7 +1121,7 @@ public class AppDatabase {
 				result.addEmojis(emojiList.toArray(new Emoji[0]));
 			}
 		}
-		if (result.getLocationId() != 0L) {
+		if (result.getLocationId() != Location.NO_ID) {
 			Location location = getLocation(db, result.getLocationId());
 			if (location != null) {
 				result.addLocation(location);
@@ -1229,12 +1246,12 @@ public class AppDatabase {
 	/**
 	 * get user register or zero if not found
 	 *
-	 * @param db     database instance
-	 * @param userID ID of the user
+	 * @param db database instance
+	 * @param id ID of the user
 	 * @return user flags
 	 */
-	private int getUserFlags(SQLiteDatabase db, long userID) {
-		String[] args = {Long.toString(userID), Long.toString(settings.getLogin().getId())};
+	private int getUserFlags(SQLiteDatabase db, long id) {
+		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		Cursor c = db.query(UserRegisterTable.NAME, USER_REG_COLUMN, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
 		int result = 0;
@@ -1243,6 +1260,26 @@ public class AppDatabase {
 		c.close();
 		return result;
 	}
+
+	/**
+	 * get status poll
+	 *
+	 * @param db database instance
+	 * @param id ID of the user
+	 * @return poll instance
+	 */
+	@Nullable
+	private Poll getPoll(SQLiteDatabase db, long id) {
+		String[] args = {Long.toString(id)};
+
+		Cursor c = db.query(PollTable.NAME, DatabasePoll.PROJECTION, POLL_SELECTION, args, null, null, null, SINGLE_ITEM);
+		DatabasePoll result = null;
+		if (c.moveToFirst())
+			result = new DatabasePoll(c);
+		c.close();
+		return result;
+	}
+
 
 	/**
 	 * store user information into database
@@ -1302,7 +1339,7 @@ public class AppDatabase {
 	private void saveStatus(Status status, SQLiteDatabase db, int flags) {
 		User user = status.getAuthor();
 		Status rtStat = status.getEmbeddedStatus();
-		long rtId = -1L;
+		long rtId = NO_ID;
 		if (rtStat != null) {
 			saveStatus(rtStat, db, 0);
 			rtId = rtStat.getId();
@@ -1328,7 +1365,7 @@ public class AppDatabase {
 		} else {
 			flags &= ~BOOKMARK_MASK;
 		}
-		ContentValues column = new ContentValues(17);
+		ContentValues column = new ContentValues(18);
 		column.put(StatusTable.ID, status.getId());
 		column.put(StatusTable.USER, user.getId());
 		column.put(StatusTable.TIME, status.getTimestamp());
@@ -1366,6 +1403,10 @@ public class AppDatabase {
 			}
 			String emojiKeys = buf.deleteCharAt(buf.length() - 1).toString();
 			column.put(StatusTable.EMOJI, emojiKeys);
+		}
+		if (status.getPoll() != null) {
+			savePoll(status.getPoll(), db);
+			column.put(StatusTable.POLL, status.getPoll().getId());
 		}
 		db.insertWithOnConflict(StatusTable.NAME, "", column, CONFLICT_REPLACE);
 		saveUser(user, db, CONFLICT_IGNORE);
@@ -1419,6 +1460,28 @@ public class AppDatabase {
 		column.put(LocationTable.COUNTRY, location.getCountry());
 		column.put(LocationTable.PLACE, location.getPlace());
 		db.insertWithOnConflict(LocationTable.NAME, "", column, CONFLICT_IGNORE);
+	}
+
+	/**
+	 * save status poll
+	 *
+	 * @param poll poll to save
+	 * @param db   database instance
+	 */
+	private void savePoll(Poll poll, SQLiteDatabase db) {
+		ContentValues column = new ContentValues(4);
+		StringBuilder buf = new StringBuilder();
+		for (Poll.Option option : poll.getOptions()) {
+			buf.append(option.getTitle()).append(';');
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length() - 1);
+		}
+		column.put(PollTable.ID, poll.getId());
+		column.put(PollTable.LIMIT, poll.getLimit());
+		column.put(PollTable.EXPIRATION, poll.expirationTime());
+		column.put(PollTable.OPTIONS, buf.toString());
+		db.insertWithOnConflict(PollTable.NAME, "", column, CONFLICT_IGNORE);
 	}
 
 	/**

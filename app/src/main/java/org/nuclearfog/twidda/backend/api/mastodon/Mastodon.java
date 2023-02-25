@@ -588,7 +588,7 @@ public class Mastodon implements Connection {
 		params.add("visibility=public");
 		if (update.getText() != null)
 			params.add("status=" + StringTools.encode(update.getText()));
-		if (update.getReplyId() > 0)
+		if (update.getReplyId() != 0)
 			params.add("in_reply_to_id=" + update.getReplyId());
 		for (long mediaId : mediaIds)
 			params.add("media_ids[]=" + mediaId);
@@ -882,7 +882,7 @@ public class Mastodon implements Connection {
 	@Override
 	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
 		List<String> params = new ArrayList<>();
-		if (minId > 0)
+		if (minId != 0L)
 			params.add("since_id=" + minId);
 		if (maxId > minId)
 			params.add("max_id=" + maxId);
@@ -959,7 +959,7 @@ public class Mastodon implements Connection {
 	 * @return status  timeline
 	 */
 	private List<Status> getStatuses(String endpoint, List<String> params, long minId, long maxId) throws MastodonException {
-		if (minId > 0)
+		if (minId != 0L)
 			params.add("min_id=" + minId);
 		if (maxId > minId)
 			params.add("max_id=" + maxId);

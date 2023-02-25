@@ -196,9 +196,9 @@ public class TwitterV2 extends TwitterV1 {
 		params.add(PollV2.FIELDS_POLL);
 		params.add(LocationV2.FIELDS_PLACE);
 		// set tweet range
-		if (minId > 0)
+		if (minId != 0L)
 			params.add("since_id=" + minId);
-		if (maxId > 1)
+		if (maxId != 0L)
 			params.add("until_id=" + maxId);
 		params.add("max_results=" + settings.getListSize());
 		try {

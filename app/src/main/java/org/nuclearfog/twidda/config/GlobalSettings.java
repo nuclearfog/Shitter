@@ -538,7 +538,7 @@ public class GlobalSettings {
 				return location;
 
 			default:
-				return new ConfigLocation(-1L, "");
+				return new ConfigLocation();
 		}
 	}
 

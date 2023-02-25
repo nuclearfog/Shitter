@@ -16,11 +16,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ImageLoader;
 import org.nuclearfog.twidda.backend.async.ImageLoader.ImageParameter;
 import org.nuclearfog.twidda.backend.async.ImageLoader.ImageResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;

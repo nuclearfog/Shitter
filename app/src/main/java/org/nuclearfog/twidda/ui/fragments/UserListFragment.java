@@ -15,10 +15,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ListLoader;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistParam;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistResult;
-import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -75,7 +75,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		super.onViewCreated(view, savedInstanceState);
 		Bundle param = getArguments();
 		if (param != null) {
-			id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
+			id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1L);
 			type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
 		}
 		listTask = new ListLoader(requireContext());

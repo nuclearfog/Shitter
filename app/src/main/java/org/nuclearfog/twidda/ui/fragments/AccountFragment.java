@@ -119,7 +119,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 				break;
 
 			case AccountResult.DELETE:
-				if (result.id > 0)
+				if (result.id != 0)
 					adapter.removeItem(result.id);
 				break;
 

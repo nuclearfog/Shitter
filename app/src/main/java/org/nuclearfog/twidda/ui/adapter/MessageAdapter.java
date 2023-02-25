@@ -65,7 +65,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 		Message message = messages.get(index);
 		if (message != null)
 			return message.getId();
-		return -1;
+		return 0L;
 	}
 
 
