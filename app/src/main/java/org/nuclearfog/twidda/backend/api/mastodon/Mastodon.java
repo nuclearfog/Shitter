@@ -212,44 +212,37 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringTools.encode(search));
 		params.add("type=accounts");
-		return getUsers(ENDPOINT_SEARCH_ACCOUNTS, params);
+		return getUsers(ENDPOINT_SEARCH_ACCOUNTS, page, params);
 	}
 
 
 	@Override
 	public Users getRepostingUsers(long id, long cursor) throws MastodonException {
-		return getUsers(ENDPOINT_STATUS + id + "/reblogged_by", new ArrayList<>());
+		return getUsers(ENDPOINT_STATUS + id + "/reblogged_by", cursor, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getFavoritingUsers(long id, long cursor) throws MastodonException {
-		return getUsers(ENDPOINT_STATUS + id + "/favourited_by", new ArrayList<>());
+		return getUsers(ENDPOINT_STATUS + id + "/favourited_by", cursor, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getFollowing(long id, long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		if (cursor != -1L)
-			params.add("since_id=" + cursor);
-		return getUsers(ENDPOINT_ACCOUNTS + id + "/following", params);
+		return getUsers(ENDPOINT_ACCOUNTS + id + "/following", cursor, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getFollower(long id, long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		if (cursor != -1L)
-			params.add("since_id=" + cursor);
-		return getUsers(ENDPOINT_ACCOUNTS + id + "/followers", params);
+		return getUsers(ENDPOINT_ACCOUNTS + id + "/followers", cursor, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getListMember(long id, long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		return getUsers(ENDPOINT_USERLIST + id + "/accounts", params);
+		return getUsers(ENDPOINT_USERLIST + id + "/accounts", cursor, new ArrayList<>());
 	}
 
 
@@ -261,22 +254,19 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Users getBlockedUsers(long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		return getUsers(ENDPOINT_BLOCKS, params);
+		return getUsers(ENDPOINT_BLOCKS, cursor, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getMutedUsers(long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		return getUsers(ENDPOINT_MUTES, params);
+		return getUsers(ENDPOINT_MUTES, cursor, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getIncomingFollowRequests(long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		return getUsers(ENDPOINT_INCOMIN_REQUESTS, params);
+		return getUsers(ENDPOINT_INCOMIN_REQUESTS, cursor, new ArrayList<>());
 	}
 
 
@@ -669,19 +659,13 @@ public class Mastodon implements Connection {
 
 	@Override
 	public UserLists getUserlistOwnerships(long id, long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		if (cursor != -1L)
-			params.add("since_id=" + cursor);
-		return getUserLists(ENDPOINT_USERLIST, params);
+		return getUserLists(ENDPOINT_USERLIST, new ArrayList<>(), cursor);
 	}
 
 
 	@Override
 	public UserLists getUserlistMemberships(long id, long cursor) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		if (cursor != -1L)
-			params.add("since_id=" + cursor);
-		return getUserLists(ENDPOINT_ACCOUNTS + id + "/lists", params);
+		return getUserLists(ENDPOINT_ACCOUNTS + id + "/lists", new ArrayList<>(), cursor);
 	}
 
 
@@ -981,8 +965,10 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return list of users
 	 */
-	private Users getUsers(String endpoint, List<String> params) throws MastodonException {
+	private Users getUsers(String endpoint, long cursor, List<String> params) throws MastodonException {
 		try {
+			if (cursor != -1L)
+				params.add("max_id=" + cursor);
 			params.add("limit=" + settings.getListSize());
 			return createUsers(get(endpoint, params));
 		} catch (IOException e) {
@@ -997,14 +983,17 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return userlists
 	 */
-	private UserLists getUserLists(String endpoint, List<String> params) throws MastodonException {
+	private UserLists getUserLists(String endpoint, List<String> params, long cursor) throws MastodonException {
 		params.add("limit=" + settings.getListSize());
+		if (cursor != -1L)
+			params.add("max_id=" + cursor);
 		try {
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
+				long[] cursors = getCursors(response);
 				JSONArray array = new JSONArray(body.string());
-				UserLists result = new UserLists(0L, 0L);// todo add pagination
+				UserLists result = new UserLists(cursors[0], cursors[1]);
 				for (int i = 0; i < array.length(); i++) {
 					result.add(new MastodonList(array.getJSONObject(i)));
 				}
@@ -1045,8 +1034,9 @@ public class Mastodon implements Connection {
 		try {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
+				long[] cursors = getCursors(response);
 				JSONArray array = new JSONArray(body.string());
-				Users result = new Users(0L, 0L);
+				Users result = new Users(cursors[0], cursors[1]);
 				for (int i = 0; i < array.length(); i++) {
 					User item = new MastodonUser(array.getJSONObject(i));
 					result.add(item);
@@ -1343,6 +1333,36 @@ public class Mastodon implements Connection {
 			}
 		};
 		return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, StringTools.getRandomString(), data).build();
+	}
+
+	/**
+	 * get cursors from header
+	 *
+	 * @param response response to get the header
+	 * @return array of cursors
+	 */
+	private long[] getCursors(Response response) {
+		String headerStr = response.header("Link", "");
+		long[] cursors = {0L, 0L};
+		if (headerStr != null) {
+			try {
+				int start = headerStr.indexOf("since_id=");
+				if (start >= 0) {
+					int end = headerStr.indexOf(">", start);
+					String test = headerStr.substring(start + 9, end);
+					cursors[0] = Long.parseLong(test);
+				}
+				start = headerStr.indexOf("max_id=");
+				if (start >= 0) {
+					int end = headerStr.indexOf(">", start);
+					String test = headerStr.substring(start + 7, end);
+					cursors[1] = Long.parseLong(test);
+				}
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+		return cursors;
 	}
 
 	/**
