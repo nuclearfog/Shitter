@@ -36,6 +36,7 @@ public enum Configuration {
 	private final boolean profileUrlEnabled;
 	private final boolean idBlocklistEnabled;
 	private final boolean postLocationSupported;
+	private final boolean userlistVisibility;
 	private final int maxImages;
 	private final int maxGifs;
 	private final int maxVideos;
@@ -54,6 +55,7 @@ public enum Configuration {
 				profileUrlEnabled = true;
 				idBlocklistEnabled = true;
 				postLocationSupported = true;
+				userlistVisibility = true;
 				maxImages = 4;
 				maxGifs = 1;
 				maxVideos = 1;
@@ -67,6 +69,7 @@ public enum Configuration {
 				profileUrlEnabled = false;
 				idBlocklistEnabled = false;
 				postLocationSupported = false;
+				userlistVisibility = false;
 				maxImages = 4;
 				maxGifs = 1;
 				maxVideos = 1;
@@ -86,6 +89,13 @@ public enum Configuration {
 	 */
 	public boolean showListExtras() {
 		return userlistExtended;
+	}
+
+	/**
+	 * @return true if userlist visibility is supported
+	 */
+	public boolean userlistVisibilitySupported() {
+		return userlistVisibility;
 	}
 
 	/**

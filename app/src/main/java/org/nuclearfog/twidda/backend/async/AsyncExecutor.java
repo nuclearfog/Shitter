@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.Queue;
@@ -40,7 +41,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @param parameter parameter to send to the background task
 	 * @param callback  result from the background task
 	 */
-	public final void execute(final Parameter parameter, AsyncCallback<Result> callback) {
+	public final void execute(final Parameter parameter, @Nullable AsyncCallback<Result> callback) {
 		this.callback = new WeakReference<>(callback);
 		Future<?> future = EXECUTOR.submit(new Runnable() {
 			@Override

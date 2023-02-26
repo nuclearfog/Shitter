@@ -410,10 +410,10 @@ public class AppDatabase {
 	 */
 	public void saveHomeTimeline(List<Status> statuses) {
 		if (!statuses.isEmpty()) {
-			SQLiteDatabase db = getDbWrite();
+			SQLiteDatabase db = adapter.getDbWrite();
 			for (Status status : statuses)
 				saveStatus(status, db, HOME_TIMELINE_MASK);
-			commit(db);
+			adapter.commit();
 		}
 	}
 
@@ -424,10 +424,10 @@ public class AppDatabase {
 	 */
 	public void saveUserTimeline(List<Status> statuses) {
 		if (!statuses.isEmpty()) {
-			SQLiteDatabase db = getDbWrite();
+			SQLiteDatabase db = adapter.getDbWrite();
 			for (Status status : statuses)
 				saveStatus(status, db, USER_TIMELINE_MASK);
-			commit(db);
+			adapter.commit();
 		}
 	}
 
@@ -438,7 +438,7 @@ public class AppDatabase {
 	 * @param ownerId  user ID
 	 */
 	public void saveFavoriteTimeline(List<Status> statuses, long ownerId) {
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		// delete old favorits
 		String[] delArgs = {Long.toString(ownerId)};
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
@@ -449,7 +449,7 @@ public class AppDatabase {
 				saveFavorite(status.getId(), ownerId, db);
 			}
 		}
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -459,7 +459,7 @@ public class AppDatabase {
 	 * @param ownerId  id of the owner
 	 */
 	public void saveBookmarkTimeline(List<Status> statuses, long ownerId) {
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		// delete old favorits
 		String[] delArgs = {Long.toString(ownerId)};
 		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_OWNER, delArgs);
@@ -470,7 +470,7 @@ public class AppDatabase {
 				saveBookmark(status.getId(), ownerId, db);
 			}
 		}
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -480,10 +480,10 @@ public class AppDatabase {
 	 */
 	public void saveReplyTimeline(List<Status> statuses) {
 		if (!statuses.isEmpty()) {
-			SQLiteDatabase db = getDbWrite();
+			SQLiteDatabase db = adapter.getDbWrite();
 			for (Status status : statuses)
 				saveStatus(status, db, STATUS_REPLY_MASK);
-			commit(db);
+			adapter.commit();
 		}
 	}
 
@@ -492,7 +492,7 @@ public class AppDatabase {
 	 */
 	public void saveNotifications(List<Notification> notifications) {
 		if (!notifications.isEmpty()) {
-			SQLiteDatabase db = getDbWrite();
+			SQLiteDatabase db = adapter.getDbWrite();
 			for (Notification notification : notifications) {
 				ContentValues column = new ContentValues();
 				column.put(NotificationTable.ID, notification.getId());
@@ -508,7 +508,7 @@ public class AppDatabase {
 				}
 				db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
 			}
-			commit(db);
+			adapter.commit();
 		}
 	}
 
@@ -519,10 +519,10 @@ public class AppDatabase {
 	 */
 	public void saveMessages(List<Message> messages) {
 		if (!messages.isEmpty()) {
-			SQLiteDatabase db = getDbWrite();
+			SQLiteDatabase db = adapter.getDbWrite();
 			for (Message message : messages)
 				saveMessages(message, db);
-			commit(db);
+			adapter.commit();
 		}
 	}
 
@@ -534,7 +534,7 @@ public class AppDatabase {
 	public void saveFilterlist(List<Long> ids) {
 		long homeId = settings.getLogin().getId();
 		String[] args = {Long.toString(homeId)};
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		db.delete(UserExcludeTable.NAME, LIST_SELECT, args);
 
 		if (!ids.isEmpty()) {
@@ -545,7 +545,7 @@ public class AppDatabase {
 				db.insertWithOnConflict(UserExcludeTable.NAME, null, column, SQLiteDatabase.CONFLICT_IGNORE);
 			}
 		}
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -555,7 +555,7 @@ public class AppDatabase {
 	 */
 	public void saveTrends(List<Trend> trends) {
 		String[] args = {Long.toString(settings.getTrendLocation().getId())};
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		db.delete(TrendTable.NAME, TREND_SELECT, args);
 		for (Trend trend : trends) {
 			ContentValues column = new ContentValues(4);
@@ -565,7 +565,7 @@ public class AppDatabase {
 			column.put(TrendTable.INDEX, trend.getRank());
 			db.insert(TrendTable.NAME, null, column);
 		}
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -576,10 +576,10 @@ public class AppDatabase {
 	public void addToFavorits(Status status) {
 		if (status.getEmbeddedStatus() != null)
 			status = status.getEmbeddedStatus();
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		saveStatus(status, db, 0);
 		saveFavorite(status.getId(), settings.getLogin().getId(), db);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -590,10 +590,10 @@ public class AppDatabase {
 	public void addToBookmarks(Status status) {
 		if (status.getEmbeddedStatus() != null)
 			status = status.getEmbeddedStatus();
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		saveStatus(status, db, 0);
 		saveBookmark(status.getId(), settings.getLogin().getId(), db);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -612,12 +612,12 @@ public class AppDatabase {
 		column.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
 		column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 		column.put(AccountTable.BEARER, account.getBearerToken());
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		db.insertWithOnConflict(AccountTable.NAME, "", column, CONFLICT_REPLACE);
 		if (account.getUser() != null) {
 			saveUser(account.getUser(), db, CONFLICT_IGNORE);
 		}
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -626,12 +626,12 @@ public class AppDatabase {
 	 * @param userId ID of the user
 	 */
 	public void addUserToFilterlist(long userId) {
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		ContentValues column = new ContentValues(2);
 		column.put(UserExcludeTable.ID, userId);
 		column.put(UserExcludeTable.OWNER, settings.getLogin().getId());
 		db.insert(UserExcludeTable.NAME, null, column);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -643,7 +643,7 @@ public class AppDatabase {
 		String homeStr = Long.toString(settings.getLogin().getId());
 		String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(HOME_QUERY, args);
 		return getStatuses(cursor, db);
 	}
@@ -658,7 +658,7 @@ public class AppDatabase {
 		String homeStr = Long.toString(settings.getLogin().getId());
 		String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
 		return getStatuses(cursor, db);
 	}
@@ -673,7 +673,7 @@ public class AppDatabase {
 		String homeStr = Long.toString(settings.getLogin().getId());
 		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(USER_FAVORIT_QUERY, args);
 		return getStatuses(cursor, db);
 	}
@@ -688,7 +688,7 @@ public class AppDatabase {
 		String homeStr = Long.toString(settings.getLogin().getId());
 		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(USER_BOOKMARKS_QUERY, args);
 		return getStatuses(cursor, db);
 	}
@@ -703,7 +703,7 @@ public class AppDatabase {
 		String homeStr = Long.toString(settings.getLogin().getId());
 		String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
 		return getStatuses(cursor, db);
 	}
@@ -716,7 +716,7 @@ public class AppDatabase {
 	public List<Notification> getNotifications() {
 		Account login = settings.getLogin();
 		String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		List<Notification> result = new LinkedList<>();
 		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 		if (cursor.moveToFirst()) {
@@ -735,7 +735,7 @@ public class AppDatabase {
 	 */
 	public List<Trend> getTrends() {
 		String[] args = {Long.toString(settings.getTrendLocation().getId())};
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
 		List<Trend> trends = new LinkedList<>();
 		if (cursor.moveToFirst()) {
@@ -758,7 +758,7 @@ public class AppDatabase {
 		String homeIdStr = Long.toString(login.getId());
 		String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
 		Messages result = new Messages(null, null);
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 		if (cursor.moveToFirst()) {
 			do {
@@ -788,7 +788,7 @@ public class AppDatabase {
 	public List<Account> getLogins() {
 		ArrayList<Account> result = new ArrayList<>();
 
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 		if (cursor.moveToFirst()) {
 			result.ensureCapacity(cursor.getCount());
@@ -822,7 +822,7 @@ public class AppDatabase {
 	@Nullable
 	public Notification getNotification(long id) {
 		String[] args = {Long.toString(id)};
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(SINGLE_NOTIFICATION_QUERY, args);
 		Notification notification = null;
 		if (cursor.moveToFirst())
@@ -841,7 +841,7 @@ public class AppDatabase {
 	@Nullable
 	public User getUser(long userId, Account account) {
 		String[] args = {Long.toString(userId)};
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
 		User user = null;
 		if (cursor.moveToFirst())
@@ -861,7 +861,7 @@ public class AppDatabase {
 		String homeStr = Long.toString(settings.getLogin().getId());
 		String[] args = {Long.toString(id), homeStr, homeStr};
 
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Status result = null;
 		Cursor cursor = db.rawQuery(SINGLE_STATUS_QUERY, args);
 		if (cursor.moveToFirst())
@@ -876,9 +876,9 @@ public class AppDatabase {
 	 * @param user Twitter user
 	 */
 	public void saveUser(User user) {
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		saveUser(user, db, CONFLICT_REPLACE);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -887,11 +887,11 @@ public class AppDatabase {
 	 * @param status status to update
 	 */
 	public void saveStatus(Status status) {
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		saveStatus(status, db, CONFLICT_REPLACE);
 		if (status.getEmbeddedStatus() != null)
 			saveStatus(status.getEmbeddedStatus(), db, CONFLICT_REPLACE);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -903,7 +903,7 @@ public class AppDatabase {
 	public void hideStatus(long id, boolean hide) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		int flags = getStatusFlags(db, id);
 		if (hide) {
 			flags |= HIDDEN_MASK;
@@ -913,7 +913,7 @@ public class AppDatabase {
 		ContentValues column = new ContentValues(1);
 		column.put(StatusRegisterTable.REGISTER, flags);
 		db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -924,12 +924,12 @@ public class AppDatabase {
 	public void removeStatus(long id) {
 		String[] args = {Long.toString(id)};
 
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		db.delete(StatusTable.NAME, STATUS_SELECT, args);
 		db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
 		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_STATUS, args);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -943,14 +943,14 @@ public class AppDatabase {
 		if (status.getEmbeddedStatus() != null) {
 			status = status.getEmbeddedStatus();
 		}
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		// get status flags
 		int flags = getStatusFlags(db, status.getId());
 		flags &= ~FAVORITE_MASK; // unset favorite flag
 		// update database
 		saveStatusFlags(db, status, flags);
 		db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -964,14 +964,14 @@ public class AppDatabase {
 		if (status.getEmbeddedStatus() != null) {
 			status = status.getEmbeddedStatus();
 		}
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		// get status flags
 		int flags = getStatusFlags(db, status.getId());
 		flags &= ~BOOKMARK_MASK; // unset bookmark flag
 		// update database
 		saveStatusFlags(db, status, flags);
 		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT, delArgs);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -982,9 +982,9 @@ public class AppDatabase {
 	public void removeMessage(long id) {
 		String[] messageId = {Long.toString(id)};
 
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		db.delete(MessageTable.NAME, MESSAGE_SELECT, messageId);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -995,9 +995,9 @@ public class AppDatabase {
 	public void removeLogin(long id) {
 		String[] args = {Long.toString(id)};
 
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -1007,7 +1007,7 @@ public class AppDatabase {
 	 */
 	public Set<Long> getFilterlistUserIds() {
 		String[] args = {Long.toString(settings.getLogin().getId())};
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor cursor = db.query(UserExcludeTable.NAME, LIST_ID_COL, LIST_SELECT, args, null, null, null, null);
 
 		Set<Long> result = new TreeSet<>();
@@ -1028,9 +1028,9 @@ public class AppDatabase {
 	 */
 	public void removeUserFromFilterlist(long userId) {
 		String[] args = {Long.toString(settings.getLogin().getId()), Long.toString(userId)};
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		db.delete(UserExcludeTable.NAME, FILTER_SELECT, args);
-		commit(db);
+		adapter.commit();
 	}
 
 	/**
@@ -1041,7 +1041,7 @@ public class AppDatabase {
 	 */
 	public boolean containsStatus(long id) {
 		String[] args = {Long.toString(id)};
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor c = db.query(StatusTable.NAME, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
 		boolean result = c.moveToFirst();
 		c.close();
@@ -1056,7 +1056,7 @@ public class AppDatabase {
 	 */
 	public boolean containsLogin(long id) {
 		String[] args = {Long.toString(id)};
-		SQLiteDatabase db = getDbRead();
+		SQLiteDatabase db = adapter.getDbRead();
 		Cursor c = db.query(AccountTable.NAME, null, ACCOUNT_SELECTION, args, null, null, SINGLE_ITEM);
 		boolean result = c.moveToFirst();
 		c.close();
@@ -1070,7 +1070,7 @@ public class AppDatabase {
 	 * @param mute true remove user status from mention results
 	 */
 	public void muteUser(long id, boolean mute) {
-		SQLiteDatabase db = getDbWrite();
+		SQLiteDatabase db = adapter.getDbWrite();
 		int flags = getUserFlags(db, id);
 		if (mute) {
 			flags |= EXCLUDE_MASK;
@@ -1078,7 +1078,29 @@ public class AppDatabase {
 			flags &= ~EXCLUDE_MASK;
 		}
 		saveUserFlags(db, id, flags);
-		commit(db);
+		adapter.commit();
+	}
+
+	/**
+	 * remove database tables except account table
+	 */
+	public void resetDatabase() {
+		SQLiteDatabase db = adapter.getDbWrite();
+		db.delete(UserTable.NAME, null, null);
+		db.delete(StatusTable.NAME, null, null);
+		db.delete(MessageTable.NAME, null, null);
+		db.delete(FavoriteTable.NAME, null, null);
+		db.delete(BookmarkTable.NAME, null, null);
+		db.delete(TrendTable.NAME, null, null);
+		db.delete(StatusRegisterTable.NAME, null, null);
+		db.delete(UserRegisterTable.NAME, null, null);
+		db.delete(UserExcludeTable.NAME, null, null);
+		db.delete(NotificationTable.NAME, null, null);
+		db.delete(MediaTable.NAME, null, null);
+		db.delete(LocationTable.NAME, null, null);
+		db.delete(EmojiTable.NAME, null, null);
+		db.delete(PollTable.NAME, null, null);
+		adapter.commit();
 	}
 
 	/**
@@ -1582,35 +1604,5 @@ public class AppDatabase {
 		db.insertWithOnConflict(MessageTable.NAME, "", column, CONFLICT_IGNORE);
 		// store user information
 		saveUser(message.getSender(), db, CONFLICT_IGNORE);
-	}
-
-	/**
-	 * Get SQLite instance for reading database
-	 *
-	 * @return SQLite instance
-	 */
-	private synchronized SQLiteDatabase getDbRead() {
-		return adapter.getDatabase();
-	}
-
-	/**
-	 * GET SQLite instance for writing database
-	 *
-	 * @return SQLite instance
-	 */
-	private synchronized SQLiteDatabase getDbWrite() {
-		SQLiteDatabase db = adapter.getDatabase();
-		db.beginTransaction();
-		return db;
-	}
-
-	/**
-	 * Commit changes and close Database
-	 *
-	 * @param db database instance
-	 */
-	private synchronized void commit(SQLiteDatabase db) {
-		db.setTransactionSuccessful();
-		db.endTransaction();
 	}
 }

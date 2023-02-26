@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.backend.async.ListUpdater.ListUpdateResult;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -63,7 +64,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 	private ListUpdater updaterAsync;
 	private EditText titleInput, subTitleInput;
-	private CompoundButton visibility;
+	private CompoundButton visibilitySwitch;
 	@Nullable
 	private UserList userList;
 
@@ -82,14 +83,16 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		ImageView background = findViewById(R.id.userlist_popup_background);
 		Button updateButton = findViewById(R.id.userlist_create_list);
 		TextView popupTitle = findViewById(R.id.popup_list_title);
+		TextView visibilityLabel = findViewById(R.id.userlist_switch_text);
 		titleInput = findViewById(R.id.list_edit_title);
 		subTitleInput = findViewById(R.id.list_edit_descr);
-		visibility = findViewById(R.id.list_edit_public_sw);
+		visibilitySwitch = findViewById(R.id.list_edit_public_sw);
 
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
 		updaterAsync = new ListUpdater(this);
 
+		GlobalSettings settings = GlobalSettings.getInstance(this);
 		AppStyles.setEditorTheme(root, background);
 
 		Object data = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
@@ -97,11 +100,14 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 			userList = (UserList) data;
 			titleInput.setText(userList.getTitle());
 			subTitleInput.setText(userList.getDescription());
-			visibility.setChecked(!userList.isPrivate());
+			visibilitySwitch.setChecked(!userList.isPrivate());
 			popupTitle.setText(R.string.menu_edit_list);
 			updateButton.setText(R.string.update_list);
 		}
-
+		if (!settings.getLogin().getConfiguration().userlistVisibilitySupported()) {
+			visibilitySwitch.setVisibility(View.INVISIBLE);
+			visibilityLabel.setVisibility(View.INVISIBLE);
+		}
 		updateButton.setOnClickListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		confirmDialog.setConfirmListener(this);
@@ -113,7 +119,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		String title = titleInput.getText().toString();
 		String descr = subTitleInput.getText().toString();
 		// Check for changes, leave if there aren't any
-		if (userList != null && visibility.isChecked() == !userList.isPrivate()
+		if (userList != null && visibilitySwitch.isChecked() == !userList.isPrivate()
 				&& title.equals(userList.getTitle()) && descr.equals(userList.getDescription())) {
 			super.onBackPressed();
 		} else if (title.isEmpty() && descr.isEmpty()) {
@@ -186,7 +192,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	private void updateList() {
 		String titleStr = titleInput.getText().toString();
 		String descrStr = subTitleInput.getText().toString();
-		boolean isPublic = visibility.isChecked();
+		boolean isPublic = visibilitySwitch.isChecked();
 		if (titleStr.trim().isEmpty()) {
 			Toast.makeText(getApplicationContext(), R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
 		} else {

@@ -12,6 +12,9 @@ import org.nuclearfog.twidda.backend.async.AccountLoader;
 import org.nuclearfog.twidda.backend.async.AccountLoader.AccountParameter;
 import org.nuclearfog.twidda.backend.async.AccountLoader.AccountResult;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.DatabaseAction;
+import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
+import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
@@ -28,6 +31,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
 
 	private AccountLoader loginTask;
+	private DatabaseAction databaseAsync;
 	private GlobalSettings settings;
 	private AccountAdapter adapter;
 	private ConfirmDialog dialog;
@@ -42,6 +46,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		settings = GlobalSettings.getInstance(requireContext());
 		adapter = new AccountAdapter(requireContext(), this);
 		loginTask = new AccountLoader(requireContext());
+		databaseAsync = new DatabaseAction(requireContext());
 
 		setAdapter(adapter);
 		dialog.setConfirmListener(this);
@@ -81,13 +86,11 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onAccountClick(Account account) {
 		settings.setLogin(account, true);
+		databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), this::onDatabaseResult);
 		if (account.getUser() != null) {
 			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 		}
-		// finish activity and return to parent activity
-		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
-		requireActivity().finish();
 	}
 
 
@@ -128,6 +131,15 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 					Toast.makeText(getContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
 				break;
 		}
+	}
+
+	/**
+	 * called from {@link DatabaseAction} when all data of the previous login were removed
+	 */
+	public void onDatabaseResult(DatabaseResult result) {
+		// finish activity and return to parent activity
+		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
+		requireActivity().finish();
 	}
 
 	/**

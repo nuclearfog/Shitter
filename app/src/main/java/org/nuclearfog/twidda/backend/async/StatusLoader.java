@@ -84,7 +84,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						statuses = connection.getUserFavorits(request.id, 0L, request.maxId);
 						if (request.maxId == 0L) {
 							db.saveFavoriteTimeline(statuses, request.id);
-							position = CLEAR_LIST; // set flag to clear previous data
+							position = CLEAR_LIST; // clear previous items
 						}
 					}
 					break;
@@ -100,6 +100,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						statuses = connection.getUserBookmarks(request.minId, request.maxId);
 						if (request.maxId == 0L) {
 							db.saveBookmarkTimeline(statuses, request.id);
+							position = CLEAR_LIST; // clear previous items
 						}
 					}
 					break;

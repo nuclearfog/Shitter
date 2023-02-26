@@ -39,14 +39,15 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.DatabaseAction;
+import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
+import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.ui.adapter.FontAdapter;
 import org.nuclearfog.twidda.ui.adapter.LocationAdapter;
 import org.nuclearfog.twidda.ui.adapter.ScaleAdapter;
@@ -63,7 +64,7 @@ import java.util.regex.Matcher;
  * @author nuclearfog
  */
 public class SettingsActivity extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
-		OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener, AsyncCallback<LocationLoaderResult> {
+		OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener {
 
 	/**
 	 * return code to recognize {@link MainActivity} that the current account was removed from login
@@ -99,8 +100,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	private GlobalSettings settings;
 	private Configuration configuration;
-
+	private DatabaseAction databaseAsync;
 	private LocationLoader locationAsync;
+
 	private LocationAdapter locationAdapter;
 	private BaseAdapter fontAdapter, scaleAdapter;
 
@@ -191,6 +193,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 		locationAsync = new LocationLoader(this);
+		databaseAsync = new DatabaseAction(this);
 
 		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
 			enableTwitterAlt.setVisibility(GONE);
@@ -255,7 +258,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		setResult(RETURN_SETTINGS_CHANGED);
 		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
 			if (locationSpinner.getCount() <= 1) {
-				locationAsync.execute(null, this);
+				locationAsync.execute(null, this::onLocationResult);
 			}
 		}
 	}
@@ -274,6 +277,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	protected void onDestroy() {
 		locationAsync.cancel();
+		databaseAsync.cancel();
 		super.onDestroy();
 	}
 
@@ -303,13 +307,13 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (type == ConfirmDialog.APP_LOG_OUT) {
 			// remove account from database
 			settings.setLogin(null, true);
+			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), null);
 			setResult(RETURN_APP_LOGOUT);
 			finish();
 		}
 		// confirm delete app data and cache
 		else if (type == ConfirmDialog.DELETE_APP_DATA) {
-			DatabaseAdapter.deleteDatabase(this);
-			setResult(RETURN_DATA_CLEARED);
+			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), this::onDatabaseResult);
 		}
 		// confirm leaving without saving proxy changes
 		else if (type == ConfirmDialog.WRONG_PROXY) {
@@ -585,9 +589,30 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		settings.setListSize((seekBar.getProgress() + 1) * 10);
 	}
 
+	/**
+	 * called from {@link DatabaseAction}
+	 *
+	 * @param result result from {@link DatabaseAction}
+	 */
+	public void onDatabaseResult(DatabaseResult result) {
+		switch (result.mode) {
+			case DatabaseResult.DELETE:
+				setResult(RETURN_DATA_CLEARED);
+				Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
+				break;
 
-	@Override
-	public void onResult(LocationLoaderResult result) {
+			case DatabaseResult.ERROR:
+				Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
+				break;
+		}
+	}
+
+	/**
+	 * called from {@link LocationLoader}
+	 *
+	 * @param result result from {@link LocationLoader}
+	 */
+	public void onLocationResult(LocationLoaderResult result) {
 		if (result.locations != null) {
 			locationAdapter.replaceItems(result.locations);
 			int position = locationAdapter.indexOf(settings.getTrendLocation());

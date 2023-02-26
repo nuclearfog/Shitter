@@ -312,17 +312,6 @@ public class DatabaseAdapter {
 	}
 
 	/**
-	 * get database instance
-	 *
-	 * @return SQLite database
-	 */
-	public synchronized SQLiteDatabase getDatabase() {
-		if (!db.isOpen())
-			db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
-		return db;
-	}
-
-	/**
 	 * get database adapter instance
 	 *
 	 * @param context application context
@@ -335,20 +324,11 @@ public class DatabaseAdapter {
 			} catch (SQLiteException e) {
 				// if database is corrupted, clear and create a new one
 				e.printStackTrace();
-				deleteDatabase(context);
+				SQLiteDatabase.deleteDatabase(INSTANCE.databasePath);
+				INSTANCE.init(context.getApplicationContext());
 			}
 		}
 		return INSTANCE;
-	}
-
-	/**
-	 * delete database and destroy instance
-	 *
-	 * @param c application context
-	 */
-	public static void deleteDatabase(Context c) {
-		SQLiteDatabase.deleteDatabase(c.getDatabasePath(DB_NAME));
-		INSTANCE.init(c.getApplicationContext());
 	}
 
 	/**
@@ -423,6 +403,37 @@ public class DatabaseAdapter {
 				db.setVersion(DB_VERSION);
 			}
 		}
+	}
+
+	/**
+	 * Get SQLite instance for reading database
+	 *
+	 * @return SQLite instance
+	 */
+	SQLiteDatabase getDbRead() {
+		if (!db.isOpen())
+			db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
+		return db;
+	}
+
+	/**
+	 * GET SQLite instance for writing database
+	 *
+	 * @return SQLite instance
+	 */
+	SQLiteDatabase getDbWrite() {
+		if (!db.isOpen()) // todo implement database lock
+			db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
+		db.beginTransaction();
+		return db;
+	}
+
+	/**
+	 * Commit changes and close Database
+	 */
+	void commit() {
+		db.setTransactionSuccessful();
+		db.endTransaction();
 	}
 
 	/**

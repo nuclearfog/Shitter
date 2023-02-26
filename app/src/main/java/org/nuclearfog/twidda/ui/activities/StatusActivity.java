@@ -246,8 +246,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		adapter = new PreviewAdapter(settings, picasso, this);
 		// get parameter
-		long id = 0;
-		String replyUsername = "";
+		long id;
+		String replyUsername;
 		Object statusObject = getIntent().getSerializableExtra(KEY_STATUS_DATA);
 		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
 		if (statusObject instanceof Status) {
@@ -263,6 +263,16 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		} else if (notificationObject instanceof Notification) {
 			notification = (Notification) notificationObject;
+			if (notification.getStatus() != null) {
+				id = notification.getStatus().getId();
+				replyUsername = notification.getStatus().getAuthor().getScreenname();
+			} else {
+				id = 0L;
+				replyUsername = "";
+			}
+		} else {
+			id = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
+			replyUsername = getIntent().getStringExtra(KEY_STATUS_NAME);
 		}
 		// initialize status reply list
 		Bundle param = new Bundle();

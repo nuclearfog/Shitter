@@ -76,11 +76,11 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 	public void setContent(Poll poll) {
 		if (poll.closed()) {
 			votesCount.setText(R.string.poll_finished);
-			voteButton.setVisibility(View.INVISIBLE);
+			voteButton.setVisibility(View.GONE);
 		} else {
 			votesCount.setText(R.string.poll_total_votes);
 			if (poll.voted()) {
-				voteButton.setVisibility(View.INVISIBLE);
+				voteButton.setVisibility(View.GONE);
 			} else if (poll.getLimit() > 0) {
 				voteButton.setVisibility(View.VISIBLE);
 			}

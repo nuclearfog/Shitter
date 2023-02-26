@@ -19,7 +19,6 @@
 	<string name="info_open_mastodon_login">redirecting to Mastodon login website. Please wait</string>
 	<string name="info_login_to_twitter">login to Twitter, please wait</string>
 	<string name="info_login_to_mastodon">login to Mastodon, please wait</string>
-	<string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
 	<string name="info_get_link">please open login page first to get the PIN</string>
 	<string name="info_gps_attached">GPS position added</string>
 	<string name="info_tweet_retweeted">reposted</string>
@@ -65,6 +64,7 @@
 	<string name="info_user_repost">%1$s reposted your status</string>
 	<string name="info_missing_key">please enter key</string>
 	<string name="info_missing_host">please enter correct hostname</string>
+	<string name="info_database_cleared">Database cleared</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -103,8 +103,10 @@
 	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>
 	<string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
+	<string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
 	<string name="error_invalid_media">Invalid media file!</string>
 	<string name="error_not_defined">Not specified error!</string>
+	<string name="error_database_cleared">Error while clearing database!</string>
 	<string name="error_forbidden_api_access">API does not support this operation!</string>
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>

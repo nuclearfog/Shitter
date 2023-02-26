@@ -24,6 +24,7 @@
 	<string name="info_user_follow_request">Follow-Anfrage von %1$s</string>
 	<string name="info_user_mention">%1$s hat dich erwähnt</string>
 	<string name="info_user_repost">%1$s hat deinen Status geteilt</string>
+	<string name="info_database_cleared">Datenbank gelöscht</string>
 	<string name="info_error">Fehler!</string>
 	<string name="menu_tweet_delete">löschen</string>
 	<string name="menu_tweet_open_browser">Im Browser öffnen</string>
@@ -270,4 +271,5 @@
 	<string name="info_tweet_unbookmarked">Status aus Lesezeichen entfernt</string>
 	<string name="settings_bookmark_color">Lesezeichen symbol</string>
 	<string name="info_poll_voted">Umfrage abgestimmt!</string>
+	<string name="error_database_cleared">Fehler beim löschen der Datenbank!</string>
 </resources>
