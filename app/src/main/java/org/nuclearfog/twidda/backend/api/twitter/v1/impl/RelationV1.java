@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
+package org.nuclearfog.twidda.backend.api.twitter.v1.impl;
 
 import androidx.annotation.NonNull;
 

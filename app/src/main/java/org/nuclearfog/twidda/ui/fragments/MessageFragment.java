@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class MessageFragment extends ListFragment implements OnMessageClickListener, OnConfirmListener, AsyncCallback<MessageLoaderResult> {
 
-	private MessageLoader messageTask;
+	private MessageLoader messageLoader;
 	private MessageAdapter adapter;
 	private ConfirmDialog confirmDialog;
 
@@ -57,32 +57,28 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 		super.onViewCreated(view, savedInstanceState);
 		confirmDialog = new ConfirmDialog(requireContext());
 		adapter = new MessageAdapter(requireContext(), this);
-		messageTask = new MessageLoader(requireContext());
+		messageLoader = new MessageLoader(requireContext());
 		setAdapter(adapter);
 
 		confirmDialog.setConfirmListener(this);
-	}
 
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmpty()) {
-			loadMessages(false, null);
-		}
+		loadMessages(false, null);
+		setRefresh(true);
 	}
 
 
 	@Override
 	protected void onReset() {
 		adapter = new MessageAdapter(requireContext(), this);
+		setAdapter(adapter);
 		loadMessages(false, null);
+		setRefresh(true);
 	}
 
 
 	@Override
 	public void onDestroy() {
-		messageTask.cancel();
+		messageLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -138,7 +134,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 					break;
 
 				case DELETE:
-					if (!confirmDialog.isShowing() && messageTask.isIdle()) {
+					if (!confirmDialog.isShowing() && messageLoader.isIdle()) {
 						deleteId = message.getId();
 						confirmDialog.show(ConfirmDialog.MESSAGE_DELETE);
 					}
@@ -167,7 +163,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	public boolean onPlaceholderClick(String cursor) {
-		if (messageTask.isIdle()) {
+		if (messageLoader.isIdle()) {
 			loadMessages(false, cursor);
 			return true;
 		}
@@ -179,7 +175,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	public void onConfirm(int type, boolean rememberChoice) {
 		if (type == ConfirmDialog.MESSAGE_DELETE) {
 			MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, deleteId, "");
-			messageTask.execute(param, this);
+			messageLoader.execute(param, this);
 		}
 	}
 
@@ -221,7 +217,6 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	private void loadMessages(boolean local, String cursor) {
 		int mode = local ? MessageLoaderParam.DATABASE : MessageLoaderParam.ONLINE;
 		MessageLoaderParam param = new MessageLoaderParam(mode, 0L, cursor);
-		messageTask.execute(param, this);
-		setRefresh(true);
+		messageLoader.execute(param, this);
 	}
 }

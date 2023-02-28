@@ -139,7 +139,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private UsersLoader userAsync;
+	private UsersLoader userLoader;
 	private UserAdapter adapter;
 
 	private String search = "";
@@ -158,19 +158,12 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 			search = param.getString(KEY_FRAG_USER_SEARCH, "");
 			delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
 		}
-		userAsync = new UsersLoader(requireContext());
+		userLoader = new UsersLoader(requireContext());
 		adapter = new UserAdapter(requireContext(), this, delUser);
 		setAdapter(adapter);
-	}
 
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmpty()) {
-			setRefresh(true);
-			load(-1L);
-		}
+		setRefresh(true);
+		load(-1L);
 	}
 
 
@@ -183,7 +176,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	public void onDestroy() {
-		userAsync.cancel();
+		userLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -219,7 +212,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (userAsync.isIdle()) {
+		if (userLoader.isIdle()) {
 			load(cursor);
 			return true;
 		}
@@ -314,6 +307,6 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 			default:
 				return;
 		}
-		userAsync.execute(param, this);
+		userLoader.execute(param, this);
 	}
 }

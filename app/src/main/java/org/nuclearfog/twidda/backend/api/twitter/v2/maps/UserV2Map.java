@@ -1,11 +1,11 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps;
+package org.nuclearfog.twidda.backend.api.twitter.v2.maps;
 
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.UserV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.UserV2;
 import org.nuclearfog.twidda.model.User;
 
 import java.util.TreeMap;

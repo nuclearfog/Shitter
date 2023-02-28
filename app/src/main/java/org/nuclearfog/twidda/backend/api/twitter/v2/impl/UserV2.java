@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
+package org.nuclearfog.twidda.backend.api.twitter.v2.impl;
 
 import android.util.Patterns;
 
@@ -13,21 +13,22 @@ import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
 /**
- * API 1.1 implementation of User
+ * User implementation of API V2
  *
  * @author nuclearfog
  */
-public class UserV1 implements User {
+public class UserV2 implements User {
 
-	public static final long serialVersionUID = 7893496988800499358L;
+	public static final long serialVersionUID = 1136243062864162774L;
 
-	public static final String PARAM_SKIP_STATUS = "skip_status=true";
-
-	public static final String PARAM_INCLUDE_ENTITIES = "include_entities=true";
-
+	/**
+	 * extra parameters required to fetch additional data
+	 */
+	public static final String FIELDS_USER = "user.fields=created_at%2Cdescription%2Centities%2Cid%2Clocation%2Cname%2Cprofile_image_url" +
+			"%2Cprotected%2Cpublic_metrics%2Curl%2Cusername%2Cverified";
 
 	private long id;
-	private long timestamp;
+	private long createdAt;
 	private String username;
 	private String screenName;
 	private String description;
@@ -38,45 +39,33 @@ public class UserV1 implements User {
 	private int following;
 	private int follower;
 	private int tweetCount;
-	private int favoriteCount;
+	private boolean isCurrentUser;
 	private boolean isVerified;
-	private boolean isLocked;
-	private boolean followReqSent;
+	private boolean isProtected;
 	private boolean defaultImage;
-	private boolean isCurrentUser = true;
 
 	/**
-	 * @param json      JSON object containing user information
+	 * @param json      JSON object containing user data
 	 * @param twitterId ID of the current user
-	 * @throws JSONException if values are missing
 	 */
-	public UserV1(JSONObject json, long twitterId) throws JSONException {
-		this(json);
-		isCurrentUser = twitterId == id;
-	}
-
-	/**
-	 * @param json JSON object containing user information
-	 * @throws JSONException if values are missing
-	 */
-	public UserV1(JSONObject json) throws JSONException {
-		String idStr = json.getString("id_str");
-		String profileImageUrl = json.optString("profile_image_url_https", "");
+	public UserV2(JSONObject json, long twitterId) throws JSONException {
+		JSONObject metrics = json.getJSONObject("public_metrics");
+		String idStr = json.getString("id");
+		String profileImageUrl = json.optString("profile_image_url", "");
 		String profileBannerUrl = json.optString("profile_banner_url", "");
+		String createdAtStr = json.optString("created_at", "");
 		username = json.optString("name", "");
-		screenName = '@' + json.optString("screen_name", "");
-		isVerified = json.optBoolean("verified");
-		isLocked = json.optBoolean("protected");
+		screenName = '@' + json.optString("username", "");
+		isProtected = json.optBoolean("protected");
 		location = json.optString("location", "");
-		following = json.optInt("friends_count");
-		follower = json.optInt("followers_count");
-		tweetCount = json.optInt("statuses_count");
-		favoriteCount = json.optInt("favourites_count");
-		followReqSent = json.optBoolean("follow_request_sent");
-		defaultImage = json.optBoolean("default_profile_image");
-		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
-		description = getDescription(json);
+		isVerified = json.optBoolean("verified");
+		createdAt = StringTools.getTime(createdAtStr, StringTools.TIME_TWITTER_V2);
+		defaultImage = profileImageUrl.contains("default_profile_images");
 		url = getUrl(json);
+		description = getDescription(json);
+		following = metrics.optInt("following_count");
+		follower = metrics.optInt("followers_count");
+		tweetCount = metrics.optInt("tweet_count");
 
 		if (Patterns.WEB_URL.matcher(profileImageUrl).matches()) {
 			if (defaultImage) {
@@ -90,6 +79,7 @@ public class UserV1 implements User {
 		}
 		try {
 			id = Long.parseLong(idStr);
+			isCurrentUser = id == twitterId;
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad user ID: " + idStr);
 		}
@@ -116,7 +106,7 @@ public class UserV1 implements User {
 
 	@Override
 	public long getTimestamp() {
-		return timestamp;
+		return createdAt;
 	}
 
 
@@ -182,13 +172,14 @@ public class UserV1 implements User {
 
 	@Override
 	public boolean isProtected() {
-		return isLocked;
+		return isProtected;
 	}
 
 
 	@Override
 	public boolean followRequested() {
-		return followReqSent;
+		// todo not yet implemented in API V2
+		return false;
 	}
 
 
@@ -212,7 +203,8 @@ public class UserV1 implements User {
 
 	@Override
 	public int getFavoriteCount() {
-		return favoriteCount;
+		// todo not yet implemented in API V2
+		return -1;
 	}
 
 
@@ -238,7 +230,7 @@ public class UserV1 implements User {
 
 	@Override
 	public int compareTo(User o) {
-		return Long.compare(o.getTimestamp(), timestamp);
+		return Long.compare(o.getTimestamp(), createdAt);
 	}
 
 
@@ -247,6 +239,7 @@ public class UserV1 implements User {
 	public String toString() {
 		return "name=\"" + screenName + "\"";
 	}
+
 
 	/**
 	 * expand URLs of the user description
@@ -268,15 +261,14 @@ public class UserV1 implements User {
 					for (int i = urls.length() - 1; i >= 0; i--) {
 						JSONObject entry = urls.getJSONObject(i);
 						String link = entry.getString("expanded_url");
-						JSONArray indices = entry.getJSONArray("indices");
-						int start = indices.getInt(0);
-						int end = indices.getInt(1);
+						int start = entry.getInt("start");
+						int end = entry.getInt("end");
 						int offset = StringTools.calculateIndexOffset(description, start);
 						builder.replace(start + offset, end + offset, link);
 					}
 					return builder.toString();
 				} catch (JSONException e) {
-					// use default description
+					// ignore, use default description
 				}
 			}
 		}
@@ -293,14 +285,16 @@ public class UserV1 implements User {
 	private String getUrl(JSONObject json) {
 		JSONObject entities = json.optJSONObject("entities");
 		if (entities != null) {
-			try {
-				JSONObject urlJson = entities.getJSONObject("url");
-				JSONArray urls = urlJson.getJSONArray("urls");
-				if (urls.length() > 0) {
-					return urls.getJSONObject(0).getString("display_url");
+			JSONObject url = entities.optJSONObject("url");
+			if (url != null) {
+				try {
+					JSONArray urls = url.getJSONArray("urls");
+					if (urls.length() > 0) {
+						return urls.getJSONObject(0).getString("display_url");
+					}
+				} catch (JSONException e) {
+					// ignore
 				}
-			} catch (JSONException e) {
-				// ignore
 			}
 		}
 		return "";

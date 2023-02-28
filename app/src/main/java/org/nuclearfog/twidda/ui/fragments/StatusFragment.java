@@ -113,7 +113,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private StatusLoader statusAsync;
+	private StatusLoader statusLoader;
 	private StatusAdapter adapter;
 
 	private String search = "";
@@ -130,19 +130,12 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			id = param.getLong(KEY_STATUS_FRAGMENT_ID, 0);
 			search = param.getString(KEY_STATUS_FRAGMENT_SEARCH, "");
 		}
-		statusAsync = new StatusLoader(requireContext());
+		statusLoader = new StatusLoader(requireContext());
 		adapter = new StatusAdapter(requireContext(), this);
 		setAdapter(adapter);
-	}
 
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmpty()) {
-			load(0L, 0L, CLEAR_LIST);
-			setRefresh(true);
-		}
+		load(0L, 0L, CLEAR_LIST);
+		setRefresh(true);
 	}
 
 
@@ -157,7 +150,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public void onDestroy() {
-		statusAsync.cancel();
+		statusLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -205,7 +198,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public boolean onPlaceholderClick(long minId, long maxId, int pos) {
-		if (statusAsync.isIdle()) {
+		if (statusLoader.isIdle()) {
 			load(minId, maxId, pos);
 			return true;
 		}
@@ -226,7 +219,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
-			setRefresh(false);
 		}
 	}
 
@@ -278,6 +270,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			default:
 				return;
 		}
-		statusAsync.execute(request, this);
+		statusLoader.execute(request, this);
 	}
 }

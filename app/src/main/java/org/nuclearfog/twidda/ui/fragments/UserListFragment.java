@@ -63,7 +63,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private ListLoader listTask;
+	private ListLoader userlistLoader;
 	private UserlistAdapter adapter;
 
 	private long id = 0;
@@ -78,32 +78,25 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 			id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1L);
 			type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
 		}
-		listTask = new ListLoader(requireContext());
+		userlistLoader = new ListLoader(requireContext());
 		adapter = new UserlistAdapter(requireContext(), this);
 		setAdapter(adapter);
-	}
 
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmtpy()) {
-			setRefresh(true);
-			load(-1L);
-		}
+		setRefresh(true);
+		load(-1L);
 	}
 
 
 	@Override
 	protected void onReset() {
-		load(-1L);
 		setRefresh(true);
+		load(-1L);
 	}
 
 
 	@Override
 	public void onDestroy() {
-		listTask.cancel();
+		userlistLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -153,7 +146,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public boolean onPlaceholderClick(long cursor) {
-		if (listTask.isIdle()) {
+		if (userlistLoader.isIdle()) {
 			load(cursor);
 			return true;
 		}
@@ -197,6 +190,6 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 			default:
 				return;
 		}
-		listTask.execute(param, this);
+		userlistLoader.execute(param, this);
 	}
 }

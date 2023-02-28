@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
+package org.nuclearfog.twidda.backend.api.twitter.v2.impl;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,10 +6,10 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.MediaV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.PollV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.LocationV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Emoji;

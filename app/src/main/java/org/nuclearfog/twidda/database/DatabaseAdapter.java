@@ -293,7 +293,7 @@ public class DatabaseAdapter {
 	/**
 	 * singleton instance
 	 */
-	private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
+	private static DatabaseAdapter instance;
 
 	/**
 	 * path to the database file
@@ -305,41 +305,16 @@ public class DatabaseAdapter {
 	 */
 	private SQLiteDatabase db;
 
-	/**
-	 *
-	 */
-	private DatabaseAdapter() {
-	}
+
+	private volatile boolean lock = false;
 
 	/**
-	 * get database adapter instance
 	 *
-	 * @param context application context
-	 * @return database instance
 	 */
-	public static DatabaseAdapter getInstance(@NonNull Context context) {
-		if (INSTANCE.db == null) {
-			try {
-				INSTANCE.init(context.getApplicationContext());
-			} catch (SQLiteException e) {
-				// if database is corrupted, clear and create a new one
-				e.printStackTrace();
-				SQLiteDatabase.deleteDatabase(INSTANCE.databasePath);
-				INSTANCE.init(context.getApplicationContext());
-			}
-		}
-		return INSTANCE;
-	}
-
-	/**
-	 * initialize databases
-	 *
-	 * @param c application context
-	 */
-	private void init(Context c) {
+	private DatabaseAdapter(Context context) {
 		// fetch database information
-		databasePath = c.getDatabasePath(DB_NAME);
-		db = c.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
+		databasePath = context.getDatabasePath(DB_NAME);
+		db = context.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
 		// create tables if not exist
 		db.execSQL(TABLE_USER);
 		db.execSQL(TABLE_STATUS);
@@ -406,11 +381,39 @@ public class DatabaseAdapter {
 	}
 
 	/**
+	 * get database adapter instance
+	 *
+	 * @param context application context
+	 * @return database instance
+	 */
+	public static DatabaseAdapter getInstance(@NonNull Context context) {
+		if (instance == null) {
+			try {
+				instance = new DatabaseAdapter(context.getApplicationContext());
+			} catch (SQLiteException e) {
+				// if database is corrupted, clear and create a new one
+				e.printStackTrace();
+				SQLiteDatabase.deleteDatabase(instance.databasePath);
+				instance = new DatabaseAdapter(context.getApplicationContext());
+			}
+		}
+		return instance;
+	}
+
+	/**
 	 * Get SQLite instance for reading database
 	 *
 	 * @return SQLite instance
 	 */
 	SQLiteDatabase getDbRead() {
+		int wait = 0;
+		while (lock && wait++ < 10) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 		if (!db.isOpen())
 			db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
 		return db;
@@ -422,8 +425,8 @@ public class DatabaseAdapter {
 	 * @return SQLite instance
 	 */
 	SQLiteDatabase getDbWrite() {
-		if (!db.isOpen()) // todo implement database lock
-			db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
+		SQLiteDatabase db = getDbRead();
+		lock = true;
 		db.beginTransaction();
 		return db;
 	}
@@ -434,6 +437,7 @@ public class DatabaseAdapter {
 	void commit() {
 		db.setTransactionSuccessful();
 		db.endTransaction();
+		lock = false;
 	}
 
 	/**

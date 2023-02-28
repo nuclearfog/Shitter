@@ -12,10 +12,11 @@ import org.nuclearfog.twidda.config.Configuration;
 public class ConnectionConfig {
 
 	private Configuration apiConfig;
-	private String consumerKey = "";
-	private String consumerSecret = "";
 	private String hostname = "";
-	private String tempOauth = "";
+	// these attributes below may be changed by another (background) thread
+	private volatile String consumerKey = "";
+	private volatile String consumerSecret = "";
+	private volatile String tempOauth = "";
 
 	/**
 	 * get host url used by the API

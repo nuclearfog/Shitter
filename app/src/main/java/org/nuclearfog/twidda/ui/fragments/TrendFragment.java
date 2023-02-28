@@ -32,7 +32,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	 */
 	public static final String KEY_HASHTAG_SEARCH = "trend_search_hashtags";
 
-	private TrendLoader trendTask;
+	private TrendLoader trendLoader;
 	private TrendAdapter adapter;
 
 	private String search = "";
@@ -42,22 +42,15 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		adapter = new TrendAdapter(settings, this);
-		trendTask = new TrendLoader(requireContext());
+		trendLoader = new TrendLoader(requireContext());
 		setAdapter(adapter);
 		Bundle args = getArguments();
 		if (args != null) {
 			search = args.getString(KEY_HASHTAG_SEARCH, "");
 		}
-	}
 
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmpty()) {
-			load();
-			setRefresh(true);
-		}
+		setRefresh(true);
+		load();
 	}
 
 
@@ -72,7 +65,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 	@Override
 	public void onDestroy() {
-		trendTask.cancel();
+		trendLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -104,7 +97,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 		} else if (getContext() != null) {
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-			setRefresh(false);
 		}
 	}
 
@@ -119,6 +111,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 			param = new TrendParameter(TrendLoader.DATABASE, search);
 		else
 			param = new TrendParameter(TrendLoader.ONLINE, search);
-		trendTask.execute(param, this);
+		trendLoader.execute(param, this);
 	}
 }

@@ -1,6 +1,6 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
+package org.nuclearfog.twidda.backend.api.twitter.v2.impl;
 
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.AccountV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.AccountV1;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.model.Account;
 

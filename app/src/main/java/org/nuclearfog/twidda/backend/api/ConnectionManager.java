@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.mastodon.Mastodon;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.TwitterV2;
+import org.nuclearfog.twidda.backend.api.twitter.v1.TwitterV1;
+import org.nuclearfog.twidda.backend.api.twitter.v2.TwitterV2;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;

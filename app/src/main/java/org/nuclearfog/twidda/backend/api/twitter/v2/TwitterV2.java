@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl.v2;
+package org.nuclearfog.twidda.backend.api.twitter.v2;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,11 +9,17 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v1.TwitterV1;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.LocationV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.MediaV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.PollV2Map;
-import org.nuclearfog.twidda.backend.api.twitter.impl.v2.maps.UserV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v1.TwitterV1;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.AccountV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.LocationV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.MediaV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.PollV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.TweetV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.UserV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.LocationV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
+import org.nuclearfog.twidda.backend.api.twitter.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.StringTools;

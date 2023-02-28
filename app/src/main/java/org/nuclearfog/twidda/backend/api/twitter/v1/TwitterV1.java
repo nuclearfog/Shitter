@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter.impl.v1;
+package org.nuclearfog.twidda.backend.api.twitter.v1;
 
 import android.content.Context;
 import android.net.Uri;
@@ -14,6 +14,15 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.AccountV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.LocationV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.MessageV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.NotificationV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.RelationV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.TrendV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.TweetV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.Messages;

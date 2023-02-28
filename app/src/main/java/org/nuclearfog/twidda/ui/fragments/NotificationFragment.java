@@ -43,16 +43,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		adapter = new NotificationAdapter(requireContext(), this);
 		notificationAsync = new NotificationLoader(requireContext());
 		setAdapter(adapter);
-	}
 
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmpty()) {
-			load(0L, 0L, 0);
-			setRefresh(true);
-		}
+		load(0L, 0L, 0);
+		setRefresh(true);
 	}
 
 
@@ -69,6 +62,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (!adapter.isEmpty())
 			sinceId = adapter.getItemId(0);
 		load(sinceId, 0L, 0);
+		setRefresh(true);
 	}
 
 

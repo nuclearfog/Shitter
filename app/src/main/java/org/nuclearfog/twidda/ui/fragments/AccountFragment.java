@@ -30,8 +30,8 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
  */
 public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
 
-	private AccountLoader loginTask;
-	private DatabaseAction databaseAsync;
+	private AccountLoader accountLoader;
+	private DatabaseAction databaseAction;
 	private GlobalSettings settings;
 	private AccountAdapter adapter;
 	private ConfirmDialog dialog;
@@ -45,27 +45,21 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		dialog = new ConfirmDialog(requireContext());
 		settings = GlobalSettings.getInstance(requireContext());
 		adapter = new AccountAdapter(requireContext(), this);
-		loginTask = new AccountLoader(requireContext());
-		databaseAsync = new DatabaseAction(requireContext());
+		accountLoader = new AccountLoader(requireContext());
+		databaseAction = new DatabaseAction(requireContext());
 
 		setAdapter(adapter);
 		dialog.setConfirmListener(this);
-	}
 
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		if (adapter.isEmpty()) {
-			setRefresh(true);
-			load(AccountParameter.LOAD);
-		}
+		load(AccountParameter.LOAD);
+		setRefresh(true);
 	}
 
 
 	@Override
 	public void onDestroy() {
-		loginTask.cancel();
+		accountLoader.cancel();
+		databaseAction.cancel();
 		super.onDestroy();
 	}
 
@@ -86,7 +80,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onAccountClick(Account account) {
 		settings.setLogin(account, true);
-		databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), this::onDatabaseResult);
+		databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), this::onDatabaseResult);
 		if (account.getUser() != null) {
 			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
@@ -147,6 +141,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	 */
 	public void load(int mode) {
 		AccountParameter request = new AccountParameter(mode, selectedId);
-		loginTask.execute(request, this);
+		accountLoader.execute(request, this);
 	}
 }
