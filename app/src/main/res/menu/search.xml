@@ -12,7 +12,7 @@
 	<item
 		android:id="@+id/search_status"
 		android:icon="@drawable/post"
-		android:title="@string/menu_tweet"
+		android:title="@string/menu_status"
 		app:showAsAction="ifRoom" />
 
 	<item

@@ -170,7 +170,7 @@
 					android:layout_marginTop="@dimen/page_status_textview_margin"
 					android:layout_marginEnd="@dimen/page_status_textview_margin"
 					android:lines="1"
-					android:text="@string/tweet_sensitive_media"
+					android:text="@string/status_sensitive_media"
 					android:textSize="@dimen/page_status_textsize_small"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/page_status_cards"

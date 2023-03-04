@@ -21,14 +21,14 @@
 	<string name="info_login_to_mastodon">login to Mastodon, please wait</string>
 	<string name="info_get_link">please open login page first to get the PIN</string>
 	<string name="info_gps_attached">GPS position added</string>
-	<string name="info_tweet_retweeted">reposted</string>
-	<string name="info_tweet_unretweeted">Repost removed</string>
-	<string name="info_tweet_favored">Status added to favorites</string>
-	<string name="info_tweet_unfavored">Status removed from favorites</string>
-	<string name="info_tweet_liked">Status liked</string>
-	<string name="info_tweet_unliked">Status unliked</string>
-	<string name="info_tweet_bookmarked">Status added to bookmarks</string>
-	<string name="info_tweet_unbookmarked">Status removed from bookmarks</string>
+	<string name="info_status_reposted">reposted</string>
+	<string name="info_status_unreposted">Repost removed</string>
+	<string name="info_status_favored">Status added to favorites</string>
+	<string name="info_status_unfavored">Status removed from favorites</string>
+	<string name="info_status_liked">Status liked</string>
+	<string name="info_status_unliked">Status unliked</string>
+	<string name="info_status_bookmarked">Status added to bookmarks</string>
+	<string name="info_status_unbookmarked">Status removed from bookmarks</string>
 	<string name="info_reply_hidden">Reply is hidden</string>
 	<string name="info_reply_unhidden">Reply is visible</string>
 	<string name="info_user_muted">User muted</string>
@@ -36,15 +36,15 @@
 	<string name="info_dm_send">Directmessage sent</string>
 	<string name="info_dm_removed">Directmessage removed</string>
 	<string name="info_image_saved">Image saved</string>
-	<string name="info_tweet_link_copied">Link copied to clipboard</string>
+	<string name="info_status_link_copied">Link copied to clipboard</string>
 	<string name="info_loading">loading..</string>
 	<string name="info_profile_updated">Profile updated</string>
 	<string name="info_followed">followed</string>
 	<string name="info_unfollowed">unfollowed</string>
 	<string name="info_user_blocked">blocked</string>
 	<string name="info_user_unblocked">unblocked</string>
-	<string name="info_tweet_removed">Status removed</string>
-	<string name="info_tweet_sent">Status shared</string>
+	<string name="info_status_removed">Status removed</string>
+	<string name="info_status_sent">Status shared</string>
 	<string name="info_location_pending">requesting location, please wait</string>
 	<string name="info_refreshing_exclude_list">refreshing exclude list</string>
 	<string name="info_exclude_list_updated">exclude list updated!</string>
@@ -52,9 +52,9 @@
 	<string name="info_permission_location">Location permission only needed to attach location to a status</string>
 	<string name="info_permission_write">Write permission used to store images.</string>
 	<string name="info_restart_app_on_change">restarting required to apply changes</string>
-	<string name="info_tweet_text_copied">Status text copied</string>
-	<string name="info_tweet_location_copied">Location coordinates copied</string>
-	<string name="info_tweet_medialink_copied">Media link copied</string>
+	<string name="info_status_text_copied">Status text copied</string>
+	<string name="info_status_location_copied">Location coordinates copied</string>
+	<string name="info_status_medialink_copied">Media link copied</string>
 	<string name="info_poll_voted">vote sent!</string>
 	<string name="info_account_selected">%1$s selected</string>
 	<string name="info_user_favorited">%1$s favorited your status</string>
@@ -65,10 +65,11 @@
 	<string name="info_missing_key">please enter key</string>
 	<string name="info_missing_host">please enter correct hostname</string>
 	<string name="info_database_cleared">Database cleared</string>
+	<string name="info_notification_dismiss">Notification dismissed</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
-	<string name="error_empty_tweet">Empty status!</string>
+	<string name="error_empty_status">Empty status!</string>
 	<string name="error_dm">enter username or message!</string>
 	<string name="error_not_found">not found!</string>
 	<string name="error_enter_code">code missing!</string>
@@ -93,7 +94,7 @@
 	<string name="error_dm_length">Directmessage is too long!</string>
 	<string name="error_list_title_empty">Empty list title!</string>
 	<string name="error_username_format">Wrong username format!</string>
-	<string name="error_cant_reply_to_tweet">You can\'t reply to this status!</string>
+	<string name="error_cant_reply_to_status">You can\'t reply to this status!</string>
 	<string name="error_corrupt_api_key">Error, corrupt API key!</string>
 	<string name="error_acc_update">Account update failed! Please check your input!</string>
 	<string name="error_acc_loading">Error while loading login information!</string>
@@ -113,7 +114,7 @@
 	<string name="error_empty_text">Empty text!</string>
 
 	<!-- menu icon strings -->
-	<string name="menu_tweet">write status</string>
+	<string name="menu_status">write status</string>
 	<string name="menu_open_home_profile">open Profile</string>
 	<string name="menu_open_twitter_search">Search</string>
 	<string name="menu_open_settings">Settings</string>
@@ -126,11 +127,12 @@
 	<string name="menu_block_user">block</string>
 	<string name="menu_unmute_user">unmute</string>
 	<string name="menu_follow_requested">follow requested</string>
-	<string name="menu_tweet_delete">delete</string>
-	<string name="menu_tweet_hide">hide</string>
-	<string name="menu_tweet_metrics">Metrics</string>
-	<string name="menu_tweet_unhide">unhide</string>
-	<string name="menu_tweet_open_browser">open in browser</string>
+	<string name="menu_status_delete">delete</string>
+	<string name="menu_notification_dismiss">dismiss</string>
+	<string name="menu_status_hide">hide</string>
+	<string name="menu_status_metrics">Metrics</string>
+	<string name="menu_status_unhide">unhide</string>
+	<string name="menu_status_open_browser">open in browser</string>
 	<string name="menu_mute_user">mute</string>
 	<string name="menu_follow_requests">Requests</string>
 	<string name="menu_edit_profile">edit profile</string>
@@ -150,9 +152,9 @@
 	<string name="menu_refresh_exclude">refresh exclude list</string>
 	<string name="menu_select_account">Logins</string>
 	<string name="menu_add_account">add account</string>
-	<string name="menu_tweet_copy_text">Text</string>
+	<string name="menu_status_copy_text">Text</string>
 	<string name="menu_media_link">Media link</string>
-	<string name="menu_tweet_copy_link">Status link</string>
+	<string name="menu_status_copy_link">Status link</string>
 	<string name="menu_toolbar_request">Follow requests</string>
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
 	<string name="menu_message">write message</string>
@@ -171,11 +173,11 @@
 	<string name="login_key_enable">add keys</string>
 	<string name="login_key_enable_v2">use API v2</string>
 	<string name="login_verifier">login</string>
-	<string name="popup_tweet_hint">Status</string>
+	<string name="popup_status_text_hint">Status</string>
 	<string name="title_settings">Settings</string>
 	<string name="userlist_following" translatable="false">Following</string>
 	<string name="userlist_follower" translatable="false">Follower</string>
-	<string name="toolbar_userlist_retweet">Status reposted by</string>
+	<string name="toolbar_userlist_repost">Status reposted by</string>
 	<string name="settings_color_settings">Color settings</string>
 	<string name="settings_background">Background</string>
 	<string name="settings_text">Text</string>
@@ -194,9 +196,10 @@
 	<string name="register_link">get code</string>
 	<string name="settings_image">enable images</string>
 	<string name="settings_clear_data">clear app data</string>
-	<string name="confirm_delete_tweet">delete status?</string>
+	<string name="confirm_delete_status">delete status?</string>
+	<string name="confirm_dismiss_notification">dismiss notification?</string>
 	<string name="confirm_delete_database">clear app data?</string>
-	<string name="tweet_sent_from">"sent from: "</string>
+	<string name="status_sent_from">"sent from: "</string>
 	<string name="username">Username</string>
 	<string name="dm_message">Message</string>
 	<string name="confirm_cancel_message">discard message?</string>
@@ -206,11 +209,11 @@
 	<string name="confirm_unfollow">unfollow user?</string>
 	<string name="confirm_block">block user?</string>
 	<string name="confirm_log_lout">log out?</string>
-	<string name="confirm_cancel_tweet">discard changes?</string>
+	<string name="confirm_cancel_status">discard changes?</string>
 	<string name="image_preview">Image preview</string>
-	<string name="tweet_add_image">add new image</string>
-	<string name="send_tweet">share status</string>
-	<string name="tweet_close">close editor</string>
+	<string name="status_add_image">add new image</string>
+	<string name="send_status">share status</string>
+	<string name="status_close">close editor</string>
 	<string name="profile_link">Link</string>
 	<string name="close_dm">close directmessage</string>
 	<string name="profile_location">Location</string>
@@ -253,7 +256,7 @@
 	<string name="item_poll_option_vote">vote</string>
 	<string name="settings_enable_proxy">enable proxy</string>
 	<string name="settings_enable_proxy_auth">enable proxy authentication</string>
-	<string name="tweet_sensitive_media">sensitive content</string>
+	<string name="status_sensitive_media">sensitive content</string>
 	<string name="login_info">4 steps to login</string>
 	<string name="login_first_opt" translatable="false">1.</string>
 	<string name="login_sec_opt" translatable="false">2.</string>
@@ -285,8 +288,8 @@
 	<string name="dialog_warning_videoview">videoplayer does not support proxy! Continue without proxy connection?</string>
 	<string name="account_user_id_prefix" translatable="false">User ID:</string>
 	<string name="account_user_unnamed">\'unnamed\'</string>
-	<string name="toolbar_tweet_favoriter">User favoriting this status</string>
-	<string name="toolbar_tweet_liker">User liking this status</string>
+	<string name="toolbar_status_favoriter">User favoriting this status</string>
+	<string name="toolbar_status_liker">User liking this status</string>
 	<string name="time_now">now</string>
 	<string name="confirm_open_link">open in browser</string>
 	<string name="status_replyname_empty">Reply</string>

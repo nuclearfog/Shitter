@@ -5,7 +5,7 @@
 	<item
 		android:id="@+id/profile_post"
 		android:icon="@drawable/post"
-		android:title="@string/menu_tweet"
+		android:title="@string/menu_status"
 		app:showAsAction="always" />
 
 	<item

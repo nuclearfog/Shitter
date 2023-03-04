@@ -233,12 +233,12 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	/**
 	 * remove notification
 	 *
-	 * @param statusId sId of the notification's status
+	 * @param id notification ID
 	 */
-	public void removeItem(long statusId) {
+	public void removeItem(long id) {
 		for (int i = 0; i < items.size(); i++) {
 			Notification item = items.get(i);
-			if (item != null && item.getStatus() != null && item.getStatus().getId() == statusId) {
+			if (item != null && item.getId() == id) {
 				items.remove(i);
 				notifyItemRemoved(i);
 				break;

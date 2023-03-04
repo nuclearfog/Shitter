@@ -154,7 +154,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (v.getId() == R.id.popup_status_send) {
 			// check if status is empty
 			if (statusUpdate.isEmpty()) {
-				Toast.makeText(getApplicationContext(), R.string.error_empty_tweet, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_empty_status, Toast.LENGTH_SHORT).show();
 			}
 			// check if GPS location is pending
 			else if (isLocating()) {
@@ -286,7 +286,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	public void onResult(StatusUpdateResult result) {
 		if (result.success) {
-			Toast.makeText(getApplicationContext(), R.string.info_tweet_sent, Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
 			String message = ErrorHandler.getErrorMessage(this, result.exception);

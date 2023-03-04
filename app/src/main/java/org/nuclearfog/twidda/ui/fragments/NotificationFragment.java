@@ -118,8 +118,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 					break;
 
 				case StatusActivity.RETURN_NOTIFICATION_REMOVED:
-					long statusId = intent.getLongExtra(StatusActivity.INTENT_STATUS_REMOVED_ID, 0L);
-					adapter.removeItem(statusId);
+					long notificationId = intent.getLongExtra(StatusActivity.INTENT_NOTIFICATION_REMOVED_ID, 0L);
+					adapter.removeItem(notificationId);
 					break;
 			}
 		}

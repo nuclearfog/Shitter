@@ -11,7 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.Tokens;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.AccountV1;
@@ -598,7 +597,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Status> getUserBookmarks(long minId, long maxId) throws ConnectionException {
+	public List<Status> getUserBookmarks(long minId, long maxId) throws TwitterException {
 		throw new TwitterException("not implemented!");
 	}
 
@@ -678,13 +677,13 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Status bookmarkStatus(long id) throws ConnectionException {
+	public Status bookmarkStatus(long id) throws TwitterException {
 		throw new TwitterException("not supported!");
 	}
 
 
 	@Override
-	public Status removeBookmark(long id) throws ConnectionException {
+	public Status removeBookmark(long id) throws TwitterException {
 		throw new TwitterException("not supported!");
 	}
 
@@ -930,19 +929,19 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Emoji> getEmojis() throws ConnectionException {
+	public List<Emoji> getEmojis() throws TwitterException {
 		throw new TwitterException("not supported!");
 	}
 
 
 	@Override
-	public Poll getPoll(long id) throws ConnectionException {
+	public Poll getPoll(long id) throws TwitterException {
 		throw new TwitterException("not supported!");
 	}
 
 
 	@Override
-	public Poll votePoll(Poll poll, int[] choices) throws ConnectionException {
+	public Poll votePoll(Poll poll, int[] choices) throws TwitterException {
 		throw new TwitterException("not supported!");
 	}
 
@@ -1126,8 +1125,14 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Notification getNotification(long id) throws ConnectionException {
+	public Notification getNotification(long id) throws TwitterException {
 		return new NotificationV1(showStatus(id));
+	}
+
+
+	@Override
+	public void dismissNotification(long id) throws TwitterException {
+		throw new TwitterException("not supported");
 	}
 
 	/**

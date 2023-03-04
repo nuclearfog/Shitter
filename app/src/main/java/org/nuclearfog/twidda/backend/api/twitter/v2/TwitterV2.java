@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.v2.impl.AccountV2;
@@ -118,7 +117,7 @@ public class TwitterV2 extends TwitterV1 {
 
 
 	@Override
-	public Poll getPoll(long id) throws ConnectionException {
+	public Poll getPoll(long id) throws TwitterException {
 		throw new TwitterException("not implemented!");
 	}
 

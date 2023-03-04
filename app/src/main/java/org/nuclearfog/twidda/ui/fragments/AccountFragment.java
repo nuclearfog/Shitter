@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.backend.async.AccountLoader.AccountResult;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
-import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
@@ -130,7 +129,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	/**
 	 * called from {@link DatabaseAction} when all data of the previous login were removed
 	 */
-	public void onDatabaseResult(DatabaseResult result) {
+	public void onDatabaseResult(Void v) {
 		// finish activity and return to parent activity
 		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
 		requireActivity().finish();

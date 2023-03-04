@@ -3,7 +3,7 @@
 
 	<item
 		android:id="@+id/menu_status_browser"
-		android:title="@string/menu_tweet_open_browser" />
+		android:title="@string/menu_status_open_browser" />
 
 	<item
 		android:id="@+id/menu_status_copy"
@@ -12,27 +12,31 @@
 		<menu>
 			<item
 				android:id="@+id/menu_status_copy_text"
-				android:title="@string/menu_tweet_copy_text" />
+				android:title="@string/menu_status_copy_text" />
 
 			<item
 				android:id="@+id/menu_status_copy_link"
-				android:title="@string/menu_tweet_copy_link" />
+				android:title="@string/menu_status_copy_link" />
 		</menu>
-
 	</item>
 
 	<item
 		android:id="@+id/menu_status_metrics"
-		android:title="@string/menu_tweet_metrics"
+		android:title="@string/menu_status_metrics"
 		android:visible="false" />
 
 	<item
 		android:id="@+id/menu_status_hide"
-		android:title="@string/menu_tweet_hide"
+		android:title="@string/menu_status_hide"
+		android:visible="false" />
+
+	<item
+		android:id="@+id/menu_notification_dismiss"
+		android:title="@string/menu_notification_dismiss"
 		android:visible="false" />
 
 	<item
 		android:id="@+id/menu_status_delete"
-		android:title="@string/menu_tweet_delete"
+		android:title="@string/menu_status_delete"
 		android:visible="false" />
 </menu>

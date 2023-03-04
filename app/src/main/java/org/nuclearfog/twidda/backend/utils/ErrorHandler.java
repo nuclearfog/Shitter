@@ -74,7 +74,7 @@ public class ErrorHandler {
 					return context.getString(R.string.error_corrupt_api_key);
 
 				case ConnectionException.STATUS_CANT_REPLY:
-					return context.getString(R.string.error_cant_reply_to_tweet);
+					return context.getString(R.string.error_cant_reply_to_status);
 
 				case ConnectionException.ACCOUNT_UPDATE_FAILED:
 					return context.getString(R.string.error_acc_update);

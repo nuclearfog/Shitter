@@ -151,11 +151,11 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				adapter.setupReposterPage(id);
 				pager.setOffscreenPageLimit(1);
 				tablayout.setVisibility(View.GONE);
-				toolbar.setTitle(R.string.toolbar_userlist_retweet);
+				toolbar.setTitle(R.string.toolbar_userlist_repost);
 				break;
 
 			case USERS_FAVORIT:
-				int title = settings.likeEnabled() ? R.string.toolbar_tweet_liker : R.string.toolbar_tweet_favoriter;
+				int title = settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter;
 				adapter.setFavoriterPage(id);
 				pager.setOffscreenPageLimit(1);
 				tablayout.setVisibility(View.GONE);

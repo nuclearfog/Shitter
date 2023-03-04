@@ -133,6 +133,11 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int LIST_EDITOR_ERROR = 622;
 
+	/**
+	 * show "dismiss notification" dialog
+	 */
+	public static final int NOTIFICATION_DISMISS = 623;
+
 
 	private TextView title, message, confirmDescr;
 	private CompoundButton confirmCheck;
@@ -230,7 +235,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				break;
 
 			case STATUS_EDITOR_LEAVE:
-				messageRes = R.string.confirm_cancel_tweet;
+				messageRes = R.string.confirm_cancel_status;
 				break;
 
 			case MESSAGE_EDITOR_LEAVE:
@@ -247,7 +252,11 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				break;
 
 			case DELETE_STATUS:
-				messageRes = R.string.confirm_delete_tweet;
+				messageRes = R.string.confirm_delete_status;
+				break;
+
+			case NOTIFICATION_DISMISS:
+				messageRes = R.string.confirm_dismiss_notification;
 				break;
 
 			case PROFILE_UNFOLLOW:

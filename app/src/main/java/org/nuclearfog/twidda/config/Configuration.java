@@ -37,6 +37,7 @@ public enum Configuration {
 	private final boolean idBlocklistEnabled;
 	private final boolean postLocationSupported;
 	private final boolean userlistVisibility;
+	private final boolean notificationDismissSupported;
 	private final int maxImages;
 	private final int maxGifs;
 	private final int maxVideos;
@@ -56,6 +57,7 @@ public enum Configuration {
 				idBlocklistEnabled = true;
 				postLocationSupported = true;
 				userlistVisibility = true;
+				notificationDismissSupported = false;
 				maxImages = 4;
 				maxGifs = 1;
 				maxVideos = 1;
@@ -70,6 +72,7 @@ public enum Configuration {
 				idBlocklistEnabled = false;
 				postLocationSupported = false;
 				userlistVisibility = false;
+				notificationDismissSupported = true;
 				maxImages = 4;
 				maxGifs = 1;
 				maxVideos = 1;
@@ -131,6 +134,13 @@ public enum Configuration {
 	 */
 	public boolean locationSupported() {
 		return postLocationSupported;
+	}
+
+	/**
+	 * @return true if notification dismiss is supported
+	 */
+	public boolean NotificationDismissEnabled() {
+		return notificationDismissSupported;
 	}
 
 	/**

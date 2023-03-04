@@ -586,4 +586,11 @@ public interface Connection {
 	 * @return notification
 	 */
 	Notification getNotification(long id) throws ConnectionException;
+
+	/**
+	 * dismiss single notification
+	 *
+	 * @param id notification ID
+	 */
+	void dismissNotification(long id) throws ConnectionException;
 }

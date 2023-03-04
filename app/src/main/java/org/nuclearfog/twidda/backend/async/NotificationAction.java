@@ -44,6 +44,10 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 				case NotificationParam.ONLINE:
 					result = connection.getNotification(param.id);
 					return new NotificationResult(NotificationResult.ONLINE, result, null);
+
+				case NotificationParam.DISMISS:
+					connection.dismissNotification(param.id);
+					return new NotificationResult(NotificationResult.DISMISS, null, null);
 			}
 		} catch (ConnectionException exception) {
 			return new NotificationResult(NotificationResult.ERROR, null, exception);
@@ -60,6 +64,7 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 
 		public static final int DATABASE = 1;
 		public static final int ONLINE = 2;
+		public static final int DISMISS = 3;
 
 		public final int mode;
 		public final long id;
@@ -78,6 +83,8 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 		public static final int ERROR = -1;
 		public static final int DATABASE = 3;
 		public static final int ONLINE = 4;
+		public static final int DISMISS = 5;
+
 		@Nullable
 		public final Notification notification;
 		@Nullable

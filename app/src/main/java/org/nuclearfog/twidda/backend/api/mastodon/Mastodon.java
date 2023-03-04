@@ -888,6 +888,19 @@ public class Mastodon implements Connection {
 		}
 	}
 
+
+	@Override
+	public void dismissNotification(long id) throws ConnectionException {
+		try {
+			Response response = post(ENDPOINT_NOTIFICATION + '/' + id + "/dismiss", new ArrayList<>());
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
 	/**
 	 * get information about the current user
 	 *

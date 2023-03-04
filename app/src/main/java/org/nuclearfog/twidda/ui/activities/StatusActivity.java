@@ -365,13 +365,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onBackPressed() {
-		Intent returnData = new Intent();
+		Intent intent = new Intent();
 		if (notification != null) {
-			returnData.putExtra(INTENT_NOTIFICATION_UPDATE_DATA, notification);
-			setResult(RETURN_NOTIFICATION_UPDATE, returnData);
+			intent.putExtra(INTENT_NOTIFICATION_UPDATE_DATA, notification);
+			setResult(RETURN_NOTIFICATION_UPDATE, intent);
 		} else {
-			returnData.putExtra(INTENT_STATUS_UPDATE_DATA, status);
-			setResult(RETURN_STATUS_UPDATE, returnData);
+			intent.putExtra(INTENT_STATUS_UPDATE_DATA, status);
+			setResult(RETURN_STATUS_UPDATE, intent);
 		}
 		super.onBackPressed();
 	}
@@ -402,18 +402,21 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		MenuItem optHide = m.findItem(R.id.menu_status_hide);
 		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
 		MenuItem optMetrics = m.findItem(R.id.menu_status_metrics);
+		MenuItem optDismiss = m.findItem(R.id.menu_notification_dismiss);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
 		Status status = this.status;
 		if (status.getEmbeddedStatus() != null) {
 			status = status.getEmbeddedStatus();
 		}
-		if (status.getRepliedUserId() == settings.getLogin().getId() && status.getAuthor().getId() != settings.getLogin().getId()) {
+		if (notification != null) {
+			optHide.setVisible(false);
+		} else if (status.getRepliedUserId() == settings.getLogin().getId() && status.getAuthor().getId() != settings.getLogin().getId()) {
 			optHide.setVisible(true);
 			if (hidden) {
-				optHide.setTitle(R.string.menu_tweet_unhide);
+				optHide.setTitle(R.string.menu_status_unhide);
 			} else {
-				optHide.setTitle(R.string.menu_tweet_hide);
+				optHide.setTitle(R.string.menu_status_hide);
 			}
 		}
 		if (status.getAuthor().isCurrentUser()) {
@@ -421,6 +424,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		if (status.getMetrics() != null) {
 			optMetrics.setVisible(true);
+		}
+		if (settings.getLogin().getConfiguration().NotificationDismissEnabled()) {
+			optDismiss.setVisible(true);
 		}
 		// add media link items
 		// check if menu doesn't contain media links already
@@ -468,7 +474,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("status text", status.getText());
 				clip.setPrimaryClip(linkClip);
-				Toast.makeText(getApplicationContext(), R.string.info_tweet_text_copied, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, LENGTH_SHORT).show();
 			}
 		}
 		// copy status link to clipboard
@@ -476,7 +482,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("status link", status.getUrl());
 				clip.setPrimaryClip(linkClip);
-				Toast.makeText(getApplicationContext(), R.string.info_tweet_link_copied, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, LENGTH_SHORT).show();
 			}
 		}
 		// open status metrics page
@@ -484,6 +490,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (status.getMetrics() != null) {
 				metricsDialog.show(status.getMetrics());
 			}
+		}
+		// open notification dismiss dialog
+		else if (item.getItemId() == R.id.menu_notification_dismiss) {
+			confirmDialog.show(ConfirmDialog.NOTIFICATION_DISMISS);
 		}
 		// copy media links
 		else if (item.getGroupId() == MENU_GROUP_COPY) {
@@ -493,7 +503,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (clip != null) {
 					ClipData linkClip = ClipData.newPlainText("status media link", medias[index].getUrl());
 					clip.setPrimaryClip(linkClip);
-					Toast.makeText(getApplicationContext(), R.string.info_tweet_medialink_copied, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_medialink_copied, LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -518,38 +528,38 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// show user reposting this status
 			else if (v.getId() == R.id.page_status_repost) {
-				Intent userList = new Intent(this, UsersActivity.class);
-				userList.putExtra(KEY_USERS_ID, status.getId());
-				userList.putExtra(KEY_USERS_MODE, USERS_REPOST);
-				startActivity(userList);
+				Intent intent = new Intent(this, UsersActivity.class);
+				intent.putExtra(KEY_USERS_ID, status.getId());
+				intent.putExtra(KEY_USERS_MODE, USERS_REPOST);
+				startActivity(intent);
 			}
 			// show user favoriting this status
 			else if (v.getId() == R.id.page_status_favorite) {
-				Intent userList = new Intent(this, UsersActivity.class);
-				userList.putExtra(KEY_USERS_ID, status.getId());
-				userList.putExtra(KEY_USERS_MODE, USERS_FAVORIT);
-				startActivity(userList);
+				Intent intent = new Intent(this, UsersActivity.class);
+				intent.putExtra(KEY_USERS_ID, status.getId());
+				intent.putExtra(KEY_USERS_MODE, USERS_FAVORIT);
+				startActivity(intent);
 			}
 			// open profile of the status author
 			else if (v.getId() == R.id.page_status_profile) {
-				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_USER, status.getAuthor());
-				startActivity(profile);
+				Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+				intent.putExtra(ProfileActivity.KEY_PROFILE_USER, status.getAuthor());
+				startActivity(intent);
 			}
 			// open replied status
 			else if (v.getId() == R.id.page_status_reply_reference) {
-				Intent answerIntent = new Intent(getApplicationContext(), StatusActivity.class);
-				answerIntent.putExtra(KEY_STATUS_ID, status.getRepliedStatusId());
-				answerIntent.putExtra(KEY_STATUS_NAME, status.getReplyName());
-				startActivity(answerIntent);
+				Intent intent = new Intent(getApplicationContext(), StatusActivity.class);
+				intent.putExtra(KEY_STATUS_ID, status.getRepliedStatusId());
+				intent.putExtra(KEY_STATUS_NAME, status.getReplyName());
+				startActivity(intent);
 			}
 			// open status location coordinates
 			else if (v.getId() == R.id.page_status_location_coordinates) {
 				if (status.getLocation() != null) {
-					Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-					locationIntent.setData(Uri.parse("geo:" + status.getLocation().getCoordinates() + "?z=14"));
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setData(Uri.parse("geo:" + status.getLocation().getCoordinates() + "?z=14"));
 					try {
-						startActivity(locationIntent);
+						startActivity(intent);
 					} catch (ActivityNotFoundException err) {
 						Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
 					}
@@ -557,9 +567,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// go to user reposting this status
 			else if (v.getId() == R.id.page_status_reposter_reference) {
-				Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
-				profile.putExtra(ProfileActivity.KEY_PROFILE_USER, this.status.getAuthor());
-				startActivity(profile);
+				Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+				intent.putExtra(ProfileActivity.KEY_PROFILE_USER, this.status.getAuthor());
+				startActivity(intent);
 			}
 		}
 	}
@@ -613,7 +623,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (clip != null && location != null) {
 					ClipData linkClip = ClipData.newPlainText("Status location coordinates", location.getCoordinates());
 					clip.setPrimaryClip(linkClip);
-					Toast.makeText(getApplicationContext(), R.string.info_tweet_location_copied, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_location_copied, LENGTH_SHORT).show();
 				}
 				return true;
 			}
@@ -634,28 +644,41 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
-		if (status != null) {
-			Status status = this.status;
-			if (status.getEmbeddedStatus() != null) {
-				status = status.getEmbeddedStatus();
-			}
-			// delete status
-			if (type == ConfirmDialog.DELETE_STATUS) {
-				StatusParam param = new StatusParam(StatusParam.DELETE, status.getId());
-				statusAsync.execute(param, this::onStatusResult);
-			}
-			// confirm playing video without proxy
-			else if (type == ConfirmDialog.PROXY_CONFIRM) {
-				settings.setIgnoreProxyWarning(rememberChoice);
-				Media[] mediaItems = status.getMedia();
-				if (mediaItems.length > 0) {
-					Uri uri = Uri.parse(mediaItems[0].getUrl());
-					Intent mediaIntent = new Intent(this, VideoViewer.class);
-					mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
-					mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-					startActivity(mediaIntent);
+		switch (type) {
+			case ConfirmDialog.DELETE_STATUS:
+				if (status != null) {
+					long id = status.getId();
+					if (status.getEmbeddedStatus() != null) {
+						id = status.getEmbeddedStatus().getId();
+					}
+					StatusParam param = new StatusParam(StatusParam.DELETE, id);
+					statusAsync.execute(param, this::onStatusResult);
 				}
-			}
+				break;
+
+			case ConfirmDialog.PROXY_CONFIRM:
+				if (status != null) {
+					settings.setIgnoreProxyWarning(rememberChoice);
+					Media[] mediaItems = status.getMedia();
+					if (status.getEmbeddedStatus() != null) {
+						mediaItems = status.getEmbeddedStatus().getMedia();
+					}
+					if (mediaItems.length > 0) {
+						Uri uri = Uri.parse(mediaItems[0].getUrl());
+						Intent intent = new Intent(this, VideoViewer.class);
+						intent.putExtra(VideoViewer.VIDEO_URI, uri);
+						intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+						startActivity(intent);
+					}
+				}
+				break;
+
+			case ConfirmDialog.NOTIFICATION_DISMISS:
+				if (notification != null) {
+					NotificationParam param = new NotificationParam(NotificationParam.DISMISS, notification.getId());
+					notificationAsync.execute(param, this::onNotificationResult);
+				}
+				break;
 		}
 	}
 
@@ -673,9 +696,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
-				Intent mediaIntent = new Intent(this, ImageViewer.class);
-				mediaIntent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(card.getImageUrl()));
-				startActivity(mediaIntent);
+				Intent intent = new Intent(this, ImageViewer.class);
+				intent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(card.getImageUrl()));
+				startActivity(intent);
 			}
 		}
 	}
@@ -690,19 +713,19 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			startActivity(mediaIntent);
 		} else if (media.getMediaType() == Media.VIDEO) {
 			if (!settings.isProxyEnabled() || settings.ignoreProxyWarning()) {
-				Intent mediaIntent = new Intent(this, VideoViewer.class);
-				mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
-				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-				startActivity(mediaIntent);
+				Intent intent = new Intent(this, VideoViewer.class);
+				intent.putExtra(VideoViewer.VIDEO_URI, uri);
+				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+				startActivity(intent);
 			} else {
 				confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
 			}
 		} else if (media.getMediaType() == Media.GIF) {
 			if (!settings.isProxyEnabled() || settings.ignoreProxyWarning()) {
-				Intent mediaIntent = new Intent(this, VideoViewer.class);
-				mediaIntent.putExtra(VideoViewer.VIDEO_URI, uri);
-				mediaIntent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
-				startActivity(mediaIntent);
+				Intent intent = new Intent(this, VideoViewer.class);
+				intent.putExtra(VideoViewer.VIDEO_URI, uri);
+				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+				startActivity(intent);
 			} else {
 				confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
 			}
@@ -806,7 +829,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		likeButton.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
 		repostButton.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
 		if (!status.getSource().isEmpty()) {
-			statusApi.setText(R.string.tweet_sent_from);
+			statusApi.setText(R.string.status_sent_from);
 			statusApi.append(status.getSource());
 			statusApi.setVisibility(VISIBLE);
 		} else {
@@ -893,34 +916,33 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case StatusResult.REPOST:
-				Toast.makeText(getApplicationContext(), R.string.info_tweet_retweeted, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_reposted, LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.UNREPOST:
-				Toast.makeText(getApplicationContext(), R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
-				// todo remove old retweet from list fragment
+				Toast.makeText(getApplicationContext(), R.string.info_status_unreposted, LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.FAVORITE:
 				if (settings.likeEnabled())
-					Toast.makeText(getApplicationContext(), R.string.info_tweet_liked, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_liked, LENGTH_SHORT).show();
 				else
-					Toast.makeText(getApplicationContext(), R.string.info_tweet_favored, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_favored, LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.UNFAVORITE:
 				if (settings.likeEnabled())
-					Toast.makeText(getApplicationContext(), R.string.info_tweet_unliked, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_unliked, LENGTH_SHORT).show();
 				else
-					Toast.makeText(getApplicationContext(), R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_unfavored, LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.BOOKMARK:
-				Toast.makeText(getApplicationContext(), R.string.info_tweet_bookmarked, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_bookmarked, LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.UNBOOKMARK:
-				Toast.makeText(getApplicationContext(), R.string.info_tweet_unbookmarked, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_unbookmarked, LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.HIDE:
@@ -937,13 +959,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 			case StatusResult.DELETE:
 				if (status != null) {
-					Toast.makeText(getApplicationContext(), R.string.info_tweet_removed, LENGTH_SHORT).show();
-					Intent returnData = new Intent();
+					Toast.makeText(getApplicationContext(), R.string.info_status_removed, LENGTH_SHORT).show();
+					Intent intent = new Intent();
 					if (status.getEmbeddedStatus() != null)
-						returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());
+						intent.putExtra(INTENT_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());
 					else
-						returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
-					setResult(RETURN_STATUS_REMOVED, returnData);
+						intent.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+					setResult(RETURN_STATUS_REMOVED, intent);
 					finish();
 				}
 				break;
@@ -955,9 +977,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					finish();
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					// Mark status as removed, so it can be removed from the list
-					Intent returnData = new Intent();
-					returnData.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
-					setResult(RETURN_STATUS_REMOVED, returnData);
+					Intent intent = new Intent();
+					intent.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+					setResult(RETURN_STATUS_REMOVED, intent);
 					finish();
 				}
 				break;
@@ -970,16 +992,30 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * @param result notification containing status information
 	 */
 	public void onNotificationResult(NotificationResult result) {
-		if (result.notification != null && result.notification.getStatus() != null) {
-			notification = result.notification;
-			setStatus(result.notification.getStatus());
-		}
+
 		switch (result.mode) {
 			case NotificationResult.DATABASE:
 				if (result.notification != null) {
 					NotificationParam param = new NotificationParam(NotificationParam.ONLINE, result.notification.getId());
 					notificationAsync.execute(param, this::onNotificationResult);
 				}
+				// fall through
+
+			case NotificationResult.ONLINE:
+				if (result.notification != null && result.notification.getStatus() != null) {
+					notification = result.notification;
+					setStatus(result.notification.getStatus());
+				}
+				break;
+
+			case NotificationResult.DISMISS:
+				if (notification != null) {
+					Intent intent = new Intent();
+					intent.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
+					setResult(RETURN_NOTIFICATION_REMOVED, intent);
+				}
+				Toast.makeText(getApplicationContext(), R.string.info_notification_dismiss, LENGTH_SHORT).show();
+				finish();
 				break;
 
 			case NotificationResult.ERROR:
@@ -988,9 +1024,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (notification == null) {
 					finish();
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
-					Intent returnData = new Intent();
-					returnData.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
-					setResult(RETURN_NOTIFICATION_REMOVED, returnData);
+					Intent intent = new Intent();
+					intent.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
+					setResult(RETURN_NOTIFICATION_REMOVED, intent);
 					finish();
 				}
 				break;
