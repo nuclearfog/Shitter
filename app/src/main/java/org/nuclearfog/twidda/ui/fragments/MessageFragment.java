@@ -182,7 +182,6 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	public void onResult(MessageLoaderResult result) {
-		setRefresh(false);
 		switch (result.mode) {
 			case MessageLoaderResult.DATABASE:
 			case MessageLoaderResult.ONLINE:
@@ -208,6 +207,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 				}
 				break;
 		}
+		setRefresh(false);
 	}
 
 	/**

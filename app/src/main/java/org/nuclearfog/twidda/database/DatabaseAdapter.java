@@ -305,9 +305,6 @@ public class DatabaseAdapter {
 	 */
 	private SQLiteDatabase db;
 
-
-	private volatile boolean lock = false;
-
 	/**
 	 *
 	 */
@@ -405,15 +402,7 @@ public class DatabaseAdapter {
 	 *
 	 * @return SQLite instance
 	 */
-	SQLiteDatabase getDbRead() {
-		int wait = 0;
-		while (lock && wait++ < 10) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	synchronized SQLiteDatabase getDbRead() {
 		if (!db.isOpen())
 			db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
 		return db;
@@ -424,9 +413,8 @@ public class DatabaseAdapter {
 	 *
 	 * @return SQLite instance
 	 */
-	SQLiteDatabase getDbWrite() {
+	synchronized SQLiteDatabase getDbWrite() {
 		SQLiteDatabase db = getDbRead();
-		lock = true;
 		db.beginTransaction();
 		return db;
 	}
@@ -434,10 +422,9 @@ public class DatabaseAdapter {
 	/**
 	 * Commit changes and close Database
 	 */
-	void commit() {
+	synchronized void commit() {
 		db.setTransactionSuccessful();
 		db.endTransaction();
-		lock = false;
 	}
 
 	/**

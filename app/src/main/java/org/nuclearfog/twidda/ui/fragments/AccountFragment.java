@@ -107,7 +107,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	public void onResult(AccountResult result) {
-		setRefresh(false);
 		switch (result.mode) {
 			case AccountResult.LOAD:
 				if (result.accounts != null) {
@@ -125,6 +124,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 					Toast.makeText(getContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
 				break;
 		}
+		setRefresh(false);
 	}
 
 	/**

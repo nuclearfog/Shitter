@@ -208,7 +208,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public void onResult(StatusResult result) {
-		setRefresh(false);
 		if (result.statuses != null) {
 			if (result.position == CLEAR_LIST) {
 				adapter.replaceItems(result.statuses);
@@ -220,6 +219,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}
+		setRefresh(false);
 	}
 
 	/**

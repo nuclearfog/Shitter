@@ -232,7 +232,6 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	public void onResult(UserResult result) {
-		setRefresh(false);
 		if (result.users != null) {
 			adapter.addItems(result.users);
 		} else if (getContext() != null) {
@@ -240,6 +239,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}
+		setRefresh(false);
 	}
 
 	/**

@@ -91,13 +91,13 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 	@Override
 	public void onResult(TrendResult result) {
-		setRefresh(false);
 		if (result.trends != null) {
-			adapter.replaceItems(result.trends);
+			adapter.replaceAll(result.trends);
 		} else if (getContext() != null) {
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 		}
+		setRefresh(false);
 	}
 
 	/**

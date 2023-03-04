@@ -128,7 +128,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public void onResult(NotificationResult result) {
-		setRefresh(false);
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
 		} else if (getContext() != null) {
@@ -136,6 +135,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 			adapter.disableLoading();
 		}
+		setRefresh(false);
 	}
 
 	/**

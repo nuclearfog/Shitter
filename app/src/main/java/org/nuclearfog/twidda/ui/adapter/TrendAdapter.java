@@ -79,7 +79,7 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	 *
 	 * @param trendList list of trends
 	 */
-	public void replaceItems(@NonNull List<Trend> trendList) {
+	public void replaceAll(@NonNull List<Trend> trendList) {
 		trends.clear();
 		trends.addAll(trendList);
 		notifyDataSetChanged();

@@ -206,12 +206,10 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 				items.add(index, null);
 				notifyItemInserted(index);
 			}
-		} else {
-			if (!items.isEmpty() && items.get(index) == null) {
-				// remove placeholder
-				items.remove(index);
-				notifyItemRemoved(index);
-			}
+		} else if (!items.isEmpty() && items.get(index) == null) {
+			// remove placeholder
+			items.remove(index);
+			notifyItemRemoved(index);
 		}
 		if (!newItems.isEmpty()) {
 			items.addAll(index, newItems);
