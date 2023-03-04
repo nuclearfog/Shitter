@@ -1,9 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.view.View.GONE;
-import static android.view.View.OnClickListener;
-import static android.view.View.VISIBLE;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +9,7 @@ import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -41,7 +38,6 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
-import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -196,23 +192,23 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		databaseAsync = new DatabaseAction(this);
 
 		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
-			enableTwitterAlt.setVisibility(GONE);
-			EnableTwitterAltDescr.setVisibility(GONE);
-			trend_card.setVisibility(GONE);
+			enableTwitterAlt.setVisibility(View.GONE);
+			EnableTwitterAltDescr.setVisibility(View.GONE);
+			trend_card.setVisibility(View.GONE);
 		}
 		if (!settings.isLoggedIn()) {
-			user_card.setVisibility(GONE);
+			user_card.setVisibility(View.GONE);
 		}
 		if (!settings.isProxyEnabled()) {
-			proxyAddr.setVisibility(GONE);
-			proxyPort.setVisibility(GONE);
-			proxyUser.setVisibility(GONE);
-			proxyPass.setVisibility(GONE);
-			enableAuth.setVisibility(GONE);
-			enableAuthTxt.setVisibility(GONE);
+			proxyAddr.setVisibility(View.GONE);
+			proxyPort.setVisibility(View.GONE);
+			proxyUser.setVisibility(View.GONE);
+			proxyPass.setVisibility(View.GONE);
+			enableAuth.setVisibility(View.GONE);
+			enableAuthTxt.setVisibility(View.GONE);
 		} else if (!settings.isProxyAuthSet()) {
-			proxyUser.setVisibility(GONE);
-			proxyPass.setVisibility(GONE);
+			proxyUser.setVisibility(View.GONE);
+			proxyPass.setVisibility(View.GONE);
 		}
 		if (settings.likeEnabled()) {
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_like);
@@ -513,26 +509,26 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable proxy settings
 		else if (c.getId() == R.id.settings_enable_proxy) {
 			if (checked) {
-				proxyAddr.setVisibility(VISIBLE);
-				proxyPort.setVisibility(VISIBLE);
-				enableAuth.setVisibility(VISIBLE);
-				enableAuthTxt.setVisibility(VISIBLE);
+				proxyAddr.setVisibility(View.VISIBLE);
+				proxyPort.setVisibility(View.VISIBLE);
+				enableAuth.setVisibility(View.VISIBLE);
+				enableAuthTxt.setVisibility(View.VISIBLE);
 			} else {
-				proxyAddr.setVisibility(GONE);
-				proxyPort.setVisibility(GONE);
-				enableAuthTxt.setVisibility(GONE);
-				enableAuth.setVisibility(GONE);
+				proxyAddr.setVisibility(View.GONE);
+				proxyPort.setVisibility(View.GONE);
+				enableAuthTxt.setVisibility(View.GONE);
+				enableAuth.setVisibility(View.GONE);
 				enableAuth.setChecked(false);
 			}
 		}
 		//enable proxy authentication
 		else if (c.getId() == R.id.settings_enable_auth) {
 			if (checked) {
-				proxyUser.setVisibility(VISIBLE);
-				proxyPass.setVisibility(VISIBLE);
+				proxyUser.setVisibility(View.VISIBLE);
+				proxyPass.setVisibility(View.VISIBLE);
 			} else {
-				proxyUser.setVisibility(GONE);
-				proxyPass.setVisibility(GONE);
+				proxyUser.setVisibility(View.GONE);
+				proxyPass.setVisibility(View.GONE);
 			}
 		}
 	}
@@ -591,20 +587,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	/**
 	 * called from {@link DatabaseAction}
-	 *
-	 * @param result result from {@link DatabaseAction}
 	 */
-	public void onDatabaseResult(DatabaseResult result) {
-		switch (result.mode) {
-			case DatabaseResult.DELETE:
-				setResult(RETURN_DATA_CLEARED);
-				Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
-				break;
-
-			case DatabaseResult.ERROR:
-				Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
-				break;
-		}
+	public void onDatabaseResult(Void v) {
+		setResult(RETURN_DATA_CLEARED);
+		Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
 	}
 
 	/**
