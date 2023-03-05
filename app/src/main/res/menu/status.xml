@@ -21,6 +21,10 @@
 	</item>
 
 	<item
+		android:id="@+id/menu_status_bookmark"
+		android:title="@string/menu_bookmark_add" />
+
+	<item
 		android:id="@+id/menu_status_metrics"
 		android:title="@string/menu_status_metrics"
 		android:visible="false" />

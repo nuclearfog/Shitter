@@ -240,22 +240,6 @@
 				android:layout_height="400dp">
 
 				<Button
-					android:id="@+id/page_status_bookmark"
-					android:layout_width="0dp"
-					android:layout_height="@dimen/page_status_button_height"
-					android:visibility="invisible"
-					android:paddingLeft="@dimen/page_status_button_padding"
-					android:paddingRight="@dimen/page_status_button_padding"
-					android:drawablePadding="@dimen/page_status_padding_drawable"
-					android:layout_margin="@dimen/page_status_button_margin"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toTopOf="parent"
-					app:layout_constraintBottom_toTopOf="@id/page_status_reply_fragment"
-					app:layout_constraintEnd_toStartOf="@id/page_status_reply"
-					app:layout_constraintHorizontal_weight="1"
-					style="@style/FeedbackButton" />
-
-				<Button
 					android:id="@+id/page_status_reply"
 					android:layout_width="0dp"
 					android:layout_height="@dimen/page_status_button_height"
@@ -265,7 +249,7 @@
 					android:drawablePadding="@dimen/page_status_padding_drawable"
 					android:layout_margin="@dimen/page_status_button_margin"
 					android:lines="1"
-					app:layout_constraintStart_toEndOf="@id/page_status_bookmark"
+					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toTopOf="parent"
 					app:layout_constraintBottom_toTopOf="@id/page_status_reply_fragment"
 					app:layout_constraintEnd_toStartOf="@id/page_status_repost"

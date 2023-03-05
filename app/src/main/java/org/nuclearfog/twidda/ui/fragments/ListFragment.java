@@ -98,9 +98,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * @param adapter adapter for the list
 	 */
 	protected void setAdapter(Adapter<? extends ViewHolder> adapter) {
-		if (list != null) {
-			list.setAdapter(adapter);
-		}
+		list.setAdapter(adapter);
 	}
 
 	/**

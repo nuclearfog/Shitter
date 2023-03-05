@@ -1,10 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.view.View.GONE;
-import static android.view.View.OnClickListener;
-import static android.view.View.OnLongClickListener;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_REPLYID;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
@@ -29,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,7 +37,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
-import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -95,8 +91,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class StatusActivity extends AppCompatActivity implements OnClickListener, OnScrollChangeListener,
-		OnLongClickListener, OnTagClickListener, OnConfirmListener, OnCardClickListener {
+public class StatusActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener, OnConfirmListener, OnCardClickListener {
 
 	/**
 	 * Activity result code to update existing status information
@@ -192,9 +187,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private MetricsDialog metricsDialog;
 
 	private NestedScrollView container;
-	private ViewGroup root, header, body;
+	private ViewGroup root, body;
 	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
-	private Button replyButton, repostButton, likeButton, replyName, locationButton, repostNameButton, bookmarkButton;
+	private Button replyButton, repostButton, likeButton, replyName, locationButton, repostNameButton;
 	private ImageView profileImage;
 	private RecyclerView cardList;
 	private Toolbar toolbar;
@@ -217,14 +212,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		super.onCreate(b);
 		setContentView(R.layout.page_status);
 		root = findViewById(R.id.page_status_root);
-		header = findViewById(R.id.page_status_header);
 		body = findViewById(R.id.page_status_body);
 		container = findViewById(R.id.page_status_scroll);
 		toolbar = findViewById(R.id.page_status_toolbar);
 		replyButton = findViewById(R.id.page_status_reply);
 		repostButton = findViewById(R.id.page_status_repost);
 		likeButton = findViewById(R.id.page_status_favorite);
-		bookmarkButton = findViewById(R.id.page_status_bookmark);
 		userName = findViewById(R.id.page_status_username);
 		screenName = findViewById(R.id.page_status_screenname);
 		profileImage = findViewById(R.id.page_status_profile);
@@ -289,7 +282,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
 		replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
 		repostNameButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
-		bookmarkButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.bookmark, 0, 0, 0);
 		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
 		statusText.setLinkTextColor(settings.getHighlightColor());
 		cardList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
@@ -317,8 +309,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		likeButton.setOnLongClickListener(this);
 		repostNameButton.setOnLongClickListener(this);
 		locationButton.setOnLongClickListener(this);
-		bookmarkButton.setOnLongClickListener(this);
-		container.setOnScrollChangeListener(this);
 	}
 
 
@@ -395,47 +385,53 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onPrepareOptionsMenu(@NonNull Menu m) {
-		if (status == null)
-			return super.onPrepareOptionsMenu(m);
-
 		MenuItem optDelete = m.findItem(R.id.menu_status_delete);
 		MenuItem optHide = m.findItem(R.id.menu_status_hide);
 		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
 		MenuItem optMetrics = m.findItem(R.id.menu_status_metrics);
 		MenuItem optDismiss = m.findItem(R.id.menu_notification_dismiss);
+		MenuItem menuBookmark = m.findItem(R.id.menu_status_bookmark);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
-		Status status = this.status;
-		if (status.getEmbeddedStatus() != null) {
-			status = status.getEmbeddedStatus();
-		}
+		Configuration config = settings.getLogin().getConfiguration();
+		// set notification options
 		if (notification != null) {
-			optHide.setVisible(false);
-		} else if (status.getRepliedUserId() == settings.getLogin().getId() && status.getAuthor().getId() != settings.getLogin().getId()) {
-			optHide.setVisible(true);
-			if (hidden) {
-				optHide.setTitle(R.string.menu_status_unhide);
-			} else {
-				optHide.setTitle(R.string.menu_status_hide);
+			optDismiss.setVisible(config.NotificationDismissEnabled());
+		}
+		// set status options
+		if (status != null) {
+			Status currentStatus = status;
+			if (currentStatus.getEmbeddedStatus() != null) {
+				currentStatus = currentStatus.getEmbeddedStatus();
 			}
-		}
-		if (status.getAuthor().isCurrentUser()) {
-			optDelete.setVisible(true);
-		}
-		if (status.getMetrics() != null) {
-			optMetrics.setVisible(true);
-		}
-		if (settings.getLogin().getConfiguration().NotificationDismissEnabled()) {
-			optDismiss.setVisible(true);
-		}
-		// add media link items
-		// check if menu doesn't contain media links already
-		if (copyMenu.size() == 2) {
-			int mediaCount = status.getMedia().length;
-			for (int i = 0; i < mediaCount; i++) {
-				// create sub menu entry and use array index as item ID
-				String text = getString(R.string.menu_media_link) + ' ' + (i + 1);
-				copyMenu.add(MENU_GROUP_COPY, i, Menu.NONE, text);
+			// enable/disable status reply hide
+			long currentUserId = settings.getLogin().getId();
+			if (currentStatus.getRepliedUserId() == currentUserId && currentStatus.getAuthor().getId() != currentUserId) {
+				optHide.setTitle(hidden ? R.string.menu_status_hide : R.string.menu_status_unhide);
+				optHide.setVisible(true);
+			}
+			// enable/disable bookmark
+			if (currentStatus.isBookmarked()) {
+				menuBookmark.setTitle(R.string.menu_bookmark_remove);
+			} else {
+				menuBookmark.setTitle(R.string.menu_bookmark_add);
+			}
+			// enable/disable status hide option
+			if (currentStatus.getAuthor().isCurrentUser()) {
+				optDelete.setVisible(true);
+			}
+			// enable/disable status metrics option
+			if (currentStatus.getMetrics() != null) {
+				optMetrics.setVisible(true);
+			}
+			// add media link items
+			// check if menu doesn't contain media links already
+			if (copyMenu.size() == 2) {
+				for (int i = 0; i < currentStatus.getMedia().length; i++) {
+					// create sub menu entry and use array index as item ID
+					String text = getString(R.string.menu_media_link) + ' ' + (i + 1);
+					copyMenu.add(MENU_GROUP_COPY, i, Menu.NONE, text);
+				}
 			}
 		}
 		return true;
@@ -454,6 +450,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (item.getItemId() == R.id.menu_status_delete) {
 			confirmDialog.show(ConfirmDialog.DELETE_STATUS);
 		}
+		// add/remove bookmark
+		if (item.getItemId() == R.id.menu_status_bookmark) {
+			Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+			int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
+			StatusParam param = new StatusParam(mode, status.getId());
+			statusAsync.execute(param, this::onStatusResult);
+		}
 		// hide status
 		else if (item.getItemId() == R.id.menu_status_hide) {
 			int mode = hidden ? StatusParam.UNHIDE : StatusParam.HIDE;
@@ -466,7 +469,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
-				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
 			}
 		}
 		// copy status link to clipboard
@@ -474,7 +477,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("status text", status.getText());
 				clip.setPrimaryClip(linkClip);
-				Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, Toast.LENGTH_SHORT).show();
 			}
 		}
 		// copy status link to clipboard
@@ -482,7 +485,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (clip != null) {
 				ClipData linkClip = ClipData.newPlainText("status link", status.getUrl());
 				clip.setPrimaryClip(linkClip);
-				Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, Toast.LENGTH_SHORT).show();
 			}
 		}
 		// open status metrics page
@@ -503,7 +506,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (clip != null) {
 					ClipData linkClip = ClipData.newPlainText("status media link", medias[index].getUrl());
 					clip.setPrimaryClip(linkClip);
-					Toast.makeText(getApplicationContext(), R.string.info_status_medialink_copied, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_medialink_copied, Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -561,7 +564,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					try {
 						startActivity(intent);
 					} catch (ActivityNotFoundException err) {
-						Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), R.string.error_no_card_app, Toast.LENGTH_SHORT).show();
 					}
 				}
 			}
@@ -580,7 +583,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (status != null && statusAsync.isIdle()) {
 			// repost this status
 			if (v.getId() == R.id.page_status_repost) {
-				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 				int mode = status.isReposted() ? StatusParam.UNREPOST : StatusParam.REPOST;
 				StatusParam param = new StatusParam(mode, status.getId());
 				statusAsync.execute(param, this::onStatusResult);
@@ -588,16 +591,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// favorite this status
 			else if (v.getId() == R.id.page_status_favorite) {
-				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 				int mode = status.isFavorited() ? StatusParam.UNFAVORITE : StatusParam.FAVORITE;
-				StatusParam param = new StatusParam(mode, status.getId());
-				statusAsync.execute(param, this::onStatusResult);
-				return true;
-			}
-			// bookmark status
-			else if (v.getId() == R.id.page_status_bookmark) {
-				Toast.makeText(getApplicationContext(), R.string.info_loading, LENGTH_SHORT).show();
-				int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
 				StatusParam param = new StatusParam(mode, status.getId());
 				statusAsync.execute(param, this::onStatusResult);
 				return true;
@@ -623,22 +618,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (clip != null && location != null) {
 					ClipData linkClip = ClipData.newPlainText("Status location coordinates", location.getCoordinates());
 					clip.setPrimaryClip(linkClip);
-					Toast.makeText(getApplicationContext(), R.string.info_status_location_copied, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_location_copied, Toast.LENGTH_SHORT).show();
 				}
 				return true;
 			}
 		}
 		return false;
-	}
-
-
-	@Override
-	public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-		if (scrollY == header.getMeasuredHeight()) {
-			// unlock child scrolling
-		} else {
-			// lock child view from scrolling
-		}
 	}
 
 
@@ -691,7 +676,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
-				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
 			}
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
@@ -763,7 +748,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			try {
 				startActivity(intent);
 			} catch (ActivityNotFoundException err) {
-				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -785,11 +770,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void setStatus(@NonNull Status status) {
 		this.status = status;
 		if (status.getEmbeddedStatus() != null) {
-			repostNameButton.setVisibility(VISIBLE);
+			repostNameButton.setVisibility(View.VISIBLE);
 			repostNameButton.setText(status.getAuthor().getScreenname());
 			status = status.getEmbeddedStatus();
 		} else {
-			repostNameButton.setVisibility(GONE);
+			repostNameButton.setVisibility(View.GONE);
 		}
 		User author = status.getAuthor();
 		Location location = status.getLocation();
@@ -804,11 +789,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			AppStyles.setDrawableColor(likeButton, settings.getFavoriteIconColor());
 		} else {
 			AppStyles.setDrawableColor(likeButton, settings.getIconColor());
-		}
-		if (status.isBookmarked()) {
-			AppStyles.setDrawableColor(bookmarkButton, settings.getBookmarkColor());
-		} else {
-			AppStyles.setDrawableColor(bookmarkButton, settings.getIconColor());
 		}
 		if (author.isVerified()) {
 			userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
@@ -831,30 +811,30 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (!status.getSource().isEmpty()) {
 			statusApi.setText(R.string.status_sent_from);
 			statusApi.append(status.getSource());
-			statusApi.setVisibility(VISIBLE);
+			statusApi.setVisibility(View.VISIBLE);
 		} else {
-			statusApi.setVisibility(GONE);
+			statusApi.setVisibility(View.GONE);
 		}
 		if (!status.getText().isEmpty()) {
 			Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
-			statusText.setVisibility(VISIBLE);
+			statusText.setVisibility(View.VISIBLE);
 			statusText.setText(spannableText);
 		} else {
-			statusText.setVisibility(GONE);
+			statusText.setVisibility(View.GONE);
 		}
 		if (status.getRepliedStatusId() > 0) {
 			if (!status.getReplyName().isEmpty())
 				replyName.setText(status.getReplyName());
 			else
 				replyName.setText(R.string.status_replyname_empty);
-			replyName.setVisibility(VISIBLE);
+			replyName.setVisibility(View.VISIBLE);
 		} else {
-			replyName.setVisibility(GONE);
+			replyName.setVisibility(View.GONE);
 		}
 		if (status.isSensitive()) {
-			sensitive_media.setVisibility(VISIBLE);
+			sensitive_media.setVisibility(View.VISIBLE);
 		} else {
-			sensitive_media.setVisibility(GONE);
+			sensitive_media.setVisibility(View.GONE);
 		}
 		String profileImageUrl = author.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
@@ -865,37 +845,32 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		if (location != null) {
 			if (!location.getPlace().isEmpty()) {
-				locationName.setVisibility(VISIBLE);
+				locationName.setVisibility(View.VISIBLE);
 				locationName.setText(location.getFullName());
 			} else {
-				locationName.setVisibility(GONE);
+				locationName.setVisibility(View.GONE);
 			}
 			if (!location.getCoordinates().isEmpty()) {
-				locationButton.setVisibility(VISIBLE);
+				locationButton.setVisibility(View.VISIBLE);
 				locationButton.setText(location.getCoordinates());
 			} else {
-				locationButton.setVisibility(GONE);
+				locationButton.setVisibility(View.GONE);
 			}
 		} else {
-			locationName.setVisibility(GONE);
-			locationButton.setVisibility(GONE);
+			locationName.setVisibility(View.GONE);
+			locationButton.setVisibility(View.GONE);
 		}
-		if (repostButton.getVisibility() != VISIBLE) {
-			if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
-				bookmarkButton.setVisibility(VISIBLE);
-			} else {
-				bookmarkButton.setVisibility(GONE);
-			}
-			repostButton.setVisibility(VISIBLE);
-			likeButton.setVisibility(VISIBLE);
-			replyButton.setVisibility(VISIBLE);
+		if (repostButton.getVisibility() != View.VISIBLE) {
+			repostButton.setVisibility(View.VISIBLE);
+			likeButton.setVisibility(View.VISIBLE);
+			replyButton.setVisibility(View.VISIBLE);
 		}
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
-			cardList.setVisibility(VISIBLE);
+			cardList.setVisibility(View.VISIBLE);
 			adapter.replaceAll(status);
 			statusText.setMaxLines(5);
 		} else {
-			cardList.setVisibility(GONE);
+			cardList.setVisibility(View.GONE);
 			statusText.setMaxLines(10);
 		}
 	}
@@ -916,50 +891,50 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case StatusResult.REPOST:
-				Toast.makeText(getApplicationContext(), R.string.info_status_reposted, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_reposted, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.UNREPOST:
-				Toast.makeText(getApplicationContext(), R.string.info_status_unreposted, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_unreposted, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.FAVORITE:
 				if (settings.likeEnabled())
-					Toast.makeText(getApplicationContext(), R.string.info_status_liked, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_liked, Toast.LENGTH_SHORT).show();
 				else
-					Toast.makeText(getApplicationContext(), R.string.info_status_favored, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_favored, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.UNFAVORITE:
 				if (settings.likeEnabled())
-					Toast.makeText(getApplicationContext(), R.string.info_status_unliked, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_unliked, Toast.LENGTH_SHORT).show();
 				else
-					Toast.makeText(getApplicationContext(), R.string.info_status_unfavored, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_unfavored, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.BOOKMARK:
-				Toast.makeText(getApplicationContext(), R.string.info_status_bookmarked, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_bookmarked, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.UNBOOKMARK:
-				Toast.makeText(getApplicationContext(), R.string.info_status_unbookmarked, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_status_unbookmarked, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.HIDE:
 				hidden = true;
 				invalidateOptionsMenu();
-				Toast.makeText(getApplicationContext(), R.string.info_reply_hidden, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_reply_hidden, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.UNHIDE:
 				hidden = false;
 				invalidateOptionsMenu();
-				Toast.makeText(getApplicationContext(), R.string.info_reply_unhidden, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_reply_unhidden, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusResult.DELETE:
 				if (status != null) {
-					Toast.makeText(getApplicationContext(), R.string.info_status_removed, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_status_removed, Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
 					if (status.getEmbeddedStatus() != null)
 						intent.putExtra(INTENT_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());
@@ -1014,7 +989,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					intent.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
 					setResult(RETURN_NOTIFICATION_REMOVED, intent);
 				}
-				Toast.makeText(getApplicationContext(), R.string.info_notification_dismiss, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_notification_dismiss, Toast.LENGTH_SHORT).show();
 				finish();
 				break;
 

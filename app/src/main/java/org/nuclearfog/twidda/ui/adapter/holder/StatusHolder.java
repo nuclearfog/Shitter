@@ -42,8 +42,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class StatusHolder extends ViewHolder implements OnClickListener {
 
-	private ImageView profile, rpUser, verifiedIcon, lockedIcon, rtIcon, favIcon, replyIcon;
-	private TextView username, screenname, text, repost, favorite, reposter, created, replyname, label;
+	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
+	private TextView username, screenname, text, repost, favorite, reply, reposter, created, replyname, label;
 	private RecyclerView iconList;
 
 	private GlobalSettings settings;
@@ -64,16 +64,17 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		profile = itemView.findViewById(R.id.item_status_profile_image);
 		verifiedIcon = itemView.findViewById(R.id.item_status_verified_icon);
 		lockedIcon = itemView.findViewById(R.id.item_status_locked_icon);
-		rpUser = itemView.findViewById(R.id.item_status_reposter_icon);
-		rtIcon = itemView.findViewById(R.id.item_status_repost_icon);
-		favIcon = itemView.findViewById(R.id.item_status_favorite_icon);
+		repostUserIcon = itemView.findViewById(R.id.item_status_reposter_icon);
+		repostIcon = itemView.findViewById(R.id.item_status_repost_icon);
+		favoriteIcon = itemView.findViewById(R.id.item_status_favorite_icon);
 		iconList = itemView.findViewById(R.id.item_status_attachment_list);
-		replyIcon = itemView.findViewById(R.id.item_status_reply);
+		replyStatus = itemView.findViewById(R.id.item_status_reply);
 		username = itemView.findViewById(R.id.item_status_author_username);
 		screenname = itemView.findViewById(R.id.item_status_author_screenname);
 		text = itemView.findViewById(R.id.item_status_text);
 		repost = itemView.findViewById(R.id.item_status_repost_count);
 		favorite = itemView.findViewById(R.id.item_status_favorite_count);
+		reply = itemView.findViewById(R.id.item_status_reply_count);
 		reposter = itemView.findViewById(R.id.item_status_reposter_name);
 		created = itemView.findViewById(R.id.item_status_created_at);
 		replyname = itemView.findViewById(R.id.item_status_reply_name);
@@ -83,9 +84,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		iconList.setAdapter(adapter);
 
 		if (settings.likeEnabled()) {
-			favIcon.setImageResource(R.drawable.like);
+			favoriteIcon.setImageResource(R.drawable.like);
 		} else {
-			favIcon.setImageResource(R.drawable.favorite);
+			favoriteIcon.setImageResource(R.drawable.favorite);
 		}
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		cardLayout.setCardBackgroundColor(settings.getCardColor());
@@ -117,17 +118,18 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		if (status.getEmbeddedStatus() != null) {
 			reposter.setText(user.getScreenname());
 			reposter.setVisibility(View.VISIBLE);
-			rpUser.setVisibility(View.VISIBLE);
+			repostUserIcon.setVisibility(View.VISIBLE);
 			status = status.getEmbeddedStatus();
 			user = status.getAuthor();
 		} else {
 			reposter.setVisibility(View.GONE);
-			rpUser.setVisibility(View.GONE);
+			repostUserIcon.setVisibility(View.GONE);
 		}
 		username.setText(user.getUsername());
 		screenname.setText(user.getScreenname());
 		repost.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
 		favorite.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
+		reply.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
 		created.setText(StringTools.formatCreationTime(itemView.getResources(), status.getTimestamp()));
 		if (!status.getText().trim().isEmpty()) {
 			Spanned textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
@@ -137,14 +139,14 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			text.setVisibility(View.GONE);
 		}
 		if (status.isReposted()) {
-			rtIcon.setColorFilter(settings.getRepostIconColor());
+			repostIcon.setColorFilter(settings.getRepostIconColor());
 		} else {
-			rtIcon.setColorFilter(settings.getIconColor());
+			repostIcon.setColorFilter(settings.getIconColor());
 		}
 		if (status.isFavorited()) {
-			favIcon.setColorFilter(settings.getFavoriteIconColor());
+			favoriteIcon.setColorFilter(settings.getFavoriteIconColor());
 		} else {
-			favIcon.setColorFilter(settings.getIconColor());
+			favoriteIcon.setColorFilter(settings.getIconColor());
 		}
 		if (user.isVerified()) {
 			verifiedIcon.setVisibility(View.VISIBLE);
@@ -164,14 +166,14 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			profile.setImageResource(0);
 		}
 		if (status.getRepliedStatusId() > 0) {
-			replyIcon.setVisibility(View.VISIBLE);
+			replyStatus.setVisibility(View.VISIBLE);
 			replyname.setVisibility(View.VISIBLE);
 			if (!status.getReplyName().isEmpty())
 				replyname.setText(status.getReplyName());
 			else
 				replyname.setText(R.string.status_replyname_empty);
 		} else {
-			replyIcon.setVisibility(View.GONE);
+			replyStatus.setVisibility(View.GONE);
 			replyname.setVisibility(View.GONE);
 		}
 		if (settings.statusIndicatorsEnabled()) {

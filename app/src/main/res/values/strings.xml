@@ -107,7 +107,6 @@
 	<string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
 	<string name="error_invalid_media">Invalid media file!</string>
 	<string name="error_not_defined">Not specified error!</string>
-	<string name="error_database_cleared">Error while clearing database!</string>
 	<string name="error_forbidden_api_access">API does not support this operation!</string>
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
@@ -125,6 +124,8 @@
 	<string name="menu_app_info">About</string>
 	<string name="menu_licenses">Licenses</string>
 	<string name="menu_block_user">block</string>
+	<string name="menu_bookmark_add">bookmark</string>
+	<string name="menu_bookmark_remove">remove bookmark</string>
 	<string name="menu_unmute_user">unmute</string>
 	<string name="menu_follow_requested">follow requested</string>
 	<string name="menu_status_delete">delete</string>

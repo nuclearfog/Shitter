@@ -272,7 +272,6 @@
 	<string name="info_status_unbookmarked">Status aus Lesezeichen entfernt</string>
 	<string name="settings_bookmark_color">Lesezeichen symbol</string>
 	<string name="info_poll_voted">Umfrage abgestimmt!</string>
-	<string name="error_database_cleared">Fehler beim löschen der Datenbank!</string>
 	<string name="menu_notification_dismiss">entfernen</string>
 	<string name="confirm_dismiss_notification">Nachricht verwerfen?</string>
 </resources>

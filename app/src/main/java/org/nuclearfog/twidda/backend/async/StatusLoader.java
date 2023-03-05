@@ -97,7 +97,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 							db.saveBookmarkTimeline(statuses, request.id);
 						}
 					} else {
-						statuses = connection.getUserBookmarks(request.minId, request.maxId);
+						statuses = connection.getUserBookmarks(0L, request.maxId);
 						if (request.maxId == 0L) {
 							db.saveBookmarkTimeline(statuses, request.id);
 							position = CLEAR_LIST; // clear previous items
