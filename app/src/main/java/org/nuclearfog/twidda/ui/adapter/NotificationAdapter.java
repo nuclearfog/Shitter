@@ -141,32 +141,32 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
+	public boolean onPlaceholderClick(int index) {
 		long sinceId = 0;
 		long maxId = 0;
-		if (position == 0) {
-			Notification notification = items.get(position + 1);
+		if (index == 0) {
+			Notification notification = items.get(index + 1);
 			if (notification != null) {
 				sinceId = notification.getId();
 			}
-		} else if (position == items.size() - 1) {
-			Notification notification = items.get(position - 1);
+		} else if (index == items.size() - 1) {
+			Notification notification = items.get(index - 1);
 			if (notification != null) {
 				maxId = notification.getId() - 1;
 			}
 		} else {
-			Notification notification = items.get(position + 1);
+			Notification notification = items.get(index + 1);
 			if (notification != null) {
 				sinceId = notification.getId();
 			}
-			notification = items.get(position - 1);
+			notification = items.get(index - 1);
 			if (notification != null) {
 				maxId = notification.getId() - 1;
 			}
 		}
-		boolean success = listener.onPlaceholderClick(sinceId, maxId, position);
+		boolean success = listener.onPlaceholderClick(sinceId, maxId, index);
 		if (success) {
-			loadingIndex = position;
+			loadingIndex = index;
 			return true;
 		}
 		return false;

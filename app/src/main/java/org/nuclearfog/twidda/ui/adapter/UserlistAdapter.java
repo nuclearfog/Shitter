@@ -122,10 +122,10 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
-		boolean actionPerformed = listener.onPlaceholderClick(userlists.getNext());
+	public boolean onPlaceholderClick(int index) {
+		boolean actionPerformed = listener.onPlaceholderClick(userlists.getNext(), index);
 		if (actionPerformed)
-			loadingIndex = position;
+			loadingIndex = index;
 		return actionPerformed;
 	}
 
@@ -133,32 +133,28 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 * adds new data to the list
 	 *
 	 * @param newUserlists new list to add
+	 * @param index index where to insert new items
 	 */
-	public void addItems(UserLists newUserlists) {
+	public void addItems(UserLists newUserlists, int index) {
 		disableLoading();
-		if (newUserlists.isEmpty()) {
-			if (!userlists.isEmpty() && userlists.peekLast() == null) {
-				// remove placeholder
-				int end = userlists.size() - 1;
-				userlists.remove(end);
-				notifyItemRemoved(end);
-			}
-		} else if (userlists.isEmpty() || !newUserlists.hasPrevious()) {
+		if (index < 0) {
 			userlists.replace(newUserlists);
-			if (userlists.hasNext()) {
+			if (userlists.getNext() != 0L) {
 				// Add placeholder
 				userlists.add(null);
 			}
 			notifyDataSetChanged();
 		} else {
-			int end = userlists.size() - 1;
-			if (!userlists.hasNext()) {
-				// remove placeholder
-				userlists.remove(end);
-				notifyItemRemoved(end);
+			userlists.addAll(index, newUserlists);
+			if (userlists.getNext() != 0L && userlists.peekLast() != null) {
+				userlists.add(null);
+				notifyItemRangeInserted(index, newUserlists.size() + 1);
+			} else if (userlists.getNext() == 0L && userlists.peekLast() == null)  {
+				userlists.pollLast();
+				notifyItemRangeInserted(index, newUserlists.size() - 1);
+			} else {
+				notifyItemRangeInserted(index, newUserlists.size());
 			}
-			userlists.addAt(newUserlists, end);
-			notifyItemRangeInserted(end, newUserlists.size());
 		}
 	}
 
@@ -221,7 +217,8 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 		 * called when the placeholder is clicked
 		 *
 		 * @param cursor next cursor of the list
+		 * @param index index of the placeholder
 		 */
-		boolean onPlaceholderClick(long cursor);
+		boolean onPlaceholderClick(long cursor, int index);
 	}
 }

@@ -57,8 +57,8 @@ public interface OnHolderClickListener {
 	/**
 	 * called when a placeholder item was clicked
 	 *
-	 * @param position position of the item
+	 * @param index index of the item
 	 * @return true to enable loading animation
 	 */
-	boolean onPlaceholderClick(int position);
+	boolean onPlaceholderClick(int index);
 }

@@ -139,7 +139,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	/**
 	 * "index" used to replace the whole list with new items
 	 */
-	public static final int CLEAR_LIST = -1;
+	private static final int CLEAR_LIST = -1;
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);

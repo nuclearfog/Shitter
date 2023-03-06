@@ -60,6 +60,11 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	 */
 	public static final int LIST_USER_SUBSCR_TO = 0xAA7386AA;
 
+	/**
+	 * "index" used to replace the whole list with new items
+	 */
+	private static final int CLEAR_LIST = -1;
+
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -83,14 +88,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		setAdapter(adapter);
 
 		setRefresh(true);
-		load(-1L);
-	}
-
-
-	@Override
-	protected void onReset() {
-		setRefresh(true);
-		load(-1L);
+		load(-1L, CLEAR_LIST);
 	}
 
 
@@ -98,6 +96,19 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	public void onDestroy() {
 		userlistLoader.cancel();
 		super.onDestroy();
+	}
+
+
+	@Override
+	protected void onReload() {
+		load(0L, CLEAR_LIST);
+	}
+
+
+	@Override
+	protected void onReset() {
+		setRefresh(true);
+		load(0L, CLEAR_LIST);
 	}
 
 
@@ -123,12 +134,6 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 
 	@Override
-	protected void onReload() {
-		load(-1L);
-	}
-
-
-	@Override
 	public void onListClick(UserList listItem) {
 		Intent listIntent = new Intent(requireContext(), UserlistActivity.class);
 		listIntent.putExtra(KEY_LIST_DATA, listItem);
@@ -145,9 +150,9 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 
 	@Override
-	public boolean onPlaceholderClick(long cursor) {
+	public boolean onPlaceholderClick(long cursor, int index) {
 		if (userlistLoader.isIdle()) {
-			load(cursor);
+			load(cursor, index);
 			return true;
 		}
 		return false;
@@ -160,7 +165,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 			case UserlistResult.MEMBERSHIP:
 			case UserlistResult.OWNERSHIP:
 				if (result.userlists != null) {
-					adapter.addItems(result.userlists);
+					adapter.addItems(result.userlists, result.index);
 				}
 				break;
 
@@ -176,15 +181,15 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	/**
 	 * load content into the list
 	 */
-	private void load(long cursor) {
+	private void load(long cursor, int index) {
 		UserlistParam param;
 		switch (type) {
 			case LIST_USER_OWNS:
-				param = new UserlistParam(UserlistParam.OWNERSHIP, id, cursor);
+				param = new UserlistParam(UserlistParam.OWNERSHIP, index, id, cursor);
 				break;
 
 			case LIST_USER_SUBSCR_TO:
-				param = new UserlistParam(UserlistParam.MEMBERSHIP, id, cursor);
+				param = new UserlistParam(UserlistParam.MEMBERSHIP, index, id, cursor);
 				break;
 
 			default:

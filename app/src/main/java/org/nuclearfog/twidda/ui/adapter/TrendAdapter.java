@@ -70,7 +70,7 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
+	public boolean onPlaceholderClick(int index) {
 		return false;
 	}
 

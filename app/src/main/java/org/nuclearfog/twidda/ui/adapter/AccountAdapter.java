@@ -74,7 +74,7 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
+	public boolean onPlaceholderClick(int index) {
 		return false;
 	}
 

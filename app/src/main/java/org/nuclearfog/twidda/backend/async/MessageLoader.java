@@ -41,7 +41,7 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 				case MessageLoaderParam.DATABASE:
 					Messages messages = db.getMessages();
 					if (!messages.isEmpty()) {
-						return new MessageLoaderResult(MessageLoaderResult.DATABASE, param.id, messages, null);
+						return new MessageLoaderResult(MessageLoaderResult.DATABASE, param.index, param.id, messages, null);
 					}
 					// fall through
 
@@ -50,21 +50,21 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 					// merge online messages with offline messages
 					db.saveMessages(messages);
 					messages = db.getMessages();
-					return new MessageLoaderResult(MessageLoaderResult.ONLINE, param.id, messages, null);
+					return new MessageLoaderResult(MessageLoaderResult.ONLINE, param.index, param.id, messages, null);
 
 				case MessageLoaderParam.DELETE:
 					connection.deleteDirectmessage(param.id);
 					db.removeMessage(param.id);
-					return new MessageLoaderResult(MessageLoaderResult.DELETE, param.id, null, null);
+					return new MessageLoaderResult(MessageLoaderResult.DELETE, param.index, param.id, null, null);
 			}
 		} catch (ConnectionException exception) {
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND)
 				db.removeMessage(param.id);
-			return new MessageLoaderResult(MessageLoaderResult.ERROR, param.id, null, exception);
+			return new MessageLoaderResult(MessageLoaderResult.ERROR, param.index, param.id, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new MessageLoaderResult(MessageLoaderResult.ERROR, param.id, null, null);
+		return new MessageLoaderResult(MessageLoaderResult.ERROR, param.index, param.id, null, null);
 	}
 
 	/**
@@ -76,13 +76,14 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 		public static final int ONLINE = 2;
 		public static final int DELETE = 3;
 
-		public final int mode;
+		public final int mode, index;
 		public final long id;
 		public final String cursor;
 
-		public MessageLoaderParam(int mode, long id, String cursor) {
+		public MessageLoaderParam(int mode, int index, long id, String cursor) {
 			this.mode = mode;
 			this.id = id;
+			this.index = index;
 			this.cursor = cursor;
 		}
 	}
@@ -97,16 +98,17 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 		public static final int ONLINE = 5;
 		public static final int DELETE = 6;
 
-		public final int mode;
+		public final int mode, index;
 		public final long id;
 		@Nullable
 		public final Messages messages;
 		@Nullable
 		public final ConnectionException exception;
 
-		MessageLoaderResult(int mode, long id, @Nullable Messages messages, @Nullable ConnectionException exception) {
+		MessageLoaderResult(int mode, int index, long id, @Nullable Messages messages, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.id = id;
+			this.index = index;
 			this.messages = messages;
 			this.exception = exception;
 		}

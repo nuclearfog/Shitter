@@ -28,6 +28,7 @@ public class Messages extends LinkedList<Message> {
 		this.nextCursor = nextCursor;
 	}
 
+
 	@Override
 	@Nullable
 	public Message get(int index) {
@@ -52,7 +53,7 @@ public class Messages extends LinkedList<Message> {
 	 * @param list  new list
 	 * @param index Index of the sub list
 	 */
-	public void addAt(Messages list, int index) {
+	public void addAll(int index, Messages list) {
 		super.addAll(index, list);
 		nextCursor = list.nextCursor;
 	}
@@ -81,24 +82,6 @@ public class Messages extends LinkedList<Message> {
 	 */
 	public String getNextCursor() {
 		return nextCursor;
-	}
-
-	/**
-	 * check if this list has a previous cursor
-	 *
-	 * @return true if list has a previous cursor
-	 */
-	public boolean hasPrev() {
-		return prevCursor != null && !prevCursor.isEmpty();
-	}
-
-	/**
-	 * check if this list has a cursor to a next list
-	 *
-	 * @return true if list has a next cursor
-	 */
-	public boolean hasNext() {
-		return nextCursor != null && !nextCursor.isEmpty();
 	}
 
 

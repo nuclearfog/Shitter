@@ -36,24 +36,6 @@ public class UserLists extends LinkedList<UserList> {
 	}
 
 	/**
-	 * check if list is linked to a previous list
-	 *
-	 * @return true if list is linked
-	 */
-	public boolean hasPrevious() {
-		return prevCursor != 0;
-	}
-
-	/**
-	 * check if list has a successor
-	 *
-	 * @return true if list has a successor
-	 */
-	public boolean hasNext() {
-		return nextCursor != 0;
-	}
-
-	/**
 	 * get next link to a list
 	 *
 	 * @return cursor
@@ -97,10 +79,18 @@ public class UserLists extends LinkedList<UserList> {
 	 * @param list  new sublist
 	 * @param index Index of the sub list
 	 */
-	public void addAt(UserLists list, int index) {
+	public void addAll(int index, UserLists list) {
+		if (isEmpty()) {
+			prevCursor = list.prevCursor;
+			nextCursor = list.nextCursor;
+		} else if (index == 0) {
+			prevCursor = list.prevCursor;
+		} else if (index == size() - 1) {
+			nextCursor = list.nextCursor;
+		}
 		super.addAll(index, list);
-		nextCursor = list.nextCursor;
 	}
+
 
 	@Override
 	@NonNull

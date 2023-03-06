@@ -144,10 +144,10 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
-		boolean success = itemClickListener.onPlaceholderClick(messages.getNextCursor());
+	public boolean onPlaceholderClick(int index) {
+		boolean success = itemClickListener.onPlaceholderClick(messages.getNextCursor(), index);
 		if (success) {
-			loadingIndex = position;
+			loadingIndex = index;
 		}
 		return success;
 	}
@@ -155,32 +155,28 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	/**
 	 * set messages
 	 *
-	 * @param newData new message list
+	 * @param newMessages new message list
 	 */
-	public void addItems(Messages newData) {
+	public void addItems(Messages newMessages, int index) {
 		disableLoading();
-		if (newData.isEmpty()) {
-			if (!messages.isEmpty() && messages.peekLast() == null) {
-				int end = messages.size() - 1;
-				messages.remove(end);
-				notifyItemRemoved(end);
-			}
-		} else if (messages.isEmpty() || !newData.hasPrev()) {
-			messages.replaceAll(newData);
-			if (newData.hasNext()) {
+		if (index < 0) {
+			messages.replaceAll(newMessages);
+			if (newMessages.getNextCursor() != null && !newMessages.getNextCursor().isEmpty()) {
 				// add placeholder
 				messages.add(null);
 			}
 			notifyDataSetChanged();
 		} else {
-			int end = messages.size() - 1;
-			if (!newData.hasNext()) {
-				// remove placeholder
-				messages.remove(end);
-				notifyItemRemoved(end);
+			messages.addAll(index, newMessages);
+			if (newMessages.getNextCursor() != null && !newMessages.getNextCursor().isEmpty() && messages.peekLast() != null) {
+				messages.add(null);
+				notifyItemRangeInserted(index, newMessages.size() + 1);
+			} else if (newMessages.getNextCursor() == null && !newMessages.getNextCursor().isEmpty() && messages.peekLast() == null) {
+				messages.pollLast();
+				notifyItemRangeInserted(index, newMessages.size() - 1);
+			} else {
+				notifyItemRangeInserted(index, newMessages.size());
 			}
-			messages.addAt(newData, end);
-			notifyItemRangeInserted(end, newData.size());
 		}
 	}
 
@@ -245,8 +241,9 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 		 * called when the placeholder was clicked
 		 *
 		 * @param cursor message cursor
+		 * @param index  index of the placeholder
 		 * @return true if task was started
 		 */
-		boolean onPlaceholderClick(String cursor);
+		boolean onPlaceholderClick(String cursor, int index);
 	}
 }

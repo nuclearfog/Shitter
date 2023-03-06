@@ -812,7 +812,8 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		params.add("count=" + settings.getListSize());
-		params.add("cursor=" + cursor);
+		if (cursor != 0L)
+			params.add("cursor=" + cursor);
 		return getUserlists(USERLIST_MEMBERSHIP, params);
 	}
 
@@ -1240,8 +1241,9 @@ public class TwitterV1 implements Connection {
 	 * @return an array of user IDs + the list cursor on the last array index
 	 */
 	private long[] getUserIDs(String endpoint, List<String> params, long cursor) throws TwitterException {
-		params.add("cursor=" + cursor);
 		try {
+			if (cursor != 0L)
+				params.add("cursor=" + cursor);
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {

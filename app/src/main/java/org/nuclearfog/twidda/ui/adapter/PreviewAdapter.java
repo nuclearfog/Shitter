@@ -155,7 +155,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
+	public boolean onPlaceholderClick(int index) {
 		return false;
 	}
 

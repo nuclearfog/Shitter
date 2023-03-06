@@ -74,7 +74,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
+	public boolean onPlaceholderClick(int index) {
 		return false;
 	}
 

@@ -118,34 +118,34 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
+	public boolean onPlaceholderClick(int index) {
 		long sinceId = 0;
 		long maxId = 0;
-		if (position == 0) {
+		if (index == 0) {
 			if (items.size() > 1) {
 				Status status = items.get(1);
 				if (status != null) {
 					sinceId = status.getId();
 				}
 			}
-		} else if (position == items.size() - 1) {
-			Status status = items.get(position - 1);
+		} else if (index == items.size() - 1) {
+			Status status = items.get(index - 1);
 			if (status != null) {
 				maxId = status.getId() - 1L;
 			}
 		} else {
-			Status status = items.get(position + 1);
+			Status status = items.get(index + 1);
 			if (status != null) {
 				sinceId = status.getId();
 			}
-			status = items.get(position - 1);
+			status = items.get(index - 1);
 			if (status != null) {
 				maxId = status.getId() - 1L;
 			}
 		}
-		boolean success = listener.onPlaceholderClick(sinceId, maxId, position);
+		boolean success = listener.onPlaceholderClick(sinceId, maxId, index);
 		if (success) {
-			loadingIndex = position;
+			loadingIndex = index;
 			return true;
 		}
 		return false;

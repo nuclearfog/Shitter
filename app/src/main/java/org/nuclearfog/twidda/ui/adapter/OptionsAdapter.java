@@ -71,7 +71,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
+	public boolean onPlaceholderClick(int index) {
 		return false;
 	}
 

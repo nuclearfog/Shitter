@@ -161,7 +161,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 				users.add(null);
 				notifyItemRangeInserted(index, newUsers.size() + 1);
 			} else if (users.getNext() == 0L && users.peekLast() == null) {
-				users.remove(users.size() - 1);
+				users.pollLast();
 				notifyItemRangeInserted(index, newUsers.size() - 1);
 			} else if (!newUsers.isEmpty()) {
 				notifyItemRangeInserted(index, newUsers.size());

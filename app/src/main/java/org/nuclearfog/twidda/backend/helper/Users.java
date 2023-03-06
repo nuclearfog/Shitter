@@ -82,7 +82,7 @@ public class Users extends LinkedList<User> {
 	 * @param list  new sublist
 	 * @param index index of the sub list
 	 */
-	public boolean addAll(int index, Users list) {
+	public void addAll(int index, Users list) {
 		if (isEmpty()) {
 			prevCursor = list.prevCursor;
 			nextCursor = list.nextCursor;
@@ -91,7 +91,7 @@ public class Users extends LinkedList<User> {
 		} else if (index == size() - 1) {
 			nextCursor = list.nextCursor;
 		}
-		return super.addAll(index, list);
+		super.addAll(index, list);
 	}
 
 

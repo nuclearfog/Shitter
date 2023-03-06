@@ -45,11 +45,16 @@ import java.util.List;
  */
 public class MessageFragment extends ListFragment implements OnMessageClickListener, OnConfirmListener, AsyncCallback<MessageLoaderResult> {
 
+	/**
+	 * "index" used to replace the whole list with new items
+	 */
+	private static final int CLEAR_LIST = -1;
+
 	private MessageLoader messageLoader;
 	private MessageAdapter adapter;
 	private ConfirmDialog confirmDialog;
 
-	private long deleteId;
+	private long selectedId;
 
 
 	@Override
@@ -62,16 +67,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 		confirmDialog.setConfirmListener(this);
 
-		loadMessages(false, null);
-		setRefresh(true);
-	}
-
-
-	@Override
-	protected void onReset() {
-		adapter = new MessageAdapter(requireContext(), this);
-		setAdapter(adapter);
-		loadMessages(false, null);
+		loadMessages(false, null, CLEAR_LIST);
 		setRefresh(true);
 	}
 
@@ -85,7 +81,16 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	protected void onReload() {
-		loadMessages(true, null);
+		loadMessages(true, null, CLEAR_LIST);
+	}
+
+
+	@Override
+	protected void onReset() {
+		adapter = new MessageAdapter(requireContext(), this);
+		setAdapter(adapter);
+		loadMessages(false, null, CLEAR_LIST);
+		setRefresh(true);
 	}
 
 
@@ -135,7 +140,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 				case DELETE:
 					if (!confirmDialog.isShowing() && messageLoader.isIdle()) {
-						deleteId = message.getId();
+						selectedId = message.getId();
 						confirmDialog.show(ConfirmDialog.MESSAGE_DELETE);
 					}
 					break;
@@ -162,9 +167,9 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public boolean onPlaceholderClick(String cursor) {
+	public boolean onPlaceholderClick(String cursor, int index) {
 		if (messageLoader.isIdle()) {
-			loadMessages(false, cursor);
+			loadMessages(false, cursor, index);
 			return true;
 		}
 		return false;
@@ -174,7 +179,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onConfirm(int type, boolean rememberChoice) {
 		if (type == ConfirmDialog.MESSAGE_DELETE) {
-			MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, deleteId, "");
+			MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, 0, selectedId, "");
 			messageLoader.execute(param, this);
 		}
 	}
@@ -186,7 +191,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 			case MessageLoaderResult.DATABASE:
 			case MessageLoaderResult.ONLINE:
 				if (result.messages != null) {
-					adapter.addItems(result.messages);
+					adapter.addItems(result.messages, result.index);
 				}
 				break;
 
@@ -214,9 +219,9 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 * @param local  true to load message from database
 	 * @param cursor list cursor
 	 */
-	private void loadMessages(boolean local, String cursor) {
+	private void loadMessages(boolean local, String cursor, int index) {
 		int mode = local ? MessageLoaderParam.DATABASE : MessageLoaderParam.ONLINE;
-		MessageLoaderParam param = new MessageLoaderParam(mode, 0L, cursor);
+		MessageLoaderParam param = new MessageLoaderParam(mode, index, 0L, cursor);
 		messageLoader.execute(param, this);
 	}
 }
