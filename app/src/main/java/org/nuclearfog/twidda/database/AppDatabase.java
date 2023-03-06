@@ -386,6 +386,11 @@ public class AppDatabase {
 	private static final String SINGLE_ITEM = "1";
 
 	/**
+	 * database lock
+	 */
+	private static final Object LOCK = new Object();
+
+	/**
 	 * limit of database entries
 	 */
 	private GlobalSettings settings;
@@ -409,11 +414,13 @@ public class AppDatabase {
 	 * @param statuses status from home timeline
 	 */
 	public void saveHomeTimeline(List<Status> statuses) {
-		if (!statuses.isEmpty()) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			for (Status status : statuses)
-				saveStatus(status, db, HOME_TIMELINE_MASK);
-			adapter.commit();
+		synchronized (LOCK) {
+			if (!statuses.isEmpty()) {
+				SQLiteDatabase db = adapter.getDbWrite();
+				for (Status status : statuses)
+					saveStatus(status, db, HOME_TIMELINE_MASK);
+				adapter.commit();
+			}
 		}
 	}
 
@@ -423,11 +430,13 @@ public class AppDatabase {
 	 * @param statuses user timeline
 	 */
 	public void saveUserTimeline(List<Status> statuses) {
-		if (!statuses.isEmpty()) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			for (Status status : statuses)
-				saveStatus(status, db, USER_TIMELINE_MASK);
-			adapter.commit();
+		synchronized (LOCK) {
+			if (!statuses.isEmpty()) {
+				SQLiteDatabase db = adapter.getDbWrite();
+				for (Status status : statuses)
+					saveStatus(status, db, USER_TIMELINE_MASK);
+				adapter.commit();
+			}
 		}
 	}
 
@@ -438,18 +447,20 @@ public class AppDatabase {
 	 * @param ownerId  user ID
 	 */
 	public void saveFavoriteTimeline(List<Status> statuses, long ownerId) {
-		SQLiteDatabase db = adapter.getDbWrite();
-		// delete old favorits
-		String[] delArgs = {Long.toString(ownerId)};
-		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			// delete old favorits
+			String[] delArgs = {Long.toString(ownerId)};
+			db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
 
-		if (!statuses.isEmpty()) {
-			for (Status status : statuses) {
-				saveStatus(status, db, 0);
-				saveFavorite(status.getId(), ownerId, db);
+			if (!statuses.isEmpty()) {
+				for (Status status : statuses) {
+					saveStatus(status, db, 0);
+					saveFavorite(status.getId(), ownerId, db);
+				}
 			}
+			adapter.commit();
 		}
-		adapter.commit();
 	}
 
 	/**
@@ -459,18 +470,20 @@ public class AppDatabase {
 	 * @param ownerId  id of the owner
 	 */
 	public void saveBookmarkTimeline(List<Status> statuses, long ownerId) {
-		SQLiteDatabase db = adapter.getDbWrite();
-		// delete old favorits
-		String[] delArgs = {Long.toString(ownerId)};
-		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_OWNER, delArgs);
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			// delete old favorits
+			String[] delArgs = {Long.toString(ownerId)};
+			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_OWNER, delArgs);
 
-		if (!statuses.isEmpty()) {
-			for (Status status : statuses) {
-				saveStatus(status, db, 0);
-				saveBookmark(status.getId(), ownerId, db);
+			if (!statuses.isEmpty()) {
+				for (Status status : statuses) {
+					saveStatus(status, db, 0);
+					saveBookmark(status.getId(), ownerId, db);
+				}
 			}
+			adapter.commit();
 		}
-		adapter.commit();
 	}
 
 	/**
@@ -479,11 +492,13 @@ public class AppDatabase {
 	 * @param statuses status replies
 	 */
 	public void saveReplyTimeline(List<Status> statuses) {
-		if (!statuses.isEmpty()) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			for (Status status : statuses)
-				saveStatus(status, db, STATUS_REPLY_MASK);
-			adapter.commit();
+		synchronized (LOCK) {
+			if (!statuses.isEmpty()) {
+				SQLiteDatabase db = adapter.getDbWrite();
+				for (Status status : statuses)
+					saveStatus(status, db, STATUS_REPLY_MASK);
+				adapter.commit();
+			}
 		}
 	}
 
@@ -491,24 +506,26 @@ public class AppDatabase {
 	 * save notifications to database
 	 */
 	public void saveNotifications(List<Notification> notifications) {
-		if (!notifications.isEmpty()) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			for (Notification notification : notifications) {
-				ContentValues column = new ContentValues();
-				column.put(NotificationTable.ID, notification.getId());
-				column.put(NotificationTable.TIME, notification.getTimestamp());
-				column.put(NotificationTable.TYPE, notification.getType());
-				column.put(NotificationTable.OWNER, settings.getLogin().getId());
-				column.put(NotificationTable.USER, notification.getUser().getId());
-				saveUser(notification.getUser(), db, CONFLICT_IGNORE);
-				// add status
-				if (notification.getStatus() != null) {
-					saveStatus(notification.getStatus(), db, NOTIFICATION_MASK);
-					column.put(NotificationTable.ITEM, notification.getStatus().getId());
+		synchronized (LOCK) {
+			if (!notifications.isEmpty()) {
+				SQLiteDatabase db = adapter.getDbWrite();
+				for (Notification notification : notifications) {
+					ContentValues column = new ContentValues();
+					column.put(NotificationTable.ID, notification.getId());
+					column.put(NotificationTable.TIME, notification.getTimestamp());
+					column.put(NotificationTable.TYPE, notification.getType());
+					column.put(NotificationTable.OWNER, settings.getLogin().getId());
+					column.put(NotificationTable.USER, notification.getUser().getId());
+					saveUser(notification.getUser(), db, CONFLICT_IGNORE);
+					// add status
+					if (notification.getStatus() != null) {
+						saveStatus(notification.getStatus(), db, NOTIFICATION_MASK);
+						column.put(NotificationTable.ITEM, notification.getStatus().getId());
+					}
+					db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
 				}
-				db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
+				adapter.commit();
 			}
-			adapter.commit();
 		}
 	}
 
@@ -518,11 +535,13 @@ public class AppDatabase {
 	 * @param messages list of direct messages
 	 */
 	public void saveMessages(List<Message> messages) {
-		if (!messages.isEmpty()) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			for (Message message : messages)
-				saveMessages(message, db);
-			adapter.commit();
+		synchronized (LOCK) {
+			if (!messages.isEmpty()) {
+				SQLiteDatabase db = adapter.getDbWrite();
+				for (Message message : messages)
+					saveMessages(message, db);
+				adapter.commit();
+			}
 		}
 	}
 
@@ -532,20 +551,22 @@ public class AppDatabase {
 	 * @param ids list of user IDs
 	 */
 	public void saveFilterlist(List<Long> ids) {
-		long homeId = settings.getLogin().getId();
-		String[] args = {Long.toString(homeId)};
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.delete(UserExcludeTable.NAME, LIST_SELECT, args);
+		synchronized (LOCK) {
+			long homeId = settings.getLogin().getId();
+			String[] args = {Long.toString(homeId)};
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(UserExcludeTable.NAME, LIST_SELECT, args);
 
-		if (!ids.isEmpty()) {
-			for (long id : ids) {
-				ContentValues column = new ContentValues(2);
-				column.put(UserExcludeTable.ID, id);
-				column.put(UserExcludeTable.OWNER, homeId);
-				db.insertWithOnConflict(UserExcludeTable.NAME, null, column, SQLiteDatabase.CONFLICT_IGNORE);
+			if (!ids.isEmpty()) {
+				for (long id : ids) {
+					ContentValues column = new ContentValues(2);
+					column.put(UserExcludeTable.ID, id);
+					column.put(UserExcludeTable.OWNER, homeId);
+					db.insertWithOnConflict(UserExcludeTable.NAME, null, column, SQLiteDatabase.CONFLICT_IGNORE);
+				}
 			}
+			adapter.commit();
 		}
-		adapter.commit();
 	}
 
 	/**
@@ -554,18 +575,20 @@ public class AppDatabase {
 	 * @param trends List of Trends
 	 */
 	public void saveTrends(List<Trend> trends) {
-		String[] args = {Long.toString(settings.getTrendLocation().getId())};
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.delete(TrendTable.NAME, TREND_SELECT, args);
-		for (Trend trend : trends) {
-			ContentValues column = new ContentValues(4);
-			column.put(TrendTable.ID, trend.getLocationId());
-			column.put(TrendTable.VOL, trend.getPopularity());
-			column.put(TrendTable.TREND, trend.getName());
-			column.put(TrendTable.INDEX, trend.getRank());
-			db.insert(TrendTable.NAME, null, column);
+		synchronized (LOCK) {
+			String[] args = {Long.toString(settings.getTrendLocation().getId())};
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(TrendTable.NAME, TREND_SELECT, args);
+			for (Trend trend : trends) {
+				ContentValues column = new ContentValues(4);
+				column.put(TrendTable.ID, trend.getLocationId());
+				column.put(TrendTable.VOL, trend.getPopularity());
+				column.put(TrendTable.TREND, trend.getName());
+				column.put(TrendTable.INDEX, trend.getRank());
+				db.insert(TrendTable.NAME, null, column);
+			}
+			adapter.commit();
 		}
-		adapter.commit();
 	}
 
 	/**
@@ -574,12 +597,14 @@ public class AppDatabase {
 	 * @param status favorited status
 	 */
 	public void addToFavorits(Status status) {
-		if (status.getEmbeddedStatus() != null)
-			status = status.getEmbeddedStatus();
-		SQLiteDatabase db = adapter.getDbWrite();
-		saveStatus(status, db, 0);
-		saveFavorite(status.getId(), settings.getLogin().getId(), db);
-		adapter.commit();
+		synchronized (LOCK) {
+			if (status.getEmbeddedStatus() != null)
+				status = status.getEmbeddedStatus();
+			SQLiteDatabase db = adapter.getDbWrite();
+			saveStatus(status, db, 0);
+			saveFavorite(status.getId(), settings.getLogin().getId(), db);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -588,12 +613,14 @@ public class AppDatabase {
 	 * @param status favorited status
 	 */
 	public void addToBookmarks(Status status) {
-		if (status.getEmbeddedStatus() != null)
-			status = status.getEmbeddedStatus();
-		SQLiteDatabase db = adapter.getDbWrite();
-		saveStatus(status, db, 0);
-		saveBookmark(status.getId(), settings.getLogin().getId(), db);
-		adapter.commit();
+		synchronized (LOCK) {
+			if (status.getEmbeddedStatus() != null)
+				status = status.getEmbeddedStatus();
+			SQLiteDatabase db = adapter.getDbWrite();
+			saveStatus(status, db, 0);
+			saveBookmark(status.getId(), settings.getLogin().getId(), db);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -602,22 +629,24 @@ public class AppDatabase {
 	 * @param account login information
 	 */
 	public void saveLogin(Account account) {
-		ContentValues column = new ContentValues(9);
-		column.put(AccountTable.ID, account.getId());
-		column.put(AccountTable.DATE, account.getTimestamp());
-		column.put(AccountTable.HOSTNAME, account.getHostname());
-		column.put(AccountTable.CLIENT_ID, account.getConsumerToken());
-		column.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
-		column.put(AccountTable.API, account.getConfiguration().getAccountType());
-		column.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
-		column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
-		column.put(AccountTable.BEARER, account.getBearerToken());
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.insertWithOnConflict(AccountTable.NAME, "", column, CONFLICT_REPLACE);
-		if (account.getUser() != null) {
-			saveUser(account.getUser(), db, CONFLICT_IGNORE);
+		synchronized (LOCK) {
+			ContentValues column = new ContentValues(9);
+			column.put(AccountTable.ID, account.getId());
+			column.put(AccountTable.DATE, account.getTimestamp());
+			column.put(AccountTable.HOSTNAME, account.getHostname());
+			column.put(AccountTable.CLIENT_ID, account.getConsumerToken());
+			column.put(AccountTable.CLIENT_SECRET, account.getConsumerSecret());
+			column.put(AccountTable.API, account.getConfiguration().getAccountType());
+			column.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
+			column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
+			column.put(AccountTable.BEARER, account.getBearerToken());
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.insertWithOnConflict(AccountTable.NAME, "", column, CONFLICT_REPLACE);
+			if (account.getUser() != null) {
+				saveUser(account.getUser(), db, CONFLICT_IGNORE);
+			}
+			adapter.commit();
 		}
-		adapter.commit();
 	}
 
 	/**
@@ -626,12 +655,14 @@ public class AppDatabase {
 	 * @param userId ID of the user
 	 */
 	public void addUserToFilterlist(long userId) {
-		SQLiteDatabase db = adapter.getDbWrite();
-		ContentValues column = new ContentValues(2);
-		column.put(UserExcludeTable.ID, userId);
-		column.put(UserExcludeTable.OWNER, settings.getLogin().getId());
-		db.insert(UserExcludeTable.NAME, null, column);
-		adapter.commit();
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			ContentValues column = new ContentValues(2);
+			column.put(UserExcludeTable.ID, userId);
+			column.put(UserExcludeTable.OWNER, settings.getLogin().getId());
+			db.insert(UserExcludeTable.NAME, null, column);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -640,12 +671,14 @@ public class AppDatabase {
 	 * @return home timeline
 	 */
 	public List<Status> getHomeTimeline() {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
+		synchronized (LOCK) {
+			String homeStr = Long.toString(settings.getLogin().getId());
+			String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(HOME_QUERY, args);
-		return getStatuses(cursor, db);
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(HOME_QUERY, args);
+			return getStatuses(cursor, db);
+		}
 	}
 
 	/**
@@ -655,12 +688,14 @@ public class AppDatabase {
 	 * @return user timeline
 	 */
 	public List<Status> getUserTimeline(long userID) {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
+		synchronized (LOCK) {
+			String homeStr = Long.toString(settings.getLogin().getId());
+			String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
-		return getStatuses(cursor, db);
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(USER_STATUS_QUERY, args);
+			return getStatuses(cursor, db);
+		}
 	}
 
 	/**
@@ -670,12 +705,14 @@ public class AppDatabase {
 	 * @return favorite timeline
 	 */
 	public List<Status> getUserFavorites(long ownerID) {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
+		synchronized (LOCK) {
+			String homeStr = Long.toString(settings.getLogin().getId());
+			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(USER_FAVORIT_QUERY, args);
-		return getStatuses(cursor, db);
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(USER_FAVORIT_QUERY, args);
+			return getStatuses(cursor, db);
+		}
 	}
 
 	/**
@@ -685,12 +722,14 @@ public class AppDatabase {
 	 * @return bookmark timeline
 	 */
 	public List<Status> getUserBookmarks(long ownerID) {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
+		synchronized (LOCK) {
+			String homeStr = Long.toString(settings.getLogin().getId());
+			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(USER_BOOKMARKS_QUERY, args);
-		return getStatuses(cursor, db);
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(USER_BOOKMARKS_QUERY, args);
+			return getStatuses(cursor, db);
+		}
 	}
 
 	/**
@@ -700,12 +739,14 @@ public class AppDatabase {
 	 * @return status reply timeline
 	 */
 	public List<Status> getReplies(long id) {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
+		synchronized (LOCK) {
+			String homeStr = Long.toString(settings.getLogin().getId());
+			String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(REPLY_QUERY, args);
-		return getStatuses(cursor, db);
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(REPLY_QUERY, args);
+			return getStatuses(cursor, db);
+		}
 	}
 
 	/**
@@ -714,18 +755,20 @@ public class AppDatabase {
 	 * @return notification lsit
 	 */
 	public List<Notification> getNotifications() {
-		Account login = settings.getLogin();
-		String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
-		SQLiteDatabase db = adapter.getDbRead();
-		List<Notification> result = new LinkedList<>();
-		Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				result.add(getNotification(cursor, login));
-			} while (cursor.moveToNext());
+		synchronized (LOCK) {
+			Account login = settings.getLogin();
+			String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
+			SQLiteDatabase db = adapter.getDbRead();
+			List<Notification> result = new LinkedList<>();
+			Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
+			if (cursor.moveToFirst()) {
+				do {
+					result.add(getNotification(cursor, login));
+				} while (cursor.moveToNext());
+			}
+			cursor.close();
+			return result;
 		}
-		cursor.close();
-		return result;
 	}
 
 	/**
@@ -734,18 +777,20 @@ public class AppDatabase {
 	 * @return list of trends
 	 */
 	public List<Trend> getTrends() {
-		String[] args = {Long.toString(settings.getTrendLocation().getId())};
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
-		List<Trend> trends = new LinkedList<>();
-		if (cursor.moveToFirst()) {
-			do {
-				trends.add(new DatabaseTrend(cursor));
-			} while (cursor.moveToNext());
+		synchronized (LOCK) {
+			String[] args = {Long.toString(settings.getTrendLocation().getId())};
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
+			List<Trend> trends = new LinkedList<>();
+			if (cursor.moveToFirst()) {
+				do {
+					trends.add(new DatabaseTrend(cursor));
+				} while (cursor.moveToNext());
+			}
+			cursor.close();
+			Collections.sort(trends);
+			return trends;
 		}
-		cursor.close();
-		Collections.sort(trends);
-		return trends;
 	}
 
 	/**
@@ -754,30 +799,32 @@ public class AppDatabase {
 	 * @return list of direct messages
 	 */
 	public Messages getMessages() {
-		Account login = settings.getLogin();
-		String homeIdStr = Long.toString(login.getId());
-		String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
-		Messages result = new Messages(null, null);
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
-		if (cursor.moveToFirst()) {
-			do {
-				DatabaseMessage item = new DatabaseMessage(cursor, login);
-				result.add(item);
-				if (item.getMediaKeys().length > 0) {
-					List<Media> medias = new LinkedList<>();
-					for (String key : item.getMediaKeys()) {
-						Media media = getMedia(db, key);
-						if (media != null) {
-							medias.add(media);
+		synchronized (LOCK) {
+			Account login = settings.getLogin();
+			String homeIdStr = Long.toString(login.getId());
+			String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
+			Messages result = new Messages(null, null);
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
+			if (cursor.moveToFirst()) {
+				do {
+					DatabaseMessage item = new DatabaseMessage(cursor, login);
+					result.add(item);
+					if (item.getMediaKeys().length > 0) {
+						List<Media> medias = new LinkedList<>();
+						for (String key : item.getMediaKeys()) {
+							Media media = getMedia(db, key);
+							if (media != null) {
+								medias.add(media);
+							}
 						}
+						item.addMedia(medias.toArray(new Media[0]));
 					}
-					item.addMedia(medias.toArray(new Media[0]));
-				}
-			} while (cursor.moveToNext());
+				} while (cursor.moveToNext());
+			}
+			cursor.close();
+			return result;
 		}
-		cursor.close();
-		return result;
 	}
 
 	/**
@@ -786,20 +833,22 @@ public class AppDatabase {
 	 * @return list of all logins
 	 */
 	public List<Account> getLogins() {
-		ArrayList<Account> result = new ArrayList<>();
+		synchronized (LOCK) {
+			ArrayList<Account> result = new ArrayList<>();
 
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
-		if (cursor.moveToFirst()) {
-			result.ensureCapacity(cursor.getCount());
-			do {
-				DatabaseAccount account = new DatabaseAccount(cursor);
-				account.addUser(getUser(account.getId(), account));
-				result.add(account);
-			} while (cursor.moveToNext());
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
+			if (cursor.moveToFirst()) {
+				result.ensureCapacity(cursor.getCount());
+				do {
+					DatabaseAccount account = new DatabaseAccount(cursor);
+					account.addUser(getUser(account.getId(), account));
+					result.add(account);
+				} while (cursor.moveToNext());
+			}
+			cursor.close();
+			return result;
 		}
-		cursor.close();
-		return result;
 	}
 
 	/**
@@ -810,7 +859,9 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public User getUser(long userId) {
-		return getUser(userId, settings.getLogin());
+		synchronized (LOCK) {
+			return getUser(userId, settings.getLogin());
+		}
 	}
 
 	/**
@@ -821,14 +872,16 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Notification getNotification(long id) {
-		String[] args = {Long.toString(id)};
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(SINGLE_NOTIFICATION_QUERY, args);
-		Notification notification = null;
-		if (cursor.moveToFirst())
-			notification = new DatabaseNotification(cursor, settings.getLogin());
-		cursor.close();
-		return notification;
+		synchronized (LOCK) {
+			String[] args = {Long.toString(id)};
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(SINGLE_NOTIFICATION_QUERY, args);
+			Notification notification = null;
+			if (cursor.moveToFirst())
+				notification = new DatabaseNotification(cursor, settings.getLogin());
+			cursor.close();
+			return notification;
+		}
 	}
 
 	/**
@@ -840,14 +893,16 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public User getUser(long userId, Account account) {
-		String[] args = {Long.toString(userId)};
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
-		User user = null;
-		if (cursor.moveToFirst())
-			user = new DatabaseUser(cursor, account);
-		cursor.close();
-		return user;
+		synchronized (LOCK) {
+			String[] args = {Long.toString(userId)};
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
+			User user = null;
+			if (cursor.moveToFirst())
+				user = new DatabaseUser(cursor, account);
+			cursor.close();
+			return user;
+		}
 	}
 
 	/**
@@ -858,16 +913,18 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Status getStatus(long id) {
-		String homeStr = Long.toString(settings.getLogin().getId());
-		String[] args = {Long.toString(id), homeStr, homeStr};
+		synchronized (LOCK) {
+			String homeStr = Long.toString(settings.getLogin().getId());
+			String[] args = {Long.toString(id), homeStr, homeStr};
 
-		SQLiteDatabase db = adapter.getDbRead();
-		Status result = null;
-		Cursor cursor = db.rawQuery(SINGLE_STATUS_QUERY, args);
-		if (cursor.moveToFirst())
-			result = getStatus(cursor, db);
-		cursor.close();
-		return result;
+			SQLiteDatabase db = adapter.getDbRead();
+			Status result = null;
+			Cursor cursor = db.rawQuery(SINGLE_STATUS_QUERY, args);
+			if (cursor.moveToFirst())
+				result = getStatus(cursor, db);
+			cursor.close();
+			return result;
+		}
 	}
 
 	/**
@@ -876,9 +933,11 @@ public class AppDatabase {
 	 * @param user Twitter user
 	 */
 	public void saveUser(User user) {
-		SQLiteDatabase db = adapter.getDbWrite();
-		saveUser(user, db, CONFLICT_REPLACE);
-		adapter.commit();
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			saveUser(user, db, CONFLICT_REPLACE);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -887,11 +946,13 @@ public class AppDatabase {
 	 * @param status status to update
 	 */
 	public void saveStatus(Status status) {
-		SQLiteDatabase db = adapter.getDbWrite();
-		saveStatus(status, db, CONFLICT_REPLACE);
-		if (status.getEmbeddedStatus() != null)
-			saveStatus(status.getEmbeddedStatus(), db, CONFLICT_REPLACE);
-		adapter.commit();
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			saveStatus(status, db, CONFLICT_REPLACE);
+			if (status.getEmbeddedStatus() != null)
+				saveStatus(status.getEmbeddedStatus(), db, CONFLICT_REPLACE);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -901,19 +962,21 @@ public class AppDatabase {
 	 * @param hide true to hide this status
 	 */
 	public void hideStatus(long id, boolean hide) {
-		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
+		synchronized (LOCK) {
+			String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
-		SQLiteDatabase db = adapter.getDbWrite();
-		int flags = getStatusFlags(db, id);
-		if (hide) {
-			flags |= HIDDEN_MASK;
-		} else {
-			flags &= ~HIDDEN_MASK;
+			SQLiteDatabase db = adapter.getDbWrite();
+			int flags = getStatusFlags(db, id);
+			if (hide) {
+				flags |= HIDDEN_MASK;
+			} else {
+				flags &= ~HIDDEN_MASK;
+			}
+			ContentValues column = new ContentValues(1);
+			column.put(StatusRegisterTable.REGISTER, flags);
+			db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
+			adapter.commit();
 		}
-		ContentValues column = new ContentValues(1);
-		column.put(StatusRegisterTable.REGISTER, flags);
-		db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
-		adapter.commit();
 	}
 
 	/**
@@ -922,14 +985,16 @@ public class AppDatabase {
 	 * @param id status ID
 	 */
 	public void removeStatus(long id) {
-		String[] args = {Long.toString(id)};
+		synchronized (LOCK) {
+			String[] args = {Long.toString(id)};
 
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.delete(StatusTable.NAME, STATUS_SELECT, args);
-		db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
-		db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
-		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_STATUS, args);
-		adapter.commit();
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(StatusTable.NAME, STATUS_SELECT, args);
+			db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
+			db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
+			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_STATUS, args);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -938,19 +1003,21 @@ public class AppDatabase {
 	 * @param status status to remove from the favorites
 	 */
 	public void removeFromFavorite(Status status) {
-		String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
+		synchronized (LOCK) {
+			String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
-		if (status.getEmbeddedStatus() != null) {
-			status = status.getEmbeddedStatus();
+			if (status.getEmbeddedStatus() != null) {
+				status = status.getEmbeddedStatus();
+			}
+			SQLiteDatabase db = adapter.getDbWrite();
+			// get status flags
+			int flags = getStatusFlags(db, status.getId());
+			flags &= ~FAVORITE_MASK; // unset favorite flag
+			// update database
+			saveStatusFlags(db, status, flags);
+			db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
+			adapter.commit();
 		}
-		SQLiteDatabase db = adapter.getDbWrite();
-		// get status flags
-		int flags = getStatusFlags(db, status.getId());
-		flags &= ~FAVORITE_MASK; // unset favorite flag
-		// update database
-		saveStatusFlags(db, status, flags);
-		db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
-		adapter.commit();
 	}
 
 	/**
@@ -959,19 +1026,21 @@ public class AppDatabase {
 	 * @param status status to remove from the bookmarks
 	 */
 	public void removeFromBookmarks(Status status) {
-		String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
+		synchronized (LOCK) {
+			String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
-		if (status.getEmbeddedStatus() != null) {
-			status = status.getEmbeddedStatus();
+			if (status.getEmbeddedStatus() != null) {
+				status = status.getEmbeddedStatus();
+			}
+			SQLiteDatabase db = adapter.getDbWrite();
+			// get status flags
+			int flags = getStatusFlags(db, status.getId());
+			flags &= ~BOOKMARK_MASK; // unset bookmark flag
+			// update database
+			saveStatusFlags(db, status, flags);
+			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT, delArgs);
+			adapter.commit();
 		}
-		SQLiteDatabase db = adapter.getDbWrite();
-		// get status flags
-		int flags = getStatusFlags(db, status.getId());
-		flags &= ~BOOKMARK_MASK; // unset bookmark flag
-		// update database
-		saveStatusFlags(db, status, flags);
-		db.delete(BookmarkTable.NAME, BOOKMARK_SELECT, delArgs);
-		adapter.commit();
 	}
 
 	/**
@@ -980,11 +1049,13 @@ public class AppDatabase {
 	 * @param id Direct Message ID
 	 */
 	public void removeMessage(long id) {
-		String[] messageId = {Long.toString(id)};
+		synchronized (LOCK) {
+			String[] messageId = {Long.toString(id)};
 
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.delete(MessageTable.NAME, MESSAGE_SELECT, messageId);
-		adapter.commit();
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(MessageTable.NAME, MESSAGE_SELECT, messageId);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -993,11 +1064,13 @@ public class AppDatabase {
 	 * @param id account ID to remove
 	 */
 	public void removeLogin(long id) {
-		String[] args = {Long.toString(id)};
+		synchronized (LOCK) {
+			String[] args = {Long.toString(id)};
 
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
-		adapter.commit();
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -1006,19 +1079,21 @@ public class AppDatabase {
 	 * @return a set of user IDs
 	 */
 	public Set<Long> getFilterlistUserIds() {
-		String[] args = {Long.toString(settings.getLogin().getId())};
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor cursor = db.query(UserExcludeTable.NAME, LIST_ID_COL, LIST_SELECT, args, null, null, null, null);
+		synchronized (LOCK) {
+			String[] args = {Long.toString(settings.getLogin().getId())};
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor cursor = db.query(UserExcludeTable.NAME, LIST_ID_COL, LIST_SELECT, args, null, null, null, null);
 
-		Set<Long> result = new TreeSet<>();
-		if (cursor.moveToFirst()) {
-			do {
-				long id = cursor.getLong(0);
-				result.add(id);
-			} while (cursor.moveToNext());
+			Set<Long> result = new TreeSet<>();
+			if (cursor.moveToFirst()) {
+				do {
+					long id = cursor.getLong(0);
+					result.add(id);
+				} while (cursor.moveToNext());
+			}
+			cursor.close();
+			return result;
 		}
-		cursor.close();
-		return result;
 	}
 
 	/**
@@ -1027,10 +1102,12 @@ public class AppDatabase {
 	 * @param userId ID of the user
 	 */
 	public void removeUserFromFilterlist(long userId) {
-		String[] args = {Long.toString(settings.getLogin().getId()), Long.toString(userId)};
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.delete(UserExcludeTable.NAME, FILTER_SELECT, args);
-		adapter.commit();
+		synchronized (LOCK) {
+			String[] args = {Long.toString(settings.getLogin().getId()), Long.toString(userId)};
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(UserExcludeTable.NAME, FILTER_SELECT, args);
+			adapter.commit();
+		}
 	}
 
 	/**
@@ -1040,12 +1117,14 @@ public class AppDatabase {
 	 * @return true if found
 	 */
 	public boolean containsStatus(long id) {
-		String[] args = {Long.toString(id)};
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor c = db.query(StatusTable.NAME, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
-		boolean result = c.moveToFirst();
-		c.close();
-		return result;
+		synchronized (LOCK) {
+			String[] args = {Long.toString(id)};
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor c = db.query(StatusTable.NAME, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
+			boolean result = c.moveToFirst();
+			c.close();
+			return result;
+		}
 	}
 
 	/**
@@ -1055,12 +1134,14 @@ public class AppDatabase {
 	 * @return true if found
 	 */
 	public boolean containsLogin(long id) {
-		String[] args = {Long.toString(id)};
-		SQLiteDatabase db = adapter.getDbRead();
-		Cursor c = db.query(AccountTable.NAME, null, ACCOUNT_SELECTION, args, null, null, SINGLE_ITEM);
-		boolean result = c.moveToFirst();
-		c.close();
-		return result;
+		synchronized (LOCK) {
+			String[] args = {Long.toString(id)};
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor c = db.query(AccountTable.NAME, null, ACCOUNT_SELECTION, args, null, null, SINGLE_ITEM);
+			boolean result = c.moveToFirst();
+			c.close();
+			return result;
+		}
 	}
 
 	/**
@@ -1070,37 +1151,49 @@ public class AppDatabase {
 	 * @param mute true remove user status from mention results
 	 */
 	public void muteUser(long id, boolean mute) {
-		SQLiteDatabase db = adapter.getDbWrite();
-		int flags = getUserFlags(db, id);
-		if (mute) {
-			flags |= EXCLUDE_MASK;
-		} else {
-			flags &= ~EXCLUDE_MASK;
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			int flags = getUserFlags(db, id);
+			if (mute) {
+				flags |= EXCLUDE_MASK;
+			} else {
+				flags &= ~EXCLUDE_MASK;
+			}
+			saveUserFlags(db, id, flags);
+			adapter.commit();
 		}
-		saveUserFlags(db, id, flags);
-		adapter.commit();
 	}
 
 	/**
 	 * remove database tables except account table
 	 */
 	public void resetDatabase() {
-		SQLiteDatabase db = adapter.getDbWrite();
-		db.delete(UserTable.NAME, null, null);
-		db.delete(StatusTable.NAME, null, null);
-		db.delete(MessageTable.NAME, null, null);
-		db.delete(FavoriteTable.NAME, null, null);
-		db.delete(BookmarkTable.NAME, null, null);
-		db.delete(TrendTable.NAME, null, null);
-		db.delete(StatusRegisterTable.NAME, null, null);
-		db.delete(UserRegisterTable.NAME, null, null);
-		db.delete(UserExcludeTable.NAME, null, null);
-		db.delete(NotificationTable.NAME, null, null);
-		db.delete(MediaTable.NAME, null, null);
-		db.delete(LocationTable.NAME, null, null);
-		db.delete(EmojiTable.NAME, null, null);
-		db.delete(PollTable.NAME, null, null);
-		adapter.commit();
+		synchronized (LOCK) {
+			// save logins first
+			List<Account> logins = getLogins();
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(UserTable.NAME, null, null);
+			db.delete(StatusTable.NAME, null, null);
+			db.delete(MessageTable.NAME, null, null);
+			db.delete(FavoriteTable.NAME, null, null);
+			db.delete(BookmarkTable.NAME, null, null);
+			db.delete(TrendTable.NAME, null, null);
+			db.delete(StatusRegisterTable.NAME, null, null);
+			db.delete(UserRegisterTable.NAME, null, null);
+			db.delete(UserExcludeTable.NAME, null, null);
+			db.delete(NotificationTable.NAME, null, null);
+			db.delete(MediaTable.NAME, null, null);
+			db.delete(LocationTable.NAME, null, null);
+			db.delete(EmojiTable.NAME, null, null);
+			db.delete(PollTable.NAME, null, null);
+			// save user information from logins
+			for (Account login : logins) {
+				if (login.getUser() != null) {
+					saveUser(login.getUser(), db, CONFLICT_IGNORE);
+				}
+			}
+			adapter.commit();
+		}
 	}
 
 	/**

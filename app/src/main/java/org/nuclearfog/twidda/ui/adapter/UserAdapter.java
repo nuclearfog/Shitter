@@ -114,10 +114,10 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 
 
 	@Override
-	public boolean onPlaceholderClick(int position) {
-		boolean actionPerformed = listener.onPlaceholderClick(users.getNext());
+	public boolean onPlaceholderClick(int index) {
+		boolean actionPerformed = listener.onPlaceholderClick(users.getNext(), index);
 		if (actionPerformed) {
-			loadingIndex = position;
+			loadingIndex = index;
 			return true;
 		}
 		return false;
@@ -148,36 +148,24 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 *
 	 * @param newUsers new userlist
 	 */
-	public void addItems(@NonNull Users newUsers) {
-		disableLoading();
-		// add empty list
-		if (newUsers.isEmpty()) {
-			// remove placeholder if there isn't a next page
-			if (!users.isEmpty() && users.peekLast() == null) {
-				int end = users.size() - 1;
-				users.remove(end);
-				notifyItemRemoved(end);
-			}
-		}
-		// add items to the top of the list
-		else if (users.isEmpty() || !newUsers.hasPrevious()) {
-			users.replace(newUsers);
-			// add placeholder if there is a next page
-			if (newUsers.hasNext()) {
+	public void addItems(@NonNull Users newUsers, int index) {
+		if (index < 0) {
+			users.replaceAll(newUsers);
+			if (users.getNext() != 0L) {
 				users.add(null);
 			}
 			notifyDataSetChanged();
-		}
-		// add items to the end of the list
-		else {
-			int end = users.size() - 1;
-			// remove placeholder if there isn't a next page
-			if (!newUsers.hasNext()) {
-				users.remove(end);
-				notifyItemRemoved(end);
+		} else {
+			users.addAll(index, newUsers);
+			if (users.getNext() != 0L && users.peekLast() != null) {
+				users.add(null);
+				notifyItemRangeInserted(index, newUsers.size() + 1);
+			} else if (users.getNext() == 0L && users.peekLast() == null) {
+				users.remove(users.size() - 1);
+				notifyItemRangeInserted(index, newUsers.size() - 1);
+			} else if (!newUsers.isEmpty()) {
+				notifyItemRangeInserted(index, newUsers.size());
 			}
-			users.addAt(newUsers, end);
-			notifyItemRangeInserted(end, newUsers.size());
 		}
 	}
 
@@ -234,9 +222,10 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 		 * handle placeholder click
 		 *
 		 * @param cursor next cursor of the list
+		 * @param index index of the placeholder
 		 * @return true if click was handled
 		 */
-		boolean onPlaceholderClick(long cursor);
+		boolean onPlaceholderClick(long cursor, int index);
 
 		/**
 		 * remove user from a list

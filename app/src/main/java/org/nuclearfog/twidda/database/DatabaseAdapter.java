@@ -383,7 +383,7 @@ public class DatabaseAdapter {
 	 * @param context application context
 	 * @return database instance
 	 */
-	public static DatabaseAdapter getInstance(@NonNull Context context) {
+	static DatabaseAdapter getInstance(@NonNull Context context) {
 		if (instance == null) {
 			try {
 				instance = new DatabaseAdapter(context.getApplicationContext());
@@ -402,7 +402,7 @@ public class DatabaseAdapter {
 	 *
 	 * @return SQLite instance
 	 */
-	synchronized SQLiteDatabase getDbRead() {
+	SQLiteDatabase getDbRead() {
 		if (!db.isOpen())
 			db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
 		return db;
@@ -413,7 +413,7 @@ public class DatabaseAdapter {
 	 *
 	 * @return SQLite instance
 	 */
-	synchronized SQLiteDatabase getDbWrite() {
+	SQLiteDatabase getDbWrite() {
 		SQLiteDatabase db = getDbRead();
 		db.beginTransaction();
 		return db;
@@ -422,7 +422,7 @@ public class DatabaseAdapter {
 	/**
 	 * Commit changes and close Database
 	 */
-	synchronized void commit() {
+	void commit() {
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}

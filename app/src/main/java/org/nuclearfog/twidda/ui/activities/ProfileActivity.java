@@ -224,11 +224,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (o instanceof User) {
 			user = (User) o;
 			userId = user.getId();
-			adapter.setupProfilePage(user.getId());
 		} else {
 			userId = i.getLongExtra(KEY_PROFILE_ID, 0);
-			adapter.setupProfilePage(userId);
 		}
+		adapter.setupProfilePage(userId);
 		if (settings.likeEnabled()) {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
 		} else {
@@ -735,6 +734,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		Spanned bio = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
 		following.setText(StringTools.NUMBER_FORMAT.format(user.getFollowing()));
 		follower.setText(StringTools.NUMBER_FORMAT.format(user.getFollower()));
+		following.setVisibility(VISIBLE);
+		follower.setVisibility(VISIBLE);
 		username.setText(user.getUsername());
 		screenName.setText(user.getScreenname());
 		if (user.getStatusCount() >= 0) {
@@ -805,10 +806,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			} else {
 				profileImage.setImageResource(0);
 			}
-		}
-		if (following.getVisibility() != VISIBLE) {
-			following.setVisibility(VISIBLE);
-			follower.setVisibility(VISIBLE);
 		}
 	}
 }

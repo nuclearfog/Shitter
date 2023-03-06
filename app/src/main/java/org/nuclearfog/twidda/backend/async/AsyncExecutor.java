@@ -23,11 +23,21 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	/**
 	 * maximum task count to run in the background
 	 */
-	private static final int N_THREAD = 2;
+	private static final int N_THREAD = 4;
 
-	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(N_THREAD);
+	/**
+	 * thread pool executor
+	 */
+	private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(N_THREAD);
 
-	private Handler uiHandler = new Handler(Looper.getMainLooper());
+	/**
+	 * handler used to send result back to activity/fragment
+	 */
+	private static final Handler UI_HANDLER = new Handler(Looper.getMainLooper());
+
+	/**
+	 * callback to activity/fragment
+	 */
 	private WeakReference<AsyncCallback<Result>> callback;
 
 	/**
@@ -43,7 +53,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 */
 	public final void execute(final Parameter parameter, @Nullable AsyncCallback<Result> callback) {
 		this.callback = new WeakReference<>(callback);
-		Future<?> future = EXECUTOR.submit(new Runnable() {
+		Future<?> future = THREAD_POOL.submit(new Runnable() {
 			@Override
 			public void run() {
 				Result result = doInBackground(parameter);
@@ -78,7 +88,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @param result result of the background task
 	 */
 	private void onPostExecute(final Result result) {
-		uiHandler.post(new Runnable() {
+		UI_HANDLER.post(new Runnable() {
 			@Override
 			public void run() {
 				if (!queue.isEmpty())

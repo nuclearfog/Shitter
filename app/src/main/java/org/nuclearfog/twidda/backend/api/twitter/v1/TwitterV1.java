@@ -316,7 +316,8 @@ public class TwitterV1 implements Connection {
 	public Users getFollowing(long id, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		params.add("cursor=" + cursor);
+		if (cursor != 0L)
+			params.add("cursor=" + cursor);
 		return getUsers(USERS_FOLLOWING, params);
 	}
 
@@ -325,7 +326,8 @@ public class TwitterV1 implements Connection {
 	public Users getFollower(long id, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
-		params.add("cursor=" + cursor);
+		if (cursor != 0L)
+			params.add("cursor=" + cursor);
 		return getUsers(USERS_FOLLOWER, params);
 	}
 
@@ -334,7 +336,8 @@ public class TwitterV1 implements Connection {
 	public Users getListMember(long id, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		params.add("cursor=" + cursor);
+		if (cursor != 0L)
+			params.add("cursor=" + cursor);
 		Users result = getUsers(USERS_LIST_MEMBER, params);
 		// fix API returns zero previous_cursor when the end of the list is reached
 		// override previous cursor
@@ -350,7 +353,8 @@ public class TwitterV1 implements Connection {
 	public Users getListSubscriber(long id, long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		params.add("cursor=" + cursor);
+		if (cursor != 0L)
+			params.add("cursor=" + cursor);
 		Users result = getUsers(USERS_LIST_SUBSCRIBER, params);
 		// fix API returns zero previous_cursor when the end of the list is reached
 		// override previous cursor
@@ -365,7 +369,8 @@ public class TwitterV1 implements Connection {
 	@Override
 	public Users getBlockedUsers(long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("cursor=" + cursor);
+		if (cursor != 0L)
+			params.add("cursor=" + cursor);
 		return getUsers(USERS_BLOCKED_LIST, params);
 	}
 
@@ -373,7 +378,8 @@ public class TwitterV1 implements Connection {
 	@Override
 	public Users getMutedUsers(long cursor) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("cursor=" + cursor);
+		if (cursor != 0L)
+			params.add("cursor=" + cursor);
 		return getUsers(USERS_MUTES, params);
 	}
 

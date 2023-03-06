@@ -80,11 +80,11 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 					break;
 			}
 		} catch (ConnectionException exception) {
-			return new UserResult(null, exception);
+			return new UserResult(null, param.index, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new UserResult(users, null);
+		return new UserResult(users, param.index, null);
 	}
 
 	/**
@@ -104,12 +104,13 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 		public static final int REQUEST_OUT = 10;
 		public static final int REQUEST_IN = 11;
 
-		public final int type;
+		public final int type, index;
 		public final String search;
 		public final long id, cursor;
 
-		public UserParam(int type, long id, long cursor, String search) {
+		public UserParam(int type, int index, long id, long cursor, String search) {
 			this.type = type;
+			this.index = index;
 			this.id = id;
 			this.cursor = cursor;
 			this.search = search;
@@ -125,9 +126,11 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 		public final Users users;
 		@Nullable
 		public final ConnectionException exception;
+		public final int index;
 
-		UserResult(@Nullable Users users, @Nullable ConnectionException exception) {
+		UserResult(@Nullable Users users, int index, @Nullable ConnectionException exception) {
 			this.users = users;
+			this.index = index;
 			this.exception = exception;
 		}
 	}

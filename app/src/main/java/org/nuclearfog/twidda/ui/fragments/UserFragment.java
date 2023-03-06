@@ -136,6 +136,11 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	 */
 	public static final int USER_FRAG_FOLLOW_OUTGOING = 0x72544f17;
 
+	/**
+	 * "index" used to replace the whole list with new items
+	 */
+	public static final int CLEAR_LIST = -1;
+
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -163,14 +168,14 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 		setAdapter(adapter);
 
 		setRefresh(true);
-		load(-1L);
+		load(-1L, CLEAR_LIST);
 	}
 
 
 	@Override
 	protected void onReset() {
 		setRefresh(true);
-		load(-1L);
+		load(-1L, CLEAR_LIST);
 	}
 
 
@@ -196,7 +201,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	protected void onReload() {
-		load(-1L);
+		load(-1L, CLEAR_LIST);
 	}
 
 
@@ -211,9 +216,9 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 
 	@Override
-	public boolean onPlaceholderClick(long cursor) {
+	public boolean onPlaceholderClick(long cursor, int index) {
 		if (userLoader.isIdle()) {
-			load(cursor);
+			load(cursor, index);
 			return true;
 		}
 		return false;
@@ -233,7 +238,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	@Override
 	public void onResult(UserResult result) {
 		if (result.users != null) {
-			adapter.addItems(result.users);
+			adapter.addItems(result.users, result.index);
 		} else if (getContext() != null) {
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
@@ -257,51 +262,51 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	 *
 	 * @param cursor cursor of the list
 	 */
-	private void load(long cursor) {
+	private void load(long cursor, int index) {
 		UserParam param;
 		switch (mode) {
 			case USER_FRAG_FOLLOWER:
-				param = new UserParam(UserParam.FOLLOWS, id, cursor, search);
+				param = new UserParam(UserParam.FOLLOWS, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOWING:
-				param = new UserParam(UserParam.FRIENDS, id, cursor, search);
+				param = new UserParam(UserParam.FRIENDS, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_REPOST:
-				param = new UserParam(UserParam.REPOST, id, cursor, search);
+				param = new UserParam(UserParam.REPOST, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_FAVORIT:
-				param = new UserParam(UserParam.FAVORIT, id, cursor, search);
+				param = new UserParam(UserParam.FAVORIT, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_SEARCH:
-				param = new UserParam(UserParam.SEARCH, id, cursor, search);
+				param = new UserParam(UserParam.SEARCH, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_LIST_SUBSCRIBER:
-				param = new UserParam(UserParam.SUBSCRIBER, id, cursor, search);
+				param = new UserParam(UserParam.SUBSCRIBER, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_LIST_MEMBERS:
-				param = new UserParam(UserParam.LISTMEMBER, id, cursor, search);
+				param = new UserParam(UserParam.LISTMEMBER, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_BLOCKED_USERS:
-				param = new UserParam(UserParam.BLOCK, id, cursor, search);
+				param = new UserParam(UserParam.BLOCK, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_MUTED_USERS:
-				param = new UserParam(UserParam.MUTE, id, cursor, search);
+				param = new UserParam(UserParam.MUTE, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOW_OUTGOING:
-				param = new UserParam(UserParam.REQUEST_OUT, id, cursor, search);
+				param = new UserParam(UserParam.REQUEST_OUT, index, id, cursor, search);
 				break;
 
 			case USER_FRAG_FOLLOW_INCOMING:
-				param = new UserParam(UserParam.REQUEST_IN, id, cursor, search);
+				param = new UserParam(UserParam.REQUEST_IN, index, id, cursor, search);
 				break;
 
 			default:
