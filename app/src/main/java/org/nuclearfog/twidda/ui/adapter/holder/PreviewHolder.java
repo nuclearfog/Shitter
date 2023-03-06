@@ -13,10 +13,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
+
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 /**
  * holder class for {@link org.nuclearfog.twidda.ui.adapter.PreviewAdapter}
@@ -65,14 +68,18 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	 *
 	 * @param media media content
 	 */
-	public void setContent(Media media) {
-		if (settings.imagesEnabled()) {
-			if (!media.getPreviewUrl().isEmpty()) {
-				picasso.load(media.getPreviewUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).error(R.drawable.no_image).into(previewImage);
-			} else {
-				previewImage.setImageDrawable(new ColorDrawable(EMPTY_COLOR));
+	public void setContent(Media media, boolean blurImage) {
+		if (settings.imagesEnabled() && !media.getPreviewUrl().isEmpty()) {
+			RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl()).error(R.drawable.no_image);
+			picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE);
+			if (blurImage) {
+				BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);
+				picassoBuilder.transform(blurTransformation);
 			}
-		}// todo add placeholder if image load is disabled
+			picassoBuilder.into(previewImage);
+		} else {
+			previewImage.setImageDrawable(new ColorDrawable(EMPTY_COLOR));
+		}
 		if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF) {
 			playIcon.setVisibility(View.VISIBLE);
 		} else {

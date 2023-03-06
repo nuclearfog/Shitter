@@ -51,6 +51,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 	private OnCardClickListener listener;
 
 	private List<Object> items = new ArrayList<>();
+	private boolean blurMedia = false;
 
 	/**
 	 *
@@ -85,7 +86,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 		if (holder instanceof PreviewHolder && item instanceof Media) {
 			PreviewHolder previewHolder = ((PreviewHolder) holder);
 			Media media = (Media) item;
-			previewHolder.setContent(media);
+			previewHolder.setContent(media, blurMedia);
 		} else if (holder instanceof CardHolder && item instanceof Card) {
 			CardHolder cardHolder = (CardHolder) holder;
 			Card card = (Card) item;
@@ -171,6 +172,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 			items.addAll(Arrays.asList(status.getMedia()));
 		if (status.getCards().length > 0)
 			items.addAll(Arrays.asList(status.getCards()));
+		blurMedia = status.isSensitive();
 		notifyDataSetChanged();
 	}
 
