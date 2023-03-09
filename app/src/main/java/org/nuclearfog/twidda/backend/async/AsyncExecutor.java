@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import java.lang.ref.WeakReference;
 import java.util.Queue;
@@ -108,6 +109,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @return result of the background task
 	 */
 	@NonNull
+	@WorkerThread
 	protected abstract Result doInBackground(@NonNull Parameter param);
 
 	/**

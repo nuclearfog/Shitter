@@ -79,7 +79,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		tabLayout.setupWithViewPager(pager);
 		tabLayout.addOnTabSelectedListener(this);
 
-		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, -1L);
+		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, 0L);
 
 		isHome = ownerId == settings.getLogin().getId();
 		adapter.setupListPage(ownerId);

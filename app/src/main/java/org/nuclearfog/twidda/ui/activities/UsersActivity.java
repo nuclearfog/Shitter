@@ -130,7 +130,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		pager.setAdapter(adapter);
 
 		mode = getIntent().getIntExtra(KEY_USERS_MODE, 0);
-		long id = getIntent().getLongExtra(KEY_USERS_ID, -1L);
+		long id = getIntent().getLongExtra(KEY_USERS_ID, 0L);
 
 		switch (mode) {
 			case USERS_FRIENDS:

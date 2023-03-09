@@ -133,16 +133,22 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public static final String KEY_STATUS_ID = "status_id";
 
 	/**
+	 * key for the status author's name. alternative to {@link #KEY_STATUS_DATA}
+	 * value type is String
+	 */
+	public static final String KEY_STATUS_NAME = "status_author";
+
+	/**
 	 * key for the notification ID value, alternative to {@link #KEY_NOTIFICATION_DATA}
 	 * value type is long
 	 */
 	public static final String KEY_NOTIFICATION_ID = "notification_id";
 
 	/**
-	 * key for the status author's name. alternative to {@link #KEY_STATUS_DATA}
+	 * key for the (notification) status author's name. alternative to {@link #KEY_STATUS_DATA}
 	 * value type is String
 	 */
-	public static final String KEY_STATUS_NAME = "status_author";
+	public static final String KEY_NOTIFICATION_NAME = "notification_status_author";
 
 	/**
 	 * key to return updated status information
@@ -245,6 +251,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
 		if (statusObject instanceof Status) {
 			status = (Status) statusObject;
+			setStatus(status);
 			Status embedded = status.getEmbeddedStatus();
 			if (embedded != null) {
 				id = embedded.getId();
@@ -257,11 +264,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else if (notificationObject instanceof Notification) {
 			notification = (Notification) notificationObject;
 			if (notification.getStatus() != null) {
+				setStatus(notification.getStatus());
 				id = notification.getStatus().getId();
 				replyUsername = notification.getStatus().getAuthor().getScreenname();
 			} else {
-				id = 0L;
-				replyUsername = "";
+				id = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
+				replyUsername = getIntent().getStringExtra(KEY_NOTIFICATION_NAME);
 			}
 		} else {
 			id = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
@@ -315,8 +323,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if (status != null) {
-			setStatus(status);
+		if (notification != null) {
+			if (notification instanceof DatabaseNotification) {
+				NotificationParam param = new NotificationParam(NotificationParam.ONLINE, notification.getId());
+				notificationAsync.execute(param, this::onNotificationResult);
+			}
+		} else if (status != null) {
 			if (status instanceof DatabaseStatus) {
 				StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
 				statusAsync.execute(param, this::onStatusResult);
@@ -324,21 +336,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				VoteParam param = new VoteParam(VoteParam.LOAD, status.getPoll(), new int[0]);
 				voteAsync.execute(param, this::setPollResult);
 			}
-		} else if (notification != null) {
-			if (notification.getStatus() != null) {
-				setStatus(notification.getStatus());
-			}
-			if (notification instanceof DatabaseNotification) {
-				NotificationParam param = new NotificationParam(NotificationParam.ONLINE, notification.getId());
-				notificationAsync.execute(param, this::onNotificationResult);
-			}
 		} else {
 			long statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
 			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
-			if (statusId != 0) {
+			if (statusId != 0L) {
 				StatusParam param = new StatusParam(StatusParam.DATABASE, statusId);
 				statusAsync.execute(param, this::onStatusResult);
-			} else if (notificationId != 0) {
+			} else if (notificationId != 0L) {
 				NotificationParam param = new NotificationParam(NotificationParam.ONLINE, notificationId);
 				notificationAsync.execute(param, this::onNotificationResult);
 			}
@@ -967,7 +971,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * @param result notification containing status information
 	 */
 	public void onNotificationResult(NotificationResult result) {
-
 		switch (result.mode) {
 			case NotificationResult.DATABASE:
 				if (result.notification != null) {

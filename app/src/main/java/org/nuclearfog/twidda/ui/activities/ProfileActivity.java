@@ -225,13 +225,16 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			user = (User) o;
 			userId = user.getId();
 		} else {
-			userId = i.getLongExtra(KEY_PROFILE_ID, 0);
+			userId = i.getLongExtra(KEY_PROFILE_ID, 0L);
 		}
 		adapter.setupProfilePage(userId);
 		if (settings.likeEnabled()) {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
 		} else {
 			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
+		}
+		if (user != null) {
+			setUser(user);
 		}
 		tabLayout.addOnTabSelectedListener(this);
 		following.setOnClickListener(this);
@@ -253,9 +256,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		} else if (user instanceof DatabaseUser) {
 			UserParam param = new UserParam(UserParam.ONLINE, userId);
 			userLoader.execute(param, this::setUserResult);
-			setUser(user);
-		} else {
-			setUser(user);
 		}
 		if (relation == null && userId != settings.getLogin().getId()) {
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);

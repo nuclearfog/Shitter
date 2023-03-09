@@ -313,7 +313,12 @@ public class AppDatabase {
 	/**
 	 * select notification from notification table using status ID
 	 */
-	private static final String NOTIFICATION_SELECT = NotificationTable.NAME + "." + NotificationTable.ITEM + "=?";
+	private static final String NOTIFICATION_SELECT = NotificationTable.NAME + "." + NotificationTable.ID + "=?";
+
+	/**
+	 * select notification from notification table using status ID
+	 */
+	private static final String NOTIFICATION_STATUS_SELECT = NotificationTable.NAME + "." + NotificationTable.ITEM + "=?";
 
 	/**
 	 * selection to get status flag register
@@ -990,9 +995,24 @@ public class AppDatabase {
 
 			SQLiteDatabase db = adapter.getDbWrite();
 			db.delete(StatusTable.NAME, STATUS_SELECT, args);
-			db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
+			db.delete(NotificationTable.NAME, NOTIFICATION_STATUS_SELECT, args);
 			db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
 			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_STATUS, args);
+			adapter.commit();
+		}
+	}
+
+	/**
+	 * remove status from database
+	 *
+	 * @param id status ID
+	 */
+	public void removeNotification(long id) {
+		synchronized (LOCK) {
+			String[] args = {Long.toString(id)};
+
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
 			adapter.commit();
 		}
 	}
@@ -1480,7 +1500,7 @@ public class AppDatabase {
 		} else {
 			flags &= ~BOOKMARK_MASK;
 		}
-		ContentValues column = new ContentValues(18);
+		ContentValues column = new ContentValues(19);
 		column.put(StatusTable.ID, status.getId());
 		column.put(StatusTable.USER, user.getId());
 		column.put(StatusTable.TIME, status.getTimestamp());
@@ -1491,6 +1511,7 @@ public class AppDatabase {
 		column.put(StatusTable.REPLYSTATUS, status.getRepliedStatusId());
 		column.put(StatusTable.REPOST, status.getRepostCount());
 		column.put(StatusTable.FAVORITE, status.getFavoriteCount());
+		column.put(StatusTable.REPLY, status.getReplyCount());
 		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		column.put(StatusTable.REPLYNAME, status.getReplyName());

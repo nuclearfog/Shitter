@@ -47,9 +47,13 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 
 				case NotificationParam.DISMISS:
 					connection.dismissNotification(param.id);
+					db.removeNotification(param.id);
 					return new NotificationResult(NotificationResult.DISMISS, null, null);
 			}
 		} catch (ConnectionException exception) {
+			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+				db.removeNotification(param.id);
+			}
 			return new NotificationResult(NotificationResult.ERROR, null, exception);
 		} catch (Exception exception) {
 			exception.printStackTrace();

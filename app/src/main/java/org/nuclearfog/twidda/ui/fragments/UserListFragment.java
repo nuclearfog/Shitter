@@ -118,7 +118,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		if (intent != null) {
 			// check if userlist was removed
 			if (result.getResultCode() == UserlistActivity.RETURN_LIST_REMOVED) {
-				long removedListId = intent.getLongExtra(UserlistActivity.RESULT_REMOVED_LIST_ID, 0);
+				long removedListId = intent.getLongExtra(UserlistActivity.RESULT_REMOVED_LIST_ID, 0L);
 				adapter.removeItem(removedListId);
 			}
 			// check if userlist was updated
