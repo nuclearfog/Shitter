@@ -45,6 +45,8 @@ public interface OnHolderClickListener {
 
 	int POLL_VOTE = 18;
 
+	int NOTIFICATION_DISMISS = 19;
+
 	/**
 	 * called when an item was clicked
 	 *

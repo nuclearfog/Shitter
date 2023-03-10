@@ -12,10 +12,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.NotificationAction;
+import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
+import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationParam;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationResult;
+import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderParam;
+import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
@@ -23,36 +27,47 @@ import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
 import org.nuclearfog.twidda.ui.adapter.NotificationAdapter;
 import org.nuclearfog.twidda.ui.adapter.NotificationAdapter.OnNotificationClickListener;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
  * fragment to show notifications
  *
  * @author nuclearfog
  */
-public class NotificationFragment extends ListFragment implements OnNotificationClickListener, AsyncCallback<NotificationResult>, ActivityResultCallback<ActivityResult> {
+public class NotificationFragment extends ListFragment implements OnNotificationClickListener, OnConfirmListener,
+		AsyncCallback<NotificationLoaderResult>, ActivityResultCallback<ActivityResult> {
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private NotificationLoader notificationAsync;
+	private NotificationLoader notificationLoader;
+	private NotificationAction notificationAction;
 	private NotificationAdapter adapter;
+	private ConfirmDialog confirmDialog;
+
+	private Notification select;
 
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		confirmDialog = new ConfirmDialog(requireContext());
+		notificationLoader = new NotificationLoader(requireContext());
+		notificationAction = new NotificationAction(requireContext());
 		adapter = new NotificationAdapter(requireContext(), this);
-		notificationAsync = new NotificationLoader(requireContext());
 		setAdapter(adapter);
 
+		confirmDialog.setConfirmListener(this);
 		load(0L, 0L, 0);
 		setRefresh(true);
 	}
 
 
 	@Override
-	public void onDestroyView() {
-		notificationAsync.cancel();
-		super.onDestroyView();
+	public void onDestroy() {
+		notificationLoader.cancel();
+		notificationAction.cancel();
+		super.onDestroy();
 	}
 
 
@@ -75,11 +90,20 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	@Override
-	public void onNotificationClick(Notification notification) {
+	public void onNotificationClick(Notification notification, int action) {
 		if (!isRefreshing()) {
-			Intent intent = new Intent(requireContext(), StatusActivity.class);
-			intent.putExtra(StatusActivity.KEY_NOTIFICATION_DATA, notification);
-			activityResultLauncher.launch(intent);
+			switch (action) {
+				case OnNotificationClickListener.VIEW:
+					Intent intent = new Intent(requireContext(), StatusActivity.class);
+					intent.putExtra(StatusActivity.KEY_NOTIFICATION_DATA, notification);
+					activityResultLauncher.launch(intent);
+					break;
+
+				case OnNotificationClickListener.DISMISS:
+					confirmDialog.show(ConfirmDialog.NOTIFICATION_DISMISS);
+					select = notification;
+					break;
+			}
 		}
 	}
 
@@ -96,7 +120,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public boolean onPlaceholderClick(long sinceId, long maxId, int position) {
-		if (notificationAsync.isIdle()) {
+		if (notificationLoader.isIdle()) {
 			load(sinceId, maxId, position);
 			return true;
 		}
@@ -127,7 +151,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	@Override
-	public void onResult(NotificationResult result) {
+	public void onResult(NotificationLoaderResult result) {
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
 		} else if (getContext() != null) {
@@ -138,13 +162,39 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		setRefresh(false);
 	}
 
+
+	@Override
+	public void onConfirm(int type, boolean rememberChoice) {
+		if (type == ConfirmDialog.NOTIFICATION_DISMISS) {
+			if (select != null) {
+				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.DISMISS, select.getId());
+				notificationAction.execute(param, this::ondismiss);
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	public void ondismiss(NotificationActionResult result) {
+		if (result.mode == NotificationActionResult.DISMISS) {
+			adapter.removeItem(result.id);
+		} else if (result.mode == NotificationActionResult.ERROR) {
+			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
+			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+			if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+				adapter.removeItem(result.id);
+			}
+		}
+	}
+
 	/**
 	 * @param minId lowest notification ID to load
 	 * @param maxId highest notification Id to load
 	 * @param pos   index to insert the new items
 	 */
 	private void load(long minId, long maxId, int pos) {
-		NotificationParam param = new NotificationParam(pos, minId, maxId);
-		notificationAsync.execute(param, this);
+		NotificationLoaderParam param = new NotificationLoaderParam(pos, minId, maxId);
+		notificationLoader.execute(param, this);
 	}
 }

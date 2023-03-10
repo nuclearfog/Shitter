@@ -49,6 +49,11 @@
 		<item name="android:windowMinWidthMinor">80%</item>
 	</style>
 
+	<style name="PollDialog" parent="Theme.AppCompat.Dialog">
+		<item name="android:windowMinWidthMinor">80%</item>
+		<item name="android:windowCloseOnTouchOutside">false</item>
+	</style>
+
 	<!-- activity enter/exit animations -->
 	<style name="TransactionPending" parent="@android:style/Animation">
 		<item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>

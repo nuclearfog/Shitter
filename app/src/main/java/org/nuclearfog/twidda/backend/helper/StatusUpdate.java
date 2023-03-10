@@ -202,7 +202,7 @@ public class StatusUpdate {
 	 * get type of attachment
 	 * currently there is only one type of media used at once
 	 *
-	 * @return media type {@link #EMPTY ,#MEDIA_VIDEO,#MEDIA_IMAGE,#MEDIA_GIF}
+	 * @return media type {@link #EMPTY,#MEDIA_VIDEO,#MEDIA_IMAGE,#MEDIA_GIF}
 	 */
 	public int getAttachmentType() {
 		return attachment;

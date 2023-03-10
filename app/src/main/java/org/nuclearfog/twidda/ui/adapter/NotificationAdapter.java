@@ -145,9 +145,11 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 		long sinceId = 0;
 		long maxId = 0;
 		if (index == 0) {
-			Notification notification = items.get(index + 1);
-			if (notification != null) {
-				sinceId = notification.getId();
+			if (items.size() > 1) {
+				Notification notification = items.get(index + 1);
+				if (notification != null) {
+					sinceId = notification.getId();
+				}
 			}
 		} else if (index == items.size() - 1) {
 			Notification notification = items.get(index - 1);
@@ -186,7 +188,13 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 
 			case OnHolderClickListener.STATUS_CLICK:
 				if (item != null) {
-					listener.onNotificationClick(item);
+					listener.onNotificationClick(item, OnNotificationClickListener.VIEW);
+				}
+				break;
+
+			case OnHolderClickListener.NOTIFICATION_DISMISS:
+				if (item != null) {
+					listener.onNotificationClick(item, OnNotificationClickListener.DISMISS);
 				}
 				break;
 		}
@@ -270,11 +278,22 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public interface OnNotificationClickListener {
 
 		/**
+		 * show a notification
+		 */
+		int VIEW = 1;
+
+		/**
+		 * dismiss a notification
+		 */
+		int DISMISS = 2;
+
+		/**
 		 * called on notification click
 		 *
 		 * @param notification clicked notification
+		 * @param action       action {@link #VIEW,#DISMISS}
 		 */
-		void onNotificationClick(Notification notification);
+		void onNotificationClick(Notification notification, int action);
 
 		/**
 		 * called on user item click

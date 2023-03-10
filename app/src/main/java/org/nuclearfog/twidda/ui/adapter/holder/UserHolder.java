@@ -40,6 +40,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 	private TextView username, screenname, followingCount, followerCount, label;
 	private ImageView profileImg, verifyIcon, lockedIcon;
 	private ImageButton delete;
+	private View notificationDismiss;
 
 	private GlobalSettings settings;
 	private Picasso picasso;
@@ -56,6 +57,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_user_container);
 		label = itemView.findViewById(R.id.item_user_label);
+		notificationDismiss = itemView.findViewById(R.id.item_user_notification_dismiss);
 		username = itemView.findViewById(R.id.item_user_username);
 		screenname = itemView.findViewById(R.id.item_user_screenname);
 		followingCount = itemView.findViewById(R.id.item_user_following_count);
@@ -74,6 +76,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		}
 
 		itemView.setOnClickListener(this);
+		notificationDismiss.setOnClickListener(this);
 		delete.setOnClickListener(this);
 	}
 
@@ -86,6 +89,8 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 				listener.onItemClick(position, OnHolderClickListener.USER_CLICK);
 			} else if (v == delete) {
 				listener.onItemClick(position, OnHolderClickListener.USER_REMOVE);
+			} else if (v == notificationDismiss) {
+				listener.onItemClick(position, OnHolderClickListener.NOTIFICATION_DISMISS);
 			}
 		}
 	}
@@ -126,11 +131,11 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		int iconRes;
 		String text, name;
 		Resources resources = itemView.getResources();
-		if (notification.getUser() != null)
+		if (notification.getUser() != null) {
 			name = notification.getUser().getScreenname();
-		else
+		} else {
 			name = "";
-
+		}
 		switch (notification.getType()) {
 			default:
 				text = "";
@@ -146,6 +151,9 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 				text = resources.getString(R.string.info_user_follow_request, name);
 				iconRes = R.drawable.follower_request;
 				break;
+		}
+		if (settings.getLogin().getConfiguration().NotificationDismissEnabled()) {
+			notificationDismiss.setVisibility(VISIBLE);
 		}
 		label.setVisibility(VISIBLE);
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);

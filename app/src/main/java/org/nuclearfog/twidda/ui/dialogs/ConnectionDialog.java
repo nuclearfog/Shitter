@@ -55,7 +55,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		api1 = findViewById(R.id.dialog_connection_api1);
 		api2 = findViewById(R.id.dialog_connection_api2);
 
-		int width = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.9);
+		int width = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.9f);
 		getWindow().setLayout(width, WRAP_CONTENT);
 		AppStyles.setTheme(root);
 		enableApi.setOnCheckedChangeListener(this);

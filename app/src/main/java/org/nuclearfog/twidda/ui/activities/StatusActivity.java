@@ -50,8 +50,8 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
-import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationParam;
-import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationResult;
+import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
+import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
 import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.async.StatusAction.StatusParam;
 import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
@@ -62,7 +62,6 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
@@ -325,7 +324,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		super.onStart();
 		if (notification != null) {
 			if (notification instanceof DatabaseNotification) {
-				NotificationParam param = new NotificationParam(NotificationParam.ONLINE, notification.getId());
+				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
 				notificationAsync.execute(param, this::onNotificationResult);
 			}
 		} else if (status != null) {
@@ -343,7 +342,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				StatusParam param = new StatusParam(StatusParam.DATABASE, statusId);
 				statusAsync.execute(param, this::onStatusResult);
 			} else if (notificationId != 0L) {
-				NotificationParam param = new NotificationParam(NotificationParam.ONLINE, notificationId);
+				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
 				notificationAsync.execute(param, this::onNotificationResult);
 			}
 		}
@@ -393,15 +392,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		MenuItem optHide = m.findItem(R.id.menu_status_hide);
 		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
 		MenuItem optMetrics = m.findItem(R.id.menu_status_metrics);
-		MenuItem optDismiss = m.findItem(R.id.menu_notification_dismiss);
 		MenuItem menuBookmark = m.findItem(R.id.menu_status_bookmark);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
-		Configuration config = settings.getLogin().getConfiguration();
-		// set notification options
-		if (notification != null) {
-			optDismiss.setVisible(config.NotificationDismissEnabled());
-		}
 		// set status options
 		if (status != null) {
 			Status currentStatus = status;
@@ -497,10 +490,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (status.getMetrics() != null) {
 				metricsDialog.show(status.getMetrics());
 			}
-		}
-		// open notification dismiss dialog
-		else if (item.getItemId() == R.id.menu_notification_dismiss) {
-			confirmDialog.show(ConfirmDialog.NOTIFICATION_DISMISS);
 		}
 		// copy media links
 		else if (item.getGroupId() == MENU_GROUP_COPY) {
@@ -659,13 +648,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 						intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
 						startActivity(intent);
 					}
-				}
-				break;
-
-			case ConfirmDialog.NOTIFICATION_DISMISS:
-				if (notification != null) {
-					NotificationParam param = new NotificationParam(NotificationParam.DISMISS, notification.getId());
-					notificationAsync.execute(param, this::onNotificationResult);
 				}
 				break;
 		}
@@ -970,23 +952,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result notification containing status information
 	 */
-	public void onNotificationResult(NotificationResult result) {
+	public void onNotificationResult(NotificationActionResult result) {
 		switch (result.mode) {
-			case NotificationResult.DATABASE:
+			case NotificationActionResult.DATABASE:
 				if (result.notification != null) {
-					NotificationParam param = new NotificationParam(NotificationParam.ONLINE, result.notification.getId());
+					NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, result.notification.getId());
 					notificationAsync.execute(param, this::onNotificationResult);
 				}
 				// fall through
 
-			case NotificationResult.ONLINE:
+			case NotificationActionResult.ONLINE:
 				if (result.notification != null && result.notification.getStatus() != null) {
 					notification = result.notification;
 					setStatus(result.notification.getStatus());
 				}
 				break;
 
-			case NotificationResult.DISMISS:
+			case NotificationActionResult.DISMISS:
 				if (notification != null) {
 					Intent intent = new Intent();
 					intent.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
@@ -996,7 +978,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				finish();
 				break;
 
-			case NotificationResult.ERROR:
+			case NotificationActionResult.ERROR:
 				String message = ErrorHandler.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				if (notification == null) {

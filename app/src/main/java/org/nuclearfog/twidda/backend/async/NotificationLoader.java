@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class NotificationLoader extends AsyncExecutor<NotificationLoader.NotificationParam, NotificationLoader.NotificationResult> {
+public class NotificationLoader extends AsyncExecutor<NotificationLoader.NotificationLoaderParam, NotificationLoader.NotificationLoaderResult> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -35,7 +35,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 
 	@NonNull
 	@Override
-	protected NotificationResult doInBackground(@NonNull NotificationParam params) {
+	protected NotificationLoaderResult doInBackground(@NonNull NotificationLoaderParam params) {
 		List<Notification> result = null;
 		try {
 			if (params.minId == 0L && params.maxId == 0L) {
@@ -51,22 +51,22 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 				}
 			}
 		} catch (ConnectionException exception) {
-			return new NotificationResult(null, params.position, exception);
+			return new NotificationLoaderResult(null, params.position, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new NotificationResult(result, params.position, null);
+		return new NotificationLoaderResult(result, params.position, null);
 	}
 
 	/**
 	 *
 	 */
-	public static class NotificationParam {
+	public static class NotificationLoaderParam {
 
 		public final int position;
 		public final long minId, maxId;
 
-		public NotificationParam(int position, long minId, long maxId) {
+		public NotificationLoaderParam(int position, long minId, long maxId) {
 			this.position = position;
 			this.minId = minId;
 			this.maxId = maxId;
@@ -76,7 +76,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	/**
 	 *
 	 */
-	public static class NotificationResult {
+	public static class NotificationLoaderResult {
 
 		public final int position;
 		@Nullable
@@ -84,7 +84,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 		@Nullable
 		public final ConnectionException exception;
 
-		NotificationResult(@Nullable List<Notification> notifications, int position, @Nullable ConnectionException exception) {
+		NotificationLoaderResult(@Nullable List<Notification> notifications, int position, @Nullable ConnectionException exception) {
 			this.notifications = notifications;
 			this.exception = exception;
 			this.position = position;

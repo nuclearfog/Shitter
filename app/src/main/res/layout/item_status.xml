@@ -24,7 +24,23 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintBottom_toTopOf="@id/item_status_label_barrier"
-			app:layout_constraintEnd_toEndOf="parent" />
+			app:layout_constraintEnd_toStartOf="@id/item_status_notification_dismiss" />
+
+		<ImageButton
+			android:id="@+id/item_status_notification_dismiss"
+			android:layout_width="@dimen/item_status_notification_button_size"
+			android:layout_height="@dimen/item_status_notification_button_size"
+			android:padding="@dimen/item_status_notification_button_drawable_padding"
+			android:visibility="gone"
+			android:src="@drawable/cross"
+			android:scaleType="fitCenter"
+			android:contentDescription="@string/notification_dismiss"
+			app:layout_constraintDimensionRatio="1"
+			app:layout_constraintStart_toEndOf="@id/item_status_label"
+			app:layout_constraintTop_toTopOf="@id/item_status_label"
+			app:layout_constraintBottom_toBottomOf="@id/item_status_label"
+			app:layout_constraintEnd_toEndOf="parent"
+			style="@style/FeedbackButton"/>
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/item_status_label_barrier"

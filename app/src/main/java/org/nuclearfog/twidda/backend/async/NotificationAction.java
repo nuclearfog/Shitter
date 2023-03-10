@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.Notification;
  *
  * @author nuclearfog
  */
-public class NotificationAction extends AsyncExecutor<NotificationAction.NotificationParam, NotificationAction.NotificationResult> {
+public class NotificationAction extends AsyncExecutor<NotificationAction.NotificationActionParam, NotificationAction.NotificationActionResult> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -32,39 +32,39 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 
 	@NonNull
 	@Override
-	protected NotificationResult doInBackground(@NonNull NotificationParam param) {
+	protected NotificationActionResult doInBackground(@NonNull NotificationActionParam param) {
 		try {
 			switch (param.mode) {
-				case NotificationParam.DATABASE:
+				case NotificationActionParam.DATABASE:
 					Notification result = db.getNotification(param.id);
 					if (result != null) {
-						return new NotificationResult(NotificationResult.DATABASE, result, null);
+						return new NotificationActionResult(NotificationActionResult.DATABASE, param.id, result, null);
 					}
 
-				case NotificationParam.ONLINE:
+				case NotificationActionParam.ONLINE:
 					result = connection.getNotification(param.id);
-					return new NotificationResult(NotificationResult.ONLINE, result, null);
+					return new NotificationActionResult(NotificationActionResult.ONLINE, param.id, result, null);
 
-				case NotificationParam.DISMISS:
+				case NotificationActionParam.DISMISS:
 					connection.dismissNotification(param.id);
 					db.removeNotification(param.id);
-					return new NotificationResult(NotificationResult.DISMISS, null, null);
+					return new NotificationActionResult(NotificationActionResult.DISMISS, param.id, null, null);
 			}
 		} catch (ConnectionException exception) {
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				db.removeNotification(param.id);
 			}
-			return new NotificationResult(NotificationResult.ERROR, null, exception);
+			return new NotificationActionResult(NotificationActionResult.ERROR, param.id, null, exception);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
-		return new NotificationResult(NotificationResult.ERROR, null, null);
+		return new NotificationActionResult(NotificationActionResult.ERROR, param.id, null, null);
 	}
 
 	/**
 	 *
 	 */
-	public static class NotificationParam {
+	public static class NotificationActionParam {
 
 		public static final int DATABASE = 1;
 		public static final int ONLINE = 2;
@@ -73,7 +73,7 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 		public final int mode;
 		public final long id;
 
-		public NotificationParam(int mode, long id) {
+		public NotificationActionParam(int mode, long id) {
 			this.mode = mode;
 			this.id = id;
 		}
@@ -82,7 +82,7 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 	/**
 	 *
 	 */
-	public static class NotificationResult {
+	public static class NotificationActionResult {
 
 		public static final int ERROR = -1;
 		public static final int DATABASE = 3;
@@ -94,11 +94,13 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 		@Nullable
 		public final ConnectionException exception;
 		public final int mode;
+		public final long id;
 
-		public NotificationResult(int mode, @Nullable Notification notification, @Nullable ConnectionException exception) {
+		public NotificationActionResult(int mode, long id, @Nullable Notification notification, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.notification = notification;
 			this.mode = mode;
+			this.id = id;
 		}
 	}
 }

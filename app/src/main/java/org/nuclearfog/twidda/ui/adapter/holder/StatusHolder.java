@@ -44,6 +44,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
 	private TextView username, screenname, text, repost, favorite, reply, reposter, created, replyname, label;
+	private View dismissButton;
 	private RecyclerView iconList;
 
 	private GlobalSettings settings;
@@ -61,6 +62,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		CardView cardLayout = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_status_container);
 		label = itemView.findViewById(R.id.item_status_label);
+		dismissButton = itemView.findViewById(R.id.item_status_notification_dismiss);
 		profile = itemView.findViewById(R.id.item_status_profile_image);
 		verifiedIcon = itemView.findViewById(R.id.item_status_verified_icon);
 		lockedIcon = itemView.findViewById(R.id.item_status_locked_icon);
@@ -93,6 +95,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 		label.setOnClickListener(this);
 		itemView.setOnClickListener(this);
+		dismissButton.setOnClickListener(this);
 	}
 
 
@@ -104,6 +107,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 				listener.onItemClick(position, OnHolderClickListener.STATUS_CLICK);
 			} else if (v == label) {
 				listener.onItemClick(position, OnHolderClickListener.STATUS_LABEL);
+			} else if (v == dismissButton) {
+				listener.onItemClick(position, OnHolderClickListener.NOTIFICATION_DISMISS);
 			}
 		}
 	}
@@ -234,6 +239,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		label.setVisibility(View.VISIBLE);
 		label.setText(text);
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
+		if (settings.getLogin().getConfiguration().NotificationDismissEnabled()) {
+			dismissButton.setVisibility(View.VISIBLE);
+		}
 		AppStyles.setDrawableColor(label, settings.getIconColor());
 	}
 }

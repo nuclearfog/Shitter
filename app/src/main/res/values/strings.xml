@@ -213,6 +213,7 @@
 	<string name="confirm_cancel_status">discard changes?</string>
 	<string name="image_preview">Image preview</string>
 	<string name="status_add_image">add new image</string>
+	<string name="notification_dismiss">dismiss notification</string>
 	<string name="send_status">share status</string>
 	<string name="status_close">close editor</string>
 	<string name="profile_link">Link</string>
@@ -220,6 +221,9 @@
 	<string name="profile_location">Location</string>
 	<string name="profile_bio">Bio</string>
 	<string name="connection_discard">discard</string>
+	<string name="dialog_poll_title">create poll</string>
+	<string name="dialog_poll_duration_label">Duration:</string>
+	<string name="dialog_poll_duration_hint">count</string>
 	<string name="confirm_discard">discard changes?</string>
 	<string name="user_data">User data</string>
 	<string name="follows_you">follows you</string>

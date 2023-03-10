@@ -10,9 +10,10 @@ import androidx.annotation.WorkerThread;
 import java.lang.ref.WeakReference;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Executor implementation used to run tasks asynchronously
@@ -27,9 +28,14 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	private static final int N_THREAD = 4;
 
 	/**
+	 * timeout for queued processes
+	 */
+	private static final long P_TIMEOUT = 5000L;
+
+	/**
 	 * thread pool executor
 	 */
-	private static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(N_THREAD);
+	private static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(1, N_THREAD, P_TIMEOUT, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 
 	/**
 	 * handler used to send result back to activity/fragment

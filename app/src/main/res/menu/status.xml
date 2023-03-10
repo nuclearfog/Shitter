@@ -35,11 +35,6 @@
 		android:visible="false" />
 
 	<item
-		android:id="@+id/menu_notification_dismiss"
-		android:title="@string/menu_notification_dismiss"
-		android:visible="false" />
-
-	<item
 		android:id="@+id/menu_status_delete"
 		android:title="@string/menu_status_delete"
 		android:visible="false" />

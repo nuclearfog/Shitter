@@ -92,8 +92,9 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	/**
 	 * regex pattern to validate username
+	 * e.g. username, @username or @username@instance.social
 	 */
-	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
+	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?[\\w\\d]{1,20}(@[\\w\\d.]{1,50})?");
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 

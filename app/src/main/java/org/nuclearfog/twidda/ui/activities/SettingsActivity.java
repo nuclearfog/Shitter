@@ -602,7 +602,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (result.locations != null) {
 			locationAdapter.replaceItems(result.locations);
 			int position = locationAdapter.indexOf(settings.getTrendLocation());
-			if (position > 0)
+			if (position >= 0)
 				locationSpinner.setSelection(position, false);
 			locationSpinner.setOnItemSelectedListener(this);
 		} else {
