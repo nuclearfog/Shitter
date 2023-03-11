@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
+import org.nuclearfog.twidda.backend.helper.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -33,6 +34,8 @@ import org.nuclearfog.twidda.ui.adapter.IconAdapter;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.dialogs.PollDialog;
+import org.nuclearfog.twidda.ui.dialogs.PollDialog.PollUpdateCallback;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 
@@ -42,7 +45,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
  * @author nuclearfog
  */
 public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener,
-		OnMediaClickListener, AsyncCallback<StatusUpdateResult>, TextWatcher {
+		OnMediaClickListener, AsyncCallback<StatusUpdateResult>, TextWatcher, PollUpdateCallback {
 
 	/**
 	 * key to add a statusd ID to reply
@@ -64,7 +67,9 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
+	private PollDialog pollDialog;
 	private IconAdapter adapter;
+
 	private StatusUpdate statusUpdate = new StatusUpdate();
 
 
@@ -82,6 +87,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		ImageView background = findViewById(R.id.popup_status_background);
 		ImageButton statusButton = findViewById(R.id.popup_status_send);
 		ImageButton closeButton = findViewById(R.id.popup_status_close);
+		ImageButton addPoll = findViewById(R.id.popup_status_add_poll);
 		RecyclerView iconList = findViewById(R.id.popup_status_media_icons);
 		EditText statusText = findViewById(R.id.popup_status_input);
 		locationBtn = findViewById(R.id.popup_status_add_location);
@@ -92,6 +98,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
+		pollDialog = new PollDialog(this, this);
 		AppStyles.setEditorTheme(root, background);
 
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
@@ -109,6 +116,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		iconList.setAdapter(adapter);
 
 		closeButton.setOnClickListener(this);
+		addPoll.setOnClickListener(this);
 		statusButton.setOnClickListener(this);
 		mediaBtn.setOnClickListener(this);
 		locationBtn.setOnClickListener(this);
@@ -168,6 +176,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		// show closing message
 		else if (v.getId() == R.id.popup_status_close) {
 			showClosingMsg();
+		}
+		// show poll dialog
+		else if (v.getId() == R.id.popup_status_add_poll) {
+			pollDialog.show(statusUpdate.getPoll());
 		}
 		// Add media to the status
 		else if (v.getId() == R.id.popup_status_add_media) {
@@ -293,6 +305,12 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
 		}
+	}
+
+
+	@Override
+	public void onPollUpdate(@Nullable PollUpdate update) {
+		statusUpdate.addPoll(update);
 	}
 
 	/**

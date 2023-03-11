@@ -17,7 +17,7 @@
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintWidth_percent="0.85"
-		app:layout_constraintHeight_percent="0.4"
+		app:layout_constraintHeight_percent="0.5"
 		tools:ignore="ContentDescription" />
 
 	<EditText
@@ -65,12 +65,11 @@
 		android:contentDescription="@string/status_add_image"
 		android:scaleType="fitCenter"
 		android:src="@drawable/attachment"
-		app:layout_constraintStart_toEndOf="@id/popup_status_media_icons"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_add_location"
 		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"
-		app:layout_constraintWidth_percent="0.1"
+		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
 
 	<ProgressBar
@@ -94,12 +93,27 @@
 		android:contentDescription="@string/send_status"
 		android:scaleType="fitCenter"
 		android:src="@drawable/location"
-		app:layout_constraintStart_toEndOf="@id/popup_status_add_media"
+		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
+		app:layout_constraintEnd_toStartOf="@id/popup_status_add_poll"
+		app:layout_constraintHorizontal_chainStyle="packed"
+		app:layout_constraintDimensionRatio="1.0"
+		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
+		style="@style/RoundButton" />
+
+	<ImageButton
+		android:id="@+id/popup_status_add_poll"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:padding="@dimen/popup_status_button_padding"
+		android:layout_marginBottom="@dimen/popup_status_margin_layout"
+		android:layout_marginEnd="@dimen/popup_status_button_margin"
+		android:scaleType="fitCenter"
+		android:src="@drawable/poll"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_send"
 		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"
-		app:layout_constraintWidth_percent="0.1"
+		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
 
 	<ImageButton
@@ -112,12 +126,11 @@
 		android:contentDescription="@string/send_status"
 		android:scaleType="fitCenter"
 		android:src="@drawable/post"
-		app:layout_constraintStart_toEndOf="@id/popup_status_add_location"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_close"
 		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"
-		app:layout_constraintWidth_percent="0.1"
+		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
 
 	<ImageButton
@@ -130,12 +143,11 @@
 		android:contentDescription="@string/status_close"
 		android:scaleType="fitCenter"
 		android:src="@drawable/cross"
-		app:layout_constraintStart_toEndOf="@id/popup_status_send"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toEndOf="@id/popup_status_background"
 		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"
-		app:layout_constraintWidth_percent="0.1"
+		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

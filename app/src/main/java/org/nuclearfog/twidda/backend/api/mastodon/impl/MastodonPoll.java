@@ -145,9 +145,9 @@ public class MastodonPoll implements Poll {
 		/**
 		 * @param json mastodon poll json format
 		 */
-		private MastodonOption(JSONObject json) throws JSONException {
-			voteCount = json.getInt("votes_count");
-			title = json.getString("title");
+		private MastodonOption(JSONObject json) {
+			voteCount = json.optInt("votes_count", 0);
+			title = json.optString("title", "-");
 		}
 
 

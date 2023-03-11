@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class PollUpdate {
 
-	private int validity;
+	private int duration;
 	private boolean multipleChoice;
 	private boolean hideTotals;
 	private List<String> options;
@@ -28,8 +28,8 @@ public class PollUpdate {
 	 *
 	 * @return time until the poll is finnished
 	 */
-	public int getValidity() {
-		return validity;
+	public int getDuration() {
+		return duration;
 	}
 
 	/**
@@ -49,14 +49,37 @@ public class PollUpdate {
 	/**
 	 * @return an array of vote options
 	 */
-	public String[] getOptions() {
-		return options.toArray(new String[0]);
+	public List<String> getOptions() {
+		return options;
+	}
+
+	/**
+	 * @param duration duration in seconds
+	 */
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+
+	public void hideVotes(boolean hideTotals) {
+		this.hideTotals = hideTotals;
+	}
+
+
+	public void setMultipleChoice(boolean multipleChoice) {
+		this.multipleChoice = multipleChoice;
+	}
+
+
+	public void setOptions(List<String> options) {
+		this.options.clear();
+		this.options.addAll(options);
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "valid=" + validity + " multiple=" + multipleChoice + "options=" + options.size();
+		return "valid=" + duration + " multiple=" + multipleChoice + "options=" + options.size();
 	}
 }

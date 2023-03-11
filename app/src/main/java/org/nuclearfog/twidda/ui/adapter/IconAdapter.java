@@ -114,40 +114,40 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	}
 
 	/**
-	 * add a single image icon
+	 * append image icon at the end
 	 */
 	public void addImageItem() {
-		if (invert) {
-			items.add(0, IconHolder.TYPE_IMAGE);
-			notifyItemInserted(0);
-		} else {
-			items.add(IconHolder.TYPE_IMAGE);
-			notifyItemInserted(items.size() - 1);
-		}
+		appendItem(IconHolder.TYPE_IMAGE);
 	}
 
 	/**
-	 * add a single gif item
-	 */
-	public void addGifItem() {
-		if (invert) {
-			items.add(0, IconHolder.TYPE_GIF);
-			notifyItemInserted(0);
-		} else {
-			items.add(IconHolder.TYPE_GIF);
-			notifyItemInserted(items.size() - 1);
-		}
-	}
-
-	/**
-	 * add a single video item
+	 * append video icon at the end
 	 */
 	public void addVideoItem() {
+		appendItem(IconHolder.TYPE_VIDEO);
+	}
+
+	/**
+	 * append GIF icon at the end
+	 */
+	public void addGifItem() {
+		appendItem(IconHolder.TYPE_GIF);
+	}
+
+	/**
+	 * append location icon at the end
+	 */
+	public void addLocation() {
+		appendItem(IconHolder.TYPE_LOCATION);
+	}
+
+
+	public void appendItem(int itemType) {
 		if (invert) {
-			items.add(0, IconHolder.TYPE_VIDEO);
+			items.add(0, itemType);
 			notifyItemInserted(0);
 		} else {
-			items.add(IconHolder.TYPE_VIDEO);
+			items.add(itemType);
 			notifyItemInserted(items.size() - 1);
 		}
 	}

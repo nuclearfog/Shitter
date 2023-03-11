@@ -586,7 +586,7 @@ public class Mastodon implements Connection {
 			PollUpdate poll = update.getPoll();
 			for (String option : poll.getOptions())
 				params.add("poll[options][]=" + StringTools.encode(option));
-			params.add("poll[expires_in]=" + poll.getValidity());
+			params.add("poll[expires_in]=" + poll.getDuration());
 			params.add("poll[multiple]=" + poll.multipleChoiceEnabled());
 			params.add("poll[hide_totals]=" + poll.hideTotalVotes());
 		}

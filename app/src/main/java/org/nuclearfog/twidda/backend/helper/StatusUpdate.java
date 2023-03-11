@@ -162,8 +162,11 @@ public class StatusUpdate {
 	 *
 	 * @param poll poll information
 	 */
-	public void addPoll(@NonNull PollUpdate poll) {
-		if (attachment == EMPTY) {
+	public void addPoll(@Nullable PollUpdate poll) {
+		if (poll == null) {
+			this.poll = null;
+			attachment = EMPTY;
+		} else if (attachment == EMPTY) {
 			this.poll = poll;
 			attachment = POLL;
 			attachmentLimitReached = true;
