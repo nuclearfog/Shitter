@@ -54,10 +54,4 @@
 		<item>@drawable/follower</item>
 	</integer-array>
 
-	<string-array name="timeunits">
-		<item>minutes</item>
-		<item>hours</item>
-		<item>days</item>
-	</string-array>
-
 </resources>

@@ -100,7 +100,7 @@
 	<string name="error_acc_loading">Error while loading login information!</string>
 	<string name="error_api_access_denied">Error, API access denied! Please check your API Keys.</string>
 	<string name="error_api_access_limited">Error, API access limited by Twitter!</string>
-	<string name="error_json_format">Error while parsing JSON response!</string>
+	<string name="error_json_format">JSON error!</string>
 	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>
 	<string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
@@ -129,7 +129,6 @@
 	<string name="menu_unmute_user">unmute</string>
 	<string name="menu_follow_requested">follow requested</string>
 	<string name="menu_status_delete">delete</string>
-	<string name="menu_notification_dismiss">dismiss</string>
 	<string name="menu_status_hide">hide</string>
 	<string name="menu_status_metrics">Metrics</string>
 	<string name="menu_status_unhide">unhide</string>
@@ -215,6 +214,7 @@
 	<string name="status_add_image">add new image</string>
 	<string name="notification_dismiss">dismiss notification</string>
 	<string name="send_status">share status</string>
+	<string name="status_add_poll">add poll</string>
 	<string name="status_close">close editor</string>
 	<string name="profile_link">Link</string>
 	<string name="close_dm">close directmessage</string>
@@ -226,7 +226,6 @@
 	<string name="dialog_poll_mc">multiple choice</string>
 	<string name="dialog_poll_hide">hide votes</string>
 	<string name="dialog_poll_option_edit_hint">Option %1$d</string>
-	<string name="dialog_poll_duration_label">Duration:</string>
 	<string name="dialog_poll_duration_hint">Duration</string>
 	<string name="confirm_discard">discard changes?</string>
 	<string name="user_data">User data</string>
@@ -312,5 +311,9 @@
 	<string name="notification_status_poll">vote finished</string>
 	<string name="login_network_selector_label">select network</string>
 	<string name="login_network_settings">connection settings</string>
+	<string name="poll_option_edit_button">add/remove</string>
+	<string name="selector_minutes">Minutes</string>
+	<string name="selector_hours">Hours</string>
+	<string name="selector_days">Days</string>
 
 </resources>

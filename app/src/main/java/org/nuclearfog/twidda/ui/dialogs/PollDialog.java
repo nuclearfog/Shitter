@@ -50,7 +50,9 @@ public class PollDialog extends Dialog implements OnClickListener {
 		hide_votes = findViewById(R.id.dialog_poll_hide_total);
 
 		ArrayAdapter<String> timeUnitAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item);
-		timeUnitAdapter.addAll(context.getResources().getStringArray(R.array.timeunits));
+		timeUnitAdapter.add(context.getResources().getString(R.string.selector_minutes));
+		timeUnitAdapter.add(context.getResources().getString(R.string.selector_hours));
+		timeUnitAdapter.add(context.getResources().getString(R.string.selector_days));
 		timeUnitSelector.setAdapter(timeUnitAdapter);
 		timeUnitSelector.setSelected(true);
 

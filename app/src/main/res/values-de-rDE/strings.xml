@@ -272,6 +272,20 @@
 	<string name="info_status_unbookmarked">Status aus Lesezeichen entfernt</string>
 	<string name="settings_bookmark_color">Lesezeichen symbol</string>
 	<string name="info_poll_voted">Umfrage abgestimmt!</string>
-	<string name="menu_notification_dismiss">entfernen</string>
 	<string name="confirm_dismiss_notification">Nachricht verwerfen?</string>
+	<string name="error_json_format">JSON Fehler!</string>
+	<string name="menu_bookmark_add">Lesezeichen hinzufügen</string>
+	<string name="menu_bookmark_remove">Lesezeichen entfernen</string>
+	<string name="notification_dismiss">Benachrichtigung verwerfen</string>
+	<string name="dialog_poll_title">Umfrage erstellen</string>
+	<string name="dialog_poll_button">erstellen</string>
+	<string name="dialog_poll_mc">Mehrfachauswahl</string>
+	<string name="dialog_poll_hide">Stimmen verstecken</string>
+	<string name="dialog_poll_option_edit_hint">%1$d. Option</string>
+	<string name="dialog_poll_duration_hint">Dauer</string>
+	<string name="selector_minutes">Minuten</string>
+	<string name="selector_hours">Stunden</string>
+	<string name="selector_days">Tage</string>
+	<string name="poll_option_edit_button">hinzufügen/entfernen</string>
+	<string name="status_add_poll">Umfrage hinzufügen</string>
 </resources>

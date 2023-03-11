@@ -109,6 +109,7 @@
 		android:layout_marginEnd="@dimen/popup_status_button_margin"
 		android:scaleType="fitCenter"
 		android:src="@drawable/poll"
+		android:contentDescription="@string/status_add_poll"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_send"
 		app:layout_constraintHorizontal_chainStyle="packed"

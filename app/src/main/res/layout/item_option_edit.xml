@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="horizontal"
@@ -11,7 +12,8 @@
 		android:layout_height="@dimen/item_option_edit_button_size"
 		android:padding="@dimen/item_option_edit_drawable_padding"
 		android:src="@drawable/add"
-		style="@style/FeedbackButton" />
+		android:contentDescription="@string/poll_option_edit_button"
+		style="@style/FeedbackButton"/>
 
 	<EditText
 		android:id="@+id/item_option_edit_name"
@@ -22,6 +24,9 @@
 		android:background="@android:color/transparent"
 		android:enabled="false"
 		android:lines="1"
-		android:layout_marginStart="@dimen/item_option_edit_layout_margin"/>
+		android:layout_marginStart="@dimen/item_option_edit_layout_margin"
+		android:inputType="text"
+		android:importantForAutofill="no"
+		tools:ignore="LabelFor" />
 
 </LinearLayout>
