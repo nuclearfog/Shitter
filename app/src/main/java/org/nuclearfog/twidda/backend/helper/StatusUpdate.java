@@ -53,6 +53,14 @@ public class StatusUpdate {
 	 */
 	public static final int POLL = 4;
 
+	/**
+	 * status visibility
+	 */
+	public static final int PUBLIC = 10;
+	public static final int UNLISTED = 11;
+	public static final int DIRECT = 12;
+	public static final int PRIVATE = 13;
+
 	private static final String MIME_GIF = "image/gif";
 	private static final String MIME_IMAGE_ALL = "image/";
 	private static final String MIME_VIDEO_ALL = "video/";
@@ -70,6 +78,10 @@ public class StatusUpdate {
 	private List<Uri> mediaUris = new ArrayList<>(5);
 	private MediaStatus[] mediaUpdates = {};
 	private boolean attachmentLimitReached = false;
+	private boolean sensitive = false;
+	private boolean spoiler = false;
+	private int visibility = PUBLIC;
+
 
 	/**
 	 * set ID of the replied status
@@ -183,6 +195,27 @@ public class StatusUpdate {
 	}
 
 	/**
+	 * set status visibility
+	 *
+	 * @param visibility visibility states {@link #PUBLIC,#PRIVATE,#UNLISTED,#DIRECT}
+	 */
+	public void setVisibility(int visibility) {
+		this.visibility = visibility;
+	}
+
+	/**
+	 */
+	public void setSpoiler(boolean spoiler) {
+		this.spoiler = spoiler;
+	}
+
+	/**
+	 */
+	public void setSensitive(boolean sensitive) {
+		this.sensitive = sensitive;
+	}
+
+	/**
 	 * get ID of the replied status
 	 *
 	 * @return status ID
@@ -247,6 +280,29 @@ public class StatusUpdate {
 	@Nullable
 	public LocationUpdate getLocation() {
 		return location;
+	}
+
+	/**
+	 * @return true if status content is sensitive
+	 */
+	public boolean isSensitive() {
+		return sensitive;
+	}
+
+	/**
+	 * @return true if status contains spoiler
+	 */
+	public boolean isSpoiler() {
+		return spoiler;
+	}
+
+	/**
+	 * get visibility states
+	 *
+	 * @return visibility states {@link #PUBLIC,#PRIVATE,#UNLISTED,#DIRECT}
+	 */
+	public int getVisibility() {
+		return visibility;
 	}
 
 	/**

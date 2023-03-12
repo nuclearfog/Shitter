@@ -719,6 +719,8 @@ public class TwitterV1 implements Connection {
 			params.add("status=" + StringTools.encode(update.getText()));
 		if (update.getReplyId() != 0)
 			params.add("in_reply_to_status_id=" + update.getReplyId());
+		if (update.isSensitive())
+			params.add("possibly_sensitive=true");
 		if (mediaIds != null && mediaIds.length > 0) {
 			StringBuilder buf = new StringBuilder();
 			for (long id : mediaIds)

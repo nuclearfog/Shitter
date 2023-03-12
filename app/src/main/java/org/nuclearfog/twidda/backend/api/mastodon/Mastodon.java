@@ -576,10 +576,22 @@ public class Mastodon implements Connection {
 		// add identifier to prevent duplicate posts
 		params.add("Idempotency-Key=" + System.currentTimeMillis() / 5000);
 		params.add("visibility=public");
+		if (update.isSensitive())
+			params.add("sensitive=true");
+		if (update.isSpoiler())
+			params.add("spoiler_text=true");
 		if (update.getText() != null)
 			params.add("status=" + StringTools.encode(update.getText()));
 		if (update.getReplyId() != 0)
 			params.add("in_reply_to_id=" + update.getReplyId());
+		if (update.getVisibility() == StatusUpdate.DIRECT)
+			params.add("visibility=direct");
+		else if (update.getVisibility() == StatusUpdate.PRIVATE)
+			params.add("visibility=private");
+		else if (update.getVisibility() == StatusUpdate.UNLISTED)
+			params.add("visibility=unlisted");
+		else
+			params.add("visibility=public");
 		for (long mediaId : mediaIds)
 			params.add("media_ids[]=" + mediaId);
 		if (update.getPoll() != null) {

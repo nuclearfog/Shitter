@@ -293,5 +293,11 @@
 	<dimen name="item_option_edit_button_size">24dp</dimen>
 	<dimen name="item_option_edit_drawable_padding">2dp</dimen>
 	<dimen name="item_option_edit_layout_margin">5dp</dimen>
+	
+	<!--dimens of dialog_status.xml-->
+	<dimen name="dialog_status_title_textsize">20sp</dimen>
+	<dimen name="dialog_status_layout_padding">10dp</dimen>
+	<dimen name="dialog_status_layout_margins">5dp</dimen>
+	<dimen name="dialog_status_dropdown_height">22sp</dimen>
 
 </resources>

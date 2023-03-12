@@ -128,6 +128,23 @@
 		android:scaleType="fitCenter"
 		android:src="@drawable/post"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
+		app:layout_constraintEnd_toStartOf="@id/popup_status_pref"
+		app:layout_constraintHorizontal_chainStyle="packed"
+		app:layout_constraintDimensionRatio="1.0"
+		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
+		style="@style/RoundButton" />
+
+	<ImageButton
+		android:id="@+id/popup_status_pref"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:padding="@dimen/popup_status_button_padding"
+		android:layout_marginBottom="@dimen/popup_status_margin_layout"
+		android:layout_marginEnd="@dimen/popup_status_button_margin"
+		android:contentDescription="@string/status_pref"
+		android:scaleType="fitCenter"
+		android:src="@drawable/cog"
+		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_close"
 		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"

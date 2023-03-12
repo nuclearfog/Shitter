@@ -214,6 +214,7 @@
 	<string name="status_add_image">add new image</string>
 	<string name="notification_dismiss">dismiss notification</string>
 	<string name="send_status">share status</string>
+	<string name="status_pref">status preferences</string>
 	<string name="status_add_poll">add poll</string>
 	<string name="status_close">close editor</string>
 	<string name="profile_link">Link</string>
@@ -313,8 +314,8 @@
 	<string name="login_network_settings">connection settings</string>
 	<string name="poll_option_edit_button">add/remove</string>
 	<string name="dialog_poll_close">close dialog</string>
-	<string name="selector_minutes">Minutes</string>
-	<string name="selector_hours">Hours</string>
-	<string name="selector_days">Days</string>
-
+	<string name="dialog_status_title">Status preferences</string>
+	<string name="dialog_status_sensitive">sensitive</string>
+	<string name="dialog_status_spoiler">spoiler</string>
+	<string name="dialog_status_visibility">visibility</string>
 </resources>

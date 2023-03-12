@@ -283,9 +283,6 @@
 	<string name="dialog_poll_hide">Stimmen verstecken</string>
 	<string name="dialog_poll_option_edit_hint">%1$d. Option</string>
 	<string name="dialog_poll_duration_hint">Dauer</string>
-	<string name="selector_minutes">Minuten</string>
-	<string name="selector_hours">Stunden</string>
-	<string name="selector_days">Tage</string>
 	<string name="poll_option_edit_button">hinzufügen/entfernen</string>
 	<string name="status_add_poll">Umfrage hinzufügen</string>
 </resources>

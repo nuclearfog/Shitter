@@ -52,11 +52,8 @@ public class PollDialog extends Dialog implements OnClickListener {
 		multiple_choice = findViewById(R.id.dialog_poll_mul_choice);
 		hide_votes = findViewById(R.id.dialog_poll_hide_total);
 
-		ArrayAdapter<String> timeUnitAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item);
-		timeUnitAdapter.add(context.getResources().getString(R.string.selector_minutes));
-		timeUnitAdapter.add(context.getResources().getString(R.string.selector_hours));
-		timeUnitAdapter.add(context.getResources().getString(R.string.selector_days));
-		timeUnitSelector.setAdapter(timeUnitAdapter);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.timeunits, android.R.layout.simple_spinner_dropdown_item);
+		timeUnitSelector.setAdapter(adapter);
 		timeUnitSelector.setSelected(true);
 
 		optionAdapter = new EditOptionsAdapter();
@@ -102,6 +99,11 @@ public class PollDialog extends Dialog implements OnClickListener {
 		} else if (v.getId() == R.id.dialog_poll_close) {
 			dismiss();
 		}
+	}
+
+
+	@Override
+	public void show() {
 	}
 
 	/**

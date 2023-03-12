@@ -12,7 +12,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,6 +37,7 @@ import org.nuclearfog.twidda.ui.dialogs.PollDialog;
 import org.nuclearfog.twidda.ui.dialogs.PollDialog.PollUpdateCallback;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
+import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
 
 /**
  * Status editor activity.
@@ -59,7 +59,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 */
 	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
 
-	private ImageButton mediaBtn, locationBtn;
+	private View mediaBtn;
+	private View locationBtn;
 	private View locationPending;
 
 	private StatusUpdater uploaderAsync;
@@ -68,6 +69,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
 	private PollDialog pollDialog;
+	private StatusPreferenceDialog preferenceDialog;
 	private IconAdapter adapter;
 
 	private StatusUpdate statusUpdate = new StatusUpdate();
@@ -85,9 +87,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		setContentView(R.layout.popup_status);
 		ViewGroup root = findViewById(R.id.popup_status_root);
 		ImageView background = findViewById(R.id.popup_status_background);
-		ImageButton statusButton = findViewById(R.id.popup_status_send);
-		ImageButton closeButton = findViewById(R.id.popup_status_close);
-		ImageButton addPoll = findViewById(R.id.popup_status_add_poll);
+		View statusButton = findViewById(R.id.popup_status_send);
+		View closeButton = findViewById(R.id.popup_status_close);
+		View addPoll = findViewById(R.id.popup_status_add_poll);
+		View preference = findViewById(R.id.popup_status_pref);
 		RecyclerView iconList = findViewById(R.id.popup_status_media_icons);
 		EditText statusText = findViewById(R.id.popup_status_input);
 		locationBtn = findViewById(R.id.popup_status_add_location);
@@ -98,6 +101,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
+		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
 		AppStyles.setEditorTheme(root, background);
 
@@ -116,6 +120,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		iconList.setAdapter(adapter);
 
 		closeButton.setOnClickListener(this);
+		preference.setOnClickListener(this);
 		addPoll.setOnClickListener(this);
 		statusButton.setOnClickListener(this);
 		mediaBtn.setOnClickListener(this);
@@ -180,6 +185,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		// show poll dialog
 		else if (v.getId() == R.id.popup_status_add_poll) {
 			pollDialog.show(statusUpdate.getPoll());
+		}
+		// open status preference
+		else if (v.getId() == R.id.popup_status_pref) {
+			preferenceDialog.show();
 		}
 		// Add media to the status
 		else if (v.getId() == R.id.popup_status_add_media) {

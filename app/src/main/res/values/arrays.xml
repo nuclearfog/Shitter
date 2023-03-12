@@ -54,4 +54,17 @@
 		<item>@drawable/follower</item>
 	</integer-array>
 
+	<string-array name="timeunits">
+		<item>Minutes</item>
+		<item>Hours</item>
+		<item>Days</item>
+	</string-array>
+
+	<string-array name="visibility">
+		<item>Public</item>
+		<item>Private</item>
+		<item>Direct</item>
+		<item>Unlisted</item>
+	</string-array>
+
 </resources>

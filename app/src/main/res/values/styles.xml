@@ -54,6 +54,10 @@
 		<item name="android:windowCloseOnTouchOutside">false</item>
 	</style>
 
+	<style name="StatusDialog" parent="Theme.AppCompat.Dialog">
+		<item name="android:windowMinWidthMinor">50%</item>
+	</style>
+
 	<!-- activity enter/exit animations -->
 	<style name="TransactionPending" parent="@android:style/Animation">
 		<item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>

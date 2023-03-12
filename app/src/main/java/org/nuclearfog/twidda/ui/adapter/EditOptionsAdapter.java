@@ -89,7 +89,7 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 			options.remove(position);
 			notifyItemRemoved(position);
 			// update upper items
-			notifyItemRangeChanged(position, MAX_OPTIONS - position);
+			notifyItemRangeChanged(position + 1, MAX_OPTIONS - position - 1);
 			// add placeholder item
 			if (options.peekLast() != null) {
 				options.add(null);

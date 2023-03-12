@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string-array name="timeunits">
+		<item>Minuten</item>
+		<item>Stunden</item>
+		<item>Tage</item>
+	</string-array>
+
+	<string-array name="visibility">
+		<item>Öffentlich</item>
+		<item>Privat</item>
+		<item>Direkt</item>
+		<item>Ungelistet</item>
+	</string-array>
+
+</resources>

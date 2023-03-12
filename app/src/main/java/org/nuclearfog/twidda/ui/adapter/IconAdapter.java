@@ -134,13 +134,6 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 		appendItem(IconHolder.TYPE_GIF);
 	}
 
-	/**
-	 * append location icon at the end
-	 */
-	public void addLocation() {
-		appendItem(IconHolder.TYPE_LOCATION);
-	}
-
 
 	public void appendItem(int itemType) {
 		if (invert) {
