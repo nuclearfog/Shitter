@@ -36,7 +36,9 @@ public class PollDialog extends Dialog implements OnClickListener {
 	private PollUpdateCallback callback;
 	private PollUpdate poll;
 
-
+	/**
+	 *
+	 */
 	public PollDialog(@NonNull Context context, PollUpdateCallback callback) {
 		super(context, R.style.PollDialog);
 		this.callback = callback;
@@ -44,6 +46,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		ViewGroup root = findViewById(R.id.dialog_poll_root);
 		RecyclerView optionsList = findViewById(R.id.dialog_poll_option_list);
 		Button confirm = findViewById(R.id.dialog_poll_create);
+		View close = findViewById(R.id.dialog_poll_close);
 		durationInput = findViewById(R.id.dialog_poll_duration_input);
 		timeUnitSelector = findViewById(R.id.dialog_poll_duration_timeunit);
 		multiple_choice = findViewById(R.id.dialog_poll_mul_choice);
@@ -61,6 +64,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		AppStyles.setTheme(root);
 
 		confirm.setOnClickListener(this);
+		close.setOnClickListener(this);
 	}
 
 
@@ -95,10 +99,16 @@ public class PollDialog extends Dialog implements OnClickListener {
 			poll.setOptions(optionAdapter.getOptions());
 			callback.onPollUpdate(poll);
 			dismiss();
+		} else if (v.getId() == R.id.dialog_poll_close) {
+			dismiss();
 		}
 	}
 
-
+	/**
+	 * show dialog
+	 *
+	 * @param poll previous poll information if any
+	 */
 	public void show(@Nullable PollUpdate poll) {
 		if (!isShowing()) {
 			if (poll != null) {
@@ -113,9 +123,14 @@ public class PollDialog extends Dialog implements OnClickListener {
 		}
 	}
 
-
+	/**
+	 * callback used to return poll information
+	 */
 	public interface PollUpdateCallback {
 
-		void onPollUpdate(@Nullable PollUpdate update);
+		/**
+		 * @param update updated poll information
+		 */
+		void onPollUpdate(PollUpdate update);
 	}
 }

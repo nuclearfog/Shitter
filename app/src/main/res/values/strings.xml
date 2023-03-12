@@ -312,6 +312,7 @@
 	<string name="login_network_selector_label">select network</string>
 	<string name="login_network_settings">connection settings</string>
 	<string name="poll_option_edit_button">add/remove</string>
+	<string name="dialog_poll_close">close dialog</string>
 	<string name="selector_minutes">Minutes</string>
 	<string name="selector_hours">Hours</string>
 	<string name="selector_days">Days</string>

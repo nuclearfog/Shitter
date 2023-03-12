@@ -246,8 +246,11 @@
 	<dimen name="dialog_poll_root_layout_padding">5dp</dimen>
 	<dimen name="dialog_poll_layout_margins">3dp</dimen>
 	<dimen name="dialog_poll_textsize_small">12sp</dimen>
-	<dimen name="dialog_poll_title_textsize">18sp</dimen>
+	<dimen name="dialog_poll_textsize_medium">16sp</dimen>
+	<dimen name="dialog_poll_textsize_big">18sp</dimen>
+	<dimen name="dialog_poll_button_close_size">24sp</dimen>
 	<dimen name="dialog_poll_button_height">20sp</dimen>
+	<dimen name="dialog_poll_spinner_height">22sp</dimen>
 
 	<!--dimens of tabitem.xml-->
 	<dimen name="tabitem_icon_size">22sp</dimen>
