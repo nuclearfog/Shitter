@@ -61,6 +61,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	private View mediaBtn;
 	private View locationBtn;
+	private View pollBtn;
 	private View locationPending;
 
 	private StatusUpdater uploaderAsync;
@@ -89,10 +90,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		ImageView background = findViewById(R.id.popup_status_background);
 		View statusButton = findViewById(R.id.popup_status_send);
 		View closeButton = findViewById(R.id.popup_status_close);
-		View addPoll = findViewById(R.id.popup_status_add_poll);
 		View preference = findViewById(R.id.popup_status_pref);
 		RecyclerView iconList = findViewById(R.id.popup_status_media_icons);
 		EditText statusText = findViewById(R.id.popup_status_input);
+		pollBtn = findViewById(R.id.popup_status_add_poll);
 		locationBtn = findViewById(R.id.popup_status_add_location);
 		mediaBtn = findViewById(R.id.popup_status_add_media);
 		locationPending = findViewById(R.id.popup_status_location_loading);
@@ -119,16 +120,16 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 		iconList.setAdapter(adapter);
 
+		statusText.addTextChangedListener(this);
 		closeButton.setOnClickListener(this);
 		preference.setOnClickListener(this);
-		addPoll.setOnClickListener(this);
 		statusButton.setOnClickListener(this);
+		pollBtn.setOnClickListener(this);
 		mediaBtn.setOnClickListener(this);
 		locationBtn.setOnClickListener(this);
 		confirmDialog.setConfirmListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		adapter.addOnMediaClickListener(this);
-		statusText.addTextChangedListener(this);
 	}
 
 
@@ -258,8 +259,13 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 				break;
 		}
+		// hide media button if limit is reached
 		if (statusUpdate.mediaLimitReached()) {
 			mediaBtn.setVisibility(View.GONE);
+		}
+		// hide poll button
+		if (mediaType != StatusUpdate.MEDIA_ERROR && pollBtn.getVisibility() != View.GONE) {
+			pollBtn.setVisibility(View.GONE);
 		}
 	}
 

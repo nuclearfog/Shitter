@@ -152,7 +152,7 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 				iconRes = R.drawable.follower_request;
 				break;
 		}
-		if (settings.getLogin().getConfiguration().NotificationDismissEnabled()) {
+		if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
 			notificationDismiss.setVisibility(VISIBLE);
 		}
 		label.setVisibility(VISIBLE);

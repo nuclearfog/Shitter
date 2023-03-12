@@ -38,6 +38,9 @@ public enum Configuration {
 	private final boolean postLocationSupported;
 	private final boolean userlistVisibility;
 	private final boolean notificationDismissSupported;
+	private final boolean statusSpoilerSupported;
+	private final boolean statusVisibilitySupported;
+	private final boolean directMessageSupported;
 	private final int maxImages;
 	private final int maxGifs;
 	private final int maxVideos;
@@ -58,6 +61,9 @@ public enum Configuration {
 				postLocationSupported = true;
 				userlistVisibility = true;
 				notificationDismissSupported = false;
+				statusSpoilerSupported = false;
+				statusVisibilitySupported = false;
+				directMessageSupported = true;
 				maxImages = 4;
 				maxGifs = 1;
 				maxVideos = 1;
@@ -73,6 +79,9 @@ public enum Configuration {
 				postLocationSupported = false;
 				userlistVisibility = false;
 				notificationDismissSupported = true;
+				statusSpoilerSupported = true;
+				statusVisibilitySupported = true;
+				directMessageSupported = false;
 				maxImages = 4;
 				maxGifs = 1;
 				maxVideos = 1;
@@ -139,8 +148,29 @@ public enum Configuration {
 	/**
 	 * @return true if notification dismiss is supported
 	 */
-	public boolean NotificationDismissEnabled() {
+	public boolean notificationDismissEnabled() {
 		return notificationDismissSupported;
+	}
+
+	/**
+	 * @return true if login type supports warining for status spoiler
+	 */
+	public boolean statusSpoilerSupported() {
+		return statusSpoilerSupported;
+	}
+
+	/**
+	 * @return true if login type supports status visibility states
+	 */
+	public boolean statusVisibilitySupported() {
+		return statusVisibilitySupported;
+	}
+
+	/**
+	 * @return true if directmessaging is supported
+	 */
+	public boolean directmessageSupported() {
+		return directMessageSupported;
 	}
 
 	/**

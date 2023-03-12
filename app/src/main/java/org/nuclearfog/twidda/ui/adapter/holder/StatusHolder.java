@@ -239,7 +239,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		label.setVisibility(View.VISIBLE);
 		label.setText(text);
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
-		if (settings.getLogin().getConfiguration().NotificationDismissEnabled()) {
+		if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
 			dismissButton.setVisibility(View.VISIBLE);
 		}
 		AppStyles.setDrawableColor(label, settings.getIconColor());

@@ -146,7 +146,6 @@
 	<string name="menu_excluded_users">Blocklists</string>
 	<string name="menu_exclude_user">exclude user</string>
 	<string name="menu_search_filter">filter results</string>
-	<string name="menu_show_local_timeline">show local timeline</string>
 	<string name="menu_hint_mute_user">enter @name to mute</string>
 	<string name="menu_hint_block_user">enter @name to block</string>
 	<string name="menu_refresh_exclude">refresh exclude list</string>
@@ -214,7 +213,7 @@
 	<string name="status_add_image">add new image</string>
 	<string name="notification_dismiss">dismiss notification</string>
 	<string name="send_status">share status</string>
-	<string name="status_pref">status preferences</string>
+	<string name="status_pref">Status preferences</string>
 	<string name="status_add_poll">add poll</string>
 	<string name="status_close">close editor</string>
 	<string name="profile_link">Link</string>
@@ -260,6 +259,7 @@
 	<string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
 	<string name="settings_look">Look</string>
 	<string name="settings_description_enable_twitter_alt">use nitter.net for links</string>
+	<string name="settings_description_local_timeline">show local timelines only</string>
 	<string name="item_load_more">load more</string>
 	<string name="item_image_save">save image</string>
 	<string name="item_poll_option_vote">vote</string>
@@ -316,6 +316,6 @@
 	<string name="dialog_poll_close">close dialog</string>
 	<string name="dialog_status_title">Status preferences</string>
 	<string name="dialog_status_sensitive">sensitive</string>
-	<string name="dialog_status_spoiler">spoiler</string>
-	<string name="dialog_status_visibility">visibility</string>
+	<string name="dialog_status_spoiler">Spoiler</string>
+	<string name="dialog_status_visibility">Visibility</string>
 </resources>

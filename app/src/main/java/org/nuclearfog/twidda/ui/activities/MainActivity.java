@@ -35,7 +35,6 @@ import org.nuclearfog.twidda.backend.async.LinkLoader;
 import org.nuclearfog.twidda.backend.async.LinkLoader.LinkResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
@@ -166,9 +165,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem localTl = menu.findItem(R.id.menu_local_timeline);
-		localTl.setVisible(settings.getLogin().getConfiguration() == Configuration.MASTODON);
-		localTl.setChecked(settings.useLocalTimeline());
+		MenuItem message = menu.findItem(R.id.menu_message);
+		message.setVisible(settings.getLogin().getConfiguration().directmessageSupported());
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -205,13 +203,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		else if (item.getItemId() == R.id.menu_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
 			activityResultLauncher.launch(accountManager);
-		}
-		// enable disable Mastodon local timeline
-		else if (item.getItemId() == R.id.menu_local_timeline) {
-			boolean toggle = !settings.useLocalTimeline();
-			settings.setLocalTimeline(toggle);
-			adapter.notifySettingsChanged();
-			item.setChecked(toggle);
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -136,7 +136,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton toggleImg = findViewById(R.id.toggleImg);
 		SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
 		SwitchButton enableLike = findViewById(R.id.enable_like);
-		SwitchButton enableTwitterAlt = findViewById(R.id.settings_enable_twitter_alt);
+		SwitchButton enableNitter = findViewById(R.id.settings_enable_twitter_alt);
+		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
 		View EnableTwitterAltDescr = findViewById(R.id.settings_enable_twitter_alt_descr);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
@@ -192,7 +193,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		databaseAsync = new DatabaseAction(this);
 
 		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
-			enableTwitterAlt.setVisibility(View.GONE);
+			enableLocalTl.setVisibility(View.VISIBLE);
+			enableNitter.setVisibility(View.GONE);
 			EnableTwitterAltDescr.setVisibility(View.GONE);
 			trend_card.setVisibility(View.GONE);
 		}
@@ -218,7 +220,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toggleImg.setCheckedImmediately(settings.imagesEnabled());
 		toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
 		enableLike.setCheckedImmediately(settings.likeEnabled());
-		enableTwitterAlt.setCheckedImmediately(settings.twitterAltSet());
+		enableNitter.setCheckedImmediately(settings.twitterAltSet());
+		enableLocalTl.setCheckedImmediately(settings.useLocalTimeline());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
 		enableProxy.setCheckedImmediately(settings.isProxyEnabled());
 		enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
@@ -236,7 +239,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		delButton.setOnClickListener(this);
 		toggleImg.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
-		enableTwitterAlt.setOnCheckedChangeListener(this);
+		enableNitter.setOnCheckedChangeListener(this);
+		enableLocalTl.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
 		enableProxy.setOnCheckedChangeListener(this);
 		enableAuth.setOnCheckedChangeListener(this);
@@ -505,6 +509,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable status indicators
 		else if (c.getId() == R.id.enable_status_indicators) {
 			settings.enableStatusIndicators(checked);
+		}
+		// enable/disable local timeline (Mastodon)
+		else if (c.getId() == R.id.settings_local_timeline) {
+			settings.setLocalTimeline(checked);
 		}
 		// enable proxy settings
 		else if (c.getId() == R.id.settings_enable_proxy) {

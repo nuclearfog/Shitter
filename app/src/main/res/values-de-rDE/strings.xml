@@ -267,7 +267,6 @@
 	<string name="info_missing_key">bitte Schlüssel eingeben</string>
 	<string name="info_missing_host">bitte gültigen Hostnamen eingeben</string>
 	<string name="info_missing_api_keys">Bitte API-Schlüssel hinzufügen</string>
-	<string name="menu_show_local_timeline">zeige lokale Timeline</string>
 	<string name="info_status_bookmarked">Status zu Lesezeichen hinzugefügt</string>
 	<string name="info_status_unbookmarked">Status aus Lesezeichen entfernt</string>
 	<string name="settings_bookmark_color">Lesezeichen symbol</string>
@@ -285,4 +284,11 @@
 	<string name="dialog_poll_duration_hint">Dauer</string>
 	<string name="poll_option_edit_button">hinzufügen/entfernen</string>
 	<string name="status_add_poll">Umfrage hinzufügen</string>
+	<string name="status_pref">Statuseinstellungen</string>
+	<string name="settings_description_local_timeline">nur lokale Timeline zeigen</string>
+	<string name="dialog_poll_close">Dialogfenster schließen</string>
+	<string name="dialog_status_title">Statuseinstellungen</string>
+	<string name="dialog_status_sensitive">sensibel</string>
+	<string name="dialog_status_spoiler">Spoiler</string>
+	<string name="dialog_status_visibility">Sichtbarkeit</string>
 </resources>

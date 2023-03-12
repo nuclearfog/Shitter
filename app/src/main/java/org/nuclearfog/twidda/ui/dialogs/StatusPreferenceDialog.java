@@ -16,6 +16,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * status editor preference dialog used to set additional status information
@@ -37,11 +38,19 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		SwitchButton sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
 		SwitchButton spoilerCheck = findViewById(R.id.dialog_status_spoiler);
 		Spinner visibilitySelector = findViewById(R.id.dialog_status_visibility);
+		View statusVisibility = findViewById(R.id.dialog_status_visibility_container);
+		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
+		GlobalSettings settings = GlobalSettings.getInstance(context);
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.visibility, android.R.layout.simple_spinner_dropdown_item);
 		visibilitySelector.setAdapter(adapter);
 		AppStyles.setTheme(rootView);
-
+		if (!settings.getLogin().getConfiguration().statusVisibilitySupported()) {
+			statusVisibility.setVisibility(View.GONE);
+		}
+		if (!settings.getLogin().getConfiguration().statusSpoilerSupported()) {
+			statusSpoiler.setVisibility(View.GONE);
+		}
 		sensitiveCheck.setOnCheckedChangeListener(this);
 		spoilerCheck.setOnCheckedChangeListener(this);
 		visibilitySelector.setOnItemSelectedListener(this);
