@@ -55,7 +55,7 @@
 	</style>
 
 	<style name="StatusDialog" parent="Theme.AppCompat.Dialog">
-		<item name="android:windowMinWidthMinor">50%</item>
+		<item name="android:windowMinWidthMinor">80%</item>
 	</style>
 
 	<!-- activity enter/exit animations -->

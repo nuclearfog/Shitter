@@ -315,7 +315,7 @@
 	<string name="poll_option_edit_button">add/remove</string>
 	<string name="dialog_poll_close">close dialog</string>
 	<string name="dialog_status_title">Status preferences</string>
-	<string name="dialog_status_sensitive">sensitive</string>
-	<string name="dialog_status_spoiler">Spoiler</string>
+	<string name="dialog_status_sensitive">mark content as sensitive</string>
+	<string name="dialog_status_spoiler">mark content as spoiler</string>
 	<string name="dialog_status_visibility">Visibility</string>
 </resources>

@@ -42,7 +42,14 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:gravity="center_vertical">
+		android:gravity="center_vertical"
+		android:layout_marginTop="@dimen/dialog_poll_layout_margins">
+
+		<com.kyleduo.switchbutton.SwitchButton
+			android:id="@+id/dialog_poll_mul_choice"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="@dimen/dialog_poll_layout_margins"/>
 
 		<TextView
 			android:id="@+id/dialog_poll_mul_choice_label"
@@ -51,12 +58,20 @@
 			android:layout_weight="2"
 			android:text="@string/dialog_poll_mc"
 			android:lines="1"
-			android:gravity="end"
 			android:textSize="@dimen/dialog_poll_textsize_small"
 			android:layout_marginEnd="@dimen/dialog_poll_layout_margins"/>
 
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical"
+		android:layout_marginTop="@dimen/dialog_poll_layout_margins">
+
 		<com.kyleduo.switchbutton.SwitchButton
-			android:id="@+id/dialog_poll_mul_choice"
+			android:id="@+id/dialog_poll_hide_total"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="@dimen/dialog_poll_layout_margins"/>
@@ -68,27 +83,16 @@
 			android:layout_weight="1"
 			android:text="@string/dialog_poll_hide"
 			android:lines="1"
-			android:gravity="end"
 			android:textSize="@dimen/dialog_poll_textsize_small" />
 
-		<com.kyleduo.switchbutton.SwitchButton
-			android:id="@+id/dialog_poll_hide_total"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/dialog_poll_layout_margins"/>
-
-		<View
-			android:id="@+id/dialog_poll_switch_placeholder"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"/>
 	</LinearLayout>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:gravity="center_vertical">
+		android:gravity="center_vertical"
+		android:layout_marginTop="@dimen/dialog_poll_layout_margins">
 
 		<EditText
 			android:id="@+id/dialog_poll_duration_input"

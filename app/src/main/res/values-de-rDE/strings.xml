@@ -288,7 +288,7 @@
 	<string name="settings_description_local_timeline">nur lokale Timeline zeigen</string>
 	<string name="dialog_poll_close">Dialogfenster schließen</string>
 	<string name="dialog_status_title">Statuseinstellungen</string>
-	<string name="dialog_status_sensitive">sensibel</string>
-	<string name="dialog_status_spoiler">Spoiler</string>
+	<string name="dialog_status_sensitive">Inhalt als sensibel markieren</string>
+	<string name="dialog_status_spoiler">Inhalt als Spoiler markieren</string>
 	<string name="dialog_status_visibility">Sichtbarkeit</string>
 </resources>
