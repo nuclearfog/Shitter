@@ -54,20 +54,9 @@ public class ConnectionManager implements OnSettingsChangeListener {
 	 * @return connection
 	 */
 	@NonNull
-	public static Connection getConnection(Context context) {
-		return getConnection(context, null);
-	}
-
-	/**
-	 * creates a connection to an online service
-	 *
-	 * @param config configuration to use, null to choose automatically
-	 * @return connection
-	 */
-	@NonNull
-	public static Connection getConnection(Context context, @Nullable Configuration config) {
+	public static Connection getDefaultConnection(Context context) {
 		ConnectionManager manager = ConnectionManager.getInstance(context);
-		return manager.getConnection(config);
+		return manager.getConnection(null);
 	}
 
 	/**

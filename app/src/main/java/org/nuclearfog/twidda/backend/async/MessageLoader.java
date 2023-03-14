@@ -29,7 +29,7 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 	 */
 	public MessageLoader(Context context) {
 		db = new AppDatabase(context);
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
@@ -76,9 +76,9 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 		public static final int ONLINE = 2;
 		public static final int DELETE = 3;
 
-		public final int mode, index;
-		public final long id;
-		public final String cursor;
+		final int mode, index;
+		final long id;
+		final String cursor;
 
 		public MessageLoaderParam(int mode, int index, long id, String cursor) {
 			this.mode = mode;

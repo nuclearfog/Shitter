@@ -40,7 +40,7 @@ public class LinkLoader extends AsyncExecutor<Uri, LinkLoader.LinkResult> {
 	 *
 	 */
 	public LinkLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 

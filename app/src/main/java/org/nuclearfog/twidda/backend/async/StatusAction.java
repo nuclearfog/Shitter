@@ -27,7 +27,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 	 *
 	 */
 	public StatusAction(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -128,8 +128,8 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 		public static final int UNBOOKMARK = 10;
 		public static final int DELETE = 11;
 
-		public final int mode;
-		public final long id;
+		final int mode;
+		final long id;
 
 		public StatusParam(int mode, long id) {
 			this.mode = mode;

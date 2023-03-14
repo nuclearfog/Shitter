@@ -135,7 +135,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	}
 
 
-	public void appendItem(int itemType) {
+	private void appendItem(int itemType) {
 		if (invert) {
 			items.add(0, itemType);
 			notifyItemInserted(0);

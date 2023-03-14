@@ -23,7 +23,7 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 	 *
 	 */
 	public ListAction(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
@@ -66,8 +66,8 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 		public static final int UNFOLLOW = 3;
 		public static final int DELETE = 4;
 
-		public final int mode;
-		public final long id;
+		final int mode;
+		final long id;
 
 		public ListActionParam(int mode, long id) {
 			this.mode = mode;

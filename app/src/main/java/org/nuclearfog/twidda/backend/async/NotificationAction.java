@@ -25,7 +25,7 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 	 *
 	 */
 	public NotificationAction(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -70,8 +70,8 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 		public static final int ONLINE = 2;
 		public static final int DISMISS = 3;
 
-		public final int mode;
-		public final long id;
+		final int mode;
+		final long id;
 
 		public NotificationActionParam(int mode, long id) {
 			this.mode = mode;
@@ -96,7 +96,7 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 		public final int mode;
 		public final long id;
 
-		public NotificationActionResult(int mode, long id, @Nullable Notification notification, @Nullable ConnectionException exception) {
+		NotificationActionResult(int mode, long id, @Nullable Notification notification, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.notification = notification;
 			this.mode = mode;

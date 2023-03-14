@@ -12,7 +12,7 @@ public abstract class ConnectionException extends Exception {
 	/**
 	 * indicates a task interrupt
 	 */
-	public static final int INTERRUPTED = -1;
+	protected static final int INTERRUPTED = -1;
 
 	/**
 	 * defines an error which is not listed here

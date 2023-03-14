@@ -43,7 +43,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 
 		public static final int DELETE = 1;
 
-		public final int mode;
+		final int mode;
 
 		public DatabaseParam(int mode) {
 			this.mode = mode;

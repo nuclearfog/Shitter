@@ -32,7 +32,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 	 */
 	public StatusLoader(Context context) {
 		db = new AppDatabase(context);
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
@@ -161,9 +161,9 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 		public static final int PUBLIC = 8;
 		public static final int BOOKMARKS = 9;
 
-		public final String search;
-		public final int type, pos;
-		public final long id, minId, maxId;
+		final String search;
+		final int type, pos;
+		final long id, minId, maxId;
 
 		public StatusParameter(int type, long id, long minId, long maxId, int pos, String search) {
 			this.type = type;

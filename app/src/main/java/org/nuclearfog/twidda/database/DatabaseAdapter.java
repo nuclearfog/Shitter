@@ -167,7 +167,7 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create table for notifications
 	 */
-	public static final String TABLE_NOTIFICATION = "CREATE TABLE IF NOT EXISTS "
+	private static final String TABLE_NOTIFICATION = "CREATE TABLE IF NOT EXISTS "
 			+ NotificationTable.NAME + "("
 			+ NotificationTable.ID + " INTEGER PRIMARY KEY,"
 			+ NotificationTable.OWNER + " INTEGER,"
@@ -179,7 +179,7 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create media table
 	 */
-	public static final String TABLE_MEDIA = "CREATE TABLE IF NOT EXISTS "
+	private static final String TABLE_MEDIA = "CREATE TABLE IF NOT EXISTS "
 			+ MediaTable.NAME + "("
 			+ MediaTable.KEY + " TEXT PRIMARY KEY,"
 			+ MediaTable.TYPE + " INTEGER,"
@@ -189,7 +189,7 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create location table
 	 */
-	public static final String TABLE_LOCATION = "CREATE TABLE  IF NOT EXISTS "
+	private static final String TABLE_LOCATION = "CREATE TABLE  IF NOT EXISTS "
 			+ LocationTable.NAME + "("
 			+ LocationTable.ID + " INTEGER,"
 			+ LocationTable.COUNTRY + " TEXT,"
@@ -200,7 +200,7 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create the emoji table
 	 */
-	public static final String TABLE_EMOJI = "CREATE TABLE IF NOT EXISTS "
+	private static final String TABLE_EMOJI = "CREATE TABLE IF NOT EXISTS "
 			+ EmojiTable.NAME + "("
 			+ EmojiTable.CODE + " TEXT PRIMARY KEY,"
 			+ EmojiTable.CATEGORY + " TEXT,"
@@ -209,7 +209,7 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create a poll table
 	 */
-	public static final String TABLE_POLL = "CREATE TABLE IF NOT EXISTS "
+	private static final String TABLE_POLL = "CREATE TABLE IF NOT EXISTS "
 			+ PollTable.NAME + "("
 			+ PollTable.ID + " INTEGER PRIMARY KEY,"
 			+ PollTable.NAME + " TEXT,"

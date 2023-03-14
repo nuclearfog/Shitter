@@ -25,7 +25,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 	 *
 	 */
 	public UserLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -63,8 +63,8 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 		public static final int DATABASE = 1;
 		public static final int ONLINE = 2;
 
-		public final int mode;
-		public final long id;
+		final int mode;
+		final long id;
 
 		public UserParam(int mode, long id) {
 			this.mode = mode;

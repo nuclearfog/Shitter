@@ -30,6 +30,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ListAction;
 import org.nuclearfog.twidda.backend.async.ListAction.ListActionParam;
 import org.nuclearfog.twidda.backend.async.ListAction.ListActionResult;
@@ -98,6 +99,10 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
+	private AsyncCallback<ListActionResult> userlistSet = this::setList;
+	private AsyncCallback<ListManagerResult> userlistUpdate = this::updateList;
+
+
 	private FragmentAdapter adapter;
 	private ListAction listLoaderAsync;
 	private ListManager listManagerAsync;
@@ -165,7 +170,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			if (!blockUpdate) {
 				// update list information
 				ListActionParam param = new ListActionParam(ListActionParam.LOAD, userList.getId());
-				listLoaderAsync.execute(param, this::setList);
+				listLoaderAsync.execute(param, userlistSet);
 			}
 		}
 	}
@@ -234,7 +239,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 					confirmDialog.show(ConfirmDialog.LIST_UNFOLLOW);
 				} else {
 					ListActionParam param = new ListActionParam(ListActionParam.FOLLOW, userList.getId());
-					listLoaderAsync.execute(param, this::setList);
+					listLoaderAsync.execute(param, userlistSet);
 				}
 			}
 			// theme expanded search view
@@ -282,21 +287,21 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (type == ConfirmDialog.LIST_DELETE && userList != null) {
 			if (listLoaderAsync.isIdle()) {
 				ListActionParam param = new ListActionParam(ListActionParam.DELETE, userList.getId());
-				listLoaderAsync.execute(param, this::setList);
+				listLoaderAsync.execute(param, userlistSet);
 			}
 		}
 		// unfollow user list
 		else if (type == ConfirmDialog.LIST_UNFOLLOW) {
 			if (listLoaderAsync.isIdle() && userList != null) {
 				ListActionParam param = new ListActionParam(ListActionParam.UNFOLLOW, userList.getId());
-				listLoaderAsync.execute(param, this::setList);
+				listLoaderAsync.execute(param, userlistSet);
 			}
 		}
 		// remove user from list
 		else if (type == ConfirmDialog.LIST_REMOVE_USER) {
 			if (listManagerAsync.isIdle() && userList != null && user != null) {
 				ListManagerParam param = new ListManagerParam(ListManagerParam.REMOVE, userList.getId(), user.getScreenname());
-				listManagerAsync.execute(param, this::updateList);
+				listManagerAsync.execute(param, userlistUpdate);
 			}
 		}
 	}
@@ -333,7 +338,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			if (listManagerAsync.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
 				ListManagerParam param = new ListManagerParam(ListManagerParam.ADD, userList.getId(), query);
-				listManagerAsync.execute(param, this::updateList);
+				listManagerAsync.execute(param, userlistUpdate);
 				return true;
 			}
 		} else {
@@ -358,7 +363,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	/**
 	 * update userlist member
 	 */
-	public void updateList(ListManagerResult result) {
+	private void updateList(ListManagerResult result) {
 		switch (result.mode) {
 			case ListManagerResult.ADD_USER:
 				String name;

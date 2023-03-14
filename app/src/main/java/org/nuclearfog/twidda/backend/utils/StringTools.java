@@ -307,24 +307,6 @@ public class StringTools {
 	}
 
 	/**
-	 * calculate sign string
-	 *
-	 * @param baseString string to sign
-	 * @param keyString  key used for sign
-	 * @return sign string
-	 */
-	public static String computeSignature(String baseString, String keyString) throws IOException {
-		try {
-			SecretKey secretKey = new SecretKeySpec(keyString.getBytes(), SIGNATURE_ALG);
-			Mac mac = Mac.getInstance(SIGNATURE_ALG);
-			mac.init(secretKey);
-			return new String(Base64.encode(mac.doFinal(baseString.getBytes()), Base64.DEFAULT)).trim();
-		} catch (Exception e) {
-			throw new IOException("error generating signature!");
-		}
-	}
-
-	/**
 	 * formate user profile image link. (remove suffix but keep the file extension if any)
 	 *
 	 * @param profileImage user profile image
@@ -341,5 +323,23 @@ public class StringTools {
 				return profileImage.substring(0, suffix) + profileImage.substring(extension);
 		}
 		return profileImage;
+	}
+
+	/**
+	 * calculate sign string
+	 *
+	 * @param baseString string to sign
+	 * @param keyString  key used for sign
+	 * @return sign string
+	 */
+	private static String computeSignature(String baseString, String keyString) throws IOException {
+		try {
+			SecretKey secretKey = new SecretKeySpec(keyString.getBytes(), SIGNATURE_ALG);
+			Mac mac = Mac.getInstance(SIGNATURE_ALG);
+			mac.init(secretKey);
+			return new String(Base64.encode(mac.doFinal(baseString.getBytes()), Base64.DEFAULT)).trim();
+		} catch (Exception e) {
+			throw new IOException("error generating signature!");
+		}
 	}
 }

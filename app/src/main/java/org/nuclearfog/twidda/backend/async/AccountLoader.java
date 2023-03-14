@@ -54,8 +54,8 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 		public static final int LOAD = 1;
 		public static final int DELETE = 2;
 
-		public final int mode;
-		public final long id;
+		final int mode;
+		final long id;
 
 		public AccountParameter(int mode, long id) {
 			this.mode = mode;

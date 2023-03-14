@@ -23,7 +23,7 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 	 *
 	 */
 	public ListManager(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 
 	}
 
@@ -57,9 +57,9 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 		public static final int ADD = 1;
 		public static final int REMOVE = 2;
 
-		public final long id;
-		public final String username;
-		public final int mode;
+		final int mode;
+		final long id;
+		final String username;
 
 		public ListManagerParam(int mode, long id, String username) {
 			this.id = id;

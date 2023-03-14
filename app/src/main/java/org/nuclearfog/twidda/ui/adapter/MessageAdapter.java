@@ -195,7 +195,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	/**
 	 * disable placeholder view loading animation
 	 */
-	public void disableLoading() {
+	private void disableLoading() {
 		if (loadingIndex != NO_LOADING) {
 			int oldIndex = loadingIndex;
 			loadingIndex = NO_LOADING;

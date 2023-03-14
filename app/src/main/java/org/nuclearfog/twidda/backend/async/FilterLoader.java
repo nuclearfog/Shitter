@@ -30,7 +30,7 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 	 *
 	 */
 	public FilterLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -72,8 +72,8 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 		public static final int MUTE = 2;
 		public static final int BLOCK = 3;
 
-		public final String name;
-		public final int mode;
+		final String name;
+		final int mode;
 
 		public FilterParam(int mode) {
 			this.mode = mode;

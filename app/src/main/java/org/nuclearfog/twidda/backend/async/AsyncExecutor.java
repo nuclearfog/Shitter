@@ -40,7 +40,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	/**
 	 * handler used to send result back to activity/fragment
 	 */
-	private static final Handler UI_HANDLER = new Handler(Looper.getMainLooper());
+	private Handler uiHandler = new Handler(Looper.getMainLooper());
 
 	/**
 	 * callback to activity/fragment
@@ -95,7 +95,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @param result result of the background task
 	 */
 	private void onPostExecute(final Result result) {
-		UI_HANDLER.post(new Runnable() {
+		uiHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				if (!queue.isEmpty())

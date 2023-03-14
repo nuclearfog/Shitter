@@ -49,15 +49,16 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
 import org.nuclearfog.twidda.backend.async.StatusAction;
 import org.nuclearfog.twidda.backend.async.StatusAction.StatusParam;
 import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
-import org.nuclearfog.twidda.backend.async.VoteUpdater;
-import org.nuclearfog.twidda.backend.async.VoteUpdater.VoteParam;
-import org.nuclearfog.twidda.backend.async.VoteUpdater.VoteResult;
+import org.nuclearfog.twidda.backend.async.PollAction;
+import org.nuclearfog.twidda.backend.async.PollAction.PollActionParam;
+import org.nuclearfog.twidda.backend.async.PollAction.PollActionResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -180,10 +181,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	private static final int MENU_GROUP_COPY = 0x157426;
 
+	private AsyncCallback<NotificationActionResult> notificationCallback = this::onNotificationResult;
+	private AsyncCallback<StatusResult> statusCallback = this::onStatusResult;
+	private AsyncCallback<PollActionResult> pollResult = this::setPollResult;
+
 	@Nullable
 	private ClipboardManager clip;
 	private StatusAction statusAsync;
-	private VoteUpdater voteAsync;
+	private PollAction voteAsync;
 	private NotificationAction notificationAsync;
 	private GlobalSettings settings;
 	private Picasso picasso;
@@ -237,7 +242,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		cardList = findViewById(R.id.page_status_cards);
 
 		statusAsync = new StatusAction(this);
-		voteAsync = new VoteUpdater(this);
+		voteAsync = new PollAction(this);
 		notificationAsync = new NotificationAction(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
@@ -325,25 +330,25 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (notification != null) {
 			if (notification instanceof DatabaseNotification) {
 				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
-				notificationAsync.execute(param, this::onNotificationResult);
+				notificationAsync.execute(param, notificationCallback);
 			}
 		} else if (status != null) {
 			if (status instanceof DatabaseStatus) {
 				StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
-				statusAsync.execute(param, this::onStatusResult);
+				statusAsync.execute(param, statusCallback);
 			} else if (status.getPoll() != null) {
-				VoteParam param = new VoteParam(VoteParam.LOAD, status.getPoll(), new int[0]);
-				voteAsync.execute(param, this::setPollResult);
+				PollActionParam param = new PollActionParam(PollActionParam.LOAD, status.getPoll(), new int[0]);
+				voteAsync.execute(param, pollResult);
 			}
 		} else {
 			long statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
 			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
 			if (statusId != 0L) {
 				StatusParam param = new StatusParam(StatusParam.DATABASE, statusId);
-				statusAsync.execute(param, this::onStatusResult);
+				statusAsync.execute(param, statusCallback);
 			} else if (notificationId != 0L) {
 				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
-				notificationAsync.execute(param, this::onNotificationResult);
+				notificationAsync.execute(param, notificationCallback);
 			}
 		}
 	}
@@ -452,13 +457,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 			int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
 			StatusParam param = new StatusParam(mode, status.getId());
-			statusAsync.execute(param, this::onStatusResult);
+			statusAsync.execute(param, statusCallback);
 		}
 		// hide status
 		else if (item.getItemId() == R.id.menu_status_hide) {
 			int mode = hidden ? StatusParam.UNHIDE : StatusParam.HIDE;
 			StatusParam param = new StatusParam(mode, status.getId());
-			statusAsync.execute(param, this::onStatusResult);
+			statusAsync.execute(param, statusCallback);
 		}
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
@@ -579,7 +584,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 				int mode = status.isReposted() ? StatusParam.UNREPOST : StatusParam.REPOST;
 				StatusParam param = new StatusParam(mode, status.getId());
-				statusAsync.execute(param, this::onStatusResult);
+				statusAsync.execute(param, statusCallback);
 				return true;
 			}
 			// favorite this status
@@ -587,7 +592,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 				int mode = status.isFavorited() ? StatusParam.UNFAVORITE : StatusParam.FAVORITE;
 				StatusParam param = new StatusParam(mode, status.getId());
-				statusAsync.execute(param, this::onStatusResult);
+				statusAsync.execute(param, statusCallback);
 				return true;
 			}
 			// go to original status
@@ -630,7 +635,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 						id = status.getEmbeddedStatus().getId();
 					}
 					StatusParam param = new StatusParam(StatusParam.DELETE, id);
-					statusAsync.execute(param, this::onStatusResult);
+					statusAsync.execute(param, statusCallback);
 				}
 				break;
 
@@ -743,8 +748,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onVoteClick(Poll poll, int[] selection) {
 		if (voteAsync.isIdle()) {
-			VoteParam param = new VoteParam(VoteParam.VOTE, poll, selection);
-			voteAsync.execute(param, this::setPollResult);
+			PollActionParam param = new PollActionParam(PollActionParam.VOTE, poll, selection);
+			voteAsync.execute(param, pollResult);
 		}
 	}
 
@@ -753,7 +758,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param status Tweet information
 	 */
-	public void setStatus(@NonNull Status status) {
+	private void setStatus(@NonNull Status status) {
 		this.status = status;
 		if (status.getEmbeddedStatus() != null) {
 			repostNameButton.setVisibility(View.VISIBLE);
@@ -864,7 +869,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 *
 	 */
-	public void onStatusResult(StatusResult result) {
+	private void onStatusResult(StatusResult result) {
 		if (result.status != null) {
 			setStatus(result.status);
 		}
@@ -872,7 +877,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			case StatusResult.DATABASE:
 				if (result.status != null) {
 					StatusParam param = new StatusParam(StatusParam.ONLINE, result.status.getId());
-					statusAsync.execute(param, this::onStatusResult);
+					statusAsync.execute(param, statusCallback);
 				}
 				break;
 
@@ -952,12 +957,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result notification containing status information
 	 */
-	public void onNotificationResult(NotificationActionResult result) {
+	private void onNotificationResult(NotificationActionResult result) {
 		switch (result.mode) {
 			case NotificationActionResult.DATABASE:
 				if (result.notification != null) {
 					NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, result.notification.getId());
-					notificationAsync.execute(param, this::onNotificationResult);
+					notificationAsync.execute(param, notificationCallback);
 				}
 				// fall through
 
@@ -998,22 +1003,22 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result poll result
 	 */
-	public void setPollResult(VoteResult result) {
+	private void setPollResult(PollActionResult result) {
 		switch (result.mode) {
-			case VoteResult.LOAD:
+			case PollActionResult.LOAD:
 				if (result.poll != null) {
 					adapter.updatePoll(result.poll);
 				}
 				break;
 
-			case VoteResult.VOTE:
+			case PollActionResult.VOTE:
 				if (result.poll != null) {
 					adapter.updatePoll(result.poll);
 					Toast.makeText(getApplicationContext(), R.string.info_poll_voted, Toast.LENGTH_SHORT).show();
 				}
 				break;
 
-			case VoteResult.ERROR:
+			case PollActionResult.ERROR:
 				String message = ErrorHandler.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				break;

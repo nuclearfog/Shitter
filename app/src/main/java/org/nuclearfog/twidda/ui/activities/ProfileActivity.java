@@ -60,6 +60,7 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.RelationLoader;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationParam;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationResult;
@@ -131,6 +132,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	public static final int TOOLBAR_TRANSPARENCY = 0x5fffffff;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
+	private AsyncCallback<RelationResult> relationCallback = this::setRelationResult;
+	private AsyncCallback<UserResult> userCallback = this::setUserResult;
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
@@ -252,14 +255,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		super.onStart();
 		if (user == null) {
 			UserParam param = new UserParam(UserParam.DATABASE, userId);
-			userLoader.execute(param, this::setUserResult);
+			userLoader.execute(param, userCallback);
 		} else if (user instanceof DatabaseUser) {
 			UserParam param = new UserParam(UserParam.ONLINE, userId);
-			userLoader.execute(param, this::setUserResult);
+			userLoader.execute(param, userCallback);
 		}
 		if (relation == null && userId != settings.getLogin().getId()) {
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
-			relationLoader.execute(param, this::setRelationResult);
+			relationLoader.execute(param, relationCallback);
 		}
 	}
 
@@ -410,7 +413,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				if (!relation.isFollowing()) {
 					if (relationLoader.isIdle()) {
 						RelationParam param = new RelationParam(user.getId(), RelationParam.FOLLOW);
-						relationLoader.execute(param, this::setRelationResult);
+						relationLoader.execute(param, relationCallback);
 					}
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_UNFOLLOW);
@@ -423,7 +426,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				if (relation.isMuted()) {
 					if (relationLoader.isIdle()) {
 						RelationParam param = new RelationParam(user.getId(), RelationParam.UNMUTE);
-						relationLoader.execute(param, this::setRelationResult);
+						relationLoader.execute(param, relationCallback);
 					}
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_MUTE);
@@ -436,7 +439,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				if (relation.isBlocked()) {
 					if (relationLoader.isIdle()) {
 						RelationParam param = new RelationParam(user.getId(), RelationParam.UNBLOCK);
-						relationLoader.execute(param, this::setRelationResult);
+						relationLoader.execute(param, relationCallback);
 					}
 				} else {
 					confirmDialog.show(ConfirmDialog.PROFILE_BLOCK);
@@ -595,17 +598,17 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			// confirmed unfollowing user
 			if (type == ConfirmDialog.PROFILE_UNFOLLOW) {
 				RelationParam param = new RelationParam(user.getId(), RelationParam.UNFOLLOW);
-				relationLoader.execute(param, this::setRelationResult);
+				relationLoader.execute(param, relationCallback);
 			}
 			// confirmed blocking user
 			else if (type == ConfirmDialog.PROFILE_BLOCK) {
 				RelationParam param = new RelationParam(user.getId(), RelationParam.BLOCK);
-				relationLoader.execute(param, this::setRelationResult);
+				relationLoader.execute(param, relationCallback);
 			}
 			// confirmed muting user
 			else if (type == ConfirmDialog.PROFILE_MUTE) {
 				RelationParam param = new RelationParam(user.getId(), RelationParam.MUTE);
-				relationLoader.execute(param, this::setRelationResult);
+				relationLoader.execute(param, relationCallback);
 			}
 		}
 	}
@@ -660,7 +663,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		switch (result.mode) {
 			case UserResult.DATABASE:
 				UserParam param = new UserParam(UserParam.ONLINE, userId);
-				userLoader.execute(param, this::setUserResult);
+				userLoader.execute(param, userCallback);
 				// fall through
 
 			case UserResult.ONLINE:

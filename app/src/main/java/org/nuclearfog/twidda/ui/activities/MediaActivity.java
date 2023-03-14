@@ -43,6 +43,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ImageSaver;
 import org.nuclearfog.twidda.backend.async.ImageSaver.ImageParam;
 
@@ -130,6 +131,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
+
+	private AsyncCallback<Boolean> imageCallback = this::setResult;
 
 	@Nullable
 	private Uri srcMediaUri;
@@ -236,7 +239,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 					InputStream src = getContentResolver().openInputStream(srcMediaUri);
 					OutputStream dest = new FileOutputStream(destMediaFile);
 					ImageParam param = new ImageParam(src, dest);
-					imageTask.execute(param, this::setResult);
+					imageTask.execute(param, imageCallback);
 				} else {
 					// use scoped storage
 					String ext = srcMediaUri.getLastPathSegment();
@@ -252,7 +255,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 						InputStream src = getContentResolver().openInputStream(srcMediaUri);
 						OutputStream dest = getContentResolver().openOutputStream(imageUri);
 						ImageParam param = new ImageParam(src, dest);
-						imageTask.execute(param, this::setResult);
+						imageTask.execute(param, imageCallback);
 					}
 				}
 			}

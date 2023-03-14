@@ -51,7 +51,7 @@ public class StatusUpdate {
 	/**
 	 * returned if a poll is attached
 	 */
-	public static final int POLL = 4;
+	private static final int POLL = 4;
 
 	/**
 	 * status visibility

@@ -32,7 +32,7 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 	 * @param context Activity context
 	 */
 	public ImageLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
@@ -74,8 +74,8 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 	 */
 	public static class ImageParameter {
 
-		public final File cache;
-		public final Uri uri;
+		final File cache;
+		final Uri uri;
 
 		public ImageParameter(Uri uri, File cache) {
 			this.cache = cache;

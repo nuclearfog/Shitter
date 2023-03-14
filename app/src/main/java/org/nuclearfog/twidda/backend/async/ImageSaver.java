@@ -38,8 +38,9 @@ public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
 	 *
 	 */
 	public static class ImageParam {
-		public final InputStream inputStream;
-		public final OutputStream outputStream;
+
+		final InputStream inputStream;
+		final OutputStream outputStream;
 
 		public ImageParam(InputStream inputStream, OutputStream outputStream) {
 			this.inputStream = inputStream;

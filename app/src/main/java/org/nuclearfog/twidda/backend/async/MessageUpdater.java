@@ -25,7 +25,7 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 	 *
 	 */
 	public MessageUpdater(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 

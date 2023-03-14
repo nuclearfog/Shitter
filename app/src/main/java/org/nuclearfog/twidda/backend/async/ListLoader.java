@@ -25,7 +25,7 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 	 *
 	 */
 	public ListLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
@@ -58,8 +58,8 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 		public static final int OWNERSHIP = 1;
 		public static final int MEMBERSHIP = 2;
 
-		public final int mode, index;
-		public final long id, cursor;
+		final int mode, index;
+		final long id, cursor;
 
 		public UserlistParam(int mode, int index, long id, long cursor) {
 			this.mode = mode;

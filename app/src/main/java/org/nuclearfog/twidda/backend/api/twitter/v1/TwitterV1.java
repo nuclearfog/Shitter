@@ -75,12 +75,12 @@ public class TwitterV1 implements Connection {
 	private static final String OAUTH = "1.0";
 
 	// API addresses
-	public static final String API = "https://api.twitter.com";
+	protected static final String API = "https://api.twitter.com";
 	private static final String UPLOAD = "https://upload.twitter.com";
 	private static final String DOWNLOAD = "https://ton.twitter.com/";
 
 	// authentication endpoints
-	public static final String AUTHENTICATE = API + "/oauth/authenticate";
+	private static final String AUTHENTICATE = API + "/oauth/authenticate";
 	private static final String REQUEST_TOKEN = API + "/oauth/request_token";
 	private static final String OAUTH_VERIFIER = API + "/oauth/access_token";
 	private static final String CREDENTIALS = API + "/1.1/account/verify_credentials.json";

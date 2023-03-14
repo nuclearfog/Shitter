@@ -26,7 +26,7 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 	 *
 	 */
 	public ListUpdater(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 

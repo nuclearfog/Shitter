@@ -28,7 +28,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	 *
 	 */
 	public NotificationLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -63,8 +63,8 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	 */
 	public static class NotificationLoaderParam {
 
-		public final int position;
-		public final long minId, maxId;
+		final int position;
+		final long minId, maxId;
 
 		public NotificationLoaderParam(int position, long minId, long maxId) {
 			this.position = position;

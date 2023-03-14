@@ -36,6 +36,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
@@ -93,6 +94,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private static final int COLOR_FOLLOW_REQUEST = 8;
 	private static final int COLOR_FOLLOWING = 9;
 	private static final int COLOR_BOOKMARK = 10;
+
+	private AsyncCallback<Void> databaseCallback = this::onDatabaseResult;
+	private AsyncCallback<LocationLoaderResult> locationResult = this::onLocationResult;
 
 	private GlobalSettings settings;
 	private Configuration configuration;
@@ -258,7 +262,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		setResult(RETURN_SETTINGS_CHANGED);
 		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
 			if (locationSpinner.getCount() <= 1) {
-				locationAsync.execute(null, this::onLocationResult);
+				locationAsync.execute(null, locationResult);
 			}
 		}
 	}
@@ -313,7 +317,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		}
 		// confirm delete app data and cache
 		else if (type == ConfirmDialog.DELETE_APP_DATA) {
-			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), this::onDatabaseResult);
+			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), databaseCallback);
 		}
 		// confirm leaving without saving proxy changes
 		else if (type == ConfirmDialog.WRONG_PROXY) {
@@ -596,7 +600,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	/**
 	 * called from {@link DatabaseAction}
 	 */
-	public void onDatabaseResult(Void v) {
+	private void onDatabaseResult(Void v) {
 		setResult(RETURN_DATA_CLEARED);
 		Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
 	}
@@ -606,7 +610,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 *
 	 * @param result result from {@link LocationLoader}
 	 */
-	public void onLocationResult(LocationLoaderResult result) {
+	private void onLocationResult(LocationLoaderResult result) {
 		if (result.locations != null) {
 			locationAdapter.replaceItems(result.locations);
 			int position = locationAdapter.indexOf(settings.getTrendLocation());

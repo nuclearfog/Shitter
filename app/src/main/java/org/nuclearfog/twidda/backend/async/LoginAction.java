@@ -76,10 +76,10 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		public static final int MODE_REQUEST = 1;
 		public static final int MODE_LOGIN = 2;
 
-		public final ConnectionConfig connection;
-		public final Configuration configuration;
-		public final String code;
-		public final int mode;
+		final ConnectionConfig connection;
+		final Configuration configuration;
+		final String code;
+		final int mode;
 
 		public LoginParam(int mode, Configuration configuration, ConnectionConfig connection, String code) {
 			this.connection = connection;

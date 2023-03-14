@@ -29,6 +29,8 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
  */
 public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
 
+	private AsyncCallback<Void> databaseResult = this::onDatabaseResult;
+
 	private AccountLoader accountLoader;
 	private DatabaseAction databaseAction;
 	private GlobalSettings settings;
@@ -79,7 +81,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onAccountClick(Account account) {
 		settings.setLogin(account, true);
-		databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), this::onDatabaseResult);
+		databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
 		if (account.getUser() != null) {
 			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
@@ -129,7 +131,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	/**
 	 * called from {@link DatabaseAction} when all data of the previous login were removed
 	 */
-	public void onDatabaseResult(Void v) {
+	private void onDatabaseResult(Void v) {
 		// finish activity and return to parent activity
 		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
 		requireActivity().finish();
@@ -138,7 +140,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	/**
 	 *
 	 */
-	public void load(int mode) {
+	private void load(int mode) {
 		AccountParameter request = new AccountParameter(mode, selectedId);
 		accountLoader.execute(request, this);
 	}

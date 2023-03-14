@@ -25,7 +25,7 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 	 *
 	 */
 	public UsersLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
@@ -104,9 +104,9 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 		public static final int REQUEST_OUT = 10;
 		public static final int REQUEST_IN = 11;
 
-		public final int type, index;
-		public final String search;
-		public final long id, cursor;
+		final int type, index;
+		final String search;
+		final long id, cursor;
 
 		public UserParam(int type, int index, long id, long cursor, String search) {
 			this.type = type;

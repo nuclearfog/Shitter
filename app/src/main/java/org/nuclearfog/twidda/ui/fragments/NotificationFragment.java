@@ -35,10 +35,11 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
  *
  * @author nuclearfog
  */
-public class NotificationFragment extends ListFragment implements OnNotificationClickListener, OnConfirmListener,
-		AsyncCallback<NotificationLoaderResult>, ActivityResultCallback<ActivityResult> {
+public class NotificationFragment extends ListFragment implements OnNotificationClickListener, OnConfirmListener, ActivityResultCallback<ActivityResult> {
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
+	private AsyncCallback<NotificationActionResult> notificationActionCallback = this::onDismiss;
+	private AsyncCallback<NotificationLoaderResult> notificationLoaderCallback = this::onResult;
 
 	private NotificationLoader notificationLoader;
 	private NotificationAction notificationAction;
@@ -151,7 +152,17 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	@Override
-	public void onResult(NotificationLoaderResult result) {
+	public void onConfirm(int type, boolean rememberChoice) {
+		if (type == ConfirmDialog.NOTIFICATION_DISMISS) {
+			if (select != null) {
+				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.DISMISS, select.getId());
+				notificationAction.execute(param, notificationActionCallback);
+			}
+		}
+	}
+
+
+	private void onResult(NotificationLoaderResult result) {
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
 		} else if (getContext() != null) {
@@ -162,21 +173,10 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		setRefresh(false);
 	}
 
-
-	@Override
-	public void onConfirm(int type, boolean rememberChoice) {
-		if (type == ConfirmDialog.NOTIFICATION_DISMISS) {
-			if (select != null) {
-				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.DISMISS, select.getId());
-				notificationAction.execute(param, this::ondismiss);
-			}
-		}
-	}
-
 	/**
 	 *
 	 */
-	public void ondismiss(NotificationActionResult result) {
+	private void onDismiss(NotificationActionResult result) {
 		if (result.mode == NotificationActionResult.DISMISS) {
 			adapter.removeItem(result.id);
 		} else if (result.mode == NotificationActionResult.ERROR) {
@@ -195,6 +195,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 */
 	private void load(long minId, long maxId, int pos) {
 		NotificationLoaderParam param = new NotificationLoaderParam(pos, minId, maxId);
-		notificationLoader.execute(param, this);
+		notificationLoader.execute(param, notificationLoaderCallback);
 	}
 }

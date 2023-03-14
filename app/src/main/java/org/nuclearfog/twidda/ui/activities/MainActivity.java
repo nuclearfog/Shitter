@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				break;
 
 			default:
+			case SettingsActivity.RETURN_DATA_CLEARED:
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
 				adapter.notifySettingsChanged();

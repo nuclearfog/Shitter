@@ -27,7 +27,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 	 *
 	 */
 	public RelationLoader(Context context) {
-		connection = ConnectionManager.getConnection(context);
+		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
 
@@ -99,8 +99,8 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 		public static final int MUTE = 6;
 		public static final int UNMUTE = 7;
 
-		public final long id;
-		public final int mode;
+		final long id;
+		final int mode;
 
 		public RelationParam(long id, int mode) {
 			this.id = id;

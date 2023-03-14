@@ -17,52 +17,52 @@ import java.util.Arrays;
  *
  * @author nuclearfog
  */
-public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdater.VoteResult> {
+public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAction.PollActionResult> {
 
 	private Connection connection;
 
 	/**
 	 *
 	 */
-	public VoteUpdater(Context context) {
-		connection = ConnectionManager.getConnection(context);
+	public PollAction(Context context) {
+		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
 	@NonNull
 	@Override
-	protected VoteResult doInBackground(@NonNull VoteParam param) {
+	protected PollActionResult doInBackground(@NonNull PollActionParam param) {
 		try {
 			switch (param.mode) {
-				case VoteParam.LOAD:
+				case PollActionParam.LOAD:
 					Poll poll = connection.getPoll(param.poll.getId());
-					return new VoteResult(VoteResult.LOAD, poll, null);
+					return new PollActionResult(PollActionResult.LOAD, poll, null);
 
-				case VoteParam.VOTE:
+				case PollActionParam.VOTE:
 					poll = connection.votePoll(param.poll, param.selection);
-					return new VoteResult(VoteResult.VOTE, poll, null);
+					return new PollActionResult(PollActionResult.VOTE, poll, null);
 			}
 		} catch (ConnectionException exception) {
-			return new VoteResult(VoteResult.ERROR, null, exception);
+			return new PollActionResult(PollActionResult.ERROR, null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new VoteResult(VoteResult.ERROR, null, null);
+		return new PollActionResult(PollActionResult.ERROR, null, null);
 	}
 
 	/**
 	 *
 	 */
-	public static class VoteParam {
+	public static class PollActionParam {
 
 		public static final int LOAD = 1;
 		public static final int VOTE = 2;
 
-		public final int mode;
-		public final Poll poll;
-		public final int[] selection;
+		final int mode;
+		final Poll poll;
+		final int[] selection;
 
-		public VoteParam(int mode, Poll poll, int[] selection) {
+		public PollActionParam(int mode, Poll poll, int[] selection) {
 			this.mode = mode;
 			this.poll = poll;
 			this.selection = Arrays.copyOf(selection, selection.length);
@@ -72,7 +72,7 @@ public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdate
 	/**
 	 *
 	 */
-	public static class VoteResult {
+	public static class PollActionResult {
 
 		public static final int ERROR = -1;
 		public static final int LOAD = 3;
@@ -84,7 +84,7 @@ public class VoteUpdater extends AsyncExecutor<VoteUpdater.VoteParam, VoteUpdate
 		@Nullable
 		public final ConnectionException exception;
 
-		VoteResult(int mode, @Nullable Poll poll, @Nullable ConnectionException exception) {
+		PollActionResult(int mode, @Nullable Poll poll, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.poll = poll;
 			this.exception = exception;

@@ -75,22 +75,22 @@ public class AppDatabase {
 	/**
 	 * flag indicates that a status exists in the home timeline of the current user
 	 */
-	public static final int HOME_TIMELINE_MASK = 1 << 2;
+	private static final int HOME_TIMELINE_MASK = 1 << 2;
 
 	/**
 	 * flag indicates that a status exists in the notification of the current user
 	 */
-	public static final int NOTIFICATION_MASK = 1 << 3;
+	private static final int NOTIFICATION_MASK = 1 << 3;
 
 	/**
 	 * flag indicates that a status exists in an user timeline
 	 */
-	public static final int USER_TIMELINE_MASK = 1 << 4;
+	private static final int USER_TIMELINE_MASK = 1 << 4;
 
 	/**
 	 * flag indicates that a status exists in the reply of a status
 	 */
-	public static final int STATUS_REPLY_MASK = 1 << 5;
+	private static final int STATUS_REPLY_MASK = 1 << 5;
 
 	/**
 	 * flag indicates that a status contains sensitive media
@@ -125,7 +125,7 @@ public class AppDatabase {
 	/**
 	 * flag indicates that the statuses of an user are excluded from timeline
 	 */
-	public static final int EXCLUDE_MASK = 1 << 3;
+	private static final int EXCLUDE_MASK = 1 << 3;
 
 	/**
 	 * flag indicates that the user has a default profile image
@@ -135,7 +135,7 @@ public class AppDatabase {
 	/**
 	 * used if no ID is defined
 	 */
-	public static final long NO_ID = -1L;
+	private static final long NO_ID = -1L;
 
 	/**
 	 * query to create status table with user and register columns
@@ -210,7 +210,7 @@ public class AppDatabase {
 	/**
 	 * SQL query to get a single status specified by an ID
 	 */
-	static final String SINGLE_STATUS_QUERY = "SELECT * FROM " + STATUS_SUBQUERY
+	private static final String SINGLE_STATUS_QUERY = "SELECT * FROM " + STATUS_SUBQUERY
 			+ " WHERE " + StatusTable.NAME + "." + StatusTable.ID + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
@@ -847,25 +847,12 @@ public class AppDatabase {
 				result.ensureCapacity(cursor.getCount());
 				do {
 					DatabaseAccount account = new DatabaseAccount(cursor);
-					account.addUser(getUser(account.getId(), account));
+					account.addUser(getUser(account.getId()));
 					result.add(account);
 				} while (cursor.moveToNext());
 			}
 			cursor.close();
 			return result;
-		}
-	}
-
-	/**
-	 * get user information
-	 *
-	 * @param userId ID of user
-	 * @return user information or null if not found
-	 */
-	@Nullable
-	public User getUser(long userId) {
-		synchronized (LOCK) {
-			return getUser(userId, settings.getLogin());
 		}
 	}
 
@@ -893,18 +880,17 @@ public class AppDatabase {
 	 * get user information
 	 *
 	 * @param userId  ID of user
-	 * @param account current user information
 	 * @return user information or null if not found
 	 */
 	@Nullable
-	public User getUser(long userId, Account account) {
+	public User getUser(long userId) {
 		synchronized (LOCK) {
 			String[] args = {Long.toString(userId)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
 			User user = null;
 			if (cursor.moveToFirst())
-				user = new DatabaseUser(cursor, account);
+				user = new DatabaseUser(cursor, settings.getLogin());
 			cursor.close();
 			return user;
 		}
