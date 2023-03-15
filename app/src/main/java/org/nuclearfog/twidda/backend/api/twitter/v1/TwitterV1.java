@@ -794,10 +794,17 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public UserList deleteUserlist(long id) throws TwitterException {
+	public void deleteUserlist(long id) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
-		return getUserlist(USERLIST_DESTROY, params);
+		try {
+			Response response = post(USERLIST_DESTROY, params);
+			if (response.code() != 200) {
+				throw new TwitterException(response);
+			}
+		} catch (IOException exception) {
+			throw new TwitterException(exception);
+		}
 	}
 
 

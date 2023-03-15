@@ -660,9 +660,12 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public UserList deleteUserlist(long id) throws MastodonException {
+	public void deleteUserlist(long id) throws MastodonException {
 		try {
-			return createUserlist(delete(ENDPOINT_USERLIST + id, new ArrayList<>()));
+			Response response = delete(ENDPOINT_USERLIST + id, new ArrayList<>());
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}

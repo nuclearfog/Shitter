@@ -421,7 +421,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 			case ListActionResult.DELETE:
 				Intent intent = new Intent();
-				intent.putExtra(RESULT_REMOVED_LIST_ID, result.userlist);
+				intent.putExtra(RESULT_REMOVED_LIST_ID, result.id);
 				setResult(RETURN_LIST_REMOVED, intent);
 				Toast.makeText(getApplicationContext(), R.string.info_list_removed, Toast.LENGTH_SHORT).show();
 				finish();

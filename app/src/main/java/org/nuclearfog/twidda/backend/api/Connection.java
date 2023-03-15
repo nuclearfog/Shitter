@@ -453,9 +453,8 @@ public interface Connection {
 	 * delete an userlist
 	 *
 	 * @param id ID of the list
-	 * @return removed userlist
 	 */
-	UserList deleteUserlist(long id) throws ConnectionException;
+	void deleteUserlist(long id) throws ConnectionException;
 
 	/**
 	 * return userlists an user is owning or following

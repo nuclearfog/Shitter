@@ -45,8 +45,8 @@ public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAc
 					return new ListActionResult(ListActionResult.UNFOLLOW, param.id, result, null);
 
 				case ListActionParam.DELETE:
-					result = connection.deleteUserlist(param.id);
-					return new ListActionResult(ListActionResult.DELETE, param.id, result, null);
+					connection.deleteUserlist(param.id);
+					return new ListActionResult(ListActionResult.DELETE, param.id, null, null);
 			}
 		} catch (ConnectionException exception) {
 			return new ListActionResult(ListActionResult.ERROR, param.id, null, exception);
