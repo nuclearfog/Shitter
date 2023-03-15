@@ -847,7 +847,11 @@ public class AppDatabase {
 				result.ensureCapacity(cursor.getCount());
 				do {
 					DatabaseAccount account = new DatabaseAccount(cursor);
-					account.addUser(getUser(account.getId()));
+					DatabaseUser user = getUser(account.getId());
+					if (user != null) {
+						user.setAsCurrentUser();
+						account.addUser(user);
+					}
 					result.add(account);
 				} while (cursor.moveToNext());
 			}
@@ -883,12 +887,12 @@ public class AppDatabase {
 	 * @return user information or null if not found
 	 */
 	@Nullable
-	public User getUser(long userId) {
+	public DatabaseUser getUser(long userId) {
 		synchronized (LOCK) {
 			String[] args = {Long.toString(userId)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
-			User user = null;
+			DatabaseUser user = null;
 			if (cursor.moveToFirst())
 				user = new DatabaseUser(cursor, settings.getLogin());
 			cursor.close();

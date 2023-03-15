@@ -226,7 +226,7 @@
 	<string name="dialog_poll_mc">multiple choice</string>
 	<string name="dialog_poll_hide">hide votes</string>
 	<string name="dialog_poll_option_edit_hint">Option %1$d</string>
-	<string name="dialog_poll_duration_hint">Duration</string>
+	<string name="dialog_poll_duration_hint">Duration: 1</string>
 	<string name="confirm_discard">discard changes?</string>
 	<string name="user_data">User data</string>
 	<string name="follows_you">follows you</string>

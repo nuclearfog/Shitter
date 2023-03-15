@@ -246,4 +246,11 @@ public class DatabaseUser implements User {
 	public String toString() {
 		return "name=\"" + screenName + "\"";
 	}
+
+	/**
+	 * set this user as current user
+	 */
+	public void setAsCurrentUser() {
+		isCurrentUser = true;
+	}
 }

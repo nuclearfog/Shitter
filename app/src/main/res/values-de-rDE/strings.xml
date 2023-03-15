@@ -281,7 +281,7 @@
 	<string name="dialog_poll_mc">Mehrfachauswahl</string>
 	<string name="dialog_poll_hide">Stimmen verstecken</string>
 	<string name="dialog_poll_option_edit_hint">%1$d. Option</string>
-	<string name="dialog_poll_duration_hint">Dauer</string>
+	<string name="dialog_poll_duration_hint">Dauer: 1</string>
 	<string name="poll_option_edit_button">hinzufügen/entfernen</string>
 	<string name="status_add_poll">Umfrage hinzufügen</string>
 	<string name="status_pref">Statuseinstellungen</string>

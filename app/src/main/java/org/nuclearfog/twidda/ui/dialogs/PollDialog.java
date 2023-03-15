@@ -54,7 +54,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.timeunits, android.R.layout.simple_spinner_dropdown_item);
 		timeUnitSelector.setAdapter(adapter);
-		timeUnitSelector.setSelected(true);
+		timeUnitSelector.setSelection(2);
 
 		optionAdapter = new EditOptionsAdapter();
 		optionsList.setAdapter(optionAdapter);
@@ -69,27 +69,27 @@ public class PollDialog extends Dialog implements OnClickListener {
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_poll_create) {
 			String durationStr = durationInput.getText().toString();
+			int secondsDuration;
 			if (durationStr.matches("\\d{1,3}")) {
-				int duration = Integer.parseInt(durationStr);
-				switch (timeUnitSelector.getSelectedItemPosition()) {
-					// minutes
-					case 0:
-						poll.setDuration(duration * 60);
-						break;
-
-					// hours
-					case 1:
-						poll.setDuration(duration * 3600);
-						break;
-
-					// days
-					case 2:
-						poll.setDuration(duration * 86400);
-						break;
-				}
+				secondsDuration = Integer.parseInt(durationStr);
 			} else {
-				// default 24h
-				poll.setDuration(86400);
+				secondsDuration = 1;
+			}
+			switch (timeUnitSelector.getSelectedItemPosition()) {
+				// minutes
+				case 0:
+					poll.setDuration(secondsDuration * 60);
+					break;
+
+				// hours
+				case 1:
+					poll.setDuration(secondsDuration * 3600);
+					break;
+
+				// days
+				case 2:
+					poll.setDuration(secondsDuration * 86400);
+					break;
 			}
 			poll.setMultipleChoice(multiple_choice.isChecked());
 			poll.hideVotes(hide_votes.isChecked());

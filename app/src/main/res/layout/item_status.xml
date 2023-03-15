@@ -126,13 +126,15 @@
 			android:id="@+id/item_status_reply"
 			android:layout_width="@dimen/item_status_icon_size"
 			android:layout_height="@dimen/item_status_icon_size"
-			android:layout_marginStart="@dimen/item_status_text_margin"
+			android:layout_marginStart="@dimen/item_status_layout_margin"
 			android:src="@drawable/back"
 			android:scaleType="fitCenter"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="@id/item_status_reply_name"
 			app:layout_constraintBottom_toBottomOf="@id/item_status_reply_name"
 			app:layout_constraintEnd_toStartOf="@id/item_status_reply_name"
+			app:layout_constraintHorizontal_chainStyle="packed"
+			app:layout_constraintHorizontal_bias="0"
 			tools:ignore="ContentDescription" />
 
 		<TextView
@@ -145,7 +147,7 @@
 			android:textSize="@dimen/item_status_textsize_button"
 			app:layout_constraintStart_toEndOf="@id/item_status_reply"
 			app:layout_constraintTop_toBottomOf="@id/item_status_user_barrier"
-			app:layout_constraintEnd_toStartOf="@id/item_status_reposter_icon" />
+			app:layout_constraintEnd_toStartOf="@id/item_status_reposter_icon"/>
 
 		<ImageView
 			android:id="@+id/item_status_reposter_icon"
@@ -157,7 +159,7 @@
 			app:layout_constraintTop_toTopOf="@id/item_status_reposter_name"
 			app:layout_constraintBottom_toBottomOf="@id/item_status_reposter_name"
 			app:layout_constraintEnd_toStartOf="@id/item_status_reposter_name"
-			tools:ignore="ContentDescription" />
+			tools:ignore="ContentDescription"/>
 
 		<TextView
 			android:id="@+id/item_status_reposter_name"
@@ -168,7 +170,8 @@
 			android:lines="1"
 			android:textSize="@dimen/item_status_textsize_button"
 			app:layout_constraintStart_toEndOf="@id/item_status_reposter_icon"
-			app:layout_constraintTop_toBottomOf="@id/item_status_user_barrier" />
+			app:layout_constraintTop_toBottomOf="@id/item_status_user_barrier"
+			app:layout_constraintEnd_toEndOf="parent"/>
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/item_status_text_barrier"
@@ -200,10 +203,10 @@
 			android:id="@+id/item_status_indicator_placeholder"
 			android:layout_width="0dp"
 			android:layout_height="@dimen/item_status_icon_size"
-			android:layout_marginTop="@dimen/item_status_layout_margin"
 			app:layout_constraintHorizontal_weight="2"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/item_status_attachment_list"
+			app:layout_constraintTop_toTopOf="@id/item_status_reply_icon"
+			app:layout_constraintBottom_toBottomOf="@id/item_status_reply_icon"
 			app:layout_constraintEnd_toStartOf="@id/item_status_reply_icon" />
 
 		<ImageView
@@ -227,7 +230,7 @@
 			android:textSize="@dimen/item_status_textsize_button"
 			app:layout_constraintHorizontal_weight="3"
 			app:layout_constraintStart_toEndOf="@id/item_status_reply_icon"
-			app:layout_constraintTop_toBottomOf="@id/item_status_attachment_list"
+			app:layout_constraintTop_toTopOf="@id/item_status_reply_icon"
 			app:layout_constraintBottom_toBottomOf="@id/item_status_reply_icon"
 			app:layout_constraintEnd_toStartOf="@id/item_status_repost_icon" />
 
@@ -252,7 +255,7 @@
 			android:textSize="@dimen/item_status_textsize_button"
 			app:layout_constraintHorizontal_weight="3"
 			app:layout_constraintStart_toEndOf="@id/item_status_repost_icon"
-			app:layout_constraintTop_toBottomOf="@id/item_status_attachment_list"
+			app:layout_constraintTop_toTopOf="@id/item_status_repost_icon"
 			app:layout_constraintBottom_toBottomOf="@id/item_status_repost_icon"
 			app:layout_constraintEnd_toStartOf="@id/item_status_favorite_icon" />
 
@@ -277,7 +280,8 @@
 			android:textSize="@dimen/item_status_textsize_button"
 			app:layout_constraintHorizontal_weight="3"
 			app:layout_constraintStart_toEndOf="@id/item_status_favorite_icon"
-			app:layout_constraintTop_toBottomOf="@id/item_status_attachment_list"
+			app:layout_constraintTop_toTopOf="@id/item_status_favorite_icon"
+			app:layout_constraintBottom_toBottomOf="@id/item_status_favorite_icon"
 			app:layout_constraintEnd_toEndOf="parent" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
