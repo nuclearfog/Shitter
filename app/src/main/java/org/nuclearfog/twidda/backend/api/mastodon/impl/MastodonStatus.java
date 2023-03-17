@@ -38,6 +38,7 @@ public class MastodonStatus implements Status {
 	private boolean reposted;
 	private boolean bookmarked;
 	private boolean sensitive;
+	private boolean spoiler;
 	private boolean muted;
 
 	private String text;
@@ -77,6 +78,7 @@ public class MastodonStatus implements Status {
 		favorited = json.optBoolean("favourited", false);
 		reposted = json.optBoolean("reblogged", false);
 		sensitive = json.optBoolean("sensitive", false);
+		spoiler = json.optBoolean("spoiler_text", false);
 		bookmarked = json.optBoolean("bookmarked", false);
 		text = json.optString("content", "");
 		text = Jsoup.parse(text).text();
@@ -198,7 +200,7 @@ public class MastodonStatus implements Status {
 
 	@Override
 	public long getRepostId() {
-		return 0;
+		return 0L;
 	}
 
 
@@ -243,6 +245,12 @@ public class MastodonStatus implements Status {
 	@Override
 	public boolean isSensitive() {
 		return sensitive;
+	}
+
+
+	@Override
+	public boolean isSpoiler() {
+		return spoiler;
 	}
 
 

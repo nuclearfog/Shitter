@@ -334,6 +334,12 @@ public class TweetV2 implements Status {
 
 
 	@Override
+	public boolean isSpoiler() {
+		return false;
+	}
+
+
+	@Override
 	public boolean isReposted() {
 		return retweeted;
 	}

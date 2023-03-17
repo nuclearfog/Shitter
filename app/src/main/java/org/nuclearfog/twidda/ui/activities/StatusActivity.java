@@ -248,45 +248,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		settings = GlobalSettings.getInstance(this);
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		adapter = new PreviewAdapter(settings, picasso, this);
-		// get parameter
-		long id;
-		String replyUsername;
-		Object statusObject = getIntent().getSerializableExtra(KEY_STATUS_DATA);
-		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
-		if (statusObject instanceof Status) {
-			status = (Status) statusObject;
-			setStatus(status);
-			Status embedded = status.getEmbeddedStatus();
-			if (embedded != null) {
-				id = embedded.getId();
-				replyUsername = embedded.getAuthor().getScreenname();
-			} else {
-				id = status.getId();
-				hidden = status.isHidden();
-				replyUsername = status.getAuthor().getScreenname();
-			}
-		} else if (notificationObject instanceof Notification) {
-			notification = (Notification) notificationObject;
-			if (notification.getStatus() != null) {
-				setStatus(notification.getStatus());
-				id = notification.getStatus().getId();
-				replyUsername = notification.getStatus().getAuthor().getScreenname();
-			} else {
-				id = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
-				replyUsername = getIntent().getStringExtra(KEY_NOTIFICATION_NAME);
-			}
-		} else {
-			id = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
-			replyUsername = getIntent().getStringExtra(KEY_STATUS_NAME);
-		}
-		// initialize status reply list
-		Bundle param = new Bundle();
-		param.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_REPLY);
-		param.putString(KEY_STATUS_FRAGMENT_SEARCH, replyUsername);
-		param.putLong(KEY_STATUS_FRAGMENT_ID, id);
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
-		fragmentTransaction.commit();
 
 		replyButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
@@ -307,6 +268,60 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 
+		// get parameter, set information and initialize loaders
+		long statusId = 0L;
+		String replyUsername = "";
+		Object statusObject = getIntent().getSerializableExtra(KEY_STATUS_DATA);
+		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
+		if (statusObject instanceof Status) {
+			Status status = (Status) statusObject;
+			setStatus(status);
+			Status embedded = status.getEmbeddedStatus();
+			if (embedded != null) {
+				statusId = embedded.getId();
+				replyUsername = embedded.getAuthor().getScreenname();
+			} else {
+				statusId = status.getId();
+				hidden = status.isHidden();
+				replyUsername = status.getAuthor().getScreenname();
+			}
+			if (status instanceof DatabaseStatus) {
+				StatusParam statusParam = new StatusParam(StatusParam.ONLINE, status.getId());
+				statusAsync.execute(statusParam, statusCallback);
+			}
+		} else if (notificationObject instanceof Notification) {
+			Notification notification = (Notification) notificationObject;
+			if (notification.getStatus() != null) {
+				setNotification(notification);
+				statusId = notification.getStatus().getId();
+				replyUsername = notification.getStatus().getAuthor().getScreenname();
+			}
+			if (notification instanceof DatabaseNotification) {
+				NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
+				notificationAsync.execute(notificationParam, notificationCallback);
+			}
+		} else {
+			statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
+			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
+			if (statusId != 0L) {
+				replyUsername = getIntent().getStringExtra(KEY_STATUS_NAME);
+				StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
+				statusAsync.execute(statusParam, statusCallback);
+			} else if (notificationId != 0L) {
+				replyUsername = getIntent().getStringExtra(KEY_NOTIFICATION_NAME);
+				NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
+				notificationAsync.execute(notificationParam, notificationCallback);
+			}
+		}
+		// initialize status reply list
+		Bundle param = new Bundle();
+		param.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_REPLY);
+		param.putString(KEY_STATUS_FRAGMENT_SEARCH, replyUsername);
+		param.putLong(KEY_STATUS_FRAGMENT_ID, statusId);
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
+		fragmentTransaction.commit();
+
 		confirmDialog = new ConfirmDialog(this);
 		metricsDialog = new MetricsDialog(this);
 		confirmDialog.setConfirmListener(this);
@@ -321,36 +336,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		likeButton.setOnLongClickListener(this);
 		repostNameButton.setOnLongClickListener(this);
 		locationButton.setOnLongClickListener(this);
-	}
-
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		if (notification != null) {
-			if (notification instanceof DatabaseNotification) {
-				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
-				notificationAsync.execute(param, notificationCallback);
-			}
-		} else if (status != null) {
-			if (status instanceof DatabaseStatus) {
-				StatusParam param = new StatusParam(StatusParam.ONLINE, status.getId());
-				statusAsync.execute(param, statusCallback);
-			} else if (status.getPoll() != null) {
-				PollActionParam param = new PollActionParam(PollActionParam.LOAD, status.getPoll(), new int[0]);
-				voteAsync.execute(param, pollResult);
-			}
-		} else {
-			long statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
-			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
-			if (statusId != 0L) {
-				StatusParam param = new StatusParam(StatusParam.DATABASE, statusId);
-				statusAsync.execute(param, statusCallback);
-			} else if (notificationId != 0L) {
-				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
-				notificationAsync.execute(param, notificationCallback);
-			}
-		}
 	}
 
 
@@ -372,6 +357,30 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			setResult(RETURN_STATUS_UPDATE, intent);
 		}
 		super.onBackPressed();
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_STATUS_DATA, status);
+		outState.putSerializable(KEY_NOTIFICATION_DATA, notification);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Object statusObject = getIntent().getSerializableExtra(KEY_STATUS_DATA);
+		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
+		if (statusObject instanceof Status) {
+			setStatus((Status) statusObject);
+		} else if (notificationObject instanceof Notification) {
+			notification = (Notification) notificationObject;
+			if (notification.getStatus() != null) {
+				setStatus(notification.getStatus());
+			}
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 
@@ -949,6 +958,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					finish();
 				}
 				break;
+		}
+	}
+
+	/**
+	 * set notification containing a status
+	 *
+	 * @param notification notification with status
+	 */
+	private void setNotification(@NonNull Notification notification) {
+		this.notification = notification;
+		if (notification.getStatus() != null) {
+			setStatus(notification.getStatus());
 		}
 	}
 

@@ -112,7 +112,7 @@ public class TweetV1 implements Status {
 		// get retweet ID
 		String retweetIdStr = "-1";
 		if (currentUserJson != null) {
-			retweetIdStr = currentUserJson.optString("id_str", "-1");
+			retweetIdStr = currentUserJson.optString("id_str", "0");
 		}
 		// add media
 		if (extEntities != null) {
@@ -249,6 +249,12 @@ public class TweetV1 implements Status {
 	@Override
 	public boolean isSensitive() {
 		return isSensitive;
+	}
+
+
+	@Override
+	public boolean isSpoiler() {
+		return false;
 	}
 
 

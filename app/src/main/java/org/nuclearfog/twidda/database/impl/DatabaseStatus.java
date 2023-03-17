@@ -1,10 +1,11 @@
 package org.nuclearfog.twidda.database.impl;
 
-import static org.nuclearfog.twidda.database.AppDatabase.BOOKMARK_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.FAVORITE_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.HIDDEN_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.MEDIA_SENS_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.REPOST_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_BOOKMARKED;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_FAVORITED;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_HIDDEN;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_SENSITIVE;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_REPOSTED;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_SPOILER;
 
 import android.database.Cursor;
 
@@ -67,6 +68,7 @@ public class DatabaseStatus implements Status {
 	private boolean favorited;
 	private boolean bookmarked;
 	private boolean sensitive;
+	private boolean spoiler;
 	private boolean isHidden;
 
 	/**
@@ -96,11 +98,12 @@ public class DatabaseStatus implements Status {
 		statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.URL));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(StatusRegisterTable.REGISTER));
 
-		favorited = (register & FAVORITE_MASK) != 0;
-		reposted = (register & REPOST_MASK) != 0;
-		sensitive = (register & MEDIA_SENS_MASK) != 0;
-		isHidden = (register & HIDDEN_MASK) != 0;
-		bookmarked = (register & BOOKMARK_MASK) != 0;
+		favorited = (register & MASK_STATUS_FAVORITED) != 0;
+		reposted = (register & MASK_STATUS_REPOSTED) != 0;
+		sensitive = (register & MASK_STATUS_SENSITIVE) != 0;
+		isHidden = (register & MASK_STATUS_HIDDEN) != 0;
+		bookmarked = (register & MASK_STATUS_BOOKMARKED) != 0;
+		spoiler = (register & MASK_STATUS_SPOILER) != 0;
 		if (mediaKeys != null && !mediaKeys.isEmpty()) {
 			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
 		}
@@ -218,6 +221,12 @@ public class DatabaseStatus implements Status {
 	@Override
 	public boolean isSensitive() {
 		return sensitive;
+	}
+
+
+	@Override
+	public boolean isSpoiler() {
+		return spoiler;
 	}
 
 

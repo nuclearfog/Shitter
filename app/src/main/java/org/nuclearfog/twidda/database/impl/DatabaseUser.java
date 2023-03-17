@@ -1,9 +1,9 @@
 package org.nuclearfog.twidda.database.impl;
 
-import static org.nuclearfog.twidda.database.AppDatabase.DEFAULT_IMAGE_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.FOLLOW_REQUEST_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.LOCKED_MASK;
-import static org.nuclearfog.twidda.database.AppDatabase.VERIFIED_MASK;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_USER_DEFAULT_IMAGE;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_USER_FOLLOW_REQUESTED;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_USER_PRIVATE;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_USER_VERIFIED;
 
 import android.database.Cursor;
 
@@ -65,10 +65,10 @@ public class DatabaseUser implements User {
 		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.STATUSES));
 		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FAVORITS));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(UserRegisterTable.REGISTER));
-		isVerified = (register & VERIFIED_MASK) != 0;
-		isLocked = (register & LOCKED_MASK) != 0;
-		followReqSent = (register & FOLLOW_REQUEST_MASK) != 0;
-		defaultImage = (register & DEFAULT_IMAGE_MASK) != 0;
+		isVerified = (register & MASK_USER_VERIFIED) != 0;
+		isLocked = (register & MASK_USER_PRIVATE) != 0;
+		followReqSent = (register & MASK_USER_FOLLOW_REQUESTED) != 0;
+		defaultImage = (register & MASK_USER_DEFAULT_IMAGE) != 0;
 		isCurrentUser = account.getId() == id;
 
 		switch (account.getConfiguration()) {

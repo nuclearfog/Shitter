@@ -94,6 +94,11 @@ public interface Status extends Serializable, Comparable<Status> {
 	boolean isSensitive();
 
 	/**
+	 * @return true if status contains any spoiler
+	 */
+	boolean isSpoiler();
+
+	/**
 	 * @return true if status is reposted by the current user
 	 */
 	boolean isReposted();

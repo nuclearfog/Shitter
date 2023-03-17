@@ -154,7 +154,7 @@ public class TwitterV2 extends TwitterV1 {
 		params.add(LocationV2.FIELDS_PLACE);
 		// add metrics information if the author is the current user and the tweet is not older than 28 days and not a retweet/quote
 		if (statusCompat.getAuthor().isCurrentUser() && System.currentTimeMillis() - statusCompat.getTimestamp() < 2419200000L
-				&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() <= 0L)) {
+				&& (statusCompat.getEmbeddedStatus() == null || statusCompat.getEmbeddedStatus().getRepostId() == 0L)) {
 			params.add(TweetV2.FIELDS_TWEET_PRIVATE);
 		} else {
 			params.add(TweetV2.FIELDS_TWEET);

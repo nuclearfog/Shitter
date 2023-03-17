@@ -238,6 +238,17 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		}
 		if (user != null) {
 			setUser(user);
+			if (user instanceof DatabaseUser) {
+				UserParam param = new UserParam(UserParam.ONLINE, userId);
+				userLoader.execute(param, userCallback);
+			}
+		} else {
+			UserParam param = new UserParam(UserParam.DATABASE, userId);
+			userLoader.execute(param, userCallback);
+		}
+		if (relation == null && userId != settings.getLogin().getId()) {
+			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
+			relationLoader.execute(param, relationCallback);
 		}
 		tabLayout.addOnTabSelectedListener(this);
 		following.setOnClickListener(this);
@@ -247,23 +258,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		user_website.setOnClickListener(this);
 		confirmDialog.setConfirmListener(this);
 		root.setOnScrollChangeListener(this);
-	}
-
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		if (user == null) {
-			UserParam param = new UserParam(UserParam.DATABASE, userId);
-			userLoader.execute(param, userCallback);
-		} else if (user instanceof DatabaseUser) {
-			UserParam param = new UserParam(UserParam.ONLINE, userId);
-			userLoader.execute(param, userCallback);
-		}
-		if (relation == null && userId != settings.getLogin().getId()) {
-			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
-			relationLoader.execute(param, relationCallback);
-		}
 	}
 
 
@@ -278,11 +272,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	@Override
 	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 		Object data = savedInstanceState.getSerializable(KEY_PROFILE_USER);
-		if (data instanceof User)
-			user = (User) data;
+		if (data instanceof User) {
+			setUser((User) data);
+		}
 		data = savedInstanceState.getSerializable(KEY_PROFILE_RELATION);
-		if (data instanceof Relation)
+		if (data instanceof Relation) {
 			relation = (Relation) data;
+			invalidateOptionsMenu();
+		}
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 
