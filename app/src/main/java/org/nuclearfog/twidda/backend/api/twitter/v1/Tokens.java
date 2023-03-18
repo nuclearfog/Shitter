@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.api.twitter;
+package org.nuclearfog.twidda.backend.api.twitter.v1;
 
 import android.content.Context;
 
@@ -52,7 +52,7 @@ public class Tokens {
 	 *
 	 * @return instance of this class
 	 */
-	public static Tokens getInstance(Context context) {
+	static Tokens getInstance(Context context) {
 		if (instance == null)
 			instance = new Tokens(context);
 		return instance;
@@ -64,7 +64,7 @@ public class Tokens {
 	 * @param forceDefault use default API key
 	 * @return consumer API key
 	 */
-	public String getConsumerKey(boolean forceDefault) {
+	String getConsumerKey(boolean forceDefault) {
 		Account login = settings.getLogin();
 		if (login.usingDefaultTokens() || forceDefault)
 			return CONSUMER_TOKEN;
@@ -77,7 +77,7 @@ public class Tokens {
 	 * @param forceDefault use default API key
 	 * @return consumer secret API key
 	 */
-	public String getConsumerSecret(boolean forceDefault) {
+	String getConsumerSecret(boolean forceDefault) {
 		Account login = settings.getLogin();
 		if (login.usingDefaultTokens() || forceDefault)
 			return TOKEN_SECRET;

@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.twitter.Tokens;
+import org.nuclearfog.twidda.backend.api.twitter.v1.Tokens;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.Configuration;
