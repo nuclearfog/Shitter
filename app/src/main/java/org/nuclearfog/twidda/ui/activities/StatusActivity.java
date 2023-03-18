@@ -17,6 +17,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BlurMaskFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -198,7 +199,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	private NestedScrollView container;
 	private ViewGroup root, body;
-	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive_media;
+	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive, spoiler, spoilerHint;
 	private Button replyButton, repostButton, likeButton, replyName, locationButton, repostNameButton;
 	private ImageView profileImage;
 	private RecyclerView cardList;
@@ -237,8 +238,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		statusApi = findViewById(R.id.page_status_api);
 		locationName = findViewById(R.id.page_status_location_name);
 		locationButton = findViewById(R.id.page_status_location_coordinates);
-		sensitive_media = findViewById(R.id.page_status_sensitive);
+		sensitive = findViewById(R.id.page_status_sensitive);
+		spoiler = findViewById(R.id.page_status_spoiler);
 		repostNameButton = findViewById(R.id.page_status_reposter_reference);
+		spoilerHint = findViewById(R.id.page_status_text_sensitive_hint);
 		cardList = findViewById(R.id.page_status_cards);
 
 		statusAsync = new StatusAction(this);
@@ -252,7 +255,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		replyButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		locationButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
-		sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
+		sensitive.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
+		spoiler.setCompoundDrawablesWithIntrinsicBounds(R.drawable.exclamation, 0, 0, 0);
 		replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
 		repostNameButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
@@ -336,6 +340,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		likeButton.setOnLongClickListener(this);
 		repostNameButton.setOnLongClickListener(this);
 		locationButton.setOnLongClickListener(this);
+		statusText.setOnClickListener(this);
 	}
 
 
@@ -580,6 +585,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
 				intent.putExtra(ProfileActivity.KEY_PROFILE_USER, this.status.getAuthor());
 				startActivity(intent);
+			}
+			// unblur text on click
+			else if (v.getId() == R.id.page_status_text) {
+				// remove blur if any
+				if (statusText.getPaint().getMaskFilter() != null) {
+					statusText.getPaint().setMaskFilter(null);
+					spoilerHint.setVisibility(View.INVISIBLE);
+				}
 			}
 		}
 	}
@@ -832,9 +845,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			replyName.setVisibility(View.GONE);
 		}
 		if (status.isSensitive()) {
-			sensitive_media.setVisibility(View.VISIBLE);
+			sensitive.setVisibility(View.VISIBLE);
 		} else {
-			sensitive_media.setVisibility(View.GONE);
+			sensitive.setVisibility(View.GONE);
+		}
+		if (status.isSpoiler()) {
+			spoiler.setVisibility(View.VISIBLE);
+			if (settings.hideSensitiveEnabled() && statusText.getPaint().getMaskFilter() == null) {
+				spoilerHint.setVisibility(View.VISIBLE);
+				statusText.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+				float radius = statusText.getTextSize() / 3;
+				BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL);
+				statusText.getPaint().setMaskFilter(filter);
+			} else {
+				spoilerHint.setVisibility(View.INVISIBLE);
+			}
+		} else {
+			spoiler.setVisibility(View.GONE);
 		}
 		String profileImageUrl = author.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {

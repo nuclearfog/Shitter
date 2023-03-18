@@ -4,6 +4,7 @@ import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -142,6 +143,14 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			text.setVisibility(View.VISIBLE);
 		} else {
 			text.setVisibility(View.GONE);
+		}
+		if (settings.hideSensitiveEnabled() && status.isSpoiler()) {
+			text.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			float radius = text.getTextSize() / 3;
+			BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL);
+			text.getPaint().setMaskFilter(filter);
+		} else {
+			text.getPaint().setMaskFilter(null);
 		}
 		if (status.isReposted()) {
 			repostIcon.setColorFilter(settings.getRepostIconColor());

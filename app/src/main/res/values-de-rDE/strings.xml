@@ -131,6 +131,7 @@
 	<string name="error_wrong_connection_settings">Falsche Proxykonfiguration! Änderung verwerfen?</string>
 	<string name="error_open_link">Link konnte nicht geöffnet werden!</string>
 	<string name="status_sensitive_media">Sensible Inhalte</string>
+	<string name="status_spoiler_hint">Zum Anzeigen tippen</string>
 	<string name="login_info">4 Schritte zum Login</string>
 	<string name="info_open_twitter_login">öffne Twitter login Seite. Bitte warten</string>
 	<string name="info_login_to_twitter">In Twitter einloggen</string>
@@ -291,4 +292,5 @@
 	<string name="dialog_status_sensitive">Inhalt als sensibel markieren</string>
 	<string name="dialog_status_spoiler">Inhalt als Spoiler markieren</string>
 	<string name="dialog_status_visibility">Sichtbarkeit</string>
+	<string name="status_contains_spoiler">Spoiler!</string>
 </resources>

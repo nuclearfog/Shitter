@@ -266,6 +266,8 @@
 	<string name="settings_enable_proxy">enable proxy</string>
 	<string name="settings_enable_proxy_auth">enable proxy authentication</string>
 	<string name="status_sensitive_media">sensitive content</string>
+	<string name="status_contains_spoiler">Spoiler!</string>
+	<string name="status_spoiler_hint">Tap to view</string>
 	<string name="login_info">4 steps to login</string>
 	<string name="login_first_opt" translatable="false">1.</string>
 	<string name="login_sec_opt" translatable="false">2.</string>

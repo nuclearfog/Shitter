@@ -98,6 +98,7 @@ public class GlobalSettings {
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
 	private static final String MASTODON_LOCAL_TIMELINE = "mastodon_local_timeline";
+	private static final String HIDE_SENSITIVE = "hide_sensitive";
 
 	// current login preferences
 	private static final String LOGGED_IN = "login";
@@ -148,6 +149,7 @@ public class GlobalSettings {
 	private boolean enableLike;
 	private boolean twitterAlt;
 	private boolean localOnly;
+	private boolean hideSensitive;
 	private int background_color;
 	private int font_color;
 	private int highlight_color;
@@ -523,6 +525,26 @@ public class GlobalSettings {
 
 		Editor edit = settings.edit();
 		edit.putBoolean(TWEET_INDICATOR, enable);
+		edit.apply();
+	}
+
+	/**
+	 * @return true to hide sensitivee/spoiler content by default
+	 */
+	public boolean hideSensitiveEnabled() {
+		return hideSensitive;
+	}
+
+	/**
+	 * enable hiding sensitive/spoiler content by default
+	 *
+	 * @param enable true to hide sensitivee/spoiler content by default
+	 */
+	public void hideSensitive(boolean enable) {
+		hideSensitive = enable;
+
+		Editor edit = settings.edit();
+		edit.putBoolean(HIDE_SENSITIVE, enable);
 		edit.apply();
 	}
 
@@ -996,6 +1018,7 @@ public class GlobalSettings {
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
 		localOnly = settings.getBoolean(MASTODON_LOCAL_TIMELINE, false);
+		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
