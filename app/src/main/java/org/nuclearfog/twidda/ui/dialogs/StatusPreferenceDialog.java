@@ -44,6 +44,8 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.visibility, android.R.layout.simple_spinner_dropdown_item);
 		visibilitySelector.setAdapter(adapter);
+		visibilitySelector.setSelection(0, false);
+		visibilitySelector.setSelected(false);
 		AppStyles.setTheme(rootView);
 		if (!settings.getLogin().getConfiguration().statusVisibilitySupported()) {
 			statusVisibility.setVisibility(View.GONE);
@@ -69,7 +71,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		if (view.getId() == R.id.dialog_status_visibility) {
+		if (parent.getId() == R.id.dialog_status_visibility) {
 			switch (position) {
 				case 0:
 					statusUpdate.setVisibility(StatusUpdate.PUBLIC);
