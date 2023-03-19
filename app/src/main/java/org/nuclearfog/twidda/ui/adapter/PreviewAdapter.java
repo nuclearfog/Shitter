@@ -172,7 +172,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements 
 			items.addAll(Arrays.asList(status.getMedia()));
 		if (status.getCards().length > 0)
 			items.addAll(Arrays.asList(status.getCards()));
-		blurMedia = status.isSensitive();
+		blurMedia = settings.hideSensitiveEnabled() & status.isSensitive();
 		notifyDataSetChanged();
 	}
 

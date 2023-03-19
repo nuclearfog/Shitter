@@ -293,4 +293,5 @@
 	<string name="dialog_status_spoiler">Inhalt als Spoiler markieren</string>
 	<string name="dialog_status_visibility">Sichtbarkeit</string>
 	<string name="status_contains_spoiler">Spoiler!</string>
+	<string name="settings_hide_sensitive">verstecke sensible Inhalte</string>
 </resources>

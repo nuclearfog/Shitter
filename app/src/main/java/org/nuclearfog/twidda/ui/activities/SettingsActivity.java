@@ -142,6 +142,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton enableLike = findViewById(R.id.enable_like);
 		SwitchButton enableNitter = findViewById(R.id.settings_enable_twitter_alt);
 		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
+		SwitchButton hideSensitive = findViewById(R.id.enable_status_hide_sensitive);
 		View EnableTwitterAltDescr = findViewById(R.id.settings_enable_twitter_alt_descr);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
@@ -226,6 +227,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLike.setCheckedImmediately(settings.likeEnabled());
 		enableNitter.setCheckedImmediately(settings.twitterAltSet());
 		enableLocalTl.setCheckedImmediately(settings.useLocalTimeline());
+		hideSensitive.setCheckedImmediately(settings.hideSensitiveEnabled());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
 		enableProxy.setCheckedImmediately(settings.isProxyEnabled());
 		enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
@@ -246,6 +248,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableNitter.setOnCheckedChangeListener(this);
 		enableLocalTl.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
+		hideSensitive.setOnCheckedChangeListener(this);
 		enableProxy.setOnCheckedChangeListener(this);
 		enableAuth.setOnCheckedChangeListener(this);
 		toolbarOverlap.setOnCheckedChangeListener(this);
@@ -533,7 +536,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				enableAuth.setChecked(false);
 			}
 		}
-		//enable proxy authentication
+		// enable proxy authentication
 		else if (c.getId() == R.id.settings_enable_auth) {
 			if (checked) {
 				proxyUser.setVisibility(View.VISIBLE);
@@ -542,6 +545,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				proxyUser.setVisibility(View.GONE);
 				proxyPass.setVisibility(View.GONE);
 			}
+		}
+		// hide sensitive content
+		else if (c.getId() == R.id.enable_status_hide_sensitive) {
+			settings.hideSensitive(checked);
 		}
 	}
 

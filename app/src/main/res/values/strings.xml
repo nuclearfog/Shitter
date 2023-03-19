@@ -186,6 +186,7 @@
 	<string name="settings_color_like">Like</string>
 	<string name="settings_color_fav">Favorite</string>
 	<string name="settings_enable_indicators">show additional status information</string>
+	<string name="settings_hide_sensitive">hide sensitive/spoiler content</string>
 	<string name="highlight">Highlight</string>
 	<string name="settings_list_size">List size</string>
 	<string name="settings_enable_like">use \'Like\' instead of ’Favorite’</string>
