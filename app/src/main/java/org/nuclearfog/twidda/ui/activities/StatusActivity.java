@@ -219,8 +219,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	protected void onCreate(@Nullable Bundle b) {
-		super.onCreate(b);
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_status);
 		root = findViewById(R.id.page_status_root);
 		body = findViewById(R.id.page_status_body);
@@ -273,10 +273,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		AppStyles.setTheme(root);
 
 		// get parameter, set information and initialize loaders
+		if (savedInstanceState == null)
+			savedInstanceState = getIntent().getExtras();
+		if (savedInstanceState == null)
+			return;
 		long statusId = 0L;
 		String replyUsername = "";
-		Object statusObject = getIntent().getSerializableExtra(KEY_STATUS_DATA);
-		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
+		Object statusObject = savedInstanceState.getSerializable(KEY_STATUS_DATA);
+		Object notificationObject = savedInstanceState.getSerializable(KEY_NOTIFICATION_DATA);
 		if (statusObject instanceof Status) {
 			Status status = (Status) statusObject;
 			setStatus(status);
@@ -305,14 +309,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				notificationAsync.execute(notificationParam, notificationCallback);
 			}
 		} else {
-			statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
-			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
+			statusId = savedInstanceState.getLong(KEY_STATUS_ID, 0L);
+			long notificationId = savedInstanceState.getLong(KEY_NOTIFICATION_ID, 0L);
 			if (statusId != 0L) {
-				replyUsername = getIntent().getStringExtra(KEY_STATUS_NAME);
+				replyUsername = savedInstanceState.getString(KEY_STATUS_NAME);
 				StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
 				statusAsync.execute(statusParam, statusCallback);
 			} else if (notificationId != 0L) {
-				replyUsername = getIntent().getStringExtra(KEY_NOTIFICATION_NAME);
+				replyUsername = savedInstanceState.getString(KEY_NOTIFICATION_NAME);
 				NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
 				notificationAsync.execute(notificationParam, notificationCallback);
 			}
@@ -370,22 +374,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		outState.putSerializable(KEY_STATUS_DATA, status);
 		outState.putSerializable(KEY_NOTIFICATION_DATA, notification);
 		super.onSaveInstanceState(outState);
-	}
-
-
-	@Override
-	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		Object statusObject = getIntent().getSerializableExtra(KEY_STATUS_DATA);
-		Object notificationObject = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
-		if (statusObject instanceof Status) {
-			setStatus((Status) statusObject);
-		} else if (notificationObject instanceof Notification) {
-			notification = (Notification) notificationObject;
-			if (notification.getStatus() != null) {
-				setStatus(notification.getStatus());
-			}
-		}
-		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 
@@ -851,7 +839,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		if (status.isSpoiler()) {
 			spoiler.setVisibility(View.VISIBLE);
-			if (settings.hideSensitiveEnabled() && statusText.getPaint().getMaskFilter() == null) {
+			if (settings.hideSensitiveEnabled()) {
 				spoilerHint.setVisibility(View.VISIBLE);
 				statusText.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 				float radius = statusText.getTextSize() / 3;
@@ -862,6 +850,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		} else {
 			spoiler.setVisibility(View.GONE);
+			spoilerHint.setVisibility(View.INVISIBLE);
 		}
 		String profileImageUrl = author.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {

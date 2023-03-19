@@ -948,9 +948,9 @@ public class AppDatabase {
 	public void saveStatus(Status status) {
 		synchronized (LOCK) {
 			SQLiteDatabase db = adapter.getDbWrite();
-			saveStatus(status, db, CONFLICT_REPLACE);
+			saveStatus(status, db, 0);
 			if (status.getEmbeddedStatus() != null)
-				saveStatus(status.getEmbeddedStatus(), db, CONFLICT_REPLACE);
+				saveStatus(status.getEmbeddedStatus(), db, 0);
 			adapter.commit();
 		}
 	}

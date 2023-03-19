@@ -167,8 +167,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 
 	@Override
-	protected void onCreate(@Nullable Bundle b) {
-		super.onCreate(b);
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_profile);
 		header = findViewById(R.id.page_profile_header);
 		body = findViewById(R.id.page_profile_body);
@@ -218,17 +218,21 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		setSupportActionBar(toolbar);
 		adapter = new FragmentAdapter(this, getSupportFragmentManager());
 		tabPages.setAdapter(adapter);
-		tabPages.setOffscreenPageLimit(2);
+		tabPages.setOffscreenPageLimit(3);
 		tabLayout.setupWithViewPager(tabPages);
 		confirmDialog = new ConfirmDialog(this);
 
-		Intent i = getIntent();
-		Object o = i.getSerializableExtra(KEY_PROFILE_USER);
+		// get parameters
+		if (savedInstanceState == null)
+			savedInstanceState = getIntent().getExtras();
+		if (savedInstanceState == null)
+			return;
+		Object o = savedInstanceState.getSerializable(KEY_PROFILE_USER);
 		if (o instanceof User) {
 			user = (User) o;
 			userId = user.getId();
 		} else {
-			userId = i.getLongExtra(KEY_PROFILE_ID, 0L);
+			userId = savedInstanceState.getLong(KEY_PROFILE_ID, 0L);
 		}
 		adapter.setupProfilePage(userId);
 		if (settings.likeEnabled()) {
@@ -266,21 +270,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		outState.putSerializable(KEY_PROFILE_USER, user);
 		outState.putSerializable(KEY_PROFILE_RELATION, relation);
 		super.onSaveInstanceState(outState);
-	}
-
-
-	@Override
-	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		Object data = savedInstanceState.getSerializable(KEY_PROFILE_USER);
-		if (data instanceof User) {
-			setUser((User) data);
-		}
-		data = savedInstanceState.getSerializable(KEY_PROFILE_RELATION);
-		if (data instanceof Relation) {
-			relation = (Relation) data;
-			invalidateOptionsMenu();
-		}
-		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 
