@@ -78,7 +78,6 @@ public class GlobalSettings {
 	private static final String FV_COLOR = "favorite_color";
 	private static final String FOLLOW_COLOR = "following_color";
 	private static final String F_REQ_COLOR = "following_pending_color";
-	private static final String BOOKMARK_COLOR = "bookmark_color";
 	private static final String INDEX_FONT = "index_font";
 	private static final String INDEX_SCALE = "index_scale";
 	private static final String LIST_SIZE = "preload";
@@ -127,7 +126,6 @@ public class GlobalSettings {
 	private static final int DEFAULT_RT_ICON_COLOR = Color.GREEN;
 	private static final int DEFAULT_FV_ICON_COLOR = Color.YELLOW;
 	private static final int DEFAULT_FR_ICON_COLOR = Color.YELLOW;
-	private static final int DEFAULT_BOOKMARK_COLOR = Color.RED;
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
 	private static final long DEFAULT_LOCATION_ID = 1L;
 	private static final String DEFAULT_LOCATION_NAME = "Worldwide";
@@ -160,7 +158,6 @@ public class GlobalSettings {
 	private int favorite_color;
 	private int request_color;
 	private int follow_color;
-	private int bookmark_color;
 	private int indexFont;
 	private int indexScale;
 	private int listSize;
@@ -371,28 +368,6 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * get bookmark icon color
-	 *
-	 * @return icon color
-	 */
-	public int getBookmarkColor() {
-		return bookmark_color;
-	}
-
-	/**
-	 * set bookmark icon color
-	 *
-	 * @param color icon color
-	 */
-	public void setbookmarkColor(int color) {
-		bookmark_color = color;
-
-		Editor edit = settings.edit();
-		edit.putInt(BOOKMARK_COLOR, color);
-		edit.apply();
-	}
-
-	/**
 	 * set icon color of the follow button
 	 *
 	 * @param color icon color
@@ -438,7 +413,7 @@ public class GlobalSettings {
 				popup_color, highlight_color,
 				card_color, icon_color,
 				retweet_color, favorite_color,
-				request_color, follow_color, bookmark_color
+				request_color, follow_color
 		};
 	}
 
@@ -1002,7 +977,6 @@ public class GlobalSettings {
 		retweet_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
 		favorite_color = settings.getInt(FV_COLOR, DEFAULT_FV_ICON_COLOR);
 		request_color = settings.getInt(F_REQ_COLOR, DEFAULT_FR_ICON_COLOR);
-		bookmark_color = settings.getInt(BOOKMARK_COLOR, DEFAULT_BOOKMARK_COLOR);
 		follow_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
 		indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
 		indexScale = settings.getInt(INDEX_SCALE, DEFAULT_SCALE_INDEX);

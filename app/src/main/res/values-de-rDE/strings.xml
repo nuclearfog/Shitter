@@ -270,7 +270,6 @@
 	<string name="info_missing_api_keys">Bitte API-Schlüssel hinzufügen</string>
 	<string name="info_status_bookmarked">Status zu Lesezeichen hinzugefügt</string>
 	<string name="info_status_unbookmarked">Status aus Lesezeichen entfernt</string>
-	<string name="settings_bookmark_color">Lesezeichen symbol</string>
 	<string name="info_poll_voted">Umfrage abgestimmt!</string>
 	<string name="confirm_dismiss_notification">Nachricht verwerfen?</string>
 	<string name="error_json_format">JSON Fehler!</string>
