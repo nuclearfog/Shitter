@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPoll;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
@@ -39,6 +40,7 @@ import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -912,6 +914,22 @@ public class Mastodon implements Connection {
 				throw new MastodonException(response);
 			}
 		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public Translation getStatusTranslation(long id) throws ConnectionException {
+		try {
+			Response response = post(ENDPOINT_STATUS + id + "/translate", new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonTranslation(json);
+			}
+			throw new MastodonException(response);
+		} catch (IOException|JSONException e) {
 			throw new MastodonException(e);
 		}
 	}

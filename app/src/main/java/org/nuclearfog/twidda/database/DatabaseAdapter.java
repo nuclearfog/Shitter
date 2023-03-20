@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 14;
+	private static final int DB_VERSION = 15;
 
 	/**
 	 * database file name
@@ -69,8 +69,7 @@ public class DatabaseAdapter {
 			+ StatusTable.CONVERSATION + " INTEGER,"
 			+ StatusTable.SOURCE + " TEXT,"
 			+ StatusTable.LOCATION + " INTEGER,"
-			+ "FOREIGN KEY(" + StatusTable.USER + ")"
-			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "));";
+			+ StatusTable.LANGUAGE + " TEXT);";
 
 	/**
 	 * SQL query to create a table for favorite list
@@ -79,8 +78,6 @@ public class DatabaseAdapter {
 			+ FavoriteTable.NAME + "("
 			+ FavoriteTable.OWNER_ID + " INTEGER,"
 			+ FavoriteTable.STATUS_ID + " INTEGER,"
-			+ "FOREIGN KEY(" + FavoriteTable.OWNER_ID + ")"
-			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "),"
 			+ "FOREIGN KEY(" + FavoriteTable.STATUS_ID + ")"
 			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
 
@@ -91,8 +88,6 @@ public class DatabaseAdapter {
 			+ BookmarkTable.NAME + "("
 			+ BookmarkTable.OWNER_ID + " INTEGER,"
 			+ BookmarkTable.STATUS_ID + " INTEGER,"
-			+ "FOREIGN KEY(" + BookmarkTable.OWNER_ID + ")"
-			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "),"
 			+ "FOREIGN KEY(" + BookmarkTable.STATUS_ID + ")"
 			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
 
@@ -290,6 +285,8 @@ public class DatabaseAdapter {
 	 */
 	private static final String UPDATE_ADD_STATUS_POLL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.POLL + " INTEGER;";
 
+	private static final String UPDATE_ADD_LANGUAGE = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LANGUAGE + " TEXT;";
+
 	/**
 	 * singleton instance
 	 */
@@ -370,8 +367,12 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_ADD_STATUS_EMOJI);
 				db.setVersion(13);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 14) {
 				db.execSQL(UPDATE_ADD_STATUS_POLL);
+				db.setVersion(14);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_ADD_LANGUAGE);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -601,6 +602,11 @@ public class DatabaseAdapter {
 		 * ID of the embedded (reposted) status
 		 */
 		String EMBEDDED = "retweetID";
+
+		/**
+		 * language of the status
+		 */
+		String LANGUAGE = "lang";
 	}
 
 	/**

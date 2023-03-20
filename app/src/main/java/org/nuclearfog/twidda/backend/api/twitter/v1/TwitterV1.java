@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.AccountV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.LocationV1;
@@ -40,6 +41,7 @@ import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -1147,6 +1149,12 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public void dismissNotification(long id) throws TwitterException {
+		throw new TwitterException("not supported");
+	}
+
+
+	@Override
+	public Translation getStatusTranslation(long id) throws ConnectionException {
 		throw new TwitterException("not supported");
 	}
 

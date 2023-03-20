@@ -164,13 +164,22 @@
 					app:layout_constraintBottom_toBottomOf="@id/page_status_text"
 					app:layout_constraintEnd_toEndOf="@id/page_status_text"/>
 
+				<TextView
+					android:id="@+id/page_status_text_translate"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:text="@string/status_translate_text"
+					app:layout_constraintStart_toStartOf="@id/page_status_text"
+					app:layout_constraintTop_toBottomOf="@id/page_status_text"/>
+
 				<androidx.recyclerview.widget.RecyclerView
 					android:id="@+id/page_status_cards"
 					android:layout_width="wrap_content"
 					android:layout_height="@dimen/page_status_card_height"
 					android:layout_margin="@dimen/page_status_cards_list_margin"
 					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/page_status_text"
+					app:layout_constraintTop_toBottomOf="@id/page_status_text_translate"
 					app:layout_constraintEnd_toEndOf="parent" />
 
 				<TextView

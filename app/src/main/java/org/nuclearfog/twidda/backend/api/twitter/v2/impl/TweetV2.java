@@ -328,6 +328,12 @@ public class TweetV2 implements Status {
 
 
 	@Override
+	public String getLanguage() {
+		return ""; // todo implement this
+	}
+
+
+	@Override
 	public boolean isSensitive() {
 		return sensitive;
 	}

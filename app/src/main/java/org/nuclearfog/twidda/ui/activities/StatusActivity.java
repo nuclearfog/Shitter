@@ -60,6 +60,8 @@ import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
 import org.nuclearfog.twidda.backend.async.PollAction;
 import org.nuclearfog.twidda.backend.async.PollAction.PollActionParam;
 import org.nuclearfog.twidda.backend.async.PollAction.PollActionResult;
+import org.nuclearfog.twidda.backend.async.TranslationLoader;
+import org.nuclearfog.twidda.backend.async.TranslationLoader.TranslationResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -73,6 +75,7 @@ import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter.OnCardClickListener;
@@ -182,15 +185,17 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	private static final int MENU_GROUP_COPY = 0x157426;
 
-	private AsyncCallback<NotificationActionResult> notificationCallback = this::onNotificationResult;
 	private AsyncCallback<StatusResult> statusCallback = this::onStatusResult;
-	private AsyncCallback<PollActionResult> pollResult = this::setPollResult;
+	private AsyncCallback<PollActionResult> pollResult = this::onPollResult;
+	private AsyncCallback<TranslationResult> translationResult = this::onTranslationResult;
+	private AsyncCallback<NotificationActionResult> notificationCallback = this::onNotificationResult;
 
 	@Nullable
 	private ClipboardManager clip;
 	private StatusAction statusAsync;
 	private PollAction voteAsync;
 	private NotificationAction notificationAsync;
+	private TranslationLoader translationAsync;
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private PreviewAdapter adapter;
@@ -199,7 +204,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	private NestedScrollView container;
 	private ViewGroup root, body;
-	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive, spoiler, spoilerHint;
+	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive, spoiler, spoilerHint, translateText;
 	private Button replyButton, repostButton, likeButton, replyName, locationButton, repostNameButton;
 	private ImageView profileImage;
 	private RecyclerView cardList;
@@ -209,6 +214,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private Status status;
 	@Nullable
 	private Notification notification;
+	@Nullable
+	private Translation translation;
 	private boolean hidden;
 
 
@@ -241,12 +248,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		sensitive = findViewById(R.id.page_status_sensitive);
 		spoiler = findViewById(R.id.page_status_spoiler);
 		repostNameButton = findViewById(R.id.page_status_reposter_reference);
+		translateText = findViewById(R.id.page_status_text_translate);
 		spoilerHint = findViewById(R.id.page_status_text_sensitive_hint);
 		cardList = findViewById(R.id.page_status_cards);
 
 		statusAsync = new StatusAction(this);
 		voteAsync = new PollAction(this);
 		notificationAsync = new NotificationAction(this);
+		translationAsync = new TranslationLoader(this);
+
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -335,6 +345,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		confirmDialog.setConfirmListener(this);
 		repostNameButton.setOnClickListener(this);
 		replyName.setOnClickListener(this);
+		translateText.setOnClickListener(this);
 		replyButton.setOnClickListener(this);
 		repostButton.setOnClickListener(this);
 		likeButton.setOnClickListener(this);
@@ -582,6 +593,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					spoilerHint.setVisibility(View.INVISIBLE);
 				}
 			}
+			// translate status text
+			else if (v.getId() == R.id.page_status_text_translate) {
+				if (translationAsync.isIdle() && translation == null) {
+					translationAsync.execute(status.getId(), translationResult);
+				}
+			}
 		}
 	}
 
@@ -803,6 +820,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
+		if (!status.getLanguage().isEmpty()) {
+			translateText.setVisibility(View.VISIBLE);
+			translateText.setTextColor(settings.getHighlightColor());
+		}
 		userName.setText(author.getUsername());
 		screenName.setText(author.getScreenname());
 		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
@@ -820,6 +841,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
 			statusText.setVisibility(View.VISIBLE);
 			statusText.setText(spannableText);
+			setTranslation();
 		} else {
 			statusText.setVisibility(View.GONE);
 		}
@@ -888,6 +910,36 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			cardList.setVisibility(View.GONE);
 			statusText.setMaxLines(10);
+		}
+	}
+
+	/**
+	 * set notification containing a status
+	 *
+	 * @param notification notification with status
+	 */
+	private void setNotification(@NonNull Notification notification) {
+		this.notification = notification;
+		if (notification.getStatus() != null) {
+			setStatus(notification.getStatus());
+		}
+	}
+
+	/**
+	 * append translation to the status text
+	 */
+	private void setTranslation() {
+		if (translation != null) {
+			StringBuilder buf = new StringBuilder("\n...\n");
+			buf.append(translation.getText()).append("\n...\n");
+			buf.append(getString(R.string.status_translate_source));
+			buf.append(' ').append(translation.getSource());
+
+			// append translation and scroll to it
+			int y = statusText.getLayout().getLineTop(statusText.getLineCount());
+			statusText.append(buf);
+			translateText.setText(R.string.status_translation_finished);
+			statusText.scrollTo(0, y);
 		}
 	}
 
@@ -978,18 +1030,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	}
 
 	/**
-	 * set notification containing a status
-	 *
-	 * @param notification notification with status
-	 */
-	private void setNotification(@NonNull Notification notification) {
-		this.notification = notification;
-		if (notification.getStatus() != null) {
-			setStatus(notification.getStatus());
-		}
-	}
-
-	/**
 	 * update notification
 	 *
 	 * @param result notification containing status information
@@ -1036,11 +1076,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	}
 
 	/**
-	 * update status poll
+	 * set poll result
 	 *
 	 * @param result poll result
 	 */
-	private void setPollResult(PollActionResult result) {
+	private void onPollResult(PollActionResult result) {
 		switch (result.mode) {
 			case PollActionResult.LOAD:
 				if (result.poll != null) {
@@ -1059,6 +1099,20 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				String message = ErrorHandler.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				break;
+		}
+	}
+
+	/**
+	 *
+	 * @param result status translation result
+	 */
+	private void onTranslationResult(TranslationResult result) {
+		if (result.translation != null) {
+			translation = result.translation;
+			setTranslation();
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		}
 	}
 }

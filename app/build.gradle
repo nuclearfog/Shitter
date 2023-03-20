@@ -13,8 +13,8 @@ android {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 77
-		versionName '3.0.9'
+		versionCode 78
+		versionName '3.0.10'
 		resConfigs 'en', 'de-rDE', 'zh-rCN'
 	}
 

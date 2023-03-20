@@ -29,8 +29,6 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
  */
 public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
 
-	private AsyncCallback<Void> databaseResult = this::onDatabaseResult;
-
 	private AccountLoader accountLoader;
 	private DatabaseAction databaseAction;
 	private GlobalSettings settings;
@@ -38,6 +36,13 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	private ConfirmDialog dialog;
 
 	private long selectedId;
+
+	private AsyncCallback<Void> databaseResult = new AsyncCallback<Void>() {
+		@Override
+		public void onResult(Void v) {
+			onDatabaseResult();
+		}
+	};
 
 
 	@Override
@@ -131,7 +136,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	/**
 	 * called from {@link DatabaseAction} when all data of the previous login were removed
 	 */
-	private void onDatabaseResult(Void v) {
+	private void onDatabaseResult() {
 		// finish activity and return to parent activity
 		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
 		requireActivity().finish();

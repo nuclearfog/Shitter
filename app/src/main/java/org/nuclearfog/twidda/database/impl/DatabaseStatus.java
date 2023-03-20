@@ -64,6 +64,7 @@ public class DatabaseStatus implements Status {
 	private String source;
 	private String userMentions;
 	private String statusUrl;
+	private String language;
 	private boolean reposted;
 	private boolean favorited;
 	private boolean bookmarked;
@@ -88,14 +89,15 @@ public class DatabaseStatus implements Status {
 		source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
 		locationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.LOCATION));
 		pollId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.POLL));
-		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
-		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.EMOJI));
-		userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusRegisterTable.REPOST_ID));
 		conversationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.CONVERSATION));
 		statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.URL));
+		language = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.LANGUAGE));
+		userMentions = StringTools.getUserMentions(text, author.getScreenname());
+		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
+		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.EMOJI));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(StatusRegisterTable.REGISTER));
 
 		favorited = (register & MASK_STATUS_FAVORITED) != 0;
@@ -215,6 +217,12 @@ public class DatabaseStatus implements Status {
 	@Override
 	public String getUserMentions() {
 		return userMentions;
+	}
+
+
+	@Override
+	public String getLanguage() {
+		return language;
 	}
 
 

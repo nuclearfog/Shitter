@@ -15,6 +15,7 @@ import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -592,4 +593,12 @@ public interface Connection {
 	 * @param id notification ID
 	 */
 	void dismissNotification(long id) throws ConnectionException;
+
+	/**
+	 * get the translation of a status
+	 *
+	 * @param id status ID
+	 * @return translation of the status
+	 */
+	Translation getStatusTranslation(long id) throws ConnectionException;
 }

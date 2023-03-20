@@ -17,6 +17,8 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 
+import java.util.Locale;
+
 /**
  * Status implementation for Mastodon
  *
@@ -43,6 +45,7 @@ public class MastodonStatus implements Status {
 
 	private String text;
 	private String mentions;
+	private String language = "";
 	private String source = "";
 	private String url = "";
 
@@ -124,6 +127,12 @@ public class MastodonStatus implements Status {
 		}
 		if (cardJson != null) {
 			cards = new Card[]{new MastodonCard(cardJson)};
+		}
+		if (json.has("language") && !json.isNull("language")) {
+			String language = json.getString("language");
+			if (!language.equals(Locale.getDefault().getLanguage())) {
+				this.language = language;
+			}
 		}
 		try {
 			id = Long.parseLong(idStr);
@@ -288,6 +297,12 @@ public class MastodonStatus implements Status {
 	@Nullable
 	public Location getLocation() {
 		return null; // todo add implementation if supported by API
+	}
+
+
+	@Override
+	public String getLanguage() {
+		return language;
 	}
 
 

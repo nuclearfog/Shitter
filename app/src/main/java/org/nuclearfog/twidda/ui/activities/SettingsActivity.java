@@ -94,9 +94,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private static final int COLOR_FOLLOW_REQUEST = 8;
 	private static final int COLOR_FOLLOWING = 9;
 
-	private AsyncCallback<Void> databaseCallback = this::onDatabaseResult;
-	private AsyncCallback<LocationLoaderResult> locationResult = this::onLocationResult;
-
 	private GlobalSettings settings;
 	private Configuration configuration;
 	private DatabaseAction databaseAsync;
@@ -119,6 +116,14 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@IntRange(from = 0, to = COLOR_COUNT - 1)
 	private int mode = 0;
 	private int color = 0;
+
+	private AsyncCallback<LocationLoaderResult> locationResult = this::onLocationResult;
+	private AsyncCallback<Void> databaseResult = new AsyncCallback<Void>() {
+		@Override
+		public void onResult(Void v) {
+			onDatabaseResult();
+		}
+	};
 
 
 	@Override
@@ -318,7 +323,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		}
 		// confirm delete app data and cache
 		else if (type == ConfirmDialog.DELETE_APP_DATA) {
-			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), databaseCallback);
+			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
 		}
 		// confirm leaving without saving proxy changes
 		else if (type == ConfirmDialog.WRONG_PROXY) {
@@ -596,7 +601,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	/**
 	 * called from {@link DatabaseAction}
 	 */
-	private void onDatabaseResult(Void v) {
+	private void onDatabaseResult() {
 		setResult(RETURN_DATA_CLEARED);
 		Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
 	}

@@ -1500,7 +1500,7 @@ public class AppDatabase {
 		} else {
 			flags &= ~MASK_STATUS_BOOKMARKED;
 		}
-		ContentValues column = new ContentValues(19);
+		ContentValues column = new ContentValues(20);
 		column.put(StatusTable.ID, status.getId());
 		column.put(StatusTable.USER, user.getId());
 		column.put(StatusTable.TIME, status.getTimestamp());
@@ -1516,6 +1516,7 @@ public class AppDatabase {
 		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		column.put(StatusTable.REPLYNAME, status.getReplyName());
 		column.put(StatusTable.CONVERSATION, status.getConversationId());
+		column.put(StatusTable.LANGUAGE, status.getLanguage());
 		if (status.getLocation() != null && status.getLocation().getId() != 0L) {
 			column.put(StatusTable.LOCATION, status.getLocation().getId());
 			saveLocation(status.getLocation(), db);

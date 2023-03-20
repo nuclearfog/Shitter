@@ -89,6 +89,13 @@ public interface Status extends Serializable, Comparable<Status> {
 	String getUserMentions();
 
 	/**
+	 * get language of the status
+	 *
+	 * @return ISO 639 Part 1 two-letter language code or empty
+	 */
+	String getLanguage();
+
+	/**
 	 * @return true if status contains sensitive media
 	 */
 	boolean isSensitive();
