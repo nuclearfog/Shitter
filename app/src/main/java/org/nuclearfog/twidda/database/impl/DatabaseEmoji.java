@@ -26,17 +26,23 @@ public class DatabaseEmoji implements Emoji {
 			EmojiTable.CATEGORY
 	};
 
-	private String code;
-	private String url;
-	private String category;
+	private String code = "";
+	private String url = "";
+	private String category = "";
 
 	/**
 	 * @param cursor database cursor
 	 */
 	public DatabaseEmoji(Cursor cursor) {
-		code = cursor.getString(0);
-		url = cursor.getString(1);
-		category = cursor.getString(2);
+		String code = cursor.getString(0);
+		String url = cursor.getString(1);
+		String category = cursor.getString(2);
+		if (code != null)
+			this.code = code;
+		if (url != null)
+			this.url = url;
+		if (category != null)
+			this.category = category;
 	}
 
 

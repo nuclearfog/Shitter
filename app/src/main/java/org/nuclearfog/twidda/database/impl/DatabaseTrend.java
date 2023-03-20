@@ -26,7 +26,7 @@ public class DatabaseTrend implements Trend {
 			DatabaseAdapter.TrendTable.ID
 	};
 
-	private String name;
+	private String name = "";
 	private int popularity;
 	private int rank;
 	private long id;
@@ -35,10 +35,13 @@ public class DatabaseTrend implements Trend {
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
 	 */
 	public DatabaseTrend(Cursor cursor) {
-		name = cursor.getString(0);
+		String name = cursor.getString(0);
 		popularity = cursor.getInt(1);
 		rank = cursor.getInt(2);
 		id = cursor.getLong(3);
+		if (name != null) {
+			this.name = name;
+		}
 	}
 
 

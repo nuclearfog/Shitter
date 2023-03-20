@@ -820,7 +820,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
-		if (!status.getLanguage().isEmpty()) {
+		if (status.getLanguage() != null && !status.getLanguage().isEmpty()) {
 			translateText.setVisibility(View.VISIBLE);
 			translateText.setTextColor(settings.getHighlightColor());
 		}

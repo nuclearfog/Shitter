@@ -54,8 +54,8 @@ public class MastodonUser implements User {
 		JSONArray emojiArray = json.optJSONArray("emojis");
 		String idStr = json.getString("id");
 		String description = json.optString("note", "");
-		String profileUrl = json.optString("avatar", "");
-		String bannerUrl = json.optString("header", "");
+		String profileUrl = json.optString("avatar_static", "");
+		String bannerUrl = json.optString("header_static", "");
 		String createdAtStr = json.optString("created_at", "");
 		screenname = '@' + json.optString("acct", "");
 		username = json.optString("display_name", "");

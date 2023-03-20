@@ -59,12 +59,12 @@ public class DatabaseStatus implements Status {
 	private int repostCount;
 	private int favoriteCount;
 	private int replyCount;
-	private String replyName;
-	private String text;
-	private String source;
-	private String userMentions;
-	private String statusUrl;
-	private String language;
+	private String replyName = "";
+	private String text = "";
+	private String source = "";
+	private String userMentions = "";
+	private String statusUrl = "";
+	private String language = "";
 	private boolean reposted;
 	private boolean favorited;
 	private boolean bookmarked;
@@ -79,25 +79,24 @@ public class DatabaseStatus implements Status {
 	public DatabaseStatus(Cursor cursor, Account account) {
 		author = new DatabaseUser(cursor, account);
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.TIME));
-		text = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.TEXT));
 		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPOST));
 		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.FAVORITE));
 		replyCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPLY));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.ID));
-		replyName = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.REPLYNAME));
 		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYSTATUS));
-		source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
 		locationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.LOCATION));
 		pollId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.POLL));
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusRegisterTable.REPOST_ID));
 		conversationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.CONVERSATION));
-		statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.URL));
-		language = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.LANGUAGE));
-		userMentions = StringTools.getUserMentions(text, author.getScreenname());
+		String statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.URL));
+		String language = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.LANGUAGE));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
 		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.EMOJI));
+		String source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
+		String text = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.TEXT));
+		String replyName = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.REPLYNAME));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(StatusRegisterTable.REGISTER));
 
 		favorited = (register & MASK_STATUS_FAVORITED) != 0;
@@ -106,11 +105,22 @@ public class DatabaseStatus implements Status {
 		isHidden = (register & MASK_STATUS_HIDDEN) != 0;
 		bookmarked = (register & MASK_STATUS_BOOKMARKED) != 0;
 		spoiler = (register & MASK_STATUS_SPOILER) != 0;
-		if (mediaKeys != null && !mediaKeys.isEmpty()) {
+
+		if (mediaKeys != null && !mediaKeys.isEmpty())
 			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
-		}
-		if (emojiKeys != null && !emojiKeys.isEmpty()) {
+		if (emojiKeys != null && !emojiKeys.isEmpty())
 			this.emojiKeys = MEDIA_SEPARATOR.split(emojiKeys);
+		if (statusUrl != null)
+			this.statusUrl = statusUrl;
+		if (language != null)
+			this.language = language;
+		if (replyName != null)
+			this.replyName = replyName;
+		if (source != null)
+			this.source = source;
+		if (text != null) {
+			this.text = text;
+			userMentions = StringTools.getUserMentions(text, author.getScreenname());
 		}
 	}
 

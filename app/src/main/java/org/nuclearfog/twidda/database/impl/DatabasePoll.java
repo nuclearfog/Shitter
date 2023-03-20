@@ -38,7 +38,7 @@ public class DatabasePoll implements Poll {
 		limit = cursor.getInt(1);
 		expired = cursor.getLong(2);
 		String optionStr = cursor.getString(3);
-		if (!optionStr.isEmpty()) {
+		if (optionStr != null && !optionStr.isEmpty()) {
 			String[] optArray = SPLIT.split(optionStr);
 			options = new DatabasePollOption[optArray.length];
 			for (int i = 0; i < optArray.length; i++) {

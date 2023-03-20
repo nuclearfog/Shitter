@@ -27,7 +27,7 @@ public class DatabaseMessage implements Message {
 	private long id;
 	private long time;
 	private long receiverId;
-	private String text;
+	private String text = "";
 	private String[] mediaKeys = {};
 	private Media[] medias = {};
 	private User sender;
@@ -38,11 +38,13 @@ public class DatabaseMessage implements Message {
 	 */
 	public DatabaseMessage(Cursor cursor, Account account) {
 		sender = new DatabaseUser(cursor, account);
-		text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
 		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TIME));
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
 		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
+		String text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));
+		if (text != null)
+			this.text = text;
 		if (mediaKeys != null && !mediaKeys.isEmpty()) {
 			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
 		}

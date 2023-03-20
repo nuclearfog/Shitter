@@ -31,20 +31,20 @@ public class DatabaseUser implements User {
 	private int follower;
 	private int statusCount;
 	private int favorCount;
-	private String username;
-	private String screenName;
-	private String bio;
-	private String location;
-	private String link;
-	private String profileImageSmall;
-	private String profileImageOrig;
-	private String profileBannerSmall;
-	private String profileBannerOrig;
 	private boolean isCurrentUser;
 	private boolean isVerified;
 	private boolean isLocked;
 	private boolean followReqSent;
 	private boolean defaultImage;
+	private String username = "";
+	private String screen_name = "";
+	private String bio = "";
+	private String location = "";
+	private String link = "";
+	private String profileImageSmall = "";
+	private String profileImageOrig = "";
+	private String profileBannerSmall = "";
+	private String profileBannerOrig = "";
 
 	/**
 	 * @param cursor  database cursor containing user column
@@ -52,13 +52,13 @@ public class DatabaseUser implements User {
 	 */
 	public DatabaseUser(Cursor cursor, Account account) {
 		id = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.ID));
-		username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
-		screenName = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));
-		profileImageOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
-		bio = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.DESCRIPTION));
-		link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
-		location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
-		profileBannerOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
+		String username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
+		String screen_name = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));
+		String profileImageOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
+		String bio = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.DESCRIPTION));
+		String link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
+		String location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
+		String profileBannerOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
 		createdAt = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
 		following = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FRIENDS));
 		follower = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FOLLOWER));
@@ -71,20 +71,37 @@ public class DatabaseUser implements User {
 		defaultImage = (register & MASK_USER_DEFAULT_IMAGE) != 0;
 		isCurrentUser = account.getId() == id;
 
+		if (username != null)
+			this.username = username;
+		if (screen_name != null)
+			this.screen_name = screen_name;
+		if (bio != null)
+			this.bio = bio;
+		if (link != null)
+			this.link = link;
+		if (location != null)
+			this.location = location;
+		if (profileImageOrig != null)
+			this.profileImageOrig = profileImageOrig;
+		if (profileBannerOrig != null)
+			this.profileBannerOrig = profileBannerOrig;
+
 		switch (account.getConfiguration()) {
 			case TWITTER1:
 			case TWITTER2:
-				if (defaultImage || profileImageOrig.isEmpty()) {
-					profileImageSmall = profileImageOrig;
-				} else {
-					profileImageSmall = profileImageOrig + "_bigger";
+				if (profileImageOrig != null && !profileImageOrig.isEmpty()) {
+					if (defaultImage) {
+						profileImageSmall = profileImageOrig;
+					} else {
+						profileImageSmall = profileImageOrig + "_bigger";
+					}
 				}
-				if (profileBannerOrig.isEmpty()) {
-					profileBannerSmall = profileBannerOrig;
-				} else if (profileBannerOrig.endsWith("/1500x500")) {
-					profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
-				} else {
-					profileBannerSmall = profileBannerOrig + "/600x200";
+				if (profileBannerOrig != null && !profileBannerOrig.isEmpty()) {
+					if (profileBannerOrig.endsWith("/1500x500")) {
+						profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
+					} else {
+						profileBannerSmall = profileBannerOrig + "/600x200";
+					}
 				}
 				break;
 
@@ -115,7 +132,7 @@ public class DatabaseUser implements User {
 
 	@Override
 	public String getScreenname() {
-		return screenName;
+		return screen_name;
 	}
 
 
@@ -244,7 +261,7 @@ public class DatabaseUser implements User {
 	@NonNull
 	@Override
 	public String toString() {
-		return "name=\"" + screenName + "\"";
+		return "name=\"" + screen_name + "\"";
 	}
 
 	/**

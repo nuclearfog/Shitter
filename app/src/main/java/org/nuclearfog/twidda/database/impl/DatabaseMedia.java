@@ -26,19 +26,26 @@ public class DatabaseMedia implements Media {
 			MediaTable.TYPE
 	};
 
-	private String key;
-	private String url, preview;
 	private int mediaType;
+	private String key = "";
+	private String url = "";
+	private String preview = "";
 
 
 	/**
 	 * @param cursor database cursor containing media table
 	 */
 	public DatabaseMedia(Cursor cursor) {
-		key = cursor.getString(0);
-		url = cursor.getString(1);
-		preview = cursor.getString(2);
+		String key = cursor.getString(0);
+		String url = cursor.getString(1);
+		String preview = cursor.getString(2);
 		mediaType = cursor.getInt(3);
+		if (key != null)
+			this.key = key;
+		if (url != null)
+			this.url = url;
+		if (preview != null)
+			this.preview = preview;
 	}
 
 

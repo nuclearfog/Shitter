@@ -24,6 +24,7 @@ public class DatabaseAccount implements Account {
 	 */
 	public static final String[] COLUMNS = {
 			AccountTable.ID,
+			AccountTable.API,
 			AccountTable.DATE,
 			AccountTable.ACCESS_TOKEN,
 			AccountTable.TOKEN_SECRET,
@@ -31,16 +32,17 @@ public class DatabaseAccount implements Account {
 			AccountTable.CLIENT_SECRET,
 			AccountTable.BEARER,
 			AccountTable.HOSTNAME,
-			AccountTable.API
 	};
 
 	private long userId;
 	private long loginDate;
 	private int apiType;
-	private String accessToken, tokenSecret;
-	private String consumerToken, consumerSecret;
-	private String bearerToken;
-	private String host;
+	private String accessToken = "";
+	private String tokenSecret = "";
+	private String consumerToken = "";
+	private String consumerSecret = "";
+	private String bearerToken = "";
+	private String host = "";
 	private User user;
 
 	/**
@@ -48,14 +50,27 @@ public class DatabaseAccount implements Account {
 	 */
 	public DatabaseAccount(Cursor cursor) {
 		userId = cursor.getLong(0);
-		loginDate = cursor.getLong(1);
-		accessToken = cursor.getString(2);
-		tokenSecret = cursor.getString(3);
-		consumerToken = cursor.getString(4);
-		consumerSecret = cursor.getString(5);
-		bearerToken = cursor.getString(6);
-		host = cursor.getString(7);
-		apiType = cursor.getInt(8);
+		apiType = cursor.getInt(1);
+		loginDate = cursor.getLong(2);
+		String accessToken = cursor.getString(3);
+		String tokenSecret = cursor.getString(4);
+		String consumerToken = cursor.getString(5);
+		String consumerSecret = cursor.getString(6);
+		String bearerToken = cursor.getString(7);
+		String host = cursor.getString(8);
+
+		if (accessToken != null)
+			this.accessToken = accessToken;
+		if (tokenSecret != null)
+			this.tokenSecret = tokenSecret;
+		if (consumerToken != null)
+			this.consumerToken = consumerToken;
+		if (consumerSecret != null)
+			this.consumerSecret = consumerSecret;
+		if (bearerToken != null)
+			this.bearerToken = bearerToken;
+		if (host != null)
+			this.host = host;
 	}
 
 
