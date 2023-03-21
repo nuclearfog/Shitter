@@ -17,10 +17,16 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -51,6 +57,9 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
@@ -87,6 +96,7 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -190,6 +200,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private AsyncCallback<PollActionResult> pollResult = this::onPollResult;
 	private AsyncCallback<TranslationResult> translationResult = this::onTranslationResult;
 	private AsyncCallback<NotificationActionResult> notificationCallback = this::onNotificationResult;
+	private AsyncCallback<EmojiResult> emojiResultCallback = this::onEmojiResult;
 
 	@Nullable
 	private ClipboardManager clip;
@@ -197,6 +208,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private PollAction voteAsync;
 	private NotificationAction notificationAsync;
 	private TranslationLoader translationAsync;
+	private EmojiLoader emojiAsync;
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private PreviewAdapter adapter;
@@ -257,6 +269,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		voteAsync = new PollAction(this);
 		notificationAsync = new NotificationAction(this);
 		translationAsync = new TranslationLoader(this);
+		emojiAsync = new EmojiLoader(this);
 
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
@@ -912,6 +925,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			cardList.setVisibility(View.GONE);
 			statusText.setMaxLines(10);
 		}
+		if (status.getEmojis().length > 0 && emojiAsync.isIdle()) {
+			EmojiParam param = new EmojiParam(status.getEmojis(), statusText.getLineHeight());
+			emojiAsync.execute(param, emojiResultCallback);
+		}
 	}
 
 	/**
@@ -1117,6 +1134,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			String message = ErrorHandler.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	/**
+	 * set cached status emojis
+	 */
+	private void onEmojiResult(EmojiResult result) {
+		if (result.images != null && statusText.getText() instanceof SpannableString) {
+			SpannableStringBuilder builder = new SpannableStringBuilder((SpannableString) statusText.getText());
+			for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
+				int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
+				if (idx >= 0) {
+					ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
+					builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				}
+			}
+			statusText.setText(builder);
 		}
 	}
 }
