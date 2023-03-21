@@ -59,11 +59,6 @@ public interface Status extends Serializable, Comparable<Status> {
 	long getRepliedStatusId();
 
 	/**
-	 * @return conversation Id (ID of the first status of a conversation)
-	 */
-	long getConversationId();
-
-	/**
 	 * @return ID of the status reposted by the current user
 	 */
 	long getRepostId();

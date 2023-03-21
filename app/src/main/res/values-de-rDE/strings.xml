@@ -294,6 +294,5 @@
 	<string name="dialog_status_visibility">Sichtbarkeit</string>
 	<string name="status_contains_spoiler">Spoiler!</string>
 	<string name="settings_hide_sensitive">verstecke sensible Inhalte</string>
-	<string name="status_translate_source">Übersetzt von:</string>
-	<string name="status_translation_finished">Text wurde übersetzt</string>
+	<string name="status_translate_source">Übersetzt von:\u0020</string>
 </resources>

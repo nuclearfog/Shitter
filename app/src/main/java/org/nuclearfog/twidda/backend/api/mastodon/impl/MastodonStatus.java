@@ -202,12 +202,6 @@ public class MastodonStatus implements Status {
 
 
 	@Override
-	public long getConversationId() {
-		return replyId;
-	}
-
-
-	@Override
 	public long getRepostId() {
 		return 0L;
 	}

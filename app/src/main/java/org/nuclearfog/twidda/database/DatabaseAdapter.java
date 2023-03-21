@@ -66,7 +66,6 @@ public class DatabaseAdapter {
 			+ StatusTable.REPOST + " INTEGER,"
 			+ StatusTable.FAVORITE + " INTEGER,"
 			+ StatusTable.REPLY + " INTEGER,"
-			+ StatusTable.CONVERSATION + " INTEGER,"
 			+ StatusTable.SOURCE + " TEXT,"
 			+ StatusTable.LOCATION + " INTEGER,"
 			+ StatusTable.LANGUAGE + " TEXT);";
@@ -261,11 +260,6 @@ public class DatabaseAdapter {
 	private static final String UPDATE_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
 
 	/**
-	 * update account table to add API client secret
-	 */
-	private static final String UPDATE_ADD_CONVERSATION_ID = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.CONVERSATION + " INTEGER;";
-
-	/**
 	 * update status table add location ID
 	 */
 	private static final String UPDATE_ADD_LOCATION_ID = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LOCATION + " INTEGER;";
@@ -350,10 +344,6 @@ public class DatabaseAdapter {
 			if (db.getVersion() < 9) {
 				db.execSQL(UPDATE_ADD_BEARER);
 				db.setVersion(9);
-			}
-			if (db.getVersion() < 10) {
-				db.execSQL(UPDATE_ADD_CONVERSATION_ID);
-				db.setVersion(10);
 			}
 			if (db.getVersion() < 11) {
 				db.execSQL(UPDATE_ADD_LOCATION_ID);
@@ -582,11 +572,6 @@ public class DatabaseAdapter {
 		 * ID of the replied status
 		 */
 		String REPLYSTATUS = "replyID";
-
-		/**
-		 * first status ID of a conversation
-		 */
-		String CONVERSATION = "conversationID";
 
 		/**
 		 * ID of the replied user

@@ -53,7 +53,6 @@ public class TweetV2 implements Status {
 	private long id;
 	private long timestamp;
 	private long replyUserId;
-	private long conversationId = -1L;
 	private long repliedTweetId;
 	private long retweetId;
 	private String tweetText;
@@ -98,7 +97,6 @@ public class TweetV2 implements Status {
 		String textStr = json.optString("text", "");
 		String timeStr = json.optString("created_at", "");
 		String replyUserIdStr = json.optString("in_reply_to_user_id", "-1");
-		String conversationIdStr = json.optString("conversation_id", "-1");
 		String authorId = json.getString("author_id");
 		// string to long conversion
 		try {
@@ -114,10 +112,8 @@ public class TweetV2 implements Status {
 				String locIdStr = geoJson.getString("place_id");
 				location = locationMap.get(Long.parseUnsignedLong(locIdStr, 16));
 			}
-			if (!conversationIdStr.equals("null"))
-				conversationId = Long.parseLong(conversationIdStr);
 		} catch (NumberFormatException e) {
-			throw new JSONException("Bad IDs: " + conversationIdStr + "," + idStr + "," + replyUserIdStr + "," + authorId);
+			throw new JSONException("Bad IDs: " + idStr + "," + replyUserIdStr + "," + authorId);
 		}
 		replyCount = publicMetrics.getInt("reply_count");
 		retweetCount = publicMetrics.getInt("retweet_count");
@@ -274,12 +270,6 @@ public class TweetV2 implements Status {
 	@Override
 	public long getRepliedStatusId() {
 		return repliedTweetId;
-	}
-
-
-	@Override
-	public long getConversationId() {
-		return conversationId;
 	}
 
 

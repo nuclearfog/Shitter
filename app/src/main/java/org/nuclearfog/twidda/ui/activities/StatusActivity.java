@@ -86,6 +86,7 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -820,7 +821,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
-		if (status.getLanguage() != null && !status.getLanguage().isEmpty()) {
+		if (!status.getLanguage().isEmpty() && !status.getLanguage().equals(Locale.getDefault().getLanguage())) {
 			translateText.setVisibility(View.VISIBLE);
 			translateText.setTextColor(settings.getHighlightColor());
 		}
@@ -930,16 +931,19 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void setTranslation() {
 		if (translation != null) {
-			StringBuilder buf = new StringBuilder("\n...\n");
-			buf.append(translation.getText()).append("\n...\n");
-			buf.append(getString(R.string.status_translate_source));
-			buf.append(' ').append(translation.getSource());
+			if (statusText.getLineCount() > statusText.getMaxLines()) {
+				int y = statusText.getLayout().getLineTop(statusText.getLineCount());
+				statusText.scrollTo(0, y);
+			}
+			// build translation string
+			String text = "\n...\n" + translation.getText() + "\n...";
+			Spannable textSpan = Tagger.makeTextWithLinks(text, settings.getHighlightColor(), this);
+			// append translation
+			statusText.append(textSpan);
+			translateText.setText(R.string.status_translate_source);
+			translateText.append(translation.getSource());
+			// scroll to translation
 
-			// append translation and scroll to it
-			int y = statusText.getLayout().getLineTop(statusText.getLineCount());
-			statusText.append(buf);
-			translateText.setText(R.string.status_translation_finished);
-			statusText.scrollTo(0, y);
 		}
 	}
 

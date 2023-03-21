@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -922,7 +923,9 @@ public class Mastodon implements Connection {
 	@Override
 	public Translation getStatusTranslation(long id) throws ConnectionException {
 		try {
-			Response response = post(ENDPOINT_STATUS + id + "/translate", new ArrayList<>());
+			List<String> param = new ArrayList<>();
+			param.add("lang=" + Locale.getDefault().getLanguage()); // set system language as destiny for translation
+			Response response = post(ENDPOINT_STATUS + id + "/translate", param);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());

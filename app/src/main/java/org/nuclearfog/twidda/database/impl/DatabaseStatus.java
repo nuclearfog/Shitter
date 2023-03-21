@@ -44,7 +44,6 @@ public class DatabaseStatus implements Status {
 	private long replyID;
 	private long replyUserId;
 	private long myRepostId;
-	private long conversationId;
 	private long locationId;
 	private long pollId;
 	private Status embedded;
@@ -89,7 +88,6 @@ public class DatabaseStatus implements Status {
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusRegisterTable.REPOST_ID));
-		conversationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.CONVERSATION));
 		String statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.URL));
 		String language = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.LANGUAGE));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
@@ -183,12 +181,6 @@ public class DatabaseStatus implements Status {
 	@Override
 	public long getRepostId() {
 		return myRepostId;
-	}
-
-
-	@Override
-	public long getConversationId() {
-		return conversationId;
 	}
 
 

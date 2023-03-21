@@ -1515,7 +1515,6 @@ public class AppDatabase {
 		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		column.put(StatusTable.REPLYNAME, status.getReplyName());
-		column.put(StatusTable.CONVERSATION, status.getConversationId());
 		column.put(StatusTable.LANGUAGE, status.getLanguage());
 		if (status.getLocation() != null && status.getLocation().getId() != 0L) {
 			column.put(StatusTable.LOCATION, status.getLocation().getId());

@@ -196,12 +196,6 @@ public class TweetV1 implements Status {
 
 
 	@Override
-	public long getConversationId() {
-		return replyTweetId;
-	}
-
-
-	@Override
 	public long getRepostId() {
 		return retweetId;
 	}
