@@ -75,6 +75,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
@@ -766,7 +767,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onLinkClick(String tag) {
 		Uri link = Uri.parse(tag);
 		// check if the link points to another status
-		if (TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+		if ((settings.getLogin().getConfiguration() == Configuration.TWITTER1 || settings.getLogin().getConfiguration() == Configuration.TWITTER2)
+			&& TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(this, StatusActivity.class);
 			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
@@ -1138,19 +1140,21 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	}
 
 	/**
-	 * set cached status emojis
+	 * set emojis, replace emoji tags with images
 	 */
 	private void onEmojiResult(EmojiResult result) {
-		if (result.images != null && statusText.getText() instanceof SpannableString) {
-			SpannableStringBuilder builder = new SpannableStringBuilder((SpannableString) statusText.getText());
-			for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
-				int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
-				if (idx >= 0) {
-					ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
-					builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
+			if (result.images != null && statusText.getText() instanceof SpannableString) {
+				SpannableStringBuilder builder = new SpannableStringBuilder(statusText.getText());
+				for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
+					int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
+					if (idx >= 0) {
+						ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
+						builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+					}
 				}
+				statusText.setText(builder);
 			}
-			statusText.setText(builder);
 		}
 	}
 }

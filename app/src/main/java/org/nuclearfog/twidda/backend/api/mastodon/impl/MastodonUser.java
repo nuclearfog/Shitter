@@ -35,22 +35,14 @@ public class MastodonUser implements User {
 	private int follower;
 	private int statusCount;
 	private boolean locked;
-	private boolean isCurrentUser = true;
+	private boolean isCurrentUser;
 	private Emoji[] emojis = {};
 
 	/**
 	 * @param json          json object used by Mastodon API
-	 * @param currentUserId ID of the current user
+	 * @param currentUserId current user ID
 	 */
 	public MastodonUser(JSONObject json, long currentUserId) throws JSONException {
-		this(json);
-		isCurrentUser = currentUserId == id;
-	}
-
-	/**
-	 * @param json json object used by Mastodon API
-	 */
-	public MastodonUser(JSONObject json) throws JSONException {
 		JSONArray emojiArray = json.optJSONArray("emojis");
 		String idStr = json.getString("id");
 		String description = json.optString("note", "");
@@ -65,6 +57,7 @@ public class MastodonUser implements User {
 		follower = json.optInt("followers_count");
 		statusCount = json.optInt("statuses_count");
 		locked = json.optBoolean("locked");
+		isCurrentUser = currentUserId == id;
 		if (!description.isEmpty()) {
 			this.description = Jsoup.parse(description).text();
 		}

@@ -842,7 +842,7 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				return new MastodonUser(json);
+				return new MastodonUser(json, settings.getLogin().getId());
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
@@ -1083,11 +1083,12 @@ public class Mastodon implements Connection {
 		try {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
+				long currentId = settings.getLogin().getId();
 				long[] cursors = getCursors(response);
 				JSONArray array = new JSONArray(body.string());
 				Users result = new Users(cursors[0], cursors[1]);
 				for (int i = 0; i < array.length(); i++) {
-					User item = new MastodonUser(array.getJSONObject(i));
+					User item = new MastodonUser(array.getJSONObject(i), currentId);
 					result.add(item);
 				}
 				return result;

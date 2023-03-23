@@ -35,7 +35,7 @@ public class MastodonNotification implements Notification {
 		JSONObject statusJson = json.optJSONObject("status");
 		JSONObject userJson = json.getJSONObject("account");
 		timestamp = StringTools.getTime(json.getString("created_at"), StringTools.TIME_MASTODON);
-		user = new MastodonUser(userJson);
+		user = new MastodonUser(userJson, currentId);
 
 		switch (typeStr) {
 			case "mention":
