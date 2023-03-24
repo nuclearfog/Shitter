@@ -21,10 +21,14 @@ import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REQUESTS;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +65,9 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.RelationLoader;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationParam;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationResult;
@@ -71,6 +78,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Relation;
@@ -81,6 +89,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -134,6 +143,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<RelationResult> relationCallback = this::setRelationResult;
 	private AsyncCallback<UserResult> userCallback = this::setUserResult;
+	private AsyncCallback<EmojiResult> emojiResultCallback = this::onEmojiResult;
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
@@ -141,6 +151,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private ConfirmDialog confirmDialog;
 	private RelationLoader relationLoader;
 	private UserLoader userLoader;
+	private EmojiLoader emojiLoader;
 
 	private NestedScrollView root;
 	private ConstraintLayout header;
@@ -191,6 +202,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 		relationLoader = new RelationLoader(this);
 		userLoader = new UserLoader(this);
+		emojiLoader = new EmojiLoader(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
 		if (!settings.toolbarOverlapEnabled()) {
@@ -794,6 +806,32 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
 			} else {
 				profileImage.setImageResource(0);
+			}
+		}
+		if (user.getEmojis().length > 0 && emojiLoader.isIdle()) {
+			EmojiParam param = new EmojiParam(user.getEmojis(), username.getLineHeight());
+			emojiLoader.execute(param, emojiResultCallback);
+		}
+	}
+
+	/**
+	 * set emojis, replace emoji tags with images
+	 */
+	private void onEmojiResult(EmojiLoader.EmojiResult result) {
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
+			TextView[] textViews = {username, user_bio};
+			for (TextView textView: textViews) {
+				if (textView.length() > 0) {
+					SpannableStringBuilder builder = new SpannableStringBuilder(textView.getText());
+					for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
+						int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
+						if (idx >= 0) {
+							ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
+							builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}
+					}
+					textView.setText(builder);
+				}
 			}
 		}
 	}

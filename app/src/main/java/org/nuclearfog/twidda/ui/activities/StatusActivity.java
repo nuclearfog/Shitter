@@ -22,7 +22,6 @@ import android.graphics.BlurMaskFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -80,6 +79,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.model.Card;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
@@ -929,8 +929,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			cardList.setVisibility(View.GONE);
 			statusText.setMaxLines(10);
 		}
-		if (status.getEmojis().length > 0 && emojiAsync.isIdle()) {
-			EmojiParam param = new EmojiParam(status.getEmojis(), statusText.getLineHeight());
+		if ((status.getEmojis().length > 0 || status.getAuthor().getEmojis().length > 0) && emojiAsync.isIdle()) {
+			int index = 0;
+			Emoji[] emojis = new Emoji[status.getEmojis().length + status.getAuthor().getEmojis().length];
+			for (Emoji emoji : status.getEmojis())
+				emojis[index++] = emoji;
+			for (Emoji emoji : status.getAuthor().getEmojis())
+				emojis[index++] = emoji;
+			EmojiParam param = new EmojiParam(emojis, statusText.getLineHeight());
 			emojiAsync.execute(param, emojiResultCallback);
 		}
 	}
@@ -1145,17 +1151,20 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * set emojis, replace emoji tags with images
 	 */
 	private void onEmojiResult(EmojiResult result) {
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
-			if (result.images != null && statusText.getText() instanceof SpannableString) {
-				SpannableStringBuilder builder = new SpannableStringBuilder(statusText.getText());
-				for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
-					int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
-					if (idx >= 0) {
-						ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
-						builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
+			TextView[] textViews = {statusText, userName};
+			for (TextView textView : textViews) {
+				if (textView.length() > 0) {
+					SpannableStringBuilder builder = new SpannableStringBuilder(textView.getText());
+					for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
+						int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
+						if (idx >= 0) {
+							ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
+							builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+						}
 					}
+					textView.setText(builder);
 				}
-				statusText.setText(builder);
 			}
 		}
 	}
