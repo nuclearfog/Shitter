@@ -219,7 +219,7 @@
 
 				<TextView
 					android:id="@+id/page_status_location_name"
-					android:layout_width="wrap_content"
+					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:visibility="invisible"
 					android:drawablePadding="@dimen/page_status_padding_drawable"
@@ -229,33 +229,9 @@
 					android:textSize="@dimen/page_status_textsize_locale"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/page_status_sensitive"
-					app:layout_constraintEnd_toStartOf="@id/page_status_location_coordinates"
+					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintHorizontal_bias="0.0"
 					app:layout_constraintHorizontal_chainStyle="packed" />
-
-				<Button
-					android:id="@+id/page_status_location_coordinates"
-					android:layout_width="wrap_content"
-					android:layout_height="@dimen/page_status_button_height"
-					android:visibility="invisible"
-					android:paddingLeft="@dimen/page_status_button_padding"
-					android:paddingRight="@dimen/page_status_button_padding"
-					android:layout_marginStart="@dimen/page_status_button_margin"
-					android:layout_marginTop="@dimen/page_status_textview_margin"
-					android:lines="1"
-					android:textSize="@dimen/page_status_textsize_locale"
-					app:layout_constraintStart_toEndOf="@id/page_status_location_name"
-					app:layout_constraintTop_toBottomOf="@id/page_status_sensitive"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintHorizontal_chainStyle="packed"
-					style="@style/FeedbackButton" />
-
-				<androidx.constraintlayout.widget.Barrier
-					android:id="@+id/page_status_api_barrier"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					app:barrierDirection="bottom"
-					app:constraint_referenced_ids="page_status_location_coordinates, page_status_location_name" />
 
 				<TextView
 					android:id="@+id/page_status_api"
@@ -268,7 +244,7 @@
 					android:textSize="@dimen/page_status_textsize_small"
 					android:layout_marginTop="@dimen/page_status_textview_margin"
 					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/page_status_api_barrier"
+					app:layout_constraintTop_toBottomOf="@id/page_status_location_name"
 					app:layout_constraintEnd_toEndOf="parent" />
 
 			</androidx.constraintlayout.widget.ConstraintLayout>

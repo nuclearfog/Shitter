@@ -219,7 +219,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private NestedScrollView container;
 	private ViewGroup root, body;
 	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive, spoiler, spoilerHint, translateText;
-	private Button replyButton, repostButton, likeButton, replyName, locationButton, repostNameButton;
+	private Button replyButton, repostButton, likeButton, replyName, repostNameButton;
 	private ImageView profileImage;
 	private RecyclerView cardList;
 	private Toolbar toolbar;
@@ -258,7 +258,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		createdAt = findViewById(R.id.page_status_date);
 		statusApi = findViewById(R.id.page_status_api);
 		locationName = findViewById(R.id.page_status_location_name);
-		locationButton = findViewById(R.id.page_status_location_coordinates);
 		sensitive = findViewById(R.id.page_status_sensitive);
 		spoiler = findViewById(R.id.page_status_spoiler);
 		repostNameButton = findViewById(R.id.page_status_reposter_reference);
@@ -279,7 +278,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 		replyButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
-		locationButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
+		locationName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
 		sensitive.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
 		spoiler.setCompoundDrawablesWithIntrinsicBounds(R.drawable.exclamation, 0, 0, 0);
 		replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
@@ -296,6 +295,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
+		locationName.setTextColor(settings.getHighlightColor());
 
 		// get parameter, set information and initialize loaders
 		if (savedInstanceState == null)
@@ -365,11 +365,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repostButton.setOnClickListener(this);
 		likeButton.setOnClickListener(this);
 		profileImage.setOnClickListener(this);
-		locationButton.setOnClickListener(this);
+		locationName.setOnClickListener(this);
 		repostButton.setOnLongClickListener(this);
 		likeButton.setOnLongClickListener(this);
 		repostNameButton.setOnLongClickListener(this);
-		locationButton.setOnLongClickListener(this);
+		locationName.setOnLongClickListener(this);
 		statusText.setOnClickListener(this);
 	}
 
@@ -583,10 +583,16 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				startActivity(intent);
 			}
 			// open status location coordinates
-			else if (v.getId() == R.id.page_status_location_coordinates) {
-				if (status.getLocation() != null) {
+			else if (v.getId() == R.id.page_status_location_name) {
+				Location location;
+				if (status.getEmbeddedStatus() != null) {
+					location = status.getEmbeddedStatus().getLocation();
+				} else {
+					location = status.getLocation();
+				}
+				if (location != null && !location.getCoordinates().trim().isEmpty()) {
 					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse("geo:" + status.getLocation().getCoordinates() + "?z=14"));
+					intent.setData(Uri.parse("geo:" + location.getCoordinates() + "?z=14"));
 					try {
 						startActivity(intent);
 					} catch (ActivityNotFoundException err) {
@@ -648,7 +654,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				return true;
 			}
 			// copy status coordinates
-			else if (v.getId() == R.id.page_status_location_coordinates) {
+			else if (v.getId() == R.id.page_status_location_name) {
 				Location location;
 				if (status.getEmbeddedStatus() != null) {
 					location = status.getEmbeddedStatus().getLocation();
@@ -898,21 +904,17 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			profileImage.setImageResource(0);
 		}
 		if (location != null) {
+			locationName.setVisibility(View.VISIBLE);
 			if (!location.getPlace().isEmpty()) {
-				locationName.setVisibility(View.VISIBLE);
 				locationName.setText(location.getFullName());
 			} else {
-				locationName.setVisibility(View.GONE);
+				locationName.setText("");
 			}
 			if (!location.getCoordinates().isEmpty()) {
-				locationButton.setVisibility(View.VISIBLE);
-				locationButton.setText(location.getCoordinates());
-			} else {
-				locationButton.setVisibility(View.GONE);
+				locationName.append(" " + location.getCoordinates());
 			}
 		} else {
 			locationName.setVisibility(View.GONE);
-			locationButton.setVisibility(View.GONE);
 		}
 		if (repostButton.getVisibility() != View.VISIBLE) {
 			repostButton.setVisibility(View.VISIBLE);

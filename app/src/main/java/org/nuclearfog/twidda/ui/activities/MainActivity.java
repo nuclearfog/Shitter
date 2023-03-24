@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	@Override
 	public void onActivityResult(ActivityResult result) {
+		invalidateMenu();
 		switch (result.getResultCode()) {
 			case LoginActivity.RETURN_LOGIN_CANCELED:
 				finish();
@@ -167,7 +168,9 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		MenuItem message = menu.findItem(R.id.menu_message);
+		MenuItem search = menu.findItem(R.id.menu_search);
 		message.setVisible(settings.getLogin().getConfiguration().directmessageSupported());
+		search.collapseActionView();
 		return super.onPrepareOptionsMenu(menu);
 	}
 
