@@ -65,7 +65,7 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	//noinspection GradleDependency
 	implementation 'com.squareup.picasso:picasso:2.8'
-	implementation 'com.github.open-android:Picasso-transformations:0.1.0'
+	implementation 'jp.wasabeef:picasso-transformations:2.4.0'
 	implementation 'com.github.QuadFlask:colorpicker:0.0.15'
 	implementation 'com.github.nuclearfog:ZoomView:1.0.4'
 	implementation 'com.github.nuclearfog:Tagger:2.3'

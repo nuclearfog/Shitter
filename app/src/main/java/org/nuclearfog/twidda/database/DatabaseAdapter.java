@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 15;
+	private static final int DB_VERSION = 16;
 
 	/**
 	 * database file name
@@ -44,7 +44,8 @@ public class DatabaseAdapter {
 			+ UserTable.FRIENDS + " INTEGER,"
 			+ UserTable.FOLLOWER + " INTEGER,"
 			+ UserTable.STATUSES + " INTEGER,"
-			+ UserTable.FAVORITS + " INTEGER);";
+			+ UserTable.FAVORITS + " INTEGER,"
+			+ UserTable.EMOJI + " TEXT);";
 
 	/**
 	 * SQL query to create a table for status information
@@ -232,54 +233,62 @@ public class DatabaseAdapter {
 	/**
 	 * update account table to add social network hostname
 	 */
-	private static final String UPDATE_ADD_HOST = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.HOSTNAME + " TEXT;";
+	private static final String UPDATE_ACCOUNT_ADD_HOST = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.HOSTNAME + " TEXT;";
 
 	/**
 	 * update account table to add API client ID
 	 */
-	private static final String UPDATE_ADD_CLIENT_ID = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_ID + " TEXT;";
+	private static final String UPDATE_ACCOUNT_ADD_CLIENT_ID = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_ID + " TEXT;";
 
 	/**
 	 * update account table to add API client secret
 	 */
-	private static final String UPDATE_ADD_CLIENT_SEC = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_SECRET + " TEXT;";
+	private static final String UPDATE_ACCOUNT_ADD_CLIENT_SEC = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_SECRET + " TEXT;";
 
 	/**
 	 * update account table to add API client secret
 	 */
-	private static final String UPDATE_ADD_API_ID = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.API + " INTEGER;";
+	private static final String UPDATE_ACCOUNT_ADD_API = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.API + " INTEGER;";
 
 	/**
 	 * update account table to add API client secret
 	 */
-	private static final String UPDATE_ADD_REPLY_COUNT = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.REPLY + " INTEGER;";
+	private static final String UPDATE_STATUS_ADD_REPLY_COUNT = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.REPLY + " INTEGER;";
 
 	/**
 	 * update account table to add API client secret
 	 */
-	private static final String UPDATE_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
+	private static final String UPDATE_ACCOUNT_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
 
 	/**
 	 * update status table add location ID
 	 */
-	private static final String UPDATE_ADD_LOCATION_ID = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LOCATION + " INTEGER;";
+	private static final String UPDATE_STATUS_ADD_LOCATION = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LOCATION + " INTEGER;";
 
 	/**
 	 * update status table add location ID
 	 */
-	private static final String UPDATE_ADD_STATUS_URL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.URL + " TEXT;";
+	private static final String UPDATE_STATUS_ADD_URL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.URL + " TEXT;";
 
 	/**
 	 * update status table add emoji keys
 	 */
-	private static final String UPDATE_ADD_STATUS_EMOJI = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.EMOJI + " TEXT;";
+	private static final String UPDATE_STATUS_ADD_EMOJI = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.EMOJI + " TEXT;";
 
 	/**
 	 * update status table add emoji keys
 	 */
-	private static final String UPDATE_ADD_STATUS_POLL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.POLL + " INTEGER;";
+	private static final String UPDATE_STATUS_ADD_STATUS_POLL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.POLL + " INTEGER;";
 
-	private static final String UPDATE_ADD_LANGUAGE = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LANGUAGE + " TEXT;";
+	/**
+	 * update status table add language string
+	 */
+	private static final String UPDATE_STATUS_ADD_LANGUAGE = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LANGUAGE + " TEXT;";
+
+	/**
+	 * updateuser table add emoji key string
+	 */
+	private static final String UPDATE_USER_ADD_EMOJI = "ALTER TABLE " + UserTable.NAME + " ADD " + UserTable.EMOJI + " TEXT;";
 
 	/**
 	 * singleton instance
@@ -328,41 +337,45 @@ public class DatabaseAdapter {
 			db.setVersion(DB_VERSION);
 		} else {
 			if (db.getVersion() < 6) {
-				db.execSQL(UPDATE_ADD_HOST);
-				db.execSQL(UPDATE_ADD_CLIENT_ID);
-				db.execSQL(UPDATE_ADD_CLIENT_SEC);
+				db.execSQL(UPDATE_ACCOUNT_ADD_HOST);
+				db.execSQL(UPDATE_ACCOUNT_ADD_CLIENT_ID);
+				db.execSQL(UPDATE_ACCOUNT_ADD_CLIENT_SEC);
 				db.setVersion(6);
 			}
 			if (db.getVersion() < 7) {
-				db.execSQL(UPDATE_ADD_API_ID);
+				db.execSQL(UPDATE_ACCOUNT_ADD_API);
 				db.setVersion(7);
 			}
 			if (db.getVersion() < 8) {
-				db.execSQL(UPDATE_ADD_REPLY_COUNT);
+				db.execSQL(UPDATE_STATUS_ADD_REPLY_COUNT);
 				db.setVersion(8);
 			}
 			if (db.getVersion() < 9) {
-				db.execSQL(UPDATE_ADD_BEARER);
+				db.execSQL(UPDATE_ACCOUNT_ADD_BEARER);
 				db.setVersion(9);
 			}
 			if (db.getVersion() < 11) {
-				db.execSQL(UPDATE_ADD_LOCATION_ID);
+				db.execSQL(UPDATE_STATUS_ADD_LOCATION);
 				db.setVersion(11);
 			}
 			if (db.getVersion() < 12) {
-				db.execSQL(UPDATE_ADD_STATUS_URL);
+				db.execSQL(UPDATE_STATUS_ADD_URL);
 				db.setVersion(12);
 			}
 			if (db.getVersion() < 13) {
-				db.execSQL(UPDATE_ADD_STATUS_EMOJI);
+				db.execSQL(UPDATE_STATUS_ADD_EMOJI);
 				db.setVersion(13);
 			}
 			if (db.getVersion() < 14) {
-				db.execSQL(UPDATE_ADD_STATUS_POLL);
+				db.execSQL(UPDATE_STATUS_ADD_STATUS_POLL);
 				db.setVersion(14);
 			}
+			if (db.getVersion() < 15) {
+				db.execSQL(UPDATE_STATUS_ADD_LANGUAGE);
+				db.setVersion(15);
+			}
 			if (db.getVersion() < DB_VERSION) {
-				db.execSQL(UPDATE_ADD_LANGUAGE);
+				db.execSQL(UPDATE_USER_ADD_EMOJI);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -492,6 +505,11 @@ public class DatabaseAdapter {
 		 * count of the statuses favored by the user
 		 */
 		String FAVORITS = "favorCount";
+
+		/**
+		 * emoji keys
+		 */
+		String EMOJI = "userEmoji";
 	}
 
 	/**

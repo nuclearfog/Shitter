@@ -16,6 +16,8 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
+import java.util.regex.Pattern;
+
 /**
  * database implementation of an user
  *
@@ -24,6 +26,8 @@ import org.nuclearfog.twidda.model.User;
 public class DatabaseUser implements User {
 
 	private static final long serialVersionUID = 2367055336838212570L;
+
+	private static final Pattern KEY_SEPARATOR = Pattern.compile(";");
 
 	private long id;
 	private long createdAt;
@@ -45,6 +49,8 @@ public class DatabaseUser implements User {
 	private String profileImageOrig = "";
 	private String profileBannerSmall = "";
 	private String profileBannerOrig = "";
+	private String[] emojiKeys = {};
+	private Emoji[] emojis = {};
 
 	/**
 	 * @param cursor  database cursor containing user column
@@ -59,6 +65,7 @@ public class DatabaseUser implements User {
 		String link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
 		String location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
 		String profileBannerOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
+		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.EMOJI));
 		createdAt = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
 		following = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FRIENDS));
 		follower = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FOLLOWER));
@@ -85,6 +92,10 @@ public class DatabaseUser implements User {
 			this.profileImageOrig = profileImageOrig;
 		if (profileBannerOrig != null)
 			this.profileBannerOrig = profileBannerOrig;
+		if (emojiKeys != null && !emojiKeys.isEmpty())
+			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
+		if (emojiKeys != null && !emojiKeys.isEmpty())
+			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
 
 		switch (account.getConfiguration()) {
 			case TWITTER1:
@@ -240,7 +251,7 @@ public class DatabaseUser implements User {
 
 	@Override
 	public Emoji[] getEmojis() {
-		return new Emoji[0];
+		return emojis;
 	}
 
 
@@ -262,6 +273,22 @@ public class DatabaseUser implements User {
 	@Override
 	public String toString() {
 		return "name=\"" + screen_name + "\"";
+	}
+
+	/**
+	 * @return used emoji keys
+	 */
+	public String[] getEmojiKeys() {
+		return emojiKeys;
+	}
+
+	/**
+	 * add status emojis
+	 *
+	 * @param emojis emoji array
+	 */
+	public void addEmojis(@NonNull Emoji[] emojis) {
+		this.emojis = emojis;
 	}
 
 	/**

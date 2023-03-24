@@ -36,7 +36,7 @@ public class DatabaseStatus implements Status {
 
 	private static final long serialVersionUID = -5957556706939766801L;
 
-	private static final Pattern MEDIA_SEPARATOR = Pattern.compile(";");
+	private static final Pattern KEY_SEPARATOR = Pattern.compile(";");
 
 	private long id;
 	private long time;
@@ -105,9 +105,9 @@ public class DatabaseStatus implements Status {
 		spoiler = (register & MASK_STATUS_SPOILER) != 0;
 
 		if (mediaKeys != null && !mediaKeys.isEmpty())
-			this.mediaKeys = MEDIA_SEPARATOR.split(mediaKeys);
+			this.mediaKeys = KEY_SEPARATOR.split(mediaKeys);
 		if (emojiKeys != null && !emojiKeys.isEmpty())
-			this.emojiKeys = MEDIA_SEPARATOR.split(emojiKeys);
+			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
 		if (statusUrl != null)
 			this.statusUrl = statusUrl;
 		if (language != null)
@@ -375,9 +375,9 @@ public class DatabaseStatus implements Status {
 	}
 
 	/**
-	 * add status media
+	 * add status emojis
 	 *
-	 * @param emojis media array
+	 * @param emojis emoji array
 	 */
 	public void addEmojis(@NonNull Emoji[] emojis) {
 		this.emojis = emojis;

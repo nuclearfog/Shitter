@@ -1220,6 +1220,7 @@ public class AppDatabase {
 	private Status getStatus(Cursor cursor, SQLiteDatabase db) {
 		Account login = settings.getLogin();
 		DatabaseStatus result = new DatabaseStatus(cursor, login);
+		DatabaseUser author = (DatabaseUser) result.getAuthor();
 		// check if there is an embedded status
 		if (result.getEmbeddedStatusId() != NO_ID) {
 			result.setEmbeddedStatus(getStatus(result.getEmbeddedStatusId()));
@@ -1255,6 +1256,18 @@ public class AppDatabase {
 			Location location = getLocation(db, result.getLocationId());
 			if (location != null) {
 				result.addLocation(location);
+			}
+		}
+		if (author.getEmojiKeys().length > 0) {
+			List<Emoji> emojiList = new LinkedList<>();
+			for (String emojiKey : author.getEmojiKeys()) {
+				Emoji item = getEmoji(db, emojiKey);
+				if (item != null) {
+					emojiList.add(item);
+				}
+			}
+			if (!emojiList.isEmpty()) {
+				author.addEmojis(emojiList.toArray(new Emoji[0]));
 			}
 		}
 		return result;
