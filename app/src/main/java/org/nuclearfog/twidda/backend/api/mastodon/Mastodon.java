@@ -946,8 +946,14 @@ public class Mastodon implements Connection {
 	 */
 	private User getCredentials(String host, @NonNull String bearer) throws MastodonException {
 		try {
-			return createUser(get(host, ENDPOINT_VERIFY_CREDENTIALS, bearer, new ArrayList<>()));
-		} catch (IOException e) {
+			Response response = get(host, ENDPOINT_VERIFY_CREDENTIALS, bearer, new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonUser(json);
+			}
+			throw new MastodonException(response);
+		} catch (IOException|JSONException e) {
 			throw new MastodonException(e);
 		}
 	}

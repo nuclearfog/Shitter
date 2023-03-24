@@ -21,10 +21,15 @@ public class UserV1 implements User {
 
 	public static final long serialVersionUID = 7893496988800499358L;
 
+	/**
+	 * API query to prevent disable statuses in the user object.
+	 */
 	public static final String PARAM_SKIP_STATUS = "skip_status=true";
 
+	/**
+	 * API query parameter to get all required json fields
+	 */
 	public static final String PARAM_INCLUDE_ENTITIES = "include_entities=true";
-
 
 	private long id;
 	private long timestamp;
@@ -43,23 +48,25 @@ public class UserV1 implements User {
 	private boolean isLocked;
 	private boolean followReqSent;
 	private boolean defaultImage;
-	private boolean isCurrentUser = true;
+	private boolean isCurrentUser;
 
 	/**
-	 * @param json      JSON object containing user information
-	 * @param twitterId ID of the current user
-	 * @throws JSONException if values are missing
+	 * user constructor used to create instance of the current user
+	 *
+	 * @param json JSON object containing user information
 	 */
-	public UserV1(JSONObject json, long twitterId) throws JSONException {
-		this(json);
-		isCurrentUser = twitterId == id;
+	public UserV1(JSONObject json) throws JSONException {
+		this(json, 0L);
+		isCurrentUser = true;
 	}
 
 	/**
-	 * @param json JSON object containing user information
-	 * @throws JSONException if values are missing
+	 * default user constructor
+	 *
+	 * @param json      JSON object containing user information
+	 * @param twitterId ID of the current user
 	 */
-	public UserV1(JSONObject json) throws JSONException {
+	public UserV1(JSONObject json, long twitterId) throws JSONException {
 		String idStr = json.getString("id_str");
 		String profileImageUrl = json.optString("profile_image_url_https", "");
 		String profileBannerUrl = json.optString("profile_banner_url", "");
@@ -90,6 +97,7 @@ public class UserV1 implements User {
 		}
 		try {
 			id = Long.parseLong(idStr);
+			isCurrentUser = twitterId == id;
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad user ID: " + idStr);
 		}

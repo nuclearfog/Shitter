@@ -39,6 +39,18 @@ public class MastodonUser implements User {
 	private Emoji[] emojis = {};
 
 	/**
+	 * constructor used to create an user instance of the current user
+	 *
+	 * @param json json object used by Mastodon API
+	 */
+	public MastodonUser(JSONObject json) throws JSONException {
+		this(json, 0L);
+		isCurrentUser = true;
+	}
+
+	/**
+	 * default constructor for all user instances
+	 *
 	 * @param json          json object used by Mastodon API
 	 * @param currentUserId current user ID
 	 */
@@ -57,7 +69,6 @@ public class MastodonUser implements User {
 		follower = json.optInt("followers_count");
 		statusCount = json.optInt("statuses_count");
 		locked = json.optBoolean("locked");
-		isCurrentUser = currentUserId == id;
 		if (!description.isEmpty()) {
 			this.description = Jsoup.parse(description).text();
 		}
@@ -76,6 +87,7 @@ public class MastodonUser implements User {
 		}
 		try {
 			id = Long.parseLong(idStr);
+			isCurrentUser = currentUserId == id;
 		} catch (NumberFormatException e) {
 			throw new JSONException("bad user ID:" + idStr);
 		}
