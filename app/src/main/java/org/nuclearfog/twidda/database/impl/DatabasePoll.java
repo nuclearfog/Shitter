@@ -16,7 +16,7 @@ public class DatabasePoll implements Poll {
 
 	private static final long serialVersionUID = 3534663789678017084L;
 
-	private static final Pattern SPLIT = Pattern.compile(";");
+	private static final Pattern SEPARATOR = Pattern.compile(";");
 
 	public static final String[] PROJECTION = {
 			PollTable.ID,
@@ -39,7 +39,7 @@ public class DatabasePoll implements Poll {
 		expired = cursor.getLong(2);
 		String optionStr = cursor.getString(3);
 		if (optionStr != null && !optionStr.isEmpty()) {
-			String[] optArray = SPLIT.split(optionStr);
+			String[] optArray = SEPARATOR.split(optionStr);
 			options = new DatabasePollOption[optArray.length];
 			for (int i = 0; i < optArray.length; i++) {
 				options[i] = new DatabasePollOption(optArray[i]);

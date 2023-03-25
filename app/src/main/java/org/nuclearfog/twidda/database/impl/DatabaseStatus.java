@@ -38,38 +38,24 @@ public class DatabaseStatus implements Status {
 
 	private static final Pattern KEY_SEPARATOR = Pattern.compile(";");
 
-	private long id;
-	private long time;
-	private long embeddedId;
-	private long replyID;
-	private long replyUserId;
-	private long myRepostId;
-	private long locationId;
-	private long pollId;
+	private long id, time, embeddedId, replyID, replyUserId, myRepostId, locationId, pollId;
+	private int repostCount, favoriteCount, replyCount;
+	private boolean reposted, favorited, bookmarked, sensitive, spoiler, isHidden;
 	private Status embedded;
+	private Poll poll;
+	private User author;
+	private Location location;
 	private String[] mediaKeys = {};
 	private String[] emojiKeys = {};
 	private Media[] medias = {};
 	private Emoji[] emojis = {};
 	private Card[] cards = {};
-	private Poll poll;
-	private User author;
-	private Location location;
-	private int repostCount;
-	private int favoriteCount;
-	private int replyCount;
 	private String replyName = "";
 	private String text = "";
 	private String source = "";
 	private String userMentions = "";
 	private String statusUrl = "";
 	private String language = "";
-	private boolean reposted;
-	private boolean favorited;
-	private boolean bookmarked;
-	private boolean sensitive;
-	private boolean spoiler;
-	private boolean isHidden;
 
 	/**
 	 * @param cursor  database cursor

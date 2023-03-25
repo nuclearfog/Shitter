@@ -24,9 +24,16 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -41,7 +48,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see StatusAdapter
  */
-public class StatusHolder extends ViewHolder implements OnClickListener {
+public class StatusHolder extends ViewHolder implements OnClickListener, AsyncCallback<EmojiResult> {
 
 	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
 	private TextView username, screenname, text, repost, favorite, reply, reposter, created, replyname, label;
@@ -50,15 +57,17 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private GlobalSettings settings;
 	private Picasso picasso;
+	private EmojiLoader emojiLoader;
 	private IconAdapter adapter;
 	private OnHolderClickListener listener;
 
 
-	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
+	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
 		this.settings = settings;
 		this.picasso = picasso;
 		this.listener = listener;
+		this.emojiLoader = emojiLoader;
 
 		CardView cardLayout = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_status_container);
@@ -111,6 +120,15 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			} else if (v == dismissButton) {
 				listener.onItemClick(position, OnHolderClickListener.NOTIFICATION_DISMISS);
 			}
+		}
+	}
+
+
+	@Override
+	public void onResult(EmojiResult result) {
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
+			TextWithEmoji.addEmojis(text, result.images);
+			TextWithEmoji.addEmojis(username, result.images);
 		}
 	}
 
@@ -201,6 +219,16 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			}
 		} else {
 			iconList.setVisibility(View.GONE);
+		}
+		if (status.getEmojis().length > 0 || status.getAuthor().getEmojis().length > 0) {
+			int index = 0;
+			Emoji[] emojis = new Emoji[status.getEmojis().length + status.getAuthor().getEmojis().length];
+			for (Emoji emoji : status.getEmojis())
+				emojis[index++] = emoji;
+			for (Emoji emoji : status.getAuthor().getEmojis())
+				emojis[index++] = emoji;
+			EmojiParam param = new EmojiParam(emojis, text.getLineHeight());
+			emojiLoader.execute(param, this);
 		}
 	}
 

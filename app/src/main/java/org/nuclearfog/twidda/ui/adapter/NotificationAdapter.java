@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
@@ -54,6 +55,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	private Picasso picasso;
 	private GlobalSettings settings;
 	private OnNotificationClickListener listener;
+	private EmojiLoader emojiLoader;
 
 	private List<Notification> items;
 	private int loadingIndex;
@@ -62,6 +64,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		emojiLoader = new EmojiLoader(context);
 		items = new LinkedList<>();
 		loadingIndex = NO_LOADING;
 		this.listener = listener;
@@ -72,9 +75,9 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_STATUS) {
-			return new StatusHolder(parent, settings, picasso, this);
+			return new StatusHolder(parent, settings, picasso, emojiLoader, this);
 		} else if (viewType == TYPE_USER) {
-			return new UserHolder(parent, settings, picasso, this, false);
+			return new UserHolder(parent, settings, picasso, emojiLoader, this, false);
 		} else {
 			return new PlaceHolder(parent, settings, false, this);
 		}

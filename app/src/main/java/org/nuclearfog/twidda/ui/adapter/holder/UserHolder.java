@@ -21,8 +21,14 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
@@ -35,7 +41,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.adapter.UserAdapter
  */
-public class UserHolder extends ViewHolder implements OnClickListener {
+public class UserHolder extends ViewHolder implements OnClickListener, AsyncCallback<EmojiResult> {
 
 	private TextView username, screenname, followingCount, followerCount, label;
 	private ImageView profileImg, verifyIcon, lockedIcon;
@@ -43,16 +49,18 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 	private View notificationDismiss;
 
 	private GlobalSettings settings;
+	private EmojiLoader emojiLoader;
 	private Picasso picasso;
 
 	private OnHolderClickListener listener;
 
 
-	public UserHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener, boolean enableDelete) {
+	public UserHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener, boolean enableDelete) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false));
 		this.settings = settings;
 		this.picasso = picasso;
 		this.listener = listener;
+		this.emojiLoader = emojiLoader;
 
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_user_container);
@@ -74,7 +82,6 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 		} else {
 			delete.setVisibility(GONE);
 		}
-
 		itemView.setOnClickListener(this);
 		notificationDismiss.setOnClickListener(this);
 		delete.setOnClickListener(this);
@@ -92,6 +99,14 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 			} else if (v == notificationDismiss) {
 				listener.onItemClick(position, OnHolderClickListener.NOTIFICATION_DISMISS);
 			}
+		}
+	}
+
+
+	@Override
+	public void onResult(EmojiResult result) {
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
+			TextWithEmoji.addEmojis(username, result.images);
 		}
 	}
 
@@ -121,6 +136,10 @@ public class UserHolder extends ViewHolder implements OnClickListener {
 			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImg);
 		} else {
 			profileImg.setImageResource(0);
+		}
+		if (user.getEmojis().length > 0) {
+			EmojiParam param = new EmojiParam(user.getEmojis(), username.getLineHeight());
+			emojiLoader.execute(param, this);
 		}
 	}
 

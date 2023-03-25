@@ -21,14 +21,10 @@ import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REQUESTS;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,6 +74,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
@@ -89,7 +86,6 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -157,7 +153,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private ConstraintLayout header;
 	private ViewGroup body;
 	private TextView[] tabIndicator;
-	private TextView user_location, user_createdAt, user_website, user_bio, follow_back, username, screenName;
+	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
 	private Button following, follower;
 	private ViewPager tabPages;
@@ -185,7 +181,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		body = findViewById(R.id.page_profile_body);
 		root = findViewById(R.id.user_view);
 		toolbar = findViewById(R.id.profile_toolbar);
-		user_bio = findViewById(R.id.bio);
+		description = findViewById(R.id.bio);
 		following = findViewById(R.id.following);
 		follower = findViewById(R.id.follower);
 		user_website = findViewById(R.id.links);
@@ -220,8 +216,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
 		username.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
 		follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
-		user_bio.setMovementMethod(LinkAndScrollMovement.getInstance());
-		user_bio.setLinkTextColor(settings.getHighlightColor());
+		description.setMovementMethod(LinkAndScrollMovement.getInstance());
+		description.setLinkTextColor(settings.getHighlightColor());
 		AppStyles.setTheme(root);
 		user_website.setTextColor(settings.getHighlightColor());
 		tabLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -775,10 +771,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			user_location.setVisibility(GONE);
 		}
 		if (!user.getDescription().isEmpty()) {
-			user_bio.setVisibility(VISIBLE);
-			user_bio.setText(bio);
+			description.setVisibility(VISIBLE);
+			description.setText(bio);
 		} else {
-			user_bio.setVisibility(GONE);
+			description.setVisibility(GONE);
 		}
 		if (!user.getProfileUrl().isEmpty()) {
 			String link = user.getProfileUrl();
@@ -819,20 +815,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private void onEmojiResult(EmojiLoader.EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			TextView[] textViews = {username, user_bio};
-			for (TextView textView: textViews) {
-				if (textView.length() > 0) {
-					SpannableStringBuilder builder = new SpannableStringBuilder(textView.getText());
-					for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
-						int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
-						if (idx >= 0) {
-							ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
-							builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-						}
-					}
-					textView.setText(builder);
-				}
-			}
+			TextWithEmoji.addEmojis(username, result.images);
+			TextWithEmoji.addEmojis(description, result.images);
 		}
 	}
 }

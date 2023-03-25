@@ -29,17 +29,9 @@ public class DatabaseUser implements User {
 
 	private static final Pattern KEY_SEPARATOR = Pattern.compile(";");
 
-	private long id;
-	private long createdAt;
-	private int following;
-	private int follower;
-	private int statusCount;
-	private int favorCount;
-	private boolean isCurrentUser;
-	private boolean isVerified;
-	private boolean isLocked;
-	private boolean followReqSent;
-	private boolean defaultImage;
+	private long id, createdAt;
+	private int following, follower, statusCount, favorCount;
+	private boolean isCurrentUser, isVerified, isLocked, followReqSent, defaultImage;
 	private String username = "";
 	private String screen_name = "";
 	private String bio = "";
@@ -92,8 +84,6 @@ public class DatabaseUser implements User {
 			this.profileImageOrig = profileImageOrig;
 		if (profileBannerOrig != null)
 			this.profileBannerOrig = profileBannerOrig;
-		if (emojiKeys != null && !emojiKeys.isEmpty())
-			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
 		if (emojiKeys != null && !emojiKeys.isEmpty())
 			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
 

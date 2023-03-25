@@ -1453,7 +1453,16 @@ public class AppDatabase {
 		} else {
 			flags &= ~MASK_USER_DEFAULT_IMAGE;
 		}
-		ContentValues column = new ContentValues(13);
+		ContentValues column = new ContentValues(14);
+		if (user.getEmojis().length > 0) {
+			StringBuilder buf = new StringBuilder();
+			saveEmojis(user.getEmojis(), db);
+			for (Emoji emoji : user.getEmojis()) {
+				buf.append(emoji.getCode()).append(';');
+			}
+			String emojiKeys = buf.deleteCharAt(buf.length() - 1).toString();
+			column.put(UserTable.EMOJI, emojiKeys);
+		}
 		column.put(UserTable.ID, user.getId());
 		column.put(UserTable.USERNAME, user.getUsername());
 		column.put(UserTable.SCREENNAME, user.getScreenname());

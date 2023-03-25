@@ -17,15 +17,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -74,6 +69,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
@@ -97,7 +93,6 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -218,7 +213,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	private NestedScrollView container;
 	private ViewGroup root, body;
-	private TextView statusApi, createdAt, statusText, screenName, userName, locationName, sensitive, spoiler, spoilerHint, translateText;
+	private TextView statusApi, createdAt, statusText, screenName, username, locationName, sensitive, spoiler, spoilerHint, translateText;
 	private Button replyButton, repostButton, likeButton, replyName, repostNameButton;
 	private ImageView profileImage;
 	private RecyclerView cardList;
@@ -250,7 +245,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		replyButton = findViewById(R.id.page_status_reply);
 		repostButton = findViewById(R.id.page_status_repost);
 		likeButton = findViewById(R.id.page_status_favorite);
-		userName = findViewById(R.id.page_status_username);
+		username = findViewById(R.id.page_status_username);
 		screenName = findViewById(R.id.page_status_screenname);
 		profileImage = findViewById(R.id.page_status_profile);
 		replyName = findViewById(R.id.page_status_reply_reference);
@@ -831,10 +826,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			AppStyles.setDrawableColor(likeButton, settings.getIconColor());
 		}
 		if (author.isVerified()) {
-			userName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-			AppStyles.setDrawableColor(userName, settings.getIconColor());
+			username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+			AppStyles.setDrawableColor(username, settings.getIconColor());
 		} else {
-			userName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
 		if (author.isProtected()) {
 			screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
@@ -846,7 +841,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			translateText.setVisibility(View.VISIBLE);
 			translateText.setTextColor(settings.getHighlightColor());
 		}
-		userName.setText(author.getUsername());
+		username.setText(author.getUsername());
 		screenName.setText(author.getScreenname());
 		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
 		replyButton.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
@@ -1152,20 +1147,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void onEmojiResult(EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			TextView[] textViews = {statusText, userName};
-			for (TextView textView : textViews) {
-				if (textView.length() > 0) {
-					SpannableStringBuilder builder = new SpannableStringBuilder(textView.getText());
-					for (Map.Entry<String, Bitmap> item : result.images.entrySet()) {
-						int idx = TextUtils.indexOf(builder, ':' + item.getKey() + ':');
-						if (idx >= 0) {
-							ImageSpan imgSpan = new ImageSpan(getApplicationContext(), item.getValue());
-							builder.setSpan(imgSpan, idx, idx + item.getKey().length() + 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-						}
-					}
-					textView.setText(builder);
-				}
-			}
+			TextWithEmoji.addEmojis(statusText, result.images);
+			TextWithEmoji.addEmojis(username, result.images);
 		}
 	}
 }

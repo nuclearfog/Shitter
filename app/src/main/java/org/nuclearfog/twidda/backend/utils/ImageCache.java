@@ -74,11 +74,12 @@ public class ImageCache {
 		if (imageFolder != null && !files.containsKey(key)) {
 			try {
 				File file = new File(imageFolder, key);
-				file.createNewFile();
-				FileOutputStream output = new FileOutputStream(file);
-				image.compress(Bitmap.CompressFormat.PNG, 1, output);
-				files.put(key, file);
-			} catch (IOException e) {
+				if (file.createNewFile()) {
+					FileOutputStream output = new FileOutputStream(file);
+					image.compress(Bitmap.CompressFormat.PNG, 1, output);
+					files.put(key, file);
+				}
+			} catch (IOException|SecurityException e) {
 				e.printStackTrace();
 			}
 		}

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
@@ -50,6 +51,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	private static final int MIN_COUNT = 2;
 
+	private EmojiLoader emojiLoader;
 	private StatusSelectListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
@@ -63,6 +65,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	public StatusAdapter(Context context, StatusSelectListener itemClickListener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		emojiLoader = new EmojiLoader(context);
 		loadingIndex = NO_LOADING;
 		items = new LinkedList<>();
 		this.listener = itemClickListener;
@@ -96,7 +99,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == VIEW_STATUS) {
-			return new StatusHolder(parent, settings, picasso, this);
+			return new StatusHolder(parent, settings, picasso, emojiLoader, this);
 		} else {
 			return new PlaceHolder(parent, settings, false, this);
 		}
@@ -108,7 +111,8 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 		if (holder instanceof StatusHolder) {
 			Status status = items.get(index);
 			if (status != null) {
-				((StatusHolder) holder).setContent(status);
+				StatusHolder statusHolder = ((StatusHolder) holder);
+				statusHolder.setContent(status);
 			}
 		} else if (holder instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) holder;
