@@ -21,6 +21,7 @@ import android.graphics.BlurMaskFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -75,7 +76,6 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.model.Card;
-import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
@@ -196,7 +196,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private AsyncCallback<PollActionResult> pollResult = this::onPollResult;
 	private AsyncCallback<TranslationResult> translationResult = this::onTranslationResult;
 	private AsyncCallback<NotificationActionResult> notificationCallback = this::onNotificationResult;
-	private AsyncCallback<EmojiResult> emojiResultCallback = this::onEmojiResult;
+	private AsyncCallback<EmojiResult> statusTextUpdate = this::onStatusTextUpdate;
+	private AsyncCallback<EmojiResult> usernameUpdate = this::onUsernameUpdate;
 
 	@Nullable
 	private ClipboardManager clip;
@@ -804,6 +805,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void setStatus(@NonNull Status status) {
 		this.status = status;
+		Spannable spannableText = null;
 		if (status.getEmbeddedStatus() != null) {
 			repostNameButton.setVisibility(View.VISIBLE);
 			repostNameButton.setText(status.getAuthor().getScreenname());
@@ -854,13 +856,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			statusApi.setVisibility(View.GONE);
 		}
-		if (!status.getText().isEmpty()) {
-			Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
-			statusText.setVisibility(View.VISIBLE);
-			statusText.setText(spannableText);
-			setTranslation();
-		} else {
-			statusText.setVisibility(View.GONE);
+		if (statusText.getText().length() == 0) {
+			if (!status.getText().isEmpty()) {
+				spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
+				statusText.setVisibility(View.VISIBLE);
+				statusText.setText(spannableText);
+				setTranslation();
+			} else {
+				statusText.setVisibility(View.GONE);
+			}
 		}
 		if (status.getRepliedStatusId() > 0) {
 			if (!status.getReplyName().isEmpty())
@@ -924,15 +928,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			cardList.setVisibility(View.GONE);
 			statusText.setMaxLines(10);
 		}
-		if ((status.getEmojis().length > 0 || status.getAuthor().getEmojis().length > 0) && emojiAsync.isIdle()) {
-			int index = 0;
-			Emoji[] emojis = new Emoji[status.getEmojis().length + status.getAuthor().getEmojis().length];
-			for (Emoji emoji : status.getEmojis())
-				emojis[index++] = emoji;
-			for (Emoji emoji : status.getAuthor().getEmojis())
-				emojis[index++] = emoji;
-			EmojiParam param = new EmojiParam(emojis, statusText.getLineHeight());
-			emojiAsync.execute(param, emojiResultCallback);
+		if (status.getEmojis().length > 0 && spannableText != null) {
+			EmojiParam param = new EmojiParam(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+			emojiAsync.execute(param, statusTextUpdate);
+		}
+		if (author.getEmojis().length > 0 && !author.getUsername().isEmpty()) {
+			SpannableString usernameSpan = new SpannableString(author.getUsername());
+			EmojiParam param = new EmojiParam(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+			emojiAsync.execute(param, usernameUpdate);
 		}
 	}
 
@@ -1145,10 +1148,20 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * set emojis, replace emoji tags with images
 	 */
-	private void onEmojiResult(EmojiResult result) {
+	private void onStatusTextUpdate(EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			TextWithEmoji.addEmojis(statusText, result.images);
-			TextWithEmoji.addEmojis(username, result.images);
+			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			statusText.setText(spannable);
+		}
+	}
+
+	/**
+	 * set emojis, replace emoji tags with images
+	 */
+	private void onUsernameUpdate(EmojiResult result) {
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
+			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			username.setText(spannable);
 		}
 	}
 }

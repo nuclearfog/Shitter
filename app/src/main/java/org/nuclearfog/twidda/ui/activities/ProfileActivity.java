@@ -24,7 +24,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Spanned;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,7 +76,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Relation;
@@ -139,7 +139,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<RelationResult> relationCallback = this::setRelationResult;
 	private AsyncCallback<UserResult> userCallback = this::setUserResult;
-	private AsyncCallback<EmojiResult> emojiResultCallback = this::onEmojiResult;
+	private AsyncCallback<EmojiResult> usernameUpdate = this::onUsernameUpdate;
+	private AsyncCallback<EmojiResult> userDescriptionUpdate = this::onUserDescriptionUpdate;
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
@@ -727,8 +728,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private void setUser(@NonNull User user) {
 		this.user = user;
+		Spannable descriptionSpan = null;
 
-		Spanned bio = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
 		following.setText(StringTools.NUMBER_FORMAT.format(user.getFollowing()));
 		follower.setText(StringTools.NUMBER_FORMAT.format(user.getFollower()));
 		following.setVisibility(VISIBLE);
@@ -752,6 +753,13 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			user_createdAt.setVisibility(VISIBLE);
 			user_createdAt.setText(date);
 		}
+		if (!user.getDescription().isEmpty()) {
+			descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
+			description.setText(descriptionSpan);
+			description.setVisibility(VISIBLE);
+		} else {
+			description.setVisibility(GONE);
+		}
 		if (user.isVerified()) {
 			username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
 			AppStyles.setDrawableColor(username, settings.getIconColor());
@@ -772,7 +780,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		}
 		if (!user.getDescription().isEmpty()) {
 			description.setVisibility(VISIBLE);
-			description.setText(bio);
+			description.setText(descriptionSpan);
 		} else {
 			description.setVisibility(GONE);
 		}
@@ -804,19 +812,36 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				profileImage.setImageResource(0);
 			}
 		}
-		if (user.getEmojis().length > 0 && emojiLoader.isIdle()) {
-			EmojiParam param = new EmojiParam(user.getEmojis(), username.getLineHeight());
-			emojiLoader.execute(param, emojiResultCallback);
+		if (user.getEmojis().length > 0) {
+			if (!user.getUsername().isEmpty()) {
+				SpannableString usernameSpan = new SpannableString(user.getUsername());
+				EmojiParam param = new EmojiParam(user.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
+				emojiLoader.execute(param, usernameUpdate);
+			}
+			if (descriptionSpan != null) {
+				EmojiParam param = new EmojiParam(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
+				emojiLoader.execute(param, userDescriptionUpdate);
+			}
 		}
 	}
 
 	/**
-	 * set emojis, replace emoji tags with images
+	 * update username with emojis
 	 */
-	private void onEmojiResult(EmojiLoader.EmojiResult result) {
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			TextWithEmoji.addEmojis(username, result.images);
-			TextWithEmoji.addEmojis(description, result.images);
+	private void onUsernameUpdate(EmojiLoader.EmojiResult result) {
+		if (result.images != null) {
+			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			username.setText(spannable);
+		}
+	}
+
+	/**
+	 * update user description with emojis
+	 */
+	private void onUserDescriptionUpdate(EmojiLoader.EmojiResult result) {
+		if (result.images != null) {
+			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			description.setText(spannable);
 		}
 	}
 }

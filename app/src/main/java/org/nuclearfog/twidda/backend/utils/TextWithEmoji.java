@@ -1,10 +1,11 @@
 package org.nuclearfog.twidda.backend.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
-import android.widget.TextView;
 
 import java.util.Map;
 import java.util.Stack;
@@ -25,13 +26,13 @@ public class TextWithEmoji {
 	/**
 	 * replace tags with emojis
 	 *
-	 * @param textView textview containing text with emoji tags (e.g. :tagname:)
-	 * @param emojis   a map of emoji tags & bitmap. every emoji bitmap has its own tag
+	 * @param spannable text with emoji tags (e.g. :tagname:)
+	 * @param emojis    a map of emoji tags & bitmap. every emoji bitmap has its own tag
 	 */
-	public static void addEmojis(TextView textView, Map<String, Bitmap> emojis) {
-		if (textView.length() > 0) {
-			SpannableStringBuilder builder = new SpannableStringBuilder(textView.getText());
-			Matcher matcher = EMOJI_PATTERN.matcher(textView.getText());
+	public static Spannable addEmojis(Context context, Spannable spannable, Map<String, Bitmap> emojis) {
+		if (spannable.length() > 0) {
+			SpannableStringBuilder builder = new SpannableStringBuilder(spannable);
+			Matcher matcher = EMOJI_PATTERN.matcher(spannable);
 			Stack<Integer> indexes = new Stack<>();
 			while (matcher.find()) {
 				indexes.push(matcher.start());
@@ -43,11 +44,12 @@ public class TextWithEmoji {
 				String tag = builder.subSequence(start + 1, end - 1).toString();
 				Bitmap emoji = emojis.get(tag);
 				if (emoji != null) {
-					ImageSpan imgSpan = new ImageSpan(textView.getContext(), emoji);
+					ImageSpan imgSpan = new ImageSpan(context, emoji);
 					builder.setSpan(imgSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 				}
 			}
-			textView.setText(builder);
+			return builder;
 		}
+		return spannable;
 	}
 }

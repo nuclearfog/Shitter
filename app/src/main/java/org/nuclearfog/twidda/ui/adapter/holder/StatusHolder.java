@@ -6,7 +6,8 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import android.content.res.Resources;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
-import android.text.Spanned;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,9 +32,7 @@ import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -48,7 +47,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see StatusAdapter
  */
-public class StatusHolder extends ViewHolder implements OnClickListener, AsyncCallback<EmojiResult> {
+public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
 	private TextView username, screenname, text, repost, favorite, reply, reposter, created, replyname, label;
@@ -60,6 +59,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener, AsyncCa
 	private EmojiLoader emojiLoader;
 	private IconAdapter adapter;
 	private OnHolderClickListener listener;
+
+	private AsyncCallback<EmojiResult> textResult = this::setTextEmojis;
+	private AsyncCallback<EmojiResult> usernameResult = this::setUsernameEmojis;
 
 
 	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener) {
@@ -123,21 +125,13 @@ public class StatusHolder extends ViewHolder implements OnClickListener, AsyncCa
 		}
 	}
 
-
-	@Override
-	public void onResult(EmojiResult result) {
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			TextWithEmoji.addEmojis(text, result.images);
-			TextWithEmoji.addEmojis(username, result.images);
-		}
-	}
-
 	/**
 	 * set view content
 	 *
 	 * @param status content to show
 	 */
 	public void setContent(Status status) {
+		Spannable textSpan = null;
 		User user = status.getAuthor();
 		if (status.getEmbeddedStatus() != null) {
 			reposter.setText(user.getScreenname());
@@ -156,7 +150,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener, AsyncCa
 		reply.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
 		created.setText(StringTools.formatCreationTime(itemView.getResources(), status.getTimestamp()));
 		if (!status.getText().trim().isEmpty()) {
-			Spanned textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
+			textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
 			text.setText(textSpan);
 			text.setVisibility(View.VISIBLE);
 		} else {
@@ -220,15 +214,14 @@ public class StatusHolder extends ViewHolder implements OnClickListener, AsyncCa
 		} else {
 			iconList.setVisibility(View.GONE);
 		}
-		if (status.getEmojis().length > 0 || status.getAuthor().getEmojis().length > 0) {
-			int index = 0;
-			Emoji[] emojis = new Emoji[status.getEmojis().length + status.getAuthor().getEmojis().length];
-			for (Emoji emoji : status.getEmojis())
-				emojis[index++] = emoji;
-			for (Emoji emoji : status.getAuthor().getEmojis())
-				emojis[index++] = emoji;
-			EmojiParam param = new EmojiParam(emojis, text.getLineHeight());
-			emojiLoader.execute(param, this);
+		if (textSpan != null && status.getEmojis().length > 0) {
+			EmojiParam param = new EmojiParam(status.getEmojis(), textSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+			emojiLoader.execute(param, textResult);
+		}
+		if (!user.getUsername().isEmpty() && user.getEmojis().length > 0) {
+			SpannableString userSpan = new SpannableString(user.getUsername());
+			EmojiParam param = new EmojiParam(user.getEmojis(), userSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+			emojiLoader.execute(param, usernameResult);
 		}
 	}
 
@@ -280,5 +273,29 @@ public class StatusHolder extends ViewHolder implements OnClickListener, AsyncCa
 			dismissButton.setVisibility(View.VISIBLE);
 		}
 		AppStyles.setDrawableColor(label, settings.getIconColor());
+	}
+
+	/**
+	 * update username
+	 *
+	 * @param result username with emojis
+	 */
+	private void setUsernameEmojis(EmojiResult result) {
+		if (result.images != null) {
+			Spannable spannable = TextWithEmoji.addEmojis(username.getContext(), result.spannable, result.images);
+			username.setText(spannable);
+		}
+	}
+
+	/**
+	 * update status text
+	 *
+	 * @param result status text with emojis
+	 */
+	private void setTextEmojis(EmojiResult result) {
+		if (result.images != null) {
+			Spannable spannable = TextWithEmoji.addEmojis(text.getContext(), result.spannable, result.images);
+			text.setText(spannable);
+		}
 	}
 }

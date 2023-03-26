@@ -30,12 +30,12 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	/**
 	 * timeout for queued processes
 	 */
-	private static final long P_TIMEOUT = 5000L;
+	private static final long P_TIMEOUT = 10L;
 
 	/**
 	 * thread pool executor
 	 */
-	private static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(1, N_THREAD, P_TIMEOUT, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+	private static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(N_THREAD, N_THREAD, P_TIMEOUT, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
 	/**
 	 * handler used to send result back to activity/fragment

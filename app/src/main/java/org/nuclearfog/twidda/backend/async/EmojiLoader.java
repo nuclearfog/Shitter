@@ -3,12 +3,12 @@ package org.nuclearfog.twidda.backend.async;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Spannable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
-import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.utils.ImageCache;
@@ -50,14 +50,13 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 					icon = BitmapFactory.decodeStream(input);
 					cache.putImage(emoji.getCode(), icon);
 				}
-				icon = Bitmap.createScaledBitmap(icon, icon.getWidth() / icon.getHeight() * param.size, param.size, false);
+				icon = Bitmap.createScaledBitmap(icon, param.size, param.size, false);
 				result.put(emoji.getCode(), icon);
 			}
-			return new EmojiResult(result, null);
-		} catch (ConnectionException exception) {
-			return new EmojiResult(null, exception);
+			cache.trimCache();
+			return new EmojiResult(param.spannable, result);
 		} catch (Exception exception) {
-			return new EmojiResult(null, null);
+			return new EmojiResult(param.spannable, null);
 		}
 	}
 
@@ -66,15 +65,16 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 	 */
 	public static class EmojiParam {
 
-		Emoji[] emojis;
-		int size;
+		final Emoji[] emojis;
+		final Spannable spannable;
+		final int size;
 
-		public EmojiParam(Emoji[] emojis, int size) {
+		public EmojiParam(Emoji[] emojis, Spannable spannable, int size) {
 			this.emojis = emojis;
+			this.spannable = spannable;
 			this.size = size;
 		}
 	}
-
 
 	/**
 	 *
@@ -82,13 +82,12 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 	public static class EmojiResult {
 
 		@Nullable
-		public Map<String, Bitmap> images;
-		@Nullable
-		public ConnectionException exception;
+		public final Map<String, Bitmap> images;
+		public final Spannable spannable;
 
-		EmojiResult(@Nullable Map<String, Bitmap> images, @Nullable ConnectionException exception) {
-			this.exception = exception;
+		EmojiResult(Spannable spannable, @Nullable Map<String, Bitmap> images) {
 			this.images = images;
+			this.spannable = spannable;
 		}
 	}
 }

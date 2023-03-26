@@ -17,6 +17,7 @@
 		tools:ignore="ScopedStorage" />
 
 	<application
+		android:name=".CustomApplication"
 		android:allowBackup="false"
 		android:fullBackupContent="false"
 		android:dataExtractionRules="@xml/rules"

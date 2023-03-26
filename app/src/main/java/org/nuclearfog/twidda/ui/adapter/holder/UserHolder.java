@@ -6,6 +6,8 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +30,6 @@ import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
@@ -105,8 +106,9 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 
 	@Override
 	public void onResult(EmojiResult result) {
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			TextWithEmoji.addEmojis(username, result.images);
+		if (result.images != null) {
+			Spannable spannable = TextWithEmoji.addEmojis(username.getContext(), result.spannable, result.images);
+			username.setText(spannable);
 		}
 	}
 
@@ -137,8 +139,9 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		} else {
 			profileImg.setImageResource(0);
 		}
-		if (user.getEmojis().length > 0) {
-			EmojiParam param = new EmojiParam(user.getEmojis(), username.getLineHeight());
+		if (!user.getUsername().isEmpty() && user.getEmojis().length > 0) {
+			SpannableString userSpan = new SpannableString(user.getUsername());
+			EmojiParam param = new EmojiParam(user.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
 			emojiLoader.execute(param, this);
 		}
 	}

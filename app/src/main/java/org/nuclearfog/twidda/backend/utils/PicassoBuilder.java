@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.utils;
 
 import android.content.Context;
 
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -16,14 +17,19 @@ import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;
 public class PicassoBuilder implements OnSettingsChangeListener {
 
 	/**
-	 * image cache size in bytes
+	 * local image cache size in bytes
 	 */
-	private static final int CACHE_SIZE = 32 * 1024 * 1024;
+	private static final int STORAGE_SIZE = 32 * 1024 * 1024;
+	/**
+	 * picasso cache size
+	 */
+	private static final int CACHE_SIZE = 16 * 1024 * 1024;
 
 	private static PicassoBuilder instance;
 	private static boolean notifySettingsChange = false;
 
 	private OkHttp3Downloader downloader;
+	private LruCache imageCache;
 
 	/**
 	 *
@@ -31,7 +37,8 @@ public class PicassoBuilder implements OnSettingsChangeListener {
 	private PicassoBuilder(Context context) {
 		GlobalSettings settings = GlobalSettings.getInstance(context);
 		settings.addSettingsChangeListener(this);
-		downloader = new OkHttp3Downloader(ConnectionBuilder.create(context, CACHE_SIZE));
+		downloader = new OkHttp3Downloader(ConnectionBuilder.create(context, STORAGE_SIZE));
+		imageCache = new LruCache(CACHE_SIZE);
 		notifySettingsChange = false;
 	}
 
@@ -43,7 +50,16 @@ public class PicassoBuilder implements OnSettingsChangeListener {
 		if (notifySettingsChange || instance == null) {
 			instance = new PicassoBuilder(context);
 		}
-		return new Picasso.Builder(context).downloader(instance.downloader).build();
+		return new Picasso.Builder(context).downloader(instance.downloader).memoryCache(instance.imageCache).build();
+	}
+
+	/**
+	 * clear image cache
+	 */
+	public static void clear(Context context) {
+		if (notifySettingsChange || instance == null)
+			instance = new PicassoBuilder(context);
+		instance.imageCache.clear();
 	}
 
 
