@@ -50,7 +50,11 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 					icon = BitmapFactory.decodeStream(input);
 					cache.putImage(emoji.getCode(), icon);
 				}
-				icon = Bitmap.createScaledBitmap(icon, param.size, param.size, false);
+				if (icon.getHeight() > 0 && icon.getWidth() > 0) {
+					icon = Bitmap.createScaledBitmap(icon, icon.getWidth() * param.size / icon.getHeight(), param.size, false);
+				} else {
+					icon = Bitmap.createScaledBitmap(icon, param.size, param.size, false);
+				}
 				result.put(emoji.getCode(), icon);
 			}
 			cache.trimCache();
