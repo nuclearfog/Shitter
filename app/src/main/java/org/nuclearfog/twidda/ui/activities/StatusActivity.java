@@ -73,8 +73,6 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.database.impl.DatabaseNotification;
-import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
@@ -304,30 +302,26 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		Object notificationObject = savedInstanceState.getSerializable(KEY_NOTIFICATION_DATA);
 		if (statusObject instanceof Status) {
 			Status status = (Status) statusObject;
+			Status embeddedStatus = status.getEmbeddedStatus();
 			setStatus(status);
-			Status embedded = status.getEmbeddedStatus();
-			if (embedded != null) {
-				statusId = embedded.getId();
-				replyUsername = embedded.getAuthor().getScreenname();
+			StatusParam statusParam = new StatusParam(StatusParam.ONLINE, status.getId());
+			statusAsync.execute(statusParam, statusCallback);
+			if (embeddedStatus != null) {
+				statusId = embeddedStatus.getId();
+				replyUsername = embeddedStatus.getAuthor().getScreenname();
 			} else {
 				statusId = status.getId();
 				hidden = status.isHidden();
 				replyUsername = status.getAuthor().getScreenname();
 			}
-			if (status instanceof DatabaseStatus) {
-				StatusParam statusParam = new StatusParam(StatusParam.ONLINE, status.getId());
-				statusAsync.execute(statusParam, statusCallback);
-			}
 		} else if (notificationObject instanceof Notification) {
 			Notification notification = (Notification) notificationObject;
+			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
+			notificationAsync.execute(notificationParam, notificationCallback);
 			if (notification.getStatus() != null) {
 				setNotification(notification);
 				statusId = notification.getStatus().getId();
 				replyUsername = notification.getStatus().getAuthor().getScreenname();
-			}
-			if (notification instanceof DatabaseNotification) {
-				NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
-				notificationAsync.execute(notificationParam, notificationCallback);
 			}
 		} else {
 			statusId = savedInstanceState.getLong(KEY_STATUS_ID, 0L);
