@@ -55,6 +55,8 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 				case LoginParam.MODE_LOGIN:
 					// login with pin and access token
 					Account account = connection.loginApp(param.connection, param.code);
+					// remove old entries to prevent conflicts
+					database.resetDatabase();
 					// save new user information
 					database.saveLogin(account);
 					return new LoginResult(LoginResult.MODE_LOGIN, null, null);

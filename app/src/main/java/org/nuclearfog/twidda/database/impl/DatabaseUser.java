@@ -68,7 +68,6 @@ public class DatabaseUser implements User {
 		isLocked = (register & MASK_USER_PRIVATE) != 0;
 		followReqSent = (register & MASK_USER_FOLLOW_REQUESTED) != 0;
 		defaultImage = (register & MASK_USER_DEFAULT_IMAGE) != 0;
-		isCurrentUser = account.getId() == id;
 
 		if (username != null)
 			this.username = username;
@@ -86,36 +85,7 @@ public class DatabaseUser implements User {
 			this.profileBannerOrig = profileBannerOrig;
 		if (emojiKeys != null && !emojiKeys.isEmpty())
 			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
-
-		switch (account.getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				if (profileImageOrig != null && !profileImageOrig.isEmpty()) {
-					if (defaultImage) {
-						profileImageSmall = profileImageOrig;
-					} else {
-						profileImageSmall = profileImageOrig + "_bigger";
-					}
-				}
-				if (profileBannerOrig != null && !profileBannerOrig.isEmpty()) {
-					if (profileBannerOrig.endsWith("/1500x500")) {
-						profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
-					} else {
-						profileBannerSmall = profileBannerOrig + "/600x200";
-					}
-				}
-				break;
-
-			case MASTODON:
-				profileImageSmall = profileImageOrig;
-				profileBannerSmall = profileBannerOrig;
-				break;
-
-			default:
-				profileImageSmall = "";
-				profileBannerSmall = "";
-				break;
-		}
+		setAccountInformation(account);
 	}
 
 
@@ -282,9 +252,39 @@ public class DatabaseUser implements User {
 	}
 
 	/**
-	 * set this user as current user
+	 * setup
 	 */
-	public void setAsCurrentUser() {
+	public void setAccountInformation(Account account) {
 		isCurrentUser = true;
+		isCurrentUser = account.getId() == id;
+		switch (account.getConfiguration()) {
+			case TWITTER1:
+			case TWITTER2:
+				if (profileImageOrig != null && !profileImageOrig.isEmpty()) {
+					if (defaultImage) {
+						profileImageSmall = profileImageOrig;
+					} else {
+						profileImageSmall = profileImageOrig + "_bigger";
+					}
+				}
+				if (profileBannerOrig != null && !profileBannerOrig.isEmpty()) {
+					if (profileBannerOrig.endsWith("/1500x500")) {
+						profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
+					} else {
+						profileBannerSmall = profileBannerOrig + "/600x200";
+					}
+				}
+				break;
+
+			case MASTODON:
+				profileImageSmall = profileImageOrig;
+				profileBannerSmall = profileBannerOrig;
+				break;
+
+			default:
+				profileImageSmall = "";
+				profileBannerSmall = "";
+				break;
+		}
 	}
 }

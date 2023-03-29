@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.mastodon.impl.CustomEmoji;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
@@ -746,7 +746,7 @@ public class Mastodon implements Connection {
 				JSONArray json = new JSONArray(body.string());
 				List<Emoji> result = new ArrayList<>(json.length());
 				for (int i = 0; i < json.length(); i++) {
-					Emoji item = new CustomEmoji(json.getJSONObject(i));
+					Emoji item = new MastodonEmoji(json.getJSONObject(i));
 					result.add(item);
 				}
 				return result;

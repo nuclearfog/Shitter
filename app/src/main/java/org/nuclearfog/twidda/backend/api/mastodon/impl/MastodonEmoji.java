@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.model.Emoji;
  *
  * @author nuclearfog
  */
-public class CustomEmoji implements Emoji {
+public class MastodonEmoji implements Emoji {
 
 	private static final long serialVersionUID = 2848675481626033993L;
 
@@ -24,9 +24,9 @@ public class CustomEmoji implements Emoji {
 	/**
 	 * @param json CustomEmoji json format
 	 */
-	public CustomEmoji(JSONObject json) throws JSONException {
+	public MastodonEmoji(JSONObject json) throws JSONException {
 		code = json.getString("shortcode");
-		url = json.getString("url");
+		url = json.getString("static_url");
 		category = json.optString("category", "");
 		visibleInPicker = json.optBoolean("visible_in_picker", true);
 	}

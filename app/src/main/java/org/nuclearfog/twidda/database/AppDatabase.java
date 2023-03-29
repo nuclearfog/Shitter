@@ -854,7 +854,7 @@ public class AppDatabase {
 					DatabaseAccount account = new DatabaseAccount(cursor);
 					DatabaseUser user = getUser(account.getId());
 					if (user != null) {
-						user.setAsCurrentUser();
+						user.setAccountInformation(account);
 						account.addUser(user);
 					}
 					result.add(account);

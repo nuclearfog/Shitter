@@ -82,7 +82,7 @@ public class MastodonUser implements User {
 			emojis = new Emoji[emojiArray.length()];
 			for (int i = 0; i < emojis.length; i++) {
 				JSONObject emojiJson = emojiArray.getJSONObject(i);
-				emojis[i] = new CustomEmoji(emojiJson);
+				emojis[i] = new MastodonEmoji(emojiJson);
 			}
 		}
 		try {
