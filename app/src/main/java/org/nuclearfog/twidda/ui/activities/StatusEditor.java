@@ -311,7 +311,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 
 	@Override
-	public void onResult(StatusUpdateResult result) {
+	public void onResult(@NonNull StatusUpdateResult result) {
 		if (result.success) {
 			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
 			finish();

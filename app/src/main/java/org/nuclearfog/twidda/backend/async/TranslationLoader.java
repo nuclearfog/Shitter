@@ -27,7 +27,6 @@ public class TranslationLoader extends AsyncExecutor<Long, TranslationLoader.Tra
 	}
 
 
-	@NonNull
 	@Override
 	protected TranslationResult doInBackground(@NonNull Long param) {
 		try {

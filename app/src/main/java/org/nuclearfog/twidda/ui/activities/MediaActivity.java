@@ -215,7 +215,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	}
 
 
-	private void setResult(Boolean res) {
+	private void setResult(@NonNull Boolean res) {
 		if (res) {
 			Toast.makeText(getApplicationContext(), R.string.info_image_saved, LENGTH_SHORT).show();
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && destMediaFile != null) {

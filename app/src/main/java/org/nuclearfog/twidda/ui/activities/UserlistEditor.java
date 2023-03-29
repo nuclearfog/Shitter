@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -168,7 +169,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onResult(ListUpdateResult result) {
+	public void onResult(@NonNull ListUpdateResult result) {
 		if (result.userlist != null) {
 			if (result.updated) {
 				Toast.makeText(getApplicationContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();

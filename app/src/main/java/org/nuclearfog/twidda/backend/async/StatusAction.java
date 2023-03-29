@@ -32,7 +32,6 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 	}
 
 
-	@NonNull
 	@Override
 	protected StatusResult doInBackground(@NonNull StatusParam param) {
 		try {

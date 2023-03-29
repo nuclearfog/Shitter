@@ -160,7 +160,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 
 	@Override
-	public void onResult(UserlistResult result) {
+	public void onResult(@NonNull UserlistResult result) {
 		switch (result.mode) {
 			case UserlistResult.MEMBERSHIP:
 			case UserlistResult.OWNERSHIP:

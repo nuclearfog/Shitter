@@ -252,7 +252,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 
 	@Override
-	public void onResult(UserUpdateResult result) {
+	public void onResult(@NonNull UserUpdateResult result) {
 		if (result.user != null) {
 			Intent data = new Intent();
 			data.putExtra(KEY_UPDATED_PROFILE, result.user);

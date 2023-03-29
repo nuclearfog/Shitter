@@ -11,7 +11,7 @@ import org.nuclearfog.twidda.database.AppDatabase;
  *
  * @author nuclearfog
  */
-public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, Void> {
+public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, DatabaseAction.DatabaseResult> {
 
 	private AppDatabase db;
 
@@ -23,12 +23,12 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 	}
 
 
-	@NonNull
 	@Override
-	protected Void doInBackground(@NonNull DatabaseParam param) {
+	protected DatabaseResult doInBackground(@NonNull DatabaseParam param) {
 		try {
 			if (param.mode == DatabaseParam.DELETE) {
 				db.resetDatabase();
+				return new DatabaseResult(DatabaseResult.DELETE);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -46,6 +46,20 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 		final int mode;
 
 		public DatabaseParam(int mode) {
+			this.mode = mode;
+		}
+	}
+
+	/**
+	 *
+	 */
+	public static class DatabaseResult {
+
+		public static final int DELETE = 1;
+
+		public final int mode;
+
+		DatabaseResult(int mode) {
 			this.mode = mode;
 		}
 	}

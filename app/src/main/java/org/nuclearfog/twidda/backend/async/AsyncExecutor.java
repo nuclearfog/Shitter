@@ -101,7 +101,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 				if (!queue.isEmpty())
 					queue.remove();
 				AsyncCallback<Result> reference = callback.get();
-				if (reference != null) {
+				if (reference != null && result != null) {
 					reference.onResult(result);
 				}
 			}
@@ -114,7 +114,6 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @param param parameter containing information for the background task
 	 * @return result of the background task
 	 */
-	@NonNull
 	@WorkerThread
 	protected abstract Result doInBackground(@NonNull Parameter param);
 
@@ -126,6 +125,6 @@ public abstract class AsyncExecutor<Parameter, Result> {
 		/**
 		 * @param result result of the task
 		 */
-		void onResult(Result result);
+		void onResult(@NonNull Result result);
 	}
 }

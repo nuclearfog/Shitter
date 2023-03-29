@@ -186,7 +186,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onResult(MessageLoaderResult result) {
+	public void onResult(@NonNull MessageLoaderResult result) {
 		switch (result.mode) {
 			case MessageLoaderResult.DATABASE:
 			case MessageLoaderResult.ONLINE:

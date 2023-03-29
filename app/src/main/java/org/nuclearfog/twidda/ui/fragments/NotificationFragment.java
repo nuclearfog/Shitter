@@ -162,7 +162,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	}
 
 
-	private void onResult(NotificationLoaderResult result) {
+	private void onResult(@NonNull NotificationLoaderResult result) {
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
 		} else if (getContext() != null) {
@@ -176,7 +176,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	/**
 	 *
 	 */
-	private void onDismiss(NotificationActionResult result) {
+	private void onDismiss(@NonNull NotificationActionResult result) {
 		if (result.mode == NotificationActionResult.DISMISS) {
 			adapter.removeItem(result.id);
 		} else if (result.mode == NotificationActionResult.ERROR) {

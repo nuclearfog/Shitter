@@ -44,7 +44,6 @@ public class LinkLoader extends AsyncExecutor<Uri, LinkLoader.LinkResult> {
 	}
 
 
-	@NonNull
 	@Override
 	protected LinkResult doInBackground(@NonNull Uri link) {
 		try {

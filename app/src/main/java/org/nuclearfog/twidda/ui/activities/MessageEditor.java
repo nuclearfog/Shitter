@@ -171,7 +171,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 
 	@Override
-	public void onResult(MessageUpdateResult result) {
+	public void onResult(@NonNull MessageUpdateResult result) {
 		if (result.success) {
 			Toast.makeText(getApplicationContext(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
 			finish();

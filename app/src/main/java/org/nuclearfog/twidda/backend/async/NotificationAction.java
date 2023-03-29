@@ -30,7 +30,6 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 	}
 
 
-	@NonNull
 	@Override
 	protected NotificationActionResult doInBackground(@NonNull NotificationActionParam param) {
 		try {

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,6 +63,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private AsyncCallback<EmojiResult> textResult = this::setTextEmojis;
 	private AsyncCallback<EmojiResult> usernameResult = this::setUsernameEmojis;
+
+	private long tagId = 0L;
 
 
 	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener) {
@@ -131,6 +134,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	 * @param status content to show
 	 */
 	public void setContent(Status status) {
+		tagId = status.getId();
 		Spannable textSpan = null;
 		User user = status.getAuthor();
 		if (status.getEmbeddedStatus() != null) {
@@ -215,12 +219,12 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			iconList.setVisibility(View.GONE);
 		}
 		if (textSpan != null && status.getEmojis().length > 0) {
-			EmojiParam param = new EmojiParam(status.getEmojis(), textSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+			EmojiParam param = new EmojiParam(tagId, status.getEmojis(), textSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
 			emojiLoader.execute(param, textResult);
 		}
 		if (!user.getUsername().isEmpty() && user.getEmojis().length > 0) {
 			SpannableString userSpan = new SpannableString(user.getUsername());
-			EmojiParam param = new EmojiParam(user.getEmojis(), userSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+			EmojiParam param = new EmojiParam(tagId, user.getEmojis(), userSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
 			emojiLoader.execute(param, usernameResult);
 		}
 	}
@@ -280,8 +284,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	 *
 	 * @param result username with emojis
 	 */
-	private void setUsernameEmojis(EmojiResult result) {
-		if (result.images != null) {
+	private void setUsernameEmojis(@NonNull EmojiResult result) {
+		if (result.id == tagId && result.images != null) {
 			Spannable spannable = TextWithEmoji.addEmojis(username.getContext(), result.spannable, result.images);
 			username.setText(spannable);
 		}
@@ -292,8 +296,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	 *
 	 * @param result status text with emojis
 	 */
-	private void setTextEmojis(EmojiResult result) {
-		if (result.images != null) {
+	private void setTextEmojis(@NonNull EmojiResult result) {
+		if (result.id == tagId && result.images != null) {
 			Spannable spannable = TextWithEmoji.addEmojis(text.getContext(), result.spannable, result.images);
 			text.setText(spannable);
 		}

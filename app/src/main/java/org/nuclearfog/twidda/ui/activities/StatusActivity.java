@@ -975,7 +975,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 *
 	 */
-	private void onStatusResult(StatusResult result) {
+	private void onStatusResult(@NonNull StatusResult result) {
 		if (result.status != null) {
 			setStatus(result.status);
 		}
@@ -1063,7 +1063,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result notification containing status information
 	 */
-	private void onNotificationResult(NotificationActionResult result) {
+	private void onNotificationResult(@NonNull NotificationActionResult result) {
 		switch (result.mode) {
 			case NotificationActionResult.DATABASE:
 				if (result.notification != null) {
@@ -1109,7 +1109,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result poll result
 	 */
-	private void onPollResult(PollActionResult result) {
+	private void onPollResult(@NonNull PollActionResult result) {
 		switch (result.mode) {
 			case PollActionResult.LOAD:
 				if (result.poll != null) {
@@ -1135,7 +1135,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result status translation result
 	 */
-	private void onTranslationResult(TranslationResult result) {
+	private void onTranslationResult(@NonNull TranslationResult result) {
 		if (result.translation != null) {
 			translation = result.translation;
 			setTranslation();
@@ -1148,7 +1148,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * set emojis, replace emoji tags with images
 	 */
-	private void onStatusTextUpdate(EmojiResult result) {
+	private void onStatusTextUpdate(@NonNull EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
 			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
 			statusText.setText(spannable);
@@ -1158,7 +1158,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * set emojis, replace emoji tags with images
 	 */
-	private void onUsernameUpdate(EmojiResult result) {
+	private void onUsernameUpdate(@NonNull EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
 			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
 			username.setText(spannable);

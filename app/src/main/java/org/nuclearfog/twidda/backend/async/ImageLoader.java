@@ -36,7 +36,6 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 	}
 
 
-	@NonNull
 	@Override
 	protected ImageResult doInBackground(@NonNull ImageParameter request) {
 		try {

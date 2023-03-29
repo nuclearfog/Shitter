@@ -29,7 +29,6 @@ public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAc
 	}
 
 
-	@NonNull
 	@Override
 	protected PollActionResult doInBackground(@NonNull PollActionParam param) {
 		try {

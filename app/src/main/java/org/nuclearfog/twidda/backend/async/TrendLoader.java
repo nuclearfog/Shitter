@@ -38,7 +38,6 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	}
 
 
-	@NonNull
 	@Override
 	protected TrendResult doInBackground(@NonNull TrendParameter param) {
 		try {

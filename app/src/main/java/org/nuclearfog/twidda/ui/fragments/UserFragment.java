@@ -236,7 +236,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 
 	@Override
-	public void onResult(UserResult result) {
+	public void onResult(@NonNull UserResult result) {
 		if (result.users != null) {
 			adapter.addItems(result.users, result.index);
 		} else if (getContext() != null) {

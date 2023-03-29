@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.backend.async.AccountLoader.AccountResult;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
+import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
@@ -37,9 +38,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	private long selectedId;
 
-	private AsyncCallback<Void> databaseResult = new AsyncCallback<Void>() {
+	private AsyncCallback<DatabaseResult> databaseResult = new AsyncCallback<DatabaseResult>() {
 		@Override
-		public void onResult(Void v) {
+		public void onResult(@NonNull DatabaseResult result) {
 			onDatabaseResult();
 		}
 	};
@@ -112,7 +113,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 
 	@Override
-	public void onResult(AccountResult result) {
+	public void onResult(@NonNull AccountResult result) {
 		switch (result.mode) {
 			case AccountResult.LOAD:
 				if (result.accounts != null) {

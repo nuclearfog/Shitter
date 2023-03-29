@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onResult(LinkResult linkResult) {
+	public void onResult(@NonNull LinkResult linkResult) {
 		loadingCircle.dismiss();
 		if (linkResult.data != null && linkResult.activity != null) {
 			if (linkResult.activity == MainActivity.class) {

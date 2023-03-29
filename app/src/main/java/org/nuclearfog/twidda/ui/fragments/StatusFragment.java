@@ -207,7 +207,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 
 	@Override
-	public void onResult(StatusResult result) {
+	public void onResult(@NonNull StatusResult result) {
 		if (result.statuses != null) {
 			if (result.position == CLEAR_LIST) {
 				adapter.replaceItems(result.statuses);

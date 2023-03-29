@@ -363,7 +363,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	/**
 	 * update userlist member
 	 */
-	private void updateList(ListManagerResult result) {
+	private void updateList(@NonNull ListManagerResult result) {
 		switch (result.mode) {
 			case ListManagerResult.ADD_USER:
 				String name;
@@ -399,7 +399,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	/**
 	 * update userlist content
 	 */
-	private void setList(ListActionResult result) {
+	private void setList(@NonNull ListActionResult result) {
 		switch (result.mode) {
 			case ListActionResult.LOAD:
 				if (result.userlist != null) {

@@ -29,7 +29,6 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 	}
 
 
-	@NonNull
 	@Override
 	protected UserResult doInBackground(@NonNull UserParam param) {
 		Users users = null;

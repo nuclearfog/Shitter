@@ -29,7 +29,6 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 	}
 
 
-	@NonNull
 	@Override
 	protected MessageUpdateResult doInBackground(@NonNull MessageUpdate update) {
 		try {

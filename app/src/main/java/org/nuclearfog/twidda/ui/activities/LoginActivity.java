@@ -270,7 +270,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 
 	@Override
-	public void onResult(LoginResult result) {
+	public void onResult(@NonNull LoginResult result) {
 		switch (result.mode) {
 			case LoginResult.MODE_LOGIN:
 				setResult(RETURN_LOGIN_SUCCESSFUL);

@@ -37,7 +37,6 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 	}
 
 
-	@NonNull
 	@Override
 	protected EmojiResult doInBackground(@NonNull EmojiParam param) {
 		try {
@@ -58,9 +57,9 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 				result.put(emoji.getCode(), icon);
 			}
 			cache.trimCache();
-			return new EmojiResult(param.spannable, result);
+			return new EmojiResult(param.id, param.spannable, result);
 		} catch (Exception exception) {
-			return new EmojiResult(param.spannable, null);
+			return new EmojiResult(param.id, param.spannable, null);
 		}
 	}
 
@@ -71,12 +70,18 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 
 		final Emoji[] emojis;
 		final Spannable spannable;
+		final long id;
 		final int size;
 
 		public EmojiParam(Emoji[] emojis, Spannable spannable, int size) {
+			this(0L, emojis, spannable, size);
+		}
+
+		public EmojiParam(long id, Emoji[] emojis, Spannable spannable, int size) {
 			this.emojis = emojis;
 			this.spannable = spannable;
 			this.size = size;
+			this.id = id;
 		}
 	}
 
@@ -88,10 +93,12 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 		@Nullable
 		public final Map<String, Bitmap> images;
 		public final Spannable spannable;
+		public final long id;
 
-		EmojiResult(Spannable spannable, @Nullable Map<String, Bitmap> images) {
+		EmojiResult(long id, Spannable spannable, @Nullable Map<String, Bitmap> images) {
 			this.images = images;
 			this.spannable = spannable;
+			this.id = id;
 		}
 	}
 }

@@ -654,7 +654,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 *
 	 * @param result user result from async executor
 	 */
-	private void setUserResult(UserResult result) {
+	private void setUserResult(@NonNull UserResult result) {
 		switch (result.mode) {
 			case UserResult.DATABASE:
 				UserParam param = new UserParam(UserParam.ONLINE, userId);
@@ -684,7 +684,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 *
 	 * @param result relation result from async executor
 	 */
-	private void setRelationResult(RelationResult result) {
+	private void setRelationResult(@NonNull RelationResult result) {
 		switch (result.mode) {
 			case RelationResult.BLOCK:
 				Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
@@ -828,7 +828,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	/**
 	 * update username with emojis
 	 */
-	private void onUsernameUpdate(EmojiLoader.EmojiResult result) {
+	private void onUsernameUpdate(@NonNull EmojiResult result) {
 		if (result.images != null) {
 			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
 			username.setText(spannable);
@@ -838,7 +838,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	/**
 	 * update user description with emojis
 	 */
-	private void onUserDescriptionUpdate(EmojiLoader.EmojiResult result) {
+	private void onUserDescriptionUpdate(@NonNull EmojiResult result) {
 		if (result.images != null) {
 			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
 			description.setText(spannable);

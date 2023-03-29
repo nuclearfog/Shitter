@@ -27,7 +27,6 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 	}
 
 
-	@NonNull
 	@Override
 	protected AccountResult doInBackground(@NonNull AccountParameter request) {
 		try {

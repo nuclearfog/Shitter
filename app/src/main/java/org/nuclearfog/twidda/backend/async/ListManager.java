@@ -28,7 +28,6 @@ public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, Lis
 	}
 
 
-	@NonNull
 	@Override
 	protected ListManagerResult doInBackground(@NonNull ListManagerParam param) {
 		try {

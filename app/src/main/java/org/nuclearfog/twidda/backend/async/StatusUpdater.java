@@ -30,7 +30,6 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 	}
 
 
-	@NonNull
 	@Override
 	protected StatusUpdateResult doInBackground(@NonNull StatusUpdate update) {
 		try {

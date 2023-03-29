@@ -31,7 +31,6 @@ public class LocationLoader extends AsyncExecutor<Void, LocationLoader.LocationL
 	}
 
 
-	@NonNull
 	@Override
 	protected LocationLoaderResult doInBackground(@NonNull Void v) {
 		try {

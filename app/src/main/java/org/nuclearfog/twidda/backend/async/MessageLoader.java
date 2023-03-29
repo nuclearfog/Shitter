@@ -33,7 +33,6 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 	}
 
 
-	@NonNull
 	@Override
 	protected MessageLoaderResult doInBackground(@NonNull MessageLoaderParam param) {
 		try {

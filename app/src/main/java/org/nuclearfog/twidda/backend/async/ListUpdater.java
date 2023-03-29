@@ -30,7 +30,6 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 	}
 
 
-	@NonNull
 	@Override
 	protected ListUpdateResult doInBackground(@NonNull UserListUpdate update) {
 		try {

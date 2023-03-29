@@ -90,7 +90,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 
 	@Override
-	public void onResult(TrendResult result) {
+	public void onResult(@NonNull TrendResult result) {
 		if (result.trends != null) {
 			adapter.replaceAll(result.trends);
 		} else if (getContext() != null) {

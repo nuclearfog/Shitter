@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -54,6 +55,8 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	private Picasso picasso;
 
 	private OnHolderClickListener listener;
+
+	private long tagId = 0L;
 
 
 	public UserHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener, boolean enableDelete) {
@@ -105,8 +108,8 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 
 
 	@Override
-	public void onResult(EmojiResult result) {
-		if (result.images != null) {
+	public void onResult(@NonNull EmojiResult result) {
+		if (result.id == tagId && result.images != null) {
 			Spannable spannable = TextWithEmoji.addEmojis(username.getContext(), result.spannable, result.images);
 			username.setText(spannable);
 		}
@@ -118,6 +121,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	 * @param user user information
 	 */
 	public void setContent(User user) {
+		tagId = user.getId();
 		username.setText(user.getUsername());
 		screenname.setText(user.getScreenname());
 		followingCount.setText(StringTools.NUMBER_FORMAT.format(user.getFollowing()));
@@ -141,7 +145,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		}
 		if (!user.getUsername().isEmpty() && user.getEmojis().length > 0) {
 			SpannableString userSpan = new SpannableString(user.getUsername());
-			EmojiParam param = new EmojiParam(user.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
+			EmojiParam param = new EmojiParam(tagId, user.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
 			emojiLoader.execute(param, this);
 		}
 	}

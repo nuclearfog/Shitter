@@ -289,7 +289,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	public void onResult(FilterResult result) {
+	public void onResult(@NonNull FilterResult result) {
 		switch (result.mode) {
 			case FilterResult.MUTE:
 				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();

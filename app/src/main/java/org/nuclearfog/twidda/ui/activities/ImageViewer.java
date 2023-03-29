@@ -133,7 +133,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 
 
 	@Override
-	public void onResult(ImageResult result) {
+	public void onResult(@NonNull ImageResult result) {
 		if (result.uri != null) {
 			cacheUri = result.uri;
 			zoomImage.reset();

@@ -39,6 +39,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
+import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -118,12 +119,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private int color = 0;
 
 	private AsyncCallback<LocationLoaderResult> locationResult = this::onLocationResult;
-	private AsyncCallback<Void> databaseResult = new AsyncCallback<Void>() {
-		@Override
-		public void onResult(Void v) {
-			onDatabaseResult();
-		}
-	};
+	private AsyncCallback<DatabaseResult> databaseResult = this::onDatabaseResult;
 
 
 	@Override
@@ -601,7 +597,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	/**
 	 * called from {@link DatabaseAction}
 	 */
-	private void onDatabaseResult() {
+	private void onDatabaseResult(@NonNull DatabaseResult result) {
 		setResult(RETURN_DATA_CLEARED);
 		Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
 	}

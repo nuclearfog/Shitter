@@ -32,7 +32,6 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 	}
 
 
-	@NonNull
 	@Override
 	protected RelationResult doInBackground(@NonNull RelationParam param) {
 		try {

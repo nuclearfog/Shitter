@@ -33,7 +33,6 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	}
 
 
-	@NonNull
 	@Override
 	protected NotificationLoaderResult doInBackground(@NonNull NotificationLoaderParam params) {
 		List<Notification> result = null;

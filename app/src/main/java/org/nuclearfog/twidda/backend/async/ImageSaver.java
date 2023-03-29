@@ -16,7 +16,6 @@ import java.io.OutputStream;
 public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
 
 
-	@NonNull
 	@Override
 	protected Boolean doInBackground(@NonNull ImageParam param) {
 		try {
