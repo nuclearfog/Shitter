@@ -598,8 +598,12 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 * called from {@link DatabaseAction}
 	 */
 	private void onDatabaseResult(@NonNull DatabaseResult result) {
-		setResult(RETURN_DATA_CLEARED);
-		Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
+		if (result.mode == DatabaseResult.DELETE) {
+			setResult(RETURN_DATA_CLEARED);
+			Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
+		} else if (result.mode == DatabaseResult.ERROR) {
+			Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	/**

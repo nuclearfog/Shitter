@@ -8,7 +8,6 @@ import android.util.LruCache;
 import androidx.annotation.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -100,6 +99,7 @@ public class ImageCache {
 				if (file.createNewFile()) {
 					FileOutputStream output = new FileOutputStream(file);
 					image.compress(Bitmap.CompressFormat.PNG, 1, output);
+					output.close();
 					files.put(key, file);
 				}
 			} catch (IOException|SecurityException e) {
@@ -118,15 +118,16 @@ public class ImageCache {
 	public synchronized Bitmap getImage(String key) {
 		Bitmap result = cache.get(key);
 		if (result == null) {
-			File file = files.get(key);
-			if (file != null) {
-				try {
-					FileInputStream inputStream = new FileInputStream(file);
-					result = BitmapFactory.decodeStream(inputStream);
-					cache.put(key, result);
-				} catch (IOException e) {
-					e.printStackTrace();
+			try {
+				File file = files.get(key);
+				if (file != null && file.canRead()) {
+					result = BitmapFactory.decodeFile(file.getAbsolutePath());
+					if (result != null) {
+						cache.put(key, result);
+					}
 				}
+			} catch (SecurityException e) {
+				e.printStackTrace();
 			}
 		}
 		return result;
@@ -139,7 +140,7 @@ public class ImageCache {
 	public synchronized void trimCache() {
 		File[] files = imageFolder.listFiles();
 		if (files != null) {
-			long size = 0;
+			long size = 0L;
 			for (File file : files) {
 				size += file.length();
 			}

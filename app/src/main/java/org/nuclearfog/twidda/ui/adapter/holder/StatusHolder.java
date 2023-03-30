@@ -51,7 +51,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
-	private TextView username, screenname, text, repost, favorite, reply, reposter, created, replyname, label;
+	private TextView username, screenname, statusText, repost, favorite, reply, reposter, created, replyname, label;
 	private View dismissButton;
 	private RecyclerView iconList;
 
@@ -88,7 +88,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		replyStatus = itemView.findViewById(R.id.item_status_reply);
 		username = itemView.findViewById(R.id.item_status_author_username);
 		screenname = itemView.findViewById(R.id.item_status_author_screenname);
-		text = itemView.findViewById(R.id.item_status_text);
+		statusText = itemView.findViewById(R.id.item_status_text);
 		repost = itemView.findViewById(R.id.item_status_repost_count);
 		favorite = itemView.findViewById(R.id.item_status_favorite_count);
 		reply = itemView.findViewById(R.id.item_status_reply_count);
@@ -155,18 +155,18 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		created.setText(StringTools.formatCreationTime(itemView.getResources(), status.getTimestamp()));
 		if (!status.getText().trim().isEmpty()) {
 			textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
-			text.setText(textSpan);
-			text.setVisibility(View.VISIBLE);
+			statusText.setText(textSpan);
+			statusText.setVisibility(View.VISIBLE);
 		} else {
-			text.setVisibility(View.GONE);
+			statusText.setVisibility(View.GONE);
 		}
 		if (settings.hideSensitiveEnabled() && status.isSpoiler()) {
-			text.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-			float radius = text.getTextSize() / 3;
+			statusText.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+			float radius = statusText.getTextSize() / 3;
 			BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL);
-			text.getPaint().setMaskFilter(filter);
+			statusText.getPaint().setMaskFilter(filter);
 		} else {
-			text.getPaint().setMaskFilter(null);
+			statusText.getPaint().setMaskFilter(null);
 		}
 		if (status.isReposted()) {
 			repostIcon.setColorFilter(settings.getRepostIconColor());
@@ -218,14 +218,16 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		} else {
 			iconList.setVisibility(View.GONE);
 		}
-		if (textSpan != null && status.getEmojis().length > 0) {
-			EmojiParam param = new EmojiParam(tagId, status.getEmojis(), textSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
-			emojiLoader.execute(param, textResult);
-		}
-		if (!user.getUsername().isEmpty() && user.getEmojis().length > 0) {
-			SpannableString userSpan = new SpannableString(user.getUsername());
-			EmojiParam param = new EmojiParam(tagId, user.getEmojis(), userSpan, text.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
-			emojiLoader.execute(param, usernameResult);
+		if (settings.imagesEnabled()) {
+			if (status.getEmojis().length > 0 && textSpan != null) {
+				EmojiParam param = new EmojiParam(tagId, status.getEmojis(), textSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+				emojiLoader.execute(param, textResult);
+			}
+			if (user.getEmojis().length > 0 && !user.getUsername().isEmpty()) {
+				SpannableString userSpan = new SpannableString(user.getUsername());
+				EmojiParam param = new EmojiParam(tagId, user.getEmojis(), userSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+				emojiLoader.execute(param, usernameResult);
+			}
 		}
 	}
 
@@ -298,8 +300,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	 */
 	private void setTextEmojis(@NonNull EmojiResult result) {
 		if (result.id == tagId && result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(text.getContext(), result.spannable, result.images);
-			text.setText(spannable);
+			Spannable spannable = TextWithEmoji.addEmojis(statusText.getContext(), result.spannable, result.images);
+			statusText.setText(spannable);
 		}
 	}
 }

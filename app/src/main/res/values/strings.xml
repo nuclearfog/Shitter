@@ -102,6 +102,7 @@
 	<string name="error_api_access_limited">Error, API access limited by Twitter!</string>
 	<string name="error_json_format">JSON error!</string>
 	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
+	<string name="error_database_cleared">Error while clearing database!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>
 	<string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
 	<string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
@@ -296,6 +297,7 @@
 	<string name="account_page" translatable="false">Accounts</string>
 	<string name="status_translate_text">translate</string>
 	<string name="status_translate_source">Translated by:\u0020</string>
+	<string name="status_translate_source_language">Language:\u0020</string>
 	<string name="confirm_remove_account">remove account from list?</string>
 	<string name="dialog_confirm_warning">Warning</string>
 	<string name="dialog_warning_videoview">videoplayer does not support proxy! Continue without proxy connection?</string>

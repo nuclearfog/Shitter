@@ -809,7 +809,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				profileImage.setImageResource(0);
 			}
 		}
-		if (user.getEmojis().length > 0) {
+		if (settings.imagesEnabled() && user.getEmojis().length > 0) {
 			if (!user.getUsername().isEmpty()) {
 				SpannableString usernameSpan = new SpannableString(user.getUsername());
 				EmojiParam param = new EmojiParam(user.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));

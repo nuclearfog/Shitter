@@ -922,14 +922,16 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			cardList.setVisibility(View.GONE);
 			statusText.setMaxLines(10);
 		}
-		if (status.getEmojis().length > 0 && spannableText != null) {
-			EmojiParam param = new EmojiParam(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
-			emojiAsync.execute(param, statusTextUpdate);
-		}
-		if (author.getEmojis().length > 0 && !author.getUsername().isEmpty()) {
-			SpannableString usernameSpan = new SpannableString(author.getUsername());
-			EmojiParam param = new EmojiParam(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
-			emojiAsync.execute(param, usernameUpdate);
+		if (settings.imagesEnabled()) {
+			if (status.getEmojis().length > 0 && spannableText != null) {
+				EmojiParam param = new EmojiParam(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+				emojiAsync.execute(param, statusTextUpdate);
+			}
+			if (author.getEmojis().length > 0 && !author.getUsername().isEmpty()) {
+				SpannableString usernameSpan = new SpannableString(author.getUsername());
+				EmojiParam param = new EmojiParam(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+				emojiAsync.execute(param, usernameUpdate);
+			}
 		}
 	}
 
@@ -960,9 +962,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// append translation
 			statusText.append(textSpan);
 			translateText.setText(R.string.status_translate_source);
-			translateText.append(translation.getSource());
-			// scroll to translation
-
+			translateText.append(translation.getSource() + ", ");
+			translateText.append(getString(R.string.status_translate_source_language));
+			translateText.append(translation.getOriginalLanguage());
 		}
 	}
 

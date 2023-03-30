@@ -33,7 +33,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
-		return null;
+		return new DatabaseResult(DatabaseResult.ERROR);
 	}
 
 	/**
@@ -55,6 +55,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 	 */
 	public static class DatabaseResult {
 
+		public static final int ERROR = -1;
 		public static final int DELETE = 1;
 
 		public final int mode;

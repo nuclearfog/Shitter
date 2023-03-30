@@ -295,4 +295,6 @@
 	<string name="status_contains_spoiler">Spoiler!</string>
 	<string name="settings_hide_sensitive">verstecke sensible Inhalte</string>
 	<string name="status_translate_source">Übersetzt von:\u0020</string>
+	<string name="error_database_cleared">Fehler beim Löschen der Datanbank!</string>
+	<string name="status_translate_source_language">Sprache:\u0020</string>
 </resources>

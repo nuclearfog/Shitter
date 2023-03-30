@@ -143,7 +143,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		} else {
 			profileImg.setImageResource(0);
 		}
-		if (!user.getUsername().isEmpty() && user.getEmojis().length > 0) {
+		if (settings.imagesEnabled() && user.getEmojis().length > 0 && !user.getUsername().isEmpty()) {
 			SpannableString userSpan = new SpannableString(user.getUsername());
 			EmojiParam param = new EmojiParam(tagId, user.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
 			emojiLoader.execute(param, this);
