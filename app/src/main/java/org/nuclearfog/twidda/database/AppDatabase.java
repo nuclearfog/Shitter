@@ -149,16 +149,16 @@ public class AppDatabase {
 			+ " INNER JOIN " + UserTable.NAME
 			+ " ON " + StatusTable.NAME + "." + StatusTable.USER + "=" + UserTable.NAME + "." + UserTable.ID
 			+ " INNER JOIN " + UserRegisterTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.USER + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID
+			+ " ON " + StatusTable.NAME + "." + StatusTable.USER + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.USER
 			+ " INNER JOIN " + StatusRegisterTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + StatusRegisterTable.NAME + "." + StatusRegisterTable.ID;
+			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + StatusRegisterTable.NAME + "." + StatusRegisterTable.STATUS;
 
 	/**
 	 * subquery to get user information
 	 */
 	private static final String USER_SUBQUERY = UserTable.NAME
 			+ " INNER JOIN " + UserRegisterTable.NAME
-			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID;
+			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.USER;
 
 	/**
 	 * subquery used to get notification
@@ -193,8 +193,8 @@ public class AppDatabase {
 	 */
 	private static final String USER_FAVORIT_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
 			+ " INNER JOIN " + FavoriteTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + FavoriteTable.NAME + "." + FavoriteTable.STATUS_ID
-			+ " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.OWNER_ID + "=?"
+			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + FavoriteTable.NAME + "." + FavoriteTable.STATUS
+			+ " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.OWNER + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.TIME + " DESC"
@@ -205,8 +205,8 @@ public class AppDatabase {
 	 */
 	private static final String USER_BOOKMARKS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
 			+ " INNER JOIN " + BookmarkTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + BookmarkTable.NAME + "." + BookmarkTable.STATUS_ID
-			+ " WHERE " + BookmarkTable.NAME + "." + BookmarkTable.OWNER_ID + "=?"
+			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + BookmarkTable.NAME + "." + BookmarkTable.STATUS
+			+ " WHERE " + BookmarkTable.NAME + "." + BookmarkTable.OWNER + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.TIME + " DESC"
@@ -248,7 +248,7 @@ public class AppDatabase {
 			+ " INNER JOIN " + UserTable.NAME
 			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserTable.NAME + "." + UserTable.ID
 			+ " INNER JOIN " + UserRegisterTable.NAME
-			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.ID
+			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.USER
 			+ " WHERE " + MessageTable.FROM + "=? OR " + MessageTable.TO + "=?"
 			+ " ORDER BY " + MessageTable.TIME + " DESC"
 			+ " LIMIT ?;";
@@ -272,23 +272,23 @@ public class AppDatabase {
 	 * select status entries from favorite table matching status ID
 	 * this status can be favored by multiple users
 	 */
-	private static final String FAVORITE_SELECT_STATUS = FavoriteTable.STATUS_ID + "=?";
+	private static final String FAVORITE_SELECT_STATUS = FavoriteTable.STATUS + "=?";
 
 	/**
 	 * select all statuses from favorite table favored by given user
 	 */
-	private static final String FAVORITE_SELECT_OWNER = FavoriteTable.OWNER_ID + "=?";
+	private static final String FAVORITE_SELECT_OWNER = FavoriteTable.OWNER + "=?";
 
 	/**
 	 * select status entries from favorite table matching status ID
 	 * this status can be favored by multiple users
 	 */
-	private static final String BOOKMARK_SELECT_STATUS = BookmarkTable.STATUS_ID + "=?";
+	private static final String BOOKMARK_SELECT_STATUS = BookmarkTable.STATUS + "=?";
 
 	/**
 	 * select all statuses from favorite table favored by given user
 	 */
-	private static final String BOOKMARK_SELECT_OWNER = BookmarkTable.OWNER_ID + "=?";
+	private static final String BOOKMARK_SELECT_OWNER = BookmarkTable.OWNER + "=?";
 
 	/**
 	 * select specific status from favorite table
@@ -328,7 +328,7 @@ public class AppDatabase {
 	/**
 	 * selection to get status flag register
 	 */
-	private static final String STATUS_REG_SELECT = StatusRegisterTable.ID + "=? AND " + StatusRegisterTable.OWNER + "=?";
+	private static final String STATUS_REG_SELECT = StatusRegisterTable.STATUS + "=? AND " + StatusRegisterTable.OWNER + "=?";
 
 	/**
 	 * selection to get a single media entry
@@ -348,7 +348,7 @@ public class AppDatabase {
 	/**
 	 * selection to get user flag register
 	 */
-	private static final String USER_REG_SELECT = UserRegisterTable.ID + "=? AND " + UserRegisterTable.OWNER + "=?";
+	private static final String USER_REG_SELECT = UserRegisterTable.USER + "=? AND " + UserRegisterTable.OWNER + "=?";
 
 	/**
 	 * selection for account entry
@@ -373,7 +373,7 @@ public class AppDatabase {
 	/**
 	 * column to fetch from the database
 	 */
-	private static final String[] LIST_ID_COL = {UserExcludeTable.ID};
+	private static final String[] LIST_ID_COL = {UserExcludeTable.USER};
 
 	/**
 	 * selection to get the exclude list of the current user
@@ -383,7 +383,7 @@ public class AppDatabase {
 	/**
 	 * selection to get a column
 	 */
-	private static final String FILTER_SELECT = LIST_SELECT + " AND " + UserExcludeTable.ID + "=?";
+	private static final String FILTER_SELECT = LIST_SELECT + " AND " + UserExcludeTable.USER + "=?";
 
 	/**
 	 * default sort order for logins
@@ -570,7 +570,7 @@ public class AppDatabase {
 			if (!ids.isEmpty()) {
 				for (long id : ids) {
 					ContentValues column = new ContentValues(2);
-					column.put(UserExcludeTable.ID, id);
+					column.put(UserExcludeTable.USER, id);
 					column.put(UserExcludeTable.OWNER, homeId);
 					db.insert(UserExcludeTable.NAME, null, column);
 				}
@@ -668,7 +668,7 @@ public class AppDatabase {
 		synchronized (LOCK) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			ContentValues column = new ContentValues(2);
-			column.put(UserExcludeTable.ID, userId);
+			column.put(UserExcludeTable.USER, userId);
 			column.put(UserExcludeTable.OWNER, settings.getLogin().getId());
 			db.insert(UserExcludeTable.NAME, null, column);
 			adapter.commit();
@@ -773,7 +773,8 @@ public class AppDatabase {
 			Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 			if (cursor.moveToFirst()) {
 				do {
-					result.add(getNotification(cursor, login));
+					Notification notification = getNotification(cursor, login);
+					result.add(notification);
 				} while (cursor.moveToNext());
 			}
 			cursor.close();
@@ -1655,7 +1656,7 @@ public class AppDatabase {
 		ContentValues column = new ContentValues(4);
 		column.put(StatusRegisterTable.REGISTER, flags);
 		column.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
-		column.put(StatusRegisterTable.ID, status.getId());
+		column.put(StatusRegisterTable.STATUS, status.getId());
 		column.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
 
 		int count = db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
@@ -1676,7 +1677,7 @@ public class AppDatabase {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		ContentValues column = new ContentValues(3);
-		column.put(UserRegisterTable.ID, id);
+		column.put(UserRegisterTable.USER, id);
 		column.put(UserRegisterTable.OWNER, settings.getLogin().getId());
 		column.put(UserRegisterTable.REGISTER, flags);
 
@@ -1696,8 +1697,8 @@ public class AppDatabase {
 	 */
 	private void saveFavorite(long statusId, long ownerId, SQLiteDatabase db) {
 		ContentValues column = new ContentValues(2);
-		column.put(FavoriteTable.STATUS_ID, statusId);
-		column.put(FavoriteTable.OWNER_ID, ownerId);
+		column.put(FavoriteTable.STATUS, statusId);
+		column.put(FavoriteTable.OWNER, ownerId);
 		db.insertWithOnConflict(FavoriteTable.NAME, "", column, CONFLICT_REPLACE);
 	}
 
@@ -1710,8 +1711,8 @@ public class AppDatabase {
 	 */
 	private void saveBookmark(long statusId, long ownerId, SQLiteDatabase db) {
 		ContentValues column = new ContentValues(2);
-		column.put(BookmarkTable.STATUS_ID, statusId);
-		column.put(BookmarkTable.OWNER_ID, ownerId);
+		column.put(BookmarkTable.STATUS, statusId);
+		column.put(BookmarkTable.OWNER, ownerId);
 		db.insertWithOnConflict(BookmarkTable.NAME, "", column, CONFLICT_REPLACE);
 	}
 

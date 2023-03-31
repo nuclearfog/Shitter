@@ -72,26 +72,6 @@ public class DatabaseAdapter {
 			+ StatusTable.LANGUAGE + " TEXT);";
 
 	/**
-	 * SQL query to create a table for favorite list
-	 */
-	private static final String TABLE_FAVORITES = "CREATE TABLE IF NOT EXISTS "
-			+ FavoriteTable.NAME + "("
-			+ FavoriteTable.OWNER_ID + " INTEGER,"
-			+ FavoriteTable.STATUS_ID + " INTEGER,"
-			+ "FOREIGN KEY(" + FavoriteTable.STATUS_ID + ")"
-			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
-
-	/**
-	 * SQL query to create a table for favorite list
-	 */
-	private static final String TABLE_BOOKMARKS = "CREATE TABLE IF NOT EXISTS "
-			+ BookmarkTable.NAME + "("
-			+ BookmarkTable.OWNER_ID + " INTEGER,"
-			+ BookmarkTable.STATUS_ID + " INTEGER,"
-			+ "FOREIGN KEY(" + BookmarkTable.STATUS_ID + ")"
-			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
-
-	/**
 	 * SQL query to create a table for trend information
 	 */
 	private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS "
@@ -114,29 +94,6 @@ public class DatabaseAdapter {
 			+ MessageTable.MEDIA + " TEXT);";
 
 	/**
-	 * table for status register
-	 */
-	private static final String TABLE_STATUS_REGISTER = "CREATE TABLE IF NOT EXISTS "
-			+ StatusRegisterTable.NAME + "("
-			+ StatusRegisterTable.OWNER + " INTEGER,"
-			+ StatusRegisterTable.ID + " INTEGER,"
-			+ StatusRegisterTable.REGISTER + " INTEGER,"
-			+ StatusRegisterTable.REPOST_ID + " INTEGER,"
-			+ "FOREIGN KEY(" + StatusRegisterTable.ID + ")"
-			+ "REFERENCES " + StatusTable.NAME + "(" + StatusTable.ID + "));";
-
-	/**
-	 * table for user register
-	 */
-	private static final String TABLE_USER_REGISTER = "CREATE TABLE IF NOT EXISTS "
-			+ UserRegisterTable.NAME + "("
-			+ UserRegisterTable.OWNER + " INTEGER,"
-			+ UserRegisterTable.ID + " INTEGER,"
-			+ UserRegisterTable.REGISTER + " INTEGER,"
-			+ "FOREIGN KEY(" + UserRegisterTable.ID + ")"
-			+ "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "));";
-
-	/**
 	 * SQL query to create a table for user logins
 	 */
 	private static final String TABLE_ACCOUNTS = "CREATE TABLE IF NOT EXISTS "
@@ -150,14 +107,6 @@ public class DatabaseAdapter {
 			+ AccountTable.CLIENT_ID + " TEXT,"
 			+ AccountTable.CLIENT_SECRET + " TEXT,"
 			+ AccountTable.BEARER + " TEXT);";
-
-	/**
-	 * SQL query to create user exclude table
-	 */
-	private static final String TABLE_USER_BLOCKLIST = "CREATE TABLE IF NOT EXISTS "
-			+ UserExcludeTable.NAME + "("
-			+ UserExcludeTable.OWNER + " INTEGER,"
-			+ UserExcludeTable.ID + " INTEGER);";
 
 	/**
 	 * SQL query to create table for notifications
@@ -186,7 +135,7 @@ public class DatabaseAdapter {
 	 */
 	private static final String TABLE_LOCATION = "CREATE TABLE  IF NOT EXISTS "
 			+ LocationTable.NAME + "("
-			+ LocationTable.ID + " INTEGER,"
+			+ LocationTable.ID + " INTEGER PRIMARY KEY,"
 			+ LocationTable.COUNTRY + " TEXT,"
 			+ LocationTable.COORDINATES + " TEXT,"
 			+ LocationTable.PLACE + " TEXT,"
@@ -213,6 +162,49 @@ public class DatabaseAdapter {
 			+ PollTable.OPTIONS + " TEXT);";
 
 	/**
+	 * table for status register
+	 */
+	private static final String TABLE_STATUS_REGISTER = "CREATE TABLE IF NOT EXISTS "
+			+ StatusRegisterTable.NAME + "("
+			+ StatusRegisterTable.OWNER + " INTEGER,"
+			+ StatusRegisterTable.STATUS + " INTEGER,"
+			+ StatusRegisterTable.REGISTER + " INTEGER,"
+			+ StatusRegisterTable.REPOST_ID + " INTEGER);";
+
+	/**
+	 * table for user register
+	 */
+	private static final String TABLE_USER_REGISTER = "CREATE TABLE IF NOT EXISTS "
+			+ UserRegisterTable.NAME + "("
+			+ UserRegisterTable.OWNER + " INTEGER,"
+			+ UserRegisterTable.USER + " INTEGER,"
+			+ UserRegisterTable.REGISTER + " INTEGER);";
+
+	/**
+	 * SQL query to create a table for favorite list
+	 */
+	private static final String TABLE_FAVORITES = "CREATE TABLE IF NOT EXISTS "
+			+ FavoriteTable.NAME + "("
+			+ FavoriteTable.OWNER + " INTEGER,"
+			+ FavoriteTable.STATUS + " INTEGER);";
+
+	/**
+	 * SQL query to create a table for favorite list
+	 */
+	private static final String TABLE_BOOKMARKS = "CREATE TABLE IF NOT EXISTS "
+			+ BookmarkTable.NAME + "("
+			+ BookmarkTable.OWNER + " INTEGER,"
+			+ BookmarkTable.STATUS + " INTEGER);";
+
+	/**
+	 * SQL query to create user exclude table
+	 */
+	private static final String TABLE_USER_BLOCKLIST = "CREATE TABLE IF NOT EXISTS "
+			+ UserExcludeTable.NAME + "("
+			+ UserExcludeTable.OWNER + " INTEGER,"
+			+ UserExcludeTable.USER + " INTEGER);";
+
+	/**
 	 * table index for status table
 	 */
 	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
@@ -222,13 +214,13 @@ public class DatabaseAdapter {
 	 * table index for status register
 	 */
 	private static final String INDX_STATUS_REG = "CREATE INDEX IF NOT EXISTS idx_tweet_register"
-			+ " ON " + StatusRegisterTable.NAME + "(" + StatusRegisterTable.OWNER + "," + StatusRegisterTable.ID + ");";
+			+ " ON " + StatusRegisterTable.NAME + "(" + StatusRegisterTable.OWNER + "," + StatusRegisterTable.STATUS + ");";
 
 	/**
 	 * table index for user register
 	 */
 	private static final String INDX_USER_REG = "CREATE INDEX IF NOT EXISTS idx_user_register"
-			+ " ON " + UserRegisterTable.NAME + "(" + UserRegisterTable.OWNER + "," + UserRegisterTable.ID + ");";
+			+ " ON " + UserRegisterTable.NAME + "(" + UserRegisterTable.OWNER + "," + UserRegisterTable.USER + ");";
 
 	/**
 	 * update account table to add social network hostname
@@ -624,12 +616,12 @@ public class DatabaseAdapter {
 		/**
 		 * ID of the status
 		 */
-		String STATUS_ID = "tweetID";
+		String STATUS = "tweetID";
 
 		/**
 		 * ID of the user of this favored status
 		 */
-		String OWNER_ID = "ownerID";
+		String OWNER = "ownerID";
 	}
 
 	/**
@@ -644,12 +636,12 @@ public class DatabaseAdapter {
 		/**
 		 * ID of the status
 		 */
-		String STATUS_ID = "tweetID";
+		String STATUS = "tweetID";
 
 		/**
 		 * ID of the user of this bookmarks
 		 */
-		String OWNER_ID = "ownerID";
+		String OWNER = "ownerID";
 	}
 
 	/**
@@ -796,7 +788,7 @@ public class DatabaseAdapter {
 		/**
 		 * ID of the user this register references to
 		 */
-		String ID = "tweetID";
+		String STATUS = "tweetID";
 
 		/**
 		 * ID of the current user accessing the database
@@ -826,7 +818,7 @@ public class DatabaseAdapter {
 		/**
 		 * ID of the user this register references to
 		 */
-		String ID = "userID";
+		String USER = "userID";
 
 		/**
 		 * ID of the current user accessing the database
@@ -856,7 +848,7 @@ public class DatabaseAdapter {
 		/**
 		 * user ID to filter
 		 */
-		String ID = "userID";
+		String USER = "userID";
 	}
 
 	/**
@@ -943,7 +935,7 @@ public class DatabaseAdapter {
 		String NAME = "location";
 
 		/**
-		 * locaion ID
+		 * location ID
 		 */
 		String ID = "id";
 
