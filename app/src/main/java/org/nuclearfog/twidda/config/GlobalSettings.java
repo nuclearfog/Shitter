@@ -162,8 +162,11 @@ public class GlobalSettings {
 	private int indexScale;
 	private int listSize;
 
-	private List<OnSettingsChangeListener> settingsChangeListeners = new LinkedList<>();
+	private List<SettingsChangeObserver> settingsChangeObservers = new LinkedList<>();
 
+	/**
+	 * single instance constructor
+	 */
 	private GlobalSettings() {
 	}
 
@@ -947,20 +950,20 @@ public class GlobalSettings {
 	 * changes like new proxy settings requires re initialization
 	 * registered instances can be notified if these setting change
 	 *
-	 * @param listener listener called when some settings change
+	 * @param observer listener called when some settings change
 	 */
-	public void addSettingsChangeListener(@NonNull OnSettingsChangeListener listener) {
-		settingsChangeListeners.add(listener);
+	public void addObserver(@NonNull SettingsChangeObserver observer) {
+		settingsChangeObservers.add(observer);
 	}
 
 	/**
 	 * notify listener when settings changes and clear old instances
 	 */
 	private void notifySettingsChange() {
-		for (OnSettingsChangeListener listener : settingsChangeListeners) {
-			listener.onSettingsChange();
+		for (SettingsChangeObserver observer : settingsChangeObservers) {
+			observer.onSettingsChange();
 		}
-		settingsChangeListeners.clear();
+		settingsChangeObservers.clear();
 	}
 
 	/**
@@ -1022,9 +1025,9 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * global listener for settings
+	 * Observer interface to notify subclasses when settings change
 	 */
-	public interface OnSettingsChangeListener {
+	public interface SettingsChangeObserver {
 
 		/**
 		 * called when settings change

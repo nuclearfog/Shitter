@@ -7,14 +7,14 @@ import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;
+import org.nuclearfog.twidda.config.GlobalSettings.SettingsChangeObserver;
 
 /**
  * Create Picasso instance with proxy connection and image cache
  *
  * @author nuclearfog
  */
-public class PicassoBuilder implements OnSettingsChangeListener {
+public class PicassoBuilder implements SettingsChangeObserver {
 
 	/**
 	 * local image cache size in bytes
@@ -36,7 +36,7 @@ public class PicassoBuilder implements OnSettingsChangeListener {
 	 */
 	private PicassoBuilder(Context context) {
 		GlobalSettings settings = GlobalSettings.getInstance(context);
-		settings.addSettingsChangeListener(this);
+		settings.addObserver(this);
 		downloader = new OkHttp3Downloader(ConnectionBuilder.create(context, STORAGE_SIZE));
 		imageCache = new LruCache(CACHE_SIZE);
 		notifySettingsChange = false;

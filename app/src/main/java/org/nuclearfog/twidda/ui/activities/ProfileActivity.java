@@ -145,6 +145,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private ConfirmDialog confirmDialog;
+
 	private RelationLoader relationLoader;
 	private UserLoader userLoader;
 	private EmojiLoader emojiLoader;
@@ -283,6 +284,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	protected void onDestroy() {
 		relationLoader.cancel();
 		userLoader.cancel();
+		emojiLoader.cancel();
 		super.onDestroy();
 	}
 

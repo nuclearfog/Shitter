@@ -68,7 +68,7 @@ dependencies {
 	implementation 'jp.wasabeef:picasso-transformations:2.4.0'
 	implementation 'com.github.QuadFlask:colorpicker:0.0.15'
 	implementation 'com.github.nuclearfog:ZoomView:1.0.4'
-	implementation 'com.github.nuclearfog:Tagger:2.3'
+	implementation 'com.github.nuclearfog:Tagger:2.4'
 	implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4.1'
 	implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
 }

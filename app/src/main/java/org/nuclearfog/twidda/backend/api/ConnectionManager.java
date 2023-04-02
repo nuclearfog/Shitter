@@ -10,14 +10,14 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.v2.TwitterV2;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.config.GlobalSettings.OnSettingsChangeListener;
+import org.nuclearfog.twidda.config.GlobalSettings.SettingsChangeObserver;
 
 /**
  * this class manages multiple API implementations depending on settings
  *
  * @author nuclearfog
  */
-public class ConnectionManager implements OnSettingsChangeListener {
+public class ConnectionManager implements SettingsChangeObserver {
 
 	private static final int IDX_MASTODON = 0;
 	private static final int IDX_TWITTER1 = 1;
@@ -39,7 +39,7 @@ public class ConnectionManager implements OnSettingsChangeListener {
 		connections[IDX_TWITTER2] = new TwitterV2(context);
 
 		settings = GlobalSettings.getInstance(context);
-		settings.addSettingsChangeListener(this);
+		settings.addObserver(this);
 	}
 
 

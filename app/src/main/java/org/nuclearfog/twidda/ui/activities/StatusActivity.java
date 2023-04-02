@@ -197,13 +197,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private AsyncCallback<EmojiResult> statusTextUpdate = this::onStatusTextUpdate;
 	private AsyncCallback<EmojiResult> usernameUpdate = this::onUsernameUpdate;
 
+	private StatusAction statusLoader;
+	private NotificationAction notificationLoader;
+	private TranslationLoader translationLoader;
+	private PollAction pollLoader;
+	private EmojiLoader emojiLoader;
+
 	@Nullable
 	private ClipboardManager clip;
-	private StatusAction statusAsync;
-	private PollAction voteAsync;
-	private NotificationAction notificationAsync;
-	private TranslationLoader translationAsync;
-	private EmojiLoader emojiAsync;
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private PreviewAdapter adapter;
@@ -259,11 +260,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		spoilerHint = findViewById(R.id.page_status_text_sensitive_hint);
 		cardList = findViewById(R.id.page_status_cards);
 
-		statusAsync = new StatusAction(this);
-		voteAsync = new PollAction(this);
-		notificationAsync = new NotificationAction(this);
-		translationAsync = new TranslationLoader(this);
-		emojiAsync = new EmojiLoader(this);
+		statusLoader = new StatusAction(this);
+		pollLoader = new PollAction(this);
+		notificationLoader = new NotificationAction(this);
+		translationLoader = new TranslationLoader(this);
+		emojiLoader = new EmojiLoader(this);
 
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
@@ -305,7 +306,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			Status embeddedStatus = status.getEmbeddedStatus();
 			setStatus(status);
 			StatusParam statusParam = new StatusParam(StatusParam.ONLINE, status.getId());
-			statusAsync.execute(statusParam, statusCallback);
+			statusLoader.execute(statusParam, statusCallback);
 			if (embeddedStatus != null) {
 				statusId = embeddedStatus.getId();
 				replyUsername = embeddedStatus.getAuthor().getScreenname();
@@ -317,7 +318,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else if (notificationObject instanceof Notification) {
 			Notification notification = (Notification) notificationObject;
 			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
-			notificationAsync.execute(notificationParam, notificationCallback);
+			notificationLoader.execute(notificationParam, notificationCallback);
 			if (notification.getStatus() != null) {
 				setNotification(notification);
 				statusId = notification.getStatus().getId();
@@ -329,11 +330,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (statusId != 0L) {
 				replyUsername = savedInstanceState.getString(KEY_STATUS_NAME);
 				StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
-				statusAsync.execute(statusParam, statusCallback);
+				statusLoader.execute(statusParam, statusCallback);
 			} else if (notificationId != 0L) {
 				replyUsername = savedInstanceState.getString(KEY_NOTIFICATION_NAME);
 				NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
-				notificationAsync.execute(notificationParam, notificationCallback);
+				notificationLoader.execute(notificationParam, notificationCallback);
 			}
 		}
 		// initialize status reply list
@@ -366,7 +367,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	protected void onDestroy() {
-		statusAsync.cancel();
+		statusLoader.cancel();
+		pollLoader.cancel();
+		notificationLoader.cancel();
+		translationLoader.cancel();
+		emojiLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -475,13 +480,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 			int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
 			StatusParam param = new StatusParam(mode, status.getId());
-			statusAsync.execute(param, statusCallback);
+			statusLoader.execute(param, statusCallback);
 		}
 		// hide status
 		else if (item.getItemId() == R.id.menu_status_hide) {
 			int mode = hidden ? StatusParam.UNHIDE : StatusParam.HIDE;
 			StatusParam param = new StatusParam(mode, status.getId());
-			statusAsync.execute(param, statusCallback);
+			statusLoader.execute(param, statusCallback);
 		}
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
@@ -606,8 +611,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// translate status text
 			else if (v.getId() == R.id.page_status_text_translate) {
-				if (translationAsync.isIdle() && translation == null) {
-					translationAsync.execute(status.getId(), translationResult);
+				if (translationLoader.isIdle() && translation == null) {
+					translationLoader.execute(status.getId(), translationResult);
 				}
 			}
 		}
@@ -616,13 +621,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onLongClick(View v) {
-		if (status != null && statusAsync.isIdle()) {
+		if (status != null && statusLoader.isIdle()) {
 			// repost this status
 			if (v.getId() == R.id.page_status_repost) {
 				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 				int mode = status.isReposted() ? StatusParam.UNREPOST : StatusParam.REPOST;
 				StatusParam param = new StatusParam(mode, status.getId());
-				statusAsync.execute(param, statusCallback);
+				statusLoader.execute(param, statusCallback);
 				return true;
 			}
 			// favorite this status
@@ -630,7 +635,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 				int mode = status.isFavorited() ? StatusParam.UNFAVORITE : StatusParam.FAVORITE;
 				StatusParam param = new StatusParam(mode, status.getId());
-				statusAsync.execute(param, statusCallback);
+				statusLoader.execute(param, statusCallback);
 				return true;
 			}
 			// go to original status
@@ -673,7 +678,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 						id = status.getEmbeddedStatus().getId();
 					}
 					StatusParam param = new StatusParam(StatusParam.DELETE, id);
-					statusAsync.execute(param, statusCallback);
+					statusLoader.execute(param, statusCallback);
 				}
 				break;
 
@@ -786,9 +791,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onVoteClick(Poll poll, int[] selection) {
-		if (voteAsync.isIdle()) {
+		if (pollLoader.isIdle()) {
 			PollActionParam param = new PollActionParam(PollActionParam.VOTE, poll, selection);
-			voteAsync.execute(param, pollResult);
+			pollLoader.execute(param, pollResult);
 		}
 	}
 
@@ -833,9 +838,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
-		if (!status.getLanguage().isEmpty() && !status.getLanguage().equals(Locale.getDefault().getLanguage())) {
+		if (!status.getText().isEmpty() && !status.getLanguage().isEmpty() && !status.getLanguage().equals(Locale.getDefault().getLanguage())) {
 			translateText.setVisibility(View.VISIBLE);
 			translateText.setTextColor(settings.getHighlightColor());
+		} else {
+			translateText.setVisibility(View.GONE);
 		}
 		username.setText(author.getUsername());
 		screenName.setText(author.getScreenname());
@@ -925,12 +932,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (settings.imagesEnabled()) {
 			if (status.getEmojis().length > 0 && spannableText != null) {
 				EmojiParam param = new EmojiParam(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
-				emojiAsync.execute(param, statusTextUpdate);
+				emojiLoader.execute(param, statusTextUpdate);
 			}
 			if (author.getEmojis().length > 0 && !author.getUsername().isEmpty()) {
 				SpannableString usernameSpan = new SpannableString(author.getUsername());
 				EmojiParam param = new EmojiParam(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
-				emojiAsync.execute(param, usernameUpdate);
+				emojiLoader.execute(param, usernameUpdate);
 			}
 		}
 	}
@@ -965,6 +972,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			translateText.append(translation.getSource() + ", ");
 			translateText.append(getString(R.string.status_translate_source_language));
 			translateText.append(translation.getOriginalLanguage());
+			translateText.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -979,7 +987,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			case StatusResult.DATABASE:
 				if (result.status != null) {
 					StatusParam param = new StatusParam(StatusParam.ONLINE, result.status.getId());
-					statusAsync.execute(param, statusCallback);
+					statusLoader.execute(param, statusCallback);
 				}
 				break;
 
@@ -1064,7 +1072,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			case NotificationActionResult.DATABASE:
 				if (result.notification != null) {
 					NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, result.notification.getId());
-					notificationAsync.execute(param, notificationCallback);
+					notificationLoader.execute(param, notificationCallback);
 				}
 				// fall through
 
