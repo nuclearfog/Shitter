@@ -3,8 +3,6 @@ package org.nuclearfog.twidda.backend.utils;
 import static android.graphics.Bitmap.Config.ARGB_8888;
 import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static android.view.View.GONE;
-import static jp.wasabeef.picasso.transformations.CropTransformation.GravityHorizontal.CENTER;
-import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical.TOP;
 
 import android.app.Activity;
 import android.content.Context;
@@ -293,14 +291,24 @@ public class AppStyles {
 	public static void setToolbarBackground(Activity activity, ImageView background, ImageView toolbarBackground) {
 		Point displaySize = new Point();
 		activity.getWindowManager().getDefaultDisplay().getSize(displaySize);
-		float toolbarRatio = displaySize.x / activity.getResources().getDimension(R.dimen.profile_toolbar_height);
-		Bitmap image = ((BitmapDrawable) background.getDrawable()).getBitmap();
+		Drawable backgroundDrawable = background.getDrawable();
+		if (backgroundDrawable instanceof BitmapDrawable) {
+			Bitmap image = ((BitmapDrawable) backgroundDrawable).getBitmap().copy(ARGB_8888, true);
+			if (image.getWidth() > 1 && image.getHeight() > 1) {
+				if (background.getMeasuredHeight() > 0 && background.getMeasuredWidth() > 0) {
+					int height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
+					CropTransformation crop = new CropTransformation(image.getWidth(), height, CropTransformation.GravityHorizontal.CENTER, CropTransformation.GravityVertical.CENTER);
+					image = crop.transform(image);
+				}
+				float toolbarRatio = activity.getResources().getDimension(R.dimen.profile_toolbar_height) / displaySize.x;
+				int blurRadius = Math.max(Math.round(displaySize.x * 10.0f / image.getWidth()), 10);
 
-		BlurTransformation blur = new BlurTransformation(activity, 5);
-		CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() / toolbarRatio), CENTER, TOP);
-
-		Bitmap result = blur.transform(crop.transform(image.copy(ARGB_8888, true)));
-		toolbarBackground.setImageBitmap(result);
+				BlurTransformation blur = new BlurTransformation(activity.getApplicationContext(), blurRadius);
+				CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() * toolbarRatio), CropTransformation.GravityHorizontal.CENTER, CropTransformation.GravityVertical.TOP);
+				image = blur.transform(crop.transform(image));
+				toolbarBackground.setImageBitmap(image);
+			}
+		}
 	}
 
 	/**
