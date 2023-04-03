@@ -777,12 +777,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		} else {
 			user_location.setVisibility(GONE);
 		}
-		if (!user.getDescription().isEmpty()) {
-			description.setVisibility(VISIBLE);
-			description.setText(descriptionSpan);
-		} else {
-			description.setVisibility(GONE);
-		}
 		if (!user.getProfileUrl().isEmpty()) {
 			String link = user.getProfileUrl();
 			if (link.startsWith("http://"))

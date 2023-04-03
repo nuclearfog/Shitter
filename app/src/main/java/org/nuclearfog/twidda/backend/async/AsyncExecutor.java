@@ -30,7 +30,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	/**
 	 * timeout for queued processes
 	 */
-	private static final long P_TIMEOUT = 10L;
+	private static final long P_TIMEOUT = 4L;
 
 	/**
 	 * thread pool executor
@@ -43,14 +43,9 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	private Handler uiHandler = new Handler(Looper.getMainLooper());
 
 	/**
-	 * callback to activity/fragment
-	 */
-	private WeakReference<AsyncCallback<Result>> callback;
-
-	/**
 	 * contains all tasks used by an instance
 	 */
-	private Queue<Future<?>> queue = new LinkedBlockingQueue<>();
+	private Queue<Future<?>> futureTasks = new LinkedBlockingQueue<>();
 
 	/**
 	 * start packground task
@@ -59,23 +54,23 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @param callback  result from the background task
 	 */
 	public final void execute(final Parameter parameter, @Nullable AsyncCallback<Result> callback) {
-		this.callback = new WeakReference<>(callback);
+		final WeakReference<AsyncCallback<Result>> callbackReference = new WeakReference<>(callback);
 		Future<?> future = THREAD_POOL.submit(new Runnable() {
 			@Override
 			public void run() {
 				Result result = doInBackground(parameter);
-				onPostExecute(result);
+				onPostExecute(result, callbackReference);
 			}
 		});
-		queue.add(future);
+		futureTasks.add(future);
 	}
 
 	/**
 	 * send signal to the tasks executed by this instance
 	 */
 	public final void cancel() {
-		while (!queue.isEmpty()) {
-			Future<?> future = queue.remove();
+		while (!futureTasks.isEmpty()) {
+			Future<?> future = futureTasks.remove();
 			future.cancel(true);
 		}
 	}
@@ -86,7 +81,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @return true if there aren't any tasks
 	 */
 	public final boolean isIdle() {
-		return queue.isEmpty();
+		return futureTasks.isEmpty();
 	}
 
 	/**
@@ -94,13 +89,13 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 *
 	 * @param result result of the background task
 	 */
-	private void onPostExecute(final Result result) {
+	private synchronized void onPostExecute(final Result result, WeakReference<AsyncCallback<Result>> callbackReference) {
 		uiHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				if (!queue.isEmpty())
-					queue.remove();
-				AsyncCallback<Result> reference = callback.get();
+				if (!futureTasks.isEmpty())
+					futureTasks.remove();
+				AsyncCallback<Result> reference = callbackReference.get();
 				if (reference != null && result != null) {
 					reference.onResult(result);
 				}

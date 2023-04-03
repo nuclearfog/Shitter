@@ -30,7 +30,7 @@ public class TextWithEmoji {
 	 * @param emojis    a map of emoji tags & bitmap. every emoji bitmap has its own tag
 	 */
 	public static Spannable addEmojis(Context context, Spannable spannable, Map<String, Bitmap> emojis) {
-		if (spannable.length() > 0) {
+		if (spannable.length() > 0 && !emojis.isEmpty()) {
 			SpannableStringBuilder builder = new SpannableStringBuilder(spannable);
 			Matcher matcher = EMOJI_PATTERN.matcher(spannable);
 			Stack<Integer> indexes = new Stack<>();
@@ -44,8 +44,10 @@ public class TextWithEmoji {
 				String tag = builder.subSequence(start + 1, end - 1).toString();
 				Bitmap emoji = emojis.get(tag);
 				if (emoji != null) {
-					ImageSpan imgSpan = new ImageSpan(context, emoji);
+					ImageSpan imgSpan = new ImageSpan(context, emoji.copy(Bitmap.Config.ARGB_8888, true));
 					builder.setSpan(imgSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				} else {
+					builder.delete(start, end);
 				}
 			}
 			return builder;
