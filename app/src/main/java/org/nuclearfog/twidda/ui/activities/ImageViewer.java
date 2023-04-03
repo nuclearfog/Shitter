@@ -46,8 +46,6 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	 */
 	private static final String CACHE_FOLDER = "imagecache";
 
-	private static final int TOOLBAR_COLOR_MASK = 0xcfa0a0a0;
-
 	private ZoomView zoomImage;
 	private ProgressBar loadingCircle;
 
@@ -71,7 +69,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		settings = GlobalSettings.getInstance(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
 		toolbar.setTitle("");
-		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_COLOR_MASK);
+		toolbar.setBackgroundColor(settings.getBackgroundColor());
 		setSupportActionBar(toolbar);
 
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
