@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
 import org.nuclearfog.twidda.backend.api.twitter.v1.TwitterV1;
 import org.nuclearfog.twidda.backend.api.twitter.v2.impl.AccountV2;
@@ -14,6 +15,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v2.impl.LocationV2;
 import org.nuclearfog.twidda.backend.api.twitter.v2.impl.MediaV2;
 import org.nuclearfog.twidda.backend.api.twitter.v2.impl.PollV2;
 import org.nuclearfog.twidda.backend.api.twitter.v2.impl.TweetV2;
+import org.nuclearfog.twidda.backend.api.twitter.v2.impl.TwitterV2Instance;
 import org.nuclearfog.twidda.backend.api.twitter.v2.impl.UserV2;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.LocationV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
@@ -23,6 +25,7 @@ import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 
@@ -60,6 +63,12 @@ public class TwitterV2 extends TwitterV1 {
 	public Account loginApp(ConnectionConfig connection, String pin) throws TwitterException {
 		Account account = super.loginApp(connection, pin);
 		return new AccountV2(account);
+	}
+
+
+	@Override
+	public Instance getInformation() {
+		return new TwitterV2Instance();
 	}
 
 

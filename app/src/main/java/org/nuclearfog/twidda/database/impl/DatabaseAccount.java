@@ -15,24 +15,14 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclearfog
  */
-public class DatabaseAccount implements Account {
+public class DatabaseAccount implements Account, AccountTable {
 
 	private static final long serialVersionUID = -2276274593772105348L;
 
 	/**
 	 * projection of the columns with fixed order
 	 */
-	public static final String[] COLUMNS = {
-			AccountTable.ID,
-			AccountTable.API,
-			AccountTable.DATE,
-			AccountTable.ACCESS_TOKEN,
-			AccountTable.TOKEN_SECRET,
-			AccountTable.CLIENT_ID,
-			AccountTable.CLIENT_SECRET,
-			AccountTable.BEARER,
-			AccountTable.HOSTNAME,
-	};
+	public static final String[] COLUMNS = {ID, API, DATE, ACCESS_TOKEN, TOKEN_SECRET, CLIENT_ID, CLIENT_SECRET, BEARER, HOSTNAME};
 
 	private long userId;
 	private long loginDate;

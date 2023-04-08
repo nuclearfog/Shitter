@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class DatabaseMessage implements Message {
+public class DatabaseMessage implements Message, MessageTable {
 
 	private static final long serialVersionUID = 4089879784295312386L;
 
@@ -38,11 +38,11 @@ public class DatabaseMessage implements Message {
 	 */
 	public DatabaseMessage(Cursor cursor, Account account) {
 		sender = new DatabaseUser(cursor, account);
-		time = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TIME));
-		id = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.ID));
-		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(MessageTable.TO));
-		String text = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MESSAGE));
-		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MessageTable.MEDIA));
+		time = cursor.getLong(cursor.getColumnIndexOrThrow(TIME));
+		id = cursor.getLong(cursor.getColumnIndexOrThrow(ID));
+		receiverId = cursor.getLong(cursor.getColumnIndexOrThrow(TO));
+		String text = cursor.getString(cursor.getColumnIndexOrThrow(MESSAGE));
+		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA));
 		if (text != null)
 			this.text = text;
 		if (mediaKeys != null && !mediaKeys.isEmpty()) {

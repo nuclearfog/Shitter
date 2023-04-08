@@ -20,6 +20,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.impl.NotificationV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.RelationV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.TrendV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.TweetV1;
+import org.nuclearfog.twidda.backend.api.twitter.v1.impl.TwitterV1Instance;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
@@ -36,6 +37,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
@@ -250,6 +252,12 @@ public class TwitterV1 implements Connection {
 		} catch (IOException e) {
 			throw new TwitterException(e);
 		}
+	}
+
+
+	@Override
+	public Instance getInformation() {
+		return new TwitterV1Instance();
 	}
 
 

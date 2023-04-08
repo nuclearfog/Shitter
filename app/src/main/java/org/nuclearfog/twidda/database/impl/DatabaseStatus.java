@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class DatabaseStatus implements Status {
+public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable {
 
 	private static final long serialVersionUID = -5957556706939766801L;
 
@@ -63,25 +63,25 @@ public class DatabaseStatus implements Status {
 	 */
 	public DatabaseStatus(Cursor cursor, Account account) {
 		author = new DatabaseUser(cursor, account);
-		time = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.TIME));
-		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPOST));
-		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.FAVORITE));
-		replyCount = cursor.getInt(cursor.getColumnIndexOrThrow(StatusTable.REPLY));
-		id = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.ID));
-		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYSTATUS));
-		locationId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.LOCATION));
-		pollId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.POLL));
-		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.REPLYUSER));
-		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusTable.EMBEDDED));
-		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(StatusRegisterTable.REPOST_ID));
-		String statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.URL));
-		String language = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.LANGUAGE));
-		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.MEDIA));
-		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.EMOJI));
-		String source = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.SOURCE));
-		String text = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.TEXT));
-		String replyName = cursor.getString(cursor.getColumnIndexOrThrow(StatusTable.REPLYNAME));
-		int register = cursor.getInt(cursor.getColumnIndexOrThrow(StatusRegisterTable.REGISTER));
+		time = cursor.getLong(cursor.getColumnIndexOrThrow(TIME));
+		repostCount = cursor.getInt(cursor.getColumnIndexOrThrow(REPOST));
+		favoriteCount = cursor.getInt(cursor.getColumnIndexOrThrow(FAVORITE));
+		replyCount = cursor.getInt(cursor.getColumnIndexOrThrow(REPLY));
+		id = cursor.getLong(cursor.getColumnIndexOrThrow(ID));
+		replyID = cursor.getLong(cursor.getColumnIndexOrThrow(REPLYSTATUS));
+		locationId = cursor.getLong(cursor.getColumnIndexOrThrow(LOCATION));
+		pollId = cursor.getLong(cursor.getColumnIndexOrThrow(POLL));
+		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(REPLYUSER));
+		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(EMBEDDED));
+		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(REPOST_ID));
+		String statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(URL));
+		String language = cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE));
+		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA));
+		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(EMOJI));
+		String source = cursor.getString(cursor.getColumnIndexOrThrow(SOURCE));
+		String text = cursor.getString(cursor.getColumnIndexOrThrow(TEXT));
+		String replyName = cursor.getString(cursor.getColumnIndexOrThrow(REPLYNAME));
+		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
 
 		favorited = (register & MASK_STATUS_FAVORITED) != 0;
 		reposted = (register & MASK_STATUS_REPOSTED) != 0;

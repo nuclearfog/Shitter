@@ -13,20 +13,14 @@ import org.nuclearfog.twidda.model.Location;
  *
  * @author nuclearfog
  */
-public class DatabaseLocation implements Location {
+public class DatabaseLocation implements Location, LocationTable {
 
 	private static final long serialVersionUID = 3719416358210741464L;
 
 	/**
 	 * SQL projection
 	 */
-	public static final String[] PROJECTION = {
-			LocationTable.ID,
-			LocationTable.PLACE,
-			LocationTable.COUNTRY,
-			LocationTable.FULLNAME,
-			LocationTable.COORDINATES
-	};
+	public static final String[] PROJECTION = {ID, PLACE, COUNTRY, FULLNAME, COORDINATES};
 
 	private long id;
 	private String name = "";

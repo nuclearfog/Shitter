@@ -79,7 +79,6 @@ import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
-import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter.OnCardClickListener;
@@ -223,8 +222,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private Status status;
 	@Nullable
 	private Notification notification;
-	@Nullable
-	private Translation translation;
 	private boolean hidden;
 
 
@@ -291,6 +288,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 		locationName.setTextColor(settings.getHighlightColor());
+		translateText.setTextColor(settings.getHighlightColor());
 
 		// get parameter, set information and initialize loaders
 		if (savedInstanceState == null)
@@ -310,10 +308,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (embeddedStatus != null) {
 				statusId = embeddedStatus.getId();
 				replyUsername = embeddedStatus.getAuthor().getScreenname();
+				hidden = embeddedStatus.isHidden();
 			} else {
 				statusId = status.getId();
-				hidden = status.isHidden();
 				replyUsername = status.getAuthor().getScreenname();
+				hidden = status.isHidden();
 			}
 		} else if (notificationObject instanceof Notification) {
 			Notification notification = (Notification) notificationObject;
@@ -611,7 +610,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// translate status text
 			else if (v.getId() == R.id.page_status_text_translate) {
-				if (translationLoader.isIdle() && translation == null) {
+				if (translationLoader.isIdle()) {
 					translationLoader.execute(status.getId(), translationResult);
 				}
 			}
@@ -839,8 +838,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
 		if (!status.getText().isEmpty() && !status.getLanguage().isEmpty() && !status.getLanguage().equals(Locale.getDefault().getLanguage())) {
-			translateText.setVisibility(View.VISIBLE);
-			translateText.setTextColor(settings.getHighlightColor());
+			translateText.setVisibility(View.VISIBLE); // todo add translation support check
 		} else {
 			translateText.setVisibility(View.GONE);
 		}
@@ -862,7 +860,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
 				statusText.setVisibility(View.VISIBLE);
 				statusText.setText(spannableText);
-				setTranslation();
 			} else {
 				statusText.setVisibility(View.GONE);
 			}
@@ -951,28 +948,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		this.notification = notification;
 		if (notification.getStatus() != null) {
 			setStatus(notification.getStatus());
-		}
-	}
-
-	/**
-	 * append translation to the status text
-	 */
-	private void setTranslation() {
-		if (translation != null) {
-			if (statusText.getLineCount() > statusText.getMaxLines()) {
-				int y = statusText.getLayout().getLineTop(statusText.getLineCount());
-				statusText.scrollTo(0, y);
-			}
-			// build translation string
-			String text = "\n...\n" + translation.getText() + "\n...";
-			Spannable textSpan = Tagger.makeTextWithLinks(text, settings.getHighlightColor(), this);
-			// append translation
-			statusText.append(textSpan);
-			translateText.setText(R.string.status_translate_source);
-			translateText.append(translation.getSource() + ", ");
-			translateText.append(getString(R.string.status_translate_source_language));
-			translateText.append(translation.getOriginalLanguage());
-			translateText.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -1141,8 +1116,20 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void onTranslationResult(@NonNull TranslationResult result) {
 		if (result.translation != null) {
-			translation = result.translation;
-			setTranslation();
+			if (statusText.getLineCount() > statusText.getMaxLines()) {
+				int y = statusText.getLayout().getLineTop(statusText.getLineCount());
+				statusText.scrollTo(0, y);
+			}
+			// build translation string
+			String text = "\n...\n" + result.translation.getText() + "\n...";
+			Spannable textSpan = Tagger.makeTextWithLinks(text, settings.getHighlightColor(), this);
+			// append translation
+			statusText.append(textSpan);
+			translateText.setText(R.string.status_translate_source);
+			translateText.append(result.translation.getSource() + ", ");
+			translateText.append(getString(R.string.status_translate_source_language));
+			translateText.append(result.translation.getOriginalLanguage());
+			translateText.setOnClickListener(null); // disable link to translation
 		} else {
 			String message = ErrorHandler.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

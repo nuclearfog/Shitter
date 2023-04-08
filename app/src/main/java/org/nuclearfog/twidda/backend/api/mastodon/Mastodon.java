@@ -13,6 +13,7 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonInstance;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPoll;
@@ -35,6 +36,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
@@ -88,6 +90,7 @@ public class Mastodon implements Connection {
 	// Mastodon endpoints see https://docs.joinmastodon.org/methods/
 	private static final String ENDPOINT_REGISTER_APP = "/api/v1/apps";
 	private static final String ENDPOINT_AUTHORIZE_APP = "/oauth/authorize";
+	private static final String ENDPOINT_INSTANCE = "/api/v2/instance";
 	private static final String ENDPOINT_LOGIN_APP = "/oauth/token";
 	private static final String ENDPOINT_VERIFY_CREDENTIALS = "/api/v1/accounts/verify_credentials";
 	private static final String ENDPOINT_HOME_TIMELINE = "/api/v1/timelines/home";
@@ -180,6 +183,22 @@ public class Mastodon implements Connection {
 				Account account = new MastodonAccount(user, hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
 				return account;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public Instance getInformation() throws ConnectionException {
+		try {
+			Response response = get(ENDPOINT_INSTANCE, new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonInstance(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

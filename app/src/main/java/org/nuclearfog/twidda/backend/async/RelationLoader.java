@@ -51,7 +51,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 				case RelationParam.BLOCK:
 					relation = connection.blockUser(param.id);
 					db.muteUser(param.id, true);
-					db.addUserToFilterlist(param.id);
+					db.saveUserToFilterlist(param.id);
 					return new RelationResult(RelationResult.BLOCK, relation);
 
 				case RelationParam.UNBLOCK:

@@ -197,12 +197,39 @@ public class DatabaseAdapter {
 			+ BookmarkTable.STATUS + " INTEGER);";
 
 	/**
-	 * SQL query to create user exclude table
+	 * SQL query to create user blocklist table
 	 */
 	private static final String TABLE_USER_BLOCKLIST = "CREATE TABLE IF NOT EXISTS "
 			+ UserExcludeTable.NAME + "("
 			+ UserExcludeTable.OWNER + " INTEGER,"
 			+ UserExcludeTable.USER + " INTEGER);";
+
+	/**
+	 * SQL query to create instance table
+	 */
+	private static final String TABLE_INSTANCES = "CREATE TABLE IF NOT EXISTS "
+			+ InstanceTable.NAME + "("
+			+ InstanceTable.DOMAIN + " TEXT PRIMARY KEY,"
+			+ InstanceTable.TIMESTAMP + " INTEGER,"
+			+ InstanceTable.TITLE + " TEXT,"
+			+ InstanceTable.VERSION + " TEXT,"
+			+ InstanceTable.DESCRIPTION + " TEXT,"
+			+ InstanceTable.MIME_TYPES + " TEXT,"
+			+ InstanceTable.FLAGS + " INTEGER,"
+			+ InstanceTable.IMAGE_LIMIT + " INTEGER,"
+			+ InstanceTable.GIF_LIMIT + " INTEGER,"
+			+ InstanceTable.VIDEO_LIMIT + " INTEGER,"
+			+ InstanceTable.AUDIO_LIMIT + " INTEGER,"
+			+ InstanceTable.IMAGE_SIZE + " INTEGER,"
+			+ InstanceTable.GIF_SIZE + " INTEGER,"
+			+ InstanceTable.VIDEO_SIZE + " INTEGER,"
+			+ InstanceTable.AUDIO_SIZE + " INTEGER,"
+			+ InstanceTable.STATUS_MAX_CHAR + " INTEGER,"
+			+ InstanceTable.OPTION_MAX_CHAR + " INTEGER,"
+			+ InstanceTable.HASHTAG_LIMIT + " INTEGER,"
+			+ InstanceTable.OPTIONS_LIMIT + " INTEGER,"
+			+ InstanceTable.POLL_MIN_DURATION + " INTEGER,"
+			+ InstanceTable.POLL_MAX_DURATION + " INTEGER);";
 
 	/**
 	 * table index for status table
@@ -320,6 +347,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_LOCATION);
 		db.execSQL(TABLE_EMOJI);
 		db.execSQL(TABLE_POLL);
+		db.execSQL(TABLE_INSTANCES);
 		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
@@ -1015,5 +1043,121 @@ public class DatabaseAdapter {
 		 * poll options titles separated by ';'
 		 */
 		String OPTIONS = "options";
+	}
+
+	/**
+	 *
+	 */
+	public interface InstanceTable {
+
+		/**
+		 * table name
+		 */
+		String NAME = "instance";
+
+		/**
+		 * domain name
+		 */
+		String DOMAIN = "instance_domain";
+
+		/**
+		 * timestamp of the last update
+		 */
+		String TIMESTAMP = "instance_timestamp";
+
+		/**
+		 * title of the instance
+		 */
+		String TITLE = "instance_title";
+
+		/**
+		 * API verison
+		 */
+		String VERSION = "instance_version";
+
+		/**
+		 * instance description
+		 */
+		String DESCRIPTION = "instance_description";
+
+		/**
+		 * instance flags
+		 */
+		String FLAGS = "instance_flags";
+
+		/**
+		 * hashtag follow limit
+		 */
+		String HASHTAG_LIMIT = "limit_follow_tag";
+
+		/**
+		 * max allowed status length
+		 */
+		String STATUS_MAX_CHAR = "limit_char_status";
+
+		/**
+		 * status image attachment limit
+		 */
+		String IMAGE_LIMIT = "limit_image";
+
+		/**
+		 * status video attachment limit
+		 */
+		String VIDEO_LIMIT = "limit_video";
+
+		/**
+		 * status gif attachment limit
+		 */
+		String GIF_LIMIT ="limit_gif";
+
+		/**
+		 * status audio attachment limit
+		 */
+		String AUDIO_LIMIT = "limit_audio";
+
+		/**
+		 * status poll option limit
+		 */
+		String OPTIONS_LIMIT = "limit_count_options";
+
+		/**
+		 * status poll option max length
+		 */
+		String OPTION_MAX_CHAR = "limit_char_options";
+
+		/**
+		 * instance supproted MIME types
+		 */
+		String MIME_TYPES = "mime_types";
+
+		/**
+		 * max image size supported by instance
+		 */
+		String IMAGE_SIZE = "max_size_image";
+
+		/**
+		 * max video size supported by instance
+		 */
+		String VIDEO_SIZE = "max_size_video";
+
+		/**
+		 * max gif size supported by instance
+		 */
+		String GIF_SIZE = "max_size_gif";
+
+		/**
+		 * max audio size supported by instance
+		 */
+		String AUDIO_SIZE = "max_size_audio";
+
+		/**
+		 * minimum status poll duration
+		 */
+		String POLL_MIN_DURATION = "duration_poll_min";
+
+		/**
+		 * maximum status poll duration
+		 */
+		String POLL_MAX_DURATION = "duration_poll_max";
 	}
 }

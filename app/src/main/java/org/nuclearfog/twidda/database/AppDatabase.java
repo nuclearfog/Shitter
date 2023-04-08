@@ -1,23 +1,5 @@
 package org.nuclearfog.twidda.database;
 
-import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
-import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.UserExcludeTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -27,8 +9,25 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserExcludeTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.InstanceTable;
 import org.nuclearfog.twidda.database.impl.DatabaseAccount;
 import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
+import org.nuclearfog.twidda.database.impl.DatabaseInstance;
 import org.nuclearfog.twidda.database.impl.DatabaseLocation;
 import org.nuclearfog.twidda.database.impl.DatabaseMedia;
 import org.nuclearfog.twidda.database.impl.DatabaseMessage;
@@ -39,6 +38,7 @@ import org.nuclearfog.twidda.database.impl.DatabaseTrend;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
@@ -361,6 +361,11 @@ public class AppDatabase {
 	private static final String POLL_SELECTION = PollTable.ID + "=?";
 
 	/**
+	 * selection for instance entry
+	 */
+	private static final String INSTANCE_SELECTION = InstanceTable.DOMAIN + "=?";
+
+	/**
 	 * column projection for user flag register
 	 */
 	private static final String[] USER_REG_COLUMN = {UserRegisterTable.REGISTER};
@@ -526,13 +531,13 @@ public class AppDatabase {
 					column.put(NotificationTable.TYPE, notification.getType());
 					column.put(NotificationTable.OWNER, settings.getLogin().getId());
 					column.put(NotificationTable.USER, notification.getUser().getId());
-					saveUser(notification.getUser(), db, CONFLICT_IGNORE);
+					saveUser(notification.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
 					// add status
 					if (notification.getStatus() != null) {
 						saveStatus(notification.getStatus(), db, MASK_STATUS_NOTIFICATION);
 						column.put(NotificationTable.ITEM, notification.getStatus().getId());
 					}
-					db.insertWithOnConflict(NotificationTable.NAME, null, column, CONFLICT_REPLACE);
+					db.insertWithOnConflict(NotificationTable.NAME, null, column, SQLiteDatabase.CONFLICT_REPLACE);
 				}
 				adapter.commit();
 			}
@@ -602,33 +607,42 @@ public class AppDatabase {
 	}
 
 	/**
-	 * store ID of a favorited status to the current users favorite list
+	 * Store user information
 	 *
-	 * @param status favorited status
+	 * @param user Twitter user
 	 */
-	public void addToFavorits(Status status) {
+	public void saveUser(User user) {
 		synchronized (LOCK) {
-			if (status.getEmbeddedStatus() != null)
-				status = status.getEmbeddedStatus();
 			SQLiteDatabase db = adapter.getDbWrite();
-			saveStatus(status, db, 0);
-			saveFavorite(status.getId(), settings.getLogin().getId(), db);
+			saveUser(user, db, SQLiteDatabase.CONFLICT_REPLACE);
 			adapter.commit();
 		}
 	}
 
 	/**
-	 * store ID of a status to the current users bookmarks
+	 * update status
 	 *
-	 * @param status favorited status
+	 * @param status status to update
 	 */
-	public void addToBookmarks(Status status) {
+	public void saveStatus(Status status) {
 		synchronized (LOCK) {
-			if (status.getEmbeddedStatus() != null)
-				status = status.getEmbeddedStatus();
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveStatus(status, db, 0);
-			saveBookmark(status.getId(), settings.getLogin().getId(), db);
+			if (status.getEmbeddedStatus() != null)
+				saveStatus(status.getEmbeddedStatus(), db, 0);
+			adapter.commit();
+		}
+	}
+
+	/**
+	 * save instance information
+	 *
+	 * @param instance instance information
+	 */
+	public void saveInstance(Instance instance) {
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			saveInstance(instance, db);
 			adapter.commit();
 		}
 	}
@@ -651,10 +665,42 @@ public class AppDatabase {
 			column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 			column.put(AccountTable.BEARER, account.getBearerToken());
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.insertWithOnConflict(AccountTable.NAME, "", column, CONFLICT_REPLACE);
+			db.insertWithOnConflict(AccountTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 			if (account.getUser() != null) {
-				saveUser(account.getUser(), db, CONFLICT_IGNORE);
+				saveUser(account.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
 			}
+			adapter.commit();
+		}
+	}
+
+	/**
+	 * store ID of a favorited status to the current users favorite list
+	 *
+	 * @param status favorited status
+	 */
+	public void saveToFavorits(Status status) {
+		synchronized (LOCK) {
+			if (status.getEmbeddedStatus() != null)
+				status = status.getEmbeddedStatus();
+			SQLiteDatabase db = adapter.getDbWrite();
+			saveStatus(status, db, 0);
+			saveFavorite(status.getId(), settings.getLogin().getId(), db);
+			adapter.commit();
+		}
+	}
+
+	/**
+	 * store ID of a status to the current users bookmarks
+	 *
+	 * @param status favorited status
+	 */
+	public void saveToBookmarks(Status status) {
+		synchronized (LOCK) {
+			if (status.getEmbeddedStatus() != null)
+				status = status.getEmbeddedStatus();
+			SQLiteDatabase db = adapter.getDbWrite();
+			saveStatus(status, db, 0);
+			saveBookmark(status.getId(), settings.getLogin().getId(), db);
 			adapter.commit();
 		}
 	}
@@ -664,7 +710,7 @@ public class AppDatabase {
 	 *
 	 * @param userId ID of the user
 	 */
-	public void addUserToFilterlist(long userId) {
+	public void saveUserToFilterlist(long userId) {
 		synchronized (LOCK) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			ContentValues column = new ContentValues(2);
@@ -867,6 +913,27 @@ public class AppDatabase {
 	}
 
 	/**
+	 * get a single instance of a domain
+	 *
+	 * @param domain domain name of the instance
+	 * @return instance or null if not found
+	 */
+	@Nullable
+	public Instance getInstance(String domain) {
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbRead();
+			String[] args = {domain};
+			Instance result = null;
+			Cursor cursor = db.query(InstanceTable.NAME, DatabaseInstance.COLUMNS, INSTANCE_SELECTION, args, null, null, null);
+			if (cursor.moveToFirst()) {
+				result = new DatabaseInstance(cursor);
+			}
+			cursor.close();
+			return result;
+		}
+	}
+
+	/**
 	 * get a single notification by ID
 	 *
 	 * @param id notification ID
@@ -925,34 +992,6 @@ public class AppDatabase {
 				result = getStatus(cursor, db);
 			cursor.close();
 			return result;
-		}
-	}
-
-	/**
-	 * Store user information
-	 *
-	 * @param user Twitter user
-	 */
-	public void saveUser(User user) {
-		synchronized (LOCK) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			saveUser(user, db, CONFLICT_REPLACE);
-			adapter.commit();
-		}
-	}
-
-	/**
-	 * update status
-	 *
-	 * @param status status to update
-	 */
-	public void saveStatus(Status status) {
-		synchronized (LOCK) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			saveStatus(status, db, 0);
-			if (status.getEmbeddedStatus() != null)
-				saveStatus(status.getEmbeddedStatus(), db, 0);
-			adapter.commit();
 		}
 	}
 
@@ -1205,7 +1244,7 @@ public class AppDatabase {
 			// save user information from logins
 			for (Account login : logins) {
 				if (login.getUser() != null) {
-					saveUser(login.getUser(), db, CONFLICT_IGNORE);
+					saveUser(login.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
 				}
 			}
 			adapter.commit();
@@ -1567,8 +1606,8 @@ public class AppDatabase {
 			savePoll(status.getPoll(), db);
 			column.put(StatusTable.POLL, status.getPoll().getId());
 		}
-		db.insertWithOnConflict(StatusTable.NAME, "", column, CONFLICT_REPLACE);
-		saveUser(user, db, CONFLICT_IGNORE);
+		db.insertWithOnConflict(StatusTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+		saveUser(user, db, SQLiteDatabase.CONFLICT_IGNORE);
 		saveStatusFlags(db, status, flags);
 	}
 
@@ -1585,7 +1624,7 @@ public class AppDatabase {
 			column.put(MediaTable.URL, media.getUrl());
 			column.put(MediaTable.PREVIEW, media.getPreviewUrl());
 			column.put(MediaTable.TYPE, media.getMediaType());
-			db.insertWithOnConflict(MediaTable.NAME, "", column, CONFLICT_IGNORE);
+			db.insertWithOnConflict(MediaTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 	}
 
@@ -1601,7 +1640,7 @@ public class AppDatabase {
 			column.put(EmojiTable.CODE, emoji.getCode());
 			column.put(EmojiTable.URL, emoji.getUrl());
 			column.put(EmojiTable.CATEGORY, emoji.getCategory());
-			db.insertWithOnConflict(EmojiTable.NAME, "", column, CONFLICT_IGNORE);
+			db.insertWithOnConflict(EmojiTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 	}
 
@@ -1618,7 +1657,7 @@ public class AppDatabase {
 		column.put(LocationTable.COORDINATES, location.getCoordinates());
 		column.put(LocationTable.COUNTRY, location.getCountry());
 		column.put(LocationTable.PLACE, location.getPlace());
-		db.insertWithOnConflict(LocationTable.NAME, "", column, CONFLICT_IGNORE);
+		db.insertWithOnConflict(LocationTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	/**
@@ -1640,7 +1679,7 @@ public class AppDatabase {
 		column.put(PollTable.LIMIT, poll.getLimit());
 		column.put(PollTable.EXPIRATION, poll.expirationTime());
 		column.put(PollTable.OPTIONS, buf.toString());
-		db.insertWithOnConflict(PollTable.NAME, "", column, CONFLICT_REPLACE);
+		db.insertWithOnConflict(PollTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 
 	/**
@@ -1699,7 +1738,7 @@ public class AppDatabase {
 		ContentValues column = new ContentValues(2);
 		column.put(FavoriteTable.STATUS, statusId);
 		column.put(FavoriteTable.OWNER, ownerId);
-		db.insertWithOnConflict(FavoriteTable.NAME, "", column, CONFLICT_REPLACE);
+		db.insertWithOnConflict(FavoriteTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 
 	/**
@@ -1713,7 +1752,7 @@ public class AppDatabase {
 		ContentValues column = new ContentValues(2);
 		column.put(BookmarkTable.STATUS, statusId);
 		column.put(BookmarkTable.OWNER, ownerId);
-		db.insertWithOnConflict(BookmarkTable.NAME, "", column, CONFLICT_REPLACE);
+		db.insertWithOnConflict(BookmarkTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 
 	/**
@@ -1738,8 +1777,50 @@ public class AppDatabase {
 			column.put(MessageTable.MEDIA, keyBuf.toString());
 			saveMedia(message.getMedia(), db);
 		}
-		db.insertWithOnConflict(MessageTable.NAME, "", column, CONFLICT_IGNORE);
+		db.insertWithOnConflict(MessageTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 		// store user information
-		saveUser(message.getSender(), db, CONFLICT_IGNORE);
+		saveUser(message.getSender(), db, SQLiteDatabase.CONFLICT_IGNORE);
+	}
+
+	/**
+	 * save instance information
+	 *
+	 * @param instance instance information
+	 * @param db       database instance
+	 */
+	private void saveInstance(Instance instance, SQLiteDatabase db) {
+		ContentValues column = new ContentValues(21);
+		int flags = 0;
+		if (instance.isTranslationSupported())
+			flags |= DatabaseInstance.MASK_TRANSLATION;
+		StringBuilder mimeTypes = new StringBuilder();
+		for (String mimeType : instance.getSupportedFormats()) {
+			mimeTypes.append(mimeType).append(';');
+		}
+		if (mimeTypes.length() > 0) {
+			mimeTypes.deleteCharAt(mimeTypes.length() - 1);
+		}
+		column.put(InstanceTable.DOMAIN, instance.getDomain());
+		column.put(InstanceTable.TIMESTAMP, instance.getTimestamp());
+		column.put(InstanceTable.TITLE, instance.getTitle());
+		column.put(InstanceTable.VERSION, instance.getVersion());
+		column.put(InstanceTable.DESCRIPTION, instance.getDescription());
+		column.put(InstanceTable.FLAGS, flags);
+		column.put(InstanceTable.HASHTAG_LIMIT, instance.getHashtagFollowLimit());
+		column.put(InstanceTable.STATUS_MAX_CHAR, instance.getStatusCharacterLimit());
+		column.put(InstanceTable.IMAGE_LIMIT, instance.getImageLimit());
+		column.put(InstanceTable.VIDEO_LIMIT, instance.getVideoLimit());
+		column.put(InstanceTable.GIF_LIMIT, instance.getGifLimit());
+		column.put(InstanceTable.AUDIO_LIMIT, instance.getAudioLimit());
+		column.put(InstanceTable.OPTIONS_LIMIT, instance.getPollOptionsLimit());
+		column.put(InstanceTable.OPTION_MAX_CHAR, instance.getPollOptionCharacterLimit());
+		column.put(InstanceTable.MIME_TYPES, mimeTypes.toString());
+		column.put(InstanceTable.IMAGE_SIZE, instance.getImageSizeLimit());
+		column.put(InstanceTable.VIDEO_SIZE, instance.getVideoSizeLimit());
+		column.put(InstanceTable.GIF_SIZE, instance.getGifSizeLimit());
+		column.put(InstanceTable.AUDIO_SIZE, instance.getAudioSizeLimit());
+		column.put(InstanceTable.POLL_MIN_DURATION, instance.getMinPollDuration());
+		column.put(InstanceTable.POLL_MAX_DURATION, instance.getMaxPollDuration());
+		db.insertWithOnConflict(InstanceTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 }

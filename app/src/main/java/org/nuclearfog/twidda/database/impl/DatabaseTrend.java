@@ -4,7 +4,7 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
 import org.nuclearfog.twidda.model.Trend;
 
 /**
@@ -12,19 +12,14 @@ import org.nuclearfog.twidda.model.Trend;
  *
  * @author nuclearfog
  */
-public class DatabaseTrend implements Trend {
+public class DatabaseTrend implements Trend, TrendTable {
 
 	private static final long serialVersionUID = 1799880502954768985L;
 
 	/**
 	 * SQLite columns
 	 */
-	public static final String[] COLUMNS = {
-			DatabaseAdapter.TrendTable.TREND,
-			DatabaseAdapter.TrendTable.VOL,
-			DatabaseAdapter.TrendTable.INDEX,
-			DatabaseAdapter.TrendTable.ID
-	};
+	public static final String[] COLUMNS = {TREND, VOL, INDEX, ID};
 
 	private String name = "";
 	private int popularity;

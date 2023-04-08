@@ -10,6 +10,7 @@ import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
@@ -38,11 +39,20 @@ public interface Connection {
 	String getAuthorisationLink(ConnectionConfig connection) throws ConnectionException;
 
 	/**
+	 * login app and get login credentials
+	 *
 	 * @param connection connection configuration
 	 * @param code       verification code to login
 	 * @return account information of the created login
 	 */
 	Account loginApp(ConnectionConfig connection, String code) throws ConnectionException;
+
+	/**
+	 * get information about the host server
+	 *
+	 * @return instance information
+	 */
+	Instance getInformation() throws ConnectionException;
 
 	/**
 	 * lookup user and return user information

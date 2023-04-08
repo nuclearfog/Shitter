@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.config;
 import org.nuclearfog.twidda.model.Account;
 
 /**
- * Configurations for different networks
+ * Configurations for different networks, containing static configuration
  *
  * @author nuclearfog
  */

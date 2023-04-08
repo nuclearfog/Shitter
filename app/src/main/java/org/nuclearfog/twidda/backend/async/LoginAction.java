@@ -13,6 +13,7 @@ import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
 
 /**
@@ -55,10 +56,14 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 				case LoginParam.MODE_LOGIN:
 					// login with pin and access token
 					Account account = connection.loginApp(param.connection, param.code);
+					// get instance information
+					Instance instance = connection.getInformation();
 					// remove old entries to prevent conflicts
 					database.resetDatabase();
 					// save new user information
 					database.saveLogin(account);
+					// save instance information
+					database.saveInstance(instance);
 					return new LoginResult(LoginResult.MODE_LOGIN, null, null);
 			}
 		} catch (ConnectionException exception) {

@@ -70,7 +70,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 
 				case StatusParam.FAVORITE:
 					status = connection.favoriteStatus(param.id);
-					db.addToFavorits(status);
+					db.saveToFavorits(status);
 					return new StatusResult(StatusResult.FAVORITE, status);
 
 				case StatusParam.UNFAVORITE:
@@ -80,7 +80,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 
 				case StatusParam.BOOKMARK:
 					status = connection.bookmarkStatus(param.id);
-					db.addToBookmarks(status);
+					db.saveToBookmarks(status);
 					return new StatusResult(StatusResult.BOOKMARK, status);
 
 				case StatusParam.UNBOOKMARK:

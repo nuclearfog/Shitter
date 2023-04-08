@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class DatabaseUser implements User {
+public class DatabaseUser implements User, UserTable, UserRegisterTable {
 
 	private static final long serialVersionUID = 2367055336838212570L;
 
@@ -49,21 +49,21 @@ public class DatabaseUser implements User {
 	 * @param account current user login
 	 */
 	public DatabaseUser(Cursor cursor, Account account) {
-		id = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.ID));
-		String username = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.USERNAME));
-		String screen_name = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.SCREENNAME));
-		String profileImageOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.IMAGE));
-		String bio = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.DESCRIPTION));
-		String link = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LINK));
-		String location = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.LOCATION));
-		String profileBannerOrig = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.BANNER));
-		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(UserTable.EMOJI));
-		createdAt = cursor.getLong(cursor.getColumnIndexOrThrow(UserTable.SINCE));
-		following = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FRIENDS));
-		follower = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FOLLOWER));
-		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.STATUSES));
-		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FAVORITS));
-		int register = cursor.getInt(cursor.getColumnIndexOrThrow(UserRegisterTable.REGISTER));
+		id = cursor.getLong(cursor.getColumnIndexOrThrow(ID));
+		String username = cursor.getString(cursor.getColumnIndexOrThrow(USERNAME));
+		String screen_name = cursor.getString(cursor.getColumnIndexOrThrow(SCREENNAME));
+		String profileImageOrig = cursor.getString(cursor.getColumnIndexOrThrow(IMAGE));
+		String bio = cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION));
+		String link = cursor.getString(cursor.getColumnIndexOrThrow(LINK));
+		String location = cursor.getString(cursor.getColumnIndexOrThrow(LOCATION));
+		String profileBannerOrig = cursor.getString(cursor.getColumnIndexOrThrow(BANNER));
+		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(EMOJI));
+		createdAt = cursor.getLong(cursor.getColumnIndexOrThrow(SINCE));
+		following = cursor.getInt(cursor.getColumnIndexOrThrow(FRIENDS));
+		follower = cursor.getInt(cursor.getColumnIndexOrThrow(FOLLOWER));
+		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(STATUSES));
+		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(FAVORITS));
+		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
 		isVerified = (register & MASK_USER_VERIFIED) != 0;
 		isLocked = (register & MASK_USER_PRIVATE) != 0;
 		followReqSent = (register & MASK_USER_FOLLOW_REQUESTED) != 0;

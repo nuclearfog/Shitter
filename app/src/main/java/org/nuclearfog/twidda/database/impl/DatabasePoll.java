@@ -12,18 +12,13 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class DatabasePoll implements Poll {
+public class DatabasePoll implements Poll, PollTable {
 
 	private static final long serialVersionUID = 3534663789678017084L;
 
 	private static final Pattern SEPARATOR = Pattern.compile(";");
 
-	public static final String[] PROJECTION = {
-			PollTable.ID,
-			PollTable.LIMIT,
-			PollTable.EXPIRATION,
-			PollTable.OPTIONS
-	};
+	public static final String[] PROJECTION = {ID, LIMIT, EXPIRATION, OPTIONS};
 
 	private long id;
 	private long expired;

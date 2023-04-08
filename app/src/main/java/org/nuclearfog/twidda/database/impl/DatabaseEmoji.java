@@ -13,18 +13,14 @@ import org.nuclearfog.twidda.model.Emoji;
  *
  * @author nuclearfog
  */
-public class DatabaseEmoji implements Emoji {
+public class DatabaseEmoji implements Emoji, EmojiTable {
 
 	private static final long serialVersionUID = 4915542258264850899L;
 
 	/**
 	 * projection of the emoji table columns
 	 */
-	public static final String[] PROJECTION = {
-			EmojiTable.CODE,
-			EmojiTable.URL,
-			EmojiTable.CATEGORY
-	};
+	public static final String[] PROJECTION = {CODE, URL, CATEGORY};
 
 	private String code = "";
 	private String url = "";

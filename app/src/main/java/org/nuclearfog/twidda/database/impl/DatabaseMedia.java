@@ -12,19 +12,14 @@ import org.nuclearfog.twidda.model.Media;
  *
  * @author nuclearfog
  */
-public class DatabaseMedia implements Media {
+public class DatabaseMedia implements Media, MediaTable {
 
 	private static final long serialVersionUID = 8895107738679315263L;
 
 	/**
 	 *
 	 */
-	public static final String[] PROJECTION = {
-			MediaTable.KEY,
-			MediaTable.URL,
-			MediaTable.PREVIEW,
-			MediaTable.TYPE
-	};
+	public static final String[] PROJECTION = {KEY, URL, PREVIEW, TYPE};
 
 	private int mediaType;
 	private String key = "";
