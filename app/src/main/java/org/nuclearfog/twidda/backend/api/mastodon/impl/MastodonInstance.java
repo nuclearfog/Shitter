@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +53,7 @@ public class MastodonInstance implements Instance {
 		version = json.getString("version");
 		maxHashtagFeature = accounts.getInt("max_featured_tags");
 		maxCharacters = statuses.getInt("max_characters");
-		maxImages = media.getInt("max_media_attachments");
+		maxImages = statuses.getInt("max_media_attachments");
 		maxImageSize = media.getInt("image_size_limit");
 		maxVideoSize = media.getInt("video_size_limit");
 		maxPollOptions = polls.getInt("max_options");
@@ -191,5 +194,23 @@ public class MastodonInstance implements Instance {
 	@Override
 	public boolean isTranslationSupported() {
 		return translationSupported;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof MastodonInstance))
+			return false;
+		MastodonInstance instance = (MastodonInstance) obj;
+		return instance.domain.equals(domain) && instance.timestamp == timestamp;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "domain=\"" + domain + " \" version=\"" + version + "\"";
 	}
 }

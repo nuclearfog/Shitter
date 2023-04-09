@@ -24,8 +24,10 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.location.Location;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.MotionEvent;
@@ -321,6 +323,10 @@ public class VideoViewer extends MediaActivity implements OnSeekBarChangeListene
 		}
 		// setup video looping for gif
 		else {
+			// disable audiofocus for gif
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+				videoView.setAudioFocusRequest(AudioManager.AUDIOFOCUS_NONE);
+			}
 			loadingCircle.setVisibility(INVISIBLE);
 			mp.setLooping(true);
 			mp.start();

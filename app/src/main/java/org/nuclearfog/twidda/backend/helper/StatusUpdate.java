@@ -9,8 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
-import org.nuclearfog.twidda.config.Configuration;
-import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Instance;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -73,6 +72,8 @@ public class StatusUpdate {
 	private PollUpdate poll;
 	@Nullable
 	private LocationUpdate location;
+	@Nullable
+	private Instance instance;
 
 	private int attachment = EMPTY;
 	private List<Uri> mediaUris = new ArrayList<>(5);
@@ -107,8 +108,7 @@ public class StatusUpdate {
 	 */
 	public int addMedia(Context context, Uri mediaUri) {
 		String mime = context.getContentResolver().getType(mediaUri);
-		Configuration configuration = GlobalSettings.getInstance(context).getLogin().getConfiguration();
-		if (mime == null) {
+		if (mime == null || instance == null) {
 			return MEDIA_ERROR;
 		}
 		// check if file is a 'gif' image
@@ -121,7 +121,7 @@ public class StatusUpdate {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
-						if (mediaUris.size() == configuration.getGifLimit()) {
+						if (mediaUris.size() == instance.getGifLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_GIF;
@@ -140,7 +140,7 @@ public class StatusUpdate {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
-						if (mediaUris.size() == configuration.getImageLimit()) {
+						if (mediaUris.size() == instance.getImageLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_IMAGE;
@@ -158,7 +158,7 @@ public class StatusUpdate {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						mediaUris.add(mediaUri);
-						if (mediaUris.size() == configuration.getVideoLimit()) {
+						if (mediaUris.size() == instance.getVideoLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_VIDEO;
@@ -204,15 +204,26 @@ public class StatusUpdate {
 	}
 
 	/**
+	 * set spoiler flag
 	 */
 	public void setSpoiler(boolean spoiler) {
 		this.spoiler = spoiler;
 	}
 
 	/**
+	 * set sensitive flag
 	 */
 	public void setSensitive(boolean sensitive) {
 		this.sensitive = sensitive;
+	}
+
+	/**
+	 * set instance imformation such as status limitations
+	 *
+	 * @param instance instance imformation
+	 */
+	public void setInstanceInformation(Instance instance) {
+		this.instance = instance;
 	}
 
 	/**

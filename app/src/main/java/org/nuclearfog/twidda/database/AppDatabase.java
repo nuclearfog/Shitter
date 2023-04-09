@@ -915,14 +915,13 @@ public class AppDatabase {
 	/**
 	 * get a single instance of a domain
 	 *
-	 * @param domain domain name of the instance
 	 * @return instance or null if not found
 	 */
 	@Nullable
-	public Instance getInstance(String domain) {
+	public Instance getInstance() {
 		synchronized (LOCK) {
 			SQLiteDatabase db = adapter.getDbRead();
-			String[] args = {domain};
+			String[] args = {settings.getLogin().getHostname()};
 			Instance result = null;
 			Cursor cursor = db.query(InstanceTable.NAME, DatabaseInstance.COLUMNS, INSTANCE_SELECTION, args, null, null, null);
 			if (cursor.moveToFirst()) {

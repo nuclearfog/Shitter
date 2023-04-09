@@ -41,9 +41,6 @@ public enum Configuration {
 	private final boolean statusSpoilerSupported;
 	private final boolean statusVisibilitySupported;
 	private final boolean directMessageSupported;
-	private final int maxImages;
-	private final int maxGifs;
-	private final int maxVideos;
 
 	/**
 	 * @param accountType account login type, see {@link Account}
@@ -64,9 +61,6 @@ public enum Configuration {
 				statusSpoilerSupported = false;
 				statusVisibilitySupported = false;
 				directMessageSupported = true;
-				maxImages = 4;
-				maxGifs = 1;
-				maxVideos = 1;
 				break;
 
 			default:
@@ -82,9 +76,6 @@ public enum Configuration {
 				statusSpoilerSupported = true;
 				statusVisibilitySupported = true;
 				directMessageSupported = false;
-				maxImages = 4;
-				maxGifs = 1;
-				maxVideos = 1;
 				break;
 		}
 	}
@@ -171,26 +162,5 @@ public enum Configuration {
 	 */
 	public boolean directmessageSupported() {
 		return directMessageSupported;
-	}
-
-	/**
-	 * @return image limit for posts
-	 */
-	public int getImageLimit() {
-		return maxImages;
-	}
-
-	/**
-	 * @return video limit for posts
-	 */
-	public int getVideoLimit() {
-		return maxVideos;
-	}
-
-	/**
-	 * @return gif limit for posts
-	 */
-	public int getGifLimit() {
-		return maxGifs;
 	}
 }

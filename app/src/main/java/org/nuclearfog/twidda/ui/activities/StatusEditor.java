@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
 import org.nuclearfog.twidda.backend.helper.PollUpdate;
@@ -29,6 +30,7 @@ import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -45,7 +47,7 @@ import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
  * @author nuclearfog
  */
 public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener,
-		OnMediaClickListener, AsyncCallback<StatusUpdateResult>, TextWatcher, PollUpdateCallback {
+		OnMediaClickListener, TextWatcher, PollUpdateCallback {
 
 	/**
 	 * key to add a statusd ID to reply
@@ -59,14 +61,18 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 */
 	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
 
+	private AsyncCallback<StatusUpdateResult> statusUpdateResult = this::onStatusUpdated;
+	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
+
 	private View mediaBtn;
 	private View locationBtn;
 	private View pollBtn;
 	private View locationPending;
 
-	private StatusUpdater uploaderAsync;
-	private GlobalSettings settings;
+	private StatusUpdater statusUpdater;
+	private InstanceLoader instanceLoader;
 
+	private GlobalSettings settings;
 	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
 	private PollDialog pollDialog;
@@ -98,7 +104,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		mediaBtn = findViewById(R.id.popup_status_add_media);
 		locationPending = findViewById(R.id.popup_status_location_loading);
 
-		uploaderAsync = new StatusUpdater(this);
+		instanceLoader = new InstanceLoader(this);
+		statusUpdater = new StatusUpdater(this);
 		settings = GlobalSettings.getInstance(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
@@ -119,6 +126,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		adapter.addOnMediaClickListener(this);
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 		iconList.setAdapter(adapter);
+
+		instanceLoader.execute(null, instanceResult);
 
 		statusText.addTextChangedListener(this);
 		closeButton.setOnClickListener(this);
@@ -151,7 +160,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
-		uploaderAsync.cancel();
+		statusUpdater.cancel();
+		instanceLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -175,7 +185,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				Toast.makeText(getApplicationContext(), R.string.info_location_pending, Toast.LENGTH_SHORT).show();
 			}
 			// check if gps locating is not pending
-			else if (uploaderAsync.isIdle()) {
+			else if (statusUpdater.isIdle()) {
 				updateStatus();
 			}
 		}
@@ -223,6 +233,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	public void afterTextChanged(Editable s) {
 		statusUpdate.addText(s.toString());
+		// todo add character limit check
 	}
 
 
@@ -272,7 +283,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	public void stopProgress() {
-		uploaderAsync.cancel();
+		statusUpdater.cancel();
 	}
 
 
@@ -311,19 +322,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 
 	@Override
-	public void onResult(@NonNull StatusUpdateResult result) {
-		if (result.success) {
-			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
-			finish();
-		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
-			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
-			loadingCircle.dismiss();
-		}
-	}
-
-
-	@Override
 	public void onPollUpdate(@Nullable PollUpdate update) {
 		statusUpdate.addPoll(update);
 	}
@@ -340,13 +338,34 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	}
 
 	/**
+	 * called when the status was successfully updated
+	 */
+	private void onStatusUpdated(@NonNull StatusUpdateResult result) {
+		if (result.success) {
+			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
+			finish();
+		} else {
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
+			loadingCircle.dismiss();
+		}
+	}
+
+	/**
+	 * set instance information such as upload limits
+	 */
+	private void onInstanceResult(Instance instance) {
+		statusUpdate.setInstanceInformation(instance);
+	}
+
+	/**
 	 * start uploading status and media files
 	 */
 	private void updateStatus() {
 		// first initialize filestreams of the media files
 		if (statusUpdate.prepare(getContentResolver())) {
 			// send status
-			uploaderAsync.execute(statusUpdate, this);
+			statusUpdater.execute(statusUpdate, statusUpdateResult);
 			// show progress dialog
 			loadingCircle.show();
 		} else {

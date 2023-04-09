@@ -257,7 +257,7 @@ public class TwitterV1 implements Connection {
 
 	@Override
 	public Instance getInformation() {
-		return new TwitterV1Instance();
+		return new TwitterV1Instance(settings.getLogin().getHostname());
 	}
 
 

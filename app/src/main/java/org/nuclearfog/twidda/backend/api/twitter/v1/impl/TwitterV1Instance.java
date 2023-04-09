@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.twitter.v1.impl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.model.Instance;
 
 /**
@@ -12,6 +15,15 @@ public class TwitterV1Instance implements Instance {
 
 	private static final long serialVersionUID = 6248302391974167770L;
 
+	private String hostname;
+
+	/**
+	 * @param hostname currently used hostname
+	 */
+	public TwitterV1Instance(String hostname) {
+		this.hostname = hostname;
+	}
+
 
 	@Override
 	public String getTitle() {
@@ -21,7 +33,7 @@ public class TwitterV1Instance implements Instance {
 
 	@Override
 	public String getDomain() {
-		return "https://twitter.com";
+		return hostname;
 	}
 
 
@@ -136,5 +148,23 @@ public class TwitterV1Instance implements Instance {
 	@Override
 	public boolean isTranslationSupported() {
 		return false;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof TwitterV1Instance))
+			return false;
+		TwitterV1Instance instance = (TwitterV1Instance) obj;
+		return instance.hostname.equals(hostname);
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "domain=\"" + getDomain() + " \" version=\"2.0\"";
 	}
 }
