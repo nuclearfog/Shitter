@@ -40,6 +40,7 @@ public class MediaV1 implements Media {
 
 	private int type = NONE;
 	private String url = "";
+	private String previewUrl = "";
 	private String key;
 
 	/**
@@ -53,6 +54,7 @@ public class MediaV1 implements Media {
 				String url = json.getString("media_url_https");
 				if (Patterns.WEB_URL.matcher(url).matches()) {
 					this.url = url;
+					previewUrl = url;
 				} else {
 					throw new JSONException("invalid url: \"" + url + "\"");
 				}
@@ -62,6 +64,7 @@ public class MediaV1 implements Media {
 			case TYPE_VIDEO:
 				int maxBitrate = -1;
 				JSONArray videoVariants = json.getJSONObject("video_info").getJSONArray("variants");
+				previewUrl = json.optString("media_url_https", "");
 				for (int i = 0; i < videoVariants.length(); i++) {
 					JSONObject variant = videoVariants.getJSONObject(i);
 					int bitRate = variant.optInt("bitrate", 0);
@@ -80,6 +83,7 @@ public class MediaV1 implements Media {
 
 			case TYPE_GIF:
 				JSONArray gifVariants = json.getJSONObject("video_info").getJSONArray("variants");
+				previewUrl = json.optString("media_url_https", "");
 				for (int i = 0; i < gifVariants.length(); i++) {
 					JSONObject gifVariant = gifVariants.getJSONObject(i);
 					if (MIME_V_MP4.equals(gifVariant.getString("content_type"))) {
@@ -118,7 +122,7 @@ public class MediaV1 implements Media {
 
 	@Override
 	public String getPreviewUrl() {
-		return url;
+		return previewUrl;
 	}
 
 

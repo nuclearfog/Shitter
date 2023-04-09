@@ -30,11 +30,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.LinkLoader;
-import org.nuclearfog.twidda.backend.async.LinkLoader.LinkResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
@@ -44,13 +40,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
  *
  * @author nuclearfog
  */
-public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener, AsyncCallback<LinkResult> {
-
-	/**
-	 * key used to set the tab page
-	 * vale type is Integer
-	 */
-	public static final String KEY_TAB_PAGE = "tab_pos";
+public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener {
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -106,12 +96,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		// initialize lists
 		else if (adapter.isEmpty()) {
 			setupAdapter(true);
-			// check if there is a Twitter link
-			if (getIntent().getData() != null) {
-				LinkLoader linkLoader = new LinkLoader(this);
-				linkLoader.execute(getIntent().getData(), this);
-				loadingCircle.show();
-			}
 		}
 	}
 
@@ -255,29 +239,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	@Override
 	public void onTabReselected(Tab tab) {
 		adapter.scrollToTop(tab.getPosition());
-	}
-
-
-	@Override
-	public void onResult(@NonNull LinkResult linkResult) {
-		loadingCircle.dismiss();
-		if (linkResult.data != null && linkResult.activity != null) {
-			if (linkResult.activity == MainActivity.class) {
-				int page = linkResult.data.getInt(KEY_TAB_PAGE, 0);
-				pager.setCurrentItem(page);
-			} else {
-				Intent intent = new Intent(this, linkResult.activity);
-				intent.putExtras(linkResult.data);
-				startActivity(intent);
-			}
-		} else {
-			if (linkResult.exception != null) {
-				String message = ErrorHandler.getErrorMessage(this, linkResult.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
-			}
-		}
 	}
 
 	/**

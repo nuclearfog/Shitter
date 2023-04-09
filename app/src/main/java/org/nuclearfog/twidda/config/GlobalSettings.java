@@ -90,7 +90,6 @@ public class GlobalSettings {
 	private static final String PROXY_PORT = "proxy_port";
 	private static final String PROXY_USER = "proxy_user";
 	private static final String PROXY_PASS = "proxy_pass";
-	private static final String PROXY_IGNORE = "ignore_proxy_set";
 	private static final String TREND_LOC = "location";
 	private static final String TREND_ID = "world_id_long";
 	private static final String ENABLE_LIKE = "like_enable";
@@ -140,7 +139,6 @@ public class GlobalSettings {
 	private boolean loggedIn;
 	private boolean isProxyEnabled;
 	private boolean isProxyAuthSet;
-	private boolean ignoreProxyWarning;
 	private boolean toolbarOverlap;
 	private boolean tweetIndicators;
 	private boolean filterResults;
@@ -861,27 +859,6 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * check if proxy warning should be ignored
-	 *
-	 * @return true if proxy warning should be ignored
-	 */
-	public boolean ignoreProxyWarning() {
-		return ignoreProxyWarning;
-	}
-
-	/**
-	 * enable/ignore proxy warning
-	 *
-	 * @param ignore true to ignore proxy warning
-	 */
-	public void setIgnoreProxyWarning(boolean ignore) {
-		ignoreProxyWarning = ignore;
-		Editor e = settings.edit();
-		e.putBoolean(PROXY_IGNORE, ignore);
-		e.apply();
-	}
-
-	/**
 	 * Check if current user is logged in
 	 *
 	 * @return true if current user is logged in
@@ -986,7 +963,6 @@ public class GlobalSettings {
 		listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
 		isProxyEnabled = settings.getBoolean(PROXY_SET, false);
 		isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
-		ignoreProxyWarning = settings.getBoolean(PROXY_IGNORE, false);
 		loggedIn = settings.getBoolean(LOGGED_IN, false);
 		loadImage = settings.getBoolean(IMAGE_LOAD, true);
 		tweetIndicators = settings.getBoolean(TWEET_INDICATOR, true);

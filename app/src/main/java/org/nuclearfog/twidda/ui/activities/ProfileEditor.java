@@ -239,7 +239,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 
 	@Override
-	public void onConfirm(int type, boolean rememberChoice) {
+	public void onConfirm(int type) {
 		// leave without settings
 		if (type == ConfirmDialog.PROFILE_EDITOR_LEAVE) {
 			finish();

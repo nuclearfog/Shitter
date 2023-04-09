@@ -112,28 +112,6 @@ public class StringTools {
 	}
 
 	/**
-	 * format media time to string
-	 *
-	 * @param time duration/current position in ms
-	 * @return time string
-	 */
-	public static String formatMediaTime(int time) {
-		String result = "";
-		int seconds = (time / 1000) % 60;
-		int minutes = (time / 60000) % 60;
-
-		if (minutes < 10)
-			result += "0";
-		result += minutes + ":";
-
-		if (seconds < 10)
-			result += "0";
-		result += seconds;
-
-		return result;
-	}
-
-	/**
 	 * un-escape html based text
 	 *
 	 * @param text text containing html escapes

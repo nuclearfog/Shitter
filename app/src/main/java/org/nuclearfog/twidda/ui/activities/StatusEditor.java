@@ -288,7 +288,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 
 	@Override
-	public void onConfirm(int type, boolean rememberChoice) {
+	public void onConfirm(int type) {
 		// retry uploading status
 		if (type == ConfirmDialog.STATUS_EDITOR_ERROR) {
 			updateStatus();

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -139,8 +138,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int NOTIFICATION_DISMISS = 623;
 
 
-	private TextView title, message, confirmDescr;
-	private CompoundButton confirmCheck;
+	private TextView title, message;
 	private Button confirm, cancel;
 	private ViewGroup root;
 
@@ -158,8 +156,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		cancel = findViewById(R.id.confirm_no);
 		title = findViewById(R.id.confirm_title);
 		message = findViewById(R.id.confirm_message);
-		confirmDescr = findViewById(R.id.confirm_remember_descr);
-		confirmCheck = findViewById(R.id.confirm_remember);
 
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
@@ -193,7 +189,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		confirm.setTag(type);
 		// default visibility values
 		int titleVis = View.GONE;
-		int confirmVis = View.INVISIBLE;
 		int cancelVis = View.VISIBLE;
 		// default resource values
 		int titleRes = R.string.info_error;
@@ -288,7 +283,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				break;
 
 			case PROXY_CONFIRM:
-				confirmVis = View.VISIBLE;
 				titleVis = View.VISIBLE;
 				titleRes = R.string.dialog_confirm_warning;
 				messageRes = R.string.dialog_warning_videoview;
@@ -304,9 +298,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		// setup confirm button
 		confirm.setText(confirmRes);
 		confirm.setCompoundDrawablesWithIntrinsicBounds(confirmIconRes, 0, 0, 0);
-		// setup remember choice checkbox
-		confirmCheck.setVisibility(confirmVis);
-		confirmDescr.setVisibility(confirmVis);
 		// setup message
 		if (messageTxt.isEmpty()) {
 			message.setText(messageRes);
@@ -324,8 +315,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 			Object tag = v.getTag();
 			if (listener != null && tag instanceof Integer) {
 				int type = (int) tag;
-				boolean remember = confirmCheck.getVisibility() == View.VISIBLE && confirmCheck.isChecked();
-				listener.onConfirm(type, remember);
+				listener.onConfirm(type);
 			}
 			dismiss();
 		} else if (v.getId() == R.id.confirm_no) {
@@ -348,9 +338,8 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		/**
 		 * called when the positive button was clicked
 		 *
-		 * @param type           type of dialog
-		 * @param rememberChoice true if choice should be remembered
+		 * @param type type of dialog
 		 */
-		void onConfirm(int type, boolean rememberChoice);
+		void onConfirm(int type);
 	}
 }

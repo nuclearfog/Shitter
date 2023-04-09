@@ -587,7 +587,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 
 	@Override
-	public void onConfirm(int type, boolean rememberChoice) {
+	public void onConfirm(int type) {
 		if (user != null) {
 			// confirmed unfollowing user
 			if (type == ConfirmDialog.PROFILE_UNFOLLOW) {

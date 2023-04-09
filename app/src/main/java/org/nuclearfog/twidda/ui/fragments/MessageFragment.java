@@ -177,7 +177,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onConfirm(int type, boolean rememberChoice) {
+	public void onConfirm(int type) {
 		if (type == ConfirmDialog.MESSAGE_DELETE) {
 			MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, 0, selectedId, "");
 			messageLoader.execute(param, this);

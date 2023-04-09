@@ -183,9 +183,6 @@
 	<string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
 	<string name="info_location_pending">Ortung läuft, bitte warten.</string>
 	<string name="error_twitter_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
-	<string name="button_backward">Zurückspulen</string>
-	<string name="button_forward">Vorspulen</string>
-	<string name="button_play_pause">Pause/Abspielen</string>
 	<string name="button_share">Videolink teilen</string>
 	<string name="settings_look">Aussehen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
@@ -237,7 +234,6 @@
 	<string name="dialog_confirm_warning">Warnung</string>
 	<string name="dialog_warning_videoview">Videoplayer unterstützt keine Proxy Verbindung! Fortsetzen ohne Proxy?</string>
 	<string name="confirm_unknown_error">Unbekannter Fehler!</string>
-	<string name="dialog_confirm_remember">merken</string>
 	<string name="error_invalid_media">Ungültige Mediendatei!</string>
 	<string name="menu_follow_requests">Anfragen</string>
 	<string name="menu_toolbar_excluded_users">Blocklisten</string>

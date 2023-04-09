@@ -283,13 +283,9 @@
 	<string name="update_list">update list</string>
 	<string name="confirm_remove_user_from_list">remove user from list?</string>
 	<string name="descr_remove_user">remove user from list</string>
-	<string name="dialog_confirm_remember">remember</string>
 	<string name="confirm_unknown_error">unknown error!</string>
 	<string name="list_following_indicator">following list</string>
 	<string name="descr_add_profile_image">change profile image</string>
-	<string name="button_backward">Rewind</string>
-	<string name="button_forward">Fast forward</string>
-	<string name="button_play_pause">Pause/Play</string>
 	<string name="button_share">share link</string>
 	<string name="settings_rt_icon_color">Reposts</string>
 	<string name="settings_follow_req_color">Follow request</string>

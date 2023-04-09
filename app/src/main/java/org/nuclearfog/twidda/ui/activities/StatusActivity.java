@@ -668,35 +668,16 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onConfirm(int type, boolean rememberChoice) {
-		switch (type) {
-			case ConfirmDialog.DELETE_STATUS:
-				if (status != null) {
-					long id = status.getId();
-					if (status.getEmbeddedStatus() != null) {
-						id = status.getEmbeddedStatus().getId();
-					}
-					StatusParam param = new StatusParam(StatusParam.DELETE, id);
-					statusLoader.execute(param, statusCallback);
+	public void onConfirm(int type) {
+		if (type == ConfirmDialog.DELETE_STATUS) {
+			if (status != null) {
+				long id = status.getId();
+				if (status.getEmbeddedStatus() != null) {
+					id = status.getEmbeddedStatus().getId();
 				}
-				break;
-
-			case ConfirmDialog.PROXY_CONFIRM:
-				if (status != null) {
-					settings.setIgnoreProxyWarning(rememberChoice);
-					Media[] mediaItems = status.getMedia();
-					if (status.getEmbeddedStatus() != null) {
-						mediaItems = status.getEmbeddedStatus().getMedia();
-					}
-					if (mediaItems.length > 0) {
-						Uri uri = Uri.parse(mediaItems[0].getUrl());
-						Intent intent = new Intent(this, VideoViewer.class);
-						intent.putExtra(VideoViewer.VIDEO_URI, uri);
-						intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-						startActivity(intent);
-					}
-				}
-				break;
+				StatusParam param = new StatusParam(StatusParam.DELETE, id);
+				statusLoader.execute(param, statusCallback);
+			}
 		}
 	}
 
@@ -730,23 +711,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			mediaIntent.putExtra(ImageViewer.IMAGE_URI, uri);
 			startActivity(mediaIntent);
 		} else if (media.getMediaType() == Media.VIDEO) {
-			if (!settings.isProxyEnabled() || settings.ignoreProxyWarning()) {
-				Intent intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.VIDEO_URI, uri);
-				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-				startActivity(intent);
-			} else {
-				confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
-			}
+			Intent intent = new Intent(this, VideoViewer.class);
+			intent.putExtra(VideoViewer.VIDEO_URI, uri);
+			intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+			startActivity(intent);
 		} else if (media.getMediaType() == Media.GIF) {
-			if (!settings.isProxyEnabled() || settings.ignoreProxyWarning()) {
-				Intent intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.VIDEO_URI, uri);
-				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
-				startActivity(intent);
-			} else {
-				confirmDialog.show(ConfirmDialog.PROXY_CONFIRM);
-			}
+			Intent intent = new Intent(this, VideoViewer.class);
+			intent.putExtra(VideoViewer.VIDEO_URI, uri);
+			intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+			startActivity(intent);
 		}
 	}
 

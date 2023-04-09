@@ -40,24 +40,6 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 
-			<!-- DEPRECATED
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-
-				<data
-					android:scheme="https"
-					android:host="twitter.com" />
-				<data
-					android:scheme="https"
-					android:host="www.twitter.com" />
-				<data
-					android:scheme="https"
-					android:host="mobile.twitter.com" />
-			</intent-filter>
-			-->
 		</activity>
 
 		<activity
@@ -102,7 +84,6 @@
 
 		<activity
 			android:name=".ui.activities.VideoViewer"
-			android:screenOrientation="portrait"
 			android:theme="@style/Transparency" />
 
 		<activity

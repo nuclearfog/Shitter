@@ -5,14 +5,11 @@ import android.content.Context;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 
-import io.michaelrocks.paranoid.Obfuscate;
-
 /**
  * this class manages Twitter oauth 1.0 keys (consumer token & token secret) for API V1.1 & V2
  *
  * @author nuclearfog
  */
-@Obfuscate
 public class Tokens {
 
 	/**

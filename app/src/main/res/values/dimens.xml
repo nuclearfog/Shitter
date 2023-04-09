@@ -187,7 +187,6 @@
 	<dimen name="mediapage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="mediapage_preview_margin">10dp</dimen>
 	<dimen name="mediapage_circle_size">64dp</dimen>
-	<dimen name="mediapage_controller_layout_margin">10dp</dimen>
 
 	<!--dimens of item_placeholder.xml-->
 	<dimen name="item_placeholder_margin">8dp</dimen>
@@ -227,8 +226,6 @@
 	<dimen name="confirm_message_fontsize">18sp</dimen>
 	<dimen name="confirm_title_fontsize">22sp</dimen>
 	<dimen name="confirm_button_height">30sp</dimen>
-	<dimen name="confirm_checkbox_text_margin">5dp</dimen>
-	<dimen name="confirm_checkbox_text_size">10sp</dimen>
 	<integer name="confirm_message_max_ines">8</integer>
 
 	<!--dimens of dialog_userlist.xml-->
@@ -257,14 +254,6 @@
 	<!--dimens of tabitem.xml-->
 	<dimen name="tabitem_icon_size">22sp</dimen>
 	<dimen name="tabitem_textsize">11sp</dimen>
-
-	<!--dimens of controlpanel-->
-	<dimen name="controller_seekbar_margin">10dp</dimen>
-	<dimen name="controller_text_margin">5dp</dimen>
-	<dimen name="controller_text_size">11sp</dimen>
-	<dimen name="controller_button_width">64dp</dimen>
-	<dimen name="controller_button_height">32dp</dimen>
-	<dimen name="controller_text_width">36sp</dimen>
 
 	<!--dimens of item_card.xml-->
 	<dimen name="item_card_textsize">11sp</dimen>
