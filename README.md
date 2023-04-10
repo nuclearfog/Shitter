@@ -26,7 +26,7 @@
 
 ## 3rd party libraries and licenses
 
-- <a href="https://github.com/square/picasso">picasso 2.8</a>
+- <a href="https://github.com/square/picasso">picasso</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
 - <a href="https://github.com/MichaelRocks/paranoid">String obfuscation</a>
 - <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
@@ -37,6 +37,8 @@
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
+- <a href="https://github.com/google/ExoPlayer">ExoPlayer</a>
+- <a href="https://github.com/koral--/android-gif-drawable">Android gif drawable</a>
 
 
 ## Graphics
