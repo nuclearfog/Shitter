@@ -306,20 +306,20 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 		if (!(obj instanceof Status))
 			return false;
 		Status status = ((Status) obj);
-		return status.getId() == id && status.getTimestamp() == time && status.getAuthor().equals(author);
+		return status.getId() == id && status.getTimestamp() == getTimestamp() && status.getAuthor().equals(getAuthor());
 	}
 
 
 	@Override
 	public int compareTo(Status status) {
-		return Long.compare(status.getTimestamp(), time);
+		return Long.compare(status.getTimestamp(), getTimestamp());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "from=\"" + author.getScreenname() + "\" text=\"" + text + "\"";
+		return "from=\"" + getAuthor().getScreenname() + "\" text=\"" + getText() + "\"";
 	}
 
 	/**

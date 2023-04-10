@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.PollUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.adapter.EditOptionsAdapter;
 
 /**
@@ -35,6 +37,8 @@ public class PollDialog extends Dialog implements OnClickListener {
 
 	private PollUpdateCallback callback;
 	private PollUpdate poll;
+	@Nullable
+	private Instance instance;
 
 	/**
 	 *
@@ -69,33 +73,30 @@ public class PollDialog extends Dialog implements OnClickListener {
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_poll_create) {
 			String durationStr = durationInput.getText().toString();
-			int secondsDuration;
+			int duration;
 			if (durationStr.matches("\\d{1,3}")) {
-				secondsDuration = Integer.parseInt(durationStr);
+				duration = Integer.parseInt(durationStr);
 			} else {
-				secondsDuration = 1;
+				duration = 1;
 			}
-			switch (timeUnitSelector.getSelectedItemPosition()) {
-				// minutes
-				case 0:
-					poll.setDuration(secondsDuration * 60);
-					break;
-
-				// hours
-				case 1:
-					poll.setDuration(secondsDuration * 3600);
-					break;
-
-				// days
-				case 2:
-					poll.setDuration(secondsDuration * 86400);
-					break;
+			if (timeUnitSelector.getSelectedItemPosition() == 0)
+				duration *= 60;
+			else if (timeUnitSelector.getSelectedItemPosition() == 1)
+				duration *= 3600;
+			else if (timeUnitSelector.getSelectedItemPosition() == 2)
+				duration *= 86400;
+			if (instance != null && duration < instance.getMinPollDuration()) {
+				Toast.makeText(getContext(), R.string.error_duration_time_low, Toast.LENGTH_SHORT).show();
+			} else if (instance != null && duration > instance.getMaxPollDuration()) {
+				Toast.makeText(getContext(), R.string.error_duration_time_high, Toast.LENGTH_SHORT).show();
+			} else {
+				poll.setDuration(duration);
+				poll.setMultipleChoice(multiple_choice.isChecked());
+				poll.hideVotes(hide_votes.isChecked());
+				poll.setOptions(optionAdapter.getOptions());
+				callback.onPollUpdate(poll);
+				dismiss();
 			}
-			poll.setMultipleChoice(multiple_choice.isChecked());
-			poll.hideVotes(hide_votes.isChecked());
-			poll.setOptions(optionAdapter.getOptions());
-			callback.onPollUpdate(poll);
-			dismiss();
 		} else if (v.getId() == R.id.dialog_poll_close) {
 			dismiss();
 		}
@@ -123,6 +124,13 @@ public class PollDialog extends Dialog implements OnClickListener {
 			}
 			super.show();
 		}
+	}
+
+	/**
+	 * set instance information
+	 */
+	public void setInstance(@Nullable Instance instance) {
+		this.instance = instance;
 	}
 
 	/**

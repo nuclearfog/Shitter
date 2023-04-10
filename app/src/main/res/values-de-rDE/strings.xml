@@ -293,4 +293,6 @@
 	<string name="status_translate_source">Übersetzt von:\u0020</string>
 	<string name="error_database_cleared">Fehler beim Löschen der Datanbank!</string>
 	<string name="status_translate_source_language">Sprache:\u0020</string>
+	<string name="error_duration_time_low">Dauer der Umfrage ist zu kurz!</string>
+	<string name="error_duration_time_high">Dauer der Umfrage ist zu lang!</string>
 </resources>

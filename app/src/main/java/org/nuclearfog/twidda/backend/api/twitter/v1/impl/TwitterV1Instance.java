@@ -155,16 +155,16 @@ public class TwitterV1Instance implements Instance {
 	public boolean equals(@Nullable Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof TwitterV1Instance))
+		if (!(obj instanceof Instance))
 			return false;
-		TwitterV1Instance instance = (TwitterV1Instance) obj;
-		return instance.hostname.equals(hostname);
+		Instance instance = (Instance) obj;
+		return instance.getDomain().equals(getDomain()) && instance.getTimestamp() == getTimestamp();
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "domain=\"" + getDomain() + " \" version=\"2.0\"";
+		return "domain=\"" + getDomain() + " \" version=\"" + getVersion() + "\"";
 	}
 }

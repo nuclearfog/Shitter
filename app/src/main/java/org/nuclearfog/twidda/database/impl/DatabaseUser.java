@@ -219,20 +219,20 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof User))
 			return false;
-		return ((User) obj).getId() == id;
+		return ((User) obj).getId() == getId();
 	}
 
 
 	@Override
 	public int compareTo(User o) {
-		return Long.compare(o.getTimestamp(), createdAt);
+		return Long.compare(o.getId(), getId());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "name=\"" + screen_name + "\"";
+		return "name=\"" + getScreenname() + "\"";
 	}
 
 	/**

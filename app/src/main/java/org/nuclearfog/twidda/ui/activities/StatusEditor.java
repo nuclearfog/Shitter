@@ -374,6 +374,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 */
 	private void onInstanceResult(Instance instance) {
 		statusUpdate.setInstanceInformation(instance);
+		pollDialog.setInstance(instance);
 	}
 
 	/**

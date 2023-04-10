@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/page_video_root"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:keepScreenOn="true"
+	tools:context=".ui.activities.VideoViewer">
 
 	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/page_video_toolbar"

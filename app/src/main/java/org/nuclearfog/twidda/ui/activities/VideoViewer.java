@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -110,8 +111,10 @@ public class VideoViewer extends AppCompatActivity {
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 			toolbar.setVisibility(View.GONE);
 		} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 			toolbar.setVisibility(View.VISIBLE);
 		}
 	}

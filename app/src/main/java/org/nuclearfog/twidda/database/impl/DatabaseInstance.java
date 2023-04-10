@@ -2,6 +2,9 @@ package org.nuclearfog.twidda.database.impl;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.database.DatabaseAdapter.InstanceTable;
 import org.nuclearfog.twidda.model.Instance;
 
@@ -210,5 +213,23 @@ public class DatabaseInstance implements Instance, InstanceTable {
 	@Override
 	public boolean isTranslationSupported() {
 		return translationSupported;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Instance))
+			return false;
+		Instance instance = (Instance) obj;
+		return instance.getDomain().equals(getDomain()) && instance.getTimestamp() == getTimestamp();
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "domain=\"" + getDomain() + " \" version=\"" + getVersion() + "\"";
 	}
 }

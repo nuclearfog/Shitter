@@ -66,6 +66,8 @@
 	<string name="info_missing_host">please enter correct hostname</string>
 	<string name="info_database_cleared">Database cleared</string>
 	<string name="info_notification_dismiss">Notification dismissed</string>
+	<string name="error_duration_time_low">Poll duration time too low!</string>
+	<string name="error_duration_time_high">Poll duration time too high!</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->

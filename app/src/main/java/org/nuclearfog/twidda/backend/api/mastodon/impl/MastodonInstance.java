@@ -201,16 +201,16 @@ public class MastodonInstance implements Instance {
 	public boolean equals(@Nullable Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof MastodonInstance))
+		if (!(obj instanceof Instance))
 			return false;
-		MastodonInstance instance = (MastodonInstance) obj;
-		return instance.domain.equals(domain) && instance.timestamp == timestamp;
+		Instance instance = (Instance) obj;
+		return instance.getDomain().equals(getDomain()) && instance.getTimestamp() == getTimestamp();
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "domain=\"" + domain + " \" version=\"" + version + "\"";
+		return "domain=\"" + getDomain() + " \" version=\"" + getVersion() + "\"";
 	}
 }

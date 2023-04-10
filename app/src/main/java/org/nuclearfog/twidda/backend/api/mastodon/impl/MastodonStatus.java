@@ -347,25 +347,25 @@ public class MastodonStatus implements Status {
 	}
 
 
-	@NonNull
-	@Override
-	public String toString() {
-		return author.toString() + " text=\"" + text + "\"";
-	}
-
-
-	@Override
-	public int compareTo(Status status) {
-		return Long.compare(status.getTimestamp(), createdAt);
-	}
-
-
 	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Status))
 			return false;
 		Status status = ((Status) obj);
-		return status.getId() == id && status.getTimestamp() == createdAt && status.getAuthor().equals(author);
+		return status.getId() == id && status.getTimestamp() == getTimestamp() && status.getAuthor().equals(getAuthor());
+	}
+
+
+	@Override
+	public int compareTo(Status status) {
+		return Long.compare(status.getTimestamp(), getTimestamp());
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "from=\"" + getAuthor().getScreenname() + "\" text=\"" + getText() + "\"";
 	}
 
 	/**

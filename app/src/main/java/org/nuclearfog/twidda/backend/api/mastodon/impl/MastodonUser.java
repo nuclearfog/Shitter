@@ -221,22 +221,22 @@ public class MastodonUser implements User {
 
 
 	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof User))
+			return false;
+		return ((User) obj).getId() == getId();
+	}
+
+
+	@Override
 	public int compareTo(User o) {
-		return Long.compare(o.getTimestamp(), createdAt);
+		return Long.compare(o.getId(), getId());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + id + " name=\"" + screenname + "\"";
-	}
-
-
-	@Override
-	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof User))
-			return false;
-		return ((User) obj).getId() == id;
+		return "name=\"" + getScreenname() + "\"";
 	}
 }
