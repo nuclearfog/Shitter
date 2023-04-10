@@ -93,7 +93,7 @@ public class TwitterV1Instance implements Instance {
 
 	@Override
 	public String[] getSupportedFormats() {
-		return new String[]{"image/jpeg", "image/png", "image/gif", "image/webp", "video/mp4", "video/mov", "video/3gp", "video/webm"};
+		return new String[]{"image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "video/mp4", "video/mov", "video/3gp", "video/webm"};
 	}
 
 

@@ -8,8 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import org.nuclearfog.twidda.model.Instance;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class is used to upload a message
@@ -22,6 +27,11 @@ public class MessageUpdate {
 	private MediaStatus mediaUpdate;
 	private String name = "";
 	private String text = "";
+
+	@Nullable
+	private Instance instance;
+
+	private Set<String> supportedFormats = new TreeSet<>();
 
 	/**
 	 * @param name screen name of the user
@@ -82,13 +92,18 @@ public class MessageUpdate {
 	 * @return true if file is valid
 	 */
 	public boolean addMedia(Context context, @NonNull Uri uri) {
-		// check if file is valid
 		DocumentFile file = DocumentFile.fromSingleUri(context, uri);
-		if (file != null && file.length() > 0) {
-			this.uri = uri;
-			return true;
+		String mime = context.getContentResolver().getType(uri);
+		// check if file is valid
+		if (file == null || file.length() == 0) {
+			return false;
 		}
-		return false;
+		// check if file format is supported
+		if (mime == null || !supportedFormats.contains(mime)) {
+			return false;
+		}
+		this.uri = uri;
+		return true;
 	}
 
 	/**
@@ -97,8 +112,10 @@ public class MessageUpdate {
 	 * @return true if initialization succeded
 	 */
 	public boolean prepare(ContentResolver resolver) {
-		if (uri == null)
+		if (uri == null) {
+			// no need to check media files if not attached
 			return true;
+		}
 		try {
 			String mimeType = resolver.getType(uri);
 			InputStream fileStream = resolver.openInputStream(uri);
@@ -110,6 +127,24 @@ public class MessageUpdate {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	/**
+	 * set instance imformation such as status limitations
+	 *
+	 * @param instance instance imformation
+	 */
+	public void setInstanceInformation(Instance instance) {
+		supportedFormats.addAll(Arrays.asList(instance.getSupportedFormats()));
+		this.instance = instance;
+	}
+
+	/**
+	 * get instance information
+	 */
+	@Nullable
+	public Instance getInstance() {
+		return instance;
 	}
 
 	/**

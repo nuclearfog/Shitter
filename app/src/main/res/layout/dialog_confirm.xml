@@ -45,26 +45,30 @@
 	<Button
 		android:id="@+id/confirm_no"
 		style="@style/FeedbackButton"
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="@dimen/confirm_button_height"
 		android:layout_margin="@dimen/confirm_button_margin"
 		android:padding="@dimen/confirm_button_padding"
 		android:lines="1"
 		android:text="@android:string/cancel"
 		android:textSize="@dimen/confirm_button_fontsize"
+		app:layout_constraintHorizontal_chainStyle="packed"
+		app:layout_constraintHorizontal_bias="1"
+		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/confirm_yes" />
 
 	<Button
 		android:id="@+id/confirm_yes"
 		style="@style/FeedbackButton"
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="@dimen/confirm_button_height"
 		android:layout_margin="@dimen/confirm_button_margin"
 		android:padding="@dimen/confirm_button_padding"
 		android:lines="1"
 		android:text="@android:string/ok"
 		android:textSize="@dimen/confirm_button_fontsize"
+		app:layout_constraintStart_toEndOf="@id/confirm_no"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
 

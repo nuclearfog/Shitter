@@ -6,5 +6,6 @@
 		android:id="@+id/menu_video_link"
 		android:icon="@drawable/share"
 		android:title="@string/button_share"
+		android:visible="true"
 		app:showAsAction="always" />
 </menu>

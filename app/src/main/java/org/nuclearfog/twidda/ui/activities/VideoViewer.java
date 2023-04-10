@@ -3,11 +3,13 @@ package org.nuclearfog.twidda.ui.activities;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,11 +25,11 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSource;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
-import org.nuclearfog.twidda.config.GlobalSettings;
 
 import okhttp3.Call;
 
@@ -50,8 +52,8 @@ public class VideoViewer extends AppCompatActivity {
 	 */
 	public static final String ENABLE_VIDEO_CONTROLS = "enable_controls";
 
-	private GlobalSettings settings;
 	private ExoPlayer player;
+	private Toolbar toolbar;
 
 	private Uri data;
 
@@ -65,19 +67,13 @@ public class VideoViewer extends AppCompatActivity {
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_video);
-
-		ViewGroup root = findViewById(R.id.page_video_root);
 		StyledPlayerView playerView = findViewById(R.id.page_video_player);
-		Toolbar toolbar = findViewById(R.id.page_video_toolbar);
+		toolbar = findViewById(R.id.page_video_toolbar);
 
 		player = new ExoPlayer.Builder(this).build();
-		settings = GlobalSettings.getInstance(this);
 
-		AppStyles.setTheme(root);
-		if (toolbar != null) {
-			setSupportActionBar(toolbar);
-			toolbar.setTitle("");
-		}
+		toolbar.setTitle("");
+		setSupportActionBar(toolbar);
 
 		data = getIntent().getParcelableExtra(VIDEO_URI);
 		boolean enableControls = getIntent().getBooleanExtra(ENABLE_VIDEO_CONTROLS, true);
@@ -86,15 +82,20 @@ public class VideoViewer extends AppCompatActivity {
 			player.setRepeatMode(Player.REPEAT_MODE_ONE);
 		}
 
+		DataSource.Factory dataSourceFactory;
 		MediaItem mediaItem = MediaItem.fromUri(data);
-		DataSource.Factory dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, 128000));
+		if (data.getScheme().startsWith("http")) {
+			dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, 128000));
+		} else {
+			dataSourceFactory = new DefaultDataSource.Factory(this);
+			toolbar.setVisibility(View.GONE);
+		}
 		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem);
-
 		player.setMediaSource(mediaSource);
 		playerView.setPlayer(player);
 
 		player.prepare();
-		player.play();
+		player.setPlayWhenReady(true);
 	}
 
 
@@ -106,10 +107,20 @@ public class VideoViewer extends AppCompatActivity {
 
 
 	@Override
+	public void onConfigurationChanged(@NonNull Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			toolbar.setVisibility(View.GONE);
+		} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+			toolbar.setVisibility(View.VISIBLE);
+		}
+	}
+
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.video, menu);
-		AppStyles.setMenuIconColor(menu, settings.getIconColor());
-		menu.findItem(R.id.menu_video_link).setVisible(data.getScheme().startsWith("http"));
+		AppStyles.setMenuIconColor(menu, Color.WHITE);
 		return super.onCreateOptionsMenu(menu);
 	}
 

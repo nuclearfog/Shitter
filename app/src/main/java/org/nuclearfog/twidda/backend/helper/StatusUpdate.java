@@ -13,7 +13,10 @@ import org.nuclearfog.twidda.model.Instance;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class is used to upload status information
@@ -77,6 +80,7 @@ public class StatusUpdate {
 
 	private int attachment = EMPTY;
 	private List<Uri> mediaUris = new ArrayList<>(5);
+	private Set<String> supportedFormats = new TreeSet<>();
 	private MediaStatus[] mediaUpdates = {};
 	private boolean attachmentLimitReached = false;
 	private boolean sensitive = false;
@@ -108,7 +112,7 @@ public class StatusUpdate {
 	 */
 	public int addMedia(Context context, Uri mediaUri) {
 		String mime = context.getContentResolver().getType(mediaUri);
-		if (mime == null || instance == null) {
+		if (mime == null || instance == null || !supportedFormats.contains(mime)) {
 			return MEDIA_ERROR;
 		}
 		// check if file is a 'gif' image
@@ -223,6 +227,7 @@ public class StatusUpdate {
 	 * @param instance instance imformation
 	 */
 	public void setInstanceInformation(Instance instance) {
+		supportedFormats.addAll(Arrays.asList(instance.getSupportedFormats()));
 		this.instance = instance;
 	}
 
@@ -323,6 +328,14 @@ public class StatusUpdate {
 	 */
 	public boolean mediaLimitReached() {
 		return attachmentLimitReached;
+	}
+
+	/**
+	 * get instance information
+	 */
+	@Nullable
+	public Instance getInstance() {
+		return instance;
 	}
 
 	/**

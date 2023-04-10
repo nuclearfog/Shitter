@@ -22,11 +22,13 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.MessageUpdater;
 import org.nuclearfog.twidda.backend.async.MessageUpdater.MessageUpdateResult;
 import org.nuclearfog.twidda.backend.helper.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
@@ -37,7 +39,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
  *
  * @author nuclearfog
  */
-public class MessageEditor extends MediaActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<MessageUpdateResult> {
+public class MessageEditor extends MediaActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
 
 	/**
 	 * key for the screenname if any
@@ -45,7 +47,11 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	 */
 	public static final String KEY_DM_PREFIX = "dm_prefix";
 
-	private MessageUpdater messageAsync;
+	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
+	private AsyncCallback<MessageUpdateResult> messageResult = this::onMessageResult;
+
+	private InstanceLoader instanceLoader;
+	private MessageUpdater messageUpdater;
 
 	private ProgressDialog loadingCircle;
 	private ConfirmDialog confirmDialog;
@@ -53,7 +59,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	private EditText receiver, message;
 	private ImageButton media, preview;
 
-	private MessageUpdate holder = new MessageUpdate();
+	private MessageUpdate messageUpdate = new MessageUpdate();
 
 	@Override
 	protected void attachBaseContext(Context newBase) {
@@ -74,7 +80,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		message = findViewById(R.id.popup_message_text);
 		AppStyles.setEditorTheme(root, background);
 
-		messageAsync = new MessageUpdater(this);
+		messageUpdater = new MessageUpdater(this);
+		instanceLoader = new InstanceLoader(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
 
@@ -87,12 +94,23 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		preview.setOnClickListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		confirmDialog.setConfirmListener(this);
+
+
+	}
+
+
+	@Override
+	protected void onResume() {
+		if (messageUpdate.getInstance() == null) {
+			instanceLoader.execute(null, instanceResult);
+		}
+		super.onResume();
 	}
 
 
 	@Override
 	public void onBackPressed() {
-		if (receiver.getText().length() == 0 && message.getText().length() == 0 && holder.getMediaUri() == null) {
+		if (receiver.getText().length() == 0 && message.getText().length() == 0 && messageUpdate.getMediaUri() == null) {
 			loadingCircle.dismiss();
 			super.onBackPressed();
 		} else {
@@ -103,9 +121,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	protected void onDestroy() {
-		messageAsync.cancel();
-		if (holder != null)
-			holder.close();
+		messageUpdater.cancel();
+		if (messageUpdate != null)
+			messageUpdate.close();
 		super.onDestroy();
 	}
 
@@ -118,7 +136,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	@Override
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
 		if (resultType == REQUEST_IMAGE) {
-			if (holder.addMedia(this, uri)) {
+			if (messageUpdate.addMedia(this, uri)) {
 				preview.setVisibility(VISIBLE);
 				media.setVisibility(GONE);
 			} else {
@@ -132,7 +150,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	public void onClick(View v) {
 		// send direct message
 		if (v.getId() == R.id.popup_message_send) {
-			if (messageAsync.isIdle()) {
+			if (messageUpdater.isIdle()) {
 				sendMessage();
 			}
 		}
@@ -142,9 +160,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		}
 		// open media
 		else if (v.getId() == R.id.popup_message_preview) {
-			if (holder.getMediaUri() != null) {
+			if (messageUpdate.getMediaUri() != null) {
 				Intent image = new Intent(this, ImageViewer.class);
-				image.putExtra(ImageViewer.IMAGE_URI, holder.getMediaUri());
+				image.putExtra(ImageViewer.IMAGE_URI, messageUpdate.getMediaUri());
 				startActivity(image);
 			}
 		}
@@ -153,7 +171,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	public void stopProgress() {
-		messageAsync.cancel();
+		messageUpdater.cancel();
 	}
 
 
@@ -169,9 +187,30 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		}
 	}
 
+	/**
+	 * check inputs and send message
+	 */
+	private void sendMessage() {
+		String username = receiver.getText().toString();
+		String message = this.message.getText().toString();
+		if (!username.trim().isEmpty() && (!message.trim().isEmpty() || messageUpdate.getMediaUri() != null)) {
+			if (messageUpdate.prepare(getContentResolver())) {
+				messageUpdate.setReceiver(username);
+				messageUpdate.setText(message);
+				messageUpdater.execute(messageUpdate, messageResult);
+				loadingCircle.show();
+			} else {
+				Toast.makeText(getApplicationContext(), R.string.error_media_init, LENGTH_SHORT).show();
+			}
+		} else {
+			Toast.makeText(getApplicationContext(), R.string.error_dm, LENGTH_SHORT).show();
+		}
+	}
 
-	@Override
-	public void onResult(@NonNull MessageUpdateResult result) {
+	/**
+	 *
+	 */
+	private void onMessageResult(@NonNull MessageUpdateResult result) {
 		if (result.success) {
 			Toast.makeText(getApplicationContext(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
 			finish();
@@ -183,22 +222,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	}
 
 	/**
-	 * check inputs and send message
+	 *
 	 */
-	private void sendMessage() {
-		String username = receiver.getText().toString();
-		String message = this.message.getText().toString();
-		if (!username.trim().isEmpty() && (!message.trim().isEmpty() || holder.getMediaUri() != null)) {
-			if (holder.prepare(getContentResolver())) {
-				holder.setReceiver(username);
-				holder.setText(message);
-				messageAsync.execute(holder, this);
-				loadingCircle.show();
-			} else {
-				Toast.makeText(getApplicationContext(), R.string.error_media_init, LENGTH_SHORT).show();
-			}
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_dm, LENGTH_SHORT).show();
-		}
+	private void onInstanceResult(Instance instance) {
+		messageUpdate.setInstanceInformation(instance);
 	}
 }

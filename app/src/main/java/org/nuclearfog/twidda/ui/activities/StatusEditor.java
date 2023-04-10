@@ -127,8 +127,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 		iconList.setAdapter(adapter);
 
-		instanceLoader.execute(null, instanceResult);
-
 		statusText.addTextChangedListener(this);
 		closeButton.setOnClickListener(this);
 		preference.setOnClickListener(this);
@@ -139,12 +137,17 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		confirmDialog.setConfirmListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		adapter.addOnMediaClickListener(this);
+
+
 	}
 
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (statusUpdate.getInstance() == null) {
+			instanceLoader.execute(null, instanceResult);
+		}
 		if (settings.getLogin().getConfiguration().locationSupported()) {
 			if (isLocating()) {
 				locationPending.setVisibility(View.VISIBLE);
