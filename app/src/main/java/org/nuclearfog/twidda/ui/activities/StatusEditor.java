@@ -308,17 +308,24 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		Uri[] uris = statusUpdate.getMediaUris();
 		switch (statusUpdate.getAttachmentType()) {
 			case StatusUpdate.MEDIA_IMAGE:
+				Intent intent = new Intent(this, ImageViewer.class);
+				intent.putExtra(ImageViewer.IMAGE_URI, uris[index]);
+				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+				startActivity(intent);
+				break;
+
 			case StatusUpdate.MEDIA_GIF:
-				Intent mediaViewer = new Intent(this, ImageViewer.class);
-				mediaViewer.putExtra(ImageViewer.IMAGE_URI, uris[index]);
-				startActivity(mediaViewer);
+				intent = new Intent(this, ImageViewer.class);
+				intent.putExtra(ImageViewer.IMAGE_URI, uris[index]);
+				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_GIF);
+				startActivity(intent);
 				break;
 
 			case StatusUpdate.MEDIA_VIDEO:
-				mediaViewer = new Intent(this, VideoViewer.class);
-				mediaViewer.putExtra(VideoViewer.VIDEO_URI, uris[0]);
-				mediaViewer.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-				startActivity(mediaViewer);
+				intent = new Intent(this, VideoViewer.class);
+				intent.putExtra(VideoViewer.VIDEO_URI, uris[0]);
+				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+				startActivity(intent);
 				break;
 		}
 	}

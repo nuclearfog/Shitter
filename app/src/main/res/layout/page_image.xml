@@ -29,6 +29,15 @@
 		app:max_zoom_in="10.0"
 		app:max_zoom_out="0.5" />
 
+	<pl.droidsonroids.gif.GifImageView
+		android:id="@+id/page_image_gif"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
 	<ProgressBar
 		android:id="@+id/page_image_progress"
 		android:layout_width="@dimen/mediapage_circle_size"

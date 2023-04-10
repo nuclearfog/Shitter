@@ -1,13 +1,11 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.view.View.INVISIBLE;
-
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,6 +25,8 @@ import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
 
+import pl.droidsonroids.gif.GifImageView;
+
 /**
  * Activity to show online and local images
  *
@@ -35,10 +35,26 @@ import java.io.File;
 public class ImageViewer extends MediaActivity implements AsyncCallback<ImageResult> {
 
 	/**
+	 * indicates a default image (jpg, png, etc.)
+	 */
+	public static final int IMAGE_DEFAULT = 1;
+
+	/**
+	 * indicates an animated image (gif)
+	 */
+	public static final int IMAGE_GIF = 2;
+
+	/**
 	 * key to add URI of the image (online or local)
 	 * value type is {@link Uri}
 	 */
 	public static final String IMAGE_URI = "image-uri";
+
+	/**
+	 * key to set image format (image or gif)
+	 * value type is Integer {@link #IMAGE_DEFAULT,#IMAGE_GIF}
+	 */
+	public static final String IMAGE_TYPE = "image-type";
 
 	/**
 	 * name of the cache folder where online images will be stored
@@ -47,6 +63,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	private static final String CACHE_FOLDER = "imagecache";
 
 	private ZoomView zoomImage;
+	private GifImageView gifImage;
 	private ProgressBar loadingCircle;
 
 	@Nullable
@@ -56,6 +73,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	private GlobalSettings settings;
 	private File cacheFolder;
 	private boolean enableSave = false;
+	private int mode = 0;
 
 
 	@Override
@@ -65,6 +83,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		Toolbar toolbar = findViewById(R.id.page_image_toolbar);
 		loadingCircle = findViewById(R.id.page_image_progress);
 		zoomImage = findViewById(R.id.page_image_viewer);
+		gifImage = findViewById(R.id.page_image_gif);
 
 		settings = GlobalSettings.getInstance(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
@@ -75,18 +94,35 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
 		cacheFolder.mkdirs();
 
-		Parcelable data = getIntent().getParcelableExtra(IMAGE_URI);
-		if (data instanceof Uri) {
-			Uri uri = (Uri) data;
-			if (uri.getScheme().startsWith("http")) {
-				ImageParameter request = new ImageParameter(uri, cacheFolder);
-				imageAsync = new ImageLoader(this);
-				imageAsync.execute(request, this);
-				enableSave = true;
-			} else {
-				zoomImage.setImageURI(uri);
-				loadingCircle.setVisibility(INVISIBLE);
-			}
+		Uri data = getIntent().getParcelableExtra(IMAGE_URI);
+		mode = getIntent().getIntExtra(IMAGE_TYPE, IMAGE_DEFAULT);
+		boolean isLocalFile = !data.getScheme().startsWith("http");
+
+		switch (mode) {
+			case IMAGE_DEFAULT:
+				zoomImage.setVisibility(View.VISIBLE);
+				gifImage.setVisibility(View.INVISIBLE);
+				if (isLocalFile) {
+					zoomImage.setImageURI(data);
+				}
+				break;
+
+			case IMAGE_GIF:
+				zoomImage.setVisibility(View.INVISIBLE);
+				gifImage.setVisibility(View.VISIBLE);
+				if (isLocalFile) {
+					gifImage.setImageURI(data);
+				}
+				break;
+		}
+		if (!isLocalFile) {
+			ImageParameter request = new ImageParameter(data, cacheFolder);
+			imageAsync = new ImageLoader(this);
+			imageAsync.execute(request, this);
+			enableSave = true;
+		} else {
+			loadingCircle.setVisibility(View.INVISIBLE);
+			toolbar.setVisibility(View.GONE);
 		}
 	}
 
@@ -133,10 +169,18 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	@Override
 	public void onResult(@NonNull ImageResult result) {
 		if (result.uri != null) {
+			loadingCircle.setVisibility(View.INVISIBLE);
 			cacheUri = result.uri;
-			zoomImage.reset();
-			zoomImage.setImageURI(cacheUri);
-			loadingCircle.setVisibility(INVISIBLE);
+			switch (mode) {
+				case IMAGE_DEFAULT:
+					zoomImage.reset();
+					zoomImage.setImageURI(cacheUri);
+					break;
+
+				case IMAGE_GIF:
+					gifImage.setImageURI(cacheUri);
+					break;
+			}
 		} else {
 			String message = ErrorHandler.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

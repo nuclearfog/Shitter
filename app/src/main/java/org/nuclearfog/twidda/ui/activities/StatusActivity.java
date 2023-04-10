@@ -697,6 +697,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (!imageUrl.isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
 				intent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(card.getImageUrl()));
+				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 			}
 		}
@@ -707,9 +708,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onMediaClick(Media media) {
 		Uri uri = Uri.parse(media.getUrl());
 		if (media.getMediaType() == Media.PHOTO) {
-			Intent mediaIntent = new Intent(this, ImageViewer.class);
-			mediaIntent.putExtra(ImageViewer.IMAGE_URI, uri);
-			startActivity(mediaIntent);
+			Intent intent = new Intent(this, ImageViewer.class);
+			intent.putExtra(ImageViewer.IMAGE_URI, uri);
+			intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+			startActivity(intent);
 		} else if (media.getMediaType() == Media.VIDEO) {
 			Intent intent = new Intent(this, VideoViewer.class);
 			intent.putExtra(VideoViewer.VIDEO_URI, uri);
