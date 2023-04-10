@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_REPLYID;
+import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_DATA;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
@@ -544,7 +544,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			if (v.getId() == R.id.page_status_reply) {
 				String prefix = status.getUserMentions();
 				Intent intent = new Intent(this, StatusEditor.class);
-				intent.putExtra(KEY_STATUS_EDITOR_REPLYID, status.getId());
+				intent.putExtra(KEY_STATUS_EDITOR_DATA, status);
 				if (!prefix.isEmpty())
 					intent.putExtra(KEY_STATUS_EDITOR_TEXT, prefix);
 				startActivity(intent);

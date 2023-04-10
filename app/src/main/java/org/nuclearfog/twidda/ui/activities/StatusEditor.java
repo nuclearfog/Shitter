@@ -31,6 +31,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Instance;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -50,10 +51,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		OnMediaClickListener, TextWatcher, PollUpdateCallback {
 
 	/**
-	 * key to add a statusd ID to reply
-	 * value type is Long
+	 * key to add the status to reply
+	 * value type is {@link Status}
 	 */
-	public static final String KEY_STATUS_EDITOR_REPLYID = "status_reply_id";
+	public static final String KEY_STATUS_EDITOR_DATA = "status_data";
 
 	/**
 	 * key for the text added to the status if any
@@ -116,9 +117,16 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
 			locationBtn.setVisibility(View.GONE);
 		}
-		long inReplyId = getIntent().getLongExtra(KEY_STATUS_EDITOR_REPLYID, 0L);
+		long replyId = 0L;
+		Object data = getIntent().getSerializableExtra(KEY_STATUS_EDITOR_DATA);
+		if (data instanceof Status) {
+			Status status = (Status) data;
+			replyId = status.getId();
+			statusUpdate.setVisibility(status.getVisibility());
+		}
+
 		String prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
-		statusUpdate.addReplyStatusId(inReplyId);
+		statusUpdate.addReplyStatusId(replyId);
 		if (prefix != null) {
 			statusText.append(prefix);
 		}

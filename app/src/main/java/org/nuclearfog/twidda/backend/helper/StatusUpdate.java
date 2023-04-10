@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import org.nuclearfog.twidda.model.Instance;
+import org.nuclearfog.twidda.model.Status;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,14 +56,6 @@ public class StatusUpdate {
 	 */
 	private static final int POLL = 4;
 
-	/**
-	 * status visibility
-	 */
-	public static final int PUBLIC = 10;
-	public static final int UNLISTED = 11;
-	public static final int DIRECT = 12;
-	public static final int PRIVATE = 13;
-
 	private static final String MIME_GIF = "image/gif";
 	private static final String MIME_IMAGE_ALL = "image/";
 	private static final String MIME_VIDEO_ALL = "video/";
@@ -78,15 +71,14 @@ public class StatusUpdate {
 	@Nullable
 	private Instance instance;
 
-	private int attachment = EMPTY;
 	private List<Uri> mediaUris = new ArrayList<>(5);
 	private Set<String> supportedFormats = new TreeSet<>();
 	private MediaStatus[] mediaUpdates = {};
 	private boolean attachmentLimitReached = false;
 	private boolean sensitive = false;
 	private boolean spoiler = false;
-	private int visibility = PUBLIC;
-
+	private int visibility = Status.VISIBLE_PUBLIC;
+	private int attachment = EMPTY;
 
 	/**
 	 * set ID of the replied status
@@ -201,7 +193,7 @@ public class StatusUpdate {
 	/**
 	 * set status visibility
 	 *
-	 * @param visibility visibility states {@link #PUBLIC,#PRIVATE,#UNLISTED,#DIRECT}
+	 * @param visibility visibility states {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DIRECT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
 	 */
 	public void setVisibility(int visibility) {
 		this.visibility = visibility;
@@ -315,7 +307,7 @@ public class StatusUpdate {
 	/**
 	 * get visibility states
 	 *
-	 * @return visibility states {@link #PUBLIC,#PRIVATE,#UNLISTED,#DIRECT}
+	 * @return visibility states {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DIRECT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
 	 */
 	public int getVisibility() {
 		return visibility;

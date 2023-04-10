@@ -36,6 +36,7 @@ public class MastodonStatus implements Status {
 	private int replyCount;
 	private int favoriteCount;
 	private int reblogCount;
+	private int visibility;
 	private boolean favorited;
 	private boolean reposted;
 	private boolean bookmarked;
@@ -71,6 +72,7 @@ public class MastodonStatus implements Status {
 		String replyIdStr = json.optString("in_reply_to_id", "0");
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
 		String idStr = json.getString("id");
+		String visibilityStr = json.getString("visibility");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 		createdAt = StringTools.getTime(json.optString("created_at"), StringTools.TIME_MASTODON);
@@ -133,6 +135,24 @@ public class MastodonStatus implements Status {
 			if (!language.equals(Locale.getDefault().getLanguage())) {
 				this.language = language;
 			}
+		}
+		switch (visibilityStr) {
+			default:
+			case "public":
+				visibility = VISIBLE_PUBLIC;
+				break;
+
+			case "private":
+				visibility = VISIBLE_PRIVATE;
+				break;
+
+			case "direct":
+				visibility = VISIBLE_DIRECT;
+				break;
+
+			case "unlisted":
+				visibility = VISIBLE_UNLISTED;
+				break;
 		}
 		try {
 			id = Long.parseLong(idStr);
@@ -222,6 +242,12 @@ public class MastodonStatus implements Status {
 	@Override
 	public int getReplyCount() {
 		return replyCount;
+	}
+
+
+	@Override
+	public int getVisibility() {
+		return visibility;
 	}
 
 

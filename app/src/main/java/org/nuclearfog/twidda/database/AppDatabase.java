@@ -113,6 +113,21 @@ public class AppDatabase {
 	public static final int MASK_STATUS_BOOKMARKED = 1 << 10;
 
 	/**
+	 * status visibility flag {@link Status#VISIBLE_UNLISTED}
+	 */
+	public static final int MASK_STATUS_VISIBILITY_UNLISTED = 1 << 11;
+
+	/**
+	 * status visibility flag {@link Status#VISIBLE_PRIVATE}
+	 */
+	public static final int MASK_STATUS_VISIBILITY_PRIVATE = 2 << 11;
+
+	/**
+	 * status visibility flag {@link Status#VISIBLE_DIRECT}
+	 */
+	public static final int MASK_STATUS_VISIBILITY_DIRECT = 3 << 11;
+
+	/**
 	 * flag indicates that an user is verified
 	 */
 	public static final int MASK_USER_VERIFIED = 1;
@@ -1560,6 +1575,22 @@ public class AppDatabase {
 			flags |= MASK_STATUS_BOOKMARKED;
 		} else {
 			flags &= ~MASK_STATUS_BOOKMARKED;
+		}
+		switch (status.getVisibility()) {
+			case Status.VISIBLE_DIRECT:
+				flags |= MASK_STATUS_VISIBILITY_DIRECT;
+				break;
+
+			case Status.VISIBLE_UNLISTED:
+				flags |= MASK_STATUS_VISIBILITY_UNLISTED;
+				break;
+
+			case Status.VISIBLE_PRIVATE:
+				flags |= MASK_STATUS_VISIBILITY_PRIVATE;
+				break;
+
+			default:
+				flags &= ~MASK_STATUS_VISIBILITY_DIRECT;
 		}
 		ContentValues column = new ContentValues(20);
 		column.put(StatusTable.ID, status.getId());

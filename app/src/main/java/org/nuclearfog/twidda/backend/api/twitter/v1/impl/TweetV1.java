@@ -220,6 +220,12 @@ public class TweetV1 implements Status {
 	}
 
 
+	@Override
+	public int getVisibility() {
+		return author.isProtected() ? VISIBLE_PRIVATE : VISIBLE_PUBLIC;
+	}
+
+
 	@NonNull
 	@Override
 	public Media[] getMedia() {

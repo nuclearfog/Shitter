@@ -6,6 +6,9 @@ import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_HIDDEN;
 import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_SENSITIVE;
 import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_REPOSTED;
 import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_SPOILER;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_VISIBILITY_DIRECT;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_VISIBILITY_PRIVATE;
+import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_VISIBILITY_UNLISTED;
 
 import android.database.Cursor;
 
@@ -39,7 +42,7 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 	private static final Pattern KEY_SEPARATOR = Pattern.compile(";");
 
 	private long id, time, embeddedId, replyID, replyUserId, myRepostId, locationId, pollId;
-	private int repostCount, favoriteCount, replyCount;
+	private int repostCount, favoriteCount, replyCount, visibility;
 	private boolean reposted, favorited, bookmarked, sensitive, spoiler, isHidden;
 	private Status embedded;
 	private Poll poll;
@@ -90,6 +93,14 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 		bookmarked = (register & MASK_STATUS_BOOKMARKED) != 0;
 		spoiler = (register & MASK_STATUS_SPOILER) != 0;
 
+		if ((register & MASK_STATUS_VISIBILITY_DIRECT) != 0)
+			visibility = VISIBLE_DIRECT;
+		else if ((register & MASK_STATUS_VISIBILITY_PRIVATE) != 0)
+			visibility = VISIBLE_PRIVATE;
+		else if ((register & MASK_STATUS_VISIBILITY_UNLISTED) != 0)
+			visibility = VISIBLE_UNLISTED;
+		else
+			visibility = VISIBLE_PUBLIC;
 		if (mediaKeys != null && !mediaKeys.isEmpty())
 			this.mediaKeys = KEY_SEPARATOR.split(mediaKeys);
 		if (emojiKeys != null && !emojiKeys.isEmpty())
@@ -185,6 +196,12 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 	@Override
 	public int getReplyCount() {
 		return replyCount;
+	}
+
+
+	@Override
+	public int getVisibility() {
+		return visibility;
 	}
 
 

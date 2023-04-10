@@ -13,6 +13,26 @@ import java.io.Serializable;
 public interface Status extends Serializable, Comparable<Status> {
 
 	/**
+	 * Status is visible to everyone, shown in public timelines.
+	 */
+	int VISIBLE_PUBLIC = 1;
+
+	/**
+	 * Status is visible to followers only, and to any mentioned users.
+	 */
+	int VISIBLE_PRIVATE = 2;
+
+	/**
+	 * Status is visible only to mentioned users.
+	 */
+	int VISIBLE_DIRECT = 3;
+
+	/**
+	 * Status is visible to public, but not included in public timelines.
+	 */
+	int VISIBLE_UNLISTED = 4;
+
+	/**
 	 * @return status ID
 	 */
 	long getId();
@@ -77,6 +97,13 @@ public interface Status extends Serializable, Comparable<Status> {
 	 * @return number of replies
 	 */
 	int getReplyCount();
+
+	/**
+	 * get status visibility
+	 *
+	 * @return {@link #VISIBLE_DIRECT,#VISIBLE_PRIVATE,#VISIBLE_PUBLIC}
+	 */
+	int getVisibility();
 
 	/**
 	 * @return mentioned user names in the status text

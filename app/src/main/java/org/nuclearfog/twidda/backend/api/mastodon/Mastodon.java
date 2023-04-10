@@ -606,11 +606,11 @@ public class Mastodon implements Connection {
 			params.add("status=" + StringTools.encode(update.getText()));
 		if (update.getReplyId() != 0)
 			params.add("in_reply_to_id=" + update.getReplyId());
-		if (update.getVisibility() == StatusUpdate.DIRECT)
+		if (update.getVisibility() == Status.VISIBLE_DIRECT)
 			params.add("visibility=direct");
-		else if (update.getVisibility() == StatusUpdate.PRIVATE)
+		else if (update.getVisibility() == Status.VISIBLE_PRIVATE)
 			params.add("visibility=private");
-		else if (update.getVisibility() == StatusUpdate.UNLISTED)
+		else if (update.getVisibility() == Status.VISIBLE_UNLISTED)
 			params.add("visibility=unlisted");
 		else
 			params.add("visibility=public");
