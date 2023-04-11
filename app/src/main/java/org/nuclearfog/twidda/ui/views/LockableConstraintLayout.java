@@ -16,7 +16,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 
 	@Nullable
 	private LockCallback callback;
-	private boolean lock = true;
+	private boolean lock = false;
 	private float yPos = 0.0f;
 
 	/**
@@ -42,7 +42,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				break;
 
 			case MotionEvent.ACTION_MOVE:
-				if (ev.getY() < yPos && callback != null) {
+				if (ev.getY() < yPos && callback != null) {// scroll down
 					lock = callback.aquireLock();
 				}
 				yPos = ev.getY();

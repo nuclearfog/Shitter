@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 /**
- * {@link LinearLayout} implementation with child scroll lock
+ * Vertical {@link LinearLayout} implementation with child scroll lock
  *
  * @author nuclearfog
  */
@@ -16,7 +16,7 @@ public class LockableLinearLayout extends LinearLayout {
 
 	@Nullable
 	private LockCallback callback;
-	private boolean lock = true;
+	private boolean lock = false;
 	private float yPos = 0.0f;
 
 	/**
@@ -32,6 +32,22 @@ public class LockableLinearLayout extends LinearLayout {
 	 */
 	public LockableLinearLayout(Context context, AttributeSet attr) {
 		super(context, attr);
+		setOrientation(VERTICAL);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public LockableLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		setOrientation(VERTICAL);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public LockableLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+		super(context, attrs, defStyleAttr, defStyleRes);
 		setOrientation(VERTICAL);
 	}
 
