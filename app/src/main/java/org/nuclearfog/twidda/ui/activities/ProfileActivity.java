@@ -29,7 +29,6 @@ import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -82,6 +81,8 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.views.LockableLinearLayout;
+import org.nuclearfog.twidda.ui.views.LockableLinearLayout.LockCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -94,7 +95,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  */
 public class ProfileActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnScrollChangeListener,
-		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback {
+		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback, LockCallback {
 
 	/**
 	 * Key for the user ID
@@ -135,6 +136,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	public static final int TOOLBAR_TRANSPARENCY = 0x5fffffff;
 
+	/**
+	 * scrollview position threshold to lock/unlock child scrolling
+	 */
+	private static final int SCROLL_THRESHOLD = 10;
+
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<RelationResult> relationCallback = this::setRelationResult;
 	private AsyncCallback<UserResult> userCallback = this::setUserResult;
@@ -152,7 +158,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	private NestedScrollView root;
 	private ConstraintLayout header;
-	private ViewGroup body;
+	private LockableLinearLayout body;
 	private TextView[] tabIndicator;
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
@@ -269,6 +275,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		user_website.setOnClickListener(this);
 		confirmDialog.setConfirmListener(this);
 		root.setOnScrollChangeListener(this);
+		body.addLockCallback(this);
 	}
 
 
@@ -629,11 +636,13 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-		if (scrollY == header.getMeasuredHeight()) {
-			// unlock child scrolling
-		} else {
-			// lock child view from scrolling
-		}
+		body.lock(scrollY > header.getMeasuredHeight() + SCROLL_THRESHOLD && scrollY < header.getMeasuredHeight() - SCROLL_THRESHOLD);
+	}
+
+
+	@Override
+	public boolean aquireLock() {
+		return root.getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
 	}
 
 

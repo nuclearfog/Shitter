@@ -218,9 +218,8 @@
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
-		<LinearLayout
+		<org.nuclearfog.twidda.ui.views.LockableLinearLayout
 			android:id="@+id/page_profile_body"
-			android:orientation="vertical"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
 
@@ -236,7 +235,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent" />
 
-		</LinearLayout>
+		</org.nuclearfog.twidda.ui.views.LockableLinearLayout>
 
 	</LinearLayout>
 

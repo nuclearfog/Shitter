@@ -39,6 +39,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,6 +87,8 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
+import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
+import org.nuclearfog.twidda.ui.views.LockableConstraintLayout.LockCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -99,7 +102,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class StatusActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener, OnConfirmListener, OnCardClickListener {
+public class StatusActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener,
+		OnConfirmListener, OnCardClickListener, OnScrollChangeListener, LockCallback {
 
 	/**
 	 * Activity result code to update existing status information
@@ -187,6 +191,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	public static final Pattern TWITTER_LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
+	/**
+	 * scrollview position threshold to lock/unlock child scrolling
+	 */
+	private static final int SCROLL_THRESHOLD = 10;
+
 	private static final int MENU_GROUP_COPY = 0x157426;
 
 	private AsyncCallback<StatusResult> statusCallback = this::onStatusResult;
@@ -210,8 +219,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private ConfirmDialog confirmDialog;
 	private MetricsDialog metricsDialog;
 
+	private ViewGroup root, header;
 	private NestedScrollView container;
-	private ViewGroup root, body;
+	private LockableConstraintLayout body;
 	private TextView statusApi, createdAt, statusText, screenName, username, locationName, sensitive, spoiler, spoilerHint, translateText;
 	private Button replyButton, repostButton, likeButton, replyName, repostNameButton;
 	private ImageView profileImage;
@@ -236,6 +246,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_status);
 		root = findViewById(R.id.page_status_root);
+		header = findViewById(R.id.page_status_header);
 		body = findViewById(R.id.page_status_body);
 		container = findViewById(R.id.page_status_scroll);
 		toolbar = findViewById(R.id.page_status_toolbar);
@@ -361,6 +372,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repostNameButton.setOnLongClickListener(this);
 		locationName.setOnLongClickListener(this);
 		statusText.setOnClickListener(this);
+		container.setOnScrollChangeListener(this);
+		body.addLockCallback(this);
 	}
 
 
@@ -664,6 +677,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		}
 		return false;
+	}
+
+
+	@Override
+	public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+		body.lock(scrollY > header.getMeasuredHeight() + SCROLL_THRESHOLD && scrollY < header.getMeasuredHeight() - SCROLL_THRESHOLD);
+	}
+
+
+	@Override
+	public boolean aquireLock() {
+		return container.getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
 	}
 
 

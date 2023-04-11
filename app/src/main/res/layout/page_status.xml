@@ -250,7 +250,7 @@
 
 			</androidx.constraintlayout.widget.ConstraintLayout>
 
-			<androidx.constraintlayout.widget.ConstraintLayout
+			<org.nuclearfog.twidda.ui.views.LockableConstraintLayout
 				android:id="@+id/page_status_body"
 				android:orientation="vertical"
 				android:layout_width="match_parent"
@@ -317,7 +317,7 @@
 					app:layout_constraintEnd_toEndOf="parent"
 					tools:layout="@layout/page_list" />
 
-			</androidx.constraintlayout.widget.ConstraintLayout>
+			</org.nuclearfog.twidda.ui.views.LockableConstraintLayout>
 
 		</LinearLayout>
 
