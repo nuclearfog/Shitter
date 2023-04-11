@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.v2.impl;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -98,20 +99,22 @@ public class PollV2 implements Poll {
 
 
 	@Override
-	public int compareTo(Poll o) {
-		return Long.compare(id, o.getId());
+	public boolean equals(Object o) {
+		return o instanceof Poll && ((Poll)o).getId() == getId();
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		StringBuilder optionsBuf = new StringBuilder(" options=(");
-		for (Option option : options) {
-			optionsBuf.append(option).append(',');
+		StringBuilder optionsBuf = new StringBuilder();
+		if (getOptions().length > 0) {
+			optionsBuf.append(" options=(");
+			for (Option option : getOptions())
+				optionsBuf.append(option).append(',');
+			optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
 		}
-		optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
-		return "id=" + id + " expired=" + expired + " options=" + optionsBuf;
+		return "id=" + getId() + " expired=" + expirationTime() + optionsBuf;
 	}
 
 	/**
@@ -148,7 +151,7 @@ public class PollV2 implements Poll {
 
 
 		@Override
-		public boolean selected() {
+		public boolean isSelected() {
 			return selected;
 		}
 
@@ -156,7 +159,13 @@ public class PollV2 implements Poll {
 		@NonNull
 		@Override
 		public String toString() {
-			return "title=\"" + title + "\" votes=" + voteCount + " selected=" + selected;
+			return "title=\"" + getTitle() + "\" votes=" + getVotes() + " selected=" + isSelected();
+		}
+
+
+		@Override
+		public boolean equals(@Nullable Object obj) {
+			return obj instanceof Option && ((Option) obj).getTitle().equals(getTitle());
 		}
 	}
 }

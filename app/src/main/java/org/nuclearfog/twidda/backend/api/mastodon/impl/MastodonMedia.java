@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api.mastodon.impl;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,8 +96,14 @@ public class MastodonMedia implements Media {
 
 
 	@Override
+	public boolean equals(@Nullable Object obj) {
+		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
+	}
+
+
+	@Override
 	public int compareTo(Media o) {
-		return String.CASE_INSENSITIVE_ORDER.compare(key, o.getKey());
+		return String.CASE_INSENSITIVE_ORDER.compare(getKey(), o.getKey());
 	}
 
 
@@ -104,7 +111,7 @@ public class MastodonMedia implements Media {
 	@Override
 	public String toString() {
 		String tostring;
-		switch (type) {
+		switch (getMediaType()) {
 			case PHOTO:
 				tostring = "photo:";
 				break;
@@ -121,7 +128,6 @@ public class MastodonMedia implements Media {
 				tostring = "none:";
 				break;
 		}
-		tostring += "url=\"" + url + "\"";
-		return tostring;
+		return tostring + "url=\"" + getUrl() + "\"";
 	}
 }

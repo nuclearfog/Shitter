@@ -100,13 +100,13 @@ public class MastodonList implements UserList {
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + id + " title=\"" + title + "\"";
+		return "id=" + getId() + " title=\"" + getTitle() + "\"";
 	}
 
 
 	@Override
 	public int compareTo(UserList userlist) {
-		return Long.compare(userlist.getId(), id);
+		return Long.compare(userlist.getId(), getId());
 	}
 
 
@@ -114,6 +114,6 @@ public class MastodonList implements UserList {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof UserList))
 			return false;
-		return ((UserList) obj).getId() == id;
+		return ((UserList) obj).getId() == getId();
 	}
 }

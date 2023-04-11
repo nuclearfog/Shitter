@@ -117,24 +117,24 @@ public class UserListV1 implements UserList {
 	}
 
 
-	@Override
-	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof UserList))
-			return false;
-		return ((UserList) obj).getId() == id;
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {
-		return "title=\"" + title + "\" description=\"" + description + "\"";
+		return "id=" + getId() + " title=\"" + getTitle() + "\"";
 	}
 
 
 	@Override
 	public int compareTo(UserList userlist) {
-		return Long.compare(userlist.getTimestamp(), timestamp);
+		return Long.compare(userlist.getId(), getId());
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof UserList))
+			return false;
+		return ((UserList) obj).getId() == getId();
 	}
 
 	/**

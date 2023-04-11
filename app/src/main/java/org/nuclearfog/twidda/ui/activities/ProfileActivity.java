@@ -377,7 +377,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				MenuItem muteIcon = m.findItem(R.id.profile_mute);
 				muteIcon.setTitle(R.string.menu_unmute_user);
 			}
-			if (relation.canDm()) {
+			if (relation.privateMessagingEnabled()) {
 				MenuItem dmIcon = m.findItem(R.id.profile_message);
 				dmIcon.setVisible(true);
 			}

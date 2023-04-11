@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
 import android.util.Patterns;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Card;
@@ -57,5 +59,12 @@ public class MastodonCard implements Card {
 	@Override
 	public String getImageUrl() {
 		return imageLink;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "title=\"" + getTitle() + " \" description=\"" + getDescription() + "\"";
 	}
 }

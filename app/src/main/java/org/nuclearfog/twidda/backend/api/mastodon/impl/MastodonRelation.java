@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,7 +70,7 @@ public class MastodonRelation implements Relation {
 
 
 	@Override
-	public boolean canDm() {
+	public boolean privateMessagingEnabled() {
 		return false;
 	}
 
@@ -89,10 +90,20 @@ public class MastodonRelation implements Relation {
 	}
 
 
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Relation))
+			return false;
+		Relation relation = (Relation) obj;
+		return relation.getId() == getId() && relation.isBlocked() == isBlocked() && relation.isFollower() == isFollower()
+				&& relation.isFollowing() == isFollowing() && relation.isMuted() == isMuted() && relation.privateMessagingEnabled() == privateMessagingEnabled();
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {
-		return "following=" + isFollowing + " follower=" + isFollower +
-				" blocked=" + isBlocked + " muted=" + isMuted;
+		return "following=" + isFollowing() + " follower=" + isFollower() +
+				" blocked=" + isBlocked() + " muted=" + isMuted() + " dm open=" + privateMessagingEnabled();
 	}
 }

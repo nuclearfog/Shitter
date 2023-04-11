@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api.twitter.v2.impl;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,14 +96,20 @@ public class LocationV2 implements Location {
 
 
 	@Override
+	public boolean equals(@Nullable Object obj) {
+		return obj instanceof Location && ((Location) obj).getId() == getId();
+	}
+
+
+	@Override
 	public int compareTo(Location o) {
-		return Long.compare(id, o.getId());
+		return Long.compare(getId(), o.getId());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=\"" + id + " full_name=" + fullName + " country=\"" + country + "\"";
+		return "id=" + getId() + " name=\"" + getFullName() + "\"";
 	}
 }

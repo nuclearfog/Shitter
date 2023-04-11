@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.config.impl;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.model.Location;
 
@@ -62,14 +63,20 @@ public class ConfigLocation implements Location {
 
 
 	@Override
+	public boolean equals(@Nullable Object obj) {
+		return obj instanceof Location && ((Location) obj).getId() == getId();
+	}
+
+
+	@Override
 	public int compareTo(Location o) {
-		return Long.compare(id, o.getId());
+		return Long.compare(getId(), o.getId());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + id + " name=\"" + name + "\"";
+		return "id=" + getId() + " name=\"" + getFullName() + "\"";
 	}
 }

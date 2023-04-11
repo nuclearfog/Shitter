@@ -84,7 +84,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 		options = poll.getOptions();
 		for (int i = 0; i < options.length; i++) {
 			Poll.Option option = options[i];
-			if (option.selected()) {
+			if (option.isSelected()) {
 				selection.add(i);
 			}
 		}

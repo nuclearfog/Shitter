@@ -2,6 +2,9 @@ package org.nuclearfog.twidda.database.impl;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
 import org.nuclearfog.twidda.model.Poll;
 
@@ -86,8 +89,22 @@ public class DatabasePoll implements Poll, PollTable {
 
 
 	@Override
-	public int compareTo(Poll o) {
-		return 0;
+	public boolean equals(Object o) {
+		return o instanceof Poll && ((Poll)o).getId() == getId();
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		StringBuilder optionsBuf = new StringBuilder();
+		if (getOptions().length > 0) {
+			optionsBuf.append(" options=(");
+			for (Option option : getOptions())
+				optionsBuf.append(option).append(',');
+			optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
+		}
+		return "id=" + getId() + " expired=" + expirationTime() + optionsBuf;
 	}
 
 	/**
@@ -118,8 +135,21 @@ public class DatabasePoll implements Poll, PollTable {
 
 
 		@Override
-		public boolean selected() {
+		public boolean isSelected() {
 			return false;
+		}
+
+
+		@NonNull
+		@Override
+		public String toString() {
+			return "title=\"" + getTitle() + "\" votes=" + getVotes() + " selected=" + isSelected();
+		}
+
+
+		@Override
+		public boolean equals(@Nullable Object obj) {
+			return obj instanceof Option && ((Option) obj).getTitle().equals(getTitle());
 		}
 	}
 }

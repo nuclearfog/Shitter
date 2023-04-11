@@ -66,7 +66,7 @@ public class MetricsV2 implements Metrics {
 	@NonNull
 	@Override
 	public String toString() {
-		return "impressions=" + impressions + " profile_clicks=" + profileClicks +
-				" link_clicks=" + linkClicks + " quotes=" + quotes + "video_views=" + videoViews;
+		return "impressions=" + getViews() + " profile_clicks=" + getProfileClicks() +
+				" link_clicks=" + getLinkClicks() + " quotes=" + getQuoteCount() + "video_views=" + getVideoViews();
 	}
 }

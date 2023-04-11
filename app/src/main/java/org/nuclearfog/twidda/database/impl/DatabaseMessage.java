@@ -92,20 +92,20 @@ public class DatabaseMessage implements Message, MessageTable {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Message))
 			return false;
-		return ((Message) obj).getId() == id;
+		return ((Message) obj).getId() == getId();
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "from=" + sender + " message=\"" + text + "\"";
+		return getSender() + " message=\"" + getText() + "\"";
 	}
 
 
 	@Override
 	public int compareTo(Message message) {
-		return Long.compare(message.getTimestamp(), time);
+		return Long.compare(message.getTimestamp(), getTimestamp());
 	}
 
 	/**

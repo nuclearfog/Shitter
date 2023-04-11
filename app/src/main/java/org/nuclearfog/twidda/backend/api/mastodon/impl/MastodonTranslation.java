@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.nuclearfog.twidda.model.Translation;
@@ -47,5 +49,12 @@ public class MastodonTranslation implements Translation {
 	@Override
 	public String getOriginalLanguage() {
 		return language;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "language=\"" + getOriginalLanguage() + "\" source=\"" + getSource() + "\"";
 	}
 }

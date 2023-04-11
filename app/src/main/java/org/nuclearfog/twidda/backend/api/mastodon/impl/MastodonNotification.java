@@ -112,23 +112,23 @@ public class MastodonNotification implements Notification {
 	}
 
 
-	@NonNull
 	@Override
-	public String toString() {
-		return "id=" + id + " " + user;
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Notification))
+			return false;
+		return ((Notification) obj).getId() == getId();
 	}
 
 
 	@Override
 	public int compareTo(Notification notification) {
-		return Long.compare(notification.getTimestamp(), timestamp);
+		return Long.compare(notification.getTimestamp(), getTimestamp());
 	}
 
 
+	@NonNull
 	@Override
-	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Notification))
-			return false;
-		return ((Notification) obj).getId() == id;
+	public String toString() {
+		return "id=" + getId() + " " + getUser();
 	}
 }

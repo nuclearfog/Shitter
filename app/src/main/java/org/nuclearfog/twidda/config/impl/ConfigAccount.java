@@ -147,9 +147,21 @@ public class ConfigAccount implements Account {
 	@NonNull
 	@Override
 	public String toString() {
-		return "date=" + timestamp + " host=\"" + hostname;
+		if (getUser() != null)
+			return getUser().toString();
+		return "";
 	}
 
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Account))
+			return false;
+		Account account = (Account) obj;
+		if (account.getUser() != null && getUser() != null)
+			return getUser().equals(account.getUser());
+		return false;
+	}
 
 	/**
 	 * override hostname

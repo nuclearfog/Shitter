@@ -93,19 +93,19 @@ public class DatabaseNotification implements Notification, NotificationTable {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Notification))
 			return false;
-		return ((Notification) obj).getId() == id;
+		return ((Notification) obj).getId() == getId();
 	}
 
 
 	@Override
 	public int compareTo(Notification notification) {
-		return Long.compare(notification.getTimestamp(), timestamp);
+		return Long.compare(notification.getTimestamp(), getTimestamp());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + id + " " + user;
+		return "id=" + getId() + " " + getUser();
 	}
 }

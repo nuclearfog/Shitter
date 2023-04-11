@@ -74,7 +74,7 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 	 * @param totalCount total vote count
 	 */
 	public void setContent(Option option, boolean selected, int totalCount) {
-		if (option.selected() | selected) {
+		if (option.isSelected() | selected) {
 			checkIcon.setImageResource(R.drawable.check);
 		} else {
 			checkIcon.setImageResource(R.drawable.circle);

@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Poll extends Serializable, Comparable<Poll> {
+public interface Poll extends Serializable {
 
 	/**
 	 * @return ID of the poll
@@ -63,6 +63,6 @@ public interface Poll extends Serializable, Comparable<Poll> {
 		/**
 		 * @return true if option is selected
 		 */
-		boolean selected();
+		boolean isSelected();
 	}
 }

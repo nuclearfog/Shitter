@@ -64,23 +64,21 @@ public class DatabaseTrend implements Trend, TrendTable {
 	}
 
 
-	@NonNull
 	@Override
-	public String toString() {
-		return "rank=" + rank + " name=\"" + name + "\"";
+	public int compareTo(Trend trend) {
+		if (trend.getPopularity() > 0 && getPopularity() > 0)
+			return Integer.compare(trend.getPopularity(), getPopularity());
+		if (trend.getPopularity() > 0)
+			return 1;
+		if (getPopularity() > 0)
+			return -1;
+		return String.CASE_INSENSITIVE_ORDER.compare(getName(), trend.getName());
 	}
 
 
+	@NonNull
 	@Override
-	public int compareTo(Trend trend) {
-		if (trend.getRank() > 0 && rank > 0)
-			return Integer.compare(rank, trend.getRank());
-		if (trend.getPopularity() > 0 && popularity > 0)
-			return Integer.compare(trend.getPopularity(), popularity);
-		if (trend.getPopularity() > 0)
-			return 1;
-		if (popularity > 0)
-			return -1;
-		return String.CASE_INSENSITIVE_ORDER.compare(name, trend.getName());
+	public String toString() {
+		return "name=\"" + getName() + "\"";
 	}
 }

@@ -37,5 +37,5 @@ public interface Relation extends Serializable {
 	/**
 	 * @return true if this user accepts direct messages from the current user
 	 */
-	boolean canDm();
+	boolean privateMessagingEnabled();
 }

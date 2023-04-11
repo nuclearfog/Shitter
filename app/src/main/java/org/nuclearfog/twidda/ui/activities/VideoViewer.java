@@ -20,13 +20,18 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSource;
+import com.google.android.exoplayer2.extractor.Extractor;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.extractor.mkv.MatroskaExtractor;
+import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.google.android.exoplayer2.upstream.ContentDataSource;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSource;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -39,7 +44,7 @@ import okhttp3.Call;
  *
  * @author nuclearfog
  */
-public class VideoViewer extends AppCompatActivity {
+public class VideoViewer extends AppCompatActivity implements Player.Listener {
 
 	/**
 	 * key for an Uri array with local links
@@ -52,6 +57,11 @@ public class VideoViewer extends AppCompatActivity {
 	 * value type is Boolean
 	 */
 	public static final String ENABLE_VIDEO_CONTROLS = "enable_controls";
+
+	/**
+	 * online video cache size
+	 */
+	private static final int CACHE_SIZE = 64000000;
 
 	private ExoPlayer player;
 	private Toolbar toolbar;
@@ -72,6 +82,7 @@ public class VideoViewer extends AppCompatActivity {
 		toolbar = findViewById(R.id.page_video_toolbar);
 
 		player = new ExoPlayer.Builder(this).build();
+		player.addListener(this);
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
@@ -82,16 +93,34 @@ public class VideoViewer extends AppCompatActivity {
 			playerView.setUseController(false);
 			player.setRepeatMode(Player.REPEAT_MODE_ONE);
 		}
-
 		DataSource.Factory dataSourceFactory;
 		MediaItem mediaItem = MediaItem.fromUri(data);
+
+		// initialize online source
 		if (data.getScheme().startsWith("http")) {
-			dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, 128000));
-		} else {
-			dataSourceFactory = new DefaultDataSource.Factory(this);
-			toolbar.setVisibility(View.GONE);
+			// configure with okhttp connection of the app
+			dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
 		}
-		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem);
+		// initialize local source
+		else {
+			toolbar.setVisibility(View.GONE);
+			dataSourceFactory = new DataSource.Factory() {
+				@NonNull
+				@Override
+				public DataSource createDataSource() {
+					return new ContentDataSource(getApplicationContext());
+				}
+			};
+		}
+		// initialize video extractor
+		ExtractorsFactory customExtractor = new ExtractorsFactory() {
+			@NonNull
+			@Override
+			public Extractor[] createExtractors() {
+				return new Extractor[] {new Mp4Extractor(), new MatroskaExtractor()};
+			}
+		};
+		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, customExtractor).createMediaSource(mediaItem);
 		player.setMediaSource(mediaSource);
 		playerView.setPlayer(player);
 
@@ -142,5 +171,12 @@ public class VideoViewer extends AppCompatActivity {
 			}
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+
+	@Override
+	public void onPlayerError(PlaybackException error) {
+		Toast.makeText(getApplicationContext(), "ExoPlayer: " + error.getErrorCodeName(), Toast.LENGTH_SHORT).show();
+		finish();
 	}
 }

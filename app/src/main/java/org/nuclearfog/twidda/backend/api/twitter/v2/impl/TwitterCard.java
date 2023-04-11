@@ -70,6 +70,6 @@ public class TwitterCard implements Card {
 	@NonNull
 	@Override
 	public String toString() {
-		return "title=\"" + title + "\" description=\"" + description + "\" url=\"" + url + "\"";
+		return "title=\"" + getTitle() + " \" description=\"" + getDescription() + "\"";
 	}
 }

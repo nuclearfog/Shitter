@@ -113,7 +113,9 @@ public class MastodonAccount implements Account {
 	@NonNull
 	@Override
 	public String toString() {
-		return user.toString();
+		if (getUser() != null)
+			return getUser().toString();
+		return "";
 	}
 
 
@@ -121,6 +123,9 @@ public class MastodonAccount implements Account {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Account))
 			return false;
-		return user.equals(((Account) obj).getUser());
+		Account account = (Account) obj;
+		if (account.getUser() != null && getUser() != null)
+			return getUser().equals(account.getUser());
+		return false;
 	}
 }

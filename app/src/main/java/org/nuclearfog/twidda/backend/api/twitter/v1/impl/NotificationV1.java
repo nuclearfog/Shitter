@@ -56,24 +56,23 @@ public class NotificationV1 implements Notification {
 	}
 
 
-	@NonNull
-	@Override
-	public String toString() {
-		return "type=mention " + status;
-	}
-
-
 	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Notification))
 			return false;
-		Notification notification = ((Notification) obj);
-		return status.equals(notification.getStatus());
+		return ((Notification) obj).getId() == getId();
 	}
 
 
 	@Override
 	public int compareTo(Notification notification) {
 		return Long.compare(notification.getTimestamp(), getTimestamp());
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=" + getId() + " " + getUser();
 	}
 }

@@ -148,7 +148,20 @@ public class DatabaseAccount implements Account, AccountTable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "date=" + loginDate + " host=\"" + host + "\" user=" + user;
+		if (getUser() != null)
+			return getUser().toString();
+		return "";
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Account))
+			return false;
+		Account account = (Account) obj;
+		if (account.getUser() != null && getUser() != null)
+			return getUser().equals(account.getUser());
+		return false;
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,8 +112,8 @@ public class MastodonPoll implements Poll {
 
 
 	@Override
-	public int compareTo(Poll o) {
-		return Long.compare(id, o.getId());
+	public boolean equals(Object o) {
+		return o instanceof Poll && ((Poll)o).getId() == getId();
 	}
 
 
@@ -120,15 +121,13 @@ public class MastodonPoll implements Poll {
 	@Override
 	public String toString() {
 		StringBuilder optionsBuf = new StringBuilder();
-		optionsBuf.append("id=").append(id).append(" voted=").append(voted);
-		if (options.length > 0) {
+		if (getOptions().length > 0) {
 			optionsBuf.append(" options=(");
-			for (Option option : options) {
+			for (Option option : getOptions())
 				optionsBuf.append(option).append(',');
-			}
 			optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
 		}
-		return optionsBuf.toString();
+		return "id=" + getId() + " expired=" + expirationTime() + optionsBuf;
 	}
 
 	/**
@@ -164,7 +163,7 @@ public class MastodonPoll implements Poll {
 
 
 		@Override
-		public boolean selected() {
+		public boolean isSelected() {
 			return selected;
 		}
 
@@ -172,7 +171,13 @@ public class MastodonPoll implements Poll {
 		@NonNull
 		@Override
 		public String toString() {
-			return "title=\"" + title + "\" votes=" + voteCount + " selected=" + selected;
+			return "title=\"" + getTitle() + "\" votes=" + getVotes() + " selected=" + isSelected();
+		}
+
+
+		@Override
+		public boolean equals(@Nullable Object obj) {
+			return obj instanceof Option && ((Option) obj).getTitle().equals(getTitle());
 		}
 
 		/**

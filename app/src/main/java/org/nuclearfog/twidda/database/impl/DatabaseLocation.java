@@ -78,21 +78,19 @@ public class DatabaseLocation implements Location, LocationTable {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Location))
-			return false;
-		return ((Location) obj).getId() == id;
+		return obj instanceof Location && ((Location) obj).getId() == getId();
 	}
 
 
 	@Override
 	public int compareTo(Location o) {
-		return Long.compare(id, o.getId());
+		return Long.compare(getId(), o.getId());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + id + " name=\"" + name + "\"";
+		return "id=" + getId() + " name=\"" + getFullName() + "\"";
 	}
 }

@@ -64,19 +64,19 @@ public class DatabaseEmoji implements Emoji, EmojiTable {
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Emoji))
 			return false;
-		return ((Emoji) obj).getCode().equals(code);
+		return ((Emoji) obj).getCode().equals(getCode());
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "code=\"" + code + "\" category=\"" + category + "\" url=\"" + url + "\"";
+		return "code=\"" + getCode() + "\" category=\"" + getCategory() + "\" url=\"" + getUrl() + "\"";
 	}
 
 
 	@Override
 	public int compareTo(Emoji emoji) {
-		return String.CASE_INSENSITIVE_ORDER.compare(code, emoji.getCode());
+		return String.CASE_INSENSITIVE_ORDER.compare(getCode(), emoji.getCode());
 	}
 }

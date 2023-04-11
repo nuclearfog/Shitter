@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.database.impl;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import org.nuclearfog.twidda.model.Media;
@@ -69,8 +70,14 @@ public class DatabaseMedia implements Media, MediaTable {
 
 
 	@Override
+	public boolean equals(@Nullable Object obj) {
+		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
+	}
+
+
+	@Override
 	public int compareTo(Media o) {
-		return String.CASE_INSENSITIVE_ORDER.compare(key, o.getKey());
+		return String.CASE_INSENSITIVE_ORDER.compare(getKey(), o.getKey());
 	}
 
 
@@ -78,7 +85,7 @@ public class DatabaseMedia implements Media, MediaTable {
 	@Override
 	public String toString() {
 		String tostring;
-		switch (mediaType) {
+		switch (getMediaType()) {
 			case PHOTO:
 				tostring = "photo:";
 				break;
@@ -95,7 +102,6 @@ public class DatabaseMedia implements Media, MediaTable {
 				tostring = "none:";
 				break;
 		}
-		tostring += "url=\"" + url + "\"";
-		return tostring;
+		return tostring + "url=\"" + getUrl() + "\"";
 	}
 }

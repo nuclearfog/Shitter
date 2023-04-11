@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api.twitter.v1.impl;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -127,8 +128,14 @@ public class MediaV1 implements Media {
 
 
 	@Override
+	public boolean equals(@Nullable Object obj) {
+		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
+	}
+
+
+	@Override
 	public int compareTo(Media o) {
-		return String.CASE_INSENSITIVE_ORDER.compare(key, o.getKey());
+		return String.CASE_INSENSITIVE_ORDER.compare(getKey(), o.getKey());
 	}
 
 
@@ -136,7 +143,7 @@ public class MediaV1 implements Media {
 	@Override
 	public String toString() {
 		String tostring;
-		switch (type) {
+		switch (getMediaType()) {
 			case PHOTO:
 				tostring = "photo:";
 				break;
@@ -153,7 +160,6 @@ public class MediaV1 implements Media {
 				tostring = "none:";
 				break;
 		}
-		tostring += "url=\"" + url + "\"";
-		return tostring;
+		return tostring + "url=\"" + getUrl() + "\"";
 	}
 }
