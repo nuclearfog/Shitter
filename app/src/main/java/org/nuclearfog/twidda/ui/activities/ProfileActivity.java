@@ -650,7 +650,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	public void onSuccess() {
 		// setup toolbar background
 		if (settings.toolbarOverlapEnabled()) {
-			AppStyles.setToolbarBackground(ProfileActivity.this, bannerImage, toolbarBackground);
+			AppStyles.setToolbarBackground(this, bannerImage, toolbarBackground);
 		}
 	}
 

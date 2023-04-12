@@ -23,13 +23,13 @@ public class LockableConstraintLayout extends ConstraintLayout {
 	 * @inheritDoc
 	 */
 	public LockableConstraintLayout(Context context) {
-		super(context);
+		this(context, null);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public LockableConstraintLayout(Context context, AttributeSet attr) {
+	public LockableConstraintLayout(Context context, @Nullable AttributeSet attr) {
 		super(context, attr);
 	}
 
@@ -42,7 +42,9 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				break;
 
 			case MotionEvent.ACTION_MOVE:
-				if (ev.getY() < yPos && callback != null) {// scroll down
+				// detect scroll down, then aquire scroll lock
+				float deltaY = ev.getY() - yPos;
+				if (deltaY < 0.0f && callback != null) {
 					lock = callback.aquireLock();
 				}
 				yPos = ev.getY();

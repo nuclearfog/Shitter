@@ -14,33 +14,36 @@ import androidx.annotation.Nullable;
  */
 public class LockableLinearLayout extends LinearLayout {
 
+	/**
+	 * minimum X-Y ratio of a swipe to determine if it's a left right swipe
+	 */
+	private static final float LEFT_RIGHT_SWIPE_RATIO = 2.0f;
+
 	@Nullable
 	private LockCallback callback;
 	private boolean lock = false;
+	private float xPos = 0.0f;
 	private float yPos = 0.0f;
 
 	/**
 	 * @inheritDoc
 	 */
 	public LockableLinearLayout(Context context) {
-		super(context);
-		setOrientation(VERTICAL);
+		this(context, null);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public LockableLinearLayout(Context context, AttributeSet attr) {
-		super(context, attr);
-		setOrientation(VERTICAL);
+	public LockableLinearLayout(Context context, @Nullable AttributeSet attrs) {
+		this(context, attrs, 0);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public LockableLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-		setOrientation(VERTICAL);
+		this(context, attrs, defStyleAttr, 0);
 	}
 
 	/**
@@ -60,9 +63,19 @@ public class LockableLinearLayout extends LinearLayout {
 				break;
 
 			case MotionEvent.ACTION_MOVE:
-				if (ev.getY() < yPos && callback != null) {
-					lock = callback.aquireLock();
+				float deltaX = ev.getX() - xPos;
+				float deltaY = ev.getY() - yPos;
+				// detect up/down swipe
+				if (deltaY < 0.0f && Math.abs(deltaX * LEFT_RIGHT_SWIPE_RATIO) < Math.abs(deltaY)) {
+					if (callback != null) {
+						lock = callback.aquireLock();
+					}
 				}
+				// detect left/right swipe
+				else {
+					lock = false;
+				}
+				xPos = ev.getX();
 				yPos = ev.getY();
 				break;
 		}
