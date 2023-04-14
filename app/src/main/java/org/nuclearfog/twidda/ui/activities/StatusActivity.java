@@ -69,8 +69,8 @@ import org.nuclearfog.twidda.backend.async.TranslationLoader;
 import org.nuclearfog.twidda.backend.async.TranslationLoader.TranslationResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -845,9 +845,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		username.setText(author.getUsername());
 		screenName.setText(author.getScreenname());
 		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
-		replyButton.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
-		likeButton.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
-		repostButton.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
+		replyButton.setText(StringUtils.NUMBER_FORMAT.format(status.getReplyCount()));
+		likeButton.setText(StringUtils.NUMBER_FORMAT.format(status.getFavoriteCount()));
+		repostButton.setText(StringUtils.NUMBER_FORMAT.format(status.getRepostCount()));
 		if (!status.getSource().isEmpty()) {
 			statusApi.setText(R.string.status_sent_from);
 			statusApi.append(status.getSource());

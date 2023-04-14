@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.utils;
+package org.nuclearfog.twidda.backend.image;
 
 import android.content.Context;
 
@@ -6,6 +6,7 @@ import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.config.GlobalSettings.SettingsChangeObserver;
 
@@ -28,18 +29,18 @@ public class PicassoBuilder implements SettingsChangeObserver {
 	private static PicassoBuilder instance;
 	private static boolean notifySettingsChange = false;
 
+	private final LruCache imageCache;
 	private OkHttp3Downloader downloader;
-	private LruCache imageCache;
 
 	/**
 	 *
 	 */
 	private PicassoBuilder(Context context) {
-		GlobalSettings settings = GlobalSettings.getInstance(context);
-		settings.addObserver(this);
 		downloader = new OkHttp3Downloader(ConnectionBuilder.create(context, STORAGE_SIZE));
 		imageCache = new LruCache(CACHE_SIZE);
 		notifySettingsChange = false;
+		GlobalSettings settings = GlobalSettings.getInstance(context);
+		settings.registerObserver(this);
 	}
 
 	/**
@@ -47,19 +48,23 @@ public class PicassoBuilder implements SettingsChangeObserver {
 	 * @return instance of Picasso with custom downloader
 	 */
 	public static Picasso get(Context context) {
-		if (notifySettingsChange || instance == null) {
-			instance = new PicassoBuilder(context);
+		synchronized (instance.imageCache) {
+			if (notifySettingsChange || instance == null) {
+				instance = new PicassoBuilder(context);
+			}
+			return new Picasso.Builder(context).downloader(instance.downloader).memoryCache(instance.imageCache).build();
 		}
-		return new Picasso.Builder(context).downloader(instance.downloader).memoryCache(instance.imageCache).build();
 	}
 
 	/**
 	 * clear image cache
 	 */
-	public static void clear(Context context) {
-		if (notifySettingsChange || instance == null)
-			instance = new PicassoBuilder(context);
-		instance.imageCache.clear();
+	public static void clear() {
+		synchronized (instance.imageCache) {
+			if (instance != null) {
+				instance.imageCache.clear();
+			}
+		}
 	}
 
 

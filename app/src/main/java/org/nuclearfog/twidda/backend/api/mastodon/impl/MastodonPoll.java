@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Poll;
 
 /**
@@ -34,7 +34,7 @@ public class MastodonPoll implements Poll {
 		String exTimeStr = json.getString("expires_at");
 		JSONArray optionsJson = json.getJSONArray("options");
 		JSONArray votesJson = json.optJSONArray("own_votes");
-		exTime = StringTools.getTime(exTimeStr, StringTools.TIME_MASTODON);
+		exTime = StringUtils.getTime(exTimeStr, StringUtils.TIME_MASTODON);
 		expired = json.getBoolean("expired");
 		voted = json.optBoolean("voted", false);
 		multipleChoice = json.getBoolean("multiple");

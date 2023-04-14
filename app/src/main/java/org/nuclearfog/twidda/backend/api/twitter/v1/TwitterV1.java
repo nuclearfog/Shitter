@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
@@ -274,7 +274,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		if (name.startsWith("@"))
 			name = name.substring(1);
-		params.add("screen_name=" + StringTools.encode(name));
+		params.add("screen_name=" + StringUtils.encode(name));
 		return getUser(USER_LOOKUP, params);
 	}
 
@@ -286,7 +286,7 @@ public class TwitterV1 implements Connection {
 		long nextPage = currentPage + 1;
 
 		List<String> params = new ArrayList<>();
-		params.add("q=" + StringTools.encode(search));
+		params.add("q=" + StringUtils.encode(search));
 		params.add("page=" + currentPage);
 		Users result = getUsers(USERS_SEARCH, params);
 		// notice that there are no more results
@@ -464,7 +464,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		if (name.startsWith("@"))
 			name = name.substring(1);
-		params.add("screen_name=" + StringTools.encode(name));
+		params.add("screen_name=" + StringUtils.encode(name));
 		User user = getUser(USER_BLOCK, params);
 		RelationV1 relation = getUserRelationship(user.getId());
 		relation.setBlocked(true);
@@ -499,7 +499,7 @@ public class TwitterV1 implements Connection {
 		List<String> params = new ArrayList<>();
 		if (name.startsWith("@"))
 			name = name.substring(1);
-		params.add("screen_name=" + StringTools.encode(name));
+		params.add("screen_name=" + StringUtils.encode(name));
 		User user = getUser(USER_MUTE, params);
 		RelationV1 relation = getUserRelationship(user.getId());
 		relation.setMuted(true);
@@ -521,7 +521,7 @@ public class TwitterV1 implements Connection {
 	@Override
 	public List<Status> searchStatuses(String search, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("q=" + StringTools.encode(search + " +exclude:retweets"));
+		params.add("q=" + StringUtils.encode(search + " +exclude:retweets"));
 		params.add("result_type=recent");
 		List<Status> result = getTweets(TWEET_SEARCH, params, minId, maxId);
 		if (settings.filterResults())
@@ -633,7 +633,7 @@ public class TwitterV1 implements Connection {
 		if (replyUsername.startsWith("@")) {
 			replyUsername = replyUsername.substring(1);
 		}
-		params.add("q=" + StringTools.encode("to:" + replyUsername + " -filter:retweets"));
+		params.add("q=" + StringUtils.encode("to:" + replyUsername + " -filter:retweets"));
 		List<Status> result = getTweets(TWEET_SEARCH, params, Math.max(id, minId), maxId);
 		for (Status reply : result) {
 			if (reply.getRepliedStatusId() == id) {
@@ -725,7 +725,7 @@ public class TwitterV1 implements Connection {
 	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (update.getText() != null)
-			params.add("status=" + StringTools.encode(update.getText()));
+			params.add("status=" + StringUtils.encode(update.getText()));
 		if (update.getReplyId() != 0)
 			params.add("in_reply_to_status_id=" + update.getReplyId());
 		if (update.isSensitive())
@@ -740,8 +740,8 @@ public class TwitterV1 implements Connection {
 		if (update.getLocation() != null) {
 			String lat = Double.toString(update.getLocation().getLatitude());
 			String lon = Double.toString(update.getLocation().getLongitude());
-			params.add("lat=" + StringTools.encode(lat));
-			params.add("long=" + StringTools.encode(lon));
+			params.add("lat=" + StringUtils.encode(lat));
+			params.add("long=" + StringUtils.encode(lon));
 		}
 		getTweet(TWEET_UPLOAD, params);
 	}
@@ -750,8 +750,8 @@ public class TwitterV1 implements Connection {
 	@Override
 	public UserList createUserlist(UserListUpdate update) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("name=" + StringTools.encode(update.getTitle()));
-		params.add("description=" + StringTools.encode(update.getDescription()));
+		params.add("name=" + StringUtils.encode(update.getTitle()));
+		params.add("description=" + StringUtils.encode(update.getDescription()));
 		if (update.isPublic())
 			params.add("mode=public");
 		else
@@ -764,8 +764,8 @@ public class TwitterV1 implements Connection {
 	public UserList updateUserlist(UserListUpdate update) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + update.getId());
-		params.add("name=" + StringTools.encode(update.getTitle()));
-		params.add("description=" + StringTools.encode(update.getDescription()));
+		params.add("name=" + StringUtils.encode(update.getTitle()));
+		params.add("description=" + StringUtils.encode(update.getDescription()));
 		if (update.isPublic())
 			params.add("mode=public");
 		else
@@ -842,7 +842,7 @@ public class TwitterV1 implements Connection {
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("list_id=" + id);
-		params.add("screen_name=" + StringTools.encode(name));
+		params.add("screen_name=" + StringUtils.encode(name));
 		sendPost(USERLIST_ADD_USER, params);
 	}
 
@@ -853,7 +853,7 @@ public class TwitterV1 implements Connection {
 		if (name.startsWith("@"))
 			name = name.substring(1);
 		params.add("list_id=" + id);
-		params.add("screen_name=" + StringTools.encode(name));
+		params.add("screen_name=" + StringUtils.encode(name));
 		sendPost(USERLIST_DEL_USER, params);
 	}
 
@@ -1097,10 +1097,10 @@ public class TwitterV1 implements Connection {
 	@Override
 	public User updateProfile(ProfileUpdate update) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		params.add("name=" + StringTools.encode(update.getName()));
-		params.add("url=" + StringTools.encode(update.getUrl()));
-		params.add("location=" + StringTools.encode(update.getLocation()));
-		params.add("description=" + StringTools.encode(update.getDescription()));
+		params.add("name=" + StringUtils.encode(update.getName()));
+		params.add("url=" + StringUtils.encode(update.getUrl()));
+		params.add("location=" + StringUtils.encode(update.getLocation()));
+		params.add("description=" + StringUtils.encode(update.getDescription()));
 		if (update.getProfileImageStream() != null) {
 			updateImage(PROFILE_UPDATE_IMAGE, update.getProfileImageStream(), "image");
 		}
@@ -1664,8 +1664,8 @@ public class TwitterV1 implements Connection {
 	 */
 	private String buildHeader(String method, String endpoint, List<String> params, String... keys) throws IOException {
 		String oauthToken, tokenSecret, consumerKey, consumerSecret;
-		String timeStamp = StringTools.getTimestamp();
-		String random = StringTools.getRandomString();
+		String timeStamp = StringUtils.getTimestamp();
+		String random = StringUtils.getRandomString();
 		String oauth_token_param = "";
 
 		if (keys.length >= 2) {
@@ -1688,7 +1688,7 @@ public class TwitterV1 implements Connection {
 		sortedParams.add("oauth_callback=oob");
 		sortedParams.add("oauth_consumer_key=" + consumerKey);
 		sortedParams.add("oauth_nonce=" + random);
-		sortedParams.add("oauth_signature_method=" + StringTools.SIGNATURE_ALG);
+		sortedParams.add("oauth_signature_method=" + StringUtils.SIGNATURE_ALG);
 		sortedParams.add("oauth_timestamp=" + timeStamp);
 		sortedParams.add("oauth_version=" + OAUTH);
 		// add custom parameters
@@ -1708,14 +1708,14 @@ public class TwitterV1 implements Connection {
 		paramStr.deleteCharAt(paramStr.length() - 1);
 
 		// calculate oauth signature
-		String signature = StringTools.sign(method, endpoint, paramStr.toString(), signkey);
+		String signature = StringUtils.sign(method, endpoint, paramStr.toString(), signkey);
 
 		// create header string
 		return "OAuth oauth_callback=\"oob\"" +
 				", oauth_consumer_key=\"" + consumerKey + "\"" +
 				", oauth_nonce=\"" + random + "\"" +
 				", oauth_signature=\"" + signature + "\"" +
-				", oauth_signature_method=\"" + StringTools.SIGNATURE_ALG + "\"" +
+				", oauth_signature_method=\"" + StringUtils.SIGNATURE_ALG + "\"" +
 				", oauth_timestamp=\"" + timeStamp + "\""
 				+ oauth_token_param +
 				", oauth_version=\"" + OAUTH + "\"";

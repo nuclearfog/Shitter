@@ -18,7 +18,7 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -110,9 +110,9 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		title.setText(userlist.getTitle());
 		if (enableExtras) {
 			description.setText(userlist.getDescription());
-			date.setText(StringTools.formatCreationTime(itemView.getResources(), userlist.getTimestamp()));
-			member.setText(StringTools.NUMBER_FORMAT.format(userlist.getMemberCount()));
-			subscriber.setText(StringTools.NUMBER_FORMAT.format(userlist.getSubscriberCount()));
+			date.setText(StringUtils.formatCreationTime(itemView.getResources(), userlist.getTimestamp()));
+			member.setText(StringUtils.NUMBER_FORMAT.format(userlist.getMemberCount()));
+			subscriber.setText(StringUtils.NUMBER_FORMAT.format(userlist.getSubscriberCount()));
 		}
 		if (owner != null) {
 			username.setText(owner.getUsername());

@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Poll;
 
 /**
@@ -39,7 +39,7 @@ public class PollV2 implements Poll {
 		JSONArray optionsJson = json.getJSONArray("options");
 		String idStr = json.getString("id");
 		expired = VOTE_CLOSED.equals(json.getString("voting_status"));
-		expiredAt = StringTools.getTime(json.optString("end_datetime"), StringTools.TIME_TWITTER_V2);
+		expiredAt = StringUtils.getTime(json.optString("end_datetime"), StringUtils.TIME_TWITTER_V2);
 		// add options
 		options = new Option[optionsJson.length()];
 		for (int i = 0; i < optionsJson.length(); i++) {

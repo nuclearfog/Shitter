@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Metrics;
 
 /**
@@ -51,10 +51,10 @@ public class MetricsDialog extends Dialog {
 	 */
 	public void show(Metrics metrics) {
 		if (!isShowing()) {
-			views.setText(StringTools.NUMBER_FORMAT.format(metrics.getViews()));
-			profileClicks.setText(StringTools.NUMBER_FORMAT.format(metrics.getProfileClicks()));
+			views.setText(StringUtils.NUMBER_FORMAT.format(metrics.getViews()));
+			profileClicks.setText(StringUtils.NUMBER_FORMAT.format(metrics.getProfileClicks()));
 			if (metrics.getLinkClicks() > 0) {
-				linkClicks.setText(StringTools.NUMBER_FORMAT.format(metrics.getLinkClicks()));
+				linkClicks.setText(StringUtils.NUMBER_FORMAT.format(metrics.getLinkClicks()));
 				linkClicks.setVisibility(View.VISIBLE);
 				linkIcon.setVisibility(View.VISIBLE);
 			} else {
@@ -62,7 +62,7 @@ public class MetricsDialog extends Dialog {
 				linkIcon.setVisibility(View.GONE);
 			}
 			if (metrics.getQuoteCount() > 0) {
-				quotes.setText(StringTools.NUMBER_FORMAT.format(metrics.getQuoteCount()));
+				quotes.setText(StringUtils.NUMBER_FORMAT.format(metrics.getQuoteCount()));
 				quotes.setVisibility(View.VISIBLE);
 				quoteIcon.setVisibility(View.VISIBLE);
 			} else {
@@ -70,7 +70,7 @@ public class MetricsDialog extends Dialog {
 				quoteIcon.setVisibility(View.GONE);
 			}
 			if (metrics.getVideoViews() > 0) {
-				videoViews.setText(StringTools.NUMBER_FORMAT.format(metrics.getVideoViews()));
+				videoViews.setText(StringUtils.NUMBER_FORMAT.format(metrics.getVideoViews()));
 				videoViews.setVisibility(View.VISIBLE);
 				videoIcon.setVisibility(View.VISIBLE);
 			} else {

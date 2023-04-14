@@ -26,7 +26,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.User;
@@ -137,7 +137,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		User sender = message.getSender();
 		username.setText(sender.getUsername());
 		screenname.setText(sender.getScreenname());
-		time.setText(StringTools.formatCreationTime(itemView.getResources(), message.getTimestamp()));
+		time.setText(StringUtils.formatCreationTime(itemView.getResources(), message.getTimestamp()));
 		iconList.setVisibility(View.VISIBLE);
 		adapter.addItems(message);
 

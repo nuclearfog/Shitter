@@ -72,8 +72,8 @@ import org.nuclearfog.twidda.backend.async.UserLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
@@ -740,20 +740,20 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		this.user = user;
 		Spannable descriptionSpan = null;
 
-		following.setText(StringTools.NUMBER_FORMAT.format(user.getFollowing()));
-		follower.setText(StringTools.NUMBER_FORMAT.format(user.getFollower()));
+		following.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
+		follower.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
 		following.setVisibility(VISIBLE);
 		follower.setVisibility(VISIBLE);
 		username.setText(user.getUsername());
 		screenName.setText(user.getScreenname());
 		if (user.getStatusCount() >= 0) {
-			tabIndicator[0].setText(StringTools.NUMBER_FORMAT.format(user.getStatusCount()));
+			tabIndicator[0].setText(StringUtils.NUMBER_FORMAT.format(user.getStatusCount()));
 		} else {
 			tabIndicator[0].setText("");
 		}
 		if (tabIndicator.length > 1) {
 			if (user.getFavoriteCount() >= 0) {
-				tabIndicator[1].setText(StringTools.NUMBER_FORMAT.format(user.getFavoriteCount()));
+				tabIndicator[1].setText(StringUtils.NUMBER_FORMAT.format(user.getFavoriteCount()));
 			} else {
 				tabIndicator[1].setText("");
 			}

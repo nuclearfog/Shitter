@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -42,7 +42,7 @@ public class UserListV1 implements UserList {
 		String idStr = json.getString("id_str");
 
 		owner = new UserV1(json.getJSONObject("user"), currentId);
-		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
+		timestamp = StringUtils.getTime(json.optString("created_at", ""), StringUtils.TIME_TWITTER_V1);
 		title = json.optString("name", "");
 		description = json.optString("description", "");
 		memberCount = json.optInt("member_count");

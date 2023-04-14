@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.ui.adapter.OptionsAdapter;
@@ -85,7 +85,7 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 				voteButton.setVisibility(View.VISIBLE);
 			}
 		}
-		votesCount.append(StringTools.NUMBER_FORMAT.format(poll.voteCount()));
+		votesCount.append(StringUtils.NUMBER_FORMAT.format(poll.voteCount()));
 		adapter.addAll(poll);
 	}
 }

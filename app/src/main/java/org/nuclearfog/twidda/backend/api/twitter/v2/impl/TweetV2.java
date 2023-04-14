@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v2.maps.LocationV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.UserV2Map;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
@@ -118,7 +118,7 @@ public class TweetV2 implements Status {
 		replyCount = publicMetrics.getInt("reply_count");
 		retweetCount = publicMetrics.getInt("retweet_count");
 		favoriteCount = publicMetrics.getInt("like_count");
-		timestamp = StringTools.getTime(timeStr, StringTools.TIME_TWITTER_V2);
+		timestamp = StringUtils.getTime(timeStr, StringUtils.TIME_TWITTER_V2);
 		source = json.optString("source", "");
 		sensitive = json.optBoolean("possibly_sensitive", false);
 		mentions = author.getScreenname() + ' ';
@@ -166,7 +166,7 @@ public class TweetV2 implements Status {
 					int start = entry.optInt("start", -1);
 					int end = entry.optInt("end", -1);
 					if (start >= 0 && end > start) {
-						int offset = StringTools.calculateIndexOffset(textStr, start);
+						int offset = StringUtils.calculateIndexOffset(textStr, start);
 						// replace shortened link
 						if (!displayUrl.contains("pic.twitter.com")) {
 							builder.replace(start + offset, end + offset, expandedUrl);
@@ -182,13 +182,13 @@ public class TweetV2 implements Status {
 						cardsList.add(item);
 					}
 				}
-				tweetText = StringTools.unescapeString(builder.toString());
+				tweetText = StringUtils.unescapeString(builder.toString());
 				cards = cardsList.toArray(cards);
 			} else {
-				tweetText = StringTools.unescapeString(textStr);
+				tweetText = StringUtils.unescapeString(textStr);
 			}
 		} else {
-			tweetText = StringTools.unescapeString(textStr);
+			tweetText = StringUtils.unescapeString(textStr);
 		}
 		// add references to other tweets
 		if (tweetReferences != null && tweetReferences.length() > 0) {

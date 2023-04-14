@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -34,7 +34,7 @@ public class MastodonNotification implements Notification {
 		String typeStr = json.getString("type");
 		JSONObject statusJson = json.optJSONObject("status");
 		JSONObject userJson = json.getJSONObject("account");
-		timestamp = StringTools.getTime(json.getString("created_at"), StringTools.TIME_MASTODON);
+		timestamp = StringUtils.getTime(json.getString("created_at"), StringUtils.TIME_MASTODON);
 		user = new MastodonUser(userJson, currentId);
 
 		switch (typeStr) {

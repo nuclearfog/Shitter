@@ -15,7 +15,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.model.Account;
@@ -115,7 +115,7 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 			this.source = source;
 		if (text != null) {
 			this.text = text;
-			userMentions = StringTools.getUserMentions(text, author.getScreenname());
+			userMentions = StringUtils.getUserMentions(text, author.getScreenname());
 		}
 	}
 

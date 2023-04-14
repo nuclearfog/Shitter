@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
@@ -59,7 +59,7 @@ public class UserV2 implements User {
 		isProtected = json.optBoolean("protected");
 		location = json.optString("location", "");
 		isVerified = json.optBoolean("verified");
-		createdAt = StringTools.getTime(createdAtStr, StringTools.TIME_TWITTER_V2);
+		createdAt = StringUtils.getTime(createdAtStr, StringUtils.TIME_TWITTER_V2);
 		defaultImage = profileImageUrl.contains("default_profile_images");
 		url = getUrl(json);
 		description = getDescription(json);
@@ -71,7 +71,7 @@ public class UserV2 implements User {
 			if (defaultImage) {
 				this.profileImageUrl = profileImageUrl;
 			} else {
-				this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
+				this.profileImageUrl = StringUtils.createProfileImageLink(profileImageUrl);
 			}
 		}
 		if (Patterns.WEB_URL.matcher(profileBannerUrl).matches()) {
@@ -263,7 +263,7 @@ public class UserV2 implements User {
 						String link = entry.getString("expanded_url");
 						int start = entry.getInt("start");
 						int end = entry.getInt("end");
-						int offset = StringTools.calculateIndexOffset(description, start);
+						int offset = StringUtils.calculateIndexOffset(description, start);
 						builder.replace(start + offset, end + offset, link);
 					}
 					return builder.toString();

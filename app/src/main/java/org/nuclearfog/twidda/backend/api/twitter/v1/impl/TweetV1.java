@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
@@ -86,8 +86,8 @@ public class TweetV1 implements Status {
 		isFavorited = json.optBoolean("favorited");
 		isRetweeted = json.optBoolean("retweeted");
 		isSensitive = json.optBoolean("possibly_sensitive");
-		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
-		userMentions = StringTools.getUserMentions(textStr, author.getScreenname());
+		timestamp = StringUtils.getTime(json.optString("created_at", ""), StringUtils.TIME_TWITTER_V1);
+		userMentions = StringUtils.getUserMentions(textStr, author.getScreenname());
 		source = Jsoup.parse(sourceStr).text();
 		this.host = host;
 		// add reply name
@@ -407,15 +407,15 @@ public class TweetV1 implements Status {
 						JSONArray indices = entry.getJSONArray("indices");
 						int start = indices.getInt(0);
 						int end = indices.getInt(1);
-						int offset = StringTools.calculateIndexOffset(text, start);
+						int offset = StringUtils.calculateIndexOffset(text, start);
 						builder.replace(start + offset, end + offset, link);
 					}
-					return StringTools.unescapeString(builder.toString());
+					return StringUtils.unescapeString(builder.toString());
 				} catch (JSONException e) {
 					// use default tweet text
 				}
 			}
 		}
-		return StringTools.unescapeString(text);
+		return StringUtils.unescapeString(text);
 	}
 }

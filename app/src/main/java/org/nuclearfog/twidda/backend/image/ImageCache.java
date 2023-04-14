@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.utils;
+package org.nuclearfog.twidda.backend.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -41,7 +41,7 @@ public class ImageCache {
 
 	private static ImageCache instance;
 
-	private LruCache<String, Bitmap> cache;
+	private final LruCache<String, Bitmap> cache;
 	private Map<String, File> files;
 	private File imageFolder;
 
@@ -86,24 +86,39 @@ public class ImageCache {
 	}
 
 	/**
+	 * free image cache
+	 */
+	public static void clear() {
+		synchronized (instance.cache) {
+			if (instance != null) {
+				instance.cache.evictAll();
+			}
+		}
+	}
+
+	/**
 	 * put image to cache and save as file if not exists
 	 *
 	 * @param key   key of the image (tag)
 	 * @param image image bitmap
 	 */
-	public synchronized void putImage(String key, Bitmap image) {
-		cache.put(key, image);
-		if (!files.containsKey(key)) {
-			try {
-				File file = new File(imageFolder, key);
-				if (file.createNewFile()) {
-					FileOutputStream output = new FileOutputStream(file);
-					image.compress(Bitmap.CompressFormat.PNG, 1, output);
-					output.close();
-					files.put(key, file);
+	public void putImage(String key, Bitmap image) {
+		synchronized (instance.cache) {
+			cache.put(key, image);
+			if (!files.containsKey(key)) {
+				try {
+					File file = new File(imageFolder, key);
+					if (file.createNewFile()) {
+						FileOutputStream output = new FileOutputStream(file);
+						image.compress(Bitmap.CompressFormat.PNG, 1, output);
+						output.close();
+						files.put(key, file);
+					}
+				} catch (
+						IOException |
+						SecurityException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException|SecurityException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -115,29 +130,32 @@ public class ImageCache {
 	 * @return image bitmap or null if not found
 	 */
 	@Nullable
-	public synchronized Bitmap getImage(String key) {
-		Bitmap result = cache.get(key);
-		if (result == null) {
-			try {
-				File file = files.get(key);
-				if (file != null && file.canRead()) {
-					result = BitmapFactory.decodeFile(file.getAbsolutePath());
-					if (result != null) {
-						cache.put(key, result);
+	public Bitmap getImage(String key) {
+		synchronized (instance.cache) {
+			Bitmap result = cache.get(key);
+			if (result == null) {
+				try {
+					File file = files.get(key);
+					if (file != null && file.canRead()) {
+						result = BitmapFactory.decodeFile(file.getAbsolutePath());
+						if (result != null) {
+							cache.put(key, result);
+						}
 					}
+				} catch (
+						SecurityException e) {
+					e.printStackTrace();
 				}
-			} catch (SecurityException e) {
-				e.printStackTrace();
 			}
+			return result;
 		}
-		return result;
 	}
 
 	/**
 	 * check if cache size exceeded the limit
 	 * and reduce cache size by deleting old image files
 	 */
-	public synchronized void trimCache() {
+	public void trimCache() {
 		File[] files = imageFolder.listFiles();
 		if (files != null) {
 			long size = 0L;
@@ -164,12 +182,5 @@ public class ImageCache {
 				}
 			}
 		}
-	}
-
-	/**
-	 * free image cache
-	 */
-	public synchronized void clear() {
-		cache.evictAll();
 	}
 }

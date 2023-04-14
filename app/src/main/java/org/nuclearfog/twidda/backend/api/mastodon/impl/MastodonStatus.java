@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
@@ -75,7 +75,7 @@ public class MastodonStatus implements Status {
 		String visibilityStr = json.getString("visibility");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
-		createdAt = StringTools.getTime(json.optString("created_at"), StringTools.TIME_MASTODON);
+		createdAt = StringUtils.getTime(json.optString("created_at"), StringUtils.TIME_MASTODON);
 		replyCount = json.optInt("replies_count");
 		reblogCount = json.optInt("reblogs_count");
 		favoriteCount = json.optInt("favourites_count");

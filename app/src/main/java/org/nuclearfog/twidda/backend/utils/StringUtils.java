@@ -29,7 +29,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author nuclearfog
  */
-public class StringTools {
+public class StringUtils {
 
 	/**
 	 * global number formatter
@@ -74,7 +74,7 @@ public class StringTools {
 	 */
 	private static Random rand = new Random();
 
-	private StringTools() {
+	private StringUtils() {
 	}
 
 	/**

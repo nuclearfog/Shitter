@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
@@ -232,7 +232,7 @@ public class Mastodon implements Connection {
 	@Override
 	public Users searchUsers(String search, long page) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("q=" + StringTools.encode(search));
+		params.add("q=" + StringUtils.encode(search));
 		params.add("type=accounts");
 		return getUsers(ENDPOINT_SEARCH_ACCOUNTS, page, params);
 	}
@@ -397,7 +397,7 @@ public class Mastodon implements Connection {
 		if (search.matches("#\\S+")) {
 			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + search.substring(1), params, minId, maxId);
 		} else {
-			params.add("q=" + StringTools.encode(search));
+			params.add("q=" + StringUtils.encode(search));
 			params.add("type=statuses");
 			return getStatuses(ENDPOINT_SEARCH_TIMELINE, params, minId, maxId);
 		}
@@ -439,7 +439,7 @@ public class Mastodon implements Connection {
 	public List<Trend> searchHashtags(String search) throws MastodonException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("q=" + StringTools.encode(search));
+			params.add("q=" + StringUtils.encode(search));
 			params.add("limit=" + settings.getListSize());
 			params.add("type=hashtags");
 			Response response = get(ENDPOINT_SEARCH_TIMELINE, params);
@@ -603,7 +603,7 @@ public class Mastodon implements Connection {
 		if (update.isSpoiler())
 			params.add("spoiler_text=true");
 		if (update.getText() != null)
-			params.add("status=" + StringTools.encode(update.getText()));
+			params.add("status=" + StringUtils.encode(update.getText()));
 		if (update.getReplyId() != 0)
 			params.add("in_reply_to_id=" + update.getReplyId());
 		if (update.getVisibility() == Status.VISIBLE_DIRECT)
@@ -619,7 +619,7 @@ public class Mastodon implements Connection {
 		if (update.getPoll() != null) {
 			PollUpdate poll = update.getPoll();
 			for (String option : poll.getOptions())
-				params.add("poll[options][]=" + StringTools.encode(option));
+				params.add("poll[options][]=" + StringUtils.encode(option));
 			params.add("poll[expires_in]=" + poll.getDuration());
 			params.add("poll[multiple]=" + poll.multipleChoiceEnabled());
 			params.add("poll[hide_totals]=" + poll.hideTotalVotes());
@@ -638,7 +638,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserList createUserlist(UserListUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("title=" + StringTools.encode(update.getTitle()));
+		params.add("title=" + StringUtils.encode(update.getTitle()));
 		try {
 			return createUserlist(post(ENDPOINT_USERLIST, params));
 		} catch (IOException e) {
@@ -650,7 +650,7 @@ public class Mastodon implements Connection {
 	@Override
 	public UserList updateUserlist(UserListUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("title=" + StringTools.encode(update.getTitle()));
+		params.add("title=" + StringUtils.encode(update.getTitle()));
 		try {
 			return createUserlist(put(ENDPOINT_USERLIST + update.getId(), params));
 		} catch (IOException e) {
@@ -846,8 +846,8 @@ public class Mastodon implements Connection {
 		List<InputStream> streams = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 
-		params.add("display_name=" + StringTools.encode(update.getName()));
-		params.add("note=" + StringTools.encode(update.getDescription()));
+		params.add("display_name=" + StringUtils.encode(update.getName()));
+		params.add("note=" + StringUtils.encode(update.getDescription()));
 		if (update.getProfileImageStream() != null) {
 			streams.add(update.getProfileImageStream());
 			keys.add("avatar");
@@ -1407,7 +1407,7 @@ public class Mastodon implements Connection {
 				sink.writeAll(Okio.buffer(Okio.source(is)));
 			}
 		};
-		return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, StringTools.getRandomString(), data).build();
+		return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, StringUtils.getRandomString(), data).build();
 	}
 
 	/**

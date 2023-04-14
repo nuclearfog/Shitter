@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
@@ -63,7 +63,7 @@ public class MastodonUser implements User {
 		String createdAtStr = json.optString("created_at", "");
 		screenname = '@' + json.optString("acct", "");
 		username = json.optString("display_name", "");
-		createdAt = StringTools.getTime(createdAtStr, StringTools.TIME_MASTODON);
+		createdAt = StringUtils.getTime(createdAtStr, StringUtils.TIME_MASTODON);
 		url = json.optString("url", "");
 		following = json.optInt("following_count");
 		follower = json.optInt("followers_count");

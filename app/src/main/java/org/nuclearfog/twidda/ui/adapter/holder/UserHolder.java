@@ -29,7 +29,7 @@ import org.nuclearfog.twidda.backend.async.EmojiLoader;
 import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
@@ -124,8 +124,8 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		tagId = user.getId();
 		username.setText(user.getUsername());
 		screenname.setText(user.getScreenname());
-		followingCount.setText(StringTools.NUMBER_FORMAT.format(user.getFollowing()));
-		followerCount.setText(StringTools.NUMBER_FORMAT.format(user.getFollower()));
+		followingCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
+		followerCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
 		if (user.isVerified()) {
 			verifyIcon.setVisibility(VISIBLE);
 		} else {

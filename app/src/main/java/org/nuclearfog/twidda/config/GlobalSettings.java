@@ -929,7 +929,7 @@ public class GlobalSettings {
 	 *
 	 * @param observer listener called when some settings change
 	 */
-	public void addObserver(@NonNull SettingsChangeObserver observer) {
+	public void registerObserver(@NonNull SettingsChangeObserver observer) {
 		settingsChangeObservers.add(observer);
 	}
 

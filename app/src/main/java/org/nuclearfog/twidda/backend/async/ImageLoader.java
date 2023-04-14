@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 
 			// create file
 			String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
-			File imageFile = new File(request.cache, StringTools.getRandomString() + ext);
+			File imageFile = new File(request.cache, StringUtils.getRandomString() + ext);
 			imageFile.createNewFile();
 
 			// copy image to cache folder

@@ -39,7 +39,7 @@ public class ConnectionManager implements SettingsChangeObserver {
 		connections[IDX_TWITTER2] = new TwitterV2(context);
 
 		settings = GlobalSettings.getInstance(context);
-		settings.addObserver(this);
+		settings.registerObserver(this);
 	}
 
 

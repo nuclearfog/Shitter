@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.utils.ImageCache;
+import org.nuclearfog.twidda.backend.image.ImageCache;
 import org.nuclearfog.twidda.model.Emoji;
 
 import java.io.InputStream;

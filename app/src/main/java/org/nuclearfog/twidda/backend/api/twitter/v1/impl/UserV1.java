@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.User;
 
@@ -81,7 +81,7 @@ public class UserV1 implements User {
 		favoriteCount = json.optInt("favourites_count");
 		followReqSent = json.optBoolean("follow_request_sent");
 		defaultImage = json.optBoolean("default_profile_image");
-		timestamp = StringTools.getTime(json.optString("created_at", ""), StringTools.TIME_TWITTER_V1);
+		timestamp = StringUtils.getTime(json.optString("created_at", ""), StringUtils.TIME_TWITTER_V1);
 		description = getDescription(json);
 		url = getUrl(json);
 
@@ -89,7 +89,7 @@ public class UserV1 implements User {
 			if (defaultImage) {
 				this.profileImageUrl = profileImageUrl;
 			} else {
-				this.profileImageUrl = StringTools.createProfileImageLink(profileImageUrl);
+				this.profileImageUrl = StringUtils.createProfileImageLink(profileImageUrl);
 			}
 		}
 		if (Patterns.WEB_URL.matcher(profileBannerUrl).matches()) {
@@ -279,7 +279,7 @@ public class UserV1 implements User {
 						JSONArray indices = entry.getJSONArray("indices");
 						int start = indices.getInt(0);
 						int end = indices.getInt(1);
-						int offset = StringTools.calculateIndexOffset(description, start);
+						int offset = StringUtils.calculateIndexOffset(description, start);
 						builder.replace(start + offset, end + offset, link);
 					}
 					return builder.toString();

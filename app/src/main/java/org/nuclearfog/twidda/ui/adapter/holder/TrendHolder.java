@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
 
@@ -70,7 +70,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 		name.setText(trend.getName());
 		if (trend.getPopularity() > 0) {
 			Resources resources = vol.getResources();
-			String trendVol = StringTools.NUMBER_FORMAT.format(trend.getPopularity()) + resources.getString(R.string.trend_range);
+			String trendVol = StringUtils.NUMBER_FORMAT.format(trend.getPopularity()) + resources.getString(R.string.trend_range);
 			vol.setText(trendVol);
 			vol.setVisibility(View.VISIBLE);
 		} else {

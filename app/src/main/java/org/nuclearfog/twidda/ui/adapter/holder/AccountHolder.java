@@ -19,7 +19,7 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
@@ -85,7 +85,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	 * @param account content
 	 */
 	public void setContent(Account account) {
-		date.setText(StringTools.formatCreationTime(itemView.getResources(), account.getTimestamp()));
+		date.setText(StringUtils.formatCreationTime(itemView.getResources(), account.getTimestamp()));
 		User user = account.getUser();
 		if (user != null) {
 			// set profile information

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll.Option;
 
@@ -83,6 +83,6 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 		AppStyles.setDrawableColor(checkIcon, settings.getIconColor());
 		optionName.setText(option.getTitle());
 		voteProgress.setProgress(option.getVotes());
-		optionVotes.setText(StringTools.NUMBER_FORMAT.format(option.getVotes()));
+		optionVotes.setText(StringUtils.NUMBER_FORMAT.format(option.getVotes()));
 	}
 }

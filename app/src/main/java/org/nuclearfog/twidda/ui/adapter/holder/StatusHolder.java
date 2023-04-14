@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.backend.async.EmojiLoader;
 import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
@@ -149,10 +149,10 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		}
 		username.setText(user.getUsername());
 		screenname.setText(user.getScreenname());
-		repost.setText(StringTools.NUMBER_FORMAT.format(status.getRepostCount()));
-		favorite.setText(StringTools.NUMBER_FORMAT.format(status.getFavoriteCount()));
-		reply.setText(StringTools.NUMBER_FORMAT.format(status.getReplyCount()));
-		created.setText(StringTools.formatCreationTime(itemView.getResources(), status.getTimestamp()));
+		repost.setText(StringUtils.NUMBER_FORMAT.format(status.getRepostCount()));
+		favorite.setText(StringUtils.NUMBER_FORMAT.format(status.getFavoriteCount()));
+		reply.setText(StringUtils.NUMBER_FORMAT.format(status.getReplyCount()));
+		created.setText(StringUtils.formatCreationTime(itemView.getResources(), status.getTimestamp()));
 		if (!status.getText().trim().isEmpty()) {
 			textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
 			statusText.setText(textSpan);
