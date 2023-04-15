@@ -21,11 +21,11 @@ import org.nuclearfog.twidda.backend.async.ImageLoader.ImageResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.ui.views.AnimatedImageView;
 import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
 
-import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Activity to show online and local images
@@ -63,7 +63,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	private static final String CACHE_FOLDER = "imagecache";
 
 	private ZoomView zoomImage;
-	private GifImageView gifImage;
+	private AnimatedImageView gifImage;
 	private ProgressBar loadingCircle;
 
 	@Nullable

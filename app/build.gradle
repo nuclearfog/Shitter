@@ -64,7 +64,6 @@ dependencies {
 	//noinspection GradleDependency
 	implementation 'com.squareup.picasso:picasso:2.8'
 	implementation 'jp.wasabeef:picasso-transformations:2.4.0'
-	implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 	implementation 'com.github.QuadFlask:colorpicker:0.0.15'
 	implementation 'com.github.nuclearfog:ZoomView:1.0.4'
 	implementation 'com.github.nuclearfog:Tagger:2.4'

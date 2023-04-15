@@ -37,8 +37,6 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -keep,allowobfuscation, allowoptimization class org.openjsse.net.ssl.OpenJSSE {*;}
 
--keep class pl.droidsonroids.gif.** {*;}
-
 -dontwarn javax.annotation.Nullable
 
 -keepclassmembers class * implements android.os.Parcelable {*;}

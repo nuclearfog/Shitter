@@ -29,7 +29,7 @@
 		app:max_zoom_in="10.0"
 		app:max_zoom_out="0.5" />
 
-	<pl.droidsonroids.gif.GifImageView
+	<org.nuclearfog.twidda.ui.views.AnimatedImageView
 		android:id="@+id/page_image_gif"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
