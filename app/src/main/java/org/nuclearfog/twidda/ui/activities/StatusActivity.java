@@ -71,7 +71,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
-import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
@@ -1141,7 +1141,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void onStatusTextUpdate(@NonNull EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			statusText.setText(spannable);
 		}
 	}
@@ -1151,7 +1151,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void onUsernameUpdate(@NonNull EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			username.setText(spannable);
 		}
 	}

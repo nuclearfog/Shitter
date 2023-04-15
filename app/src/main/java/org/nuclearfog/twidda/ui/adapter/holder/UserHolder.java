@@ -30,7 +30,7 @@ import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
-import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
@@ -110,7 +110,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	@Override
 	public void onResult(@NonNull EmojiResult result) {
 		if (result.id == tagId && result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(username.getContext(), result.spannable, result.images);
+			Spannable spannable = EmojiUtils.addEmojis(username.getContext(), result.spannable, result.images);
 			username.setText(spannable);
 		}
 	}

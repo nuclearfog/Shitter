@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
-import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
@@ -155,6 +155,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		created.setText(StringUtils.formatCreationTime(itemView.getResources(), status.getTimestamp()));
 		if (!status.getText().trim().isEmpty()) {
 			textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
+			if (status.getEmojis().length > 0) {
+				textSpan = EmojiUtils.removeTags(textSpan);
+			}
 			statusText.setText(textSpan);
 			statusText.setVisibility(View.VISIBLE);
 		} else {
@@ -288,7 +291,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	 */
 	private void setUsernameEmojis(@NonNull EmojiResult result) {
 		if (result.id == tagId && result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(username.getContext(), result.spannable, result.images);
+			Spannable spannable = EmojiUtils.addEmojis(username.getContext(), result.spannable, result.images);
 			username.setText(spannable);
 		}
 	}
@@ -300,7 +303,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	 */
 	private void setTextEmojis(@NonNull EmojiResult result) {
 		if (result.id == tagId && result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(statusText.getContext(), result.spannable, result.images);
+			Spannable spannable = EmojiUtils.addEmojis(statusText.getContext(), result.spannable, result.images);
 			statusText.setText(spannable);
 		}
 	}

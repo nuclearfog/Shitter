@@ -17,11 +17,15 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class TextWithEmoji {
+public class EmojiUtils {
 
+	/**
+	 * emoji pattern used by Mastodon
+	 */
 	private static final Pattern EMOJI_PATTERN = Pattern.compile(":\\w+:");
 
-	private TextWithEmoji() {}
+
+	private EmojiUtils() {}
 
 	/**
 	 * replace tags with emojis
@@ -31,16 +35,14 @@ public class TextWithEmoji {
 	 */
 	public static Spannable addEmojis(Context context, Spannable spannable, Map<String, Bitmap> emojis) {
 		if (spannable.length() > 0 && !emojis.isEmpty()) {
-			SpannableStringBuilder builder = new SpannableStringBuilder(spannable);
-			Matcher matcher = EMOJI_PATTERN.matcher(spannable);
-			Stack<Integer> indexes = new Stack<>();
-			while (matcher.find()) {
-				indexes.push(matcher.start());
-				indexes.push(matcher.end());
+			Stack<Integer> indexes = getTagIndexes(spannable);
+			if (indexes.isEmpty()) {
+				return spannable;
 			}
+			SpannableStringBuilder builder = new SpannableStringBuilder(spannable);
 			while (!indexes.isEmpty()) {
-				int end = indexes.pop();
 				int start = indexes.pop();
+				int end = indexes.pop();
 				String tag = builder.subSequence(start + 1, end - 1).toString();
 				Bitmap emoji = emojis.get(tag);
 				if (emoji != null) {
@@ -53,5 +55,40 @@ public class TextWithEmoji {
 			return builder;
 		}
 		return spannable;
+	}
+
+	/**
+	 * remove emoji tags from spannable
+	 */
+	public static Spannable removeTags(Spannable spannable) {
+		if (spannable.length() > 0) {
+			Stack<Integer> indexes = getTagIndexes(spannable);
+			if (!indexes.isEmpty()) {
+				SpannableStringBuilder builder = new SpannableStringBuilder(spannable);
+				while (!indexes.isEmpty()) {
+					int start = indexes.pop();
+					int end = indexes.pop();
+					builder.delete(start, end);
+				}
+				return builder;
+			}
+		}
+		return spannable;
+	}
+
+	/**
+	 * create a stack with indexes of emoji tags
+	 *
+	 * @param spannable spannable containing emoji tags
+	 * @return indexes stack
+	 */
+	private static Stack<Integer> getTagIndexes(Spannable spannable) {
+		Matcher matcher = EMOJI_PATTERN.matcher(spannable);
+		Stack<Integer> indexes = new Stack<>();
+		while (matcher.find()) {
+			indexes.push(matcher.end());
+			indexes.push(matcher.start());
+		}
+		return indexes;
 	}
 }

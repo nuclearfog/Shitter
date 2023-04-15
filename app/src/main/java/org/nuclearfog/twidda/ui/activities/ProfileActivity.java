@@ -74,7 +74,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
-import org.nuclearfog.twidda.backend.utils.TextWithEmoji;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
@@ -765,6 +765,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		}
 		if (!user.getDescription().isEmpty()) {
 			descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
+			if (user.getEmojis().length > 0) {
+				descriptionSpan = EmojiUtils.removeTags(descriptionSpan);
+			}
 			description.setText(descriptionSpan);
 			description.setVisibility(VISIBLE);
 		} else {
@@ -834,7 +837,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private void onUsernameUpdate(@NonNull EmojiResult result) {
 		if (result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			username.setText(spannable);
 		}
 	}
@@ -844,7 +847,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private void onUserDescriptionUpdate(@NonNull EmojiResult result) {
 		if (result.images != null) {
-			Spannable spannable = TextWithEmoji.addEmojis(getApplicationContext(), result.spannable, result.images);
+			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			description.setText(spannable);
 		}
 	}
