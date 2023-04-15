@@ -48,10 +48,10 @@ public class PicassoBuilder implements SettingsChangeObserver {
 	 * @return instance of Picasso with custom downloader
 	 */
 	public static Picasso get(Context context) {
+		if (notifySettingsChange || instance == null) {
+			instance = new PicassoBuilder(context);
+		}
 		synchronized (instance.imageCache) {
-			if (notifySettingsChange || instance == null) {
-				instance = new PicassoBuilder(context);
-			}
 			return new Picasso.Builder(context).downloader(instance.downloader).memoryCache(instance.imageCache).build();
 		}
 	}
@@ -60,8 +60,8 @@ public class PicassoBuilder implements SettingsChangeObserver {
 	 * clear image cache
 	 */
 	public static void clear() {
-		synchronized (instance.imageCache) {
-			if (instance != null) {
+		if (instance != null) {
+			synchronized (instance.imageCache) {
 				instance.imageCache.clear();
 			}
 		}
