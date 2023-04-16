@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		tabLayout.setupWithViewPager(pager);
 		pager.setOffscreenPageLimit(4);
 		adapter = new FragmentAdapter(this, getSupportFragmentManager());
+		pager.setAdapter(adapter);
 
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		}
 		// initialize lists
 		else if (adapter.isEmpty()) {
-			setupAdapter(true);
+			setupAdapter();
 		}
 	}
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
 			case AccountActivity.RETURN_ACCOUNT_CHANGED:
-				setupAdapter(true);
+				setupAdapter();
 				break;
 
 			case SettingsActivity.RETURN_APP_LOGOUT:
@@ -131,8 +132,9 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			case SettingsActivity.RETURN_DATA_CLEARED:
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
+				AppStyles.setTheme(root);
+				AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 				adapter.notifySettingsChanged();
-				setupAdapter(false);
 				break;
 		}
 	}
@@ -244,13 +246,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	/**
 	 * initialize pager content
 	 */
-	private void setupAdapter(boolean resetFragments) {
+	private void setupAdapter() {
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-		if (resetFragments) {
-			adapter.setupForHomePage();
-			pager.setAdapter(adapter);
-		}
+		adapter.setupForHomePage();
 		switch (settings.getLogin().getConfiguration()) {
 			case TWITTER1:
 			case TWITTER2:
