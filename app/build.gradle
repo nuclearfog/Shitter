@@ -45,7 +45,7 @@ proguardDictionaries {
 	dictionaryNames = ['dict/class-dictionary', 'dict/package-dictionary', 'dict/obfuscation-dictionary']
 	minLineLength 4
 	maxLineLength 8
-	linesCountInDictionary 12500
+	linesCountInDictionary 50000
 }
 
 dependencies {

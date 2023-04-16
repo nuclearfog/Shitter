@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.VisibilityDelay;
 import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
@@ -57,12 +58,14 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		tabContainer.setOrientation(LinearLayout.HORIZONTAL);
 		indicator = new View(context);
 
-		indicator.setVisibility(INVISIBLE);
 		indicator_height = (int) getResources().getDimension(R.dimen.tabs_indicator_height);
+		LayoutParams indicatorParam = new LayoutParams(getMeasuredWidth() / Math.max(tabCount, 1), 5);
 		LayoutParams tabContainerParam = new LayoutParams(LayoutParams.MATCH_PARENT, 0);
 		tabContainerParam.weight = 1;
 
 		tabContainer.setLayoutParams(tabContainerParam);
+		indicator.setLayoutParams(indicatorParam);
+		setVisibility(INVISIBLE);
 		addView(tabContainer);
 		addView(indicator);
 	}
@@ -86,7 +89,8 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	@Override
 	public void onGlobalLayout() {
 		getViewTreeObserver().removeOnGlobalLayoutListener(this);
-		for (int i = 0 ; i < tabContainer.getChildCount(); i++) {
+		// set tab item size
+		for (int i = 0; i < tabContainer.getChildCount(); i++) {
 			View tabItemView = tabContainer.getChildAt(i);
 			ImageView icon = tabItemView.findViewById(R.id.tab_icon);
 			TextView label = tabItemView.findViewById(R.id.tab_text);
@@ -94,11 +98,15 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 			tabItemView.getLayoutParams().height = getMeasuredHeight();
 			AppStyles.setDrawableColor(icon, settings.getIconColor());
 			label.setTextColor(settings.getTextColor());
+			tabItemView.requestLayout();
 		}
+		// set indicator size
 		LayoutParams params = new LayoutParams(getMeasuredWidth() / Math.max(tabCount, 1), 5);
 		indicator.setLayoutParams(params);
 		indicator.setBackgroundColor(settings.getHighlightColor());
-		indicator.setVisibility(VISIBLE);
+		indicator.requestLayout();
+		// make this view visible after setting sizes and distances correctly
+		post(new VisibilityDelay(this, true));
 	}
 
 	/**
@@ -124,7 +132,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		} else {
 			tabCount = tArray.length();
 		}
-		for (int i = 0 ; i < tabCount ; i++) {
+		for (int i = 0; i < tabCount; i++) {
 			View tabItemView = inflate(getContext(), R.layout.item_tab, null);
 			ImageView icon = tabItemView.findViewById(R.id.tab_icon);
 			int resId = tArray.getResourceId(i, 0);
@@ -165,7 +173,6 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 			LayoutParams params = new LayoutParams(getMeasuredWidth() / tabCount, indicator_height);
 			params.setMarginStart((int) (getMeasuredWidth() * positionOffset / tabCount));
 			indicator.setLayoutParams(params);
-			indicator.setVisibility(VISIBLE);
 		}
 	}
 

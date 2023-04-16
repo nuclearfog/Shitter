@@ -3,6 +3,8 @@
 -classobfuscationdictionary dict/class-dictionary.txt
 -packageobfuscationdictionary dict/package-dictionary.txt
 
+-optimizationpasses 5
+
 # keep these libraries but allow obfuscating
 -dontwarn org.conscrypt.Conscrypt
 -keep,allowobfuscation, allowoptimization class org.conscrypt.Conscrypt {*;}
