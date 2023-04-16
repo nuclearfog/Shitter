@@ -22,11 +22,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
-import com.google.android.material.tabs.TabLayout.Tab;
+import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -46,6 +42,8 @@ import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
+import org.nuclearfog.twidda.ui.views.TabSelector;
+import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 import java.util.regex.Pattern;
 
@@ -111,8 +109,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	private ConfirmDialog confirmDialog;
 
-	private TabLayout tablayout;
-	private ViewPager pager;
+	private ViewPager2 viewPager;
 	private Toolbar toolbar;
 
 	@Nullable
@@ -132,17 +129,17 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		super.onCreate(b);
 		setContentView(R.layout.page_listdetail);
 		ViewGroup root = findViewById(R.id.listdetail_root);
+		TabSelector tabSelector = findViewById(R.id.listdetail_tab);
 		toolbar = findViewById(R.id.listdetail_toolbar);
-		tablayout = findViewById(R.id.listdetail_tab);
-		pager = findViewById(R.id.listdetail_pager);
+		viewPager = findViewById(R.id.listdetail_pager);
 
 		confirmDialog = new ConfirmDialog(this);
 		listLoaderAsync = new ListAction(this);
 		listManagerAsync = new ListManager(this);
-		adapter = new FragmentAdapter(this, getSupportFragmentManager());
-		pager.setOffscreenPageLimit(3);
-		pager.setAdapter(adapter);
-		tablayout.setupWithViewPager(pager);
+		adapter = new FragmentAdapter(this);
+		viewPager.setOffscreenPageLimit(3);
+		viewPager.setAdapter(adapter);
+		tabSelector.addViewPager(viewPager);
 		settings = GlobalSettings.getInstance(this);
 
 		Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
@@ -155,10 +152,10 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
-		AppStyles.setTabIcons(tablayout, settings, R.array.list_tab_icons);
+		tabSelector.addTabIcons(R.array.list_tab_icons);
 
 		confirmDialog.setConfirmListener(this);
-		tablayout.addOnTabSelectedListener(this);
+		tabSelector.addOnTabSelectedListener(this);
 	}
 
 
@@ -254,8 +251,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Override
 	public void onBackPressed() {
-		if (tablayout.getSelectedTabPosition() > 0) {
-			pager.setCurrentItem(0);
+		if (viewPager.getCurrentItem() > 0) {
+			viewPager.setCurrentItem(0);
 		} else {
 			Intent result = new Intent();
 			result.putExtra(RESULT_UPDATE_LIST, userList);
@@ -308,19 +305,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 
 	@Override
-	public void onTabSelected(Tab tab) {
-	}
-
-
-	@Override
-	public void onTabUnselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
-	}
-
-
-	@Override
-	public void onTabReselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
+	public void onTabSelected(int oldPosition, int position) {
+		adapter.scrollToTop(oldPosition);
 	}
 
 

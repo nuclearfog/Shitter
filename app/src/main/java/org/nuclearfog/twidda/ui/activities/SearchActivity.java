@@ -17,17 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
-import com.google.android.material.tabs.TabLayout.Tab;
+import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.views.TabSelector;
+import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 /**
  * search Activity for statuses and users
@@ -46,8 +44,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
-	private TabLayout tabLayout;
-	private ViewPager pager;
+	private ViewPager2 viewPager;
 	private Toolbar toolbar;
 
 	private String search = "";
@@ -64,26 +61,26 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		super.onCreate(b);
 		setContentView(R.layout.page_search);
 		ViewGroup root = findViewById(R.id.search_layout);
+		TabSelector tabSelector = findViewById(R.id.search_tab);
 		toolbar = findViewById(R.id.search_toolbar);
-		tabLayout = findViewById(R.id.search_tab);
-		pager = findViewById(R.id.search_pager);
+		viewPager = findViewById(R.id.search_pager);
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 
 		settings = GlobalSettings.getInstance(this);
-		adapter = new FragmentAdapter(this, getSupportFragmentManager());
-		tabLayout.setupWithViewPager(pager);
-		tabLayout.addOnTabSelectedListener(this);
-		pager.setAdapter(adapter);
-		pager.setOffscreenPageLimit(2);
+		adapter = new FragmentAdapter(this);
+		tabSelector.addViewPager(viewPager);
+		tabSelector.addOnTabSelectedListener(this);
+		viewPager.setAdapter(adapter);
+		viewPager.setOffscreenPageLimit(2);
 
 		String search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
 		if (search != null) {
 			this.search = search;
 			boolean enableHashtags = !search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON;
 			adapter.setupSearchPage(search, enableHashtags);
-			AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
+			tabSelector.addTabIcons(R.array.search_tab_icons);
 		}
 		AppStyles.setTheme(root);
 	}
@@ -91,8 +88,8 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 	@Override
 	public void onBackPressed() {
-		if (tabLayout.getSelectedTabPosition() > 0) {
-			pager.setCurrentItem(0);
+		if (viewPager.getCurrentItem() > 0) {
+			viewPager.setCurrentItem(0);
 		} else {
 			super.onBackPressed();
 		}
@@ -162,19 +159,8 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 
 	@Override
-	public void onTabSelected(Tab tab) {
+	public void onTabSelected(int oldPosition, int position) {
 		invalidateOptionsMenu();
-	}
-
-
-	@Override
-	public void onTabUnselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
-	}
-
-
-	@Override
-	public void onTabReselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
+		adapter.scrollToTop(oldPosition);
 	}
 }

@@ -60,7 +60,7 @@ public class FontAdapter extends BaseAdapter {
 		textItem = view.findViewById(R.id.dropdown_textitem);
 		textItem.setText(FONT_NAMES[pos]);
 		textItem.setTypeface(FONT_TYPES[pos]);
-		textItem.setTextColor(settings.getFontColor());
+		textItem.setTextColor(settings.getTextColor());
 		textItem.setBackgroundColor(settings.getCardColor());
 		view.setBackgroundColor(settings.getBackgroundColor());
 		return view;

@@ -348,7 +348,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// set font color
 		else if (v.getId() == R.id.color_text) {
 			mode = COLOR_TEXT;
-			color = settings.getFontColor();
+			color = settings.getTextColor();
 			showColorPicker(color, false);
 		}
 		// set popup color
@@ -418,7 +418,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					break;
 
 				case COLOR_TEXT:
-					settings.setFontColor(color);
+					settings.setTextColor(color);
 					fontAdapter.notifyDataSetChanged();
 					scaleAdapter.notifyDataSetChanged();
 					if (settings.isLoggedIn()) {

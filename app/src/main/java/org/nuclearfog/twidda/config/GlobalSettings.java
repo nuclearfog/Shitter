@@ -210,7 +210,7 @@ public class GlobalSettings {
 	 *
 	 * @return font color value
 	 */
-	public int getFontColor() {
+	public int getTextColor() {
 		return font_color;
 	}
 
@@ -219,7 +219,7 @@ public class GlobalSettings {
 	 *
 	 * @param color font color value
 	 */
-	public void setFontColor(int color) {
+	public void setTextColor(int color) {
 		font_color = color;
 
 		Editor edit = settings.edit();

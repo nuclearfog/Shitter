@@ -23,17 +23,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
-import com.google.android.material.tabs.TabLayout.Tab;
+import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
+import org.nuclearfog.twidda.ui.views.TabSelector;
+import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 /**
  * Main Activity of the App
@@ -49,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private Intent loginIntent;
 
 	private Dialog loadingCircle;
-	private TabLayout tabLayout;
-	private ViewPager pager;
+	private TabSelector tabSelector;
+	private ViewPager2 viewPager;
 	private Toolbar toolbar;
 	private ViewGroup root;
 
@@ -66,23 +64,23 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_main);
 		toolbar = findViewById(R.id.home_toolbar);
-		pager = findViewById(R.id.home_pager);
-		tabLayout = findViewById(R.id.home_tab);
+		viewPager = findViewById(R.id.home_pager);
+		tabSelector = findViewById(R.id.home_tab);
 		root = findViewById(R.id.main_layout);
 		loadingCircle = new ProgressDialog(this);
 
 		settings = GlobalSettings.getInstance(this);
-		tabLayout.setupWithViewPager(pager);
-		pager.setOffscreenPageLimit(4);
-		adapter = new FragmentAdapter(this, getSupportFragmentManager());
-		pager.setAdapter(adapter);
+		tabSelector.addViewPager(viewPager);
+		viewPager.setOffscreenPageLimit(4);
+		adapter = new FragmentAdapter(this);
+		viewPager.setAdapter(adapter);
 
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
-		tabLayout.addOnTabSelectedListener(this);
+		tabSelector.addOnTabSelectedListener(this);
 	}
 
 
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 			case SettingsActivity.RETURN_APP_LOGOUT:
 				adapter.clear();
-				pager.setAdapter(adapter);
+				viewPager.setAdapter(adapter);
 				loginIntent = new Intent(this, LoginActivity.class);
 				activityResultLauncher.launch(loginIntent);
 				break;
@@ -200,8 +198,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	@Override
 	public void onBackPressed() {
-		if (tabLayout.getSelectedTabPosition() > 0) {
-			pager.setCurrentItem(0);
+		if (viewPager.getCurrentItem() > 0) {
+			viewPager.setCurrentItem(0);
 		} else {
 			super.onBackPressed();
 		}
@@ -228,19 +226,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onTabSelected(Tab tab) {
-	}
-
-
-	@Override
-	public void onTabUnselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
-	}
-
-
-	@Override
-	public void onTabReselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
+	public void onTabSelected(int oldPosition, int position) {
+		adapter.scrollToTop(oldPosition);
 	}
 
 	/**
@@ -250,15 +237,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		adapter.setupForHomePage();
-		switch (settings.getLogin().getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				AppStyles.setTabIcons(tabLayout, settings, R.array.home_twitter_icons);
-				break;
-
-			case MASTODON:
-				AppStyles.setTabIcons(tabLayout, settings, R.array.home_mastodon_icons);
-				break;
-		}
+		tabSelector.addTabIcons(settings.getLogin().getConfiguration().getHomeTabIcons());
 	}
 }

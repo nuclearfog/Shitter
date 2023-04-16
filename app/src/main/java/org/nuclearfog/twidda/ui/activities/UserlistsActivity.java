@@ -18,16 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
-import com.google.android.material.tabs.TabLayout.Tab;
+import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.views.TabSelector;
+import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 /**
  * Activity to show userlists of an user
@@ -47,8 +45,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
-	private ViewPager pager;
-	private TabLayout tabLayout;
+	private ViewPager2 viewPager;
 
 	private boolean isHome = false;
 
@@ -65,25 +62,25 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		setContentView(R.layout.page_list);
 		ViewGroup root = findViewById(R.id.list_view);
 		Toolbar toolbar = findViewById(R.id.list_toolbar);
-		pager = findViewById(R.id.list_pager);
-		tabLayout = findViewById(R.id.list_tab);
+		TabSelector tabSelector = findViewById(R.id.list_tab);
+		viewPager = findViewById(R.id.list_pager);
 
 		toolbar.setTitle(R.string.list_appbar);
 		setSupportActionBar(toolbar);
-		adapter = new FragmentAdapter(this, getSupportFragmentManager());
+		adapter = new FragmentAdapter(this);
 
 		settings = GlobalSettings.getInstance(this);
 		AppStyles.setTheme(root);
-		pager.setAdapter(adapter);
-		pager.setOffscreenPageLimit(2);
-		tabLayout.setupWithViewPager(pager);
-		tabLayout.addOnTabSelectedListener(this);
+		viewPager.setAdapter(adapter);
+		viewPager.setOffscreenPageLimit(2);
+		tabSelector.addViewPager(viewPager);
+		tabSelector.addOnTabSelectedListener(this);
 
 		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, 0L);
 
 		isHome = ownerId == settings.getLogin().getId();
 		adapter.setupListPage(ownerId);
-		AppStyles.setTabIcons(tabLayout, settings, R.array.userlist_tab_icons);
+		tabSelector.addTabIcons(R.array.userlist_tab_icons);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 	}
 
@@ -98,8 +95,8 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 
 	@Override
 	public void onBackPressed() {
-		if (tabLayout.getSelectedTabPosition() > 0) {
-			pager.setCurrentItem(0);
+		if (viewPager.getCurrentItem() > 0) {
+			viewPager.setCurrentItem(0);
 		} else {
 			super.onBackPressed();
 		}
@@ -134,18 +131,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 
 
 	@Override
-	public void onTabSelected(Tab tab) {
-	}
-
-
-	@Override
-	public void onTabUnselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
-	}
-
-
-	@Override
-	public void onTabReselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
+	public void onTabSelected(int oldPosition, int position) {
+		adapter.scrollToTop(oldPosition);
 	}
 }

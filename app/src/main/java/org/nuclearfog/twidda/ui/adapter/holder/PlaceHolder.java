@@ -43,9 +43,9 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 		loadBtn = itemView.findViewById(R.id.placeholder_button);
 
 		background.setCardBackgroundColor(settings.getCardColor());
-		loadBtn.setTextColor(settings.getFontColor());
+		loadBtn.setTextColor(settings.getTextColor());
 		loadBtn.setTypeface(settings.getTypeFace());
-		AppStyles.setButtonColor(loadBtn, settings.getFontColor());
+		AppStyles.setButtonColor(loadBtn, settings.getTextColor());
 		AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
 
 		// enable extra views

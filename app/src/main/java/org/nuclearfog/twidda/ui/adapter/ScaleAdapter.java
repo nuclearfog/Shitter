@@ -58,7 +58,7 @@ public class ScaleAdapter extends BaseAdapter {
 		textItem = view.findViewById(R.id.dropdown_textitem);
 		textItem.setText(String.format(Locale.getDefault(), "%.1f X", FONT_SCALES[pos]));
 		textItem.setTypeface(settings.getTypeFace());
-		textItem.setTextColor(settings.getFontColor());
+		textItem.setTextColor(settings.getTextColor());
 		textItem.setBackgroundColor(settings.getCardColor());
 		view.setBackgroundColor(settings.getBackgroundColor());
 		return view;

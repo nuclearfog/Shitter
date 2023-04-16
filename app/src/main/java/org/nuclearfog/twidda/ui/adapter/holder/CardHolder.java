@@ -63,7 +63,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 
 		itemView.getLayoutParams().width = parent.getMeasuredHeight() * 16 / 9;
 		linkText.setTypeface(settings.getTypeFace());
-		linkText.setTextColor(settings.getFontColor());
+		linkText.setTextColor(settings.getTextColor());
 		linkText.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
 
 		linkText.setOnClickListener(this);

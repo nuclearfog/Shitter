@@ -44,7 +44,7 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 		this.listener = listener;
 
 		cardBackground.setCardBackgroundColor(settings.getCardColor());
-		votesCount.setTextColor(settings.getFontColor());
+		votesCount.setTextColor(settings.getTextColor());
 		votesCount.setTypeface(settings.getTypeFace());
 		itemView.getLayoutParams().width = parent.getMeasuredHeight() * 2; // 2:1 ratio
 

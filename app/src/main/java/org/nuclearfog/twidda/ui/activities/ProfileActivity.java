@@ -46,11 +46,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.widget.NestedScrollView;
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
-import com.google.android.material.tabs.TabLayout.Tab;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -83,6 +80,8 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.views.LockableLinearLayout;
 import org.nuclearfog.twidda.ui.views.LockableLinearLayout.LockCallback;
+import org.nuclearfog.twidda.ui.views.TabSelector;
+import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -159,12 +158,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private NestedScrollView root;
 	private ConstraintLayout header;
 	private LockableLinearLayout body;
-	private TextView[] tabIndicator;
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
 	private Button following, follower;
-	private ViewPager tabPages;
-	private TabLayout tabLayout;
+	private ViewPager2 viewPager;
+	private TabSelector tabSelector;
 	private Toolbar toolbar;
 
 	@Nullable
@@ -200,8 +198,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		user_location = findViewById(R.id.location);
 		user_createdAt = findViewById(R.id.profile_date);
 		follow_back = findViewById(R.id.follow_back);
-		tabLayout = findViewById(R.id.profile_tab);
-		tabPages = findViewById(R.id.profile_pager);
+		tabSelector = findViewById(R.id.profile_tab);
+		viewPager = findViewById(R.id.profile_pager);
 
 		relationLoader = new RelationLoader(this);
 		userLoader = new UserLoader(this);
@@ -227,14 +225,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		description.setLinkTextColor(settings.getHighlightColor());
 		AppStyles.setTheme(root);
 		user_website.setTextColor(settings.getHighlightColor());
-		tabLayout.setBackgroundColor(Color.TRANSPARENT);
+		tabSelector.setBackgroundColor(Color.TRANSPARENT);
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
-		adapter = new FragmentAdapter(this, getSupportFragmentManager());
-		tabPages.setAdapter(adapter);
-		tabPages.setOffscreenPageLimit(3);
-		tabLayout.setupWithViewPager(tabPages);
+		adapter = new FragmentAdapter(this);
+		viewPager.setAdapter(adapter);
+		viewPager.setOffscreenPageLimit(3);
+		tabSelector.addViewPager(viewPager);
 		confirmDialog = new ConfirmDialog(this);
 
 		// get parameters
@@ -251,9 +249,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		}
 		adapter.setupProfilePage(userId);
 		if (settings.likeEnabled()) {
-			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
+			tabSelector.addTabIcons(R.array.profile_tab_icons_like);
 		} else {
-			tabIndicator = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
+			tabSelector.addTabIcons(R.array.profile_tab_icons);
 		}
 		if (user != null) {
 			setUser(user);
@@ -267,7 +265,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
 			relationLoader.execute(param, relationCallback);
 		}
-		tabLayout.addOnTabSelectedListener(this);
+		tabSelector.addOnTabSelectedListener(this);
 		following.setOnClickListener(this);
 		follower.setOnClickListener(this);
 		profileImage.setOnClickListener(this);
@@ -480,8 +478,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	public void onBackPressed() {
-		if (tabLayout.getSelectedTabPosition() > 0) {
-			tabPages.setCurrentItem(0);
+		if (viewPager.getCurrentItem() > 0) {
+			viewPager.setCurrentItem(0);
 		} else {
 			Intent returnData = new Intent();
 			returnData.putExtra(KEY_USER_UPDATE, user);
@@ -618,19 +616,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 
 	@Override
-	public void onTabSelected(Tab tab) {
-	}
-
-
-	@Override
-	public void onTabUnselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
-	}
-
-
-	@Override
-	public void onTabReselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
+	public void onTabSelected(int oldPosition, int position) {
+		adapter.scrollToTop(oldPosition);
 	}
 
 
@@ -747,16 +734,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		username.setText(user.getUsername());
 		screenName.setText(user.getScreenname());
 		if (user.getStatusCount() >= 0) {
-			tabIndicator[0].setText(StringUtils.NUMBER_FORMAT.format(user.getStatusCount()));
+			tabSelector.setLabel(0, StringUtils.NUMBER_FORMAT.format(user.getStatusCount()));
 		} else {
-			tabIndicator[0].setText("");
+			tabSelector.setLabel(0, "");
 		}
-		if (tabIndicator.length > 1) {
-			if (user.getFavoriteCount() >= 0) {
-				tabIndicator[1].setText(StringUtils.NUMBER_FORMAT.format(user.getFavoriteCount()));
-			} else {
-				tabIndicator[1].setText("");
-			}
+		if (user.getFavoriteCount() >= 0) {
+			tabSelector.setLabel(1, StringUtils.NUMBER_FORMAT.format(user.getFavoriteCount()));
+		} else {
+			tabSelector.setLabel(1, "");
 		}
 		if (user_createdAt.getVisibility() != VISIBLE) {
 			String date = SimpleDateFormat.getDateTimeInstance().format(user.getTimestamp());

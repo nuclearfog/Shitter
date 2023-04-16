@@ -63,7 +63,7 @@ public class LocationAdapter extends BaseAdapter {
 		}
 		textItem = view.findViewById(R.id.dropdown_textitem);
 		textItem.setBackgroundColor(settings.getCardColor());
-		textItem.setTextColor(settings.getFontColor());
+		textItem.setTextColor(settings.getTextColor());
 		textItem.setTypeface(settings.getTypeFace());
 		textItem.setText(locations.get(pos).getFullName());
 		view.setBackgroundColor(settings.getBackgroundColor());

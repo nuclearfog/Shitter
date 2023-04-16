@@ -14,11 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
-import com.google.android.material.tabs.TabLayout.Tab;
+import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
@@ -29,6 +25,8 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.views.TabSelector;
+import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 import java.util.regex.Pattern;
 
@@ -103,8 +101,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private FragmentAdapter adapter;
 
 	private Toolbar toolbar;
-	private TabLayout tablayout;
-	private ViewPager pager;
+	private TabSelector tabSelector;
+	private ViewPager2 viewPager;
 
 	private int mode;
 
@@ -121,13 +119,13 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		setContentView(R.layout.page_exclude);
 		ViewGroup root = findViewById(R.id.page_exclude_root);
 		toolbar = findViewById(R.id.page_exclude_toolbar);
-		tablayout = findViewById(R.id.page_exclude_tab);
-		pager = findViewById(R.id.page_exclude_pager);
+		tabSelector = findViewById(R.id.page_exclude_tab);
+		viewPager = findViewById(R.id.page_exclude_pager);
 
 		filterAsync = new FilterLoader(this);
 		settings = GlobalSettings.getInstance(this);
-		adapter = new FragmentAdapter(this, getSupportFragmentManager());
-		pager.setAdapter(adapter);
+		adapter = new FragmentAdapter(this);
+		//pager.setAdapter(adapter);
 
 		mode = getIntent().getIntExtra(KEY_USERS_MODE, 0);
 		long id = getIntent().getLongExtra(KEY_USERS_ID, 0L);
@@ -135,48 +133,48 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		switch (mode) {
 			case USERS_FRIENDS:
 				adapter.setupFollowingPage(id);
-				pager.setOffscreenPageLimit(1);
-				tablayout.setVisibility(View.GONE);
+				viewPager.setOffscreenPageLimit(1);
+				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.userlist_following);
 				break;
 
 			case USERS_FOLLOWER:
 				adapter.setupFollowerPage(id);
-				pager.setOffscreenPageLimit(1);
-				tablayout.setVisibility(View.GONE);
+				viewPager.setOffscreenPageLimit(1);
+				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.userlist_follower);
 				break;
 
 			case USERS_REPOST:
 				adapter.setupReposterPage(id);
-				pager.setOffscreenPageLimit(1);
-				tablayout.setVisibility(View.GONE);
+				viewPager.setOffscreenPageLimit(1);
+				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.toolbar_userlist_repost);
 				break;
 
 			case USERS_FAVORIT:
 				int title = settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter;
 				adapter.setFavoriterPage(id);
-				pager.setOffscreenPageLimit(1);
-				tablayout.setVisibility(View.GONE);
+				viewPager.setOffscreenPageLimit(1);
+				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(title);
 				break;
 
 			case USERS_EXCLUDED:
 				adapter.setupMuteBlockPage();
-				pager.setOffscreenPageLimit(2);
-				tablayout.setupWithViewPager(pager);
-				tablayout.addOnTabSelectedListener(this);
-				AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
+				viewPager.setOffscreenPageLimit(2);
+				tabSelector.addViewPager(viewPager);
+				tabSelector.addOnTabSelectedListener(this);
+				tabSelector.addTabIcons(R.array.user_exclude_icons);
 				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
 				break;
 
 			case USERS_REQUESTS:
 				adapter.setupFollowRequestPage();
-				pager.setOffscreenPageLimit(2);
-				tablayout.setupWithViewPager(pager);
-				tablayout.addOnTabSelectedListener(this);
-				AppStyles.setTabIcons(tablayout, settings, R.array.user_requests_icon);
+				viewPager.setOffscreenPageLimit(2);
+				tabSelector.addViewPager(viewPager);
+				tabSelector.addOnTabSelectedListener(this);
+				tabSelector.addTabIcons(R.array.user_requests_icon);
 				toolbar.setTitle(R.string.menu_toolbar_request);
 				break;
 		}
@@ -187,8 +185,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public void onBackPressed() {
-		if (tablayout.getVisibility() == View.VISIBLE && tablayout.getSelectedTabPosition() > 0) {
-			pager.setCurrentItem(0);
+		if (tabSelector.getVisibility() == View.VISIBLE && viewPager.getCurrentItem() > 0) {
+			viewPager.setCurrentItem(0);
 		} else {
 			super.onBackPressed();
 		}
@@ -217,10 +215,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public boolean onPrepareOptionsMenu(Menu m) {
 		if (mode == USERS_EXCLUDED) {
 			SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
-			if (tablayout.getSelectedTabPosition() == 0) {
+			if (viewPager.getCurrentItem() == 0) {
 				String hint = getString(R.string.menu_hint_mute_user);
 				searchView.setQueryHint(hint);
-			} else if (tablayout.getSelectedTabPosition() == 1) {
+			} else if (viewPager.getCurrentItem() == 1) {
 				String hint = getString(R.string.menu_hint_block_user);
 				searchView.setQueryHint(hint);
 			}
@@ -244,21 +242,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	public void onTabSelected(Tab tab) {
+	public void onTabSelected(int oldPosition, int position) {
+		adapter.scrollToTop(oldPosition);
 		// reset menu
 		invalidateOptionsMenu();
-	}
-
-
-	@Override
-	public void onTabUnselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
-	}
-
-
-	@Override
-	public void onTabReselected(Tab tab) {
-		adapter.scrollToTop(tab.getPosition());
 	}
 
 
@@ -266,10 +253,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public boolean onQueryTextSubmit(String query) {
 		if (USERNAME_PATTERN.matcher(query).matches()) {
 			if (filterAsync.isIdle()) {
-				if (tablayout.getSelectedTabPosition() == 0) {
+				if (viewPager.getCurrentItem() == 0) {
 					FilterParam param = new FilterParam(FilterParam.MUTE, query);
 					filterAsync.execute(param, this);
-				} else if (tablayout.getSelectedTabPosition() == 1) {
+				} else if (viewPager.getCurrentItem() == 1) {
 					FilterParam param = new FilterParam(FilterParam.BLOCK, query);
 					filterAsync.execute(param, this);
 				}

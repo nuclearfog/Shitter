@@ -31,13 +31,12 @@ import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_OWNS;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_SUBSCR_TO;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
@@ -50,34 +49,47 @@ import org.nuclearfog.twidda.ui.fragments.UserFragment;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
 /**
- * custom adapter used for {@link androidx.viewpager.widget.ViewPager}
+ * custom adapter used for {@link androidx.viewpager2.widget.ViewPager2}
  *
  * @author nuclearfog
  */
-public class FragmentAdapter extends FragmentStatePagerAdapter {
+public class FragmentAdapter extends FragmentStateAdapter {
 
 	private ListFragment[] fragments = {};
 	private GlobalSettings settings;
 
 	/**
-	 * @param fManager Activity Fragment Manager
+	 * @param fragmentActivity fragment activity
 	 */
-	public FragmentAdapter(Context context, FragmentManager fManager) {
-		super(fManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-		settings = GlobalSettings.getInstance(context);
+	public FragmentAdapter(FragmentActivity fragmentActivity) {
+		super(fragmentActivity);
+		settings = GlobalSettings.getInstance(fragmentActivity.getApplicationContext());
 	}
 
 
-	@Override
 	@NonNull
-	public Fragment getItem(int index) {
-		return fragments[index];
+	@Override
+	public Fragment createFragment(int position) {
+		return fragments[position];
 	}
 
 
 	@Override
-	public int getCount() {
+	public int getItemCount() {
 		return fragments.length;
+	}
+
+	/**
+	 * get fragment at index
+	 *
+	 * @param index index of the fragment
+	 * @return fragment
+	 */
+	public ListFragment getItem(int index) {
+		if (index >= 0 && index < fragments.length) {
+			return fragments[index];
+		}
+		return null;
 	}
 
 	/**

@@ -1,18 +1,14 @@
 package org.nuclearfog.twidda.backend.utils;
 
-import static android.graphics.Bitmap.Config.ARGB_8888;
-import static android.graphics.PorterDuff.Mode.SRC_IN;
-import static android.view.View.GONE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -31,17 +27,14 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
@@ -211,7 +204,7 @@ public class AppStyles {
 	public static void setProgressColor(ProgressBar circle, int color) {
 		Drawable icon = circle.getIndeterminateDrawable();
 		if (icon != null) {
-			icon.setColorFilter(new PorterDuffColorFilter(color, SRC_IN));
+			icon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
 		}
 	}
 
@@ -229,59 +222,6 @@ public class AppStyles {
 	}
 
 	/**
-	 * set tab icons
-	 *
-	 * @param tabLayout Tab layout with tab icons
-	 * @param settings  settings to set color
-	 * @param array     set of icons
-	 */
-	public static void setTabIcons(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
-		TextView[] textViews = setTabIconsWithText(tabLayout, settings, array);
-		for (TextView textView : textViews) {
-			if (textView != null) {
-				textView.setVisibility(GONE);
-			}
-		}
-	}
-
-	/**
-	 * create tab icons with TextView
-	 *
-	 * @param tabLayout TabLayout to set the icons
-	 * @param settings  settings instance
-	 * @param array     Array of drawable resources to set the icons
-	 * @return array of TextViews
-	 */
-	public static TextView[] setTabIconsWithText(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
-		Context context = tabLayout.getContext();
-		TypedArray tArray = context.getResources().obtainTypedArray(array);
-		TextView[] tabs = new TextView[tabLayout.getTabCount()];
-		for (int index = 0; index < tArray.length() && index < tabLayout.getTabCount(); index++) {
-			TabLayout.Tab mTab = tabLayout.getTabAt(index);
-			if (mTab != null) {
-				View tabView;
-				int resId = tArray.getResourceId(index, 0);
-				Drawable icon = AppCompatResources.getDrawable(context, resId);
-				setDrawableColor(icon, settings.getIconColor());
-				if (mTab.getCustomView() == null) {
-					tabView = View.inflate(context, R.layout.item_tab, null);
-					mTab.setCustomView(tabView);
-				} else {
-					// Update existing view
-					tabView = mTab.getCustomView();
-				}
-				ImageView imageIcon = tabView.findViewById(R.id.tab_icon);
-				tabs[index] = tabView.findViewById(R.id.tab_text);
-				tabs[index].setTextColor(settings.getFontColor());
-				tabs[index].setTypeface(settings.getTypeFace());
-				imageIcon.setImageDrawable(icon);
-			}
-		}
-		tArray.recycle();
-		return tabs;
-	}
-
-	/**
 	 * setup a transparent blurry toolbar
 	 *
 	 * @param activity          activity reference to get the measures
@@ -292,7 +232,7 @@ public class AppStyles {
 		Drawable backgroundDrawable = background.getDrawable();
 		if (backgroundDrawable instanceof BitmapDrawable) {
 			try {
-				Bitmap image = ((BitmapDrawable) backgroundDrawable).getBitmap().copy(ARGB_8888, true);
+				Bitmap image = ((BitmapDrawable) backgroundDrawable).getBitmap().copy(Bitmap.Config.ARGB_8888, true);
 				// check if image is valid
 				if (image.getWidth() > 1 && image.getHeight() > 1) {
 					// crop image to background size
@@ -330,9 +270,9 @@ public class AppStyles {
 	 * @param settings global settings instance
 	 */
 	public static void setSeekBarColor(SeekBar seekBar, GlobalSettings settings) {
-		seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
+		seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), PorterDuff.Mode.SRC_IN));
 		if (seekBar.getThumb() != null) {
-			seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
+			seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), PorterDuff.Mode.SRC_IN));
 		}
 	}
 
@@ -344,7 +284,7 @@ public class AppStyles {
 	 */
 	public static void setDrawableColor(@Nullable Drawable drawable, int color) {
 		if (drawable != null) {
-			drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_IN));
+			drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
 		}
 	}
 
@@ -386,10 +326,7 @@ public class AppStyles {
 	private void setSubViewTheme(ViewGroup group) {
 		for (int pos = 0; pos < group.getChildCount(); pos++) {
 			View child = group.getChildAt(pos);
-			if (child instanceof TabLayout) {
-				TabLayout tablayout = (TabLayout) child;
-				tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-			} else if (child instanceof SwitchButton) {
+			if (child instanceof SwitchButton) {
 				SwitchButton sw = (SwitchButton) child;
 				int[] color = {settings.getIconColor()};
 				sw.setTintColor(settings.getHighlightColor());
@@ -403,28 +340,28 @@ public class AppStyles {
 			} else if (child instanceof TextView) {
 				TextView tv = (TextView) child;
 				tv.setTypeface(settings.getTypeFace());
-				tv.setTextColor(settings.getFontColor());
+				tv.setTextColor(settings.getTextColor());
 				setDrawableColor(tv, settings.getIconColor());
 				if (child instanceof Button) {
 					Button btn = (Button) child;
-					setButtonColor(btn, settings.getFontColor());
+					setButtonColor(btn, settings.getTextColor());
 				} else if (child instanceof EditText) {
 					EditText edit = (EditText) child;
-					edit.setHintTextColor(settings.getFontColor() & HINT_TRANSPARENCY);
+					edit.setHintTextColor(settings.getTextColor() & HINT_TRANSPARENCY);
 				}
 			} else if (child instanceof ImageView) {
 				ImageView img = (ImageView) child;
 				setDrawableColor(img.getDrawable(), settings.getIconColor());
 				if (child instanceof ImageButton) {
 					ImageButton btn = (ImageButton) child;
-					setButtonColor(btn, settings.getFontColor());
+					setButtonColor(btn, settings.getTextColor());
 				}
 			} else if (child instanceof ViewGroup) {
 				if (child instanceof CardView) {
 					CardView card = (CardView) child;
 					card.setCardBackgroundColor(settings.getCardColor());
 					setSubViewTheme(card);
-				} else if (!(child instanceof ViewPager)) {
+				} else if (!(child instanceof ViewPager2)) {
 					setSubViewTheme((ViewGroup) child);
 				}
 			}

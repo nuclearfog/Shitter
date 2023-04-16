@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.config;
 
+import androidx.annotation.ArrayRes;
+
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.model.Account;
 
 /**
@@ -41,6 +44,7 @@ public enum Configuration {
 	private final boolean statusSpoilerSupported;
 	private final boolean statusVisibilitySupported;
 	private final boolean directMessageSupported;
+	private final int arrayResHome;
 
 	/**
 	 * @param accountType account login type, see {@link Account}
@@ -61,6 +65,7 @@ public enum Configuration {
 				statusSpoilerSupported = false;
 				statusVisibilitySupported = false;
 				directMessageSupported = true;
+				arrayResHome = R.array.home_twitter_icons;
 				break;
 
 			default:
@@ -76,6 +81,7 @@ public enum Configuration {
 				statusSpoilerSupported = true;
 				statusVisibilitySupported = true;
 				directMessageSupported = false;
+				arrayResHome = R.array.home_mastodon_icons;
 				break;
 		}
 	}
@@ -162,5 +168,15 @@ public enum Configuration {
 	 */
 	public boolean directmessageSupported() {
 		return directMessageSupported;
+	}
+
+	/**
+	 * get home tabitems drawable IDs
+	 *
+	 * @return Integer array resource containing drawable IDs
+	 */
+	@ArrayRes
+	public int getHomeTabIcons() {
+		return arrayResHome;
 	}
 }

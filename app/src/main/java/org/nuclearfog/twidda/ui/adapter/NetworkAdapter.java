@@ -81,7 +81,7 @@ public class NetworkAdapter extends BaseAdapter {
 		textItem = convertView.findViewById(R.id.dropdown_textitem);
 		textItem.setText(STRINGS[position]);
 		textItem.setCompoundDrawablesWithIntrinsicBounds(ICONS[position], 0, 0, 0);
-		textItem.setTextColor(settings.getFontColor());
+		textItem.setTextColor(settings.getTextColor());
 		textItem.setBackgroundColor(settings.getCardColor());
 		AppStyles.setDrawableColor(textItem, settings.getIconColor());
 		convertView.setBackgroundColor(settings.getBackgroundColor());

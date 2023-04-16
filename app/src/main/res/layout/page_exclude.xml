@@ -13,13 +13,12 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" />
 
-	<com.google.android.material.tabs.TabLayout
+	<org.nuclearfog.twidda.ui.views.TabSelector
 		android:id="@+id/page_exclude_tab"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@android:color/transparent" />
+		android:layout_height="@dimen/tabselector_height" />
 
-	<androidx.viewpager.widget.ViewPager
+	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/page_exclude_pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

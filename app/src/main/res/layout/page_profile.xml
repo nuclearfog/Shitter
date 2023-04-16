@@ -223,14 +223,12 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
 
-			<com.google.android.material.tabs.TabLayout
+			<org.nuclearfog.twidda.ui.views.TabSelector
 				android:id="@+id/profile_tab"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:background="@android:color/transparent"
-				app:tabMinWidth="@dimen/profile_tabitem_min_width" />
+				android:layout_height="@dimen/profile_tabselector_height" />
 
-			<androidx.viewpager.widget.ViewPager
+			<androidx.viewpager2.widget.ViewPager2
 				android:id="@+id/profile_pager"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent" />

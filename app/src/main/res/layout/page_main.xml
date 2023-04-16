@@ -13,15 +13,15 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/mainpage_toolbar_height" />
 
-	<com.google.android.material.tabs.TabLayout
+	<org.nuclearfog.twidda.ui.views.TabSelector
 		android:id="@+id/home_tab"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@android:color/transparent" />
+		android:layout_height="@dimen/tabselector_height" />
 
-	<androidx.viewpager.widget.ViewPager
+	<androidx.viewpager2.widget.ViewPager2
 		android:id="@+id/home_pager"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:layout_height="match_parent"
+		android:orientation="horizontal"/>
 
 </LinearLayout>

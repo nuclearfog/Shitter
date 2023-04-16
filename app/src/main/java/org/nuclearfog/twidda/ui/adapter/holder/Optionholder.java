@@ -44,9 +44,9 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 		this.settings = settings;
 		this.listener = listener;
 
-		optionName.setTextColor(settings.getFontColor());
+		optionName.setTextColor(settings.getTextColor());
 		optionName.setTypeface(settings.getTypeFace());
-		optionVotes.setTextColor(settings.getFontColor());
+		optionVotes.setTextColor(settings.getTextColor());
 		optionVotes.setTypeface(settings.getTypeFace());
 		AppStyles.setSeekBarColor(voteProgress, settings);
 		checkIcon.setColorFilter(settings.getIconColor());
