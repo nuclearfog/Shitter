@@ -330,6 +330,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	public boolean onPrepareOptionsMenu(@NonNull Menu m) {
+		boolean result = super.onPrepareOptionsMenu(m);
 		if (user != null) {
 			MenuItem listItem = m.findItem(R.id.profile_lists);
 
@@ -367,6 +368,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				blockIcon.setVisible(true);
 				muteIcon.setVisible(true);
 			}
+			result = true;
 		}
 		if (relation != null) {
 			if (relation.isFollowing()) {
@@ -389,8 +391,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			if (relation.isFollower()) {
 				follow_back.setVisibility(VISIBLE);
 			}
+			result = true;
 		}
-		return super.onPrepareOptionsMenu(m);
+		return result;
 	}
 
 
@@ -405,6 +408,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				intent.putExtra(KEY_STATUS_EDITOR_TEXT, prefix);
 			}
 			startActivity(intent);
+			return true;
 		}
 		// follow / unfollow user
 		else if (item.getItemId() == R.id.profile_follow) {
@@ -418,6 +422,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 					confirmDialog.show(ConfirmDialog.PROFILE_UNFOLLOW);
 				}
 			}
+			return true;
 		}
 		// mute user
 		else if (item.getItemId() == R.id.profile_mute) {
@@ -431,6 +436,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 					confirmDialog.show(ConfirmDialog.PROFILE_MUTE);
 				}
 			}
+			return true;
 		}
 		// block user
 		else if (item.getItemId() == R.id.profile_block) {
@@ -444,6 +450,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 					confirmDialog.show(ConfirmDialog.PROFILE_BLOCK);
 				}
 			}
+			return true;
 		}
 		// open profile editor
 		else if (item.getItemId() == R.id.profile_settings) {
@@ -457,6 +464,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			if (user != null && !user.isCurrentUser())
 				intent.putExtra(KEY_DM_PREFIX, user.getScreenname());
 			startActivity(intent);
+			return true;
 		}
 		// open users list
 		else if (item.getItemId() == R.id.profile_lists) {
@@ -465,12 +473,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				intent.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
 				startActivity(intent);
 			}
+			return true;
 		}
 		// open request list
 		else if (item.getItemId() == R.id.profile_requests) {
 			Intent usersIntent = new Intent(this, UsersActivity.class);
 			usersIntent.putExtra(KEY_USERS_MODE, USERS_REQUESTS);
 			startActivity(usersIntent);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

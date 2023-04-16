@@ -212,6 +212,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 					followList.setTitle(R.string.menu_list_follow);
 				}
 			}
+			return true;
 		}
 		return super.onPrepareOptionsMenu(m);
 	}
@@ -225,10 +226,12 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				Intent editList = new Intent(this, UserlistEditor.class);
 				editList.putExtra(KEY_LIST_EDITOR_DATA, userList);
 				activityResultLauncher.launch(editList);
+				return true;
 			}
 			// delete user list
 			else if (item.getItemId() == R.id.menu_delete_list) {
 				confirmDialog.show(ConfirmDialog.LIST_DELETE);
+				return true;
 			}
 			// follow user list
 			else if (item.getItemId() == R.id.menu_follow_list) {
@@ -238,11 +241,13 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 					ListActionParam param = new ListActionParam(ListActionParam.FOLLOW, userList.getId());
 					listLoaderAsync.execute(param, userlistSet);
 				}
+				return true;
 			}
 			// theme expanded search view
 			else if (item.getItemId() == R.id.menu_list_add_user) {
 				SearchView searchView = (SearchView) item.getActionView();
 				AppStyles.setTheme(searchView, Color.TRANSPARENT);
+				return true;
 			}
 		}
 		return super.onOptionsItemSelected(item);

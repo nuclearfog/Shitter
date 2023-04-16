@@ -470,8 +470,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					copyMenu.add(MENU_GROUP_COPY, i, Menu.NONE, text);
 				}
 			}
+			return true;
 		}
-		return true;
+		return super.onPrepareOptionsMenu(m);
 	}
 
 
@@ -486,6 +487,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// Delete status option
 		if (item.getItemId() == R.id.menu_status_delete) {
 			confirmDialog.show(ConfirmDialog.DELETE_STATUS);
+			return true;
 		}
 		// add/remove bookmark
 		if (item.getItemId() == R.id.menu_status_bookmark) {
@@ -493,12 +495,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
 			StatusParam param = new StatusParam(mode, status.getId());
 			statusLoader.execute(param, statusCallback);
+			return true;
 		}
 		// hide status
 		else if (item.getItemId() == R.id.menu_status_hide) {
 			int mode = hidden ? StatusParam.UNHIDE : StatusParam.HIDE;
 			StatusParam param = new StatusParam(mode, status.getId());
 			statusLoader.execute(param, statusCallback);
+			return true;
 		}
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
@@ -508,6 +512,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			} catch (ActivityNotFoundException err) {
 				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
 			}
+			return true;
 		}
 		// copy status link to clipboard
 		else if (item.getItemId() == R.id.menu_status_copy_text) {
@@ -516,6 +521,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				clip.setPrimaryClip(linkClip);
 				Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, Toast.LENGTH_SHORT).show();
 			}
+			return true;
 		}
 		// copy status link to clipboard
 		else if (item.getItemId() == R.id.menu_status_copy_link) {
@@ -524,6 +530,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				clip.setPrimaryClip(linkClip);
 				Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, Toast.LENGTH_SHORT).show();
 			}
+			return true;
 		}
 		// open status metrics page
 		else if (item.getItemId() == R.id.menu_status_metrics) {
@@ -542,8 +549,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					Toast.makeText(getApplicationContext(), R.string.info_status_medialink_copied, Toast.LENGTH_SHORT).show();
 				}
 			}
+			return true;
 		}
-		return true;
+		return super.onOptionsItemSelected(item);
 	}
 
 

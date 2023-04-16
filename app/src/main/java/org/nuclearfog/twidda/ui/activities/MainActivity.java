@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		MenuItem search = menu.findItem(R.id.menu_search);
 		SearchView searchView = (SearchView) search.getActionView();
 		searchView.setOnQueryTextListener(this);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		MenuItem search = menu.findItem(R.id.menu_search);
 		message.setVisible(settings.getLogin().getConfiguration().directmessageSupported());
 		search.collapseActionView();
-		return super.onPrepareOptionsMenu(menu);
+		return true;
 	}
 
 
@@ -166,31 +166,37 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			Intent user = new Intent(this, ProfileActivity.class);
 			user.putExtra(KEY_PROFILE_ID, settings.getLogin().getId());
 			startActivity(user);
+			return true;
 		}
 		// open status editor
 		else if (item.getItemId() == R.id.menu_post) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			startActivity(intent);
+			return true;
 		}
 		// open app settings
 		else if (item.getItemId() == R.id.menu_settings) {
 			Intent settings = new Intent(this, SettingsActivity.class);
 			activityResultLauncher.launch(settings);
+			return true;
 		}
 		// theme expanded search view
 		else if (item.getItemId() == R.id.menu_search) {
 			SearchView searchView = (SearchView) item.getActionView();
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
+			return true;
 		}
 		// open message editor
 		else if (item.getItemId() == R.id.menu_message) {
 			Intent intent = new Intent(this, MessageEditor.class);
 			startActivity(intent);
+			return true;
 		}
 		// open account manager
 		else if (item.getItemId() == R.id.menu_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
 			activityResultLauncher.launch(accountManager);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

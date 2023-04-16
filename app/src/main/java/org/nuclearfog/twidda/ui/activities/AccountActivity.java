@@ -88,7 +88,7 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 		m.findItem(R.id.action_add_account).setVisible(!disableSelector);
 		// theme icons
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 

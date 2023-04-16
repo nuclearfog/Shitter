@@ -97,7 +97,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
 	private GlobalSettings settings;
-	private FilterLoader filterAsync;
+	private FilterLoader filterLoader;
 	private FragmentAdapter adapter;
 
 	private Toolbar toolbar;
@@ -116,16 +116,16 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	protected void onCreate(Bundle savedInst) {
 		super.onCreate(savedInst);
-		setContentView(R.layout.page_exclude);
-		ViewGroup root = findViewById(R.id.page_exclude_root);
-		toolbar = findViewById(R.id.page_exclude_toolbar);
+		setContentView(R.layout.page_users);
+		ViewGroup root = findViewById(R.id.page_users_root);
+		toolbar = findViewById(R.id.page_users_toolbar);
 		tabSelector = findViewById(R.id.page_exclude_tab);
-		viewPager = findViewById(R.id.page_exclude_pager);
+		viewPager = findViewById(R.id.page_users_pager);
 
-		filterAsync = new FilterLoader(this);
+		filterLoader = new FilterLoader(this);
 		settings = GlobalSettings.getInstance(this);
 		adapter = new FragmentAdapter(this);
-		//pager.setAdapter(adapter);
+		viewPager.setAdapter(adapter);
 
 		mode = getIntent().getIntExtra(KEY_USERS_MODE, 0);
 		long id = getIntent().getLongExtra(KEY_USERS_ID, 0L);
@@ -205,9 +205,9 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
 			AppStyles.setMenuIconColor(m, settings.getIconColor());
 			AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-			return super.onCreateOptionsMenu(m);
+			return true;
 		}
-		return false;
+		return super.onCreateOptionsMenu(m);
 	}
 
 
@@ -222,20 +222,21 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				String hint = getString(R.string.menu_hint_block_user);
 				searchView.setQueryHint(hint);
 			}
-			return super.onPrepareOptionsMenu(m);
+			return true;
 		}
-		return false;
+		return super.onPrepareOptionsMenu(m);
 	}
 
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_exclude_refresh) {
-			if (filterAsync.isIdle()) {
+			if (filterLoader.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
 				FilterParam param = new FilterParam(FilterParam.RELOAD);
-				filterAsync.execute(param, this);
+				filterLoader.execute(param, this);
 			}
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -252,13 +253,13 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (filterAsync.isIdle()) {
+			if (filterLoader.isIdle()) {
 				if (viewPager.getCurrentItem() == 0) {
 					FilterParam param = new FilterParam(FilterParam.MUTE, query);
-					filterAsync.execute(param, this);
+					filterLoader.execute(param, this);
 				} else if (viewPager.getCurrentItem() == 1) {
 					FilterParam param = new FilterParam(FilterParam.BLOCK, query);
-					filterAsync.execute(param, this);
+					filterLoader.execute(param, this);
 				}
 				return true;
 			}

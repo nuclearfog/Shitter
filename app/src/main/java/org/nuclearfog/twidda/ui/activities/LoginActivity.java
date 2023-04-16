@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		getMenuInflater().inflate(R.menu.login, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		m.findItem(R.id.login_select_account).setVisible(!settings.isLoggedIn());
-		return super.onCreateOptionsMenu(m);
+		return true;
 	}
 
 
@@ -158,12 +158,14 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			activityResultLauncher.launch(intent);
 			// notify MainActivity that settings may changed
 			setResult(RETURN_SETTINGS_CHANGED);
+			return true;
 		}
 		// open account selector
 		else if (item.getItemId() == R.id.login_select_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
 			accountManager.putExtra(KEY_DISABLE_SELECTOR, true);
 			activityResultLauncher.launch(accountManager);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

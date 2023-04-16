@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.ui.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -101,7 +102,12 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 			tabItemView.requestLayout();
 		}
 		// set indicator size
-		LayoutParams params = new LayoutParams(getMeasuredWidth() / Math.max(tabCount, 1), 5);
+		if (tabCount == 1) {
+			setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
+		} else {
+			setHorizontalGravity(Gravity.START);
+		}
+		LayoutParams params = new LayoutParams(getMeasuredWidth() / Math.max(tabCount, 2), 5);
 		indicator.setLayoutParams(params);
 		indicator.setBackgroundColor(settings.getHighlightColor());
 		indicator.requestLayout();

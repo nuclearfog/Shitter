@@ -141,7 +141,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		getMenuInflater().inflate(R.menu.image, menu);
 		AppStyles.setMenuIconColor(menu, settings.getIconColor());
 		menu.findItem(R.id.menu_image_save).setVisible(enableSave);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 
@@ -150,6 +150,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		if (item.getItemId() == R.id.menu_image_save) {
 			if (cacheUri != null) {
 				storeImage(cacheUri);
+				return true;
 			}
 		}
 		return super.onOptionsItemSelected(item);

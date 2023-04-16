@@ -123,17 +123,20 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			if (search.startsWith("#"))
 				intent.putExtra(KEY_STATUS_EDITOR_TEXT, search + " ");
 			startActivity(intent);
+			return true;
 		}
 		// theme expanded search view
 		else if (item.getItemId() == R.id.new_search) {
 			SearchView searchView = (SearchView) item.getActionView();
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
+			return true;
 		}
 		// enable/disable search filter
 		else if (item.getItemId() == R.id.search_filter) {
 			boolean enable = !settings.filterResults();
 			settings.setFilterResults(enable);
 			item.setChecked(enable);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -145,10 +148,11 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			Intent search = new Intent(this, SearchActivity.class);
 			search.putExtra(KEY_SEARCH_QUERY, s);
 			startActivity(search);
+			return true;
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
+			return false;
 		}
-		return true;
 	}
 
 

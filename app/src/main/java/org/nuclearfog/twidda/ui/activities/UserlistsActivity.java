@@ -119,12 +119,14 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		if (item.getItemId() == R.id.list_create) {
 			Intent createList = new Intent(this, UserlistEditor.class);
 			activityResultLauncher.launch(createList);
+			return true;
 		}
 		// open mute/block list
 		else if (item.getItemId() == R.id.list_blocklists) {
 			Intent usersIntent = new Intent(this, UsersActivity.class);
 			usersIntent.putExtra(KEY_USERS_MODE, USERS_EXCLUDED);
 			startActivity(usersIntent);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
