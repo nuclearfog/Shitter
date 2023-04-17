@@ -255,9 +255,8 @@
 	<string name="error_api_access_limited">Fehler! API Zugang wurde von Twitter beschränkt.</string>
 	<string name="status_media_preview">Medienvorschau</string>
 	<string name="status_media_preview_button">Videovorschau Button</string>
-	<string name="poll_total_votes">"Anzahl:\u0020"</string>
 	<string name="description_poll_vote_icon">abgestimmt</string>
-	<string name="poll_finished">Abstimmung beendet:\u0020</string>
+	<string name="poll_finished">Abstimmung beendet</string>
 	<string name="description_attachment_icon">Status/Nachricht Anhang</string>
 	<string name="notification_status_poll">Umfrage abgeschlossen</string>
 	<string name="login_network_selector_label">Netzwerk auswählen</string>

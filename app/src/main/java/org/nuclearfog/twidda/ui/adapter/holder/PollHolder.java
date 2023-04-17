@@ -50,7 +50,7 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 		votesCount.setTypeface(settings.getTypeFace());
 		expiration.setTextColor(settings.getTextColor());
 		expiration.setTypeface(settings.getTypeFace());
-		itemView.getLayoutParams().width = Resources.getSystem().getDisplayMetrics().widthPixels * 2 / 3;
+		itemView.getLayoutParams().width = Resources.getSystem().getDisplayMetrics().widthPixels * 3 / 4;
 
 		optionsList.setAdapter(adapter);
 		optionsList.setItemAnimator(null); // disable animation
@@ -79,19 +79,17 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 	 */
 	public void setContent(Poll poll) {
 		if (poll.closed()) {
-			votesCount.setText(R.string.poll_total_votes);
 			expiration.setText(R.string.poll_finished);
 			voteButton.setVisibility(View.GONE);
 		} else {
-			votesCount.setText(R.string.poll_total_votes);
 			expiration.setText(StringUtils.formatExpirationTime(expiration.getResources(), poll.getEndTime()));
 			if (poll.voted()) {
-				voteButton.setVisibility(View.INVISIBLE);
+				voteButton.setVisibility(View.GONE);
 			} else if (poll.getLimit() > 0) {
 				voteButton.setVisibility(View.VISIBLE);
 			}
 		}
-		votesCount.append(StringUtils.NUMBER_FORMAT.format(poll.voteCount()));
+		votesCount.setText(votesCount.getResources().getQuantityString(R.plurals.poll_votes, poll.voteCount(), poll.voteCount()));
 		adapter.addAll(poll);
 	}
 }

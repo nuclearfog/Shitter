@@ -51,4 +51,9 @@
 		<item quantity="other"><xliff:g id="count">%d</xliff:g> weeks remain</item>
 	</plurals>
 
+	<plurals name="poll_votes">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> Vote</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> Votes</item>
+	</plurals>
+
 </resources>

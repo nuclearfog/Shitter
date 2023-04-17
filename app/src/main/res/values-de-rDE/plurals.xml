@@ -51,4 +51,9 @@
 		<item quantity="other">noch <xliff:g id="count">%d</xliff:g> Wochen</item>
 	</plurals>
 
+	<plurals name="poll_votes">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> Stimme</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> Stimmen</item>
+	</plurals>
+
 </resources>

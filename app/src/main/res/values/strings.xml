@@ -310,7 +310,7 @@
 	<string name="status_media_preview">Media preview</string>
 	<string name="status_media_preview_button">Video preview button</string>
 	<string name="poll_total_votes">Total votes:\u0020</string>
-	<string name="poll_finished">Vote finished:\u0020</string>
+	<string name="poll_finished">Vote finished</string>
 	<string name="description_poll_vote_icon">voted</string>
 	<string name="description_attachment_icon">Status/Message attachment</string>
 	<string name="notification_status_poll">vote finished</string>
