@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
@@ -46,6 +44,7 @@ import com.google.android.exoplayer2.video.VideoRendererEventListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
+import org.nuclearfog.twidda.backend.utils.LinkUtils;
 
 import okhttp3.Call;
 
@@ -181,13 +180,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_video_link) {
 			if (data != null) {
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(data);
-				try {
-					startActivity(intent);
-				} catch (ActivityNotFoundException err) {
-					Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
-				}
+				LinkUtils.openMediaLink(this, data);
 			}
 		}
 		return super.onOptionsItemSelected(item);

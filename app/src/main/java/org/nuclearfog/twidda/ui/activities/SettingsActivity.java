@@ -143,7 +143,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton enableNitter = findViewById(R.id.settings_enable_twitter_alt);
 		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
 		SwitchButton hideSensitive = findViewById(R.id.enable_status_hide_sensitive);
-		View EnableTwitterAltDescr = findViewById(R.id.settings_enable_twitter_alt_descr);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.spinner_font);
@@ -198,8 +197,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
 			enableLocalTl.setVisibility(View.VISIBLE);
-			enableNitter.setVisibility(View.GONE);
-			EnableTwitterAltDescr.setVisibility(View.GONE);
 			trend_card.setVisibility(View.GONE);
 		}
 		if (!settings.isLoggedIn()) {

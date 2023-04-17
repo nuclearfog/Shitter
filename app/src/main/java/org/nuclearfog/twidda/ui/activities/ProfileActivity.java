@@ -7,9 +7,6 @@ import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.TWITTER_LINK_PATTERN;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
 import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
@@ -70,6 +67,7 @@ import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -84,7 +82,6 @@ import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -509,24 +506,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	public void onLinkClick(String tag) {
-		Uri link = Uri.parse(tag);
-		// open status link
-		if (TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
-			List<String> segments = link.getPathSegments();
-			Intent intent = new Intent(this, StatusActivity.class);
-			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
-			startActivity(intent);
-		}
-		// open link in browser
-		else {
-			Intent intent = new Intent(Intent.ACTION_VIEW, link);
-			try {
-				startActivity(intent);
-			} catch (ActivityNotFoundException err) {
-				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
-			}
-		}
+		LinkUtils.openLink(this, tag);
 	}
 
 

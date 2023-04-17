@@ -32,6 +32,7 @@ public enum Configuration {
 	 */
 	public static final Configuration FALLBACK_CONFIG = MASTODON;
 
+	private final String name;
 	private final int accountType;
 	private final boolean userlistExtended;
 	private final boolean searchFilterEnabled;
@@ -54,6 +55,7 @@ public enum Configuration {
 		switch (accountType) {
 			case Account.API_TWITTER_1:
 			case Account.API_TWITTER_2:
+				name = "Twitter";
 				userlistExtended = true;
 				searchFilterEnabled = true;
 				profileLocationEnabled = true;
@@ -70,6 +72,7 @@ public enum Configuration {
 
 			default:
 			case Account.API_MASTODON:
+				name = "Mastodon";
 				userlistExtended = false;
 				searchFilterEnabled = false;
 				profileLocationEnabled = false;
@@ -84,6 +87,13 @@ public enum Configuration {
 				arrayResHome = R.array.home_mastodon_icons;
 				break;
 		}
+	}
+
+	/**
+	 * @return network name
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**

@@ -51,7 +51,7 @@ public class AnimatedImageView extends AppCompatImageView {
 	public void setImageURI(@Nullable Uri uri) {
 		ContentResolver resolver =  getContext().getContentResolver();
 		String mime = resolver.getType(uri);
-		if (mime != null && mime.contains("gif")) {
+		if (mime != null && mime.equals("image/gif")) {
 			try {
 				InputStream is = resolver.openInputStream(uri);
 				movie = Movie.decodeStream(is);

@@ -148,9 +148,7 @@ public class DatabaseAccount implements Account, AccountTable {
 	@NonNull
 	@Override
 	public String toString() {
-		if (getUser() != null)
-			return getUser().toString();
-		return "";
+		return "hostname=\"" + getHostname() + "\" configuration=\"" + getConfiguration().getName() + "\" " + user;
 	}
 
 

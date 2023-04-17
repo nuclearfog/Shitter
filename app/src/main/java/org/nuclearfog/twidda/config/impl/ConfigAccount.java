@@ -25,7 +25,7 @@ public class ConfigAccount implements Account {
 	/**
 	 *
 	 */
-	public ConfigAccount(Account account) {
+	public ConfigAccount(@NonNull Account account) {
 		id = account.getId();
 		oauthToken = account.getOauthToken();
 		tokenSecret = account.getOauthSecret();
@@ -147,9 +147,7 @@ public class ConfigAccount implements Account {
 	@NonNull
 	@Override
 	public String toString() {
-		if (getUser() != null)
-			return getUser().toString();
-		return "";
+		return "hostname=\"" + getHostname() + "\" configuration=\"" + getConfiguration().getName() + "\"";
 	}
 
 

@@ -70,6 +70,7 @@ import org.nuclearfog.twidda.backend.async.TranslationLoader.TranslationResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.config.Configuration;
@@ -91,9 +92,7 @@ import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
 import org.nuclearfog.twidda.ui.views.LockableConstraintLayout.LockCallback;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -185,11 +184,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * value type is Long
 	 */
 	public static final String INTENT_NOTIFICATION_REMOVED_ID = "notification_removed_id";
-
-	/**
-	 * regex pattern of a status URL
-	 */
-	public static final Pattern TWITTER_LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
 	/**
 	 * scrollview position threshold to lock/unlock child scrolling
@@ -606,13 +600,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					location = status.getLocation();
 				}
 				if (location != null && !location.getCoordinates().trim().isEmpty()) {
-					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse("geo:" + location.getCoordinates() + "?z=14"));
-					try {
-						startActivity(intent);
-					} catch (ActivityNotFoundException err) {
-						Toast.makeText(getApplicationContext(), R.string.error_no_card_app, Toast.LENGTH_SHORT).show();
-					}
+					LinkUtils.openCoordinates(this, location.getCoordinates());
 				}
 			}
 			// go to user reposting this status
@@ -718,13 +706,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onCardClick(Card card, int type) {
 		if (type == OnCardClickListener.TYPE_LINK) {
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse(card.getUrl()));
-			try {
-				startActivity(intent);
-			} catch (ActivityNotFoundException err) {
-				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
-			}
+			LinkUtils.openLink(this, card.getUrl());
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
@@ -773,26 +755,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	@Override
 	public void onLinkClick(String tag) {
-		Uri link = Uri.parse(tag);
-		// check if the link points to another status
-		if ((settings.getLogin().getConfiguration() == Configuration.TWITTER1 || settings.getLogin().getConfiguration() == Configuration.TWITTER2)
-			&& TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
-			List<String> segments = link.getPathSegments();
-			Intent intent = new Intent(this, StatusActivity.class);
-			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
-			startActivity(intent);
-		}
-		// open link in a browser
-		else {
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(link);
-			try {
-				startActivity(intent);
-			} catch (ActivityNotFoundException err) {
-				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
-			}
-		}
+		LinkUtils.openLink(this, tag);
 	}
 
 

@@ -898,14 +898,6 @@ public class GlobalSettings {
 			ConfigAccount account = new ConfigAccount(login);
 			this.account = account;
 			loggedIn = true;
-			// setup alternative Twitter host
-			switch (account.getConfiguration()) {
-				case TWITTER1:
-				case TWITTER2:
-					if (twitterAlt)
-						account.setHost(TWITTER_ALT_HOST);
-					break;
-			}
 			e.putString(HOSTNAME, account.getHostname());
 			e.putLong(CURRENT_ID, account.getId());
 			e.putString(OAUTH_TOKEN, account.getOauthToken());

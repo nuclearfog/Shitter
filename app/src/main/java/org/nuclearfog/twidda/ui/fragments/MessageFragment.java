@@ -4,11 +4,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_ID;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_NAME;
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.TWITTER_LINK_PATTERN;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +21,7 @@ import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
@@ -106,25 +103,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	public void onLinkClick(String tag) {
-		Uri link = Uri.parse(tag);
-		// open status link
-		if (TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
-			List<String> segments = link.getPathSegments();
-			Intent intent = new Intent(requireContext(), StatusActivity.class);
-			intent.putExtra(KEY_STATUS_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(KEY_STATUS_NAME, segments.get(0));
-			startActivity(intent);
-		}
-		// open link in browser
-		else {
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(link);
-			try {
-				startActivity(intent);
-			} catch (ActivityNotFoundException err) {
-				Toast.makeText(requireContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
-			}
-		}
+		LinkUtils.openLink(requireActivity(), tag);
 	}
 
 
