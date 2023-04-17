@@ -70,6 +70,7 @@ import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
@@ -734,9 +735,12 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			tabSelector.setLabel(1, "");
 		}
 		if (user_createdAt.getVisibility() != VISIBLE) {
-			String date = SimpleDateFormat.getDateTimeInstance().format(user.getTimestamp());
 			user_createdAt.setVisibility(VISIBLE);
-			user_createdAt.setText(date);
+			if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
+				user_createdAt.setText(SimpleDateFormat.getDateInstance().format(user.getTimestamp()));
+			} else {
+				user_createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(user.getTimestamp()));
+			}
 		}
 		if (!user.getDescription().isEmpty()) {
 			descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);

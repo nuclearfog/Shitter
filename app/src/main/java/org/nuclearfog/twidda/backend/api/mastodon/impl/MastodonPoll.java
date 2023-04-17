@@ -94,7 +94,7 @@ public class MastodonPoll implements Poll {
 
 
 	@Override
-	public long expirationTime() {
+	public long getEndTime() {
 		return exTime;
 	}
 
@@ -127,7 +127,7 @@ public class MastodonPoll implements Poll {
 				optionsBuf.append(option).append(',');
 			optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
 		}
-		return "id=" + getId() + " expired=" + expirationTime() + optionsBuf;
+		return "id=" + getId() + " expired=" + getEndTime() + optionsBuf;
 	}
 
 	/**

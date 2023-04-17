@@ -160,13 +160,4 @@ public class ConfigAccount implements Account {
 			return getUser().equals(account.getUser());
 		return false;
 	}
-
-	/**
-	 * override hostname
-	 *
-	 * @param hostname new hostname
-	 */
-	public void setHost(String hostname) {
-		this.hostname = hostname;
-	}
 }

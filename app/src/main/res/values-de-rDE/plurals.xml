@@ -1,29 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-	<plurals name="n_seconds">
+	<plurals name="seconds_ago">
 		<item quantity="one">vor <xliff:g id="count">%d</xliff:g> Sek.</item>
 		<item quantity="other">vor <xliff:g id="count">%d</xliff:g> Sek.</item>
 	</plurals>
 
-	<plurals name="n_minutes">
+	<plurals name="minutes_ago">
 		<item quantity="one">vor <xliff:g id="count">%d</xliff:g> Min.</item>
 		<item quantity="other">vor <xliff:g id="count">%d</xliff:g> Min.</item>
 	</plurals>
 
-	<plurals name="n_hours">
+	<plurals name="hours_ago">
 		<item quantity="one">vor <xliff:g id="count">%d</xliff:g> Std.</item>
 		<item quantity="other">vor <xliff:g id="count">%d</xliff:g> Std.</item>
 	</plurals>
 
-	<plurals name="n_days">
+	<plurals name="days_ago">
 		<item quantity="one">vor <xliff:g id="count">%d</xliff:g> Tag</item>
 		<item quantity="other">vor <xliff:g id="count">%d</xliff:g> Tagen</item>
 	</plurals>
 
-	<plurals name="n_weeks">
+	<plurals name="weeks_ago">
 		<item quantity="one">vor <xliff:g id="count">%d</xliff:g> Woche</item>
 		<item quantity="other">vor <xliff:g id="count">%d</xliff:g> Wochen</item>
+	</plurals>
+
+	<plurals name="seconds_remain">
+		<item quantity="one">noch <xliff:g id="count">%d</xliff:g> Sekunde</item>
+		<item quantity="other">noch <xliff:g id="count">%d</xliff:g> Sekunden</item>
+	</plurals>
+
+	<plurals name="minutes_remain">
+		<item quantity="one">noch <xliff:g id="count">%d</xliff:g> Minute</item>
+		<item quantity="other">noch <xliff:g id="count">%d</xliff:g> Minuten</item>
+	</plurals>
+
+	<plurals name="hours_remain">
+		<item quantity="one">noch <xliff:g id="count">%d</xliff:g> Stunde</item>
+		<item quantity="other">noch <xliff:g id="count">%d</xliff:g> Stunden</item>
+	</plurals>
+
+	<plurals name="days_remain">
+		<item quantity="one">noch <xliff:g id="count">%d</xliff:g> Tag</item>
+		<item quantity="other">noch <xliff:g id="count">%d</xliff:g> Tage</item>
+	</plurals>
+
+	<plurals name="weeks_remain">
+		<item quantity="one">noch <xliff:g id="count">%d</xliff:g> Woche</item>
+		<item quantity="other">noch <xliff:g id="count">%d</xliff:g> Wochen</item>
 	</plurals>
 
 </resources>

@@ -32,6 +32,14 @@
 				android:lines="1"
 				android:layout_weight="1" />
 
+			<TextView
+				android:id="@+id/item_poll_expiration"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:textSize="@dimen/item_poll_text_size"
+				android:lines="1"
+				android:layout_weight="1" />
+
 			<Button
 				android:id="@+id/item_poll_vote_button"
 				android:layout_width="0dp"

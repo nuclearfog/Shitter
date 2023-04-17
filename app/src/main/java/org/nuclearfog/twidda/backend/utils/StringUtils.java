@@ -90,25 +90,56 @@ public class StringUtils {
 		}
 		if (diff > 604800000L) { // more than a week
 			int number = (int) (diff / 604800000L);
-			return resources.getQuantityString(R.plurals.n_weeks, number, number);
+			return resources.getQuantityString(R.plurals.weeks_ago, number, number);
 		}
 		if (diff > 86400000L) { // more than a day
 			int number = (int) (diff / 86400000L);
-			return resources.getQuantityString(R.plurals.n_days, number, number);
+			return resources.getQuantityString(R.plurals.days_ago, number, number);
 		}
 		if (diff > 3600000L) { // more than a hour
 			int number = (int) (diff / 3600000L);
-			return resources.getQuantityString(R.plurals.n_hours, number, number);
+			return resources.getQuantityString(R.plurals.hours_ago, number, number);
 		}
 		if (diff / 60000L > 0L) { // more than a minute
 			int number = (int) (diff / 60000L);
-			return resources.getQuantityString(R.plurals.n_minutes, number, number);
+			return resources.getQuantityString(R.plurals.minutes_ago, number, number);
 		}
 		if (diff / 1000L > 0L) {
 			int number = (int) (diff / 1000L);
-			return resources.getQuantityString(R.plurals.n_seconds, number, number);
+			return resources.getQuantityString(R.plurals.seconds_ago, number, number);
 		}
 		return resources.getString(R.string.time_now);
+	}
+
+	/**
+	 * creates a time string from the difference between the current time and the given time
+	 *
+	 * @param time time value from which to create a difference
+	 * @return time string showing the time difference
+	 */
+	public static String formatExpirationTime(Resources resources, long time) {
+		time = time - System.currentTimeMillis();
+		if (time > 604800000L) { // more than a week
+			int number = (int) (time / 604800000L);
+			return resources.getQuantityString(R.plurals.weeks_remain, number, number);
+		}
+		if (time > 86400000L) { // more than a day
+			int number = (int) (time / 86400000L);
+			return resources.getQuantityString(R.plurals.days_remain, number, number);
+		}
+		if (time > 3600000L) { // more than a hour
+			int number = (int) (time / 3600000L);
+			return resources.getQuantityString(R.plurals.hours_remain, number, number);
+		}
+		if (time / 60000L > 0L) { // more than a minute
+			int number = (int) (time / 60000L);
+			return resources.getQuantityString(R.plurals.minutes_remain, number, number);
+		}
+		if (time / 1000L > 0L) {
+			int number = (int) (time / 1000L);
+			return resources.getQuantityString(R.plurals.seconds_remain, number, number);
+		}
+		return "";
 	}
 
 	/**

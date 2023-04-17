@@ -32,7 +32,7 @@ public interface Poll extends Serializable {
 	/**
 	 * @return time where the poll expires
 	 */
-	long expirationTime();
+	long getEndTime();
 
 	/**
 	 * @return total number of votes

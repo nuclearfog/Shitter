@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.text.SpannableString;
@@ -52,7 +53,9 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private OnHolderClickListener listener;
 
-
+	/**
+	 *
+	 */
 	public CardHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false));
 		linkText = itemView.findViewById(R.id.link_preview_text);
@@ -61,7 +64,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 		this.settings = settings;
 		this.listener = listener;
 
-		itemView.getLayoutParams().width = parent.getMeasuredHeight() * 16 / 9;
+		itemView.getLayoutParams().width = Resources.getSystem().getDisplayMetrics().widthPixels * 2 / 3;
 		linkText.setTypeface(settings.getTypeFace());
 		linkText.setTextColor(settings.getTextColor());
 		linkText.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);

@@ -43,16 +43,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int REMOVE_ACCOUNT = 604;
 
 	/**
-	 * show "proxy bypass" dialog
-	 */
-	public static final int PROXY_CONFIRM = 605;
-
-	/**
-	 * show "video error" dialog
-	 */
-	public static final int VIDEO_ERROR = 606;
-
-	/**
 	 * show dialog to delete status
 	 */
 	public static final int DELETE_STATUS = 607;
@@ -216,14 +206,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				messageRes = R.string.confirm_log_lout;
 				break;
 
-			case VIDEO_ERROR:
-				titleVis = View.VISIBLE;
-				messageRes = R.string.error_cant_load_video;
-				confirmIconRes = 0;
-				confirmRes = R.string.confirm_open_link;
-				cancelVis = View.GONE;
-				break;
-
 			case LIST_EDITOR_LEAVE:
 			case PROFILE_EDITOR_LEAVE:
 				messageRes = R.string.confirm_discard;
@@ -280,12 +262,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 			case REMOVE_ACCOUNT:
 				messageRes = R.string.confirm_remove_account;
-				break;
-
-			case PROXY_CONFIRM:
-				titleVis = View.VISIBLE;
-				titleRes = R.string.dialog_confirm_warning;
-				messageRes = R.string.dialog_warning_videoview;
 				break;
 		}
 		// setup title

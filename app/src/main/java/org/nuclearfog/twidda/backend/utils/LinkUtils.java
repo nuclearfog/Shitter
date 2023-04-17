@@ -24,7 +24,7 @@ public class LinkUtils {
 	/**
 	 * regex pattern of a status URL
 	 */
-	public static final Pattern TWITTER_LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
+	private static final Pattern TWITTER_LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
 	private LinkUtils() {}
 

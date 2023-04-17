@@ -71,7 +71,7 @@ public class DatabasePoll implements Poll, PollTable {
 
 
 	@Override
-	public long expirationTime() {
+	public long getEndTime() {
 		return expired;
 	}
 
@@ -104,7 +104,7 @@ public class DatabasePoll implements Poll, PollTable {
 				optionsBuf.append(option).append(',');
 			optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
 		}
-		return "id=" + getId() + " expired=" + expirationTime() + optionsBuf;
+		return "id=" + getId() + " expired=" + getEndTime() + optionsBuf;
 	}
 
 	/**

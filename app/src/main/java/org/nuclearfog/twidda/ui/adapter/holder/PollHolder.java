@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,7 +26,7 @@ import org.nuclearfog.twidda.ui.adapter.OptionsAdapter;
  */
 public class PollHolder extends ViewHolder implements OnClickListener {
 
-	private TextView votesCount;
+	private TextView votesCount, expiration;
 	private Button voteButton;
 
 	private OptionsAdapter adapter;
@@ -40,13 +41,16 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 		RecyclerView optionsList = itemView.findViewById(R.id.item_poll_options_list);
 		voteButton = itemView.findViewById(R.id.item_poll_vote_button);
 		votesCount = itemView.findViewById(R.id.item_poll_votes_count);
+		expiration = itemView.findViewById(R.id.item_poll_expiration);
 		adapter = new OptionsAdapter(settings);
 		this.listener = listener;
 
 		cardBackground.setCardBackgroundColor(settings.getCardColor());
 		votesCount.setTextColor(settings.getTextColor());
 		votesCount.setTypeface(settings.getTypeFace());
-		itemView.getLayoutParams().width = parent.getMeasuredHeight() * 2; // 2:1 ratio
+		expiration.setTextColor(settings.getTextColor());
+		expiration.setTypeface(settings.getTypeFace());
+		itemView.getLayoutParams().width = Resources.getSystem().getDisplayMetrics().widthPixels * 2 / 3;
 
 		optionsList.setAdapter(adapter);
 		optionsList.setItemAnimator(null); // disable animation
@@ -75,12 +79,14 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 	 */
 	public void setContent(Poll poll) {
 		if (poll.closed()) {
-			votesCount.setText(R.string.poll_finished);
+			votesCount.setText(R.string.poll_total_votes);
+			expiration.setText(R.string.poll_finished);
 			voteButton.setVisibility(View.GONE);
 		} else {
 			votesCount.setText(R.string.poll_total_votes);
+			expiration.setText(StringUtils.formatExpirationTime(expiration.getResources(), poll.getEndTime()));
 			if (poll.voted()) {
-				voteButton.setVisibility(View.GONE);
+				voteButton.setVisibility(View.INVISIBLE);
 			} else if (poll.getLimit() > 0) {
 				voteButton.setVisibility(View.VISIBLE);
 			}
