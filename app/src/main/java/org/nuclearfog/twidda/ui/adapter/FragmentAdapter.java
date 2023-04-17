@@ -67,6 +67,22 @@ public class FragmentAdapter extends FragmentStateAdapter {
 	}
 
 
+	@Override
+	public long getItemId(int position) {
+		return fragments[position].getSessionId();
+	}
+
+
+	@Override
+	public boolean containsItem(long itemId) {
+		for (ListFragment fragment : fragments) {
+			if (fragment.getSessionId() == itemId)
+				return true;
+		}
+		return false;
+	}
+
+
 	@NonNull
 	@Override
 	public Fragment createFragment(int position) {

@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				finish();
 				break;
 
-			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
 			case AccountActivity.RETURN_ACCOUNT_CHANGED:
+			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
 				setupAdapter();
 				break;
 

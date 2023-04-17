@@ -20,6 +20,8 @@ import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
 import org.nuclearfog.twidda.config.GlobalSettings;
 
+import java.util.Random;
+
 /**
  * this fragment class hosts a list view inside a swipe view
  * superclass for all list fragments
@@ -33,11 +35,14 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 */
 	private static final int REFRESH_DELAY_MS = 1000;
 
+	private static final Random rand = new Random();
+
 	private RecyclerView list;
 	private SwipeRefreshLayout reload;
 	protected GlobalSettings settings;
 
 	private boolean isRefreshing = false;
+	private long sessionId = rand.nextLong();
 
 
 	@Override
@@ -123,6 +128,15 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		if (list != null) {
 			list.smoothScrollToPosition(0);
 		}
+	}
+
+	/**
+	 * get session fragment ID
+	 *
+	 * @return unique session ID
+	 */
+	public long getSessionId() {
+		return sessionId;
 	}
 
 	/**
