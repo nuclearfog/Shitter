@@ -132,7 +132,7 @@ public class GlobalSettings {
 	private SharedPreferences settings;
 
 	private Location location;
-	private Account account;
+	private ConfigAccount login;
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
 	private boolean loadImage;
@@ -530,7 +530,7 @@ public class GlobalSettings {
 	 * @return saved location information
 	 */
 	public Location getTrendLocation() {
-		switch (account.getConfiguration()) {
+		switch (login.getConfiguration()) {
 			case TWITTER1:
 			case TWITTER2:
 				return location;
@@ -680,15 +680,18 @@ public class GlobalSettings {
 	public void setTwitterAlt(boolean enable) {
 		twitterAlt = enable;
 		Editor edit = settings.edit();
-		if (enable) {
-			edit.putString(HOSTNAME, TWITTER_ALT_HOST);
-		} else {
-			edit.putString(HOSTNAME, TWITTER_HOST);
+		Configuration configuration = login.getConfiguration();
+		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
+			if (enable) {
+				edit.putString(HOSTNAME, TWITTER_ALT_HOST);
+				login.setHostname(TWITTER_ALT_HOST);
+			} else {
+				edit.putString(HOSTNAME, TWITTER_HOST);
+				login.setHostname(TWITTER_HOST);
+			}
 		}
 		edit.putBoolean(ENABLE_TWITTER_ALT, enable);
 		edit.apply();
-		// re initialize login information
-		initLogin();
 	}
 
 	/**
@@ -873,7 +876,7 @@ public class GlobalSettings {
 	 * @return current account
 	 */
 	public Account getLogin() {
-		return account;
+		return login;
 	}
 
 	/**
@@ -896,7 +899,7 @@ public class GlobalSettings {
 			e.remove(HOSTNAME);
 		} else {
 			ConfigAccount account = new ConfigAccount(login);
-			this.account = account;
+			this.login = account;
 			loggedIn = true;
 			e.putString(HOSTNAME, account.getHostname());
 			e.putLong(CURRENT_ID, account.getId());
@@ -989,7 +992,7 @@ public class GlobalSettings {
 		long userId = settings.getLong(CURRENT_ID, 0);
 		if ((apiId == Account.API_TWITTER_1 || apiId == Account.API_TWITTER_2) && twitterAlt)
 			hostname = TWITTER_ALT_HOST;
-		account = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
+		login = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
 	}
 
 	/**

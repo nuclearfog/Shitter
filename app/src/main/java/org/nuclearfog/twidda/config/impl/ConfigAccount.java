@@ -160,4 +160,10 @@ public class ConfigAccount implements Account {
 			return getUser().equals(account.getUser());
 		return false;
 	}
+
+	/**
+	 */
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
 }
