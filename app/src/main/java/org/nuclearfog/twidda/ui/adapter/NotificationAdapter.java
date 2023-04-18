@@ -19,6 +19,7 @@ import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.StatusHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.UserHolder;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -194,6 +195,15 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	}
 
 	/**
+	 * get adapter items
+	 *
+	 * @return array of notification items
+	 */
+	public Notification[] getItems() {
+		return notifications.toArray(new Notification[0]);
+	}
+
+	/**
 	 * add new items at specific position
 	 *
 	 * @param newItems items to add
@@ -216,6 +226,21 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 			notifications.addAll(index, newItems);
 			notifyItemRangeInserted(index, newItems.size());
 		}
+	}
+
+	/**
+	 * Replace all items in the list
+	 *
+	 * @param newItems list of statuses to add
+	 */
+	public void replaceItems(Notification[] newItems) {
+		notifications.clear();
+		notifications.addAll(Arrays.asList(newItems));
+		if (newItems.length > MIN_COUNT) {
+			notifications.add(null);
+		}
+		loadingIndex = NO_LOADING;
+		notifyDataSetChanged();
 	}
 
 	/**
@@ -260,7 +285,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 *
 	 * @return notification ID
 	 */
-	public long getTopId() {
+	public long getTopItemId() {
 		if (!notifications.isEmpty() && notifications.get(0) != null) {
 			return notifications.get(0).getId();
 		}

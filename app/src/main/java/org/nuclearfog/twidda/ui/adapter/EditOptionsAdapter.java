@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * RecyclerView adapter used to show option items
+ * RecyclerView adapter used to show poll option items
  *
  * @author nuclearfog
  */
@@ -112,7 +112,7 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 	 *
 	 * @param newOptions list of option name strings
 	 */
-	public void setOptions(List<String> newOptions) {
+	public void replaceItems(List<String> newOptions) {
 		options.clear();
 		options.addAll(newOptions);
 		for (int i = options.size() ; i < MIN_OPTIONS; i++) {
@@ -127,7 +127,7 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 	 *
 	 * @return list of option name strings
 	 */
-	public List<String> getOptions() {
+	public List<String> getItems() {
 		List<String> result = new ArrayList<>();
 		for (String option : options) {
 			if (option != null && !option.trim().isEmpty()) {

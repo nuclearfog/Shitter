@@ -30,12 +30,21 @@ import org.nuclearfog.twidda.ui.adapter.NotificationAdapter.OnNotificationClickL
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
+import java.io.Serializable;
+
 /**
  * fragment to show notifications
  *
  * @author nuclearfog
  */
 public class NotificationFragment extends ListFragment implements OnNotificationClickListener, OnConfirmListener, ActivityResultCallback<ActivityResult> {
+
+	/**
+	 * Bundle key used to save adapter items
+	 * value type is {@link Notification[]}
+	 */
+	private static final String KEY_FRAGMENT_NOTIFICATION_DATA = "notification-data";
+
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<NotificationActionResult> notificationActionCallback = this::onDismiss;
@@ -57,10 +66,22 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		notificationAction = new NotificationAction(requireContext());
 		adapter = new NotificationAdapter(requireContext(), this);
 		setAdapter(adapter);
-
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_NOTIFICATION_DATA);
+			if (data instanceof Notification[]) {
+				adapter.replaceItems((Notification[]) data);
+			}
+		}
 		confirmDialog.setConfirmListener(this);
 		load(0L, 0L, 0);
 		setRefresh(true);
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_FRAGMENT_NOTIFICATION_DATA, adapter.getItems());
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -74,7 +95,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopId(), 0L, 0);
+		load(adapter.getTopItemId(), 0L, 0);
 	}
 
 

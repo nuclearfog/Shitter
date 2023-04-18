@@ -122,7 +122,6 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	 */
 	public void setContent(User user) {
 		tagId = user.getId();
-		username.setText(user.getUsername());
 		screenname.setText(user.getScreenname());
 		followingCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
 		followerCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
@@ -135,6 +134,12 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 			lockedIcon.setVisibility(VISIBLE);
 		} else {
 			lockedIcon.setVisibility(GONE);
+		}
+		if (user.getEmojis().length > 0) {
+			Spannable usernameSpan = new SpannableString(user.getUsername());
+			username.setText(EmojiUtils.removeTags(usernameSpan));
+		} else {
+			username.setText(user.getUsername());
 		}
 		String profileImageUrl = user.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {

@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.StatusHolder;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -156,6 +157,15 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	}
 
 	/**
+	 * get adapter items
+	 *
+	 * @return item array
+	 */
+	public Status[] getItems() {
+		return items.toArray(new Status[0]);
+	}
+
+	/**
 	 * Insert data at specific index of the list
 	 *
 	 * @param newItems list of statuses to insert
@@ -193,6 +203,15 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 		}
 		loadingIndex = NO_LOADING;
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * Replace all items in the list
+	 *
+	 * @param newItems array of statuses to add
+	 */
+	public void replaceItems(Status[] newItems) {
+		replaceItems(Arrays.asList(newItems));
 	}
 
 	/**
@@ -240,7 +259,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 *
 	 * @return status ID
 	 */
-	public long getTopId() {
+	public long getTopItemId() {
 		if (!items.isEmpty() && items.get(0) != null) {
 			return items.get(0).getId();
 		}

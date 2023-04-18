@@ -136,19 +136,24 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	public void setContent(Status status) {
 		tagId = status.getId();
 		Spannable textSpan = null;
-		User user = status.getAuthor();
+		User author = status.getAuthor();
 		if (status.getEmbeddedStatus() != null) {
-			reposter.setText(user.getScreenname());
+			reposter.setText(author.getScreenname());
 			reposter.setVisibility(View.VISIBLE);
 			repostUserIcon.setVisibility(View.VISIBLE);
 			status = status.getEmbeddedStatus();
-			user = status.getAuthor();
+			author = status.getAuthor();
 		} else {
 			reposter.setVisibility(View.GONE);
 			repostUserIcon.setVisibility(View.GONE);
 		}
-		username.setText(user.getUsername());
-		screenname.setText(user.getScreenname());
+		if (author.getEmojis().length > 0) {
+			Spannable usernameSpan = new SpannableString(author.getUsername());
+			username.setText(EmojiUtils.removeTags(usernameSpan));
+		} else {
+			username.setText(author.getUsername());
+		}
+		screenname.setText(author.getScreenname());
 		repost.setText(StringUtils.NUMBER_FORMAT.format(status.getRepostCount()));
 		favorite.setText(StringUtils.NUMBER_FORMAT.format(status.getFavoriteCount()));
 		reply.setText(StringUtils.NUMBER_FORMAT.format(status.getReplyCount()));
@@ -181,17 +186,17 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		} else {
 			favoriteIcon.setColorFilter(settings.getIconColor());
 		}
-		if (user.isVerified()) {
+		if (author.isVerified()) {
 			verifiedIcon.setVisibility(View.VISIBLE);
 		} else {
 			verifiedIcon.setVisibility(View.GONE);
 		}
-		if (user.isProtected()) {
+		if (author.isProtected()) {
 			lockedIcon.setVisibility(View.VISIBLE);
 		} else {
 			lockedIcon.setVisibility(View.GONE);
 		}
-		String profileImageUrl = user.getProfileImageThumbnailUrl();
+		String profileImageUrl = author.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
 			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
@@ -226,9 +231,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 				EmojiParam param = new EmojiParam(tagId, status.getEmojis(), textSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
 				emojiLoader.execute(param, textResult);
 			}
-			if (user.getEmojis().length > 0 && !user.getUsername().isEmpty()) {
-				SpannableString userSpan = new SpannableString(user.getUsername());
-				EmojiParam param = new EmojiParam(tagId, user.getEmojis(), userSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+			if (author.getEmojis().length > 0 && !author.getUsername().isEmpty()) {
+				SpannableString userSpan = new SpannableString(author.getUsername());
+				EmojiParam param = new EmojiParam(tagId, author.getEmojis(), userSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
 				emojiLoader.execute(param, usernameResult);
 			}
 		}

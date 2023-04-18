@@ -23,12 +23,20 @@ import org.nuclearfog.twidda.ui.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
+import java.io.Serializable;
+
 /**
  * fragment class to show registered accounts
  *
  * @author nuclearfog
  */
 public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
+
+	/**
+	 * internal Bundle key used to save adapter items
+	 * value type is {@link Account[]}
+	 */
+	private static final String KEY_ACCOUNT_SAVE = "account-data";
 
 	private AccountLoader accountLoader;
 	private DatabaseAction databaseAction;
@@ -57,9 +65,21 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 		setAdapter(adapter);
 		dialog.setConfirmListener(this);
-
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_ACCOUNT_SAVE);
+			if (data instanceof Account[]) {
+				adapter.replaceItems((Account[]) data);
+			}
+		}
 		load(AccountParameter.LOAD);
 		setRefresh(true);
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_ACCOUNT_SAVE, adapter.getItems());
+		super.onSaveInstanceState(outState);
 	}
 
 

@@ -18,12 +18,15 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UsersLoader;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
+import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.adapter.UserAdapter;
 import org.nuclearfog.twidda.ui.adapter.UserAdapter.UserClickListener;
+
+import java.io.Serializable;
 
 /**
  * fragment class to show a list of users
@@ -58,6 +61,12 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	 * value type is boolean
 	 */
 	public static final String KEY_FRAG_DEL_USER = "user_en_del";
+
+	/**
+	 * Bundle key to save list items
+	 * value type is {@link org.nuclearfog.twidda.backend.helper.Users}
+	 */
+	private static final String USER_FRAGMENT_SAVE = "user_data";
 
 	/**
 	 * value to configure to show users following the authenticating user
@@ -166,9 +175,21 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 		userLoader = new UsersLoader(requireContext());
 		adapter = new UserAdapter(requireContext(), this, delUser);
 		setAdapter(adapter);
-
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(USER_FRAGMENT_SAVE);
+			if (data instanceof Users) {
+				adapter.replaceItems((Users) data);
+			}
+		}
 		setRefresh(true);
 		load(-1L, CLEAR_LIST);
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(USER_FRAGMENT_SAVE, adapter.getItems());
+		super.onSaveInstanceState(outState);
 	}
 
 

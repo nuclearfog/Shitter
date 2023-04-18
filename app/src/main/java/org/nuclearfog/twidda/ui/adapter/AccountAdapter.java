@@ -15,6 +15,7 @@ import org.nuclearfog.twidda.ui.adapter.holder.AccountHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,6 +80,15 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	}
 
 	/**
+	 * get adapter items
+	 *
+	 * @return list of adapter items
+	 */
+	public Account[] getItems() {
+		return accounts.toArray(new Account[0]);
+	}
+
+	/**
 	 * sets login data
 	 *
 	 * @param newAccounts list with login items
@@ -86,6 +96,17 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	public void replaceItems(List<Account> newAccounts) {
 		accounts.clear();
 		accounts.addAll(newAccounts);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * sets login data
+	 *
+	 * @param newAccounts list with login items
+	 */
+	public void replaceItems(Account[] newAccounts) {
+		accounts.clear();
+		accounts.addAll(Arrays.asList(newAccounts));
 		notifyDataSetChanged();
 	}
 

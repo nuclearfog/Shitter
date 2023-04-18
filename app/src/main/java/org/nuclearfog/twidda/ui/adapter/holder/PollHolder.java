@@ -64,7 +64,7 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 		if (v.getId() == R.id.item_poll_vote_button) {
 			int pos = getLayoutPosition();
 			if (pos != RecyclerView.NO_POSITION) {
-				int[] selection = adapter.getSelection();
+				int[] selection = adapter.getItemSelection();
 				if (selection.length > 0) {
 					listener.onItemClick(pos, OnHolderClickListener.POLL_VOTE, selection);
 				}
@@ -90,6 +90,6 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 			}
 		}
 		votesCount.setText(votesCount.getResources().getQuantityString(R.plurals.poll_votes, poll.voteCount(), poll.voteCount()));
-		adapter.addAll(poll);
+		adapter.addItems(poll);
 	}
 }

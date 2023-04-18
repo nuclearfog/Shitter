@@ -10,7 +10,7 @@ import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USER;
 import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_USERLIST;
-import static org.nuclearfog.twidda.ui.fragments.TrendFragment.KEY_HASHTAG_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.TrendFragment.KEY_FRAGMENT_TREND_SEARCH;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.KEY_FRAG_USER_MODE;
@@ -26,8 +26,8 @@ import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LIST_SUB
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_MUTED_USERS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_REPOST;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
-import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAGMENT_USERLIST_TYPE;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAGMENT_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_OWNS;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_SUBSCR_TO;
 
@@ -224,7 +224,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
 		paramUsers.putString(KEY_FRAG_USER_SEARCH, search);
 		paramStatuses.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_SEARCH);
 		paramUsers.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
-		paramTrend.putString(KEY_HASHTAG_SEARCH, search);
+		paramTrend.putString(KEY_FRAGMENT_TREND_SEARCH, search);
 		if (includeHashtag) {
 			fragments = new ListFragment[3];
 			fragments[2] = new TrendFragment();
@@ -247,10 +247,10 @@ public class FragmentAdapter extends FragmentStateAdapter {
 	public void setupListPage(long userId) {
 		Bundle paramUserlistOwnership = new Bundle();
 		Bundle paramUserlistSubscription = new Bundle();
-		paramUserlistOwnership.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
-		paramUserlistSubscription.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
-		paramUserlistOwnership.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
-		paramUserlistSubscription.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
+		paramUserlistOwnership.putLong(KEY_FRAGMENT_USERLIST_OWNER_ID, userId);
+		paramUserlistSubscription.putLong(KEY_FRAGMENT_USERLIST_OWNER_ID, userId);
+		paramUserlistOwnership.putInt(KEY_FRAGMENT_USERLIST_TYPE, LIST_USER_OWNS);
+		paramUserlistSubscription.putInt(KEY_FRAGMENT_USERLIST_TYPE, LIST_USER_SUBSCR_TO);
 
 		switch (settings.getLogin().getConfiguration()) {
 			case TWITTER1:

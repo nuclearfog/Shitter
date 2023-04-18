@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.ui.adapter;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
@@ -18,7 +18,7 @@ import java.util.TreeSet;
  *
  * @author nuclearfog
  */
-public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implements OnHolderClickListener {
+public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderClickListener {
 
 	private Poll.Option[] options = {};
 	private Set<Integer> selection;
@@ -80,7 +80,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 	 *
 	 * @param poll poll information
 	 */
-	public void addAll(Poll poll) {
+	public void addItems(Poll poll) {
 		options = poll.getOptions();
 		for (int i = 0; i < options.length; i++) {
 			Poll.Option option = options[i];
@@ -94,9 +94,9 @@ public class OptionsAdapter extends RecyclerView.Adapter<Optionholder> implement
 	}
 
 	/**
-	 * @return a set of selection position
+	 * @return an array of selection indexes
 	 */
-	public int[] getSelection() {
+	public int[] getItemSelection() {
 		int pos = 0;
 		int[] result = new int[selection.size()];
 		for (Integer index : selection)

@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.TrendHolder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -75,13 +76,33 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	}
 
 	/**
+	 * get adapter items
+	 *
+	 * @return array of items
+	 */
+	public Trend[] getItems() {
+		return trends.toArray(new Trend[0]);
+	}
+
+	/**
 	 * replace data from list
 	 *
-	 * @param trendList list of trends
+	 * @param items list of trend items
 	 */
-	public void replaceAll(@NonNull List<Trend> trendList) {
+	public void replaceItems(@NonNull List<Trend> items) {
 		trends.clear();
-		trends.addAll(trendList);
+		trends.addAll(items);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * replace data from list
+	 *
+	 * @param items array of trend items
+	 */
+	public void replaceItems(Trend[] items) {
+		trends.clear();
+		trends.addAll(Arrays.asList(items));
 		notifyDataSetChanged();
 	}
 

@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.ui.adapter;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class PreviewAdapter extends RecyclerView.Adapter<ViewHolder> implements OnHolderClickListener {
+public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	private static final int INVALID_ID = -1;
 

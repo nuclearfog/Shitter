@@ -28,6 +28,15 @@ public class Messages extends LinkedList<Message> {
 		this.nextCursor = nextCursor;
 	}
 
+	/**
+	 *
+	 */
+	public Messages(Messages messages) {
+		super.addAll(messages);
+		prevCursor = messages.prevCursor;
+		nextCursor = messages.nextCursor;
+	}
+
 
 	@Override
 	@Nullable

@@ -19,6 +19,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ListLoader;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistParam;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistResult;
+import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -26,6 +27,8 @@ import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.adapter.UserlistAdapter;
 import org.nuclearfog.twidda.ui.adapter.UserlistAdapter.ListClickListener;
+
+import java.io.Serializable;
 
 /**
  * Fragment class to show userlists
@@ -38,25 +41,31 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	 * Key for the owner ID
 	 * value type is Long
 	 */
-	public static final String KEY_FRAG_LIST_OWNER_ID = "list_owner_id";
+	public static final String KEY_FRAGMENT_USERLIST_OWNER_ID = "userlist_owner_id";
 
 	/**
 	 * key to define the type of the list
 	 * {@link #LIST_USER_OWNS,#LIST_USER_SUBSCR_TO}
 	 */
-	public static final String KEY_FRAG_LIST_LIST_TYPE = "list_type";
+	public static final String KEY_FRAGMENT_USERLIST_TYPE = "userlist_type";
+
+	/**
+	 * internal Bundle key used to save adapter items
+	 * value type is {@link UserList[]}
+	 */
+	private static final String KEY_FRAGMENT_USERLIST_SAVE = "userlist_save";
 
 	/**
 	 * value to show all user lists owned by a specified user
 	 *
-	 * @see #KEY_FRAG_LIST_LIST_TYPE
+	 * @see #KEY_FRAGMENT_USERLIST_TYPE
 	 */
 	public static final int LIST_USER_OWNS = 0x5F36F90D;
 
 	/**
 	 * value to show all user lists the specified user is added to
 	 *
-	 * @see #KEY_FRAG_LIST_LIST_TYPE
+	 * @see #KEY_FRAGMENT_USERLIST_TYPE
 	 */
 	public static final int LIST_USER_SUBSCR_TO = 0xAA7386AA;
 
@@ -80,15 +89,27 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		super.onViewCreated(view, savedInstanceState);
 		Bundle param = getArguments();
 		if (param != null) {
-			id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1L);
-			type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
+			id = param.getLong(KEY_FRAGMENT_USERLIST_OWNER_ID, -1L);
+			type = param.getInt(KEY_FRAGMENT_USERLIST_TYPE);
 		}
 		userlistLoader = new ListLoader(requireContext());
 		adapter = new UserlistAdapter(requireContext(), this);
 		setAdapter(adapter);
-
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_USERLIST_SAVE);
+			if (data instanceof UserLists) {
+				adapter.replaceItems((UserLists) data);
+			}
+		}
 		setRefresh(true);
 		load(-1L, CLEAR_LIST);
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_FRAGMENT_USERLIST_SAVE, adapter.getItems());
+		super.onSaveInstanceState(outState);
 	}
 
 

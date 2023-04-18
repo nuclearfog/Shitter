@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.ui.adapter.holder;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -17,7 +20,12 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor;
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
@@ -33,18 +41,23 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class UserlistHolder extends ViewHolder implements OnClickListener {
 
+	private AsyncExecutor.AsyncCallback<EmojiResult> usernameResult = this::setUsernameEmojis;
+
 	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon;
 	private TextView title, description, username, screenname, date, member, subscriber, followList;
 
 	private Picasso picasso;
+	private GlobalSettings settings;
 	private OnHolderClickListener listener;
+	private EmojiLoader emojiLoader;
 
 	private boolean enableExtras, enableImages;
+	private long tagId;
 
 	/**
 	 * @param parent Parent view from adapter
 	 */
-	public UserlistHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
+	public UserlistHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_list_container);
@@ -87,6 +100,8 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 
 		this.picasso = picasso;
 		this.listener = listener;
+		this.emojiLoader = emojiLoader;
+		this.settings = settings;
 	}
 
 
@@ -106,6 +121,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	 * set view content
 	 */
 	public void setContent(UserList userlist) {
+		tagId = userlist.getId();
 		User owner = userlist.getListOwner();
 		title.setText(userlist.getTitle());
 		if (enableExtras) {
@@ -115,9 +131,14 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 			subscriber.setText(StringUtils.NUMBER_FORMAT.format(userlist.getSubscriberCount()));
 		}
 		if (owner != null) {
-			username.setText(owner.getUsername());
 			screenname.setText(owner.getScreenname());
 			String profileImageUrl = owner.getProfileImageThumbnailUrl();
+			if (owner.getEmojis().length > 0) {
+				Spannable usernameSpan = new SpannableString(owner.getUsername());
+				username.setText(EmojiUtils.removeTags(usernameSpan));
+			} else {
+				username.setText(owner.getUsername());
+			}
 			if (enableImages && !profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(3, 0);
 				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
@@ -154,6 +175,23 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 			privateIcon.setVisibility(View.VISIBLE);
 		} else {
 			privateIcon.setVisibility(View.GONE);
+		}
+		if (settings.imagesEnabled() && owner != null && owner.getEmojis().length > 0 && !owner.getUsername().isEmpty()) {
+			SpannableString userSpan = new SpannableString(owner.getUsername());
+			EmojiParam param = new EmojiParam(tagId, owner.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
+			emojiLoader.execute(param, usernameResult);
+		}
+	}
+
+	/**
+	 * update username
+	 *
+	 * @param result username text with emojis
+	 */
+	private void setUsernameEmojis(@NonNull EmojiResult result) {
+		if (result.id == tagId && result.images != null) {
+			Spannable spannable = EmojiUtils.addEmojis(username.getContext(), result.spannable, result.images);
+			username.setText(spannable);
 		}
 	}
 }

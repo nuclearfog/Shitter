@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -48,6 +49,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	private ListClickListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
+	private EmojiLoader emojiLoader;
 
 	private UserLists userlists;
 	private int loadingIndex;
@@ -59,6 +61,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 		this.listener = listener;
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		emojiLoader = new EmojiLoader(context);
 		userlists = new UserLists(0L, 0L);
 		loadingIndex = NO_LOADING;
 	}
@@ -82,7 +85,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_LIST) {
-			return new UserlistHolder(parent, settings, picasso, this);
+			return new UserlistHolder(parent, settings, picasso, emojiLoader, this);
 		} else {
 			return new PlaceHolder(parent, settings, false, this);
 		}
@@ -130,15 +133,24 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	}
 
 	/**
+	 * get all adapter items
+	 *
+	 * @return adapter items
+	 */
+	public UserLists getItems() {
+		return new UserLists(userlists);
+	}
+
+	/**
 	 * adds new data to the list
 	 *
-	 * @param newUserlists new list to add
+	 * @param newUserlists new items to add
 	 * @param index index where to insert new items
 	 */
 	public void addItems(UserLists newUserlists, int index) {
 		disableLoading();
 		if (index < 0) {
-			userlists.replace(newUserlists);
+			userlists.replaceAll(newUserlists);
 			if (userlists.getNext() != 0L) {
 				// Add placeholder
 				userlists.add(null);
@@ -156,6 +168,20 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 				notifyItemRangeInserted(index, newUserlists.size());
 			}
 		}
+	}
+
+	/**
+	 * replace all adapter items
+	 *
+	 * @param newUserlists new items to replace old items
+	 */
+	public void replaceItems(UserLists newUserlists) {
+		userlists.replaceAll(newUserlists);
+		if (userlists.getNext() != 0L) {
+			// Add placeholder
+			userlists.add(null);
+		}
+		notifyDataSetChanged();
 	}
 
 	/**

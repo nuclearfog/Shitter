@@ -20,6 +20,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
+import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.Message;
@@ -32,6 +33,8 @@ import org.nuclearfog.twidda.ui.adapter.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
+import java.io.Serializable;
+
 /**
  * Fragment class to show a list of directmessages
  *
@@ -43,6 +46,12 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 * "index" used to replace the whole list with new items
 	 */
 	private static final int CLEAR_LIST = -1;
+
+	/**
+	 * bundle key used to save adapter items
+	 * value type is {@link Messages}
+	 */
+	private static final String KEY_FRAGMENT_MESSAGE_SAVE = "message-save";
 
 	private MessageLoader messageLoader;
 	private MessageAdapter adapter;
@@ -60,9 +69,21 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 		setAdapter(adapter);
 
 		confirmDialog.setConfirmListener(this);
-
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_MESSAGE_SAVE);
+			if (data instanceof Messages) {
+				adapter.replaceItems((Messages) data);
+			}
+		}
 		loadMessages(false, null, CLEAR_LIST);
 		setRefresh(true);
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_FRAGMENT_MESSAGE_SAVE, adapter.getItems());
+		super.onSaveInstanceState(outState);
 	}
 
 

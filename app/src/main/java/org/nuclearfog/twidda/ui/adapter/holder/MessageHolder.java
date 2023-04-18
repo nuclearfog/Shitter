@@ -4,6 +4,8 @@ import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +28,12 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
@@ -41,7 +49,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.adapter.MessageAdapter
  */
-public class MessageHolder extends ViewHolder implements OnClickListener, OnTagClickListener, OnMediaClickListener {
+public class MessageHolder extends ViewHolder implements OnClickListener, OnTagClickListener, OnMediaClickListener, AsyncCallback<EmojiResult> {
 
 	private TextView username, screenname, time, text;
 	private ImageView profile, verifiedIcon, lockedIcon;
@@ -52,13 +60,17 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private IconAdapter adapter;
+	private EmojiLoader emojiLoader;
+
+	private long tagId;
 
 
-	public MessageHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnItemClickListener listener) {
+	public MessageHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnItemClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false));
 		this.settings = settings;
 		this.picasso = picasso;
 		this.listener = listener;
+		this.emojiLoader = emojiLoader;
 
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_message_container);
@@ -130,17 +142,30 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		}
 	}
 
+	@Override
+	public void onResult(@NonNull EmojiResult result) {
+		if (result.id == tagId && result.images != null) {
+			Spannable spannable = EmojiUtils.addEmojis(username.getContext(), result.spannable, result.images);
+			username.setText(spannable);
+		}
+	}
+
 	/**
 	 * set item content
 	 */
 	public void setContent(Message message) {
+		tagId = message.getId();
 		User sender = message.getSender();
-		username.setText(sender.getUsername());
 		screenname.setText(sender.getScreenname());
 		time.setText(StringUtils.formatCreationTime(itemView.getResources(), message.getTimestamp()));
 		iconList.setVisibility(View.VISIBLE);
 		adapter.addItems(message);
-
+		if (sender.getEmojis().length > 0) {
+			Spannable usernameSpan = new SpannableString(sender.getUsername());
+			username.setText(EmojiUtils.removeTags(usernameSpan));
+		} else {
+			username.setText(sender.getUsername());
+		}
 		if (!message.getText().trim().isEmpty()) {
 			Spanned textSpan = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), this);
 			text.setText(textSpan);
@@ -168,7 +193,14 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		} else {
 			profile.setImageResource(0);
 		}
+		if (settings.imagesEnabled() && sender.getEmojis().length > 0 && !sender.getUsername().isEmpty()) {
+			SpannableString userSpan = new SpannableString(sender.getUsername());
+			EmojiParam param = new EmojiParam(tagId, sender.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
+			emojiLoader.execute(param, this);
+		}
 	}
+
+
 
 	/**
 	 * item click listener

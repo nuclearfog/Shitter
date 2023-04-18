@@ -24,6 +24,8 @@ import org.nuclearfog.twidda.ui.activities.StatusActivity;
 import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
 import org.nuclearfog.twidda.ui.adapter.StatusAdapter.StatusSelectListener;
 
+import java.io.Serializable;
+
 /**
  * fragment class to show a status list
  *
@@ -49,6 +51,12 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 * value type is Long
 	 */
 	public static final String KEY_STATUS_FRAGMENT_ID = "status_id";
+
+	/**
+	 * key to save adapter items
+	 * value type is {@link Status[]}
+	 */
+	private static final String KEY_STATUS_FRAGMENT_SAVE = "status_save";
 
 	/**
 	 * setup list for home timeline
@@ -132,9 +140,22 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			id = param.getLong(KEY_STATUS_FRAGMENT_ID, 0);
 			search = param.getString(KEY_STATUS_FRAGMENT_SEARCH, "");
 		}
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_STATUS_FRAGMENT_SAVE);
+			if (data instanceof Status[]) {
+				adapter.replaceItems((Status[]) data);
+			}
+		}
 		setAdapter(adapter);
 		load(0L, 0L, CLEAR_LIST);
 		setRefresh(true);
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_STATUS_FRAGMENT_SAVE, adapter.getItems());
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -177,7 +198,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopId(), 0L, 0);
+		load(adapter.getTopItemId(), 0L, 0);
 	}
 
 

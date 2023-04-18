@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
+import org.nuclearfog.twidda.backend.async.EmojiLoader;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -44,6 +45,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	private OnMessageClickListener itemClickListener;
 	private GlobalSettings settings;
 	private Picasso picasso;
+	private EmojiLoader emojiLoader;
 
 	private Messages messages;
 	private int loadingIndex;
@@ -56,6 +58,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 		loadingIndex = NO_LOADING;
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		emojiLoader = new EmojiLoader(context);
 		this.itemClickListener = itemClickListener;
 	}
 
@@ -78,7 +81,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_MESSAGE) {
-			return new MessageHolder(parent, settings, picasso, this);
+			return new MessageHolder(parent, settings, picasso, emojiLoader, this);
 		} else {
 			return new PlaceHolder(parent, settings, false, this);
 		}
@@ -144,6 +147,13 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	}
 
 	/**
+	 * get all adapter items
+	 */
+	public Messages getItems() {
+		return new Messages(messages);
+	}
+
+	/**
 	 * set messages
 	 *
 	 * @param newMessages new message list
@@ -169,6 +179,21 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 				notifyItemRangeInserted(index, newMessages.size());
 			}
 		}
+	}
+
+	/**
+	 * replace all adapter items
+	 *
+	 * @param newMessages new adapter items
+	 */
+	public void replaceItems(Messages newMessages) {
+		messages.clear();
+		messages.replaceAll(newMessages);
+		if (newMessages.getNextCursor() != null && !newMessages.getNextCursor().isEmpty()) {
+			// add placeholder
+			messages.add(null);
+		}
+		notifyDataSetChanged();
 	}
 
 	/**

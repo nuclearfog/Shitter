@@ -20,6 +20,8 @@ import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.adapter.TrendAdapter;
 import org.nuclearfog.twidda.ui.adapter.TrendAdapter.TrendClickListener;
 
+import java.io.Serializable;
+
 /**
  * Fragment class to show a list of trends
  *
@@ -29,8 +31,15 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 	/**
 	 * additional bundle key to set search string for hashtags
+	 * value type is String
 	 */
-	public static final String KEY_HASHTAG_SEARCH = "trend_search_hashtags";
+	public static final String KEY_FRAGMENT_TREND_SEARCH = "trend_search_hashtags";
+
+	/**
+	 * bundle key to add adapter items
+	 * value type is {@link Trend[]}
+	 */
+	private static final String KEY_FRAGMENT_TREND_DATA = "trend_data";
 
 	private TrendLoader trendLoader;
 	private TrendAdapter adapter;
@@ -45,11 +54,24 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 		trendLoader = new TrendLoader(requireContext());
 		Bundle args = getArguments();
 		if (args != null) {
-			search = args.getString(KEY_HASHTAG_SEARCH, "");
+			search = args.getString(KEY_FRAGMENT_TREND_SEARCH, "");
+		}
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_TREND_DATA);
+			if (data instanceof Trend[]) {
+				adapter.replaceItems((Trend[]) data);
+			}
 		}
 		setAdapter(adapter);
 		setRefresh(true);
 		load();
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_FRAGMENT_TREND_DATA, adapter.getItems());
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -90,7 +112,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	@Override
 	public void onResult(@NonNull TrendResult result) {
 		if (result.trends != null) {
-			adapter.replaceAll(result.trends);
+			adapter.replaceItems(result.trends);
 		} else if (getContext() != null) {
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();

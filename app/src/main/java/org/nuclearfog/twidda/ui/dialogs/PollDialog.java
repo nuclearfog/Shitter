@@ -93,7 +93,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 				poll.setDuration(duration);
 				poll.setMultipleChoice(multiple_choice.isChecked());
 				poll.hideVotes(hide_votes.isChecked());
-				poll.setOptions(optionAdapter.getOptions());
+				poll.setOptions(optionAdapter.getItems());
 				callback.onPollUpdate(poll);
 				dismiss();
 			}
@@ -115,7 +115,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 	public void show(@Nullable PollUpdate poll) {
 		if (!isShowing()) {
 			if (poll != null) {
-				optionAdapter.setOptions(poll.getOptions());
+				optionAdapter.replaceItems(poll.getOptions());
 				multiple_choice.setCheckedImmediately(poll.multipleChoiceEnabled());
 				hide_votes.setCheckedImmediately(poll.hideTotalVotes());
 				this.poll = poll;

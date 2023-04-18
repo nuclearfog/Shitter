@@ -31,6 +31,15 @@ public class Users extends LinkedList<User> {
 		this.nextCursor = nextCursor;
 	}
 
+	/**
+	 */
+	public Users(Users users) {
+		super.addAll(users);
+		prevCursor = users.prevCursor;
+		nextCursor = users.nextCursor;
+	}
+
+
 	@Nullable
 	@Override
 	public User get(int index) {

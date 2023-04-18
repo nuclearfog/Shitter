@@ -136,6 +136,15 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	}
 
 	/**
+	 * get adapter items
+	 *
+	 * @return user items
+	 */
+	public Users getItems() {
+		return new Users(users);
+	}
+
+	/**
 	 * insert an user list depending on cursor to the top or bottom
 	 *
 	 * @param newUsers new userlist
@@ -159,6 +168,17 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 				notifyItemRangeInserted(index, newUsers.size());
 			}
 		}
+	}
+
+	/**
+	 * replace all user items
+	 */
+	public void replaceItems(Users newUsers) {
+		users.replaceAll(newUsers);
+		if (users.getNext() != 0L) {
+			users.add(null);
+		}
+		notifyDataSetChanged();
 	}
 
 	/**

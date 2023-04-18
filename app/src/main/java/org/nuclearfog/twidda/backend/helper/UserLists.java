@@ -28,6 +28,14 @@ public class UserLists extends LinkedList<UserList> {
 		this.nextCursor = nextCursor;
 	}
 
+	/**
+	 */
+	public UserLists(UserLists userLists) {
+		super.addAll(userLists);
+		prevCursor = userLists.prevCursor;
+		nextCursor = userLists.nextCursor;
+	}
+
 
 	@Nullable
 	@Override
@@ -47,13 +55,13 @@ public class UserLists extends LinkedList<UserList> {
 	/**
 	 * replace whole list including cursors
 	 *
-	 * @param list new list
+	 * @param userLists new list
 	 */
-	public void replace(UserLists list) {
+	public void replaceAll(UserLists userLists) {
 		super.clear();
-		super.addAll(list);
-		prevCursor = list.prevCursor;
-		nextCursor = list.nextCursor;
+		super.addAll(userLists);
+		prevCursor = userLists.prevCursor;
+		nextCursor = userLists.nextCursor;
 	}
 
 	/**
