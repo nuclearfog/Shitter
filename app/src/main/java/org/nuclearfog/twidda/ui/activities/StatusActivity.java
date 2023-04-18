@@ -165,31 +165,33 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * key to return updated status information
 	 * value type is {@link Status}
 	 */
-	public static final String INTENT_STATUS_UPDATE_DATA = "status_update_data";
+	public static final String RETURN_STATUS_UPDATE_DATA = "status_update_data";
 
 	/**
 	 * key to return updated notification information
 	 * value type is {@link Status}
 	 */
-	public static final String INTENT_NOTIFICATION_UPDATE_DATA = "notification_update_data";
+	public static final String RETURN_NOTIFICATION_UPDATE_DATA = "notification_update_data";
 
 	/**
 	 * key to return an ID if status was deleted
 	 * value type is Long
 	 */
-	public static final String INTENT_STATUS_REMOVED_ID = "status_removed_id";
+	public static final String RETURN_STATUS_REMOVED_ID = "status_removed_id";
 
 	/**
 	 * key to return an ID if notification was deleted
 	 * value type is Long
 	 */
-	public static final String INTENT_NOTIFICATION_REMOVED_ID = "notification_removed_id";
+	public static final String RETURN_NOTIFICATION_REMOVED_ID = "notification_removed_id";
 
 	/**
 	 * scrollview position threshold to lock/unlock child scrolling
 	 */
 	private static final int SCROLL_THRESHOLD = 10;
 
+	/**
+	 */
 	private static final int MENU_GROUP_COPY = 0x157426;
 
 	private AsyncCallback<StatusResult> statusCallback = this::onStatusResult;
@@ -295,11 +297,21 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		locationName.setTextColor(settings.getHighlightColor());
 		translateText.setTextColor(settings.getHighlightColor());
 
-		long statusId = 0L;
+		// get parameters
+		if (savedInstanceState == null) {
+			savedInstanceState = getIntent().getExtras();
+		}
+		if (savedInstanceState == null) {
+			return;
+		}
+		// get data
+		Serializable serializedStatus = savedInstanceState.getSerializable(KEY_STATUS_DATA);
+		Serializable serializedNotification = savedInstanceState.getSerializable(KEY_NOTIFICATION_DATA);
+		long statusId = savedInstanceState.getLong(KEY_STATUS_ID, 0L);
+		long notificationId = savedInstanceState.getLong(KEY_NOTIFICATION_ID, 0L);
 		String replyUsername = "";
 
-		Serializable serializedStatus = getIntent().getSerializableExtra(KEY_STATUS_DATA);
-		Serializable serializedNotification = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
+		// set status data
 		if (serializedStatus instanceof Status) {
 			Status status = (Status) serializedStatus;
 			Status embeddedStatus = status.getEmbeddedStatus();
@@ -315,7 +327,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				replyUsername = status.getAuthor().getScreenname();
 				hidden = status.isHidden();
 			}
-		} else if (serializedNotification instanceof Notification) {
+		}
+		// set notification data
+		else if (serializedNotification instanceof Notification) {
 			Notification notification = (Notification) serializedNotification;
 			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
 			notificationLoader.execute(notificationParam, notificationCallback);
@@ -324,18 +338,18 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				statusId = notification.getStatus().getId();
 				replyUsername = notification.getStatus().getAuthor().getScreenname();
 			}
-		} else {
-			statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
-			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
-			if (statusId != 0L) {
-				replyUsername = getIntent().getStringExtra(KEY_STATUS_NAME);
-				StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
-				statusLoader.execute(statusParam, statusCallback);
-			} else if (notificationId != 0L) {
-				replyUsername = getIntent().getStringExtra(KEY_NOTIFICATION_NAME);
-				NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
-				notificationLoader.execute(notificationParam, notificationCallback);
-			}
+		}
+		// get status data using status ID
+		else if (statusId != 0L) {
+			replyUsername = savedInstanceState.getString(KEY_STATUS_NAME);
+			StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
+			statusLoader.execute(statusParam, statusCallback);
+		}
+		// get notification data using notification ID
+		else if (notificationId != 0L) {
+			replyUsername = savedInstanceState.getString(KEY_NOTIFICATION_NAME);
+			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
+			notificationLoader.execute(notificationParam, notificationCallback);
 		}
 		// initialize status reply list
 		Bundle param = new Bundle();
@@ -376,26 +390,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		Serializable serializedStatus = savedInstanceState.getSerializable(KEY_STATUS_DATA);
-		Serializable serializedNotification = savedInstanceState.getSerializable(KEY_NOTIFICATION_DATA);
-		if (serializedStatus instanceof Status) {
-			status = (Status) serializedStatus;
-		} else if (serializedNotification instanceof Notification) {
-			notification = (Notification) serializedNotification;
-		}
-	}
-
-
-	@Override
 	public void onBackPressed() {
 		Intent intent = new Intent();
 		if (notification != null) {
-			intent.putExtra(INTENT_NOTIFICATION_UPDATE_DATA, notification);
+			intent.putExtra(RETURN_NOTIFICATION_UPDATE_DATA, notification);
 			setResult(RETURN_NOTIFICATION_UPDATE, intent);
 		} else {
-			intent.putExtra(INTENT_STATUS_UPDATE_DATA, status);
+			intent.putExtra(RETURN_STATUS_UPDATE_DATA, status);
 			setResult(RETURN_STATUS_UPDATE, intent);
 		}
 		super.onBackPressed();
@@ -416,8 +417,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		body.getLayoutParams().height = root.getMeasuredHeight() - toolbar.getMeasuredHeight();
-		container.scrollTo(0, 0);
+		if (hasFocus) {
+			body.getLayoutParams().height = root.getMeasuredHeight() - toolbar.getMeasuredHeight();
+			container.scrollTo(0, 0);
+		}
 	}
 
 
@@ -990,9 +993,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					Toast.makeText(getApplicationContext(), R.string.info_status_removed, Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
 					if (status.getEmbeddedStatus() != null)
-						intent.putExtra(INTENT_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());
+						intent.putExtra(RETURN_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());
 					else
-						intent.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+						intent.putExtra(RETURN_STATUS_REMOVED_ID, status.getId());
 					setResult(RETURN_STATUS_REMOVED, intent);
 					finish();
 				}
@@ -1006,7 +1009,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					// Mark status as removed, so it can be removed from the list
 					Intent intent = new Intent();
-					intent.putExtra(INTENT_STATUS_REMOVED_ID, status.getId());
+					intent.putExtra(RETURN_STATUS_REMOVED_ID, status.getId());
 					setResult(RETURN_STATUS_REMOVED, intent);
 					finish();
 				}
@@ -1038,7 +1041,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			case NotificationActionResult.DISMISS:
 				if (notification != null) {
 					Intent intent = new Intent();
-					intent.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
+					intent.putExtra(RETURN_NOTIFICATION_REMOVED_ID, notification.getId());
 					setResult(RETURN_NOTIFICATION_REMOVED, intent);
 				}
 				Toast.makeText(getApplicationContext(), R.string.info_notification_dismiss, Toast.LENGTH_SHORT).show();
@@ -1052,7 +1055,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					finish();
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					Intent intent = new Intent();
-					intent.putExtra(INTENT_NOTIFICATION_REMOVED_ID, notification.getId());
+					intent.putExtra(RETURN_NOTIFICATION_REMOVED_ID, notification.getId());
 					setResult(RETURN_NOTIFICATION_REMOVED, intent);
 					finish();
 				}

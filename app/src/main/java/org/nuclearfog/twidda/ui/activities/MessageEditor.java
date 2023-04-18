@@ -102,8 +102,6 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		preview.setOnClickListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		confirmDialog.setConfirmListener(this);
-
-
 	}
 
 

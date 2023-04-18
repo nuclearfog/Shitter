@@ -152,7 +152,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (intent != null) {
 			switch (result.getResultCode()) {
 				case StatusActivity.RETURN_NOTIFICATION_UPDATE:
-					Object data = intent.getSerializableExtra(StatusActivity.INTENT_NOTIFICATION_UPDATE_DATA);
+					Object data = intent.getSerializableExtra(StatusActivity.RETURN_NOTIFICATION_UPDATE_DATA);
 					if (data instanceof Notification) {
 						Notification update = (Notification) data;
 						adapter.updateItem(update);
@@ -160,7 +160,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 					break;
 
 				case StatusActivity.RETURN_NOTIFICATION_REMOVED:
-					long notificationId = intent.getLongExtra(StatusActivity.INTENT_NOTIFICATION_REMOVED_ID, 0L);
+					long notificationId = intent.getLongExtra(StatusActivity.RETURN_NOTIFICATION_REMOVED_ID, 0L);
 					adapter.removeItem(notificationId);
 					break;
 			}

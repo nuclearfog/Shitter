@@ -102,13 +102,13 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	public static final String KEY_PROFILE_ID = "profile_id";
 
 	/**
-	 * key for user object
+	 * key to save user data
 	 * value type is {@link User}
 	 */
 	public static final String KEY_PROFILE_USER = "profile_user";
 
 	/**
-	 * key for relation object
+	 * key to save relation data
 	 * value type is {@link Relation}
 	 */
 	private static final String KEY_PROFILE_RELATION = "profile_relation";
@@ -117,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 * key to send updated user data
 	 * value type is {@link User}
 	 */
-	public static final String KEY_USER_UPDATE = "user_update";
+	public static final String RETURN_USER_UPDATE = "user_update";
 
 	/**
 	 * Return code to update user information
@@ -234,24 +234,25 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		confirmDialog = new ConfirmDialog(this);
 
 		// get parameters
-		if (savedInstanceState == null)
+		if (savedInstanceState == null) {
 			savedInstanceState = getIntent().getExtras();
-		if (savedInstanceState == null)
+		}
+		if (savedInstanceState == null) {
 			return;
-		long userId;
+		}
+		long userId = savedInstanceState.getLong(KEY_PROFILE_ID, 0L);
 		Serializable serializedUser = savedInstanceState.getSerializable(KEY_PROFILE_USER);
+		Serializable serializedRelation = savedInstanceState.getSerializable(KEY_PROFILE_RELATION);
+		// get relation data
+		if (serializedRelation instanceof Relation) {
+			relation = (Relation) serializedRelation;
+		}
+		// get user data
 		if (serializedUser instanceof User) {
 			user = (User) serializedUser;
 			userId = user.getId();
-		} else {
-			userId = savedInstanceState.getLong(KEY_PROFILE_ID, 0L);
 		}
-		adapter.setupProfilePage(userId);
-		if (settings.likeEnabled()) {
-			tabSelector.addTabIcons(R.array.profile_tab_icons_like);
-		} else {
-			tabSelector.addTabIcons(R.array.profile_tab_icons);
-		}
+		// set user/relation data and initialize loaders
 		if (user != null) {
 			setUser(user);
 			UserParam param = new UserParam(UserParam.ONLINE, userId);
@@ -264,6 +265,13 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
 			relationLoader.execute(param, relationCallback);
 		}
+		adapter.setupProfilePage(userId);
+		if (settings.likeEnabled()) {
+			tabSelector.addTabIcons(R.array.profile_tab_icons_like);
+		} else {
+			tabSelector.addTabIcons(R.array.profile_tab_icons);
+		}
+
 		tabSelector.addOnTabSelectedListener(this);
 		following.setOnClickListener(this);
 		follower.setOnClickListener(this);
@@ -285,20 +293,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 
 	@Override
-	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		Serializable serializedUser = savedInstanceState.getSerializable(KEY_PROFILE_USER);
-		Serializable serializedRelation = savedInstanceState.getSerializable(KEY_PROFILE_RELATION);
-		if (serializedUser instanceof User) {
-			user = (User) serializedUser;
-		}
-		if (serializedRelation instanceof Relation) {
-			relation = (Relation) serializedRelation;
-		}
-	}
-
-
-	@Override
 	protected void onDestroy() {
 		relationLoader.cancel();
 		userLoader.cancel();
@@ -310,8 +304,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		body.getLayoutParams().height = root.getMeasuredHeight();
-		root.scrollTo(0, 0);
+		if (hasFocus) {
+			body.getLayoutParams().height = root.getMeasuredHeight();
+			root.scrollTo(0, 0);
+		}
 	}
 
 
@@ -505,7 +501,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			viewPager.setCurrentItem(0);
 		} else {
 			Intent returnData = new Intent();
-			returnData.putExtra(KEY_USER_UPDATE, user);
+			returnData.putExtra(RETURN_USER_UPDATE, user);
 			setResult(RETURN_USER_UPDATED, returnData);
 			super.onBackPressed();
 		}

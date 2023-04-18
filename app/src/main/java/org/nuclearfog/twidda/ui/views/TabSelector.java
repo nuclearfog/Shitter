@@ -33,11 +33,12 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	private LinearLayout tabContainer;
 	private View indicator;
 
+	private LayoutParams indicatorParams;
+
 	@Nullable
 	private OnTabSelectedListener listener;
 	private GlobalSettings settings;
 
-	private int indicator_height;
 	private int oldPosition;
 	private int tabCount;
 
@@ -59,13 +60,15 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		tabContainer.setOrientation(LinearLayout.HORIZONTAL);
 		indicator = new View(context);
 
-		indicator_height = (int) getResources().getDimension(R.dimen.tabs_indicator_height);
-		LayoutParams indicatorParam = new LayoutParams(getMeasuredWidth() / Math.max(tabCount, 1), 5);
+		indicatorParams = new LayoutParams(0, 0);
+		indicatorParams.width = getMeasuredWidth() / Math.max(tabCount, 1);
+		indicatorParams.height = (int) getResources().getDimension(R.dimen.tabs_indicator_height);
+
 		LayoutParams tabContainerParam = new LayoutParams(LayoutParams.MATCH_PARENT, 0);
 		tabContainerParam.weight = 1;
 
 		tabContainer.setLayoutParams(tabContainerParam);
-		indicator.setLayoutParams(indicatorParam);
+		indicator.setLayoutParams(indicatorParams);
 		setVisibility(INVISIBLE);
 		addView(tabContainer);
 		addView(indicator);
@@ -107,10 +110,12 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		} else {
 			setHorizontalGravity(Gravity.START);
 		}
-		LayoutParams params = new LayoutParams(getMeasuredWidth() / Math.max(tabCount, 2), 5);
-		indicator.setLayoutParams(params);
+		indicatorParams.width = getMeasuredWidth() / Math.max(tabCount, 2);
+		indicator.setLayoutParams(indicatorParams);
 		indicator.setBackgroundColor(settings.getHighlightColor());
 		indicator.requestLayout();
+		if (viewPager != null)
+			setPosition((float) viewPager.getCurrentItem());
 		// make this view visible after setting sizes and distances correctly
 		post(new VisibilityDelay(this, true));
 	}
@@ -192,9 +197,9 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	 */
 	private void setPosition(float positionOffset) {
 		if (viewPager != null && viewPager.getAdapter() != null && tabCount > 0) {
-			LayoutParams params = new LayoutParams(getMeasuredWidth() / tabCount, indicator_height);
-			params.setMarginStart((int) (getMeasuredWidth() * positionOffset / tabCount));
-			indicator.setLayoutParams(params);
+			indicatorParams.width = getMeasuredWidth() / tabCount;
+			indicatorParams.setMarginStart((int) (getMeasuredWidth() * positionOffset / tabCount));
+			indicator.setLayoutParams(indicatorParams);
 		}
 	}
 

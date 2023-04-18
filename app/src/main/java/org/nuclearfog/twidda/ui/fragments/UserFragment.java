@@ -204,7 +204,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	public void onActivityResult(ActivityResult result) {
 		Intent intent = result.getData();
 		if (result.getResultCode() == ProfileActivity.RETURN_USER_UPDATED && intent != null) {
-			Object object = intent.getSerializableExtra(ProfileActivity.KEY_USER_UPDATE);
+			Object object = intent.getSerializableExtra(ProfileActivity.RETURN_USER_UPDATE);
 			if (object instanceof User) {
 				User update = (User) object;
 				adapter.updateItem(update);
