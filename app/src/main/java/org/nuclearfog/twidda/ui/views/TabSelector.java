@@ -77,7 +77,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		for (int i = 0 ; i < tabContainer.getChildCount(); i++) {
 			if (tabContainer.getChildAt(i) == v && listener != null) {
 				if (viewPager != null && viewPager.getAdapter() != null && i < viewPager.getAdapter().getItemCount()) {
-					listener.onTabSelected(oldPosition, i);
+					listener.onTabSelected(oldPosition);
 					viewPager.setCurrentItem(i);
 					oldPosition = i;
 				}
@@ -123,6 +123,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	public void addViewPager(ViewPager2 viewPager) {
 		this.viewPager = viewPager;
 		viewPager.registerOnPageChangeCallback(new ViewPagerCallback());
+		setPosition((float) viewPager.getCurrentItem());
 	}
 
 	/**
@@ -147,6 +148,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 			tabItemView.setOnClickListener(this);
 		}
 		tArray.recycle();
+		setVisibility(INVISIBLE);
 		getViewTreeObserver().addOnGlobalLayoutListener(this);
 	}
 
@@ -173,6 +175,20 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	}
 
 	/**
+	 * update colors if theme changes
+	 */
+	public void updateTheme() {
+		for (int i = 0; i < tabContainer.getChildCount(); i++) {
+			View tabItemView = tabContainer.getChildAt(i);
+			ImageView icon = tabItemView.findViewById(R.id.tab_icon);
+			TextView label = tabItemView.findViewById(R.id.tab_text);
+			AppStyles.setDrawableColor(icon, settings.getIconColor());
+			label.setTextColor(settings.getTextColor());
+		}
+		indicator.setBackgroundColor(settings.getHighlightColor());
+	}
+
+	/**
 	 */
 	private void setPosition(float positionOffset) {
 		if (viewPager != null && viewPager.getAdapter() != null && tabCount > 0) {
@@ -187,7 +203,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	private void setPage(int page) {
 		if (viewPager != null && viewPager.getAdapter() != null && page < viewPager.getAdapter().getItemCount() && page < tabCount) {
 			if (listener != null) {
-				listener.onTabSelected(oldPosition, page);
+				listener.onTabSelected(oldPosition);
 			}
 			oldPosition = page;
 		}
@@ -202,9 +218,8 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		 * called on tab item click
 		 *
 		 * @param oldPosition unselected position
-		 * @param position    selected position
 		 */
-		void onTabSelected(int oldPosition, int position);
+		void onTabSelected(int oldPosition);
 	}
 
 	/**

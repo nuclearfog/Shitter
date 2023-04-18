@@ -173,13 +173,6 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 
 	@Override
-	protected void onReset() {
-		setRefresh(true);
-		load(-1L, CLEAR_LIST);
-	}
-
-
-	@Override
 	public void onDestroy() {
 		userLoader.cancel();
 		super.onDestroy();
@@ -196,6 +189,14 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 				adapter.updateItem(update);
 			}
 		}
+	}
+
+
+	@Override
+	protected void onReset() {
+		adapter.clear();
+		setRefresh(true);
+		load(-1L, CLEAR_LIST);
 	}
 
 

@@ -190,12 +190,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		}
 		// get login request token
 		if (v.getId() == R.id.login_get_link) {
-			// re use login link
-			if (loginLink != null) {
-				connect();
-			}
 			// generate Twitter login link
-			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+			if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
 				// use userdefined or default token keys
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();

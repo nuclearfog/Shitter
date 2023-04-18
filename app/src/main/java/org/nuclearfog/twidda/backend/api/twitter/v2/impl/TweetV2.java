@@ -146,9 +146,7 @@ public class TweetV2 implements Status {
 				for (int i = 0; i < mentionsJson.length(); i++) {
 					JSONObject mentionJson = mentionsJson.getJSONObject(i);
 					String mention_name = '@' + mentionJson.getString("username");
-					if (!author.getScreenname().equals(mention_name)) {
-						builder.append(mention_name).append(' ');
-					}
+					builder.append(mention_name).append(' ');
 				}
 				mentions = builder.toString();
 			}

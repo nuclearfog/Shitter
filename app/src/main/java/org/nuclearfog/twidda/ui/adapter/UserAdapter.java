@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_ID;
-
 import android.content.Context;
 import android.view.ViewGroup;
 
@@ -71,15 +69,6 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	@Override
 	public int getItemCount() {
 		return users.size();
-	}
-
-
-	@Override
-	public long getItemId(int index) {
-		User user = users.get(index);
-		if (user != null)
-			return user.getId();
-		return NO_ID;
 	}
 
 
@@ -196,6 +185,14 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 			users.remove(pos);
 			notifyItemRemoved(pos);
 		}
+	}
+
+	/**
+	 * clear adapter data
+	 */
+	public void clear() {
+		users.clear();
+		notifyDataSetChanged();
 	}
 
 	/**

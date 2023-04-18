@@ -34,6 +34,8 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 
+import java.io.Serializable;
+
 /**
  * Directmessage editor activity
  *
@@ -45,7 +47,13 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	 * key for the screenname if any
 	 * value type is String
 	 */
-	public static final String KEY_DM_PREFIX = "dm_prefix";
+	public static final String KEY_MESSAGE_PREFIX = "message_prefix";
+
+	/**
+	 * key for message update
+	 * value type is {@link MessageUpdate}
+	 */
+	private static final String KEY_MESSAGE_UPDATE = "message_update";
 
 	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
 	private AsyncCallback<MessageUpdateResult> messageResult = this::onMessageResult;
@@ -85,7 +93,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
 
-		String prefix = getIntent().getStringExtra(KEY_DM_PREFIX);
+		String prefix = getIntent().getStringExtra(KEY_MESSAGE_PREFIX);
 		if (prefix != null) {
 			receiver.append(prefix);
 		}
@@ -105,6 +113,23 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 			instanceLoader.execute(null, instanceResult);
 		}
 		super.onResume();
+	}
+
+
+	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_MESSAGE_UPDATE, messageUpdate);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Serializable serializedStatusUpdate = savedInstanceState.getSerializable(KEY_MESSAGE_UPDATE);
+		if (serializedStatusUpdate instanceof MessageUpdate) {
+			messageUpdate = (MessageUpdate) serializedStatusUpdate;
+		}
 	}
 
 

@@ -2,47 +2,34 @@ package org.nuclearfog.twidda.backend.helper;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * This class is used to upload list information
  *
  * @author nuclearfog
  */
-public class UserListUpdate {
+public class UserListUpdate implements Serializable {
+
+	private static final long serialVersionUID = -366691257985800712L;
 
 	/**
 	 * this ID indicates that the list isn't created yet
 	 */
-	private static final long NEW_LIST = -1L;
+	public static final long NO_ID = -1L;
 
-	private long listId;
-	private String title;
-	private String description;
-	private boolean isPublic;
-
-	/**
-	 * Constructor used for newly created userlist
-	 *
-	 * @param title       Title of the list
-	 * @param description short description of the list
-	 * @param isPublic    true if list should be public
-	 */
-	public UserListUpdate(String title, String description, boolean isPublic) {
-		this(title, description, isPublic, NEW_LIST);
-	}
+	private long listId = NO_ID;
+	private String title = "";
+	private String description = "";
+	private boolean isPublic = false;
 
 
 	/**
-	 * Constructor used to update existing userlist
+	 * set ID of an existing list to update
 	 *
-	 * @param title       Title of the list
-	 * @param description short description of the list
-	 * @param isPublic    true if list should be public
-	 * @param listId      ID of the list to update or {@link #NEW_LIST} to create a new list
+	 * @param listId ID of an existing list
 	 */
-	public UserListUpdate(String title, String description, boolean isPublic, long listId) {
-		this.title = title;
-		this.description = description;
-		this.isPublic = isPublic;
+	public void setId(long listId) {
 		this.listId = listId;
 	}
 
@@ -56,6 +43,15 @@ public class UserListUpdate {
 	}
 
 	/**
+	 * set list title
+	 *
+	 * @param title title text
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/**
 	 * get Title of the list
 	 *
 	 * @return Title
@@ -65,12 +61,30 @@ public class UserListUpdate {
 	}
 
 	/**
+	 * set list description
+	 *
+	 * @param description text description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
 	 * get short description of the list
 	 *
 	 * @return description
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * set list visibility to public
+	 *
+	 * @param isPublic true to set list visibility to public
+	 */
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	/**
@@ -88,7 +102,7 @@ public class UserListUpdate {
 	 * @return true if list exists
 	 */
 	public boolean exists() {
-		return listId != NEW_LIST;
+		return listId != NO_ID;
 	}
 
 	@NonNull

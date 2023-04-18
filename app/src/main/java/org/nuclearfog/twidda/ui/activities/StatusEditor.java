@@ -42,6 +42,8 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
 
+import java.io.Serializable;
+
 /**
  * Status editor activity.
  *
@@ -61,6 +63,12 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 * value type is String
 	 */
 	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
+
+	/**
+	 * key for status update to restore
+	 * value type is {@link StatusUpdate}
+	 */
+	private static final String KEY_STATUS_UPDATE = "status_update";
 
 	private AsyncCallback<StatusUpdateResult> statusUpdateResult = this::onStatusUpdated;
 	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
@@ -118,14 +126,16 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			locationBtn.setVisibility(View.GONE);
 		}
 		long replyId = 0L;
-		Object data = getIntent().getSerializableExtra(KEY_STATUS_EDITOR_DATA);
-		if (data instanceof Status) {
-			Status status = (Status) data;
+		String prefix;
+		Serializable serializedStatus = getIntent().getSerializableExtra(KEY_STATUS_EDITOR_DATA);
+		if (serializedStatus instanceof Status) {
+			Status status = (Status) serializedStatus;
 			replyId = status.getId();
 			statusUpdate.setVisibility(status.getVisibility());
+			prefix = status.getUserMentions();
+		} else {
+			prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
 		}
-
-		String prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
 		statusUpdate.addReplyStatusId(replyId);
 		if (prefix != null) {
 			statusText.append(prefix);
@@ -145,8 +155,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		confirmDialog.setConfirmListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		adapter.addOnMediaClickListener(this);
-
-
 	}
 
 
@@ -169,17 +177,34 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 
 	@Override
-	protected void onDestroy() {
-		loadingCircle.dismiss();
-		statusUpdater.cancel();
-		instanceLoader.cancel();
-		super.onDestroy();
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_STATUS_UPDATE, statusUpdate);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Serializable serializedStatusUpdate = savedInstanceState.getSerializable(KEY_STATUS_UPDATE);
+		if (serializedStatusUpdate instanceof StatusUpdate) {
+			statusUpdate = (StatusUpdate) serializedStatusUpdate;
+		}
 	}
 
 
 	@Override
 	public void onBackPressed() {
 		showClosingMsg();
+	}
+
+
+	@Override
+	protected void onDestroy() {
+		loadingCircle.dismiss();
+		statusUpdater.cancel();
+		instanceLoader.cancel();
+		super.onDestroy();
 	}
 
 

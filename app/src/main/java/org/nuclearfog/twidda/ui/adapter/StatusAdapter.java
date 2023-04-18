@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_ID;
-
 import android.content.Context;
 import android.view.ViewGroup;
 
@@ -69,15 +67,6 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 		loadingIndex = NO_LOADING;
 		items = new LinkedList<>();
 		this.listener = itemClickListener;
-	}
-
-
-	@Override
-	public long getItemId(int index) {
-		Status status = items.get(index);
-		if (status != null)
-			return status.getId();
-		return NO_ID;
 	}
 
 
@@ -239,12 +228,23 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	}
 
 	/**
-	 * check if list is empty
-	 *
-	 * @return true if list is empty
+	 * clear all data from adapter
 	 */
-	public boolean isEmpty() {
-		return items.isEmpty();
+	public void clear() {
+		items.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * get Id of the first status
+	 *
+	 * @return status ID
+	 */
+	public long getTopId() {
+		if (!items.isEmpty() && items.get(0) != null) {
+			return items.get(0).getId();
+		}
+		return 0L;
 	}
 
 	/**

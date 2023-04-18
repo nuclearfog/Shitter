@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -57,7 +56,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	private OnNotificationClickListener listener;
 	private EmojiLoader emojiLoader;
 
-	private List<Notification> items;
+	private List<Notification> notifications;
 	private int loadingIndex;
 
 
@@ -65,7 +64,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
 		emojiLoader = new EmojiLoader(context);
-		items = new LinkedList<>();
+		notifications = new LinkedList<>();
 		loadingIndex = NO_LOADING;
 		this.listener = listener;
 	}
@@ -86,7 +85,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-		Notification item = items.get(position);
+		Notification item = notifications.get(position);
 		if (item != null) {
 			if (holder instanceof StatusHolder && item.getStatus() != null) {
 				StatusHolder statusHolder = (StatusHolder) holder;
@@ -106,22 +105,13 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 
 	@Override
 	public int getItemCount() {
-		return items.size();
-	}
-
-
-	@Override
-	public long getItemId(int position) {
-		Notification notification = items.get(position);
-		if (notification != null)
-			return notification.getId();
-		return RecyclerView.NO_ID;
+		return notifications.size();
 	}
 
 
 	@Override
 	public int getItemViewType(int position) {
-		Notification item = items.get(position);
+		Notification item = notifications.get(position);
 		if (item == null)
 			return TYPE_PLACEHOLER;
 		switch (item.getType()) {
@@ -148,23 +138,23 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 		long sinceId = 0;
 		long maxId = 0;
 		if (index == 0) {
-			if (items.size() > 1) {
-				Notification notification = items.get(index + 1);
+			if (notifications.size() > 1) {
+				Notification notification = notifications.get(index + 1);
 				if (notification != null) {
 					sinceId = notification.getId();
 				}
 			}
-		} else if (index == items.size() - 1) {
-			Notification notification = items.get(index - 1);
+		} else if (index == notifications.size() - 1) {
+			Notification notification = notifications.get(index - 1);
 			if (notification != null) {
 				maxId = notification.getId() - 1;
 			}
 		} else {
-			Notification notification = items.get(index + 1);
+			Notification notification = notifications.get(index + 1);
 			if (notification != null) {
 				sinceId = notification.getId();
 			}
-			notification = items.get(index - 1);
+			notification = notifications.get(index - 1);
 			if (notification != null) {
 				maxId = notification.getId() - 1;
 			}
@@ -180,7 +170,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		Notification item = items.get(position);
+		Notification item = notifications.get(position);
 		switch (type) {
 			case OnHolderClickListener.USER_CLICK:
 			case OnHolderClickListener.STATUS_LABEL:
@@ -212,18 +202,18 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public void addItems(List<Notification> newItems, int index) {
 		disableLoading();
 		if (newItems.size() > MIN_COUNT) {
-			if (items.isEmpty() || items.get(index) != null) {
+			if (notifications.isEmpty() || notifications.get(index) != null) {
 				// Add placeholder
-				items.add(index, null);
+				notifications.add(index, null);
 				notifyItemInserted(index);
 			}
-		} else if (!items.isEmpty() && items.get(index) == null) {
+		} else if (!notifications.isEmpty() && notifications.get(index) == null) {
 			// remove placeholder
-			items.remove(index);
+			notifications.remove(index);
 			notifyItemRemoved(index);
 		}
 		if (!newItems.isEmpty()) {
-			items.addAll(index, newItems);
+			notifications.addAll(index, newItems);
 			notifyItemRangeInserted(index, newItems.size());
 		}
 	}
@@ -234,9 +224,9 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 * @param update notification to update
 	 */
 	public void updateItem(Notification update) {
-		int index = items.indexOf(update);
+		int index = notifications.indexOf(update);
 		if (index >= 0) {
-			items.set(index, update);
+			notifications.set(index, update);
 			notifyItemChanged(index);
 		}
 	}
@@ -247,14 +237,34 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 * @param id notification ID
 	 */
 	public void removeItem(long id) {
-		for (int i = 0; i < items.size(); i++) {
-			Notification item = items.get(i);
+		for (int i = 0; i < notifications.size(); i++) {
+			Notification item = notifications.get(i);
 			if (item != null && item.getId() == id) {
-				items.remove(i);
+				notifications.remove(i);
 				notifyItemRemoved(i);
 				break;
 			}
 		}
+	}
+
+	/**
+	 * clear adapter data
+	 */
+	public void clear() {
+		notifications.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * get ID of the first notification item
+	 *
+	 * @return notification ID
+	 */
+	public long getTopId() {
+		if (!notifications.isEmpty() && notifications.get(0) != null) {
+			return notifications.get(0).getId();
+		}
+		return 0L;
 	}
 
 	/**
@@ -266,13 +276,6 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 			loadingIndex = NO_LOADING;
 			notifyItemChanged(oldIndex);
 		}
-	}
-
-	/**
-	 * @return true if adapter is empty
-	 */
-	public boolean isEmpty() {
-		return items.isEmpty();
 	}
 
 	/**

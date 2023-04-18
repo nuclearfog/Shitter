@@ -39,7 +39,7 @@ public class StringUtils {
 	/**
 	 * regex pattern used to get user mentions
 	 */
-	private static final Pattern MENTION = Pattern.compile("@[\\w_]+");
+	private static final Pattern MENTION = Pattern.compile("@[\\w_.]+");
 
 	/**
 	 * oauth 1.0 signature algorithm

@@ -133,14 +133,15 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		toolbar = findViewById(R.id.listdetail_toolbar);
 		viewPager = findViewById(R.id.listdetail_pager);
 
+		settings = GlobalSettings.getInstance(this);
 		confirmDialog = new ConfirmDialog(this);
 		listLoaderAsync = new ListAction(this);
 		listManagerAsync = new ListManager(this);
 		adapter = new FragmentAdapter(this);
+
 		viewPager.setOffscreenPageLimit(3);
 		viewPager.setAdapter(adapter);
 		tabSelector.addViewPager(viewPager);
-		settings = GlobalSettings.getInstance(this);
 
 		Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
 		if (data instanceof UserList) {
@@ -149,8 +150,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			toolbar.setSubtitle(userList.getDescription());
 			adapter.setupListContentPage(userList.getId(), userList.isEdiatable());
 		}
-
 		setSupportActionBar(toolbar);
+
 		AppStyles.setTheme(root);
 		tabSelector.addTabIcons(R.array.list_tab_icons);
 
@@ -271,7 +272,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	public void onActivityResult(ActivityResult result) {
 		if (result.getData() != null) {
 			if (result.getResultCode() == UserlistEditor.RETURN_LIST_CHANGED) {
-				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_UPDATED_USERLIST);
+				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_USERLIST_UPDATED);
 				if (data instanceof UserList) {
 					userList = (UserList) data;
 					toolbar.setTitle(userList.getTitle());
@@ -310,7 +311,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 
 	@Override
-	public void onTabSelected(int oldPosition, int position) {
+	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
 	}
 

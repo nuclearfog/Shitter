@@ -4,13 +4,16 @@ import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 /**
  * This class is used to upload and download media files
  *
  * @author nuclearfog
  */
-public class MediaStatus {
+public class MediaStatus implements Serializable {
+
+	private static final long serialVersionUID = 6824278073662885637L;
 
 	private InputStream inputStream;
 	private String mimeType;

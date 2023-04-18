@@ -13,6 +13,7 @@ import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Status;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,9 @@ import java.util.TreeSet;
  *
  * @author nuclearfog
  */
-public class StatusUpdate {
+public class StatusUpdate implements Serializable {
+
+	private static final long serialVersionUID = -5300983806882462557L;
 
 	/**
 	 * returned if an error occured while attaching item
@@ -71,7 +74,7 @@ public class StatusUpdate {
 	@Nullable
 	private Instance instance;
 
-	private List<Uri> mediaUris = new ArrayList<>(5);
+	private List<String> mediaUriStrings = new ArrayList<>(5);
 	private Set<String> supportedFormats = new TreeSet<>();
 	private MediaStatus[] mediaUpdates = {};
 	private boolean attachmentLimitReached = false;
@@ -116,8 +119,8 @@ public class StatusUpdate {
 				case MEDIA_GIF:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
-						mediaUris.add(mediaUri);
-						if (mediaUris.size() == instance.getGifLimit()) {
+						mediaUriStrings.add(mediaUri.toString());
+						if (mediaUriStrings.size() == instance.getGifLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_GIF;
@@ -135,8 +138,8 @@ public class StatusUpdate {
 				case MEDIA_IMAGE:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
-						mediaUris.add(mediaUri);
-						if (mediaUris.size() == instance.getImageLimit()) {
+						mediaUriStrings.add(mediaUri.toString());
+						if (mediaUriStrings.size() == instance.getImageLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_IMAGE;
@@ -153,8 +156,8 @@ public class StatusUpdate {
 				case MEDIA_VIDEO:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
-						mediaUris.add(mediaUri);
-						if (mediaUris.size() == instance.getVideoLimit()) {
+						mediaUriStrings.add(mediaUri.toString());
+						if (mediaUriStrings.size() == instance.getVideoLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_VIDEO;
@@ -267,7 +270,11 @@ public class StatusUpdate {
 	 * @return media uri array
 	 */
 	public Uri[] getMediaUris() {
-		return mediaUris.toArray(new Uri[0]);
+		Uri[] result = new Uri[mediaUriStrings.size()];
+		for (int i = 0 ; i < result.length ; i++) {
+			result[i] = Uri.parse(mediaUriStrings.get(i));
+		}
+		return result;
 	}
 
 	/**
@@ -336,7 +343,7 @@ public class StatusUpdate {
 	 * @return true if media is attached
 	 */
 	public boolean isEmpty() {
-		return mediaUris.isEmpty() && location == null && poll == null && getText() == null;
+		return mediaUriStrings.isEmpty() && location == null && poll == null && getText() == null;
 	}
 
 	/**
@@ -345,14 +352,15 @@ public class StatusUpdate {
 	 * @return true if success, false if an error occurs
 	 */
 	public boolean prepare(ContentResolver resolver) {
-		if (mediaUris.isEmpty())
+		if (mediaUriStrings.isEmpty())
 			return true;
 		try {
 			// open input streams
-			mediaUpdates = new MediaStatus[mediaUris.size()];
+			mediaUpdates = new MediaStatus[mediaUriStrings.size()];
 			for (int i = 0; i < mediaUpdates.length; i++) {
-				InputStream is = resolver.openInputStream(mediaUris.get(i));
-				String mime = resolver.getType(mediaUris.get(i));
+				Uri uri = Uri.parse(mediaUriStrings.get(i));
+				InputStream is = resolver.openInputStream(uri);
+				String mime = resolver.getType(uri);
 				// check if stream is valid
 				if (is != null && mime != null && is.available() > 0) {
 					mediaUpdates[i] = new MediaStatus(is, mime);

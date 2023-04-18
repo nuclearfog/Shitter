@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
+
+	@Nullable
 	private Intent loginIntent;
 
 	private Dialog loadingCircle;
@@ -117,13 +119,11 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			case AccountActivity.RETURN_ACCOUNT_CHANGED:
 			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
 				setupAdapter();
+				loginIntent = null;
 				break;
 
 			case SettingsActivity.RETURN_APP_LOGOUT:
 				adapter.clear();
-				viewPager.setAdapter(adapter);
-				loginIntent = new Intent(this, LoginActivity.class);
-				activityResultLauncher.launch(loginIntent);
 				break;
 
 			default:
@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
 				AppStyles.setTheme(root);
 				AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+				tabSelector.updateTheme();
 				adapter.notifySettingsChanged();
 				break;
 		}
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onTabSelected(int oldPosition, int position) {
+	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
 	}
 

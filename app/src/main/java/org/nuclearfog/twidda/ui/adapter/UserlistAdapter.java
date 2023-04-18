@@ -184,6 +184,14 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	}
 
 	/**
+	 * clear adapter data
+	 */
+	public void clear() {
+		userlists.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * disable placeholder view loading animation
 	 */
 	public void disableLoading() {

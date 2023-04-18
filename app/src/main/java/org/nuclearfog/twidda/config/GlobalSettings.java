@@ -889,14 +889,15 @@ public class GlobalSettings {
 		Editor e = settings.edit();
 		if (login == null) {
 			loggedIn = false;
-			e.remove(LOGGED_IN);
+			e.remove(HOSTNAME);
 			e.remove(CURRENT_ID);
 			e.remove(OAUTH_TOKEN);
 			e.remove(OAUTH_SECRET);
 			e.remove(CONSUMER_TOKEN);
 			e.remove(CONSUMER_SECRET);
 			e.remove(BEARER_TOKEN);
-			e.remove(HOSTNAME);
+			e.remove(CURRENT_API);
+			e.remove(LOGGED_IN);
 		} else {
 			ConfigAccount account = new ConfigAccount(login);
 			this.login = account;

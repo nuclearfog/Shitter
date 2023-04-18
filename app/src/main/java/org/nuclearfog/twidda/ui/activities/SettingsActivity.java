@@ -306,13 +306,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	public void onConfirm(int type) {
-		// confirm log out
+		// remove account from database
 		if (type == ConfirmDialog.APP_LOG_OUT) {
-			// remove account from database
 			settings.setLogin(null, true);
-			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), null);
-			setResult(RETURN_APP_LOGOUT);
-			finish();
+			databaseAsync.execute(new DatabaseParam(DatabaseParam.LOGOUT), databaseResult);
 		}
 		// confirm delete app data and cache
 		else if (type == ConfirmDialog.DELETE_APP_DATA) {
@@ -320,7 +317,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		}
 		// confirm leaving without saving proxy changes
 		else if (type == ConfirmDialog.WRONG_PROXY) {
-			// exit without saving proxy settings
 			finish();
 		}
 	}
@@ -595,11 +591,21 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 * called from {@link DatabaseAction}
 	 */
 	private void onDatabaseResult(@NonNull DatabaseResult result) {
-		if (result.mode == DatabaseResult.DELETE) {
-			setResult(RETURN_DATA_CLEARED);
-			Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
-		} else if (result.mode == DatabaseResult.ERROR) {
-			Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
+		switch (result.mode) {
+			case DatabaseResult.DELETE:
+				setResult(RETURN_DATA_CLEARED);
+				Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
+				break;
+
+			case DatabaseResult.LOGOUT:
+				setResult(RETURN_APP_LOGOUT);
+				finish();
+				break;
+
+			case DatabaseResult.ERROR:
+				Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
+				break;
+
 		}
 	}
 

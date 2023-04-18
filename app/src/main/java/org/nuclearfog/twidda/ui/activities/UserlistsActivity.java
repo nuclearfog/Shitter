@@ -65,23 +65,24 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		TabSelector tabSelector = findViewById(R.id.list_tab);
 		viewPager = findViewById(R.id.list_pager);
 
-		toolbar.setTitle(R.string.list_appbar);
-		setSupportActionBar(toolbar);
+		settings = GlobalSettings.getInstance(this);
 		adapter = new FragmentAdapter(this);
 
-		settings = GlobalSettings.getInstance(this);
-		AppStyles.setTheme(root);
+		toolbar.setTitle(R.string.list_appbar);
+		setSupportActionBar(toolbar);
+
+		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, 0L);
+		isHome = ownerId == settings.getLogin().getId();
+
+		adapter.setupListPage(ownerId);
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
 		tabSelector.addViewPager(viewPager);
-		tabSelector.addOnTabSelectedListener(this);
-
-		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, 0L);
-
-		isHome = ownerId == settings.getLogin().getId();
-		adapter.setupListPage(ownerId);
 		tabSelector.addTabIcons(R.array.userlist_tab_icons);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+		AppStyles.setTheme(root);
+
+		tabSelector.addOnTabSelectedListener(this);
 	}
 
 
@@ -133,7 +134,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 
 
 	@Override
-	public void onTabSelected(int oldPosition, int position) {
+	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
 	}
 }

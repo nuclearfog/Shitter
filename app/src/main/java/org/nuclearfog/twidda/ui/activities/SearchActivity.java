@@ -163,7 +163,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 
 	@Override
-	public void onTabSelected(int oldPosition, int position) {
+	public void onTabSelected(int oldPosition) {
 		invalidateOptionsMenu();
 		adapter.scrollToTop(oldPosition);
 	}

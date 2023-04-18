@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.fragments;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_MESSAGE_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 
@@ -81,8 +81,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	protected void onReset() {
-		adapter = new MessageAdapter(requireContext(), this);
-		setAdapter(adapter);
+		adapter.clear();
 		loadMessages(false, null, CLEAR_LIST);
 		setRefresh(true);
 	}
@@ -110,7 +109,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 			switch (action) {
 				case ANSWER:
 					Intent sendDm = new Intent(requireContext(), MessageEditor.class);
-					sendDm.putExtra(KEY_DM_PREFIX, message.getSender().getScreenname());
+					sendDm.putExtra(KEY_MESSAGE_PREFIX, message.getSender().getScreenname());
 					startActivity(sendDm);
 					break;
 

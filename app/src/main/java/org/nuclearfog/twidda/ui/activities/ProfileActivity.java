@@ -5,7 +5,7 @@ import static android.view.View.GONE;
 import static android.view.View.OnClickListener;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_MESSAGE_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
 import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_ID;
@@ -82,6 +82,7 @@ import org.nuclearfog.twidda.ui.views.LockableLinearLayout.LockCallback;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -167,7 +168,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private Relation relation;
 	@Nullable
 	private User user;
-	private long userId;
 
 
 	@Override
@@ -238,9 +238,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			savedInstanceState = getIntent().getExtras();
 		if (savedInstanceState == null)
 			return;
-		Object o = savedInstanceState.getSerializable(KEY_PROFILE_USER);
-		if (o instanceof User) {
-			user = (User) o;
+		long userId;
+		Serializable serializedUser = savedInstanceState.getSerializable(KEY_PROFILE_USER);
+		if (serializedUser instanceof User) {
+			user = (User) serializedUser;
 			userId = user.getId();
 		} else {
 			userId = savedInstanceState.getLong(KEY_PROFILE_ID, 0L);
@@ -280,6 +281,20 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		outState.putSerializable(KEY_PROFILE_USER, user);
 		outState.putSerializable(KEY_PROFILE_RELATION, relation);
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Serializable serializedUser = savedInstanceState.getSerializable(KEY_PROFILE_USER);
+		Serializable serializedRelation = savedInstanceState.getSerializable(KEY_PROFILE_RELATION);
+		if (serializedUser instanceof User) {
+			user = (User) serializedUser;
+		}
+		if (serializedRelation instanceof Relation) {
+			relation = (Relation) serializedRelation;
+		}
 	}
 
 
@@ -460,7 +475,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (item.getItemId() == R.id.profile_message) {
 			Intent intent = new Intent(this, MessageEditor.class);
 			if (user != null && !user.isCurrentUser())
-				intent.putExtra(KEY_DM_PREFIX, user.getScreenname());
+				intent.putExtra(KEY_MESSAGE_PREFIX, user.getScreenname());
 			startActivity(intent);
 			return true;
 		}
@@ -607,7 +622,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 
 	@Override
-	public void onTabSelected(int oldPosition, int position) {
+	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
 	}
 
@@ -645,8 +660,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private void setUserResult(@NonNull UserResult result) {
 		switch (result.mode) {
 			case UserResult.DATABASE:
-				UserParam param = new UserParam(UserParam.ONLINE, userId);
-				userLoader.execute(param, userCallback);
+				if (result.user != null) {
+					UserParam param = new UserParam(UserParam.ONLINE, result.user.getId());
+					userLoader.execute(param, userCallback);
+				}
 				// fall through
 
 			case UserResult.ONLINE:

@@ -45,7 +45,7 @@ public class MastodonStatus implements Status {
 	private boolean muted;
 
 	private String text;
-	private String mentions;
+	private String mentions = "";
 	private String language = "";
 	private String source = "";
 	private String url = "";
@@ -87,8 +87,8 @@ public class MastodonStatus implements Status {
 		bookmarked = json.optBoolean("bookmarked", false);
 		text = json.optString("content", "");
 		text = Jsoup.parse(text).text();
-		mentions = author.getScreenname() + ' ';
-
+		if (author.getId() != currentUserId)
+			mentions = author.getScreenname() + ' ';
 		if (embeddedJson != null) {
 			embeddedStatus = new MastodonStatus(embeddedJson, currentUserId);
 			this.url = embeddedStatus.getUrl();
@@ -108,8 +108,13 @@ public class MastodonStatus implements Status {
 		if (mentionsJson != null && mentionsJson.length() > 0) {
 			StringBuilder mentionsBuilder = new StringBuilder(mentions);
 			for (int i = 0; i < mentionsJson.length(); i++) {
-				String mention = '@' + mentionsJson.getJSONObject(i).getString("acct");
-				if (!mention.equals(author.getScreenname())) {
+				long mentionUserId = 0L;
+				JSONObject mentionJson = mentionsJson.getJSONObject(i);
+				String mention = '@' + mentionJson.getString("acct");
+				String mentionedUserIdStr = mentionJson.optString("id", "0");
+				if (mentionedUserIdStr.matches("\\d+"))
+					mentionUserId = Long.parseLong(mentionsJson.getJSONObject(i).getString("id"));
+				if (mentionUserId != 0L && mentionUserId != currentUserId) {
 					mentionsBuilder.append(mention).append(' ');
 				}
 			}

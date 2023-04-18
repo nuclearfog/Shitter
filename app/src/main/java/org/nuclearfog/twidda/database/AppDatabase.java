@@ -1608,6 +1608,7 @@ public class AppDatabase {
 		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		column.put(StatusTable.REPLYNAME, status.getReplyName());
 		column.put(StatusTable.LANGUAGE, status.getLanguage());
+		column.put(StatusTable.MENTIONS, status.getUserMentions());
 		if (status.getLocation() != null && status.getLocation().getId() != 0L) {
 			column.put(StatusTable.LOCATION, status.getLocation().getId());
 			saveLocation(status.getLocation(), db);

@@ -86,6 +86,14 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	}
 
 	/**
+	 * clear adapter data
+	 */
+	public void clear() {
+		trends.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * check if adapter is empty
 	 *
 	 * @return true if adapter is empty

@@ -74,17 +74,13 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	protected void onReload() {
-		long sinceId = 0;
-		if (!adapter.isEmpty())
-			sinceId = adapter.getItemId(0);
-		load(sinceId, 0L, 0);
+		load(adapter.getTopId(), 0L, 0);
 	}
 
 
 	@Override
 	protected void onReset() {
-		adapter = new NotificationAdapter(requireContext(), this);
-		setAdapter(adapter);
+		adapter.clear();
 		load(0L, 0L, 0);
 		setRefresh(true);
 	}

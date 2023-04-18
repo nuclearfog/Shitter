@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 /**
@@ -14,11 +15,13 @@ import org.nuclearfog.twidda.database.AppDatabase;
 public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, DatabaseAction.DatabaseResult> {
 
 	private AppDatabase db;
+	private GlobalSettings settings;
 
 	/**
 	 *
 	 */
 	public DatabaseAction(Context context) {
+		settings = GlobalSettings.getInstance(context);
 		db = new AppDatabase(context);
 	}
 
@@ -26,9 +29,14 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 	@Override
 	protected DatabaseResult doInBackground(@NonNull DatabaseParam param) {
 		try {
-			if (param.mode == DatabaseParam.DELETE) {
-				db.resetDatabase();
-				return new DatabaseResult(DatabaseResult.DELETE);
+			switch(param.mode) {
+				case DatabaseParam.DELETE:
+					db.resetDatabase();
+					return new DatabaseResult(DatabaseResult.DELETE);
+
+				case DatabaseParam.LOGOUT:
+					db.removeLogin(settings.getLogin().getId());
+					return new DatabaseResult(DatabaseResult.LOGOUT);
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -42,6 +50,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 	public static class DatabaseParam {
 
 		public static final int DELETE = 1;
+		public static final int LOGOUT = 2;
 
 		final int mode;
 
@@ -57,6 +66,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 
 		public static final int ERROR = -1;
 		public static final int DELETE = 1;
+		public static final int LOGOUT = 2;
 
 		public final int mode;
 

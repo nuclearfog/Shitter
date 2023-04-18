@@ -8,13 +8,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
@@ -31,12 +31,14 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 
+import java.io.Serializable;
+
 /**
  * Activity for the list editor
  *
  * @author nuclearfog
  */
-public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<ListUpdateResult> {
+public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<ListUpdateResult>, OnCheckedChangeListener {
 
 	/**
 	 * Key for the list ID if an existing list should be updated
@@ -48,7 +50,13 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	 * Key for updated list information
 	 * value type is {@link UserList}
 	 */
-	public static final String KEY_UPDATED_USERLIST = "userlist-update";
+	public static final String KEY_USERLIST_UPDATED = "userlist-updated";
+
+	/**
+	 * internal key used to save userlist changes
+	 * value type is {@link UserListUpdate}
+	 */
+	private static final String KEY_USERLIST_UPDATE = "userlist-update";
 
 	/**
 	 * Return code used when an existing userlist was changed
@@ -63,11 +71,10 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	private ProgressDialog loadingCircle;
 	private ConfirmDialog confirmDialog;
 
-	private ListUpdater updaterAsync;
-	private EditText titleInput, subTitleInput;
-	private CompoundButton visibilitySwitch;
-	@Nullable
-	private UserList userList;
+	private ListUpdater listUpdater;
+	private EditText titleText, descriptionText;
+
+	private UserListUpdate listUpdate = new UserListUpdate();
 
 
 	@Override
@@ -85,23 +92,27 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		Button updateButton = findViewById(R.id.userlist_create_list);
 		TextView popupTitle = findViewById(R.id.popup_list_title);
 		TextView visibilityLabel = findViewById(R.id.userlist_switch_text);
-		titleInput = findViewById(R.id.list_edit_title);
-		subTitleInput = findViewById(R.id.list_edit_descr);
-		visibilitySwitch = findViewById(R.id.list_edit_public_sw);
+		CompoundButton visibilitySwitch = findViewById(R.id.list_edit_public_sw);
+		titleText = findViewById(R.id.list_edit_title);
+		descriptionText = findViewById(R.id.list_edit_descr);
 
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
-		updaterAsync = new ListUpdater(this);
+		listUpdater = new ListUpdater(this);
 
 		GlobalSettings settings = GlobalSettings.getInstance(this);
 		AppStyles.setEditorTheme(root, background);
 
-		Object data = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
-		if (data instanceof UserList) {
-			userList = (UserList) data;
-			titleInput.setText(userList.getTitle());
-			subTitleInput.setText(userList.getDescription());
+		Serializable serializedUserlist = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
+		if (serializedUserlist instanceof UserList) {
+			UserList userList = (UserList) serializedUserlist;
+			titleText.setText(userList.getTitle());
+			descriptionText.setText(userList.getDescription());
 			visibilitySwitch.setChecked(!userList.isPrivate());
+			listUpdate.setId(userList.getId());
+			listUpdate.setDescription(userList.getDescription());
+			listUpdate.setTitle(userList.getTitle());
+			listUpdate.setPublic(!userList.isPrivate());
 			popupTitle.setText(R.string.menu_edit_list);
 			updateButton.setText(R.string.update_list);
 		}
@@ -112,18 +123,33 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		updateButton.setOnClickListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 		confirmDialog.setConfirmListener(this);
+		visibilitySwitch.setOnCheckedChangeListener(this);
+	}
+
+
+	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		listUpdate.setTitle(titleText.getText().toString());
+		listUpdate.setDescription(descriptionText.getText().toString());
+		outState.putSerializable(KEY_USERLIST_UPDATE, listUpdate);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Serializable serializedListUpdate = savedInstanceState.getSerializable(KEY_USERLIST_UPDATE);
+		if (serializedListUpdate instanceof UserListUpdate) {
+			listUpdate = (UserListUpdate) serializedListUpdate;
+		}
 	}
 
 
 	@Override
 	public void onBackPressed() {
-		String title = titleInput.getText().toString();
-		String descr = subTitleInput.getText().toString();
 		// Check for changes, leave if there aren't any
-		if (userList != null && visibilitySwitch.isChecked() == !userList.isPrivate()
-				&& title.equals(userList.getTitle()) && descr.equals(userList.getDescription())) {
-			super.onBackPressed();
-		} else if (title.isEmpty() && descr.isEmpty()) {
+		if (listUpdate.getId() == UserListUpdate.NO_ID && titleText.getText().length() == 0 && descriptionText.getText().length() == 0) {
 			super.onBackPressed();
 		} else {
 			confirmDialog.show(ConfirmDialog.LIST_EDITOR_LEAVE);
@@ -134,7 +160,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	@Override
 	protected void onDestroy() {
 		loadingCircle.dismiss();
-		updaterAsync.cancel();
+		listUpdater.cancel();
 		super.onDestroy();
 	}
 
@@ -142,7 +168,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onClick(View view) {
 		if (view.getId() == R.id.userlist_create_list) {
-			if (updaterAsync.isIdle()) {
+			if (listUpdater.isIdle()) {
 				updateList();
 			}
 		}
@@ -150,8 +176,16 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 
 	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (buttonView.getId() == R.id.list_edit_public_sw) {
+			listUpdate.setPublic(isChecked);
+		}
+	}
+
+
+	@Override
 	public void stopProgress() {
-		updaterAsync.cancel();
+		listUpdater.cancel();
 	}
 
 
@@ -177,7 +211,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 				Toast.makeText(getApplicationContext(), R.string.info_list_created, Toast.LENGTH_SHORT).show();
 			}
 			Intent intent = new Intent();
-			intent.putExtra(KEY_UPDATED_USERLIST, result.userlist);
+			intent.putExtra(KEY_USERLIST_UPDATED, result.userlist);
 			setResult(RETURN_LIST_CHANGED, intent);
 			finish();
 		} else {
@@ -191,21 +225,14 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	 * check input and create/update list
 	 */
 	private void updateList() {
-		String titleStr = titleInput.getText().toString();
-		String descrStr = subTitleInput.getText().toString();
-		boolean isPublic = visibilitySwitch.isChecked();
+		String titleStr = titleText.getText().toString();
+		String descrStr = descriptionText.getText().toString();
 		if (titleStr.trim().isEmpty()) {
 			Toast.makeText(getApplicationContext(), R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
 		} else {
-			UserListUpdate mHolder;
-			if (userList != null) {
-				// update existing list
-				mHolder = new UserListUpdate(titleStr, descrStr, isPublic, userList.getId());
-			} else {
-				// create new one
-				mHolder = new UserListUpdate(titleStr, descrStr, isPublic);
-			}
-			updaterAsync.execute(mHolder, this);
+			listUpdate.setTitle(titleStr);
+			listUpdate.setDescription(descrStr);
+			listUpdater.execute(listUpdate, this);
 			loadingCircle.show();
 		}
 	}

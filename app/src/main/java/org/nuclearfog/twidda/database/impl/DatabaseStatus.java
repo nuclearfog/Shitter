@@ -15,7 +15,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.model.Account;
@@ -84,6 +83,7 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 		String source = cursor.getString(cursor.getColumnIndexOrThrow(SOURCE));
 		String text = cursor.getString(cursor.getColumnIndexOrThrow(TEXT));
 		String replyName = cursor.getString(cursor.getColumnIndexOrThrow(REPLYNAME));
+		String userMentions = cursor.getString(cursor.getColumnIndexOrThrow(MENTIONS));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
 
 		favorited = (register & MASK_STATUS_FAVORITED) != 0;
@@ -113,10 +113,10 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 			this.replyName = replyName;
 		if (source != null)
 			this.source = source;
-		if (text != null) {
+		if (text != null)
 			this.text = text;
-			userMentions = StringUtils.getUserMentions(text, author.getScreenname());
-		}
+		if (userMentions != null)
+			this.userMentions = userMentions;
 	}
 
 

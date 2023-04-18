@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.ui.activities;
 
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_DATA;
-import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FAVORIT;
@@ -91,6 +90,7 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
 import org.nuclearfog.twidda.ui.views.LockableConstraintLayout.LockCallback;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -295,17 +295,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		locationName.setTextColor(settings.getHighlightColor());
 		translateText.setTextColor(settings.getHighlightColor());
 
-		// get parameter, set information and initialize loaders
-		if (savedInstanceState == null)
-			savedInstanceState = getIntent().getExtras();
-		if (savedInstanceState == null)
-			return;
 		long statusId = 0L;
 		String replyUsername = "";
-		Object statusObject = savedInstanceState.getSerializable(KEY_STATUS_DATA);
-		Object notificationObject = savedInstanceState.getSerializable(KEY_NOTIFICATION_DATA);
-		if (statusObject instanceof Status) {
-			Status status = (Status) statusObject;
+
+		Serializable serializedStatus = getIntent().getSerializableExtra(KEY_STATUS_DATA);
+		Serializable serializedNotification = getIntent().getSerializableExtra(KEY_NOTIFICATION_DATA);
+		if (serializedStatus instanceof Status) {
+			Status status = (Status) serializedStatus;
 			Status embeddedStatus = status.getEmbeddedStatus();
 			setStatus(status);
 			StatusParam statusParam = new StatusParam(StatusParam.ONLINE, status.getId());
@@ -319,8 +315,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				replyUsername = status.getAuthor().getScreenname();
 				hidden = status.isHidden();
 			}
-		} else if (notificationObject instanceof Notification) {
-			Notification notification = (Notification) notificationObject;
+		} else if (serializedNotification instanceof Notification) {
+			Notification notification = (Notification) serializedNotification;
 			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
 			notificationLoader.execute(notificationParam, notificationCallback);
 			if (notification.getStatus() != null) {
@@ -329,14 +325,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				replyUsername = notification.getStatus().getAuthor().getScreenname();
 			}
 		} else {
-			statusId = savedInstanceState.getLong(KEY_STATUS_ID, 0L);
-			long notificationId = savedInstanceState.getLong(KEY_NOTIFICATION_ID, 0L);
+			statusId = getIntent().getLongExtra(KEY_STATUS_ID, 0L);
+			long notificationId = getIntent().getLongExtra(KEY_NOTIFICATION_ID, 0L);
 			if (statusId != 0L) {
-				replyUsername = savedInstanceState.getString(KEY_STATUS_NAME);
+				replyUsername = getIntent().getStringExtra(KEY_STATUS_NAME);
 				StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
 				statusLoader.execute(statusParam, statusCallback);
 			} else if (notificationId != 0L) {
-				replyUsername = savedInstanceState.getString(KEY_NOTIFICATION_NAME);
+				replyUsername = getIntent().getStringExtra(KEY_NOTIFICATION_NAME);
 				NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
 				notificationLoader.execute(notificationParam, notificationCallback);
 			}
@@ -372,13 +368,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	protected void onDestroy() {
-		statusLoader.cancel();
-		pollLoader.cancel();
-		notificationLoader.cancel();
-		translationLoader.cancel();
-		emojiLoader.cancel();
-		super.onDestroy();
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_STATUS_DATA, status);
+		outState.putSerializable(KEY_NOTIFICATION_DATA, notification);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Serializable serializedStatus = savedInstanceState.getSerializable(KEY_STATUS_DATA);
+		Serializable serializedNotification = savedInstanceState.getSerializable(KEY_NOTIFICATION_DATA);
+		if (serializedStatus instanceof Status) {
+			status = (Status) serializedStatus;
+		} else if (serializedNotification instanceof Notification) {
+			notification = (Notification) serializedNotification;
+		}
 	}
 
 
@@ -397,10 +403,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_STATUS_DATA, status);
-		outState.putSerializable(KEY_NOTIFICATION_DATA, notification);
-		super.onSaveInstanceState(outState);
+	protected void onDestroy() {
+		statusLoader.cancel();
+		pollLoader.cancel();
+		notificationLoader.cancel();
+		translationLoader.cancel();
+		emojiLoader.cancel();
+		super.onDestroy();
 	}
 
 
@@ -557,11 +566,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				status = status.getEmbeddedStatus();
 			// answer to the status
 			if (v.getId() == R.id.page_status_reply) {
-				String prefix = status.getUserMentions();
 				Intent intent = new Intent(this, StatusEditor.class);
 				intent.putExtra(KEY_STATUS_EDITOR_DATA, status);
-				if (!prefix.isEmpty())
-					intent.putExtra(KEY_STATUS_EDITOR_TEXT, prefix);
 				startActivity(intent);
 			}
 			// show user reposting this status

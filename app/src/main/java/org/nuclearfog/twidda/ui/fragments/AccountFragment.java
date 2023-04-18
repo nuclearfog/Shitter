@@ -79,6 +79,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	protected void onReset() {
+		adapter.clear();
 		setRefresh(true);
 		load(AccountParameter.LOAD);
 	}
@@ -122,8 +123,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 				break;
 
 			case AccountResult.DELETE:
-				if (result.id != 0)
-					adapter.removeItem(result.id);
+				adapter.removeItem(result.id);
 				break;
 
 			case AccountResult.ERROR:

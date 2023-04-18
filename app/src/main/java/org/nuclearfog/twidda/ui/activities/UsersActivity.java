@@ -243,7 +243,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	public void onTabSelected(int oldPosition, int position) {
+	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
 		// reset menu
 		invalidateOptionsMenu();

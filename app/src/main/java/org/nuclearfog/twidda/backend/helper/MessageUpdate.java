@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.model.Instance;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
@@ -21,9 +22,11 @@ import java.util.TreeSet;
  *
  * @author nuclearfog
  */
-public class MessageUpdate {
+public class MessageUpdate implements Serializable {
 
-	private Uri uri;
+	private static final long serialVersionUID = 991295406939128220L;
+
+	private String uriString;
 	private MediaStatus mediaUpdate;
 	private String name = "";
 	private String text = "";
@@ -81,7 +84,7 @@ public class MessageUpdate {
 	 */
 	@Nullable
 	public Uri getMediaUri() {
-		return uri;
+		return Uri.parse(uriString);
 	}
 
 	/**
@@ -102,7 +105,7 @@ public class MessageUpdate {
 		if (mime == null || !supportedFormats.contains(mime)) {
 			return false;
 		}
-		this.uri = uri;
+		this.uriString = uri.toString();
 		return true;
 	}
 
@@ -112,11 +115,12 @@ public class MessageUpdate {
 	 * @return true if initialization succeded
 	 */
 	public boolean prepare(ContentResolver resolver) {
-		if (uri == null) {
+		if (uriString == null) {
 			// no need to check media files if not attached
 			return true;
 		}
 		try {
+			Uri uri = Uri.parse(uriString);
 			String mimeType = resolver.getType(uri);
 			InputStream fileStream = resolver.openInputStream(uri);
 			if (fileStream != null && mimeType != null && fileStream.available() > 0) {

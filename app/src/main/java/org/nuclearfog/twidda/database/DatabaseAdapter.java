@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 16;
+	private static final int DB_VERSION = 17;
 
 	/**
 	 * database file name
@@ -68,6 +68,7 @@ public class DatabaseAdapter {
 			+ StatusTable.FAVORITE + " INTEGER,"
 			+ StatusTable.REPLY + " INTEGER,"
 			+ StatusTable.SOURCE + " TEXT,"
+			+ StatusTable.MENTIONS + " TEXT,"
 			+ StatusTable.LOCATION + " INTEGER,"
 			+ StatusTable.LANGUAGE + " TEXT);";
 
@@ -305,9 +306,14 @@ public class DatabaseAdapter {
 	private static final String UPDATE_STATUS_ADD_LANGUAGE = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LANGUAGE + " TEXT;";
 
 	/**
-	 * updateuser table add emoji key string
+	 * update user table add emoji key string
 	 */
 	private static final String UPDATE_USER_ADD_EMOJI = "ALTER TABLE " + UserTable.NAME + " ADD " + UserTable.EMOJI + " TEXT;";
+
+	/**
+	 * add mention column to status table
+	 */
+	private static final String UPDATE_STATUS_ADD_MENTIONS = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.MENTIONS + " TEXT;";
 
 	/**
 	 * singleton instance
@@ -394,8 +400,12 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_STATUS_ADD_LANGUAGE);
 				db.setVersion(15);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 16) {
 				db.execSQL(UPDATE_USER_ADD_EMOJI);
+				db.setVersion(16);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_STATUS_ADD_MENTIONS);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -555,6 +565,11 @@ public class DatabaseAdapter {
 		 * status text
 		 */
 		String TEXT = "tweet";
+
+		/**
+		 * mentioned usernames
+		 */
+		String MENTIONS = "mentions";
 
 		/**
 		 * media keys

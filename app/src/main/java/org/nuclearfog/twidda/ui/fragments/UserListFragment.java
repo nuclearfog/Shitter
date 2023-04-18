@@ -107,6 +107,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	protected void onReset() {
+		adapter.clear();
 		setRefresh(true);
 		load(0L, CLEAR_LIST);
 	}

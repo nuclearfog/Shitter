@@ -124,24 +124,14 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		statusLoader = new StatusLoader(requireContext());
+		adapter = new StatusAdapter(requireContext(), this);
 		Bundle param = getArguments();
 		if (param != null) {
 			mode = param.getInt(KEY_STATUS_FRAGMENT_MODE, 0);
 			id = param.getLong(KEY_STATUS_FRAGMENT_ID, 0);
 			search = param.getString(KEY_STATUS_FRAGMENT_SEARCH, "");
 		}
-		statusLoader = new StatusLoader(requireContext());
-		adapter = new StatusAdapter(requireContext(), this);
-		setAdapter(adapter);
-
-		load(0L, 0L, CLEAR_LIST);
-		setRefresh(true);
-	}
-
-
-	@Override
-	protected void onReset() {
-		adapter = new StatusAdapter(requireContext(), this);
 		setAdapter(adapter);
 		load(0L, 0L, CLEAR_LIST);
 		setRefresh(true);
@@ -178,11 +168,16 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 
 	@Override
+	protected void onReset() {
+		adapter.clear();
+		load(0L, 0L, CLEAR_LIST);
+		setRefresh(true);
+	}
+
+
+	@Override
 	protected void onReload() {
-		long sinceId = 0;
-		if (!adapter.isEmpty())
-			sinceId = adapter.getItemId(0);
-		load(sinceId, 0L, 0);
+		load(adapter.getTopId(), 0L, 0);
 	}
 
 

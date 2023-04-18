@@ -61,15 +61,6 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 
 
 	@Override
-	public long getItemId(int index) {
-		Message message = messages.get(index);
-		if (message != null)
-			return message.getId();
-		return 0L;
-	}
-
-
-	@Override
 	public int getItemCount() {
 		return messages.size();
 	}
@@ -190,6 +181,14 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 		if (pos >= 0) {
 			notifyItemRemoved(pos);
 		}
+	}
+
+	/**
+	 * clear adapter data
+	 */
+	public void clear() {
+		messages.clear();
+		notifyDataSetChanged();
 	}
 
 	/**

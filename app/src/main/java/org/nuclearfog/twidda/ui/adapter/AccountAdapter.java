@@ -106,6 +106,14 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	}
 
 	/**
+	 * clear adapter data
+	 */
+	public void clear() {
+		accounts.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * click listener for an account item
 	 */
 	public interface OnAccountClickListener {
