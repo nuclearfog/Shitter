@@ -112,7 +112,9 @@ public class MessageV1 implements Message {
 
 	@Override
 	public int compareTo(Message message) {
-		return Long.compare(message.getTimestamp(), getTimestamp());
+		if (message.getTimestamp() != getTimestamp())
+			return Long.compare(message.getTimestamp(), getTimestamp());
+		return Long.compare(message.getId(), getId());
 	}
 
 	/**

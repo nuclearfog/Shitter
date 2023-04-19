@@ -66,7 +66,9 @@ public class NotificationV1 implements Notification {
 
 	@Override
 	public int compareTo(Notification notification) {
-		return Long.compare(notification.getTimestamp(), getTimestamp());
+		if (notification.getTimestamp() != getTimestamp())
+			return Long.compare(notification.getTimestamp(), getTimestamp());
+		return Long.compare(notification.getId(), getId());
 	}
 
 
