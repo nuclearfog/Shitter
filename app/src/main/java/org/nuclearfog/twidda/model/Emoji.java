@@ -29,4 +29,13 @@ public interface Emoji extends Serializable, Comparable<Emoji> {
 	 * @return category name
 	 */
 	String getCategory();
+
+
+	@Override
+	default int compareTo(Emoji emoji) {
+		int categoryCompare = String.CASE_INSENSITIVE_ORDER.compare(emoji.getCategory(), getCategory());
+		if (categoryCompare != 0)
+			return categoryCompare;
+		return String.CASE_INSENSITIVE_ORDER.compare(emoji.getCode(), getCode());
+	}
 }

@@ -75,12 +75,6 @@ public class DatabaseMedia implements Media, MediaTable {
 	}
 
 
-	@Override
-	public int compareTo(Media o) {
-		return String.CASE_INSENSITIVE_ORDER.compare(getKey(), o.getKey());
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

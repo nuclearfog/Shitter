@@ -335,14 +335,6 @@ public class TweetV1 implements Status {
 	}
 
 
-	@Override
-	public int compareTo(Status status) {
-		if (status.getTimestamp() != getTimestamp())
-			return Long.compare(status.getTimestamp(), getTimestamp());
-		return Long.compare(status.getId(), getId());
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

@@ -228,12 +228,6 @@ public class UserV2 implements User {
 	}
 
 
-	@Override
-	public int compareTo(User o) {
-		return Long.compare(o.getId(), getId());
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

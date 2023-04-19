@@ -86,4 +86,12 @@ public interface Notification extends Serializable, Comparable<Notification> {
 	 */
 	@Nullable
 	Status getStatus();
+
+
+	@Override
+	default int compareTo(Notification notification) {
+		if (notification.getTimestamp() != getTimestamp())
+			return Long.compare(notification.getTimestamp(), getTimestamp());
+		return Long.compare(notification.getId(), getId());
+	}
 }

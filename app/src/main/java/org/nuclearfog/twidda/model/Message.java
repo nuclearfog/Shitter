@@ -41,4 +41,12 @@ public interface Message extends Serializable, Comparable<Message> {
 	 */
 	@NonNull
 	Media[] getMedia();
+
+
+	@Override
+	default int compareTo(Message message) {
+		if (message.getTimestamp() != getTimestamp())
+			return Long.compare(message.getTimestamp(), getTimestamp());
+		return Long.compare(message.getId(), getId());
+	}
 }

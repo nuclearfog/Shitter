@@ -223,12 +223,6 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 	}
 
 
-	@Override
-	public int compareTo(User o) {
-		return Long.compare(o.getId(), getId());
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

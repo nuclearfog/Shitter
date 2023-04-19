@@ -57,18 +57,6 @@ public class MastodonTrend implements Trend {
 	}
 
 
-	@Override
-	public int compareTo(Trend trend) {
-		if (trend.getPopularity() > 0 && getPopularity() > 0)
-			return Integer.compare(trend.getPopularity(), getPopularity());
-		if (trend.getPopularity() > 0)
-			return 1;
-		if (getPopularity() > 0)
-			return -1;
-		return String.CASE_INSENSITIVE_ORDER.compare(getName(), trend.getName());
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

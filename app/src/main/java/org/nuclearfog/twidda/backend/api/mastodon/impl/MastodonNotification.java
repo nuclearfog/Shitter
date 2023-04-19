@@ -120,14 +120,6 @@ public class MastodonNotification implements Notification {
 	}
 
 
-	@Override
-	public int compareTo(Notification notification) {
-		if (notification.getTimestamp() != getTimestamp())
-			return Long.compare(notification.getTimestamp(), getTimestamp());
-		return Long.compare(notification.getId(), getId());
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

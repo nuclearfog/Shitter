@@ -35,4 +35,10 @@ public interface Location extends Serializable, Comparable<Location> {
 	 * @return name of the location (country, city)
 	 */
 	String getFullName();
+
+
+	@Override
+	default int compareTo(Location o) {
+		return Long.compare(getId(), o.getId());
+	}
 }

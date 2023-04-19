@@ -187,4 +187,12 @@ public interface Status extends Serializable, Comparable<Status> {
 	 */
 	@Nullable
 	Metrics getMetrics();
+
+
+	@Override
+	default int compareTo(Status status) {
+		if (status.getTimestamp() != getTimestamp())
+			return Long.compare(status.getTimestamp(), getTimestamp());
+		return Long.compare(status.getId(), getId());
+	}
 }

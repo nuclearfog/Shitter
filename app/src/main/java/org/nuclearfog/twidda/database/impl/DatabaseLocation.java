@@ -82,12 +82,6 @@ public class DatabaseLocation implements Location, LocationTable {
 	}
 
 
-	@Override
-	public int compareTo(Location o) {
-		return Long.compare(getId(), o.getId());
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

@@ -113,4 +113,10 @@ public interface User extends Serializable, Comparable<User> {
 	 * @return custom emojis used in the profile
 	 */
 	Emoji[] getEmojis();
+
+
+	@Override
+	default int compareTo(User o) {
+		return Long.compare(o.getId(), getId());
+	}
 }

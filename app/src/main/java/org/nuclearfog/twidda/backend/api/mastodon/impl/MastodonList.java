@@ -105,14 +105,6 @@ public class MastodonList implements UserList {
 
 
 	@Override
-	public int compareTo(UserList userlist) {
-		if (userlist.getTimestamp() != getTimestamp())
-			return Long.compare(userlist.getTimestamp(), getTimestamp());
-		return Long.compare(userlist.getId(), getId());
-	}
-
-
-	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof UserList))
 			return false;

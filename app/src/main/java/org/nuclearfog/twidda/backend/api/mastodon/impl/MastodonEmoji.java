@@ -64,12 +64,6 @@ public class MastodonEmoji implements Emoji {
 		return "code=\"" + getCode() + "\" category=\"" + getCategory() + "\" url=\"" + getUrl() + "\"";
 	}
 
-
-	@Override
-	public int compareTo(Emoji emoji) {
-		return String.CASE_INSENSITIVE_ORDER.compare(getCode(), emoji.getCode());
-	}
-
 	/**
 	 * @return true if emoji is visible for picker
 	 */

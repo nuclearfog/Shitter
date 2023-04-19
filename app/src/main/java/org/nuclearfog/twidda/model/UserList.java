@@ -61,4 +61,12 @@ public interface UserList extends Serializable, Comparable<UserList> {
 	 * @return list subscriber count
 	 */
 	int getSubscriberCount();
+
+
+	@Override
+	default int compareTo(UserList userlist) {
+		if (userlist.getTimestamp() != getTimestamp())
+			return Long.compare(userlist.getTimestamp(), getTimestamp());
+		return Long.compare(userlist.getId(), getId());
+	}
 }

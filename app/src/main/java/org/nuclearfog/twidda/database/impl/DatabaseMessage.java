@@ -102,14 +102,6 @@ public class DatabaseMessage implements Message, MessageTable {
 		return getSender() + " message=\"" + getText() + "\"";
 	}
 
-
-	@Override
-	public int compareTo(Message message) {
-		if (message.getTimestamp() != getTimestamp())
-			return Long.compare(message.getTimestamp(), getTimestamp());
-		return Long.compare(message.getId(), getId());
-	}
-
 	/**
 	 * @return media key array
 	 */

@@ -48,4 +48,10 @@ public interface Media extends Serializable, Comparable<Media> {
 	 * @return preview url
 	 */
 	String getPreviewUrl();
+
+
+	@Override
+	default int compareTo(Media o) {
+		return String.CASE_INSENSITIVE_ORDER.compare(getKey(), o.getKey());
+	}
 }
