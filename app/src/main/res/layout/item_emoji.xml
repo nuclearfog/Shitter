@@ -3,48 +3,58 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="horizontal">
+	android:orientation="horizontal"
+	android:padding="@dimen/item_emoji_layout_padding" >
 
 	<TextView
 		android:id="@+id/item_emoji_group"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:textSize="@dimen/item_emoji_text_size"
+		android:layout_margin="@dimen/item_emoji_text_margin"
+		android:lines="1"
 		android:visibility="gone" />
 
 	<ImageView
 		android:id="@+id/item_emoji_1"
-		android:layout_width="@dimen/item_emoji_emoji_size"
-		android:layout_height="@dimen/item_emoji_emoji_size"
+		android:layout_width="@dimen/item_emoji_image_size"
+		android:layout_height="@dimen/item_emoji_image_size"
+		android:layout_marginEnd="@dimen/item_emoji_item_margin"
 		tools:ignore="ContentDescription" />
 
 	<ImageView
 		android:id="@+id/item_emoji_2"
-		android:layout_width="@dimen/item_emoji_emoji_size"
-		android:layout_height="@dimen/item_emoji_emoji_size"
+		android:layout_width="@dimen/item_emoji_image_size"
+		android:layout_height="@dimen/item_emoji_image_size"
+		android:layout_marginEnd="@dimen/item_emoji_item_margin"
 		tools:ignore="ContentDescription" />
 
 	<ImageView
 		android:id="@+id/item_emoji_3"
-		android:layout_width="@dimen/item_emoji_emoji_size"
-		android:layout_height="@dimen/item_emoji_emoji_size"
+		android:layout_width="@dimen/item_emoji_image_size"
+		android:layout_height="@dimen/item_emoji_image_size"
+		android:layout_marginEnd="@dimen/item_emoji_item_margin"
 		tools:ignore="ContentDescription" />
 
 	<ImageView
 		android:id="@+id/item_emoji_4"
-		android:layout_width="@dimen/item_emoji_emoji_size"
-		android:layout_height="@dimen/item_emoji_emoji_size"
+		android:layout_width="@dimen/item_emoji_image_size"
+		android:layout_height="@dimen/item_emoji_image_size"
+		android:layout_marginEnd="@dimen/item_emoji_item_margin"
 		tools:ignore="ContentDescription" />
 
 	<ImageView
 		android:id="@+id/item_emoji_5"
-		android:layout_width="@dimen/item_emoji_emoji_size"
-		android:layout_height="@dimen/item_emoji_emoji_size"
+		android:layout_width="@dimen/item_emoji_image_size"
+		android:layout_height="@dimen/item_emoji_image_size"
+		android:layout_marginEnd="@dimen/item_emoji_item_margin"
 		tools:ignore="ContentDescription" />
 
 	<ImageView
 		android:id="@+id/item_emoji_6"
-		android:layout_width="@dimen/item_emoji_emoji_size"
-		android:layout_height="@dimen/item_emoji_emoji_size"
+		android:layout_width="@dimen/item_emoji_image_size"
+		android:layout_height="@dimen/item_emoji_image_size"
+		android:layout_marginEnd="@dimen/item_emoji_item_margin"
 		tools:ignore="ContentDescription" />
 
 </LinearLayout>

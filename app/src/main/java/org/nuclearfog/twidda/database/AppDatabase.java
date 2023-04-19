@@ -737,6 +737,21 @@ public class AppDatabase {
 	}
 
 	/**
+	 * save emojis to database
+	 *
+	 * @param emojis list of emojis
+	 */
+	public void saveEmojis(List<Emoji> emojis) {
+		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			for (Emoji emoji : emojis) {
+				saveEmoji(emoji, db);
+			}
+			adapter.commit();
+		}
+	}
+
+	/**
 	 * load home timeline
 	 *
 	 * @return home timeline
@@ -1234,6 +1249,27 @@ public class AppDatabase {
 	}
 
 	/**
+	 * get all emojis
+	 *
+	 * @return list of emojis
+	 */
+	public List<Emoji> getEmojis() {
+		synchronized (LOCK) {
+			ArrayList<Emoji> result = new ArrayList<>();
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor c = db.query(EmojiTable.NAME, null, null, null, null, null, null);
+			if (c.moveToFirst()) {
+				result.ensureCapacity(c.getCount());
+				do {
+					result.add(new DatabaseEmoji(c));
+				} while (c.moveToNext());
+			}
+			c.close();
+			return result;
+		}
+	}
+
+	/**
 	 * remove database tables except account table
 	 */
 	public void resetDatabase() {
@@ -1667,11 +1703,7 @@ public class AppDatabase {
 	 */
 	private void saveEmojis(Emoji[] emojis, SQLiteDatabase db) {
 		for (Emoji emoji : emojis) {
-			ContentValues column = new ContentValues(3);
-			column.put(EmojiTable.CODE, emoji.getCode());
-			column.put(EmojiTable.URL, emoji.getUrl());
-			column.put(EmojiTable.CATEGORY, emoji.getCategory());
-			db.insertWithOnConflict(EmojiTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
+			saveEmoji(emoji, db);
 		}
 	}
 
@@ -1711,6 +1743,20 @@ public class AppDatabase {
 		column.put(PollTable.EXPIRATION, poll.getEndTime());
 		column.put(PollTable.OPTIONS, buf.toString());
 		db.insertWithOnConflict(PollTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+	}
+
+	/**
+	 * save single emoji
+	 *
+	 * @param emoji emoji to save
+	 * @param db    database write instance
+	 */
+	private void saveEmoji(Emoji emoji, SQLiteDatabase db) {
+		ContentValues column = new ContentValues(3);
+		column.put(EmojiTable.CODE, emoji.getCode());
+		column.put(EmojiTable.URL, emoji.getUrl());
+		column.put(EmojiTable.CATEGORY, emoji.getCategory());
+		db.insertWithOnConflict(EmojiTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	/**

@@ -12,23 +12,25 @@ import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.ui.adapter.holder.EmojiHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.EmojiHolder.OnEmojiClickListener;
+import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 
 import java.util.LinkedList;
 import java.util.List;
 
 
-public class EmojiAdapter extends Adapter<EmojiHolder> implements OnEmojiClickListener {
+public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickListener {
 
+	private OnEmojiClickListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
 
 	private LinkedList<Object> items = new LinkedList<>();
 
 
-	public EmojiAdapter(Context context) {
+	public EmojiAdapter(Context context, OnEmojiClickListener listener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
+		this.listener = listener;
 	}
 
 
@@ -57,7 +59,21 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnEmojiClickLi
 
 
 	@Override
-	public void onEmojiClick(int position, int index) {
+	public void onItemClick(int position, int type, int... extras) {
+		Object item = items.get(position);
+		if (item instanceof Emoji[]) {
+			Emoji[] emoji = (Emoji[]) item;
+			int index = extras[0];
+			if (emoji[index] != null) {
+				listener.onEmojiClick(emoji[index]);
+			}
+		}
+	}
+
+
+	@Override
+	public boolean onPlaceholderClick(int index) {
+		return false;
 	}
 
 
@@ -69,8 +85,10 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnEmojiClickLi
 			Object item = items.peekLast();
 			if (!emoji.getCategory().equals(groupname)) {
 				row = new Emoji[EmojiHolder.ROW_COUNT];
+				groupname = emoji.getCategory();
 				row[0] = emoji;
-				items.add(groupname);
+				if (!groupname.trim().isEmpty())
+					items.add(groupname);
 				items.add(row);
 			} else if (item instanceof Emoji[]) {
 				row = (Emoji[]) item;
@@ -78,6 +96,7 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnEmojiClickLi
 					for (int j = 0; j < row.length; j++) {
 						if (row[j] == null) {
 							row[j] = emoji;
+							break;
 						}
 					}
 				} else {
@@ -87,5 +106,12 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnEmojiClickLi
 				}
 			}
 		}
+		notifyDataSetChanged();
+	}
+
+
+	public interface OnEmojiClickListener {
+
+		void onEmojiClick(Emoji emoji);
 	}
 }

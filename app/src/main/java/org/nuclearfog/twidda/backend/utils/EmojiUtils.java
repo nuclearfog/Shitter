@@ -43,7 +43,7 @@ public class EmojiUtils {
 			while (!indexes.isEmpty()) {
 				int start = indexes.pop();
 				int end = indexes.pop();
-				String tag = builder.subSequence(start + 1, end - 1).toString();
+				String tag = builder.subSequence(start, end).toString();
 				Bitmap emoji = emojis.get(tag);
 				if (emoji != null) {
 					ImageSpan imgSpan = new ImageSpan(context, emoji.copy(Bitmap.Config.ARGB_8888, true));

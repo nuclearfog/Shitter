@@ -30,12 +30,15 @@ import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.dialogs.EmojiPicker;
+import org.nuclearfog.twidda.ui.dialogs.EmojiPicker.OnEmojiSelectListener;
 import org.nuclearfog.twidda.ui.dialogs.PollDialog;
 import org.nuclearfog.twidda.ui.dialogs.PollDialog.PollUpdateCallback;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
@@ -50,7 +53,7 @@ import java.io.Serializable;
  * @author nuclearfog
  */
 public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener,
-		OnMediaClickListener, TextWatcher, PollUpdateCallback {
+		OnMediaClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener {
 
 	/**
 	 * key to add the status to reply
@@ -77,6 +80,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private View locationBtn;
 	private View pollBtn;
 	private View locationPending;
+	private EditText statusText;
 
 	private StatusUpdater statusUpdater;
 	private InstanceLoader instanceLoader;
@@ -85,6 +89,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
 	private PollDialog pollDialog;
+	private EmojiPicker emojiPicker;
 	private StatusPreferenceDialog preferenceDialog;
 	private IconAdapter adapter;
 
@@ -104,10 +109,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		ViewGroup root = findViewById(R.id.popup_status_root);
 		ImageView background = findViewById(R.id.popup_status_background);
 		View statusButton = findViewById(R.id.popup_status_send);
-		View closeButton = findViewById(R.id.popup_status_close);
+		View emojiButton = findViewById(R.id.popup_status_emoji);
 		View preference = findViewById(R.id.popup_status_pref);
 		RecyclerView iconList = findViewById(R.id.popup_status_media_icons);
-		EditText statusText = findViewById(R.id.popup_status_input);
+		statusText = findViewById(R.id.popup_status_input);
 		pollBtn = findViewById(R.id.popup_status_add_poll);
 		locationBtn = findViewById(R.id.popup_status_add_location);
 		mediaBtn = findViewById(R.id.popup_status_add_media);
@@ -120,6 +125,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		confirmDialog = new ConfirmDialog(this);
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
+		emojiPicker = new EmojiPicker(this, this);
 		AppStyles.setEditorTheme(root, background);
 
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
@@ -146,7 +152,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		iconList.setAdapter(adapter);
 
 		statusText.addTextChangedListener(this);
-		closeButton.setOnClickListener(this);
+		emojiButton.setOnClickListener(this);
 		preference.setOnClickListener(this);
 		statusButton.setOnClickListener(this);
 		pollBtn.setOnClickListener(this);
@@ -226,8 +232,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			}
 		}
 		// show closing message
-		else if (v.getId() == R.id.popup_status_close) {
-			showClosingMsg();
+		else if (v.getId() == R.id.popup_status_emoji) {
+			emojiPicker.show();
 		}
 		// show poll dialog
 		else if (v.getId() == R.id.popup_status_add_poll) {
@@ -253,6 +259,12 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			locationBtn.setVisibility(View.INVISIBLE);
 			getLocation();
 		}
+	}
+
+
+	@Override
+	public void onEmojiSelected(Emoji emoji) {
+		statusText.append(emoji.getCode());
 	}
 
 

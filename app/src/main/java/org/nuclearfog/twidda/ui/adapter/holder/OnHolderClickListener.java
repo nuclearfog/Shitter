@@ -47,6 +47,8 @@ public interface OnHolderClickListener {
 
 	int NOTIFICATION_DISMISS = 19;
 
+	int EMOJI_CLICK = 20;
+
 	/**
 	 * called when an item was clicked
 	 *

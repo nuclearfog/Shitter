@@ -25,7 +25,8 @@ public class MastodonEmoji implements Emoji {
 	 * @param json CustomEmoji json format
 	 */
 	public MastodonEmoji(JSONObject json) throws JSONException {
-		code = json.getString("shortcode");
+		String code = json.getString("shortcode");
+		this.code = ':' + code + ':';
 		url = json.getString("static_url");
 		category = json.optString("category", "");
 		visibleInPicker = json.optBoolean("visible_in_picker", true);

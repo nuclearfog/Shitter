@@ -24,11 +24,11 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 	private ImageView[] emojiViews = new ImageView[ROW_COUNT];
 	private TextView groupLabel;
 
-	private OnEmojiClickListener listener;
+	private OnHolderClickListener listener;
 	private Picasso picasso;
 
 
-	public EmojiHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnEmojiClickListener listener) {
+	public EmojiHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_emoji, parent, false));
 
 		groupLabel = itemView.findViewById(R.id.item_emoji_group);
@@ -53,7 +53,7 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 		if (pos != RecyclerView.NO_POSITION) {
 			for (int i = 0; i < emojiViews.length; i++) {
 				if (v == emojiViews[i]) {
-					listener.onEmojiClick(pos, i);
+					listener.onItemClick(pos, OnHolderClickListener.EMOJI_CLICK, i);
 				}
 			}
 		}
@@ -63,12 +63,14 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 	public void setData(Emoji[] emojis) {
 		for (int i = 0 ; i < emojis.length && i < emojiViews.length ; i++) {
 			Emoji emoji = emojis[i];
-			ImageView emojiView = emojiViews[i];
-			if (!emoji.getUrl().trim().isEmpty()) {
-				picasso.load(emoji.getUrl()).into(emojiViews[i]);
-				emojiView.setVisibility(View.VISIBLE);
+			if (emoji != null) {
+				ImageView emojiView = emojiViews[i];
+				if (!emoji.getUrl().trim().isEmpty()) {
+					picasso.load(emoji.getUrl()).into(emojiViews[i]);
+					emojiView.setVisibility(View.VISIBLE);
+				}
+				emojiView.setOnClickListener(this);
 			}
-			emojiView.setOnClickListener(this);
 		}
 		groupLabel.setVisibility(View.GONE);
 	}
@@ -80,11 +82,5 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 		}
 		groupLabel.setText(label);
 		groupLabel.setVisibility(View.VISIBLE);
-	}
-
-
-	public interface OnEmojiClickListener {
-
-		void onEmojiClick(int position, int index);
 	}
 }

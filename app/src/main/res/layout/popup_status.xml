@@ -42,15 +42,14 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:barrierDirection="top"
-		app:constraint_referenced_ids="popup_status_media_icons,popup_status_add_media,popup_status_add_location,popup_status_send,popup_status_close" />
+		app:constraint_referenced_ids="popup_status_media_icons,popup_status_add_media,popup_status_add_location,popup_status_send,popup_status_emoji" />
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/popup_status_media_icons"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:layout_marginStart="@dimen/popup_status_icon_list_margin"
 		android:layout_marginEnd="@dimen/popup_status_icon_list_margin"
-		app:layout_constraintStart_toStartOf="@id/popup_status_background"
+		app:layout_constraintStart_toStartOf="@id/popup_status_input"
 		app:layout_constraintTop_toTopOf="@id/popup_status_send"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_send"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_add_media" />
@@ -67,7 +66,6 @@
 		android:src="@drawable/attachment"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_add_location"
-		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"
 		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
@@ -95,7 +93,6 @@
 		android:src="@drawable/location"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_add_poll"
-		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"
 		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
@@ -111,25 +108,7 @@
 		android:src="@drawable/poll"
 		android:contentDescription="@string/status_add_poll"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
-		app:layout_constraintEnd_toStartOf="@id/popup_status_send"
-		app:layout_constraintHorizontal_chainStyle="packed"
-		app:layout_constraintDimensionRatio="1.0"
-		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
-		style="@style/RoundButton" />
-
-	<ImageButton
-		android:id="@+id/popup_status_send"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
-		android:padding="@dimen/popup_status_button_padding"
-		android:layout_marginBottom="@dimen/popup_status_margin_layout"
-		android:layout_marginEnd="@dimen/popup_status_button_margin"
-		android:contentDescription="@string/send_status"
-		android:scaleType="fitCenter"
-		android:src="@drawable/post"
-		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
 		app:layout_constraintEnd_toStartOf="@id/popup_status_pref"
-		app:layout_constraintHorizontal_chainStyle="packed"
 		app:layout_constraintDimensionRatio="1.0"
 		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
@@ -145,14 +124,13 @@
 		android:scaleType="fitCenter"
 		android:src="@drawable/cog"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
-		app:layout_constraintEnd_toStartOf="@id/popup_status_close"
-		app:layout_constraintHorizontal_chainStyle="packed"
+		app:layout_constraintEnd_toStartOf="@id/popup_status_emoji"
 		app:layout_constraintDimensionRatio="1.0"
 		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
 
 	<ImageButton
-		android:id="@+id/popup_status_close"
+		android:id="@+id/popup_status_emoji"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:padding="@dimen/popup_status_button_padding"
@@ -160,10 +138,24 @@
 		android:layout_marginEnd="@dimen/popup_status_margin_layout"
 		android:contentDescription="@string/status_close"
 		android:scaleType="fitCenter"
-		android:src="@drawable/cross"
+		android:src="@drawable/emoji"
 		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
-		app:layout_constraintEnd_toEndOf="@id/popup_status_background"
-		app:layout_constraintHorizontal_chainStyle="packed"
+		app:layout_constraintEnd_toStartOf="@id/popup_status_send"
+		app:layout_constraintDimensionRatio="1.0"
+		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
+		style="@style/RoundButton" />
+
+	<ImageButton
+		android:id="@+id/popup_status_send"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:padding="@dimen/popup_status_button_padding"
+		android:layout_marginBottom="@dimen/popup_status_margin_layout"
+		android:contentDescription="@string/send_status"
+		android:scaleType="fitCenter"
+		android:src="@drawable/post"
+		app:layout_constraintBottom_toBottomOf="@id/popup_status_background"
+		app:layout_constraintEnd_toEndOf="@id/popup_status_input"
 		app:layout_constraintDimensionRatio="1.0"
 		app:layout_constraintWidth_percent="@dimen/popup_status_button_size"
 		style="@style/RoundButton" />
