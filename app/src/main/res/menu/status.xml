@@ -35,6 +35,11 @@
 		android:visible="false" />
 
 	<item
+		android:id="@+id/menu_status_edit"
+		android:title="@string/menu_status_edit"
+		android:visible="false" />
+
+	<item
 		android:id="@+id/menu_status_delete"
 		android:title="@string/menu_status_delete"
 		android:visible="false" />

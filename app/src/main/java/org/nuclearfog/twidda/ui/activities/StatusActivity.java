@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.activities;
 
 import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_DATA;
+import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_EDIT;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FAVORIT;
@@ -33,6 +34,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -102,7 +107,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  */
 public class StatusActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener,
-		OnConfirmListener, OnCardClickListener, OnScrollChangeListener, LockCallback {
+		OnConfirmListener, OnCardClickListener, OnScrollChangeListener, LockCallback, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Activity result code to update existing status information
@@ -194,6 +199,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private static final int MENU_GROUP_COPY = 0x157426;
 
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<StatusResult> statusCallback = this::onStatusResult;
 	private AsyncCallback<PollActionResult> pollResult = this::onPollResult;
 	private AsyncCallback<TranslationResult> translationResult = this::onTranslationResult;
@@ -439,6 +445,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
 		MenuItem optMetrics = m.findItem(R.id.menu_status_metrics);
 		MenuItem menuBookmark = m.findItem(R.id.menu_status_bookmark);
+		MenuItem editStatus = m.findItem(R.id.menu_status_edit);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
 		// set status options
@@ -462,6 +469,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// enable/disable status hide option
 			if (currentStatus.getAuthor().isCurrentUser()) {
 				optDelete.setVisible(true);
+				if (settings.getLogin().getConfiguration().isStatusEditSupported()) {
+					editStatus.setVisible(true);
+				}
 			}
 			// enable/disable status metrics option
 			if (currentStatus.getMetrics() != null) {
@@ -496,7 +506,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			return true;
 		}
 		// add/remove bookmark
-		if (item.getItemId() == R.id.menu_status_bookmark) {
+		else if (item.getItemId() == R.id.menu_status_bookmark) {
 			Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
 			int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
 			StatusParam param = new StatusParam(mode, status.getId());
@@ -557,7 +567,25 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			return true;
 		}
+		// edit status
+		else if (item.getItemId() == R.id.menu_status_edit) {
+			Intent intent = new Intent(this, StatusEditor.class);
+			intent.putExtra(KEY_STATUS_EDITOR_DATA, status);
+			intent.putExtra(KEY_STATUS_EDITOR_EDIT, true);
+			activityResultLauncher.launch(intent);
+		}
 		return super.onOptionsItemSelected(item);
+	}
+
+
+	@Override
+	public void onActivityResult(ActivityResult result) {
+		if (result.getData() != null && result.getResultCode() == StatusEditor.RETURN_STATUS_UPDATE) {
+			Serializable data = result.getData().getSerializableExtra(StatusEditor.RETURN_STATUS_DATA);
+			if (data instanceof Status) {
+				setStatus((Status) data);
+			}
+		}
 	}
 
 
@@ -835,14 +863,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			statusApi.setVisibility(View.GONE);
 		}
-		if (statusText.getText().length() == 0) {
-			if (!status.getText().isEmpty()) {
-				spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
-				statusText.setVisibility(View.VISIBLE);
-				statusText.setText(spannableText);
-			} else {
-				statusText.setVisibility(View.GONE);
-			}
+		if (!status.getText().isEmpty()) {
+			spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
+			statusText.setVisibility(View.VISIBLE);
+			statusText.setText(spannableText);
+		} else {
+			statusText.setVisibility(View.GONE);
 		}
 		if (status.getRepliedStatusId() > 0) {
 			if (!status.getReplyName().isEmpty())

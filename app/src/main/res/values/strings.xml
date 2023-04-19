@@ -130,6 +130,7 @@
 	<string name="menu_bookmark_remove">remove bookmark</string>
 	<string name="menu_unmute_user">unmute</string>
 	<string name="menu_follow_requested">follow requested</string>
+	<string name="menu_status_edit">edit</string>
 	<string name="menu_status_delete">delete</string>
 	<string name="menu_status_hide">hide</string>
 	<string name="menu_status_metrics">Metrics</string>

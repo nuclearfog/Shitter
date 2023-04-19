@@ -593,7 +593,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws MastodonException {
+	public Status uploadStatus(StatusUpdate update, long[] mediaIds) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		// add identifier to prevent duplicate posts
 		params.add("Idempotency-Key=" + System.currentTimeMillis() / 5000);
@@ -625,10 +625,15 @@ public class Mastodon implements Connection {
 			params.add("poll[hide_totals]=" + poll.hideTotalVotes());
 		}
 		try {
-			Response response = post(ENDPOINT_STATUS, params);
-			if (response.code() != 200) {
-				throw new MastodonException(response);
+			Response response;
+			if (update.statusExists())
+				response = put(ENDPOINT_STATUS + update.getStatusId(), params);
+			else
+				response = post(ENDPOINT_STATUS, params);
+			if (response.code() == 200) {
+				return createStatus(response);
 			}
+			throw new MastodonException(response);
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}

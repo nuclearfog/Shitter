@@ -56,16 +56,33 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		OnMediaClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener {
 
 	/**
+	 * return code used to send status information to calling activity
+	 */
+	public static final int RETURN_STATUS_UPDATE = 0x30220;
+
+	/**
 	 * key to add the status to reply
 	 * value type is {@link Status}
 	 */
 	public static final String KEY_STATUS_EDITOR_DATA = "status_data";
 
 	/**
+	 * key to edit an existing status
+	 * value type is Boolean
+	 */
+	public static final String KEY_STATUS_EDITOR_EDIT = "status_edit";
+
+	/**
 	 * key for the text added to the status if any
 	 * value type is String
 	 */
 	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
+
+	/**
+	 * key to return uploaded status information
+	 * value type is {@link Status}
+	 */
+	public static final String RETURN_STATUS_DATA = "status_update";
 
 	/**
 	 * key for status update to restore
@@ -103,8 +120,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 
 	@Override
-	protected void onCreate(@Nullable Bundle b) {
-		super.onCreate(b);
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.popup_status);
 		ViewGroup root = findViewById(R.id.popup_status_root);
 		ImageView background = findViewById(R.id.popup_status_background);
@@ -134,20 +151,32 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (!settings.getLogin().getConfiguration().isEmojiSupported()) {
 			emojiButton.setVisibility(View.GONE);
 		}
-		long replyId = 0L;
-		String prefix;
-		Serializable serializedStatus = getIntent().getSerializableExtra(KEY_STATUS_EDITOR_DATA);
-		if (serializedStatus instanceof Status) {
-			Status status = (Status) serializedStatus;
-			replyId = status.getId();
-			statusUpdate.setVisibility(status.getVisibility());
-			prefix = status.getUserMentions();
-		} else {
-			prefix = getIntent().getStringExtra(KEY_STATUS_EDITOR_TEXT);
-		}
-		statusUpdate.addReplyStatusId(replyId);
-		if (prefix != null) {
-			statusText.append(prefix);
+		// fetch parameters
+		if (savedInstanceState == null)
+			savedInstanceState = getIntent().getExtras();
+		if (savedInstanceState != null) {
+			Serializable serializedStatus = savedInstanceState.getSerializable(KEY_STATUS_EDITOR_DATA);
+			Serializable serializedStatusUpdate = savedInstanceState.getSerializable(KEY_STATUS_UPDATE);
+			boolean editStatus = savedInstanceState.getBoolean(KEY_STATUS_EDITOR_EDIT, false);
+			String prefix = savedInstanceState.getString(KEY_STATUS_EDITOR_TEXT);
+			if (serializedStatusUpdate instanceof StatusUpdate) {
+				statusUpdate = (StatusUpdate) serializedStatusUpdate;
+			} else if (serializedStatus instanceof Status) {
+				Status status = (Status) serializedStatus;
+				if (editStatus) {
+					statusUpdate.setStatus(status);
+					statusText.append(status.getText());
+				} else {
+					statusUpdate.addStatusId(status.getId());
+					statusUpdate.addReplyStatusId(status.getId());
+					statusUpdate.setVisibility(status.getVisibility());
+					statusUpdate.addText(status.getUserMentions());
+					statusText.append(status.getUserMentions());
+				}
+			} else {
+				statusUpdate.addText(prefix);
+				statusText.append(prefix);
+			}
 		}
 		adapter = new IconAdapter(settings, true);
 		adapter.addOnMediaClickListener(this);
@@ -189,16 +218,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	protected void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_STATUS_UPDATE, statusUpdate);
 		super.onSaveInstanceState(outState);
-	}
-
-
-	@Override
-	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		Serializable serializedStatusUpdate = savedInstanceState.getSerializable(KEY_STATUS_UPDATE);
-		if (serializedStatusUpdate instanceof StatusUpdate) {
-			statusUpdate = (StatusUpdate) serializedStatusUpdate;
-		}
 	}
 
 
@@ -399,7 +418,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 * called when the status was successfully updated
 	 */
 	private void onStatusUpdated(@NonNull StatusUpdateResult result) {
-		if (result.success) {
+		if (result.status != null) {
+			Intent intent = new Intent();
+			intent.putExtra(RETURN_STATUS_DATA, result.status);
+			setResult(RETURN_STATUS_UPDATE, intent);
 			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
 			finish();
 		} else {

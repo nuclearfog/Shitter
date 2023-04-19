@@ -722,7 +722,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public void uploadStatus(StatusUpdate update, long[] mediaIds) throws TwitterException {
+	public Status uploadStatus(StatusUpdate update, long[] mediaIds) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (update.getText() != null)
 			params.add("status=" + StringUtils.encode(update.getText()));
@@ -743,7 +743,7 @@ public class TwitterV1 implements Connection {
 			params.add("lat=" + StringUtils.encode(lat));
 			params.add("long=" + StringUtils.encode(lon));
 		}
-		getTweet(TWEET_UPLOAD, params);
+		return getTweet(TWEET_UPLOAD, params);
 	}
 
 

@@ -10,6 +10,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusEditor;
 
 /**
@@ -41,16 +42,16 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 				mediaIds[pos] = connection.uploadMedia(mediaUpdates[pos]);
 			}
 			// upload status
-			connection.uploadStatus(update, mediaIds);
-			return new StatusUpdateResult(true, null);
+			Status status = connection.uploadStatus(update, mediaIds);
+			return new StatusUpdateResult(status, null);
 		} catch (ConnectionException exception) {
-			return new StatusUpdateResult(false, exception);
+			return new StatusUpdateResult(null, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			update.close();
 		}
-		return new StatusUpdateResult(false, null);
+		return new StatusUpdateResult(null, null);
 	}
 
 	/**
@@ -58,12 +59,13 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 	 */
 	public static class StatusUpdateResult {
 
-		public final boolean success;
+		@Nullable
+		public final Status status;
 		@Nullable
 		public final ConnectionException exception;
 
-		StatusUpdateResult(boolean success, @Nullable ConnectionException exception) {
-			this.success = success;
+		StatusUpdateResult(@Nullable Status status, @Nullable ConnectionException exception) {
+			this.status = status;
 			this.exception = exception;
 		}
 	}

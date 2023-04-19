@@ -46,6 +46,7 @@ public enum Configuration {
 	private final boolean statusVisibilitySupported;
 	private final boolean directMessageSupported;
 	private final boolean emojiSupported;
+	private final boolean statusEditSupported;
 	private final int arrayResHome;
 
 	/**
@@ -69,6 +70,7 @@ public enum Configuration {
 				statusVisibilitySupported = false;
 				directMessageSupported = true;
 				emojiSupported = false;
+				statusEditSupported = false;
 				arrayResHome = R.array.home_twitter_icons;
 				break;
 
@@ -87,6 +89,7 @@ public enum Configuration {
 				statusVisibilitySupported = true;
 				directMessageSupported = false;
 				emojiSupported = true;
+				statusEditSupported = true;
 				arrayResHome = R.array.home_mastodon_icons;
 				break;
 		}
@@ -188,6 +191,13 @@ public enum Configuration {
 	 */
 	public boolean isEmojiSupported() {
 		return emojiSupported;
+	}
+
+	/**
+	 * @return true if status edit is supported
+	 */
+	public boolean isStatusEditSupported() {
+		return statusEditSupported;
 	}
 
 	/**

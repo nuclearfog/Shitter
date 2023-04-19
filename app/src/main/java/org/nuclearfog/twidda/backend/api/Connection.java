@@ -417,8 +417,9 @@ public interface Connection {
 	 *
 	 * @param update   status update information
 	 * @param mediaIds IDs of the uploaded media files if any
+	 * @return uploaded status
 	 */
-	void uploadStatus(StatusUpdate update, long[] mediaIds) throws ConnectionException;
+	Status uploadStatus(StatusUpdate update, long[] mediaIds) throws ConnectionException;
 
 	/**
 	 * create userlist

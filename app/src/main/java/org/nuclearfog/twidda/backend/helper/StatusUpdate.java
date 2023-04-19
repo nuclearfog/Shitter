@@ -63,25 +63,51 @@ public class StatusUpdate implements Serializable {
 	private static final String MIME_IMAGE_ALL = "image/";
 	private static final String MIME_VIDEO_ALL = "video/";
 
-
-	private long replyId;
-	@Nullable
+	// main attributes
+	private long statusId = 0L;
+	private long replyId = 0L;
+	private boolean sensitive = false;
+	private boolean spoiler = false;
+	private int visibility = Status.VISIBLE_PUBLIC;
 	private String text;
+
+	// attachment attributes
 	@Nullable
 	private PollUpdate poll;
 	@Nullable
 	private LocationUpdate location;
+	private MediaStatus[] mediaUpdates = {};
+	private int attachment = EMPTY;
+
+	// helper attributes
 	@Nullable
 	private Instance instance;
-
 	private List<String> mediaUriStrings = new ArrayList<>(5);
 	private Set<String> supportedFormats = new TreeSet<>();
-	private MediaStatus[] mediaUpdates = {};
 	private boolean attachmentLimitReached = false;
-	private boolean sensitive = false;
-	private boolean spoiler = false;
-	private int visibility = Status.VISIBLE_PUBLIC;
-	private int attachment = EMPTY;
+
+	/**
+	 * set existing status to edit
+	 *
+	 * @param status existing status
+	 */
+	public void setStatus(Status status) {
+		statusId = status.getId();
+		replyId = status.getRepliedStatusId();
+		text = status.getText();
+		sensitive = status.isSensitive();
+		spoiler = status.isSpoiler();
+		visibility = status.getVisibility();
+	}
+
+	/**
+	 * to edit an existing status, the ID can added
+	 *
+	 * @param statusId ID of an existing status to edit
+	 */
+	public void addStatusId(long statusId) {
+		this.statusId = statusId;
+	}
 
 	/**
 	 * set ID of the replied status
@@ -224,6 +250,22 @@ public class StatusUpdate implements Serializable {
 	public void setInstanceInformation(Instance instance) {
 		supportedFormats.addAll(Arrays.asList(instance.getSupportedFormats()));
 		this.instance = instance;
+	}
+
+	/**
+	 * @return true to edit an existing status {@link #statusId} must be set
+	 */
+	public boolean statusExists() {
+		return statusId != 0L;
+	}
+
+	/**
+	 * get ID of an existing status to edit
+	 *
+	 * @return status ID or '0' to post a new status instead of edit
+	 */
+	public long getStatusId() {
+		return statusId;
 	}
 
 	/**
