@@ -16,7 +16,11 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
 
-
+/**
+ * Emoji holder class for {@link org.nuclearfog.twidda.ui.adapter.EmojiAdapter}
+ *
+ * @author nuclearfog
+ */
 public class EmojiHolder extends ViewHolder implements OnClickListener {
 
 	public static final int ROW_COUNT = 6;
@@ -27,10 +31,11 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 	private OnHolderClickListener listener;
 	private Picasso picasso;
 
-
+	/**
+	 *
+	 */
 	public EmojiHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_emoji, parent, false));
-
 		groupLabel = itemView.findViewById(R.id.item_emoji_group);
 		emojiViews[0] = itemView.findViewById(R.id.item_emoji_1);
 		emojiViews[1] = itemView.findViewById(R.id.item_emoji_2);
@@ -39,6 +44,8 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 		emojiViews[4] = itemView.findViewById(R.id.item_emoji_5);
 		emojiViews[5] = itemView.findViewById(R.id.item_emoji_6);
 
+		for (ImageView emojiView : emojiViews)
+			emojiView.setOnClickListener(this);
 		groupLabel.setTextColor(settings.getTextColor());
 		groupLabel.setTypeface(settings.getTypeFace());
 
@@ -59,23 +66,31 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 		}
 	}
 
-
+	/**
+	 * set emoji group
+	 *
+	 * @param emojis a group of emojis
+	 */
 	public void setData(Emoji[] emojis) {
-		for (int i = 0 ; i < emojis.length && i < emojiViews.length ; i++) {
-			Emoji emoji = emojis[i];
-			if (emoji != null) {
-				ImageView emojiView = emojiViews[i];
-				if (!emoji.getUrl().trim().isEmpty()) {
-					picasso.load(emoji.getUrl()).into(emojiViews[i]);
-					emojiView.setVisibility(View.VISIBLE);
-				}
-				emojiView.setOnClickListener(this);
+		for (int i = 0 ; i < emojiViews.length ; i++) {
+			Emoji emoji = null;
+			if (i < emojis.length)
+				emoji = emojis[i];
+			if (emoji != null && !emoji.getUrl().trim().isEmpty()) {
+				picasso.load(emoji.getUrl()).error(R.drawable.no_image).into(emojiViews[i]);
+				emojiViews[i].setVisibility(View.VISIBLE);
+			} else {
+				emojiViews[i].setVisibility(View.INVISIBLE);
 			}
 		}
 		groupLabel.setVisibility(View.GONE);
 	}
 
-
+	/**
+	 * set emoji group label
+	 *
+	 * @param label name of the group
+	 */
 	public void setLabel(String label) {
 		for (ImageView emojiView : emojiViews) {
 			emojiView.setVisibility(View.GONE);

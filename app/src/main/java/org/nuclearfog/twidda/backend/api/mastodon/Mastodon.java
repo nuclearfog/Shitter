@@ -765,8 +765,10 @@ public class Mastodon implements Connection {
 				JSONArray json = new JSONArray(body.string());
 				List<Emoji> result = new ArrayList<>(json.length());
 				for (int i = 0; i < json.length(); i++) {
-					Emoji item = new MastodonEmoji(json.getJSONObject(i));
-					result.add(item);
+					MastodonEmoji item = new MastodonEmoji(json.getJSONObject(i));
+					if (item.visible()) {
+						result.add(item);
+					}
 				}
 				Collections.sort(result);
 				return result;

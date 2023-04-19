@@ -58,6 +58,16 @@
 		<item name="android:windowMinWidthMinor">80%</item>
 	</style>
 
+	<style name="EmojiPickerDialog" parent="Theme.Design.Light.BottomSheetDialog">
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+		<item name="android:colorBackground">@android:color/transparent</item>
+		<item name="android:backgroundDimEnabled">true</item>
+		<item name="android:backgroundDimAmount">0.3</item>
+		<item name="android:windowFrame">@null</item>
+		<item name="android:windowIsFloating">true</item>
+	</style>
+
 	<!-- activity enter/exit animations -->
 	<style name="TransactionPending" parent="@android:style/Animation">
 		<item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>

@@ -17,7 +17,11 @@ import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/**
+ * Recyclerview adapter used to show a list of grouped emojis
+ *
+ * @author nuclearfog
+ */
 public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickListener {
 
 	private OnEmojiClickListener listener;
@@ -26,7 +30,9 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickL
 
 	private LinkedList<Object> items = new LinkedList<>();
 
-
+	/**
+	 *
+	 */
 	public EmojiAdapter(Context context, OnEmojiClickListener listener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
@@ -76,7 +82,11 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickL
 		return false;
 	}
 
-
+	/**
+	 * add new emoji items
+	 *
+	 * @param emojis emoji items
+	 */
 	public void replaceItems(List<Emoji> emojis) {
 		items.clear();
 		String groupname = "";
@@ -109,9 +119,16 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickL
 		notifyDataSetChanged();
 	}
 
-
+	/**
+	 * Listener used to send emoji information on click
+	 */
 	public interface OnEmojiClickListener {
 
+		/**
+		 * called when an emoji was clicked
+		 *
+		 * @param emoji selected emoji
+		 */
 		void onEmojiClick(Emoji emoji);
 	}
 }

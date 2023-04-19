@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/dialog_emoji_root"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:ignore="MergeRootFrame">
+
+	<ImageView
+		android:id="@+id/dialog_emoji_background"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@drawable/emoji_picker_background"
+		tools:ignore="ContentDescription" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/dialog_emoji_list"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
+</FrameLayout>

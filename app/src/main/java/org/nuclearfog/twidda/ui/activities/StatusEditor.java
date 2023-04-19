@@ -131,6 +131,9 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
 			locationBtn.setVisibility(View.GONE);
 		}
+		if (!settings.getLogin().getConfiguration().isEmojiSupported()) {
+			emojiButton.setVisibility(View.GONE);
+		}
 		long replyId = 0L;
 		String prefix;
 		Serializable serializedStatus = getIntent().getSerializableExtra(KEY_STATUS_EDITOR_DATA);

@@ -11,13 +11,19 @@ import org.nuclearfog.twidda.model.Emoji;
 
 import java.util.List;
 
-
+/**
+ * Background loader used to load emojis from network
+ *
+ * @author nuclearfog
+ */
 public class EmojiLoader extends AsyncExecutor<Void, List<Emoji>> {
 
 	private AppDatabase db;
 	private Connection connection;
 
-
+	/**
+	 *
+	 */
 	public EmojiLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
