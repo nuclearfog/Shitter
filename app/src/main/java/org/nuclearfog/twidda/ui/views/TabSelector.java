@@ -59,12 +59,8 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		tabContainer = new LinearLayout(context);
 		tabContainer.setOrientation(LinearLayout.HORIZONTAL);
 		indicator = new View(context);
-
-		indicatorParams = new LayoutParams(0, 0);
-		indicatorParams.width = getMeasuredWidth() / Math.max(tabCount, 1);
-		indicatorParams.height = (int) getResources().getDimension(R.dimen.tabs_indicator_height);
-
-		LayoutParams tabContainerParam = new LayoutParams(LayoutParams.MATCH_PARENT, 0);
+		indicatorParams = new LayoutParams(LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.tabs_indicator_height));
+		LayoutParams tabContainerParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		tabContainerParam.weight = 1;
 
 		tabContainer.setLayoutParams(tabContainerParam);
@@ -197,7 +193,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	 */
 	private void setPosition(float positionOffset) {
 		if (viewPager != null && viewPager.getAdapter() != null && tabCount > 0) {
-			indicatorParams.width = getMeasuredWidth() / tabCount;
+			indicatorParams.width = getMeasuredWidth() / Math.max(tabCount, 2);
 			indicatorParams.setMarginStart((int) (getMeasuredWidth() * positionOffset / tabCount));
 			indicator.setLayoutParams(indicatorParams);
 		}
