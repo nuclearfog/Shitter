@@ -167,7 +167,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 					statusUpdate.setStatus(status);
 					statusText.append(status.getText());
 				} else {
-					statusUpdate.addStatusId(status.getId());
 					statusUpdate.addReplyStatusId(status.getId());
 					statusUpdate.setVisibility(status.getVisibility());
 					statusUpdate.addText(status.getUserMentions());

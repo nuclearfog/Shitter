@@ -101,15 +101,6 @@ public class StatusUpdate implements Serializable {
 	}
 
 	/**
-	 * to edit an existing status, the ID can added
-	 *
-	 * @param statusId ID of an existing status to edit
-	 */
-	public void addStatusId(long statusId) {
-		this.statusId = statusId;
-	}
-
-	/**
 	 * set ID of the replied status
 	 *
 	 * @param replyId status ID to reply
@@ -430,7 +421,7 @@ public class StatusUpdate implements Serializable {
 	@Override
 	public String toString() {
 		if (replyId != 0)
-			return "to=" + replyId + " tweet=\"" + text + "\"";
-		return "tweet=\"" + text + "\"";
+			return "to=" + replyId + " status=\"" + text + "\"";
+		return "status=\"" + text + "\"";
 	}
 }
