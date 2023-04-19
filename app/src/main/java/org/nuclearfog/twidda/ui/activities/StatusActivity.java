@@ -52,9 +52,9 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
@@ -205,7 +205,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private NotificationAction notificationLoader;
 	private TranslationLoader translationLoader;
 	private PollAction pollLoader;
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 
 	@Nullable
 	private ClipboardManager clip;
@@ -268,7 +268,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		pollLoader = new PollAction(this);
 		notificationLoader = new NotificationAction(this);
 		translationLoader = new TranslationLoader(this);
-		emojiLoader = new EmojiLoader(this);
+		emojiLoader = new TextEmojiLoader(this);
 
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);

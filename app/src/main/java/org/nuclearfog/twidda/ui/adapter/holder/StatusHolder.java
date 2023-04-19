@@ -27,9 +27,9 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -57,7 +57,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private GlobalSettings settings;
 	private Picasso picasso;
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 	private IconAdapter adapter;
 	private OnHolderClickListener listener;
 
@@ -67,7 +67,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	private long tagId = 0L;
 
 
-	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener) {
+	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
 		this.settings = settings;
 		this.picasso = picasso;

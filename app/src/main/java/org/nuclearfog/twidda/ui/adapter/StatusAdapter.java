@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
@@ -50,7 +50,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	private static final int MIN_COUNT = 2;
 
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 	private StatusSelectListener listener;
 	private GlobalSettings settings;
 	private Picasso picasso;
@@ -64,7 +64,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	public StatusAdapter(Context context, StatusSelectListener itemClickListener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
-		emojiLoader = new EmojiLoader(context);
+		emojiLoader = new TextEmojiLoader(context);
 		loadingIndex = NO_LOADING;
 		items = new LinkedList<>();
 		this.listener = itemClickListener;

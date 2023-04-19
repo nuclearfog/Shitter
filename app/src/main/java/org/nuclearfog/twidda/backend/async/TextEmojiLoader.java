@@ -23,7 +23,7 @@ import java.util.TreeMap;
  *
  * @author nuclearfog
  */
-public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoader.EmojiResult> {
+public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, TextEmojiLoader.EmojiResult> {
 
 	private Connection connection;
 	private ImageCache cache;
@@ -31,7 +31,7 @@ public class EmojiLoader extends AsyncExecutor<EmojiLoader.EmojiParam, EmojiLoad
 	/**
 	 *
 	 */
-	public EmojiLoader(Context context) {
+	public TextEmojiLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 		cache = ImageCache.getInstance(context);
 	}

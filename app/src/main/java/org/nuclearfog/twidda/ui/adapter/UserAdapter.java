@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -43,7 +43,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 
 	private GlobalSettings settings;
 	private Picasso picasso;
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 
 	private UserClickListener listener;
 	private boolean enableDelete;
@@ -58,7 +58,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	public UserAdapter(Context context, UserClickListener listener, boolean enableDelete) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
-		emojiLoader = new EmojiLoader(context);
+		emojiLoader = new TextEmojiLoader(context);
 		users = new Users(0L, 0L);
 		loadingIndex = NO_LOADING;
 		this.enableDelete = enableDelete;

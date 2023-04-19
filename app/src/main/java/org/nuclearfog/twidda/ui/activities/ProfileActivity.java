@@ -55,9 +55,9 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.RelationLoader;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationParam;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationResult;
@@ -152,7 +152,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	private RelationLoader relationLoader;
 	private UserLoader userLoader;
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 
 	private NestedScrollView root;
 	private ConstraintLayout header;
@@ -201,7 +201,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 		relationLoader = new RelationLoader(this);
 		userLoader = new UserLoader(this);
-		emojiLoader = new EmojiLoader(this);
+		emojiLoader = new TextEmojiLoader(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.getInstance(this);
 		if (!settings.toolbarOverlapEnabled()) {

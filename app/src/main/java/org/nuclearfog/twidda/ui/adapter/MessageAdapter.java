@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -45,7 +45,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	private OnMessageClickListener itemClickListener;
 	private GlobalSettings settings;
 	private Picasso picasso;
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 
 	private Messages messages;
 	private int loadingIndex;
@@ -58,7 +58,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 		loadingIndex = NO_LOADING;
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
-		emojiLoader = new EmojiLoader(context);
+		emojiLoader = new TextEmojiLoader(context);
 		this.itemClickListener = itemClickListener;
 	}
 

@@ -21,9 +21,9 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor;
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
@@ -49,7 +49,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	private Picasso picasso;
 	private GlobalSettings settings;
 	private OnHolderClickListener listener;
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 
 	private boolean enableExtras, enableImages;
 	private long tagId;
@@ -57,7 +57,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * @param parent Parent view from adapter
 	 */
-	public UserlistHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnHolderClickListener listener) {
+	public UserlistHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_list_container);

@@ -11,11 +11,11 @@
 
 	<!--dimens of page_settings.xml-->
 	<dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>
-	<dimen name="settings_color_button_height">42sp</dimen>
+	<dimen name="settings_color_button_height">38sp</dimen>
 	<dimen name="settings_color_button_margin">2dp</dimen>
 	<dimen name="settings_color_button_stroke_width">2dp</dimen>
 	<dimen name="settings_color_button_corner_radius">4dp</dimen>
-	<dimen name="settings_cardview_padding">10dp</dimen>
+	<dimen name="settings_cardview_padding">6dp</dimen>
 	<dimen name="settings_textsize">20sp</dimen>
 	<dimen name="settings_icon_size">20sp</dimen>
 	<dimen name="settings_textsize_small">12sp</dimen>
@@ -294,5 +294,8 @@
 	<dimen name="dialog_status_layout_padding">10dp</dimen>
 	<dimen name="dialog_status_layout_margins">5dp</dimen>
 	<dimen name="dialog_status_dropdown_height">22sp</dimen>
+
+	<!--dimens of item_emoji.xml-->
+	<dimen name="item_emoji_emoji_size">48dp</dimen>
 
 </resources>

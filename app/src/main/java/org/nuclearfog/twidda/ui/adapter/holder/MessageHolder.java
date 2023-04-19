@@ -29,9 +29,9 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.EmojiLoader;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.EmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
@@ -60,12 +60,12 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private IconAdapter adapter;
-	private EmojiLoader emojiLoader;
+	private TextEmojiLoader emojiLoader;
 
 	private long tagId;
 
 
-	public MessageHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, EmojiLoader emojiLoader, OnItemClickListener listener) {
+	public MessageHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, TextEmojiLoader emojiLoader, OnItemClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false));
 		this.settings = settings;
 		this.picasso = picasso;

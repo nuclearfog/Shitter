@@ -768,6 +768,7 @@ public class Mastodon implements Connection {
 					Emoji item = new MastodonEmoji(json.getJSONObject(i));
 					result.add(item);
 				}
+				Collections.sort(result);
 				return result;
 			}
 			throw new MastodonException(response);
