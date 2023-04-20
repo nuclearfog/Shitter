@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public interface Location extends Serializable, Comparable<Location> {
 
-	long NO_ID = 0;
+	long NO_ID = -1L;
 
 	/**
 	 * @return ID of the place (World ID)

@@ -262,7 +262,7 @@
 	<string name="settings_app_information">App source code:</string>
 	<string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
 	<string name="settings_look">Look</string>
-	<string name="settings_description_enable_twitter_alt">use nitter.net for links</string>
+	<string name="settings_description_enable_twitter_alt">use Nitter to open Twitter links</string>
 	<string name="settings_description_local_timeline">show local timelines only</string>
 	<string name="item_load_more">load more</string>
 	<string name="item_image_save">save image</string>

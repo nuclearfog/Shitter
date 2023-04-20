@@ -27,6 +27,7 @@
 	<string name="info_database_cleared">Datenbank gelöscht</string>
 	<string name="info_notification_dismiss">Nachricht verworfen</string>
 	<string name="info_error">Fehler!</string>
+	<string name="menu_status_edit">bearbeiten</string>
 	<string name="menu_status_delete">löschen</string>
 	<string name="menu_status_open_browser">Im Browser öffnen</string>
 	<string name="error_not_found">nicht gefunden!</string>
@@ -228,7 +229,7 @@
 	<string name="menu_status_unhide">Antwort einblenden</string>
 	<string name="info_reply_hidden">Antwort wurde ausgeblendet</string>
 	<string name="info_reply_unhidden">Antwort wurde eingeblendet</string>
-	<string name="settings_description_enable_twitter_alt">nitter.net für Links benutzen</string>
+	<string name="settings_description_enable_twitter_alt">öffne Twitter-Links mit Nitter</string>
 	<string name="confirm_unknown_error">Unbekannter Fehler!</string>
 	<string name="error_invalid_media">Ungültige Mediendatei!</string>
 	<string name="menu_follow_requests">Anfragen</string>

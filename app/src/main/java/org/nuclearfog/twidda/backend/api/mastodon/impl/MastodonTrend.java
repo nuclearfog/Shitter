@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Trend;
 
 /**
@@ -41,7 +42,7 @@ public class MastodonTrend implements Trend {
 
 	@Override
 	public long getLocationId() {
-		return -1L;
+		return Location.NO_ID;
 	}
 
 

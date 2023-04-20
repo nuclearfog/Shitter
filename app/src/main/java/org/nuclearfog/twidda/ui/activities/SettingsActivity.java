@@ -70,11 +70,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public static final int RETURN_APP_LOGOUT = 0x530;
 
 	/**
-	 * return code to recognize {@link MainActivity} that the database was removed
-	 */
-	public static final int RETURN_DATA_CLEARED = 0x955;
-
-	/**
 	 * return code to recognize {@link MainActivity} that settings may changed
 	 */
 	public static final int RETURN_SETTINGS_CHANGED = 0xA3E8;
@@ -97,8 +92,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	private GlobalSettings settings;
 	private Configuration configuration;
-	private DatabaseAction databaseAsync;
-	private LocationLoader locationAsync;
+	private DatabaseAction databaseAction;
+	private LocationLoader locationLoader;
 
 	private LocationAdapter locationAdapter;
 	private BaseAdapter fontAdapter, scaleAdapter;
@@ -106,10 +101,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private Dialog color_dialog_selector, appInfo, license;
 	private ConfirmDialog confirmDialog;
 
-	private View enableAuthTxt;
-	private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
-	private SwitchButton enableProxy, enableAuth;
-	private Spinner locationSpinner;
+	private View enable_auth_label;
+	private EditText proxy_address, proxy_port, proxy_user, proxy_pass;
+	private SwitchButton enable_proxy, enable_auth;
+	private Spinner location_dropdown;
 	private TextView list_size;
 	private ViewGroup root;
 	private Button[] colorButtons = new Button[COLOR_COUNT];
@@ -147,10 +142,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.spinner_font);
 		Spinner scaleSelector = findViewById(R.id.spinner_scale);
-		enableProxy = findViewById(R.id.settings_enable_proxy);
-		enableAuth = findViewById(R.id.settings_enable_auth);
-		locationSpinner = findViewById(R.id.spinner_woeid);
-		enableAuthTxt = findViewById(R.id.settings_enable_auth_descr);
+		enable_proxy = findViewById(R.id.settings_enable_proxy);
+		enable_auth = findViewById(R.id.settings_enable_auth);
+		location_dropdown = findViewById(R.id.spinner_woeid);
+		enable_auth_label = findViewById(R.id.settings_enable_auth_descr);
 		colorButtons[COLOR_BACKGROUND] = findViewById(R.id.color_background);
 		colorButtons[COLOR_TEXT] = findViewById(R.id.color_text);
 		colorButtons[COLOR_WINDOW] = findViewById(R.id.color_window);
@@ -161,10 +156,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		colorButtons[COLOR_FAVORITE] = findViewById(R.id.color_fav);
 		colorButtons[COLOR_FOLLOW_REQUEST] = findViewById(R.id.color_f_req);
 		colorButtons[COLOR_FOLLOWING] = findViewById(R.id.color_follow);
-		proxyAddr = findViewById(R.id.edit_proxy_address);
-		proxyPort = findViewById(R.id.edit_proxy_port);
-		proxyUser = findViewById(R.id.edit_proxyuser);
-		proxyPass = findViewById(R.id.edit_proxypass);
+		proxy_address = findViewById(R.id.edit_proxy_address);
+		proxy_port = findViewById(R.id.edit_proxy_port);
+		proxy_user = findViewById(R.id.edit_proxyuser);
+		proxy_pass = findViewById(R.id.edit_proxypass);
 		list_size = findViewById(R.id.settings_list_size);
 		root = findViewById(R.id.settings_layout);
 
@@ -175,8 +170,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		configuration = settings.getLogin().getConfiguration();
 		locationAdapter = new LocationAdapter(settings);
 		locationAdapter.addItem(settings.getTrendLocation());
-		locationSpinner.setAdapter(locationAdapter);
-		locationSpinner.setSelected(false);
+		location_dropdown.setAdapter(locationAdapter);
+		location_dropdown.setSelected(false);
 		fontAdapter = new FontAdapter(settings);
 		scaleAdapter = new ScaleAdapter(settings);
 		fontSelector.setAdapter(fontAdapter);
@@ -192,8 +187,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		confirmDialog = new ConfirmDialog(this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
-		locationAsync = new LocationLoader(this);
-		databaseAsync = new DatabaseAction(this);
+		locationLoader = new LocationLoader(this);
+		databaseAction = new DatabaseAction(this);
 
 		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
 			enableLocalTl.setVisibility(View.VISIBLE);
@@ -203,15 +198,15 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			user_card.setVisibility(View.GONE);
 		}
 		if (!settings.isProxyEnabled()) {
-			proxyAddr.setVisibility(View.GONE);
-			proxyPort.setVisibility(View.GONE);
-			proxyUser.setVisibility(View.GONE);
-			proxyPass.setVisibility(View.GONE);
-			enableAuth.setVisibility(View.GONE);
-			enableAuthTxt.setVisibility(View.GONE);
+			proxy_address.setVisibility(View.GONE);
+			proxy_port.setVisibility(View.GONE);
+			proxy_user.setVisibility(View.GONE);
+			proxy_pass.setVisibility(View.GONE);
+			enable_auth.setVisibility(View.GONE);
+			enable_auth_label.setVisibility(View.GONE);
 		} else if (!settings.isProxyAuthSet()) {
-			proxyUser.setVisibility(View.GONE);
-			proxyPass.setVisibility(View.GONE);
+			proxy_user.setVisibility(View.GONE);
+			proxy_pass.setVisibility(View.GONE);
 		}
 		if (settings.likeEnabled()) {
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_like);
@@ -225,12 +220,12 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLocalTl.setCheckedImmediately(settings.useLocalTimeline());
 		hideSensitive.setCheckedImmediately(settings.hideSensitiveEnabled());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
-		enableProxy.setCheckedImmediately(settings.isProxyEnabled());
-		enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
-		proxyAddr.setText(settings.getProxyHost());
-		proxyPort.setText(settings.getProxyPort());
-		proxyUser.setText(settings.getProxyUser());
-		proxyPass.setText(settings.getProxyPass());
+		enable_proxy.setCheckedImmediately(settings.isProxyEnabled());
+		enable_auth.setCheckedImmediately(settings.isProxyAuthSet());
+		proxy_address.setText(settings.getProxyHost());
+		proxy_port.setText(settings.getProxyPort());
+		proxy_user.setText(settings.getProxyUser());
+		proxy_pass.setText(settings.getProxyPass());
 		list_size.setText(Integer.toString(settings.getListSize()));
 		listSizeSelector.setProgress(settings.getListSize() / 10 - 1);
 		setButtonColors();
@@ -245,8 +240,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLocalTl.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
 		hideSensitive.setOnCheckedChangeListener(this);
-		enableProxy.setOnCheckedChangeListener(this);
-		enableAuth.setOnCheckedChangeListener(this);
+		enable_proxy.setOnCheckedChangeListener(this);
+		enable_auth.setOnCheckedChangeListener(this);
 		toolbarOverlap.setOnCheckedChangeListener(this);
 		fontSelector.setOnItemSelectedListener(this);
 		scaleSelector.setOnItemSelectedListener(this);
@@ -260,8 +255,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		super.onStart();
 		setResult(RETURN_SETTINGS_CHANGED);
 		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
-			if (locationSpinner.getCount() <= 1) {
-				locationAsync.execute(null, locationResult);
+			if (location_dropdown.getCount() <= 1) {
+				locationLoader.execute(null, locationResult);
 			}
 		}
 	}
@@ -279,8 +274,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	protected void onDestroy() {
-		locationAsync.cancel();
-		databaseAsync.cancel();
+		locationLoader.cancel();
+		databaseAction.cancel();
 		super.onDestroy();
 	}
 
@@ -309,11 +304,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// remove account from database
 		if (type == ConfirmDialog.APP_LOG_OUT) {
 			settings.setLogin(null, true);
-			databaseAsync.execute(new DatabaseParam(DatabaseParam.LOGOUT), databaseResult);
+			databaseAction.execute(new DatabaseParam(DatabaseParam.LOGOUT), databaseResult);
 		}
 		// confirm delete app data and cache
 		else if (type == ConfirmDialog.DELETE_APP_DATA) {
-			databaseAsync.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
+			databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
 		}
 		// confirm leaving without saving proxy changes
 		else if (type == ConfirmDialog.WRONG_PROXY) {
@@ -507,26 +502,26 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable proxy settings
 		else if (c.getId() == R.id.settings_enable_proxy) {
 			if (checked) {
-				proxyAddr.setVisibility(View.VISIBLE);
-				proxyPort.setVisibility(View.VISIBLE);
-				enableAuth.setVisibility(View.VISIBLE);
-				enableAuthTxt.setVisibility(View.VISIBLE);
+				proxy_address.setVisibility(View.VISIBLE);
+				proxy_port.setVisibility(View.VISIBLE);
+				enable_auth.setVisibility(View.VISIBLE);
+				enable_auth_label.setVisibility(View.VISIBLE);
 			} else {
-				proxyAddr.setVisibility(View.GONE);
-				proxyPort.setVisibility(View.GONE);
-				enableAuthTxt.setVisibility(View.GONE);
-				enableAuth.setVisibility(View.GONE);
-				enableAuth.setChecked(false);
+				proxy_address.setVisibility(View.GONE);
+				proxy_port.setVisibility(View.GONE);
+				enable_auth_label.setVisibility(View.GONE);
+				enable_auth.setVisibility(View.GONE);
+				enable_auth.setChecked(false);
 			}
 		}
 		// enable proxy authentication
 		else if (c.getId() == R.id.settings_enable_auth) {
 			if (checked) {
-				proxyUser.setVisibility(View.VISIBLE);
-				proxyPass.setVisibility(View.VISIBLE);
+				proxy_user.setVisibility(View.VISIBLE);
+				proxy_pass.setVisibility(View.VISIBLE);
 			} else {
-				proxyUser.setVisibility(View.GONE);
-				proxyPass.setVisibility(View.GONE);
+				proxy_user.setVisibility(View.GONE);
+				proxy_pass.setVisibility(View.GONE);
 			}
 		}
 		// hide sensitive content
@@ -593,7 +588,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private void onDatabaseResult(@NonNull DatabaseResult result) {
 		switch (result.mode) {
 			case DatabaseResult.DELETE:
-				setResult(RETURN_DATA_CLEARED);
 				Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
 				break;
 
@@ -619,8 +613,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			locationAdapter.replaceItems(result.locations);
 			int position = locationAdapter.indexOf(settings.getTrendLocation());
 			if (position >= 0)
-				locationSpinner.setSelection(position, false);
-			locationSpinner.setOnItemSelectedListener(this);
+				location_dropdown.setSelection(position, false);
+			location_dropdown.setOnItemSelectedListener(this);
 		} else {
 			String message = ErrorHandler.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -663,35 +657,35 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private boolean saveConnectionSettings() {
 		boolean checkPassed = true;
 		// check if proxy settings are correct
-		if (enableProxy.isChecked()) {
-			checkPassed = proxyAddr.length() > 0 && proxyPort.length() > 0;
+		if (enable_proxy.isChecked()) {
+			checkPassed = proxy_address.length() > 0 && proxy_port.length() > 0;
 			// check IP address
 			if (checkPassed) {
-				Matcher ipMatch = Patterns.IP_ADDRESS.matcher(proxyAddr.getText());
+				Matcher ipMatch = Patterns.IP_ADDRESS.matcher(proxy_address.getText());
 				checkPassed = ipMatch.matches();
 			}
 			// check Port number
 			if (checkPassed) {
 				int port = 0;
-				String portStr = proxyPort.getText().toString();
+				String portStr = proxy_port.getText().toString();
 				if (!portStr.isEmpty()) {
 					port = Integer.parseInt(portStr);
 				}
 				checkPassed = port > 0 && port < 65536;
 			}
 			// check user login
-			if (enableAuth.isChecked() && checkPassed) {
-				checkPassed = proxyUser.length() > 0 && proxyPass.length() > 0;
+			if (enable_auth.isChecked() && checkPassed) {
+				checkPassed = proxy_user.length() > 0 && proxy_pass.length() > 0;
 			}
 			// save settings if correct
 			if (checkPassed) {
-				String proxyAddrStr = proxyAddr.getText().toString();
-				String proxyPortStr = proxyPort.getText().toString();
-				String proxyUserStr = proxyUser.getText().toString();
-				String proxyPassStr = proxyPass.getText().toString();
+				String proxyAddrStr = proxy_address.getText().toString();
+				String proxyPortStr = proxy_port.getText().toString();
+				String proxyUserStr = proxy_user.getText().toString();
+				String proxyPassStr = proxy_pass.getText().toString();
 				settings.setProxyServer(proxyAddrStr, proxyPortStr, proxyUserStr, proxyPassStr);
 				settings.setProxyEnabled(true);
-				settings.setProxyAuthSet(enableAuth.isChecked());
+				settings.setProxyAuthSet(enable_auth.isChecked());
 			}
 		} else {
 			settings.clearProxyServer();

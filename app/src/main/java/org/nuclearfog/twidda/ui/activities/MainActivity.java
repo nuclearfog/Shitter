@@ -116,24 +116,19 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				finish();
 				break;
 
-			case AccountActivity.RETURN_ACCOUNT_CHANGED:
-			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
-				setupAdapter();
-				loginIntent = null;
-				break;
-
 			case SettingsActivity.RETURN_APP_LOGOUT:
 				adapter.clear();
 				break;
 
+			case AccountActivity.RETURN_ACCOUNT_CHANGED:
+			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
+				loginIntent = null;
+				// fall through
+
 			default:
-			case SettingsActivity.RETURN_DATA_CLEARED:
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
-				AppStyles.setTheme(root);
-				AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-				tabSelector.updateTheme();
-				adapter.notifySettingsChanged();
+				setupAdapter();
 				break;
 		}
 	}

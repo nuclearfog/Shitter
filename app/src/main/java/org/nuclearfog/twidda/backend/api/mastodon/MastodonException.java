@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import okhttp3.Response;
@@ -42,9 +43,10 @@ public class MastodonException extends ConnectionException {
 	/**
 	 * caused by interrupt
 	 */
-	private static final int ERRO_INTERRUPTED = -4;
+	private static final int ERROR_INTERRUPTED = -4;
 
 
+	private int httpCode = 0;
 	private int errorCode = UNKNOWN_ERROR;
 	private String errorMessage = "";
 
@@ -58,8 +60,10 @@ public class MastodonException extends ConnectionException {
 			errorCode = ERROR_NETWORK;
 		} else if (e instanceof JSONException) {
 			errorCode = ERROR_JSON;
+		}  else if (e instanceof ConnectException) {
+			errorCode = NO_CONNECTION;
 		} else if (getCause() instanceof InterruptedException) {
-			errorCode = ERRO_INTERRUPTED;
+			errorCode = ERROR_INTERRUPTED;
 		}
 	}
 
@@ -68,7 +72,7 @@ public class MastodonException extends ConnectionException {
 	 */
 	MastodonException(Response response) {
 		super(response.message());
-		errorCode = response.code();
+		httpCode = response.code();
 		ResponseBody body = response.body();
 		if (body != null) {
 			try {
@@ -97,7 +101,9 @@ public class MastodonException extends ConnectionException {
 
 	@Override
 	public int getErrorCode() {
-		switch (errorCode) {
+		if (errorCode != UNKNOWN_ERROR)
+			return errorCode;
+		switch (httpCode) {
 			case 404:
 				if (errorMessage.startsWith(MESSAGE_NOT_FOUND)) {
 					return RESOURCE_NOT_FOUND;
@@ -114,18 +120,8 @@ public class MastodonException extends ConnectionException {
 			case 503:
 				return SERVICE_UNAVAILABLE;
 
-			case ERROR_NETWORK:
-				return NETWORK_CONNECTION;
-
-			case ERROR_JSON:
-				return JSON_FORMAT;
-
-			case ERRO_INTERRUPTED:
-				return INTERRUPTED;
-
 			default:
-			case UNKNOWN_ERROR:
-				return ERROR_NOT_DEFINED;
+				return errorCode;
 		}
 	}
 
