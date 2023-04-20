@@ -38,7 +38,6 @@
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
 - <a href="https://github.com/google/ExoPlayer">ExoPlayer</a>
-- <a href="https://github.com/koral--/android-gif-drawable">Android gif drawable</a>
 
 
 ## Graphics
