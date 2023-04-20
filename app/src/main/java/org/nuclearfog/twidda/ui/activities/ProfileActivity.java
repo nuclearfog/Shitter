@@ -729,34 +729,41 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private void setUser(@NonNull User user) {
 		this.user = user;
-		Spannable descriptionSpan = null;
-
 		following.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
 		follower.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
 		following.setVisibility(VISIBLE);
 		follower.setVisibility(VISIBLE);
-		username.setText(user.getUsername());
+		user_createdAt.setVisibility(VISIBLE);
 		screenName.setText(user.getScreenname());
+		// set status count
 		if (user.getStatusCount() >= 0) {
 			tabSelector.setLabel(0, StringUtils.NUMBER_FORMAT.format(user.getStatusCount()));
 		} else {
 			tabSelector.setLabel(0, "");
 		}
+		// set favorites count
 		if (user.getFavoriteCount() >= 0) {
 			tabSelector.setLabel(1, StringUtils.NUMBER_FORMAT.format(user.getFavoriteCount()));
 		} else {
 			tabSelector.setLabel(1, "");
 		}
-		if (user_createdAt.getVisibility() != VISIBLE) {
-			user_createdAt.setVisibility(VISIBLE);
-			if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
-				user_createdAt.setText(SimpleDateFormat.getDateInstance().format(user.getTimestamp()));
-			} else {
-				user_createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(user.getTimestamp()));
-			}
+		// set username and emojis
+		if (!user.getUsername().trim().isEmpty() && user.getEmojis().length > 0) {
+			Spannable usernameSpan = new SpannableString(user.getUsername());
+			usernameSpan = EmojiUtils.removeTags(usernameSpan);
+			username.setText(usernameSpan);
+		} else {
+			username.setText(user.getUsername());
 		}
+		// set user join date
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
+			user_createdAt.setText(SimpleDateFormat.getDateInstance().format(user.getTimestamp()));
+		} else {
+			user_createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(user.getTimestamp()));
+		}
+		// set user description
 		if (!user.getDescription().isEmpty()) {
-			descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
+			Spannable descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
 			if (user.getEmojis().length > 0) {
 				descriptionSpan = EmojiUtils.removeTags(descriptionSpan);
 			}
@@ -765,24 +772,28 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		} else {
 			description.setVisibility(GONE);
 		}
+		// set user verified icon
 		if (user.isVerified()) {
 			username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
 			AppStyles.setDrawableColor(username, settings.getIconColor());
 		} else {
 			username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
+		// set user protected icon
 		if (user.isProtected()) {
 			screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
 			AppStyles.setDrawableColor(screenName, settings.getIconColor());
 		} else {
 			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
+		// set user location
 		if (!user.getLocation().isEmpty()) {
 			user_location.setText(user.getLocation());
 			user_location.setVisibility(VISIBLE);
 		} else {
 			user_location.setVisibility(GONE);
 		}
+		// set profile url
 		if (!user.getProfileUrl().isEmpty()) {
 			String link = user.getProfileUrl();
 			if (link.startsWith("http://"))
@@ -795,6 +806,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		} else {
 			user_website.setVisibility(GONE);
 		}
+		// set profile/banner images
 		if (settings.imagesEnabled()) {
 			String bannerImageUrl = user.getBannerImageThumbnailUrl();
 			String profileImageUrl = user.getProfileImageThumbnailUrl();
@@ -811,13 +823,15 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				profileImage.setImageResource(0);
 			}
 		}
+		// initialize emoji loading for username/description
 		if (settings.imagesEnabled() && user.getEmojis().length > 0) {
 			if (!user.getUsername().isEmpty()) {
 				SpannableString usernameSpan = new SpannableString(user.getUsername());
 				EmojiParam param = new EmojiParam(user.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
 				emojiLoader.execute(param, usernameUpdate);
 			}
-			if (descriptionSpan != null) {
+			if (!user.getDescription().trim().isEmpty()) {
+				Spannable descriptionSpan = new SpannableString(user.getDescription());
 				EmojiParam param = new EmojiParam(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
 				emojiLoader.execute(param, userDescriptionUpdate);
 			}

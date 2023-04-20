@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,7 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 			for (int i = 0; i < emojiViews.length; i++) {
 				if (v == emojiViews[i]) {
 					listener.onItemClick(pos, OnHolderClickListener.EMOJI_CLICK, i);
+					v.startAnimation(AnimationUtils.loadAnimation(v.getContext(),R.anim.emoji));
 				}
 			}
 		}

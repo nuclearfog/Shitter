@@ -285,7 +285,17 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	public void onEmojiSelected(Emoji emoji) {
-		statusText.append(emoji.getCode());
+		String tagToInsert;
+		int start = Math.max(statusText.getSelectionStart(), 0);
+		int end = Math.max(statusText.getSelectionEnd(), 0);
+		if (start == 0) {
+			tagToInsert = emoji.getCode() + ' ';
+		} else if (end == statusText.length()) {
+			tagToInsert = ' ' + emoji.getCode();
+		} else {
+			tagToInsert = ' ' + emoji.getCode() + ' ';
+		}
+		statusText.getText().replace(Math.min(start, end), Math.max(start, end), tagToInsert, 0, tagToInsert.length());
 	}
 
 

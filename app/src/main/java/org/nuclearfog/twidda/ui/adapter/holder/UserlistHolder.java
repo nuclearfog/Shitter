@@ -133,8 +133,10 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		if (owner != null) {
 			screenname.setText(owner.getScreenname());
 			String profileImageUrl = owner.getProfileImageThumbnailUrl();
-			if (owner.getEmojis().length > 0) {
-				Spannable usernameSpan = new SpannableString(owner.getUsername());
+			if (owner.getEmojis().length > 0 && !owner.getUsername().trim().isEmpty() && settings.imagesEnabled()) {
+				SpannableString usernameSpan = new SpannableString(owner.getUsername());
+				EmojiParam param = new EmojiParam(tagId, owner.getEmojis(), usernameSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
+				emojiLoader.execute(param, usernameResult);
 				username.setText(EmojiUtils.removeTags(usernameSpan));
 			} else {
 				username.setText(owner.getUsername());
@@ -175,11 +177,6 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 			privateIcon.setVisibility(View.VISIBLE);
 		} else {
 			privateIcon.setVisibility(View.GONE);
-		}
-		if (settings.imagesEnabled() && owner != null && owner.getEmojis().length > 0 && !owner.getUsername().isEmpty()) {
-			SpannableString userSpan = new SpannableString(owner.getUsername());
-			EmojiParam param = new EmojiParam(tagId, owner.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
-			emojiLoader.execute(param, usernameResult);
 		}
 	}
 

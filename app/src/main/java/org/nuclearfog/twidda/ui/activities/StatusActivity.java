@@ -224,10 +224,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private ViewGroup root, header;
 	private NestedScrollView container;
 	private LockableConstraintLayout body;
-	private TextView statusApi, createdAt, statusText, screenName, username, locationName, sensitive, spoiler, spoilerHint, translateText;
-	private Button replyButton, repostButton, likeButton, replyName, repostNameButton;
-	private ImageView profileImage;
-	private RecyclerView cardList;
+	private TextView status_source, created_at, status_text, screen_name, username, location_name, sensitive, spoiler, spoiler_hint, translate_text;
+	private Button reply_button, repost_button, like_button, reply_name, repost_name_button;
+	private ImageView profile_image;
+	private RecyclerView card_list;
 	private Toolbar toolbar;
 
 	@Nullable
@@ -252,23 +252,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		body = findViewById(R.id.page_status_body);
 		container = findViewById(R.id.page_status_scroll);
 		toolbar = findViewById(R.id.page_status_toolbar);
-		replyButton = findViewById(R.id.page_status_reply);
-		repostButton = findViewById(R.id.page_status_repost);
-		likeButton = findViewById(R.id.page_status_favorite);
+		reply_button = findViewById(R.id.page_status_reply);
+		repost_button = findViewById(R.id.page_status_repost);
+		like_button = findViewById(R.id.page_status_favorite);
 		username = findViewById(R.id.page_status_username);
-		screenName = findViewById(R.id.page_status_screenname);
-		profileImage = findViewById(R.id.page_status_profile);
-		replyName = findViewById(R.id.page_status_reply_reference);
-		statusText = findViewById(R.id.page_status_text);
-		createdAt = findViewById(R.id.page_status_date);
-		statusApi = findViewById(R.id.page_status_api);
-		locationName = findViewById(R.id.page_status_location_name);
+		screen_name = findViewById(R.id.page_status_screenname);
+		profile_image = findViewById(R.id.page_status_profile);
+		reply_name = findViewById(R.id.page_status_reply_reference);
+		status_text = findViewById(R.id.page_status_text);
+		created_at = findViewById(R.id.page_status_date);
+		status_source = findViewById(R.id.page_status_api);
+		location_name = findViewById(R.id.page_status_location_name);
 		sensitive = findViewById(R.id.page_status_sensitive);
 		spoiler = findViewById(R.id.page_status_spoiler);
-		repostNameButton = findViewById(R.id.page_status_reposter_reference);
-		translateText = findViewById(R.id.page_status_text_translate);
-		spoilerHint = findViewById(R.id.page_status_text_sensitive_hint);
-		cardList = findViewById(R.id.page_status_cards);
+		repost_name_button = findViewById(R.id.page_status_reposter_reference);
+		translate_text = findViewById(R.id.page_status_text_translate);
+		spoiler_hint = findViewById(R.id.page_status_text_sensitive_hint);
+		card_list = findViewById(R.id.page_status_cards);
 
 		statusLoader = new StatusAction(this);
 		pollLoader = new PollAction(this);
@@ -281,27 +281,27 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		adapter = new PreviewAdapter(settings, picasso, this);
 
-		replyButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
-		repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
-		locationName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
+		reply_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
+		repost_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
+		location_name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
 		sensitive.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
 		spoiler.setCompoundDrawablesWithIntrinsicBounds(R.drawable.exclamation, 0, 0, 0);
-		replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
-		repostNameButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
-		statusText.setMovementMethod(LinkAndScrollMovement.getInstance());
-		statusText.setLinkTextColor(settings.getHighlightColor());
-		cardList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
-		cardList.setAdapter(adapter);
+		reply_name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
+		repost_name_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
+		status_text.setMovementMethod(LinkAndScrollMovement.getInstance());
+		status_text.setLinkTextColor(settings.getHighlightColor());
+		card_list.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+		card_list.setAdapter(adapter);
 		if (settings.likeEnabled()) {
-			likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like, 0, 0, 0);
+			like_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like, 0, 0, 0);
 		} else {
-			likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
+			like_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
 		}
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
-		locationName.setTextColor(settings.getHighlightColor());
-		translateText.setTextColor(settings.getHighlightColor());
+		location_name.setTextColor(settings.getHighlightColor());
+		translate_text.setTextColor(settings.getHighlightColor());
 
 		// get parameters
 		if (savedInstanceState == null) {
@@ -369,19 +369,19 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		confirmDialog = new ConfirmDialog(this);
 		metricsDialog = new MetricsDialog(this);
 		confirmDialog.setConfirmListener(this);
-		repostNameButton.setOnClickListener(this);
-		replyName.setOnClickListener(this);
-		translateText.setOnClickListener(this);
-		replyButton.setOnClickListener(this);
-		repostButton.setOnClickListener(this);
-		likeButton.setOnClickListener(this);
-		profileImage.setOnClickListener(this);
-		locationName.setOnClickListener(this);
-		repostButton.setOnLongClickListener(this);
-		likeButton.setOnLongClickListener(this);
-		repostNameButton.setOnLongClickListener(this);
-		locationName.setOnLongClickListener(this);
-		statusText.setOnClickListener(this);
+		repost_name_button.setOnClickListener(this);
+		reply_name.setOnClickListener(this);
+		translate_text.setOnClickListener(this);
+		reply_button.setOnClickListener(this);
+		repost_button.setOnClickListener(this);
+		like_button.setOnClickListener(this);
+		profile_image.setOnClickListener(this);
+		location_name.setOnClickListener(this);
+		repost_button.setOnLongClickListener(this);
+		like_button.setOnLongClickListener(this);
+		repost_name_button.setOnLongClickListener(this);
+		location_name.setOnLongClickListener(this);
+		status_text.setOnClickListener(this);
 		container.setOnScrollChangeListener(this);
 		body.addLockCallback(this);
 	}
@@ -649,9 +649,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// unblur text on click
 			else if (v.getId() == R.id.page_status_text) {
 				// remove blur if any
-				if (statusText.getPaint().getMaskFilter() != null) {
-					statusText.getPaint().setMaskFilter(null);
-					spoilerHint.setVisibility(View.INVISIBLE);
+				if (status_text.getPaint().getMaskFilter() != null) {
+					status_text.getPaint().setMaskFilter(null);
+					spoiler_hint.setVisibility(View.INVISIBLE);
 				}
 			}
 			// translate status text
@@ -811,137 +811,152 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void setStatus(@NonNull Status status) {
 		this.status = status;
-		Spannable spannableText = null;
 		if (status.getEmbeddedStatus() != null) {
-			repostNameButton.setVisibility(View.VISIBLE);
-			repostNameButton.setText(status.getAuthor().getScreenname());
+			repost_name_button.setVisibility(View.VISIBLE);
+			repost_name_button.setText(status.getAuthor().getScreenname());
 			status = status.getEmbeddedStatus();
 		} else {
-			repostNameButton.setVisibility(View.GONE);
+			repost_name_button.setVisibility(View.GONE);
 		}
 		User author = status.getAuthor();
 		Location location = status.getLocation();
 		invalidateOptionsMenu();
 
+		repost_button.setVisibility(View.VISIBLE);
+		like_button.setVisibility(View.VISIBLE);
+		reply_button.setVisibility(View.VISIBLE);
+		screen_name.setText(author.getScreenname());
+		created_at.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
+		reply_button.setText(StringUtils.NUMBER_FORMAT.format(status.getReplyCount()));
+		like_button.setText(StringUtils.NUMBER_FORMAT.format(status.getFavoriteCount()));
+		repost_button.setText(StringUtils.NUMBER_FORMAT.format(status.getRepostCount()));
+		// set repost icon
 		if (status.isReposted()) {
-			AppStyles.setDrawableColor(repostButton, settings.getRepostIconColor());
+			AppStyles.setDrawableColor(repost_button, settings.getRepostIconColor());
 		} else {
-			AppStyles.setDrawableColor(repostButton, settings.getIconColor());
+			AppStyles.setDrawableColor(repost_button, settings.getIconColor());
 		}
+		// set favorite/like icon
 		if (status.isFavorited()) {
-			AppStyles.setDrawableColor(likeButton, settings.getFavoriteIconColor());
+			AppStyles.setDrawableColor(like_button, settings.getFavoriteIconColor());
 		} else {
-			AppStyles.setDrawableColor(likeButton, settings.getIconColor());
+			AppStyles.setDrawableColor(like_button, settings.getIconColor());
 		}
+		// set user verified icon
 		if (author.isVerified()) {
 			username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
 			AppStyles.setDrawableColor(username, settings.getIconColor());
 		} else {
 			username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
+		// set user protected icon
 		if (author.isProtected()) {
-			screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-			AppStyles.setDrawableColor(screenName, settings.getIconColor());
+			screen_name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+			AppStyles.setDrawableColor(screen_name, settings.getIconColor());
 		} else {
-			screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+			screen_name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 		}
+		// add 'translate' label
 		if (!status.getText().isEmpty() && !status.getLanguage().isEmpty() && !status.getLanguage().equals(Locale.getDefault().getLanguage())) {
-			translateText.setVisibility(View.VISIBLE); // todo add translation support check
+			translate_text.setVisibility(View.VISIBLE); // todo add translation support check
 		} else {
-			translateText.setVisibility(View.GONE);
+			translate_text.setVisibility(View.GONE);
 		}
-		username.setText(author.getUsername());
-		screenName.setText(author.getScreenname());
-		createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(status.getTimestamp()));
-		replyButton.setText(StringUtils.NUMBER_FORMAT.format(status.getReplyCount()));
-		likeButton.setText(StringUtils.NUMBER_FORMAT.format(status.getFavoriteCount()));
-		repostButton.setText(StringUtils.NUMBER_FORMAT.format(status.getRepostCount()));
+		// set username
+		if (status.getAuthor().getEmojis().length > 0) {
+			Spannable usernameSpan = new SpannableString(author.getUsername());
+			if (settings.imagesEnabled()) {
+				EmojiParam param = new EmojiParam(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+				emojiLoader.execute(param, usernameUpdate);
+				usernameSpan = EmojiUtils.removeTags(usernameSpan);
+			}
+			username.setText(usernameSpan);
+		} else {
+			username.setText(author.getUsername());
+		}
+		// set status source
 		if (!status.getSource().isEmpty()) {
-			statusApi.setText(R.string.status_sent_from);
-			statusApi.append(status.getSource());
-			statusApi.setVisibility(View.VISIBLE);
+			status_source.setText(R.string.status_sent_from);
+			status_source.append(status.getSource());
+			status_source.setVisibility(View.VISIBLE);
 		} else {
-			statusApi.setVisibility(View.GONE);
+			status_source.setVisibility(View.GONE);
 		}
+		// set status text
 		if (!status.getText().isEmpty()) {
-			spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
-			statusText.setVisibility(View.VISIBLE);
-			statusText.setText(spannableText);
+			Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
+			if (status.getEmojis().length > 0 && settings.imagesEnabled()) {
+				EmojiParam param = new EmojiParam(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+				emojiLoader.execute(param, statusTextUpdate);
+				spannableText = EmojiUtils.removeTags(spannableText);
+			}
+			status_text.setVisibility(View.VISIBLE);
+			status_text.setText(spannableText);
 		} else {
-			statusText.setVisibility(View.GONE);
+			status_text.setVisibility(View.GONE);
 		}
+		// setup button to replied status
 		if (status.getRepliedStatusId() > 0) {
-			if (!status.getReplyName().isEmpty())
-				replyName.setText(status.getReplyName());
-			else
-				replyName.setText(R.string.status_replyname_empty);
-			replyName.setVisibility(View.VISIBLE);
+			if (!status.getReplyName().isEmpty()) {
+				reply_name.setText(status.getReplyName());
+			} else {
+				reply_name.setText(R.string.status_replyname_empty);
+			}
+			reply_name.setVisibility(View.VISIBLE);
 		} else {
-			replyName.setVisibility(View.GONE);
+			reply_name.setVisibility(View.GONE);
 		}
+		// set status sensible warining
 		if (status.isSensitive()) {
 			sensitive.setVisibility(View.VISIBLE);
 		} else {
 			sensitive.setVisibility(View.GONE);
 		}
+		// set status spoiler warning
 		if (status.isSpoiler()) {
 			spoiler.setVisibility(View.VISIBLE);
 			if (settings.hideSensitiveEnabled()) {
-				spoilerHint.setVisibility(View.VISIBLE);
-				statusText.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-				float radius = statusText.getTextSize() / 3;
+				spoiler_hint.setVisibility(View.VISIBLE);
+				status_text.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+				float radius = status_text.getTextSize() / 3;
 				BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL);
-				statusText.getPaint().setMaskFilter(filter);
+				status_text.getPaint().setMaskFilter(filter);
 			} else {
-				spoilerHint.setVisibility(View.INVISIBLE);
+				spoiler_hint.setVisibility(View.INVISIBLE);
 			}
 		} else {
 			spoiler.setVisibility(View.GONE);
-			spoilerHint.setVisibility(View.INVISIBLE);
+			spoiler_hint.setVisibility(View.INVISIBLE);
 		}
-		String profileImageUrl = author.getProfileImageThumbnailUrl();
-		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+		// set profile image url
+		if (settings.imagesEnabled() && !author.getProfileImageThumbnailUrl().isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(4, 0);
-			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
+			picasso.load(author.getProfileImageThumbnailUrl()).transform(roundCorner).error(R.drawable.no_image).into(profile_image);
 		} else {
-			profileImage.setImageResource(0);
+			profile_image.setImageResource(0);
 		}
+		// set location information
 		if (location != null) {
-			locationName.setVisibility(View.VISIBLE);
+			location_name.setVisibility(View.VISIBLE);
 			if (!location.getPlace().isEmpty()) {
-				locationName.setText(location.getFullName());
+				location_name.setText(location.getFullName());
 			} else {
-				locationName.setText("");
+				location_name.setText("");
 			}
 			if (!location.getCoordinates().isEmpty()) {
-				locationName.append(" " + location.getCoordinates());
+				location_name.append(" " + location.getCoordinates());
 			}
 		} else {
-			locationName.setVisibility(View.GONE);
+			location_name.setVisibility(View.GONE);
 		}
-		if (repostButton.getVisibility() != View.VISIBLE) {
-			repostButton.setVisibility(View.VISIBLE);
-			likeButton.setVisibility(View.VISIBLE);
-			replyButton.setVisibility(View.VISIBLE);
-		}
+		// set status attachment preview
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
-			cardList.setVisibility(View.VISIBLE);
+			card_list.setVisibility(View.VISIBLE);
 			adapter.replaceAll(status);
-			statusText.setMaxLines(5);
+			status_text.setMaxLines(5);
 		} else {
-			cardList.setVisibility(View.GONE);
-			statusText.setMaxLines(10);
-		}
-		if (settings.imagesEnabled()) {
-			if (status.getEmojis().length > 0 && spannableText != null) {
-				EmojiParam param = new EmojiParam(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
-				emojiLoader.execute(param, statusTextUpdate);
-			}
-			if (author.getEmojis().length > 0 && !author.getUsername().isEmpty()) {
-				SpannableString usernameSpan = new SpannableString(author.getUsername());
-				EmojiParam param = new EmojiParam(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
-				emojiLoader.execute(param, usernameUpdate);
-			}
+			card_list.setVisibility(View.GONE);
+			status_text.setMaxLines(10);
 		}
 	}
 
@@ -1122,20 +1137,20 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void onTranslationResult(@NonNull TranslationResult result) {
 		if (result.translation != null) {
-			if (statusText.getLineCount() > statusText.getMaxLines()) {
-				int y = statusText.getLayout().getLineTop(statusText.getLineCount());
-				statusText.scrollTo(0, y);
+			if (status_text.getLineCount() > status_text.getMaxLines()) {
+				int y = status_text.getLayout().getLineTop(status_text.getLineCount());
+				status_text.scrollTo(0, y);
 			}
 			// build translation string
 			String text = "\n...\n" + result.translation.getText() + "\n...";
 			Spannable textSpan = Tagger.makeTextWithLinks(text, settings.getHighlightColor(), this);
 			// append translation
-			statusText.append(textSpan);
-			translateText.setText(R.string.status_translate_source);
-			translateText.append(result.translation.getSource() + ", ");
-			translateText.append(getString(R.string.status_translate_source_language));
-			translateText.append(result.translation.getOriginalLanguage());
-			translateText.setOnClickListener(null); // disable link to translation
+			status_text.append(textSpan);
+			translate_text.setText(R.string.status_translate_source);
+			translate_text.append(result.translation.getSource() + ", ");
+			translate_text.append(getString(R.string.status_translate_source_language));
+			translate_text.append(result.translation.getOriginalLanguage());
+			translate_text.setOnClickListener(null); // disable link to translation
 		} else {
 			String message = ErrorHandler.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -1148,7 +1163,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private void onStatusTextUpdate(@NonNull EmojiResult result) {
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
-			statusText.setText(spannable);
+			status_text.setText(spannable);
 		}
 	}
 

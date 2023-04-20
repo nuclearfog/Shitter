@@ -135,32 +135,38 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	 */
 	public void setContent(Status status) {
 		tagId = status.getId();
-		Spannable textSpan = null;
-		User author = status.getAuthor();
 		if (status.getEmbeddedStatus() != null) {
-			reposter.setText(author.getScreenname());
+			reposter.setText(status.getAuthor().getScreenname());
 			reposter.setVisibility(View.VISIBLE);
 			repostUserIcon.setVisibility(View.VISIBLE);
 			status = status.getEmbeddedStatus();
-			author = status.getAuthor();
 		} else {
 			reposter.setVisibility(View.GONE);
 			repostUserIcon.setVisibility(View.GONE);
 		}
-		if (author.getEmojis().length > 0) {
-			Spannable usernameSpan = new SpannableString(author.getUsername());
-			username.setText(EmojiUtils.removeTags(usernameSpan));
-		} else {
-			username.setText(author.getUsername());
-		}
+		User author = status.getAuthor();
+		String profileImageUrl = author.getProfileImageThumbnailUrl();
+
 		screenname.setText(author.getScreenname());
 		repost.setText(StringUtils.NUMBER_FORMAT.format(status.getRepostCount()));
 		favorite.setText(StringUtils.NUMBER_FORMAT.format(status.getFavoriteCount()));
 		reply.setText(StringUtils.NUMBER_FORMAT.format(status.getReplyCount()));
 		created.setText(StringUtils.formatCreationTime(itemView.getResources(), status.getTimestamp()));
+		// set username and emojis
+		if (author.getEmojis().length > 0 && !author.getUsername().trim().isEmpty() && settings.imagesEnabled()) {
+			SpannableString usernameSpan = new SpannableString(author.getUsername());
+			EmojiParam param = new EmojiParam(tagId, author.getEmojis(), usernameSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+			emojiLoader.execute(param, usernameResult);
+			username.setText(EmojiUtils.removeTags(usernameSpan));
+		} else {
+			username.setText(author.getUsername());
+		}
+		// set status text and emojis
 		if (!status.getText().trim().isEmpty()) {
-			textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
-			if (status.getEmojis().length > 0) {
+			Spannable textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
+			if (status.getEmojis().length > 0 && settings.imagesEnabled()) {
+				EmojiParam param = new EmojiParam(tagId, status.getEmojis(), textSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+				emojiLoader.execute(param, textResult);
 				textSpan = EmojiUtils.removeTags(textSpan);
 			}
 			statusText.setText(textSpan);
@@ -168,6 +174,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		} else {
 			statusText.setVisibility(View.GONE);
 		}
+		// set status blur if spoiler content
 		if (settings.hideSensitiveEnabled() && status.isSpoiler()) {
 			statusText.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 			float radius = statusText.getTextSize() / 3;
@@ -176,33 +183,38 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		} else {
 			statusText.getPaint().setMaskFilter(null);
 		}
+		// set repost icon
 		if (status.isReposted()) {
 			repostIcon.setColorFilter(settings.getRepostIconColor());
 		} else {
 			repostIcon.setColorFilter(settings.getIconColor());
 		}
+		// set favorite/like icon
 		if (status.isFavorited()) {
 			favoriteIcon.setColorFilter(settings.getFavoriteIconColor());
 		} else {
 			favoriteIcon.setColorFilter(settings.getIconColor());
 		}
+		// set user verified icon
 		if (author.isVerified()) {
 			verifiedIcon.setVisibility(View.VISIBLE);
 		} else {
 			verifiedIcon.setVisibility(View.GONE);
 		}
+		// set user protected icon
 		if (author.isProtected()) {
 			lockedIcon.setVisibility(View.VISIBLE);
 		} else {
 			lockedIcon.setVisibility(View.GONE);
 		}
-		String profileImageUrl = author.getProfileImageThumbnailUrl();
+		// set profile image
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
 			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
 		} else {
 			profile.setImageResource(0);
 		}
+		// set 'replied' text and icon
 		if (status.getRepliedStatusId() > 0) {
 			replyStatus.setVisibility(View.VISIBLE);
 			replyname.setVisibility(View.VISIBLE);
@@ -214,8 +226,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			replyStatus.setVisibility(View.GONE);
 			replyname.setVisibility(View.GONE);
 		}
+		// setup attachment indicators
 		if (settings.statusIndicatorsEnabled()) {
-			// set visibility first so iconholder can measure the listview height
 			iconList.setVisibility(View.VISIBLE);
 			adapter.addItems(status);
 			if (adapter.isEmpty()) {
@@ -225,17 +237,6 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			}
 		} else {
 			iconList.setVisibility(View.GONE);
-		}
-		if (settings.imagesEnabled()) {
-			if (status.getEmojis().length > 0 && textSpan != null) {
-				EmojiParam param = new EmojiParam(tagId, status.getEmojis(), textSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
-				emojiLoader.execute(param, textResult);
-			}
-			if (author.getEmojis().length > 0 && !author.getUsername().isEmpty()) {
-				SpannableString userSpan = new SpannableString(author.getUsername());
-				EmojiParam param = new EmojiParam(tagId, author.getEmojis(), userSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
-				emojiLoader.execute(param, usernameResult);
-			}
 		}
 	}
 

@@ -160,8 +160,10 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		time.setText(StringUtils.formatCreationTime(itemView.getResources(), message.getTimestamp()));
 		iconList.setVisibility(View.VISIBLE);
 		adapter.addItems(message);
-		if (sender.getEmojis().length > 0) {
+		if (sender.getEmojis().length > 0 && !sender.getUsername().trim().isEmpty()) {
 			Spannable usernameSpan = new SpannableString(sender.getUsername());
+			EmojiParam param = new EmojiParam(tagId, sender.getEmojis(), usernameSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
+			emojiLoader.execute(param, this);
 			username.setText(EmojiUtils.removeTags(usernameSpan));
 		} else {
 			username.setText(sender.getUsername());
@@ -192,11 +194,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
 		} else {
 			profile.setImageResource(0);
-		}
-		if (settings.imagesEnabled() && sender.getEmojis().length > 0 && !sender.getUsername().isEmpty()) {
-			SpannableString userSpan = new SpannableString(sender.getUsername());
-			EmojiParam param = new EmojiParam(tagId, sender.getEmojis(), userSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
-			emojiLoader.execute(param, this);
 		}
 	}
 
