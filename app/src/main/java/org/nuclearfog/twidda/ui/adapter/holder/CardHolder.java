@@ -3,7 +3,8 @@ package org.nuclearfog.twidda.ui.adapter.holder;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.text.SpannableString;
+import android.graphics.drawable.Drawable;
+import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,23 +93,32 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	 * @param card card content
 	 */
 	public void setContent(Card card) {
-		String textStr;
-		String title = card.getTitle();
-		if (title.length() > TITLE_MAX_LEN) {
-			textStr = title.substring(0, TITLE_MAX_LEN - 3) + "...";
-		} else {
-			textStr = title;
-		}
-		if (!card.getDescription().isEmpty())
-			textStr += '\n' + card.getDescription();
-		SpannableString textSpan = new SpannableString(textStr);
-		if (!title.isEmpty())
-			textSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, Math.min(title.length(), TITLE_MAX_LEN), 0);
-		linkText.setText(textSpan);
+		SpannableStringBuilder urlDescription = new SpannableStringBuilder();
+		Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
+		// set url preview image
 		if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
-			picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).into(preview);
+			picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(preview);
 		} else {
-			preview.setImageDrawable(new ColorDrawable(EMPTY_COLOR));
+			preview.setImageDrawable(placeholder);
 		}
+		// set url title and truncate if needed
+		if (!card.getTitle().trim().isEmpty()) {
+			// truncate title
+			if (card.getTitle().length() > TITLE_MAX_LEN) {
+				urlDescription.append(card.getTitle().substring(0, TITLE_MAX_LEN - 3));
+				urlDescription.append("...");
+				urlDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, TITLE_MAX_LEN, 0);
+			} else {
+				urlDescription.append(card.getTitle());
+				urlDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, card.getTitle().length(), 0);
+			}
+		}
+		// set url description
+		if (!card.getDescription().isEmpty()) {
+			urlDescription.append('\n');
+			urlDescription.append(card.getDescription());
+		}
+		// apply description
+		linkText.setText(urlDescription);
 	}
 }

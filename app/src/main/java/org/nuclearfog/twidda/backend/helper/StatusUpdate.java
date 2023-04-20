@@ -98,6 +98,12 @@ public class StatusUpdate implements Serializable {
 		sensitive = status.isSensitive();
 		spoiler = status.isSpoiler();
 		visibility = status.getVisibility();
+		if (status.getPoll() != null) {
+			poll = new PollUpdate(status.getPoll());
+		}
+		if (status.getLocation() != null) {
+			location = new LocationUpdate(status.getLocation());
+		}
 	}
 
 	/**
@@ -207,7 +213,7 @@ public class StatusUpdate implements Serializable {
 	 * @param location location information
 	 */
 	public void addLocation(@NonNull Location location) {
-		this.location = new LocationUpdate(location);
+		this.location = new LocationUpdate(location.getLongitude(), location.getLatitude());
 	}
 
 	/**

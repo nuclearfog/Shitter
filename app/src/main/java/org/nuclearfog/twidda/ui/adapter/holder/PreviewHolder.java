@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +18,7 @@ import com.squareup.picasso.RequestCreator;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.database.impl.DatabaseMedia;
 import org.nuclearfog.twidda.model.Media;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -69,17 +71,20 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	 * @param media media content
 	 */
 	public void setContent(Media media, boolean blurImage) {
-		if (settings.imagesEnabled() && !media.getPreviewUrl().isEmpty()) {
-			RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl()).error(R.drawable.no_image);
-			picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE);
+		RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
+		Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
+		// check if online media and image loading is enabled
+		if (!(media instanceof DatabaseMedia) && settings.imagesEnabled() && !media.getPreviewUrl().isEmpty()) {
+			// set image blur if enabled
 			if (blurImage) {
 				BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);
 				picassoBuilder.transform(blurTransformation);
 			}
-			picassoBuilder.into(previewImage);
+			picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(previewImage);
 		} else {
-			previewImage.setImageDrawable(new ColorDrawable(EMPTY_COLOR));
+			previewImage.setImageDrawable(placeholder);
 		}
+		// set 'play video' button
 		if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF) {
 			playIcon.setVisibility(View.VISIBLE);
 		} else {

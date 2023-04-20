@@ -25,9 +25,9 @@ public interface Poll extends Serializable {
 	boolean closed();
 
 	/**
-	 * @return vote selection limit
+	 * @return true if multiple choice is enabled
 	 */
-	int getLimit();
+	boolean multipleChoiceEnabled();
 
 	/**
 	 * @return time where the poll expires
@@ -40,7 +40,7 @@ public interface Poll extends Serializable {
 	int voteCount();
 
 	/**
-	 * @return option
+	 * @return array of vote options
 	 */
 	Option[] getOptions();
 

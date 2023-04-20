@@ -58,6 +58,11 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 		} else {
 			holder.setState(position, EditOptionsHolder.STATE_DISABLED);
 		}
+		if (options.get(position) != null) {
+			holder.setDescription(options.get(position));
+		} else {
+			holder.setDescription("");
+		}
 	}
 
 

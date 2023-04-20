@@ -75,8 +75,8 @@ public class PollV2 implements Poll {
 
 
 	@Override
-	public int getLimit() {
-		return 0;
+	public boolean multipleChoiceEnabled() {
+		return false;
 	}
 
 

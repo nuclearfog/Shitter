@@ -102,9 +102,18 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 	@Override
 	public void afterTextChanged(Editable s) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION) {
+		if (position != NO_POSITION && option_name.hasFocus()) {
 			listener.OnOptionChange(position, s.toString());
 		}
+	}
+
+	/**
+	 * set option description
+	 *
+	 * @param description descrition of the option
+	 */
+	public void setDescription(String description) {
+		option_name.setText(description);
 	}
 
 	/**

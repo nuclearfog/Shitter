@@ -158,7 +158,6 @@ public class DatabaseAdapter {
 			+ PollTable.NAME + "("
 			+ PollTable.ID + " INTEGER PRIMARY KEY,"
 			+ PollTable.NAME + " TEXT,"
-			+ PollTable.LIMIT + " INTEGER,"
 			+ PollTable.EXPIRATION + " INTEGER,"
 			+ PollTable.OPTIONS + " TEXT);";
 
@@ -1048,11 +1047,6 @@ public class DatabaseAdapter {
 		 * expiration time
 		 */
 		String EXPIRATION = "expires_at";
-
-		/**
-		 * maximum selection count
-		 */
-		String LIMIT = "select_limit";
 
 		/**
 		 * poll options titles separated by ';'

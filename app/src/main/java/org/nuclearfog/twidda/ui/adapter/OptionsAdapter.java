@@ -20,13 +20,12 @@ import java.util.TreeSet;
  */
 public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderClickListener {
 
+	private GlobalSettings settings;
+
+	private int totalVotes, limitVotes;
+
 	private Poll.Option[] options = {};
 	private Set<Integer> selection;
-
-	private int totalVotes = 1;
-	private int limitVotes = 1;
-
-	private GlobalSettings settings;
 
 	/**
 	 *
@@ -88,8 +87,15 @@ public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderCli
 				selection.add(i);
 			}
 		}
+		if (poll.voted() || poll.closed()) {
+			limitVotes = 0;
+		} else if (poll.multipleChoiceEnabled()) {
+			limitVotes = poll.getOptions().length;
+		} else {
+			limitVotes = 1;
+		}
 		totalVotes = poll.voteCount();
-		limitVotes = poll.getLimit();
+
 		notifyDataSetChanged();
 	}
 

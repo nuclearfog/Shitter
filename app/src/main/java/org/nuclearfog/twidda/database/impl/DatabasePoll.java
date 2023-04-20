@@ -21,11 +21,10 @@ public class DatabasePoll implements Poll, PollTable {
 
 	private static final Pattern SEPARATOR = Pattern.compile(";");
 
-	public static final String[] PROJECTION = {ID, LIMIT, EXPIRATION, OPTIONS};
+	public static final String[] PROJECTION = {ID, EXPIRATION, OPTIONS};
 
 	private long id;
-	private long expired;
-	private int limit;
+	private long endTime;
 	private DatabasePollOption[] options = {};
 
 	/**
@@ -33,9 +32,8 @@ public class DatabasePoll implements Poll, PollTable {
 	 */
 	public DatabasePoll(Cursor cursor) {
 		id = cursor.getLong(0);
-		limit = cursor.getInt(1);
-		expired = cursor.getLong(2);
-		String optionStr = cursor.getString(3);
+		endTime = cursor.getLong(1);
+		String optionStr = cursor.getString(2);
 		if (optionStr != null && !optionStr.isEmpty()) {
 			String[] optArray = SEPARATOR.split(optionStr);
 			options = new DatabasePollOption[optArray.length];
@@ -65,14 +63,14 @@ public class DatabasePoll implements Poll, PollTable {
 
 
 	@Override
-	public int getLimit() {
-		return limit;
+	public boolean multipleChoiceEnabled() {
+		return false;
 	}
 
 
 	@Override
 	public long getEndTime() {
-		return expired;
+		return endTime;
 	}
 
 

@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.helper;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.model.Poll;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,15 +20,30 @@ public class PollUpdate {
 	private boolean hideTotals;
 	private List<String> options;
 
-
+	/**
+	 *
+	 */
 	public PollUpdate() {
 		options = new LinkedList<>();
 	}
 
 	/**
-	 * get validity in seconds
+	 * create poll using existing poll
 	 *
-	 * @return time until the poll is finnished
+	 * @param poll existing poll to update
+	 */
+	public PollUpdate(Poll poll) {
+		options = new LinkedList<>();
+		multipleChoice = poll.multipleChoiceEnabled();
+		for (Poll.Option option : poll.getOptions()) {
+			options.add(option.getTitle());
+		}
+	}
+
+	/**
+	 * set poll duration
+	 *
+	 * @return duration time in seconds
 	 */
 	public int getDuration() {
 		return duration;

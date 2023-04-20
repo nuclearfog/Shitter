@@ -1739,7 +1739,6 @@ public class AppDatabase {
 			buf.deleteCharAt(buf.length() - 1);
 		}
 		column.put(PollTable.ID, poll.getId());
-		column.put(PollTable.LIMIT, poll.getLimit());
 		column.put(PollTable.EXPIRATION, poll.getEndTime());
 		column.put(PollTable.OPTIONS, buf.toString());
 		db.insertWithOnConflict(PollTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);

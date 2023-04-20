@@ -1,8 +1,9 @@
 package org.nuclearfog.twidda.backend.helper;
 
-import android.location.Location;
 
 import androidx.annotation.NonNull;
+
+import org.nuclearfog.twidda.model.Location;
 
 /**
  * This class contains location information used for {@link StatusUpdate}
@@ -11,14 +12,30 @@ import androidx.annotation.NonNull;
  */
 public class LocationUpdate {
 
-	private double[] coordinates = new double[2];
+	private double longitude, latitude;
 
 	/**
-	 * @param location Android location information
+	 *
+	 */
+	public LocationUpdate(double longitude, double latitude) {
+		this.longitude = longitude;
+		this.latitude = latitude;
+	}
+
+	/**
+	 * create locationupdate from status location
+	 *
+	 * @param location location information
 	 */
 	public LocationUpdate(Location location) {
-		coordinates[0] = location.getLongitude();
-		coordinates[1] = location.getLatitude();
+		String[] locationStr = location.getCoordinates().split(",");
+		try {
+			this.longitude = Double.parseDouble(locationStr[0]);
+			this.latitude = Double.parseDouble(locationStr[1]);
+		} catch (NumberFormatException e) {
+			longitude = 0.0;
+			latitude = 0.0;
+		}
 	}
 
 	/**
@@ -27,7 +44,7 @@ public class LocationUpdate {
 	 * @return longitute value
 	 */
 	public double getLongitude() {
-		return coordinates[0];
+		return longitude;
 	}
 
 	/**
@@ -36,13 +53,13 @@ public class LocationUpdate {
 	 * @return latitude value
 	 */
 	public double getLatitude() {
-		return coordinates[1];
+		return latitude;
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "longitude=" + coordinates[0] + " latitude=" + coordinates[1];
+		return "longitude=" + longitude + " latitude=" + latitude;
 	}
 }
