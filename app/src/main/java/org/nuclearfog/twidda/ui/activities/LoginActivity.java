@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	private LoginAction loginAsync;
 	private GlobalSettings settings;
 	private ConnectionDialog connectionDialog;
+	private NetworkAdapter adapter;
 
 	private EditText pinInput;
 	private Spinner hostSelector;
@@ -107,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 
-		NetworkAdapter adapter = new NetworkAdapter(this);
+		adapter = new NetworkAdapter(this);
 		connectionDialog = new ConnectionDialog(this);
 		loginAsync = new LoginAction(this);
 		connection = new ConnectionConfig();
@@ -179,6 +180,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			finish();
 		} else {
 			AppStyles.setTheme(root);
+			adapter.notifyDataSetChanged();
 		}
 	}
 

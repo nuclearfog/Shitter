@@ -240,5 +240,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		adapter.setupForHomePage();
 		tabSelector.addTabIcons(settings.getLogin().getConfiguration().getHomeTabIcons());
+		tabSelector.updateTheme();
 	}
 }
