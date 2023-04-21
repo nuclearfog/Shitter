@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.backend.helper.Users;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Account;
@@ -30,7 +31,6 @@ import org.nuclearfog.twidda.model.Status;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import okhttp3.RequestBody;
@@ -105,9 +105,9 @@ public class TwitterV2 extends TwitterV1 {
 
 
 	@Override
-	public List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws TwitterException {
+	public Statuses getStatusReplies(long id, long minId, long maxId, String... extras) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		List<Status> replies = new LinkedList<>();
+		Statuses replies = new Statuses();
 		params.add("query=" + StringUtils.encode("conversation_id:" + id));
 		// Note: minId disabled! Twitter refuses API request containing minId of a tweet older than one week
 		List<Status> result = getTweets(TWEET_SEARCH_2, params, 0, maxId);

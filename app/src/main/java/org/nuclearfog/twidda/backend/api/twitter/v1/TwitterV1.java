@@ -28,6 +28,7 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
@@ -51,7 +52,6 @@ import org.nuclearfog.twidda.model.UserList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -519,19 +519,19 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Status> searchStatuses(String search, long minId, long maxId) throws TwitterException {
+	public Statuses searchStatuses(String search, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringUtils.encode(search + " +exclude:retweets"));
 		params.add("result_type=recent");
 		List<Status> result = getTweets(TWEET_SEARCH, params, minId, maxId);
 		if (settings.filterResults())
 			filterTweets(result);
-		return result;
+		return new Statuses();
 	}
 
 
 	@Override
-	public List<Status> getPublicTimeline(long minId, long maxId) throws TwitterException {
+	public Statuses getPublicTimeline(long minId, long maxId) throws TwitterException {
 		throw new TwitterException("not supported");
 	}
 
@@ -590,13 +590,13 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Status> getHomeTimeline(long minId, long maxId) throws TwitterException {
+	public Statuses getHomeTimeline(long minId, long maxId) throws TwitterException {
 		return getTweets(TWEETS_HOME_TIMELINE, new ArrayList<>(), minId, maxId);
 	}
 
 
 	@Override
-	public List<Status> getUserTimeline(long id, long minId, long maxId) throws TwitterException {
+	public Statuses getUserTimeline(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		return getTweets(TWEETS_USER, params, minId, maxId);
@@ -604,7 +604,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Status> getUserFavorits(long id, long minId, long maxId) throws TwitterException {
+	public Statuses getUserFavorits(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("user_id=" + id);
 		return getTweets(TWEETS_USER_FAVORITS, params, minId, maxId);
@@ -612,13 +612,13 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Status> getUserBookmarks(long minId, long maxId) throws TwitterException {
+	public Statuses getUserBookmarks(long minId, long maxId) throws TwitterException {
 		throw new TwitterException("not implemented!");
 	}
 
 
 	@Override
-	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws TwitterException {
+	public Statuses getUserlistStatuses(long id, long minId, long maxId) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("list_id=" + id);
 		return getTweets(TWEETS_LIST, params, minId, maxId);
@@ -626,24 +626,24 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws TwitterException {
+	public Statuses getStatusReplies(long id, long minId, long maxId, String... extras) throws TwitterException {
 		List<String> params = new ArrayList<>();
-		List<Status> replies = new LinkedList<>();
+		Statuses filteredResults = new Statuses();
 		String replyUsername = extras[0];
 		if (replyUsername.startsWith("@")) {
 			replyUsername = replyUsername.substring(1);
 		}
 		params.add("q=" + StringUtils.encode("to:" + replyUsername + " -filter:retweets"));
-		List<Status> result = getTweets(TWEET_SEARCH, params, Math.max(id, minId), maxId);
+		Statuses result = getTweets(TWEET_SEARCH, params, Math.max(id, minId), maxId);
 		for (Status reply : result) {
 			if (reply.getRepliedStatusId() == id) {
-				replies.add(reply);
+				filteredResults.add(reply);
 			}
 		}
-		if (settings.filterResults() && !replies.isEmpty()) {
-			filterTweets(replies);
+		if (settings.filterResults() && !filteredResults.isEmpty()) {
+			filterTweets(filteredResults);
 		}
-		return replies;
+		return filteredResults;
 	}
 
 
@@ -1175,7 +1175,7 @@ public class TwitterV1 implements Connection {
 	 * @param maxId    maximum tweet ID
 	 * @return list of tweets
 	 */
-	private List<Status> getTweets(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
+	private Statuses getTweets(String endpoint, List<String> params, long minId, long maxId) throws TwitterException {
 		// enable extended tweet mode
 		params.add(TweetV1.PARAM_EXT_MODE);
 		params.add(TweetV1.PARAM_INCL_RETWEET);
@@ -1184,7 +1184,7 @@ public class TwitterV1 implements Connection {
 		if (minId != 0L)
 			params.add("since_id=" + minId);
 		if (maxId != 0L)
-			params.add("max_id=" + maxId);
+			params.add("max_id=" + (maxId - 1L));
 		params.add("count=" + settings.getListSize());
 		try {
 			Response response = get(endpoint, params);
@@ -1197,18 +1197,18 @@ public class TwitterV1 implements Connection {
 					array = new JSONArray(body.string());
 				long homeId = settings.getLogin().getId();
 				String host = settings.getLogin().getHostname();
-				List<Status> tweets = new ArrayList<>(array.length() + 1);
+				Statuses statuses = new Statuses();
 				for (int i = 0; i < array.length(); i++) {
 					try {
 						JSONObject tweetJson = array.getJSONObject(i);
-						tweets.add(new TweetV1(tweetJson, host, homeId));
+						statuses.add(new TweetV1(tweetJson, host, homeId));
 					} catch (JSONException e) {
 						if (BuildConfig.DEBUG) {
 							Log.w("tweet", e);
 						}
 					}
 				}
-				return tweets;
+				return statuses;
 			}
 			throw new TwitterException(response);
 		} catch (IOException | JSONException err) {

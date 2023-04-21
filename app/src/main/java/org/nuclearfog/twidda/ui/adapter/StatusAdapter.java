@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
@@ -17,10 +18,6 @@ import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.StatusHolder;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter to show statuses
@@ -55,7 +52,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private final List<Status> items;
+	private Statuses items;
 	private int loadingIndex;
 
 	/**
@@ -66,7 +63,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);
 		loadingIndex = NO_LOADING;
-		items = new LinkedList<>();
+		items = new Statuses();
 		this.listener = itemClickListener;
 	}
 
@@ -113,31 +110,23 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 
 	@Override
 	public boolean onPlaceholderClick(int index) {
-		long sinceId = 0;
-		long maxId = 0;
+		long minId = 0L;
+		long maxId = 0L;
 		if (index == 0) {
-			if (items.size() > 1) {
-				Status status = items.get(1);
-				if (status != null) {
-					sinceId = status.getId();
-				}
-			}
+			minId = items.getMinId();
 		} else if (index == items.size() - 1) {
-			Status status = items.get(index - 1);
-			if (status != null) {
-				maxId = status.getId() - 1L;
-			}
+			maxId = items.getMaxId();
 		} else {
 			Status status = items.get(index + 1);
 			if (status != null) {
-				sinceId = status.getId();
+				minId = status.getId();
 			}
 			status = items.get(index - 1);
 			if (status != null) {
-				maxId = status.getId() - 1L;
+				maxId = status.getId();
 			}
 		}
-		boolean success = listener.onPlaceholderClick(sinceId, maxId, index);
+		boolean success = listener.onPlaceholderClick(minId, maxId, index);
 		if (success) {
 			loadingIndex = index;
 			return true;
@@ -171,7 +160,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 * @param newItems list of statuses to insert
 	 * @param index    position to insert
 	 */
-	public void addItems(@NonNull List<Status> newItems, int index) {
+	public void addItems(@NonNull Statuses newItems, int index) {
 		disableLoading();
 		if (newItems.size() > MIN_COUNT) {
 			if (items.isEmpty() || items.get(index) != null) {
@@ -195,12 +184,10 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 *
 	 * @param newItems list of statuses to add
 	 */
-	public void replaceItems(@NonNull List<Status> newItems) {
-		items.clear();
-		items.addAll(newItems);
-		if (newItems.size() > MIN_COUNT) {
+	public void replaceItems(@NonNull Statuses newItems) {
+		items.replaceAll(newItems);
+		if (items.size() > MIN_COUNT && items.getMaxId() != Statuses.NO_ID)
 			items.add(null);
-		}
 		loadingIndex = NO_LOADING;
 		notifyDataSetChanged();
 	}
@@ -211,7 +198,11 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 * @param newItems array of statuses to add
 	 */
 	public void replaceItems(Status[] newItems) {
-		replaceItems(Arrays.asList(newItems));
+		items.replaceAll(newItems);
+		if (items.size() > MIN_COUNT)
+			items.add(null);
+		loadingIndex = NO_LOADING;
+		notifyDataSetChanged();
 	}
 
 	/**

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.helper.Messages;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
@@ -443,7 +444,7 @@ public class AppDatabase {
 	 *
 	 * @param statuses status from home timeline
 	 */
-	public void saveHomeTimeline(List<Status> statuses) {
+	public void saveHomeTimeline(Statuses statuses) {
 		synchronized (LOCK) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
@@ -459,7 +460,7 @@ public class AppDatabase {
 	 *
 	 * @param statuses user timeline
 	 */
-	public void saveUserTimeline(List<Status> statuses) {
+	public void saveUserTimeline(Statuses statuses) {
 		synchronized (LOCK) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
@@ -476,7 +477,7 @@ public class AppDatabase {
 	 * @param statuses status favored by user
 	 * @param ownerId  user ID
 	 */
-	public void saveFavoriteTimeline(List<Status> statuses, long ownerId) {
+	public void saveFavoriteTimeline(Statuses statuses, long ownerId) {
 		synchronized (LOCK) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete old favorits
@@ -499,7 +500,7 @@ public class AppDatabase {
 	 * @param statuses bookmarked statuses
 	 * @param ownerId  id of the owner
 	 */
-	public void saveBookmarkTimeline(List<Status> statuses, long ownerId) {
+	public void saveBookmarkTimeline(Statuses statuses, long ownerId) {
 		synchronized (LOCK) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete old favorits
@@ -521,7 +522,7 @@ public class AppDatabase {
 	 *
 	 * @param statuses status replies
 	 */
-	public void saveReplyTimeline(List<Status> statuses) {
+	public void saveReplyTimeline(Statuses statuses) {
 		synchronized (LOCK) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
@@ -756,7 +757,7 @@ public class AppDatabase {
 	 *
 	 * @return home timeline
 	 */
-	public List<Status> getHomeTimeline() {
+	public Statuses getHomeTimeline() {
 		synchronized (LOCK) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
@@ -773,7 +774,7 @@ public class AppDatabase {
 	 * @param userID user ID
 	 * @return user timeline
 	 */
-	public List<Status> getUserTimeline(long userID) {
+	public Statuses getUserTimeline(long userID) {
 		synchronized (LOCK) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
@@ -790,14 +791,16 @@ public class AppDatabase {
 	 * @param ownerID user ID
 	 * @return favorite timeline
 	 */
-	public List<Status> getUserFavorites(long ownerID) {
+	public Statuses getUserFavorites(long ownerID) {
 		synchronized (LOCK) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(USER_FAVORIT_QUERY, args);
-			return getStatuses(cursor, db);
+			Statuses statuses = getStatuses(cursor, db);
+			statuses.setMaxId(Statuses.NO_ID);
+			return statuses;
 		}
 	}
 
@@ -807,14 +810,16 @@ public class AppDatabase {
 	 * @param ownerID user ID
 	 * @return bookmark timeline
 	 */
-	public List<Status> getUserBookmarks(long ownerID) {
+	public Statuses getUserBookmarks(long ownerID) {
 		synchronized (LOCK) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(USER_BOOKMARKS_QUERY, args);
-			return getStatuses(cursor, db);
+			Statuses statuses = getStatuses(cursor, db);
+			statuses.setMaxId(Statuses.NO_ID);
+			return statuses;
 		}
 	}
 
@@ -824,7 +829,7 @@ public class AppDatabase {
 	 * @param id status ID
 	 * @return status reply timeline
 	 */
-	public List<Status> getReplies(long id) {
+	public Statuses getReplies(long id) {
 		synchronized (LOCK) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
@@ -1369,16 +1374,17 @@ public class AppDatabase {
 	 * @param cursor cursor with statuses
 	 * @return status list
 	 */
-	private List<Status> getStatuses(Cursor cursor, SQLiteDatabase db) {
-		List<Status> result = new LinkedList<>();
+	private Statuses getStatuses(Cursor cursor, SQLiteDatabase db) {
+		Statuses statuses = new Statuses();
 		if (cursor.moveToFirst()) {
 			do {
 				Status status = getStatus(cursor, db);
-				result.add(status);
+				statuses.add(status);
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
-		return result;
+		Collections.sort(statuses);
+		return statuses;
 	}
 
 	/**

@@ -28,6 +28,7 @@ import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.helper.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
@@ -51,9 +52,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -121,6 +123,9 @@ public class Mastodon implements Connection {
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
+
+	private static final Pattern PATTERN_MIN_ID = Pattern.compile("min_id=\\d+");
+	private static final Pattern PATTERN_MAX_ID = Pattern.compile("max_id=\\d+");
 
 	private GlobalSettings settings;
 	private OkHttpClient client;
@@ -391,7 +396,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> searchStatuses(String search, long minId, long maxId) throws MastodonException {
+	public Statuses searchStatuses(String search, long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("local=" + settings.useLocalTimeline());
 		if (search.matches("#\\S+")) {
@@ -405,7 +410,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getPublicTimeline(long minId, long maxId) throws MastodonException {
+	public Statuses getPublicTimeline(long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("local=" + settings.useLocalTimeline());
 		return getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
@@ -467,42 +472,42 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Status> getHomeTimeline(long minId, long maxId) throws MastodonException {
+	public Statuses getHomeTimeline(long minId, long maxId) throws MastodonException {
 		return getStatuses(ENDPOINT_HOME_TIMELINE, new ArrayList<>(0), minId, maxId);
 	}
 
 
 	@Override
-	public List<Status> getUserTimeline(long id, long minId, long maxId) throws MastodonException {
+	public Statuses getUserTimeline(long id, long minId, long maxId) throws MastodonException {
 		String endpoint = ENDPOINT_USER_TIMELINE + id + "/statuses";
 		return getStatuses(endpoint, new ArrayList<>(), minId, maxId);
 	}
 
 
 	@Override
-	public List<Status> getUserFavorits(long id, long minId, long maxId) throws MastodonException {
+	public Statuses getUserFavorits(long id, long minId, long maxId) throws MastodonException {
 		if (id == settings.getLogin().getId()) // mastodon only returns favorits of the authenticating user
-			return getStatuses(ENDPOINT_USER_FAVORITS, new ArrayList<>(), minId, maxId);
-		return new ArrayList<>(0);
+			return getStatuses(ENDPOINT_USER_FAVORITS, new ArrayList<>(), maxId, minId); // min_id and max_id swapped by Mastodon
+		return new Statuses();
 	}
 
 
 	@Override
-	public List<Status> getUserBookmarks(long minId, long maxId) throws MastodonException {
-		return getStatuses(ENDPOINT_BOOKMARKS, new ArrayList<>(), minId, maxId);
+	public Statuses getUserBookmarks(long minId, long maxId) throws MastodonException {
+		return getStatuses(ENDPOINT_BOOKMARKS, new ArrayList<>(), maxId, minId); // min_id and max_id swapped by Mastodon
 	}
 
 
 	@Override
-	public List<Status> getUserlistStatuses(long id, long minId, long maxId) throws MastodonException {
+	public Statuses getUserlistStatuses(long id, long minId, long maxId) throws MastodonException {
 		return getStatuses(ENDPOINT_LIST_TIMELINE + id, new ArrayList<>(0), minId, maxId);
 	}
 
 
 	@Override
-	public List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws MastodonException {
-		List<Status> statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
-		List<Status> result = new LinkedList<>();
+	public Statuses getStatusReplies(long id, long minId, long maxId, String... extras) throws MastodonException {
+		Statuses statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
+		Statuses result = new Statuses();
 		for (Status status : statusThreads) {
 			// Mastodon doesn't support min/max ID.
 			if (status.getRepliedStatusId() == id && (minId == 0 || status.getId() > minId) && (maxId == 0 || status.getId() < maxId)) {
@@ -913,7 +918,7 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		if (minId != 0L)
 			params.add("since_id=" + minId);
-		if (maxId > minId)
+		if (maxId != 0L)
 			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());
 		try {
@@ -1024,14 +1029,14 @@ public class Mastodon implements Connection {
 	 * @param maxId    maximum status ID
 	 * @return status  timeline
 	 */
-	private List<Status> getStatuses(String endpoint, List<String> params, long minId, long maxId) throws MastodonException {
+	private Statuses getStatuses(String endpoint, List<String> params, long minId, long maxId) throws MastodonException {
 		if (minId != 0L)
 			params.add("min_id=" + minId);
-		if (maxId > minId)
+		if (maxId != 0L)
 			params.add("max_id=" + maxId);
 		params.add("limit=" + settings.getListSize());
 		try {
-			List<Status> result = createStatuses(get(endpoint, params));
+			Statuses result = createStatuses(get(endpoint, params));
 			if (result.size() > 1)
 				Collections.sort(result);
 			return result;
@@ -1176,7 +1181,7 @@ public class Mastodon implements Connection {
 	 * @param response endpoint response
 	 * @return list of statuses
 	 */
-	private List<Status> createStatuses(Response response) throws MastodonException {
+	private Statuses createStatuses(Response response) throws MastodonException {
 		try {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
@@ -1191,7 +1196,8 @@ public class Mastodon implements Connection {
 				} else {
 					statuses = new JSONArray(jsonStr);
 				}
-				List<Status> result = new ArrayList<>(statuses.length());
+				long[] cursors = getCursors(response);
+				Statuses result = new Statuses(cursors[0], cursors[1]);
 				long currentId = settings.getLogin().getId();
 				for (int i = 0; i < statuses.length(); i++) {
 					result.add(new MastodonStatus(statuses.getJSONObject(i), currentId));
@@ -1422,24 +1428,22 @@ public class Mastodon implements Connection {
 	 * get cursors from header
 	 *
 	 * @param response response to get the header
-	 * @return array of cursors
+	 * @return array of cursors [min_id, max_id]
 	 */
 	private long[] getCursors(Response response) {
 		String headerStr = response.header("Link", "");
 		long[] cursors = {0L, 0L};
-		if (headerStr != null) {
+		if (headerStr != null && !headerStr.trim().isEmpty()) {
 			try {
-				int start = headerStr.indexOf("since_id=");
-				if (start >= 0) {
-					int end = headerStr.indexOf(">", start);
-					String test = headerStr.substring(start + 9, end);
-					cursors[0] = Long.parseLong(test);
+				Matcher m = PATTERN_MIN_ID.matcher(headerStr);
+				if (m.find()) {
+					String min_id_str = headerStr.substring(m.start() + 7, m.end());
+					cursors[0] = Long.parseLong(min_id_str);
 				}
-				start = headerStr.indexOf("max_id=");
-				if (start >= 0) {
-					int end = headerStr.indexOf(">", start);
-					String test = headerStr.substring(start + 7, end);
-					cursors[1] = Long.parseLong(test);
+				m = PATTERN_MAX_ID.matcher(headerStr);
+				if (m.find()) {
+					String max_id_str = headerStr.substring(m.start() + 7, m.end());
+					cursors[1] = Long.parseLong(max_id_str);
 				}
 			} catch (NumberFormatException e) {
 				e.printStackTrace();

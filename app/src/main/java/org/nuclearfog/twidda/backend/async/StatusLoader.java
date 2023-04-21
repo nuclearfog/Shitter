@@ -10,11 +10,10 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
-import java.util.List;
 
 /**
  * Background task to download a list of statuses from different sources
@@ -37,104 +36,104 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 
 
 	@Override
-	protected StatusResult doInBackground(@NonNull StatusParameter request) {
-		List<Status> statuses = null;
-		int position = request.pos;
+	protected StatusResult doInBackground(@NonNull StatusParameter param) {
+		Statuses statuses = null;
+		int position = param.pos;
 		try {
-			switch (request.type) {
+			switch (param.type) {
 				case StatusParameter.HOME:
-					if (request.minId == 0L && request.maxId == 0L) {
+					if (param.minId == 0L && param.maxId == 0L) {
 						statuses = db.getHomeTimeline();
 						if (statuses.isEmpty()) {
 							statuses = connection.getHomeTimeline(0L, 0L);
 							db.saveHomeTimeline(statuses);
 						}
 					} else {
-						statuses = connection.getHomeTimeline(request.minId, request.maxId);
-						if (request.maxId == 0L) {
+						statuses = connection.getHomeTimeline(param.minId, param.maxId);
+						if (param.maxId == 0L) {
 							db.saveHomeTimeline(statuses);
 						}
 					}
 					break;
 
 				case StatusParameter.USER:
-					if (request.minId == 0L && request.maxId == 0L) {
-						statuses = db.getUserTimeline(request.id);
+					if (param.minId == 0L && param.maxId == 0L) {
+						statuses = db.getUserTimeline(param.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getUserTimeline(request.id, 0L, 0L);
+							statuses = connection.getUserTimeline(param.id, 0L, 0L);
 							db.saveUserTimeline(statuses);
 						}
 					} else {
-						statuses = connection.getUserTimeline(request.id, request.minId, request.maxId);
-						if (request.maxId == 0L) {
+						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId);
+						if (param.maxId == 0L) {
 							db.saveUserTimeline(statuses);
 						}
 					}
 					break;
 
 				case StatusParameter.FAVORIT:
-					if (request.minId == 0L && request.maxId == 0L) {
-						statuses = db.getUserFavorites(request.id);
+					if (param.minId == 0L && param.maxId == 0L) {
+						statuses = db.getUserFavorites(param.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getUserFavorits(request.id, 0L, 0L);
-							db.saveFavoriteTimeline(statuses, request.id);
+							statuses = connection.getUserFavorits(param.id, 0L, 0L);
+							db.saveFavoriteTimeline(statuses, param.id);
 						}
 					} else {
-						statuses = connection.getUserFavorits(request.id, 0L, request.maxId);
-						if (request.maxId == 0L) {
-							db.saveFavoriteTimeline(statuses, request.id);
+						statuses = connection.getUserFavorits(param.id, 0L, param.maxId);
+						if (param.maxId == 0L) {
+							db.saveFavoriteTimeline(statuses, param.id);
 							position = CLEAR_LIST; // clear previous items
 						}
 					}
 					break;
 
 				case StatusParameter.BOOKMARKS:
-					if (request.minId == 0L && request.maxId == 0L) {
-						statuses = db.getUserBookmarks(request.id);
+					if (param.minId == 0L && param.maxId == 0L) {
+						statuses = db.getUserBookmarks(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserBookmarks(0L, 0L);
-							db.saveBookmarkTimeline(statuses, request.id);
+							db.saveBookmarkTimeline(statuses, param.id);
 						}
 					} else {
-						statuses = connection.getUserBookmarks(0L, request.maxId);
-						if (request.maxId == 0L) {
-							db.saveBookmarkTimeline(statuses, request.id);
+						statuses = connection.getUserBookmarks(0L, param.maxId);
+						if (param.maxId == 0L) {
+							db.saveBookmarkTimeline(statuses, param.id);
 							position = CLEAR_LIST; // clear previous items
 						}
 					}
 					break;
 
 				case StatusParameter.REPLIES_LOCAL:
-					statuses = db.getReplies(request.id);
+					statuses = db.getReplies(param.id);
 					break;
 
 				case StatusParameter.REPLIES:
-					if (request.minId == 0L && request.maxId == 0L) {
-						statuses = db.getReplies(request.id);
+					if (param.minId == 0L && param.maxId == 0L) {
+						statuses = db.getReplies(param.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getStatusReplies(request.id, 0L, 0L, request.search);
-							if (db.containsStatus(request.id)) {
+							statuses = connection.getStatusReplies(param.id, 0L, 0L, param.search);
+							if (db.containsStatus(param.id)) {
 								db.saveReplyTimeline(statuses);
 							}
 						}
 					} else {
-						statuses = connection.getStatusReplies(request.id, request.minId, request.maxId, request.search);
-						if (request.maxId == 0L && db.containsStatus(request.id)) {
+						statuses = connection.getStatusReplies(param.id, param.minId, param.maxId, param.search);
+						if (param.maxId == 0L && db.containsStatus(param.id)) {
 							db.saveReplyTimeline(statuses);
 						}
 					}
 					break;
 
 				case StatusParameter.SEARCH:
-					statuses = connection.searchStatuses(request.search, request.minId, request.maxId);
+					statuses = connection.searchStatuses(param.search, param.minId, param.maxId);
 					break;
 
 				case StatusParameter.USERLIST:
-					statuses = connection.getUserlistStatuses(request.id, request.minId, request.maxId);
+					statuses = connection.getUserlistStatuses(param.id, param.minId, param.maxId);
 					break;
 
 				case StatusParameter.PUBLIC:
-					statuses = connection.getPublicTimeline(request.minId, request.maxId);
+					statuses = connection.getPublicTimeline(param.minId, param.maxId);
 					break;
 			}
 		} catch (ConnectionException exception) {
@@ -181,11 +180,11 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 
 		public final int position;
 		@Nullable
-		public final List<Status> statuses;
+		public final Statuses statuses;
 		@Nullable
 		public final ConnectionException exception;
 
-		StatusResult(@Nullable List<Status> statuses, int position, @Nullable ConnectionException exception) {
+		StatusResult(@Nullable Statuses statuses, int position, @Nullable ConnectionException exception) {
 			this.statuses = statuses;
 			this.position = position;
 			this.exception = exception;

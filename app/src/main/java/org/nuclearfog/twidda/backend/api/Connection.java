@@ -5,6 +5,7 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.Messages;
 import org.nuclearfog.twidda.backend.helper.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.StatusUpdate;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.backend.helper.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.UserLists;
 import org.nuclearfog.twidda.backend.helper.Users;
@@ -243,7 +244,7 @@ public interface Connection {
 	 * @param maxId  get statuses with ID under the max ID
 	 * @return list of statuses matching the search string
 	 */
-	List<Status> searchStatuses(String search, long minId, long maxId) throws ConnectionException;
+	Statuses searchStatuses(String search, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * get public timeline
@@ -252,7 +253,7 @@ public interface Connection {
 	 * @param maxId get statuses with ID under the max ID
 	 * @return statuses of the public timeline
 	 */
-	List<Status> getPublicTimeline(long minId, long maxId) throws ConnectionException;
+	Statuses getPublicTimeline(long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * get location trends
@@ -283,7 +284,7 @@ public interface Connection {
 	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getHomeTimeline(long minId, long maxId) throws ConnectionException;
+	Statuses getHomeTimeline(long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * show the timeline of an user
@@ -293,7 +294,7 @@ public interface Connection {
 	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getUserTimeline(long id, long minId, long maxId) throws ConnectionException;
+	Statuses getUserTimeline(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * show the favorite timeline of an user
@@ -303,7 +304,7 @@ public interface Connection {
 	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getUserFavorits(long id, long minId, long maxId) throws ConnectionException;
+	Statuses getUserFavorits(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * show statuses with bookmarks
@@ -312,7 +313,7 @@ public interface Connection {
 	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getUserBookmarks(long minId, long maxId) throws ConnectionException;
+	Statuses getUserBookmarks(long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * return timeline from an user list
@@ -322,7 +323,7 @@ public interface Connection {
 	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	List<Status> getUserlistStatuses(long id, long minId, long maxId) throws ConnectionException;
+	Statuses getUserlistStatuses(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * get replies of a status
@@ -333,7 +334,7 @@ public interface Connection {
 	 * @param extras additional information like screen name of the status author
 	 * @return list of statuses
 	 */
-	List<Status> getStatusReplies(long id, long minId, long maxId, String... extras) throws ConnectionException;
+	Statuses getStatusReplies(long id, long minId, long maxId, String... extras) throws ConnectionException;
 
 	/**
 	 * lookup status by ID

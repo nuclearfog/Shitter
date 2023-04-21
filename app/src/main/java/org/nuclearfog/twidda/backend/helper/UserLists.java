@@ -82,10 +82,10 @@ public class UserLists extends LinkedList<UserList> {
 	}
 
 	/**
-	 * add a sublist at the bottom of this list including next cursor
+	 * add a sublist at specific index
 	 *
-	 * @param list  new sublist
-	 * @param index Index of the sub list
+	 * @param list  sublist to add
+	 * @param index index where to insert the sublist
 	 */
 	public void addAll(int index, UserLists list) {
 		if (isEmpty()) {
