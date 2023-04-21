@@ -24,7 +24,7 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintBottom_toTopOf="@id/item_user_notification_barrier"
-			app:layout_constraintEnd_toStartOf="@id/item_user_notification_dismiss"/>
+			app:layout_constraintEnd_toStartOf="@id/item_user_notification_dismiss" />
 
 		<ImageButton
 			android:id="@+id/item_user_notification_dismiss"
@@ -40,7 +40,7 @@
 			app:layout_constraintTop_toTopOf="@id/item_user_label"
 			app:layout_constraintBottom_toBottomOf="@id/item_user_label"
 			app:layout_constraintEnd_toEndOf="parent"
-			style="@style/FeedbackButton"/>
+			style="@style/FeedbackButton" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/item_user_notification_barrier"

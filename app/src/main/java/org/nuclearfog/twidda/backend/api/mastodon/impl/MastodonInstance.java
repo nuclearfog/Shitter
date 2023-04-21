@@ -63,7 +63,7 @@ public class MastodonInstance implements Instance {
 		translationSupported = translations.getBoolean("enabled");
 
 		mimeTypes = new String[mediaTypes.length()];
-		for (int i = 0 ; i < mimeTypes.length ; i++) {
+		for (int i = 0; i < mimeTypes.length; i++) {
 			mimeTypes[i] = mediaTypes.getString(i);
 		}
 		if (!domain.startsWith("http")) {

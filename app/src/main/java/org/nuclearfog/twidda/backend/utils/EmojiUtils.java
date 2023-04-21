@@ -25,7 +25,8 @@ public class EmojiUtils {
 	private static final Pattern EMOJI_PATTERN = Pattern.compile(":\\w+:");
 
 
-	private EmojiUtils() {}
+	private EmojiUtils() {
+	}
 
 	/**
 	 * replace tags with emojis

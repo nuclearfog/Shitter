@@ -197,8 +197,6 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		}
 	}
 
-
-
 	/**
 	 * item click listener
 	 * todo find a replace for this listener class

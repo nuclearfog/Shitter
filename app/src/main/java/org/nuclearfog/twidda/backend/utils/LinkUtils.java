@@ -26,7 +26,8 @@ public class LinkUtils {
 	 */
 	private static final Pattern TWITTER_LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
-	private LinkUtils() {}
+	private LinkUtils() {
+	}
 
 	/**
 	 * Open a link, regarding it's content
@@ -46,8 +47,7 @@ public class LinkUtils {
 			intent.putExtra(StatusActivity.KEY_STATUS_NAME, segments.get(0));
 			activity.startActivity(intent);
 			return;
-		}
-		else if (url.startsWith("https://twitter.com") && settings.twitterAltSet()) {
+		} else if (url.startsWith("https://twitter.com") && settings.twitterAltSet()) {
 			url = "https://nitter.net" + link.getPath();
 			link = Uri.parse(url);
 		}

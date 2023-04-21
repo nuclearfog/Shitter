@@ -100,7 +100,7 @@ public class PollV2 implements Poll {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Poll && ((Poll)o).getId() == getId();
+		return o instanceof Poll && ((Poll) o).getId() == getId();
 	}
 
 

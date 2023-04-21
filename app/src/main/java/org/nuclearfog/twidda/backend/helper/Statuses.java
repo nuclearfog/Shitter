@@ -88,7 +88,7 @@ public class Statuses extends LinkedList<Status> {
 			return maxId;
 		}
 		Iterator<Status> iterator = descendingIterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			Status item = iterator.next();
 			if (item != null) {
 				return item.getId();

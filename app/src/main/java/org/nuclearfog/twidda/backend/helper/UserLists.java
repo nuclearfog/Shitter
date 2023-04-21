@@ -29,6 +29,7 @@ public class UserLists extends LinkedList<UserList> {
 	}
 
 	/**
+	 *
 	 */
 	public UserLists(UserLists userLists) {
 		super.addAll(userLists);

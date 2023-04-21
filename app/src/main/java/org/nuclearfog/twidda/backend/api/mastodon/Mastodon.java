@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonInstance;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
@@ -969,7 +969,7 @@ public class Mastodon implements Connection {
 				return new MastodonTranslation(json);
 			}
 			throw new MastodonException(response);
-		} catch (IOException|JSONException e) {
+		} catch (IOException | JSONException e) {
 			throw new MastodonException(e);
 		}
 	}
@@ -990,7 +990,7 @@ public class Mastodon implements Connection {
 				return new MastodonUser(json);
 			}
 			throw new MastodonException(response);
-		} catch (IOException|JSONException e) {
+		} catch (IOException | JSONException e) {
 			throw new MastodonException(e);
 		}
 	}

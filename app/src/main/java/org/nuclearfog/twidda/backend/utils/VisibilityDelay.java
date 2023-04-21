@@ -15,7 +15,7 @@ public class VisibilityDelay implements Runnable {
 	private boolean visibility;
 
 	/**
-	 * @param view view to set visibility
+	 * @param view       view to set visibility
 	 * @param visibility true to set view visible
 	 */
 	public VisibilityDelay(View view, boolean visibility) {

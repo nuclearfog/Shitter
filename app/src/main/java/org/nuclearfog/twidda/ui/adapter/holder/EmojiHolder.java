@@ -62,7 +62,7 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 			for (int i = 0; i < emojiViews.length; i++) {
 				if (v == emojiViews[i]) {
 					listener.onItemClick(pos, OnHolderClickListener.EMOJI_CLICK, i);
-					v.startAnimation(AnimationUtils.loadAnimation(v.getContext(),R.anim.emoji));
+					v.startAnimation(AnimationUtils.loadAnimation(v.getContext(), R.anim.emoji));
 				}
 			}
 		}
@@ -74,7 +74,7 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 	 * @param emojis a group of emojis
 	 */
 	public void setData(Emoji[] emojis) {
-		for (int i = 0 ; i < emojiViews.length ; i++) {
+		for (int i = 0; i < emojiViews.length; i++) {
 			Emoji emoji = null;
 			if (i < emojis.length)
 				emoji = emojis[i];

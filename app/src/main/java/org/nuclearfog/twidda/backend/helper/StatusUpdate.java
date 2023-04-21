@@ -347,7 +347,7 @@ public class StatusUpdate implements Serializable {
 	 */
 	public Uri[] getMediaUris() {
 		Uri[] result = new Uri[previews.size()];
-		for (int i = 0 ; i < result.length ; i++) {
+		for (int i = 0; i < result.length; i++) {
 			result[i] = Uri.parse(previews.get(i));
 		}
 		return result;

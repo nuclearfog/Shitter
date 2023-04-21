@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/page_video_root"
 	android:orientation="vertical"
@@ -13,12 +12,12 @@
 		android:id="@+id/page_video_toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/page_status_toolbar_height"
-		android:visibility="gone"/>
+		android:visibility="gone" />
 
 	<com.google.android.exoplayer2.ui.StyledPlayerView
 		android:id="@+id/page_video_player"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="1"/>
+		android:layout_weight="1" />
 
 </LinearLayout>

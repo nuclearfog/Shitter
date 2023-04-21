@@ -105,9 +105,12 @@ public class UserListUpdate implements Serializable {
 		return listId != NO_ID;
 	}
 
+
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + listId + " title=\"" + title + "\"";
+		if (listId != NO_ID)
+			return "id=" + listId + " title=\"" + title + "\"";
+		return "title=\"" + title + "\"";
 	}
 }

@@ -135,6 +135,8 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		super.onViewCreated(view, savedInstanceState);
 		statusLoader = new StatusLoader(requireContext());
 		adapter = new StatusAdapter(requireContext(), this);
+		setAdapter(adapter);
+
 		Bundle param = getArguments();
 		if (param != null) {
 			mode = param.getInt(KEY_STATUS_FRAGMENT_MODE, 0);
@@ -147,7 +149,6 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				adapter.replaceItems((Statuses) data);
 			}
 		}
-		setAdapter(adapter);
 		load(0L, 0L, CLEAR_LIST);
 		setRefresh(true);
 	}

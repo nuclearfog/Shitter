@@ -87,14 +87,15 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		userlistLoader = new ListLoader(requireContext());
+		adapter = new UserlistAdapter(requireContext(), this);
+		setAdapter(adapter);
+
 		Bundle param = getArguments();
 		if (param != null) {
 			id = param.getLong(KEY_FRAGMENT_USERLIST_OWNER_ID, -1L);
 			type = param.getInt(KEY_FRAGMENT_USERLIST_TYPE);
 		}
-		userlistLoader = new ListLoader(requireContext());
-		adapter = new UserlistAdapter(requireContext(), this);
-		setAdapter(adapter);
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_USERLIST_SAVE);
 			if (data instanceof UserLists) {

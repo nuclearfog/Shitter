@@ -91,6 +91,6 @@
 		app:layout_constraintWidth_percent="0.12"
 		app:layout_constraintStart_toEndOf="@id/item_emoji_5"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

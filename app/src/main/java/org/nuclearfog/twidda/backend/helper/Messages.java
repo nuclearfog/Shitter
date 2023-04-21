@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.model.Message;
 import java.util.LinkedList;
 
 /**
- * Message list container class containing cursor information
+ * Custom message list implementation containing cursor information
  *
  * @author nuclearfog
  */

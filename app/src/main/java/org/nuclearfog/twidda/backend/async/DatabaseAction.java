@@ -29,7 +29,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 	@Override
 	protected DatabaseResult doInBackground(@NonNull DatabaseParam param) {
 		try {
-			switch(param.mode) {
+			switch (param.mode) {
 				case DatabaseParam.DELETE:
 					db.resetDatabase();
 					return new DatabaseResult(DatabaseResult.DELETE);

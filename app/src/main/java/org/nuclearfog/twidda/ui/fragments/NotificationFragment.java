@@ -66,6 +66,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		notificationAction = new NotificationAction(requireContext());
 		adapter = new NotificationAdapter(requireContext(), this);
 		setAdapter(adapter);
+
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_NOTIFICATION_DATA);
 			if (data instanceof Notification[]) {

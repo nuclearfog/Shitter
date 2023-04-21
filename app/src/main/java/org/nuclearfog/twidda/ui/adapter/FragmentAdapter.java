@@ -26,8 +26,8 @@ import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_LIST_SUB
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_MUTED_USERS;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_REPOST;
 import static org.nuclearfog.twidda.ui.fragments.UserFragment.USER_FRAG_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAGMENT_USERLIST_TYPE;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAGMENT_USERLIST_OWNER_ID;
+import static org.nuclearfog.twidda.ui.fragments.UserListFragment.KEY_FRAGMENT_USERLIST_TYPE;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_OWNS;
 import static org.nuclearfog.twidda.ui.fragments.UserListFragment.LIST_USER_SUBSCR_TO;
 

@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.InstanceTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
@@ -25,7 +26,6 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserExcludeTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.InstanceTable;
 import org.nuclearfog.twidda.database.impl.DatabaseAccount;
 import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
 import org.nuclearfog.twidda.database.impl.DatabaseInstance;
@@ -990,7 +990,7 @@ public class AppDatabase {
 	/**
 	 * get user information
 	 *
-	 * @param userId  ID of user
+	 * @param userId ID of user
 	 * @return user information or null if not found
 	 */
 	@Nullable

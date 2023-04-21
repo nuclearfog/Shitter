@@ -145,7 +145,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 * adds new data to the list
 	 *
 	 * @param newUserlists new items to add
-	 * @param index index where to insert new items
+	 * @param index        index where to insert new items
 	 */
 	public void addItems(UserLists newUserlists, int index) {
 		disableLoading();
@@ -161,7 +161,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 			if (userlists.getNext() != 0L && userlists.peekLast() != null) {
 				userlists.add(null);
 				notifyItemRangeInserted(index, newUserlists.size() + 1);
-			} else if (userlists.getNext() == 0L && userlists.peekLast() == null)  {
+			} else if (userlists.getNext() == 0L && userlists.peekLast() == null) {
 				userlists.pollLast();
 				notifyItemRangeInserted(index, newUserlists.size() - 1);
 			} else {
@@ -251,7 +251,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 		 * called when the placeholder is clicked
 		 *
 		 * @param cursor next cursor of the list
-		 * @param index index of the placeholder
+		 * @param index  index of the placeholder
 		 */
 		boolean onPlaceholderClick(long cursor, int index);
 	}

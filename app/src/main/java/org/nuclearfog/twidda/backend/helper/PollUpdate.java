@@ -77,17 +77,23 @@ public class PollUpdate {
 		this.duration = duration;
 	}
 
-
+	/**
+	 * @param hideTotals true to hide vote counts of the options until vote finished
+	 */
 	public void hideVotes(boolean hideTotals) {
 		this.hideTotals = hideTotals;
 	}
 
-
+	/**
+	 * @param multipleChoice enable/disable multiple choice
+	 */
 	public void setMultipleChoice(boolean multipleChoice) {
 		this.multipleChoice = multipleChoice;
 	}
 
-
+	/**
+	 * @param options a list of vote options
+	 */
 	public void setOptions(List<String> options) {
 		this.options.clear();
 		this.options.addAll(options);

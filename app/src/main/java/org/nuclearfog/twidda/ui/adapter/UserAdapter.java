@@ -48,20 +48,16 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	private UserClickListener listener;
 	private boolean enableDelete;
 
-	private Users users;
-	private int loadingIndex;
+	private Users users = new Users(0L, 0L);
+	private int loadingIndex = NO_LOADING;
 
 	/**
-	 * @param listener     click listener
-	 * @param enableDelete true to enable delete button
+	 * @param listener item click listener
 	 */
-	public UserAdapter(Context context, UserClickListener listener, boolean enableDelete) {
+	public UserAdapter(Context context, UserClickListener listener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);
-		users = new Users(0L, 0L);
-		loadingIndex = NO_LOADING;
-		this.enableDelete = enableDelete;
 		this.listener = listener;
 	}
 
@@ -227,6 +223,15 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	}
 
 	/**
+	 * enable delete button
+	 *
+	 * @param enableDelete true to enable delete button
+	 */
+	public void enableDeleteButton(boolean enableDelete) {
+		this.enableDelete = enableDelete;
+	}
+
+	/**
 	 * Listener for list click
 	 */
 	public interface UserClickListener {
@@ -242,7 +247,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 		 * handle placeholder click
 		 *
 		 * @param cursor next cursor of the list
-		 * @param index index of the placeholder
+		 * @param index  index of the placeholder
 		 * @return true if click was handled
 		 */
 		boolean onPlaceholderClick(long cursor, int index);

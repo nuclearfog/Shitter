@@ -6,9 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.net.Uri;
 import android.util.AttributeSet;
-import androidx.appcompat.widget.AppCompatImageView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -49,7 +49,7 @@ public class AnimatedImageView extends AppCompatImageView {
 	 */
 	@Override
 	public void setImageURI(@Nullable Uri uri) {
-		ContentResolver resolver =  getContext().getContentResolver();
+		ContentResolver resolver = getContext().getContentResolver();
 		String mime = resolver.getType(uri);
 		if (mime != null && mime.equals("image/gif")) {
 			try {

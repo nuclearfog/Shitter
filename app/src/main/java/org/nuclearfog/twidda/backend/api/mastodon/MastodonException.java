@@ -60,7 +60,7 @@ public class MastodonException extends ConnectionException {
 			errorCode = ERROR_NETWORK;
 		} else if (e instanceof JSONException) {
 			errorCode = ERROR_JSON;
-		}  else if (e instanceof ConnectException) {
+		} else if (e instanceof ConnectException) {
 			errorCode = NO_CONNECTION;
 		} else if (getCause() instanceof InterruptedException) {
 			errorCode = ERROR_INTERRUPTED;

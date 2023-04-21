@@ -164,17 +164,18 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		userLoader = new UsersLoader(requireContext());
+		adapter = new UserAdapter(requireContext(), this);
+		setAdapter(adapter);
+
 		Bundle param = getArguments();
-		boolean delUser = false;
 		if (param != null) {
 			mode = param.getInt(KEY_FRAG_USER_MODE, 0);
 			id = param.getLong(KEY_FRAG_USER_ID, 0);
 			search = param.getString(KEY_FRAG_USER_SEARCH, "");
-			delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
+			boolean delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
+			adapter.enableDeleteButton(delUser);
 		}
-		userLoader = new UsersLoader(requireContext());
-		adapter = new UserAdapter(requireContext(), this, delUser);
-		setAdapter(adapter);
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(USER_FRAGMENT_SAVE);
 			if (data instanceof Users) {

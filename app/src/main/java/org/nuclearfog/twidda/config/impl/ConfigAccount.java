@@ -162,6 +162,7 @@ public class ConfigAccount implements Account {
 	}
 
 	/**
+	 *
 	 */
 	public void setHostname(String hostname) {
 		this.hostname = hostname;

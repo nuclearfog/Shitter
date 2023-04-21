@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 /**
- * This class is used to upload and download media files
+ * This class contains information about a media source and a inputstream used to download or upload a file.
  *
  * @author nuclearfog
  */
@@ -20,7 +20,6 @@ public class MediaStatus implements Serializable {
 
 	private InputStream inputStream;
 	private String mimeType;
-
 	private String path;
 	private boolean local;
 
@@ -55,16 +54,16 @@ public class MediaStatus implements Serializable {
 	 * @return true if stream is prepared, false if an error occured
 	 */
 	public boolean openStream(ContentResolver resolver) {
-		if (path == null)
-			return false;
-		Uri uri = Uri.parse(path);
-		try {
-			inputStream = resolver.openInputStream(uri);
-			mimeType = resolver.getType(uri);
-			// check if stream is valid
-			return inputStream != null && mimeType != null && inputStream.available() > 0;
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (path != null) {
+			Uri uri = Uri.parse(path);
+			try {
+				inputStream = resolver.openInputStream(uri);
+				mimeType = resolver.getType(uri);
+				// check if stream is valid
+				return inputStream != null && mimeType != null && inputStream.available() > 0;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -90,10 +89,13 @@ public class MediaStatus implements Serializable {
 		try {
 			return inputStream.available();
 		} catch (IOException e) {
-			return 0;
+			return 0L;
 		}
 	}
 
+	/**
+	 * @return true if source stream is local
+	 */
 	public boolean isLocal() {
 		return local;
 	}
@@ -109,9 +111,10 @@ public class MediaStatus implements Serializable {
 		}
 	}
 
+
 	@NonNull
 	@Override
 	public String toString() {
-		return "mime=\"" + mimeType + "\" size=" + available();
+		return "mime=\"" + mimeType + "\" size=" + available() + " path=\"" + path + "\"";
 	}
 }

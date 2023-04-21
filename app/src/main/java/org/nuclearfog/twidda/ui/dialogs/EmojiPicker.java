@@ -43,7 +43,7 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 	public EmojiPicker(@NonNull Activity activity, OnEmojiSelectListener listener) {
 		super(activity, R.style.EmojiPickerDialog);
 		this.listener = listener;
-		GlobalSettings settings  = GlobalSettings.getInstance(getContext());
+		GlobalSettings settings = GlobalSettings.getInstance(getContext());
 		setContentView(R.layout.dialog_emoji_picker);
 		ViewGroup root = findViewById(R.id.dialog_emoji_root);
 		RecyclerView listView = findViewById(R.id.dialog_emoji_list);
@@ -54,7 +54,7 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 		background.getBackground().setColorFilter(settings.getBackgroundColor(), PorterDuff.Mode.SRC_IN);
 		// set height
 		int height = Resources.getSystem().getDisplayMetrics().heightPixels / 4;
-		BottomSheetBehavior<View> mBehavior = BottomSheetBehavior.from((View)root.getParent());
+		BottomSheetBehavior<View> mBehavior = BottomSheetBehavior.from((View) root.getParent());
 		mBehavior.setPeekHeight(height);
 
 		adapter = new EmojiAdapter(getContext(), this);

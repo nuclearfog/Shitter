@@ -1117,7 +1117,7 @@ public class DatabaseAdapter {
 		/**
 		 * status gif attachment limit
 		 */
-		String GIF_LIMIT ="limit_gif";
+		String GIF_LIMIT = "limit_gif";
 
 		/**
 		 * status audio attachment limit

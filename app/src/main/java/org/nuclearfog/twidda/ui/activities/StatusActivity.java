@@ -57,26 +57,26 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
 import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
-import org.nuclearfog.twidda.backend.async.StatusAction;
-import org.nuclearfog.twidda.backend.async.StatusAction.StatusParam;
-import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
 import org.nuclearfog.twidda.backend.async.PollAction;
 import org.nuclearfog.twidda.backend.async.PollAction.PollActionParam;
 import org.nuclearfog.twidda.backend.async.PollAction.PollActionResult;
+import org.nuclearfog.twidda.backend.async.StatusAction;
+import org.nuclearfog.twidda.backend.async.StatusAction.StatusParam;
+import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.TranslationLoader;
 import org.nuclearfog.twidda.backend.async.TranslationLoader.TranslationResult;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
-import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
@@ -196,6 +196,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private static final int SCROLL_THRESHOLD = 10;
 
 	/**
+	 *
 	 */
 	private static final int MENU_GROUP_COPY = 0x157426;
 
@@ -1132,7 +1133,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	}
 
 	/**
-	 *
 	 * @param result status translation result
 	 */
 	private void onTranslationResult(@NonNull TranslationResult result) {

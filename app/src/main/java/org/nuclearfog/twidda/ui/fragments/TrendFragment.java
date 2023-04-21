@@ -52,6 +52,8 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 		super.onViewCreated(view, savedInstanceState);
 		adapter = new TrendAdapter(settings, this);
 		trendLoader = new TrendLoader(requireContext());
+		setAdapter(adapter);
+
 		Bundle args = getArguments();
 		if (args != null) {
 			search = args.getString(KEY_FRAGMENT_TREND_SEARCH, "");
@@ -62,7 +64,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 				adapter.replaceItems((Trend[]) data);
 			}
 		}
-		setAdapter(adapter);
 		setRefresh(true);
 		load();
 	}

@@ -73,7 +73,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 
 	@Override
 	public void onClick(View v) {
-		for (int i = 0 ; i < tabContainer.getChildCount(); i++) {
+		for (int i = 0; i < tabContainer.getChildCount(); i++) {
 			if (tabContainer.getChildAt(i) == v && listener != null) {
 				if (viewPager != null && viewPager.getAdapter() != null && i < viewPager.getAdapter().getItemCount()) {
 					listener.onTabSelected(oldPosition);
@@ -190,6 +190,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	}
 
 	/**
+	 *
 	 */
 	private void setPosition(float positionOffset) {
 		if (viewPager != null && viewPager.getAdapter() != null && tabCount > 0) {
@@ -200,6 +201,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	}
 
 	/**
+	 *
 	 */
 	private void setPage(int page) {
 		if (viewPager != null && viewPager.getAdapter() != null && page < viewPager.getAdapter().getItemCount() && page < tabCount) {

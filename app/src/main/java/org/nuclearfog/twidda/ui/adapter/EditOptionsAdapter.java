@@ -36,7 +36,7 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 	 */
 	public EditOptionsAdapter() {
 		options = new LinkedList<>();
-		for (int i = 0 ; i < MIN_OPTIONS ; i++)
+		for (int i = 0; i < MIN_OPTIONS; i++)
 			options.add("");
 		options.add(null);
 	}
@@ -120,7 +120,7 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 	public void replaceItems(List<String> newOptions) {
 		options.clear();
 		options.addAll(newOptions);
-		for (int i = options.size() ; i < MIN_OPTIONS; i++) {
+		for (int i = options.size(); i < MIN_OPTIONS; i++) {
 			options.add("");
 		}
 		options.add(null);

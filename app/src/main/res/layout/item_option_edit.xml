@@ -13,7 +13,7 @@
 		android:padding="@dimen/item_option_edit_drawable_padding"
 		android:src="@drawable/add"
 		android:contentDescription="@string/poll_option_edit_button"
-		style="@style/FeedbackButton"/>
+		style="@style/FeedbackButton" />
 
 	<EditText
 		android:id="@+id/item_option_edit_name"

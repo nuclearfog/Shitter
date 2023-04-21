@@ -26,10 +26,7 @@ import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSource;
-import com.google.android.exoplayer2.extractor.Extractor;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
-import com.google.android.exoplayer2.extractor.mkv.MatroskaExtractor;
-import com.google.android.exoplayer2.extractor.mp4.Mp4Extractor;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector;
 import com.google.android.exoplayer2.metadata.MetadataOutput;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -97,7 +94,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 			@Override
 			public Renderer[] createRenderers(Handler eventHandler, VideoRendererEventListener videoRendererEventListener,
 			                                  AudioRendererEventListener audioRendererEventListener, TextOutput textRendererOutput, MetadataOutput metadataRendererOutput) {
-				return new Renderer[] {
+				return new Renderer[]{
 						new MediaCodecVideoRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, 0L, eventHandler, videoRendererEventListener, 4),
 						new MediaCodecAudioRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)
 				};
@@ -132,14 +129,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 			};
 		}
 		// initialize video extractor
-		ExtractorsFactory customExtractor = new ExtractorsFactory() {
-			@NonNull
-			@Override
-			public Extractor[] createExtractors() {
-				return new Extractor[] {new Mp4Extractor(), new MatroskaExtractor()};
-			}
-		};
-		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, customExtractor).createMediaSource(mediaItem);
+		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem);
 		player.setMediaSource(mediaSource);
 		playerView.setPlayer(player);
 
