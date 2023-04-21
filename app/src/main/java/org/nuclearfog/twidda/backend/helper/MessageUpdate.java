@@ -10,8 +10,6 @@ import androidx.documentfile.provider.DocumentFile;
 
 import org.nuclearfog.twidda.model.Instance;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
@@ -26,7 +24,7 @@ public class MessageUpdate implements Serializable {
 
 	private static final long serialVersionUID = 991295406939128220L;
 
-	private String uriString;
+	private String mediaUri;
 	private MediaStatus mediaUpdate;
 	private String name = "";
 	private String text = "";
@@ -84,7 +82,7 @@ public class MessageUpdate implements Serializable {
 	 */
 	@Nullable
 	public Uri getMediaUri() {
-		return Uri.parse(uriString);
+		return Uri.parse(mediaUri);
 	}
 
 	/**
@@ -98,14 +96,11 @@ public class MessageUpdate implements Serializable {
 		DocumentFile file = DocumentFile.fromSingleUri(context, uri);
 		String mime = context.getContentResolver().getType(uri);
 		// check if file is valid
-		if (file == null || file.length() == 0) {
+		if (mime == null || file == null || file.length() == 0 || !supportedFormats.contains(mime)) {
 			return false;
 		}
-		// check if file format is supported
-		if (mime == null || !supportedFormats.contains(mime)) {
-			return false;
-		}
-		this.uriString = uri.toString();
+		this.mediaUri = uri.toString();
+		mediaUpdate = new MediaStatus(uri.toString(), mime);
 		return true;
 	}
 
@@ -115,22 +110,7 @@ public class MessageUpdate implements Serializable {
 	 * @return true if initialization succeded
 	 */
 	public boolean prepare(ContentResolver resolver) {
-		if (uriString == null) {
-			// no need to check media files if not attached
-			return true;
-		}
-		try {
-			Uri uri = Uri.parse(uriString);
-			String mimeType = resolver.getType(uri);
-			InputStream fileStream = resolver.openInputStream(uri);
-			if (fileStream != null && mimeType != null && fileStream.available() > 0) {
-				mediaUpdate = new MediaStatus(fileStream, mimeType);
-				return true;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
+		return mediaUpdate == null || mediaUpdate.openStream(resolver);
 	}
 
 	/**
@@ -163,6 +143,6 @@ public class MessageUpdate implements Serializable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "to=\"" + name + "\" text=\"" + text + "\" media=" + (mediaUpdate != null);
+		return "to=\"" + name + "\" text=\"" + text + "\" media=" + mediaUpdate;
 	}
 }

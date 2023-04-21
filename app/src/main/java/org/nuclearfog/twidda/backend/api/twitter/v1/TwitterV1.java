@@ -722,7 +722,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Status uploadStatus(StatusUpdate update, long[] mediaIds) throws TwitterException {
+	public Status uploadStatus(StatusUpdate update, List<Long> mediaIds) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (update.getText() != null)
 			params.add("status=" + StringUtils.encode(update.getText()));
@@ -730,7 +730,7 @@ public class TwitterV1 implements Connection {
 			params.add("in_reply_to_status_id=" + update.getReplyId());
 		if (update.isSensitive())
 			params.add("possibly_sensitive=true");
-		if (mediaIds != null && mediaIds.length > 0) {
+		if (!mediaIds.isEmpty()) {
 			StringBuilder buf = new StringBuilder();
 			for (long id : mediaIds)
 				buf.append(id).append("%2C");

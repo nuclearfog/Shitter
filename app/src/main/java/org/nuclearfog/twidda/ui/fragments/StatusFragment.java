@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.StatusLoader;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusParameter;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusResult;
+import org.nuclearfog.twidda.backend.helper.Statuses;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
@@ -142,8 +143,8 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		}
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_STATUS_FRAGMENT_SAVE);
-			if (data instanceof Status[]) {
-				adapter.replaceItems((Status[]) data);
+			if (data instanceof Statuses) {
+				adapter.replaceItems((Statuses) data);
 			}
 		}
 		setAdapter(adapter);

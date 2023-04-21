@@ -175,7 +175,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 */
 	public void replaceItems(Users newUsers) {
 		users.replaceAll(newUsers);
-		if (users.getNext() != 0L) {
+		if (users.getNext() != 0L && users.peekLast() != null) {
 			users.add(null);
 		}
 		notifyDataSetChanged();

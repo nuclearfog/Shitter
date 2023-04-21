@@ -10,9 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import org.nuclearfog.twidda.model.Instance;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,18 +76,20 @@ public class StatusUpdate implements Serializable {
 	private PollUpdate poll;
 	@Nullable
 	private LocationUpdate location;
-	private MediaStatus[] mediaUpdates = {};
 	private int attachment = EMPTY;
 
 	// helper attributes
 	@Nullable
 	private Instance instance;
-	private List<String> mediaUriStrings = new ArrayList<>(5);
+	private List<String> previews = new ArrayList<>();
+	private List<String> mediaKeys = new ArrayList<>();
+	private List<MediaStatus> mediaStatuses = new ArrayList<>();
+
 	private Set<String> supportedFormats = new TreeSet<>();
 	private boolean attachmentLimitReached = false;
 
 	/**
-	 * set existing status to edit
+	 * set informations of an existing status to edit these
 	 *
 	 * @param status existing status
 	 */
@@ -107,6 +109,36 @@ public class StatusUpdate implements Serializable {
 	}
 
 	/**
+	 * set information  media files attached to an existing status
+	 *
+	 * @param status status contianing media
+	 * @return attached media type {@link #EMPTY,#MEDIA_VIDEO,#MEDIA_IMAGE,#MEDIA_GIF}
+	 */
+	public int setMedia(Status status) {
+		if (status.getMedia().length > 0) {
+			for (Media media : status.getMedia()) {
+				mediaKeys.add(media.getKey());
+				previews.add(media.getUrl());
+			}
+			attachmentLimitReached = true;
+			switch (status.getMedia()[0].getMediaType()) {
+				case Media.GIF:
+					attachment = MEDIA_GIF;
+					break;
+
+				case Media.PHOTO:
+					attachment = MEDIA_IMAGE;
+					break;
+
+				case Media.VIDEO:
+					attachment = MEDIA_VIDEO;
+					break;
+			}
+		}
+		return attachment;
+	}
+
+	/**
 	 * set ID of the replied status
 	 *
 	 * @param replyId status ID to reply
@@ -117,6 +149,8 @@ public class StatusUpdate implements Serializable {
 
 	/**
 	 * add status text
+	 *
+	 * @param text status text
 	 */
 	public void addText(String text) {
 		this.text = text;
@@ -142,8 +176,9 @@ public class StatusUpdate implements Serializable {
 				case MEDIA_GIF:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
-						mediaUriStrings.add(mediaUri.toString());
-						if (mediaUriStrings.size() == instance.getGifLimit()) {
+						previews.add(mediaUri.toString());
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						if (mediaStatuses.size() == instance.getGifLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_GIF;
@@ -161,8 +196,9 @@ public class StatusUpdate implements Serializable {
 				case MEDIA_IMAGE:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
-						mediaUriStrings.add(mediaUri.toString());
-						if (mediaUriStrings.size() == instance.getImageLimit()) {
+						previews.add(mediaUri.toString());
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						if (mediaStatuses.size() == instance.getImageLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_IMAGE;
@@ -179,8 +215,9 @@ public class StatusUpdate implements Serializable {
 				case MEDIA_VIDEO:
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
-						mediaUriStrings.add(mediaUri.toString());
-						if (mediaUriStrings.size() == instance.getVideoLimit()) {
+						previews.add(mediaUri.toString());
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						if (mediaStatuses.size() == instance.getVideoLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_VIDEO;
@@ -299,8 +336,8 @@ public class StatusUpdate implements Serializable {
 	 *
 	 * @return list of media updates
 	 */
-	public MediaStatus[] getMediaUpdates() {
-		return mediaUpdates;
+	public List<MediaStatus> getMediaStatuses() {
+		return new ArrayList<>(mediaStatuses);
 	}
 
 	/**
@@ -309,9 +346,9 @@ public class StatusUpdate implements Serializable {
 	 * @return media uri array
 	 */
 	public Uri[] getMediaUris() {
-		Uri[] result = new Uri[mediaUriStrings.size()];
+		Uri[] result = new Uri[previews.size()];
 		for (int i = 0 ; i < result.length ; i++) {
-			result[i] = Uri.parse(mediaUriStrings.get(i));
+			result[i] = Uri.parse(previews.get(i));
 		}
 		return result;
 	}
@@ -334,6 +371,15 @@ public class StatusUpdate implements Serializable {
 	@Nullable
 	public LocationUpdate getLocation() {
 		return location;
+	}
+
+	/**
+	 * get media keys (IDs) of online media
+	 *
+	 * @return media key
+	 */
+	public String[] getMediaKeys() {
+		return mediaKeys.toArray(new String[0]);
 	}
 
 	/**
@@ -382,7 +428,7 @@ public class StatusUpdate implements Serializable {
 	 * @return true if media is attached
 	 */
 	public boolean isEmpty() {
-		return mediaUriStrings.isEmpty() && location == null && poll == null && getText() == null;
+		return previews.isEmpty() && location == null && poll == null && getText() == null;
 	}
 
 	/**
@@ -391,21 +437,16 @@ public class StatusUpdate implements Serializable {
 	 * @return true if success, false if an error occurs
 	 */
 	public boolean prepare(ContentResolver resolver) {
-		if (mediaUriStrings.isEmpty())
+		if (previews.isEmpty())
 			return true;
 		try {
 			// open input streams
-			mediaUpdates = new MediaStatus[mediaUriStrings.size()];
-			for (int i = 0; i < mediaUpdates.length; i++) {
-				Uri uri = Uri.parse(mediaUriStrings.get(i));
-				InputStream is = resolver.openInputStream(uri);
-				String mime = resolver.getType(uri);
-				// check if stream is valid
-				if (is != null && mime != null && is.available() > 0) {
-					mediaUpdates[i] = new MediaStatus(is, mime);
-				} else {
+			for (MediaStatus mediaStatus : mediaStatuses) {
+				boolean success = mediaStatus.openStream(resolver);
+				if (!success) {
 					return false;
 				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -418,8 +459,10 @@ public class StatusUpdate implements Serializable {
 	 * close all open streams
 	 */
 	public void close() {
-		for (MediaStatus mediaUpdate : mediaUpdates) {
-			mediaUpdate.close();
+		for (MediaStatus mediaUpdate : mediaStatuses) {
+			if (mediaUpdate != null) {
+				mediaUpdate.close();
+			}
 		}
 	}
 

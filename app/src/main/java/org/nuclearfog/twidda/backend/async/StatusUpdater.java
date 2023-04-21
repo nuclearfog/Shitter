@@ -13,6 +13,9 @@ import org.nuclearfog.twidda.backend.helper.StatusUpdate;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusEditor;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Background task for posting a status
  *
@@ -35,11 +38,12 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 	protected StatusUpdateResult doInBackground(@NonNull StatusUpdate update) {
 		try {
 			// upload media first
-			MediaStatus[] mediaUpdates = update.getMediaUpdates();
-			long[] mediaIds = new long[mediaUpdates.length];
-			for (int pos = 0; pos < mediaUpdates.length; pos++) {
-				// upload media file and save media ID
-				mediaIds[pos] = connection.uploadMedia(mediaUpdates[pos]);
+			List<Long> mediaIds = new LinkedList<>();
+			for (MediaStatus mediaStatus : update.getMediaStatuses()) {
+				if (mediaStatus.isLocal()) {
+					long mediaId = connection.uploadMedia(mediaStatus);
+					mediaIds.add(mediaId);
+				}
 			}
 			// upload status
 			Status status = connection.uploadStatus(update, mediaIds);

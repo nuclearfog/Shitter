@@ -598,7 +598,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Status uploadStatus(StatusUpdate update, long[] mediaIds) throws MastodonException {
+	public Status uploadStatus(StatusUpdate update, List<Long> mediaIds) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		// add identifier to prevent duplicate posts
 		params.add("Idempotency-Key=" + System.currentTimeMillis() / 5000);
@@ -619,8 +619,13 @@ public class Mastodon implements Connection {
 			params.add("visibility=unlisted");
 		else
 			params.add("visibility=public");
-		for (long mediaId : mediaIds)
+		for (long mediaId : mediaIds) {
 			params.add("media_ids[]=" + mediaId);
+		}
+		// add media keys of a previous status
+		for (String mediaKey : update.getMediaKeys()) {
+			params.add("media_ids[]=" + mediaKey);
+		}
 		if (update.getPoll() != null) {
 			PollUpdate poll = update.getPoll();
 			for (String option : poll.getOptions())

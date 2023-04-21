@@ -177,7 +177,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 */
 	public void replaceItems(UserLists newUserlists) {
 		userlists.replaceAll(newUserlists);
-		if (userlists.getNext() != 0L) {
+		if (userlists.getNext() != 0L && userlists.peekLast() != null) {
 			// Add placeholder
 			userlists.add(null);
 		}

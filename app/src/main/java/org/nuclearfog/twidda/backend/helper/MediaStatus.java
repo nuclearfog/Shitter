@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.helper;
 
+import android.content.ContentResolver;
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
@@ -18,13 +21,52 @@ public class MediaStatus implements Serializable {
 	private InputStream inputStream;
 	private String mimeType;
 
+	private String path;
+	private boolean local;
+
 	/**
-	 * @param inputStream stream of the media (local or online)
-	 * @param mimeType    MIME type e.g. image/jpeg
+	 * create MediaStatus from an online source
+	 *
+	 * @param inputStream inputstream to fetch data from internet
+	 * @param mimeType    MIME type of the media
 	 */
 	public MediaStatus(InputStream inputStream, String mimeType) {
 		this.inputStream = inputStream;
 		this.mimeType = mimeType;
+		local = false;
+	}
+
+	/**
+	 * create MediaStatus from an offline source
+	 *
+	 * @param path     path to the local file
+	 * @param mimeType MIME type of the file
+	 */
+	public MediaStatus(String path, String mimeType) {
+		this.path = path;
+		this.mimeType = mimeType;
+		local = true;
+	}
+
+	/**
+	 * create a stream to upload media file
+	 *
+	 * @param resolver content resolver used to create stream and determine MIME type of the file
+	 * @return true if stream is prepared, false if an error occured
+	 */
+	public boolean openStream(ContentResolver resolver) {
+		if (path == null)
+			return false;
+		Uri uri = Uri.parse(path);
+		try {
+			inputStream = resolver.openInputStream(uri);
+			mimeType = resolver.getType(uri);
+			// check if stream is valid
+			return inputStream != null && mimeType != null && inputStream.available() > 0;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -50,6 +92,10 @@ public class MediaStatus implements Serializable {
 		} catch (IOException e) {
 			return 0;
 		}
+	}
+
+	public boolean isLocal() {
+		return local;
 	}
 
 	/**

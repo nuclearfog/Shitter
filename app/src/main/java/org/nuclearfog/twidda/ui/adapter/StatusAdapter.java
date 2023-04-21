@@ -150,8 +150,8 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 *
 	 * @return item array
 	 */
-	public Status[] getItems() {
-		return items.toArray(new Status[0]);
+	public Statuses getItems() {
+		return new Statuses(items);
 	}
 
 	/**
@@ -186,20 +186,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public void replaceItems(@NonNull Statuses newItems) {
 		items.replaceAll(newItems);
-		if (items.size() > MIN_COUNT && items.getMaxId() != Statuses.NO_ID)
-			items.add(null);
-		loadingIndex = NO_LOADING;
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * Replace all items in the list
-	 *
-	 * @param newItems array of statuses to add
-	 */
-	public void replaceItems(Status[] newItems) {
-		items.replaceAll(newItems);
-		if (items.size() > MIN_COUNT)
+		if (items.size() > MIN_COUNT && items.getMaxId() != Statuses.NO_ID && items.peekLast() != null)
 			items.add(null);
 		loadingIndex = NO_LOADING;
 		notifyDataSetChanged();
@@ -252,7 +239,10 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public long getTopItemId() {
 		if (!items.isEmpty() && items.get(0) != null) {
-			return items.get(0).getId();
+			Status status = items.get(0);
+			if (status != null) {
+				return status.getId();
+			}
 		}
 		return 0L;
 	}

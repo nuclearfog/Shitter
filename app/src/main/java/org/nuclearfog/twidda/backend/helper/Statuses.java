@@ -1,8 +1,9 @@
 package org.nuclearfog.twidda.backend.helper;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.model.Status;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -31,6 +32,17 @@ public class Statuses extends LinkedList<Status> {
 	}
 
 	/**
+	 * create a copy of statuses
+	 *
+	 * @param statuses list to copy
+	 */
+	public Statuses(Statuses statuses) {
+		super(statuses);
+		this.minId = statuses.getMinId();
+		this.maxId = statuses.getMaxId();
+	}
+
+	/**
 	 * @param minId minimum ID of the first item
 	 * @param maxId maximum ID of the last item
 	 */
@@ -38,6 +50,15 @@ public class Statuses extends LinkedList<Status> {
 		super();
 		this.minId = minId;
 		this.maxId = maxId;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	@Nullable
+	@Override
+	public Status get(int index) {
+		return super.get(index);
 	}
 
 	/**
@@ -113,17 +134,5 @@ public class Statuses extends LinkedList<Status> {
 		addAll(statuses);
 		minId = statuses.getMinId();
 		maxId = statuses.getMaxId();
-	}
-
-	/**
-	 * replace all items with new ones
-	 *
-	 * @param statuses new items to insert
-	 */
-	public void replaceAll(Status[] statuses) {
-		clear();
-		addAll(Arrays.asList(statuses));
-		minId = statuses[0].getId();
-		maxId = statuses[statuses.length - 1].getId();
 	}
 }

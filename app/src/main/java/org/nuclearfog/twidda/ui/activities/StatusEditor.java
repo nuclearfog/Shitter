@@ -143,6 +143,9 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
 		emojiPicker = new EmojiPicker(this, this);
+		adapter = new IconAdapter(settings, true);
+		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
+		iconList.setAdapter(adapter);
 		AppStyles.setEditorTheme(root, background);
 
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
@@ -166,6 +169,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				if (editStatus) {
 					statusUpdate.setStatus(status);
 					statusText.append(status.getText());
+					if (status.getMedia().length > 0) {
+						int mediaType = statusUpdate.setMedia(status);
+						addMedia(mediaType);
+					}
 				} else {
 					statusUpdate.addReplyStatusId(status.getId());
 					statusUpdate.setVisibility(status.getVisibility());
@@ -177,11 +184,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				statusText.append(prefix);
 			}
 		}
-		adapter = new IconAdapter(settings, true);
-		adapter.addOnMediaClickListener(this);
-		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
-		iconList.setAdapter(adapter);
 
+		adapter.addOnMediaClickListener(this);
 		statusText.addTextChangedListener(this);
 		emojiButton.setOnClickListener(this);
 		preference.setOnClickListener(this);
@@ -332,31 +336,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
 		int mediaType = statusUpdate.addMedia(this, uri);
-		switch (mediaType) {
-			case StatusUpdate.MEDIA_IMAGE:
-				adapter.addImageItem();
-				break;
-
-			case StatusUpdate.MEDIA_GIF:
-				adapter.addGifItem();
-				break;
-
-			case StatusUpdate.MEDIA_VIDEO:
-				adapter.addVideoItem();
-				break;
-
-			case StatusUpdate.MEDIA_ERROR:
-				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
-				break;
-		}
-		// hide media button if limit is reached
-		if (statusUpdate.mediaLimitReached()) {
-			mediaBtn.setVisibility(View.GONE);
-		}
-		// hide poll button
-		if (mediaType != StatusUpdate.MEDIA_ERROR && pollBtn.getVisibility() != View.GONE) {
-			pollBtn.setVisibility(View.GONE);
-		}
+		addMedia(mediaType);
 	}
 
 
@@ -420,6 +400,34 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			finish();
 		} else {
 			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_LEAVE);
+		}
+	}
+
+	private void addMedia(int mediaType) {
+		switch (mediaType) {
+			case StatusUpdate.MEDIA_IMAGE:
+				adapter.addImageItem();
+				break;
+
+			case StatusUpdate.MEDIA_GIF:
+				adapter.addGifItem();
+				break;
+
+			case StatusUpdate.MEDIA_VIDEO:
+				adapter.addVideoItem();
+				break;
+
+			case StatusUpdate.MEDIA_ERROR:
+				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
+				break;
+		}
+		// hide media button if limit is reached
+		if (statusUpdate.mediaLimitReached()) {
+			mediaBtn.setVisibility(View.GONE);
+		}
+		// hide poll button
+		if (mediaType != StatusUpdate.MEDIA_ERROR && pollBtn.getVisibility() != View.GONE) {
+			pollBtn.setVisibility(View.GONE);
 		}
 	}
 

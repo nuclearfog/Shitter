@@ -189,7 +189,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	public void replaceItems(Messages newMessages) {
 		messages.clear();
 		messages.replaceAll(newMessages);
-		if (newMessages.getNextCursor() != null && !newMessages.getNextCursor().isEmpty()) {
+		if (newMessages.getNextCursor() != null && !newMessages.getNextCursor().isEmpty() && messages.peekLast() != null) {
 			// add placeholder
 			messages.add(null);
 		}
