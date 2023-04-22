@@ -1,6 +1,6 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
-# Lightweight Android client for Twitter & Mastodon
+# Lightweight Android client for Mastodon
 
 
 <img src="/images/shitter_1.jpg" height="360"/> <img src="/images/shitter_2.jpg" height="360"/> <img src="/images/shitter_3.jpg" height="360"/> <img src="/images/shitter_4.jpg" height="360"/>
@@ -8,14 +8,17 @@
 
 ## Features
 
-- access to statuses, users and trends
+- access to statuses, users, lists and trends
 - real timeline (chronological order)
-- status, list and profile editor
+- status, userlist and profile editor
 - customizable theme
 - media, link and poll viewer
-- GPS locale support
 - multi account support
-- no ads, no app tracking, proxy support
+- location support
+- emoji support
+- Proxy support
+- no ads, no app tracking
+- Twitter support (API tokens required)
 
 
 ## Download
@@ -26,18 +29,16 @@
 
 ## 3rd party libraries and licenses
 
+- <a href="https://github.com/square/okhttp">okhttp</a>
 - <a href="https://github.com/square/picasso">picasso</a>
+- <a href="https://github.com/open-android/Picasso-transformations">picasso Transformations</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
-- <a href="https://github.com/MichaelRocks/paranoid">String obfuscation</a>
 - <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
-- <a href="https://github.com/open-android/Picasso-transformations">Picasso Transformations</a>
-- <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
-- <a href="https://github.com/LeonardoCardoso/Android-Link-Preview">Android-Link-Preview</a>
-- <a href="https://github.com/LarsWerkman/LicenseView">LicenseView</a>
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
 - <a href="https://github.com/google/ExoPlayer">ExoPlayer</a>
+- <a href="https://jsoup.org">jsoup</a>
 
 
 ## Graphics
