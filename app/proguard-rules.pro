@@ -1,8 +1,3 @@
-# use dictionaries to create random class/package names
--obfuscationdictionary dict/obfuscation-dictionary.txt
--classobfuscationdictionary dict/class-dictionary.txt
--packageobfuscationdictionary dict/package-dictionary.txt
-
 -optimizationpasses 5
 
 # keep these libraries but allow obfuscating

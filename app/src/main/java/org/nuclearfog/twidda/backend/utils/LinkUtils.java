@@ -36,30 +36,35 @@ public class LinkUtils {
 	 * @param url      url to open
 	 */
 	public static void openLink(Activity activity, String url) {
+		GlobalSettings settings = GlobalSettings.getInstance(activity);
 		if (!url.startsWith("https://"))
 			url = "https://" + url;
 		Uri link = Uri.parse(url);
-		GlobalSettings settings = GlobalSettings.getInstance(activity);
-		// check if the link points to another status
+
+		// if it's a link to a Tweet, open Tweet in an activity
 		if ((settings.getLogin().getConfiguration() == Configuration.TWITTER1 || settings.getLogin().getConfiguration() == Configuration.TWITTER2)
-				&& TWITTER_LINK_PATTERN.matcher(link.getScheme() + "://" + link.getHost() + link.getPath()).matches()) {
+				&& TWITTER_LINK_PATTERN.matcher(url).matches()) {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(activity, StatusActivity.class);
 			intent.putExtra(StatusActivity.KEY_STATUS_ID, Long.parseLong(segments.get(2)));
 			intent.putExtra(StatusActivity.KEY_STATUS_NAME, segments.get(0));
 			activity.startActivity(intent);
-			return;
-		} else if (url.startsWith("https://twitter.com") && settings.twitterAltSet()) {
-			url = "https://nitter.net" + link.getPath();
-			link = Uri.parse(url);
 		}
 		// open link in a browser
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setData(link);
-		try {
-			activity.startActivity(intent);
-		} catch (ActivityNotFoundException err) {
-			Toast.makeText(activity.getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
+		else {
+			// replace Twitter link with Nitter if enabled
+			if (settings.twitterAltSet() && (url.startsWith("https://twitter.com") || url.startsWith("https://mobile.twitter.com"))) {
+				url = "https://nitter.net" + link.getPath();
+				link = Uri.parse(url);
+			}
+			// open link in a browser
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(link);
+			try {
+				activity.startActivity(intent);
+			} catch (ActivityNotFoundException err) {
+				Toast.makeText(activity.getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 

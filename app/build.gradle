@@ -1,6 +1,5 @@
 plugins {
 	id 'com.android.application'
-	id 'ru.cleverpumpkin.proguard-dictionaries-generator'
 }
 
 android {
@@ -39,13 +38,6 @@ android {
 			excludes += ['/META-INF/CHANGES', '/META-INF/DEPENDENCIES', '/META-INF/README.md', '/META-INF/androidx.*', '/META-INF/kotlin*', '/META-INF/com.*', '/META-INF/services/**', '/META-INF/com/**', '/kotlin/**', '/Debug*']
 		}
 	}
-}
-
-proguardDictionaries {
-	dictionaryNames = ['dict/class-dictionary', 'dict/package-dictionary', 'dict/obfuscation-dictionary']
-	minLineLength 2
-	maxLineLength 8
-	linesCountInDictionary 50000
 }
 
 dependencies {
