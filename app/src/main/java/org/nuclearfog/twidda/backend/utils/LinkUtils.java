@@ -36,6 +36,8 @@ public class LinkUtils {
 	 * @param url      url to open
 	 */
 	public static void openLink(Activity activity, String url) {
+		if (!url.startsWith("https://"))
+			url = "https://" + url;
 		Uri link = Uri.parse(url);
 		GlobalSettings settings = GlobalSettings.getInstance(activity);
 		// check if the link points to another status
