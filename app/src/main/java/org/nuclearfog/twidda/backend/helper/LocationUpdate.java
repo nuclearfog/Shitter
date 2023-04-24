@@ -5,12 +5,16 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.Location;
 
+import java.io.Serializable;
+
 /**
  * This class contains location information used for {@link StatusUpdate}
  *
  * @author nuclearfog
  */
-public class LocationUpdate {
+public class LocationUpdate implements Serializable {
+
+	private static final long serialVersionUID = -5642948673710019921L;
 
 	private double longitude, latitude;
 

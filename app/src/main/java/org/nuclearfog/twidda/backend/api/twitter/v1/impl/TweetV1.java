@@ -24,7 +24,7 @@ import org.nuclearfog.twidda.model.User;
  */
 public class TweetV1 implements Status {
 
-	public static final long serialVersionUID = 70666106496232760L;
+	private static final long serialVersionUID = 70666106496232760L;
 
 	/**
 	 * query parameter to enable extended mode to show tweets with more than 140 characters

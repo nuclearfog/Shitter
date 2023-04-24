@@ -12,7 +12,6 @@ import org.nuclearfog.twidda.model.Instance;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -32,7 +31,7 @@ public class MessageUpdate implements Serializable {
 	@Nullable
 	private Instance instance;
 
-	private Set<String> supportedFormats = new TreeSet<>();
+	private TreeSet<String> supportedFormats = new TreeSet<>();
 
 	/**
 	 * @param name screen name of the user

@@ -4,7 +4,8 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.Poll;
 
-import java.util.LinkedList;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,18 +14,20 @@ import java.util.List;
  * @author nuclearfog
  * @see StatusUpdate
  */
-public class PollUpdate {
+public class PollUpdate implements Serializable {
+
+	private static final long serialVersionUID = -1366978571647066623L;
 
 	private int duration;
 	private boolean multipleChoice;
 	private boolean hideTotals;
-	private List<String> options;
+	private ArrayList<String> options = new ArrayList<>(5);
 
 	/**
 	 *
 	 */
 	public PollUpdate() {
-		options = new LinkedList<>();
+
 	}
 
 	/**
@@ -33,7 +36,6 @@ public class PollUpdate {
 	 * @param poll existing poll to update
 	 */
 	public PollUpdate(Poll poll) {
-		options = new LinkedList<>();
 		multipleChoice = poll.multipleChoiceEnabled();
 		for (Poll.Option option : poll.getOptions()) {
 			options.add(option.getTitle());

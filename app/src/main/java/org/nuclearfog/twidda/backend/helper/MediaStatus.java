@@ -18,7 +18,8 @@ public class MediaStatus implements Serializable {
 
 	private static final long serialVersionUID = 6824278073662885637L;
 
-	private InputStream inputStream;
+	private transient InputStream inputStream = null;
+
 	private String mimeType;
 	private String path;
 	private boolean local;
@@ -54,7 +55,7 @@ public class MediaStatus implements Serializable {
 	 * @return true if stream is prepared, false if an error occured
 	 */
 	public boolean openStream(ContentResolver resolver) {
-		if (path != null) {
+		if (path != null && inputStream != null) {
 			Uri uri = Uri.parse(path);
 			try {
 				inputStream = resolver.openInputStream(uri);
@@ -86,6 +87,8 @@ public class MediaStatus implements Serializable {
 	 * @return remaining bytes of the stream
 	 */
 	public long available() {
+		if (inputStream == null)
+			return 0L;
 		try {
 			return inputStream.available();
 		} catch (IOException e) {
@@ -105,7 +108,9 @@ public class MediaStatus implements Serializable {
 	 */
 	public void close() {
 		try {
-			inputStream.close();
+			if (inputStream != null) {
+				inputStream.close();
+			}
 		} catch (IOException e) {
 			// ignore
 		}

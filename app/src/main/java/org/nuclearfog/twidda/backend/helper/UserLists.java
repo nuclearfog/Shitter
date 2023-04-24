@@ -14,7 +14,7 @@ import java.util.LinkedList;
  */
 public class UserLists extends LinkedList<UserList> {
 
-	public static final long serialVersionUID = -5947008315897774115L;
+	private static final long serialVersionUID = -5947008315897774115L;
 
 	private long prevCursor, nextCursor;
 

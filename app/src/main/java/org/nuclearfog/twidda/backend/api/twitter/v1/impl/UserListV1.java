@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.UserList;
  */
 public class UserListV1 implements UserList {
 
-	public static final long serialVersionUID = 4121925943880606236L;
+	private static final long serialVersionUID = 4121925943880606236L;
 
 	/**
 	 * indicates that a list can only be accessed by the owner

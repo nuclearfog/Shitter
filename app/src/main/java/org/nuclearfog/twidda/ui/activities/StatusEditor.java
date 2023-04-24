@@ -390,6 +390,9 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	@Override
 	public void onPollUpdate(@Nullable PollUpdate update) {
 		statusUpdate.addPoll(update);
+		if (statusUpdate.mediaLimitReached()) {
+			mediaBtn.setVisibility(View.GONE);
+		}
 	}
 
 	/**

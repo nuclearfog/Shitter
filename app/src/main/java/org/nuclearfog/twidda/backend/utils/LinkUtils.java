@@ -37,7 +37,7 @@ public class LinkUtils {
 	 */
 	public static void openLink(Activity activity, String url) {
 		GlobalSettings settings = GlobalSettings.getInstance(activity);
-		if (!url.startsWith("https://"))
+		if (!url.contains("://")) // check if link contains any scheme like 'http://'
 			url = "https://" + url;
 		Uri link = Uri.parse(url);
 

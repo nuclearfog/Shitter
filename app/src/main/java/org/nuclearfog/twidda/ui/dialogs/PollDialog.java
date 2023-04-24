@@ -23,6 +23,8 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.adapter.EditOptionsAdapter;
 
+import java.util.List;
+
 /**
  * Dialog class used to show poll editor
  *
@@ -90,6 +92,13 @@ public class PollDialog extends Dialog implements OnClickListener {
 			} else if (instance != null && duration > instance.getMaxPollDuration()) {
 				Toast.makeText(getContext(), R.string.error_duration_time_high, Toast.LENGTH_SHORT).show();
 			} else {
+				List<String> options = optionAdapter.getItems();
+				for (String option : options) {
+					if (option.trim().isEmpty()) {
+						Toast.makeText(getContext(), R.string.error_poll_option_missing, Toast.LENGTH_SHORT).show();
+						return;
+					}
+				}
 				poll.setDuration(duration);
 				poll.setMultipleChoice(multiple_choice.isChecked());
 				poll.hideVotes(hide_votes.isChecked());

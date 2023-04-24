@@ -19,7 +19,7 @@ import org.nuclearfog.twidda.model.User;
  */
 public class UserV1 implements User {
 
-	public static final long serialVersionUID = 7893496988800499358L;
+	private static final long serialVersionUID = 7893496988800499358L;
 
 	/**
 	 * API query to prevent disable statuses in the user object.

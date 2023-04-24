@@ -17,7 +17,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -81,11 +80,10 @@ public class StatusUpdate implements Serializable {
 	// helper attributes
 	@Nullable
 	private Instance instance;
-	private List<String> previews = new ArrayList<>();
-	private List<String> mediaKeys = new ArrayList<>();
-	private List<MediaStatus> mediaStatuses = new ArrayList<>();
-
-	private Set<String> supportedFormats = new TreeSet<>();
+	private ArrayList<String> previews = new ArrayList<>();
+	private ArrayList<String> mediaKeys = new ArrayList<>();
+	private ArrayList<MediaStatus> mediaStatuses = new ArrayList<>();
+	private TreeSet<String> supportedFormats = new TreeSet<>();
 	private boolean attachmentLimitReached = false;
 
 	/**
@@ -233,11 +231,8 @@ public class StatusUpdate implements Serializable {
 	 *
 	 * @param poll poll information
 	 */
-	public void addPoll(@Nullable PollUpdate poll) {
-		if (poll == null) {
-			this.poll = null;
-			attachment = EMPTY;
-		} else if (attachment == EMPTY) {
+	public void addPoll(PollUpdate poll) {
+		if (attachment == EMPTY) {
 			this.poll = poll;
 			attachment = POLL;
 			attachmentLimitReached = true;

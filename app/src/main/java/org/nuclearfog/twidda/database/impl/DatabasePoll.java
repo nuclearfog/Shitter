@@ -25,7 +25,7 @@ public class DatabasePoll implements Poll, PollTable {
 
 	private long id;
 	private long endTime;
-	private DatabasePollOption[] options = {};
+	private Option[] options = {};
 
 	/**
 	 *
@@ -36,7 +36,7 @@ public class DatabasePoll implements Poll, PollTable {
 		String optionStr = cursor.getString(2);
 		if (optionStr != null && !optionStr.isEmpty()) {
 			String[] optArray = SEPARATOR.split(optionStr);
-			options = new DatabasePollOption[optArray.length];
+			options = new Option[optArray.length];
 			for (int i = 0; i < optArray.length; i++) {
 				options[i] = new DatabasePollOption(optArray[i]);
 			}

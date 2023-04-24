@@ -94,7 +94,7 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 			options.remove(position);
 			notifyItemRemoved(position);
 			// update upper items
-			notifyItemRangeChanged(position + 1, MAX_OPTIONS - position - 1);
+			notifyItemRangeChanged(position, MAX_OPTIONS - position - 1);
 			// add placeholder item
 			if (options.peekLast() != null) {
 				options.add(null);
@@ -135,7 +135,8 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 	public List<String> getItems() {
 		List<String> result = new ArrayList<>();
 		for (String option : options) {
-			if (option != null && !option.trim().isEmpty()) {
+			// exclude placehholder
+			if (option != null) {
 				result.add(option);
 			}
 		}
