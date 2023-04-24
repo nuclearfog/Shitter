@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,7 @@ public class MediaStatus implements Serializable {
 
 	private static final long serialVersionUID = 6824278073662885637L;
 
+	@Nullable
 	private transient InputStream inputStream = null;
 
 	private String mimeType;
@@ -30,7 +32,7 @@ public class MediaStatus implements Serializable {
 	 * @param inputStream inputstream to fetch data from internet
 	 * @param mimeType    MIME type of the media
 	 */
-	public MediaStatus(InputStream inputStream, String mimeType) {
+	public MediaStatus(@Nullable InputStream inputStream, String mimeType) {
 		this.inputStream = inputStream;
 		this.mimeType = mimeType;
 		local = false;
@@ -55,7 +57,7 @@ public class MediaStatus implements Serializable {
 	 * @return true if stream is prepared, false if an error occured
 	 */
 	public boolean openStream(ContentResolver resolver) {
-		if (path != null && inputStream != null) {
+		if (path != null) {
 			Uri uri = Uri.parse(path);
 			try {
 				inputStream = resolver.openInputStream(uri);
@@ -72,6 +74,7 @@ public class MediaStatus implements Serializable {
 	/**
 	 * @return input stream of the media file
 	 */
+	@Nullable
 	public InputStream getStream() {
 		return inputStream;
 	}

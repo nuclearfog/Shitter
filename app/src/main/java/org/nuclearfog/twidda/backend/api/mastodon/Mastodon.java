@@ -1333,9 +1333,11 @@ public class Mastodon implements Connection {
 	 * @param params   additional http parameters
 	 * @return http response
 	 */
-	private Response post(String endpoint, List<String> params, InputStream is, String addToKey) throws IOException {
+	private Response post(String endpoint, List<String> params, InputStream inputStream, String addToKey) throws IOException {
+		if (inputStream == null)
+			throw new IOException("InputStream null!");
 		Account login = settings.getLogin();
-		RequestBody body = createUploadRequest(is, addToKey);
+		RequestBody body = createUploadRequest(inputStream, addToKey);
 		return post(login.getHostname(), endpoint, login.getBearerToken(), params, body);
 	}
 
@@ -1410,11 +1412,13 @@ public class Mastodon implements Connection {
 	/**
 	 * create requestbody with upload stream
 	 *
-	 * @param is       input stream to upload a file
-	 * @param addToKey upload stream key
+	 * @param inputStream  input stream to upload a file
+	 * @param addToKey     upload stream key
 	 * @return request body
 	 */
-	private RequestBody createUploadRequest(final InputStream is, String addToKey) {
+	private RequestBody createUploadRequest(final InputStream inputStream, String addToKey) throws IOException {
+		if (inputStream == null)
+			throw new IOException("InputStream null!");
 		RequestBody data = new RequestBody() {
 			@Override
 			public MediaType contentType() {
@@ -1423,7 +1427,7 @@ public class Mastodon implements Connection {
 
 			@Override
 			public void writeTo(@NonNull BufferedSink sink) throws IOException {
-				sink.writeAll(Okio.buffer(Okio.source(is)));
+				sink.writeAll(Okio.buffer(Okio.source(inputStream)));
 			}
 		};
 		return new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart(addToKey, StringUtils.getRandomString(), data).build();
