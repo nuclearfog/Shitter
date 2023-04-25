@@ -34,6 +34,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class AccountHolder extends ViewHolder implements OnClickListener {
 
+	private static final int IMG_SIZE = 150;
+
 	private static final String ACCOUNT_TWITTER = " @twitter.com";
 
 	private ImageView profile;
@@ -95,7 +97,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			String profileImageUrl = user.getProfileImageThumbnailUrl();
 			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
+				picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().transform(roundCorner).error(R.drawable.no_image).into(profile);
 			} else {
 				profile.setImageResource(0);
 			}

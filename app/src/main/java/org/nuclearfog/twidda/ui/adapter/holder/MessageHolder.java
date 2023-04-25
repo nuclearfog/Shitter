@@ -51,6 +51,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class MessageHolder extends ViewHolder implements OnClickListener, OnTagClickListener, OnMediaClickListener, AsyncCallback<EmojiResult> {
 
+	private static final int IMG_SIZE = 150;
+
 	private TextView username, screenname, time, text;
 	private ImageView profile, verifiedIcon, lockedIcon;
 	private RecyclerView iconList;
@@ -191,7 +193,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		String profileImageUrl = sender.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
+			picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().transform(roundCorner).error(R.drawable.no_image).into(profile);
 		} else {
 			profile.setImageResource(0);
 		}

@@ -50,6 +50,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class StatusHolder extends ViewHolder implements OnClickListener {
 
+	private static final int IMG_SIZE = 150;
+
 	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
 	private TextView username, screenname, statusText, repost, favorite, reply, reposter, created, replyname, label;
 	private View dismissButton;
@@ -210,7 +212,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		// set profile image
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-			picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profile);
+			picasso.load(profileImageUrl).transform(roundCorner).resize(IMG_SIZE, IMG_SIZE).centerCrop().error(R.drawable.no_image).into(profile);
 		} else {
 			profile.setImageResource(0);
 		}

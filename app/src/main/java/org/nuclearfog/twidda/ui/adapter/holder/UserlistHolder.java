@@ -41,6 +41,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class UserlistHolder extends ViewHolder implements OnClickListener {
 
+	private static final int IMG_SIZE = 150;
+
 	private AsyncExecutor.AsyncCallback<EmojiResult> usernameResult = this::setUsernameEmojis;
 
 	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon;
@@ -143,7 +145,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 			}
 			if (enableImages && !profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(3, 0);
-				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
+				picasso.load(profileImageUrl).transform(roundCorner).resize(IMG_SIZE, IMG_SIZE).centerCrop().error(R.drawable.no_image).into(profileImage);
 			} else {
 				profileImage.setImageResource(0);
 			}
