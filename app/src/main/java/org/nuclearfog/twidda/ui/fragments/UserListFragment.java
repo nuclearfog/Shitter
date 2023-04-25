@@ -19,7 +19,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ListLoader;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistParam;
 import org.nuclearfog.twidda.backend.async.ListLoader.UserlistResult;
-import org.nuclearfog.twidda.backend.helper.UserLists;
+import org.nuclearfog.twidda.backend.helper.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.helper;
+package org.nuclearfog.twidda.backend.helper.update;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.PollUpdate;
+import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.adapter.EditOptionsAdapter;

@@ -1,8 +1,9 @@
-package org.nuclearfog.twidda.backend.helper;
+package org.nuclearfog.twidda.backend.helper.update;
 
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.model.Location;
 
 import java.io.Serializable;

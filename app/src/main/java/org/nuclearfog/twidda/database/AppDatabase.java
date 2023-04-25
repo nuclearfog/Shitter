@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.helper.Messages;
-import org.nuclearfog.twidda.backend.helper.Statuses;
+import org.nuclearfog.twidda.backend.helper.lists.Messages;
+import org.nuclearfog.twidda.backend.helper.lists.Statuses;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;

@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UsersLoader;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
-import org.nuclearfog.twidda.backend.helper.Users;
+import org.nuclearfog.twidda.backend.helper.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -64,7 +64,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	/**
 	 * Bundle key to save list items
-	 * value type is {@link org.nuclearfog.twidda.backend.helper.Users}
+	 * value type is {@link Users}
 	 */
 	private static final String USER_FRAGMENT_SAVE = "user_data";
 

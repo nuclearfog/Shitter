@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.MessageUpdater;
 import org.nuclearfog.twidda.backend.async.MessageUpdater.MessageUpdateResult;
-import org.nuclearfog.twidda.backend.helper.MessageUpdate;
+import org.nuclearfog.twidda.backend.helper.update.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Instance;

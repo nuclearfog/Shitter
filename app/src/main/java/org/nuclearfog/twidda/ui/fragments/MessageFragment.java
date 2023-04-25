@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
-import org.nuclearfog.twidda.backend.helper.Messages;
+import org.nuclearfog.twidda.backend.helper.lists.Messages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.Message;

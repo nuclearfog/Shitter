@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ListUpdater;
 import org.nuclearfog.twidda.backend.async.ListUpdater.ListUpdateResult;
-import org.nuclearfog.twidda.backend.helper.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;

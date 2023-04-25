@@ -43,6 +43,9 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 			MediaStatus mediaUpdate = connection.downloadImage(request.uri.toString());
 			InputStream input = mediaUpdate.getStream();
 			String mimeType = mediaUpdate.getMimeType();
+			if (input == null) {
+				return new ImageResult(null, null);
+			}
 
 			// create file
 			String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);

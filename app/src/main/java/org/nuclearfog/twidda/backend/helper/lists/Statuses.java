@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.helper;
+package org.nuclearfog.twidda.backend.helper.lists;
 
 import androidx.annotation.Nullable;
 

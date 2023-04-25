@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.helper;
+package org.nuclearfog.twidda.backend.helper.update;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.model.Instance;
 
 import java.io.Serializable;
