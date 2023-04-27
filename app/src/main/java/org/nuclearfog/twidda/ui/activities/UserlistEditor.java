@@ -149,7 +149,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onBackPressed() {
 		// Check for changes, leave if there aren't any
-		if (listUpdate.getId() == UserListUpdate.NO_ID && titleText.getText().length() == 0 && descriptionText.getText().length() == 0) {
+		if (listUpdate.getId() == 0L && titleText.getText().length() == 0 && descriptionText.getText().length() == 0) {
 			super.onBackPressed();
 		} else {
 			confirmDialog.show(ConfirmDialog.LIST_EDITOR_LEAVE);

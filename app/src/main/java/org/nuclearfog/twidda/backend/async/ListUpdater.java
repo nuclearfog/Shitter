@@ -33,7 +33,7 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 	@Override
 	protected ListUpdateResult doInBackground(@NonNull UserListUpdate update) {
 		try {
-			if (update.exists()) {
+			if (update.getId() != 0L) {
 				UserList result = connection.updateUserlist(update);
 				return new ListUpdateResult(result, true, null);
 			} else {
@@ -41,11 +41,11 @@ public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListU
 				return new ListUpdateResult(result, false, null);
 			}
 		} catch (ConnectionException exception) {
-			return new ListUpdateResult(null, update.exists(), exception);
+			return new ListUpdateResult(null, false, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ListUpdateResult(null, update.exists(), null);
+		return new ListUpdateResult(null, false, null);
 	}
 
 	/**

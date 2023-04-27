@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend.helper.update;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.model.Poll;
 
 import java.io.Serializable;
@@ -19,9 +18,9 @@ public class PollUpdate implements Serializable {
 
 	private static final long serialVersionUID = -1366978571647066623L;
 
-	private int duration;
-	private boolean multipleChoice;
-	private boolean hideTotals;
+	private int duration = 86400;
+	private boolean multipleChoice = false;
+	private boolean hideTotals = false;
 	private ArrayList<String> options = new ArrayList<>(5);
 
 	/**

@@ -636,7 +636,7 @@ public class Mastodon implements Connection {
 		}
 		try {
 			Response response;
-			if (update.statusExists())
+			if (update.getStatusId() != 0L)
 				response = put(ENDPOINT_STATUS + update.getStatusId(), params);
 			else
 				response = post(ENDPOINT_STATUS, params);

@@ -169,8 +169,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				if (editStatus) {
 					statusUpdate.setStatus(status);
 					statusText.append(status.getText());
-					if (status.getMedia().length > 0) {
-						int mediaType = statusUpdate.setMedia(status);
+					int mediaType = statusUpdate.getAttachmentType();
+					if (mediaType != StatusUpdate.EMPTY) {
 						addMedia(mediaType);
 					}
 				} else {

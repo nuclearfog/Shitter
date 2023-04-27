@@ -13,12 +13,7 @@ public class UserListUpdate implements Serializable {
 
 	private static final long serialVersionUID = -366691257985800712L;
 
-	/**
-	 * this ID indicates that the list isn't created yet
-	 */
-	public static final long NO_ID = -1L;
-
-	private long listId = NO_ID;
+	private long listId = 0L;
 	private String title = "";
 	private String description = "";
 	private boolean isPublic = false;
@@ -96,20 +91,11 @@ public class UserListUpdate implements Serializable {
 		return isPublic;
 	}
 
-	/**
-	 * check if list exists, so only the information will be updated
-	 *
-	 * @return true if list exists
-	 */
-	public boolean exists() {
-		return listId != NO_ID;
-	}
-
 
 	@NonNull
 	@Override
 	public String toString() {
-		if (listId != NO_ID)
+		if (listId != 0L)
 			return "id=" + listId + " title=\"" + title + "\"";
 		return "title=\"" + title + "\"";
 	}

@@ -24,13 +24,15 @@ public class MessageUpdate implements Serializable {
 
 	private static final long serialVersionUID = 991295406939128220L;
 
+	@Nullable
+	private Instance instance;
+	@Nullable
 	private String mediaUri;
+	@Nullable
 	private MediaStatus mediaUpdate;
 	private String name = "";
 	private String text = "";
 
-	@Nullable
-	private Instance instance;
 
 	private TreeSet<String> supportedFormats = new TreeSet<>();
 
@@ -82,7 +84,9 @@ public class MessageUpdate implements Serializable {
 	 */
 	@Nullable
 	public Uri getMediaUri() {
-		return Uri.parse(mediaUri);
+		if (mediaUri != null)
+			return Uri.parse(mediaUri);
+		return null;
 	}
 
 	/**
@@ -143,6 +147,6 @@ public class MessageUpdate implements Serializable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "to=\"" + name + "\" text=\"" + text + "\" media=" + mediaUpdate;
+		return "to=\"" + name + "\" text=\"" + text + "\" " + mediaUpdate;
 	}
 }

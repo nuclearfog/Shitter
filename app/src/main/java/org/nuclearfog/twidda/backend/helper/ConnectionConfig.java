@@ -144,7 +144,7 @@ public class ConnectionConfig {
 			result = "network=\"none\"";
 		}
 		if (useHost()) {
-			result = " hostname=\"" + hostname + "\"";
+			result += " hostname=\"" + hostname + "\"";
 		}
 		return result;
 	}

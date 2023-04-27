@@ -105,15 +105,6 @@ public class StatusUpdate implements Serializable {
 		if (status.getLocation() != null) {
 			location = new LocationUpdate(status.getLocation());
 		}
-	}
-
-	/**
-	 * set information  media files attached to an existing status
-	 *
-	 * @param status status contianing media
-	 * @return attached media type {@link #EMPTY,#MEDIA_VIDEO,#MEDIA_IMAGE,#MEDIA_GIF}
-	 */
-	public int setMedia(Status status) {
 		if (status.getMedia().length > 0) {
 			for (Media media : status.getMedia()) {
 				mediaKeys.add(media.getKey());
@@ -134,7 +125,6 @@ public class StatusUpdate implements Serializable {
 					break;
 			}
 		}
-		return attachment;
 	}
 
 	/**
@@ -283,13 +273,6 @@ public class StatusUpdate implements Serializable {
 	}
 
 	/**
-	 * @return true to edit an existing status {@link #statusId} must be set
-	 */
-	public boolean statusExists() {
-		return statusId != 0L;
-	}
-
-	/**
 	 * get ID of an existing status to edit
 	 *
 	 * @return status ID or '0' to post a new status instead of edit
@@ -433,6 +416,7 @@ public class StatusUpdate implements Serializable {
 	 * @return true if success, false if an error occurs
 	 */
 	public boolean prepare(ContentResolver resolver) {
+		// skip preparation if there is no media attached
 		if (previews.isEmpty())
 			return true;
 		try {
@@ -461,6 +445,7 @@ public class StatusUpdate implements Serializable {
 			}
 		}
 	}
+
 
 	@NonNull
 	@Override
