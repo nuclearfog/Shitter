@@ -50,5 +50,5 @@
 
 ## Thanks to
 
-- <a href="https://github.com/Tobaloidee">@Tobaloidee</a>
+- <a href="https://github.com/Tobaloidee">@Tobaloidee</a> for app logo and banner
 - <a href="https://github.com/lehmaning">@lehmaning</a>
