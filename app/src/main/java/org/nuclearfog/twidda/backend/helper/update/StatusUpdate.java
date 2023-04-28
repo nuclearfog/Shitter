@@ -76,16 +76,16 @@ public class StatusUpdate implements Serializable {
 	private PollUpdate poll;
 	@Nullable
 	private LocationUpdate location;
-	private int attachment = EMPTY;
+	private ArrayList<String> mediaKeys = new ArrayList<>();
+	private ArrayList<MediaStatus> mediaStatuses = new ArrayList<>();
 
 	// helper attributes
 	@Nullable
 	private Instance instance;
 	private ArrayList<String> previews = new ArrayList<>();
-	private ArrayList<String> mediaKeys = new ArrayList<>();
-	private ArrayList<MediaStatus> mediaStatuses = new ArrayList<>();
 	private TreeSet<String> supportedFormats = new TreeSet<>();
 	private boolean attachmentLimitReached = false;
+	private int attachment = EMPTY;
 
 	/**
 	 * set informations of an existing status to edit these
@@ -110,18 +110,23 @@ public class StatusUpdate implements Serializable {
 				mediaKeys.add(media.getKey());
 				previews.add(media.getUrl());
 			}
-			attachmentLimitReached = true;
 			switch (status.getMedia()[0].getMediaType()) {
 				case Media.GIF:
 					attachment = MEDIA_GIF;
+					if (instance != null && mediaKeys.size() == instance.getGifLimit())
+						attachmentLimitReached = true;
 					break;
 
 				case Media.PHOTO:
 					attachment = MEDIA_IMAGE;
+					if (instance != null && mediaKeys.size() == instance.getImageLimit())
+						attachmentLimitReached = true;
 					break;
 
 				case Media.VIDEO:
 					attachment = MEDIA_VIDEO;
+					if (instance != null && mediaKeys.size() == instance.getVideoLimit())
+						attachmentLimitReached = true;
 					break;
 			}
 		}
@@ -167,7 +172,7 @@ public class StatusUpdate implements Serializable {
 					if (file != null && file.length() > 0) {
 						previews.add(mediaUri.toString());
 						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
-						if (mediaStatuses.size() == instance.getGifLimit()) {
+						if (mediaStatuses.size() + mediaKeys.size() == instance.getGifLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_GIF;
@@ -187,7 +192,7 @@ public class StatusUpdate implements Serializable {
 					if (file != null && file.length() > 0) {
 						previews.add(mediaUri.toString());
 						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
-						if (mediaStatuses.size() == instance.getImageLimit()) {
+						if (mediaStatuses.size() + mediaKeys.size() == instance.getImageLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_IMAGE;
@@ -206,7 +211,7 @@ public class StatusUpdate implements Serializable {
 					if (file != null && file.length() > 0) {
 						previews.add(mediaUri.toString());
 						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
-						if (mediaStatuses.size() == instance.getVideoLimit()) {
+						if (mediaStatuses.size() + mediaKeys.size() == instance.getVideoLimit()) {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_VIDEO;
