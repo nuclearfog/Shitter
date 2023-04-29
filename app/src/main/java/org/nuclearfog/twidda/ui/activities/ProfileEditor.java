@@ -271,7 +271,13 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	public void onSuccess() {
 		// set toolbar background
 		if (settings.toolbarOverlapEnabled()) {
-			AppStyles.setToolbarBackground(ProfileEditor.this, profile_banner, toolbar_background);
+			// fixme may cause memory leak
+			profile_banner.post(new Runnable() {
+				@Override
+				public void run() {
+					AppStyles.setToolbarBackground(ProfileEditor.this, profile_banner, toolbar_background);
+				}
+			});
 		}
 	}
 

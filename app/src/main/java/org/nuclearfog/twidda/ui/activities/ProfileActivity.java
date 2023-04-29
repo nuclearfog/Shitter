@@ -26,6 +26,7 @@ import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -93,7 +94,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  */
 public class ProfileActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnScrollChangeListener,
-		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback, LockCallback {
+		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback, LockCallback, OnPreDrawListener {
 
 	/**
 	 * Key for the user ID
@@ -280,6 +281,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		user_website.setOnClickListener(this);
 		confirmDialog.setConfirmListener(this);
 		root.setOnScrollChangeListener(this);
+		root.getViewTreeObserver().addOnPreDrawListener(this);
 		body.addLockCallback(this);
 	}
 
@@ -302,12 +304,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 
 	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-			body.getLayoutParams().height = root.getMeasuredHeight();
-			root.scrollTo(0, 0);
-		}
+	public boolean onPreDraw() {
+		root.getViewTreeObserver().removeOnPreDrawListener(this);
+		body.getLayoutParams().height = root.getMeasuredHeight();
+		root.scrollTo(0, 0);
+		return true;
 	}
 
 
@@ -639,7 +640,13 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	public void onSuccess() {
 		// setup toolbar background
 		if (settings.toolbarOverlapEnabled()) {
-			AppStyles.setToolbarBackground(this, bannerImage, toolbarBackground);
+			// fixme may cause memory leak
+			bannerImage.post(new Runnable() {
+				@Override
+				public void run() {
+					AppStyles.setToolbarBackground(ProfileActivity.this, bannerImage, toolbarBackground);
+				}
+			});
 		}
 	}
 

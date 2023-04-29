@@ -42,6 +42,8 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import jp.wasabeef.picasso.transformations.CropTransformation;
+import jp.wasabeef.picasso.transformations.CropTransformation.GravityHorizontal;
+import jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical;
 
 /**
  * Theme class provides methods to set view styles and colors
@@ -237,12 +239,17 @@ public class AppStyles {
 				if (image.getWidth() > 1 && image.getHeight() > 1) {
 					// crop image to background size
 					if (background.getMeasuredHeight() > 0 && background.getMeasuredWidth() > 0) {
-						int height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
-						// crop only if needed
-						if (height != image.getHeight()) {
-							CropTransformation crop = new CropTransformation(image.getWidth(), height, CropTransformation.GravityHorizontal.CENTER, CropTransformation.GravityVertical.CENTER);
-							image = crop.transform(image);
+						CropTransformation crop;
+						if (image.getWidth() > background.getMeasuredWidth()) {
+							int height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
+							crop = new CropTransformation(image.getWidth(), height, GravityHorizontal.CENTER, GravityVertical.CENTER);
+						} else if (image.getWidth() < background.getMeasuredWidth()) {
+							int width = image.getHeight() * background.getMeasuredWidth() / background.getMeasuredHeight();
+							crop = new CropTransformation(width, image.getHeight(), GravityHorizontal.CENTER, GravityVertical.CENTER);
+						} else {
+							crop = new CropTransformation(image.getWidth(), background.getMeasuredHeight(), GravityHorizontal.CENTER, GravityVertical.CENTER);
 						}
+						image = crop.transform(image);
 					}
 					Point displaySize = new Point();
 					activity.getWindowManager().getDefaultDisplay().getSize(displaySize);
@@ -250,7 +257,7 @@ public class AppStyles {
 					float toolbarRatio = activity.getResources().getDimension(R.dimen.profile_toolbar_height) / displaySize.x;
 					// do final transformations (crop first image to toolbar background size, then blur)
 					BlurTransformation blur = new BlurTransformation(activity.getApplicationContext(), blurRadius);
-					CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() * toolbarRatio), CropTransformation.GravityHorizontal.CENTER, CropTransformation.GravityVertical.TOP);
+					CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() * toolbarRatio), GravityHorizontal.CENTER, GravityVertical.TOP);
 					image = blur.transform(crop.transform(image));
 					toolbarBackground.setImageBitmap(image);
 				}

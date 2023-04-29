@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -107,7 +108,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  */
 public class StatusActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener,
-		OnConfirmListener, OnCardClickListener, OnScrollChangeListener, LockCallback, ActivityResultCallback<ActivityResult> {
+		OnConfirmListener, OnCardClickListener, OnScrollChangeListener, LockCallback, ActivityResultCallback<ActivityResult>, OnPreDrawListener {
 
 	/**
 	 * Activity result code to update existing status information
@@ -385,6 +386,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		status_text.setOnClickListener(this);
 		container.setOnScrollChangeListener(this);
 		body.addLockCallback(this);
+		container.getViewTreeObserver().addOnPreDrawListener(this);
 	}
 
 
@@ -422,12 +424,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-			body.getLayoutParams().height = root.getMeasuredHeight() - toolbar.getMeasuredHeight();
-			container.scrollTo(0, 0);
-		}
+	public boolean onPreDraw() {
+		// when views are added to scrollview, scroll back to top
+		container.getViewTreeObserver().removeOnPreDrawListener(this);
+		body.getLayoutParams().height = root.getMeasuredHeight() - toolbar.getMeasuredHeight();
+		container.scrollTo(0, 0);
+		return true;
 	}
 
 
