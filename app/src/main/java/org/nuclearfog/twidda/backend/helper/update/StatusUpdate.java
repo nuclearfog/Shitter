@@ -55,6 +55,11 @@ public class StatusUpdate implements Serializable {
 	public static final int MEDIA_GIF = 3;
 
 	/**
+	 * returned if an audio is attached
+	 */
+	public static final int MEDIA_AUDIO = 4;
+
+	/**
 	 * returned if a poll is attached
 	 */
 	private static final int POLL = 4;
@@ -62,6 +67,7 @@ public class StatusUpdate implements Serializable {
 	private static final String MIME_GIF = "image/gif";
 	private static final String MIME_IMAGE_ALL = "image/";
 	private static final String MIME_VIDEO_ALL = "video/";
+	private static final String MIME_AUDIO_ALL = "audio/";
 
 	// main attributes
 	private long statusId = 0L;
@@ -215,6 +221,25 @@ public class StatusUpdate implements Serializable {
 							attachmentLimitReached = true;
 						}
 						return MEDIA_VIDEO;
+					}
+					break;
+			}
+		}
+		// check if file is an audio
+		else if (mime.startsWith(MIME_AUDIO_ALL)) {
+			switch (attachment) {
+				case EMPTY:
+					attachment = MEDIA_AUDIO;
+
+				case MEDIA_AUDIO:
+					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
+					if (file != null && file.length() > 0) {
+						previews.add(mediaUri.toString());
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						if (mediaStatuses.size() + mediaKeys.size() == instance.getAudioLimit()) {
+							attachmentLimitReached = true;
+						}
+						return MEDIA_AUDIO;
 					}
 					break;
 			}

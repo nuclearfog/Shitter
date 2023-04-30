@@ -35,6 +35,7 @@ import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
+import org.nuclearfog.twidda.ui.dialogs.AudioPlayerDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.EmojiPicker;
@@ -106,6 +107,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
 	private PollDialog pollDialog;
+	private AudioPlayerDialog audioDialog;
 	private EmojiPicker emojiPicker;
 	private StatusPreferenceDialog preferenceDialog;
 	private IconAdapter adapter;
@@ -142,6 +144,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		confirmDialog = new ConfirmDialog(this);
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
+		audioDialog = new AudioPlayerDialog(this);
 		emojiPicker = new EmojiPicker(this, this);
 		adapter = new IconAdapter(settings, true);
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
@@ -274,7 +277,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		else if (v.getId() == R.id.popup_status_add_media) {
 			if (statusUpdate.getAttachmentType() == StatusUpdate.EMPTY) {
 				// request images/videos
-				getMedia(REQUEST_IMG_VID);
+				getMedia(REQUEST_ALL);
 			} else {
 				// request images only
 				getMedia(REQUEST_IMAGE);
@@ -363,27 +366,31 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	public void onMediaClick(int index) {
-		Uri[] uris = statusUpdate.getMediaUris();
+		Uri uri = statusUpdate.getMediaUris()[index];
 		switch (statusUpdate.getAttachmentType()) {
 			case StatusUpdate.MEDIA_IMAGE:
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, uris[index]);
+				intent.putExtra(ImageViewer.IMAGE_URI, uri);
 				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 				break;
 
 			case StatusUpdate.MEDIA_GIF:
 				intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, uris[index]);
+				intent.putExtra(ImageViewer.IMAGE_URI, uri);
 				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_GIF);
 				startActivity(intent);
 				break;
 
 			case StatusUpdate.MEDIA_VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.VIDEO_URI, uris[0]);
+				intent.putExtra(VideoViewer.VIDEO_URI, uri);
 				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
 				startActivity(intent);
+				break;
+
+			case StatusUpdate.MEDIA_AUDIO:
+				audioDialog.show(uri);
 				break;
 		}
 	}
@@ -408,6 +415,11 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		}
 	}
 
+	/**
+	 * update icon adapter and set buttons
+	 *
+	 * @param mediaType media type attached to {@link StatusUpdate}
+	 */
 	private void addMedia(int mediaType) {
 		switch (mediaType) {
 			case StatusUpdate.MEDIA_IMAGE:
@@ -420,6 +432,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 			case StatusUpdate.MEDIA_VIDEO:
 				adapter.addVideoItem();
+				break;
+
+			case StatusUpdate.MEDIA_AUDIO:
+				adapter.addAudioItem();
 				break;
 
 			case StatusUpdate.MEDIA_ERROR:

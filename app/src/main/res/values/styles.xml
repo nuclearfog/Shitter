@@ -54,6 +54,11 @@
 		<item name="android:windowCloseOnTouchOutside">false</item>
 	</style>
 
+	<style name="AudioDialog" parent="Theme.AppCompat.Dialog">
+		<item name="android:windowMinWidthMinor">90%</item>
+		<item name="android:windowCloseOnTouchOutside">false</item>
+	</style>
+
 	<style name="StatusDialog" parent="Theme.AppCompat.Dialog">
 		<item name="android:windowMinWidthMinor">80%</item>
 	</style>

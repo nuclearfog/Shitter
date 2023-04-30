@@ -304,4 +304,5 @@
 
 	<!--dimens of DescriptionView-->
 	<dimen name="descriptionview_layout_padding">5dp</dimen>
+
 </resources>

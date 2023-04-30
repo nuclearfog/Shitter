@@ -71,11 +71,10 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	 * @param media media content
 	 */
 	public void setContent(Media media, boolean blurImage) {
-		RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
 		Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
-		// check if online media and image loading is enabled
-		if (!(media instanceof DatabaseMedia) && settings.imagesEnabled() && !media.getPreviewUrl().isEmpty()) {
-			// set image blur if enabled
+		if (!(media instanceof DatabaseMedia) && settings.imagesEnabled() && media.getMediaType() != Media.AUDIO
+				&& media.getMediaType() != Media.UNDEFINED && !media.getPreviewUrl().trim().isEmpty()) {
+			RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
 			if (blurImage) {
 				BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);
 				picassoBuilder.transform(blurTransformation);
@@ -85,7 +84,7 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 			previewImage.setImageDrawable(placeholder);
 		}
 		// set 'play video' button
-		if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF) {
+		if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF || media.getMediaType() == Media.AUDIO) {
 			playIcon.setVisibility(View.VISIBLE);
 		} else {
 			playIcon.setVisibility(View.GONE);

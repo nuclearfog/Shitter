@@ -89,6 +89,7 @@ import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter.OnCardClickListener;
+import org.nuclearfog.twidda.ui.dialogs.AudioPlayerDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
@@ -222,6 +223,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private PreviewAdapter adapter;
 	private ConfirmDialog confirmDialog;
 	private MetricsDialog metricsDialog;
+	private AudioPlayerDialog audioDialog;
 
 	private ViewGroup root, header;
 	private NestedScrollView container;
@@ -370,6 +372,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 		confirmDialog = new ConfirmDialog(this);
 		metricsDialog = new MetricsDialog(this);
+		audioDialog = new AudioPlayerDialog(this);
 		confirmDialog.setConfirmListener(this);
 		repost_name_button.setOnClickListener(this);
 		reply_name.setOnClickListener(this);
@@ -762,22 +765,32 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onMediaClick(Media media) {
 		Uri uri = Uri.parse(media.getUrl());
-		if (media.getMediaType() == Media.PHOTO) {
-			Intent intent = new Intent(this, ImageViewer.class);
-			intent.putExtra(ImageViewer.IMAGE_URI, uri);
-			intent.putExtra(ImageViewer.IMAGE_DESCRIPTION, media.getDescription());
-			intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
-			startActivity(intent);
-		} else if (media.getMediaType() == Media.VIDEO) {
-			Intent intent = new Intent(this, VideoViewer.class);
-			intent.putExtra(VideoViewer.VIDEO_URI, uri);
-			intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
-			startActivity(intent);
-		} else if (media.getMediaType() == Media.GIF) {
-			Intent intent = new Intent(this, VideoViewer.class);
-			intent.putExtra(VideoViewer.VIDEO_URI, uri);
-			intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
-			startActivity(intent);
+		switch (media.getMediaType()) {
+			case Media.PHOTO:
+				Intent intent = new Intent(this, ImageViewer.class);
+				intent.putExtra(ImageViewer.IMAGE_URI, uri);
+				intent.putExtra(ImageViewer.IMAGE_DESCRIPTION, media.getDescription());
+				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+				startActivity(intent);
+				break;
+
+			case Media.AUDIO:
+				audioDialog.show(uri);
+				break;
+
+			case Media.VIDEO:
+				intent = new Intent(this, VideoViewer.class);
+				intent.putExtra(VideoViewer.VIDEO_URI, uri);
+				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+				startActivity(intent);
+				break;
+
+			case Media.GIF:
+				intent = new Intent(this, VideoViewer.class);
+				intent.putExtra(VideoViewer.VIDEO_URI, uri);
+				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+				startActivity(intent);
+				break;
 		}
 	}
 

@@ -88,6 +88,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	private static final String MIME_ALL_READ = "*/*";
 	private static final String MIME_IMAGE_READ = "image/*";
 	private static final String MIME_VIDEO_READ = "video/*";
+	private static final String MIME_AUDIO_READ = "audio/*";
 
 	/**
 	 * image name prefix used to save images
@@ -97,7 +98,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	/**
 	 * mime types for videos and images
 	 */
-	private static final String[] TYPE_ALL = {MIME_IMAGE_READ, MIME_VIDEO_READ};
+	private static final String[] TYPE_ALL = {MIME_IMAGE_READ, MIME_VIDEO_READ, MIME_AUDIO_READ};
 
 	/**
 	 * request code to check permissions
@@ -112,7 +113,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	/**
 	 * request code to pick image or video
 	 */
-	protected static final int REQUEST_IMG_VID = 0x6B1A;
+	protected static final int REQUEST_ALL = 0x6B1A;
 
 	/**
 	 * request code to pick an image for a profile picture
@@ -362,7 +363,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 		Intent mediaSelect = new Intent(ACTION_PICK);
 		mediaSelect.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
 		switch (requestCode) {
-			case REQUEST_IMG_VID:
+			case REQUEST_ALL:
 				// pick image or video
 				mediaSelect.setType(MIME_ALL_READ);
 				mediaSelect.putExtra(EXTRA_MIME_TYPES, TYPE_ALL);

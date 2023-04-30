@@ -134,7 +134,16 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 		appendItem(IconHolder.TYPE_GIF);
 	}
 
+	/**
+	 * append audio icon to the end
+	 */
+	public void addAudioItem() {
+		appendItem(IconHolder.TYPE_AUDIO);
+	}
 
+	/**
+	 *
+	 */
 	private void appendItem(int itemType) {
 		if (invert) {
 			items.add(0, itemType);
@@ -161,6 +170,10 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 
 				case Media.VIDEO:
 					items.add(IconHolder.TYPE_VIDEO);
+					break;
+
+				case Media.AUDIO:
+					items.add(IconHolder.TYPE_AUDIO);
 					break;
 			}
 		}

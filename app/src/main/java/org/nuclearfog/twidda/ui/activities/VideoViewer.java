@@ -86,6 +86,8 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 		setContentView(R.layout.page_video);
 		StyledPlayerView playerView = findViewById(R.id.page_video_player);
 		toolbar = findViewById(R.id.page_video_toolbar);
+		playerView.setShowNextButton(false);
+		playerView.setShowPreviousButton(false);
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);

@@ -45,6 +45,11 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 	 */
 	public static final int TYPE_LOCATION = 5;
 
+	/**
+	 * item type used for audio item
+	 */
+	public static final int TYPE_AUDIO = 6;
+
 	private ImageButton button;
 
 	private GlobalSettings settings;
@@ -102,6 +107,10 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 
 			case TYPE_POLL:
 				button.setImageResource(R.drawable.poll);
+				break;
+
+			case TYPE_AUDIO:
+				button.setImageResource(R.drawable.audio);
 				break;
 
 			default:
