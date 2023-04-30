@@ -6,7 +6,7 @@ import static org.nuclearfog.twidda.ui.activities.ProfileActivity.TOOLBAR_TRANSP
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
+import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -213,9 +213,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		// Add image as banner image
 		else if (resultType == REQUEST_BANNER) {
 			if (holder.setBanner(this, uri)) {
-				Point displaySize = new Point();
-				getWindowManager().getDefaultDisplay().getSize(displaySize);
-				picasso.load(uri).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
+				int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+				picasso.load(uri).resize(widthPixels, widthPixels / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
 				addBannerBtn.setVisibility(INVISIBLE);
 				changeBannerBtn.setVisibility(VISIBLE);
 			} else {

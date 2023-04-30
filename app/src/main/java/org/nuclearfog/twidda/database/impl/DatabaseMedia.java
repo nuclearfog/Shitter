@@ -20,12 +20,13 @@ public class DatabaseMedia implements Media, MediaTable {
 	/**
 	 *
 	 */
-	public static final String[] PROJECTION = {KEY, URL, PREVIEW, TYPE};
+	public static final String[] PROJECTION = {KEY, URL, PREVIEW, TYPE, DESCRIPTION};
 
 	private int mediaType;
 	private String key = "";
 	private String url = "";
 	private String preview = "";
+	private String description = "";
 
 
 	/**
@@ -35,6 +36,7 @@ public class DatabaseMedia implements Media, MediaTable {
 		String key = cursor.getString(0);
 		String url = cursor.getString(1);
 		String preview = cursor.getString(2);
+		String description = cursor.getString(3);
 		mediaType = cursor.getInt(3);
 		if (key != null)
 			this.key = key;
@@ -42,6 +44,8 @@ public class DatabaseMedia implements Media, MediaTable {
 			this.url = url;
 		if (preview != null)
 			this.preview = preview;
+		if (description != null)
+			this.description = description;
 	}
 
 
@@ -70,6 +74,12 @@ public class DatabaseMedia implements Media, MediaTable {
 
 
 	@Override
+	public String getDescription() {
+		return description;
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
 	}
@@ -78,24 +88,24 @@ public class DatabaseMedia implements Media, MediaTable {
 	@NonNull
 	@Override
 	public String toString() {
-		String tostring;
+		String tostring = "type=";
 		switch (getMediaType()) {
 			case PHOTO:
-				tostring = "photo:";
+				tostring += "photo";
 				break;
 
 			case VIDEO:
-				tostring = "video:";
+				tostring += "video";
 				break;
 
 			case GIF:
-				tostring = "gif:";
+				tostring += "gif";
 				break;
 
 			default:
-				tostring = "none:";
+				tostring += "none";
 				break;
 		}
-		return tostring + "url=\"" + getUrl() + "\"";
+		return tostring + " url=\"" + getUrl() + "\"";
 	}
 }

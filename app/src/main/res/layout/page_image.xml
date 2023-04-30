@@ -31,8 +31,8 @@
 
 	<org.nuclearfog.twidda.ui.views.AnimatedImageView
 		android:id="@+id/page_image_gif"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
 		app:layout_constraintBottom_toBottomOf="parent"
@@ -47,5 +47,16 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
+
+	<org.nuclearfog.twidda.ui.views.DescriptionView
+		android:id="@+id/page_image_description"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.2"
+		app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

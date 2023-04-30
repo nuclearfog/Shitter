@@ -39,7 +39,7 @@ public class MediaV1 implements Media {
 	 */
 	private static final String TYPE_VIDEO = "video";
 
-	private int type = NONE;
+	private int type = UNDEFINED;
 	private String url = "";
 	private String previewUrl = "";
 	private String key;
@@ -128,6 +128,12 @@ public class MediaV1 implements Media {
 
 
 	@Override
+	public String getDescription() {
+		return "";
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
 	}
@@ -136,24 +142,24 @@ public class MediaV1 implements Media {
 	@NonNull
 	@Override
 	public String toString() {
-		String tostring;
+		String tostring = "type=";
 		switch (getMediaType()) {
 			case PHOTO:
-				tostring = "photo:";
+				tostring += "photo";
 				break;
 
 			case VIDEO:
-				tostring = "video:";
+				tostring += "video";
 				break;
 
 			case GIF:
-				tostring = "gif:";
+				tostring += "gif";
 				break;
 
 			default:
-				tostring = "none:";
+				tostring += "none";
 				break;
 		}
-		return tostring + "url=\"" + getUrl() + "\"";
+		return tostring + " url=\"" + getUrl() + "\"";
 	}
 }

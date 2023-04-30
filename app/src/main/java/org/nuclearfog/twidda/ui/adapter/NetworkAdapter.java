@@ -29,11 +29,6 @@ public class NetworkAdapter extends BaseAdapter {
 	public static final int ID_MASTODON = 20;
 
 	/**
-	 * social network icons
-	 */
-	private static final int[] ICONS = {R.drawable.mastodon, R.drawable.twitter};
-
-	/**
 	 * social network names
 	 */
 	private static final int[] STRINGS = {R.string.mastodon, R.string.twitter};
@@ -55,7 +50,7 @@ public class NetworkAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return ICONS.length;
+		return IDS.length;
 	}
 
 
@@ -80,7 +75,6 @@ public class NetworkAdapter extends BaseAdapter {
 		}
 		textItem = convertView.findViewById(R.id.dropdown_textitem);
 		textItem.setText(STRINGS[position]);
-		textItem.setCompoundDrawablesWithIntrinsicBounds(ICONS[position], 0, 0, 0);
 		textItem.setTextColor(settings.getTextColor());
 		textItem.setBackgroundColor(settings.getCardColor());
 		AppStyles.setDrawableColor(textItem, settings.getIconColor());

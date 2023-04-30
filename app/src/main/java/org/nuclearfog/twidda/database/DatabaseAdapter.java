@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 17;
+	private static final int DB_VERSION = 18;
 
 	/**
 	 * database file name
@@ -129,6 +129,7 @@ public class DatabaseAdapter {
 			+ MediaTable.KEY + " TEXT PRIMARY KEY,"
 			+ MediaTable.TYPE + " INTEGER,"
 			+ MediaTable.URL + " TEXT,"
+			+ MediaTable.DESCRIPTION + " TEXT,"
 			+ MediaTable.PREVIEW + " TEXT);";
 
 	/**
@@ -315,6 +316,11 @@ public class DatabaseAdapter {
 	private static final String UPDATE_STATUS_ADD_MENTIONS = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.MENTIONS + " TEXT;";
 
 	/**
+	 * add mediatable description
+	 */
+	private static final String UPDATE_MEDIA_ADD_DESCRIPTION = "ALTER TABLE " + MediaTable.NAME + " ADD " + MediaTable.DESCRIPTION + " TEXT;";
+
+	/**
 	 * singleton instance
 	 */
 	private static DatabaseAdapter instance;
@@ -360,7 +366,9 @@ public class DatabaseAdapter {
 		// set initial version
 		if (db.getVersion() == 0) {
 			db.setVersion(DB_VERSION);
-		} else {
+		}
+		// update table
+		else if (db.getVersion() != DB_VERSION) {
 			if (db.getVersion() < 6) {
 				db.execSQL(UPDATE_ACCOUNT_ADD_HOST);
 				db.execSQL(UPDATE_ACCOUNT_ADD_CLIENT_ID);
@@ -403,8 +411,12 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_USER_ADD_EMOJI);
 				db.setVersion(16);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 17) {
 				db.execSQL(UPDATE_STATUS_ADD_MENTIONS);
+				db.setVersion(17);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_MEDIA_ADD_DESCRIPTION);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -964,6 +976,11 @@ public class DatabaseAdapter {
 		 * url for the media thumbnail
 		 */
 		String PREVIEW = "media_preview_url";
+
+		/**
+		 * description of the media
+		 */
+		String DESCRIPTION = "media_description";
 	}
 
 	/**

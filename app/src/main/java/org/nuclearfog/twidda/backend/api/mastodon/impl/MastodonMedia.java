@@ -33,10 +33,16 @@ public class MastodonMedia implements Media {
 	 */
 	private static final String TYPE_VIDEO = "video";
 
+	/**
+	 * Mastodon audio type
+	 */
+	private static final String TYPE_AUDIO = "audio";
+
 	private String key;
 	private String url;
 	private String preview = "";
-	private int type = NONE;
+	private String description = "";
+	private int type = UNDEFINED;
 
 	/**
 	 * @param json Mastodon status JSON format
@@ -59,6 +65,10 @@ public class MastodonMedia implements Media {
 			case TYPE_VIDEO:
 				type = VIDEO;
 				break;
+
+			case TYPE_AUDIO:
+				type = AUDIO;
+				break;
 		}
 		if (Patterns.WEB_URL.matcher(url).matches()) {
 			this.url = url;
@@ -67,6 +77,9 @@ public class MastodonMedia implements Media {
 		}
 		if (Patterns.WEB_URL.matcher(preview).matches()) {
 			this.preview = preview;
+		}
+		if (json.has("description") && !json.isNull("description")) {
+			description = json.getString("description");
 		}
 	}
 
@@ -96,6 +109,12 @@ public class MastodonMedia implements Media {
 
 
 	@Override
+	public String getDescription() {
+		return description;
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
 	}
@@ -104,24 +123,24 @@ public class MastodonMedia implements Media {
 	@NonNull
 	@Override
 	public String toString() {
-		String tostring;
+		String tostring = "type=";
 		switch (getMediaType()) {
 			case PHOTO:
-				tostring = "photo:";
+				tostring += "photo";
 				break;
 
 			case VIDEO:
-				tostring = "video:";
+				tostring += "video";
 				break;
 
 			case GIF:
-				tostring = "gif:";
+				tostring += "gif";
 				break;
 
 			default:
-				tostring = "none:";
+				tostring += "none";
 				break;
 		}
-		return tostring + "url=\"" + getUrl() + "\"";
+		return tostring + " url=\"" + getUrl() + "\"";
 	}
 }

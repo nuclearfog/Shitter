@@ -47,7 +47,7 @@ public class MediaV2 implements Media {
 	private String key;
 	private String preview;
 	private String url = "";
-	private int type = NONE;
+	private int type = UNDEFINED;
 
 	/**
 	 * @param mediaItem Twitter media json format
@@ -134,6 +134,12 @@ public class MediaV2 implements Media {
 
 
 	@Override
+	public String getDescription() {
+		return "";
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
 	}
@@ -142,24 +148,24 @@ public class MediaV2 implements Media {
 	@NonNull
 	@Override
 	public String toString() {
-		String tostring;
+		String tostring = "type=";
 		switch (getMediaType()) {
 			case PHOTO:
-				tostring = "photo:";
+				tostring += "photo";
 				break;
 
 			case VIDEO:
-				tostring = "video:";
+				tostring += "video";
 				break;
 
 			case GIF:
-				tostring = "gif:";
+				tostring += "gif";
 				break;
 
 			default:
-				tostring = "none:";
+				tostring += "none";
 				break;
 		}
-		return tostring + "url=\"" + getUrl() + "\"";
+		return tostring + " url=\"" + getUrl() + "\"";
 	}
 }

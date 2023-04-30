@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.views.AnimatedImageView;
+import org.nuclearfog.twidda.ui.views.DescriptionView;
 import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
@@ -57,6 +58,12 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	public static final String IMAGE_TYPE = "image-type";
 
 	/**
+	 * key to set image description
+	 * value type is String
+	 */
+	public static final String IMAGE_DESCRIPTION = "image-description";
+
+	/**
 	 * name of the cache folder where online images will be stored
 	 * after the end of this activity this folder will be cleared
 	 */
@@ -81,6 +88,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_image);
 		Toolbar toolbar = findViewById(R.id.page_image_toolbar);
+		DescriptionView descriptionView = findViewById(R.id.page_image_description);
 		loadingCircle = findViewById(R.id.page_image_progress);
 		zoomImage = findViewById(R.id.page_image_viewer);
 		gifImage = findViewById(R.id.page_image_gif);
@@ -96,6 +104,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 
 		Uri data = getIntent().getParcelableExtra(IMAGE_URI);
 		mode = getIntent().getIntExtra(IMAGE_TYPE, IMAGE_DEFAULT);
+		String description = getIntent().getStringExtra(IMAGE_DESCRIPTION);
 		boolean isLocalFile = !data.getScheme().startsWith("http");
 
 		switch (mode) {
@@ -123,6 +132,11 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		} else {
 			loadingCircle.setVisibility(View.INVISIBLE);
 			toolbar.setVisibility(View.GONE);
+		}
+		if (description != null && !description.trim().isEmpty()) {
+			descriptionView.setDescription(description);
+		} else {
+			descriptionView.setVisibility(View.INVISIBLE);
 		}
 	}
 

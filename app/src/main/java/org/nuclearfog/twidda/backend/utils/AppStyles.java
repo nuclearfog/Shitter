@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
@@ -251,10 +250,9 @@ public class AppStyles {
 						}
 						image = crop.transform(image);
 					}
-					Point displaySize = new Point();
-					activity.getWindowManager().getDefaultDisplay().getSize(displaySize);
-					int blurRadius = Math.max(Math.round(displaySize.x * 10.0f / image.getWidth()), 10);
-					float toolbarRatio = activity.getResources().getDimension(R.dimen.profile_toolbar_height) / displaySize.x;
+					int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+					int blurRadius = Math.max(Math.round(widthPixels * 10.0f / image.getWidth()), 10);
+					float toolbarRatio = activity.getResources().getDimension(R.dimen.profile_toolbar_height) / widthPixels;
 					// do final transformations (crop first image to toolbar background size, then blur)
 					BlurTransformation blur = new BlurTransformation(activity.getApplicationContext(), blurRadius);
 					CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() * toolbarRatio), GravityHorizontal.CENTER, GravityVertical.TOP);

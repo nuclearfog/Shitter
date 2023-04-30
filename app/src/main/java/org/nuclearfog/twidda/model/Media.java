@@ -10,24 +10,29 @@ import java.io.Serializable;
 public interface Media extends Serializable, Comparable<Media> {
 
 	/**
-	 * returned when the status doesn't contain any media
+	 * media is undefined
 	 */
-	int NONE = -1;
+	int UNDEFINED = -1;
 
 	/**
-	 * returned when the status contains one or more images
+	 * media is a image
 	 */
 	int PHOTO = 800;
 
 	/**
-	 * returned when the status contains a video
+	 * media is a video
 	 */
 	int VIDEO = 801;
 
 	/**
-	 * returned when the status contains an animated gif
+	 * media is an animated gif
 	 */
 	int GIF = 802;
+
+	/**
+	 * media is an audio
+	 */
+	int AUDIO = 803;
 
 	/**
 	 * @return media key
@@ -35,7 +40,7 @@ public interface Media extends Serializable, Comparable<Media> {
 	String getKey();
 
 	/**
-	 * @return type of media e.g. video or image {@link #NONE,#GIF,#PHOTO,#VIDEO}
+	 * @return type of media e.g. video or image {@link #UNDEFINED ,#GIF,#PHOTO,#VIDEO}
 	 */
 	int getMediaType();
 
@@ -48,6 +53,11 @@ public interface Media extends Serializable, Comparable<Media> {
 	 * @return preview url
 	 */
 	String getPreviewUrl();
+
+	/**
+	 * @return additional media description
+	 */
+	String getDescription();
 
 
 	@Override

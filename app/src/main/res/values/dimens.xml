@@ -302,4 +302,6 @@
 	<dimen name="item_emoji_text_size">18sp</dimen>
 	<dimen name="item_emoji_text_margin">8dp</dimen>
 
+	<!--dimens of DescriptionView-->
+	<dimen name="descriptionview_layout_padding">5dp</dimen>
 </resources>

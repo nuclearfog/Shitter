@@ -765,6 +765,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (media.getMediaType() == Media.PHOTO) {
 			Intent intent = new Intent(this, ImageViewer.class);
 			intent.putExtra(ImageViewer.IMAGE_URI, uri);
+			intent.putExtra(ImageViewer.IMAGE_DESCRIPTION, media.getDescription());
 			intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
 			startActivity(intent);
 		} else if (media.getMediaType() == Media.VIDEO) {
