@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
+import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,6 +82,12 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	private File cacheFolder;
 	private boolean enableSave = false;
 	private int mode = 0;
+
+
+	@Override
+	protected void attachBaseContext(Context newBase) {
+		super.attachBaseContext(AppStyles.setFontScale(newBase));
+	}
 
 
 	@Override

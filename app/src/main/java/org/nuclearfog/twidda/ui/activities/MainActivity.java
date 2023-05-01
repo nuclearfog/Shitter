@@ -120,6 +120,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				adapter.clear();
 				break;
 
+			case SettingsActivity.RETURN_FONT_SCALE_CHANGED:
+				AppStyles.updateFontScale(this);
+				// fall through
+
 			case AccountActivity.RETURN_ACCOUNT_CHANGED:
 			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
 				loginIntent = null;
@@ -159,9 +163,9 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		// open home profile
 		if (item.getItemId() == R.id.menu_profile) {
-			Intent user = new Intent(this, ProfileActivity.class);
-			user.putExtra(KEY_PROFILE_ID, settings.getLogin().getId());
-			startActivity(user);
+			Intent intent = new Intent(this, ProfileActivity.class);
+			intent.putExtra(KEY_PROFILE_ID, settings.getLogin().getId());
+			startActivity(intent);
 			return true;
 		}
 		// open status editor
@@ -172,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		}
 		// open app settings
 		else if (item.getItemId() == R.id.menu_settings) {
-			Intent settings = new Intent(this, SettingsActivity.class);
-			activityResultLauncher.launch(settings);
+			Intent intent = new Intent(this, SettingsActivity.class);
+			activityResultLauncher.launch(intent);
 			return true;
 		}
 		// theme expanded search view
@@ -190,8 +194,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		}
 		// open account manager
 		else if (item.getItemId() == R.id.menu_account) {
-			Intent accountManager = new Intent(this, AccountActivity.class);
-			activityResultLauncher.launch(accountManager);
+			Intent intent = new Intent(this, AccountActivity.class);
+			activityResultLauncher.launch(intent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

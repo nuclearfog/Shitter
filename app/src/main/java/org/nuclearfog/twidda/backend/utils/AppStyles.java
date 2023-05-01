@@ -13,10 +13,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -121,6 +123,23 @@ public class AppStyles {
 		Configuration config = context.getResources().getConfiguration();
 		config.fontScale = instance.settings.getTextScale();
 		return context.createConfigurationContext(config);
+	}
+
+	/**
+	 * update global font size
+	 */
+	public static void updateFontScale(Context context) {
+		AppStyles instance = new AppStyles(context);
+		Resources resources = context.getResources();
+		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		if (wm != null) {
+			Configuration configuration = resources.getConfiguration();
+			configuration.fontScale = instance.settings.getTextScale();
+			DisplayMetrics metrics = resources.getDisplayMetrics();
+			wm.getDefaultDisplay().getMetrics(metrics);
+			metrics.scaledDensity = configuration.fontScale * metrics.density;
+			resources.updateConfiguration(configuration, metrics);
+		}
 	}
 
 	/**

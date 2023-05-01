@@ -51,7 +51,6 @@
 	<string name="info_permission_read">Read permission needed to access images and videos.</string>
 	<string name="info_permission_location">Location permission only needed to attach location to a status</string>
 	<string name="info_permission_write">Write permission used to store images.</string>
-	<string name="info_restart_app_on_change">restarting required to apply changes</string>
 	<string name="info_status_text_copied">Status text copied</string>
 	<string name="info_status_location_copied">Location coordinates copied</string>
 	<string name="info_status_medialink_copied">Media link copied</string>

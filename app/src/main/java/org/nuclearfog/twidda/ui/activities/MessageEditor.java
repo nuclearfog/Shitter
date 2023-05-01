@@ -69,6 +69,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	private MessageUpdate messageUpdate = new MessageUpdate();
 
+
 	@Override
 	protected void attachBaseContext(Context newBase) {
 		super.attachBaseContext(AppStyles.setFontScale(newBase));

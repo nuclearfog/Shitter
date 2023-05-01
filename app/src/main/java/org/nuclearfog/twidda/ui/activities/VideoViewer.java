@@ -74,6 +74,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 
 	private Uri data;
 
+
 	@Override
 	protected void attachBaseContext(Context newBase) {
 		super.attachBaseContext(AppStyles.setFontScale(newBase));

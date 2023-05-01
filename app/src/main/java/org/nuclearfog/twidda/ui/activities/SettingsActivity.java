@@ -74,6 +74,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 */
 	public static final int RETURN_SETTINGS_CHANGED = 0xA3E8;
 
+	public static final int RETURN_FONT_SCALE_CHANGED = 0x2636;
+
 	/**
 	 * total count of all colors defined
 	 */
@@ -548,8 +550,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// Font scale spinner
 		else if (parent.getId() == R.id.spinner_scale) {
 			settings.setScaleIndex(position);
-			AppStyles.setFontStyle(root);
-			Toast.makeText(getApplicationContext(), R.string.info_restart_app_on_change, Toast.LENGTH_SHORT).show();
+			AppStyles.updateFontScale(this);
+			setResult(RETURN_FONT_SCALE_CHANGED);
 		}
 	}
 

@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 /**
  * @author nuclearfog
  */
-public class CustomApplication extends Application {
+public class ClientApplication extends Application {
 
 	@Override
 	public void onLowMemory() {
