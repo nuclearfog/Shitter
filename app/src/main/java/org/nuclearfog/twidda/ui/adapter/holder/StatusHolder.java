@@ -6,6 +6,8 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import android.content.res.Resources;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -50,12 +52,15 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class StatusHolder extends ViewHolder implements OnClickListener {
 
+	private static final int EMPTY_COLOR = 0x2F000000;
+
 	private static final int IMG_SIZE = 150;
 
 	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
 	private TextView username, screenname, statusText, repost, favorite, reply, reposter, created, replyname, label;
 	private View dismissButton;
 	private RecyclerView iconList;
+	private Drawable placeholder;
 
 	private GlobalSettings settings;
 	private Picasso picasso;
@@ -98,6 +103,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		created = itemView.findViewById(R.id.item_status_created_at);
 		replyname = itemView.findViewById(R.id.item_status_reply_name);
 
+		placeholder = new ColorDrawable(EMPTY_COLOR);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
 		adapter = new IconAdapter(settings, false);
 		iconList.setAdapter(adapter);
@@ -212,9 +218,9 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		// set profile image
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-			picasso.load(profileImageUrl).transform(roundCorner).resize(IMG_SIZE, IMG_SIZE).centerCrop().error(R.drawable.no_image).into(profile);
+			picasso.load(profileImageUrl).transform(roundCorner).resize(IMG_SIZE, IMG_SIZE).placeholder(placeholder).centerCrop().error(R.drawable.no_image).into(profile);
 		} else {
-			profile.setImageResource(0);
+			profile.setImageDrawable(placeholder);
 		}
 		// set 'replied' text and icon
 		if (status.getRepliedStatusId() > 0) {

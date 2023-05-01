@@ -4,6 +4,8 @@ import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -53,10 +55,13 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 
 	private static final int IMG_SIZE = 150;
 
+	private static final int EMPTY_COLOR = 0x2F000000;
+
 	private TextView username, screenname, time, text;
 	private ImageView profile, verifiedIcon, lockedIcon;
 	private RecyclerView iconList;
 	private Button answer, delete;
+	private Drawable placeholder;
 
 	private OnItemClickListener listener;
 	private GlobalSettings settings;
@@ -86,6 +91,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		text = itemView.findViewById(R.id.item_message_text);
 		answer = itemView.findViewById(R.id.item_message_answer);
 		delete = itemView.findViewById(R.id.item_message_delete);
+		placeholder = new ColorDrawable(EMPTY_COLOR);
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
@@ -193,15 +199,14 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		String profileImageUrl = sender.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-			picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().transform(roundCorner).error(R.drawable.no_image).into(profile);
+			picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().transform(roundCorner).placeholder(placeholder).error(R.drawable.no_image).into(profile);
 		} else {
-			profile.setImageResource(0);
+			profile.setImageDrawable(placeholder);
 		}
 	}
 
 	/**
 	 * item click listener
-	 * todo find a replace for this listener class
 	 */
 	public interface OnItemClickListener extends OnHolderClickListener {
 

@@ -6,6 +6,8 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -45,12 +47,15 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  */
 public class UserHolder extends ViewHolder implements OnClickListener, AsyncCallback<EmojiResult> {
 
+	private static final int EMPTY_COLOR = 0x2F000000;
+
 	private static final int IMG_SIZE = 150;
 
 	private TextView username, screenname, followingCount, followerCount, label;
 	private ImageView profileImg, verifyIcon, lockedIcon;
 	private ImageButton delete;
 	private View notificationDismiss;
+	private Drawable placeholder;
 
 	private GlobalSettings settings;
 	private TextEmojiLoader emojiLoader;
@@ -80,6 +85,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		verifyIcon = itemView.findViewById(R.id.item_user_verified);
 		lockedIcon = itemView.findViewById(R.id.item_user_private);
 		delete = itemView.findViewById(R.id.item_user_delete_buton);
+		placeholder = new ColorDrawable(EMPTY_COLOR);
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
@@ -148,9 +154,9 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		String profileImageUrl = user.getProfileImageThumbnailUrl();
 		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-			picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().transform(roundCorner).error(R.drawable.no_image).into(profileImg);
+			picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().transform(roundCorner).placeholder(placeholder).error(R.drawable.no_image).into(profileImg);
 		} else {
-			profileImg.setImageResource(0);
+			profileImg.setImageDrawable(placeholder);
 		}
 	}
 

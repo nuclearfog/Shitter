@@ -62,7 +62,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	public void onItemClick(int position, int type, int... extras) {
 		if (listener != null) {
 			Integer item = items.get(position);
-			if (item == IconHolder.TYPE_IMAGE || item == IconHolder.TYPE_GIF || item == IconHolder.TYPE_VIDEO) {
+			if (item == IconHolder.TYPE_IMAGE || item == IconHolder.TYPE_GIF || item == IconHolder.TYPE_VIDEO || item == IconHolder.TYPE_AUDIO) {
 				if (invert) {
 					listener.onMediaClick(items.size() - position - 1);
 				} else {

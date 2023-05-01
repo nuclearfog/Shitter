@@ -3,4 +3,5 @@
 	<color name="half_transparent">#40000000</color>
 	<color name="background">#80000000</color>
 	<color name="bright_transparent">#afffffff</color>
+	<color name="player_control">#ff0e0e0e</color>
 </resources>

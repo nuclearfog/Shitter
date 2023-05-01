@@ -891,7 +891,10 @@ public class Mastodon implements Connection {
 	@Override
 	public long uploadMedia(MediaStatus mediaUpdate) throws MastodonException {
 		try {
-			Response response = post(ENDPOINT_UPLOAD_MEDIA, new ArrayList<>(), mediaUpdate.getStream(), "file");
+			List<String> params = new ArrayList<>();
+			if (!mediaUpdate.getDescription().isEmpty())
+				params.add("description=" + mediaUpdate.getDescription());
+			Response response = post(ENDPOINT_UPLOAD_MEDIA, params, mediaUpdate.getStream(), "file");
 			ResponseBody body = response.body();
 			if (body != null) {
 				if (response.code() == 200) {

@@ -183,7 +183,7 @@
 	<string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
 	<string name="info_location_pending">Ortung läuft, bitte warten.</string>
 	<string name="error_twitter_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
-	<string name="button_share">Videolink teilen</string>
+	<string name="button_share">Link teilen</string>
 	<string name="settings_look">Aussehen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
 	<string name="status_translate_text">übersetzen</string>

@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.utils;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
@@ -87,16 +88,15 @@ public class LinkUtils {
 	/**
 	 * open a link to a media file
 	 *
-	 * @param activity activity used to open link
 	 * @param url      media url
 	 */
-	public static void openMediaLink(Activity activity, Uri url) {
+	public static void openMediaLink(Context context, Uri url) {
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		intent.setData(url);
 		try {
-			activity.startActivity(intent);
+			context.startActivity(intent);
 		} catch (ActivityNotFoundException err) {
-			Toast.makeText(activity.getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
+			Toast.makeText(context.getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
 		}
 	}
 }

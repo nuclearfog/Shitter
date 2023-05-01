@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.ui.adapter.holder;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -43,10 +45,13 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 
 	private static final int IMG_SIZE = 150;
 
+	private static final int EMPTY_COLOR = 0x2F000000;
+
 	private AsyncExecutor.AsyncCallback<EmojiResult> usernameResult = this::setUsernameEmojis;
 
 	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon;
 	private TextView title, description, username, screenname, date, member, subscriber, followList;
+	private Drawable placeholder;
 
 	private Picasso picasso;
 	private GlobalSettings settings;
@@ -79,6 +84,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		member = itemView.findViewById(R.id.item_list_member);
 		subscriber = itemView.findViewById(R.id.item_list_subscriber);
 		followList = itemView.findViewById(R.id.item_list_following_indicator);
+		placeholder = new ColorDrawable(EMPTY_COLOR);
 
 		enableExtras = settings.getLogin().getConfiguration().showListExtras();
 		enableImages = settings.imagesEnabled();
@@ -145,9 +151,9 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 			}
 			if (enableImages && !profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(3, 0);
-				picasso.load(profileImageUrl).transform(roundCorner).resize(IMG_SIZE, IMG_SIZE).centerCrop().error(R.drawable.no_image).into(profileImage);
+				picasso.load(profileImageUrl).transform(roundCorner).resize(IMG_SIZE, IMG_SIZE).centerCrop().placeholder(placeholder).error(R.drawable.no_image).into(profileImage);
 			} else {
-				profileImage.setImageResource(0);
+				profileImage.setImageDrawable(placeholder);
 			}
 			if (!owner.isCurrentUser() && userlist.isFollowing()) {
 				followIcon.setVisibility(View.VISIBLE);

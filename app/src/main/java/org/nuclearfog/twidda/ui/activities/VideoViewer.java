@@ -144,7 +144,16 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		player.pause();
+		if (player.isPlaying()) {
+			player.pause();
+		}
+	}
+
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		player.stop();
 	}
 
 

@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.ui.adapter.holder;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,11 +38,12 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 
 	private static final int IMG_SIZE = 150;
 
-	private static final String ACCOUNT_TWITTER = " @twitter.com";
+	private static final int EMPTY_COLOR = 0x2F000000;
 
 	private ImageView profile;
 	private ImageButton remove;
 	private TextView username, screenname, date;
+	private Drawable placeholder;
 
 	private OnHolderClickListener listener;
 	private GlobalSettings settings;
@@ -60,6 +63,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 		date = itemView.findViewById(R.id.item_account_date);
 		remove = itemView.findViewById(R.id.item_account_remove);
 		profile = itemView.findViewById(R.id.item_account_profile);
+		placeholder = new ColorDrawable(EMPTY_COLOR);
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
@@ -97,9 +101,9 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			String profileImageUrl = user.getProfileImageThumbnailUrl();
 			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-				picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().transform(roundCorner).error(R.drawable.no_image).into(profile);
+				picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().placeholder(placeholder).transform(roundCorner).error(R.drawable.no_image).into(profile);
 			} else {
-				profile.setImageResource(0);
+				profile.setImageDrawable(placeholder);
 			}
 		} else {
 			profile.setImageResource(0);
@@ -110,7 +114,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 		switch (account.getConfiguration()) {
 			case TWITTER1:
 			case TWITTER2:
-				screenname.append(ACCOUNT_TWITTER);
+				screenname.append(" @twitter.com");
 				break;
 
 			case MASTODON:

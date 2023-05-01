@@ -87,6 +87,13 @@ public class MediaStatus implements Serializable {
 	}
 
 	/**
+	 * @return media description if any
+	 */
+	public String getDescription() {
+		return ""; // todo implement this
+	}
+
+	/**
 	 * @return remaining bytes of the stream
 	 */
 	public long available() {

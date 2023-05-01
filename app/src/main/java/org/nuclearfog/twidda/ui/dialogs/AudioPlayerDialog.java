@@ -4,6 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -27,6 +30,7 @@ import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
+import org.nuclearfog.twidda.backend.utils.LinkUtils;
 
 import okhttp3.Call;
 
@@ -35,27 +39,52 @@ import okhttp3.Call;
  *
  * @author nuclearfog
  */
-public class AudioPlayerDialog  extends Dialog {
+public class AudioPlayerDialog  extends Dialog implements OnClickListener {
 
+	private TextView mediaLink;
 	private ExoPlayer player;
+
+	private Uri data;
 
 	/**
 	 * @inheritDoc
 	 */
 	public AudioPlayerDialog(@NonNull Context context) {
 		super(context, R.style.AudioDialog);
-		PlayerControlView controls = new PlayerControlView(context);
-		setContentView(controls);
+		setContentView(R.layout.dialog_audio_player);
+		PlayerControlView controls = findViewById(R.id.dialog_audio_player_controls);
+		mediaLink = findViewById(R.id.dialog_audio_player_share);
+
 		controls.setShowNextButton(false);
 		controls.setShowPreviousButton(false);
 		player = new ExoPlayer.Builder(context, createRenderer(context)).build();
 		controls.setPlayer(player);
 		controls.setShowTimeoutMs(-1);
+
+		mediaLink.setOnClickListener(this);
 	}
 
 
 	@Override
 	public void show() {
+		// use show(Uri) instead
+	}
+
+
+	@Override
+	public void dismiss() {
+		super.dismiss();
+		player.stop();
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.dialog_audio_player_share) {
+			if (data != null) {
+				LinkUtils.openMediaLink(getContext(), data);
+			}
+		}
 	}
 
 	/**
@@ -67,6 +96,7 @@ public class AudioPlayerDialog  extends Dialog {
 		if (isShowing())
 			return;
 		super.show();
+		this.data = data;
 
 		DataSource.Factory dataSourceFactory;
 		MediaItem mediaItem = MediaItem.fromUri(data);
@@ -75,9 +105,11 @@ public class AudioPlayerDialog  extends Dialog {
 		if (data.getScheme().startsWith("http")) {
 			// configure with okhttp connection of the app
 			dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(getContext()));
+			mediaLink.setVisibility(View.VISIBLE);
 		}
 		// initialize local source
 		else {
+			mediaLink.setVisibility(View.GONE);
 			dataSourceFactory = new DataSource.Factory() {
 				@NonNull
 				@Override

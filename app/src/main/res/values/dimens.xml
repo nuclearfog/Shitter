@@ -295,6 +295,11 @@
 	<dimen name="dialog_status_layout_margins">5dp</dimen>
 	<dimen name="dialog_status_dropdown_height">22sp</dimen>
 
+	<!--dimens of dialog_audio_player.xml-->
+	<dimen name="dialog_audio_player_drawable_padding">5dp</dimen>
+	<dimen name="dialog_audio_player_layout_padding">5dp</dimen>
+	<dimen name="dialog_audio_player_layout_margin">5dp</dimen>
+
 	<!--dimens of item_emoji.xml-->
 	<dimen name="item_emoji_layout_margin_left_right">10dp</dimen>
 	<dimen name="item_emoji_layout_padding">5dp</dimen>

@@ -55,12 +55,14 @@
 		<activity
 			android:name=".ui.activities.StatusEditor"
 			android:screenOrientation="portrait"
-			android:theme="@style/TransparencyDim" />
+			android:theme="@style/TransparencyDim"
+			android:windowSoftInputMode="stateHidden" />
 
 		<activity
 			android:name=".ui.activities.MessageEditor"
 			android:screenOrientation="portrait"
-			android:theme="@style/TransparencyDim" />
+			android:theme="@style/TransparencyDim"
+			android:windowSoftInputMode="stateHidden" />
 
 		<activity
 			android:name=".ui.activities.SettingsActivity"
