@@ -56,13 +56,13 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	 * key for an Uri array with local links
 	 * value type is {@link Uri}
 	 */
-	public static final String VIDEO_URI = "media_uri";
+	public static final String KEY_LINK = "media_uri";
 
 	/**
 	 * Key to enable extra layouts for a video
 	 * value type is Boolean
 	 */
-	public static final String ENABLE_VIDEO_CONTROLS = "enable_controls";
+	public static final String KEY_CONTROLS = "enable_controls";
 
 	/**
 	 * online video cache size
@@ -106,8 +106,8 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 		player = new ExoPlayer.Builder(this, renderersFactory).build();
 		player.addListener(this);
 
-		data = getIntent().getParcelableExtra(VIDEO_URI);
-		boolean enableControls = getIntent().getBooleanExtra(ENABLE_VIDEO_CONTROLS, true);
+		data = getIntent().getParcelableExtra(KEY_LINK);
+		boolean enableControls = getIntent().getBooleanExtra(KEY_CONTROLS, true);
 		if (!enableControls) {
 			playerView.setUseController(false);
 			player.setRepeatMode(Player.REPEAT_MODE_ONE);

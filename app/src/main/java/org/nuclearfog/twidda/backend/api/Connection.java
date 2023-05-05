@@ -20,6 +20,7 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
+import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -283,15 +284,17 @@ public interface Connection {
 	 * follow hashtag by name
 	 *
 	 * @param name name of the hashtag
+	 * @return updated hashtag information
 	 */
-	void followHashtag(String name) throws ConnectionException;
+	Trend followHashtag(String name) throws ConnectionException;
 
 	/**
 	 * unfollow hashtag by name
 	 *
 	 * @param name name of the hashtag
+	 * @return updated hashtag information
 	 */
-	void unfollowHashtag(String name) throws ConnectionException;
+	Trend unfollowHashtag(String name) throws ConnectionException;
 
 	/**
 	 * get available locations for trends

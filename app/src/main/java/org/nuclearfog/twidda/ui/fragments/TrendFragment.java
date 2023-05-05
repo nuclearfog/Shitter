@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -129,9 +127,12 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), SearchActivity.class);
 			String name = trend.getName();
-			if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\""))
+			if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\"")) {
 				name = "\"" + name + "\"";
-			intent.putExtra(KEY_SEARCH_QUERY, name);
+				intent.putExtra(SearchActivity.KEY_QUERY, name);
+			} else {
+				intent.putExtra(SearchActivity.KEY_TREND, trend);
+			}
 			startActivity(intent);
 		}
 	}

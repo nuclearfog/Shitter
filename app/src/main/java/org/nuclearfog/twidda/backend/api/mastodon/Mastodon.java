@@ -46,6 +46,7 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
+import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -454,11 +455,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public void followHashtag(String name) throws ConnectionException {
+	public Trend followHashtag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/follow", new ArrayList<>());
+			return createTrend(post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/follow", new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -466,11 +467,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public void unfollowHashtag(String name) throws ConnectionException {
+	public Trend unfollowHashtag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/unfollow", new ArrayList<>());
+			return createTrend(post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/unfollow", new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -1296,6 +1297,25 @@ public class Mastodon implements Connection {
 				long currentId = settings.getLogin().getId();
 				JSONObject json = new JSONObject(body.string());
 				return new MastodonNotification(json, currentId);
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
+	 * create trend from response
+	 *
+	 * @param response response from a trend endpoint
+	 * @return trend information
+	 */
+	private Trend createTrend(Response response) throws MastodonException {
+		try {
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonTrend(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

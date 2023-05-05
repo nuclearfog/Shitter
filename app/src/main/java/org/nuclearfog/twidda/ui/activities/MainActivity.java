@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		// open home profile
 		if (item.getItemId() == R.id.menu_profile) {
 			Intent intent = new Intent(this, ProfileActivity.class);
-			intent.putExtra(KEY_PROFILE_ID, settings.getLogin().getId());
+			intent.putExtra(ProfileActivity.KEY_PROFILE_ID, settings.getLogin().getId());
 			startActivity(intent);
 			return true;
 		}
@@ -216,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	public boolean onQueryTextSubmit(String s) {
 		if (s.length() <= SearchActivity.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
 			Intent search = new Intent(this, SearchActivity.class);
-			search.putExtra(KEY_SEARCH_QUERY, s);
+			search.putExtra(SearchActivity.KEY_QUERY, s);
 			startActivity(search);
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_twitter_search, Toast.LENGTH_SHORT).show();

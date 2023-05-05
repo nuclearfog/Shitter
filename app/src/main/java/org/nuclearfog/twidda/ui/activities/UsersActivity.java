@@ -42,53 +42,53 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	 * type of users to get from the source
 	 * {@link #USERS_FOLLOWING ,#USERS_FOLLOWER ,#USERS_REPOST ,#USERLIST_FAVORIT,#USERLIST_EXCLUDED_USERS,#USERLIST_REQUESTS}
 	 */
-	public static final String KEY_USERS_MODE = "userlist_mode";
+	public static final String KEY_MODE = "userlist_mode";
 
 	/**
 	 * ID of a userlist, an user or a status to get the users from
 	 * value type is Long
 	 */
-	public static final String KEY_USERS_ID = "userlist_id";
+	public static final String KEY_ID = "userlist_id";
 
 	/**
 	 * user following, requires user ID
 	 *
-	 * @see #KEY_USERS_MODE
+	 * @see #KEY_MODE
 	 */
 	public static final int USERS_FOLLOWING = 0xDF893242;
 
 	/**
 	 * follower of an user, requires user ID
 	 *
-	 * @see #KEY_USERS_MODE
+	 * @see #KEY_MODE
 	 */
 	public static final int USERS_FOLLOWER = 0xA89F5968;
 
 	/**
 	 * user reposting a status, requires status ID
 	 *
-	 * @see #KEY_USERS_MODE
+	 * @see #KEY_MODE
 	 */
 	public static final int USERS_REPOST = 0x19F582E;
 
 	/**
 	 * user favoriting/liking a status, requires status ID
 	 *
-	 * @see #KEY_USERS_MODE
+	 * @see #KEY_MODE
 	 */
 	public static final int USERS_FAVORIT = 0x9bcc3f99;
 
 	/**
 	 * setup list to show excluded (muted, blocked) users
 	 *
-	 * @see #KEY_USERS_MODE
+	 * @see #KEY_MODE
 	 */
 	public static final int USERS_EXCLUDED = 0x896a786;
 
 	/**
 	 * setup list to show incoming & outgoing follow requests
 	 *
-	 * @see #KEY_USERS_MODE
+	 * @see #KEY_MODE
 	 */
 	public static final int USERS_REQUESTS = 0x0948693;
 
@@ -128,8 +128,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		adapter = new FragmentAdapter(this);
 		viewPager.setAdapter(adapter);
 
-		mode = getIntent().getIntExtra(KEY_USERS_MODE, 0);
-		long id = getIntent().getLongExtra(KEY_USERS_ID, 0L);
+		mode = getIntent().getIntExtra(KEY_MODE, 0);
+		long id = getIntent().getLongExtra(KEY_ID, 0L);
 
 		switch (mode) {
 			case USERS_FOLLOWING:

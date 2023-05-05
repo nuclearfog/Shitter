@@ -1,16 +1,12 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.view.View.GONE;
-import static android.view.View.OnClickListener;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
-
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -161,10 +157,10 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
 		if (resultType == REQUEST_IMAGE) {
 			if (messageUpdate.addMedia(this, uri)) {
-				preview.setVisibility(VISIBLE);
-				media.setVisibility(GONE);
+				preview.setVisibility(View.VISIBLE);
+				media.setVisibility(View.GONE);
 			} else {
-				Toast.makeText(getApplicationContext(), R.string.error_adding_media, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -225,10 +221,10 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 				messageUpdater.execute(messageUpdate, messageResult);
 				loadingCircle.show();
 			} else {
-				Toast.makeText(getApplicationContext(), R.string.error_media_init, LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();
 			}
 		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_dm, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_dm, Toast.LENGTH_SHORT).show();
 		}
 	}
 

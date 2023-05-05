@@ -116,7 +116,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 			switch (action) {
 				case OnNotificationClickListener.VIEW:
 					Intent intent = new Intent(requireContext(), StatusActivity.class);
-					intent.putExtra(StatusActivity.KEY_NOTIFICATION_DATA, notification);
+					intent.putExtra(StatusActivity.KEY_DATA, notification);
 					activityResultLauncher.launch(intent);
 					break;
 

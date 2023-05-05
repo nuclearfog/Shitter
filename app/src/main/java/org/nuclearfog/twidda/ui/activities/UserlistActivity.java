@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static org.nuclearfog.twidda.ui.activities.UserlistEditor.KEY_LIST_EDITOR_DATA;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -59,25 +57,19 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	 * key to add list information
 	 * value type is {@link UserList}
 	 */
-	public static final String KEY_LIST_DATA = "list_data";
+	public static final String KEY_DATA = "list_data";
 
 	/**
 	 * key to disable list update
 	 * value type is boolean
 	 */
-	public static final String KEY_LIST_NO_UPDATE = "list_no_update";
+	public static final String KEY_DISABLE_UPDATE = "list_no_update";
 
 	/**
 	 * result key to return the ID of a removed list
 	 * value type is {@link UserList}
 	 */
-	public static final String RESULT_REMOVED_LIST_ID = "removed-list-id";
-
-	/**
-	 * result key to update an user list
-	 * value type is {@link UserList}
-	 */
-	public static final String RESULT_UPDATE_LIST = "update-user-list";
+	public static final String KEY_ID = "removed-list-id";
 
 	/**
 	 * return code when an user list was deleted
@@ -143,7 +135,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		viewPager.setAdapter(adapter);
 		tabSelector.addViewPager(viewPager);
 
-		Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
+		Object data = getIntent().getSerializableExtra(KEY_DATA);
 		if (data instanceof UserList) {
 			userList = (UserList) data;
 			toolbar.setTitle(userList.getTitle());
@@ -164,7 +156,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	protected void onStart() {
 		super.onStart();
 		if (userList != null) {
-			boolean blockUpdate = getIntent().getBooleanExtra(KEY_LIST_NO_UPDATE, false);
+			boolean blockUpdate = getIntent().getBooleanExtra(KEY_DISABLE_UPDATE, false);
 			if (!blockUpdate) {
 				// update list information
 				ListActionParam param = new ListActionParam(ListActionParam.LOAD, userList.getId());
@@ -225,7 +217,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			// open user list editor
 			if (item.getItemId() == R.id.menu_list_edit) {
 				Intent editList = new Intent(this, UserlistEditor.class);
-				editList.putExtra(KEY_LIST_EDITOR_DATA, userList);
+				editList.putExtra(UserlistEditor.KEY_DATA, userList);
 				activityResultLauncher.launch(editList);
 				return true;
 			}
@@ -261,7 +253,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			viewPager.setCurrentItem(0);
 		} else {
 			Intent result = new Intent();
-			result.putExtra(RESULT_UPDATE_LIST, userList);
+			result.putExtra(KEY_DATA, userList);
 			setResult(RETURN_LIST_UPDATED, result);
 			super.onBackPressed();
 		}
@@ -272,7 +264,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	public void onActivityResult(ActivityResult result) {
 		if (result.getData() != null) {
 			if (result.getResultCode() == UserlistEditor.RETURN_LIST_CHANGED) {
-				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_USERLIST_UPDATED);
+				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_UPDATE);
 				if (data instanceof UserList) {
 					userList = (UserList) data;
 					toolbar.setTitle(userList.getTitle());
@@ -413,7 +405,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 			case ListActionResult.DELETE:
 				Intent intent = new Intent();
-				intent.putExtra(RESULT_REMOVED_LIST_ID, result.id);
+				intent.putExtra(KEY_ID, result.id);
 				setResult(RETURN_LIST_REMOVED, intent);
 				Toast.makeText(getApplicationContext(), R.string.info_list_removed, Toast.LENGTH_SHORT).show();
 				finish();
@@ -425,7 +417,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					// List does not exist
 					intent = new Intent();
-					intent.putExtra(RESULT_REMOVED_LIST_ID, result.id);
+					intent.putExtra(KEY_ID, result.id);
 					setResult(RETURN_LIST_REMOVED, intent);
 					finish();
 				}

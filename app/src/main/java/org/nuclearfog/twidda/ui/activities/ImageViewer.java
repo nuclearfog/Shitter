@@ -28,7 +28,6 @@ import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
 
-
 /**
  * Activity to show online and local images
  *

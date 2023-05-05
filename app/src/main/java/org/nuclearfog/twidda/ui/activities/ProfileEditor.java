@@ -1,9 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.TOOLBAR_TRANSPARENCY;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -137,7 +133,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			profileLocation.setVisibility(View.GONE);
 			profileLocationLabel.setVisibility(View.GONE);
 		}
-		toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
+		toolbar.setBackgroundColor(settings.getBackgroundColor() & ProfileActivity.TOOLBAR_TRANSPARENCY);
 		profile_banner.setDrawingCacheEnabled(true);
 		AppStyles.setTheme(root);
 		picasso = PicassoBuilder.get(this);
@@ -215,8 +211,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			if (holder.setBanner(this, uri)) {
 				int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 				picasso.load(uri).resize(widthPixels, widthPixels / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
-				addBannerBtn.setVisibility(INVISIBLE);
-				changeBannerBtn.setVisibility(VISIBLE);
+				addBannerBtn.setVisibility(View.INVISIBLE);
+				changeBannerBtn.setVisibility(View.VISIBLE);
 			} else {
 				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 			}
@@ -324,11 +320,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		}
 		if (!bannerImageUrl.isEmpty()) {
 			picasso.load(bannerImageUrl).into(profile_banner, this);
-			addBannerBtn.setVisibility(INVISIBLE);
-			changeBannerBtn.setVisibility(VISIBLE);
+			addBannerBtn.setVisibility(View.INVISIBLE);
+			changeBannerBtn.setVisibility(View.VISIBLE);
 		} else {
-			addBannerBtn.setVisibility(VISIBLE);
-			changeBannerBtn.setVisibility(INVISIBLE);
+			addBannerBtn.setVisibility(View.VISIBLE);
+			changeBannerBtn.setVisibility(View.INVISIBLE);
 		}
 		username.setText(user.getUsername());
 		profileUrl.setText(user.getProfileUrl());

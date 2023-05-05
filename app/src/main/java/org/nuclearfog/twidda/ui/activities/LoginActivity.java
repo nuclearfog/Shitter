@@ -1,10 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.content.Intent.ACTION_VIEW;
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.ui.activities.AccountActivity.KEY_DISABLE_SELECTOR;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -164,7 +159,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		// open account selector
 		else if (item.getItemId() == R.id.login_select_account) {
 			Intent accountManager = new Intent(this, AccountActivity.class);
-			accountManager.putExtra(KEY_DISABLE_SELECTOR, true);
+			accountManager.putExtra(AccountActivity.KEY_DISABLE_SELECTOR, true);
 			activityResultLauncher.launch(accountManager);
 			return true;
 		}
@@ -196,18 +191,18 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
 				// use userdefined or default token keys
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
-					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, Toast.LENGTH_LONG).show();
 					LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection.getApiType(), connection, "");
 					loginAsync.execute(param, this);
 				}
 				// no tokens are set, print error message
 				else {
-					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, Toast.LENGTH_SHORT).show();
 				}
 			}
 			// generate Mastodon login
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
-				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, Toast.LENGTH_LONG).show();
 				LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection.getApiType(), connection, "");
 				loginAsync.execute(param, this);
 			}
@@ -217,23 +212,23 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			String code = pinInput.getText().toString();
 			// check if user clicked on PIN button
 			if (loginLink == null) {
-				Toast.makeText(getApplicationContext(), R.string.info_get_link, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_get_link, Toast.LENGTH_LONG).show();
 			} else if (code.isEmpty()) {
 				pinInput.setError(getString(R.string.error_enter_code));
 			}
 			// login to Twitter
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
-					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, Toast.LENGTH_LONG).show();
 					LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection.getApiType(), connection, code);
 					loginAsync.execute(param, this);
 				} else {
-					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.info_missing_api_keys, Toast.LENGTH_SHORT).show();
 				}
 			}
 			// login to mastodon
 			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
-				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, Toast.LENGTH_LONG).show();
 				LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection.getApiType(), connection, code);
 				loginAsync.execute(param, this);
 			}
@@ -293,11 +288,11 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	 * open login page
 	 */
 	private void connect() {
-		Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(loginLink));
+		Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(loginLink));
 		try {
 			startActivity(loginIntent);
 		} catch (ActivityNotFoundException err) {
-			Toast.makeText(getApplicationContext(), R.string.error_open_link, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
 		}
 	}
 }

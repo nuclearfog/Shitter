@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.ui.fragments;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_MESSAGE_PREFIX;
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
-import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_QUERY;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -108,7 +108,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	public void onTagClick(String tag) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), SearchActivity.class);
-			intent.putExtra(KEY_SEARCH_QUERY, tag);
+			intent.putExtra(KEY_QUERY, tag);
 			startActivity(intent);
 		}
 	}

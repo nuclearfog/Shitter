@@ -45,6 +45,7 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
+import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -573,13 +574,13 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public void followHashtag(String name) throws ConnectionException {
+	public Trend followHashtag(String name) throws ConnectionException {
 		throw new TwitterException("not supported!");
 	}
 
 
 	@Override
-	public void unfollowHashtag(String name) throws ConnectionException {
+	public Trend unfollowHashtag(String name) throws ConnectionException {
 		throw new TwitterException("not supported!");
 	}
 

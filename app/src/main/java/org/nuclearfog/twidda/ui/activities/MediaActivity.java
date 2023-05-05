@@ -6,9 +6,6 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.Intent.ACTION_PICK;
-import static android.content.Intent.EXTRA_MIME_TYPES;
-import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.provider.MediaStore.Images.Media.DATE_TAKEN;
@@ -16,8 +13,6 @@ import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.provider.MediaStore.Images.Media.MIME_TYPE;
 import static android.provider.MediaStore.Images.Media.RELATIVE_PATH;
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
 
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
@@ -218,7 +213,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 
 	private void setResult(@NonNull Boolean res) {
 		if (res) {
-			Toast.makeText(getApplicationContext(), R.string.info_image_saved, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.info_image_saved, Toast.LENGTH_SHORT).show();
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && destMediaFile != null) {
 				// start media scanner to scan for new image
 				MediaScannerConnection.scanFile(getApplicationContext(), new String[]{destMediaFile.getPath()}, null, null);
@@ -273,7 +268,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 			startLocating();
 		} else {
 			if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
-				Toast.makeText(getApplicationContext(), R.string.info_permission_location, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_permission_location, Toast.LENGTH_LONG).show();
 			}
 			requestPermissions(PERMISSION_LOCATION, REQUEST_LOCATION);
 		}
@@ -301,7 +296,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 			if (requiresPermission) {
 				for (String permission : PERMISSIONS_READ) {
 					if (shouldShowRequestPermissionRationale(permission)) {
-						Toast.makeText(getApplicationContext(), R.string.info_permission_read, LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), R.string.info_permission_read, Toast.LENGTH_LONG).show();
 						break;
 					}
 				}
@@ -328,7 +323,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 			saveImage();
 		} else {
 			if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))
-				Toast.makeText(getApplicationContext(), R.string.info_permission_write, LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), R.string.info_permission_write, Toast.LENGTH_LONG).show();
 			requestPermissions(PERMISSION_WRITE, REQUEST_STORE_IMG);
 		}
 	}
@@ -360,13 +355,13 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	 * @param requestCode type of media to fetch
 	 */
 	private void openMediaPicker(int requestCode) {
-		Intent mediaSelect = new Intent(ACTION_PICK);
-		mediaSelect.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
+		Intent mediaSelect = new Intent(Intent.ACTION_PICK);
+		mediaSelect.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		switch (requestCode) {
 			case REQUEST_ALL:
 				// pick image or video
 				mediaSelect.setType(MIME_ALL_READ);
-				mediaSelect.putExtra(EXTRA_MIME_TYPES, TYPE_ALL);
+				mediaSelect.putExtra(Intent.EXTRA_MIME_TYPES, TYPE_ALL);
 				break;
 
 			case REQUEST_IMAGE:
@@ -379,7 +374,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 			activityResultLauncher.launch(mediaSelect);
 			this.requestCode = requestCode;
 		} catch (ActivityNotFoundException err) {
-			Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_no_media_app, Toast.LENGTH_SHORT).show();
 			this.requestCode = 0;
 		}
 	}

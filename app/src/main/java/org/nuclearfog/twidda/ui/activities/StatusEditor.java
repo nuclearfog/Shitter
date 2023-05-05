@@ -65,31 +65,25 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 * key to add the status to reply
 	 * value type is {@link Status}
 	 */
-	public static final String KEY_STATUS_EDITOR_DATA = "status_data";
+	public static final String KEY_DATA = "status_data";
 
 	/**
 	 * key to edit an existing status
 	 * value type is Boolean
 	 */
-	public static final String KEY_STATUS_EDITOR_EDIT = "status_edit";
+	public static final String KEY_EDIT = "status_edit";
 
 	/**
 	 * key for the text added to the status if any
 	 * value type is String
 	 */
-	public static final String KEY_STATUS_EDITOR_TEXT = "status_text";
-
-	/**
-	 * key to return uploaded status information
-	 * value type is {@link Status}
-	 */
-	public static final String RETURN_STATUS_DATA = "status_update";
+	public static final String KEY_TEXT = "status_text";
 
 	/**
 	 * key for status update to restore
 	 * value type is {@link StatusUpdate}
 	 */
-	private static final String KEY_STATUS_UPDATE = "status_update";
+	private static final String KEY_SAVE = "status_update";
 
 	private AsyncCallback<StatusUpdateResult> statusUpdateResult = this::onStatusUpdated;
 	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
@@ -161,10 +155,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (savedInstanceState == null)
 			savedInstanceState = getIntent().getExtras();
 		if (savedInstanceState != null) {
-			Serializable serializedStatus = savedInstanceState.getSerializable(KEY_STATUS_EDITOR_DATA);
-			Serializable serializedStatusUpdate = savedInstanceState.getSerializable(KEY_STATUS_UPDATE);
-			boolean editStatus = savedInstanceState.getBoolean(KEY_STATUS_EDITOR_EDIT, false);
-			String prefix = savedInstanceState.getString(KEY_STATUS_EDITOR_TEXT);
+			Serializable serializedStatus = savedInstanceState.getSerializable(KEY_DATA);
+			Serializable serializedStatusUpdate = savedInstanceState.getSerializable(KEY_SAVE);
+			boolean editStatus = savedInstanceState.getBoolean(KEY_EDIT, false);
+			String prefix = savedInstanceState.getString(KEY_TEXT);
 			if (serializedStatusUpdate instanceof StatusUpdate) {
 				statusUpdate = (StatusUpdate) serializedStatusUpdate;
 			} else if (serializedStatus instanceof Status) {
@@ -224,7 +218,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	protected void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_STATUS_UPDATE, statusUpdate);
+		outState.putSerializable(KEY_SAVE, statusUpdate);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -384,8 +378,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 			case StatusUpdate.MEDIA_VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.VIDEO_URI, uri);
-				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+				intent.putExtra(VideoViewer.KEY_LINK, uri);
+				intent.putExtra(VideoViewer.KEY_CONTROLS, true);
 				startActivity(intent);
 				break;
 
@@ -458,7 +452,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private void onStatusUpdated(@NonNull StatusUpdateResult result) {
 		if (result.status != null) {
 			Intent intent = new Intent();
-			intent.putExtra(RETURN_STATUS_DATA, result.status);
+			intent.putExtra(KEY_DATA, result.status);
 			setResult(RETURN_STATUS_UPDATE, intent);
 			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
 			finish();

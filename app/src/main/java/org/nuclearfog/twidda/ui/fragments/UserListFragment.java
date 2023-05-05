@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.fragments;
 
 import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
-import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_LIST_DATA;
+import static org.nuclearfog.twidda.ui.activities.UserlistActivity.KEY_DATA;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -137,12 +137,12 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		if (intent != null) {
 			// check if userlist was removed
 			if (result.getResultCode() == UserlistActivity.RETURN_LIST_REMOVED) {
-				long removedListId = intent.getLongExtra(UserlistActivity.RESULT_REMOVED_LIST_ID, 0L);
+				long removedListId = intent.getLongExtra(UserlistActivity.KEY_ID, 0L);
 				adapter.removeItem(removedListId);
 			}
 			// check if userlist was updated
 			else if (result.getResultCode() == UserlistActivity.RETURN_LIST_UPDATED) {
-				Object object = intent.getSerializableExtra(UserlistActivity.RESULT_UPDATE_LIST);
+				Object object = intent.getSerializableExtra(UserlistActivity.KEY_DATA);
 				if (object instanceof UserList) {
 					UserList update = (UserList) object;
 					adapter.updateItem(update);
@@ -155,7 +155,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	@Override
 	public void onListClick(UserList listItem) {
 		Intent listIntent = new Intent(requireContext(), UserlistActivity.class);
-		listIntent.putExtra(KEY_LIST_DATA, listItem);
+		listIntent.putExtra(KEY_DATA, listItem);
 		activityResultLauncher.launch(listIntent);
 	}
 

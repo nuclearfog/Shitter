@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,27 +18,43 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.HashtagAction;
+import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagParam;
+import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
+
+import java.io.Serializable;
 
 /**
  * search Activity for statuses and users
  *
  * @author nuclearfog
  */
-public class SearchActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
+public class SearchActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, AsyncCallback<HashtagResult> {
 
 	/**
 	 * Key for the search query, required
 	 * value type is String
 	 */
-	public static final String KEY_SEARCH_QUERY = "search_query";
+	public static final String KEY_QUERY = "search_query";
+
+	/**
+	 * key to add trend information to search for
+	 * value type is {@link org.nuclearfog.twidda.model.Trend}
+	 */
+	public static final String KEY_TREND = "search_trend";
 
 	public static final int SEARCH_STR_MAX_LEN = 128;
+
+	private HashtagAction hashtagAction;
 
 	private FragmentAdapter adapter;
 	private GlobalSettings settings;
@@ -48,6 +62,8 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	private Toolbar toolbar;
 
 	private String search = "";
+	@Nullable
+	private Trend trend;
 
 
 	@Override
@@ -70,18 +86,23 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 		settings = GlobalSettings.getInstance(this);
 		adapter = new FragmentAdapter(this);
+		hashtagAction = new HashtagAction(this);
 		tabSelector.addViewPager(viewPager);
 		tabSelector.addOnTabSelectedListener(this);
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(3);
 
-		String search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
-		if (search != null) {
-			this.search = search;
-			boolean enableHashtags = !search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON;
-			adapter.setupSearchPage(search, enableHashtags);
-			tabSelector.addTabIcons(R.array.search_tab_icons);
+		String query = getIntent().getStringExtra(KEY_QUERY);
+		Serializable data = getIntent().getSerializableExtra(KEY_TREND);
+		if (data instanceof Trend) {
+			trend = (Trend) data;
+			search = trend.getName();
+		} else if (query != null) {
+			search = query;
 		}
+		boolean enableHashtags = !search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON;
+		adapter.setupSearchPage(search, enableHashtags);
+		tabSelector.addTabIcons(R.array.search_tab_icons);
 		AppStyles.setTheme(root);
 	}
 
@@ -97,21 +118,44 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 
 	@Override
-	public boolean onCreateOptionsMenu(@NonNull Menu m) {
-		getMenuInflater().inflate(R.menu.search, m);
-		MenuItem searchItem = m.findItem(R.id.new_search);
-		MenuItem searchFilter = m.findItem(R.id.search_filter);
+	protected void onDestroy() {
+		hashtagAction.cancel();
+		super.onDestroy();
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+		getMenuInflater().inflate(R.menu.search, menu);
+		MenuItem searchItem = menu.findItem(R.id.new_search);
+		MenuItem searchFilter = menu.findItem(R.id.search_filter);
+		MenuItem hashtag = menu.findItem(R.id.search_hashtag);
 		SearchView searchView = (SearchView) searchItem.getActionView();
 
+		hashtag.setVisible(trend != null);
 		boolean enableSearchFilter = settings.getLogin().getConfiguration().filterEnabled();
 		searchFilter.setChecked(settings.filterResults() & enableSearchFilter);
 		searchView.setQueryHint(search);
 		searchView.setOnQueryTextListener(this);
 		// set theme
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);
-		AppStyles.setMenuIconColor(m, settings.getIconColor());
+		AppStyles.setMenuIconColor(menu, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-		return super.onCreateOptionsMenu(m);
+		return true;
+	}
+
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem hashtag = menu.findItem(R.id.search_hashtag);
+		if (trend != null) {
+			if (trend.following()) {
+				hashtag.setTitle(R.string.menu_hashtag_unfollow);
+			} else {
+				hashtag.setTitle(R.string.menu_hashtag_follow);
+			}
+		}
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 
@@ -121,7 +165,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		if (item.getItemId() == R.id.search_status) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			if (search.startsWith("#"))
-				intent.putExtra(KEY_STATUS_EDITOR_TEXT, search + " ");
+				intent.putExtra(StatusEditor.KEY_TEXT, search + " ");
 			startActivity(intent);
 			return true;
 		}
@@ -138,6 +182,17 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			item.setChecked(enable);
 			return true;
 		}
+		// follow/unfollow hashtag
+		else if (item.getItemId() == R.id.search_hashtag) {
+			if (trend != null && hashtagAction.isIdle()) {
+				HashtagParam param;
+				if (trend.following())
+					param = new HashtagParam(trend.getName(), HashtagParam.UNFOLLOW);
+				else
+					param = new HashtagParam(trend.getName(), HashtagParam.FOLLOW);
+				hashtagAction.execute(param, this);
+			}
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -146,7 +201,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	public boolean onQueryTextSubmit(String s) {
 		if (s.length() <= SearchActivity.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
 			Intent search = new Intent(this, SearchActivity.class);
-			search.putExtra(KEY_SEARCH_QUERY, s);
+			search.putExtra(KEY_QUERY, s);
 			startActivity(search);
 			return true;
 		} else {
@@ -166,5 +221,28 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	public void onTabSelected(int oldPosition) {
 		invalidateOptionsMenu();
 		adapter.scrollToTop(oldPosition);
+	}
+
+
+	@Override
+	public void onResult(@NonNull HashtagResult result) {
+		if (result.trend != null)
+			this.trend = result.trend;
+		switch(result.mode) {
+			case HashtagResult.FOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
+				invalidateMenu();
+				break;
+
+			case HashtagResult.UNFOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
+				invalidateMenu();
+				break;
+
+			case HashtagResult.ERROR:
+				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				break;
+		}
 	}
 }

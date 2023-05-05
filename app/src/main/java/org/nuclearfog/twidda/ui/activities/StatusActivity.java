@@ -1,17 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_DATA;
-import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_EDIT;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FAVORIT;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REPOST;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_ID;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_MODE;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.MODE_REPLY;
-
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -136,34 +124,28 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * value type is {@link Status}
 	 * If no status object exists, {@link #KEY_STATUS_ID} and {@link #KEY_STATUS_NAME} will be used instead
 	 */
-	public static final String KEY_STATUS_DATA = "status_data";
+	public static final String KEY_DATA = "status_data";
 
 	/**
-	 * key uused for notification information, containing a status
-	 * value type is {@link Notification}
-	 */
-	public static final String KEY_NOTIFICATION_DATA = "notification_data";
-
-	/**
-	 * key for the status ID value, alternative to {@link #KEY_STATUS_DATA}
+	 * key for the status ID value, alternative to {@link #KEY_DATA}
 	 * value type is Long
 	 */
 	public static final String KEY_STATUS_ID = "status_id";
 
 	/**
-	 * key for the status author's name. alternative to {@link #KEY_STATUS_DATA}
+	 * key for the status author's name. alternative to {@link #KEY_DATA}
 	 * value type is String
 	 */
 	public static final String KEY_STATUS_NAME = "status_author";
 
 	/**
-	 * key for the notification ID value, alternative to {@link #KEY_NOTIFICATION_DATA}
+	 * key for the notification ID value
 	 * value type is long
 	 */
 	public static final String KEY_NOTIFICATION_ID = "notification_id";
 
 	/**
-	 * key for the (notification) status author's name. alternative to {@link #KEY_STATUS_DATA}
+	 * key for the (notification) status author's name. alternative to {@link #KEY_DATA}
 	 * value type is String
 	 */
 	public static final String KEY_NOTIFICATION_NAME = "notification_status_author";
@@ -315,15 +297,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			return;
 		}
 		// get data
-		Serializable serializedStatus = savedInstanceState.getSerializable(KEY_STATUS_DATA);
-		Serializable serializedNotification = savedInstanceState.getSerializable(KEY_NOTIFICATION_DATA);
+		Serializable serialized = savedInstanceState.getSerializable(KEY_DATA);
 		long statusId = savedInstanceState.getLong(KEY_STATUS_ID, 0L);
 		long notificationId = savedInstanceState.getLong(KEY_NOTIFICATION_ID, 0L);
 		String replyUsername = "";
 
 		// set status data
-		if (serializedStatus instanceof Status) {
-			Status status = (Status) serializedStatus;
+		if (serialized instanceof Status) {
+			Status status = (Status) serialized;
 			Status embeddedStatus = status.getEmbeddedStatus();
 			setStatus(status);
 			StatusParam statusParam = new StatusParam(StatusParam.ONLINE, status.getId());
@@ -339,8 +320,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 		}
 		// set notification data
-		else if (serializedNotification instanceof Notification) {
-			Notification notification = (Notification) serializedNotification;
+		else if (serialized instanceof Notification) {
+			Notification notification = (Notification) serialized;
 			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
 			notificationLoader.execute(notificationParam, notificationCallback);
 			if (notification.getStatus() != null) {
@@ -363,9 +344,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// initialize status reply list
 		Bundle param = new Bundle();
-		param.putInt(KEY_MODE, MODE_REPLY);
-		param.putString(KEY_SEARCH, replyUsername);
-		param.putLong(KEY_ID, statusId);
+		param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_REPLY);
+		param.putString(StatusFragment.KEY_SEARCH, replyUsername);
+		param.putLong(StatusFragment.KEY_ID, statusId);
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
 		fragmentTransaction.commit();
@@ -395,8 +376,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_STATUS_DATA, status);
-		outState.putSerializable(KEY_NOTIFICATION_DATA, notification);
+		outState.putSerializable(KEY_DATA, status);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -576,8 +556,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// edit status
 		else if (item.getItemId() == R.id.menu_status_edit) {
 			Intent intent = new Intent(this, StatusEditor.class);
-			intent.putExtra(KEY_STATUS_EDITOR_DATA, status);
-			intent.putExtra(KEY_STATUS_EDITOR_EDIT, true);
+			intent.putExtra(StatusEditor.KEY_DATA, status);
+			intent.putExtra(StatusEditor.KEY_EDIT, true);
 			activityResultLauncher.launch(intent);
 		}
 		return super.onOptionsItemSelected(item);
@@ -587,7 +567,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onActivityResult(ActivityResult result) {
 		if (result.getData() != null && result.getResultCode() == StatusEditor.RETURN_STATUS_UPDATE) {
-			Serializable data = result.getData().getSerializableExtra(StatusEditor.RETURN_STATUS_DATA);
+			Serializable data = result.getData().getSerializableExtra(StatusEditor.KEY_DATA);
 			if (data instanceof Status) {
 				setStatus((Status) data);
 			}
@@ -604,21 +584,21 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// answer to the status
 			if (v.getId() == R.id.page_status_reply) {
 				Intent intent = new Intent(this, StatusEditor.class);
-				intent.putExtra(KEY_STATUS_EDITOR_DATA, status);
+				intent.putExtra(StatusEditor.KEY_DATA, status);
 				startActivity(intent);
 			}
 			// show user reposting this status
 			else if (v.getId() == R.id.page_status_repost) {
 				Intent intent = new Intent(this, UsersActivity.class);
-				intent.putExtra(KEY_USERS_ID, status.getId());
-				intent.putExtra(KEY_USERS_MODE, USERS_REPOST);
+				intent.putExtra(UsersActivity.KEY_ID, status.getId());
+				intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_REPOST);
 				startActivity(intent);
 			}
 			// show user favoriting this status
 			else if (v.getId() == R.id.page_status_favorite) {
 				Intent intent = new Intent(this, UsersActivity.class);
-				intent.putExtra(KEY_USERS_ID, status.getId());
-				intent.putExtra(KEY_USERS_MODE, USERS_FAVORIT);
+				intent.putExtra(UsersActivity.KEY_ID, status.getId());
+				intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_FAVORIT);
 				startActivity(intent);
 			}
 			// open profile of the status author
@@ -694,7 +674,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Status embeddedStatus = status.getEmbeddedStatus();
 				if (embeddedStatus != null) {
 					Intent intent = new Intent(this, StatusActivity.class);
-					intent.putExtra(KEY_STATUS_DATA, embeddedStatus);
+					intent.putExtra(KEY_DATA, embeddedStatus);
 					startActivity(intent);
 				}
 				return true;
@@ -780,15 +760,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 			case Media.VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.VIDEO_URI, uri);
-				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, true);
+				intent.putExtra(VideoViewer.KEY_LINK, uri);
+				intent.putExtra(VideoViewer.KEY_CONTROLS, true);
 				startActivity(intent);
 				break;
 
 			case Media.GIF:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.VIDEO_URI, uri);
-				intent.putExtra(VideoViewer.ENABLE_VIDEO_CONTROLS, false);
+				intent.putExtra(VideoViewer.KEY_LINK, uri);
+				intent.putExtra(VideoViewer.KEY_CONTROLS, false);
 				startActivity(intent);
 				break;
 		}
@@ -798,7 +778,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onTagClick(String tag) {
 		Intent intent = new Intent(this, SearchActivity.class);
-		intent.putExtra(KEY_SEARCH_QUERY, tag);
+		intent.putExtra(SearchActivity.KEY_QUERY, tag);
 		startActivity(intent);
 	}
 

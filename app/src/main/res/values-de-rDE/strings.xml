@@ -291,4 +291,8 @@
 	<string name="error_duration_time_low">Dauer der Umfrage ist zu kurz!</string>
 	<string name="error_duration_time_high">Dauer der Umfrage ist zu lang!</string>
 	<string name="error_poll_option_missing">Umfrageoption darf nicht leer sein!</string>
+	<string name="menu_hashtag_follow">folge Hashtag</string>
+	<string name="menu_hashtag_unfollow">entfolge Hashtag</string>
+	<string name="info_hashtag_unfollowed">Hashtag entfolgt</string>
+	<string name="info_hashtag_followed">Hashtag gefolgt</string>
 </resources>

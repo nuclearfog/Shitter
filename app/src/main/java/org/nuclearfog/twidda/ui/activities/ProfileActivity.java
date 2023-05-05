@@ -1,20 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.content.Intent.ACTION_VIEW;
-import static android.view.View.GONE;
-import static android.view.View.OnClickListener;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_MESSAGE_PREFIX;
-import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.ui.activities.StatusEditor.KEY_STATUS_EDITOR_TEXT;
-import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST_OWNER_ID;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FOLLOWER;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FOLLOWING;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REQUESTS;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +11,7 @@ import android.text.SpannableString;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -399,7 +385,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				dmIcon.setVisible(true);
 			}
 			if (relation.isFollower()) {
-				follow_back.setVisibility(VISIBLE);
+				follow_back.setVisibility(View.VISIBLE);
 			}
 			result = true;
 		}
@@ -415,7 +401,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			if (user != null && !user.isCurrentUser()) {
 				// add username to status
 				String prefix = user.getScreenname() + " ";
-				intent.putExtra(KEY_STATUS_EDITOR_TEXT, prefix);
+				intent.putExtra(StatusEditor.KEY_TEXT, prefix);
 			}
 			startActivity(intent);
 			return true;
@@ -472,7 +458,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (item.getItemId() == R.id.profile_message) {
 			Intent intent = new Intent(this, MessageEditor.class);
 			if (user != null && !user.isCurrentUser())
-				intent.putExtra(KEY_MESSAGE_PREFIX, user.getScreenname());
+				intent.putExtra(MessageEditor.KEY_MESSAGE_PREFIX, user.getScreenname());
 			startActivity(intent);
 			return true;
 		}
@@ -480,7 +466,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (item.getItemId() == R.id.profile_lists) {
 			if (user != null) {
 				Intent intent = new Intent(this, UserlistsActivity.class);
-				intent.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
+				intent.putExtra(UserlistsActivity.KEY_ID, user.getId());
 				startActivity(intent);
 			}
 			return true;
@@ -488,7 +474,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// open request list
 		else if (item.getItemId() == R.id.profile_requests) {
 			Intent usersIntent = new Intent(this, UsersActivity.class);
-			usersIntent.putExtra(KEY_USERS_MODE, USERS_REQUESTS);
+			usersIntent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_REQUESTS);
 			startActivity(usersIntent);
 			return true;
 		}
@@ -512,7 +498,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	@Override
 	public void onTagClick(String text) {
 		Intent intent = new Intent(this, SearchActivity.class);
-		intent.putExtra(KEY_SEARCH_QUERY, text);
+		intent.putExtra(SearchActivity.KEY_QUERY, text);
 		startActivity(intent);
 	}
 
@@ -530,8 +516,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// open following page
 		if (v.getId() == R.id.following) {
 			Intent intent = new Intent(this, UsersActivity.class);
-			intent.putExtra(KEY_USERS_ID, user.getId());
-			intent.putExtra(KEY_USERS_MODE, USERS_FOLLOWING);
+			intent.putExtra(UsersActivity.KEY_ID, user.getId());
+			intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_FOLLOWING);
 			switch (settings.getLogin().getConfiguration()) {
 				case TWITTER1:
 				case TWITTER2:
@@ -548,8 +534,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// open follower page
 		else if (v.getId() == R.id.follower) {
 			Intent intent = new Intent(this, UsersActivity.class);
-			intent.putExtra(KEY_USERS_ID, user.getId());
-			intent.putExtra(KEY_USERS_MODE, USERS_FOLLOWER);
+			intent.putExtra(UsersActivity.KEY_ID, user.getId());
+			intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_FOLLOWER);
 			switch (settings.getLogin().getConfiguration()) {
 				case TWITTER1:
 				case TWITTER2:
@@ -567,11 +553,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (v.getId() == R.id.links) {
 			if (!user.getProfileUrl().isEmpty()) {
 				String link = user.getProfileUrl();
-				Intent intent = new Intent(ACTION_VIEW, Uri.parse(link));
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
 				try {
 					startActivity(intent);
 				} catch (ActivityNotFoundException err) {
-					Toast.makeText(getApplicationContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -738,9 +724,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		this.user = user;
 		following.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
 		follower.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
-		following.setVisibility(VISIBLE);
-		follower.setVisibility(VISIBLE);
-		user_createdAt.setVisibility(VISIBLE);
+		following.setVisibility(View.VISIBLE);
+		follower.setVisibility(View.VISIBLE);
+		user_createdAt.setVisibility(View.VISIBLE);
 		screenName.setText(user.getScreenname());
 		// set status count
 		if (user.getStatusCount() >= 0) {
@@ -775,9 +761,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				descriptionSpan = EmojiUtils.removeTags(descriptionSpan);
 			}
 			description.setText(descriptionSpan);
-			description.setVisibility(VISIBLE);
+			description.setVisibility(View.VISIBLE);
 		} else {
-			description.setVisibility(GONE);
+			description.setVisibility(View.GONE);
 		}
 		// set user verified icon
 		if (user.isVerified()) {
@@ -796,9 +782,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// set user location
 		if (!user.getLocation().isEmpty()) {
 			user_location.setText(user.getLocation());
-			user_location.setVisibility(VISIBLE);
+			user_location.setVisibility(View.VISIBLE);
 		} else {
-			user_location.setVisibility(GONE);
+			user_location.setVisibility(View.GONE);
 		}
 		// set profile url
 		if (!user.getProfileUrl().isEmpty()) {
@@ -809,9 +795,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				user_website.setText(link.substring(8));
 			else
 				user_website.setText(link);
-			user_website.setVisibility(VISIBLE);
+			user_website.setVisibility(View.VISIBLE);
 		} else {
-			user_website.setVisibility(GONE);
+			user_website.setVisibility(View.GONE);
 		}
 		// set profile/banner images
 		if (settings.imagesEnabled()) {

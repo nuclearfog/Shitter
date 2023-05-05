@@ -44,19 +44,19 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	 * Key for the list ID if an existing list should be updated
 	 * value type is Long
 	 */
-	public static final String KEY_LIST_EDITOR_DATA = "list_edit_data";
+	public static final String KEY_DATA = "list_edit_data";
 
 	/**
 	 * Key for updated list information
 	 * value type is {@link UserList}
 	 */
-	public static final String KEY_USERLIST_UPDATED = "userlist-updated";
+	public static final String KEY_UPDATE = "userlist-updated";
 
 	/**
 	 * internal key used to save userlist changes
 	 * value type is {@link UserListUpdate}
 	 */
-	private static final String KEY_USERLIST_UPDATE = "userlist-update";
+	private static final String KEY_SAVE = "userlist-update";
 
 	/**
 	 * Return code used when an existing userlist was changed
@@ -103,7 +103,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		GlobalSettings settings = GlobalSettings.getInstance(this);
 		AppStyles.setEditorTheme(root, background);
 
-		Serializable serializedUserlist = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
+		Serializable serializedUserlist = getIntent().getSerializableExtra(KEY_DATA);
 		if (serializedUserlist instanceof UserList) {
 			UserList userList = (UserList) serializedUserlist;
 			titleText.setText(userList.getTitle());
@@ -131,7 +131,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	protected void onSaveInstanceState(@NonNull Bundle outState) {
 		listUpdate.setTitle(titleText.getText().toString());
 		listUpdate.setDescription(descriptionText.getText().toString());
-		outState.putSerializable(KEY_USERLIST_UPDATE, listUpdate);
+		outState.putSerializable(KEY_SAVE, listUpdate);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -139,7 +139,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	@Override
 	protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		Serializable serializedListUpdate = savedInstanceState.getSerializable(KEY_USERLIST_UPDATE);
+		Serializable serializedListUpdate = savedInstanceState.getSerializable(KEY_SAVE);
 		if (serializedListUpdate instanceof UserListUpdate) {
 			listUpdate = (UserListUpdate) serializedListUpdate;
 		}
@@ -211,7 +211,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 				Toast.makeText(getApplicationContext(), R.string.info_list_created, Toast.LENGTH_SHORT).show();
 			}
 			Intent intent = new Intent();
-			intent.putExtra(KEY_USERLIST_UPDATED, result.userlist);
+			intent.putExtra(KEY_UPDATE, result.userlist);
 			setResult(RETURN_LIST_CHANGED, intent);
 			finish();
 		} else {

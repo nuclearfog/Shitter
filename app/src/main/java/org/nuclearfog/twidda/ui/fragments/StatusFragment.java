@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_STATUS_DATA;
+import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_DATA;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -205,7 +205,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onStatusSelected(Status status) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), StatusActivity.class);
-			intent.putExtra(KEY_STATUS_DATA, status);
+			intent.putExtra(KEY_DATA, status);
 			activityResultLauncher.launch(intent);
 		}
 	}

@@ -16,8 +16,15 @@
 		app:showAsAction="ifRoom" />
 
 	<item
+		android:id="@+id/search_hashtag"
+		android:title="@string/menu_hashtag_follow"
+		app:showAsAction="never"
+		android:visible="false"/>
+
+	<item
 		android:id="@+id/search_filter"
 		android:title="@string/menu_search_filter"
-		android:checkable="true" />
+		android:checkable="true"
+		app:showAsAction="never" />
 
 </menu>

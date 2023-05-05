@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_EXCLUDED;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,7 +35,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	 * Key for the ID the list owner
 	 * value type is Long
 	 */
-	public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
+	public static final String KEY_ID = "userlist-owner-id";
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
@@ -71,7 +68,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		toolbar.setTitle(R.string.list_appbar);
 		setSupportActionBar(toolbar);
 
-		long ownerId = getIntent().getLongExtra(KEY_USERLIST_OWNER_ID, 0L);
+		long ownerId = getIntent().getLongExtra(KEY_ID, 0L);
 		isHome = ownerId == settings.getLogin().getId();
 
 		adapter.setupListPage(ownerId);
@@ -125,7 +122,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		// open mute/block list
 		else if (item.getItemId() == R.id.list_blocklists) {
 			Intent usersIntent = new Intent(this, UsersActivity.class);
-			usersIntent.putExtra(KEY_USERS_MODE, USERS_EXCLUDED);
+			usersIntent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_EXCLUDED);
 			startActivity(usersIntent);
 			return true;
 		}
