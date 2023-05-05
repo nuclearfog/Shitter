@@ -21,8 +21,8 @@ public class Statuses extends LinkedList<Status> {
 	 */
 	public static final long NO_ID = -1L;
 
-	private long minId;
-	private long maxId;
+	private long prevCursor;
+	private long nextCursor;
 
 	/**
 	 * use status ID to determine minimum and maximum ID
@@ -38,18 +38,18 @@ public class Statuses extends LinkedList<Status> {
 	 */
 	public Statuses(Statuses statuses) {
 		super(statuses);
-		this.minId = statuses.getMinId();
-		this.maxId = statuses.getMaxId();
+		this.prevCursor = statuses.getPreviousCursor();
+		this.nextCursor = statuses.getNextCursor();
 	}
 
 	/**
-	 * @param minId minimum ID of the first item
-	 * @param maxId maximum ID of the last item
+	 * @param prevCursor previous cursor
+	 * @param nextCursor next cursor
 	 */
-	public Statuses(long minId, long maxId) {
+	public Statuses(long prevCursor, long nextCursor) {
 		super();
-		this.minId = minId;
-		this.maxId = maxId;
+		this.prevCursor = prevCursor;
+		this.nextCursor = nextCursor;
 	}
 
 	/**
@@ -62,13 +62,13 @@ public class Statuses extends LinkedList<Status> {
 	}
 
 	/**
-	 * get the minimum ID of this list. If not set, use the first item's ID
+	 * get the previous cursor or the highest status ID
 	 *
 	 * @return minimum ID
 	 */
-	public long getMinId() {
-		if (minId != 0L) {
-			return minId;
+	public long getPreviousCursor() {
+		if (prevCursor != 0L) {
+			return prevCursor;
 		}
 		for (Status item : this) {
 			if (item != null) {
@@ -79,13 +79,13 @@ public class Statuses extends LinkedList<Status> {
 	}
 
 	/**
-	 * get the maximum ID of the list. If not set, use the last item's ID
+	 * get the next cursor if defined or lowest status ID
 	 *
 	 * @return maximum ID
 	 */
-	public long getMaxId() {
-		if (maxId != 0L) {
-			return maxId;
+	public long getNextCursor() {
+		if (nextCursor != 0L) {
+			return nextCursor;
 		}
 		Iterator<Status> iterator = descendingIterator();
 		while (iterator.hasNext()) {
@@ -100,10 +100,10 @@ public class Statuses extends LinkedList<Status> {
 	/**
 	 * set maximum ID
 	 *
-	 * @param maxId new maximum ID
+	 * @param nextCursor new maximum ID
 	 */
-	public void setMaxId(long maxId) {
-		this.maxId = maxId;
+	public void setNextCursor(long nextCursor) {
+		this.nextCursor = nextCursor;
 	}
 
 	/**
@@ -114,12 +114,12 @@ public class Statuses extends LinkedList<Status> {
 	 */
 	public void addAll(int index, Statuses statuses) {
 		if (isEmpty()) {
-			minId = statuses.getMinId();
-			maxId = statuses.getMaxId();
+			prevCursor = statuses.getPreviousCursor();
+			nextCursor = statuses.getNextCursor();
 		} else if (index == 0) {
-			minId = statuses.getMinId();
+			prevCursor = statuses.getPreviousCursor();
 		} else if (index == size() - 1) {
-			maxId = statuses.getMaxId();
+			nextCursor = statuses.getNextCursor();
 		}
 		super.addAll(index, statuses);
 	}
@@ -132,7 +132,7 @@ public class Statuses extends LinkedList<Status> {
 	public void replaceAll(Statuses statuses) {
 		clear();
 		addAll(statuses);
-		minId = statuses.getMinId();
-		maxId = statuses.getMaxId();
+		prevCursor = statuses.getPreviousCursor();
+		nextCursor = statuses.getNextCursor();
 	}
 }

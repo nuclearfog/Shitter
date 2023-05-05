@@ -16,6 +16,7 @@ import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.lists.Accounts;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
 import org.nuclearfog.twidda.ui.adapter.AccountAdapter;
@@ -34,9 +35,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	/**
 	 * internal Bundle key used to save adapter items
-	 * value type is {@link Account[]}
+	 * value type is {@link Accounts}
 	 */
-	private static final String KEY_ACCOUNT_SAVE = "account-data";
+	private static final String KEY_SAVE = "account-data";
 
 	private AccountLoader accountLoader;
 	private DatabaseAction databaseAction;
@@ -46,12 +47,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	private long selectedId;
 
-	private AsyncCallback<DatabaseResult> databaseResult = new AsyncCallback<DatabaseResult>() {
-		@Override
-		public void onResult(@NonNull DatabaseResult result) {
-			onDatabaseResult();
-		}
-	};
+	private AsyncCallback<DatabaseResult> databaseResult = this::onDatabaseResult;
 
 
 	@Override
@@ -66,9 +62,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		setAdapter(adapter);
 		dialog.setConfirmListener(this);
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_ACCOUNT_SAVE);
-			if (data instanceof Account[]) {
-				adapter.replaceItems((Account[]) data);
+			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			if (data instanceof Accounts) {
+				adapter.replaceItems((Accounts) data);
 				return;
 			}
 		}
@@ -79,7 +75,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_ACCOUNT_SAVE, adapter.getItems());
+		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -158,7 +154,8 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	/**
 	 * called from {@link DatabaseAction} when all data of the previous login were removed
 	 */
-	private void onDatabaseResult() {
+	@SuppressWarnings("unused")
+	private void onDatabaseResult(DatabaseResult result) {
 		// finish activity and return to parent activity
 		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
 		requireActivity().finish();

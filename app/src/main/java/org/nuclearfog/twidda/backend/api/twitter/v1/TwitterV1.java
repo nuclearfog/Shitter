@@ -26,6 +26,7 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
+import org.nuclearfog.twidda.lists.Notifications;
 import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.lists.Trends;
@@ -293,7 +294,7 @@ public class TwitterV1 implements Connection {
 			nextPage = 0;
 		if (settings.filterResults())
 			filterUsers(result);
-		result.setPrevCursor(currentPage - 1);
+		result.setPreviousCursor(currentPage - 1);
 		result.setNextCursor(nextPage);
 		return result;
 	}
@@ -306,7 +307,7 @@ public class TwitterV1 implements Connection {
 		params.add("count=" + settings.getListSize());
 		long[] ids = getUserIDs(TWEET_GET_RETWEETERS, params, cursor);
 		Users result = getUsers(ids);
-		result.setPrevCursor(cursor);
+		result.setPreviousCursor(cursor);
 		result.setNextCursor(ids[ids.length - 1]); // Twitter bug: next cursor is always zero!
 		return result;
 	}
@@ -349,9 +350,9 @@ public class TwitterV1 implements Connection {
 		// fix API returns zero previous_cursor when the end of the list is reached
 		// override previous cursor
 		if (cursor == -1L)
-			result.setPrevCursor(0);
+			result.setPreviousCursor(0);
 		else
-			result.setPrevCursor(cursor);
+			result.setPreviousCursor(cursor);
 		return result;
 	}
 
@@ -366,9 +367,9 @@ public class TwitterV1 implements Connection {
 		// fix API returns zero previous_cursor when the end of the list is reached
 		// override previous cursor
 		if (cursor == -1L)
-			result.setPrevCursor(0);
+			result.setPreviousCursor(0);
 		else
-			result.setPrevCursor(cursor);
+			result.setPreviousCursor(cursor);
 		return result;
 	}
 
@@ -1152,9 +1153,9 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Notification> getNotifications(long minId, long maxId) throws TwitterException {
+	public Notifications getNotifications(long minId, long maxId) throws TwitterException {
 		List<Status> mentions = getTweets(TWEETS_MENTIONS, new ArrayList<>(), minId, maxId);
-		List<Notification> result = new ArrayList<>(mentions.size());
+		Notifications result = new Notifications();
 		for (Status status : mentions) {
 			result.add(new NotificationV1(status));
 		}

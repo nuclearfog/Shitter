@@ -12,16 +12,13 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.lists.Notifications;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.StatusHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.UserHolder;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Rycyclerview adapter for notifications
@@ -57,16 +54,16 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	private OnNotificationClickListener listener;
 	private TextEmojiLoader emojiLoader;
 
-	private List<Notification> notifications;
-	private int loadingIndex;
+	private Notifications notifications = new Notifications();
+	private int loadingIndex = NO_LOADING;
 
-
+	/**
+	 *
+	 */
 	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);
-		notifications = new LinkedList<>();
-		loadingIndex = NO_LOADING;
 		this.listener = listener;
 	}
 
@@ -199,8 +196,8 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 *
 	 * @return array of notification items
 	 */
-	public Notification[] getItems() {
-		return notifications.toArray(new Notification[0]);
+	public Notifications getItems() {
+		return new Notifications(notifications);
 	}
 
 	/**
@@ -209,7 +206,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 * @param newItems items to add
 	 * @param index    position where to add the items
 	 */
-	public void addItems(List<Notification> newItems, int index) {
+	public void addItems(Notifications newItems, int index) {
 		disableLoading();
 		if (newItems.size() > MIN_COUNT) {
 			if (notifications.isEmpty() || notifications.get(index) != null) {
@@ -233,10 +230,10 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 *
 	 * @param newItems list of statuses to add
 	 */
-	public void replaceItems(Notification[] newItems) {
+	public void replaceItems(Notifications newItems) {
 		notifications.clear();
-		notifications.addAll(Arrays.asList(newItems));
-		if (newItems.length > MIN_COUNT) {
+		notifications.addAll(newItems);
+		if (newItems.size() > MIN_COUNT) {
 			notifications.add(null);
 		}
 		loadingIndex = NO_LOADING;

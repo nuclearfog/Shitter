@@ -24,7 +24,6 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.ListManagerPa
 	 */
 	public UserlistManager(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
-
 	}
 
 

@@ -38,112 +38,112 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	/**
 	 * key to set the type of user list to show
 	 * possible value types are
-	 * {@link #USER_FRAG_FOLLOWER,#USER_FRAG_FOLLOWING,#USER_FRAG_REPOST ,#USER_FRAG_FAVORIT},
-	 * {@link #USER_FRAG_SEARCH,#USER_FRAG_LIST_SUBSCRIBER,#USER_FRAG_LIST_MEMBERS,#USER_FRAG_BLOCKED_USERS},
-	 * {@link #USER_FRAG_MUTED_USERS,#USER_FRAG_FOLLOW_INCOMING,#USER_FRAG_FOLLOW_OUTGOING}
+	 * {@link #MODE_FOLLOWER ,#USER_FRAG_FOLLOWING,#USER_FRAG_REPOST ,#USER_FRAG_FAVORIT},
+	 * {@link #MODE_SEARCH ,#USER_FRAG_LIST_SUBSCRIBER,#USER_FRAG_LIST_MEMBERS,#USER_FRAG_BLOCKED_USERS},
+	 * {@link #MODE_MUTES ,#USER_FRAG_FOLLOW_INCOMING,#USER_FRAG_FOLLOW_OUTGOING}
 	 */
-	public static final String KEY_FRAG_USER_MODE = "user_mode";
+	public static final String KEY_MODE = "user_mode";
 
 	/**
 	 * key to define search string like username
 	 * value type is string
 	 */
-	public static final String KEY_FRAG_USER_SEARCH = "user_search";
+	public static final String KEY_SEARCH = "user_search";
 
 	/**
 	 * key to define user, status or list ID
 	 * value type is long
 	 */
-	public static final String KEY_FRAG_USER_ID = "user_id";
+	public static final String KEY_ID = "user_id";
 
 	/**
 	 * key enable function to remove users from list
 	 * value type is boolean
 	 */
-	public static final String KEY_FRAG_DEL_USER = "user_en_del";
+	public static final String KEY_DELETE = "user_en_del";
 
 	/**
 	 * Bundle key to save list items
 	 * value type is {@link Users}
 	 */
-	private static final String USER_FRAGMENT_SAVE = "user_data";
+	private static final String KEY_SAVE = "user_data";
 
 	/**
 	 * value to configure to show users following the authenticating user
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_FOLLOWER = 0xE45DD2;
+	public static final int MODE_FOLLOWER = 0xE45DD2;
 
 	/**
 	 * value to configure to show users followed by the authenticating user
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_FOLLOWING = 0x64D432EB;
+	public static final int MODE_FOLLOWING = 0x64D432EB;
 
 	/**
 	 * value to configure to show users reposting a status
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_REPOST = 0x2AC31E6B;
+	public static final int MODE_REPOSTER = 0x2AC31E6B;
 
 	/**
 	 * value to configure to show users favoring a status
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_FAVORIT = 0xA7FB2BB4;
+	public static final int MODE_FAVORITER = 0xA7FB2BB4;
 
 	/**
 	 * value to configure to search users matching a search string
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_SEARCH = 0x162C3599;
+	public static final int MODE_SEARCH = 0x162C3599;
 
 	/**
 	 * value to configure to show subscribers of an userlist
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_LIST_SUBSCRIBER = 0x21DCF91C;
+	public static final int MODE_LIST_SUBSCRIBER = 0x21DCF91C;
 
 	/**
 	 * value to configure to show members of an userlist
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_LIST_MEMBERS = 0x9A00B3A5;
+	public static final int MODE_LIST_MEMBER = 0x9A00B3A5;
 
 	/**
 	 * value to configure a list of blocked users
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_BLOCKED_USERS = 0x83D186AD;
+	public static final int MODE_BLOCKS = 0x83D186AD;
 
 	/**
 	 * value to configure a list of muted users
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_MUTED_USERS = 0x5246DC35;
+	public static final int MODE_MUTES = 0x5246DC35;
 
 	/**
 	 * value to configure a list of users with incoming following request
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_FOLLOW_INCOMING = 0x89e5255a;
+	public static final int MODE_FOLLOW_INCOMING = 0x89e5255a;
 
 	/**
 	 * value to configure a list of users with outgoing following request
 	 *
-	 * @see #KEY_FRAG_USER_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int USER_FRAG_FOLLOW_OUTGOING = 0x72544f17;
+	public static final int MODE_FOLLOW_OUTGOING = 0x72544f17;
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
@@ -165,14 +165,14 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 		Bundle param = getArguments();
 		if (param != null) {
-			mode = param.getInt(KEY_FRAG_USER_MODE, 0);
-			id = param.getLong(KEY_FRAG_USER_ID, 0);
-			search = param.getString(KEY_FRAG_USER_SEARCH, "");
-			boolean delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
+			mode = param.getInt(KEY_MODE, 0);
+			id = param.getLong(KEY_ID, 0);
+			search = param.getString(KEY_SEARCH, "");
+			boolean delUser = param.getBoolean(KEY_DELETE, false);
 			adapter.enableDeleteButton(delUser);
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(USER_FRAGMENT_SAVE);
+			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Users) {
 				adapter.replaceItems((Users) data);
 				return;
@@ -185,7 +185,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(USER_FRAGMENT_SAVE, adapter.getItems());
+		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -284,47 +284,47 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	private void load(long cursor, int index) {
 		UserParam param;
 		switch (mode) {
-			case USER_FRAG_FOLLOWER:
+			case MODE_FOLLOWER:
 				param = new UserParam(UserParam.FOLLOWS, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_FOLLOWING:
+			case MODE_FOLLOWING:
 				param = new UserParam(UserParam.FRIENDS, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_REPOST:
+			case MODE_REPOSTER:
 				param = new UserParam(UserParam.REPOST, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_FAVORIT:
+			case MODE_FAVORITER:
 				param = new UserParam(UserParam.FAVORIT, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_SEARCH:
+			case MODE_SEARCH:
 				param = new UserParam(UserParam.SEARCH, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_LIST_SUBSCRIBER:
+			case MODE_LIST_SUBSCRIBER:
 				param = new UserParam(UserParam.SUBSCRIBER, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_LIST_MEMBERS:
+			case MODE_LIST_MEMBER:
 				param = new UserParam(UserParam.LISTMEMBER, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_BLOCKED_USERS:
+			case MODE_BLOCKS:
 				param = new UserParam(UserParam.BLOCK, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_MUTED_USERS:
+			case MODE_MUTES:
 				param = new UserParam(UserParam.MUTE, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_FOLLOW_OUTGOING:
+			case MODE_FOLLOW_OUTGOING:
 				param = new UserParam(UserParam.REQUEST_OUT, index, id, cursor, search);
 				break;
 
-			case USER_FRAG_FOLLOW_INCOMING:
+			case MODE_FOLLOW_INCOMING:
 				param = new UserParam(UserParam.REQUEST_IN, index, id, cursor, search);
 				break;
 

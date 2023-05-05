@@ -43,15 +43,10 @@ import java.io.Serializable;
 public class MessageFragment extends ListFragment implements OnMessageClickListener, OnConfirmListener, AsyncCallback<MessageLoaderResult> {
 
 	/**
-	 * "index" used to replace the whole list with new items
-	 */
-	private static final int CLEAR_LIST = -1;
-
-	/**
 	 * bundle key used to save adapter items
 	 * value type is {@link Messages}
 	 */
-	private static final String KEY_FRAGMENT_MESSAGE_SAVE = "message-save";
+	private static final String KEY_SAVE = "message-save";
 
 	private MessageLoader messageLoader;
 	private MessageAdapter adapter;
@@ -70,20 +65,20 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 		confirmDialog.setConfirmListener(this);
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_MESSAGE_SAVE);
+			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Messages) {
 				adapter.replaceItems((Messages) data);
 				return;
 			}
 		}
-		loadMessages(false, null, CLEAR_LIST);
+		loadMessages(false, null, MessageAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_FRAGMENT_MESSAGE_SAVE, adapter.getItems());
+		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -97,14 +92,14 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	protected void onReload() {
-		loadMessages(true, null, CLEAR_LIST);
+		loadMessages(true, null, MessageAdapter.CLEAR_LIST);
 	}
 
 
 	@Override
 	protected void onReset() {
 		adapter.clear();
-		loadMessages(false, null, CLEAR_LIST);
+		loadMessages(false, null, MessageAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 

@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.backend.async.FilterLoader.FilterParam;
 import org.nuclearfog.twidda.backend.async.FilterLoader.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
@@ -39,7 +40,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	/**
 	 * type of users to get from the source
-	 * {@link #USERS_FRIENDS ,#USERS_FOLLOWER ,#USERS_REPOST ,#USERLIST_FAVORIT,#USERLIST_EXCLUDED_USERS,#USERLIST_REQUESTS}
+	 * {@link #USERS_FOLLOWING ,#USERS_FOLLOWER ,#USERS_REPOST ,#USERLIST_FAVORIT,#USERLIST_EXCLUDED_USERS,#USERLIST_REQUESTS}
 	 */
 	public static final String KEY_USERS_MODE = "userlist_mode";
 
@@ -50,11 +51,11 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public static final String KEY_USERS_ID = "userlist_id";
 
 	/**
-	 * friends of an user, requires user ID
+	 * user following, requires user ID
 	 *
 	 * @see #KEY_USERS_MODE
 	 */
-	public static final int USERS_FRIENDS = 0xDF893242;
+	public static final int USERS_FOLLOWING = 0xDF893242;
 
 	/**
 	 * follower of an user, requires user ID
@@ -131,11 +132,19 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		long id = getIntent().getLongExtra(KEY_USERS_ID, 0L);
 
 		switch (mode) {
-			case USERS_FRIENDS:
-				adapter.setupFollowingPage(id);
-				viewPager.setOffscreenPageLimit(1);
-				tabSelector.setVisibility(View.GONE);
+			case USERS_FOLLOWING:
 				toolbar.setTitle(R.string.userlist_following);
+				if (settings.getLogin().getConfiguration() == Configuration.MASTODON && settings.getLogin().getId() == id) {
+					adapter.setupFollowingPage(id, true);
+					viewPager.setOffscreenPageLimit(2);
+					tabSelector.addTabIcons(R.array.user_hashtag_following);
+					tabSelector.addViewPager(viewPager);
+					tabSelector.addOnTabSelectedListener(this);
+				} else {
+					adapter.setupFollowingPage(id, false);
+					viewPager.setOffscreenPageLimit(1);
+					tabSelector.setVisibility(View.GONE);
+				}
 				break;
 
 			case USERS_FOLLOWER:

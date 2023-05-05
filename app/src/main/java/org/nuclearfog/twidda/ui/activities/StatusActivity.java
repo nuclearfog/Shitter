@@ -7,10 +7,10 @@ import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FAVORIT;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REPOST;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_ID;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_MODE;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_STATUS_FRAGMENT_SEARCH;
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.STATUS_FRAGMENT_REPLY;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_ID;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_MODE;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.KEY_SEARCH;
+import static org.nuclearfog.twidda.ui.fragments.StatusFragment.MODE_REPLY;
 
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -363,9 +363,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// initialize status reply list
 		Bundle param = new Bundle();
-		param.putInt(KEY_STATUS_FRAGMENT_MODE, STATUS_FRAGMENT_REPLY);
-		param.putString(KEY_STATUS_FRAGMENT_SEARCH, replyUsername);
-		param.putLong(KEY_STATUS_FRAGMENT_ID, statusId);
+		param.putInt(KEY_MODE, MODE_REPLY);
+		param.putString(KEY_SEARCH, replyUsername);
+		param.putLong(KEY_ID, statusId);
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
 		fragmentTransaction.commit();

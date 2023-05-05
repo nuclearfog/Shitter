@@ -20,10 +20,6 @@ import org.nuclearfog.twidda.ui.fragments.TrendFragment;
  */
 public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, TrendLoader.TrendResult> {
 
-	public static final int DATABASE = 1;
-	public static final int ONLINE = 2;
-	public static final int SEARCH = 3;
-
 	private Connection connection;
 	private AppDatabase db;
 
@@ -40,34 +36,43 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	protected TrendResult doInBackground(@NonNull TrendParameter param) {
 		try {
 			switch (param.mode) {
-				case DATABASE:
+				case TrendParameter.POPULAR_OFFLINE:
 					Trends trends = db.getTrends();
 					if (!trends.isEmpty()) {
-						return new TrendResult(trends, param.index, null);
+						return new TrendResult(TrendResult.POPULAR, trends, param.index, null);
 					}
 					// fall through
 
-				case ONLINE:
+				case TrendParameter.POPULAR_ONLINE:
 					trends = connection.getTrends();
 					db.saveTrends(trends);
-					return new TrendResult(trends, param.index, null);
+					return new TrendResult(TrendResult.POPULAR, trends, param.index, null);
 
-				case SEARCH:
+				case TrendParameter.SEARCH:
 					trends = connection.searchHashtags(param.trend);
-					return new TrendResult(trends, param.index, null);
+					return new TrendResult(TrendResult.SEARCH, trends, param.index, null);
+
+				case TrendParameter.FOLLOWING:
+					trends = connection.showHashtagFollowing();
+					return new TrendResult(TrendResult.FOLLOWING, trends, param.index, null);
 			}
 		} catch (ConnectionException exception) {
-			return new TrendResult(null, param.index, exception);
+			return new TrendResult(TrendResult.ERROR, null, param.index, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new TrendResult(null, param.index, null);
+		return new TrendResult(TrendResult.ERROR, null, param.index, null);
 	}
 
 	/**
 	 *
 	 */
 	public static class TrendParameter {
+
+		public static final int POPULAR_OFFLINE = 1;
+		public static final int POPULAR_ONLINE = 2;
+		public static final int SEARCH = 3;
+		public static final int FOLLOWING = 4;
 
 		public static final long NO_CURSOR = -1L;
 
@@ -89,16 +94,23 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	 */
 	public static class TrendResult {
 
+		public static final int ERROR = -1;
+		public static final int POPULAR = 4;
+		public static final int SEARCH = 5;
+		public static final int FOLLOWING = 6;
+
+		public final int mode;
 		public final int index;
 		@Nullable
 		public final Trends trends;
 		@Nullable
 		public final ConnectionException exception;
 
-		TrendResult(@Nullable Trends trends, int index, @Nullable ConnectionException exception) {
+		TrendResult(int mode, @Nullable Trends trends, int index, @Nullable ConnectionException exception) {
 			this.trends = trends;
 			this.exception = exception;
 			this.index = index;
+			this.mode = mode;
 		}
 	}
 }

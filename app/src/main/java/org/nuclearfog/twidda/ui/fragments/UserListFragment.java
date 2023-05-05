@@ -41,35 +41,33 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	 * Key for the owner ID
 	 * value type is Long
 	 */
-	public static final String KEY_FRAGMENT_USERLIST_OWNER_ID = "userlist_owner_id";
+	public static final String KEY_ID = "userlist_owner_id";
 
 	/**
 	 * key to define the type of the list
-	 * {@link #LIST_USER_OWNS,#LIST_USER_SUBSCR_TO}
+	 * {@link #MODE_OWNERSHIP ,#LIST_USER_SUBSCR_TO}
 	 */
-	public static final String KEY_FRAGMENT_USERLIST_TYPE = "userlist_type";
+	public static final String KEY_MODE = "userlist_type";
 
 	/**
 	 * internal Bundle key used to save adapter items
-	 * value type is {@link UserList[]}
+	 * value type is {@link UserLists}
 	 */
-	private static final String KEY_FRAGMENT_USERLIST_SAVE = "userlist_save";
+	private static final String KEY_SAVE = "userlist_save";
 
 	/**
 	 * value to show all user lists owned by a specified user
 	 *
-	 * @see #KEY_FRAGMENT_USERLIST_TYPE
+	 * @see #KEY_MODE
 	 */
-	public static final int LIST_USER_OWNS = 0x5F36F90D;
+	public static final int MODE_OWNERSHIP = 0x5F36F90D;
 
 	/**
 	 * value to show all user lists the specified user is added to
 	 *
-	 * @see #KEY_FRAGMENT_USERLIST_TYPE
+	 * @see #KEY_MODE
 	 */
-	public static final int LIST_USER_SUBSCR_TO = 0xAA7386AA;
-
-
+	public static final int MODE_MEMBERSHIP = 0xAA7386AA;
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
@@ -90,11 +88,11 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 		Bundle param = getArguments();
 		if (param != null) {
-			id = param.getLong(KEY_FRAGMENT_USERLIST_OWNER_ID, -1L);
-			type = param.getInt(KEY_FRAGMENT_USERLIST_TYPE);
+			id = param.getLong(KEY_ID, -1L);
+			type = param.getInt(KEY_MODE);
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_USERLIST_SAVE);
+			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof UserLists) {
 				adapter.replaceItems((UserLists) data);
 				return;
@@ -107,7 +105,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_FRAGMENT_USERLIST_SAVE, adapter.getItems());
+		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -205,11 +203,11 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	private void load(long cursor, int index) {
 		UserlistParam param;
 		switch (type) {
-			case LIST_USER_OWNS:
+			case MODE_OWNERSHIP:
 				param = new UserlistParam(UserlistParam.OWNERSHIP, index, id, cursor);
 				break;
 
-			case LIST_USER_SUBSCR_TO:
+			case MODE_MEMBERSHIP:
 				param = new UserlistParam(UserlistParam.MEMBERSHIP, index, id, cursor);
 				break;
 

@@ -16,8 +16,8 @@ public class Trends extends LinkedList<Trend> {
 
 	private static final long serialVersionUID = 7646437787602696292L;
 
-	private long minId = 0L;
-	private long maxId = 0L;
+	private long prevCursor = 0L;
+	private long nextCursor = 0L;
 
 	/**
 	 *
@@ -27,13 +27,13 @@ public class Trends extends LinkedList<Trend> {
 	}
 
 	/**
-	 * @param minId minimum ID of an item
-	 * @param maxId maximum ID of an item
+	 * @param prevCursor minimum ID of an item
+	 * @param nextCursor maximum ID of an item
 	 */
-	public Trends(long minId, long maxId) {
+	public Trends(long prevCursor, long nextCursor) {
 		super();
-		this.maxId = maxId;
-		this.minId = minId;
+		this.nextCursor = nextCursor;
+		this.prevCursor = prevCursor;
 	}
 
 	/**
@@ -41,8 +41,8 @@ public class Trends extends LinkedList<Trend> {
 	 */
 	public Trends(Trends trends) {
 		super(trends);
-		minId = trends.minId;
-		maxId = trends.maxId;
+		prevCursor = trends.prevCursor;
+		nextCursor = trends.nextCursor;
 	}
 
 	/**
@@ -57,29 +57,15 @@ public class Trends extends LinkedList<Trend> {
 	/**
 	 * @return (internal) ID of the first item
 	 */
-	public long getMinId() {
-		return minId;
-	}
-
-	/**
-	 * @param minId (internal) ID of the first item
-	 */
-	public void setMinId(long minId) {
-		this.minId = minId;
+	public long getPreviousCursor() {
+		return prevCursor;
 	}
 
 	/**
 	 * @return (internal) ID of the last item
 	 */
-	public long getMaxId() {
-		return maxId;
-	}
-
-	/**
-	 * @param maxId  (internal) ID of the last item
-	 */
-	public void setMaxId(long maxId) {
-		this.maxId = maxId;
+	public long getNextCursor() {
+		return nextCursor;
 	}
 
 	/**
@@ -90,12 +76,12 @@ public class Trends extends LinkedList<Trend> {
 	 */
 	public void addAll(int index, Trends trends) {
 		if (isEmpty()) {
-			minId = trends.getMinId();
-			maxId = trends.getMaxId();
+			prevCursor = trends.getPreviousCursor();
+			nextCursor = trends.getNextCursor();
 		} else if (index == 0) {
-			minId = trends.getMinId();
+			prevCursor = trends.getPreviousCursor();
 		} else if (index == size() - 1) {
-			maxId = trends.getMaxId();
+			nextCursor = trends.getNextCursor();
 		}
 		super.addAll(index, trends);
 	}
@@ -108,14 +94,14 @@ public class Trends extends LinkedList<Trend> {
 	public void replaceAll(Trends trends) {
 		clear();
 		addAll(trends);
-		minId = trends.getMinId();
-		maxId = trends.getMaxId();
+		prevCursor = trends.getPreviousCursor();
+		nextCursor = trends.getNextCursor();
 	}
 
 
 	@Override
 	@NonNull
 	public String toString() {
-		return "size=" + size() + " min_id=" + minId + " max_id=" + maxId;
+		return "size=" + size() + " min_id=" + prevCursor + " max_id=" + nextCursor;
 	}
 }

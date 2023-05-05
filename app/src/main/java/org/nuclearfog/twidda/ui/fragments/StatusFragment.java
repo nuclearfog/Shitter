@@ -36,89 +36,85 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	/**
 	 * Key to define what type of status should be loaded
-	 * possible values are {@link #STATUS_FRAGMENT_HOME,#STATUS_FRAGMENT_MENTION,#STATUS_FRAGMENT_USER,#STATUS_FRAGMENT_FAVORIT}
-	 * and {@link #STATUS_FRAGMENT_REPLY,#STATUS_FRAGMENT_SEARCH,#STATUS_FRAGMENT_USERLIST,#STATUS_FRAGMENT_PUBLIC,#STATUS_FRAGMENT_BOOKMARK}
+	 * possible values are {@link #MODE_HOME ,#STATUS_FRAGMENT_MENTION,#STATUS_FRAGMENT_USER,#STATUS_FRAGMENT_FAVORIT}
+	 * and {@link #MODE_REPLY ,#STATUS_FRAGMENT_SEARCH,#STATUS_FRAGMENT_USERLIST,#STATUS_FRAGMENT_PUBLIC,#STATUS_FRAGMENT_BOOKMARK}
 	 */
-	public static final String KEY_STATUS_FRAGMENT_MODE = "status_mode";
+	public static final String KEY_MODE = "status_mode";
 
 	/**
 	 * Key to define a search query
 	 * value type is String
 	 */
-	public static final String KEY_STATUS_FRAGMENT_SEARCH = "status_search";
+	public static final String KEY_SEARCH = "status_search";
 
 	/**
 	 * Key to define a an (status, user, list) ID
 	 * value type is Long
 	 */
-	public static final String KEY_STATUS_FRAGMENT_ID = "status_id";
+	public static final String KEY_ID = "status_id";
 
 	/**
 	 * key to save adapter items
-	 * value type is {@link Status[]}
+	 * value type is {@link Statuses}
 	 */
-	private static final String KEY_STATUS_FRAGMENT_SAVE = "status_save";
+	private static final String KEY_SAVE = "status_save";
 
 	/**
 	 * setup list for home timeline
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_HOME = 0xE7028B60;
+	public static final int MODE_HOME = 0xE7028B60;
 
 	/**
 	 * setup list for status timeline of a specific user
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_USER = 0x4DBEF6CD;
+	public static final int MODE_USER = 0x4DBEF6CD;
 
 	/**
 	 * setup list for favorite timeline of a specific user
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_FAVORIT = 0x8DE749EC;
+	public static final int MODE_FAVORIT = 0x8DE749EC;
 
 	/**
 	 * setup list for status replies
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_REPLY = 0xAFB5F1C0;
+	public static final int MODE_REPLY = 0xAFB5F1C0;
 
 	/**
 	 * setup list for search timeline
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_SEARCH = 0x91A71117;
+	public static final int MODE_SEARCH = 0x91A71117;
 
 	/**
 	 * setup list for userlist timeline
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_USERLIST = 0x43F518F7;
+	public static final int MODE_USERLIST = 0x43F518F7;
 
 	/**
 	 * setup list for public timeline
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_PUBLIC = 0x6125C6D6;
+	public static final int MODE_PUBLIC = 0x6125C6D6;
 
 	/**
 	 * setup list for bookmark timeline
 	 *
-	 * @see #KEY_STATUS_FRAGMENT_MODE
+	 * @see #KEY_MODE
 	 */
-	public static final int STATUS_FRAGMENT_BOOKMARK = 0x7F493A4C;
+	public static final int MODE_BOOKMARK = 0x7F493A4C;
 
-	/**
-	 * replace all items from list
-	 */
-	public static final int CLEAR_LIST = -1;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -139,25 +135,25 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 		Bundle param = getArguments();
 		if (param != null) {
-			mode = param.getInt(KEY_STATUS_FRAGMENT_MODE, 0);
-			id = param.getLong(KEY_STATUS_FRAGMENT_ID, 0);
-			search = param.getString(KEY_STATUS_FRAGMENT_SEARCH, "");
+			mode = param.getInt(KEY_MODE, 0);
+			id = param.getLong(KEY_ID, 0);
+			search = param.getString(KEY_SEARCH, "");
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_STATUS_FRAGMENT_SAVE);
+			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Statuses) {
 				adapter.replaceItems((Statuses) data);
 				return;
 			}
 		}
-		load(0L, 0L, CLEAR_LIST);
+		load(StatusParameter.NO_ID, StatusParameter.NO_ID, StatusAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_STATUS_FRAGMENT_SAVE, adapter.getItems());
+		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -194,14 +190,14 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	@Override
 	protected void onReset() {
 		adapter.clear();
-		load(0L, 0L, CLEAR_LIST);
+		load(StatusParameter.NO_ID, StatusParameter.NO_ID, StatusAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopItemId(), 0L, 0);
+		load(adapter.getTopItemId(), StatusParameter.NO_ID, 0);
 	}
 
 
@@ -228,7 +224,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	@Override
 	public void onResult(@NonNull StatusResult result) {
 		if (result.statuses != null) {
-			if (result.position == CLEAR_LIST) {
+			if (result.position == StatusResult.CLEAR) {
 				adapter.replaceItems(result.statuses);
 			} else {
 				adapter.addItems(result.statuses, result.position);
@@ -251,38 +247,38 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	private void load(long sinceId, long maxId, int index) {
 		StatusParameter request;
 		switch (mode) {
-			case STATUS_FRAGMENT_HOME:
+			case MODE_HOME:
 				request = new StatusParameter(StatusParameter.HOME, id, sinceId, maxId, index, search);
 				break;
 
-			case STATUS_FRAGMENT_USER:
+			case MODE_USER:
 				request = new StatusParameter(StatusParameter.USER, id, sinceId, maxId, index, search);
 				break;
 
-			case STATUS_FRAGMENT_FAVORIT:
+			case MODE_FAVORIT:
 				request = new StatusParameter(StatusParameter.FAVORIT, id, sinceId, maxId, index, search);
 				break;
 
-			case STATUS_FRAGMENT_REPLY:
-				if (index == CLEAR_LIST)
+			case MODE_REPLY:
+				if (index == StatusAdapter.CLEAR_LIST)
 					request = new StatusParameter(StatusParameter.REPLIES_LOCAL, id, sinceId, maxId, index, search);
 				else
 					request = new StatusParameter(StatusParameter.REPLIES, id, sinceId, maxId, index, search);
 				break;
 
-			case STATUS_FRAGMENT_SEARCH:
+			case MODE_SEARCH:
 				request = new StatusParameter(StatusParameter.SEARCH, id, sinceId, maxId, index, search);
 				break;
 
-			case STATUS_FRAGMENT_USERLIST:
+			case MODE_USERLIST:
 				request = new StatusParameter(StatusParameter.USERLIST, id, sinceId, maxId, index, search);
 				break;
 
-			case STATUS_FRAGMENT_PUBLIC:
+			case MODE_PUBLIC:
 				request = new StatusParameter(StatusParameter.PUBLIC, id, sinceId, maxId, index, search);
 				break;
 
-			case STATUS_FRAGMENT_BOOKMARK:
+			case MODE_BOOKMARK:
 				request = new StatusLoader.StatusParameter(StatusParameter.BOOKMARKS, id, sinceId, maxId, index, search);
 				break;
 

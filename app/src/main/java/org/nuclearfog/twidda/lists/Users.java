@@ -59,7 +59,7 @@ public class Users extends LinkedList<User> {
 	 *
 	 * @return cursor
 	 */
-	public long getNext() {
+	public long getNextCursor() {
 		return nextCursor;
 	}
 
@@ -68,7 +68,7 @@ public class Users extends LinkedList<User> {
 	 *
 	 * @param prevCursor cursor value
 	 */
-	public void setPrevCursor(long prevCursor) {
+	public void setPreviousCursor(long prevCursor) {
 		this.prevCursor = prevCursor;
 	}
 

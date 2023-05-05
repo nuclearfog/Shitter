@@ -32,6 +32,11 @@
 		<item>@drawable/block</item>
 	</integer-array>
 
+	<integer-array name="user_hashtag_following">
+		<item>@drawable/user</item>
+		<item>@drawable/hash</item>
+	</integer-array>
+
 	<integer-array name="user_requests_icon">
 		<item>@drawable/follower_request</item>
 		<item>@drawable/following_request</item>

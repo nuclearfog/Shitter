@@ -10,13 +10,10 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.lists.Accounts;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.adapter.holder.AccountHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter to show a list of accounts
@@ -30,7 +27,7 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	private OnAccountClickListener listener;
 	private Picasso picasso;
 
-	private List<Account> accounts;
+	private Accounts accounts = new Accounts();
 
 	/**
 	 * @param listener item click listener
@@ -38,7 +35,6 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	public AccountAdapter(Context context, OnAccountClickListener listener) {
 		picasso = PicassoBuilder.get(context);
 		settings = GlobalSettings.getInstance(context);
-		accounts = new ArrayList<>();
 		this.listener = listener;
 	}
 
@@ -84,8 +80,8 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	 *
 	 * @return list of adapter items
 	 */
-	public Account[] getItems() {
-		return accounts.toArray(new Account[0]);
+	public Accounts getItems() {
+		return new Accounts(accounts);
 	}
 
 	/**
@@ -93,20 +89,9 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	 *
 	 * @param newAccounts list with login items
 	 */
-	public void replaceItems(List<Account> newAccounts) {
+	public void replaceItems(Accounts newAccounts) {
 		accounts.clear();
 		accounts.addAll(newAccounts);
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * sets login data
-	 *
-	 * @param newAccounts list with login items
-	 */
-	public void replaceItems(Account[] newAccounts) {
-		accounts.clear();
-		accounts.addAll(Arrays.asList(newAccounts));
 		notifyDataSetChanged();
 	}
 

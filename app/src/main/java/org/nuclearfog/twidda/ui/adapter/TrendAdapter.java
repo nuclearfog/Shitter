@@ -30,10 +30,13 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 	private static final int TYPE_PLACEHOLDER = 1;
 
+	private static final int NO_INDEX = -1;
+
 	private TrendClickListener itemClickListener;
 	private GlobalSettings settings;
 
 	private Trends items = new Trends();
+	private int loadingIndex = NO_INDEX;
 
 	/**
 	 * @param itemClickListener Listener for item click
@@ -78,7 +81,8 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 				holder.setContent(trend, index);
 			}
 		} else if (vh instanceof PlaceHolder) {
-
+			PlaceHolder placeHolder = (PlaceHolder) vh;
+			placeHolder.setLoading(loadingIndex == index);
 		}
 	}
 
@@ -91,7 +95,11 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 	@Override
 	public boolean onPlaceholderClick(int index) {
-		return false;
+		boolean actionPerformed = itemClickListener.onPlaceholderClick(items.getNextCursor(), index);
+		if (actionPerformed) {
+			loadingIndex = index;
+		}
+		return actionPerformed;
 	}
 
 	/**
@@ -114,10 +122,10 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 			notifyDataSetChanged();
 		} else {
 			items.addAll(index, newItems);
-			if (items.getMaxId() != 0L && items.peekLast() != null) {
+			if (items.getNextCursor() != 0L && items.peekLast() != null) {
 				items.add(null);
 				notifyItemRangeInserted(index, newItems.size() + 1);
-			} else if (items.getMaxId() == 0L && items.peekLast() == null) {
+			} else if (items.getNextCursor() == 0L && items.peekLast() == null) {
 				items.pollLast();
 				notifyItemRangeInserted(index, newItems.size() - 1);
 			} else if (!newItems.isEmpty()) {

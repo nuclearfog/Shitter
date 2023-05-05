@@ -9,10 +9,8 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.model.Notification;
+import org.nuclearfog.twidda.lists.Notifications;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
-
-import java.util.List;
 
 /**
  * Notification loader for {@link NotificationFragment}
@@ -35,7 +33,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 
 	@Override
 	protected NotificationLoaderResult doInBackground(@NonNull NotificationLoaderParam params) {
-		List<Notification> result = null;
+		Notifications result = null;
 		try {
 			if (params.minId == 0L && params.maxId == 0L) {
 				result = db.getNotifications();
@@ -79,11 +77,11 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 
 		public final int position;
 		@Nullable
-		public final List<Notification> notifications;
+		public final Notifications notifications;
 		@Nullable
 		public final ConnectionException exception;
 
-		NotificationLoaderResult(@Nullable List<Notification> notifications, int position, @Nullable ConnectionException exception) {
+		NotificationLoaderResult(@Nullable Notifications notifications, int position, @Nullable ConnectionException exception) {
 			this.notifications = notifications;
 			this.exception = exception;
 			this.position = position;

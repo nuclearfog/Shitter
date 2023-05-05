@@ -31,21 +31,44 @@ import java.io.Serializable;
 public class TrendFragment extends ListFragment implements TrendClickListener, AsyncCallback<TrendResult> {
 
 	/**
-	 * additional bundle key to set search string for hashtags
+	 * setup fragment to show popular trends of an instance/location
+	 */
+	public static final int MODE_POPULAR = 0x32105718;
+
+	/**
+	 * setup fragment to show hashtags relating to search
+	 * requires {@link #KEY_SEARCH}
+	 */
+	public static final int MODE_SEARCH = 0x17210512;
+
+	/**
+	 * setup fragment to show hashtags followed by the current user
+	 */
+	public static final int MODE_FOLLOW = 0x50545981;
+
+	/**
+	 * key used to define what type of trends should be shown, see {@link #MODE_FOLLOW ,#MODE_POPULAR ,#KEY_FRAGMENT_TREND_SEARCH}
+	 * value type is Integer
+	 */
+	public static final String KEY_MODE = "fragment_trend_mode";
+
+	/**
+	 * (optional) key to search for trends and hashtag matching a search string
 	 * value type is String
 	 */
-	public static final String KEY_FRAGMENT_TREND_SEARCH = "trend_search_hashtags";
+	public static final String KEY_SEARCH = "fragment_trend_search";
 
 	/**
 	 * bundle key to add adapter items
-	 * value type is {@link Trend[]}
+	 * value type is {@link Trends}
 	 */
-	private static final String KEY_FRAGMENT_TREND_DATA = "trend_data";
+	private static final String KEY_DATA = "fragment_trend_data";
 
 
 	private TrendLoader trendLoader;
 	private TrendAdapter adapter;
 
+	private int mode = 0;
 	private String search = "";
 
 
@@ -58,10 +81,11 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 		Bundle args = getArguments();
 		if (args != null) {
-			search = args.getString(KEY_FRAGMENT_TREND_SEARCH, "");
+			search = args.getString(KEY_SEARCH, "");
+			mode = args.getInt(KEY_MODE, 0);
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_TREND_DATA);
+			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
 			if (data instanceof Trends) {
 				adapter.addItems((Trends) data, TrendAdapter.CLEAR_LIST);
 				return;
@@ -74,7 +98,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_FRAGMENT_TREND_DATA, adapter.getItems());
+		outState.putSerializable(KEY_DATA, adapter.getItems());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -125,11 +149,11 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 	@Override
 	public void onResult(@NonNull TrendResult result) {
-		if (result.trends != null) {
-			adapter.addItems(result.trends, result.index);
-		} else if (getContext() != null) {
+		if (result.mode == TrendResult.ERROR) {
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+		} else {
+			adapter.addItems(result.trends, result.index);
 		}
 		setRefresh(false);
 	}
@@ -139,12 +163,25 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	 */
 	private void load(long cursor, int index) {
 		TrendParameter param;
-		if (!search.trim().isEmpty())
-			param = new TrendParameter(TrendLoader.SEARCH, index, search, cursor);
-		else if (adapter.isEmpty())
-			param = new TrendParameter(TrendLoader.DATABASE,  index, search, cursor);
-		else
-			param = new TrendParameter(TrendLoader.ONLINE,  index, search, cursor);
-		trendLoader.execute(param, this);
+		switch(mode) {
+			case MODE_POPULAR:
+				if (adapter.isEmpty()) {
+					param = new TrendParameter(TrendParameter.POPULAR_OFFLINE, index, search, cursor);
+				} else {
+					param = new TrendParameter(TrendParameter.POPULAR_ONLINE, index, search, cursor);
+				}
+				trendLoader.execute(param, this);
+				break;
+
+			case MODE_FOLLOW:
+				param = new TrendParameter(TrendParameter.FOLLOWING, index, search, cursor);
+				trendLoader.execute(param, this);
+				break;
+
+			case MODE_SEARCH:
+				param = new TrendParameter(TrendParameter.SEARCH, index, search, cursor);
+				trendLoader.execute(param, this);
+				break;
+		}
 	}
 }

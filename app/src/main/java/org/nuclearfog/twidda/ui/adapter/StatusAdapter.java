@@ -47,6 +47,11 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	private static final int MIN_COUNT = 2;
 
+	/**
+	 * replace all items from list
+	 */
+	public static final int CLEAR_LIST = -1;
+
 	private TextEmojiLoader emojiLoader;
 	private StatusSelectListener listener;
 	private GlobalSettings settings;
@@ -113,9 +118,9 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 		long minId = 0L;
 		long maxId = 0L;
 		if (index == 0) {
-			minId = items.getMinId();
+			minId = items.getPreviousCursor();
 		} else if (index == items.size() - 1) {
-			maxId = items.getMaxId();
+			maxId = items.getNextCursor();
 		} else {
 			Status status = items.get(index + 1);
 			if (status != null) {
@@ -186,7 +191,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public void replaceItems(@NonNull Statuses newItems) {
 		items.replaceAll(newItems);
-		if (items.size() > MIN_COUNT && items.getMaxId() != Statuses.NO_ID && items.peekLast() != null)
+		if (items.size() > MIN_COUNT && items.getNextCursor() != Statuses.NO_ID && items.peekLast() != null)
 			items.add(null);
 		loadingIndex = NO_LOADING;
 		notifyDataSetChanged();

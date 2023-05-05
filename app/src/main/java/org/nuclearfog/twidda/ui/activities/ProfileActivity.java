@@ -12,7 +12,7 @@ import static org.nuclearfog.twidda.ui.activities.UserlistsActivity.KEY_USERLIST
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_ID;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.KEY_USERS_MODE;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FOLLOWER;
-import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FRIENDS;
+import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_FOLLOWING;
 import static org.nuclearfog.twidda.ui.activities.UsersActivity.USERS_REQUESTS;
 
 import android.content.ActivityNotFoundException;
@@ -531,7 +531,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (v.getId() == R.id.following) {
 			Intent intent = new Intent(this, UsersActivity.class);
 			intent.putExtra(KEY_USERS_ID, user.getId());
-			intent.putExtra(KEY_USERS_MODE, USERS_FRIENDS);
+			intent.putExtra(KEY_USERS_MODE, USERS_FOLLOWING);
 			switch (settings.getLogin().getConfiguration()) {
 				case TWITTER1:
 				case TWITTER2:

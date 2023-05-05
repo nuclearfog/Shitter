@@ -11,8 +11,8 @@ android {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 84
-		versionName '3.1.4'
+		versionCode 85
+		versionName '3.1.5'
 		resConfigs 'en', 'de-rDE', 'zh-rCN'
 	}
 
@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-	implementation 'com.google.android.material:material:1.8.0'
+	implementation 'com.google.android.material:material:1.9.0'
 	implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.6'
 	implementation 'com.google.android.exoplayer:exoplayer-core:2.18.6'
 	implementation 'com.google.android.exoplayer:extension-okhttp:2.18.6'

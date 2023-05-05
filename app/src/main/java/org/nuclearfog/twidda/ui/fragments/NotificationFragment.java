@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.backend.async.NotificationLoader;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderParam;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.lists.Notifications;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -43,7 +44,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * Bundle key used to save adapter items
 	 * value type is {@link Notification[]}
 	 */
-	private static final String KEY_FRAGMENT_NOTIFICATION_DATA = "notification-data";
+	private static final String KEY_DATA = "notification-data";
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
@@ -68,9 +69,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		setAdapter(adapter);
 
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_NOTIFICATION_DATA);
-			if (data instanceof Notification[]) {
-				adapter.replaceItems((Notification[]) data);
+			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
+			if (data instanceof Notifications) {
+				adapter.replaceItems((Notifications) data);
 				return;
 			}
 		}
@@ -82,7 +83,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_FRAGMENT_NOTIFICATION_DATA, adapter.getItems());
+		outState.putSerializable(KEY_DATA, adapter.getItems());
 		super.onSaveInstanceState(outState);
 	}
 

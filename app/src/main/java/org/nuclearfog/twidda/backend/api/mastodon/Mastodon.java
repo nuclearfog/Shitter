@@ -28,6 +28,7 @@ import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
+import org.nuclearfog.twidda.lists.Notifications;
 import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.lists.Trends;
@@ -930,7 +931,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Notification> getNotifications(long minId, long maxId) throws ConnectionException {
+	public Notifications getNotifications(long minId, long maxId) throws ConnectionException {
 		List<String> params = new ArrayList<>();
 		if (minId != 0L)
 			params.add("since_id=" + minId);
@@ -1263,13 +1264,13 @@ public class Mastodon implements Connection {
 	 *
 	 * @return a list of notification
 	 */
-	private List<Notification> createNotifications(Response response) throws MastodonException {
+	private Notifications createNotifications(Response response) throws MastodonException {
 		try {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				long currentId = settings.getLogin().getId();
 				JSONArray json = new JSONArray(body.string());
-				List<Notification> result = new ArrayList<>(json.length());
+				Notifications result = new Notifications();
 				for (int i = 0; i < json.length(); i++)
 					result.add(new MastodonNotification(json.getJSONObject(i), currentId));
 				return result;

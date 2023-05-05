@@ -6,9 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.model.Account;
-
-import java.util.List;
+import org.nuclearfog.twidda.lists.Accounts;
 
 /**
  * backend loader to get login information of local accounts
@@ -32,7 +30,7 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 		try {
 			switch (request.mode) {
 				case AccountParameter.LOAD:
-					List<Account> accounts = db.getLogins();
+					Accounts accounts = db.getLogins();
 					return new AccountResult(AccountResult.LOAD, 0L, accounts);
 
 				case AccountParameter.DELETE:
@@ -72,11 +70,11 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 		public static final int DELETE = 4;
 
 		@Nullable
-		public final List<Account> accounts;
+		public final Accounts accounts;
 		public final int mode;
 		public final long id;
 
-		AccountResult(int mode, long id, @Nullable List<Account> accounts) {
+		AccountResult(int mode, long id, @Nullable Accounts accounts) {
 			this.accounts = accounts;
 			this.mode = mode;
 			this.id = id;

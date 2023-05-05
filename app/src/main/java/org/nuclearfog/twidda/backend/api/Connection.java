@@ -5,6 +5,7 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
+import org.nuclearfog.twidda.lists.Notifications;
 import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.lists.Trends;
@@ -19,7 +20,6 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
-import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -598,7 +598,7 @@ public interface Connection {
 	 * @param maxId maximum ID
 	 * @return notification list
 	 */
-	List<Notification> getNotifications(long minId, long maxId) throws ConnectionException;
+	Notifications getNotifications(long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * get aa single notification by ID

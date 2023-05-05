@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.backend.async;
 
-import static org.nuclearfog.twidda.ui.fragments.StatusFragment.CLEAR_LIST;
-
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -42,7 +40,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 		try {
 			switch (param.type) {
 				case StatusParameter.HOME:
-					if (param.minId == 0L && param.maxId == 0L) {
+					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
 						statuses = db.getHomeTimeline();
 						if (statuses.isEmpty()) {
 							statuses = connection.getHomeTimeline(0L, 0L);
@@ -50,14 +48,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						}
 					} else {
 						statuses = connection.getHomeTimeline(param.minId, param.maxId);
-						if (param.maxId == 0L) {
+						if (param.maxId == StatusParameter.NO_ID) {
 							db.saveHomeTimeline(statuses);
 						}
 					}
 					break;
 
 				case StatusParameter.USER:
-					if (param.minId == 0L && param.maxId == 0L) {
+					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
 						statuses = db.getUserTimeline(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserTimeline(param.id, 0L, 0L);
@@ -65,14 +63,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						}
 					} else {
 						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId);
-						if (param.maxId == 0L) {
+						if (param.maxId == StatusParameter.NO_ID) {
 							db.saveUserTimeline(statuses);
 						}
 					}
 					break;
 
 				case StatusParameter.FAVORIT:
-					if (param.minId == 0L && param.maxId == 0L) {
+					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
 						statuses = db.getUserFavorites(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserFavorits(param.id, 0L, 0L);
@@ -80,15 +78,15 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						}
 					} else {
 						statuses = connection.getUserFavorits(param.id, 0L, param.maxId);
-						if (param.maxId == 0L) {
+						if (param.maxId == StatusParameter.NO_ID) {
 							db.saveFavoriteTimeline(statuses, param.id);
-							position = CLEAR_LIST; // clear previous items
+							position = StatusResult.CLEAR;
 						}
 					}
 					break;
 
 				case StatusParameter.BOOKMARKS:
-					if (param.minId == 0L && param.maxId == 0L) {
+					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
 						statuses = db.getUserBookmarks(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getUserBookmarks(0L, 0L);
@@ -96,9 +94,9 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						}
 					} else {
 						statuses = connection.getUserBookmarks(0L, param.maxId);
-						if (param.maxId == 0L) {
+						if (param.maxId == StatusParameter.NO_ID) {
 							db.saveBookmarkTimeline(statuses, param.id);
-							position = CLEAR_LIST; // clear previous items
+							position = StatusResult.CLEAR;
 						}
 					}
 					break;
@@ -108,7 +106,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 					break;
 
 				case StatusParameter.REPLIES:
-					if (param.minId == 0L && param.maxId == 0L) {
+					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
 						statuses = db.getReplies(param.id);
 						if (statuses.isEmpty()) {
 							statuses = connection.getStatusReplies(param.id, 0L, 0L, param.search);
@@ -118,7 +116,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						}
 					} else {
 						statuses = connection.getStatusReplies(param.id, param.minId, param.maxId, param.search);
-						if (param.maxId == 0L && db.containsStatus(param.id)) {
+						if (param.maxId == StatusParameter.NO_ID && db.containsStatus(param.id)) {
 							db.saveReplyTimeline(statuses);
 						}
 					}
@@ -149,6 +147,8 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 	 */
 	public static class StatusParameter {
 
+		public static final long NO_ID = 0L;
+
 		public static final int HOME = 1;
 		public static final int USER = 2;
 		public static final int FAVORIT = 3;
@@ -177,6 +177,8 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 	 *
 	 */
 	public static class StatusResult {
+
+		public static final int CLEAR = -1;
 
 		public final int position;
 		@Nullable

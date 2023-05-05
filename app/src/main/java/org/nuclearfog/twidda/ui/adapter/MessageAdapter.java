@@ -42,6 +42,11 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	 */
 	private static final int TYPE_PLACEHOLDER = 1;
 
+	/**
+	 * "index" used to replace the whole list with new items
+	 */
+	public static final int CLEAR_LIST = -1;
+
 	private OnMessageClickListener itemClickListener;
 	private GlobalSettings settings;
 	private Picasso picasso;

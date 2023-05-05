@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.lists.Accounts;
 import org.nuclearfog.twidda.lists.Messages;
+import org.nuclearfog.twidda.lists.Notifications;
 import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
@@ -800,7 +802,7 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(USER_FAVORIT_QUERY, args);
 			Statuses statuses = getStatuses(cursor, db);
-			statuses.setMaxId(Statuses.NO_ID);
+			statuses.setNextCursor(Statuses.NO_ID);
 			return statuses;
 		}
 	}
@@ -819,7 +821,7 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(USER_BOOKMARKS_QUERY, args);
 			Statuses statuses = getStatuses(cursor, db);
-			statuses.setMaxId(Statuses.NO_ID);
+			statuses.setNextCursor(Statuses.NO_ID);
 			return statuses;
 		}
 	}
@@ -846,12 +848,12 @@ public class AppDatabase {
 	 *
 	 * @return notification lsit
 	 */
-	public List<Notification> getNotifications() {
+	public Notifications getNotifications() {
 		synchronized (LOCK) {
 			Account login = settings.getLogin();
 			String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
 			SQLiteDatabase db = adapter.getDbRead();
-			List<Notification> result = new LinkedList<>();
+			Notifications result = new Notifications();
 			Cursor cursor = db.rawQuery(NOTIFICATION_QUERY, args);
 			if (cursor.moveToFirst()) {
 				do {
@@ -925,14 +927,12 @@ public class AppDatabase {
 	 *
 	 * @return list of all logins
 	 */
-	public List<Account> getLogins() {
+	public Accounts getLogins() {
 		synchronized (LOCK) {
-			ArrayList<Account> result = new ArrayList<>();
-
+			Accounts result = new Accounts();
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 			if (cursor.moveToFirst()) {
-				result.ensureCapacity(cursor.getCount());
 				do {
 					DatabaseAccount account = new DatabaseAccount(cursor);
 					DatabaseUser user = getUser(account.getId());
