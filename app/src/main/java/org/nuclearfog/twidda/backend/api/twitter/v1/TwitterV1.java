@@ -567,7 +567,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Trends showHashtagFollowing() throws ConnectionException {
+	public Trends showHashtagFollowing(long cursor) throws ConnectionException {
 		throw new TwitterException("not supported!");
 	}
 

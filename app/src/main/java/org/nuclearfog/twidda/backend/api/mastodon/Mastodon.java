@@ -127,6 +127,7 @@ public class Mastodon implements Connection {
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
 
+	private static final Pattern PATTERN_SINCE_ID = Pattern.compile("since_id=\\d+");
 	private static final Pattern PATTERN_MIN_ID = Pattern.compile("min_id=\\d+");
 	private static final Pattern PATTERN_MAX_ID = Pattern.compile("max_id=\\d+");
 
@@ -443,9 +444,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Trends showHashtagFollowing() throws ConnectionException {
+	public Trends showHashtagFollowing(long cursor) throws ConnectionException {
 		List<String> params = new ArrayList<>();
 		params.add("limit=" + settings.getListSize());
+		if (cursor != 0L)
+			params.add("max_id=" + cursor);
 		return getTrends(ENDPOINT_HASHTAG_FOLLOWING, params);
 	}
 
@@ -1492,6 +1495,12 @@ public class Mastodon implements Connection {
 				if (m.find()) {
 					String min_id_str = headerStr.substring(m.start() + 7, m.end());
 					cursors[0] = Long.parseLong(min_id_str);
+				} else {
+					m = PATTERN_SINCE_ID.matcher(headerStr);
+					if (m.find()) {
+						String min_id_str = headerStr.substring(m.start() + 9, m.end());
+						cursors[0] = Long.parseLong(min_id_str);
+					}
 				}
 				m = PATTERN_MAX_ID.matcher(headerStr);
 				if (m.find()) {

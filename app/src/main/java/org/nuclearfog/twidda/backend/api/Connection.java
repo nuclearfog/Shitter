@@ -271,13 +271,27 @@ public interface Connection {
 	 */
 	Trends searchHashtags(String search) throws ConnectionException;
 
-	Trends showHashtagFollowing() throws ConnectionException;
+	/**
+	 * show hashtags the current user follows them
+	 *
+	 * @param cursor cursor to parse the results
+	 * @return hashtag list
+	 */
+	Trends showHashtagFollowing(long cursor) throws ConnectionException;
 
+	/**
+	 * follow hashtag by name
+	 *
+	 * @param name name of the hashtag
+	 */
 	void followHashtag(String name) throws ConnectionException;
 
+	/**
+	 * unfollow hashtag by name
+	 *
+	 * @param name name of the hashtag
+	 */
 	void unfollowHashtag(String name) throws ConnectionException;
-
-
 
 	/**
 	 * get available locations for trends

@@ -152,6 +152,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 		if (result.mode == TrendResult.ERROR) {
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+			adapter.disableLoading();
 		} else {
 			adapter.addItems(result.trends, result.index);
 		}

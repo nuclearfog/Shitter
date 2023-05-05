@@ -151,6 +151,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 * @param newUsers new userlist
 	 */
 	public void addItems(@NonNull Users newUsers, int index) {
+		disableLoading();
 		if (index < 0) {
 			items.replaceAll(newUsers);
 			if (items.getNextCursor() != 0L) {

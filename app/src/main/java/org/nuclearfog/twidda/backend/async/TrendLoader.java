@@ -53,7 +53,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 					return new TrendResult(TrendResult.SEARCH, trends, param.index, null);
 
 				case TrendParameter.FOLLOWING:
-					trends = connection.showHashtagFollowing();
+					trends = connection.showHashtagFollowing(param.cursor);
 					return new TrendResult(TrendResult.FOLLOWING, trends, param.index, null);
 			}
 		} catch (ConnectionException exception) {
@@ -74,7 +74,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		public static final int SEARCH = 3;
 		public static final int FOLLOWING = 4;
 
-		public static final long NO_CURSOR = -1L;
+		public static final long NO_CURSOR = 0L;
 
 		final String trend;
 		final int mode;

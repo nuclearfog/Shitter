@@ -30,13 +30,13 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 	private static final int TYPE_PLACEHOLDER = 1;
 
-	private static final int NO_INDEX = -1;
+	private static final int NO_LOADING = -1;
 
 	private TrendClickListener itemClickListener;
 	private GlobalSettings settings;
 
 	private Trends items = new Trends();
-	private int loadingIndex = NO_INDEX;
+	private int loadingIndex = NO_LOADING;
 
 	/**
 	 * @param itemClickListener Listener for item click
@@ -117,8 +117,12 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	 * @param newItems array of trend items
 	 */
 	public void addItems(Trends newItems, int index) {
+		disableLoading();
 		if (index < 0) {
 			this.items.replaceAll(newItems);
+			if (items.getNextCursor() != 0L) {
+				items.add(null);
+			}
 			notifyDataSetChanged();
 		} else {
 			items.addAll(index, newItems);
@@ -149,6 +153,17 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	 */
 	public boolean isEmpty() {
 		return items.isEmpty();
+	}
+
+	/**
+	 * disable placeholder view loading animation
+	 */
+	public void disableLoading() {
+		if (loadingIndex != NO_LOADING) {
+			int oldIndex = loadingIndex;
+			loadingIndex = NO_LOADING;
+			notifyItemChanged(oldIndex);
+		}
 	}
 
 	/**
