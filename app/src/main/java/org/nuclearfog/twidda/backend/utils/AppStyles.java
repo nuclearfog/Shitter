@@ -258,19 +258,12 @@ public class AppStyles {
 					// crop image to background size
 					if (background.getMeasuredHeight() > 0 && background.getMeasuredWidth() > 0) {
 						CropTransformation crop;
-						if (image.getWidth() > background.getMeasuredWidth()) {
-							int height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
-							crop = new CropTransformation(image.getWidth(), height, GravityHorizontal.CENTER, GravityVertical.CENTER);
-						} else if (image.getWidth() < background.getMeasuredWidth()) {
-							int width = image.getHeight() * background.getMeasuredWidth() / background.getMeasuredHeight();
-							crop = new CropTransformation(width, image.getHeight(), GravityHorizontal.CENTER, GravityVertical.CENTER);
-						} else {
-							crop = new CropTransformation(image.getWidth(), background.getMeasuredHeight(), GravityHorizontal.CENTER, GravityVertical.CENTER);
-						}
+						int height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
+						crop = new CropTransformation(image.getWidth(), height, GravityHorizontal.CENTER, GravityVertical.CENTER);
 						image = crop.transform(image);
 					}
 					int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-					int blurRadius = Math.max(Math.round(widthPixels * 10.0f / image.getWidth()), 10);
+					int blurRadius = Math.max(Math.round((image.getWidth() * 20.0f) / widthPixels), 10);
 					float toolbarRatio = activity.getResources().getDimension(R.dimen.profile_toolbar_height) / widthPixels;
 					// do final transformations (crop first image to toolbar background size, then blur)
 					BlurTransformation blur = new BlurTransformation(activity.getApplicationContext(), blurRadius);
