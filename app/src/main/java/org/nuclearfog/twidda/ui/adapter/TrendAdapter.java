@@ -7,13 +7,11 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.lists.Trends;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
+import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.TrendHolder;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show trends
@@ -24,14 +22,18 @@ import java.util.List;
 public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
-	 * trend limit
+	 * "index" used to replace the whole list with new items
 	 */
-	private static final int INIT_COUNT = 50;
+	public static final int CLEAR_LIST = -1;
+
+	private static final int TYPE_TREND = 0;
+
+	private static final int TYPE_PLACEHOLDER = 1;
 
 	private TrendClickListener itemClickListener;
 	private GlobalSettings settings;
 
-	private List<Trend> trends;
+	private Trends items = new Trends();
 
 	/**
 	 * @param itemClickListener Listener for item click
@@ -39,34 +41,51 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
 		this.itemClickListener = itemClickListener;
 		this.settings = settings;
-		trends = new ArrayList<>(INIT_COUNT);
 	}
 
 
 	@Override
 	public int getItemCount() {
-		return trends.size();
+		return items.size();
+	}
+
+
+	@Override
+	public int getItemViewType(int position) {
+		if (items.get(position) != null)
+			return TYPE_TREND;
+		return TYPE_PLACEHOLDER;
 	}
 
 
 	@NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		return new TrendHolder(parent, settings, this);
+		if (viewType == TYPE_TREND) {
+			return new TrendHolder(parent, settings, this);
+		} else {
+			return new PlaceHolder(parent, settings, false, this);
+		}
 	}
 
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
-		TrendHolder holder = (TrendHolder) vh;
-		Trend trend = trends.get(index);
-		holder.setContent(trend, index);
+		if (vh instanceof TrendHolder) {
+			TrendHolder holder = (TrendHolder) vh;
+			Trend trend = items.get(index);
+			if (trend != null) {
+				holder.setContent(trend, index);
+			}
+		} else if (vh instanceof PlaceHolder) {
+
+		}
 	}
 
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		itemClickListener.onTrendClick(trends.get(position));
+		itemClickListener.onTrendClick(items.get(position));
 	}
 
 
@@ -78,39 +97,40 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	/**
 	 * get adapter items
 	 *
-	 * @return array of items
+	 * @return a copy of the items
 	 */
-	public Trend[] getItems() {
-		return trends.toArray(new Trend[0]);
+	public Trends getItems() {
+		return new Trends(items);
 	}
 
 	/**
 	 * replace data from list
 	 *
-	 * @param items list of trend items
+	 * @param newItems array of trend items
 	 */
-	public void replaceItems(@NonNull List<Trend> items) {
-		trends.clear();
-		trends.addAll(items);
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * replace data from list
-	 *
-	 * @param items array of trend items
-	 */
-	public void replaceItems(Trend[] items) {
-		trends.clear();
-		trends.addAll(Arrays.asList(items));
-		notifyDataSetChanged();
+	public void addItems(Trends newItems, int index) {
+		if (index < 0) {
+			this.items.replaceAll(newItems);
+			notifyDataSetChanged();
+		} else {
+			items.addAll(index, newItems);
+			if (items.getMaxId() != 0L && items.peekLast() != null) {
+				items.add(null);
+				notifyItemRangeInserted(index, newItems.size() + 1);
+			} else if (items.getMaxId() == 0L && items.peekLast() == null) {
+				items.pollLast();
+				notifyItemRangeInserted(index, newItems.size() - 1);
+			} else if (!newItems.isEmpty()) {
+				notifyItemRangeInserted(index, newItems.size());
+			}
+		}
 	}
 
 	/**
 	 * clear adapter data
 	 */
 	public void clear() {
-		trends.clear();
+		items.clear();
 		notifyDataSetChanged();
 	}
 
@@ -120,7 +140,7 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	 * @return true if adapter is empty
 	 */
 	public boolean isEmpty() {
-		return trends.isEmpty();
+		return items.isEmpty();
 	}
 
 	/**
@@ -129,10 +149,13 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	public interface TrendClickListener {
 
 		/**
-		 * called when trend item is clicked
+		 * called when a trend item is clicked
 		 *
 		 * @param trend trend name
 		 */
 		void onTrendClick(Trend trend);
+
+
+		boolean onPlaceholderClick(long cursor, int index);
 	}
 }

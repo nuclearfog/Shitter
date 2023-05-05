@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.helper.lists.Users;
+import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
 
 /**
@@ -90,6 +90,8 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 	 *
 	 */
 	public static class UserParam {
+
+		public static final long NO_CURSOR = -1L;
 
 		public static final int FOLLOWS = 1;
 		public static final int FRIENDS = 2;

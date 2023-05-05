@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.model;
 import java.io.Serializable;
 
 /**
- * interface for trend implementations
+ * Trend interface containing hashtag name or search string and additional information
  *
  * @author nuclearfog
  */
@@ -28,6 +28,11 @@ public interface Trend extends Serializable, Comparable<Trend> {
 	 * @return popularity of the trend
 	 */
 	int getPopularity();
+
+	/**
+	 * @return true if current user follows trend (hashtag)
+	 */
+	boolean following();
 
 
 	@Override

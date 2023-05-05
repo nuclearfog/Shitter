@@ -15,14 +15,14 @@ import org.nuclearfog.twidda.backend.api.ConnectionManager;
  *
  * @author nuclearfog
  */
-public class ListManager extends AsyncExecutor<ListManager.ListManagerParam, ListManager.ListManagerResult> {
+public class UserlistManager extends AsyncExecutor<UserlistManager.ListManagerParam, UserlistManager.ListManagerResult> {
 
 	private Connection connection;
 
 	/**
 	 *
 	 */
-	public ListManager(Context context) {
+	public UserlistManager(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 
 	}

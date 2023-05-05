@@ -19,8 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.ListUpdater;
-import org.nuclearfog.twidda.backend.async.ListUpdater.ListUpdateResult;
+import org.nuclearfog.twidda.backend.async.UserlistUpdater;
+import org.nuclearfog.twidda.backend.async.UserlistUpdater.ListUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -71,7 +71,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	private ProgressDialog loadingCircle;
 	private ConfirmDialog confirmDialog;
 
-	private ListUpdater listUpdater;
+	private UserlistUpdater listUpdater;
 	private EditText titleText, descriptionText;
 
 	private UserListUpdate listUpdate = new UserListUpdate();
@@ -98,7 +98,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
-		listUpdater = new ListUpdater(this);
+		listUpdater = new UserlistUpdater(this);
 
 		GlobalSettings settings = GlobalSettings.getInstance(this);
 		AppStyles.setEditorTheme(root, background);

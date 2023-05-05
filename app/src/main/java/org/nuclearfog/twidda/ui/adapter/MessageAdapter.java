@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.helper.lists.Messages;
+import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
@@ -47,15 +47,13 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	private Picasso picasso;
 	private TextEmojiLoader emojiLoader;
 
-	private Messages messages;
-	private int loadingIndex;
+	private Messages messages = new Messages();
+	private int loadingIndex = NO_LOADING;
 
 	/**
 	 * @param itemClickListener click listener
 	 */
 	public MessageAdapter(Context context, OnMessageClickListener itemClickListener) {
-		messages = new Messages(null, null);
-		loadingIndex = NO_LOADING;
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);

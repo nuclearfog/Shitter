@@ -24,14 +24,15 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.helper.lists.Messages;
+import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
-import org.nuclearfog.twidda.backend.helper.lists.Statuses;
+import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
-import org.nuclearfog.twidda.backend.helper.lists.UserLists;
-import org.nuclearfog.twidda.backend.helper.lists.Users;
+import org.nuclearfog.twidda.lists.Trends;
+import org.nuclearfog.twidda.lists.UserLists;
+import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -44,7 +45,6 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
-import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -99,6 +99,8 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_LIST_TIMELINE = "/api/v1/timelines/list/";
 	private static final String ENDPOINT_SEARCH_TIMELINE = "/api/v2/search";
 	private static final String ENDPOINT_HASHTAG_TIMELINE = "/api/v1/timelines/tag/";
+	private static final String ENDPOINT_HASHTAG_FOLLOWING = "/api/v1/followed_tags";
+	private static final String ENDPOINT_HASHTAG_GET = "/api/v1/tags/";
 	private static final String ENDPOINT_USER_TIMELINE = "/api/v1/accounts/";
 	private static final String ENDPOINT_USER_FAVORITS = "/api/v1/favourites";
 	private static final String ENDPOINT_TRENDS = "/api/v1/trends/tags";
@@ -299,7 +301,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Users getOutgoingFollowRequests(long cursor) {
-		return new Users(0L, 0L); // not yet implemented in the mastodon API
+		return new Users(); // not yet implemented in the mastodon API
 	}
 
 
@@ -418,48 +420,54 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Trend> getTrends() throws MastodonException {
+	public Trends getTrends() throws MastodonException {
+		List<String> params = new ArrayList<>();
+		params.add("limit=" + settings.getListSize());
+		Trends result = getTrends(ENDPOINT_TRENDS, params);
+		Collections.sort(result);
+		return result;
+	}
+
+
+	@Override
+	public Trends searchHashtags(String search) throws MastodonException {
+		List<String> params = new ArrayList<>();
+		params.add("q=" + StringUtils.encode(search));
+		params.add("limit=" + settings.getListSize());
+		params.add("type=hashtags");
+		Trends result = getTrends(ENDPOINT_SEARCH_TIMELINE, params);
+		Collections.sort(result);
+		return result;
+	}
+
+
+	@Override
+	public Trends showHashtagFollowing() throws ConnectionException {
+		List<String> params = new ArrayList<>();
+		params.add("limit=" + settings.getListSize());
+		return getTrends(ENDPOINT_HASHTAG_FOLLOWING, params);
+	}
+
+
+	@Override
+	public void followHashtag(String name) throws ConnectionException {
 		try {
-			List<String> params = new ArrayList<>();
-			params.add("limit=" + settings.getListSize());
-			Response response = get(ENDPOINT_TRENDS, params);
-			ResponseBody body = response.body();
-			if (response.code() == 200 && body != null) {
-				JSONArray array = new JSONArray(body.string());
-				List<Trend> result = new ArrayList<>(array.length());
-				for (int i = 0; i < array.length(); i++) {
-					result.add(new MastodonTrend(array.getJSONObject(i)));
-				}
-				Collections.sort(result);
-				return result;
-			}
-			throw new MastodonException(response);
-		} catch (IOException | JSONException e) {
+			if (name.startsWith("#"))
+				name = name.substring(1);
+			post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/follow", new ArrayList<>());
+		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
 	}
 
 
 	@Override
-	public List<Trend> searchHashtags(String search) throws MastodonException {
+	public void unfollowHashtag(String name) throws ConnectionException {
 		try {
-			List<String> params = new ArrayList<>();
-			params.add("q=" + StringUtils.encode(search));
-			params.add("limit=" + settings.getListSize());
-			params.add("type=hashtags");
-			Response response = get(ENDPOINT_SEARCH_TIMELINE, params);
-			ResponseBody body = response.body();
-			if (response.code() == 200 && body != null) {
-				JSONArray array = new JSONObject(body.string()).getJSONArray("hashtags");
-				List<Trend> result = new ArrayList<>(array.length());
-				for (int i = 0; i < array.length(); i++) {
-					result.add(new MastodonTrend(array.getJSONObject(i)));
-				}
-				Collections.sort(result);
-				return result;
-			}
-			throw new MastodonException(response);
-		} catch (IOException | JSONException e) {
+			if (name.startsWith("#"))
+				name = name.substring(1);
+			post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/unfollow", new ArrayList<>());
+		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
 	}
@@ -1056,7 +1064,7 @@ public class Mastodon implements Connection {
 	/**
 	 * get a list of users from an endpoint
 	 *
-	 * @param endpoint Ednpoint to use
+	 * @param endpoint Endpoint to use
 	 * @param params   additional parameters
 	 * @return list of users
 	 */
@@ -1067,6 +1075,38 @@ public class Mastodon implements Connection {
 			params.add("limit=" + settings.getListSize());
 			return createUsers(get(endpoint, params));
 		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
+	 * call Trend/Hashtag endpoint and create trend result
+	 * @param endpoint Endpoint to use
+	 * @param params   additional parameters
+	 * @return trend list
+	 */
+	private Trends getTrends(String endpoint, List<String> params) throws MastodonException {
+		try {
+			Response response = get(endpoint, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				String jsonStr = body.string();
+				JSONArray jsonArray;
+				if (jsonStr.startsWith("[")) {
+					jsonArray = new JSONArray(jsonStr);
+				} else {
+					jsonArray = new JSONObject(jsonStr).getJSONArray("hashtags");
+				}
+				long[] cursors = getCursors(response);
+				Trends result = new Trends(cursors[0], cursors[1]);
+				for (int i = 0; i < jsonArray.length(); i++) {
+					result.add(new MastodonTrend(jsonArray.getJSONObject(i)));
+				}
+				Collections.sort(result);
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
 			throw new MastodonException(e);
 		}
 	}

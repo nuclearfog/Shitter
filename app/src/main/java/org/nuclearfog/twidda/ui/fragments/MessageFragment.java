@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
-import org.nuclearfog.twidda.backend.helper.lists.Messages;
+import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.Message;
@@ -73,6 +73,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_MESSAGE_SAVE);
 			if (data instanceof Messages) {
 				adapter.replaceItems((Messages) data);
+				return;
 			}
 		}
 		loadMessages(false, null, CLEAR_LIST);

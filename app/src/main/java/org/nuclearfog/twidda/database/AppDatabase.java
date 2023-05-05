@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.helper.lists.Messages;
-import org.nuclearfog.twidda.backend.helper.lists.Statuses;
+import org.nuclearfog.twidda.lists.Messages;
+import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
@@ -37,6 +37,7 @@ import org.nuclearfog.twidda.database.impl.DatabasePoll;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.database.impl.DatabaseTrend;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
+import org.nuclearfog.twidda.lists.Trends;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;
@@ -868,12 +869,12 @@ public class AppDatabase {
 	 *
 	 * @return list of trends
 	 */
-	public List<Trend> getTrends() {
+	public Trends getTrends() {
 		synchronized (LOCK) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
-			List<Trend> trends = new LinkedList<>();
+			Trends trends = new Trends();
 			if (cursor.moveToFirst()) {
 				do {
 					trends.add(new DatabaseTrend(cursor));
@@ -895,7 +896,7 @@ public class AppDatabase {
 			Account login = settings.getLogin();
 			String homeIdStr = Long.toString(login.getId());
 			String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
-			Messages result = new Messages(null, null);
+			Messages result = new Messages();
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
 			if (cursor.moveToFirst()) {

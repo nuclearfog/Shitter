@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UsersLoader;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
-import org.nuclearfog.twidda.backend.helper.lists.Users;
+import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -145,11 +145,6 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	 */
 	public static final int USER_FRAG_FOLLOW_OUTGOING = 0x72544f17;
 
-	/**
-	 * "index" used to replace the whole list with new items
-	 */
-	private static final int CLEAR_LIST = -1;
-
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -180,10 +175,11 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 			Serializable data = savedInstanceState.getSerializable(USER_FRAGMENT_SAVE);
 			if (data instanceof Users) {
 				adapter.replaceItems((Users) data);
+				return;
 			}
 		}
 		setRefresh(true);
-		load(-1L, CLEAR_LIST);
+		load(UserParam.NO_CURSOR, UserAdapter.CLEAR_LIST);
 	}
 
 
@@ -218,13 +214,13 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	protected void onReset() {
 		adapter.clear();
 		setRefresh(true);
-		load(-1L, CLEAR_LIST);
+		load(UserParam.NO_CURSOR, UserAdapter.CLEAR_LIST);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(-1L, CLEAR_LIST);
+		load(UserParam.NO_CURSOR, UserAdapter.CLEAR_LIST);
 	}
 
 

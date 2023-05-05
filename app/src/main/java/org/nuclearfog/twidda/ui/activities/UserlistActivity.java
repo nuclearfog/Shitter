@@ -27,12 +27,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.ListAction;
-import org.nuclearfog.twidda.backend.async.ListAction.ListActionParam;
-import org.nuclearfog.twidda.backend.async.ListAction.ListActionResult;
-import org.nuclearfog.twidda.backend.async.ListManager;
-import org.nuclearfog.twidda.backend.async.ListManager.ListManagerParam;
-import org.nuclearfog.twidda.backend.async.ListManager.ListManagerResult;
+import org.nuclearfog.twidda.backend.async.UserlistAction;
+import org.nuclearfog.twidda.backend.async.UserlistAction.ListActionParam;
+import org.nuclearfog.twidda.backend.async.UserlistAction.ListActionResult;
+import org.nuclearfog.twidda.backend.async.UserlistManager;
+import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerParam;
+import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -102,8 +102,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 
 	private FragmentAdapter adapter;
-	private ListAction listLoaderAsync;
-	private ListManager listManagerAsync;
+	private UserlistAction listLoaderAsync;
+	private UserlistManager listManagerAsync;
 
 	private GlobalSettings settings;
 
@@ -135,8 +135,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 		settings = GlobalSettings.getInstance(this);
 		confirmDialog = new ConfirmDialog(this);
-		listLoaderAsync = new ListAction(this);
-		listManagerAsync = new ListManager(this);
+		listLoaderAsync = new UserlistAction(this);
+		listManagerAsync = new UserlistManager(this);
 		adapter = new FragmentAdapter(this);
 
 		viewPager.setOffscreenPageLimit(3);

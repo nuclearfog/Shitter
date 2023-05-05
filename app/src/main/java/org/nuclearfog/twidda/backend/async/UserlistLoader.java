@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.helper.lists.UserLists;
+import org.nuclearfog.twidda.lists.UserLists;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
 /**
@@ -17,14 +17,14 @@ import org.nuclearfog.twidda.ui.fragments.UserListFragment;
  * @author nuclearfog
  * @see UserListFragment
  */
-public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoader.UserlistResult> {
+public class UserlistLoader extends AsyncExecutor<UserlistLoader.UserlistParam, UserlistLoader.UserlistResult> {
 
 	private Connection connection;
 
 	/**
 	 *
 	 */
-	public ListLoader(Context context) {
+	public UserlistLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
@@ -53,6 +53,8 @@ public class ListLoader extends AsyncExecutor<ListLoader.UserlistParam, ListLoad
 	 *
 	 */
 	public static class UserlistParam {
+
+		public static final long NO_CURSOR = -1L;
 
 		public static final int OWNERSHIP = 1;
 		public static final int MEMBERSHIP = 2;

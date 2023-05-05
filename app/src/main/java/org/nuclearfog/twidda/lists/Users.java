@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.helper.lists;
+package org.nuclearfog.twidda.lists;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +18,13 @@ public class Users extends LinkedList<User> {
 
 	private long prevCursor;
 	private long nextCursor;
+
+	/**
+	 *
+	 */
+	public Users() {
+		this(0L, 0L);
+	}
 
 	/**
 	 * creates an empty list with defined cursors

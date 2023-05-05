@@ -64,6 +64,12 @@ public class DatabaseTrend implements Trend, TrendTable {
 	}
 
 
+	@Override
+	public boolean following() {
+		return false; // todo implement this
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {

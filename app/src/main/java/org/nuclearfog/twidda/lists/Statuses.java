@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.helper.lists;
+package org.nuclearfog.twidda.lists;
 
 import androidx.annotation.Nullable;
 
@@ -17,18 +17,18 @@ public class Statuses extends LinkedList<Status> {
 	private static final long serialVersionUID = 2077374641015738748L;
 
 	/**
-	 * ID used if the list can't be extended by more items
+	 * max ID indicats that the list can't be extended by more items
 	 */
 	public static final long NO_ID = -1L;
 
-	private long minId = 0L;
-	private long maxId = 0L;
+	private long minId;
+	private long maxId;
 
 	/**
 	 * use status ID to determine minimum and maximum ID
 	 */
 	public Statuses() {
-		super();
+		this(0L, 0L);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class Statuses extends LinkedList<Status> {
 	}
 
 	/**
-	 * override maximum ID
+	 * set maximum ID
 	 *
 	 * @param maxId new maximum ID
 	 */
@@ -107,7 +107,7 @@ public class Statuses extends LinkedList<Status> {
 	}
 
 	/**
-	 * add a sublist at the bottom of this list including next cursor
+	 * add a sublist at specific position
 	 *
 	 * @param statuses sublist to add
 	 * @param index    index where to insert the sublist

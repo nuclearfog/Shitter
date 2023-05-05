@@ -18,6 +18,7 @@ public class MastodonTrend implements Trend {
 
 	private int popularity;
 	private String name;
+	private boolean following;
 
 	/**
 	 * @param json trend json object
@@ -25,6 +26,7 @@ public class MastodonTrend implements Trend {
 	public MastodonTrend(JSONObject json) {
 		JSONArray history = json.optJSONArray("history");
 		name = '#' + json.optString("name", "");
+		following = json.optBoolean("following", false);
 		if (history != null && history.length() > 0) {
 			JSONObject latest = history.optJSONObject(0);
 			if (latest != null) {
@@ -55,6 +57,12 @@ public class MastodonTrend implements Trend {
 	@Override
 	public int getPopularity() {
 		return popularity;
+	}
+
+
+	@Override
+	public boolean following() {
+		return following;
 	}
 
 

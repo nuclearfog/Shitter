@@ -23,13 +23,14 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.helper.lists.Messages;
+import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
-import org.nuclearfog.twidda.backend.helper.lists.Statuses;
+import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
-import org.nuclearfog.twidda.backend.helper.lists.UserLists;
-import org.nuclearfog.twidda.backend.helper.lists.Users;
+import org.nuclearfog.twidda.lists.Trends;
+import org.nuclearfog.twidda.lists.UserLists;
+import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -43,7 +44,6 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
-import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
@@ -315,7 +315,7 @@ public class TwitterV1 implements Connection {
 	@Override
 	public Users getFavoritingUsers(long tweetId, long cursor) throws TwitterException {
 		// API v1.1 doesn't support this!
-		return new Users(0L, 0L);
+		return new Users();
 	}
 
 
@@ -535,7 +535,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Trend> getTrends() throws TwitterException {
+	public Trends getTrends() throws TwitterException {
 		long id = settings.getTrendLocation().getId();
 		List<String> params = new ArrayList<>();
 		params.add("id=" + id);
@@ -545,8 +545,7 @@ public class TwitterV1 implements Connection {
 			if (body != null && response.code() == 200) {
 				JSONArray json = new JSONArray(body.string());
 				JSONArray trends = json.getJSONObject(0).getJSONArray("trends");
-				List<Trend> result = new ArrayList<>(trends.length() + 1);
-
+				Trends result = new Trends();
 				for (int pos = 0; pos < trends.length(); pos++) {
 					JSONObject trend = trends.getJSONObject(pos);
 					result.add(new TrendV1(trend, pos, id));
@@ -561,8 +560,26 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public List<Trend> searchHashtags(String search) throws TwitterException {
-		throw new TwitterException("not implemented!");
+	public Trends searchHashtags(String search) throws TwitterException {
+		throw new TwitterException("not supported!");
+	}
+
+
+	@Override
+	public Trends showHashtagFollowing() throws ConnectionException {
+		throw new TwitterException("not supported!");
+	}
+
+
+	@Override
+	public void followHashtag(String name) throws ConnectionException {
+		throw new TwitterException("not supported!");
+	}
+
+
+	@Override
+	public void unfollowHashtag(String name) throws ConnectionException {
+		throw new TwitterException("not supported!");
 	}
 
 
@@ -1298,7 +1315,7 @@ public class TwitterV1 implements Connection {
 			params.add(idBuf.substring(0, idBuf.length() - 3));
 			return getUsers(USERS_LOOKUP, params);
 		}
-		return new Users(0L, 0L);
+		return new Users();
 	}
 
 	/**
@@ -1422,7 +1439,7 @@ public class TwitterV1 implements Connection {
 					result = new UserLists(prevCursor, nextCursor);
 				} else {
 					array = new JSONArray(bodyStr);
-					result = new UserLists(0L, 0L);
+					result = new UserLists();
 				}
 				long currentId = settings.getLogin().getId();
 				for (int pos = 0; pos < array.length(); pos++) {

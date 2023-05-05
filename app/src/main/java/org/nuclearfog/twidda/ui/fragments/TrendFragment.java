@@ -15,6 +15,7 @@ import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendParameter;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.lists.Trends;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.adapter.TrendAdapter;
@@ -41,6 +42,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	 */
 	private static final String KEY_FRAGMENT_TREND_DATA = "trend_data";
 
+
 	private TrendLoader trendLoader;
 	private TrendAdapter adapter;
 
@@ -60,12 +62,13 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 		}
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_TREND_DATA);
-			if (data instanceof Trend[]) {
-				adapter.replaceItems((Trend[]) data);
+			if (data instanceof Trends) {
+				adapter.addItems((Trends) data, TrendAdapter.CLEAR_LIST);
+				return;
 			}
 		}
 		setRefresh(true);
-		load();
+		load(TrendParameter.NO_CURSOR, TrendAdapter.CLEAR_LIST);
 	}
 
 
@@ -87,13 +90,13 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	protected void onReset() {
 		adapter.clear();
 		setRefresh(true);
-		load();
+		load(TrendParameter.NO_CURSOR, TrendAdapter.CLEAR_LIST);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load();
+		load(TrendParameter.NO_CURSOR, TrendAdapter.CLEAR_LIST);
 	}
 
 
@@ -111,9 +114,19 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 
 	@Override
+	public boolean onPlaceholderClick(long cursor, int index) {
+		if (trendLoader.isIdle()) {
+			load(cursor, index);
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
 	public void onResult(@NonNull TrendResult result) {
 		if (result.trends != null) {
-			adapter.replaceItems(result.trends);
+			adapter.addItems(result.trends, result.index);
 		} else if (getContext() != null) {
 			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
 			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
@@ -124,14 +137,14 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	/**
 	 * load content into the list
 	 */
-	private void load() {
+	private void load(long cursor, int index) {
 		TrendParameter param;
 		if (!search.trim().isEmpty())
-			param = new TrendParameter(TrendLoader.SEARCH, search);
+			param = new TrendParameter(TrendLoader.SEARCH, index, search, cursor);
 		else if (adapter.isEmpty())
-			param = new TrendParameter(TrendLoader.DATABASE, search);
+			param = new TrendParameter(TrendLoader.DATABASE,  index, search, cursor);
 		else
-			param = new TrendParameter(TrendLoader.ONLINE, search);
+			param = new TrendParameter(TrendLoader.ONLINE,  index, search, cursor);
 		trendLoader.execute(param, this);
 	}
 }

@@ -15,14 +15,14 @@ import org.nuclearfog.twidda.model.UserList;
  *
  * @author nuclearfog
  */
-public class ListAction extends AsyncExecutor<ListAction.ListActionParam, ListAction.ListActionResult> {
+public class UserlistAction extends AsyncExecutor<UserlistAction.ListActionParam, UserlistAction.ListActionResult> {
 
 	private Connection connection;
 
 	/**
 	 *
 	 */
-	public ListAction(Context context) {
+	public UserlistAction(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 	}
 

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.helper.lists;
+package org.nuclearfog.twidda.lists;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +17,13 @@ public class UserLists extends LinkedList<UserList> {
 	private static final long serialVersionUID = -5947008315897774115L;
 
 	private long prevCursor, nextCursor;
+
+	/**
+	 *
+	 */
+	public UserLists() {
+		this(0L, 0L);
+	}
 
 	/**
 	 * @param prevCursor previous list cursor or 0 if list starts

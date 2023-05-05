@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.helper.lists.Users;
+import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
@@ -41,6 +41,11 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 */
 	private static final int ITEM_GAP = 1;
 
+	/**
+	 * index indicator used to replace the whole list with new items
+	 */
+	public static final int CLEAR_LIST = -1;
+
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private TextEmojiLoader emojiLoader;
@@ -48,7 +53,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	private UserClickListener listener;
 	private boolean enableDelete;
 
-	private Users users = new Users(0L, 0L);
+	private Users items = new Users();
 	private int loadingIndex = NO_LOADING;
 
 	/**
@@ -64,13 +69,13 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 
 	@Override
 	public int getItemCount() {
-		return users.size();
+		return items.size();
 	}
 
 
 	@Override
 	public int getItemViewType(int index) {
-		if (users.get(index) == null)
+		if (items.get(index) == null)
 			return ITEM_GAP;
 		return ITEM_USER;
 	}
@@ -90,7 +95,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
 		if (holder instanceof UserHolder) {
-			User user = users.get(index);
+			User user = items.get(index);
 			if (user != null) {
 				((UserHolder) holder).setContent(user);
 			}
@@ -103,7 +108,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 
 	@Override
 	public boolean onPlaceholderClick(int index) {
-		boolean actionPerformed = listener.onPlaceholderClick(users.getNext(), index);
+		boolean actionPerformed = listener.onPlaceholderClick(items.getNext(), index);
 		if (actionPerformed) {
 			loadingIndex = index;
 			return true;
@@ -116,14 +121,14 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	public void onItemClick(int position, int type, int... extras) {
 		switch (type) {
 			case OnHolderClickListener.USER_CLICK:
-				User user = users.get(position);
+				User user = items.get(position);
 				if (user != null) {
 					listener.onUserClick(user);
 				}
 				break;
 
 			case OnHolderClickListener.USER_REMOVE:
-				user = users.get(position);
+				user = items.get(position);
 				if (user != null) {
 					listener.onDelete(user);
 				}
@@ -137,7 +142,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 * @return user items
 	 */
 	public Users getItems() {
-		return new Users(users);
+		return new Users(items);
 	}
 
 	/**
@@ -147,18 +152,18 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 */
 	public void addItems(@NonNull Users newUsers, int index) {
 		if (index < 0) {
-			users.replaceAll(newUsers);
-			if (users.getNext() != 0L) {
-				users.add(null);
+			items.replaceAll(newUsers);
+			if (items.getNext() != 0L) {
+				items.add(null);
 			}
 			notifyDataSetChanged();
 		} else {
-			users.addAll(index, newUsers);
-			if (users.getNext() != 0L && users.peekLast() != null) {
-				users.add(null);
+			items.addAll(index, newUsers);
+			if (items.getNext() != 0L && items.peekLast() != null) {
+				items.add(null);
 				notifyItemRangeInserted(index, newUsers.size() + 1);
-			} else if (users.getNext() == 0L && users.peekLast() == null) {
-				users.pollLast();
+			} else if (items.getNext() == 0L && items.peekLast() == null) {
+				items.pollLast();
 				notifyItemRangeInserted(index, newUsers.size() - 1);
 			} else if (!newUsers.isEmpty()) {
 				notifyItemRangeInserted(index, newUsers.size());
@@ -170,9 +175,9 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 * replace all user items
 	 */
 	public void replaceItems(Users newUsers) {
-		users.replaceAll(newUsers);
-		if (users.getNext() != 0L && users.peekLast() != null) {
-			users.add(null);
+		items.replaceAll(newUsers);
+		if (items.getNext() != 0L && items.peekLast() != null) {
+			items.add(null);
 		}
 		notifyDataSetChanged();
 	}
@@ -183,9 +188,9 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 * @param user User update
 	 */
 	public void updateItem(User user) {
-		int index = users.indexOf(user);
+		int index = items.indexOf(user);
 		if (index >= 0) {
-			users.set(index, user);
+			items.set(index, user);
 			notifyItemChanged(index);
 		}
 	}
@@ -196,10 +201,10 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 * @param user screen name of the user to remove
 	 */
 	public void removeItem(User user) {
-		int pos = users.indexOf(user);
-		if (pos >= 0) {
-			users.remove(pos);
-			notifyItemRemoved(pos);
+		int index = items.indexOf(user);
+		if (index >= 0) {
+			items.remove(index);
+			notifyItemRemoved(index);
 		}
 	}
 
@@ -207,7 +212,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	 * clear adapter data
 	 */
 	public void clear() {
-		users.clear();
+		items.clear();
 		notifyDataSetChanged();
 	}
 

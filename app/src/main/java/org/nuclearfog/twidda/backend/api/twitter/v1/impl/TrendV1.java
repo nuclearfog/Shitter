@@ -56,6 +56,12 @@ public class TrendV1 implements Trend {
 	}
 
 
+	@Override
+	public boolean following() {
+		return false;
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {

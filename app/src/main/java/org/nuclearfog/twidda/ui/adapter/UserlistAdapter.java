@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.helper.lists.UserLists;
+import org.nuclearfog.twidda.lists.UserLists;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
@@ -26,6 +26,11 @@ import org.nuclearfog.twidda.ui.adapter.holder.UserlistHolder;
  * @see org.nuclearfog.twidda.ui.fragments.UserListFragment
  */
 public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
+
+	/**
+	 * "index" used to replace the whole list with new items
+	 */
+	public static final int CLEAR_LIST = -1;
 
 	/**
 	 * indicator if there is no loading progress
@@ -51,8 +56,8 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	private Picasso picasso;
 	private TextEmojiLoader emojiLoader;
 
-	private UserLists userlists;
-	private int loadingIndex;
+	private UserLists userlists = new UserLists();
+	private int loadingIndex = NO_LOADING;
 
 	/**
 	 * @param listener item click listener
@@ -62,8 +67,6 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 		settings = GlobalSettings.getInstance(context);
 		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);
-		userlists = new UserLists(0L, 0L);
-		loadingIndex = NO_LOADING;
 	}
 
 

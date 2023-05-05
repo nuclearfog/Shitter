@@ -69,6 +69,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 			Serializable data = savedInstanceState.getSerializable(KEY_ACCOUNT_SAVE);
 			if (data instanceof Account[]) {
 				adapter.replaceItems((Account[]) data);
+				return;
 			}
 		}
 		load(AccountParameter.LOAD);

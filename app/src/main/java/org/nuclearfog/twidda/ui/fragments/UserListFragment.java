@@ -16,10 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.ListLoader;
-import org.nuclearfog.twidda.backend.async.ListLoader.UserlistParam;
-import org.nuclearfog.twidda.backend.async.ListLoader.UserlistResult;
-import org.nuclearfog.twidda.backend.helper.lists.UserLists;
+import org.nuclearfog.twidda.backend.async.UserlistLoader;
+import org.nuclearfog.twidda.backend.async.UserlistLoader.UserlistParam;
+import org.nuclearfog.twidda.backend.async.UserlistLoader.UserlistResult;
+import org.nuclearfog.twidda.lists.UserLists;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -69,15 +69,12 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	 */
 	public static final int LIST_USER_SUBSCR_TO = 0xAA7386AA;
 
-	/**
-	 * "index" used to replace the whole list with new items
-	 */
-	private static final int CLEAR_LIST = -1;
+
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private ListLoader userlistLoader;
+	private UserlistLoader userlistLoader;
 	private UserlistAdapter adapter;
 
 	private long id = 0;
@@ -87,7 +84,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		userlistLoader = new ListLoader(requireContext());
+		userlistLoader = new UserlistLoader(requireContext());
 		adapter = new UserlistAdapter(requireContext(), this);
 		setAdapter(adapter);
 
@@ -100,10 +97,11 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_USERLIST_SAVE);
 			if (data instanceof UserLists) {
 				adapter.replaceItems((UserLists) data);
+				return;
 			}
 		}
 		setRefresh(true);
-		load(-1L, CLEAR_LIST);
+		load(UserlistParam.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
 	}
 
 
@@ -123,7 +121,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	protected void onReload() {
-		load(0L, CLEAR_LIST);
+		load(UserlistParam.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
 	}
 
 
@@ -131,7 +129,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	protected void onReset() {
 		adapter.clear();
 		setRefresh(true);
-		load(0L, CLEAR_LIST);
+		load(UserlistParam.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
 	}
 
 

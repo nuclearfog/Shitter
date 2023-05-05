@@ -2,13 +2,14 @@ package org.nuclearfog.twidda.backend.api;
 
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.helper.lists.Messages;
+import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
-import org.nuclearfog.twidda.backend.helper.lists.Statuses;
+import org.nuclearfog.twidda.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
-import org.nuclearfog.twidda.backend.helper.lists.UserLists;
-import org.nuclearfog.twidda.backend.helper.lists.Users;
+import org.nuclearfog.twidda.lists.Trends;
+import org.nuclearfog.twidda.lists.UserLists;
+import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;
@@ -260,7 +261,7 @@ public interface Connection {
 	 *
 	 * @return trend list
 	 */
-	List<Trend> getTrends() throws ConnectionException;
+	Trends getTrends() throws ConnectionException;
 
 	/**
 	 * search hashtags matching search string
@@ -268,7 +269,15 @@ public interface Connection {
 	 * @param search text to search hashtags
 	 * @return list of trends (Hashtags)
 	 */
-	List<Trend> searchHashtags(String search) throws ConnectionException;
+	Trends searchHashtags(String search) throws ConnectionException;
+
+	Trends showHashtagFollowing() throws ConnectionException;
+
+	void followHashtag(String name) throws ConnectionException;
+
+	void unfollowHashtag(String name) throws ConnectionException;
+
+
 
 	/**
 	 * get available locations for trends

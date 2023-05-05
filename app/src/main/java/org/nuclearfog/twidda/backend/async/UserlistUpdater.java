@@ -18,14 +18,14 @@ import org.nuclearfog.twidda.ui.activities.UserlistEditor;
  *
  * @author nuclearfog
  */
-public class ListUpdater extends AsyncExecutor<UserListUpdate, ListUpdater.ListUpdateResult> {
+public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdater.ListUpdateResult> {
 
 	private Connection connection;
 
 	/**
 	 *
 	 */
-	public ListUpdater(Context context) {
+	public UserlistUpdater(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 	}
 

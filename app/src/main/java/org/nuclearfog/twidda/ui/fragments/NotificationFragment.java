@@ -71,6 +71,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 			Serializable data = savedInstanceState.getSerializable(KEY_FRAGMENT_NOTIFICATION_DATA);
 			if (data instanceof Notification[]) {
 				adapter.replaceItems((Notification[]) data);
+				return;
 			}
 		}
 		confirmDialog.setConfirmListener(this);

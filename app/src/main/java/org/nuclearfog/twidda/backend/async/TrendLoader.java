@@ -9,10 +9,8 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.lists.Trends;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
-
-import java.util.List;
 
 /**
  * Background task to load a list of location specific trends
@@ -43,27 +41,27 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		try {
 			switch (param.mode) {
 				case DATABASE:
-					List<Trend> trends = db.getTrends();
+					Trends trends = db.getTrends();
 					if (!trends.isEmpty()) {
-						return new TrendResult(trends, null);
+						return new TrendResult(trends, param.index, null);
 					}
 					// fall through
 
 				case ONLINE:
 					trends = connection.getTrends();
 					db.saveTrends(trends);
-					return new TrendResult(trends, null);
+					return new TrendResult(trends, param.index, null);
 
 				case SEARCH:
 					trends = connection.searchHashtags(param.trend);
-					return new TrendResult(trends, null);
+					return new TrendResult(trends, param.index, null);
 			}
 		} catch (ConnectionException exception) {
-			return new TrendResult(null, exception);
+			return new TrendResult(null, param.index, exception);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new TrendResult(null, null);
+		return new TrendResult(null, param.index, null);
 	}
 
 	/**
@@ -71,12 +69,18 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	 */
 	public static class TrendParameter {
 
+		public static final long NO_CURSOR = -1L;
+
 		final String trend;
 		final int mode;
+		final int index;
+		final long cursor;
 
-		public TrendParameter(int mode, String trend) {
+		public TrendParameter(int mode, int index, String trend, long cursor) {
 			this.mode = mode;
 			this.trend = trend;
+			this.index = index;
+			this.cursor = cursor;
 		}
 	}
 
@@ -85,14 +89,16 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	 */
 	public static class TrendResult {
 
+		public final int index;
 		@Nullable
-		public final List<Trend> trends;
+		public final Trends trends;
 		@Nullable
 		public final ConnectionException exception;
 
-		TrendResult(@Nullable List<Trend> trends, @Nullable ConnectionException exception) {
+		TrendResult(@Nullable Trends trends, int index, @Nullable ConnectionException exception) {
 			this.trends = trends;
 			this.exception = exception;
+			this.index = index;
 		}
 	}
 }

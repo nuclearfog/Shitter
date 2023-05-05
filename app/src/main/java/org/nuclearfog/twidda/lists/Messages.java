@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.helper.lists;
+package org.nuclearfog.twidda.lists;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +17,13 @@ public class Messages extends LinkedList<Message> {
 	private static final long serialVersionUID = 7877548659917419256L;
 
 	private String prevCursor, nextCursor;
+
+	/**
+	 *
+	 */
+	public Messages() {
+		this(null, null);
+	}
 
 	/**
 	 * @param prevCursor cursor to a previous list

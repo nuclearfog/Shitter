@@ -21,8 +21,8 @@ import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
-import org.nuclearfog.twidda.backend.helper.lists.Statuses;
-import org.nuclearfog.twidda.backend.helper.lists.Users;
+import org.nuclearfog.twidda.lists.Statuses;
+import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Instance;
@@ -265,7 +265,7 @@ public class TwitterV2 extends TwitterV1 {
 			ResponseBody body = response.body();
 			if (body != null && response.code() == 200) {
 				JSONObject json = new JSONObject(body.string());
-				Users users = new Users(0L, 0L);
+				Users users = new Users();
 				// check if result is not empty
 				if (json.has("data")) {
 					JSONArray array = json.getJSONArray("data");
