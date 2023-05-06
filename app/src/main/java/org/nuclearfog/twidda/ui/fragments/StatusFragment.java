@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static org.nuclearfog.twidda.ui.activities.StatusActivity.KEY_DATA;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -171,7 +169,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		if (intent != null) {
 			switch (result.getResultCode()) {
 				case StatusActivity.RETURN_STATUS_UPDATE:
-					Object data = intent.getSerializableExtra(StatusActivity.RETURN_STATUS_UPDATE_DATA);
+					Object data = intent.getSerializableExtra(StatusActivity.KEY_DATA);
 					if (data instanceof Status) {
 						Status statusUpdate = (Status) data;
 						adapter.updateItem(statusUpdate);
@@ -179,7 +177,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 					break;
 
 				case StatusActivity.RETURN_STATUS_REMOVED:
-					long statusId = intent.getLongExtra(StatusActivity.RETURN_STATUS_REMOVED_ID, 0L);
+					long statusId = intent.getLongExtra(StatusActivity.KEY_STATUS_ID, 0L);
 					adapter.removeItem(statusId);
 					break;
 			}
@@ -205,7 +203,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onStatusSelected(Status status) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), StatusActivity.class);
-			intent.putExtra(KEY_DATA, status);
+			intent.putExtra(StatusActivity.KEY_DATA, status);
 			activityResultLauncher.launch(intent);
 		}
 	}

@@ -133,7 +133,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onUserClick(User user) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), ProfileActivity.class);
-			intent.putExtra(ProfileActivity.KEY_PROFILE_USER, user);
+			intent.putExtra(ProfileActivity.KEY_USER, user);
 			startActivity(intent);
 		}
 	}
@@ -155,7 +155,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (intent != null) {
 			switch (result.getResultCode()) {
 				case StatusActivity.RETURN_NOTIFICATION_UPDATE:
-					Object data = intent.getSerializableExtra(StatusActivity.RETURN_NOTIFICATION_UPDATE_DATA);
+					Object data = intent.getSerializableExtra(StatusActivity.KEY_DATA);
 					if (data instanceof Notification) {
 						Notification update = (Notification) data;
 						adapter.updateItem(update);
@@ -163,7 +163,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 					break;
 
 				case StatusActivity.RETURN_NOTIFICATION_REMOVED:
-					long notificationId = intent.getLongExtra(StatusActivity.RETURN_NOTIFICATION_REMOVED_ID, 0L);
+					long notificationId = intent.getLongExtra(StatusActivity.KEY_NOTIFICATION_ID, 0L);
 					adapter.removeItem(notificationId);
 					break;
 			}

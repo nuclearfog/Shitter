@@ -49,19 +49,19 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	 * key to add URI of the image (online or local)
 	 * value type is {@link Uri}
 	 */
-	public static final String IMAGE_URI = "image-uri";
+	public static final String LINK = "image-uri";
 
 	/**
 	 * key to set image format (image or gif)
 	 * value type is Integer {@link #IMAGE_DEFAULT,#IMAGE_GIF}
 	 */
-	public static final String IMAGE_TYPE = "image-type";
+	public static final String TYPE = "image-type";
 
 	/**
 	 * key to set image description
 	 * value type is String
 	 */
-	public static final String IMAGE_DESCRIPTION = "image-description";
+	public static final String DESCRIPTION = "image-description";
 
 	/**
 	 * name of the cache folder where online images will be stored
@@ -108,9 +108,9 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
 		cacheFolder.mkdirs();
 
-		Uri data = getIntent().getParcelableExtra(IMAGE_URI);
-		mode = getIntent().getIntExtra(IMAGE_TYPE, IMAGE_DEFAULT);
-		String description = getIntent().getStringExtra(IMAGE_DESCRIPTION);
+		Uri data = getIntent().getParcelableExtra(LINK);
+		mode = getIntent().getIntExtra(TYPE, IMAGE_DEFAULT);
+		String description = getIntent().getStringExtra(DESCRIPTION);
 		boolean isLocalFile = !data.getScheme().startsWith("http");
 
 		switch (mode) {

@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -99,7 +96,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 
 		adapter = new IconAdapter(settings, false);
 		adapter.addOnMediaClickListener(this);
-		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
+		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
 		iconList.setAdapter(adapter);
 
 		itemView.setOnClickListener(this);
@@ -112,7 +109,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION) {
+		if (position != RecyclerView.NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnItemClickListener.MESSAGE_VIEW);
 			} else if (v == answer) {
@@ -145,7 +142,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	@Override
 	public void onMediaClick(int index) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION && listener != null) {
+		if (position != RecyclerView.NO_POSITION && listener != null) {
 			listener.onItemClick(position, OnHolderClickListener.MESSAGE_MEDIA, index);
 		}
 	}

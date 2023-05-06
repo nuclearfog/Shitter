@@ -55,13 +55,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	 * key to preload user data
 	 * value is {@link User}
 	 */
-	public static final String KEY_PROFILE_DATA = "profile-editor-data";
-
-	/**
-	 * key to update profile information
-	 * value is {@link User}
-	 */
-	public static final String KEY_UPDATED_PROFILE = "profile-update";
+	public static final String KEY_USER = "profile-editor-data";
 
 	/**
 	 * return code used if profile information has changed
@@ -138,7 +132,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		AppStyles.setTheme(root);
 		picasso = PicassoBuilder.get(this);
 
-		Object data = getIntent().getSerializableExtra(KEY_PROFILE_DATA);
+		Object data = getIntent().getSerializableExtra(KEY_USER);
 		if (data instanceof User) {
 			setUser((User) data);
 		}
@@ -250,7 +244,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	public void onResult(@NonNull UserUpdateResult result) {
 		if (result.user != null) {
 			Intent data = new Intent();
-			data.putExtra(KEY_UPDATED_PROFILE, result.user);
+			data.putExtra(KEY_USER, result.user);
 			Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
 			setResult(RETURN_PROFILE_CHANGED, data);
 			finish();

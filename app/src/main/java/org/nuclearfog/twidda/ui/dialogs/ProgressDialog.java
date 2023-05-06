@@ -1,12 +1,10 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
-import static android.view.View.VISIBLE;
-import static android.view.Window.FEATURE_NO_TITLE;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -34,7 +32,7 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 	public ProgressDialog(Context context) {
 		super(context, R.style.LoadingDialog);
 		// setup dialog
-		requestWindowFeature(FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setCanceledOnTouchOutside(false);
 		setCancelable(false);
 
@@ -70,7 +68,7 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 	 * enables cancel button and adds a listener
 	 */
 	public void addOnProgressStopListener(OnProgressStopListener listener) {
-		cancel.setVisibility(VISIBLE);
+		cancel.setVisibility(View.VISIBLE);
 		this.listener = listener;
 	}
 

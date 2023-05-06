@@ -1,20 +1,11 @@
 package org.nuclearfog.twidda.database.impl;
 
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_BOOKMARKED;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_FAVORITED;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_HIDDEN;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_REPOSTED;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_SENSITIVE;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_SPOILER;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_VISIBILITY_DIRECT;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_VISIBILITY_PRIVATE;
-import static org.nuclearfog.twidda.database.AppDatabase.MASK_STATUS_VISIBILITY_UNLISTED;
-
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.model.Account;
@@ -86,18 +77,18 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 		String userMentions = cursor.getString(cursor.getColumnIndexOrThrow(MENTIONS));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
 
-		favorited = (register & MASK_STATUS_FAVORITED) != 0;
-		reposted = (register & MASK_STATUS_REPOSTED) != 0;
-		sensitive = (register & MASK_STATUS_SENSITIVE) != 0;
-		isHidden = (register & MASK_STATUS_HIDDEN) != 0;
-		bookmarked = (register & MASK_STATUS_BOOKMARKED) != 0;
-		spoiler = (register & MASK_STATUS_SPOILER) != 0;
+		favorited = (register & AppDatabase.MASK_STATUS_FAVORITED) != 0;
+		reposted = (register & AppDatabase.MASK_STATUS_REPOSTED) != 0;
+		sensitive = (register & AppDatabase.MASK_STATUS_SENSITIVE) != 0;
+		isHidden = (register & AppDatabase.MASK_STATUS_HIDDEN) != 0;
+		bookmarked = (register & AppDatabase.MASK_STATUS_BOOKMARKED) != 0;
+		spoiler = (register & AppDatabase.MASK_STATUS_SPOILER) != 0;
 
-		if ((register & MASK_STATUS_VISIBILITY_DIRECT) != 0)
+		if ((register & AppDatabase.MASK_STATUS_VISIBILITY_DIRECT) != 0)
 			visibility = VISIBLE_DIRECT;
-		else if ((register & MASK_STATUS_VISIBILITY_PRIVATE) != 0)
+		else if ((register & AppDatabase.MASK_STATUS_VISIBILITY_PRIVATE) != 0)
 			visibility = VISIBLE_PRIVATE;
-		else if ((register & MASK_STATUS_VISIBILITY_UNLISTED) != 0)
+		else if ((register & AppDatabase.MASK_STATUS_VISIBILITY_UNLISTED) != 0)
 			visibility = VISIBLE_UNLISTED;
 		else
 			visibility = VISIBLE_PUBLIC;

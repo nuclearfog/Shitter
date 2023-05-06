@@ -86,25 +86,19 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 * Key for the user ID
 	 * value type is Long
 	 */
-	public static final String KEY_PROFILE_ID = "profile_id";
+	public static final String KEY_ID = "profile_id";
 
 	/**
 	 * key to save user data
 	 * value type is {@link User}
 	 */
-	public static final String KEY_PROFILE_USER = "profile_user";
+	public static final String KEY_USER = "profile_user";
 
 	/**
 	 * key to save relation data
 	 * value type is {@link Relation}
 	 */
-	private static final String KEY_PROFILE_RELATION = "profile_relation";
-
-	/**
-	 * key to send updated user data
-	 * value type is {@link User}
-	 */
-	public static final String RETURN_USER_UPDATE = "user_update";
+	private static final String KEY_RELATION = "profile_relation";
 
 	/**
 	 * Return code to update user information
@@ -227,9 +221,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (savedInstanceState == null) {
 			return;
 		}
-		long userId = savedInstanceState.getLong(KEY_PROFILE_ID, 0L);
-		Serializable serializedUser = savedInstanceState.getSerializable(KEY_PROFILE_USER);
-		Serializable serializedRelation = savedInstanceState.getSerializable(KEY_PROFILE_RELATION);
+		long userId = savedInstanceState.getLong(KEY_ID, 0L);
+		Serializable serializedUser = savedInstanceState.getSerializable(KEY_USER);
+		Serializable serializedRelation = savedInstanceState.getSerializable(KEY_RELATION);
 		// get relation data
 		if (serializedRelation instanceof Relation) {
 			relation = (Relation) serializedRelation;
@@ -274,8 +268,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_PROFILE_USER, user);
-		outState.putSerializable(KEY_PROFILE_RELATION, relation);
+		outState.putSerializable(KEY_USER, user);
+		outState.putSerializable(KEY_RELATION, relation);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -302,7 +296,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	public void onActivityResult(ActivityResult result) {
 		if (result.getData() != null) {
 			if (result.getResultCode() == ProfileEditor.RETURN_PROFILE_CHANGED) {
-				Object data = result.getData().getSerializableExtra(ProfileEditor.KEY_UPDATED_PROFILE);
+				Object data = result.getData().getSerializableExtra(ProfileEditor.KEY_USER);
 				if (data instanceof User) {
 					// remove blur background
 					toolbarBackground.setImageResource(0);
@@ -451,7 +445,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		// open profile editor
 		else if (item.getItemId() == R.id.profile_settings) {
 			Intent editProfile = new Intent(this, ProfileEditor.class);
-			editProfile.putExtra(ProfileEditor.KEY_PROFILE_DATA, user);
+			editProfile.putExtra(ProfileEditor.KEY_USER, user);
 			activityResultLauncher.launch(editProfile);
 		}
 		// open direct message
@@ -488,7 +482,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			viewPager.setCurrentItem(0);
 		} else {
 			Intent returnData = new Intent();
-			returnData.putExtra(RETURN_USER_UPDATE, user);
+			returnData.putExtra(KEY_USER, user);
 			setResult(RETURN_USER_UPDATED, returnData);
 			super.onBackPressed();
 		}
@@ -565,8 +559,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (v.getId() == R.id.profile_img) {
 			if (!user.getOriginalProfileImageUrl().isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(user.getOriginalProfileImageUrl()));
-				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.LINK, Uri.parse(user.getOriginalProfileImageUrl()));
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 			}
 		}
@@ -574,8 +568,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (v.getId() == R.id.profile_banner) {
 			if (!user.getOriginalBannerImageUrl().isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(user.getOriginalBannerImageUrl()));
-				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.LINK, Uri.parse(user.getOriginalBannerImageUrl()));
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 			}
 		}

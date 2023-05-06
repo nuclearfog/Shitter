@@ -122,9 +122,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * key used for status information
 	 * value type is {@link Status}
-	 * If no status object exists, {@link #KEY_STATUS_ID} and {@link #KEY_STATUS_NAME} will be used instead
+	 * If no status object exists, {@link #KEY_STATUS_ID} and {@link #KEY_NAME} will be used instead
 	 */
 	public static final String KEY_DATA = "status_data";
+
+	/**
+	 * key for the status author's name. alternative to {@link #KEY_DATA}
+	 * value type is String
+	 */
+	public static final String KEY_NAME = "status_author";
 
 	/**
 	 * key for the status ID value, alternative to {@link #KEY_DATA}
@@ -133,46 +139,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public static final String KEY_STATUS_ID = "status_id";
 
 	/**
-	 * key for the status author's name. alternative to {@link #KEY_DATA}
-	 * value type is String
-	 */
-	public static final String KEY_STATUS_NAME = "status_author";
-
-	/**
 	 * key for the notification ID value
 	 * value type is long
 	 */
 	public static final String KEY_NOTIFICATION_ID = "notification_id";
-
-	/**
-	 * key for the (notification) status author's name. alternative to {@link #KEY_DATA}
-	 * value type is String
-	 */
-	public static final String KEY_NOTIFICATION_NAME = "notification_status_author";
-
-	/**
-	 * key to return updated status information
-	 * value type is {@link Status}
-	 */
-	public static final String RETURN_STATUS_UPDATE_DATA = "status_update_data";
-
-	/**
-	 * key to return updated notification information
-	 * value type is {@link Status}
-	 */
-	public static final String RETURN_NOTIFICATION_UPDATE_DATA = "notification_update_data";
-
-	/**
-	 * key to return an ID if status was deleted
-	 * value type is Long
-	 */
-	public static final String RETURN_STATUS_REMOVED_ID = "status_removed_id";
-
-	/**
-	 * key to return an ID if notification was deleted
-	 * value type is Long
-	 */
-	public static final String RETURN_NOTIFICATION_REMOVED_ID = "notification_removed_id";
 
 	/**
 	 * scrollview position threshold to lock/unlock child scrolling
@@ -180,7 +150,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private static final int SCROLL_THRESHOLD = 10;
 
 	/**
-	 *
+	 * toolbar menu group ID for copy options
 	 */
 	private static final int MENU_GROUP_COPY = 0x157426;
 
@@ -332,13 +302,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// get status data using status ID
 		else if (statusId != 0L) {
-			replyUsername = savedInstanceState.getString(KEY_STATUS_NAME);
+			replyUsername = savedInstanceState.getString(KEY_NAME);
 			StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
 			statusLoader.execute(statusParam, statusCallback);
 		}
 		// get notification data using notification ID
 		else if (notificationId != 0L) {
-			replyUsername = savedInstanceState.getString(KEY_NOTIFICATION_NAME);
+			replyUsername = savedInstanceState.getString(KEY_NAME);
 			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
 			notificationLoader.execute(notificationParam, notificationCallback);
 		}
@@ -385,10 +355,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onBackPressed() {
 		Intent intent = new Intent();
 		if (notification != null) {
-			intent.putExtra(RETURN_NOTIFICATION_UPDATE_DATA, notification);
+			intent.putExtra(KEY_DATA, notification);
 			setResult(RETURN_NOTIFICATION_UPDATE, intent);
 		} else {
-			intent.putExtra(RETURN_STATUS_UPDATE_DATA, status);
+			intent.putExtra(KEY_DATA, status);
 			setResult(RETURN_STATUS_UPDATE, intent);
 		}
 		super.onBackPressed();
@@ -604,14 +574,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// open profile of the status author
 			else if (v.getId() == R.id.page_status_profile) {
 				Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-				intent.putExtra(ProfileActivity.KEY_PROFILE_USER, status.getAuthor());
+				intent.putExtra(ProfileActivity.KEY_USER, status.getAuthor());
 				startActivity(intent);
 			}
 			// open replied status
 			else if (v.getId() == R.id.page_status_reply_reference) {
 				Intent intent = new Intent(getApplicationContext(), StatusActivity.class);
 				intent.putExtra(KEY_STATUS_ID, status.getRepliedStatusId());
-				intent.putExtra(KEY_STATUS_NAME, status.getReplyName());
+				intent.putExtra(KEY_NAME, status.getReplyName());
 				startActivity(intent);
 			}
 			// open status location coordinates
@@ -629,7 +599,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// go to user reposting this status
 			else if (v.getId() == R.id.page_status_reposter_reference) {
 				Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-				intent.putExtra(ProfileActivity.KEY_PROFILE_USER, this.status.getAuthor());
+				intent.putExtra(ProfileActivity.KEY_USER, this.status.getAuthor());
 				startActivity(intent);
 			}
 			// unblur text on click
@@ -734,8 +704,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(card.getImageUrl()));
-				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.LINK, Uri.parse(card.getImageUrl()));
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 			}
 		}
@@ -748,9 +718,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		switch (media.getMediaType()) {
 			case Media.PHOTO:
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, uri);
-				intent.putExtra(ImageViewer.IMAGE_DESCRIPTION, media.getDescription());
-				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.LINK, uri);
+				intent.putExtra(ImageViewer.DESCRIPTION, media.getDescription());
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 				break;
 
@@ -1031,9 +1001,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					Toast.makeText(getApplicationContext(), R.string.info_status_removed, Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
 					if (status.getEmbeddedStatus() != null)
-						intent.putExtra(RETURN_STATUS_REMOVED_ID, status.getEmbeddedStatus().getId());
+						intent.putExtra(KEY_STATUS_ID, status.getEmbeddedStatus().getId());
 					else
-						intent.putExtra(RETURN_STATUS_REMOVED_ID, status.getId());
+						intent.putExtra(KEY_STATUS_ID, status.getId());
 					setResult(RETURN_STATUS_REMOVED, intent);
 					finish();
 				}
@@ -1047,7 +1017,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					// Mark status as removed, so it can be removed from the list
 					Intent intent = new Intent();
-					intent.putExtra(RETURN_STATUS_REMOVED_ID, status.getId());
+					intent.putExtra(KEY_STATUS_ID, status.getId());
 					setResult(RETURN_STATUS_REMOVED, intent);
 					finish();
 				}
@@ -1079,7 +1049,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			case NotificationActionResult.DISMISS:
 				if (notification != null) {
 					Intent intent = new Intent();
-					intent.putExtra(RETURN_NOTIFICATION_REMOVED_ID, notification.getId());
+					intent.putExtra(KEY_NOTIFICATION_ID, notification.getId());
 					setResult(RETURN_NOTIFICATION_REMOVED, intent);
 				}
 				Toast.makeText(getApplicationContext(), R.string.info_notification_dismiss, Toast.LENGTH_SHORT).show();
@@ -1093,7 +1063,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					finish();
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					Intent intent = new Intent();
-					intent.putExtra(RETURN_NOTIFICATION_REMOVED_ID, notification.getId());
+					intent.putExtra(KEY_NOTIFICATION_ID, notification.getId());
 					setResult(RETURN_NOTIFICATION_REMOVED, intent);
 					finish();
 				}

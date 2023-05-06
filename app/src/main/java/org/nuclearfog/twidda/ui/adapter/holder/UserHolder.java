@@ -1,9 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
@@ -90,9 +87,9 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
 		if (enableDelete) {
-			delete.setVisibility(VISIBLE);
+			delete.setVisibility(View.VISIBLE);
 		} else {
-			delete.setVisibility(GONE);
+			delete.setVisibility(View.GONE);
 		}
 		itemView.setOnClickListener(this);
 		notificationDismiss.setOnClickListener(this);
@@ -103,7 +100,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION) {
+		if (position != RecyclerView.NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnHolderClickListener.USER_CLICK);
 			} else if (v == delete) {
@@ -134,14 +131,14 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		followingCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
 		followerCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
 		if (user.isVerified()) {
-			verifyIcon.setVisibility(VISIBLE);
+			verifyIcon.setVisibility(View.VISIBLE);
 		} else {
-			verifyIcon.setVisibility(GONE);
+			verifyIcon.setVisibility(View.GONE);
 		}
 		if (user.isProtected()) {
-			lockedIcon.setVisibility(VISIBLE);
+			lockedIcon.setVisibility(View.VISIBLE);
 		} else {
-			lockedIcon.setVisibility(GONE);
+			lockedIcon.setVisibility(View.GONE);
 		}
 		if (user.getEmojis().length > 0 && !user.getUsername().trim().isEmpty() && settings.imagesEnabled()) {
 			Spannable usernameSpan = new SpannableString(user.getUsername());
@@ -189,9 +186,9 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 				break;
 		}
 		if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
-			notificationDismiss.setVisibility(VISIBLE);
+			notificationDismiss.setVisibility(View.VISIBLE);
 		}
-		label.setVisibility(VISIBLE);
+		label.setVisibility(View.VISIBLE);
 		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
 		label.setText(text);
 	}

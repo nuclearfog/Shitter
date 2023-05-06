@@ -1,13 +1,12 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
@@ -75,7 +74,7 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION) {
+		if (position != RecyclerView.NO_POSITION) {
 			if (v.getId() == R.id.item_icon_media) {
 				listener.onItemClick(position, OnHolderClickListener.NO_TYPE);
 			}

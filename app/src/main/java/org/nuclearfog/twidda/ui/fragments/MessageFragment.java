@@ -1,10 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.ui.activities.MessageEditor.KEY_MESSAGE_PREFIX;
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
-import static org.nuclearfog.twidda.ui.activities.SearchActivity.KEY_QUERY;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -108,7 +103,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	public void onTagClick(String tag) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), SearchActivity.class);
-			intent.putExtra(KEY_QUERY, tag);
+			intent.putExtra(SearchActivity.KEY_QUERY, tag);
 			startActivity(intent);
 		}
 	}
@@ -126,7 +121,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 			switch (action) {
 				case ANSWER:
 					Intent sendDm = new Intent(requireContext(), MessageEditor.class);
-					sendDm.putExtra(KEY_MESSAGE_PREFIX, message.getSender().getScreenname());
+					sendDm.putExtra(MessageEditor.KEY_MESSAGE_PREFIX, message.getSender().getScreenname());
 					startActivity(sendDm);
 					break;
 
@@ -139,7 +134,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 				case PROFILE:
 					Intent profile = new Intent(requireContext(), ProfileActivity.class);
-					profile.putExtra(KEY_PROFILE_USER, message.getSender());
+					profile.putExtra(ProfileActivity.KEY_USER, message.getSender());
 					startActivity(profile);
 					break;
 
@@ -148,8 +143,8 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 						int mediaIndex = extras[0];
 						if (mediaIndex >= 0 && mediaIndex < message.getMedia().length) {
 							Intent intent = new Intent(requireContext(), ImageViewer.class);
-							intent.putExtra(ImageViewer.IMAGE_URI, Uri.parse(message.getMedia()[mediaIndex].getUrl()));
-							intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+							intent.putExtra(ImageViewer.LINK, Uri.parse(message.getMedia()[mediaIndex].getUrl()));
+							intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 							startActivity(intent);
 						}
 					}
@@ -190,7 +185,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 			case MessageLoaderResult.DELETE:
 				if (getContext() != null) {
-					Toast.makeText(getContext(), R.string.info_dm_removed, LENGTH_SHORT).show();
+					Toast.makeText(getContext(), R.string.info_dm_removed, Toast.LENGTH_SHORT).show();
 				}
 				adapter.removeItem(result.id);
 				break;

@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import static org.nuclearfog.twidda.ui.activities.ProfileActivity.KEY_PROFILE_USER;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -201,7 +199,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	public void onActivityResult(ActivityResult result) {
 		Intent intent = result.getData();
 		if (result.getResultCode() == ProfileActivity.RETURN_USER_UPDATED && intent != null) {
-			Object object = intent.getSerializableExtra(ProfileActivity.RETURN_USER_UPDATE);
+			Object object = intent.getSerializableExtra(ProfileActivity.KEY_USER);
 			if (object instanceof User) {
 				User update = (User) object;
 				adapter.updateItem(update);
@@ -228,7 +226,7 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	public void onUserClick(User user) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), ProfileActivity.class);
-			intent.putExtra(KEY_PROFILE_USER, user);
+			intent.putExtra(ProfileActivity.KEY_USER, user);
 			activityResultLauncher.launch(intent);
 		}
 	}

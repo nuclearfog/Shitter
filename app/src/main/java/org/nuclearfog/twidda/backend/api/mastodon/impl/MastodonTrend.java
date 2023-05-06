@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,6 +64,15 @@ public class MastodonTrend implements Trend {
 	@Override
 	public boolean following() {
 		return following;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Trend))
+			return false;
+		Trend trend = (Trend) obj;
+		return getName().equals(trend.getName()) && getLocationId() == trend.getLocationId();
 	}
 
 

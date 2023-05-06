@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.config.Configuration;
 
+import java.io.Serializable;
+
 /**
  * Configuration class for {@link org.nuclearfog.twidda.backend.api.Connection}
  *
  * @author nuclearfog
  */
-public class ConnectionConfig {
+public class ConnectionConfig implements Serializable {
+
+	private static final long serialVersionUID = 2238181470544567706L;
 
 	private Configuration apiConfig;
 	private String hostname = "";

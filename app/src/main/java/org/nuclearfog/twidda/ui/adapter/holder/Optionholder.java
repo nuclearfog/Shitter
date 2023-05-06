@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
@@ -59,7 +58,7 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION) {
+		if (position != RecyclerView.NO_POSITION) {
 			if (v == checkIcon) {
 				listener.onItemClick(position, OnHolderClickListener.POLL_OPTION);
 			}

@@ -139,6 +139,19 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	}
 
 	/**
+	 * remove item from adapter
+	 *
+	 * @param trend item to remove
+	 */
+	public void removeItem(Trend trend) {
+		int index = items.indexOf(trend);
+		if (index >= 0) {
+			items.remove(index);
+			notifyItemRemoved(index);
+		}
+	}
+
+	/**
 	 * clear adapter data
 	 */
 	public void clear() {

@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -11,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
@@ -68,7 +67,7 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION) {
+		if (position != RecyclerView.NO_POSITION) {
 			if (v.getId() == R.id.item_option_edit_action) {
 				switch (state) {
 					case STATE_ACTIVE:
@@ -102,7 +101,7 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 	@Override
 	public void afterTextChanged(Editable s) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION && option_name.hasFocus()) {
+		if (position != RecyclerView.NO_POSITION && option_name.hasFocus()) {
 			listener.OnOptionChange(position, s.toString());
 		}
 	}

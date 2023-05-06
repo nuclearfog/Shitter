@@ -48,7 +48,7 @@ public class LinkUtils {
 			List<String> segments = link.getPathSegments();
 			Intent intent = new Intent(activity, StatusActivity.class);
 			intent.putExtra(StatusActivity.KEY_STATUS_ID, Long.parseLong(segments.get(2)));
-			intent.putExtra(StatusActivity.KEY_STATUS_NAME, segments.get(0));
+			intent.putExtra(StatusActivity.KEY_NAME, segments.get(0));
 			activity.startActivity(intent);
 		}
 		// open link in a browser

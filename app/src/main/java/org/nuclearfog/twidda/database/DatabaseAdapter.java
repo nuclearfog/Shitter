@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.database;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -341,7 +339,7 @@ public class DatabaseAdapter {
 	private DatabaseAdapter(Context context) {
 		// fetch database information
 		databasePath = context.getDatabasePath(DB_NAME);
-		db = context.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
+		db = context.openOrCreateDatabase(databasePath.toString(), Context.MODE_PRIVATE, null);
 		// create tables if not exist
 		db.execSQL(TABLE_USER);
 		db.execSQL(TABLE_STATUS);

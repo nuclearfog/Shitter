@@ -48,9 +48,11 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 	/**
 	 * key to add trend information to search for
-	 * value type is {@link org.nuclearfog.twidda.model.Trend}
+	 * value type is {@link Trend}
 	 */
-	public static final String KEY_TREND = "search_trend";
+	public static final String KEY_DATA = "trend_data";
+
+	public static final int RETURN_TREND = 0x2735;
 
 	public static final int SEARCH_STR_MAX_LEN = 128;
 
@@ -93,7 +95,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		viewPager.setOffscreenPageLimit(3);
 
 		String query = getIntent().getStringExtra(KEY_QUERY);
-		Serializable data = getIntent().getSerializableExtra(KEY_TREND);
+		Serializable data = getIntent().getSerializableExtra(KEY_DATA);
 		if (data instanceof Trend) {
 			trend = (Trend) data;
 			search = trend.getName();
@@ -112,6 +114,11 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		if (viewPager.getCurrentItem() > 0) {
 			viewPager.setCurrentItem(0);
 		} else {
+			if (trend != null) {
+				Intent intent = new Intent();
+				intent.putExtra(KEY_DATA, trend);
+				setResult(RETURN_TREND, intent);
+			}
 			super.onBackPressed();
 		}
 	}

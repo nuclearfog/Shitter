@@ -47,12 +47,6 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 	public static final String KEY_DATA = "list_edit_data";
 
 	/**
-	 * Key for updated list information
-	 * value type is {@link UserList}
-	 */
-	public static final String KEY_UPDATE = "userlist-updated";
-
-	/**
 	 * internal key used to save userlist changes
 	 * value type is {@link UserListUpdate}
 	 */
@@ -211,7 +205,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 				Toast.makeText(getApplicationContext(), R.string.info_list_created, Toast.LENGTH_SHORT).show();
 			}
 			Intent intent = new Intent();
-			intent.putExtra(KEY_UPDATE, result.userlist);
+			intent.putExtra(KEY_DATA, result.userlist);
 			setResult(RETURN_LIST_CHANGED, intent);
 			finish();
 		} else {

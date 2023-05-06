@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		// open home profile
 		if (item.getItemId() == R.id.menu_profile) {
 			Intent intent = new Intent(this, ProfileActivity.class);
-			intent.putExtra(ProfileActivity.KEY_PROFILE_ID, settings.getLogin().getId());
+			intent.putExtra(ProfileActivity.KEY_ID, settings.getLogin().getId());
 			startActivity(intent);
 			return true;
 		}

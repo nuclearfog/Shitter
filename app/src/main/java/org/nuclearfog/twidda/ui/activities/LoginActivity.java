@@ -41,6 +41,8 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.NetworkAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog;
 
+import java.io.Serializable;
+
 /**
  * Account Activity of the App
  * called from {@link MainActivity} when this app isn't logged in
@@ -64,6 +66,11 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	 */
 	public static final int RETURN_SETTINGS_CHANGED = 0x227;
 
+	/**
+	 * key used to save connection configuration
+	 */
+	private static final String KEY_SAVE = "connection_save";
+
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private LoginAction loginAsync;
@@ -77,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Nullable
 	private String loginLink;
-	private ConnectionConfig connection;
+	private ConnectionConfig connection = new ConnectionConfig();
 
 
 	@Override
@@ -87,8 +94,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 
 	@Override
-	protected void onCreate(@Nullable Bundle b) {
-		super.onCreate(b);
+	protected void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_login);
 		Toolbar toolbar = findViewById(R.id.login_toolbar);
 		Button linkButton = findViewById(R.id.login_get_link);
@@ -106,8 +113,13 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		adapter = new NetworkAdapter(this);
 		connectionDialog = new ConnectionDialog(this);
 		loginAsync = new LoginAction(this);
-		connection = new ConnectionConfig();
 		hostSelector.setAdapter(adapter);
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			if (data instanceof ConnectionConfig) {
+				connection = (ConnectionConfig) data;
+			}
+		}
 
 		connection.setApiType(settings.getLogin().getConfiguration());
 		switch (settings.getLogin().getConfiguration()) {
@@ -124,9 +136,21 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		loginButton.setOnClickListener(this);
 		settingsButton.setOnClickListener(this);
 		hostSelector.setOnItemSelectedListener(this);
+	}
 
+
+	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_SAVE, connection);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onBackPressed() {
 		// set default result code
 		setResult(RETURN_LOGIN_CANCELED);
+		super.onBackPressed();
 	}
 
 

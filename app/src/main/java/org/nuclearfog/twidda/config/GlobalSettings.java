@@ -1,12 +1,5 @@
 package org.nuclearfog.twidda.config;
 
-import static android.content.Context.MODE_PRIVATE;
-import static android.graphics.Typeface.DEFAULT;
-import static android.graphics.Typeface.MONOSPACE;
-import static android.graphics.Typeface.NORMAL;
-import static android.graphics.Typeface.SANS_SERIF;
-import static android.graphics.Typeface.SERIF;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -45,12 +38,12 @@ public class GlobalSettings {
 	/**
 	 * custom android font
 	 */
-	private static final Typeface SANS_SERIF_THIN = Typeface.create("sans-serif-thin", NORMAL);
+	private static final Typeface SANS_SERIF_THIN = Typeface.create("sans-serif-thin", Typeface.NORMAL);
 
 	/**
 	 * custom font families from android system
 	 */
-	public static final Typeface[] FONT_TYPES = {DEFAULT, MONOSPACE, SERIF, SANS_SERIF, SANS_SERIF_THIN};
+	public static final Typeface[] FONT_TYPES = {Typeface.DEFAULT, Typeface.MONOSPACE, Typeface.SERIF, Typeface.SANS_SERIF, SANS_SERIF_THIN};
 
 	/**
 	 * names of the font types {@link #FONT_TYPES}
@@ -176,7 +169,7 @@ public class GlobalSettings {
 	 */
 	public static GlobalSettings getInstance(@NonNull Context context) {
 		if (INSTANCE.settings == null) {
-			INSTANCE.settings = context.getApplicationContext().getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
+			INSTANCE.settings = context.getApplicationContext().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
 			INSTANCE.initialize();
 		}
 		return INSTANCE;

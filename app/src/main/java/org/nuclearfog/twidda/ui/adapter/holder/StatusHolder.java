@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.content.res.Resources;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
@@ -104,7 +101,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		replyname = itemView.findViewById(R.id.item_status_reply_name);
 
 		placeholder = new ColorDrawable(EMPTY_COLOR);
-		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), HORIZONTAL, false));
+		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
 		adapter = new IconAdapter(settings, false);
 		iconList.setAdapter(adapter);
 
@@ -125,7 +122,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		int position = getLayoutPosition();
-		if (position != NO_POSITION) {
+		if (position != RecyclerView.NO_POSITION) {
 			if (v == itemView) {
 				listener.onItemClick(position, OnHolderClickListener.STATUS_CLICK);
 			} else if (v == label) {

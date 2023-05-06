@@ -1,9 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +8,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
@@ -52,8 +49,8 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 		if (horizontal) {
 			loadBtn.setVisibility(View.INVISIBLE);
 			loadCircle.setVisibility(View.VISIBLE);
-			background.getLayoutParams().height = MATCH_PARENT;
-			background.getLayoutParams().width = WRAP_CONTENT;
+			background.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+			background.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
 		}
 		loadBtn.setOnClickListener(this);
 	}
@@ -63,7 +60,7 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 	public void onClick(View v) {
 		if (v == loadBtn) {
 			int position = getLayoutPosition();
-			if (position != NO_POSITION) {
+			if (position != RecyclerView.NO_POSITION) {
 				boolean enableLoading = listener.onPlaceholderClick(position);
 				setLoading(enableLoading);
 			}

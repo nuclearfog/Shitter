@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.database.impl;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
 import org.nuclearfog.twidda.model.Trend;
@@ -67,6 +68,15 @@ public class DatabaseTrend implements Trend, TrendTable {
 	@Override
 	public boolean following() {
 		return false; // todo implement this
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Trend))
+			return false;
+		Trend trend = (Trend) obj;
+		return getName().equals(trend.getName()) && getLocationId() == trend.getLocationId();
 	}
 
 

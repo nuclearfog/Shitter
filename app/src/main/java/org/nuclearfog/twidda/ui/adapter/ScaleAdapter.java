@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import static org.nuclearfog.twidda.config.GlobalSettings.FONT_SCALES;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +36,13 @@ public class ScaleAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return FONT_SCALES.length;
+		return GlobalSettings.FONT_SCALES.length;
 	}
 
 
 	@Override
 	public Float getItem(int pos) {
-		return FONT_SCALES[pos];
+		return GlobalSettings.FONT_SCALES[pos];
 	}
 
 
@@ -56,7 +54,7 @@ public class ScaleAdapter extends BaseAdapter {
 			view = inflater.inflate(R.layout.item_dropdown, parent, false);
 		}
 		textItem = view.findViewById(R.id.dropdown_textitem);
-		textItem.setText(String.format(Locale.getDefault(), "%.1f X", FONT_SCALES[pos]));
+		textItem.setText(String.format(Locale.getDefault(), "%.1f X", GlobalSettings.FONT_SCALES[pos]));
 		textItem.setTypeface(settings.getTypeFace());
 		textItem.setTextColor(settings.getTextColor());
 		textItem.setBackgroundColor(settings.getCardColor());

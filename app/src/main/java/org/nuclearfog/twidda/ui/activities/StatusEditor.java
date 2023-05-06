@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import static android.view.View.OnClickListener;
-
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -10,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -68,7 +67,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	public static final String KEY_DATA = "status_data";
 
 	/**
-	 * key to edit an existing status
+	 * key to edit status send with {@link #KEY_DATA}
 	 * value type is Boolean
 	 */
 	public static final String KEY_EDIT = "status_edit";
@@ -364,15 +363,15 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		switch (statusUpdate.getAttachmentType()) {
 			case StatusUpdate.MEDIA_IMAGE:
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, uri);
-				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.LINK, uri);
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 				break;
 
 			case StatusUpdate.MEDIA_GIF:
 				intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.IMAGE_URI, uri);
-				intent.putExtra(ImageViewer.IMAGE_TYPE, ImageViewer.IMAGE_GIF);
+				intent.putExtra(ImageViewer.LINK, uri);
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_GIF);
 				startActivity(intent);
 				break;
 

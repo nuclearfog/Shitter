@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
-
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -12,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
@@ -53,7 +51,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 	public void onClick(View v) {
 		if (v == itemView) {
 			int position = getLayoutPosition();
-			if (position != NO_POSITION) {
+			if (position != RecyclerView.NO_POSITION) {
 				listener.onItemClick(position, OnHolderClickListener.NO_TYPE);
 			}
 		}

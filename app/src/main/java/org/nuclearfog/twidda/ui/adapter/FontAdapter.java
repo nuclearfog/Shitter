@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import static org.nuclearfog.twidda.config.GlobalSettings.FONT_NAMES;
-import static org.nuclearfog.twidda.config.GlobalSettings.FONT_TYPES;
-
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +31,7 @@ public class FontAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return FONT_TYPES.length;
+		return GlobalSettings.FONT_TYPES.length;
 	}
 
 
@@ -46,7 +43,7 @@ public class FontAdapter extends BaseAdapter {
 
 	@Override
 	public Typeface getItem(int pos) {
-		return FONT_TYPES[pos];
+		return GlobalSettings.FONT_TYPES[pos];
 	}
 
 
@@ -58,8 +55,8 @@ public class FontAdapter extends BaseAdapter {
 			view = inflater.inflate(R.layout.item_dropdown, parent, false);
 		}
 		textItem = view.findViewById(R.id.dropdown_textitem);
-		textItem.setText(FONT_NAMES[pos]);
-		textItem.setTypeface(FONT_TYPES[pos]);
+		textItem.setText(GlobalSettings.FONT_NAMES[pos]);
+		textItem.setTypeface(GlobalSettings.FONT_TYPES[pos]);
 		textItem.setTextColor(settings.getTextColor());
 		textItem.setBackgroundColor(settings.getCardColor());
 		view.setBackgroundColor(settings.getBackgroundColor());

@@ -6,8 +6,6 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.provider.MediaStore.Images.Media.DATE_TAKEN;
 import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -19,6 +17,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -156,7 +155,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	@Override
 	public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (grantResults.length > 0 && permissions.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
+		if (grantResults.length > 0 && permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 			// read storage permission granted
 			switch (permissions[0]) {
 				case ACCESS_FINE_LOCATION:
@@ -244,7 +243,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 					ContentValues values = new ContentValues();
 					values.put(DISPLAY_NAME, destMediaFile.getName());
 					values.put(DATE_TAKEN, System.currentTimeMillis());
-					values.put(RELATIVE_PATH, DIRECTORY_PICTURES);
+					values.put(RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
 					values.put(MIME_TYPE, mime);
 					Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
 					if (imageUri != null) {
@@ -264,7 +263,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	 * Ask for GPS location
 	 */
 	protected void getLocation() {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 			startLocating();
 		} else {
 			if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
@@ -288,7 +287,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 		else {
 			boolean requiresPermission = false;
 			for (String permission : PERMISSIONS_READ) {
-				if (checkSelfPermission(permission) != PERMISSION_GRANTED) {
+				if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
 					requiresPermission = true;
 					break;
 				}
@@ -314,12 +313,12 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	 */
 	protected void storeImage(Uri uri) {
 		String imageName = IMAGE_PREFIX + uri.getLastPathSegment();
-		File imageFolder = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
+		File imageFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 		destMediaFile = new File(imageFolder, imageName);
 		srcMediaUri = uri;
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-				|| checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+				|| checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 			saveImage();
 		} else {
 			if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))

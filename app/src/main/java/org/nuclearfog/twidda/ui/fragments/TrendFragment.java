@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -26,7 +30,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class TrendFragment extends ListFragment implements TrendClickListener, AsyncCallback<TrendResult> {
+public class TrendFragment extends ListFragment implements TrendClickListener, AsyncCallback<TrendResult>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * setup fragment to show popular trends of an instance/location
@@ -62,6 +66,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	 */
 	private static final String KEY_DATA = "fragment_trend_data";
 
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private TrendLoader trendLoader;
 	private TrendAdapter adapter;
@@ -123,6 +128,23 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 
 	@Override
+	public void onActivityResult(ActivityResult result) {
+		if (result.getResultCode() == SearchActivity.RETURN_TREND) {
+			if (result.getData() != null) {
+				Serializable data = result.getData().getSerializableExtra(SearchActivity.KEY_DATA);
+				if (data instanceof Trend) {
+					Trend update = (Trend) data;
+					// remove hashtag if unfollowed
+					if (mode == MODE_FOLLOW && !update.following()) {
+						adapter.removeItem(update);
+					}
+				}
+			}
+		}
+	}
+
+
+	@Override
 	public void onTrendClick(Trend trend) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), SearchActivity.class);
@@ -131,9 +153,9 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 				name = "\"" + name + "\"";
 				intent.putExtra(SearchActivity.KEY_QUERY, name);
 			} else {
-				intent.putExtra(SearchActivity.KEY_TREND, trend);
+				intent.putExtra(SearchActivity.KEY_DATA, trend);
 			}
-			startActivity(intent);
+			activityResultLauncher.launch(intent);
 		}
 	}
 

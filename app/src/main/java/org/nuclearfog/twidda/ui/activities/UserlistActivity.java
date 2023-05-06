@@ -60,12 +60,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	public static final String KEY_DATA = "list_data";
 
 	/**
-	 * key to disable list update
-	 * value type is boolean
-	 */
-	public static final String KEY_DISABLE_UPDATE = "list_no_update";
-
-	/**
 	 * result key to return the ID of a removed list
 	 * value type is {@link UserList}
 	 */
@@ -156,12 +150,9 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	protected void onStart() {
 		super.onStart();
 		if (userList != null) {
-			boolean blockUpdate = getIntent().getBooleanExtra(KEY_DISABLE_UPDATE, false);
-			if (!blockUpdate) {
-				// update list information
-				ListActionParam param = new ListActionParam(ListActionParam.LOAD, userList.getId());
-				listLoaderAsync.execute(param, userlistSet);
-			}
+			// update list information
+			ListActionParam param = new ListActionParam(ListActionParam.LOAD, userList.getId());
+			listLoaderAsync.execute(param, userlistSet);
 		}
 	}
 
@@ -264,7 +255,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	public void onActivityResult(ActivityResult result) {
 		if (result.getData() != null) {
 			if (result.getResultCode() == UserlistEditor.RETURN_LIST_CHANGED) {
-				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_UPDATE);
+				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_DATA);
 				if (data instanceof UserList) {
 					userList = (UserList) data;
 					toolbar.setTitle(userList.getTitle());
