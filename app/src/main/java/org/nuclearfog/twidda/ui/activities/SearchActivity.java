@@ -139,15 +139,18 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		MenuItem hashtag = menu.findItem(R.id.search_hashtag);
 		SearchView searchView = (SearchView) searchItem.getActionView();
 
-		hashtag.setVisible(trend != null);
 		boolean enableSearchFilter = settings.getLogin().getConfiguration().filterEnabled();
+		searchFilter.setVisible(enableSearchFilter);
 		searchFilter.setChecked(settings.filterResults() & enableSearchFilter);
 		searchView.setQueryHint(search);
-		searchView.setOnQueryTextListener(this);
+		hashtag.setVisible(trend != null);
+
 		// set theme
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);
 		AppStyles.setMenuIconColor(menu, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+
+		searchView.setOnQueryTextListener(this);
 		return true;
 	}
 
