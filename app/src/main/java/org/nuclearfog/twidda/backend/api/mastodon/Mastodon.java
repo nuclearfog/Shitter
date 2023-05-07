@@ -670,7 +670,8 @@ public class Mastodon implements Connection {
 		try {
 			List<String> params = new ArrayList<>();
 			params.add("limit=" + settings.getListSize());
-			params.add("maxId=" + cursor);
+			if (cursor != 0L)
+				params.add("max_id=" + cursor);
 			Response response = get(ENDPOINT_DOMAIN_BLOCK, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {

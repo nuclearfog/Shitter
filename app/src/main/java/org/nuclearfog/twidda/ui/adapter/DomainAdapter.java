@@ -148,6 +148,7 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 * @param item domain name item
 	 */
 	public void removeItem(String item) {
+		disableLoading();
 		int index = items.indexOf(item);
 		if (index >= 0) {
 			items.remove(index);
