@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
@@ -34,12 +33,10 @@ import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.ui.fragments.UserFragment;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -100,8 +97,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Nullable
 	private UserList userList;
-	@Nullable
-	private User user;
 
 
 	@Override
@@ -283,13 +278,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				listLoaderAsync.execute(param, userlistSet);
 			}
 		}
-		// remove user from list
-		else if (type == ConfirmDialog.LIST_REMOVE_USER) {
-			if (listManagerAsync.isIdle() && userList != null && user != null) {
-				ListManagerParam param = new ListManagerParam(ListManagerParam.REMOVE, userList.getId(), user.getScreenname());
-				listManagerAsync.execute(param, userlistUpdate);
-			}
-		}
 	}
 
 
@@ -322,19 +310,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		return false;
 	}
 
-
-	/**
-	 * called from {@link org.nuclearfog.twidda.ui.fragments.UserFragment} when an user should be removed from a list
-	 *
-	 * @param user user to remove from the lsit
-	 */
-	public void onDelete(User user) {
-		if (!confirmDialog.isShowing()) {
-			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
-			this.user = user;
-		}
-	}
-
 	/**
 	 * update userlist member
 	 */
@@ -349,19 +324,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				String info = getString(R.string.info_user_added_to_list, name);
 				Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
-				break;
-
-			case ListManagerResult.DEL_USER:
-				if (user != null) {
-					info = getString(R.string.info_user_removed, user.getScreenname());
-					Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-					// remove user from list member page
-					Fragment fragment = adapter.getItem(1);
-					if (fragment instanceof UserFragment) {
-						UserFragment callback = (UserFragment) fragment;
-						callback.removeUser(user);
-					}
-				}
 				break;
 
 			case ListManagerResult.ERROR:

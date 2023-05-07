@@ -21,6 +21,11 @@
 		android:visible="false" />
 
 	<item
+		android:id="@+id/profile_block_domain"
+		android:title="@string/menu_block_domain"
+		android:visible="false" />
+
+	<item
 		android:id="@+id/profile_mute"
 		android:title="@string/menu_mute_user"
 		android:visible="false" />

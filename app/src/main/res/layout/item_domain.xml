@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	style="@style/CardViewStyle">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center">
+
+		<TextView
+			android:id="@+id/item_domain_name"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/item_domain_layout_margin"
+			android:textSize="@dimen/item_domain_text_size"
+			android:layout_weight="1"
+			android:lines="1"/>
+
+		<ImageButton
+			android:id="@+id/item_domain_delete"
+			android:layout_width="@dimen/item_domain_button_size"
+			android:layout_height="@dimen/item_domain_button_size"
+			android:padding="@dimen/item_domain_button_padding"
+			android:layout_margin="@dimen/item_domain_layout_margin"
+			android:contentDescription="@string/descr_remove_domain"
+			android:scaleType="fitCenter"
+			android:src="@drawable/cross"
+			style="@style/RoundButton" />
+	</LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -67,6 +67,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		notificationAction = new NotificationAction(requireContext());
 		adapter = new NotificationAdapter(requireContext(), this);
 		setAdapter(adapter);
+		confirmDialog.setConfirmListener(this);
 
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
@@ -75,7 +76,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 				return;
 			}
 		}
-		confirmDialog.setConfirmListener(this);
 		load(0L, 0L, 0);
 		setRefresh(true);
 	}

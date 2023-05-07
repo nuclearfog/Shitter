@@ -44,15 +44,19 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 					db.saveFilterlist(ids);
 					return new FilterResult(FilterResult.RELOAD, null);
 
-				case FilterParam.MUTE:
+				case FilterParam.MUTE_USER:
 					Relation relation = connection.muteUser(param.name);
 					db.muteUser(relation.getId(), true);
-					return new FilterResult(FilterResult.MUTE, null);
+					return new FilterResult(FilterResult.MUTE_USER, null);
 
-				case FilterParam.BLOCK:
+				case FilterParam.BLOCK_USER:
 					relation = connection.blockUser(param.name);
 					db.muteUser(relation.getId(), true);
-					return new FilterResult(FilterResult.BLOCK, null);
+					return new FilterResult(FilterResult.BLOCK_USER, null);
+
+				case FilterParam.BLOCK_DOMAIN:
+					connection.blockDomain(param.name);
+					return new FilterResult(FilterResult.BLOCK_DOMAIN, null);
 			}
 		} catch (ConnectionException exception) {
 			return new FilterResult(FilterResult.ERROR, exception);
@@ -68,8 +72,9 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 	public static class FilterParam {
 
 		public static final int RELOAD = 1;
-		public static final int MUTE = 2;
-		public static final int BLOCK = 3;
+		public static final int MUTE_USER = 2;
+		public static final int BLOCK_USER = 3;
+		public static final int BLOCK_DOMAIN = 4;
 
 		final String name;
 		final int mode;
@@ -91,9 +96,10 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 	public static class FilterResult {
 
 		public static final int ERROR = -1;
-		public static final int RELOAD = 4;
-		public static final int MUTE = 5;
-		public static final int BLOCK = 6;
+		public static final int RELOAD = 5;
+		public static final int MUTE_USER = 6;
+		public static final int BLOCK_USER = 7;
+		public static final int BLOCK_DOMAIN = 8;
 
 		public final int mode;
 		@Nullable

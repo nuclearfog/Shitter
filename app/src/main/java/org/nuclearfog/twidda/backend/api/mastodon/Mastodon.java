@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.lists.Domains;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
@@ -124,6 +125,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_PUBLIC_TIMELINE = "/api/v1/timelines/public";
 	private static final String ENDPOINT_CUSTOM_EMOJIS = "/api/v1/custom_emojis";
 	private static final String ENDPOINT_POLL = "/api/v1/polls/";
+	private static final String ENDPOINT_DOMAIN_BLOCK = "/api/v1/domain_blocks";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -657,6 +659,61 @@ public class Mastodon implements Connection {
 				return createStatus(response);
 			}
 			throw new MastodonException(response);
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public Domains getDomainBlocks(long cursor) throws ConnectionException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("limit=" + settings.getListSize());
+			params.add("maxId=" + cursor);
+			Response response = get(ENDPOINT_DOMAIN_BLOCK, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONArray(body.string());
+				long[] cursors = getCursors(response);
+				Domains result = new Domains(cursors[0], cursors[1]);
+				for (int i = 0 ; i < array.length() ; i++) {
+					result.add(array.getString(i));
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+
+		} catch (JSONException | IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public void blockDomain(String domain) throws ConnectionException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("domain=" + domain);
+			Response response = post(ENDPOINT_DOMAIN_BLOCK, params);
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public void unblockDomain(String domain) throws ConnectionException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("domain=" + domain);
+			Response response = delete(ENDPOINT_DOMAIN_BLOCK, params);
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}

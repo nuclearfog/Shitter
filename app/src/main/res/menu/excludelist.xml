@@ -5,7 +5,7 @@
 	<item
 		android:id="@+id/menu_exclude_user"
 		android:title="@string/menu_exclude_user"
-		android:icon="@drawable/add_user"
+		android:icon="@drawable/plus"
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 		app:showAsAction="ifRoom|collapseActionView" />
 

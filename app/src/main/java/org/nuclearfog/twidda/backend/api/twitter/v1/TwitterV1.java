@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.lists.Domains;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
@@ -761,6 +762,24 @@ public class TwitterV1 implements Connection {
 			params.add("long=" + StringUtils.encode(lon));
 		}
 		return getTweet(TWEET_UPLOAD, params);
+	}
+
+
+	@Override
+	public Domains getDomainBlocks(long cursor) throws ConnectionException {
+		throw new TwitterException("not supported");
+	}
+
+
+	@Override
+	public void blockDomain(String domain) throws ConnectionException {
+		throw new TwitterException("not supported");
+	}
+
+
+	@Override
+	public void unblockDomain(String domain) throws ConnectionException {
+		throw new TwitterException("not supported");
 	}
 
 

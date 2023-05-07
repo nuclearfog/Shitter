@@ -41,7 +41,7 @@
 	<string name="info_profile_updated">Profile updated</string>
 	<string name="info_followed">followed</string>
 	<string name="info_unfollowed">unfollowed</string>
-	<string name="info_user_blocked">blocked</string>
+	<string name="info_blocked">blocked</string>
 	<string name="info_user_unblocked">unblocked</string>
 	<string name="info_status_removed">Status removed</string>
 	<string name="info_status_sent">Status shared</string>
@@ -66,7 +66,9 @@
 	<string name="info_database_cleared">Database cleared</string>
 	<string name="info_notification_dismiss">Notification dismissed</string>
 	<string name="info_hashtag_unfollowed">hashtag unfollowed</string>
+	<string name="info_domain_removed">domain removed from the list</string>
 	<string name="info_hashtag_followed">hashtag followed</string>
+	<string name="info_domain_blocked">domain blocked!</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -97,6 +99,7 @@
 	<string name="error_dm_length">Directmessage is too long!</string>
 	<string name="error_list_title_empty">Empty list title!</string>
 	<string name="error_username_format">Wrong username format!</string>
+	<string name="error_domain_format">Wrong domain format!</string>
 	<string name="error_cant_reply_to_status">You can\'t reply to this status!</string>
 	<string name="error_corrupt_api_key">Error, corrupt API key!</string>
 	<string name="error_acc_update">Account update failed! Please check your input!</string>
@@ -129,7 +132,8 @@
 	<string name="menu_goto_lists">Userlists</string>
 	<string name="menu_app_info">About</string>
 	<string name="menu_licenses">Licenses</string>
-	<string name="menu_block_user">block</string>
+	<string name="menu_block_user">block user</string>
+	<string name="menu_block_domain">block domain</string>
 	<string name="menu_bookmark_add">bookmark</string>
 	<string name="menu_bookmark_remove">remove bookmark</string>
 	<string name="menu_unmute_user">unmute</string>
@@ -155,6 +159,7 @@
 	<string name="menu_search_filter">filter results</string>
 	<string name="menu_hint_mute_user">enter @name to mute</string>
 	<string name="menu_hint_block_user">enter @name to block</string>
+	<string name="menu_hint_block_domain">enter domain.name</string>
 	<string name="menu_refresh_exclude">refresh exclude list</string>
 	<string name="menu_select_account">Logins</string>
 	<string name="menu_add_account">add account</string>
@@ -205,6 +210,8 @@
 	<string name="settings_clear_data">clear app data</string>
 	<string name="confirm_delete_status">delete status?</string>
 	<string name="confirm_dismiss_notification">dismiss notification?</string>
+	<string name="confirm_add_domain_block">block user domain?</string>
+	<string name="confirm_remove_domain_block">remove domain from list?</string>
 	<string name="confirm_delete_database">clear app data?</string>
 	<string name="status_sent_from">"sent from: "</string>
 	<string name="username">Username</string>
@@ -289,6 +296,7 @@
 	<string name="update_list">update list</string>
 	<string name="confirm_remove_user_from_list">remove user from list?</string>
 	<string name="descr_remove_user">remove user from list</string>
+	<string name="descr_remove_domain">remove domain from list</string>
 	<string name="confirm_unknown_error">unknown error!</string>
 	<string name="list_following_indicator">following list</string>
 	<string name="descr_add_profile_image">change profile image</string>

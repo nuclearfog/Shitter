@@ -49,6 +49,8 @@ public interface OnHolderClickListener {
 
 	int EMOJI_CLICK = 20;
 
+	int DOMAIN_REMOVE = 21;
+
 	/**
 	 * called when an item was clicked
 	 *

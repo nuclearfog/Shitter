@@ -16,6 +16,8 @@
 	<string name="settings_background">Hintergrund</string>
 	<string name="confirm_delete_status">Status löschen?</string>
 	<string name="error_enter_code">PIN eingeben!</string>
+	<string name="confirm_add_domain_block">Nutzerdomain sperren?</string>
+	<string name="confirm_remove_domain_block">Domain von der Liste entfernen?</string>
 	<string name="confirm_delete_database">App Daten Löschen?</string>
 	<string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrung nach:"</string>
 	<string name="info_status_sent">Status gesendet</string>
@@ -26,6 +28,7 @@
 	<string name="info_user_repost">%1$s hat deinen Status geteilt</string>
 	<string name="info_database_cleared">Datenbank gelöscht</string>
 	<string name="info_notification_dismiss">Nachricht verworfen</string>
+	<string name="info_domain_blocked">Domain gesperrt!</string>
 	<string name="info_error">Fehler!</string>
 	<string name="menu_status_edit">bearbeiten</string>
 	<string name="menu_status_delete">löschen</string>
@@ -35,7 +38,7 @@
 	<string name="menu_block_user">blocken</string>
 	<string name="menu_user_unblock">entblocken</string>
 	<string name="info_followed">gefolgt!</string>
-	<string name="info_user_blocked">geblockt!</string>
+	<string name="info_blocked">geblockt!</string>
 	<string name="info_user_unblocked">entblockt!</string>
 	<string name="info_status_removed">Status gelöscht!</string>
 	<string name="status_sent_from">"gesendet von: "</string>
@@ -171,6 +174,7 @@
 	<string name="info_user_added_to_list">%1$s wurde zur Liste hinzugefügt!</string>
 	<string name="error_username_format">Nutzername falsch!</string>
 	<string name="error_not_defined">Undefinierter Fehler!</string>
+	<string name="error_domain_format">Falsches Domainformat!</string>
 	<string name="error_cant_reply_to_status">Status ist nicht für Antworten freigegeben!</string>
 	<string name="error_corrupt_api_key">Fehler, API Schlüssel ist fehlerhaft!</string>
 	<string name="error_acc_update">Account Informationen konnten nicht aktualisiert werden! Bitte Eingaben überprüfen.</string>
@@ -200,6 +204,7 @@
 	<string name="menu_hint_block_user">\@name blockieren</string>
 	<string name="menu_exclude_user">Nutzer ausschließen</string>
 	<string name="menu_search_filter">Ergebnisse filtern</string>
+	<string name="menu_hint_block_domain">domain.namen eingeben</string>
 	<string name="menu_refresh_exclude">Filterliste aktualisieren</string>
 	<string name="info_refreshing_exclude_list">aktualisiere Filterliste</string>
 	<string name="info_exclude_list_updated">Filterliste aktualisiert!</string>
@@ -229,6 +234,7 @@
 	<string name="info_reply_hidden">Antwort wurde ausgeblendet</string>
 	<string name="info_reply_unhidden">Antwort wurde eingeblendet</string>
 	<string name="settings_description_enable_twitter_alt">öffne Twitter-Links mit Nitter</string>
+	<string name="descr_remove_domain">entferne Domain von der Liste</string>
 	<string name="confirm_unknown_error">Unbekannter Fehler!</string>
 	<string name="error_invalid_media">Ungültige Mediendatei!</string>
 	<string name="menu_follow_requests">Anfragen</string>
@@ -265,6 +271,7 @@
 	<string name="info_poll_voted">Umfrage abgestimmt!</string>
 	<string name="confirm_dismiss_notification">Nachricht verwerfen?</string>
 	<string name="error_json_format">JSON Fehler!</string>
+	<string name="menu_block_domain">Domain sperren</string>
 	<string name="menu_bookmark_add">Lesezeichen hinzufügen</string>
 	<string name="menu_bookmark_remove">Lesezeichen entfernen</string>
 	<string name="notification_dismiss">Benachrichtigung verwerfen</string>
@@ -294,5 +301,6 @@
 	<string name="menu_hashtag_follow">folge Hashtag</string>
 	<string name="menu_hashtag_unfollow">entfolge Hashtag</string>
 	<string name="info_hashtag_unfollowed">Hashtag entfolgt</string>
+	<string name="info_domain_removed">Domain von der Liste entfernt</string>
 	<string name="info_hashtag_followed">Hashtag gefolgt</string>
 </resources>

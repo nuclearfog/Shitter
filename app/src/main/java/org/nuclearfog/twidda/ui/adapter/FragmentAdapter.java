@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.ui.fragments.DomainFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.MessageFragment;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
@@ -62,19 +63,6 @@ public class FragmentAdapter extends FragmentStateAdapter {
 	@Override
 	public int getItemCount() {
 		return fragments.length;
-	}
-
-	/**
-	 * get fragment at index
-	 *
-	 * @param index index of the fragment
-	 * @return fragment
-	 */
-	public ListFragment getItem(int index) {
-		if (index >= 0 && index < fragments.length) {
-			return fragments[index];
-		}
-		return null;
 	}
 
 	/**
@@ -297,12 +285,17 @@ public class FragmentAdapter extends FragmentStateAdapter {
 	/**
 	 * setup adapter for a page of muted / blocked users
 	 */
-	public void setupMuteBlockPage() {
+	public void setupBlockPage(boolean enableDomainBlock) {
 		Bundle paramMuteList = new Bundle();
 		Bundle paramBlockList = new Bundle();
 		paramMuteList.putInt(UserFragment.KEY_MODE, UserFragment.MODE_MUTES);
 		paramBlockList.putInt(UserFragment.KEY_MODE, UserFragment.MODE_BLOCKS);
-		fragments = new ListFragment[2];
+		if (enableDomainBlock) {
+			fragments = new ListFragment[3];
+			fragments[2] = new DomainFragment();
+		} else {
+			fragments = new ListFragment[2];
+		}
 		fragments[0] = new UserFragment();
 		fragments[1] = new UserFragment();
 		fragments[0].setArguments(paramMuteList);

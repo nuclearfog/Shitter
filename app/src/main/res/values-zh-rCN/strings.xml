@@ -109,7 +109,7 @@
 	<string name="info_profile_updated">个人资料已更新</string>
 	<string name="info_followed">已关注</string>
 	<string name="info_unfollowed">已取消关注</string>
-	<string name="info_user_blocked">已屏蔽</string>
+	<string name="info_blocked">已屏蔽</string>
 	<string name="info_user_unblocked">已取消屏蔽</string>
 	<string name="info_status_removed">推文已删除</string>
 	<string name="info_status_sent">推文已发送</string>

@@ -12,7 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.UserlistManager;
+import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerResult;
 import org.nuclearfog.twidda.backend.async.UsersLoader;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
@@ -20,9 +23,10 @@ import org.nuclearfog.twidda.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
-import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.adapter.UserAdapter;
 import org.nuclearfog.twidda.ui.adapter.UserAdapter.UserClickListener;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 import java.io.Serializable;
 
@@ -31,7 +35,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class UserFragment extends ListFragment implements UserClickListener, AsyncCallback<UserResult>, ActivityResultCallback<ActivityResult> {
+public class UserFragment extends ListFragment implements UserClickListener, OnConfirmListener, AsyncCallback<UserResult>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * key to set the type of user list to show
@@ -145,10 +149,14 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
+	private AsyncCallback<ListManagerResult> userlistUpdate = this::updateUsers;
 
+	private ConfirmDialog confirmDialog;
 	private UsersLoader userLoader;
+	private UserlistManager userlistManager;
 	private UserAdapter adapter;
 
+	private User selectedUser;
 	private String search = "";
 	private long id = 0;
 	private int mode = 0;
@@ -158,8 +166,11 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		userLoader = new UsersLoader(requireContext());
+		userlistManager = new UserlistManager(requireContext());
+		confirmDialog = new ConfirmDialog(requireContext());
 		adapter = new UserAdapter(requireContext(), this);
 		setAdapter(adapter);
+		confirmDialog.setConfirmListener(this);
 
 		Bundle param = getArguments();
 		if (param != null) {
@@ -244,10 +255,9 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 
 	@Override
 	public void onDelete(User user) {
-		if (getActivity() instanceof UserlistActivity) {
-			// call parent activity to handle user delete
-			UserlistActivity callback = (UserlistActivity) getActivity();
-			callback.onDelete(user);
+		if (!confirmDialog.isShowing()) {
+			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
+			this.selectedUser = user;
 		}
 	}
 
@@ -264,15 +274,30 @@ public class UserFragment extends ListFragment implements UserClickListener, Asy
 		setRefresh(false);
 	}
 
-	/**
-	 * remove specific user from fragment list
-	 *
-	 * @param user user to remove
-	 */
-	public void removeUser(User user) {
-		adapter.removeItem(user);
+
+	@Override
+	public void onConfirm(int type) {
+		// remove user from list
+		if (type == ConfirmDialog.LIST_REMOVE_USER) {
+			if (userlistManager.isIdle() && selectedUser != null) {
+				UserlistManager.ListManagerParam param = new UserlistManager.ListManagerParam(UserlistManager.ListManagerParam.REMOVE, id, selectedUser.getScreenname());
+				userlistManager.execute(param, userlistUpdate);
+			}
+		}
 	}
 
+	/**
+	 * callback for userlist changes
+	 */
+	private void updateUsers(ListManagerResult result) {
+		if (result.mode == ListManagerResult.DEL_USER) {
+			if (selectedUser != null) {
+				String info = getString(R.string.info_user_removed, selectedUser.getScreenname());
+				Toast.makeText(requireContext(), info, Toast.LENGTH_SHORT).show();
+				adapter.removeItem(selectedUser);
+			}
+		}
+	}
 
 	/**
 	 * load content into the list

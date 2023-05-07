@@ -127,6 +127,10 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int NOTIFICATION_DISMISS = 623;
 
+	public static final int DOMAIN_BLOCK_ADD = 624;
+
+	public static final int DOMAIN_BLOCK_REMOVE = 625;
+
 
 	private TextView title, message;
 	private Button confirm, cancel;
@@ -234,6 +238,14 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 			case NOTIFICATION_DISMISS:
 				messageRes = R.string.confirm_dismiss_notification;
+				break;
+
+			case DOMAIN_BLOCK_ADD:
+				messageRes = R.string.confirm_add_domain_block;
+				break;
+
+			case DOMAIN_BLOCK_REMOVE:
+				messageRes = R.string.confirm_remove_domain_block;
 				break;
 
 			case PROFILE_UNFOLLOW:

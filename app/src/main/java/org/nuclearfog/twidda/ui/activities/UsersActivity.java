@@ -2,7 +2,9 @@ package org.nuclearfog.twidda.ui.activities;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -170,11 +172,17 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				break;
 
 			case USERS_EXCLUDED:
-				adapter.setupMuteBlockPage();
-				viewPager.setOffscreenPageLimit(2);
+				if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
+					adapter.setupBlockPage(true);
+					viewPager.setOffscreenPageLimit(3);
+					tabSelector.addTabIcons(R.array.user_domain_exclude_icons);
+				} else {
+					adapter.setupBlockPage(false);
+					viewPager.setOffscreenPageLimit(2);
+					tabSelector.addTabIcons(R.array.user_exclude_icons);
+				}
 				tabSelector.addViewPager(viewPager);
 				tabSelector.addOnTabSelectedListener(this);
-				tabSelector.addTabIcons(R.array.user_exclude_icons);
 				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
 				break;
 
@@ -230,6 +238,9 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			} else if (viewPager.getCurrentItem() == 1) {
 				String hint = getString(R.string.menu_hint_block_user);
 				searchView.setQueryHint(hint);
+			} else if (viewPager.getCurrentItem() == 2) {
+				String hint = getString(R.string.menu_hint_block_domain);
+				searchView.setQueryHint(hint);
 			}
 			return true;
 		}
@@ -261,19 +272,33 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public boolean onQueryTextSubmit(String query) {
-		if (USERNAME_PATTERN.matcher(query).matches()) {
-			if (filterLoader.isIdle()) {
-				if (viewPager.getCurrentItem() == 0) {
-					FilterParam param = new FilterParam(FilterParam.MUTE, query);
-					filterLoader.execute(param, this);
-				} else if (viewPager.getCurrentItem() == 1) {
-					FilterParam param = new FilterParam(FilterParam.BLOCK, query);
-					filterLoader.execute(param, this);
-				}
+		if (!filterLoader.isIdle())
+			return false;
+		if (viewPager.getCurrentItem() == 0) {
+			if (USERNAME_PATTERN.matcher(query).matches()) {
+				FilterParam param = new FilterParam(FilterParam.MUTE_USER, query);
+				filterLoader.execute(param, this);
 				return true;
 			}
-		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
+		} else if (viewPager.getCurrentItem() == 1) {
+			if (USERNAME_PATTERN.matcher(query).matches()) {
+				FilterParam param = new FilterParam(FilterParam.BLOCK_USER, query);
+				filterLoader.execute(param, this);
+				return true;
+			}
+			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
+		} else if (viewPager.getCurrentItem() == 2) {
+			if (Patterns.WEB_URL.matcher(query).matches()) {
+				FilterParam param;
+				if (query.startsWith("https://"))
+					param = new FilterParam(FilterParam.BLOCK_DOMAIN, Uri.parse(query).getHost());
+				else
+					param = new FilterParam(FilterParam.BLOCK_DOMAIN, query);
+				filterLoader.execute(param, this);
+				return true;
+			}
+			Toast.makeText(getApplicationContext(), R.string.error_domain_format, Toast.LENGTH_SHORT).show();
 		}
 		return false;
 	}
@@ -288,13 +313,14 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public void onResult(@NonNull FilterResult result) {
 		switch (result.mode) {
-			case FilterResult.MUTE:
+			case FilterResult.MUTE_USER:
 				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case FilterResult.BLOCK:
-				Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
+			case FilterResult.BLOCK_DOMAIN:
+			case FilterResult.BLOCK_USER:
+				Toast.makeText(getApplicationContext(), R.string.info_blocked, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 

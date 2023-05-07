@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.api;
 
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.lists.Domains;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
@@ -447,6 +448,28 @@ public interface Connection {
 	 * @return uploaded status
 	 */
 	Status uploadStatus(StatusUpdate update, List<Long> mediaIds) throws ConnectionException;
+
+	/**
+	 * return a list of domain names the current user has blocked
+	 *
+	 * @param cursor cursor to parse the pages or 0L if not defined
+	 * @return domain list
+	 */
+	Domains getDomainBlocks(long cursor) throws ConnectionException;
+
+	/**
+	 * block specific domain name
+	 *
+	 * @param domain domain name (without "https://")
+	 */
+	void blockDomain(String domain) throws ConnectionException;
+
+	/**
+	 * remove block of a specific domain name
+	 *
+	 * @param domain domain name (without "https://")
+	 */
+	void unblockDomain(String domain) throws ConnectionException;
 
 	/**
 	 * create userlist

@@ -42,6 +42,9 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.DomainAction;
+import org.nuclearfog.twidda.backend.async.DomainAction.DomainParam;
+import org.nuclearfog.twidda.backend.async.DomainAction.DomainResult;
 import org.nuclearfog.twidda.backend.async.RelationLoader;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationParam;
 import org.nuclearfog.twidda.backend.async.RelationLoader.RelationResult;
@@ -121,6 +124,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private static final int SCROLL_THRESHOLD = 10;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
+	private AsyncCallback<DomainResult> domainCallback = this::setDomainResult;
 	private AsyncCallback<RelationResult> relationCallback = this::setRelationResult;
 	private AsyncCallback<UserResult> userCallback = this::setUserResult;
 	private AsyncCallback<EmojiResult> usernameUpdate = this::onUsernameUpdate;
@@ -131,6 +135,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private Picasso picasso;
 	private ConfirmDialog confirmDialog;
 
+	private DomainAction domainAction;
 	private RelationLoader relationLoader;
 	private UserLoader userLoader;
 	private TextEmojiLoader emojiLoader;
@@ -181,6 +186,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		viewPager = findViewById(R.id.profile_pager);
 
 		relationLoader = new RelationLoader(this);
+		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
 		picasso = PicassoBuilder.get(this);
@@ -323,6 +329,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		boolean result = super.onPrepareOptionsMenu(m);
 		if (user != null) {
 			MenuItem listItem = m.findItem(R.id.profile_lists);
+			MenuItem domainBlock = m.findItem(R.id.profile_block_domain);
 
 			switch (settings.getLogin().getConfiguration()) {
 				case TWITTER1:
@@ -339,6 +346,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				case MASTODON:
 					if (user.isCurrentUser()) {
 						listItem.setVisible(true);
+					} else {
+						domainBlock.setVisible(true);
 					}
 					break;
 			}
@@ -472,6 +481,12 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			startActivity(usersIntent);
 			return true;
 		}
+		// block user domain
+		else if (item.getItemId() == R.id.profile_block_domain) {
+			if (user != null) {
+				confirmDialog.show(ConfirmDialog.DOMAIN_BLOCK_ADD);
+			}
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -594,6 +609,12 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				RelationParam param = new RelationParam(user.getId(), RelationParam.MUTE);
 				relationLoader.execute(param, relationCallback);
 			}
+			// confirmed domain block
+			else if (type == ConfirmDialog.DOMAIN_BLOCK_ADD) {
+				String url = Uri.parse(user.getProfileUrl()).getHost();
+				DomainParam param = new DomainParam(DomainParam.MODE_BLOCK, 0, DomainParam.NO_CURSOR, url);
+				domainAction.execute(param, domainCallback);
+			}
 		}
 	}
 
@@ -675,7 +696,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private void setRelationResult(@NonNull RelationResult result) {
 		switch (result.mode) {
 			case RelationResult.BLOCK:
-				Toast.makeText(getApplicationContext(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_blocked, Toast.LENGTH_SHORT).show();
 				break;
 
 			case RelationResult.UNBLOCK:
@@ -706,6 +727,18 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (result.relation != null) {
 			relation = result.relation;
 			invalidateOptionsMenu();
+		}
+	}
+
+	/**
+	 * set domain block result
+	 */
+	private void setDomainResult(DomainResult result) {
+		if (result.mode == DomainResult.MODE_BLOCK) {
+			Toast.makeText(getApplicationContext(), R.string.info_domain_blocked, Toast.LENGTH_SHORT).show();
+		} else if (result.mode == DomainResult.ERROR) {
+			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		}
 	}
 
