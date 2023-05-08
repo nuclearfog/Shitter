@@ -437,7 +437,7 @@ public class StatusUpdate implements Serializable {
 	 * @return true if media is attached
 	 */
 	public boolean isEmpty() {
-		return previews.isEmpty() && location == null && poll == null && getText() == null;
+		return previews.isEmpty() && location == null && poll == null && (getText() == null || getText().trim().isEmpty());
 	}
 
 	/**
