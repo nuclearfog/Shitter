@@ -139,6 +139,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 	private int requestCode = 0;
 
 
+	@SuppressLint("MissingPermission")
 	@Override
 	protected void onDestroy() {
 		if (locationPending) {

@@ -3,9 +3,12 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:ignore="LockedOrientationActivity">
 
-	<uses-permission android:name="android.permission.INTERNET" />
+
+	<!-- permission used to add location to status.
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	-->
+	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
