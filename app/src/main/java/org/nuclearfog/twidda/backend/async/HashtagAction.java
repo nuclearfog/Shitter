@@ -31,8 +31,12 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagParam, Has
 	protected HashtagResult doInBackground(@NonNull HashtagParam param) {
 		try {
 			switch (param.mode) {
+				case HashtagParam.LOAD:
+					Trend result = connection.showHashtag(param.name);
+					return new HashtagResult(HashtagResult.LOAD, result, null);
+
 				case HashtagParam.FOLLOW:
-					Trend result = connection.followHashtag(param.name);
+					result = connection.followHashtag(param.name);
 					return new HashtagResult(HashtagResult.FOLLOW, result, null);
 
 				case HashtagParam.UNFOLLOW:
@@ -52,8 +56,9 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagParam, Has
 	 */
 	public static class HashtagParam {
 
-		public static final int FOLLOW = 1;
-		public static final int UNFOLLOW = 2;
+		public static final int LOAD = 1;
+		public static final int FOLLOW = 2;
+		public static final int UNFOLLOW = 3;
 
 		final String name;
 		final int mode;
@@ -70,8 +75,9 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagParam, Has
 	public static class HashtagResult {
 
 		public static final int ERROR = -1;
-		public static final int FOLLOW = 3;
-		public static final int UNFOLLOW = 4;
+		public static final int LOAD = 4;
+		public static final int FOLLOW = 5;
+		public static final int UNFOLLOW = 6;
 
 		@Nullable
 		public final ConnectionException exception;

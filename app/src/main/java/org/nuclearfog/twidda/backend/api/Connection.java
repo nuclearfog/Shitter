@@ -282,6 +282,13 @@ public interface Connection {
 	Trends showHashtagFollowing(long cursor) throws ConnectionException;
 
 	/**
+	 * show information of a single hashtag
+	 * @param name hashtag name
+	 * @return hashtag information
+	 */
+	Trend showHashtag(String name) throws ConnectionException;
+
+	/**
 	 * follow hashtag by name
 	 *
 	 * @param name name of the hashtag

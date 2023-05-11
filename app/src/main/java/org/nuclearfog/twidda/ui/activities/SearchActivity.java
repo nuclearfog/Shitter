@@ -101,6 +101,10 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			search = trend.getName();
 		} else if (query != null) {
 			search = query;
+			if (search.startsWith("#") && search.matches("\\S+")) {
+				HashtagParam param = new HashtagParam(search, HashtagParam.LOAD);
+				hashtagAction.execute(param, this);
+			}
 		}
 		boolean enableHashtags = !search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON;
 		adapter.setupSearchPage(search, enableHashtags);
@@ -143,8 +147,9 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		searchFilter.setVisible(enableSearchFilter);
 		searchFilter.setChecked(settings.filterResults() & enableSearchFilter);
 		searchView.setQueryHint(search);
-		hashtag.setVisible(trend != null);
-
+		if (trend != null && trend.getName().startsWith("#")) {
+			hashtag.setVisible(true);
+		}
 		// set theme
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);
 		AppStyles.setMenuIconColor(menu, settings.getIconColor());
@@ -158,6 +163,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		MenuItem hashtag = menu.findItem(R.id.search_hashtag);
+		// set menu option depending on trend follow status
 		if (trend != null) {
 			if (trend.following()) {
 				hashtag.setTitle(R.string.menu_hashtag_unfollow);
@@ -236,17 +242,17 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 	@Override
 	public void onResult(@NonNull HashtagResult result) {
-		if (result.trend != null)
+		if (result.trend != null) {
 			this.trend = result.trend;
+			invalidateMenu();
+		}
 		switch(result.mode) {
 			case HashtagResult.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
-				invalidateMenu();
 				break;
 
 			case HashtagResult.UNFOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
-				invalidateMenu();
 				break;
 
 			case HashtagResult.ERROR:

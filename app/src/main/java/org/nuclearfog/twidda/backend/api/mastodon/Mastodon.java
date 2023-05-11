@@ -457,6 +457,18 @@ public class Mastodon implements Connection {
 
 
 	@Override
+	public Trend showHashtag(String name) throws ConnectionException {
+		try {
+			if (name.startsWith("#"))
+				name = name.substring(1);
+			return createTrend(get(ENDPOINT_HASHTAG_GET + StringUtils.encode(name), new ArrayList<>()));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
 	public Trend followHashtag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
