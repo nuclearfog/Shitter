@@ -61,4 +61,5 @@ dependencies {
 	implementation 'com.github.nuclearfog:Tagger:2.4'
 	implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4.1'
 	implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
+	implementation 'com.github.UnifiedPush:android-connector:2.1.1'
 }

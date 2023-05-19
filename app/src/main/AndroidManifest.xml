@@ -10,14 +10,11 @@
 	-->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-	<uses-permission
-		android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-		android:maxSdkVersion="29"
-		tools:ignore="ScopedStorage" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" tools:ignore="ScopedStorage" />
 
 	<application
 		android:name=".ClientApplication"
@@ -128,6 +125,19 @@
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
+		<receiver
+			android:name=".receiver.PushNotificationReceiver"
+			android:enabled="true"
+			android:exported="true">
+
+			<intent-filter>
+				<action android:name="org.unifiedpush.android.connector.MESSAGE"/>
+				<action android:name="org.unifiedpush.android.connector.UNREGISTERED"/>
+				<action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT"/>
+				<action android:name="org.unifiedpush.android.connector.REGISTRATION_FAILED"/>
+				<action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED"/>
+			</intent-filter>
+		</receiver>
 	</application>
 
 </manifest>

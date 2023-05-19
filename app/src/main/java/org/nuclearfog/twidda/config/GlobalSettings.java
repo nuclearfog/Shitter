@@ -12,8 +12,10 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.config.impl.ConfigAccount;
 import org.nuclearfog.twidda.config.impl.ConfigLocation;
+import org.nuclearfog.twidda.config.impl.ConfigPush;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.WebPush;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -85,6 +87,12 @@ public class GlobalSettings {
 	private static final String PROXY_PASS = "proxy_pass";
 	private static final String TREND_LOC = "location";
 	private static final String TREND_ID = "world_id_long";
+	private static final String PUSH_ID = "push_id";
+	private static final String PUSH_SERVER_HOST = "push_server_host";
+	private static final String PUSH_SERVER_KEY = "push_server_key";
+	private static final String PUSH_PUBLIC_KEY = "push_public_key";
+	private static final String PUSH_PRIVATE_KEY = "push_private_key";
+	private static final String PUSH_AUTH_KEY = "push_auth_key";
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
@@ -125,6 +133,7 @@ public class GlobalSettings {
 	private SharedPreferences settings;
 
 	private Location location;
+	private ConfigPush webPush;
 	private ConfigAccount login;
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
@@ -544,6 +553,31 @@ public class GlobalSettings {
 		Editor edit = settings.edit();
 		edit.putLong(TREND_ID, location.getId());
 		edit.putString(TREND_LOC, location.getFullName());
+		edit.apply();
+	}
+
+	/**
+	 * get used web push instance
+	 */
+	public WebPush getWebPush() {
+		return webPush;
+	}
+
+	/**
+	 * save web push configuration
+	 *
+	 * @param webPush web push information
+	 */
+	public void setWebPush(WebPush webPush) {
+		this.webPush = new ConfigPush(webPush);
+
+		Editor edit = settings.edit();
+		edit.putLong(PUSH_ID, webPush.getId());
+		edit.putString(PUSH_SERVER_KEY, webPush.getServerKey());
+		edit.putString(PUSH_SERVER_HOST, webPush.getEndpoint());
+		edit.putString(PUSH_PUBLIC_KEY, webPush.getPublicKey());
+		edit.putString(PUSH_PRIVATE_KEY, webPush.getPrivateKey());
+		edit.putString(PUSH_AUTH_KEY, webPush.getAuthSecret());
 		edit.apply();
 	}
 
@@ -967,7 +1001,14 @@ public class GlobalSettings {
 		proxyPass = settings.getString(PROXY_PASS, "");
 		String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
 		long woeId = settings.getLong(TREND_ID, DEFAULT_LOCATION_ID);
+		long pushID = settings.getLong(PUSH_ID, 0L);
+		String pushServerKey = settings.getString(PUSH_SERVER_KEY, "");
+		String pushServerHost = settings.getString(PUSH_SERVER_HOST, "");
+		String pushPublicKey = settings.getString(PUSH_PUBLIC_KEY, "");
+		String pushPrivateKey = settings.getString(PUSH_PRIVATE_KEY, "");
+		String pushAuthKey = settings.getString(PUSH_AUTH_KEY, "");
 		location = new ConfigLocation(woeId, place);
+		webPush = new ConfigPush(pushID, pushServerHost, pushServerKey, pushPublicKey, pushPrivateKey, pushAuthKey);
 		// login informations
 		initLogin();
 	}

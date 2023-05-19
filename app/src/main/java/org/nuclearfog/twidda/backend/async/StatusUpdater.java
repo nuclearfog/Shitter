@@ -41,12 +41,12 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 			List<Long> mediaIds = new LinkedList<>();
 			for (MediaStatus mediaStatus : update.getMediaStatuses()) {
 				if (mediaStatus.isLocal()) {
-					long mediaId = connection.uploadMedia(mediaStatus);
+					long mediaId = connection.updateMedia(mediaStatus);
 					mediaIds.add(mediaId);
 				}
 			}
 			// upload status
-			Status status = connection.uploadStatus(update, mediaIds);
+			Status status = connection.updateStatus(update, mediaIds);
 			return new StatusUpdateResult(status, null);
 		} catch (ConnectionException exception) {
 			return new StatusUpdateResult(null, exception);

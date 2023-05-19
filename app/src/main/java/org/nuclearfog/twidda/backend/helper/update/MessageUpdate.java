@@ -11,6 +11,7 @@ import androidx.documentfile.provider.DocumentFile;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.model.Instance;
 
+import java.io.Closeable;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.TreeSet;
@@ -20,7 +21,7 @@ import java.util.TreeSet;
  *
  * @author nuclearfog
  */
-public class MessageUpdate implements Serializable {
+public class MessageUpdate implements Serializable, Closeable {
 
 	private static final long serialVersionUID = 991295406939128220L;
 
@@ -35,6 +36,16 @@ public class MessageUpdate implements Serializable {
 
 
 	private TreeSet<String> supportedFormats = new TreeSet<>();
+
+	/**
+	 * close inputstream of media file
+	 */
+	@Override
+	public void close() {
+		if (mediaUpdate != null) {
+			mediaUpdate.close();
+		}
+	}
 
 	/**
 	 * @param name screen name of the user
@@ -135,14 +146,6 @@ public class MessageUpdate implements Serializable {
 		return instance;
 	}
 
-	/**
-	 * close inputstream of media file
-	 */
-	public void close() {
-		if (mediaUpdate != null) {
-			mediaUpdate.close();
-		}
-	}
 
 	@NonNull
 	@Override

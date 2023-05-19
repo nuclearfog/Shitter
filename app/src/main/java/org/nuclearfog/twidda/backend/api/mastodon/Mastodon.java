@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon;
 
 import android.content.Context;
+import android.util.Base64;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonInstance;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPoll;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPush;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
@@ -24,6 +26,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.lists.Domains;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
@@ -50,10 +53,19 @@ import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
+import org.nuclearfog.twidda.model.WebPush;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.ECPoint;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -85,7 +97,7 @@ public class Mastodon implements Connection {
 	/**
 	 * scopes used by this app
 	 */
-	private static final String AUTH_SCOPES = "read%20write%20follow";
+	private static final String AUTH_SCOPES = "read%20write%20follow%20push";
 
 	/**
 	 * oauth no redirect (oob)
@@ -126,6 +138,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_CUSTOM_EMOJIS = "/api/v1/custom_emojis";
 	private static final String ENDPOINT_POLL = "/api/v1/polls/";
 	private static final String ENDPOINT_DOMAIN_BLOCK = "/api/v1/domain_blocks";
+	private static final String ENDPOINT_PUSH_UPDATE = "/api/v1/push/subscription";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -166,7 +179,7 @@ public class Mastodon implements Connection {
 				String client_id = json.getString("client_id");
 				String client_secret = json.getString("client_secret");
 				connection.setOauthTokens(client_id, client_secret);
-				return hostname + ENDPOINT_AUTHORIZE_APP + "?scope=read%20write%20follow&response_type=code&redirect_uri=" + REDIRECT_URI + "&client_id=" + client_id;
+				return hostname + ENDPOINT_AUTHORIZE_APP + "?scope=" + AUTH_SCOPES + "&response_type=code&redirect_uri=" + REDIRECT_URI + "&client_id=" + client_id;
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
@@ -625,7 +638,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Status uploadStatus(StatusUpdate update, List<Long> mediaIds) throws MastodonException {
+	public Status updateStatus(StatusUpdate update, List<Long> mediaIds) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		// add identifier to prevent duplicate posts
 		params.add("Idempotency-Key=" + System.currentTimeMillis() / 5000);
@@ -972,7 +985,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public long uploadMedia(MediaStatus mediaUpdate) throws MastodonException {
+	public long updateMedia(MediaStatus mediaUpdate) throws MastodonException {
 		try {
 			List<String> params = new ArrayList<>();
 			if (!mediaUpdate.getDescription().isEmpty())
@@ -999,6 +1012,65 @@ public class Mastodon implements Connection {
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException | NumberFormatException | InterruptedException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public WebPush updatePush(PushUpdate pushUpdate) throws ConnectionException {
+		try {
+			KeyPairGenerator generator = KeyPairGenerator.getInstance("EC");
+			ECGenParameterSpec spec = new ECGenParameterSpec("prime256v1");
+			generator.initialize(spec);
+			KeyPair keyPair = generator.generateKeyPair();
+			byte[] privKeyData = keyPair.getPrivate().getEncoded();
+			byte[] pubKeyData = keyPair.getPublic().getEncoded();
+			byte[] serializedPubKey = serializeRawPublicKey((ECPublicKey) keyPair.getPublic());
+			String encodedPublicKey = Base64.encodeToString(serializedPubKey, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+			String pushPrivateKey = Base64.encodeToString(privKeyData, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+			String pushPublicKey = Base64.encodeToString(pubKeyData, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
+			String randomString = StringUtils.getRandomString();
+
+			List<String> params = new ArrayList<>();
+			params.add("subscription[endpoint]=" + pushUpdate.getEndpoint());
+			params.add("subscription[keys][p256dh]=" + encodedPublicKey);
+			params.add("subscription[keys][auth]=" + randomString);
+			if (pushUpdate.enableMentions())
+				params.add("data[alerts][mention]=true");
+			if (pushUpdate.enableFavorite())
+				params.add("data[alerts][favourite]=true");
+			if (pushUpdate.enableRepost())
+				params.add("data[alerts][reblog]=true");
+			if (pushUpdate.enableFollow())
+				params.add("data[alerts][follow]=true");
+			if (pushUpdate.enableFollowRequest())
+				params.add("data[alerts][follow_request]=true");
+			if (pushUpdate.enablePoll())
+				params.add("data[alerts][poll]=true");
+			if (pushUpdate.enableStatus())
+				params.add("data[alerts][status]=true");
+			if (pushUpdate.enableStatusEdit())
+				params.add("data[alerts][update]=true");
+			if (pushUpdate.getPolicy() == PushUpdate.POLICY_ALL)
+				params.add("data[policy]=all");
+			else if (pushUpdate.getPolicy() == PushUpdate.POLICY_FOLLOWER)
+				params.add("data[policy]=follower");
+			else if (pushUpdate.getPolicy() == PushUpdate.POLICY_FOLLOWING)
+				params.add("data[policy]=followed");
+			else if (pushUpdate.getPolicy() == PushUpdate.POLICY_NONE)
+				params.add("data[policy]=none");
+			Response response = post(ENDPOINT_PUSH_UPDATE, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				MastodonPush result = new MastodonPush(json);
+				result.setKeys(pushPublicKey, pushPrivateKey);
+				result.setAuthSecret(randomString);
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | JSONException | IOException e) {
 			throw new MastodonException(e);
 		}
 	}
@@ -1623,5 +1695,23 @@ public class Mastodon implements Connection {
 			return result.toString();
 		}
 		return hostname + endpoint;
+	}
+
+	/**
+	 *
+	 */
+	private byte[] serializeRawPublicKey(ECPublicKey key) {
+		ECPoint point = key.getW();
+		byte[] x = point.getAffineX().toByteArray();
+		byte[] y = point.getAffineY().toByteArray();
+		if(x.length>32)
+			x = Arrays.copyOfRange(x, x.length-32, x.length);
+		if(y.length>32)
+			y = Arrays.copyOfRange(y, y.length-32, y.length);
+		byte[] result = new byte[65];
+		result[0] = 4;
+		System.arraycopy(x, 0, result, 1+(32-x.length), x.length);
+		System.arraycopy(y, 0, result, result.length-y.length, y.length);
+		return result;
 	}
 }

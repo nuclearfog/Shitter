@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.api;
 
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.lists.Domains;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
@@ -24,6 +25,7 @@ import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
+import org.nuclearfog.twidda.model.WebPush;
 
 import java.util.List;
 
@@ -448,15 +450,6 @@ public interface Connection {
 	void deleteStatus(long id) throws ConnectionException;
 
 	/**
-	 * upload status with additional attachment
-	 *
-	 * @param update   status update information
-	 * @param mediaIds IDs of the uploaded media files if any
-	 * @return uploaded status
-	 */
-	Status uploadStatus(StatusUpdate update, List<Long> mediaIds) throws ConnectionException;
-
-	/**
 	 * return a list of domain names the current user has blocked
 	 *
 	 * @param cursor cursor to parse the pages or 0L if not defined
@@ -479,6 +472,15 @@ public interface Connection {
 	void unblockDomain(String domain) throws ConnectionException;
 
 	/**
+	 * upload status with additional attachment
+	 *
+	 * @param update   status update information
+	 * @param mediaIds IDs of the uploaded media files if any
+	 * @return uploaded status
+	 */
+	Status updateStatus(StatusUpdate update, List<Long> mediaIds) throws ConnectionException;
+
+	/**
 	 * create userlist
 	 *
 	 * @param update Userlist information
@@ -493,6 +495,30 @@ public interface Connection {
 	 * @return updated user list
 	 */
 	UserList updateUserlist(UserListUpdate update) throws ConnectionException;
+
+	/**
+	 * updates current user's profile
+	 *
+	 * @param update profile update information
+	 * @return updated user information
+	 */
+	User updateProfile(ProfileUpdate update) throws ConnectionException;
+
+	/**
+	 * upload media file and generate a media ID
+	 *
+	 * @param mediaUpdate inputstream with MIME type of the media
+	 * @return media ID
+	 */
+	long updateMedia(MediaStatus mediaUpdate) throws ConnectionException;
+
+	/**
+	 * create Web push subscription
+	 *
+	 * @param pushUpdate web push update
+	 * @return created web push subscription
+	 */
+	WebPush updatePush(PushUpdate pushUpdate) throws ConnectionException;
 
 	/**
 	 * return userlist information
@@ -621,22 +647,6 @@ public interface Connection {
 	 * @return image bitmap
 	 */
 	MediaStatus downloadImage(String link) throws ConnectionException;
-
-	/**
-	 * updates current user's profile
-	 *
-	 * @param update profile update information
-	 * @return updated user information
-	 */
-	User updateProfile(ProfileUpdate update) throws ConnectionException;
-
-	/**
-	 * upload media file and generate a media ID
-	 *
-	 * @param mediaUpdate inputstream with MIME type of the media
-	 * @return media ID
-	 */
-	long uploadMedia(MediaStatus mediaUpdate) throws ConnectionException;
 
 	/**
 	 * get notification of the current user

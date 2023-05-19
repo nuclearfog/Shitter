@@ -1,0 +1,81 @@
+package org.nuclearfog.twidda.model;
+
+import java.io.Serializable;
+
+/**
+ * Represents a web push subscription.
+ *
+ * @author nuclearfog
+ */
+public interface WebPush extends Serializable {
+
+	/**
+	 * @return ID of the subscription
+	 */
+	long getId();
+
+	/**
+	 * @return webpush host url
+	 */
+	String getEndpoint();
+
+	/**
+	 * @return unique server key set from {@link org.nuclearfog.twidda.backend.api.Connection}
+	 */
+	String getServerKey();
+
+	/**
+	 * @return encryption public key
+	 */
+	String getPublicKey();
+
+	/**
+	 * @return encryption public key
+	 */
+	String getPrivateKey();
+
+	/**
+	 * @return auth secret
+	 */
+	String getAuthSecret();
+
+	/**
+	 * @return true if notification for mentions is enabled
+	 */
+	boolean alertMentionEnabled();
+
+	/**
+	 * @return true if status notification (profile subscription) is enabled
+	 */
+	boolean alertStatusEnabled();
+
+	/**
+	 * @return true if 'status reposted' notification is enabled
+	 */
+	boolean alertRepostEnabled();
+
+	/**
+	 * @return true if 'new follower' notification is enabled
+	 */
+	boolean alertFollowingEnabled();
+
+	/**
+	 * @return true if 'follow request' notification is enabled
+	 */
+	boolean alertFollowRequestEnabled();
+
+	/**
+	 * @return true if 'status favorited' notification is enabled
+	 */
+	boolean alertFavoriteEnabled();
+
+	/**
+	 * @return true if 'poll finished' notification is enabled
+	 */
+	boolean alertPollEnabled();
+
+	/**
+	 * @return true if 'status changed' notification is enabled
+	 */
+	boolean alertStatusChangeEnabled();
+}

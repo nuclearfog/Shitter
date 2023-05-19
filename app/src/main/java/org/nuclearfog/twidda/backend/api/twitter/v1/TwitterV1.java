@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.lists.Domains;
 import org.nuclearfog.twidda.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
@@ -49,6 +50,7 @@ import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
+import org.nuclearfog.twidda.model.WebPush;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -746,7 +748,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Status uploadStatus(StatusUpdate update, List<Long> mediaIds) throws TwitterException {
+	public Status updateStatus(StatusUpdate update, List<Long> mediaIds) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		if (update.getText() != null)
 			params.add("status=" + StringUtils.encode(update.getText()));
@@ -1012,7 +1014,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public long uploadMedia(MediaStatus mediaUpdate) throws TwitterException {
+	public long updateMedia(MediaStatus mediaUpdate) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		boolean enableChunk;
 		final long mediaId;
@@ -1093,6 +1095,12 @@ public class TwitterV1 implements Connection {
 		} catch (InterruptedException e) {
 			return -1L; //ignore
 		}
+	}
+
+
+	@Override
+	public WebPush updatePush(PushUpdate pushUpdate) throws TwitterException {
+		throw new TwitterException("not implemented");
 	}
 
 

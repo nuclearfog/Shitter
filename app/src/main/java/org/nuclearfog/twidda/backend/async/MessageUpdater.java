@@ -37,7 +37,7 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 			// upload media if any
 			long mediaId = 0L;
 			if (update.getMediaUpdate() != null) {
-				mediaId = connection.uploadMedia(update.getMediaUpdate());
+				mediaId = connection.updateMedia(update.getMediaUpdate());
 			}
 			// upload message and media ID
 			connection.sendDirectmessage(id, update.getMessage(), mediaId);

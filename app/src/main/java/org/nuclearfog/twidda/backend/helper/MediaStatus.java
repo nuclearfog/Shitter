@@ -6,6 +6,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -15,7 +16,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class MediaStatus implements Serializable {
+public class MediaStatus implements Serializable, Closeable {
 
 	private static final long serialVersionUID = 6824278073662885637L;
 
@@ -48,6 +49,20 @@ public class MediaStatus implements Serializable {
 		this.path = path;
 		this.mimeType = mimeType;
 		local = true;
+	}
+
+	/**
+	 * close stream
+	 */
+	@Override
+	public void close() {
+		try {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+		} catch (IOException e) {
+			// ignore
+		}
 	}
 
 	/**
@@ -112,20 +127,6 @@ public class MediaStatus implements Serializable {
 	public boolean isLocal() {
 		return local;
 	}
-
-	/**
-	 * close stream
-	 */
-	public void close() {
-		try {
-			if (inputStream != null) {
-				inputStream.close();
-			}
-		} catch (IOException e) {
-			// ignore
-		}
-	}
-
 
 	@NonNull
 	@Override

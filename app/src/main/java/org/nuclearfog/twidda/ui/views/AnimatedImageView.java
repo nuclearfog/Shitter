@@ -48,6 +48,7 @@ public class AnimatedImageView extends AppCompatImageView {
 	 * @inheritDoc
 	 */
 	@Override
+	@SuppressWarnings("deprecation")
 	public void setImageURI(@Nullable Uri uri) {
 		ContentResolver resolver = getContext().getContentResolver();
 		String mime = resolver.getType(uri);
@@ -66,6 +67,7 @@ public class AnimatedImageView extends AppCompatImageView {
 	 * @inheritDoc
 	 */
 	@Override
+	@SuppressWarnings("deprecation")
 	protected void onDraw(Canvas canvas) {
 		if (movie != null) {
 			// calculate scale and offsets

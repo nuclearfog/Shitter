@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,7 +18,7 @@ import java.io.InputStream;
  *
  * @author nuclearfog
  */
-public class ProfileUpdate {
+public class ProfileUpdate implements Closeable {
 
 	private Uri[] imageUrls = new Uri[2];
 	private InputStream[] imageStreams = new InputStream[2];
@@ -26,6 +27,23 @@ public class ProfileUpdate {
 	private String url = "";
 	private String description = "";
 	private String location = "";
+
+
+	/**
+	 * close all image streams
+	 */
+	@Override
+	public void close() {
+		try {
+			for (InputStream imageStream : imageStreams) {
+				if (imageStream != null) {
+					imageStream.close();
+				}
+			}
+		} catch (IOException e) {
+			// ignore
+		}
+	}
 
 	/**
 	 * setup profile information
@@ -149,21 +167,6 @@ public class ProfileUpdate {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * close all image streams
-	 */
-	public void close() {
-		try {
-			for (InputStream imageStream : imageStreams) {
-				if (imageStream != null) {
-					imageStream.close();
-				}
-			}
-		} catch (IOException e) {
-			// ignore
-		}
 	}
 
 

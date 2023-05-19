@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 
+import java.io.Closeable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ import java.util.TreeSet;
  *
  * @author nuclearfog
  */
-public class StatusUpdate implements Serializable {
+public class StatusUpdate implements Serializable, Closeable {
 
 	private static final long serialVersionUID = -5300983806882462557L;
 
@@ -92,6 +93,18 @@ public class StatusUpdate implements Serializable {
 	private TreeSet<String> supportedFormats = new TreeSet<>();
 	private boolean attachmentLimitReached = false;
 	private int attachment = EMPTY;
+
+	/**
+	 * close all open streams
+	 */
+	@Override
+	public void close() {
+		for (MediaStatus mediaUpdate : mediaStatuses) {
+			if (mediaUpdate != null) {
+				mediaUpdate.close();
+			}
+		}
+	}
 
 	/**
 	 * set informations of an existing status to edit these
@@ -463,17 +476,6 @@ public class StatusUpdate implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * close all open streams
-	 */
-	public void close() {
-		for (MediaStatus mediaUpdate : mediaStatuses) {
-			if (mediaUpdate != null) {
-				mediaUpdate.close();
-			}
-		}
 	}
 
 
