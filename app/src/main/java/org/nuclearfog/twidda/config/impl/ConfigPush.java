@@ -13,31 +13,49 @@ public class ConfigPush implements WebPush {
 	private static final long serialVersionUID = -6942479639448210795L;
 
 	private long id;
-	private String endpoint;
+	private String host;
 	private String serverKey, publicKey, privateKey, authKey;
+	private boolean mentions, reposts, favorits, following, follow_request, status_post, status_change, poll_finished;
 
 	/**
 	 * @param webPush web push instance to copy information
 	 */
 	public ConfigPush(WebPush webPush) {
 		id = webPush.getId();
-		endpoint = webPush.getEndpoint();
+		host = webPush.getHost();
 		serverKey = webPush.getServerKey();
 		publicKey = webPush.getPublicKey();
 		privateKey = webPush.getPrivateKey();
 		authKey = webPush.getAuthSecret();
+		mentions = webPush.alertMentionEnabled();
+		reposts = webPush.alertRepostEnabled();
+		favorits = webPush.alertFavoriteEnabled();
+		following = webPush.alertFollowingEnabled();
+		follow_request = webPush.alertFollowRequestEnabled();
+		status_post = webPush.alertStatusPostEnabled();
+		status_change = webPush.alertStatusChangeEnabled();
+		poll_finished = webPush.alertPollEnabled();
 	}
 
 	/**
 	 *
 	 */
-	public ConfigPush(long id, String endpoint, String serverKey, String publicKey, String privateKey, String authKey) {
+	public ConfigPush(long id, String host, String serverKey, String publicKey, String privateKey, String authKey, boolean mentions, boolean reposts,
+	                  boolean favorits, boolean following, boolean follow_request, boolean status_post, boolean status_change, boolean poll_finished) {
 		this.id = id;
-		this.endpoint = endpoint;
+		this.host = host;
 		this.serverKey = serverKey;
 		this.privateKey = privateKey;
 		this.publicKey = publicKey;
 		this.authKey = authKey;
+		this.mentions = mentions;
+		this.reposts = reposts;
+		this.favorits = favorits;
+		this.following = following;
+		this.follow_request = follow_request;
+		this.status_post = status_post;
+		this.status_change = status_change;
+		this.poll_finished = poll_finished;
 	}
 
 
@@ -48,8 +66,8 @@ public class ConfigPush implements WebPush {
 
 
 	@Override
-	public String getEndpoint() {
-		return endpoint;
+	public String getHost() {
+		return host;
 	}
 
 
@@ -79,56 +97,56 @@ public class ConfigPush implements WebPush {
 
 	@Override
 	public boolean alertMentionEnabled() {
-		return false;
+		return mentions;
 	}
 
 
 	@Override
-	public boolean alertStatusEnabled() {
-		return false;
+	public boolean alertStatusPostEnabled() {
+		return status_post;
 	}
 
 
 	@Override
 	public boolean alertRepostEnabled() {
-		return false;
+		return reposts;
 	}
 
 
 	@Override
 	public boolean alertFollowingEnabled() {
-		return false;
+		return following;
 	}
 
 
 	@Override
 	public boolean alertFollowRequestEnabled() {
-		return false;
+		return follow_request;
 	}
 
 
 	@Override
 	public boolean alertFavoriteEnabled() {
-		return false;
+		return favorits;
 	}
 
 
 	@Override
 	public boolean alertPollEnabled() {
-		return false;
+		return poll_finished;
 	}
 
 
 	@Override
 	public boolean alertStatusChangeEnabled() {
-		return false;
+		return status_change;
 	}
 
 
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + getId() + " url=\"" + getEndpoint() + "\"";
+		return "id=" + getId() + " url=\"" + getHost() + "\"";
 	}
 
 
@@ -137,6 +155,6 @@ public class ConfigPush implements WebPush {
 		if (!(obj instanceof WebPush))
 			return false;
 		WebPush push = (WebPush) obj;
-		return getId() == push.getId() && getEndpoint().equals(push.getEndpoint());
+		return getId() == push.getId() && getHost().equals(push.getHost());
 	}
 }

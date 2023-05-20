@@ -9,11 +9,13 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Instance;
+import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
 
 /**
@@ -64,6 +66,17 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 					database.saveLogin(account);
 					// save instance information
 					database.saveInstance(instance);
+					// subscripe to web push
+					if (settings.pushEnabled()) {
+						try {
+							PushUpdate pushUpdate = new PushUpdate(settings.getWebPush());
+							WebPush webpush = connection.updatePush(pushUpdate);
+							settings.setWebPush(webpush);
+						} catch (ConnectionException e) {
+							// continue without webpush subscription
+							settings.setPushEnabled(false);
+						}
+					}
 					return new LoginResult(LoginResult.MODE_LOGIN, null, null);
 			}
 		} catch (ConnectionException exception) {

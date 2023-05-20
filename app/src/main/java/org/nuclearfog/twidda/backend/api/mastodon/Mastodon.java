@@ -1033,24 +1033,24 @@ public class Mastodon implements Connection {
 			String randomString = StringUtils.getRandomString();
 
 			List<String> params = new ArrayList<>();
-			params.add("subscription[endpoint]=" + pushUpdate.getEndpoint());
+			params.add("subscription[endpoint]=" + pushUpdate.getHost());
 			params.add("subscription[keys][p256dh]=" + encodedPublicKey);
 			params.add("subscription[keys][auth]=" + randomString);
-			if (pushUpdate.enableMentions())
+			if (pushUpdate.mentionsEnabled())
 				params.add("data[alerts][mention]=true");
-			if (pushUpdate.enableFavorite())
+			if (pushUpdate.favoriteEnabled())
 				params.add("data[alerts][favourite]=true");
-			if (pushUpdate.enableRepost())
+			if (pushUpdate.repostEnabled())
 				params.add("data[alerts][reblog]=true");
-			if (pushUpdate.enableFollow())
+			if (pushUpdate.followEnabled())
 				params.add("data[alerts][follow]=true");
-			if (pushUpdate.enableFollowRequest())
+			if (pushUpdate.followRequestEnabled())
 				params.add("data[alerts][follow_request]=true");
-			if (pushUpdate.enablePoll())
+			if (pushUpdate.pollEnabled())
 				params.add("data[alerts][poll]=true");
-			if (pushUpdate.enableStatus())
+			if (pushUpdate.statusPostEnabled())
 				params.add("data[alerts][status]=true");
-			if (pushUpdate.enableStatusEdit())
+			if (pushUpdate.statusEditEnabled())
 				params.add("data[alerts][update]=true");
 			if (pushUpdate.getPolicy() == PushUpdate.POLICY_ALL)
 				params.add("data[policy]=all");

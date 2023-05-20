@@ -17,7 +17,7 @@ public class MastodonPush implements WebPush {
 	private static final long serialVersionUID = 565081495547561476L;
 
 	private long id;
-	private String endpoint;
+	private String host;
 	private String serverKey, publicKey, privateKey, authSec;
 
 	/**
@@ -25,7 +25,7 @@ public class MastodonPush implements WebPush {
 	 */
 	public MastodonPush(JSONObject json) throws JSONException {
 		String id = json.getString("id");
-		endpoint = json.getString("endpoint");
+		host = json.getString("endpoint");
 		serverKey = json.getString("server_key");
 		try {
 			this.id = Long.parseLong(id);
@@ -42,8 +42,8 @@ public class MastodonPush implements WebPush {
 
 
 	@Override
-	public String getEndpoint() {
-		return endpoint;
+	public String getHost() {
+		return host;
 	}
 
 
@@ -78,7 +78,7 @@ public class MastodonPush implements WebPush {
 
 
 	@Override
-	public boolean alertStatusEnabled() {
+	public boolean alertStatusPostEnabled() {
 		return false;
 	}
 
@@ -122,7 +122,7 @@ public class MastodonPush implements WebPush {
 	@NonNull
 	@Override
 	public String toString() {
-		return "id=" + getId() + " url=\"" + getEndpoint() + "\"";
+		return "id=" + getId() + " url=\"" + getHost() + "\"";
 	}
 
 
@@ -131,7 +131,7 @@ public class MastodonPush implements WebPush {
 		if (!(obj instanceof WebPush))
 			return false;
 		WebPush push = (WebPush) obj;
-		return getId() == push.getId() && getEndpoint().equals(push.getEndpoint());
+		return getId() == push.getId() && getHost().equals(push.getHost());
 	}
 
 	/**

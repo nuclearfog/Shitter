@@ -27,7 +27,7 @@ public class PushNotificationReceiver extends MessagingReceiver {
 	public void onNewEndpoint(@NonNull Context context, @NonNull String endpoint, @NonNull String instance) {
 		super.onNewEndpoint(context, endpoint, instance);
 		PushUpdater pushUpdater = new PushUpdater(context);
-		PushUpdate update = new PushUpdate(endpoint);
+		PushUpdate update = new PushUpdate(instance);
 		pushUpdater.execute(update, null);
 	}
 }

@@ -104,6 +104,7 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * @return media description if any
 	 */
+	@SuppressWarnings("SameReturnValue")
 	public String getDescription() {
 		return ""; // todo implement this
 	}

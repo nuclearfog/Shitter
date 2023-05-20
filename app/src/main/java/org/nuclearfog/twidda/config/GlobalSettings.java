@@ -87,20 +87,15 @@ public class GlobalSettings {
 	private static final String PROXY_PASS = "proxy_pass";
 	private static final String TREND_LOC = "location";
 	private static final String TREND_ID = "world_id_long";
-	private static final String PUSH_ID = "push_id";
-	private static final String PUSH_SERVER_HOST = "push_server_host";
-	private static final String PUSH_SERVER_KEY = "push_server_key";
-	private static final String PUSH_PUBLIC_KEY = "push_public_key";
-	private static final String PUSH_PRIVATE_KEY = "push_private_key";
-	private static final String PUSH_AUTH_KEY = "push_auth_key";
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
 	private static final String MASTODON_LOCAL_TIMELINE = "mastodon_local_timeline";
 	private static final String HIDE_SENSITIVE = "hide_sensitive";
+	private static final String PUSH_ENABLED = "push_enabled";
+	private static final String LOGIN_ENABLED = "login";
 
 	// current login preferences
-	private static final String LOGGED_IN = "login";
 	private static final String CURRENT_ID = "userID";
 	private static final String OAUTH_TOKEN = "key1";
 	private static final String OAUTH_SECRET = "key2";
@@ -109,6 +104,20 @@ public class GlobalSettings {
 	private static final String BEARER_TOKEN = "bearer";
 	private static final String CURRENT_API = "current_api_id";
 	private static final String HOSTNAME = "mastodon_host";
+	private static final String PUSH_ID = "push_id";
+	private static final String PUSH_SERVER_HOST = "push_server_host";
+	private static final String PUSH_SERVER_KEY = "push_server_key";
+	private static final String PUSH_PUBLIC_KEY = "push_public_key";
+	private static final String PUSH_PRIVATE_KEY = "push_private_key";
+	private static final String PUSH_AUTH_KEY = "push_auth_key";
+	private static final String PUSH_ALERT_MENTION = "push_mention";
+	private static final String PUSH_ALERT_REPOST = "_push_repost";
+	private static final String PUSH_ALERT_FAVORITE = "_push_favorite";
+	private static final String PUSH_ALERT_FOLLOWING = "push_following";
+	private static final String PUSH_ALERT_REQUEST_FOLLOW = "push_follow_req";
+	private static final String PUSH_ALERT_POLL = "push_poll_finished";
+	private static final String PUSH_ALERT_STATUS_POST = "push_status_subscr";
+	private static final String PUSH_ALERT_STATUS_EDIT = "push_status_edit";
 
 	// file name of the preferences
 	private static final String APP_SETTINGS = "settings";
@@ -129,6 +138,7 @@ public class GlobalSettings {
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
 	private static final long DEFAULT_LOCATION_ID = 1L;
 	private static final String DEFAULT_LOCATION_NAME = "Worldwide";
+	private static final String DEFAULT_UNIFYPUSH_HOST = "https://ntfy.sh";
 
 	private SharedPreferences settings;
 
@@ -139,6 +149,7 @@ public class GlobalSettings {
 	private String proxyUser, proxyPass;
 	private boolean loadImage;
 	private boolean loggedIn;
+	private boolean push_enabled;
 	private boolean isProxyEnabled;
 	private boolean isProxyAuthSet;
 	private boolean toolbarOverlap;
@@ -574,7 +585,7 @@ public class GlobalSettings {
 		Editor edit = settings.edit();
 		edit.putLong(PUSH_ID, webPush.getId());
 		edit.putString(PUSH_SERVER_KEY, webPush.getServerKey());
-		edit.putString(PUSH_SERVER_HOST, webPush.getEndpoint());
+		edit.putString(PUSH_SERVER_HOST, webPush.getHost());
 		edit.putString(PUSH_PUBLIC_KEY, webPush.getPublicKey());
 		edit.putString(PUSH_PRIVATE_KEY, webPush.getPrivateKey());
 		edit.putString(PUSH_AUTH_KEY, webPush.getAuthSecret());
@@ -898,6 +909,28 @@ public class GlobalSettings {
 	}
 
 	/**
+	 * check if push notification is enabled
+	 *
+	 * @return true if push notification is enabled
+	 */
+	public boolean pushEnabled() {
+		return push_enabled;
+	}
+
+	/**
+	 * enable/disable push notification
+	 *
+	 * @param enable true to enable notification
+	 */
+	public void setPushEnabled(boolean enable) {
+		push_enabled = enable;
+
+		Editor edit = settings.edit();
+		edit.putBoolean(PUSH_ENABLED, enable);
+		edit.apply();
+	}
+
+	/**
 	 * get login information
 	 *
 	 * @return current account
@@ -924,7 +957,7 @@ public class GlobalSettings {
 			e.remove(CONSUMER_SECRET);
 			e.remove(BEARER_TOKEN);
 			e.remove(CURRENT_API);
-			e.remove(LOGGED_IN);
+			e.remove(LOGIN_ENABLED);
 		} else {
 			ConfigAccount account = new ConfigAccount(login);
 			this.login = account;
@@ -937,7 +970,7 @@ public class GlobalSettings {
 			e.putString(CONSUMER_SECRET, account.getConsumerSecret());
 			e.putString(BEARER_TOKEN, account.getBearerToken());
 			e.putInt(CURRENT_API, account.getConfiguration().getAccountType());
-			e.putBoolean(LOGGED_IN, true);
+			e.putBoolean(LOGIN_ENABLED, true);
 		}
 		e.apply();
 		if (notify) {
@@ -986,7 +1019,8 @@ public class GlobalSettings {
 		listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
 		isProxyEnabled = settings.getBoolean(PROXY_SET, false);
 		isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
-		loggedIn = settings.getBoolean(LOGGED_IN, false);
+		loggedIn = settings.getBoolean(LOGIN_ENABLED, false);
+		push_enabled = settings.getBoolean(PUSH_ENABLED, false);
 		loadImage = settings.getBoolean(IMAGE_LOAD, true);
 		tweetIndicators = settings.getBoolean(TWEET_INDICATOR, true);
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
@@ -1001,16 +1035,10 @@ public class GlobalSettings {
 		proxyPass = settings.getString(PROXY_PASS, "");
 		String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
 		long woeId = settings.getLong(TREND_ID, DEFAULT_LOCATION_ID);
-		long pushID = settings.getLong(PUSH_ID, 0L);
-		String pushServerKey = settings.getString(PUSH_SERVER_KEY, "");
-		String pushServerHost = settings.getString(PUSH_SERVER_HOST, "");
-		String pushPublicKey = settings.getString(PUSH_PUBLIC_KEY, "");
-		String pushPrivateKey = settings.getString(PUSH_PRIVATE_KEY, "");
-		String pushAuthKey = settings.getString(PUSH_AUTH_KEY, "");
 		location = new ConfigLocation(woeId, place);
-		webPush = new ConfigPush(pushID, pushServerHost, pushServerKey, pushPublicKey, pushPrivateKey, pushAuthKey);
 		// login informations
 		initLogin();
+		initWebpush();
 	}
 
 	/**
@@ -1028,6 +1056,28 @@ public class GlobalSettings {
 		if ((apiId == Account.API_TWITTER_1 || apiId == Account.API_TWITTER_2) && twitterAlt)
 			hostname = TWITTER_ALT_HOST;
 		login = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
+	}
+
+	/**
+	 *
+	 */
+	private void initWebpush() {
+		long pushID = settings.getLong(PUSH_ID, 0L);
+		String pushServerKey = settings.getString(PUSH_SERVER_KEY, "");
+		String pushServerHost = settings.getString(PUSH_SERVER_HOST, DEFAULT_UNIFYPUSH_HOST);
+		String pushPublicKey = settings.getString(PUSH_PUBLIC_KEY, "");
+		String pushPrivateKey = settings.getString(PUSH_PRIVATE_KEY, "");
+		String pushAuthKey = settings.getString(PUSH_AUTH_KEY, "");
+		boolean mentions = settings.getBoolean(PUSH_ALERT_MENTION, false);
+		boolean reposts = settings.getBoolean(PUSH_ALERT_REPOST, false);
+		boolean favorits = settings.getBoolean(PUSH_ALERT_FAVORITE, false);
+		boolean following = settings.getBoolean(PUSH_ALERT_FOLLOWING, false);
+		boolean follow_request = settings.getBoolean(PUSH_ALERT_REQUEST_FOLLOW, false);
+		boolean status_post = settings.getBoolean(PUSH_ALERT_STATUS_POST, false);
+		boolean status_change = settings.getBoolean(PUSH_ALERT_STATUS_EDIT, false);
+		boolean poll_finished = settings.getBoolean(PUSH_ALERT_POLL, false);
+		webPush = new ConfigPush(pushID, pushServerHost, pushServerKey, pushPublicKey, pushPrivateKey, pushAuthKey,
+				mentions, reposts, favorits, following, follow_request, status_post, status_change, poll_finished);
 	}
 
 	/**

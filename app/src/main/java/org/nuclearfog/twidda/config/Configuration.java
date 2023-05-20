@@ -47,6 +47,7 @@ public enum Configuration {
 	private final boolean directMessageSupported;
 	private final boolean emojiSupported;
 	private final boolean statusEditSupported;
+	private final boolean webpushSupported;
 	private final int arrayResHome;
 
 	/**
@@ -71,6 +72,7 @@ public enum Configuration {
 				directMessageSupported = true;
 				emojiSupported = false;
 				statusEditSupported = false;
+				webpushSupported = false;
 				arrayResHome = R.array.home_twitter_icons;
 				break;
 
@@ -90,6 +92,7 @@ public enum Configuration {
 				directMessageSupported = false;
 				emojiSupported = true;
 				statusEditSupported = true;
+				webpushSupported = true;
 				arrayResHome = R.array.home_mastodon_icons;
 				break;
 		}
@@ -198,6 +201,13 @@ public enum Configuration {
 	 */
 	public boolean isStatusEditSupported() {
 		return statusEditSupported;
+	}
+
+	/**
+	 * @return true if network supports push subscription
+	 */
+	public boolean isWebpushSupported() {
+		return webpushSupported;
 	}
 
 	/**

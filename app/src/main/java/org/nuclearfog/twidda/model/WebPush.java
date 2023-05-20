@@ -17,7 +17,7 @@ public interface WebPush extends Serializable {
 	/**
 	 * @return webpush host url
 	 */
-	String getEndpoint();
+	String getHost();
 
 	/**
 	 * @return unique server key set from {@link org.nuclearfog.twidda.backend.api.Connection}
@@ -47,7 +47,7 @@ public interface WebPush extends Serializable {
 	/**
 	 * @return true if status notification (profile subscription) is enabled
 	 */
-	boolean alertStatusEnabled();
+	boolean alertStatusPostEnabled();
 
 	/**
 	 * @return true if 'status reposted' notification is enabled

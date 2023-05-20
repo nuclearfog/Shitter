@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.helper.update;
 
+import org.nuclearfog.twidda.model.WebPush;
+
 import java.io.Serializable;
 
 /**
@@ -32,65 +34,76 @@ public class PushUpdate implements Serializable {
 	 */
 	public static final int POLICY_NONE = 4;
 
-	private String endpoint;
+	private String host;
 	private boolean notifyMention, notifyStatus, notifyFollow, notifyFollowRequest;
 	private boolean notifyFavorite, notifyRepost, notifyPoll, notifyEdit;
 	private int policy;
 
 	/**
-	 *
+	 * @param host unifiedpush host url
 	 */
-	public PushUpdate(String endpoint) {
-		int idx = endpoint.indexOf('?');
-		if (idx > 0) {
-			this.endpoint = endpoint.substring(0, idx);
-		} else {
-			this.endpoint = endpoint;
-		}
+	public PushUpdate(String host) {
+		this.host = host;
+	}
+
+	/**
+	 * create push update from existing push subscription
+	 */
+	public PushUpdate(WebPush push) {
+		host = push.getHost();
+		notifyMention = push.alertMentionEnabled();
+		notifyStatus = push.alertStatusPostEnabled();
+		notifyFollowRequest = push.alertFollowRequestEnabled();
+		notifyFollow = push.alertFollowingEnabled();
+		notifyFavorite = push.alertFavoriteEnabled();
+		notifyRepost = push.alertRepostEnabled();
+		notifyPoll = push.alertPollEnabled();
+		notifyEdit = push.alertStatusChangeEnabled();
+		policy = POLICY_ALL; // todo implement this
 	}
 
 
-	public String getEndpoint() {
-		return endpoint;
+	public String getHost() {
+		return host;
 	}
 
 
-	public boolean enableMentions() {
+	public boolean mentionsEnabled() {
 		return notifyMention;
 	}
 
 
-	public boolean enableStatus() {
+	public boolean statusPostEnabled() {
 		return notifyStatus;
 	}
 
 
-	public boolean enableStatusEdit() {
+	public boolean statusEditEnabled() {
 		return notifyEdit;
 	}
 
 
-	public boolean enableRepost() {
+	public boolean repostEnabled() {
 		return notifyRepost;
 	}
 
 
-	public boolean enableFavorite() {
+	public boolean favoriteEnabled() {
 		return notifyFavorite;
 	}
 
 
-	public boolean enablePoll() {
+	public boolean pollEnabled() {
 		return notifyPoll;
 	}
 
 
-	public boolean enableFollow() {
+	public boolean followEnabled() {
 		return notifyFollow;
 	}
 
 
-	public boolean enableFollowRequest() {
+	public boolean followRequestEnabled() {
 		return notifyFollowRequest;
 	}
 
