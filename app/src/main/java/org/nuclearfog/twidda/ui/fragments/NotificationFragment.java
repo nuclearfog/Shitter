@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.backend.async.NotificationLoader;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderParam;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;

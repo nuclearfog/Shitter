@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 
 /**

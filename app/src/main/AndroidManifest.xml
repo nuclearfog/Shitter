@@ -126,7 +126,7 @@
 			android:theme="@style/AppTheme" />
 
 		<receiver
-			android:name=".receiver.PushNotificationReceiver"
+			android:name=".notification.PushNotificationReceiver"
 			android:enabled="true"
 			android:exported="true">
 

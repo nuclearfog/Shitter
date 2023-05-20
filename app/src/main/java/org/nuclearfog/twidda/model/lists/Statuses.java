@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.lists;
+package org.nuclearfog.twidda.model.lists;
 
 import androidx.annotation.Nullable;
 
@@ -21,8 +21,7 @@ public class Statuses extends LinkedList<Status> {
 	 */
 	public static final long NO_ID = -1L;
 
-	private long prevCursor;
-	private long nextCursor;
+	private long prevCursor, nextCursor;
 
 	/**
 	 * use status ID to determine minimum and maximum ID

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.lists;
+package org.nuclearfog.twidda.model.lists;
 
 import org.nuclearfog.twidda.model.Account;
 

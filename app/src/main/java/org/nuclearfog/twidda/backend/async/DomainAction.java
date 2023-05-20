@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.lists.Domains;
+import org.nuclearfog.twidda.model.lists.Domains;
 
 /**
  * background executor to load/block domains

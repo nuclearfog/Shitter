@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.lists.Accounts;
+import org.nuclearfog.twidda.model.lists.Accounts;
 
 /**
  * backend loader to get login information of local accounts

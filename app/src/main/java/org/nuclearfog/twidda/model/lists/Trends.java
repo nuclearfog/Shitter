@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.lists;
+package org.nuclearfog.twidda.model.lists;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,14 +16,13 @@ public class Trends extends LinkedList<Trend> {
 
 	private static final long serialVersionUID = 7646437787602696292L;
 
-	private long prevCursor = 0L;
-	private long nextCursor = 0L;
+	private long prevCursor, nextCursor;
 
 	/**
 	 *
 	 */
 	public Trends() {
-		super();
+		this(0L, 0L);
 	}
 
 	/**

@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.StatusLoader;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusParameter;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusResult;
-import org.nuclearfog.twidda.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;

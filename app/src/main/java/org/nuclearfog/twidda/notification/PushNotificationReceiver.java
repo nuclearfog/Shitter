@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.receiver;
+package org.nuclearfog.twidda.notification;
 
 import android.content.Context;
 

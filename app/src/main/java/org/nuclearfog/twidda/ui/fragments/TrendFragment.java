@@ -17,7 +17,7 @@ import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendParameter;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.adapter.TrendAdapter;

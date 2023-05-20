@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.backend.async.DomainAction;
 import org.nuclearfog.twidda.backend.async.DomainAction.DomainParam;
 import org.nuclearfog.twidda.backend.async.DomainAction.DomainResult;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.lists.Domains;
+import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.ui.adapter.DomainAdapter;
 import org.nuclearfog.twidda.ui.adapter.DomainAdapter.OnDomainClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;

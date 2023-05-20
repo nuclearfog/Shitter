@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.lists;
+package org.nuclearfog.twidda.model.lists;
 
 import java.util.LinkedList;
 

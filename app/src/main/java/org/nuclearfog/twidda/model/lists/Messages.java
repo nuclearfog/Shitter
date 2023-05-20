@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.lists;
+package org.nuclearfog.twidda.model.lists;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,6 +92,15 @@ public class Messages extends LinkedList<Message> {
 	}
 
 	/**
+	 * get previous cursor
+	 *
+	 * @return cursor string
+	 */
+	public String getPrevCursor() {
+		return prevCursor;
+	}
+
+	/**
 	 * get next cursor string
 	 *
 	 * @return cursor string
@@ -104,6 +113,6 @@ public class Messages extends LinkedList<Message> {
 	@Override
 	@NonNull
 	public String toString() {
-		return "size=" + size() + " previous=" + prevCursor + " next=" + nextCursor;
+		return "size=" + size() + " previous=" + getPrevCursor()  + " next=" + getNextCursor();
 	}
 }

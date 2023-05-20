@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.lists;
+package org.nuclearfog.twidda.model.lists;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,8 +16,7 @@ public class Users extends LinkedList<User> {
 
 	private static final long serialVersionUID = -1108521824070076679L;
 
-	private long prevCursor;
-	private long nextCursor;
+	private long prevCursor, nextCursor;
 
 	/**
 	 *

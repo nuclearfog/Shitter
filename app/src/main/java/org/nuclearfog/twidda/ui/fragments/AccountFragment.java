@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.lists.Accounts;
+import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
 import org.nuclearfog.twidda.ui.adapter.AccountAdapter;

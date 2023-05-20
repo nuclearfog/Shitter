@@ -7,10 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.lists.Accounts;
-import org.nuclearfog.twidda.lists.Messages;
-import org.nuclearfog.twidda.lists.Notifications;
-import org.nuclearfog.twidda.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Accounts;
+import org.nuclearfog.twidda.model.lists.Messages;
+import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
@@ -39,7 +39,7 @@ import org.nuclearfog.twidda.database.impl.DatabasePoll;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.database.impl.DatabaseTrend;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
-import org.nuclearfog.twidda.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;

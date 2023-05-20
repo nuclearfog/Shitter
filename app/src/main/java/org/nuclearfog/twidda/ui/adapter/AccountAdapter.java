@@ -10,7 +10,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.lists.Accounts;
+import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.ui.adapter.holder.AccountHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
