@@ -10,6 +10,26 @@ import java.io.Serializable;
 public interface WebPush extends Serializable {
 
 	/**
+	 * show all notifications
+	 */
+	int POLICY_ALL = 1;
+
+	/**
+	 * show only notifications of followed users
+	 */
+	int POLICY_FOLLOWING = 2;
+
+	/**
+	 * show only notifications of followers
+	 */
+	int POLICY_FOLLOWER = 3;
+
+	/**
+	 * disable push notification
+	 */
+	int POLICY_NONE = 4;
+
+	/**
 	 * @return ID of the subscription
 	 */
 	long getId();
@@ -78,4 +98,9 @@ public interface WebPush extends Serializable {
 	 * @return true if 'status changed' notification is enabled
 	 */
 	boolean alertStatusChangeEnabled();
+
+	/**
+	 * @return push policy {@link #POLICY_ALL,#POLICY_FOLLOWER,#POLICY_FOLLOWING,#POLICY_NONE}
+	 */
+	int getPolicy();
 }

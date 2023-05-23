@@ -1052,13 +1052,13 @@ public class Mastodon implements Connection {
 				params.add("data[alerts][status]=true");
 			if (pushUpdate.statusEditEnabled())
 				params.add("data[alerts][update]=true");
-			if (pushUpdate.getPolicy() == PushUpdate.POLICY_ALL)
+			if (pushUpdate.getPolicy() == WebPush.POLICY_ALL)
 				params.add("data[policy]=all");
-			else if (pushUpdate.getPolicy() == PushUpdate.POLICY_FOLLOWER)
+			else if (pushUpdate.getPolicy() == WebPush.POLICY_FOLLOWER)
 				params.add("data[policy]=follower");
-			else if (pushUpdate.getPolicy() == PushUpdate.POLICY_FOLLOWING)
+			else if (pushUpdate.getPolicy() == WebPush.POLICY_FOLLOWING)
 				params.add("data[policy]=followed");
-			else if (pushUpdate.getPolicy() == PushUpdate.POLICY_NONE)
+			else if (pushUpdate.getPolicy() == WebPush.POLICY_NONE)
 				params.add("data[policy]=none");
 			Response response = post(ENDPOINT_PUSH_UPDATE, params);
 			ResponseBody body = response.body();
@@ -1067,6 +1067,7 @@ public class Mastodon implements Connection {
 				MastodonPush result = new MastodonPush(json);
 				result.setKeys(pushPublicKey, pushPrivateKey);
 				result.setAuthSecret(randomString);
+				result.setPolicy(pushUpdate.getPolicy());
 				return result;
 			}
 			throw new MastodonException(response);

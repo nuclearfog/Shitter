@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/dialog_push_root"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="@dimen/dialog_push_root_padding">
+
+	<TextView
+		android:id="@+id/dialog_push_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_title"
+		android:textSize="@dimen/dialog_push_title_textsize"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<Spinner
+		android:id="@+id/dialog_push_policy"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_title"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_mention"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_policy" />
+
+	<TextView
+		android:id="@+id/dialog_push_mention_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_mention"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_mention"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_mention"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_mention"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_repost"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_mention_label" />
+
+	<TextView
+		android:id="@+id/dialog_push_repost_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_repost"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_repost"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_repost"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_repost"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_favorite"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_repost" />
+
+	<TextView
+		android:id="@+id/dialog_push_favorite_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_favorite"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_favorite"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_favorite"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_favorite"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_poll"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_favorite" />
+
+	<TextView
+		android:id="@+id/dialog_push_poll_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_poll_finished"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_poll"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_poll"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_poll"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_follow"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_poll" />
+
+	<TextView
+		android:id="@+id/dialog_push_follow_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_new_follower"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_follow"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_follow"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_follow"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_follow_request"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_follow" />
+
+	<TextView
+		android:id="@+id/dialog_push_follow_request_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_follow_request"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_follow_request"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_follow_request"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_follow_request"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_new_status"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_follow_request" />
+
+	<TextView
+		android:id="@+id/dialog_push_new_status_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_new_status"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_new_status"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_new_status"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_new_status"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_push_edit_status"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_new_status" />
+
+	<TextView
+		android:id="@+id/dialog_push_edit_status_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_push_edit_status"
+		app:layout_constraintStart_toEndOf="@id/dialog_push_edit_status"
+		app:layout_constraintTop_toTopOf="@id/dialog_push_edit_status"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_push_edit_status"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<Button
+		android:id="@+id/dialog_push_apply"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/dialog_push_button_height"
+		android:padding="@dimen/dialog_push_button_padding"
+		android:text="@string/dialog_push_apply"
+		android:layout_margin="@dimen/dialog_push_layout_margin"
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_edit_status"
+		app:layout_constraintEnd_toEndOf="parent"
+		style="@style/FeedbackButton" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

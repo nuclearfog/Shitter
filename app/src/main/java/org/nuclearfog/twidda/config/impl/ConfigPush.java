@@ -16,6 +16,7 @@ public class ConfigPush implements WebPush {
 	private String host;
 	private String serverKey, publicKey, privateKey, authKey;
 	private boolean mentions, reposts, favorits, following, follow_request, status_post, status_change, poll_finished;
+	private int policy;
 
 	/**
 	 * @param webPush web push instance to copy information
@@ -35,15 +36,17 @@ public class ConfigPush implements WebPush {
 		status_post = webPush.alertStatusPostEnabled();
 		status_change = webPush.alertStatusChangeEnabled();
 		poll_finished = webPush.alertPollEnabled();
+		policy = webPush.getPolicy();
 	}
 
 	/**
 	 *
 	 */
-	public ConfigPush(long id, String host, String serverKey, String publicKey, String privateKey, String authKey, boolean mentions, boolean reposts,
+	public ConfigPush(long id, String host, String serverKey, String publicKey, String privateKey, String authKey, int policy, boolean mentions, boolean reposts,
 	                  boolean favorits, boolean following, boolean follow_request, boolean status_post, boolean status_change, boolean poll_finished) {
 		this.id = id;
 		this.host = host;
+		this.policy = policy;
 		this.serverKey = serverKey;
 		this.privateKey = privateKey;
 		this.publicKey = publicKey;
@@ -140,6 +143,12 @@ public class ConfigPush implements WebPush {
 	@Override
 	public boolean alertStatusChangeEnabled() {
 		return status_change;
+	}
+
+
+	@Override
+	public int getPolicy() {
+		return policy;
 	}
 
 

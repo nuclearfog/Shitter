@@ -19,6 +19,7 @@ public class MastodonPush implements WebPush {
 	private long id;
 	private String host;
 	private String serverKey, publicKey, privateKey, authSec;
+	private int policy;
 
 	/**
 	 * @param json web push json object
@@ -119,6 +120,12 @@ public class MastodonPush implements WebPush {
 	}
 
 
+	@Override
+	public int getPolicy() {
+		return policy;
+	}
+
+
 	@NonNull
 	@Override
 	public String toString() {
@@ -147,5 +154,12 @@ public class MastodonPush implements WebPush {
 	 */
 	public void setAuthSecret(String authSec) {
 		this.authSec = authSec;
+	}
+
+	/**
+	 * set push policy
+	 */
+	public void setPolicy(int policy) {
+		this.policy = policy;
 	}
 }

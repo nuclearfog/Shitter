@@ -5,9 +5,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.WebPush;
 
 /**
@@ -15,28 +15,39 @@ import org.nuclearfog.twidda.model.WebPush;
  *
  * @author nuclearfog
  */
-public class PushUpdater extends AsyncExecutor <PushUpdate, Void> {
+public class PushUpdater extends AsyncExecutor <PushUpdate, PushUpdater.PushUpdateResult> {
 
 	private Connection connection;
-	private GlobalSettings settings;
 
 	/**
 	 *
 	 */
 	public PushUpdater(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
-		settings = GlobalSettings.getInstance(context);
 	}
 
 
 	@Override
-	protected Void doInBackground(@NonNull PushUpdate param) {
+	protected PushUpdateResult doInBackground(@NonNull PushUpdate param) {
 		try {
 			WebPush webpush = connection.updatePush(param);
-			settings.setWebPush(webpush);
-		} catch (Exception e) {
-			e.printStackTrace();
+			return new PushUpdateResult(webpush, null);
+		} catch (ConnectionException e) {
+			return new PushUpdateResult(null, e);
 		}
-		return null;
+	}
+
+	/**
+	 *
+	 */
+	public static class PushUpdateResult {
+
+		public final WebPush push;
+		public final ConnectionException exception;
+
+		PushUpdateResult(WebPush push, ConnectionException exception) {
+			this.push = push;
+			this.exception = exception;
+		}
 	}
 }

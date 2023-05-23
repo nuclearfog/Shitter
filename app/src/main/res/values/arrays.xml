@@ -71,6 +71,13 @@
 		<item>Days</item>
 	</string-array>
 
+	<string-array name="push_policy">
+		<item>All</item>
+		<item>Following</item>
+		<item>Follower</item>
+		<item>Disable</item>
+	</string-array>
+
 	<string-array name="visibility">
 		<item>Public</item>
 		<item>Private</item>

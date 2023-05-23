@@ -303,4 +303,14 @@
 	<string name="info_hashtag_unfollowed">Hashtag entfolgt</string>
 	<string name="info_domain_removed">Domain von der Liste entfernt</string>
 	<string name="info_hashtag_followed">Hashtag gefolgt</string>
+	<string name="dialog_push_repost">bei Reposts</string>
+	<string name="dialog_push_favorite">bei Favorisierung</string>
+	<string name="dialog_push_poll_finished">bei beendeten Umfragen</string>
+	<string name="dialog_push_mention">bei Erwähnungen</string>
+	<string name="dialog_push_new_status">bei neuem Status</string>
+	<string name="dialog_push_edit_status">bei Statusänderungen</string>
+	<string name="dialog_push_new_follower">bei neuen Followern</string>
+	<string name="dialog_push_follow_request">bei neuen Follow-Anfragen</string>
+	<string name="dialog_push_title">Pushbenachrichtigungen</string>
+	<string name="dialog_push_apply">Änderungen anwenden</string>
 </resources>

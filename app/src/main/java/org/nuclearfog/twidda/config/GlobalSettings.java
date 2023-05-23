@@ -109,6 +109,7 @@ public class GlobalSettings {
 	private static final String PUSH_SERVER_KEY = "push_server_key";
 	private static final String PUSH_PUBLIC_KEY = "push_public_key";
 	private static final String PUSH_PRIVATE_KEY = "push_private_key";
+	private static final String PUSH_POLICY = "push_policy";
 	private static final String PUSH_AUTH_KEY = "push_auth_key";
 	private static final String PUSH_ALERT_MENTION = "push_mention";
 	private static final String PUSH_ALERT_REPOST = "_push_repost";
@@ -1076,7 +1077,8 @@ public class GlobalSettings {
 		boolean status_post = settings.getBoolean(PUSH_ALERT_STATUS_POST, false);
 		boolean status_change = settings.getBoolean(PUSH_ALERT_STATUS_EDIT, false);
 		boolean poll_finished = settings.getBoolean(PUSH_ALERT_POLL, false);
-		webPush = new ConfigPush(pushID, pushServerHost, pushServerKey, pushPublicKey, pushPrivateKey, pushAuthKey,
+		int policy = settings.getInt(PUSH_POLICY, WebPush.POLICY_ALL);
+		webPush = new ConfigPush(pushID, pushServerHost, pushServerKey, pushPublicKey, pushPrivateKey, pushAuthKey, policy,
 				mentions, reposts, favorits, following, follow_request, status_post, status_change, poll_finished);
 	}
 

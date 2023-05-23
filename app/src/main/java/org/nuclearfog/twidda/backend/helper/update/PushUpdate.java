@@ -14,26 +14,6 @@ public class PushUpdate implements Serializable {
 
 	private static final long serialVersionUID = -34599486422177957L;
 
-	/**
-	 * show all notifications
-	 */
-	public static final int POLICY_ALL = 1;
-
-	/**
-	 * show only notifications of followed users
-	 */
-	public static final int POLICY_FOLLOWING = 2;
-
-	/**
-	 * show only notifications of followers
-	 */
-	public static final int POLICY_FOLLOWER = 3;
-
-	/**
-	 * disable push notification
-	 */
-	public static final int POLICY_NONE = 4;
-
 	private String host;
 	private boolean notifyMention, notifyStatus, notifyFollow, notifyFollowRequest;
 	private boolean notifyFavorite, notifyRepost, notifyPoll, notifyEdit;
@@ -59,7 +39,7 @@ public class PushUpdate implements Serializable {
 		notifyRepost = push.alertRepostEnabled();
 		notifyPoll = push.alertPollEnabled();
 		notifyEdit = push.alertStatusChangeEnabled();
-		policy = POLICY_ALL; // todo implement this
+		policy = WebPush.POLICY_ALL;
 	}
 
 
@@ -73,8 +53,18 @@ public class PushUpdate implements Serializable {
 	}
 
 
+	public void setMentionsEnabled(boolean enable) {
+		notifyMention = enable;
+	}
+
+
 	public boolean statusPostEnabled() {
 		return notifyStatus;
+	}
+
+
+	public void setStatusPostEnabled(boolean enable) {
+		notifyStatus = enable;
 	}
 
 
@@ -83,8 +73,18 @@ public class PushUpdate implements Serializable {
 	}
 
 
+	public void setStatusEditEnabled(boolean enable) {
+		notifyEdit = enable;
+	}
+
+
 	public boolean repostEnabled() {
 		return notifyRepost;
+	}
+
+
+	public void setRepostEnabled(boolean enable) {
+		notifyRepost = enable;
 	}
 
 
@@ -93,8 +93,18 @@ public class PushUpdate implements Serializable {
 	}
 
 
+	public void setFavoriteEnabled(boolean enable) {
+		notifyFavorite = enable;
+	}
+
+
 	public boolean pollEnabled() {
 		return notifyPoll;
+	}
+
+
+	public void setPollEnabled(boolean enable) {
+		notifyPoll = enable;
 	}
 
 
@@ -103,12 +113,27 @@ public class PushUpdate implements Serializable {
 	}
 
 
+	public void setFollowEnabled(boolean enable) {
+		notifyFollow = enable;
+	}
+
+
 	public boolean followRequestEnabled() {
 		return notifyFollowRequest;
 	}
 
 
+	public void setFollowRequestEnabled(boolean enable) {
+		notifyFollowRequest = enable;
+	}
+
+
 	public int getPolicy() {
 		return policy;
+	}
+
+
+	public void setPolicy(int policy) {
+		this.policy = policy;
 	}
 }

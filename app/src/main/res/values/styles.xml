@@ -54,6 +54,11 @@
 		<item name="android:windowCloseOnTouchOutside">false</item>
 	</style>
 
+	<style name="WebPushDialog" parent="Theme.AppCompat.Dialog">
+		<item name="android:windowMinWidthMinor">80%</item>
+		<item name="android:windowCloseOnTouchOutside">false</item>
+	</style>
+
 	<style name="AudioDialog" parent="Theme.AppCompat.Dialog">
 		<item name="android:background">@color/player_control</item>
 		<item name="android:windowMinWidthMinor">90%</item>
