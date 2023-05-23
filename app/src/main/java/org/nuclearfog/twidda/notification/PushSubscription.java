@@ -23,9 +23,9 @@ public class PushSubscription {
 			if (settings.pushEnabled()) {
 				ArrayList<String> features = new ArrayList<>(1);
 				features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
-				UnifiedPush.registerApp(context, settings.getWebPush().getHost(), features, "");
+				UnifiedPush.registerApp(context.getApplicationContext(), settings.getWebPush().getHost(), features, "");
 			} else {
-				UnifiedPush.unregisterApp(context, settings.getWebPush().getHost());
+				UnifiedPush.unregisterApp(context.getApplicationContext(), settings.getWebPush().getHost());
 			}
 		}
 	}
@@ -36,7 +36,7 @@ public class PushSubscription {
 	public static void unsubscripe(Context context) {
 		GlobalSettings settings = GlobalSettings.getInstance(context);
 		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported() && settings.pushEnabled()) {
-			UnifiedPush.unregisterApp(context, settings.getWebPush().getHost());
+			UnifiedPush.unregisterApp(context.getApplicationContext(), settings.getWebPush().getHost());
 		}
 	}
 }

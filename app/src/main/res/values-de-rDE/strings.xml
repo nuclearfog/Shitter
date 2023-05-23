@@ -189,6 +189,7 @@
 	<string name="error_twitter_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
 	<string name="button_share">Link teilen</string>
 	<string name="settings_look">Aussehen</string>
+	<string name="menu_push_settings">Benachrichtigungen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
 	<string name="status_translate_text">übersetzen</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
@@ -313,4 +314,5 @@
 	<string name="dialog_push_follow_request">bei neuen Follow-Anfragen</string>
 	<string name="dialog_push_title">Pushbenachrichtigungen</string>
 	<string name="dialog_push_apply">Änderungen anwenden</string>
+	<string name="settings_enable_push_label">aktiviere Push-Benachrichtigung</string>
 </resources>

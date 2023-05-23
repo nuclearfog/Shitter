@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.nuclearfog.twidda.backend.image.ImageCache;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.notification.PushSubscription;
 
 /**
@@ -11,17 +12,23 @@ import org.nuclearfog.twidda.notification.PushSubscription;
  */
 public class ClientApplication extends Application {
 
+	private GlobalSettings settings;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		PushSubscription.subscripe(getApplicationContext());
+		settings = GlobalSettings.getInstance(getApplicationContext());
+		if (settings.pushEnabled()) {
+			PushSubscription.subscripe(getApplicationContext());
+		}
 	}
 
 
 	@Override
 	public void onTerminate() {
-		PushSubscription.unsubscripe(getApplicationContext());
+		if (settings.pushEnabled()) {
+			PushSubscription.unsubscripe(getApplicationContext());
+		}
 		super.onTerminate();
 	}
 

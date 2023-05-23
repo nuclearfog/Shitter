@@ -320,7 +320,8 @@
 	<dimen name="dialog_push_title_textsize">22sp</dimen>
 	<dimen name="dialog_push_button_height">28sp</dimen>
 	<dimen name="dialog_push_button_padding">5dp</dimen>
-	<dimen name="dialog_push_layout_margin">8dp</dimen>
+	<dimen name="dialog_push_layout_margin">5dp</dimen>
 	<dimen name="dialog_push_root_padding">5dp</dimen>
+	<dimen name="dialog_push_spinner_height">22sp</dimen>
 
 </resources>

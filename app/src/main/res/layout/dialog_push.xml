@@ -20,7 +20,7 @@
 	<Spinner
 		android:id="@+id/dialog_push_policy"
 		android:layout_width="0dp"
-		android:layout_height="wrap_content"
+		android:layout_height="@dimen/dialog_push_spinner_height"
 		android:layout_marginTop="@dimen/dialog_push_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_push_title"

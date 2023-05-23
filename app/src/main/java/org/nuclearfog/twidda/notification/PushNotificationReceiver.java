@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.async.PushUpdater;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.unifiedpush.android.connector.MessagingReceiver;
 
 /**
@@ -19,7 +20,10 @@ public class PushNotificationReceiver extends MessagingReceiver {
 	@Override
 	public void onMessage(@NonNull Context context, @NonNull byte[] message, @NonNull String instance) {
 		super.onMessage(context, message, instance);
-		// todo add manual synchonization
+		GlobalSettings settings = GlobalSettings.getInstance(context);
+		if (settings.pushEnabled()) {
+			// todo add manual synchonization
+		}
 	}
 
 

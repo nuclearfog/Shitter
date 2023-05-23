@@ -169,6 +169,7 @@
 	<string name="menu_toolbar_request">Follow requests</string>
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
 	<string name="menu_message">write message</string>
+	<string name="menu_push_settings">Notifications</string>
 
 	<!--dialog strings-->
 	<string name="dialog_link_image_preview">Link preview image</string>
@@ -340,4 +341,5 @@
 	<string name="dialog_push_follow_request">on follow request</string>
 	<string name="dialog_push_title">Push notifications</string>
 	<string name="dialog_push_apply">apply changes</string>
+	<string name="settings_enable_push_label">enable push notification</string>
 </resources>

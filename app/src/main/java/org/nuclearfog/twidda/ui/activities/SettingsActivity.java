@@ -46,6 +46,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.notification.PushSubscription;
 import org.nuclearfog.twidda.ui.adapter.FontAdapter;
 import org.nuclearfog.twidda.ui.adapter.LocationAdapter;
 import org.nuclearfog.twidda.ui.adapter.ScaleAdapter;
@@ -53,6 +54,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.InfoDialog;
 import org.nuclearfog.twidda.ui.dialogs.LicenseDialog;
+import org.nuclearfog.twidda.ui.dialogs.WebPushDialog;
 
 import java.util.regex.Matcher;
 
@@ -100,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private LocationAdapter locationAdapter;
 	private BaseAdapter fontAdapter, scaleAdapter;
 
-	private Dialog color_dialog_selector, appInfo, license;
+	private Dialog color_dialog_selector, appInfo, license, pushDialog;
 	private ConfirmDialog confirmDialog;
 
 	private View enable_auth_label;
@@ -141,6 +143,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
 		SwitchButton hideSensitive = findViewById(R.id.enable_status_hide_sensitive);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
+		SwitchButton enablePush = findViewById(R.id.settings_enable_push);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.spinner_font);
 		Spinner scaleSelector = findViewById(R.id.spinner_scale);
@@ -189,6 +192,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		confirmDialog = new ConfirmDialog(this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
+		pushDialog = new WebPushDialog(this);
 		locationLoader = new LocationLoader(this);
 		databaseAction = new DatabaseAction(this);
 
@@ -222,6 +226,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLocalTl.setCheckedImmediately(settings.useLocalTimeline());
 		hideSensitive.setCheckedImmediately(settings.hideSensitiveEnabled());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
+		enablePush.setCheckedImmediately(settings.pushEnabled());
 		enable_proxy.setCheckedImmediately(settings.isProxyEnabled());
 		enable_auth.setCheckedImmediately(settings.isProxyAuthSet());
 		proxy_address.setText(settings.getProxyHost());
@@ -237,6 +242,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		logout.setOnClickListener(this);
 		delButton.setOnClickListener(this);
 		toggleImg.setOnCheckedChangeListener(this);
+		enablePush.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
 		enableNitter.setOnCheckedChangeListener(this);
 		enableLocalTl.setOnCheckedChangeListener(this);
@@ -292,7 +298,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (item.getItemId() == R.id.settings_info) {
+		if (item.getItemId() == R.id.settings_push) {
+			pushDialog.show();
+		} else if (item.getItemId() == R.id.settings_info) {
 			appInfo.show();
 		} else if (item.getItemId() == R.id.settings_licenses) {
 			license.show();
@@ -500,6 +508,15 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable/disable local timeline (Mastodon)
 		else if (c.getId() == R.id.settings_local_timeline) {
 			settings.setLocalTimeline(checked);
+		}
+		// enable/disable push notification
+		else if (c.getId() == R.id.settings_enable_push) {
+			if (checked) {
+				PushSubscription.subscripe(this);
+			} else {
+				PushSubscription.unsubscripe(this);
+			}
+			settings.setPushEnabled(checked);
 		}
 		// enable proxy settings
 		else if (c.getId() == R.id.settings_enable_proxy) {

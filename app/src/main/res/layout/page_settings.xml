@@ -194,25 +194,20 @@
 						android:id="@+id/settings_look_text"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
 						android:lines="1"
 						android:text="@string/settings_look"
 						android:textSize="@dimen/settings_textsize"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintBottom_toTopOf="@id/settings_toolbar_ov"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
 						android:id="@+id/settings_toolbar_ov"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_look_text"
-						app:layout_constraintBottom_toTopOf="@id/enable_like"
-						app:layout_constraintEnd_toStartOf="@id/settings_toolbar_ov_descr" />
+						app:layout_constraintTop_toBottomOf="@id/settings_look_text" />
 
 					<TextView
 						android:id="@+id/settings_toolbar_ov_descr"
@@ -221,6 +216,8 @@
 						android:lines="1"
 						android:text="@string/settings_enable_toolbar_overlap"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toEndOf="@id/settings_toolbar_ov"
 						app:layout_constraintTop_toTopOf="@id/settings_toolbar_ov"
 						app:layout_constraintBottom_toBottomOf="@id/settings_toolbar_ov"
@@ -230,11 +227,9 @@
 						android:id="@+id/enable_like"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/settings_toolbar_ov"
-						app:layout_constraintBottom_toTopOf="@id/enable_status_indicators"
 						app:layout_constraintEnd_toStartOf="@id/enable_like_descr" />
 
 					<TextView
@@ -244,6 +239,8 @@
 						android:lines="1"
 						android:text="@string/settings_enable_like"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toEndOf="@id/enable_like"
 						app:layout_constraintTop_toTopOf="@id/enable_like"
 						app:layout_constraintBottom_toBottomOf="@id/enable_like"
@@ -253,11 +250,9 @@
 						android:id="@+id/enable_status_indicators"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/enable_like"
-						app:layout_constraintBottom_toTopOf="@id/enable_status_hide_sensitive"
 						app:layout_constraintEnd_toStartOf="@id/status_indicators_descr" />
 
 					<TextView
@@ -267,6 +262,8 @@
 						android:lines="1"
 						android:text="@string/settings_enable_indicators"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toEndOf="@id/enable_status_indicators"
 						app:layout_constraintTop_toTopOf="@id/enable_status_indicators"
 						app:layout_constraintBottom_toBottomOf="@id/enable_status_indicators"
@@ -276,11 +273,9 @@
 						android:id="@+id/enable_status_hide_sensitive"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/enable_status_indicators"
-						app:layout_constraintBottom_toTopOf="@id/spinner_font"
 						app:layout_constraintEnd_toStartOf="@id/enable_status_hide_sensitive_descr" />
 
 					<TextView
@@ -290,6 +285,8 @@
 						android:lines="1"
 						android:text="@string/settings_hide_sensitive"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toEndOf="@id/enable_status_hide_sensitive"
 						app:layout_constraintTop_toTopOf="@id/enable_status_hide_sensitive"
 						app:layout_constraintBottom_toBottomOf="@id/enable_status_hide_sensitive"
@@ -326,7 +323,6 @@
 						app:layout_constraintHorizontal_weight="2"
 						app:layout_constraintStart_toEndOf="@id/spinner_font"
 						app:layout_constraintTop_toTopOf="@id/spinner_font"
-						app:layout_constraintBottom_toBottomOf="@id/spinner_font"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
@@ -347,25 +343,20 @@
 						android:id="@+id/settings_data_text"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
 						android:lines="1"
 						android:text="@string/data_consumption"
 						android:textSize="@dimen/settings_textsize"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintBottom_toTopOf="@id/toggleImg"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
 						android:id="@+id/toggleImg"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_data_text"
-						app:layout_constraintBottom_toTopOf="@id/settings_enable_twitter_alt"
-						app:layout_constraintEnd_toStartOf="@id/toggleImg_descr" />
+						app:layout_constraintTop_toBottomOf="@id/settings_data_text" />
 
 					<TextView
 						android:id="@+id/toggleImg_descr"
@@ -375,6 +366,8 @@
 						android:lines="1"
 						android:text="@string/settings_image"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toEndOf="@id/toggleImg"
 						app:layout_constraintTop_toTopOf="@id/toggleImg"
 						app:layout_constraintBottom_toBottomOf="@id/toggleImg"
@@ -384,11 +377,9 @@
 						android:id="@+id/settings_enable_twitter_alt"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/toggleImg"
-						app:layout_constraintBottom_toTopOf="@id/settings_local_timeline"
 						app:layout_constraintEnd_toStartOf="@id/settings_enable_twitter_alt_descr" />
 
 					<TextView
@@ -398,6 +389,8 @@
 						android:lines="1"
 						android:text="@string/settings_description_enable_twitter_alt"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toEndOf="@id/settings_enable_twitter_alt"
 						app:layout_constraintTop_toTopOf="@id/settings_enable_twitter_alt"
 						app:layout_constraintBottom_toBottomOf="@id/settings_enable_twitter_alt"
@@ -407,12 +400,9 @@
 						android:id="@+id/settings_local_timeline"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_enable_twitter_alt"
-						app:layout_constraintBottom_toTopOf="@id/settings_list_seek"
-						app:layout_constraintEnd_toStartOf="@id/settings_local_timeline_descr" />
+						app:layout_constraintTop_toBottomOf="@id/settings_enable_twitter_alt" />
 
 					<TextView
 						android:id="@+id/settings_local_timeline_descr"
@@ -421,9 +411,33 @@
 						android:lines="1"
 						android:text="@string/settings_description_local_timeline"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
 						app:layout_constraintStart_toEndOf="@id/settings_local_timeline"
 						app:layout_constraintTop_toTopOf="@id/settings_local_timeline"
 						app:layout_constraintBottom_toBottomOf="@id/settings_local_timeline"
+						app:layout_constraintEnd_toEndOf="parent" />
+
+					<com.kyleduo.switchbutton.SwitchButton
+						android:id="@+id/settings_enable_push"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="@dimen/settings_column_margin"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/settings_local_timeline" />
+
+					<TextView
+						android:id="@+id/settings_enable_push_descr"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:lines="1"
+						android:text="@string/settings_enable_push_label"
+						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
+						app:layout_constraintStart_toEndOf="@id/settings_enable_push"
+						app:layout_constraintTop_toTopOf="@id/settings_enable_push"
+						app:layout_constraintBottom_toBottomOf="@id/settings_enable_push"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<TextView
@@ -444,9 +458,9 @@
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 						android:max="9"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toEndOf="@id/settings_list_seek_descr"
-						app:layout_constraintTop_toBottomOf="@id/settings_local_timeline_descr"
-						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/settings_enable_push"
 						app:layout_constraintEnd_toStartOf="@id/settings_list_size" />
 
 					<TextView

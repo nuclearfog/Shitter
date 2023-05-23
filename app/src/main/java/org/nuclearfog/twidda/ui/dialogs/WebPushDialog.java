@@ -101,6 +101,14 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 
 
 	@Override
+	public void show() {
+		if (!isShowing()) {
+			super.show();
+		}
+	}
+
+
+	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_push_apply) {
 			if (updater.isIdle()) {
