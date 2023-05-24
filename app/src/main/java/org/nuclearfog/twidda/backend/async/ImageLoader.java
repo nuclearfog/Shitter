@@ -6,6 +6,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -65,10 +66,12 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 			return new ImageResult(Uri.fromFile(imageFile), null);
 		} catch (ConnectionException exception) {
 			return new ImageResult(null, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new ImageResult(null, null);
+		return null;
 	}
 
 	/**

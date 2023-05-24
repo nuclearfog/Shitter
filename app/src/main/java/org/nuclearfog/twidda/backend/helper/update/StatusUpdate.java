@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Media;
@@ -471,8 +472,10 @@ public class StatusUpdate implements Serializable, Closeable {
 				}
 
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 			return false;
 		}
 		return true;

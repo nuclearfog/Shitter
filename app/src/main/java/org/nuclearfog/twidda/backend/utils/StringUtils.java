@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.utils;
 import android.content.res.Resources;
 import android.util.Base64;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 
 import java.io.IOException;
@@ -213,8 +214,9 @@ public class StringUtils {
 						return result.getTime() + TIME_ZONE.getOffset(System.currentTimeMillis());
 					break;
 			}
-		} catch (ParseException e) {
-			e.printStackTrace();
+		} catch (ParseException exception) {
+			if (BuildConfig.DEBUG)
+				exception.printStackTrace();
 		}
 		return DEFAULT_TIME;
 	}

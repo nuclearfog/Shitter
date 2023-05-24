@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -55,9 +56,11 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 			}
 			return new NotificationActionResult(NotificationActionResult.ERROR, param.id, null, exception);
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new NotificationActionResult(NotificationActionResult.ERROR, param.id, null, null);
+		return null;
 	}
 
 	/**

@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -16,7 +15,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendParameter;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendResult;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
@@ -173,8 +172,9 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	@Override
 	public void onResult(@NonNull TrendResult result) {
 		if (result.mode == TrendResult.ERROR) {
-			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+			if (getContext() != null) {
+				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			}
 			adapter.disableLoading();
 		} else {
 			adapter.addItems(result.trends, result.index);

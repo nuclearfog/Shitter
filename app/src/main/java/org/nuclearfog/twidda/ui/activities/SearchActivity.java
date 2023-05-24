@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.backend.async.HashtagAction;
 import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagParam;
 import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
@@ -256,7 +256,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 				break;
 
 			case HashtagResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				String message = ErrorUtils.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				break;
 		}

@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -1670,8 +1671,10 @@ public class Mastodon implements Connection {
 					String max_id_str = headerStr.substring(m.start() + 7, m.end());
 					cursors[1] = Long.parseLong(max_id_str);
 				}
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
+			} catch (NumberFormatException exception) {
+				if (BuildConfig.DEBUG) {
+					exception.printStackTrace();
+				}
 			}
 		}
 		return cursors;

@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;
@@ -456,7 +456,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
 			finish();
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
 		}

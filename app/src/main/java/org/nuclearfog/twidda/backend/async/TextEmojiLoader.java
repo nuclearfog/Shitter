@@ -8,6 +8,7 @@ import android.text.Spannable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
@@ -59,8 +60,11 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, T
 			cache.trimCache();
 			return new EmojiResult(param.id, param.spannable, result);
 		} catch (Exception exception) {
-			return new EmojiResult(param.id, param.spannable, null);
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
+		return new EmojiResult(param.id, param.spannable, null);
 	}
 
 	/**

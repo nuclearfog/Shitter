@@ -6,6 +6,8 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,8 +81,10 @@ public class MediaStatus implements Serializable, Closeable {
 				mimeType = resolver.getType(uri);
 				// check if stream is valid
 				return inputStream != null && mimeType != null && inputStream.available() > 0;
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException exception) {
+				if (BuildConfig.DEBUG) {
+					exception.printStackTrace();
+				}
 			}
 		}
 		return false;

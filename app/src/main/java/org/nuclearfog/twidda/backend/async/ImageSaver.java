@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend.async;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.ui.activities.MediaActivity;
 
 import java.io.InputStream;
@@ -27,8 +28,10 @@ public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
 			param.inputStream.close();
 			param.outputStream.close();
 			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
 		return false;
 	}

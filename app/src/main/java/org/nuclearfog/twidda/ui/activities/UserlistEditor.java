@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.backend.async.UserlistUpdater;
 import org.nuclearfog.twidda.backend.async.UserlistUpdater.ListUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -209,7 +209,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 			setResult(RETURN_LIST_CHANGED, intent);
 			finish();
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.LIST_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
 		}

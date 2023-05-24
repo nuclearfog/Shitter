@@ -34,7 +34,7 @@ import org.nuclearfog.twidda.backend.async.UserUpdater.UserUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
@@ -249,7 +249,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			setResult(RETURN_PROFILE_CHANGED, data);
 			finish();
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
 		}

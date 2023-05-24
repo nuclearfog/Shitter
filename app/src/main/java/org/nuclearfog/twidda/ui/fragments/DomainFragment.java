@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DomainAction;
 import org.nuclearfog.twidda.backend.async.DomainAction.DomainParam;
 import org.nuclearfog.twidda.backend.async.DomainAction.DomainResult;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.ui.adapter.DomainAdapter;
 import org.nuclearfog.twidda.ui.adapter.DomainAdapter.OnDomainClickListener;
@@ -116,8 +116,9 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 				Toast.makeText(requireContext(), R.string.info_domain_removed, Toast.LENGTH_SHORT).show();
 			}
 		} else if (result.mode == DomainResult.ERROR) {
-			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+			if (getContext() != null) {
+				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			}
 			adapter.disableLoading();
 		}
 	}

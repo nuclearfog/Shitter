@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -46,9 +47,11 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagParam, Has
 		} catch (ConnectionException exception) {
 			return new HashtagResult(HashtagResult.ERROR, null, exception);
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new HashtagResult(HashtagResult.ERROR, null, null);
+		return null;
 	}
 
 	/**

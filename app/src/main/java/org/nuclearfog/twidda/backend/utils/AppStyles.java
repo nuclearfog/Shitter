@@ -38,6 +38,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.kyleduo.switchbutton.SwitchButton;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.config.GlobalSettings;
 
@@ -271,10 +272,11 @@ public class AppStyles {
 					image = blur.transform(crop.transform(image));
 					toolbarBackground.setImageBitmap(image);
 				}
-			} catch (Exception e) {
+			} catch (Exception exception) {
 				// exception may occur when there is not enough free memory
 				// reset toolbar background
-				e.printStackTrace();
+				if (BuildConfig.DEBUG)
+					exception.printStackTrace();
 				toolbarBackground.setImageResource(0);
 			}
 		}

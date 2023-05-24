@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 
 import java.io.IOException;
@@ -40,11 +41,6 @@ public class MastodonException extends ConnectionException {
 	 */
 	private static final int ERROR_JSON = -3;
 
-	/**
-	 * caused by interrupt
-	 */
-	private static final int ERROR_INTERRUPTED = -4;
-
 
 	private int httpCode = 0;
 	private int errorCode = UNKNOWN_ERROR;
@@ -63,7 +59,7 @@ public class MastodonException extends ConnectionException {
 		} else if (e instanceof ConnectException) {
 			errorCode = NO_CONNECTION;
 		} else if (getCause() instanceof InterruptedException) {
-			errorCode = ERROR_INTERRUPTED;
+			errorCode = INTERRUPTED;
 		}
 	}
 
@@ -84,8 +80,10 @@ public class MastodonException extends ConnectionException {
 					errorMessage = title;
 				else
 					errorMessage = title + ": " + descr;
-			} catch (JSONException | IOException e) {
-				e.printStackTrace();
+			} catch (JSONException | IOException exception) {
+				if (BuildConfig.DEBUG) {
+					exception.printStackTrace();
+				}
 			}
 		}
 	}

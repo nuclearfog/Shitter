@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.backend.async.UserlistManager;
 import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerParam;
 import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
@@ -327,8 +327,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				break;
 
 			case ListManagerResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}
 	}
@@ -365,8 +364,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				break;
 
 			case ListActionResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					// List does not exist
 					intent = new Intent();

@@ -7,6 +7,8 @@ import android.util.LruCache;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -69,8 +71,10 @@ public class ImageCache {
 					}
 				}
 			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
+		} catch (SecurityException exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
 	}
 
@@ -114,10 +118,10 @@ public class ImageCache {
 						output.close();
 						files.put(key, file);
 					}
-				} catch (
-						IOException |
-						SecurityException e) {
-					e.printStackTrace();
+				} catch (IOException | SecurityException exception) {
+					if (BuildConfig.DEBUG) {
+						exception.printStackTrace();
+					}
 				}
 			}
 		}
@@ -142,9 +146,10 @@ public class ImageCache {
 							cache.put(key, result);
 						}
 					}
-				} catch (
-						SecurityException e) {
-					e.printStackTrace();
+				} catch (SecurityException exception) {
+					if (BuildConfig.DEBUG) {
+						exception.printStackTrace();
+					}
 				}
 			}
 			return result;

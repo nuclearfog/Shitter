@@ -38,9 +38,9 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 					return new AccountResult(AccountResult.DELETE, request.id, null);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			return new AccountResult(AccountResult.ERROR, 0L, null);
 		}
-		return new AccountResult(AccountResult.ERROR, 0L, null);
+		return null;
 	}
 
 	/**

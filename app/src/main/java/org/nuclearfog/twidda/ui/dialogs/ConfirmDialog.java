@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
@@ -166,7 +165,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 * @param type Type of dialog to show
 	 */
 	public void show(int type) {
-		show(type, "");
+		show(type, null);
 	}
 
 	/**
@@ -175,7 +174,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 * @param type       Type of dialog to show
 	 * @param messageTxt override default message text
 	 */
-	public void show(int type, @NonNull String messageTxt) {
+	public void show(int type, @Nullable String messageTxt) {
 		if (isShowing()) {
 			return;
 		}
@@ -287,10 +286,10 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		confirm.setText(confirmRes);
 		confirm.setCompoundDrawablesWithIntrinsicBounds(confirmIconRes, 0, 0, 0);
 		// setup message
-		if (messageTxt.isEmpty()) {
-			message.setText(messageRes);
-		} else {
+		if (messageTxt != null && !messageTxt.isEmpty()) {
 			message.setText(messageTxt);
+		} else {
+			message.setText(messageRes);
 		}
 		AppStyles.setTheme(root);
 		super.show();

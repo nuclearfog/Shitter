@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import org.nuclearfog.twidda.BuildConfig;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -162,8 +164,10 @@ public class ProfileUpdate implements Closeable {
 					}
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 			return false;
 		}
 		return true;

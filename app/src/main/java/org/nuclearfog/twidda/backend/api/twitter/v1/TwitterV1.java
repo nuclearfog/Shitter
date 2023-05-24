@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.twitter.TwitterException;
@@ -982,8 +983,10 @@ public class TwitterV1 implements Connection {
 							message.addSender(user);
 						}
 						result.add(message);
-					} catch (JSONException e) {
-						e.printStackTrace();
+					} catch (JSONException exception) {
+						if (BuildConfig.DEBUG) {
+							exception.printStackTrace();
+						}
 					}
 				}
 				return result;
@@ -1250,8 +1253,10 @@ public class TwitterV1 implements Connection {
 					try {
 						JSONObject tweetJson = array.getJSONObject(i);
 						statuses.add(new TweetV1(tweetJson, host, homeId));
-					} catch (JSONException e) {
-						e.printStackTrace();
+					} catch (JSONException exception) {
+						if (BuildConfig.DEBUG) {
+							exception.printStackTrace();
+						}
 					}
 				}
 				return statuses;
@@ -1384,8 +1389,10 @@ public class TwitterV1 implements Connection {
 				for (int i = 0; i < array.length(); i++) {
 					try {
 						users.add(new UserV1(array.getJSONObject(i), homeId));
-					} catch (JSONException e) {
-						e.printStackTrace();
+					} catch (JSONException exception) {
+						if (BuildConfig.DEBUG) {
+							exception.printStackTrace();
+						}
 					}
 				}
 				return users;
@@ -1480,8 +1487,10 @@ public class TwitterV1 implements Connection {
 				for (int pos = 0; pos < array.length(); pos++) {
 					try {
 						result.add(new UserListV1(array.getJSONObject(pos), currentId));
-					} catch (JSONException e) {
-						e.printStackTrace();
+					} catch (JSONException exception) {
+						if (BuildConfig.DEBUG) {
+							exception.printStackTrace();
+						}
 					}
 				}
 				return result;

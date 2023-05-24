@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -35,9 +36,8 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 
 	@Override
 	protected StatusResult doInBackground(@NonNull StatusParameter param) {
-		Statuses statuses = null;
-		int position = param.pos;
 		try {
+			Statuses statuses;
 			switch (param.type) {
 				case StatusParameter.HOME:
 					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
@@ -52,7 +52,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 							db.saveHomeTimeline(statuses);
 						}
 					}
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.USER:
 					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
@@ -67,7 +67,7 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 							db.saveUserTimeline(statuses);
 						}
 					}
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.FAVORIT:
 					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
@@ -80,10 +80,10 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						statuses = connection.getUserFavorits(param.id, 0L, param.maxId);
 						if (param.maxId == StatusParameter.NO_ID) {
 							db.saveFavoriteTimeline(statuses, param.id);
-							position = StatusResult.CLEAR;
+							return new StatusResult(statuses, StatusResult.CLEAR, null);
 						}
 					}
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.BOOKMARKS:
 					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
@@ -96,14 +96,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 						statuses = connection.getUserBookmarks(0L, param.maxId);
 						if (param.maxId == StatusParameter.NO_ID) {
 							db.saveBookmarkTimeline(statuses, param.id);
-							position = StatusResult.CLEAR;
+							return new StatusResult(statuses, StatusResult.CLEAR, null);
 						}
 					}
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.REPLIES_LOCAL:
 					statuses = db.getReplies(param.id);
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.REPLIES:
 					if (param.minId == StatusParameter.NO_ID && param.maxId == StatusParameter.NO_ID) {
@@ -120,26 +120,28 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 							db.saveReplyTimeline(statuses);
 						}
 					}
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.SEARCH:
 					statuses = connection.searchStatuses(param.search, param.minId, param.maxId);
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.USERLIST:
 					statuses = connection.getUserlistStatuses(param.id, param.minId, param.maxId);
-					break;
+					return new StatusResult(statuses, param.pos, null);
 
 				case StatusParameter.PUBLIC:
 					statuses = connection.getPublicTimeline(param.minId, param.maxId);
-					break;
+					return new StatusResult(statuses, param.pos, null);
 			}
 		} catch (ConnectionException exception) {
-			return new StatusResult(null, position, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+			return new StatusResult(null, param.pos, exception);
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new StatusResult(statuses, position, null);
+		return null;
 	}
 
 	/**

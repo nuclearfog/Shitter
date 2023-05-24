@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.utils;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -9,32 +10,46 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
- * This class handles {@link ConnectionException}
- * and prints Toast messages to current activity
+ * This class provides methods to handle {@link ConnectionException}
  *
  * @author nuclearfog
  */
-public class ErrorHandler {
+public class ErrorUtils {
 
-	private ErrorHandler() {
+	private ErrorUtils() {
+	}
+
+	/**
+	 * show toast notification with detailed error message
+	 *
+	 * @param exception connection exception
+	 */
+	public static void showErrorMessage(Context context, @Nullable ConnectionException exception) {
+		if (context != null) {
+			String errorMessage = getErrorMessage(context, exception);
+			if (errorMessage != null) {
+				Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 
 	/**
 	 * get error message string
 	 *
 	 * @param context application context
-	 * @param error   Twitter error
+	 * @param exception connection exception
 	 * @return message string
 	 */
-	public static String getErrorMessage(Context context, @Nullable ConnectionException error) {
-		if (error != null) {
-			switch (error.getErrorCode()) {
+	@Nullable
+	public static String getErrorMessage(Context context, @Nullable ConnectionException exception) {
+		if (exception != null) {
+			switch (exception.getErrorCode()) {
 				case ConnectionException.RATE_LIMIT_EX:
-					if (error.getTimeToWait() > 0) {
+					if (exception.getTimeToWait() > 0) {
 						String errMsg = context.getString(R.string.error_limit_exceeded);
-						if (error.getTimeToWait() >= 60)
-							errMsg += " " + error.getTimeToWait() / 60 + "m";
-						errMsg += " " + error.getTimeToWait() % 60 + "s";
+						if (exception.getTimeToWait() >= 60)
+							errMsg += " " + exception.getTimeToWait() / 60 + "m";
+						errMsg += " " + exception.getTimeToWait() % 60 + "s";
 						return errMsg;
 					}
 					return context.getString(R.string.error_rate_limit);
@@ -54,6 +69,9 @@ public class ErrorHandler {
 
 				case ConnectionException.STATUS_LENGTH:
 					return context.getString(R.string.error_status_length);
+
+				case ConnectionException.INTERRUPTED:
+					return null; // ignore exceptions caused by task termination
 
 				case ConnectionException.DUPLICATE_STATUS:
 					return context.getString(R.string.error_duplicate_status);
@@ -104,12 +122,15 @@ public class ErrorHandler {
 					return context.getString(R.string.error_json_format);
 
 				case ConnectionException.ERROR_NOT_DEFINED:
-					if (error.getMessage() != null && !error.getMessage().isEmpty()) {
-						return error.getMessage();
+					if (exception.getMessage() != null && !exception.getMessage().isEmpty()) {
+						return exception.getMessage();
 					}
 					break;
+
+				default:
+					return context.getString(R.string.error_not_defined);
 			}
 		}
-		return context.getString(R.string.error_not_defined);
+		return null;
 	}
 }

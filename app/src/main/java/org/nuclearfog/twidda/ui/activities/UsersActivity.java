@@ -24,7 +24,7 @@ import org.nuclearfog.twidda.backend.async.FilterLoader;
 import org.nuclearfog.twidda.backend.async.FilterLoader.FilterParam;
 import org.nuclearfog.twidda.backend.async.FilterLoader.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
@@ -330,8 +330,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 			default:
 			case FilterResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}
 	}

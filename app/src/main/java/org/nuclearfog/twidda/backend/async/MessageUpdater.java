@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -44,12 +45,14 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 			return new MessageUpdateResult(true, null);
 		} catch (ConnectionException exception) {
 			return new MessageUpdateResult(false, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		} finally {
 			update.close();
 		}
-		return new MessageUpdateResult(false, null);
+		return null;
 	}
 
 	/**

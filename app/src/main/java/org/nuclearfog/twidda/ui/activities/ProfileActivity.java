@@ -57,7 +57,7 @@ import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.Configuration;
@@ -677,8 +677,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				break;
 
 			case UserResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				if (user == null || (result.exception != null
 						&& (result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND
 						|| result.exception.getErrorCode() == ConnectionException.USER_NOT_FOUND))) {
@@ -720,8 +719,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				break;
 
 			case RelationResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}
 		if (result.relation != null) {
@@ -737,7 +735,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (result.mode == DomainResult.MODE_BLOCK) {
 			Toast.makeText(getApplicationContext(), R.string.info_domain_blocked, Toast.LENGTH_SHORT).show();
 		} else if (result.mode == DomainResult.ERROR) {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		}
 	}

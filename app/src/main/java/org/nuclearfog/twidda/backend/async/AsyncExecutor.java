@@ -89,7 +89,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 *
 	 * @param result result of the background task
 	 */
-	private synchronized void onPostExecute(final Result result, WeakReference<AsyncCallback<Result>> callbackReference) {
+	private synchronized void onPostExecute(@Nullable final Result result, WeakReference<AsyncCallback<Result>> callbackReference) {
 		uiHandler.post(new Runnable() {
 			@Override
 			public void run() {

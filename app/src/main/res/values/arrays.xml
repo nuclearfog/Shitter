@@ -72,10 +72,10 @@
 	</string-array>
 
 	<string-array name="push_policy">
-		<item>All</item>
-		<item>Following</item>
-		<item>Follower</item>
-		<item>Disable</item>
+		<item>show all</item>
+		<item>Following only</item>
+		<item>Followers only</item>
+		<item>disabled</item>
 	</string-array>
 
 	<string-array name="visibility">

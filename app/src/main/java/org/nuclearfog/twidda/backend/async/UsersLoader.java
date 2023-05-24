@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -31,59 +32,60 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 
 	@Override
 	protected UserResult doInBackground(@NonNull UserParam param) {
-		Users users = null;
 		try {
 			switch (param.type) {
 				case UserParam.FOLLOWS:
-					users = connection.getFollower(param.id, param.cursor);
-					break;
+					Users users = connection.getFollower(param.id, param.cursor);
+					return new UserResult(users, param.index, null);
 
 				case UserParam.FRIENDS:
 					users = connection.getFollowing(param.id, param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.REPOST:
 					users = connection.getRepostingUsers(param.id, param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.FAVORIT:
 					users = connection.getFavoritingUsers(param.id, param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.SEARCH:
 					users = connection.searchUsers(param.search, param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.SUBSCRIBER:
 					users = connection.getListSubscriber(param.id, param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.LISTMEMBER:
 					users = connection.getListMember(param.id, param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.BLOCK:
 					users = connection.getBlockedUsers(param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.MUTE:
 					users = connection.getMutedUsers(param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.REQUEST_IN:
 					users = connection.getIncomingFollowRequests(param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 
 				case UserParam.REQUEST_OUT:
 					users = connection.getOutgoingFollowRequests(param.cursor);
-					break;
+					return new UserResult(users, param.index, null);
 			}
 		} catch (ConnectionException exception) {
 			return new UserResult(null, param.index, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new UserResult(users, param.index, null);
+		return null;
 	}
 
 	/**

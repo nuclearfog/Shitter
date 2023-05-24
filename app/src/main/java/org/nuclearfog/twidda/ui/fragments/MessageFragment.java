@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
 import org.nuclearfog.twidda.model.lists.Messages;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.ui.activities.ImageViewer;
@@ -192,8 +192,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 			case MessageLoaderResult.ERROR:
 				if (getContext() != null) {
-					String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-					Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+					ErrorUtils.showErrorMessage(getContext(), result.exception);
 				}
 				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					adapter.removeItem(result.id);

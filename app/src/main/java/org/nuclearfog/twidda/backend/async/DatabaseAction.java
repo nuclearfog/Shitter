@@ -39,9 +39,9 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 					return new DatabaseResult(DatabaseResult.LOGOUT);
 			}
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			return new DatabaseResult(DatabaseResult.ERROR);
 		}
-		return new DatabaseResult(DatabaseResult.ERROR);
+		return null;
 	}
 
 	/**

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -44,7 +45,9 @@ public class InstanceLoader extends AsyncExecutor<Void, Instance> {
 				db.saveInstance(instance);
 			}
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
 		return instance;
 	}

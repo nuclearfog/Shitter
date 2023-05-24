@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.LocationV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
@@ -199,8 +200,10 @@ public class TweetV2 implements Status {
 					} else if (referenceType.equals("retweeted")) {
 						retweetId = Long.parseLong(tweetReference.optString("id"));
 					}
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
+				} catch (NumberFormatException exception) {
+					if (BuildConfig.DEBUG) {
+						exception.printStackTrace();
+					}
 				}
 			}
 		}

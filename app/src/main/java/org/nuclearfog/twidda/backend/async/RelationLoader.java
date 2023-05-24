@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -79,10 +80,12 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 			}
 		} catch (ConnectionException exception) {
 			return new RelationResult(RelationResult.ERROR, null, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new RelationResult(RelationResult.ERROR, null, null);
+		return null;
 	}
 
 	/**

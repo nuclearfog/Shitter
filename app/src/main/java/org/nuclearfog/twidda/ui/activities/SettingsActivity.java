@@ -43,7 +43,7 @@ import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.backend.async.LocationLoader;
 import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.notification.PushSubscription;
@@ -635,7 +635,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				location_dropdown.setSelection(position, false);
 			location_dropdown.setOnItemSelectedListener(this);
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		}
 	}

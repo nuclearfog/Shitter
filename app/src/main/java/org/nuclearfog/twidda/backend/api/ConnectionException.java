@@ -12,7 +12,7 @@ public abstract class ConnectionException extends Exception {
 	/**
 	 * indicates a task interrupt
 	 */
-	protected static final int INTERRUPTED = -1;
+	public static final int INTERRUPTED = -1;
 
 	/**
 	 * defines an error which is not listed here
@@ -123,6 +123,8 @@ public abstract class ConnectionException extends Exception {
 	 * network connection not available
 	 */
 	public static final int NETWORK_CONNECTION = 21;
+
+
 
 	/**
 	 * error parsing json format

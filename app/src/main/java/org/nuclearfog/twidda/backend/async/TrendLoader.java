@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -58,10 +59,12 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 			}
 		} catch (ConnectionException exception) {
 			return new TrendResult(TrendResult.ERROR, null, param.index, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new TrendResult(TrendResult.ERROR, null, param.index, null);
+		return null;
 	}
 
 	/**

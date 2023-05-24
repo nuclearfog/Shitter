@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.backend.async.UsersLoader;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
 import org.nuclearfog.twidda.model.lists.Users;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.adapter.UserAdapter;
@@ -266,9 +266,10 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	public void onResult(@NonNull UserResult result) {
 		if (result.users != null) {
 			adapter.addItems(result.users, result.index);
-		} else if (getContext() != null) {
-			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+		} else {
+			if (getContext() != null) {
+				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			}
 			adapter.disableLoading();
 		}
 		setRefresh(false);

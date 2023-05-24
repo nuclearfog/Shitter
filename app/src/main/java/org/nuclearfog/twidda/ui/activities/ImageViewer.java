@@ -8,19 +8,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ImageLoader;
 import org.nuclearfog.twidda.backend.async.ImageLoader.ImageParameter;
 import org.nuclearfog.twidda.backend.async.ImageLoader.ImageResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.views.AnimatedImageView;
 import org.nuclearfog.twidda.ui.views.DescriptionView;
@@ -203,8 +203,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 					break;
 			}
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
-			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+			ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 			finish();
 		}
 	}
@@ -220,8 +219,10 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 					file.delete();
 				}
 			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
+		} catch (SecurityException exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
 	}
 }

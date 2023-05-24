@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -33,8 +34,8 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 
 	@Override
 	protected NotificationLoaderResult doInBackground(@NonNull NotificationLoaderParam params) {
-		Notifications result = null;
 		try {
+			Notifications result;
 			if (params.minId == 0L && params.maxId == 0L) {
 				result = db.getNotifications();
 				if (result.isEmpty()) {
@@ -47,12 +48,15 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 					db.saveNotifications(result);
 				}
 			}
+			return new NotificationLoaderResult(result, params.position, null);
 		} catch (ConnectionException exception) {
 			return new NotificationLoaderResult(null, params.position, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new NotificationLoaderResult(result, params.position, null);
+		return null;
 	}
 
 	/**

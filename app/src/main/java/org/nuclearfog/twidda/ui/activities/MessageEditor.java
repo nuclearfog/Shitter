@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.backend.async.MessageUpdater;
 import org.nuclearfog.twidda.backend.async.MessageUpdater.MessageUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -236,7 +236,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 			Toast.makeText(getApplicationContext(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
 			finish();
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.MESSAGE_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
 		}

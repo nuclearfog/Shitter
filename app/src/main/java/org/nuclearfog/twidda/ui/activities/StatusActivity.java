@@ -63,7 +63,7 @@ import org.nuclearfog.twidda.backend.async.TranslationLoader.TranslationResult;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.Configuration;
@@ -997,20 +997,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case StatusResult.DELETE:
-				if (status != null) {
+				if (notification != null) {
 					Toast.makeText(getApplicationContext(), R.string.info_status_removed, Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
-					if (status.getEmbeddedStatus() != null)
-						intent.putExtra(KEY_STATUS_ID, status.getEmbeddedStatus().getId());
-					else
-						intent.putExtra(KEY_STATUS_ID, status.getId());
+					intent.putExtra(KEY_NOTIFICATION_ID, notification.getId());
+					setResult(RETURN_NOTIFICATION_REMOVED, intent);
+					finish();
+				} else if (status != null) {
+					Toast.makeText(getApplicationContext(), R.string.info_status_removed, Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent();
+					intent.putExtra(KEY_STATUS_ID, status.getId());
 					setResult(RETURN_STATUS_REMOVED, intent);
 					finish();
 				}
 				break;
 
 			case StatusResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				String message = ErrorUtils.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				if (status == null) {
 					finish();
@@ -1057,7 +1060,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case NotificationActionResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				String message = ErrorUtils.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				if (notification == null) {
 					finish();
@@ -1092,7 +1095,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case PollActionResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(this, result.exception);
+				String message = ErrorUtils.getErrorMessage(this, result.exception);
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				break;
 		}
@@ -1118,7 +1121,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			translate_text.append(result.translation.getOriginalLanguage());
 			translate_text.setOnClickListener(null); // disable link to translation
 		} else {
-			String message = ErrorHandler.getErrorMessage(this, result.exception);
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 		}
 	}

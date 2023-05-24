@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteException;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.BuildConfig;
+
 import java.io.File;
 
 /**
@@ -430,9 +432,10 @@ public class DatabaseAdapter {
 		if (instance == null) {
 			try {
 				instance = new DatabaseAdapter(context.getApplicationContext());
-			} catch (SQLiteException e) {
+			} catch (SQLiteException exception) {
 				// if database is corrupted, clear and create a new one
-				e.printStackTrace();
+				if (BuildConfig.DEBUG)
+					exception.printStackTrace();
 				SQLiteDatabase.deleteDatabase(instance.databasePath);
 				instance = new DatabaseAdapter(context.getApplicationContext());
 			}

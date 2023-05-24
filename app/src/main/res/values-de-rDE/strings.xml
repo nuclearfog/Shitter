@@ -182,7 +182,7 @@
 	<string name="settings_icon_color">Symbolfarbe</string>
 	<string name="settings_key1_hint">Consumer Key</string>
 	<string name="settings_key2_hint">Consumer Secret</string>
-	<string name="error_acc_loading">Fehler während des Abruf</string>
+	<string name="error_acc_loading">Fehler beim Abrufen!</string>
 	<string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt! Bitte API Schlüssel überprüfen!</string>
 	<string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
 	<string name="info_location_pending">Ortung läuft, bitte warten.</string>

@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -20,7 +19,7 @@ import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationAction
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderParam;
 import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderResult;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
@@ -185,9 +184,10 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	private void onResult(@NonNull NotificationLoaderResult result) {
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
-		} else if (getContext() != null) {
-			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+		} else {
+			if (getContext() != null) {
+				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			}
 			adapter.disableLoading();
 		}
 		setRefresh(false);
@@ -200,8 +200,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (result.mode == NotificationActionResult.DISMISS) {
 			adapter.removeItem(result.id);
 		} else if (result.mode == NotificationActionResult.ERROR) {
-			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+			if (getContext() != null) {
+				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			}
 			if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				adapter.removeItem(result.id);
 			}

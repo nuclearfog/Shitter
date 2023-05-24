@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -17,7 +16,7 @@ import org.nuclearfog.twidda.backend.async.UserlistLoader;
 import org.nuclearfog.twidda.backend.async.UserlistLoader.UserlistParam;
 import org.nuclearfog.twidda.backend.async.UserlistLoader.UserlistResult;
 import org.nuclearfog.twidda.model.lists.UserLists;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
@@ -186,8 +185,9 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 				break;
 
 			case UserlistResult.ERROR:
-				String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-				Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+				if (getContext() != null) {
+					ErrorUtils.showErrorMessage(getContext(), result.exception);
+				}
 				adapter.disableLoading();
 				break;
 		}

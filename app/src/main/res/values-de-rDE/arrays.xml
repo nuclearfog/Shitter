@@ -15,10 +15,10 @@
 	</string-array>
 
 	<string-array name="push_policy">
-		<item>Alles</item>
-		<item>Following</item>
-		<item>Follower</item>
-		<item>Deaktivieren</item>
+		<item>Alles anzeigen</item>
+		<item>nur Following</item>
+		<item>nur Follower</item>
+		<item>deaktivieren</item>
 	</string-array>
 
 </resources>

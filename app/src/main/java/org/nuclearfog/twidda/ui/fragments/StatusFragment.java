@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -17,7 +16,7 @@ import org.nuclearfog.twidda.backend.async.StatusLoader;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusParameter;
 import org.nuclearfog.twidda.backend.async.StatusLoader.StatusResult;
 import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
 import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
@@ -227,9 +226,10 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			} else {
 				adapter.addItems(result.statuses, result.position);
 			}
-		} else if (getContext() != null) {
-			String message = ErrorHandler.getErrorMessage(getContext(), result.exception);
-			Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+		} else {
+			if (getContext() != null) {
+				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			}
 			adapter.disableLoading();
 		}
 		setRefresh(false);

@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -60,10 +61,12 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND)
 				db.removeMessage(param.id);
 			return new MessageLoaderResult(MessageLoaderResult.ERROR, param.index, param.id, null, exception);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
+			}
 		}
-		return new MessageLoaderResult(MessageLoaderResult.ERROR, param.index, param.id, null, null);
+		return null;
 	}
 
 	/**
