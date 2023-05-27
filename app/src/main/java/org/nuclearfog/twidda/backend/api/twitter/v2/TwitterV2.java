@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend.api.twitter.v2;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -231,9 +230,10 @@ public class TwitterV2 extends TwitterV1 {
 						try {
 							Status item = new TweetV2(data.getJSONObject(i), userMap, mediaMap, pollMap, locationMap, host, null);
 							tweets.add(item);
-						} catch (JSONException e) {
+						} catch (JSONException exception) {
+							// skip tweet
 							if (BuildConfig.DEBUG) {
-								Log.w("tweet-v2", e);
+								exception.printStackTrace();
 							}
 						}
 					}
@@ -273,9 +273,10 @@ public class TwitterV2 extends TwitterV1 {
 					for (int i = 0; i < array.length(); i++) {
 						try {
 							users.add(new UserV2(array.getJSONObject(i), homeId));
-						} catch (JSONException err) {
+						} catch (JSONException exception) {
 							if (BuildConfig.DEBUG) {
-								Log.w("user-v2", err);
+								// skip user
+								exception.printStackTrace();
 							}
 						}
 					}

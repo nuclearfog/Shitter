@@ -37,6 +37,9 @@ public class PollUpdate implements Serializable {
 	 */
 	public PollUpdate(Poll poll) {
 		multipleChoice = poll.multipleChoiceEnabled();
+		if (System.currentTimeMillis() < poll.getEndTime()) {
+			duration = (int) (poll.getEndTime() - System.currentTimeMillis());
+		}
 		for (Poll.Option option : poll.getOptions()) {
 			options.add(option.getTitle());
 		}

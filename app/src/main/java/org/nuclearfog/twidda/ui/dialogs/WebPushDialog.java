@@ -80,10 +80,6 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 			case WebPush.POLICY_FOLLOWER:
 				policySelector.setSelection(2);
 				break;
-
-			case WebPush.POLICY_NONE:
-				policySelector.setSelection(3);
-				break;
 		}
 		AppStyles.setTheme(root);
 
@@ -154,10 +150,6 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 
 				case 2:
 					update.setPolicy(WebPush.POLICY_FOLLOWER);
-					break;
-
-				case 3:
-					update.setPolicy(WebPush.POLICY_NONE);
 					break;
 			}
 		}

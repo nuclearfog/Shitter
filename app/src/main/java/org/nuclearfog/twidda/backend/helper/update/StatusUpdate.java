@@ -130,26 +130,9 @@ public class StatusUpdate implements Serializable, Closeable {
 				mediaKeys.add(media.getKey());
 				previews.add(media.getUrl());
 			}
-			switch (status.getMedia()[0].getMediaType()) {
-				case Media.GIF:
-					attachment = MEDIA_GIF;
-					if (instance != null && mediaKeys.size() == instance.getGifLimit())
-						attachmentLimitReached = true;
-					break;
-
-				case Media.PHOTO:
-					attachment = MEDIA_IMAGE;
-					if (instance != null && mediaKeys.size() == instance.getImageLimit())
-						attachmentLimitReached = true;
-					break;
-
-				case Media.VIDEO:
-					attachment = MEDIA_VIDEO;
-					if (instance != null && mediaKeys.size() == instance.getVideoLimit())
-						attachmentLimitReached = true;
-					break;
-			}
 		}
+		// fixme it's not possible to add more media items when editing a status
+		attachmentLimitReached = true;
 	}
 
 	/**

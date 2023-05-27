@@ -127,6 +127,16 @@ public class PollDialog extends Dialog implements OnClickListener {
 				optionAdapter.replaceItems(poll.getOptions());
 				multiple_choice.setCheckedImmediately(poll.multipleChoiceEnabled());
 				hide_votes.setCheckedImmediately(poll.hideTotalVotes());
+				if (poll.getDuration() > 86400000L) {
+					durationInput.setText(Long.toString(Math.round(poll.getDuration() / 86400000d)));
+					timeUnitSelector.setSelection(2);
+				} else if (poll.getDuration() > 3600000L) {
+					durationInput.setText(Long.toString(Math.round(poll.getDuration() / 3600000d)));
+					timeUnitSelector.setSelection(1);
+				} else if (poll.getDuration() > 60000L) {
+					durationInput.setText(Long.toString(Math.round(poll.getDuration() / 60000d)));
+					timeUnitSelector.setSelection(0);
+				}
 				this.poll = poll;
 			} else {
 				this.poll = new PollUpdate();

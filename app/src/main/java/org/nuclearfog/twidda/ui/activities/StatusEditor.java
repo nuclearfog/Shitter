@@ -31,6 +31,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
@@ -165,12 +166,10 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 				if (editStatus) {
 					statusUpdate.setStatus(status);
 					statusText.append(status.getText());
-					int mediaType = statusUpdate.getAttachmentType();
-					if (mediaType != StatusUpdate.EMPTY) {
-						for (int i = 0 ; i < statusUpdate.getMediaKeys().length ; i++) {
-							addMedia(mediaType);
-						}
+					for (Media media : status.getMedia()) {
+						addMedia(media.getMediaType());
 					}
+					mediaBtn.setVisibility(View.GONE);
 				} else {
 					statusUpdate.addReplyStatusId(status.getId());
 					statusUpdate.setVisibility(status.getVisibility());
@@ -415,18 +414,22 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 */
 	private void addMedia(int mediaType) {
 		switch (mediaType) {
+			case Media.PHOTO:
 			case StatusUpdate.MEDIA_IMAGE:
 				adapter.addImageItem();
 				break;
 
+			case Media.GIF:
 			case StatusUpdate.MEDIA_GIF:
 				adapter.addGifItem();
 				break;
 
+			case Media.VIDEO:
 			case StatusUpdate.MEDIA_VIDEO:
 				adapter.addVideoItem();
 				break;
 
+			case Media.AUDIO:
 			case StatusUpdate.MEDIA_AUDIO:
 				adapter.addAudioItem();
 				break;

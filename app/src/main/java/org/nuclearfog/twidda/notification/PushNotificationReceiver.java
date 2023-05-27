@@ -19,7 +19,6 @@ public class PushNotificationReceiver extends MessagingReceiver {
 
 	@Override
 	public void onMessage(@NonNull Context context, @NonNull byte[] message, @NonNull String instance) {
-		super.onMessage(context, message, instance);
 		GlobalSettings settings = GlobalSettings.getInstance(context);
 		if (settings.pushEnabled()) {
 			// todo add manual synchonization
@@ -29,7 +28,6 @@ public class PushNotificationReceiver extends MessagingReceiver {
 
 	@Override
 	public void onNewEndpoint(@NonNull Context context, @NonNull String endpoint, @NonNull String instance) {
-		super.onNewEndpoint(context, endpoint, instance);
 		PushUpdater pushUpdater = new PushUpdater(context);
 		PushUpdate update = new PushUpdate(instance);
 		pushUpdater.execute(update, null);
