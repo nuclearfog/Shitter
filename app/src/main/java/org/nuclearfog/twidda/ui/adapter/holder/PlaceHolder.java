@@ -4,8 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,8 +22,8 @@ import org.nuclearfog.twidda.config.GlobalSettings;
  */
 public class PlaceHolder extends ViewHolder implements OnClickListener {
 
-	private ProgressBar loadCircle;
-	private Button loadBtn;
+	private ProgressBar circle;
+	private TextView label;
 
 	private OnHolderClickListener listener;
 
@@ -36,29 +36,28 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 		this.listener = listener;
 
 		CardView background = (CardView) itemView;
-		loadCircle = itemView.findViewById(R.id.placeholder_loading);
-		loadBtn = itemView.findViewById(R.id.placeholder_button);
+		circle = itemView.findViewById(R.id.placeholder_loading);
+		label = itemView.findViewById(R.id.placeholder_button);
 
 		background.setCardBackgroundColor(settings.getCardColor());
-		loadBtn.setTextColor(settings.getTextColor());
-		loadBtn.setTypeface(settings.getTypeFace());
-		AppStyles.setButtonColor(loadBtn, settings.getTextColor());
-		AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
+		label.setTextColor(settings.getTextColor());
+		label.setTypeface(settings.getTypeFace());
+		AppStyles.setProgressColor(circle, settings.getHighlightColor());
 
 		// enable extra views
-		if (horizontal) {
-			loadBtn.setVisibility(View.INVISIBLE);
-			loadCircle.setVisibility(View.VISIBLE);
+		if (horizontal && background.getLayoutParams() != null) {
+			label.setVisibility(View.INVISIBLE);
+			circle.setVisibility(View.VISIBLE);
 			background.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
 			background.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
 		}
-		loadBtn.setOnClickListener(this);
+		itemView.setOnClickListener(this);
 	}
 
 
 	@Override
 	public void onClick(View v) {
-		if (v == loadBtn) {
+		if (v == itemView) {
 			int position = getLayoutPosition();
 			if (position != RecyclerView.NO_POSITION) {
 				boolean enableLoading = listener.onPlaceholderClick(position);
@@ -74,11 +73,11 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 	 */
 	public void setLoading(boolean enable) {
 		if (enable) {
-			loadCircle.setVisibility(View.VISIBLE);
-			loadBtn.setVisibility(View.INVISIBLE);
+			circle.setVisibility(View.VISIBLE);
+			label.setVisibility(View.INVISIBLE);
 		} else {
-			loadCircle.setVisibility(View.INVISIBLE);
-			loadBtn.setVisibility(View.VISIBLE);
+			circle.setVisibility(View.INVISIBLE);
+			label.setVisibility(View.VISIBLE);
 		}
 	}
 }

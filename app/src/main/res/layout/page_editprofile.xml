@@ -90,6 +90,7 @@
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:layout_marginTop="@dimen/editprofile_scrollview_margin"
+		android:scrollbars="none"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/edit_profile_image"
 		app:layout_constraintBottom_toBottomOf="parent"

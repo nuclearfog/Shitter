@@ -25,6 +25,7 @@
 	<dimen name="settings_spinner_margin">10dp</dimen>
 	<dimen name="settings_column_margin">5dp</dimen>
 	<dimen name="settings_seek_number_width">30sp</dimen>
+	<dimen name="settings_scroll_padding">@dimen/fragment_list_layout_padding</dimen>
 
 	<!--dimens of page_status.xml-->
 	<dimen name="page_status_toolbar_height">@dimen/toolbar_height</dimen>
@@ -191,9 +192,8 @@
 	<dimen name="mediapage_circle_size">64dp</dimen>
 
 	<!--dimens of item_placeholder.xml-->
-	<dimen name="item_placeholder_margin">12dp</dimen>
-	<dimen name="item_placeholder_button_textsize">14sp</dimen>
-	<dimen name="item_placeholder_button_height">24sp</dimen>
+	<dimen name="item_placeholder_margin">10dp</dimen>
+	<dimen name="item_placeholder_button_textsize">16sp</dimen>
 
 	<!--dimens of page_search.xml-->
 	<dimen name="searchpage_toolbar_height">@dimen/toolbar_height</dimen>
@@ -213,6 +213,9 @@
 
 	<!--dimens of dialog_license.xml-->
 	<dimen name="license_textsize">8sp</dimen>
+
+	<!--dimens of fragment_list.xml-->
+	<dimen name="fragment_list_layout_padding">3dp</dimen>
 
 	<!-- dimens of dialog_metrics.xml-->
 	<dimen name="dialog_metrics_layout_margin">5dp</dimen>

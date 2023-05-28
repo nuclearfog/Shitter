@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
@@ -47,15 +48,16 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 	@Override
 	public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
-		list = new RecyclerView(requireContext());
-		list.setLayoutManager(new LinearLayoutManager(requireContext()));
-		reload = new SwipeRefreshLayout(requireContext());
-		reload.setOnRefreshListener(this);
-		reload.addView(list);
-
+		View view = inflater.inflate(R.layout.fragment_list, parent, false);
+		list = view.findViewById(R.id.fragment_list_recyclerview);
+		reload = view.findViewById(R.id.fragment_list_swipe);
 		settings = GlobalSettings.getInstance(requireContext());
+
+		list.setLayoutManager(new LinearLayoutManager(requireContext()));
 		AppStyles.setSwipeRefreshColor(reload, settings);
-		return reload;
+
+		reload.setOnRefreshListener(this);
+		return view;
 	}
 
 
