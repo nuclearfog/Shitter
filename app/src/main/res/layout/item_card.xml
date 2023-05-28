@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="wrap_content"
 	android:layout_height="match_parent"
 	android:padding="@dimen/item_card_layout_padding"
@@ -20,6 +21,9 @@
 		android:textSize="@dimen/item_card_textsize"
 		android:layout_gravity="bottom"
 		android:padding="@dimen/item_card_text_padding"
-		android:maxLines="3" />
+		android:drawablePadding="@dimen/item_card_text_drawable_padding"
+		android:drawableStart="@drawable/link"
+		android:maxLines="3"
+		tools:ignore="UseCompatTextViewDrawableXml" />
 
 </androidx.cardview.widget.CardView>

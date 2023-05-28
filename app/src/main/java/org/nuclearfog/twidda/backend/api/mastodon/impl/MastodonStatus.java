@@ -86,7 +86,7 @@ public class MastodonStatus implements Status {
 		spoiler = json.optBoolean("spoiler_text", false);
 		bookmarked = json.optBoolean("bookmarked", false);
 		text = json.optString("content", "");
-		text = Jsoup.parse(text).text();
+		text = Jsoup.parse(text).wholeText();
 		if (author.getId() != currentUserId)
 			mentions = author.getScreenname() + ' ';
 		if (embeddedJson != null) {

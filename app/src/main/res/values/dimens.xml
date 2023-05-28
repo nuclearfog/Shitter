@@ -191,7 +191,9 @@
 	<dimen name="mediapage_circle_size">64dp</dimen>
 
 	<!--dimens of item_placeholder.xml-->
-	<dimen name="item_placeholder_margin">8dp</dimen>
+	<dimen name="item_placeholder_margin">12dp</dimen>
+	<dimen name="item_placeholder_button_textsize">14sp</dimen>
+	<dimen name="item_placeholder_button_height">24sp</dimen>
 
 	<!--dimens of page_search.xml-->
 	<dimen name="searchpage_toolbar_height">@dimen/toolbar_height</dimen>
@@ -262,6 +264,7 @@
 	<dimen name="item_card_textsize">11sp</dimen>
 	<dimen name="item_card_layout_padding">5dp</dimen>
 	<dimen name="item_card_text_padding">5dp</dimen>
+	<dimen name="item_card_text_drawable_padding">5sp</dimen>
 
 	<!--dimens of item_preivew.xml-->
 	<dimen name="item_card_preivew_padding">5dp</dimen>

@@ -73,13 +73,16 @@ public class MastodonException extends ConnectionException {
 		if (body != null) {
 			try {
 				String jsonStr = body.string();
-				JSONObject json = new JSONObject(jsonStr);
-				String title = json.getString("error");
-				String descr = json.optString("error_description", "");
-				if (descr.isEmpty())
-					errorMessage = title;
-				else
-					errorMessage = title + ": " + descr;
+				if (!jsonStr.isEmpty()) {
+					JSONObject json = new JSONObject(jsonStr);
+					String title = json.getString("error");
+					String descr = json.optString("error_description", "");
+					if (descr.isEmpty()) {
+						errorMessage = title;
+					} else {
+						errorMessage = title + ": " + descr;
+					}
+				}
 			} catch (JSONException | IOException exception) {
 				if (BuildConfig.DEBUG) {
 					exception.printStackTrace();
