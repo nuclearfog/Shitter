@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -34,6 +35,7 @@ import org.nuclearfog.twidda.model.WebPush;
 public class WebPushDialog extends Dialog implements OnCheckedChangeListener, OnClickListener, OnItemSelectedListener, AsyncCallback<PushUpdateResult> {
 
 	private PushUpdater updater;
+	private GlobalSettings settings;
 
 	private PushUpdate update;
 
@@ -55,7 +57,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		Button apply_changes = findViewById(R.id.dialog_push_apply);
 		Spinner policySelector = findViewById(R.id.dialog_push_policy);
 
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.getInstance(context);
 		updater = new PushUpdater(context);
 		update = new PushUpdate(settings.getWebPush());
 		mention.setCheckedImmediately(update.mentionsEnabled());
@@ -164,6 +166,8 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	@Override
 	public void onResult(@NonNull PushUpdateResult result) {
 		if (result.push != null) {
+			Toast.makeText(getContext(), R.string.info_webpush_update, Toast.LENGTH_SHORT).show();
+			settings.setWebPush(result.push);
 			dismiss();
 		}
 	}

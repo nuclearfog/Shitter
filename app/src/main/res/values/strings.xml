@@ -69,6 +69,7 @@
 	<string name="info_domain_removed">domain removed from the list</string>
 	<string name="info_hashtag_followed">hashtag followed</string>
 	<string name="info_domain_blocked">domain blocked!</string>
+	<string name="info_webpush_update">Push configuration updated!</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -342,4 +343,13 @@
 	<string name="dialog_push_title">Push notifications</string>
 	<string name="dialog_push_apply">apply changes</string>
 	<string name="settings_enable_push_label">enable push notification</string>
+	<string name="notification_favorite">%1$s favorited your status</string>
+	<string name="notification_repost">%1$s reposted your status</string>
+	<string name="notification_follow">%1$s followed you</string>
+	<string name="notification_request">%1$s requested to follow you</string>
+	<string name="notification_mention">%1$s mentioned you in a status</string>
+	<string name="notification_status">%1$s has posted a status</string>
+	<string name="notification_edit">A status you boosted with has been edited</string>
+	<string name="notification_poll">A poll you have voted in or created has ended</string>
+	<string name="notification_new">New notifications</string>
 </resources>

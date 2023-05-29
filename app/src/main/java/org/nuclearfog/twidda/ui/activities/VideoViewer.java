@@ -69,8 +69,10 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	 */
 	private static final int CACHE_SIZE = 64000000;
 
-	private ExoPlayer player;
 	private Toolbar toolbar;
+	private StyledPlayerView playerView;
+
+	private ExoPlayer player;
 
 	private Uri data;
 
@@ -85,7 +87,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_video);
-		StyledPlayerView playerView = findViewById(R.id.page_video_player);
+		playerView = findViewById(R.id.page_video_player);
 		toolbar = findViewById(R.id.page_video_toolbar);
 		playerView.setShowNextButton(false);
 		playerView.setShowPreviousButton(false);
@@ -154,6 +156,14 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	public void onBackPressed() {
 		super.onBackPressed();
 		player.stop();
+	}
+
+
+	@Override
+	protected void onDestroy() {
+		// remove player reference to prevent memory leak
+		playerView.setPlayer(null);
+		super.onDestroy();
 	}
 
 

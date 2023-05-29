@@ -372,6 +372,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		notificationLoader.cancel();
 		translationLoader.cancel();
 		emojiLoader.cancel();
+		audioDialog.close();
 		super.onDestroy();
 	}
 

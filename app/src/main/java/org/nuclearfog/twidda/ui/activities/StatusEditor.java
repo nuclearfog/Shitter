@@ -232,6 +232,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		loadingCircle.dismiss();
 		statusUpdater.cancel();
 		instanceLoader.cancel();
+		audioDialog.close();
 		super.onDestroy();
 	}
 

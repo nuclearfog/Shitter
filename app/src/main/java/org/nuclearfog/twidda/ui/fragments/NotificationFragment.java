@@ -215,7 +215,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * @param pos   index to insert the new items
 	 */
 	private void load(long minId, long maxId, int pos) {
-		NotificationLoaderParam param = new NotificationLoaderParam(pos, minId, maxId);
+		NotificationLoaderParam param = new NotificationLoaderParam(NotificationLoaderParam.LOAD_ALL, pos, minId, maxId);
 		notificationLoader.execute(param, notificationLoaderCallback);
 	}
 }

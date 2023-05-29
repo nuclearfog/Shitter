@@ -32,6 +32,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 
+import java.io.Closeable;
+
 import okhttp3.Call;
 
 /**
@@ -39,9 +41,11 @@ import okhttp3.Call;
  *
  * @author nuclearfog
  */
-public class AudioPlayerDialog  extends Dialog implements OnClickListener {
+public class AudioPlayerDialog  extends Dialog implements OnClickListener, Closeable {
 
+	private PlayerControlView controls;
 	private TextView mediaLink;
+
 	private ExoPlayer player;
 
 	private Uri data;
@@ -52,7 +56,7 @@ public class AudioPlayerDialog  extends Dialog implements OnClickListener {
 	public AudioPlayerDialog(@NonNull Context context) {
 		super(context, R.style.AudioDialog);
 		setContentView(R.layout.dialog_audio_player);
-		PlayerControlView controls = findViewById(R.id.dialog_audio_player_controls);
+		controls = findViewById(R.id.dialog_audio_player_controls);
 		mediaLink = findViewById(R.id.dialog_audio_player_share);
 
 		controls.setShowNextButton(false);
@@ -85,6 +89,12 @@ public class AudioPlayerDialog  extends Dialog implements OnClickListener {
 				LinkUtils.openMediaLink(getContext(), data);
 			}
 		}
+	}
+
+	@Override
+	public void close() {
+		// remove player to prevent memory leak
+		controls.setPlayer(null);
 	}
 
 	/**

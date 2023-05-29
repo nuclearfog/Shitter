@@ -23,7 +23,12 @@ public class PushUpdate implements Serializable {
 	 * @param host unifiedpush host url
 	 */
 	public PushUpdate(String host) {
-		this.host = host;
+		int idxQuery = host.indexOf("?");
+		if (idxQuery > 0) {
+			this.host = host.substring(0, idxQuery);
+		} else {
+			this.host = host;
+		}
 	}
 
 	/**
