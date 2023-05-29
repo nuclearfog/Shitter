@@ -174,7 +174,7 @@ public class StatusUpdate implements Serializable, Closeable {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
 						if (mediaStatuses.size() + mediaKeys.size() == instance.getGifLimit()) {
 							attachmentLimitReached = true;
 						}
@@ -194,7 +194,7 @@ public class StatusUpdate implements Serializable, Closeable {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
 						if (mediaStatuses.size() + mediaKeys.size() == instance.getImageLimit()) {
 							attachmentLimitReached = true;
 						}
@@ -213,7 +213,7 @@ public class StatusUpdate implements Serializable, Closeable {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
 						if (mediaStatuses.size() + mediaKeys.size() == instance.getVideoLimit()) {
 							attachmentLimitReached = true;
 						}
@@ -232,7 +232,7 @@ public class StatusUpdate implements Serializable, Closeable {
 					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
 					if (file != null && file.length() > 0) {
 						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime));
+						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
 						if (mediaStatuses.size() + mediaKeys.size() == instance.getAudioLimit()) {
 							attachmentLimitReached = true;
 						}

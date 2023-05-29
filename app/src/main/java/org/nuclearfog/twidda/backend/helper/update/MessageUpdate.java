@@ -115,7 +115,7 @@ public class MessageUpdate implements Serializable, Closeable {
 			return false;
 		}
 		this.mediaUri = uri.toString();
-		mediaUpdate = new MediaStatus(uri.toString(), mime);
+		mediaUpdate = new MediaStatus(uri.toString(), mime, "");
 		return true;
 	}
 

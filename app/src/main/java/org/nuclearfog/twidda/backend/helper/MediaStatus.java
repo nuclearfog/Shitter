@@ -27,6 +27,7 @@ public class MediaStatus implements Serializable, Closeable {
 
 	private String mimeType;
 	private String path;
+	private String description;
 	private boolean local;
 
 	/**
@@ -38,18 +39,21 @@ public class MediaStatus implements Serializable, Closeable {
 	public MediaStatus(@Nullable InputStream inputStream, String mimeType) {
 		this.inputStream = inputStream;
 		this.mimeType = mimeType;
+		description = "";
 		local = false;
 	}
 
 	/**
 	 * create MediaStatus from an offline source
 	 *
-	 * @param path     path to the local file
-	 * @param mimeType MIME type of the file
+	 * @param path        path to the local file
+	 * @param mimeType    MIME type of the file
+	 * @param description description of the media source
 	 */
-	public MediaStatus(String path, String mimeType) {
+	public MediaStatus(String path, String mimeType, String description) {
 		this.path = path;
 		this.mimeType = mimeType;
+		this.description = description;
 		local = true;
 	}
 
@@ -108,9 +112,8 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * @return media description if any
 	 */
-	@SuppressWarnings("SameReturnValue")
 	public String getDescription() {
-		return ""; // todo implement this
+		return description;
 	}
 
 	/**
