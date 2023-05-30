@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.notification;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -11,6 +13,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.ui.activities.MainActivity;
 
 /**
  * This class creates app push notification
@@ -19,6 +22,7 @@ import org.nuclearfog.twidda.model.lists.Notifications;
  */
 public class PushNotification {
 
+	public static final String NOTIFICATION_NAME = BuildConfig.APPLICATION_ID + " notification";
 	public static final String NOTIFICATION_ID_STR = BuildConfig.APPLICATION_ID + ".notification";
 
 	private static final int NOTIFICATION_ID = 0x25281;
@@ -36,6 +40,15 @@ public class PushNotification {
 		notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_ID_STR);
 		settings = GlobalSettings.getInstance(context);
 		this.context = context;
+		// if notification is clicked open MainActivity
+		// todo select notification tab
+		Intent notificationIntent = new Intent(context.getApplicationContext(), MainActivity.class);
+		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		notificationIntent.setAction(Intent.ACTION_MAIN);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP);
+		PendingIntent resultIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+		notificationBuilder.setContentIntent(resultIntent);
+		notificationBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
 	}
 
 	/**
@@ -44,6 +57,7 @@ public class PushNotification {
 	 */
 	@SuppressLint("MissingPermission")
 	public void createNotification(Notifications notifications) {
+		// todo update existing notification and prevent recreating notification
 		if (!notifications.isEmpty()) {
 			String title = settings.getLogin().getConfiguration().getName();
 			String content;
@@ -100,7 +114,7 @@ public class PushNotification {
 						break;
 				}
 			}
-			notificationBuilder.setContentTitle(title).setContentText(content).setSmallIcon(icon).setAutoCancel(true);
+			notificationBuilder.setContentTitle(title).setContentText(content).setSmallIcon(icon).setOnlyAlertOnce(true).setAutoCancel(true);
 			notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
 		}
 	}

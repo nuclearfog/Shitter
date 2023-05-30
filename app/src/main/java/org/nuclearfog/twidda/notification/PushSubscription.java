@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.notification;
 import android.content.Context;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.unifiedpush.android.connector.ConstantsKt;
 import org.unifiedpush.android.connector.UnifiedPush;
 
 import java.util.ArrayList;
@@ -20,12 +21,12 @@ public class PushSubscription {
 	public static void subscripe(Context context) {
 		GlobalSettings settings = GlobalSettings.getInstance(context);
 		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported()) {
-			if (settings.pushEnabled()) {
-				ArrayList<String> features = new ArrayList<>(1);
-				features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
+			ArrayList<String> features = new ArrayList<>(1);
+			features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
+			if (!settings.getWebPush().getHost().isEmpty()) {
 				UnifiedPush.registerApp(context.getApplicationContext(), settings.getWebPush().getHost(), features, "");
 			} else {
-				UnifiedPush.unregisterApp(context.getApplicationContext(), settings.getWebPush().getHost());
+				UnifiedPush.registerApp(context.getApplicationContext(), ConstantsKt.INSTANCE_DEFAULT, features, "");
 			}
 		}
 	}

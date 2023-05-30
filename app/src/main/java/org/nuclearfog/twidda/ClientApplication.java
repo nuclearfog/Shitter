@@ -32,7 +32,7 @@ public class ClientApplication extends Application {
 		// setup notification channel
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationManager manager = getSystemService(NotificationManager.class);
-			NotificationChannel channel = new NotificationChannel(PushNotification.NOTIFICATION_ID_STR, "fdgdfg", IMPORTANCE_LOW);
+			NotificationChannel channel = new NotificationChannel(PushNotification.NOTIFICATION_ID_STR, PushNotification.NOTIFICATION_NAME, IMPORTANCE_LOW);
 			manager.createNotificationChannel(channel);
 		}
 	}
