@@ -35,7 +35,6 @@ import org.nuclearfog.twidda.model.WebPush;
 public class WebPushDialog extends Dialog implements OnCheckedChangeListener, OnClickListener, OnItemSelectedListener, AsyncCallback<PushUpdateResult> {
 
 	private PushUpdater updater;
-	private GlobalSettings settings;
 
 	private PushUpdate update;
 
@@ -57,7 +56,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		Button apply_changes = findViewById(R.id.dialog_push_apply);
 		Spinner policySelector = findViewById(R.id.dialog_push_policy);
 
-		settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.getInstance(context);
 		updater = new PushUpdater(context);
 		update = new PushUpdate(settings.getWebPush());
 		mention.setCheckedImmediately(update.mentionsEnabled());
@@ -167,7 +166,6 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	public void onResult(@NonNull PushUpdateResult result) {
 		if (result.push != null) {
 			Toast.makeText(getContext(), R.string.info_webpush_update, Toast.LENGTH_SHORT).show();
-			settings.setWebPush(result.push);
 			dismiss();
 		}
 	}

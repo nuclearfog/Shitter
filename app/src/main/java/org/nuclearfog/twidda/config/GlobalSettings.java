@@ -139,7 +139,6 @@ public class GlobalSettings {
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
 	private static final long DEFAULT_LOCATION_ID = 1L;
 	private static final String DEFAULT_LOCATION_NAME = "Worldwide";
-	private static final String DEFAULT_UNIFYPUSH_HOST = "https://ntfy.sh";
 
 	private SharedPreferences settings;
 
@@ -590,6 +589,14 @@ public class GlobalSettings {
 		edit.putString(PUSH_PUBLIC_KEY, webPush.getPublicKey());
 		edit.putString(PUSH_PRIVATE_KEY, webPush.getPrivateKey());
 		edit.putString(PUSH_AUTH_KEY, webPush.getAuthSecret());
+		edit.putBoolean(PUSH_ALERT_MENTION, webPush.alertMentionEnabled());
+		edit.putBoolean(PUSH_ALERT_REPOST, webPush.alertRepostEnabled());
+		edit.putBoolean(PUSH_ALERT_FAVORITE, webPush.alertFavoriteEnabled());
+		edit.putBoolean(PUSH_ALERT_FOLLOWING, webPush.alertFollowingEnabled());
+		edit.putBoolean(PUSH_ALERT_REQUEST_FOLLOW, webPush.alertFollowRequestEnabled());
+		edit.putBoolean(PUSH_ALERT_STATUS_POST, webPush.alertStatusPostEnabled());
+		edit.putBoolean(PUSH_ALERT_STATUS_EDIT, webPush.alertStatusChangeEnabled());
+		edit.putBoolean(PUSH_ALERT_POLL, webPush.alertPollEnabled());
 		edit.apply();
 	}
 
@@ -1065,7 +1072,7 @@ public class GlobalSettings {
 	private void initWebpush() {
 		long pushID = settings.getLong(PUSH_ID, 0L);
 		String pushServerKey = settings.getString(PUSH_SERVER_KEY, "");
-		String pushServerHost = settings.getString(PUSH_SERVER_HOST, DEFAULT_UNIFYPUSH_HOST);
+		String pushServerHost = settings.getString(PUSH_SERVER_HOST, "");
 		String pushPublicKey = settings.getString(PUSH_PUBLIC_KEY, "");
 		String pushPrivateKey = settings.getString(PUSH_PRIVATE_KEY, "");
 		String pushAuthKey = settings.getString(PUSH_AUTH_KEY, "");

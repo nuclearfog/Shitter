@@ -4,6 +4,7 @@ import android.content.Context;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.unifiedpush.android.connector.ConstantsKt;
+import org.unifiedpush.android.connector.RegistrationDialogContent;
 import org.unifiedpush.android.connector.UnifiedPush;
 
 import java.util.ArrayList;
@@ -24,9 +25,9 @@ public class PushSubscription {
 			ArrayList<String> features = new ArrayList<>(1);
 			features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
 			if (!settings.getWebPush().getHost().isEmpty()) {
-				UnifiedPush.registerApp(context.getApplicationContext(), settings.getWebPush().getHost(), features, "");
+				UnifiedPush.registerAppWithDialog(context, settings.getWebPush().getHost(), new RegistrationDialogContent(), features, "");
 			} else {
-				UnifiedPush.registerApp(context.getApplicationContext(), ConstantsKt.INSTANCE_DEFAULT, features, "");
+				UnifiedPush.registerAppWithDialog(context, ConstantsKt.INSTANCE_DEFAULT, new RegistrationDialogContent(), features, "");
 			}
 		}
 	}

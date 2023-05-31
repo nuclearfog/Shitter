@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.notification.PushSubscription;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
 import org.nuclearfog.twidda.ui.adapter.AccountAdapter;
 import org.nuclearfog.twidda.ui.adapter.AccountAdapter.OnAccountClickListener;
@@ -106,6 +107,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	public void onAccountClick(Account account) {
 		settings.setLogin(account, true);
 		databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
+		if (settings.pushEnabled()) {
+			PushSubscription.subscripe(requireContext());
+		}
 		if (account.getUser() != null) {
 			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
