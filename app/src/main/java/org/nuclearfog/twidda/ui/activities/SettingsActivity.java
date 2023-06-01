@@ -1,9 +1,13 @@
 package org.nuclearfog.twidda.ui.activities;
 
+import static android.Manifest.permission.POST_NOTIFICATIONS;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.Menu;
@@ -78,6 +82,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	public static final int RETURN_FONT_SCALE_CHANGED = 0x2636;
 
+	private static final int REQUEST_PERMISSION_NOTIFICATION = 0x5889;
+
 	/**
 	 * total count of all colors defined
 	 */
@@ -107,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	private View enable_auth_label;
 	private EditText proxy_address, proxy_port, proxy_user, proxy_pass;
-	private SwitchButton enable_proxy, enable_auth;
+	private SwitchButton enable_proxy, enable_auth, enablePush;
 	private Spinner location_dropdown;
 	private TextView list_size;
 	private ViewGroup root;
@@ -143,10 +149,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
 		SwitchButton hideSensitive = findViewById(R.id.enable_status_hide_sensitive);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
-		SwitchButton enablePush = findViewById(R.id.settings_enable_push);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.spinner_font);
 		Spinner scaleSelector = findViewById(R.id.spinner_scale);
+		enablePush = findViewById(R.id.settings_enable_push);
 		enable_proxy = findViewById(R.id.settings_enable_proxy);
 		enable_auth = findViewById(R.id.settings_enable_auth);
 		location_dropdown = findViewById(R.id.spinner_woeid);
@@ -306,6 +312,19 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			license.show();
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == REQUEST_PERMISSION_NOTIFICATION) {
+			if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				PushSubscription.subscripe(this);
+			} else {
+				enablePush.setChecked(false);
+			}
+		}
 	}
 
 
@@ -512,7 +531,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable/disable push notification
 		else if (c.getId() == R.id.settings_enable_push) {
 			if (checked) {
-				PushSubscription.subscripe(this);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+					requestPermissions(new String[]{POST_NOTIFICATIONS}, REQUEST_PERMISSION_NOTIFICATION);
+				} else {
+					PushSubscription.subscripe(this);
+				}
 			} else {
 				PushSubscription.unsubscripe(this);
 			}

@@ -1,9 +1,12 @@
 package org.nuclearfog.twidda.notification;
 
-import android.annotation.SuppressLint;
+import static android.Manifest.permission.POST_NOTIFICATIONS;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -40,22 +43,21 @@ public class PushNotification {
 		notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_ID_STR);
 		settings = GlobalSettings.getInstance(context);
 		this.context = context;
-		// if notification is clicked open MainActivity
-		// todo select notification tab
+		// Open MainActivity and select notification tab, if notification view is clicked
 		Intent notificationIntent = new Intent(context.getApplicationContext(), MainActivity.class);
+		notificationIntent.putExtra(MainActivity.KEY_SELECT_NOTIFICATION, true);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		notificationIntent.setAction(Intent.ACTION_MAIN);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent resultIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-		notificationBuilder.setContentIntent(resultIntent);
-		notificationBuilder.setPriority(NotificationCompat.PRIORITY_HIGH);
+		notificationBuilder.setContentIntent(resultIntent).setPriority(NotificationCompat.PRIORITY_HIGH).setOnlyAlertOnce(true).setAutoCancel(true);
 	}
 
 	/**
 	 * create push-notification from notifications
+	 *
 	 * @param notifications new notifications
 	 */
-	@SuppressLint("MissingPermission")
 	public void createNotification(Notifications notifications) {
 		// todo update existing notification and prevent recreating notification
 		if (!notifications.isEmpty()) {
@@ -114,8 +116,10 @@ public class PushNotification {
 						break;
 				}
 			}
-			notificationBuilder.setContentTitle(title).setContentText(content).setSmallIcon(icon).setOnlyAlertOnce(true).setAutoCancel(true);
-			notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || context.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+				notificationBuilder.setContentTitle(title).setContentText(content).setSmallIcon(icon);
+				notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+			}
 		}
 	}
 }

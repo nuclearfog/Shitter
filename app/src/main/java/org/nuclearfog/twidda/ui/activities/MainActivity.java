@@ -37,6 +37,8 @@ import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
  */
 public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener {
 
+	public static final String KEY_SELECT_NOTIFICATION = "main_notification";
+
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private FragmentAdapter adapter;
@@ -94,6 +96,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		// initialize lists
 		else if (adapter.isEmpty()) {
 			setupAdapter();
+			if (getIntent().getBooleanExtra(KEY_SELECT_NOTIFICATION, false)) {
+				// select notification page if user clicks on notification
+				viewPager.setCurrentItem(adapter.getItemCount() - 1, false);
+			}
 		}
 	}
 
