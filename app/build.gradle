@@ -30,10 +30,6 @@ android {
 		}
 	}
 
-	lintOptions {
-		ignore 'NotificationPermission'
-	}
-
 	packagingOptions {
 		jniLibs {
 			excludes += ['/META-INF/androidx.*', '/META-INF/kotlin*', '/META-INF/com.*', '/META-INF/services/**', '/META-INF/com/**', '/kotlin/**', '/Debug*']
