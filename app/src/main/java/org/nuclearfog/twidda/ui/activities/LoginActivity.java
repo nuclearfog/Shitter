@@ -38,7 +38,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.adapter.NetworkAdapter;
+import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog;
 
 import java.io.Serializable;
@@ -67,6 +67,20 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	public static final int RETURN_SETTINGS_CHANGED = 0x227;
 
 	/**
+	 * dropdown selection index of Mastodon
+	 *
+	 * @see R.array .networks
+	 */
+	private static final int IDX_MASTODON = 0;
+
+	/**
+	 * dropdown selection index of Twitter
+	 *
+	 * @see R.array .networks
+	 */
+	private static final int IDX_TWITTER = 1;
+
+	/**
 	 * key used to save connection configuration
 	 */
 	private static final String KEY_SAVE = "connection_save";
@@ -76,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	private LoginAction loginAsync;
 	private GlobalSettings settings;
 	private ConnectionDialog connectionDialog;
-	private NetworkAdapter adapter;
+	private DropdownAdapter adapter;
 
 	private EditText pinInput;
 	private Spinner hostSelector;
@@ -110,9 +124,11 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 
-		adapter = new NetworkAdapter(this);
+		adapter = new DropdownAdapter(this);
 		connectionDialog = new ConnectionDialog(this);
 		loginAsync = new LoginAction(this);
+
+		adapter.addItems(R.array.networks);
 		hostSelector.setAdapter(adapter);
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
@@ -212,7 +228,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		// get login request token
 		if (v.getId() == R.id.login_get_link) {
 			// generate Twitter login link
-			if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+			if (hostSelector.getSelectedItemPosition() == IDX_TWITTER) {
 				// use userdefined or default token keys
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_open_twitter_login, Toast.LENGTH_LONG).show();
@@ -225,7 +241,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				}
 			}
 			// generate Mastodon login
-			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
+			else if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, Toast.LENGTH_LONG).show();
 				LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection.getApiType(), connection, "");
 				loginAsync.execute(param, this);
@@ -241,7 +257,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				pinInput.setError(getString(R.string.error_enter_code));
 			}
 			// login to Twitter
-			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+			else if (hostSelector.getSelectedItemPosition() == IDX_TWITTER) {
 				if (connection.useTokens() || Tokens.USE_DEFAULT_KEYS) {
 					Toast.makeText(getApplicationContext(), R.string.info_login_to_twitter, Toast.LENGTH_LONG).show();
 					LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection.getApiType(), connection, code);
@@ -251,7 +267,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				}
 			}
 			// login to mastodon
-			else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
+			else if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, Toast.LENGTH_LONG).show();
 				LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection.getApiType(), connection, code);
 				loginAsync.execute(param, this);
@@ -259,9 +275,9 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		}
 		// open API settings dialog
 		else if (v.getId() == R.id.login_network_settings) {
-			if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_TWITTER) {
+			if (hostSelector.getSelectedItemPosition() == IDX_TWITTER) {
 				connectionDialog.show(connection);
-			} else if (hostSelector.getSelectedItemId() == NetworkAdapter.ID_MASTODON) {
+			} else if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
 				connectionDialog.show(connection);
 			}
 			loginLink = null;
@@ -271,13 +287,17 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		if (id == NetworkAdapter.ID_TWITTER) {
-			if ((Tokens.USE_DEFAULT_KEYS && Tokens.DISABLE_API_V2) || settings.getLogin().getConfiguration() == Configuration.TWITTER1)
-				connection.setApiType(Configuration.TWITTER1);
-			else
-				connection.setApiType(Configuration.TWITTER2);
-		} else if (id == NetworkAdapter.ID_MASTODON) {
+		// "Mastodon" selected
+		if (position == IDX_MASTODON) {
 			connection.setApiType(Configuration.MASTODON);
+		}
+		// "Twitter" selected
+		else if (position == IDX_TWITTER) {
+			if ((Tokens.USE_DEFAULT_KEYS && Tokens.DISABLE_API_V2) || settings.getLogin().getConfiguration() == Configuration.TWITTER1) {
+				connection.setApiType(Configuration.TWITTER1);
+			} else {
+				connection.setApiType(Configuration.TWITTER2);
+			}
 		}
 		loginLink = null;
 	}

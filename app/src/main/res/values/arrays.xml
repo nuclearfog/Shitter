@@ -65,6 +65,11 @@
 		<item>@drawable/follower</item>
 	</integer-array>
 
+	<string-array name="networks">
+		<item>Mastodon</item>
+		<item>Twitter</item>
+	</string-array>
+
 	<string-array name="timeunits">
 		<item>Minutes</item>
 		<item>Hours</item>
@@ -82,6 +87,14 @@
 		<item>Private</item>
 		<item>Direct</item>
 		<item>Unlisted</item>
+	</string-array>
+
+	<string-array name="scales">
+		<item>0.5 X</item>
+		<item>0.8 X</item>
+		<item>1.0 X</item>
+		<item>1.5 X</item>
+		<item>2.0 X</item>
 	</string-array>
 
 </resources>

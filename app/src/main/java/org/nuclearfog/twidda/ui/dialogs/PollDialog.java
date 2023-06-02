@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,6 +20,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.model.Instance;
+import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 import org.nuclearfog.twidda.ui.adapter.EditOptionsAdapter;
 
 import java.util.List;
@@ -58,7 +58,8 @@ public class PollDialog extends Dialog implements OnClickListener {
 		multiple_choice = findViewById(R.id.dialog_poll_mul_choice);
 		hide_votes = findViewById(R.id.dialog_poll_hide_total);
 
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.timeunits, android.R.layout.simple_spinner_dropdown_item);
+		DropdownAdapter adapter = new DropdownAdapter(context);
+		adapter.addItems(R.array.timeunits);
 		timeUnitSelector.setAdapter(adapter);
 		timeUnitSelector.setSelection(2);
 

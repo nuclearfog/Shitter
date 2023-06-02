@@ -17,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -50,16 +49,16 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.notification.PushSubscription;
-import org.nuclearfog.twidda.ui.adapter.FontAdapter;
-import org.nuclearfog.twidda.ui.adapter.LocationAdapter;
-import org.nuclearfog.twidda.ui.adapter.ScaleAdapter;
+import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.InfoDialog;
 import org.nuclearfog.twidda.ui.dialogs.LicenseDialog;
 import org.nuclearfog.twidda.ui.dialogs.WebPushDialog;
 
+import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -105,8 +104,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private DatabaseAction databaseAction;
 	private LocationLoader locationLoader;
 
-	private LocationAdapter locationAdapter;
-	private BaseAdapter fontAdapter, scaleAdapter;
+	private DropdownAdapter locationAdapter, fontAdapter, scaleAdapter;
 
 	private Dialog color_dialog_selector, appInfo, license, pushDialog;
 	private ConfirmDialog confirmDialog;
@@ -122,6 +120,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@IntRange(from = 0, to = COLOR_COUNT - 1)
 	private int mode = 0;
 	private int color = 0;
+
+	private List<Location> locations;
 
 	private AsyncCallback<LocationLoaderResult> locationResult = this::onLocationResult;
 	private AsyncCallback<DatabaseResult> databaseResult = this::onDatabaseResult;
@@ -174,33 +174,36 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		list_size = findViewById(R.id.settings_list_size);
 		root = findViewById(R.id.settings_layout);
 
-		toolbar.setTitle(R.string.title_settings);
-		setSupportActionBar(toolbar);
-
 		settings = GlobalSettings.getInstance(this);
 		configuration = settings.getLogin().getConfiguration();
-		locationAdapter = new LocationAdapter(settings);
-		locationAdapter.addItem(settings.getTrendLocation());
-		location_dropdown.setAdapter(locationAdapter);
-		location_dropdown.setSelected(false);
-		fontAdapter = new FontAdapter(settings);
-		scaleAdapter = new ScaleAdapter(settings);
-		fontSelector.setAdapter(fontAdapter);
-		scaleSelector.setAdapter(scaleAdapter);
-		fontSelector.setSelection(settings.getFontIndex(), false);
-		scaleSelector.setSelection(settings.getScaleIndex(), false);
-		fontSelector.setSelected(false);
-		scaleSelector.setSelected(false);
-
-		AppStyles.setTheme(root);
-		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-
 		confirmDialog = new ConfirmDialog(this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 		pushDialog = new WebPushDialog(this);
 		locationLoader = new LocationLoader(this);
 		databaseAction = new DatabaseAction(this);
+		fontAdapter = new DropdownAdapter(getApplicationContext());
+		scaleAdapter = new DropdownAdapter(getApplicationContext());
+		locationAdapter = new DropdownAdapter(getApplicationContext());
+
+		toolbar.setTitle(R.string.title_settings);
+		setSupportActionBar(toolbar);
+		AppStyles.setTheme(root);
+		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+
+		fontAdapter.addFonts(GlobalSettings.FONT_TYPES);
+		fontAdapter.addItems(GlobalSettings.FONT_NAMES);
+		scaleAdapter.addItems(R.array.scales);
+		locationAdapter.addItem(settings.getTrendLocation().getFullName());
+
+		location_dropdown.setAdapter(locationAdapter);
+		fontSelector.setAdapter(fontAdapter);
+		scaleSelector.setAdapter(scaleAdapter);
+		fontSelector.setSelection(settings.getFontIndex(), false);
+		scaleSelector.setSelection(settings.getScaleIndex(), false);
+		fontSelector.setSelected(false);
+		scaleSelector.setSelected(false);
+		location_dropdown.setSelected(false);
 
 		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
 			enableLocalTl.setVisibility(View.VISIBLE);
@@ -577,7 +580,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		// Trend location spinner
 		if (parent.getId() == R.id.spinner_woeid) {
-			settings.setTrendLocation(locationAdapter.getItem(position));
+			settings.setTrendLocation(locations.get(position));
 		}
 		// Font type spinner
 		else if (parent.getId() == R.id.spinner_font) {
@@ -652,10 +655,21 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	 */
 	private void onLocationResult(LocationLoaderResult result) {
 		if (result.locations != null) {
-			locationAdapter.replaceItems(result.locations);
-			int position = locationAdapter.indexOf(settings.getTrendLocation());
-			if (position >= 0)
+			int position = -1;
+			this.locations = result.locations;
+			String[] items = new String[result.locations.size()];
+			for (int i = 0 ; i < items.length ; i++) {
+				items[i] = result.locations.get(i).getFullName();
+				if (items[i].equals(settings.getTrendLocation().getFullName())) {
+					position = i;
+				}
+			}
+			locationAdapter.addItems(items);
+			// set item of a previously selection if exists
+			if (position >= 0) {
 				location_dropdown.setSelection(position, false);
+			}
+			// set listener after modifying content to prevent listener call
 			location_dropdown.setOnItemSelectedListener(this);
 		} else {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);

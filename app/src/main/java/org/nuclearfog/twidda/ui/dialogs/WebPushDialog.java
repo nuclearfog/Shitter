@@ -7,7 +7,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -26,6 +25,7 @@ import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.WebPush;
+import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 
 /**
  * Web push configuration dialog
@@ -67,7 +67,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		request.setCheckedImmediately(update.followRequestEnabled());
 		status_new.setCheckedImmediately(update.statusPostEnabled());
 		status_edit.setCheckedImmediately(update.statusEditEnabled());
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.push_policy, android.R.layout.simple_spinner_dropdown_item);
+		DropdownAdapter adapter = new DropdownAdapter(context);
 		policySelector.setAdapter(adapter);
 		switch (update.getPolicy()) {
 			case WebPush.POLICY_ALL:
@@ -82,8 +82,9 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 				policySelector.setSelection(2);
 				break;
 		}
-		AppStyles.setTheme(root);
+		adapter.addItems(R.array.push_policy);
 
+		AppStyles.setTheme(root);
 		mention.setOnCheckedChangeListener(this);
 		repost.setOnCheckedChangeListener(this);
 		favorite.setOnCheckedChangeListener(this);

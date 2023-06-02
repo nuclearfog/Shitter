@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
@@ -18,6 +17,7 @@ import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 
 /**
  * status editor preference dialog used to set additional status information
@@ -45,7 +45,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
 		GlobalSettings settings = GlobalSettings.getInstance(context);
 
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.visibility, android.R.layout.simple_spinner_dropdown_item);
+		DropdownAdapter adapter = new DropdownAdapter(context);
 		visibilitySelector.setAdapter(adapter);
 		visibilitySelector.setSelection(0, false);
 		visibilitySelector.setSelected(false);
@@ -56,6 +56,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		if (!settings.getLogin().getConfiguration().statusSpoilerSupported()) {
 			statusSpoiler.setVisibility(View.GONE);
 		}
+		adapter.addItems(R.array.visibility);
 		sensitiveCheck.setOnCheckedChangeListener(this);
 		spoilerCheck.setOnCheckedChangeListener(this);
 		visibilitySelector.setOnItemSelectedListener(this);

@@ -184,7 +184,8 @@
 
 	<!-- dimens of item_dropdown-->
 	<dimen name="dropdown_padding">2dp</dimen>
-	<dimen name="dropdown_text_size">18sp</dimen>
+	<dimen name="dropdown_layout_margin">2dp</dimen>
+	<dimen name="dropdown_text_size">16sp</dimen>
 
 	<!--dimens of page_media.xml-->
 	<dimen name="mediapage_toolbar_height">@dimen/toolbar_height</dimen>
@@ -256,7 +257,6 @@
 	<dimen name="dialog_poll_textsize_big">18sp</dimen>
 	<dimen name="dialog_poll_button_close_size">24sp</dimen>
 	<dimen name="dialog_poll_button_height">20sp</dimen>
-	<dimen name="dialog_poll_spinner_height">22sp</dimen>
 
 	<!--dimens of item_tab.xml-->
 	<dimen name="item_tab_icon_size">22sp</dimen>
@@ -329,6 +329,5 @@
 	<dimen name="dialog_push_layout_margin">5dp</dimen>
 	<dimen name="dialog_push_label_margin">10sp</dimen>
 	<dimen name="dialog_push_root_padding">5dp</dimen>
-	<dimen name="dialog_push_spinner_height">22sp</dimen>
 
 </resources>
