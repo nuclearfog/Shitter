@@ -19,6 +19,8 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 
+import java.util.Locale;
+
 /**
  * status editor preference dialog used to set additional status information
  *
@@ -29,6 +31,8 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	private Spinner visibilitySelector;
 
 	private StatusUpdate statusUpdate;
+
+	private Locale[] languages;
 
 	/**
 	 * @param statusUpdate status information from status editor
@@ -42,23 +46,37 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		SwitchButton spoilerCheck = findViewById(R.id.dialog_status_spoiler);
 		View statusVisibility = findViewById(R.id.dialog_status_visibility_container);
 		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
+		Spinner languageSelector = findViewById(R.id.dialog_status_language);
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
 		GlobalSettings settings = GlobalSettings.getInstance(context);
+		AppStyles.setTheme(rootView);
 
-		DropdownAdapter adapter = new DropdownAdapter(context);
-		visibilitySelector.setAdapter(adapter);
+		DropdownAdapter visibility_adapter = new DropdownAdapter(context);
+		DropdownAdapter language_adapter = new DropdownAdapter(context);
+		languageSelector.setAdapter(language_adapter);
+		languageSelector.setSelected(false);
+		visibilitySelector.setAdapter(visibility_adapter);
 		visibilitySelector.setSelection(0, false);
 		visibilitySelector.setSelected(false);
-		AppStyles.setTheme(rootView);
+
+		languages = Locale.getAvailableLocales();
+		String[] language_names = new String[languages.length + 1];
+		language_names[0] = context.getString(R.string.dialog_status_language_empty);
+		for (int i = 0 ; i < languages.length ; i++) {
+			language_names[i + 1] = languages[i].getDisplayLanguage() + " " + languages[i].getCountry();
+		}
+		language_adapter.setItems(language_names);
+
 		if (!settings.getLogin().getConfiguration().statusVisibilitySupported()) {
 			statusVisibility.setVisibility(View.GONE);
 		}
 		if (!settings.getLogin().getConfiguration().statusSpoilerSupported()) {
 			statusSpoiler.setVisibility(View.GONE);
 		}
-		adapter.addItems(R.array.visibility);
+		visibility_adapter.setItems(R.array.visibility);
 		sensitiveCheck.setOnCheckedChangeListener(this);
 		spoilerCheck.setOnCheckedChangeListener(this);
+		languageSelector.setOnItemSelectedListener(this);
 		visibilitySelector.setOnItemSelectedListener(this);
 	}
 
@@ -117,6 +135,11 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 				case 3:
 					statusUpdate.setVisibility(Status.VISIBLE_UNLISTED);
 					break;
+			}
+		} else if (parent.getId() == R.id.dialog_status_language) {
+			if (position > 0) {
+				Locale language = languages[position - 1];
+				statusUpdate.addLanguage(language.getLanguage());
 			}
 		}
 	}

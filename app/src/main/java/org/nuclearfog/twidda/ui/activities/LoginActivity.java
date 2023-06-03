@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		connectionDialog = new ConnectionDialog(this);
 		loginAsync = new LoginAction(this);
 
-		adapter.addItems(R.array.networks);
+		adapter.setItems(R.array.networks);
 		hostSelector.setAdapter(adapter);
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);

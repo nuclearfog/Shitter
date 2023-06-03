@@ -69,7 +69,7 @@
 	<string name="info_domain_removed">domain removed from the list</string>
 	<string name="info_hashtag_followed">hashtag followed</string>
 	<string name="info_domain_blocked">domain blocked!</string>
-	<string name="info_webpush_update">Push configuration updated!</string>
+	<string name="info_webpush_update">Push configuration updated</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -176,10 +176,6 @@
 	<string name="dialog_link_image_preview">Link preview image</string>
 	<string name="app_info_icons">svg icons from:</string>
 	<string name="app_info_icons_links" translatable="false">www.svgrepo.com  www.entypo.com</string>
-
-	<!--network names-->
-	<string name="twitter" translatable="false">Twitter</string>
-	<string name="mastodon" translatable="false">Mastodon</string>
 
 	<string name="profile_image">Profile image</string>
 	<string name="login_pin">enter PIN</string>
@@ -332,6 +328,8 @@
 	<string name="dialog_status_sensitive">mark content as sensitive</string>
 	<string name="dialog_status_spoiler">mark content as spoiler</string>
 	<string name="dialog_status_visibility">Visibility</string>
+	<string name="dialog_status_language">Language</string>
+	<string name="dialog_status_language_empty">nothing selected</string>
 	<string name="dialog_push_repost">on repost</string>
 	<string name="dialog_push_favorite">on favorite</string>
 	<string name="dialog_push_mention">on mention</string>

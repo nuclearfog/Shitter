@@ -78,6 +78,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	private boolean spoiler = false;
 	private int visibility = Status.VISIBLE_PUBLIC;
 	private String text;
+	private String languageCode;
 
 	// attachment attributes
 	@Nullable
@@ -119,6 +120,7 @@ public class StatusUpdate implements Serializable, Closeable {
 		sensitive = status.isSensitive();
 		spoiler = status.isSpoiler();
 		visibility = status.getVisibility();
+		languageCode = status.getLanguage();
 		if (status.getPoll() != null) {
 			poll = new PollUpdate(status.getPoll());
 		}
@@ -151,6 +153,15 @@ public class StatusUpdate implements Serializable, Closeable {
 	 */
 	public void addText(String text) {
 		this.text = text;
+	}
+
+	/**
+	 * add status language
+	 *
+	 * @param languageCode ISO 639 language code
+	 */
+	public void addLanguage(String languageCode) {
+		this.languageCode = languageCode;
 	}
 
 	/**
@@ -325,6 +336,16 @@ public class StatusUpdate implements Serializable, Closeable {
 	@Nullable
 	public String getText() {
 		return text;
+	}
+
+	/**
+	 * get status language
+	 *
+	 * @return ISO 639 language code
+	 */
+	@Nullable
+	public String getLanguageCode() {
+		return languageCode;
 	}
 
 	/**

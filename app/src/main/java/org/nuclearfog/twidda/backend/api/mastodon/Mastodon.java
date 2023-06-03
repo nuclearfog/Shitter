@@ -650,6 +650,8 @@ public class Mastodon implements Connection {
 			params.add("spoiler_text=true");
 		if (update.getText() != null)
 			params.add("status=" + StringUtils.encode(update.getText()));
+		if (update.getLanguageCode() != null)
+			params.add("language=" + update.getLanguageCode());
 		if (update.getReplyId() != 0)
 			params.add("in_reply_to_id=" + update.getReplyId());
 		if (update.getVisibility() == Status.VISIBLE_DIRECT)

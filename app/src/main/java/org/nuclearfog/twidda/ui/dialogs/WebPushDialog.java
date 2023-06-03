@@ -82,7 +82,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 				policySelector.setSelection(2);
 				break;
 		}
-		adapter.addItems(R.array.push_policy);
+		adapter.setItems(R.array.push_policy);
 
 		AppStyles.setTheme(root);
 		mention.setOnCheckedChangeListener(this);

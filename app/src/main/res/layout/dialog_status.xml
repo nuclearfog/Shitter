@@ -10,7 +10,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_status_title"
-		android:textSize="@dimen/dialog_status_title_textsize"
+		android:textSize="@dimen/dialog_status_textsize_title"
 		android:layout_marginBottom="@dimen/dialog_status_layout_margins"
 		android:lines="1" />
 
@@ -18,7 +18,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:layout_marginBottom="@dimen/dialog_status_layout_margins">
+		android:layout_marginBottom="@dimen/dialog_status_layout_margins"
+		android:gravity="center_vertical">
 
 		<com.kyleduo.switchbutton.SwitchButton
 			android:id="@+id/dialog_status_sensitive"
@@ -30,7 +31,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/dialog_status_sensitive"
-			android:lines="1" />
+			android:lines="1"
+			android:textSize="@dimen/dialog_status_textsize_small" />
+
 	</LinearLayout>
 
 	<LinearLayout
@@ -38,7 +41,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:layout_marginBottom="@dimen/dialog_status_layout_margins">
+		android:layout_marginBottom="@dimen/dialog_status_layout_margins"
+		android:gravity="center_vertical">
 
 		<com.kyleduo.switchbutton.SwitchButton
 			android:id="@+id/dialog_status_spoiler"
@@ -50,6 +54,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="@string/dialog_status_spoiler"
+			android:textSize="@dimen/dialog_status_textsize_small"
 			android:lines="1" />
 	</LinearLayout>
 
@@ -57,7 +62,9 @@
 		android:id="@+id/dialog_status_visibility_container"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:layout_marginBottom="@dimen/dialog_status_layout_margins"
+		android:gravity="center_vertical">
 
 		<TextView
 			android:layout_width="0dp"
@@ -66,13 +73,39 @@
 			android:layout_marginEnd="@dimen/dialog_status_layout_margins"
 			android:layout_weight="2"
 			android:gravity="end"
+			android:textSize="@dimen/dialog_status_textsize_small"
 			android:lines="1" />
 
 		<Spinner
 			android:id="@+id/dialog_status_visibility"
 			android:layout_width="0dp"
 			android:layout_height="@dimen/dialog_status_dropdown_height"
-			android:layout_weight="3" />
+			android:layout_weight="5" />
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/dialog_status_language_container"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical">
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:text="@string/dialog_status_language"
+			android:layout_marginEnd="@dimen/dialog_status_layout_margins"
+			android:layout_weight="2"
+			android:textSize="@dimen/dialog_status_textsize_small"
+			android:gravity="end"
+			android:lines="1" />
+
+		<Spinner
+			android:id="@+id/dialog_status_language"
+			android:layout_width="0dp"
+			android:layout_height="@dimen/dialog_status_dropdown_height"
+			android:layout_weight="5" />
 
 	</LinearLayout>
 

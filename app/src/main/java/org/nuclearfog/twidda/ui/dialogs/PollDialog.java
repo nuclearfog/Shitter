@@ -59,7 +59,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		hide_votes = findViewById(R.id.dialog_poll_hide_total);
 
 		DropdownAdapter adapter = new DropdownAdapter(context);
-		adapter.addItems(R.array.timeunits);
+		adapter.setItems(R.array.timeunits);
 		timeUnitSelector.setAdapter(adapter);
 		timeUnitSelector.setSelection(2);
 

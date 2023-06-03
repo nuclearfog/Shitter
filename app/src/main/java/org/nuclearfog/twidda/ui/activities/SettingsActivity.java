@@ -191,10 +191,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
-		fontAdapter.addFonts(GlobalSettings.FONT_TYPES);
-		fontAdapter.addItems(GlobalSettings.FONT_NAMES);
-		scaleAdapter.addItems(R.array.scales);
-		locationAdapter.addItem(settings.getTrendLocation().getFullName());
+		fontAdapter.setFonts(GlobalSettings.FONT_TYPES);
+		fontAdapter.setItems(GlobalSettings.FONT_NAMES);
+		scaleAdapter.setItems(R.array.scales);
+		locationAdapter.setItem(settings.getTrendLocation().getFullName());
 
 		location_dropdown.setAdapter(locationAdapter);
 		fontSelector.setAdapter(fontAdapter);
@@ -664,7 +664,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					position = i;
 				}
 			}
-			locationAdapter.addItems(items);
+			locationAdapter.setItems(items);
 			// set item of a previously selection if exists
 			if (position >= 0) {
 				location_dropdown.setSelection(position, false);

@@ -16,7 +16,11 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 
 import java.util.Arrays;
 
-
+/**
+ * Dropdown list adapter used for spinners
+ *
+ * @author nuclearfog
+ */
 public class DropdownAdapter extends BaseAdapter {
 
 	private GlobalSettings settings;
@@ -25,7 +29,9 @@ public class DropdownAdapter extends BaseAdapter {
 	private String[] items = {};
 	private Typeface[] fonts = {};
 
-
+	/**
+	 *
+	 */
 	public DropdownAdapter(Context context) {
 		settings = GlobalSettings.getInstance(context);
 		this.context = context;
@@ -71,31 +77,52 @@ public class DropdownAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-
-	public void addItem(String item) {
+	/**
+	 * set single item
+	 *
+	 * @param item item string
+	 */
+	public void setItem(String item) {
 		this.items = new String[] {item};
 		notifyDataSetChanged();
 	}
 
-
-	public void addItems(@ArrayRes int arrayRes) {
+	/**
+	 * set items from string array resource
+	 *
+	 * @param arrayRes array resource containing strings
+	 */
+	public void setItems(@ArrayRes int arrayRes) {
 		TypedArray tArray = context.getResources().obtainTypedArray(arrayRes);
 		items = new String[tArray.length()];
 		for (int i = 0; i < tArray.length(); i++) {
-			items[i] = tArray.getString(i);
+			String item = tArray.getString(i);
+			if (item != null) {
+				items[i] = item;
+			} else {
+				items[i] = "";
+			}
 		}
 		tArray.recycle();
 		notifyDataSetChanged();
 	}
 
-
-	public void addItems(String[] items) {
+	/**
+	 * set items from string array
+	 *
+	 * @param items string array containing items
+	 */
+	public void setItems(String[] items) {
 		this.items = Arrays.copyOf(items, items.length);
 		notifyDataSetChanged();
 	}
 
-
-	public void addFonts(Typeface[] fonts) {
+	/**
+	 * set font for items
+	 *
+	 * @param fonts font array
+	 */
+	public void setFonts(Typeface[] fonts) {
 		this.fonts = Arrays.copyOf(fonts, fonts.length);
 	}
 }

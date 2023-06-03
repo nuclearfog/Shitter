@@ -29,6 +29,7 @@
 	<string name="info_database_cleared">Datenbank gelöscht</string>
 	<string name="info_notification_dismiss">Nachricht verworfen</string>
 	<string name="info_domain_blocked">Domain gesperrt!</string>
+	<string name="info_webpush_update">Push-Konfiguration wurde aktualisiert</string>
 	<string name="info_error">Fehler!</string>
 	<string name="menu_status_edit">bearbeiten</string>
 	<string name="menu_status_delete">löschen</string>
@@ -318,6 +319,12 @@
 	<string name="notification_favorite">%1$s hat einen Status favorisiert</string>
 	<string name="notification_repost">%1$s hat einen Status geteilt</string>
 	<string name="notification_follow">%1$s folgt dir jetzt</string>
+	<string name="notification_status">%1$s  hat was gepostet</string>
+	<string name="notification_edit">Ein Status von dir wurde geteilt.</string>
 	<string name="notification_poll">Eine Umfrage wurde beendet</string>
+	<string name="notification_request">%1$s folgt dir jetzt</string>
 	<string name="notification_mention">%1$s hat dich erwähnt</string>
+	<string name="notification_new">Neue Benachrichtigungen</string>
+	<string name="dialog_status_language">Sprache</string>
+	<string name="dialog_status_language_empty">keine Auswahl</string>
 </resources>
