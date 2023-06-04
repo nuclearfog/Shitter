@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -268,7 +269,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		}
 		// Add media to the status
 		else if (v.getId() == R.id.popup_status_add_media) {
-			if (statusUpdate.getAttachmentType() == StatusUpdate.EMPTY) {
+			if (statusUpdate.getMediaStatuses().isEmpty()) {
 				// request images/videos
 				getMedia(REQUEST_ALL);
 			} else {
@@ -359,30 +360,32 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	public void onMediaClick(int index) {
+		if (statusUpdate.getMediaStatuses().isEmpty())
+			return;
 		Uri uri = statusUpdate.getMediaUris()[index];
-		switch (statusUpdate.getAttachmentType()) {
-			case StatusUpdate.MEDIA_IMAGE:
+		switch (statusUpdate.getMediaStatuses().get(0).getMediaType()) {
+			case MediaStatus.IMAGE:
 				Intent intent = new Intent(this, ImageViewer.class);
 				intent.putExtra(ImageViewer.LINK, uri);
 				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 				break;
 
-			case StatusUpdate.MEDIA_GIF:
+			case MediaStatus.GIF:
 				intent = new Intent(this, ImageViewer.class);
 				intent.putExtra(ImageViewer.LINK, uri);
 				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_GIF);
 				startActivity(intent);
 				break;
 
-			case StatusUpdate.MEDIA_VIDEO:
+			case MediaStatus.VIDEO:
 				intent = new Intent(this, VideoViewer.class);
 				intent.putExtra(VideoViewer.KEY_LINK, uri);
 				intent.putExtra(VideoViewer.KEY_CONTROLS, true);
 				startActivity(intent);
 				break;
 
-			case StatusUpdate.MEDIA_AUDIO:
+			case MediaStatus.AUDIO:
 				audioDialog.show(uri);
 				break;
 		}
@@ -416,35 +419,35 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private void addMedia(int mediaType) {
 		switch (mediaType) {
 			case Media.PHOTO:
-			case StatusUpdate.MEDIA_IMAGE:
+			case MediaStatus.IMAGE:
 				adapter.addImageItem();
 				break;
 
 			case Media.GIF:
-			case StatusUpdate.MEDIA_GIF:
+			case MediaStatus.GIF:
 				adapter.addGifItem();
 				break;
 
 			case Media.VIDEO:
-			case StatusUpdate.MEDIA_VIDEO:
+			case MediaStatus.VIDEO:
 				adapter.addVideoItem();
 				break;
 
 			case Media.AUDIO:
-			case StatusUpdate.MEDIA_AUDIO:
+			case MediaStatus.AUDIO:
 				adapter.addAudioItem();
 				break;
 
-			case StatusUpdate.MEDIA_ERROR:
+			default:
 				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
-				break;
+				return;
 		}
 		// hide media button if limit is reached
 		if (statusUpdate.mediaLimitReached()) {
 			mediaBtn.setVisibility(View.GONE);
 		}
 		// hide poll button
-		if (mediaType != StatusUpdate.MEDIA_ERROR && pollBtn.getVisibility() != View.GONE) {
+		if (pollBtn.getVisibility() != View.GONE) {
 			pollBtn.setVisibility(View.GONE);
 		}
 	}

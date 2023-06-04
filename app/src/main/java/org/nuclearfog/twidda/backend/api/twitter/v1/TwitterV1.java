@@ -1119,7 +1119,7 @@ public class TwitterV1 implements Connection {
 					if (type != null) {
 						String mime = type.toString();
 						InputStream stream = body.byteStream();
-						return new MediaStatus(stream, mime);
+						return new MediaStatus(stream, mime, "");
 					}
 				}
 				throw new TwitterException(response);
@@ -1134,7 +1134,7 @@ public class TwitterV1 implements Connection {
 					if (type != null) {
 						String mime = type.toString();
 						InputStream stream = body.byteStream();
-						return new MediaStatus(stream, mime);
+						return new MediaStatus(stream, mime, "");
 					}
 				}
 				throw new TwitterException(response);

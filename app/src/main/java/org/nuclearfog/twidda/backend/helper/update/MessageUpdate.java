@@ -115,7 +115,11 @@ public class MessageUpdate implements Serializable, Closeable {
 			return false;
 		}
 		this.mediaUri = uri.toString();
-		mediaUpdate = new MediaStatus(uri.toString(), mime, "");
+		try {
+			mediaUpdate = new MediaStatus(context, uri, "");
+		} catch (IllegalArgumentException exception) {
+			return false;
+		}
 		return true;
 	}
 

@@ -662,12 +662,17 @@ public class Mastodon implements Connection {
 			params.add("visibility=unlisted");
 		else
 			params.add("visibility=public");
-		for (long mediaId : mediaIds) {
-			params.add("media_ids[]=" + mediaId);
+		// add media IDs of previously uploaded media files (status create first)
+		if (!mediaIds.isEmpty()) {
+			for (long mediaId : mediaIds) {
+				params.add("media_ids[]=" + mediaId);
+			}
 		}
-		// add media keys of a previous status
-		for (String mediaKey : update.getMediaKeys()) {
-			params.add("media_ids[]=" + mediaKey);
+		// add media keys of existing online media files (status edit)
+		else {
+			for (String mediaKey : update.getMediaKeys()) {
+				params.add("media_ids[]=" + mediaKey);
+			}
 		}
 		if (update.getPoll() != null) {
 			PollUpdate poll = update.getPoll();
@@ -947,7 +952,7 @@ public class Mastodon implements Connection {
 				if (type != null) {
 					String mime = type.toString();
 					InputStream stream = body.byteStream();
-					return new MediaStatus(stream, mime);
+					return new MediaStatus(stream, mime, "");
 				}
 			}
 			throw new MastodonException(response);

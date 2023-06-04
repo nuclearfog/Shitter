@@ -7,7 +7,6 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
@@ -32,44 +31,9 @@ public class StatusUpdate implements Serializable, Closeable {
 	private static final long serialVersionUID = -5300983806882462557L;
 
 	/**
-	 * returned if an error occured while attaching item
+	 * Return code used to indicate an error while adding media files
 	 */
-	public static final int MEDIA_ERROR = -1;
-
-	/**
-	 * indicates that there is no attachment
-	 */
-	public static final int EMPTY = 0;
-
-	/**
-	 * returned if image is attached
-	 */
-	public static final int MEDIA_IMAGE = 1;
-
-	/**
-	 * returned if video is attached
-	 */
-	public static final int MEDIA_VIDEO = 2;
-
-	/**
-	 * returned if an animated image is attached
-	 */
-	public static final int MEDIA_GIF = 3;
-
-	/**
-	 * returned if an audio is attached
-	 */
-	public static final int MEDIA_AUDIO = 4;
-
-	/**
-	 * returned if a poll is attached
-	 */
-	private static final int POLL = 4;
-
-	private static final String MIME_GIF = "image/gif";
-	private static final String MIME_IMAGE_ALL = "image/";
-	private static final String MIME_VIDEO_ALL = "video/";
-	private static final String MIME_AUDIO_ALL = "audio/";
+	public static final int MEDIA_ERROR = -2;
 
 	// main attributes
 	private long statusId = 0L;
@@ -81,20 +45,17 @@ public class StatusUpdate implements Serializable, Closeable {
 	private String languageCode;
 
 	// attachment attributes
+	private List<MediaStatus> mediaStatuses = new ArrayList<>(5);
 	@Nullable
 	private PollUpdate poll;
 	@Nullable
 	private LocationUpdate location;
-	private ArrayList<String> mediaKeys = new ArrayList<>();
-	private ArrayList<MediaStatus> mediaStatuses = new ArrayList<>();
 
 	// helper attributes
 	@Nullable
 	private Instance instance;
-	private ArrayList<String> previews = new ArrayList<>();
 	private TreeSet<String> supportedFormats = new TreeSet<>();
 	private boolean attachmentLimitReached = false;
-	private int attachment = EMPTY;
 
 	/**
 	 * close all open streams
@@ -129,11 +90,10 @@ public class StatusUpdate implements Serializable, Closeable {
 		}
 		if (status.getMedia().length > 0) {
 			for (Media media : status.getMedia()) {
-				mediaKeys.add(media.getKey());
-				previews.add(media.getUrl());
+				mediaStatuses.add(new MediaStatus(media));
 			}
 		}
-		// fixme it's not possible to add more media items when editing a status
+		// fixme currently not possible to mix online and offline media files
 		attachmentLimitReached = true;
 	}
 
@@ -168,88 +128,55 @@ public class StatusUpdate implements Serializable, Closeable {
 	 * Add file uri and check if file is valid
 	 *
 	 * @param mediaUri uri to a local file
-	 * @return number of media attached to this holder or -1 if file is invalid
+	 * @return number of media attached to this holder or {@link #MEDIA_ERROR} if an error occured
 	 */
 	public int addMedia(Context context, Uri mediaUri) {
 		String mime = context.getContentResolver().getType(mediaUri);
-		if (mime == null || instance == null || !supportedFormats.contains(mime)) {
+		if (mime == null || instance == null || !supportedFormats.contains(mime) || attachmentLimitReached) {
 			return MEDIA_ERROR;
 		}
-		// check if file is a 'gif' image
-		else if (mime.equals(MIME_GIF)) {
-			switch (attachment) {
-				case EMPTY:
-					attachment = MEDIA_GIF;
-
-				case MEDIA_GIF:
-					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
-					if (file != null && file.length() > 0) {
-						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
-						if (mediaStatuses.size() + mediaKeys.size() == instance.getGifLimit()) {
+		try {
+			MediaStatus mediaStatus = new MediaStatus(context, mediaUri, "");
+			switch (mediaStatus.getMediaType()) {
+				case MediaStatus.IMAGE:
+					if (mediaStatuses.isEmpty() || mediaStatuses.get(0).getMediaType() == MediaStatus.IMAGE) {
+						mediaStatuses.add(mediaStatus);
+						if (mediaStatuses.size() == instance.getImageLimit())
 							attachmentLimitReached = true;
-						}
-						return MEDIA_GIF;
+						return MediaStatus.IMAGE;
 					}
-					break;
+					return MEDIA_ERROR;
+
+				case MediaStatus.AUDIO:
+					if (mediaStatuses.isEmpty() || mediaStatuses.get(0).getMediaType() == MediaStatus.AUDIO) {
+						mediaStatuses.add(mediaStatus);
+						if (mediaStatuses.size() == instance.getAudioLimit())
+							attachmentLimitReached = true;
+						return MediaStatus.AUDIO;
+					}
+					return MEDIA_ERROR;
+
+				case MediaStatus.VIDEO:
+					if (mediaStatuses.isEmpty() || mediaStatuses.get(0).getMediaType() == MediaStatus.VIDEO) {
+						mediaStatuses.add(mediaStatus);
+						if (mediaStatuses.size() == instance.getVideoLimit())
+							attachmentLimitReached = true;
+						return MediaStatus.VIDEO;
+					}
+					return MEDIA_ERROR;
+
+				case MediaStatus.GIF:
+					if (mediaStatuses.isEmpty() || mediaStatuses.get(0).getMediaType() == MediaStatus.GIF) {
+						mediaStatuses.add(mediaStatus);
+						if (mediaStatuses.size() == instance.getGifLimit())
+							attachmentLimitReached = true;
+						return MediaStatus.GIF;
+					}
+					return MEDIA_ERROR;
 			}
-
-		}
-		// check if file is an image
-		else if (mime.startsWith(MIME_IMAGE_ALL)) {
-			switch (attachment) {
-				case EMPTY:
-					attachment = MEDIA_IMAGE;
-
-				case MEDIA_IMAGE:
-					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
-					if (file != null && file.length() > 0) {
-						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
-						if (mediaStatuses.size() + mediaKeys.size() == instance.getImageLimit()) {
-							attachmentLimitReached = true;
-						}
-						return MEDIA_IMAGE;
-					}
-					break;
-			}
-		}
-		// check if file is a video
-		else if (mime.startsWith(MIME_VIDEO_ALL)) {
-			switch (attachment) {
-				case EMPTY:
-					attachment = MEDIA_VIDEO;
-
-				case MEDIA_VIDEO:
-					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
-					if (file != null && file.length() > 0) {
-						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
-						if (mediaStatuses.size() + mediaKeys.size() == instance.getVideoLimit()) {
-							attachmentLimitReached = true;
-						}
-						return MEDIA_VIDEO;
-					}
-					break;
-			}
-		}
-		// check if file is an audio
-		else if (mime.startsWith(MIME_AUDIO_ALL)) {
-			switch (attachment) {
-				case EMPTY:
-					attachment = MEDIA_AUDIO;
-
-				case MEDIA_AUDIO:
-					DocumentFile file = DocumentFile.fromSingleUri(context, mediaUri);
-					if (file != null && file.length() > 0) {
-						previews.add(mediaUri.toString());
-						mediaStatuses.add(new MediaStatus(mediaUri.toString(), mime, ""));
-						if (mediaStatuses.size() + mediaKeys.size() == instance.getAudioLimit()) {
-							attachmentLimitReached = true;
-						}
-						return MEDIA_AUDIO;
-					}
-					break;
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
+				exception.printStackTrace();
 			}
 		}
 		return MEDIA_ERROR;
@@ -261,9 +188,8 @@ public class StatusUpdate implements Serializable, Closeable {
 	 * @param poll poll information
 	 */
 	public void addPoll(PollUpdate poll) {
-		if (attachment == EMPTY) {
+		if (mediaStatuses.isEmpty()) {
 			this.poll = poll;
-			attachment = POLL;
 			attachmentLimitReached = true;
 		}
 	}
@@ -349,16 +275,6 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 * get type of attachment
-	 * currently there is only one type of media used at once
-	 *
-	 * @return media type {@link #EMPTY,#MEDIA_VIDEO,#MEDIA_IMAGE,#MEDIA_GIF}
-	 */
-	public int getAttachmentType() {
-		return attachment;
-	}
-
-	/**
 	 * get information about media attached to the status
 	 *
 	 * @return list of media updates
@@ -373,9 +289,9 @@ public class StatusUpdate implements Serializable, Closeable {
 	 * @return media uri array
 	 */
 	public Uri[] getMediaUris() {
-		Uri[] result = new Uri[previews.size()];
+		Uri[] result = new Uri[mediaStatuses.size()];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = Uri.parse(previews.get(i));
+			result[i] = Uri.parse(mediaStatuses.get(i).getPath());
 		}
 		return result;
 	}
@@ -406,7 +322,11 @@ public class StatusUpdate implements Serializable, Closeable {
 	 * @return media key
 	 */
 	public String[] getMediaKeys() {
-		return mediaKeys.toArray(new String[0]);
+		String[] keys = new String[mediaStatuses.size()];
+		for (int i = 0 ; i < keys.length ; i++) {
+			keys[i] = mediaStatuses.get(i).getKey();
+		}
+		return keys;
 	}
 
 	/**
@@ -455,7 +375,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	 * @return true if media is attached
 	 */
 	public boolean isEmpty() {
-		return previews.isEmpty() && location == null && poll == null && (getText() == null || getText().trim().isEmpty());
+		return mediaStatuses.isEmpty() && location == null && poll == null && (getText() == null || getText().trim().isEmpty());
 	}
 
 	/**
@@ -465,16 +385,17 @@ public class StatusUpdate implements Serializable, Closeable {
 	 */
 	public boolean prepare(ContentResolver resolver) {
 		// skip preparation if there is no media attached
-		if (previews.isEmpty())
+		if (mediaStatuses.isEmpty())
 			return true;
 		try {
 			// open input streams
 			for (MediaStatus mediaStatus : mediaStatuses) {
-				boolean success = mediaStatus.openStream(resolver);
-				if (!success) {
-					return false;
+				if (mediaStatus.isLocal()) {
+					boolean success = mediaStatus.openStream(resolver);
+					if (!success) {
+						return false;
+					}
 				}
-
 			}
 		} catch (Exception exception) {
 			if (BuildConfig.DEBUG) {
