@@ -98,7 +98,7 @@ public class Mastodon implements Connection {
 	/**
 	 * scopes used by this app
 	 */
-	private static final String AUTH_SCOPES = "read%20write%20follow%20push";
+	private static final String AUTH_SCOPES = "read%20write%20push";
 
 	/**
 	 * oauth no redirect (oob)

@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda;
 
-import static android.app.NotificationManager.IMPORTANCE_LOW;
-
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,7 +30,7 @@ public class ClientApplication extends Application {
 		// setup notification channel
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationManager manager = getSystemService(NotificationManager.class);
-			NotificationChannel channel = new NotificationChannel(PushNotification.NOTIFICATION_ID_STR, PushNotification.NOTIFICATION_NAME, IMPORTANCE_LOW);
+			NotificationChannel channel = new NotificationChannel(PushNotification.NOTIFICATION_ID_STR, PushNotification.NOTIFICATION_NAME, NotificationManager.IMPORTANCE_HIGH);
 			manager.createNotificationChannel(channel);
 		}
 	}

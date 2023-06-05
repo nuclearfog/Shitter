@@ -40,7 +40,7 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 	public void onNewEndpoint(@NonNull Context context, @NonNull String endpoint, @NonNull String instance) {
 		if (instance.equals(ConstantsKt.INSTANCE_DEFAULT)) {
 			PushUpdater pushUpdater = new PushUpdater(context);
-			PushUpdate update = new PushUpdate(endpoint);
+			PushUpdate update = new PushUpdate(instance);
 			pushUpdater.execute(update, null);
 		}
 	}

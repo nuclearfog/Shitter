@@ -19,15 +19,25 @@ public class MastodonPush implements WebPush {
 	private long id;
 	private String host;
 	private String serverKey, publicKey, privateKey, authSec;
+	private boolean mentionAlert, favoriteAlert, repostAlert, newPostAlert, newFollowerAlert, followRequestAlert, pollEndAlert, statusChangeAlert;
 	private int policy;
 
 	/**
 	 * @param json web push json object
 	 */
 	public MastodonPush(JSONObject json) throws JSONException {
+		JSONObject alerts = json.getJSONObject("alerts");
 		String id = json.getString("id");
 		host = json.getString("endpoint");
 		serverKey = json.getString("server_key");
+		mentionAlert = alerts.optBoolean("mention", false);
+		favoriteAlert = alerts.optBoolean("favourite", false);
+		repostAlert = alerts.optBoolean("reblog", false);
+		newPostAlert = alerts.optBoolean("status", false);
+		newFollowerAlert = alerts.optBoolean("follow", false);
+		followRequestAlert = alerts.optBoolean("follow_request", false);
+		pollEndAlert = alerts.optBoolean("poll", false);
+		statusChangeAlert = alerts.optBoolean("update", false);
 		try {
 			this.id = Long.parseLong(id);
 		} catch (NumberFormatException e) {
@@ -74,49 +84,49 @@ public class MastodonPush implements WebPush {
 
 	@Override
 	public boolean alertMentionEnabled() {
-		return false;
+		return mentionAlert;
 	}
 
 
 	@Override
 	public boolean alertStatusPostEnabled() {
-		return false;
+		return newPostAlert;
 	}
 
 
 	@Override
 	public boolean alertRepostEnabled() {
-		return false;
+		return repostAlert;
 	}
 
 
 	@Override
 	public boolean alertFollowingEnabled() {
-		return false;
+		return newFollowerAlert;
 	}
 
 
 	@Override
 	public boolean alertFollowRequestEnabled() {
-		return false;
+		return followRequestAlert;
 	}
 
 
 	@Override
 	public boolean alertFavoriteEnabled() {
-		return false;
+		return favoriteAlert;
 	}
 
 
 	@Override
 	public boolean alertPollEnabled() {
-		return false;
+		return pollEndAlert;
 	}
 
 
 	@Override
 	public boolean alertStatusChangeEnabled() {
-		return false;
+		return statusChangeAlert;
 	}
 
 

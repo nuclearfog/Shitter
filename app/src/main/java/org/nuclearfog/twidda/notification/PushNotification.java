@@ -50,7 +50,7 @@ public class PushNotification {
 		notificationIntent.setAction(Intent.ACTION_MAIN);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent resultIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-		notificationBuilder.setContentIntent(resultIntent).setPriority(NotificationCompat.PRIORITY_HIGH).setOnlyAlertOnce(true).setAutoCancel(true);
+		notificationBuilder.setContentIntent(resultIntent).setPriority(NotificationCompat.PRIORITY_HIGH).setOnlyAlertOnce(true).setAutoCancel(true).setDefaults(NotificationCompat.DEFAULT_ALL);
 	}
 
 	/**
