@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.ui.activities.MainActivity;
  */
 public class PushNotification {
 
-	public static final String NOTIFICATION_NAME = BuildConfig.APPLICATION_ID + " notification";
+	public static final String NOTIFICATION_NAME = BuildConfig.APPLICATION_ID + " UnifiedPush";
 	public static final String NOTIFICATION_ID_STR = BuildConfig.APPLICATION_ID + ".notification";
 
 	private static final int NOTIFICATION_ID = 0x25281;
@@ -50,7 +50,9 @@ public class PushNotification {
 		notificationIntent.setAction(Intent.ACTION_MAIN);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent resultIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-		notificationBuilder.setContentIntent(resultIntent).setPriority(NotificationCompat.PRIORITY_HIGH).setOnlyAlertOnce(true).setAutoCancel(true).setDefaults(NotificationCompat.DEFAULT_ALL);
+		notificationBuilder.setContentIntent(resultIntent).setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_VIBRATE).setOnlyAlertOnce(true)
+				.setAutoCancel(true).setDefaults(NotificationCompat.DEFAULT_ALL).setStyle(new NotificationCompat.InboxStyle());
 	}
 
 	/**
