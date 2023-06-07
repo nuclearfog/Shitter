@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.StatusHolder;

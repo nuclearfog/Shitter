@@ -20,13 +20,13 @@ import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.UserV2Map;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
-import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.model.lists.Users;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Users;
 
 import java.io.IOException;
 import java.util.ArrayList;

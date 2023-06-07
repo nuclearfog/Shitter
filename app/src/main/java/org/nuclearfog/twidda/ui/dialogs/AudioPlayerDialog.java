@@ -41,7 +41,7 @@ import okhttp3.Call;
  *
  * @author nuclearfog
  */
-public class AudioPlayerDialog  extends Dialog implements OnClickListener, Closeable {
+public class AudioPlayerDialog extends Dialog implements OnClickListener, Closeable {
 
 	private PlayerControlView controls;
 	private TextView mediaLink;
@@ -140,8 +140,8 @@ public class AudioPlayerDialog  extends Dialog implements OnClickListener, Close
 	private RenderersFactory createRenderer(Context context) {
 		return new RenderersFactory() {
 			@Override
-			public Renderer[] createRenderers(Handler eventHandler, VideoRendererEventListener videoRendererEventListener,
-				AudioRendererEventListener audioRendererEventListener, TextOutput textRendererOutput, MetadataOutput metadataRendererOutput) {
+			public Renderer[] createRenderers(Handler eventHandler, VideoRendererEventListener videoRendererEventListener, AudioRendererEventListener audioRendererEventListener,
+			                                  TextOutput textRendererOutput, MetadataOutput metadataRendererOutput) {
 				return new Renderer[]{
 						new MediaCodecAudioRenderer(context, MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)
 				};

@@ -24,17 +24,10 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
-import org.nuclearfog.twidda.model.lists.Domains;
-import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
-import org.nuclearfog.twidda.model.lists.Notifications;
-import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
-import org.nuclearfog.twidda.model.lists.Trends;
-import org.nuclearfog.twidda.model.lists.UserLists;
-import org.nuclearfog.twidda.model.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -52,6 +45,13 @@ import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
+import org.nuclearfog.twidda.model.lists.Domains;
+import org.nuclearfog.twidda.model.lists.Messages;
+import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.UserLists;
+import org.nuclearfog.twidda.model.lists.Users;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -1074,7 +1074,8 @@ public class TwitterV1 implements Connection {
 			params.add("command=STATUS");
 			params.add("media_id=" + mediaId);
 			// poll media processing information frequently
-			do {
+			do
+			{
 				response = get(MEDIA_UPLOAD, params);
 				body = response.body();
 				if (response.code() < 200 || response.code() >= 300 || body == null)

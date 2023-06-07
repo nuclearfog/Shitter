@@ -2,17 +2,10 @@ package org.nuclearfog.twidda.backend.api;
 
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
-import org.nuclearfog.twidda.model.lists.Domains;
-import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
-import org.nuclearfog.twidda.model.lists.Notifications;
-import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
-import org.nuclearfog.twidda.model.lists.Trends;
-import org.nuclearfog.twidda.model.lists.UserLists;
-import org.nuclearfog.twidda.model.lists.Users;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;
@@ -26,6 +19,13 @@ import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
+import org.nuclearfog.twidda.model.lists.Domains;
+import org.nuclearfog.twidda.model.lists.Messages;
+import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.UserLists;
+import org.nuclearfog.twidda.model.lists.Users;
 
 import java.util.List;
 
@@ -285,6 +285,7 @@ public interface Connection {
 
 	/**
 	 * show information of a single hashtag
+	 *
 	 * @param name hashtag name
 	 * @return hashtag information
 	 */

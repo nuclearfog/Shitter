@@ -93,7 +93,7 @@ public class MediaStatus implements Serializable, Closeable {
 
 	/**
 	 * create MediaStatus from and online/offline source
-	 * 
+	 *
 	 * @param media Media instance containing information
 	 */
 	public MediaStatus(Media media) {

@@ -62,7 +62,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		languages = Locale.getAvailableLocales();
 		String[] language_names = new String[languages.length + 1];
 		language_names[0] = context.getString(R.string.dialog_status_language_empty);
-		for (int i = 0 ; i < languages.length ; i++) {
+		for (int i = 0; i < languages.length; i++) {
 			language_names[i + 1] = languages[i].getDisplayLanguage() + " " + languages[i].getCountry();
 		}
 		language_adapter.setItems(language_names);

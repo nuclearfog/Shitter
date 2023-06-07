@@ -6,9 +6,9 @@ import java.io.Serializable;
 
 /**
  * Webpush updater class used to create a webpush subscription
- * @see org.nuclearfog.twidda.backend.api.Connection
  *
  * @author nuclearfog
+ * @see org.nuclearfog.twidda.backend.api.Connection
  */
 public class PushUpdate implements Serializable {
 

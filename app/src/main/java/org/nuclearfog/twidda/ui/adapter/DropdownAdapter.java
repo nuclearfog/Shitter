@@ -83,7 +83,7 @@ public class DropdownAdapter extends BaseAdapter {
 	 * @param item item string
 	 */
 	public void setItem(String item) {
-		this.items = new String[] {item};
+		this.items = new String[]{item};
 		notifyDataSetChanged();
 	}
 

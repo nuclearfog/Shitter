@@ -16,8 +16,8 @@ import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendParameter;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
-import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.adapter.TrendAdapter;
 import org.nuclearfog.twidda.ui.adapter.TrendAdapter.TrendClickListener;
@@ -187,7 +187,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	 */
 	private void load(long cursor, int index) {
 		TrendParameter param;
-		switch(mode) {
+		switch (mode) {
 			case MODE_POPULAR:
 				if (adapter.isEmpty()) {
 					param = new TrendParameter(TrendParameter.POPULAR_OFFLINE, index, search, cursor);

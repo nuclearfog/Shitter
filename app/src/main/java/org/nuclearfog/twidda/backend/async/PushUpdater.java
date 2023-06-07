@@ -17,7 +17,7 @@ import org.nuclearfog.twidda.model.WebPush;
  *
  * @author nuclearfog
  */
-public class PushUpdater extends AsyncExecutor <PushUpdate, PushUpdater.PushUpdateResult> {
+public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.PushUpdateResult> {
 
 	private Connection connection;
 	private GlobalSettings settings;

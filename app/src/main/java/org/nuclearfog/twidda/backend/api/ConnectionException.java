@@ -124,8 +124,6 @@ public abstract class ConnectionException extends Exception {
 	 */
 	public static final int NETWORK_CONNECTION = 21;
 
-
-
 	/**
 	 * error parsing json format
 	 */

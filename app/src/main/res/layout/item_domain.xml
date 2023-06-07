@@ -17,7 +17,7 @@
 			android:layout_margin="@dimen/item_domain_layout_margin"
 			android:textSize="@dimen/item_domain_text_size"
 			android:layout_weight="1"
-			android:lines="1"/>
+			android:lines="1" />
 
 		<ImageButton
 			android:id="@+id/item_domain_delete"

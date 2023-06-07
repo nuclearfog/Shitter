@@ -323,7 +323,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	 */
 	public String[] getMediaKeys() {
 		String[] keys = new String[mediaStatuses.size()];
-		for (int i = 0 ; i < keys.length ; i++) {
+		for (int i = 0; i < keys.length; i++) {
 			keys[i] = mediaStatuses.get(i).getKey();
 		}
 		return keys;

@@ -135,7 +135,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	/**
 	 * load domain list
 	 *
-	 * @param index index where to insert domains into the list
+	 * @param index  index where to insert domains into the list
 	 * @param cursor cursor used to page through results
 	 */
 	private void load(int index, long cursor) {

@@ -246,7 +246,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			this.trend = result.trend;
 			invalidateMenu();
 		}
-		switch(result.mode) {
+		switch (result.mode) {
 			case HashtagResult.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
 				break;

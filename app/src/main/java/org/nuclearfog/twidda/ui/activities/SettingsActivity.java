@@ -658,7 +658,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			int position = -1;
 			this.locations = result.locations;
 			String[] items = new String[result.locations.size()];
-			for (int i = 0 ; i < items.length ; i++) {
+			for (int i = 0; i < items.length; i++) {
 				items[i] = result.locations.get(i).getFullName();
 				if (items[i].equals(settings.getTrendLocation().getFullName())) {
 					position = i;

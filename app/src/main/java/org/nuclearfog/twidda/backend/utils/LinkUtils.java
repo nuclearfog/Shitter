@@ -88,7 +88,7 @@ public class LinkUtils {
 	/**
 	 * open a link to a media file
 	 *
-	 * @param url      media url
+	 * @param url media url
 	 */
 	public static void openMediaLink(Context context, Uri url) {
 		Intent intent = new Intent(Intent.ACTION_VIEW);

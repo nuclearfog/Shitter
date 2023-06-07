@@ -70,8 +70,8 @@ public class Trends extends LinkedList<Trend> {
 	/**
 	 * add a sublist at specific position
 	 *
-	 * @param trends   sublist to add
-	 * @param index    index where to insert the sublist
+	 * @param trends sublist to add
+	 * @param index  index where to insert the sublist
 	 */
 	public void addAll(int index, Trends trends) {
 		if (isEmpty()) {

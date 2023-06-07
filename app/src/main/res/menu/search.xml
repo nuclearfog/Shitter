@@ -19,7 +19,7 @@
 		android:id="@+id/search_hashtag"
 		android:title="@string/menu_hashtag_follow"
 		app:showAsAction="never"
-		android:visible="false"/>
+		android:visible="false" />
 
 	<item
 		android:id="@+id/search_filter"

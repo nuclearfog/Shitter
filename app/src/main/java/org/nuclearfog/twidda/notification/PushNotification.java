@@ -48,7 +48,7 @@ public class PushNotification {
 		notificationIntent.putExtra(MainActivity.KEY_SELECT_NOTIFICATION, true);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		notificationIntent.setAction(Intent.ACTION_MAIN);
-		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent resultIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 		notificationBuilder.setContentIntent(resultIntent).setPriority(NotificationCompat.PRIORITY_HIGH)
 				.setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_VIBRATE).setOnlyAlertOnce(true)

@@ -113,6 +113,6 @@ public class Messages extends LinkedList<Message> {
 	@Override
 	@NonNull
 	public String toString() {
-		return "size=" + size() + " previous=" + getPrevCursor()  + " next=" + getNextCursor();
+		return "size=" + size() + " previous=" + getPrevCursor() + " next=" + getNextCursor();
 	}
 }

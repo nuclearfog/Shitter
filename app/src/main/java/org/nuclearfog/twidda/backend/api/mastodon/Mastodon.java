@@ -27,18 +27,11 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
-import org.nuclearfog.twidda.model.lists.Domains;
-import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
-import org.nuclearfog.twidda.model.lists.Notifications;
-import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
-import org.nuclearfog.twidda.model.lists.Trends;
-import org.nuclearfog.twidda.model.lists.UserLists;
-import org.nuclearfog.twidda.model.lists.Users;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -55,6 +48,13 @@ import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
+import org.nuclearfog.twidda.model.lists.Domains;
+import org.nuclearfog.twidda.model.lists.Messages;
+import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.UserLists;
+import org.nuclearfog.twidda.model.lists.Users;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -711,7 +711,7 @@ public class Mastodon implements Connection {
 				JSONArray array = new JSONArray(body.string());
 				long[] cursors = getCursors(response);
 				Domains result = new Domains(cursors[0], cursors[1]);
-				for (int i = 0 ; i < array.length() ; i++) {
+				for (int i = 0; i < array.length(); i++) {
 					result.add(array.getString(i));
 				}
 				return result;
@@ -1237,6 +1237,7 @@ public class Mastodon implements Connection {
 
 	/**
 	 * call Trend/Hashtag endpoint and create trend result
+	 *
 	 * @param endpoint Endpoint to use
 	 * @param params   additional parameters
 	 * @return trend list
@@ -1630,8 +1631,8 @@ public class Mastodon implements Connection {
 	/**
 	 * create requestbody with upload stream
 	 *
-	 * @param inputStream  input stream to upload a file
-	 * @param addToKey     upload stream key
+	 * @param inputStream input stream to upload a file
+	 * @param addToKey    upload stream key
 	 * @return request body
 	 */
 	private RequestBody createUploadRequest(final InputStream inputStream, String addToKey) throws IOException {
@@ -1715,14 +1716,14 @@ public class Mastodon implements Connection {
 		ECPoint point = key.getW();
 		byte[] x = point.getAffineX().toByteArray();
 		byte[] y = point.getAffineY().toByteArray();
-		if(x.length>32)
-			x = Arrays.copyOfRange(x, x.length-32, x.length);
-		if(y.length>32)
-			y = Arrays.copyOfRange(y, y.length-32, y.length);
+		if (x.length > 32)
+			x = Arrays.copyOfRange(x, x.length - 32, x.length);
+		if (y.length > 32)
+			y = Arrays.copyOfRange(y, y.length - 32, y.length);
 		byte[] result = new byte[65];
 		result[0] = 4;
-		System.arraycopy(x, 0, result, 1+(32-x.length), x.length);
-		System.arraycopy(y, 0, result, result.length-y.length, y.length);
+		System.arraycopy(x, 0, result, 1 + (32 - x.length), x.length);
+		System.arraycopy(y, 0, result, result.length - y.length, y.length);
 		return result;
 	}
 }

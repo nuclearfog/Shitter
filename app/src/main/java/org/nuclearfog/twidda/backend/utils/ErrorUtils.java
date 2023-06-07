@@ -36,7 +36,7 @@ public class ErrorUtils {
 	/**
 	 * get error message string
 	 *
-	 * @param context application context
+	 * @param context   application context
 	 * @param exception connection exception
 	 * @return message string
 	 */
