@@ -340,7 +340,7 @@
 	<string name="dialog_push_follow_request">on follow request</string>
 	<string name="dialog_push_title">Push notifications</string>
 	<string name="dialog_push_apply">apply changes</string>
-	<string name="settings_enable_push_label">enable push notification</string>
+	<string name="settings_enable_push_label">enable push notification\n(requires ntfy app)</string>
 	<string name="notification_favorite">%1$s favorited your status</string>
 	<string name="notification_repost">%1$s reposted your status</string>
 	<string name="notification_follow">%1$s followed you</string>

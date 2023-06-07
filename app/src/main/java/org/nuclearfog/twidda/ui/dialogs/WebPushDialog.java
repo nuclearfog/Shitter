@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.backend.async.PushUpdater;
 import org.nuclearfog.twidda.backend.async.PushUpdater.PushUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
@@ -168,6 +169,8 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		if (result.push != null) {
 			Toast.makeText(getContext(), R.string.info_webpush_update, Toast.LENGTH_SHORT).show();
 			dismiss();
+		} else if (result.exception != null) {
+			ErrorUtils.showErrorMessage(getContext(), result.exception);
 		}
 	}
 }

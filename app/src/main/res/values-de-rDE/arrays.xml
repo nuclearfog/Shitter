@@ -15,9 +15,9 @@
 	</string-array>
 
 	<string-array name="push_policy">
-		<item>Alles anzeigen</item>
-		<item>nur Following</item>
-		<item>nur Follower</item>
+		<item>erlaube alle Nachrichten</item>
+		<item>nur Nachrichten von gefolgten Nutzern</item>
+		<item>nur Nachrichten von Followern</item>
 	</string-array>
 
 	<string-array name="scales">

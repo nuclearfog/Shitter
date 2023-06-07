@@ -433,7 +433,7 @@
 						android:id="@+id/settings_enable_push_descr"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:lines="1"
+						android:lines="2"
 						android:text="@string/settings_enable_push_label"
 						android:textSize="@dimen/settings_textsize_small"
 						android:layout_marginStart="@dimen/settings_switch_margin"

@@ -39,10 +39,11 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 	@Override
 	public void onNewEndpoint(@NonNull Context context, @NonNull String endpoint, @NonNull String instance) {
 		PushUpdate update;
+		GlobalSettings settings = GlobalSettings.getInstance(context);
 		if (instance.equals(ConstantsKt.INSTANCE_DEFAULT)) {
-			update = new PushUpdate(endpoint);
+			update = new PushUpdate(settings.getWebPush(), endpoint);
 		} else {
-			update = new PushUpdate(instance);
+			update = new PushUpdate(settings.getWebPush(), instance);
 		}
 		PushUpdater pushUpdater = new PushUpdater(context);
 		pushUpdater.execute(update, null);

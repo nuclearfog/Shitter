@@ -325,6 +325,7 @@
 
 	<!--dimens of dialog_push-->
 	<dimen name="dialog_push_title_textsize">22sp</dimen>
+	<dimen name="dialog_push_label_textsize">11sp</dimen>
 	<dimen name="dialog_push_button_height">28sp</dimen>
 	<dimen name="dialog_push_button_padding">5dp</dimen>
 	<dimen name="dialog_push_layout_margin">5dp</dimen>
