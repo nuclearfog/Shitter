@@ -11,7 +11,6 @@ import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoader
 import org.nuclearfog.twidda.backend.async.PushUpdater;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.unifiedpush.android.connector.ConstantsKt;
 import org.unifiedpush.android.connector.MessagingReceiver;
 
 /**
@@ -38,13 +37,8 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 
 	@Override
 	public void onNewEndpoint(@NonNull Context context, @NonNull String endpoint, @NonNull String instance) {
-		PushUpdate update;
 		GlobalSettings settings = GlobalSettings.getInstance(context);
-		if (instance.equals(ConstantsKt.INSTANCE_DEFAULT)) {
-			update = new PushUpdate(settings.getWebPush(), endpoint);
-		} else {
-			update = new PushUpdate(settings.getWebPush(), instance);
-		}
+		PushUpdate update = new PushUpdate(settings.getWebPush(), endpoint);
 		PushUpdater pushUpdater = new PushUpdater(context);
 		pushUpdater.execute(update, null);
 	}

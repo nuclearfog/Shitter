@@ -7,7 +7,6 @@
 		android:id="@+id/dropdown_textitem"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginStart="@dimen/dropdown_layout_margin"
 		android:padding="@dimen/dropdown_padding"
 		android:maxLines="2"
 		android:textSize="@dimen/dropdown_text_size"

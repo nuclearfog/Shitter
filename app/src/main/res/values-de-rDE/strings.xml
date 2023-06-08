@@ -313,7 +313,7 @@
 	<string name="dialog_push_edit_status">bei Statusänderungen</string>
 	<string name="dialog_push_new_follower">bei neuen Followern</string>
 	<string name="dialog_push_follow_request">bei neuen Follow-Anfragen</string>
-	<string name="dialog_push_title">Pushbenachrichtigungen</string>
+	<string name="dialog_push_title">Benachrichtigunen</string>
 	<string name="dialog_push_apply">Änderungen anwenden</string>
 	<string name="settings_enable_push_label">aktiviere Push-Benachrichtigung\n(ntfy-App erforderlich)</string>
 	<string name="notification_favorite">%1$s hat einen Status favorisiert</string>
@@ -326,5 +326,4 @@
 	<string name="notification_mention">%1$s hat dich erwähnt</string>
 	<string name="notification_new">Neue Benachrichtigungen</string>
 	<string name="dialog_status_language">Sprache</string>
-	<string name="dialog_status_language_empty">keine Auswahl</string>
 </resources>

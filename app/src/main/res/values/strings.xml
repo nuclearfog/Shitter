@@ -329,7 +329,6 @@
 	<string name="dialog_status_spoiler">mark content as spoiler</string>
 	<string name="dialog_status_visibility">Visibility</string>
 	<string name="dialog_status_language">Language</string>
-	<string name="dialog_status_language_empty">nothing selected</string>
 	<string name="dialog_push_repost">on repost</string>
 	<string name="dialog_push_favorite">on favorite</string>
 	<string name="dialog_push_mention">on mention</string>
@@ -338,7 +337,7 @@
 	<string name="dialog_push_edit_status">on status edit</string>
 	<string name="dialog_push_new_follower">new follower</string>
 	<string name="dialog_push_follow_request">on follow request</string>
-	<string name="dialog_push_title">Push notifications</string>
+	<string name="dialog_push_title">Notifications</string>
 	<string name="dialog_push_apply">apply changes</string>
 	<string name="settings_enable_push_label">enable push notification\n(requires ntfy app)</string>
 	<string name="notification_favorite">%1$s favorited your status</string>

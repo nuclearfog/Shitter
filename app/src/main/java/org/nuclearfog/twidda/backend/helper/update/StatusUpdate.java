@@ -41,8 +41,8 @@ public class StatusUpdate implements Serializable, Closeable {
 	private boolean sensitive = false;
 	private boolean spoiler = false;
 	private int visibility = Status.VISIBLE_PUBLIC;
+	private String languageCode = "";
 	private String text;
-	private String languageCode;
 
 	// attachment attributes
 	private List<MediaStatus> mediaStatuses = new ArrayList<>(5);
@@ -52,10 +52,10 @@ public class StatusUpdate implements Serializable, Closeable {
 	private LocationUpdate location;
 
 	// helper attributes
-	@Nullable
-	private Instance instance;
 	private TreeSet<String> supportedFormats = new TreeSet<>();
 	private boolean attachmentLimitReached = false;
+	@Nullable
+	private Instance instance;
 
 	/**
 	 * close all open streams
@@ -118,9 +118,9 @@ public class StatusUpdate implements Serializable, Closeable {
 	/**
 	 * add status language
 	 *
-	 * @param languageCode ISO 639 language code
+	 * @param languageCode ISO 639 language code or empty string to remove language
 	 */
-	public void addLanguage(String languageCode) {
+	public void addLanguage(@NonNull String languageCode) {
 		this.languageCode = languageCode;
 	}
 
@@ -269,7 +269,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	 *
 	 * @return ISO 639 language code
 	 */
-	@Nullable
+	@NonNull
 	public String getLanguageCode() {
 		return languageCode;
 	}

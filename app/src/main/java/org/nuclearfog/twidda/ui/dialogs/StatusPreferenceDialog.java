@@ -20,6 +20,8 @@ import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * status editor preference dialog used to set additional status information
@@ -32,7 +34,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	private StatusUpdate statusUpdate;
 
-	private Locale[] languages;
+	private String[] languageCodes;
 
 	/**
 	 * @param statusUpdate status information from status editor
@@ -59,14 +61,18 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		visibilitySelector.setSelection(0, false);
 		visibilitySelector.setSelected(false);
 
-		languages = Locale.getAvailableLocales();
-		String[] language_names = new String[languages.length + 1];
-		language_names[0] = context.getString(R.string.dialog_status_language_empty);
-		for (int i = 0; i < languages.length; i++) {
-			language_names[i + 1] = languages[i].getDisplayLanguage() + " " + languages[i].getCountry();
+		// initialize language selector
+		Map<String, String> languages = new TreeMap<>();
+		languages.put("", "");
+		Locale[] locales = Locale.getAvailableLocales();
+		for (Locale locale : locales) {
+			languages.put(locale.getDisplayLanguage(), locale.getLanguage());
 		}
-		language_adapter.setItems(language_names);
+		languageCodes = languages.values().toArray(new String[0]);
+		String[] languageNames = languages.keySet().toArray(new String[0]);
+		language_adapter.setItems(languageNames);
 
+		// enable/disable functions
 		if (!settings.getLogin().getConfiguration().statusVisibilitySupported()) {
 			statusVisibility.setVisibility(View.GONE);
 		}
@@ -138,8 +144,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 			}
 		} else if (parent.getId() == R.id.dialog_status_language) {
 			if (position > 0) {
-				Locale language = languages[position - 1];
-				statusUpdate.addLanguage(language.getLanguage());
+				statusUpdate.addLanguage(languageCodes[position]);
 			}
 		}
 	}

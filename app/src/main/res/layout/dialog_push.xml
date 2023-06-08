@@ -12,6 +12,7 @@
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_push_title"
 		android:textSize="@dimen/dialog_push_title_textsize"
+		android:lines="1"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />

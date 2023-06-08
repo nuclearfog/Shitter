@@ -183,9 +183,8 @@
 	<dimen name="loaditem_button_size">36sp</dimen>
 
 	<!-- dimens of item_dropdown-->
-	<dimen name="dropdown_padding">2dp</dimen>
-	<dimen name="dropdown_layout_margin">2dp</dimen>
-	<dimen name="dropdown_text_size">16sp</dimen>
+	<dimen name="dropdown_padding">4dp</dimen>
+	<dimen name="dropdown_text_size">14sp</dimen>
 
 	<!--dimens of page_media.xml-->
 	<dimen name="mediapage_toolbar_height">@dimen/toolbar_height</dimen>
@@ -300,7 +299,7 @@
 	<dimen name="dialog_status_textsize_small">11sp</dimen>
 	<dimen name="dialog_status_layout_padding">10dp</dimen>
 	<dimen name="dialog_status_layout_margins">5dp</dimen>
-	<dimen name="dialog_status_dropdown_height">22sp</dimen>
+	<dimen name="dialog_status_dropdown_height">28sp</dimen>
 
 	<!--dimens of dialog_audio_player.xml-->
 	<dimen name="dialog_audio_player_drawable_padding">5dp</dimen>
@@ -324,7 +323,7 @@
 	<dimen name="item_domain_button_padding">7dp</dimen>
 
 	<!--dimens of dialog_push-->
-	<dimen name="dialog_push_title_textsize">22sp</dimen>
+	<dimen name="dialog_push_title_textsize">20sp</dimen>
 	<dimen name="dialog_push_label_textsize">11sp</dimen>
 	<dimen name="dialog_push_button_height">28sp</dimen>
 	<dimen name="dialog_push_button_padding">5dp</dimen>
