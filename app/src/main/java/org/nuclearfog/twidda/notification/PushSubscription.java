@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.notification;
 
 import android.content.Context;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.unifiedpush.android.connector.RegistrationDialogContent;
 import org.unifiedpush.android.connector.UnifiedPush;
@@ -27,6 +28,9 @@ public class PushSubscription {
 				UnifiedPush.registerAppWithDialog(context, settings.getPushInstance(), new RegistrationDialogContent(), features, "");
 			} catch (RuntimeException exception) {
 				// thrown when ntfy-app was not found
+				if (BuildConfig.DEBUG) {
+					exception.printStackTrace();
+				}
 			}
 		}
 	}
@@ -41,6 +45,9 @@ public class PushSubscription {
 				UnifiedPush.unregisterApp(context.getApplicationContext(), settings.getWebPush().getHost());
 			} catch (RuntimeException exception) {
 				// thrown when ntfy-app was not found
+				if (BuildConfig.DEBUG) {
+					exception.printStackTrace();
+				}
 			}
 		}
 	}

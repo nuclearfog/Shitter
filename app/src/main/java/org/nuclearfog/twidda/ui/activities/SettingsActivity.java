@@ -142,6 +142,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		Toolbar toolbar = findViewById(R.id.toolbar_setting);
 		View trend_card = findViewById(R.id.settings_trend_card);
 		View user_card = findViewById(R.id.settings_data_card);
+		View push_label = findViewById(R.id.settings_enable_push_descr);
 		SwitchButton toggleImg = findViewById(R.id.toggleImg);
 		SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
 		SwitchButton enableLike = findViewById(R.id.enable_like);
@@ -211,6 +212,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		}
 		if (!settings.isLoggedIn()) {
 			user_card.setVisibility(View.GONE);
+			push_label.setVisibility(View.GONE);
+			enablePush.setVisibility(View.GONE);
 		}
 		if (!settings.isProxyEnabled()) {
 			proxy_address.setVisibility(View.GONE);
@@ -321,7 +324,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		if (requestCode == REQUEST_PERMISSION_NOTIFICATION) {
 			if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				PushSubscription.subscripe(this);
+				PushSubscription.subscripe(getApplicationContext());
 			} else {
 				enablePush.setChecked(false);
 			}
@@ -535,7 +538,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 					requestPermissions(new String[]{POST_NOTIFICATIONS}, REQUEST_PERMISSION_NOTIFICATION);
 				} else {
-					PushSubscription.subscripe(this);
+					PushSubscription.subscripe(getApplicationContext());
 					pushDialog.show();
 				}
 			} else {

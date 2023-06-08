@@ -24,14 +24,14 @@ public class ClientApplication extends Application {
 		super.onCreate();
 		// setup push receiver
 		settings = GlobalSettings.getInstance(getApplicationContext());
-		if (settings.pushEnabled()) {
-			PushSubscription.subscripe(getApplicationContext());
-		}
 		// setup notification channel
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationManager manager = getSystemService(NotificationManager.class);
 			NotificationChannel channel = new NotificationChannel(PushNotification.NOTIFICATION_ID_STR, PushNotification.NOTIFICATION_NAME, NotificationManager.IMPORTANCE_HIGH);
 			manager.createNotificationChannel(channel);
+		}
+		if (settings.isLoggedIn() && settings.pushEnabled()) {
+			PushSubscription.subscripe(getApplicationContext());
 		}
 	}
 

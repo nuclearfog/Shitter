@@ -35,6 +35,9 @@ import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
  */
 public class WebPushDialog extends Dialog implements OnCheckedChangeListener, OnClickListener, OnItemSelectedListener, AsyncCallback<PushUpdateResult> {
 
+	private SwitchButton mention, repost, favorite, poll, follow, request, status_new, status_edit;
+	private Spinner policySelector;
+
 	private PushUpdater updater;
 
 	private PushUpdate update;
@@ -46,44 +49,20 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		super(context, R.style.WebPushDialog);
 		setContentView(R.layout.dialog_push);
 		ViewGroup root = findViewById(R.id.dialog_push_root);
-		SwitchButton mention = findViewById(R.id.dialog_push_mention);
-		SwitchButton repost = findViewById(R.id.dialog_push_repost);
-		SwitchButton favorite = findViewById(R.id.dialog_push_favorite);
-		SwitchButton poll = findViewById(R.id.dialog_push_poll);
-		SwitchButton follow = findViewById(R.id.dialog_push_follow);
-		SwitchButton request = findViewById(R.id.dialog_push_follow_request);
-		SwitchButton status_new = findViewById(R.id.dialog_push_new_status);
-		SwitchButton status_edit = findViewById(R.id.dialog_push_edit_status);
 		Button apply_changes = findViewById(R.id.dialog_push_apply);
-		Spinner policySelector = findViewById(R.id.dialog_push_policy);
+		mention = findViewById(R.id.dialog_push_mention);
+		repost = findViewById(R.id.dialog_push_repost);
+		favorite = findViewById(R.id.dialog_push_favorite);
+		poll = findViewById(R.id.dialog_push_poll);
+		follow = findViewById(R.id.dialog_push_follow);
+		request = findViewById(R.id.dialog_push_follow_request);
+		status_new = findViewById(R.id.dialog_push_new_status);
+		status_edit = findViewById(R.id.dialog_push_edit_status);
+		policySelector = findViewById(R.id.dialog_push_policy);
 
-		GlobalSettings settings = GlobalSettings.getInstance(context);
-		updater = new PushUpdater(context);
-		update = new PushUpdate(settings.getWebPush());
-		mention.setCheckedImmediately(update.mentionsEnabled());
-		repost.setCheckedImmediately(update.repostEnabled());
-		favorite.setCheckedImmediately(update.favoriteEnabled());
-		poll.setCheckedImmediately(update.pollEnabled());
-		follow.setCheckedImmediately(update.followEnabled());
-		request.setCheckedImmediately(update.followRequestEnabled());
-		status_new.setCheckedImmediately(update.statusPostEnabled());
-		status_edit.setCheckedImmediately(update.statusEditEnabled());
 		DropdownAdapter adapter = new DropdownAdapter(context);
-		policySelector.setAdapter(adapter);
-		switch (update.getPolicy()) {
-			case WebPush.POLICY_ALL:
-				policySelector.setSelection(0);
-				break;
-
-			case WebPush.POLICY_FOLLOWING:
-				policySelector.setSelection(1);
-				break;
-
-			case WebPush.POLICY_FOLLOWER:
-				policySelector.setSelection(2);
-				break;
-		}
 		adapter.setItems(R.array.push_policy);
+		policySelector.setAdapter(adapter);
 
 		AppStyles.setTheme(root);
 		mention.setOnCheckedChangeListener(this);
@@ -102,6 +81,24 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	@Override
 	public void show() {
 		if (!isShowing()) {
+			GlobalSettings settings = GlobalSettings.getInstance(getContext());
+			updater = new PushUpdater(getContext());
+			update = new PushUpdate(settings.getWebPush());
+			mention.setCheckedImmediately(update.mentionsEnabled());
+			repost.setCheckedImmediately(update.repostEnabled());
+			favorite.setCheckedImmediately(update.favoriteEnabled());
+			poll.setCheckedImmediately(update.pollEnabled());
+			follow.setCheckedImmediately(update.followEnabled());
+			request.setCheckedImmediately(update.followRequestEnabled());
+			status_new.setCheckedImmediately(update.statusPostEnabled());
+			status_edit.setCheckedImmediately(update.statusEditEnabled());
+			if (update.getPolicy() == WebPush.POLICY_ALL) {
+				policySelector.setSelection(0);
+			} else if (update.getPolicy() == WebPush.POLICY_FOLLOWING) {
+				policySelector.setSelection(1);
+			} else if (update.getPolicy() == WebPush.POLICY_FOLLOWER) {
+				policySelector.setSelection(2);
+			}
 			super.show();
 		}
 	}
@@ -142,18 +139,14 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		if (parent.getId() == R.id.dialog_push_policy) {
-			switch (position) {
-				case 0:
+			if (isShowing()) {
+				if (position == 0) {
 					update.setPolicy(WebPush.POLICY_ALL);
-					break;
-
-				case 1:
+				} else if (position == 1) {
 					update.setPolicy(WebPush.POLICY_FOLLOWING);
-					break;
-
-				case 2:
+				} else if (position == 2) {
 					update.setPolicy(WebPush.POLICY_FOLLOWER);
-					break;
+				}
 			}
 		}
 	}
