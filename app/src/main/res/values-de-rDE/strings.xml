@@ -179,6 +179,7 @@
 	<string name="error_cant_reply_to_status">Status ist nicht für Antworten freigegeben!</string>
 	<string name="error_corrupt_api_key">Fehler, API Schlüssel ist fehlerhaft!</string>
 	<string name="error_acc_update">Account Informationen konnten nicht aktualisiert werden! Bitte Eingaben überprüfen.</string>
+	<string name="error_translating_status">Post konnte nicht übersetzt werden</string>
 	<string name="settings_color_card">Kartenfarbe</string>
 	<string name="settings_icon_color">Symbolfarbe</string>
 	<string name="settings_key1_hint">Consumer Key</string>
@@ -190,7 +191,6 @@
 	<string name="error_twitter_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
 	<string name="button_share">Link teilen</string>
 	<string name="settings_look">Aussehen</string>
-	<string name="menu_push_settings">Benachrichtigungen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
 	<string name="status_translate_text">übersetzen</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
@@ -313,7 +313,7 @@
 	<string name="dialog_push_edit_status">bei Statusänderungen</string>
 	<string name="dialog_push_new_follower">bei neuen Followern</string>
 	<string name="dialog_push_follow_request">bei neuen Follow-Anfragen</string>
-	<string name="dialog_push_title">Benachrichtigunen</string>
+	<string name="dialog_push_title">Benachrichtigung</string>
 	<string name="dialog_push_apply">Änderungen anwenden</string>
 	<string name="settings_enable_push_label">aktiviere Push-Benachrichtigung\n(ntfy-App erforderlich)</string>
 	<string name="notification_favorite">%1$s hat einen Status favorisiert</string>

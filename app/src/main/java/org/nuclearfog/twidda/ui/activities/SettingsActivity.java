@@ -307,9 +307,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (item.getItemId() == R.id.settings_push) {
-			pushDialog.show();
-		} else if (item.getItemId() == R.id.settings_info) {
+		if (item.getItemId() == R.id.settings_info) {
 			appInfo.show();
 		} else if (item.getItemId() == R.id.settings_licenses) {
 			license.show();
@@ -538,6 +536,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					requestPermissions(new String[]{POST_NOTIFICATIONS}, REQUEST_PERMISSION_NOTIFICATION);
 				} else {
 					PushSubscription.subscripe(this);
+					pushDialog.show();
 				}
 			} else {
 				PushSubscription.unsubscripe(this);

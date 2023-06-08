@@ -1122,8 +1122,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			translate_text.append(result.translation.getOriginalLanguage());
 			translate_text.setOnClickListener(null); // disable link to translation
 		} else {
-			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_translating_status, Toast.LENGTH_SHORT).show();
 		}
 	}
 

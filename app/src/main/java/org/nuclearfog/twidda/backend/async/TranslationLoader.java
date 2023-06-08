@@ -31,9 +31,9 @@ public class TranslationLoader extends AsyncExecutor<Long, TranslationLoader.Tra
 	@Override
 	protected TranslationResult doInBackground(@NonNull Long param) {
 		try {
-			return new TranslationResult(connection.getStatusTranslation(param), null);
+			return new TranslationResult(connection.getStatusTranslation(param));
 		} catch (ConnectionException exception) {
-			return new TranslationResult(null, exception);
+			return new TranslationResult(null);
 		} catch (Exception exception) {
 			if (BuildConfig.DEBUG) {
 				exception.printStackTrace();
@@ -49,12 +49,9 @@ public class TranslationLoader extends AsyncExecutor<Long, TranslationLoader.Tra
 
 		@Nullable
 		public Translation translation;
-		@Nullable
-		public ConnectionException exception;
 
-		TranslationResult(@Nullable Translation translation, @Nullable ConnectionException exception) {
+		TranslationResult(@Nullable Translation translation) {
 			this.translation = translation;
-			this.exception = exception;
 		}
 	}
 }

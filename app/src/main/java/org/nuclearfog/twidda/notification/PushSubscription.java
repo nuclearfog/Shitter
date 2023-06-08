@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.notification;
 import android.content.Context;
 
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.unifiedpush.android.connector.ConstantsKt;
 import org.unifiedpush.android.connector.RegistrationDialogContent;
 import org.unifiedpush.android.connector.UnifiedPush;
 
@@ -25,11 +24,7 @@ public class PushSubscription {
 			try {
 				ArrayList<String> features = new ArrayList<>(1);
 				features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
-				if (!settings.getWebPush().getHost().isEmpty()) {
-					UnifiedPush.registerAppWithDialog(context, settings.getWebPush().getHost(), new RegistrationDialogContent(), features, "");
-				} else {
-					UnifiedPush.registerAppWithDialog(context, ConstantsKt.INSTANCE_DEFAULT, new RegistrationDialogContent(), features, "");
-				}
+				UnifiedPush.registerAppWithDialog(context, settings.getPushInstance(), new RegistrationDialogContent(), features, "");
 			} catch (RuntimeException exception) {
 				// thrown when ntfy-app was not found
 			}

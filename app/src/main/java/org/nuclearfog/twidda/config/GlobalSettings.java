@@ -16,6 +16,7 @@ import org.nuclearfog.twidda.config.impl.ConfigPush;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.WebPush;
+import org.unifiedpush.android.connector.ConstantsKt;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -105,6 +106,7 @@ public class GlobalSettings {
 	private static final String CURRENT_API = "current_api_id";
 	private static final String HOSTNAME = "mastodon_host";
 	private static final String PUSH_ID = "push_id";
+	private static final String PUSH_INSTANCE = "push_instance";
 	private static final String PUSH_SERVER_HOST = "push_server_host";
 	private static final String PUSH_SERVER_KEY = "push_server_key";
 	private static final String PUSH_PUBLIC_KEY = "push_public_key";
@@ -147,6 +149,7 @@ public class GlobalSettings {
 	private ConfigAccount login;
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
+	private String pushInstance;
 	private boolean loadImage;
 	private boolean loggedIn;
 	private boolean push_enabled;
@@ -601,6 +604,20 @@ public class GlobalSettings {
 	}
 
 
+	public String getPushInstance() {
+		return pushInstance;
+	}
+
+
+	public void setPushInstance(String pushInstance) {
+		this.pushInstance = pushInstance;
+
+		Editor edit = settings.edit();
+		edit.putString(PUSH_INSTANCE, pushInstance);
+		edit.apply();
+	}
+
+
 	/**
 	 * get loading limit of tweets/users
 	 *
@@ -1037,6 +1054,7 @@ public class GlobalSettings {
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
 		localOnly = settings.getBoolean(MASTODON_LOCAL_TIMELINE, false);
 		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
+		pushInstance = settings.getString(PUSH_INSTANCE, ConstantsKt.INSTANCE_DEFAULT);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
