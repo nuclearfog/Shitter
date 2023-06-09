@@ -81,6 +81,14 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 
 
 	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
+
+	@Override
 	public void onEmojiClick(Emoji emoji) {
 		listener.onEmojiSelected(emoji);
 	}

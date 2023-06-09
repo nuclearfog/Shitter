@@ -117,6 +117,14 @@ public class PollDialog extends Dialog implements OnClickListener {
 	public void show() {
 	}
 
+
+	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
 	/**
 	 * show dialog
 	 *

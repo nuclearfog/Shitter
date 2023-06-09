@@ -146,6 +146,14 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 	}
 
 
+	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
+
 	public void show(ConnectionConfig connection) {
 		switch (connection.getApiType()) {
 			case TWITTER2:

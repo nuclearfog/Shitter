@@ -77,8 +77,12 @@ public class AudioPlayerDialog extends Dialog implements OnClickListener, Closea
 
 	@Override
 	public void dismiss() {
-		super.dismiss();
-		player.stop();
+		if (player.isPlaying()) {
+			player.stop();
+		}
+		if (isShowing()) {
+			super.dismiss();
+		}
 	}
 
 

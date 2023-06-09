@@ -38,6 +38,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	private SwitchButton mention, repost, favorite, poll, follow, request, status_new, status_edit;
 	private Spinner policySelector;
 
+	private GlobalSettings settings;
 	private PushUpdater updater;
 
 	private PushUpdate update;
@@ -59,6 +60,8 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		status_new = findViewById(R.id.dialog_push_new_status);
 		status_edit = findViewById(R.id.dialog_push_edit_status);
 		policySelector = findViewById(R.id.dialog_push_policy);
+		settings = GlobalSettings.getInstance(context);
+		updater = new PushUpdater(getContext());
 
 		DropdownAdapter adapter = new DropdownAdapter(context);
 		adapter.setItems(R.array.push_policy);
@@ -81,8 +84,6 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	@Override
 	public void show() {
 		if (!isShowing()) {
-			GlobalSettings settings = GlobalSettings.getInstance(getContext());
-			updater = new PushUpdater(getContext());
 			update = new PushUpdate(settings.getWebPush());
 			mention.setCheckedImmediately(update.mentionsEnabled());
 			repost.setCheckedImmediately(update.repostEnabled());
@@ -100,6 +101,14 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 				policySelector.setSelection(2);
 			}
 			super.show();
+		}
+	}
+
+
+	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
 		}
 	}
 

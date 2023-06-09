@@ -156,6 +156,14 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 
 	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
+
+	@Override
 	public void show() {
 	}
 

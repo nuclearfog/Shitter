@@ -111,6 +111,14 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 
 	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
+
+	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if (buttonView.getId() == R.id.dialog_status_sensitive) {
 			statusUpdate.setSensitive(isChecked);

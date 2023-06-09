@@ -33,4 +33,12 @@ public class InfoDialog extends Dialog {
 			super.show();
 		}
 	}
+
+
+	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
 }

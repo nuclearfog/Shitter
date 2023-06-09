@@ -44,6 +44,14 @@ public class MetricsDialog extends Dialog {
 	public void show() {
 	}
 
+
+	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
 	/**
 	 * show dialog window
 	 *
