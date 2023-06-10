@@ -3,8 +3,10 @@
 <ul>
     <li>Zugriff auf Posts, Nutzer und Trends</li>
     <li>chronologisch aufgebaute Timelines</li>
+    <li>ünterstützt Push-Benachrichtigungen</li>
     <li>anpassbares Aussehen</li>
-    <li>Medienupload- und Vorschau</li>
+    <li>unterstützt Vorschau für Medien, Links und Umfragen</li>
     <li>Unterstützung mehrerer Accounts</li>
+    <li>Emoji-Unterstützung</li>
     <li>keine Werbung, kein App-Tracking, integrierte Proxy-Unterstützung</li>
 </ul>
