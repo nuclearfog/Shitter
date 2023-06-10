@@ -9,16 +9,13 @@
 ## Features
 
 - access to statuses, users, lists and trends
-- real timeline (chronological order)
-- status, userlist and profile editor
+- real timelines (chronological order)
+- push notification support
 - customizable theme
 - media, link and poll viewer
+- emoji selector
 - multi account support
-- location support
-- emoji support
 - Proxy support
-- no ads, no app tracking
-- Twitter support (API tokens required)
 
 
 ## Download
@@ -31,13 +28,14 @@
 
 - <a href="https://github.com/square/okhttp">okhttp</a>
 - <a href="https://github.com/square/picasso">picasso</a>
+- <a href="https://github.com/google/ExoPlayer">ExoPlayer</a>
 - <a href="https://github.com/wasabeef/picasso-transformations">picasso Transformations</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
 - <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
-- <a href="https://github.com/google/ExoPlayer">ExoPlayer</a>
+- <a href="https://github.com/UnifiedPush/android-connector">UnifiedPush connector</a>
 - <a href="https://jsoup.org">jsoup</a>
 
 
@@ -45,10 +43,3 @@
 
 - SVG Icons from <a href="http://www.entypo.com">Entypo</a> & <a href="https://www.svgrepo.com">SVG Repo</a>
 - logo and app icon design by <a href="https://github.com/Tobaloidee">@Tobaloidee</a>
-- Twitter4J logo (version 1.x) from <a href="https://twitter4j.org/en/powered-by.html">Twitter4J website</a>
-
-
-## Thanks to
-
-- <a href="https://github.com/Tobaloidee">@Tobaloidee</a> for app logo and banner
-- <a href="https://github.com/lehmaning">@lehmaning</a>
