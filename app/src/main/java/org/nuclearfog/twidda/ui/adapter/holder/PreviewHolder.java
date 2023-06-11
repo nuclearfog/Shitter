@@ -18,7 +18,6 @@ import com.squareup.picasso.RequestCreator;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.database.impl.DatabaseMedia;
 import org.nuclearfog.twidda.model.Media;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -40,6 +39,8 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	private Picasso picasso;
 	private GlobalSettings settings;
 	private OnHolderClickListener listener;
+
+	private Media media;
 
 
 	public PreviewHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
@@ -71,23 +72,26 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 	 * @param media media content
 	 */
 	public void setContent(Media media, boolean blurImage) {
-		Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
-		if (!(media instanceof DatabaseMedia) && settings.imagesEnabled() && media.getMediaType() != Media.AUDIO
-				&& media.getMediaType() != Media.UNDEFINED && !media.getPreviewUrl().trim().isEmpty()) {
-			RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
-			if (blurImage) {
-				BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);
-				picassoBuilder.transform(blurTransformation);
+		// skip if same media is already set
+		if (!media.equals(this.media)) {
+			Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
+			if (settings.imagesEnabled() && media.getMediaType() != Media.AUDIO && media.getMediaType() != Media.UNDEFINED && !media.getPreviewUrl().trim().isEmpty()) {
+				RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
+				if (blurImage) {
+					BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);
+					picassoBuilder.transform(blurTransformation);
+				}
+				picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(previewImage);
+			} else {
+				previewImage.setImageDrawable(placeholder);
 			}
-			picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(previewImage);
-		} else {
-			previewImage.setImageDrawable(placeholder);
-		}
-		// set 'play video' button
-		if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF || media.getMediaType() == Media.AUDIO) {
-			playIcon.setVisibility(View.VISIBLE);
-		} else {
-			playIcon.setVisibility(View.GONE);
+			// set 'play video' button
+			if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF || media.getMediaType() == Media.AUDIO) {
+				playIcon.setVisibility(View.VISIBLE);
+			} else {
+				playIcon.setVisibility(View.GONE);
+			}
+			this.media = media;
 		}
 	}
 }

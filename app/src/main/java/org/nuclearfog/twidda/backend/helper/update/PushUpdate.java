@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.helper.update;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.model.WebPush;
 
 import java.io.Serializable;
@@ -59,6 +61,15 @@ public class PushUpdate implements Serializable {
 	 */
 	public String getHost() {
 		return host;
+	}
+
+	/**
+	 * set hostname of the push server
+	 *
+	 * @param host hostname url
+	 */
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 	/**
@@ -203,5 +214,12 @@ public class PushUpdate implements Serializable {
 	 */
 	public void setPolicy(int policy) {
 		this.policy = policy;
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "host=\"" + host + "\"";
 	}
 }

@@ -117,6 +117,10 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_push_apply) {
 			if (updater.isIdle()) {
+				// fix: setting host url if empty
+				if (update.getHost().isEmpty()) {
+					update.setHost(settings.getWebPush().getHost());
+				}
 				updater.execute(update, this);
 			}
 		}

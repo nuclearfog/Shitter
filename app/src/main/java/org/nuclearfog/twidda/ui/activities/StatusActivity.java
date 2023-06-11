@@ -190,7 +190,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private Status status;
 	@Nullable
 	private Notification notification;
-	private boolean hidden;
+	private boolean hidden, translated;
 
 
 	@Override
@@ -613,7 +613,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// translate status text
 			else if (v.getId() == R.id.page_status_text_translate) {
-				if (translationLoader.isIdle()) {
+				if (translated) {
+					Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
+					translate_text.setText(R.string.status_translate_text);
+					status_text.setText(spannableText);
+					translated = false;
+				} else if (translationLoader.isIdle()) {
 					translationLoader.execute(status.getId(), translationResult);
 				}
 			}
@@ -779,6 +784,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void setStatus(@NonNull Status status) {
 		this.status = status;
+		translated = false;
 		if (status.getEmbeddedStatus() != null) {
 			repost_name_button.setVisibility(View.VISIBLE);
 			repost_name_button.setText(status.getAuthor().getScreenname());
@@ -1107,20 +1113,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private void onTranslationResult(@NonNull TranslationResult result) {
 		if (result.translation != null) {
-			if (status_text.getLineCount() > status_text.getMaxLines()) {
-				int y = status_text.getLayout().getLineTop(status_text.getLineCount());
-				status_text.scrollTo(0, y);
-			}
-			// build translation string
-			String text = "\n...\n" + result.translation.getText() + "\n...";
-			Spannable textSpan = Tagger.makeTextWithLinks(text, settings.getHighlightColor(), this);
+			Spannable textSpan = Tagger.makeTextWithLinks(result.translation.getText(), settings.getHighlightColor(), this);
 			// append translation
-			status_text.append(textSpan);
+			status_text.setText(textSpan);
 			translate_text.setText(R.string.status_translate_source);
 			translate_text.append(result.translation.getSource() + ", ");
 			translate_text.append(getString(R.string.status_translate_source_language));
 			translate_text.append(result.translation.getOriginalLanguage());
-			translate_text.setOnClickListener(null); // disable link to translation
+			translated = true;
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_translating_status, Toast.LENGTH_SHORT).show();
 		}

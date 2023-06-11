@@ -61,7 +61,6 @@ public class PushNotification {
 	 * @param notifications new notifications
 	 */
 	public void createNotification(Notifications notifications) {
-		// todo update existing notification and prevent recreating notification
 		if (!notifications.isEmpty()) {
 			String title = settings.getLogin().getConfiguration().getName();
 			String content;
