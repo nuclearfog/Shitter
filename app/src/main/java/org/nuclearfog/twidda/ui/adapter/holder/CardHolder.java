@@ -54,6 +54,8 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private OnHolderClickListener listener;
 
+	private Card card;
+
 	/**
 	 *
 	 */
@@ -93,32 +95,35 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	 * @param card card content
 	 */
 	public void setContent(Card card) {
-		SpannableStringBuilder urlDescription = new SpannableStringBuilder();
-		Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
-		// set url preview image
-		if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
-			picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(preview);
-		} else {
-			preview.setImageDrawable(placeholder);
-		}
-		// set url title and truncate if needed
-		if (!card.getTitle().trim().isEmpty()) {
-			// truncate title
-			if (card.getTitle().length() > TITLE_MAX_LEN) {
-				urlDescription.append(card.getTitle().substring(0, TITLE_MAX_LEN - 3));
-				urlDescription.append("...");
-				urlDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, TITLE_MAX_LEN, 0);
+		if (!card.equals(this.card)) {
+			SpannableStringBuilder urlDescription = new SpannableStringBuilder();
+			Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
+			// set url preview image
+			if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
+				picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(preview);
 			} else {
-				urlDescription.append(card.getTitle());
-				urlDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, card.getTitle().length(), 0);
+				preview.setImageDrawable(placeholder);
 			}
+			// set url title and truncate if needed
+			if (!card.getTitle().trim().isEmpty()) {
+				// truncate title
+				if (card.getTitle().length() > TITLE_MAX_LEN) {
+					urlDescription.append(card.getTitle().substring(0, TITLE_MAX_LEN - 3));
+					urlDescription.append("...");
+					urlDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, TITLE_MAX_LEN, 0);
+				} else {
+					urlDescription.append(card.getTitle());
+					urlDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, card.getTitle().length(), 0);
+				}
+			}
+			// set url description
+			if (!card.getDescription().isEmpty()) {
+				urlDescription.append('\n');
+				urlDescription.append(card.getDescription());
+			}
+			// apply description
+			linkText.setText(urlDescription);
+			this.card = card;
 		}
-		// set url description
-		if (!card.getDescription().isEmpty()) {
-			urlDescription.append('\n');
-			urlDescription.append(card.getDescription());
-		}
-		// apply description
-		linkText.setText(urlDescription);
 	}
 }

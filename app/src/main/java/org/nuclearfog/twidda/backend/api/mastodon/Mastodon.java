@@ -551,7 +551,7 @@ public class Mastodon implements Connection {
 		Statuses result = new Statuses();
 		for (Status status : statusThreads) {
 			// Mastodon doesn't support min/max ID.
-			if (status.getRepliedStatusId() == id && (minId == 0 || status.getId() > minId) && (maxId == 0 || status.getId() < maxId)) {
+			if (status.getRepliedStatusId() == id && (minId == 0L || status.getId() > minId) && (maxId == 0L || status.getId() < maxId)) {
 				result.add(status);
 			}
 		}

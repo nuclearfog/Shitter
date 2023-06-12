@@ -175,7 +175,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		Bundle param = getArguments();
 		if (param != null) {
 			mode = param.getInt(KEY_MODE, 0);
-			id = param.getLong(KEY_ID, 0);
+			id = param.getLong(KEY_ID, 0L);
 			search = param.getString(KEY_SEARCH, "");
 			boolean delUser = param.getBoolean(KEY_DELETE, false);
 			adapter.enableDeleteButton(delUser);

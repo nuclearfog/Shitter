@@ -38,8 +38,6 @@ android {
 			excludes += ['/META-INF/CHANGES', '/META-INF/DEPENDENCIES', '/META-INF/README.md', '/META-INF/androidx.*', '/META-INF/kotlin*', '/META-INF/com.*', '/META-INF/services/**', '/META-INF/com/**', '/kotlin/**', '/Debug*']
 		}
 	}
-
-
 }
 
 dependencies {

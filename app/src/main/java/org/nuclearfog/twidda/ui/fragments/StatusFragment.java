@@ -133,7 +133,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		Bundle param = getArguments();
 		if (param != null) {
 			mode = param.getInt(KEY_MODE, 0);
-			id = param.getLong(KEY_ID, 0);
+			id = param.getLong(KEY_ID, 0L);
 			search = param.getString(KEY_SEARCH, "");
 		}
 		if (savedInstanceState != null) {

@@ -920,7 +920,7 @@ public class TwitterV1 implements Connection {
 			root.put("event", event);
 			if (!message.isEmpty())
 				data.put("text", message);
-			if (mediaId != 0) {
+			if (mediaId != 0L) {
 				JSONObject attachment = new JSONObject();
 				JSONObject media = new JSONObject();
 				attachment.put("type", "media");

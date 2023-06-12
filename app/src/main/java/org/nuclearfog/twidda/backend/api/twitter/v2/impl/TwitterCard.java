@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.api.twitter.v2.impl;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,6 +65,15 @@ public class TwitterCard implements Card {
 	@Override
 	public String getImageUrl() {
 		return imageUrl;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Card))
+			return false;
+		Card card = (Card) obj;
+		return card.getTitle().equals(getTitle()) && card.getUrl().equals(getUrl()) && card.getImageUrl().equals(getImageUrl());
 	}
 
 

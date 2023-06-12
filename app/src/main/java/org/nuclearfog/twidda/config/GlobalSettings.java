@@ -1078,7 +1078,7 @@ public class GlobalSettings {
 		String bearerToken = settings.getString(BEARER_TOKEN, "");
 		String hostname = settings.getString(HOSTNAME, TWITTER_HOST);
 		int apiId = settings.getInt(CURRENT_API, 0);
-		long userId = settings.getLong(CURRENT_ID, 0);
+		long userId = settings.getLong(CURRENT_ID, 0L);
 		if ((apiId == Account.API_TWITTER_1 || apiId == Account.API_TWITTER_2) && twitterAlt)
 			hostname = TWITTER_ALT_HOST;
 		login = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);

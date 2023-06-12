@@ -410,7 +410,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	@NonNull
 	@Override
 	public String toString() {
-		if (replyId != 0)
+		if (replyId != 0L)
 			return "to=" + replyId + " status=\"" + text + "\"";
 		return "status=\"" + text + "\"";
 	}
