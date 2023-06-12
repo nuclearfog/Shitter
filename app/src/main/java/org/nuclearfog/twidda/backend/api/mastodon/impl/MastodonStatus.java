@@ -98,8 +98,9 @@ public class MastodonStatus implements Status {
 			jsoupDoc.outputSettings(OUTPUT_SETTINGS);
 			jsoupDoc.select("br").after("\\n");
 			jsoupDoc.select("p").before("\\n");
-			String str = jsoupDoc.html().replaceAll("\\\\n", "\n");
+			String str = jsoupDoc.html().replace("\\n", "\n");
 			text = Jsoup.clean(str, "", Safelist.none(), OUTPUT_SETTINGS);
+			text = text.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&");
 			if (text.startsWith("\n")) {
 				text = text.substring(1);
 			}
