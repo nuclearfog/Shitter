@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<integer-array name="home_twitter_icons">
+	<integer-array name="home_twitter_tab_icons">
 		<item>@drawable/home</item>
 		<item>@drawable/hash</item>
 		<item>@drawable/bell</item>
 		<item>@drawable/message</item>
 	</integer-array>
 
-	<integer-array name="home_mastodon_icons">
+	<integer-array name="home_mastodon_tab_icons">
 		<item>@drawable/home</item>
 		<item>@drawable/hash</item>
 		<item>@drawable/global</item>

@@ -27,11 +27,6 @@ public enum Configuration {
 	 */
 	MASTODON(Account.API_MASTODON);
 
-	/**
-	 * fallback configuration to use when there is no network selected
-	 */
-	public static final Configuration FALLBACK_CONFIG = MASTODON;
-
 	private final String name;
 	private final int accountType;
 	private final boolean userlistExtended;
@@ -73,7 +68,7 @@ public enum Configuration {
 				emojiSupported = false;
 				statusEditSupported = false;
 				webpushSupported = false;
-				arrayResHome = R.array.home_twitter_icons;
+				arrayResHome = R.array.home_twitter_tab_icons;
 				break;
 
 			default:
@@ -93,7 +88,7 @@ public enum Configuration {
 				emojiSupported = true;
 				statusEditSupported = true;
 				webpushSupported = true;
-				arrayResHome = R.array.home_mastodon_icons;
+				arrayResHome = R.array.home_mastodon_tab_icons;
 				break;
 		}
 	}

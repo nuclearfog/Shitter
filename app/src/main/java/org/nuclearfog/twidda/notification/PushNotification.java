@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.notification;
 
 import static android.Manifest.permission.POST_NOTIFICATIONS;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -39,10 +41,16 @@ public class PushNotification {
 	 *
 	 */
 	public PushNotification(Context context) {
+		this.context = context;
 		notificationManager = NotificationManagerCompat.from(context);
 		notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_ID_STR);
 		settings = GlobalSettings.getInstance(context);
-		this.context = context;
+		// setup notification channel
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationManager manager = context.getSystemService(NotificationManager.class);
+			NotificationChannel channel = new NotificationChannel(PushNotification.NOTIFICATION_ID_STR, PushNotification.NOTIFICATION_NAME, NotificationManager.IMPORTANCE_HIGH);
+			manager.createNotificationChannel(channel);
+		}
 		// Open MainActivity and select notification tab, if notification view is clicked
 		Intent notificationIntent = new Intent(context.getApplicationContext(), MainActivity.class);
 		notificationIntent.putExtra(MainActivity.KEY_SELECT_NOTIFICATION, true);

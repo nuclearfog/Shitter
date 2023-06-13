@@ -210,6 +210,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			enableLocalTl.setVisibility(View.VISIBLE);
 			trend_card.setVisibility(View.GONE);
 		}
+		if (!configuration.isWebpushSupported()) {
+			push_label.setVisibility(View.GONE);
+			enablePush.setVisibility(View.GONE);
+		}
 		if (!settings.isLoggedIn()) {
 			user_card.setVisibility(View.GONE);
 			push_label.setVisibility(View.GONE);

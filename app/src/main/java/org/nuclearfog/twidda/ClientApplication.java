@@ -1,14 +1,10 @@
 package org.nuclearfog.twidda;
 
 import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
 
 import org.nuclearfog.twidda.backend.image.ImageCache;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.notification.PushNotification;
 import org.nuclearfog.twidda.notification.PushSubscription;
 
 /**
@@ -24,12 +20,6 @@ public class ClientApplication extends Application {
 		super.onCreate();
 		// setup push receiver
 		settings = GlobalSettings.getInstance(getApplicationContext());
-		// setup notification channel
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationManager manager = getSystemService(NotificationManager.class);
-			NotificationChannel channel = new NotificationChannel(PushNotification.NOTIFICATION_ID_STR, PushNotification.NOTIFICATION_NAME, NotificationManager.IMPORTANCE_HIGH);
-			manager.createNotificationChannel(channel);
-		}
 		if (settings.isLoggedIn() && settings.pushEnabled()) {
 			PushSubscription.subscripe(getApplicationContext());
 		}

@@ -132,7 +132,7 @@ public class DatabaseAccount implements Account, AccountTable {
 				return Configuration.MASTODON;
 
 			default:
-				return Configuration.FALLBACK_CONFIG;
+				throw new RuntimeException("wrong API type: " + apiType);
 		}
 	}
 

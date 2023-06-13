@@ -18,7 +18,7 @@ public class ConfigAccount implements Account {
 
 	private long id;
 	private long timestamp;
-	private int type;
+	private int apiType;
 	private String oauthToken, tokenSecret, bearerToken;
 	private String consumerToken, consumerSecret, hostname;
 
@@ -36,15 +36,15 @@ public class ConfigAccount implements Account {
 
 		switch (account.getConfiguration()) {
 			case TWITTER1:
-				type = API_TWITTER_1;
+				apiType = API_TWITTER_1;
 				break;
 
 			case TWITTER2:
-				type = API_TWITTER_2;
+				apiType = API_TWITTER_2;
 				break;
 
 			case MASTODON:
-				type = API_MASTODON;
+				apiType = API_MASTODON;
 				break;
 		}
 	}
@@ -52,7 +52,7 @@ public class ConfigAccount implements Account {
 	/**
 	 *
 	 */
-	public ConfigAccount(long id, String oauthToken, String tokenSecret, String consumerToken, String consumerSecret, String bearerToken, String hostname, int type) {
+	public ConfigAccount(long id, String oauthToken, String tokenSecret, String consumerToken, String consumerSecret, String bearerToken, String hostname, int apiType) {
 		this.id = id;
 		this.oauthToken = oauthToken;
 		this.tokenSecret = tokenSecret;
@@ -60,7 +60,7 @@ public class ConfigAccount implements Account {
 		this.consumerSecret = consumerSecret;
 		this.bearerToken = bearerToken;
 		this.hostname = hostname;
-		this.type = type;
+		this.apiType = apiType;
 		timestamp = System.currentTimeMillis();
 	}
 
@@ -122,7 +122,7 @@ public class ConfigAccount implements Account {
 
 	@Override
 	public Configuration getConfiguration() {
-		switch (type) {
+		switch (apiType) {
 			case API_TWITTER_1:
 				return Configuration.TWITTER1;
 
@@ -133,7 +133,7 @@ public class ConfigAccount implements Account {
 				return Configuration.MASTODON;
 
 			default:
-				return Configuration.FALLBACK_CONFIG;
+				throw new RuntimeException("wrong API type: " + apiType);
 		}
 	}
 
