@@ -3,7 +3,7 @@
 # Lightweight Android client for Mastodon
 
 
-<img src="/fastlane/metadata/android/en-US/phoneScreenshots/shitter_1.jpg" height="360"/> <img src="/fastlane/metadata/android/en-US/phoneScreenshots/shitter_2.jpg" height="360"/> <img src="/fastlane/metadata/android/en-US/phoneScreenshots/shitter_3.jpg" height="360"/> <img src="/fastlane/metadata/android/en-US/phoneScreenshots/shitter_4.jpg" height="360"/>
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/shitter_1.jpg" height="360"/> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/shitter_2.jpg" height="360"/> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/shitter_3.jpg" height="360"/> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/shitter_4.jpg" height="360"/>
 
 
 ## Features
