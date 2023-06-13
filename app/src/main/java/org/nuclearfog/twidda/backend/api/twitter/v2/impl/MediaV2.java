@@ -141,7 +141,10 @@ public class MediaV2 implements Media {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		return obj instanceof Media && ((Media) obj).getKey().equals(getKey());
+		if (!(obj instanceof Media))
+			return false;
+		Media media = (Media) obj;
+		return media.getMediaType() == getMediaType() && media.getKey().equals(getKey()) && media.getPreviewUrl().equals(getPreviewUrl()) && media.getUrl().equals(getUrl());
 	}
 
 

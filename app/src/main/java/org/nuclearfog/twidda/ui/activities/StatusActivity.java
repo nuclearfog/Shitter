@@ -183,8 +183,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private TextView status_source, created_at, status_text, screen_name, username, location_name, sensitive, spoiler, spoiler_hint, translate_text;
 	private Button reply_button, repost_button, like_button, reply_name, repost_name_button;
 	private ImageView profile_image;
-	private RecyclerView card_list;
 	private Toolbar toolbar;
+	private View card_container;
 
 	@Nullable
 	private Status status;
@@ -224,7 +224,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repost_name_button = findViewById(R.id.page_status_reposter_reference);
 		translate_text = findViewById(R.id.page_status_text_translate);
 		spoiler_hint = findViewById(R.id.page_status_text_sensitive_hint);
-		card_list = findViewById(R.id.page_status_cards);
+		card_container = findViewById(R.id.page_status_cards_container);
+		RecyclerView card_list = findViewById(R.id.page_status_cards);
 
 		statusLoader = new StatusAction(this);
 		pollLoader = new PollAction(this);
@@ -925,11 +926,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// set status attachment preview
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
-			card_list.setVisibility(View.VISIBLE);
+			card_container.setVisibility(View.VISIBLE);
 			adapter.replaceAll(status);
 			status_text.setMaxLines(5);
 		} else {
-			card_list.setVisibility(View.GONE);
+			card_container.setVisibility(View.GONE);
 			status_text.setMaxLines(10);
 		}
 	}
