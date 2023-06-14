@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.holder.CardHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.PollHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.PreviewHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.MediaHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	private static final int INVALID_ID = -1;
 
 	/**
-	 * ID used for {@link PreviewHolder}
+	 * ID used for {@link MediaHolder}
 	 */
 	private static final int ITEM_PREVIEW = 0;
 
@@ -69,7 +69,7 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 		switch (viewType) {
 			default:
 			case ITEM_PREVIEW:
-				return new PreviewHolder(parent, settings, picasso, this);
+				return new MediaHolder(parent, settings, picasso, this);
 
 			case ITEM_CARD:
 				return new CardHolder(parent, settings, picasso, this);
@@ -83,10 +83,10 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 		Object item = items.get(position);
-		if (holder instanceof PreviewHolder && item instanceof Media) {
-			PreviewHolder previewHolder = ((PreviewHolder) holder);
+		if (holder instanceof MediaHolder && item instanceof Media) {
+			MediaHolder mediaHolder = ((MediaHolder) holder);
 			Media media = (Media) item;
-			previewHolder.setContent(media, blurMedia);
+			mediaHolder.setContent(media, blurMedia);
 		} else if (holder instanceof CardHolder && item instanceof Card) {
 			CardHolder cardHolder = (CardHolder) holder;
 			Card card = (Card) item;

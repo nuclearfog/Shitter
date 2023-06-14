@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
 
@@ -27,7 +28,7 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
  *
  * @author nucleaerfog
  */
-public class PreviewHolder extends ViewHolder implements OnClickListener {
+public class MediaHolder extends ViewHolder implements OnClickListener {
 
 	/**
 	 * empty placeholder image color
@@ -42,8 +43,10 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 
 	private Media media;
 
-
-	public PreviewHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
+	/**
+	 *
+	 */
+	public MediaHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_preview, parent, false));
 		this.picasso = picasso;
 		this.settings = settings;
@@ -85,12 +88,24 @@ public class PreviewHolder extends ViewHolder implements OnClickListener {
 			} else {
 				previewImage.setImageDrawable(placeholder);
 			}
-			// set 'play video' button
-			if (media.getMediaType() == Media.VIDEO || media.getMediaType() == Media.GIF || media.getMediaType() == Media.AUDIO) {
-				playIcon.setVisibility(View.VISIBLE);
-			} else {
-				playIcon.setVisibility(View.GONE);
+			switch (media.getMediaType()) {
+				case Media.AUDIO:
+				case Media.VIDEO:
+					playIcon.setVisibility(View.VISIBLE);
+					playIcon.setImageResource(R.drawable.play);
+
+					break;
+
+				case Media.GIF:
+					playIcon.setVisibility(View.VISIBLE);
+					playIcon.setImageResource(R.drawable.gif);
+					break;
+
+				default:
+					playIcon.setVisibility(View.GONE);
+					break;
 			}
+			AppStyles.setDrawableColor(playIcon, settings.getIconColor());
 			this.media = media;
 		}
 	}

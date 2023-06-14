@@ -18,6 +18,7 @@ public class PushSubscription {
 
 	/**
 	 * subscripe to unified push service using app settings
+	 * push messages will be then received by {@link PushNotificationReceiver}
 	 */
 	public static void subscripe(Context context) {
 		GlobalSettings settings = GlobalSettings.getInstance(context);
@@ -26,7 +27,7 @@ public class PushSubscription {
 				ArrayList<String> features = new ArrayList<>(1);
 				features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
 				UnifiedPush.registerAppWithDialog(context, settings.getPushInstance(), new RegistrationDialogContent(), features, "");
-			} catch (RuntimeException exception) {
+			} catch (Exception exception) {
 				// thrown when ntfy-app was not found
 				if (BuildConfig.DEBUG) {
 					exception.printStackTrace();
@@ -36,14 +37,14 @@ public class PushSubscription {
 	}
 
 	/**
-	 * remove unified push subscription
+	 * unregister from unified push
 	 */
 	public static void unsubscripe(Context context) {
 		GlobalSettings settings = GlobalSettings.getInstance(context);
-		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported() && settings.pushEnabled()) {
+		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported()) {
 			try {
 				UnifiedPush.unregisterApp(context.getApplicationContext(), settings.getWebPush().getHost());
-			} catch (RuntimeException exception) {
+			} catch (Exception exception) {
 				// thrown when ntfy-app was not found
 				if (BuildConfig.DEBUG) {
 					exception.printStackTrace();

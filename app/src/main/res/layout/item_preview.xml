@@ -17,7 +17,6 @@
 		android:id="@+id/item_preview_play"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:src="@drawable/play"
 		android:layout_gravity="center"
 		android:contentDescription="@string/status_media_preview_button" />
 

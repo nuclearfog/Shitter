@@ -20,7 +20,7 @@ public class ClientApplication extends Application {
 		super.onCreate();
 		// setup push receiver
 		settings = GlobalSettings.getInstance(getApplicationContext());
-		if (settings.isLoggedIn() && settings.pushEnabled()) {
+		if (settings.pushEnabled()) {
 			PushSubscription.subscripe(getApplicationContext());
 		}
 	}
