@@ -129,11 +129,9 @@ public class ConfigAccount implements Account {
 			case API_TWITTER_2:
 				return Configuration.TWITTER2;
 
+			default:
 			case API_MASTODON:
 				return Configuration.MASTODON;
-
-			default:
-				throw new RuntimeException("wrong API type: " + apiType);
 		}
 	}
 
