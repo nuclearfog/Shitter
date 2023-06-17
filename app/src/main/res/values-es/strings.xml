@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!--app/repository dependent strings-->
-	<string name="app_name" translatable="false">Shitter</string>
-	<string name="app_name_api" translatable="false">SH1TT3R</string>
-	<string name="app_website" translatable="false">https://github.com/nuclearfog/Shitter</string>
-
-	<string name="app_info_icons_links" translatable="false">www.svgrepo.com  www.entypo.com</string>
-	<string name="userlist_following" translatable="false">Following</string>
-	<string name="userlist_follower" translatable="false">Follower</string>
-	<string name="settings_mastodon_hint" translatable="false">mastodon.social</string>
-	<string name="login_first_opt" translatable="false">1.</string>
-	<string name="login_sec_opt" translatable="false">2.</string>
-	<string name="login_trd_opt" translatable="false">3.</string>
-	<string name="login_4th_opt" translatable="false">4.</string>
-	<string name="account_user_id_prefix" translatable="false">User ID:</string>
 
 	<!-- toast messages to inform user -->
 	<string name="info_list_removed">Userlist removed</string>
