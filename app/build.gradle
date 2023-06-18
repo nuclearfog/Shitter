@@ -4,15 +4,15 @@ plugins {
 
 android {
 	compileSdkVersion 33
-	buildToolsVersion '33.0.2'
+	buildToolsVersion '34.0.0'
 	namespace 'org.nuclearfog.twidda'
 
 	defaultConfig {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 88
-		versionName '3.2.1'
+		versionCode 89
+		versionName '3.2.2'
 		resConfigs 'en', 'de-rDE', 'zh-rCN'
 	}
 

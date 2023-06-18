@@ -255,12 +255,22 @@ public class AppStyles {
 			try {
 				Bitmap image = ((BitmapDrawable) backgroundDrawable).getBitmap().copy(Bitmap.Config.ARGB_8888, true);
 				// check if image is valid
-				if (image.getWidth() > 1 && image.getHeight() > 1) {
+				if (image.getWidth() > 0 && image.getHeight() > 0) {
 					// crop image to background size
 					if (background.getMeasuredHeight() > 0 && background.getMeasuredWidth() > 0) {
 						CropTransformation crop;
-						int height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
-						crop = new CropTransformation(image.getWidth(), height, GravityHorizontal.CENTER, GravityVertical.CENTER);
+						int width, height;
+						if ((image.getWidth() / (float) image.getHeight() < (background.getWidth() / (float) background.getHeight()))) {
+							height = image.getWidth() * background.getMeasuredHeight() / background.getMeasuredWidth();
+							width = image.getWidth();
+						} else if ((image.getWidth() / (float) image.getHeight() > (background.getWidth() / (float) background.getHeight()))) {
+							height = image.getHeight();
+							width = image.getHeight() * background.getMeasuredWidth() / background.getMeasuredHeight();
+						} else {
+							width = image.getWidth();
+							height = image.getHeight();
+						}
+						crop = new CropTransformation(width, height, GravityHorizontal.CENTER, GravityVertical.CENTER);
 						image = crop.transform(image);
 					}
 					int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
