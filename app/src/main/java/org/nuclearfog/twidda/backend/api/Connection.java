@@ -2,12 +2,14 @@ package org.nuclearfog.twidda.backend.api;
 
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
@@ -640,6 +642,27 @@ public interface Connection {
 	 * @return list of IDs
 	 */
 	List<Long> getIdBlocklist() throws ConnectionException;
+
+	/**
+	 * returns used filter
+	 *
+	 * @return list of filter
+	 */
+	List<Filter> getFilter() throws ConnectionException;
+
+	/**
+	 * create/update status filter
+	 *
+	 * @param update filter to update
+	 */
+	void updateFilter(FilterUpdate update) throws ConnectionException;
+
+	/**
+	 * delete status filter
+	 *
+	 * @param id ID of the filter to delete
+	 */
+	void deleteFilter(long id) throws ConnectionException;
 
 	/**
 	 * download image

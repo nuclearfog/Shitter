@@ -15,6 +15,7 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonFilter;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonInstance;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
@@ -27,6 +28,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
@@ -37,6 +39,7 @@ import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
@@ -68,6 +71,7 @@ import java.security.spec.ECPoint;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -140,6 +144,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_POLL = "/api/v1/polls/";
 	private static final String ENDPOINT_DOMAIN_BLOCK = "/api/v1/domain_blocks";
 	private static final String ENDPOINT_PUSH_UPDATE = "/api/v1/push/subscription";
+	private static final String ENDPOINT_FILTER = "/api/v2/filters";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -938,6 +943,80 @@ public class Mastodon implements Connection {
 	@Override
 	public List<Long> getIdBlocklist() throws MastodonException {
 		throw new MastodonException("not supported!");
+	}
+
+
+	@Override
+	public List<Filter> getFilter() throws ConnectionException {
+		try {
+			Response response = get(ENDPOINT_FILTER, new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONArray(body.string());
+				List<Filter> result = new LinkedList<>();
+				for (int i = 0 ; i < array.length(); i++) {
+					result.add(new MastodonFilter(array.getJSONObject(i)));
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException exception) {
+			throw new MastodonException(exception);
+		}
+	}
+
+
+	@Override
+	public void updateFilter(FilterUpdate update) throws ConnectionException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("title=" + update.getTitle());
+			if (update.getExpirationTime() > 0)
+				params.add("expires_in=" + update.getExpirationTime());
+			if (update.filterHomeSet())
+				params.add("context[]=home");
+			if (update.filterNotificationSet())
+				params.add("context[]=notifications");
+			if (update.filterPublicSet())
+				params.add("context[]=public");
+			if (update.filterThreadSet())
+				params.add("context[]=thread");
+			if (update.filterUserSet())
+				params.add("context[]=account");
+			if (update.getFilterAction() == Filter.ACTION_WARN)
+				params.add("filter_action=warn");
+			else if (update.getFilterAction() == Filter.ACTION_HIDE)
+				params.add("filter_action=hide");
+			if (update.wholeWord())
+				params.add("keywords_attributes[][whole_word]=true");
+			else
+				params.add("keywords_attributes[][whole_word]=false");
+			for (String keyword : update.getKeywords())
+				params.add("keywords_attributes[][keyword]=" + StringUtils.encode(keyword));
+			Response response;
+			if (update.getId() != 0L)
+				response = put(ENDPOINT_FILTER + '/' + update.getId(), params);
+			else
+				response = post(ENDPOINT_FILTER, params);
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException exception) {
+			throw new MastodonException(exception);
+		}
+	}
+
+
+	@Override
+	public void deleteFilter(long id) throws ConnectionException {
+		try {
+			Response response = delete(ENDPOINT_FILTER + '/' + id, new ArrayList<>());
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException exception) {
+			throw new MastodonException(exception);
+		}
 	}
 
 

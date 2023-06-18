@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
 import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
@@ -34,6 +35,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
@@ -1187,6 +1189,24 @@ public class TwitterV1 implements Connection {
 			cursor = ids[ids.length - 1];
 		}
 		return new ArrayList<>(result);
+	}
+
+
+	@Override
+	public List<Filter> getFilter() throws ConnectionException {
+		throw new TwitterException("not implemented!");
+	}
+
+
+	@Override
+	public void updateFilter(FilterUpdate update) throws ConnectionException {
+		throw new TwitterException("not implemented!");
+	}
+
+
+	@Override
+	public void deleteFilter(long id) throws ConnectionException {
+		throw new TwitterException("not implemented!");
 	}
 
 
