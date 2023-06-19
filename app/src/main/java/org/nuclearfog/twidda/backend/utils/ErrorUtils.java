@@ -40,7 +40,6 @@ public class ErrorUtils {
 	 * @param exception connection exception
 	 * @return message string
 	 */
-	@Nullable
 	public static String getErrorMessage(Context context, @Nullable ConnectionException exception) {
 		if (exception != null) {
 			switch (exception.getErrorCode()) {
@@ -126,11 +125,8 @@ public class ErrorUtils {
 						return exception.getMessage();
 					}
 					break;
-
-				default:
-					return context.getString(R.string.error_not_defined);
 			}
 		}
-		return null;
+		return context.getString(R.string.error_not_defined);
 	}
 }
