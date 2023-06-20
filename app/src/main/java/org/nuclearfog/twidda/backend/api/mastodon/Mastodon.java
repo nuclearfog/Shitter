@@ -52,6 +52,7 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
+import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Statuses;
@@ -71,7 +72,6 @@ import java.security.spec.ECPoint;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -947,13 +947,13 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Filter> getFilter() throws ConnectionException {
+	public Filters getFilter() throws ConnectionException {
 		try {
 			Response response = get(ENDPOINT_FILTER, new ArrayList<>());
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONArray(body.string());
-				List<Filter> result = new LinkedList<>();
+				Filters result = new Filters();
 				for (int i = 0 ; i < array.length(); i++) {
 					result.add(new MastodonFilter(array.getJSONObject(i)));
 				}

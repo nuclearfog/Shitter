@@ -42,7 +42,7 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickL
 	public void onBindViewHolder(@NonNull EmojiHolder holder, int position) {
 		Object item = items.get(position);
 		if (item instanceof Emoji[]) {
-			holder.setData((Emoji[]) item);
+			holder.setContent((Emoji[]) item);
 		} else if (item instanceof String) {
 			holder.setLabel((String) item);
 		}

@@ -51,6 +51,10 @@ public interface OnHolderClickListener {
 
 	int DOMAIN_REMOVE = 21;
 
+	int FILTER_CLICK = 22;
+
+	int FILTER_REMOVE = 23;
+
 	/**
 	 * called when an item was clicked
 	 *

@@ -75,7 +75,7 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 	 *
 	 * @param emojis a group of emojis
 	 */
-	public void setData(Emoji[] emojis) {
+	public void setContent(Emoji[] emojis) {
 		for (int i = 0; i < emojiViews.length; i++) {
 			Emoji emoji = null;
 			if (i < emojis.length)

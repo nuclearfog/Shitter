@@ -58,7 +58,7 @@ public class DomainHolder extends ViewHolder implements OnClickListener {
 	 *
 	 * @param name domain information
 	 */
-	public void setDomain(String name) {
+	public void setContent(String name) {
 		domain_name.setText(name);
 	}
 }

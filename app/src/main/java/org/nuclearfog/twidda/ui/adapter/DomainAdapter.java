@@ -52,7 +52,7 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 		if (holder instanceof DomainHolder) {
 			DomainHolder domainHolder = (DomainHolder) holder;
-			domainHolder.setDomain(items.get(position));
+			domainHolder.setContent(items.get(position));
 		} else if (holder instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) holder;
 			placeHolder.setLoading(loadingIndex == position);

@@ -171,6 +171,12 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			startActivity(intent);
 			return true;
 		}
+		// open filter page
+		else if (item.getItemId() == R.id.menu_filter) {
+			Intent intent = new Intent(this, FilterActivity.class);
+			startActivity(intent);
+			return true;
+		}
 		// open status editor
 		else if (item.getItemId() == R.id.menu_post) {
 			Intent intent = new Intent(this, StatusEditor.class);

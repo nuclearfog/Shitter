@@ -26,6 +26,11 @@
 		app:showAsAction="withText" />
 
 	<item
+		android:id="@+id/menu_filter"
+		android:title="@string/menu_open_filter"
+		app:showAsAction="withText" />
+
+	<item
 		android:id="@+id/menu_account"
 		android:title="@string/menu_select_account"
 		app:showAsAction="withText" />

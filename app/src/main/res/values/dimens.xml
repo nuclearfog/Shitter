@@ -324,10 +324,11 @@
 
 	<!--dimens of item_filter.xml-->
 	<dimen name="item_filter_title_textsize">18sp</dimen>
-	<dimen name="item_filter_default_textsize">11sp</dimen>
+	<dimen name="item_filter_default_textsize">12sp</dimen>
 	<dimen name="item_filter_card_padding">5dp</dimen>
-	<dimen name="item_filter_icon_size">24sp</dimen>
-	<dimen name="item_filter_icon_margin">5dp</dimen>
+	<dimen name="item_filter_icon_size">20sp</dimen>
+	<dimen name="item_filter_icon_margin">8dp</dimen>
+	<dimen name="item_filter_layout_margin">5dp</dimen>
 	<dimen name="item_filter_button_size">20sp</dimen>
 
 	<!--dimens of dialog_push-->

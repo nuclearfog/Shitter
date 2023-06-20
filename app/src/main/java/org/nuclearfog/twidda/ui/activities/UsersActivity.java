@@ -20,9 +20,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.FilterLoader;
-import org.nuclearfog.twidda.backend.async.FilterLoader.FilterParam;
-import org.nuclearfog.twidda.backend.async.FilterLoader.FilterResult;
+import org.nuclearfog.twidda.backend.async.UserFilterLoader;
+import org.nuclearfog.twidda.backend.async.UserFilterLoader.FilterParam;
+import org.nuclearfog.twidda.backend.async.UserFilterLoader.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
@@ -100,7 +100,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
 	private GlobalSettings settings;
-	private FilterLoader filterLoader;
+	private UserFilterLoader filterLoader;
 	private FragmentAdapter adapter;
 
 	private Toolbar toolbar;
@@ -125,7 +125,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		tabSelector = findViewById(R.id.page_exclude_tab);
 		viewPager = findViewById(R.id.page_users_pager);
 
-		filterLoader = new FilterLoader(this);
+		filterLoader = new UserFilterLoader(this);
 		settings = GlobalSettings.get(this);
 		adapter = new FragmentAdapter(this);
 		viewPager.setAdapter(adapter);

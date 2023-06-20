@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, FilterLoader.FilterResult> {
+public class UserFilterLoader extends AsyncExecutor<UserFilterLoader.FilterParam, UserFilterLoader.FilterResult> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -30,7 +30,7 @@ public class FilterLoader extends AsyncExecutor<FilterLoader.FilterParam, Filter
 	/**
 	 *
 	 */
-	public FilterLoader(Context context) {
+	public UserFilterLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}

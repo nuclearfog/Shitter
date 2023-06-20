@@ -1,31 +1,31 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Filter;
+import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.ui.adapter.holder.FilterHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
+ * filterlist adapter
  *
+ * @see org.nuclearfog.twidda.ui.fragments.FilterFragment
+ * @author nuclearfog
  */
 public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClickListener {
 
 
+	private OnFilterClickListener listener;
+	private Filters items = new Filters();
 
-	private List<Filter> items = new ArrayList<>();
-
-
-	public FilterAdapter() {
-
+	/**
+	 *
+	 */
+	public FilterAdapter(OnFilterClickListener listener) {
+		this.listener = listener;
 	}
 
 
@@ -38,7 +38,7 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 
 	@Override
 	public void onBindViewHolder(@NonNull FilterHolder holder, int position) {
-		holder.setData(items.get(position));
+		holder.setContent(items.get(position));
 	}
 
 
@@ -50,12 +50,47 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-
+		if (type == OnHolderClickListener.FILTER_CLICK) {
+			listener.onFilterClick(position);
+		} else if (type == OnHolderClickListener.FILTER_REMOVE) {
+			listener.onFilterRemove(position);
+		}
 	}
 
 
 	@Override
 	public boolean onPlaceholderClick(int index) {
 		return false;
+	}
+
+	/**
+	 * replace all filter items
+	 *
+	 * @param items new items to insert
+	 */
+	public void replaceItems(Filters items) {
+		this.items.clear();
+		this.items.addAll(items);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * listener for filterlist items
+	 */
+	public interface OnFilterClickListener {
+
+		/**
+		 * ccalled on filter item click
+		 *
+		 * @param position index of the item
+		 */
+		void onFilterClick(int position);
+
+		/**
+		 * ccalled on filter item remove click
+		 *
+		 * @param position index of the item
+		 */
+		void onFilterRemove(int position);
 	}
 }

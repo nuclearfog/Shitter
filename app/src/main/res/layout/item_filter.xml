@@ -32,7 +32,7 @@
 			android:contentDescription="@string/notification_dismiss"
 			app:layout_constraintDimensionRatio="1"
 			app:layout_constraintStart_toEndOf="@id/item_filter_title"
-			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintTop_toTopOf="@id/item_filter_title"
 			app:layout_constraintBottom_toBottomOf="@id/item_filter_title"
 			app:layout_constraintEnd_toEndOf="parent"
 			style="@style/FeedbackButton" />
@@ -42,6 +42,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textSize="@dimen/item_filter_default_textsize"
+			android:layout_marginTop="@dimen/item_filter_layout_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_title"
 			app:layout_constraintEnd_toEndOf="parent" />
@@ -52,6 +53,7 @@
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/home"
 			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:contentDescription="@string/description_filter_home_timeline"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration" />
 
@@ -61,6 +63,7 @@
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/global"
 			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:contentDescription="@string/description_filter_public_timeline"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_home"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
 
@@ -70,6 +73,7 @@
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/bell"
 			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:contentDescription="@string/description_filter_notification"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_public"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
 
@@ -79,6 +83,7 @@
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/answer"
 			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:contentDescription="@string/description_filter_thread"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_notification"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
 
@@ -88,6 +93,7 @@
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/user"
 			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:contentDescription="@string/description_filter_user_timeline"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_thread"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
 
@@ -103,15 +109,17 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textSize="@dimen/item_filter_default_textsize"
+			android:layout_marginTop="@dimen/item_filter_layout_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_icon_barrier"
 			app:layout_constraintEnd_toEndOf="parent"/>
 
-		<LinearLayout
+		<TextView
 			android:id="@+id/item_filter_keyword_list"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
+			android:textSize="@dimen/item_filter_default_textsize"
+			android:layout_marginTop="@dimen/item_filter_layout_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_action"
 			app:layout_constraintEnd_toEndOf="parent"/>

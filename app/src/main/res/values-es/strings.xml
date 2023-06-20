@@ -332,4 +332,9 @@
 	<string name="notification_edit">A status you boosted with has been edited</string>
 	<string name="notification_poll">A poll you have voted in or created has ended</string>
 	<string name="notification_new">New notifications</string>
+	<string name="description_filter_home_timeline">Home-Timeline-Filter aktiviert</string>
+	<string name="description_filter_notification">Benachrichtigungsfilter aktiviert</string>
+	<string name="description_filter_public_timeline">Filter aktiviert für öffentliche Timeline</string>
+	<string name="description_filter_thread">Filter aktiviert für Threads</string>
+	<string name="description_filter_user_timeline">Filter aktiviert fpr Nutzer-Timeline</string>
 </resources>
