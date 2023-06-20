@@ -62,7 +62,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		TabSelector tabSelector = findViewById(R.id.list_tab);
 		viewPager = findViewById(R.id.list_pager);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		adapter = new FragmentAdapter(this);
 
 		toolbar.setTitle(R.string.list_appbar);

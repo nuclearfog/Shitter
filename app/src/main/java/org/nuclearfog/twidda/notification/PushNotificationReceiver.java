@@ -25,7 +25,7 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 
 	@Override
 	public void onMessage(@NonNull Context context, @NonNull byte[] message, @NonNull String instance) {
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported() && settings.pushEnabled()) {
 			NotificationLoader loader = new NotificationLoader(context);
 			NotificationLoaderParam param = new NotificationLoaderParam(NotificationLoaderParam.LOAD_UNREAD, 0, 0L, 0L);
@@ -37,7 +37,7 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 
 	@Override
 	public void onNewEndpoint(@NonNull Context context, @NonNull String endpoint, @NonNull String instance) {
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		settings.setPushInstance(instance);
 		PushUpdate update = new PushUpdate(settings.getWebPush(), endpoint);
 		PushUpdater pushUpdater = new PushUpdater(context);

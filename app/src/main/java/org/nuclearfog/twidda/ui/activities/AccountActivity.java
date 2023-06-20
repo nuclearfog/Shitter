@@ -75,7 +75,7 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 		tool.setTitle(R.string.account_page);
 		setSupportActionBar(tool);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		AppStyles.setTheme(root);
 	}
 

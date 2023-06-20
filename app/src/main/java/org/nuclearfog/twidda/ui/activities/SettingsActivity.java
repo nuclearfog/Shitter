@@ -175,7 +175,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		list_size = findViewById(R.id.settings_list_size);
 		root = findViewById(R.id.settings_layout);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		configuration = settings.getLogin().getConfiguration();
 		confirmDialog = new ConfirmDialog(this);
 		appInfo = new InfoDialog(this);

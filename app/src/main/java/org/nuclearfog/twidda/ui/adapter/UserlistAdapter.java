@@ -7,11 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.image.PicassoBuilder;
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.lists.UserLists;
@@ -52,8 +48,6 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 */
 
 	private ListClickListener listener;
-	private GlobalSettings settings;
-	private Picasso picasso;
 	private TextEmojiLoader emojiLoader;
 
 	private UserLists userlists = new UserLists();
@@ -64,8 +58,6 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 */
 	public UserlistAdapter(Context context, ListClickListener listener) {
 		this.listener = listener;
-		settings = GlobalSettings.getInstance(context);
-		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);
 	}
 
@@ -88,9 +80,9 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_LIST) {
-			return new UserlistHolder(parent, settings, picasso, emojiLoader, this);
+			return new UserlistHolder(parent, emojiLoader, this);
 		} else {
-			return new PlaceHolder(parent, settings, false, this);
+			return new PlaceHolder(parent, this, false);
 		}
 	}
 

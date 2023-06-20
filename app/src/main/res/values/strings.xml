@@ -346,4 +346,6 @@
 	<string name="notification_edit">A status you boosted with has been edited</string>
 	<string name="notification_poll">A poll you have voted in or created has ended</string>
 	<string name="notification_new">New notifications</string>
+	<string name="filter_hide">hide</string>
+	<string name="filter_warn">warn</string>
 </resources>

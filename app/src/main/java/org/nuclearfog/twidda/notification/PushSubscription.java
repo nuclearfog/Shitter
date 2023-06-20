@@ -21,7 +21,7 @@ public class PushSubscription {
 	 * push messages will be then received by {@link PushNotificationReceiver}
 	 */
 	public static void subscripe(Context context) {
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported()) {
 			try {
 				ArrayList<String> features = new ArrayList<>(1);
@@ -40,7 +40,7 @@ public class PushSubscription {
 	 * unregister from unified push
 	 */
 	public static void unsubscripe(Context context) {
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported()) {
 			try {
 				UnifiedPush.unregisterApp(context.getApplicationContext(), settings.getWebPush().getHost());

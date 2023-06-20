@@ -60,7 +60,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		status_new = findViewById(R.id.dialog_push_new_status);
 		status_edit = findViewById(R.id.dialog_push_edit_status);
 		policySelector = findViewById(R.id.dialog_push_policy);
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		updater = new PushUpdater(getContext());
 
 		DropdownAdapter adapter = new DropdownAdapter(context);

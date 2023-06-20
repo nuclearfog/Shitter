@@ -21,7 +21,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 	 *
 	 */
 	public DatabaseAction(Context context) {
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		db = new AppDatabase(context);
 	}
 

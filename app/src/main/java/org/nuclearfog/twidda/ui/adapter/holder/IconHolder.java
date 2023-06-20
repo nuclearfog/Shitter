@@ -54,12 +54,15 @@ public class IconHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private OnHolderClickListener listener;
 
-
-	public IconHolder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
+	/**
+	 *
+	 */
+	public IconHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_icon, parent, false));
-		button = itemView.findViewById(R.id.item_icon_media);
-		this.settings = settings;
+		settings = GlobalSettings.get(parent.getContext());
 		this.listener = listener;
+
+		button = itemView.findViewById(R.id.item_icon_media);
 
 		int size = parent.getLayoutParams().height;
 		if (size == 0)

@@ -27,7 +27,7 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.PushUpdat
 	 */
 	public PushUpdater(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 	}
 
 

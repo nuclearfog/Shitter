@@ -44,7 +44,7 @@ public class PushNotification {
 		this.context = context;
 		notificationManager = NotificationManagerCompat.from(context);
 		notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_ID_STR);
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		// setup notification channel
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationManager manager = context.getSystemService(NotificationManager.class);

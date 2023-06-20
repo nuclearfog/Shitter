@@ -46,8 +46,6 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	 */
 	private static final int ITEM_POLL = 2;
 
-	private GlobalSettings settings;
-	private Picasso picasso;
 	private OnCardClickListener listener;
 
 	private List<Object> items = new ArrayList<>();
@@ -56,9 +54,7 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	/**
 	 *
 	 */
-	public PreviewAdapter(GlobalSettings settings, Picasso picasso, OnCardClickListener listener) {
-		this.settings = settings;
-		this.picasso = picasso;
+	public PreviewAdapter(OnCardClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -69,13 +65,13 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 		switch (viewType) {
 			default:
 			case ITEM_PREVIEW:
-				return new MediaHolder(parent, settings, picasso, this);
+				return new MediaHolder(parent, this);
 
 			case ITEM_CARD:
-				return new CardHolder(parent, settings, picasso, this);
+				return new CardHolder(parent, this);
 
 			case ITEM_POLL:
-				return new PollHolder(parent, settings, this);
+				return new PollHolder(parent, this);
 		}
 	}
 
@@ -164,7 +160,7 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	 *
 	 * @param status status information with attachments
 	 */
-	public void replaceAll(Status status) {
+	public void replaceAll(Status status, boolean enableBlur) {
 		items.clear();
 		if (status.getPoll() != null)
 			items.add(status.getPoll());
@@ -172,7 +168,7 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 			items.addAll(Arrays.asList(status.getMedia()));
 		if (status.getCards().length > 0)
 			items.addAll(Arrays.asList(status.getCards()));
-		blurMedia = settings.hideSensitiveEnabled() & status.isSensitive();
+		blurMedia = enableBlur & status.isSensitive();
 		notifyDataSetChanged();
 	}
 

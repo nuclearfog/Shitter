@@ -19,7 +19,7 @@ public class ClientApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		// setup push receiver
-		settings = GlobalSettings.getInstance(getApplicationContext());
+		settings = GlobalSettings.get(getApplicationContext());
 		if (settings.pushEnabled()) {
 			PushSubscription.subscripe(getApplicationContext());
 		}

@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		root = findViewById(R.id.main_layout);
 		loadingCircle = new ProgressDialog(this);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		tabSelector.addViewPager(viewPager);
 		viewPager.setOffscreenPageLimit(4);
 		adapter = new FragmentAdapter(this);

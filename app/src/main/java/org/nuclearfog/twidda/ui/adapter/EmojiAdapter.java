@@ -1,15 +1,10 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import com.squareup.picasso.Picasso;
-
-import org.nuclearfog.twidda.backend.image.PicassoBuilder;
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.ui.adapter.holder.EmojiHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
@@ -25,17 +20,13 @@ import java.util.List;
 public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickListener {
 
 	private OnEmojiClickListener listener;
-	private GlobalSettings settings;
-	private Picasso picasso;
 
 	private LinkedList<Object> items = new LinkedList<>();
 
 	/**
 	 *
 	 */
-	public EmojiAdapter(Context context, OnEmojiClickListener listener) {
-		settings = GlobalSettings.getInstance(context);
-		picasso = PicassoBuilder.get(context);
+	public EmojiAdapter(OnEmojiClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -43,7 +34,7 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickL
 	@NonNull
 	@Override
 	public EmojiHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		return new EmojiHolder(parent, settings, picasso, this);
+		return new EmojiHolder(parent, this);
 	}
 
 

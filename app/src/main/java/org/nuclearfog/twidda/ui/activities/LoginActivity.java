@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		root = findViewById(R.id.login_root);
 		pinInput = findViewById(R.id.login_enter_code);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		toolbar.setTitle(R.string.login_info);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);

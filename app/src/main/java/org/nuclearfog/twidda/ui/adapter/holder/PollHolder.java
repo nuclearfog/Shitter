@@ -35,14 +35,15 @@ public class PollHolder extends ViewHolder implements OnClickListener {
 	/**
 	 *
 	 */
-	public PollHolder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
+	public PollHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poll, parent, false));
 		CardView cardBackground = (CardView) itemView;
+		GlobalSettings settings = GlobalSettings.get(parent.getContext());
 		RecyclerView optionsList = itemView.findViewById(R.id.item_poll_options_list);
 		voteButton = itemView.findViewById(R.id.item_poll_vote_button);
 		votesCount = itemView.findViewById(R.id.item_poll_votes_count);
 		expiration = itemView.findViewById(R.id.item_poll_expiration);
-		adapter = new OptionsAdapter(settings);
+		adapter = new OptionsAdapter();
 		this.listener = listener;
 
 		cardBackground.setCardBackgroundColor(settings.getCardColor());

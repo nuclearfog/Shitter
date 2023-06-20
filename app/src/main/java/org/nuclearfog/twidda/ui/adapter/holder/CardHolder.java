@@ -21,6 +21,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
@@ -59,12 +60,12 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	/**
 	 *
 	 */
-	public CardHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
+	public CardHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false));
 		linkText = itemView.findViewById(R.id.link_preview_text);
 		preview = itemView.findViewById(R.id.link_preview_image);
-		this.picasso = picasso;
-		this.settings = settings;
+		settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
 		this.listener = listener;
 
 		itemView.getLayoutParams().width = Resources.getSystem().getDisplayMetrics().widthPixels * 2 / 3;

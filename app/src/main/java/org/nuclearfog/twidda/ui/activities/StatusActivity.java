@@ -234,9 +234,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		emojiLoader = new TextEmojiLoader(this);
 
 		picasso = PicassoBuilder.get(this);
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-		adapter = new PreviewAdapter(settings, picasso, this);
+		adapter = new PreviewAdapter(this);
 
 		reply_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
 		repost_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
@@ -927,7 +927,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// set status attachment preview
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
 			card_container.setVisibility(View.VISIBLE);
-			adapter.replaceAll(status);
+			adapter.replaceAll(status, settings.hideSensitiveEnabled());
 			status_text.setMaxLines(5);
 		} else {
 			card_container.setVisibility(View.GONE);

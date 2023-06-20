@@ -1,15 +1,10 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import com.squareup.picasso.Picasso;
-
-import org.nuclearfog.twidda.backend.image.PicassoBuilder;
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.ui.adapter.holder.AccountHolder;
@@ -23,18 +18,14 @@ import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
  */
 public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderClickListener {
 
-	private GlobalSettings settings;
 	private OnAccountClickListener listener;
-	private Picasso picasso;
 
 	private Accounts accounts = new Accounts();
 
 	/**
 	 * @param listener item click listener
 	 */
-	public AccountAdapter(Context context, OnAccountClickListener listener) {
-		picasso = PicassoBuilder.get(context);
-		settings = GlobalSettings.getInstance(context);
+	public AccountAdapter(OnAccountClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -42,7 +33,7 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	@NonNull
 	@Override
 	public AccountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		return new AccountHolder(parent, settings, picasso, this);
+		return new AccountHolder(parent, this);
 	}
 
 

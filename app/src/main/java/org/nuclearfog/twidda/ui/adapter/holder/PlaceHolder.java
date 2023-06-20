@@ -31,7 +31,7 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 	 * @param parent     Parent view from adapter
 	 * @param horizontal true if placeholder orientation is horizontal
 	 */
-	public PlaceHolder(ViewGroup parent, GlobalSettings settings, boolean horizontal, OnHolderClickListener listener) {
+	public PlaceHolder(ViewGroup parent, OnHolderClickListener listener, boolean horizontal) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false));
 		this.listener = listener;
 
@@ -39,6 +39,7 @@ public class PlaceHolder extends ViewHolder implements OnClickListener {
 		circle = itemView.findViewById(R.id.placeholder_loading);
 		label = itemView.findViewById(R.id.placeholder_button);
 
+		GlobalSettings settings = GlobalSettings.get(parent.getContext());
 		background.setCardBackgroundColor(settings.getCardColor());
 		label.setTextColor(settings.getTextColor());
 		label.setTypeface(settings.getTypeFace());

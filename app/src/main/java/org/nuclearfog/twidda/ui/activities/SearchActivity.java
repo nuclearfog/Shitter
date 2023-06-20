@@ -86,7 +86,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		adapter = new FragmentAdapter(this);
 		hashtagAction = new HashtagAction(this);
 		tabSelector.addViewPager(viewPager);

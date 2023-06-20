@@ -190,7 +190,7 @@ public class TwitterV1 implements Connection {
 	 * @param context context used to initiate databases
 	 */
 	public TwitterV1(Context context) {
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		tokens = Tokens.getInstance(context);
 		client = ConnectionBuilder.create(context);
 		db = new AppDatabase(context);

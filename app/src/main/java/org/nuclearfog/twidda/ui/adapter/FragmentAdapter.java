@@ -33,7 +33,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
 	 */
 	public FragmentAdapter(FragmentActivity fragmentActivity) {
 		super(fragmentActivity);
-		settings = GlobalSettings.getInstance(fragmentActivity.getApplicationContext());
+		settings = GlobalSettings.get(fragmentActivity.getApplicationContext());
 	}
 
 

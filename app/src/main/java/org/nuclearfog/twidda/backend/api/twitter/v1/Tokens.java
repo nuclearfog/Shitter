@@ -41,7 +41,7 @@ public class Tokens {
 	 *
 	 */
 	private Tokens(Context context) {
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 	}
 
 	/**

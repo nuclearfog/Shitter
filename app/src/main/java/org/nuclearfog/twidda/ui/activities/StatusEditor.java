@@ -134,14 +134,14 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 		instanceLoader = new InstanceLoader(this);
 		statusUpdater = new StatusUpdater(this);
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		loadingCircle = new ProgressDialog(this);
 		confirmDialog = new ConfirmDialog(this);
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
 		audioDialog = new AudioPlayerDialog(this);
 		emojiPicker = new EmojiPicker(this, this);
-		adapter = new IconAdapter(settings, true);
+		adapter = new IconAdapter(this, true);
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 		iconList.setAdapter(adapter);
 		AppStyles.setEditorTheme(root, background);
@@ -183,7 +183,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 			}
 		}
 
-		adapter.addOnMediaClickListener(this);
 		statusText.addTextChangedListener(this);
 		emojiButton.setOnClickListener(this);
 		preference.setOnClickListener(this);
@@ -193,7 +192,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		locationBtn.setOnClickListener(this);
 		confirmDialog.setConfirmListener(this);
 		loadingCircle.addOnProgressStopListener(this);
-		adapter.addOnMediaClickListener(this);
 	}
 
 
@@ -362,31 +360,31 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	public void onMediaClick(int index) {
 		if (statusUpdate.getMediaStatuses().isEmpty())
 			return;
-		Uri uri = statusUpdate.getMediaUris()[index];
-		switch (statusUpdate.getMediaStatuses().get(0).getMediaType()) {
+		MediaStatus media = statusUpdate.getMediaStatuses().get(index);
+		switch (media.getMediaType()) {
 			case MediaStatus.IMAGE:
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.LINK, uri);
+				intent.putExtra(ImageViewer.LINK, Uri.parse(media.getPath()));
 				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
 				startActivity(intent);
 				break;
 
 			case MediaStatus.GIF:
 				intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.LINK, uri);
+				intent.putExtra(ImageViewer.LINK, Uri.parse(media.getPath()));
 				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_GIF);
 				startActivity(intent);
 				break;
 
 			case MediaStatus.VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.KEY_LINK, uri);
+				intent.putExtra(VideoViewer.KEY_LINK, Uri.parse(media.getPath()));
 				intent.putExtra(VideoViewer.KEY_CONTROLS, true);
 				startActivity(intent);
 				break;
 
 			case MediaStatus.AUDIO:
-				audioDialog.show(uri);
+				audioDialog.show(Uri.parse(media.getPath()));
 				break;
 		}
 	}

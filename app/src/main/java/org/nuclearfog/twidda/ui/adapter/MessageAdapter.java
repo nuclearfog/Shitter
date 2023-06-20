@@ -7,12 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.image.PicassoBuilder;
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.ui.adapter.holder.MessageHolder;
@@ -48,8 +44,6 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	public static final int CLEAR_LIST = -1;
 
 	private OnMessageClickListener itemClickListener;
-	private GlobalSettings settings;
-	private Picasso picasso;
 	private TextEmojiLoader emojiLoader;
 
 	private Messages messages = new Messages();
@@ -59,8 +53,6 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	 * @param itemClickListener click listener
 	 */
 	public MessageAdapter(Context context, OnMessageClickListener itemClickListener) {
-		settings = GlobalSettings.getInstance(context);
-		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);
 		this.itemClickListener = itemClickListener;
 	}
@@ -84,9 +76,9 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_MESSAGE) {
-			return new MessageHolder(parent, settings, picasso, emojiLoader, this);
+			return new MessageHolder(parent, emojiLoader, this);
 		} else {
-			return new PlaceHolder(parent, settings, false, this);
+			return new PlaceHolder(parent, this, false);
 		}
 	}
 

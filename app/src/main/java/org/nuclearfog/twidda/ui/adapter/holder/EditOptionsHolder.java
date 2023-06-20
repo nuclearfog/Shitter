@@ -52,7 +52,7 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 	 */
 	public EditOptionsHolder(ViewGroup parent, OnOptionChangedListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_option_edit, parent, false));
-		settings = GlobalSettings.getInstance(parent.getContext());
+		settings = GlobalSettings.get(parent.getContext());
 		this.listener = listener;
 
 		option_name = itemView.findViewById(R.id.item_option_edit_name);

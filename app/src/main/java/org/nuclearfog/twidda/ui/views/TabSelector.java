@@ -55,7 +55,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	public TabSelector(Context context, @Nullable AttributeSet attrs) {
 		super(context, attrs);
 		setOrientation(VERTICAL);
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		tabContainer = new LinearLayout(context);
 		tabContainer.setOrientation(LinearLayout.HORIZONTAL);
 		indicator = new View(context);

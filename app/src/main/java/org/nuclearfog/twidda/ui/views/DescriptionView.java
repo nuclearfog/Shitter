@@ -44,7 +44,7 @@ public class DescriptionView extends LinearLayout implements OnClickListener {
 	 */
 	public DescriptionView(Context context, @Nullable AttributeSet attrs) {
 		super(context, attrs);
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		int padding = (int) getResources().getDimension(R.dimen.descriptionview_layout_padding);
 		int displayWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
 		closeButton = new ImageView(context);

@@ -190,7 +190,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
 		picasso = PicassoBuilder.get(this);
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
 			constraints.clone(header);

@@ -284,19 +284,6 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 * get media links
-	 *
-	 * @return media uri array
-	 */
-	public Uri[] getMediaUris() {
-		Uri[] result = new Uri[mediaStatuses.size()];
-		for (int i = 0; i < result.length; i++) {
-			result[i] = Uri.parse(mediaStatuses.get(i).getPath());
-		}
-		return result;
-	}
-
-	/**
 	 * get attached poll if any
 	 *
 	 * @return attached poll or null

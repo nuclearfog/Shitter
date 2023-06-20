@@ -29,6 +29,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
@@ -37,6 +38,7 @@ import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.IconAdapter;
+import org.nuclearfog.twidda.ui.adapter.IconAdapter.OnMediaClickListener;
 import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -47,7 +49,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see StatusAdapter
  */
-public class StatusHolder extends ViewHolder implements OnClickListener {
+public class StatusHolder extends ViewHolder implements OnClickListener, OnMediaClickListener {
 
 	private static final int EMPTY_COLOR = 0x2F000000;
 
@@ -71,10 +73,10 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	private long tagId = 0L;
 
 
-	public StatusHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
+	public StatusHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
-		this.settings = settings;
-		this.picasso = picasso;
+		settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
 		this.listener = listener;
 		this.emojiLoader = emojiLoader;
 
@@ -102,7 +104,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 		placeholder = new ColorDrawable(EMPTY_COLOR);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
-		adapter = new IconAdapter(settings, false);
+		adapter = new IconAdapter(this, false);
 		iconList.setAdapter(adapter);
 
 		if (settings.likeEnabled()) {
@@ -132,6 +134,12 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			}
 		}
 	}
+
+
+	@Override
+	public void onMediaClick(int index) {
+	}
+
 
 	/**
 	 * set view content

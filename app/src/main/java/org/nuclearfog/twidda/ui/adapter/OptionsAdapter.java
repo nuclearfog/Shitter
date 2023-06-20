@@ -5,7 +5,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.Optionholder;
@@ -20,26 +19,16 @@ import java.util.TreeSet;
  */
 public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderClickListener {
 
-	private GlobalSettings settings;
-
 	private int totalVotes, limitVotes;
 
 	private Poll.Option[] options = {};
-	private Set<Integer> selection;
-
-	/**
-	 *
-	 */
-	public OptionsAdapter(GlobalSettings settings) {
-		this.settings = settings;
-		selection = new TreeSet<>();
-	}
+	private Set<Integer> selection = new TreeSet<>();
 
 
 	@NonNull
 	@Override
 	public Optionholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		return new Optionholder(parent, settings, this);
+		return new Optionholder(parent, this);
 	}
 
 

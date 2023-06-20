@@ -3,10 +3,8 @@ package org.nuclearfog.twidda.ui.adapter;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Status;
@@ -23,18 +21,16 @@ import java.util.List;
  */
 public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickListener {
 
-	@Nullable
 	private OnMediaClickListener listener;
-	private GlobalSettings settings;
-	private List<Integer> items;
+
+	private List<Integer> items = new ArrayList<>();
 	private boolean invert;
 
 	/**
 	 * @param invert true to invert item order
 	 */
-	public IconAdapter(GlobalSettings settings, boolean invert) {
-		this.settings = settings;
-		items = new ArrayList<>();
+	public IconAdapter(OnMediaClickListener listener, boolean invert) {
+		this.listener = listener;
 		this.invert = invert;
 	}
 
@@ -42,7 +38,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	@NonNull
 	@Override
 	public IconHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		return new IconHolder(parent, settings, this);
+		return new IconHolder(parent, this);
 	}
 
 
@@ -177,13 +173,6 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 					break;
 			}
 		}
-	}
-
-	/**
-	 * add click listener for media items
-	 */
-	public void addOnMediaClickListener(OnMediaClickListener listener) {
-		this.listener = listener;
 	}
 
 	/**

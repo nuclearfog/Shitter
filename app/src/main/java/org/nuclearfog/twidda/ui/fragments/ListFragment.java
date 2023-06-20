@@ -51,7 +51,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		View view = inflater.inflate(R.layout.fragment_list, parent, false);
 		list = view.findViewById(R.id.fragment_list_recyclerview);
 		reload = view.findViewById(R.id.fragment_list_swipe);
-		settings = GlobalSettings.getInstance(requireContext());
+		settings = GlobalSettings.get(requireContext());
 
 		list.setLayoutManager(new LinearLayoutManager(requireContext()));
 		AppStyles.setSwipeRefreshColor(reload, settings);

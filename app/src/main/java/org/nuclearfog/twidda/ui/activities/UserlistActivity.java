@@ -114,7 +114,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		toolbar = findViewById(R.id.listdetail_toolbar);
 		viewPager = findViewById(R.id.listdetail_pager);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		confirmDialog = new ConfirmDialog(this);
 		listLoaderAsync = new UserlistAction(this);
 		listManagerAsync = new UserlistManager(this);

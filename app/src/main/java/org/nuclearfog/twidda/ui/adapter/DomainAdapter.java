@@ -1,13 +1,11 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.ui.adapter.holder.DomainHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
@@ -27,7 +25,6 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	public static final int NO_INDEX = -1;
 
 	private OnDomainClickListener listener;
-	private GlobalSettings settings;
 
 	private Domains items = new Domains();
 	private int loadingIndex = NO_LOADING;
@@ -35,8 +32,7 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	/**
 	 *
 	 */
-	public DomainAdapter(Context context, OnDomainClickListener listener) {
-		settings = GlobalSettings.getInstance(context);
+	public DomainAdapter(OnDomainClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -45,9 +41,9 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_ITEM) {
-			return new DomainHolder(parent, settings, this);
+			return new DomainHolder(parent, this);
 		} else {
-			return new PlaceHolder(parent, settings, false, this);
+			return new PlaceHolder(parent, this, false);
 		}
 	}
 

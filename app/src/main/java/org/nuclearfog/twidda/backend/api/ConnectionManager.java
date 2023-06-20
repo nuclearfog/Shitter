@@ -38,7 +38,7 @@ public class ConnectionManager implements SettingsChangeObserver {
 		connections[IDX_TWITTER1] = new TwitterV1(context);
 		connections[IDX_TWITTER2] = new TwitterV2(context);
 
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		settings.registerObserver(this);
 	}
 

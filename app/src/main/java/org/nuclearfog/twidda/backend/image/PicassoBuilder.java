@@ -39,7 +39,7 @@ public class PicassoBuilder implements SettingsChangeObserver {
 		downloader = new OkHttp3Downloader(ConnectionBuilder.create(context, STORAGE_SIZE));
 		imageCache = new LruCache(CACHE_SIZE);
 		notifySettingsChange = false;
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		settings.registerObserver(this);
 	}
 

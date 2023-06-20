@@ -40,7 +40,7 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 		cancel = findViewById(R.id.kill_button);
 		ProgressBar circle = findViewById(R.id.progress_item);
 
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		AppStyles.setProgressColor(circle, settings.getHighlightColor());
 		AppStyles.setDrawableColor(cancel, settings.getIconColor());
 

@@ -27,12 +27,14 @@ public class DomainHolder extends ViewHolder implements OnClickListener {
 	/**
 	 *
 	 */
-	public DomainHolder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
+	public DomainHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_domain, parent, false));
 		this.listener = listener;
 		CardView card = (CardView) itemView;
 		View deleteButton = itemView.findViewById(R.id.item_domain_delete);
 		domain_name = itemView.findViewById(R.id.item_domain_name);
+
+		GlobalSettings settings = GlobalSettings.get(parent.getContext());
 		domain_name.setTextColor(settings.getTextColor());
 		domain_name.setTypeface(settings.getTypeFace());
 		card.setCardBackgroundColor(settings.getCardColor());

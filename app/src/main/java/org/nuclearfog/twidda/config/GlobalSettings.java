@@ -190,7 +190,7 @@ public class GlobalSettings {
 	 * @param context Application Context needed for Shared preferences
 	 * @return instance of this class
 	 */
-	public static GlobalSettings getInstance(@NonNull Context context) {
+	public static GlobalSettings get(@NonNull Context context) {
 		if (INSTANCE.settings == null) {
 			INSTANCE.settings = context.getApplicationContext().getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
 			INSTANCE.initialize();

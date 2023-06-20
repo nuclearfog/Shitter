@@ -439,7 +439,7 @@ public class AppDatabase {
 	 */
 	public AppDatabase(Context context) {
 		adapter = DatabaseAdapter.getInstance(context);
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 	}
 
 	/**

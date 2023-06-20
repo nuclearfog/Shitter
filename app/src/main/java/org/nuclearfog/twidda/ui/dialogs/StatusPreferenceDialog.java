@@ -50,7 +50,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
 		Spinner languageSelector = findViewById(R.id.dialog_status_language);
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		AppStyles.setTheme(rootView);
 
 		DropdownAdapter visibility_adapter = new DropdownAdapter(context);

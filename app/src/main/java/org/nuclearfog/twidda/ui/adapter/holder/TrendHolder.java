@@ -31,7 +31,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 	private OnHolderClickListener listener;
 
 
-	public TrendHolder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
+	public TrendHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false));
 		this.listener = listener;
 
@@ -41,6 +41,7 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 		name = itemView.findViewById(R.id.item_trend_name);
 		vol = itemView.findViewById(R.id.item_trend_vol);
 
+		GlobalSettings settings = GlobalSettings.get(parent.getContext());
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
 		itemView.setOnClickListener(this);

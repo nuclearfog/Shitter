@@ -34,14 +34,15 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 	/**
 	 *
 	 */
-	public Optionholder(ViewGroup parent, GlobalSettings settings, OnHolderClickListener listener) {
+	public Optionholder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_option, parent, false));
+		settings = GlobalSettings.get(parent.getContext());
+		this.listener = listener;
+
 		optionName = itemView.findViewById(R.id.item_option_name);
 		checkIcon = itemView.findViewById(R.id.item_option_voted_icon);
 		voteProgress = itemView.findViewById(R.id.item_option_count_bar);
 		optionVotes = itemView.findViewById(R.id.item_option_count_text);
-		this.settings = settings;
-		this.listener = listener;
 
 		optionName.setTextColor(settings.getTextColor());
 		optionName.setTypeface(settings.getTypeFace());

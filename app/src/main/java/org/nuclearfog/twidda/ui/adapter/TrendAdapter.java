@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
@@ -33,7 +32,6 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	private static final int NO_LOADING = -1;
 
 	private TrendClickListener itemClickListener;
-	private GlobalSettings settings;
 
 	private Trends items = new Trends();
 	private int loadingIndex = NO_LOADING;
@@ -41,9 +39,8 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	/**
 	 * @param itemClickListener Listener for item click
 	 */
-	public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
+	public TrendAdapter(TrendClickListener itemClickListener) {
 		this.itemClickListener = itemClickListener;
-		this.settings = settings;
 	}
 
 
@@ -65,9 +62,9 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_TREND) {
-			return new TrendHolder(parent, settings, this);
+			return new TrendHolder(parent, this);
 		} else {
-			return new PlaceHolder(parent, settings, false, this);
+			return new PlaceHolder(parent, this, false);
 		}
 	}
 

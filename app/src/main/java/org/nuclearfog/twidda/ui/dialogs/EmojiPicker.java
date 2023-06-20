@@ -42,8 +42,10 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 	@SuppressWarnings("ConstantConditions")
 	public EmojiPicker(@NonNull Activity activity, OnEmojiSelectListener listener) {
 		super(activity, R.style.EmojiPickerDialog);
+		GlobalSettings settings = GlobalSettings.get(getContext());
+		adapter = new EmojiAdapter(this);
 		this.listener = listener;
-		GlobalSettings settings = GlobalSettings.getInstance(getContext());
+
 		setContentView(R.layout.dialog_emoji_picker);
 		ViewGroup root = findViewById(R.id.dialog_emoji_root);
 		RecyclerView listView = findViewById(R.id.dialog_emoji_list);
@@ -57,7 +59,6 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 		BottomSheetBehavior<View> mBehavior = BottomSheetBehavior.from((View) root.getParent());
 		mBehavior.setPeekHeight(height);
 
-		adapter = new EmojiAdapter(getContext(), this);
 		listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 		listView.setAdapter(adapter);
 

@@ -94,7 +94,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		confirmDialog = new ConfirmDialog(this);
 		listUpdater = new UserlistUpdater(this);
 
-		GlobalSettings settings = GlobalSettings.getInstance(this);
+		GlobalSettings settings = GlobalSettings.get(this);
 		AppStyles.setEditorTheme(root, background);
 
 		Serializable serializedUserlist = getIntent().getSerializableExtra(KEY_DATA);

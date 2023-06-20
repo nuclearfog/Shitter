@@ -7,11 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.image.PicassoBuilder;
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Notifications;
@@ -49,8 +45,6 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 */
 	private static final int TYPE_USER = 2;
 
-	private Picasso picasso;
-	private GlobalSettings settings;
 	private OnNotificationClickListener listener;
 	private TextEmojiLoader emojiLoader;
 
@@ -61,8 +55,6 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 *
 	 */
 	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
-		settings = GlobalSettings.getInstance(context);
-		picasso = PicassoBuilder.get(context);
 		emojiLoader = new TextEmojiLoader(context);
 		this.listener = listener;
 	}
@@ -72,11 +64,11 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_STATUS) {
-			return new StatusHolder(parent, settings, picasso, emojiLoader, this);
+			return new StatusHolder(parent, emojiLoader, this);
 		} else if (viewType == TYPE_USER) {
-			return new UserHolder(parent, settings, picasso, emojiLoader, this, false);
+			return new UserHolder(parent, emojiLoader, this, false);
 		} else {
-			return new PlaceHolder(parent, settings, false, this);
+			return new PlaceHolder(parent, this, false);
 		}
 	}
 

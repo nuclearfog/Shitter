@@ -31,6 +31,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
@@ -69,10 +70,10 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 	private long tagId;
 
 
-	public MessageHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, TextEmojiLoader emojiLoader, OnItemClickListener listener) {
+	public MessageHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnItemClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false));
-		this.settings = settings;
-		this.picasso = picasso;
+		settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
 		this.listener = listener;
 		this.emojiLoader = emojiLoader;
 
@@ -94,8 +95,7 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 		background.setCardBackgroundColor(settings.getCardColor());
 		text.setMovementMethod(LinkMovementMethod.getInstance());
 
-		adapter = new IconAdapter(settings, false);
-		adapter.addOnMediaClickListener(this);
+		adapter = new IconAdapter(this, false);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
 		iconList.setAdapter(adapter);
 

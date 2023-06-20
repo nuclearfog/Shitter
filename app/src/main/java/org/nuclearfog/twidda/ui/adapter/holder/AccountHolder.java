@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -49,10 +50,10 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	private Picasso picasso;
 
 
-	public AccountHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
+	public AccountHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account, parent, false));
-		this.settings = settings;
-		this.picasso = picasso;
+		settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
 		this.listener = listener;
 
 		CardView background = (CardView) itemView;

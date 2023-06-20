@@ -27,6 +27,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
@@ -63,10 +64,10 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	private long tagId = 0L;
 
 
-	public UserHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, TextEmojiLoader emojiLoader, OnHolderClickListener listener, boolean enableDelete) {
+	public UserHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnHolderClickListener listener, boolean enableDelete) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false));
-		this.settings = settings;
-		this.picasso = picasso;
+		this.settings = GlobalSettings.get(parent.getContext());
+		this.picasso = PicassoBuilder.get(parent.getContext());
 		this.listener = listener;
 		this.emojiLoader = emojiLoader;
 

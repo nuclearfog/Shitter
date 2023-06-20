@@ -162,7 +162,7 @@ public class Mastodon implements Connection {
 	 *
 	 */
 	public Mastodon(Context context) {
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		client = ConnectionBuilder.create(context);
 		app_name = context.getString(R.string.app_name_api);
 		app_website = context.getString(R.string.app_website);

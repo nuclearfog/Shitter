@@ -126,7 +126,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		viewPager = findViewById(R.id.page_users_pager);
 
 		filterLoader = new FilterLoader(this);
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		adapter = new FragmentAdapter(this);
 		viewPager.setAdapter(adapter);
 

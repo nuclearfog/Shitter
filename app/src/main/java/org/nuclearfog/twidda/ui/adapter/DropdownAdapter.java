@@ -33,7 +33,7 @@ public class DropdownAdapter extends BaseAdapter {
 	 *
 	 */
 	public DropdownAdapter(Context context) {
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		this.context = context;
 	}
 

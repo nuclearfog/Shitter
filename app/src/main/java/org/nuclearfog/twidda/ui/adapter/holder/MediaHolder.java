@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
@@ -46,10 +47,10 @@ public class MediaHolder extends ViewHolder implements OnClickListener {
 	/**
 	 *
 	 */
-	public MediaHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
+	public MediaHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_preview, parent, false));
-		this.picasso = picasso;
-		this.settings = settings;
+		settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
 		this.listener = listener;
 
 		previewImage = itemView.findViewById(R.id.item_preview_image);

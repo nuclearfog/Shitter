@@ -65,7 +65,7 @@ public class AppStyles {
 	 *
 	 */
 	private AppStyles(Context context) {
-		this.settings = GlobalSettings.getInstance(context);
+		this.settings = GlobalSettings.get(context);
 	}
 
 	/**

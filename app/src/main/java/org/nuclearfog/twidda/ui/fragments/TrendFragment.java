@@ -77,7 +77,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		adapter = new TrendAdapter(settings, this);
+		adapter = new TrendAdapter(this);
 		trendLoader = new TrendLoader(requireContext());
 		setAdapter(adapter);
 

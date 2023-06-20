@@ -36,7 +36,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 	 */
 	public LoginAction(Context context) {
 		database = new AppDatabase(context);
-		settings = GlobalSettings.getInstance(context);
+		settings = GlobalSettings.get(context);
 		manager = ConnectionManager.getInstance(context);
 	}
 

@@ -99,7 +99,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 		zoomImage = findViewById(R.id.page_image_viewer);
 		gifImage = findViewById(R.id.page_image_gif);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
 		toolbar.setTitle("");
 		toolbar.setBackgroundColor(settings.getBackgroundColor());

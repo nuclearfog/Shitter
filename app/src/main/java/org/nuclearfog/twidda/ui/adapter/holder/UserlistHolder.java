@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
@@ -63,8 +64,13 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * @param parent Parent view from adapter
 	 */
-	public UserlistHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
+	public UserlistHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
+		settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
+		this.emojiLoader = emojiLoader;
+		this.listener = listener;
+
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_list_container);
 		View dateIcon = itemView.findViewById(R.id.item_list_date_icon);
@@ -104,11 +110,6 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		background.setCardBackgroundColor(settings.getCardColor());
 		itemView.setOnClickListener(this);
 		profileImage.setOnClickListener(this);
-
-		this.picasso = picasso;
-		this.listener = listener;
-		this.emojiLoader = emojiLoader;
-		this.settings = settings;
 	}
 
 

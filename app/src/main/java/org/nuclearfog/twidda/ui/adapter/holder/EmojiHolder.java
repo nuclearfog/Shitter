@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
 
@@ -35,8 +36,12 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 	/**
 	 *
 	 */
-	public EmojiHolder(ViewGroup parent, GlobalSettings settings, Picasso picasso, OnHolderClickListener listener) {
+	public EmojiHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_emoji, parent, false));
+		GlobalSettings settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
+		this.listener = listener;
+
 		groupLabel = itemView.findViewById(R.id.item_emoji_group);
 		emojiViews[0] = itemView.findViewById(R.id.item_emoji_1);
 		emojiViews[1] = itemView.findViewById(R.id.item_emoji_2);
@@ -49,9 +54,6 @@ public class EmojiHolder extends ViewHolder implements OnClickListener {
 			emojiView.setOnClickListener(this);
 		groupLabel.setTextColor(settings.getTextColor());
 		groupLabel.setTypeface(settings.getTypeFace());
-
-		this.listener = listener;
-		this.picasso = picasso;
 	}
 
 

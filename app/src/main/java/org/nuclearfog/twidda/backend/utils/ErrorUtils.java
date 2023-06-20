@@ -109,7 +109,7 @@ public class ErrorUtils {
 					return context.getString(R.string.error_invalid_media);
 
 				case ConnectionException.APP_SUSPENDED:
-					GlobalSettings settings = GlobalSettings.getInstance(context);
+					GlobalSettings settings = GlobalSettings.get(context);
 					if (settings.getLogin().usingDefaultTokens())
 						return context.getString(R.string.error_api_key_expired);
 					return context.getString(R.string.error_api_access_denied);

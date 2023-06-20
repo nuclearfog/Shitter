@@ -109,7 +109,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		toolbar.setTitle(R.string.page_profile_editor);
 		setSupportActionBar(toolbar);
 
-		settings = GlobalSettings.getInstance(this);
+		settings = GlobalSettings.get(this);
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
 			constraints.clone(root);

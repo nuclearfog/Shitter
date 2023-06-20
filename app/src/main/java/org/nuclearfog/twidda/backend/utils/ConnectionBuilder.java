@@ -47,7 +47,7 @@ public class ConnectionBuilder {
 	 */
 	public static OkHttpClient create(Context context, int cacheSize) {
 		// init okhttp client builder
-		GlobalSettings settings = GlobalSettings.getInstance(context);
+		GlobalSettings settings = GlobalSettings.get(context);
 		OkHttpClient.Builder builder = new OkHttpClient.Builder();
 		builder.writeTimeout(60, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).connectTimeout(60, TimeUnit.SECONDS);
 		// setup cache

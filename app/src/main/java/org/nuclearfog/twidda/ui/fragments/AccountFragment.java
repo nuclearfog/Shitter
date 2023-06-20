@@ -55,8 +55,8 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		dialog = new ConfirmDialog(requireContext());
-		settings = GlobalSettings.getInstance(requireContext());
-		adapter = new AccountAdapter(requireContext(), this);
+		settings = GlobalSettings.get(requireContext());
+		adapter = new AccountAdapter(this);
 		accountLoader = new AccountLoader(requireContext());
 		databaseAction = new DatabaseAction(requireContext());
 
