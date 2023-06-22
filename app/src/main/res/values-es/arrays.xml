@@ -2,22 +2,22 @@
 <resources>
 
 	<string-array name="timeunits">
-		<item>Minutes</item>
-		<item>Hours</item>
-		<item>Days</item>
+		<item>Minutos</item>
+		<item>Horas</item>
+		<item>Días</item>
 	</string-array>
 
 	<string-array name="push_policy">
-		<item>all notifications</item>
-		<item>notifications from following only</item>
-		<item>notifications from followers only</item>
+		<item>todas las notificaciones</item>
+		<item>notificaciones solo de quienes siguesy</item>
+		<item>notificaciones solo de seguidores</item>
 	</string-array>
 
 	<string-array name="visibility">
-		<item>Public</item>
-		<item>Private</item>
-		<item>Direct</item>
-		<item>Unlisted</item>
+		<item>Público</item>
+		<item>Privado</item>
+		<item>Directo</item>
+		<item>No listado</item>
 	</string-array>
 
 	<string-array name="scales">
