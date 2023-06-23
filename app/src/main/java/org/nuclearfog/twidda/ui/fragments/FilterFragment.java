@@ -7,31 +7,47 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.StatusFilterAction;
+import org.nuclearfog.twidda.backend.async.StatusFilterAction.FilterActionParam;
+import org.nuclearfog.twidda.backend.async.StatusFilterAction.FilterActionResult;
 import org.nuclearfog.twidda.backend.async.StatusFilterLoader;
-import org.nuclearfog.twidda.backend.async.StatusFilterLoader.StatusFilterResult;
+import org.nuclearfog.twidda.backend.async.StatusFilterLoader.FilterLoaderResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.ui.adapter.FilterAdapter;
 import org.nuclearfog.twidda.ui.adapter.FilterAdapter.OnFilterClickListener;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
  * status filterlist fragment
  *
  * @author nuclearfog
  */
-public class FilterFragment extends ListFragment implements OnFilterClickListener, AsyncCallback<StatusFilterResult> {
+public class FilterFragment extends ListFragment implements OnFilterClickListener, OnConfirmListener {
+
+	private AsyncCallback<FilterLoaderResult> filterLoadCallback = this::onFilterLoaded;
+	private AsyncCallback<FilterActionResult> filterRemoveCallback = this::onFilterRemoved;
 
 	private FilterAdapter adapter;
 	private StatusFilterLoader filterLoader;
+	private StatusFilterAction filterAction;
+
+	private ConfirmDialog confirmDialog;
+
+	private Filter selection;
 
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		adapter = new FilterAdapter(this);
 		filterLoader = new StatusFilterLoader(requireContext());
+		filterAction = new StatusFilterAction(requireContext());
+		confirmDialog = new ConfirmDialog(requireContext(), this);
+		adapter = new FilterAdapter(this);
 		setAdapter(adapter);
 
-		filterLoader.execute(null, this);
+		filterLoader.execute(null, filterLoadCallback);
 		setRefresh(true);
 	}
 
@@ -45,36 +61,56 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 
 	@Override
 	protected void onReload() {
-		filterLoader.execute(null, this);
+		filterLoader.execute(null, filterLoadCallback);
 	}
 
 
 	@Override
 	protected void onReset() {
-		filterLoader.execute(null, this);
+		filterLoader.execute(null, filterLoadCallback);
 		setRefresh(true);
 	}
 
 
 	@Override
-	public void onFilterClick(int position) {
+	public void onFilterClick(Filter filter) {
 		// todo implement this
 	}
 
 
 	@Override
-	public void onFilterRemove(int position) {
-		// todo implement this
+	public void onFilterRemove(Filter filter) {
+		if (!confirmDialog.isShowing()) {
+			selection = filter;
+			confirmDialog.show(ConfirmDialog.FILTER_REMOVE);
+		}
 	}
 
 
 	@Override
-	public void onResult(@NonNull StatusFilterResult result) {
+	public void onConfirm(int type) {
+		if (type == ConfirmDialog.FILTER_REMOVE) {
+			FilterActionParam param = new FilterActionParam(FilterActionParam.DELETE, selection.getId(), null);
+			filterAction.execute(param, filterRemoveCallback);
+		}
+	}
+
+
+	private void onFilterLoaded(FilterLoaderResult result) {
 		if (result.filters != null) {
 			adapter.replaceItems(result.filters);
 		} else if (result.exception != null && getContext() != null) {
 			ErrorUtils.showErrorMessage(requireContext(), result.exception);
 		}
 		setRefresh(false);
+	}
+
+
+	private void onFilterRemoved(FilterActionResult result) {
+		if (result.mode == FilterActionResult.DELETE) {
+			adapter.removeItem(result.id);
+		} else if (result.mode == FilterActionResult.ERROR) {
+			// todo add error message
+		}
 	}
 }

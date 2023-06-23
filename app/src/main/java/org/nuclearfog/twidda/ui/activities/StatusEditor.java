@@ -136,7 +136,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		statusUpdater = new StatusUpdater(this);
 		settings = GlobalSettings.get(this);
 		loadingCircle = new ProgressDialog(this);
-		confirmDialog = new ConfirmDialog(this);
+		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
 		audioDialog = new AudioPlayerDialog(this);
@@ -190,7 +190,6 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		pollBtn.setOnClickListener(this);
 		mediaBtn.setOnClickListener(this);
 		locationBtn.setOnClickListener(this);
-		confirmDialog.setConfirmListener(this);
 		loadingCircle.addOnProgressStopListener(this);
 	}
 

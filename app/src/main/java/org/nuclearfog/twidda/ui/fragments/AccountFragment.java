@@ -54,14 +54,13 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		dialog = new ConfirmDialog(requireContext());
+		dialog = new ConfirmDialog(requireContext(), this);
 		settings = GlobalSettings.get(requireContext());
-		adapter = new AccountAdapter(this);
 		accountLoader = new AccountLoader(requireContext());
 		databaseAction = new DatabaseAction(requireContext());
-
+		adapter = new AccountAdapter(this);
 		setAdapter(adapter);
-		dialog.setConfirmListener(this);
+
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Accounts) {

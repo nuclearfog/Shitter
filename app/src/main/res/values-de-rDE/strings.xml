@@ -326,6 +326,6 @@
 	<string name="notification_mention">%1$s hat dich in einem Status erwähnt</string>
 	<string name="notification_new">Neue Benachrichtigungen</string>
 	<string name="dialog_status_language">Sprache</string>
-	<string name="filter_hide">verstecken</string>
-	<string name="filter_warn">warnen</string>
+	<string name="filter_hide">verstecke Posts die diese Wörter enthalten</string>
+	<string name="filter_warn">warne vor Posts die diese Wörter enthalten</string>
 </resources>

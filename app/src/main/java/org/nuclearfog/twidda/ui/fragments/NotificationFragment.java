@@ -61,12 +61,11 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		confirmDialog = new ConfirmDialog(requireContext());
+		confirmDialog = new ConfirmDialog(requireContext(), this);
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
 		adapter = new NotificationAdapter(requireContext(), this);
 		setAdapter(adapter);
-		confirmDialog.setConfirmListener(this);
 
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);

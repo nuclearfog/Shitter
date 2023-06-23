@@ -115,7 +115,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		viewPager = findViewById(R.id.listdetail_pager);
 
 		settings = GlobalSettings.get(this);
-		confirmDialog = new ConfirmDialog(this);
+		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
 		listLoaderAsync = new UserlistAction(this);
 		listManagerAsync = new UserlistManager(this);
 		adapter = new FragmentAdapter(this);
@@ -136,7 +136,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		AppStyles.setTheme(root);
 		tabSelector.addTabIcons(R.array.list_tab_icons);
 
-		confirmDialog.setConfirmListener(this);
 		tabSelector.addOnTabSelectedListener(this);
 	}
 

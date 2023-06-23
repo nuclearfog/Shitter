@@ -227,15 +227,17 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		card_container = findViewById(R.id.page_status_cards_container);
 		RecyclerView card_list = findViewById(R.id.page_status_cards);
 
+		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		statusLoader = new StatusAction(this);
 		pollLoader = new PollAction(this);
 		notificationLoader = new NotificationAction(this);
 		translationLoader = new TranslationLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
-
+		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		metricsDialog = new MetricsDialog(this);
+		audioDialog = new AudioPlayerDialog(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
-		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		adapter = new PreviewAdapter(this);
 
 		reply_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
@@ -322,10 +324,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		fragmentTransaction.replace(R.id.page_status_reply_fragment, StatusFragment.class, param);
 		fragmentTransaction.commit();
 
-		confirmDialog = new ConfirmDialog(this);
-		metricsDialog = new MetricsDialog(this);
-		audioDialog = new AudioPlayerDialog(this);
-		confirmDialog.setConfirmListener(this);
 		repost_name_button.setOnClickListener(this);
 		reply_name.setOnClickListener(this);
 		translate_text.setOnClickListener(this);

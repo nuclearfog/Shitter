@@ -39,11 +39,10 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-		adapter = new DomainAdapter(this);
 		domainAction = new DomainAction(requireContext());
-		dialog = new ConfirmDialog(requireContext());
+		dialog = new ConfirmDialog(requireContext(), this);
+		adapter = new DomainAdapter(this);
 		setAdapter(adapter);
-		dialog.setConfirmListener(this);
 
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);

@@ -185,12 +185,15 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		tabSelector = findViewById(R.id.profile_tab);
 		viewPager = findViewById(R.id.profile_pager);
 
+		adapter = new FragmentAdapter(this);
 		relationLoader = new RelationLoader(this);
 		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
+		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
+
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
 			constraints.clone(header);
@@ -214,11 +217,10 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
-		adapter = new FragmentAdapter(this);
+
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(3);
 		tabSelector.addViewPager(viewPager);
-		confirmDialog = new ConfirmDialog(this);
 
 		// get parameters
 		if (savedInstanceState == null) {
@@ -265,7 +267,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		profileImage.setOnClickListener(this);
 		bannerImage.setOnClickListener(this);
 		user_website.setOnClickListener(this);
-		confirmDialog.setConfirmListener(this);
 		root.setOnScrollChangeListener(this);
 		root.getViewTreeObserver().addOnPreDrawListener(this);
 		body.addLockCallback(this);

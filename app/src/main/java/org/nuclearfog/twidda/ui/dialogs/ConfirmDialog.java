@@ -130,19 +130,22 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 	public static final int DOMAIN_BLOCK_REMOVE = 625;
 
+	public static final int FILTER_REMOVE = 626;
+
 
 	private TextView title, message;
 	private Button confirm, cancel;
 	private ViewGroup root;
 
-	@Nullable
 	private OnConfirmListener listener;
 
 	/**
 	 *
 	 */
-	public ConfirmDialog(Context context) {
+	public ConfirmDialog(Context context, OnConfirmListener listener) {
 		super(context, R.style.ConfirmDialog);
+		this.listener = listener;
+
 		setContentView(R.layout.dialog_confirm);
 		root = findViewById(R.id.confirm_rootview);
 		confirm = findViewById(R.id.confirm_yes);
@@ -282,6 +285,10 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 			case REMOVE_ACCOUNT:
 				messageRes = R.string.confirm_remove_account;
 				break;
+
+			case FILTER_REMOVE:
+				messageRes = R.string.confirm_remove_filter;
+				break;
 		}
 		// setup title
 		title.setVisibility(titleVis);
@@ -308,7 +315,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public void onClick(View v) {
 		if (v.getId() == R.id.confirm_yes) {
 			Object tag = v.getTag();
-			if (listener != null && tag instanceof Integer) {
+			if (tag instanceof Integer) {
 				int type = (int) tag;
 				listener.onConfirm(type);
 			}
@@ -316,13 +323,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		} else if (v.getId() == R.id.confirm_no) {
 			dismiss();
 		}
-	}
-
-	/**
-	 * add confirm listener
-	 */
-	public void setConfirmListener(OnConfirmListener listener) {
-		this.listener = listener;
 	}
 
 	/**

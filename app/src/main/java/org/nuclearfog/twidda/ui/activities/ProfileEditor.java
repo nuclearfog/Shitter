@@ -103,13 +103,14 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		userDescription = findViewById(R.id.profile_edit_change_description);
 
 		loadingCircle = new ProgressDialog(this);
-		confirmDialog = new ConfirmDialog(this);
+		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
 		editorAsync = new UserUpdater(this);
+		settings = GlobalSettings.get(this);
+		picasso = PicassoBuilder.get(this);
 
 		toolbar.setTitle(R.string.page_profile_editor);
 		setSupportActionBar(toolbar);
 
-		settings = GlobalSettings.get(this);
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
 			constraints.clone(root);
@@ -130,7 +131,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		toolbar.setBackgroundColor(settings.getBackgroundColor() & ProfileActivity.TOOLBAR_TRANSPARENCY);
 		profile_banner.setDrawingCacheEnabled(true);
 		AppStyles.setTheme(root);
-		picasso = PicassoBuilder.get(this);
 
 		Object data = getIntent().getSerializableExtra(KEY_USER);
 		if (data instanceof User) {
@@ -139,7 +139,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		profile_image.setOnClickListener(this);
 		profile_banner.setOnClickListener(this);
 		addBannerBtn.setOnClickListener(this);
-		confirmDialog.setConfirmListener(this);
 	}
 
 

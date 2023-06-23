@@ -53,12 +53,11 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		confirmDialog = new ConfirmDialog(requireContext());
+		confirmDialog = new ConfirmDialog(requireContext(), this);
 		adapter = new MessageAdapter(requireContext(), this);
 		messageLoader = new MessageLoader(requireContext());
 		setAdapter(adapter);
 
-		confirmDialog.setConfirmListener(this);
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Messages) {

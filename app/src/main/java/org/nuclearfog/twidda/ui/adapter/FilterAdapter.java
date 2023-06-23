@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.ui.adapter.holder.FilterHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
@@ -51,9 +52,9 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
 		if (type == OnHolderClickListener.FILTER_CLICK) {
-			listener.onFilterClick(position);
+			listener.onFilterClick(items.get(position));
 		} else if (type == OnHolderClickListener.FILTER_REMOVE) {
-			listener.onFilterRemove(position);
+			listener.onFilterRemove(items.get(position));
 		}
 	}
 
@@ -75,6 +76,21 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 	}
 
 	/**
+	 * remove item matching an ID
+	 *
+	 * @param id ID of the item to remove
+	 */
+	public void removeItem(long id) {
+		for (int i = 0 ; i < items.size() ; i++) {
+			if (items.get(i).getId() == id) {
+				items.remove(i);
+				notifyItemRemoved(i);
+				break;
+			}
+		}
+	}
+
+	/**
 	 * listener for filterlist items
 	 */
 	public interface OnFilterClickListener {
@@ -82,15 +98,15 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 		/**
 		 * ccalled on filter item click
 		 *
-		 * @param position index of the item
+		 * @param filter selected filter item
 		 */
-		void onFilterClick(int position);
+		void onFilterClick(Filter filter);
 
 		/**
 		 * ccalled on filter item remove click
 		 *
-		 * @param position index of the item
+		 * @param filter selected filter item
 		 */
-		void onFilterRemove(int position);
+		void onFilterRemove(Filter filter);
 	}
 }

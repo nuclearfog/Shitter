@@ -177,7 +177,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 		settings = GlobalSettings.get(this);
 		configuration = settings.getLogin().getConfiguration();
-		confirmDialog = new ConfirmDialog(this);
+		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 		pushDialog = new WebPushDialog(this);
@@ -270,7 +270,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		fontSelector.setOnItemSelectedListener(this);
 		scaleSelector.setOnItemSelectedListener(this);
 		listSizeSelector.setOnSeekBarChangeListener(this);
-		confirmDialog.setConfirmListener(this);
 	}
 
 

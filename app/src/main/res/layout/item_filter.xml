@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
@@ -18,6 +16,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textSize="@dimen/item_filter_title_textsize"
+			android:lines="1"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintEnd_toStartOf="@id/item_filter_remove" />
@@ -43,6 +42,7 @@
 			android:layout_height="wrap_content"
 			android:textSize="@dimen/item_filter_default_textsize"
 			android:layout_marginTop="@dimen/item_filter_layout_margin"
+			android:lines="1"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_title"
 			app:layout_constraintEnd_toEndOf="parent" />
@@ -52,7 +52,7 @@
 			android:layout_width="@dimen/item_filter_icon_size"
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/home"
-			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:layout_marginTop="@dimen/item_filter_icon_margin"
 			android:contentDescription="@string/description_filter_home_timeline"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration" />
@@ -62,47 +62,51 @@
 			android:layout_width="@dimen/item_filter_icon_size"
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/global"
-			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:layout_marginStart="@dimen/item_filter_icon_margin"
+			android:layout_marginTop="@dimen/item_filter_icon_margin"
 			android:contentDescription="@string/description_filter_public_timeline"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_home"
-			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
+			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration" />
 
 		<ImageView
 			android:id="@+id/item_filter_icon_notification"
 			android:layout_width="@dimen/item_filter_icon_size"
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/bell"
-			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:layout_marginStart="@dimen/item_filter_icon_margin"
+			android:layout_marginTop="@dimen/item_filter_icon_margin"
 			android:contentDescription="@string/description_filter_notification"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_public"
-			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
+			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration" />
 
 		<ImageView
 			android:id="@+id/item_filter_icon_thread"
 			android:layout_width="@dimen/item_filter_icon_size"
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/answer"
-			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:layout_marginStart="@dimen/item_filter_icon_margin"
+			android:layout_marginTop="@dimen/item_filter_icon_margin"
 			android:contentDescription="@string/description_filter_thread"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_notification"
-			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
+			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration" />
 
 		<ImageView
 			android:id="@+id/item_filter_icon_user"
 			android:layout_width="@dimen/item_filter_icon_size"
 			android:layout_height="@dimen/item_filter_icon_size"
 			android:src="@drawable/user"
-			android:layout_margin="@dimen/item_filter_icon_margin"
+			android:layout_marginStart="@dimen/item_filter_icon_margin"
+			android:layout_marginTop="@dimen/item_filter_icon_margin"
 			android:contentDescription="@string/description_filter_user_timeline"
 			app:layout_constraintStart_toEndOf="@id/item_filter_icon_thread"
-			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration"/>
+			app:layout_constraintTop_toBottomOf="@id/item_filter_expiration" />
 
 		<androidx.constraintlayout.widget.Barrier
 			android:id="@+id/item_filter_icon_barrier"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			app:constraint_referenced_ids="item_filter_icon_home,item_filter_icon_notification,item_filter_icon_public,item_filter_icon_thread,item_filter_icon_user"
-			app:barrierDirection="bottom"/>
+			app:barrierDirection="bottom" />
 
 		<TextView
 			android:id="@+id/item_filter_action"
@@ -110,9 +114,10 @@
 			android:layout_height="wrap_content"
 			android:textSize="@dimen/item_filter_default_textsize"
 			android:layout_marginTop="@dimen/item_filter_layout_margin"
+			android:lines="1"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_icon_barrier"
-			app:layout_constraintEnd_toEndOf="parent"/>
+			app:layout_constraintEnd_toEndOf="parent" />
 
 		<TextView
 			android:id="@+id/item_filter_keyword_list"
@@ -122,7 +127,7 @@
 			android:layout_marginTop="@dimen/item_filter_layout_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_filter_action"
-			app:layout_constraintEnd_toEndOf="parent"/>
+			app:layout_constraintEnd_toEndOf="parent" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
