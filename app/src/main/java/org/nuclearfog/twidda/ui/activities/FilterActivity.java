@@ -2,8 +2,11 @@ package org.nuclearfog.twidda.ui.activities;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,5 +38,21 @@ public class FilterActivity extends AppCompatActivity {
 		setSupportActionBar(toolbar);
 
 		AppStyles.setTheme(root);
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.filter, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		if (item.getItemId() == R.id.menu_filter_create) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

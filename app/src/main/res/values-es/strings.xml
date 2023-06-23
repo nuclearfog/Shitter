@@ -305,7 +305,7 @@
 	<string name="notification_status_poll">Votación finalizada</string>
 	<string name="login_network_selector_label">Seleccionar red</string>
 	<string name="poll_option_edit_button">Agregar/Eliminar</string>
-	<string name="dialog_poll_close">Cerrar diálogo/string>
+	<string name="dialog_poll_close">Cerrar diálogo</string>
 	<string name="dialog_status_title">Preferencias del estado</string>
 	<string name="dialog_status_sensitive">Marcar contenido como sensible</string>
 	<string name="dialog_status_spoiler">Marcar contenido como spoiler</string>

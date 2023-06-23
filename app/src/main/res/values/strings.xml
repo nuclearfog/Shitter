@@ -178,6 +178,7 @@
 	<string name="menu_add_account">add account</string>
 	<string name="menu_status_copy_text">Text</string>
 	<string name="menu_media_link">Media link</string>
+	<string name="menu_add_filter">create filter</string>
 	<string name="menu_status_copy_link">Status link</string>
 	<string name="menu_toolbar_request">Follow requests</string>
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
