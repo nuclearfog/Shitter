@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -39,8 +39,8 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	/**
 	 * @param statusUpdate status information from status editor
 	 */
-	public StatusPreferenceDialog(Context context, StatusUpdate statusUpdate) {
-		super(context, R.style.StatusDialog);
+	public StatusPreferenceDialog(Activity activity, StatusUpdate statusUpdate) {
+		super(activity, R.style.StatusDialog);
 		this.statusUpdate = statusUpdate;
 		setContentView(R.layout.dialog_status);
 		ViewGroup rootView = findViewById(R.id.dialog_status_root);
@@ -50,11 +50,11 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
 		Spinner languageSelector = findViewById(R.id.dialog_status_language);
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
-		GlobalSettings settings = GlobalSettings.get(context);
+		GlobalSettings settings = GlobalSettings.get(activity.getApplicationContext());
 		AppStyles.setTheme(rootView);
 
-		DropdownAdapter visibility_adapter = new DropdownAdapter(context);
-		DropdownAdapter language_adapter = new DropdownAdapter(context);
+		DropdownAdapter visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
+		DropdownAdapter language_adapter = new DropdownAdapter(activity.getApplicationContext());
 		languageSelector.setAdapter(language_adapter);
 		languageSelector.setSelected(false);
 		visibilitySelector.setAdapter(visibility_adapter);

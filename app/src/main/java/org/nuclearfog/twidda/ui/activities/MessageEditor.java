@@ -88,7 +88,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		messageUpdater = new MessageUpdater(this);
 		instanceLoader = new InstanceLoader(this);
 		loadingCircle = new ProgressDialog(this);
-		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		confirmDialog = new ConfirmDialog(this, this);
 
 		String prefix = getIntent().getStringExtra(KEY_MESSAGE_PREFIX);
 		if (prefix != null) {

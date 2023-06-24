@@ -53,7 +53,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		confirmDialog = new ConfirmDialog(requireContext(), this);
+		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new MessageAdapter(requireContext(), this);
 		messageLoader = new MessageLoader(requireContext());
 		setAdapter(adapter);

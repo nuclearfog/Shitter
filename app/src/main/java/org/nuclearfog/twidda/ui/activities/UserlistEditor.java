@@ -91,7 +91,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		descriptionText = findViewById(R.id.list_edit_descr);
 
 		loadingCircle = new ProgressDialog(this);
-		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		confirmDialog = new ConfirmDialog(this, this);
 		listUpdater = new UserlistUpdater(this);
 
 		GlobalSettings settings = GlobalSettings.get(this);

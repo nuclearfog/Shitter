@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.webkit.WebView;
 
 import org.nuclearfog.twidda.R;
@@ -14,9 +14,9 @@ import org.nuclearfog.twidda.R;
 public class LicenseDialog extends Dialog {
 
 
-	public LicenseDialog(Context context) {
-		super(context, R.style.LicenseDialog);
-		WebView htmlViewer = new WebView(context);
+	public LicenseDialog(Activity activity) {
+		super(activity, R.style.LicenseDialog);
+		WebView htmlViewer = new WebView(activity.getApplicationContext());
 		setContentView(htmlViewer);
 
 		htmlViewer.loadUrl("file:///android_asset/licenses.html");

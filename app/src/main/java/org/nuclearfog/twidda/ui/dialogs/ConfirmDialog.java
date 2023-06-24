@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -142,8 +142,8 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	/**
 	 *
 	 */
-	public ConfirmDialog(Context context, OnConfirmListener listener) {
-		super(context, R.style.ConfirmDialog);
+	public ConfirmDialog(Activity activity, OnConfirmListener listener) {
+		super(activity, R.style.ConfirmDialog);
 		this.listener = listener;
 
 		setContentView(R.layout.dialog_confirm);

@@ -136,7 +136,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		statusUpdater = new StatusUpdater(this);
 		settings = GlobalSettings.get(this);
 		loadingCircle = new ProgressDialog(this);
-		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		confirmDialog = new ConfirmDialog(this, this);
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
 		audioDialog = new AudioPlayerDialog(this);

@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -29,8 +29,8 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 	/**
 	 *
 	 */
-	public ProgressDialog(Context context) {
-		super(context, R.style.LoadingDialog);
+	public ProgressDialog(Activity activity) {
+		super(activity, R.style.LoadingDialog);
 		// setup dialog
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setCanceledOnTouchOutside(false);
@@ -40,7 +40,7 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 		cancel = findViewById(R.id.kill_button);
 		ProgressBar circle = findViewById(R.id.progress_item);
 
-		GlobalSettings settings = GlobalSettings.get(context);
+		GlobalSettings settings = GlobalSettings.get(activity);
 		AppStyles.setProgressColor(circle, settings.getHighlightColor());
 		AppStyles.setDrawableColor(cancel, settings.getIconColor());
 

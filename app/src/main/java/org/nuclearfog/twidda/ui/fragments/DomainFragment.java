@@ -40,7 +40,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		domainAction = new DomainAction(requireContext());
-		dialog = new ConfirmDialog(requireContext(), this);
+		dialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new DomainAdapter(this);
 		setAdapter(adapter);
 

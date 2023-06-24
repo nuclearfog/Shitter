@@ -177,7 +177,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 		settings = GlobalSettings.get(this);
 		configuration = settings.getLogin().getConfiguration();
-		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		confirmDialog = new ConfirmDialog(this, this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 		pushDialog = new WebPushDialog(this);

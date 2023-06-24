@@ -103,7 +103,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		userDescription = findViewById(R.id.profile_edit_change_description);
 
 		loadingCircle = new ProgressDialog(this);
-		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		confirmDialog = new ConfirmDialog(this, this);
 		editorAsync = new UserUpdater(this);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);

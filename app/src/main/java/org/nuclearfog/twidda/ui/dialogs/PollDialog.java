@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,8 +44,8 @@ public class PollDialog extends Dialog implements OnClickListener {
 	/**
 	 *
 	 */
-	public PollDialog(@NonNull Context context, PollUpdateCallback callback) {
-		super(context, R.style.PollDialog);
+	public PollDialog(Activity activity, PollUpdateCallback callback) {
+		super(activity, R.style.PollDialog);
 		this.callback = callback;
 		setContentView(R.layout.dialog_poll);
 		ViewGroup root = findViewById(R.id.dialog_poll_root);
@@ -58,7 +57,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		multiple_choice = findViewById(R.id.dialog_poll_mul_choice);
 		hide_votes = findViewById(R.id.dialog_poll_hide_total);
 
-		DropdownAdapter adapter = new DropdownAdapter(context);
+		DropdownAdapter adapter = new DropdownAdapter(activity.getApplicationContext());
 		adapter.setItems(R.array.timeunits);
 		timeUnitSelector.setAdapter(adapter);
 		timeUnitSelector.setSelection(2);

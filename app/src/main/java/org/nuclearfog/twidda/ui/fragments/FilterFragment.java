@@ -43,7 +43,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 		super.onViewCreated(view, savedInstanceState);
 		filterLoader = new StatusFilterLoader(requireContext());
 		filterAction = new StatusFilterAction(requireContext());
-		confirmDialog = new ConfirmDialog(requireContext(), this);
+		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new FilterAdapter(this);
 		setAdapter(adapter);
 

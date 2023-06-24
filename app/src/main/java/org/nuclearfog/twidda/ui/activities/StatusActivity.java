@@ -233,7 +233,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		notificationLoader = new NotificationAction(this);
 		translationLoader = new TranslationLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
-		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		confirmDialog = new ConfirmDialog(this, this);
 		metricsDialog = new MetricsDialog(this);
 		audioDialog = new AudioPlayerDialog(this);
 		picasso = PicassoBuilder.get(this);

@@ -1,12 +1,10 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -24,8 +22,8 @@ public class MetricsDialog extends Dialog {
 	private View linkIcon, quoteIcon, videoIcon;
 
 
-	public MetricsDialog(@NonNull Context context) {
-		super(context, R.style.MetricsDialog);
+	public MetricsDialog(Activity activity) {
+		super(activity, R.style.MetricsDialog);
 		setContentView(R.layout.dialog_metrics);
 		ViewGroup root = findViewById(R.id.dialog_metrics_root);
 		views = findViewById(R.id.dialog_metrics_views);

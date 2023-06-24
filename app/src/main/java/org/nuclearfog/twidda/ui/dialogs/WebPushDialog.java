@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -46,8 +46,8 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	/**
 	 *
 	 */
-	public WebPushDialog(@NonNull Context context) {
-		super(context, R.style.WebPushDialog);
+	public WebPushDialog(Activity activity) {
+		super(activity, R.style.WebPushDialog);
 		setContentView(R.layout.dialog_push);
 		ViewGroup root = findViewById(R.id.dialog_push_root);
 		Button apply_changes = findViewById(R.id.dialog_push_apply);
@@ -60,10 +60,10 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		status_new = findViewById(R.id.dialog_push_new_status);
 		status_edit = findViewById(R.id.dialog_push_edit_status);
 		policySelector = findViewById(R.id.dialog_push_policy);
-		settings = GlobalSettings.get(context);
-		updater = new PushUpdater(getContext());
+		settings = GlobalSettings.get(activity.getApplicationContext());
+		updater = new PushUpdater(activity.getApplicationContext());
 
-		DropdownAdapter adapter = new DropdownAdapter(context);
+		DropdownAdapter adapter = new DropdownAdapter(activity.getApplicationContext());
 		adapter.setItems(R.array.push_policy);
 		policySelector.setAdapter(adapter);
 

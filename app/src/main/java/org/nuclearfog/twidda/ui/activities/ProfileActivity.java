@@ -190,7 +190,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
-		confirmDialog = new ConfirmDialog(getApplicationContext(), this);
+		confirmDialog = new ConfirmDialog(this, this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
 

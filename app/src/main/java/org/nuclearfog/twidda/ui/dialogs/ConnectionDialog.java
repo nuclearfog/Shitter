@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,8 +35,8 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 	private ConnectionConfig connection;
 
 
-	public ConnectionDialog(Context context) {
-		super(context, R.style.ConfirmDialog);
+	public ConnectionDialog(Activity activity) {
+		super(activity, R.style.ConfirmDialog);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setCanceledOnTouchOutside(false);
 		setContentView(R.layout.dialog_connection);
@@ -53,7 +53,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		api1 = findViewById(R.id.dialog_connection_api1);
 		api2 = findViewById(R.id.dialog_connection_api2);
 
-		int width = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.9f);
+		int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.9f);
 		getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 		AppStyles.setTheme(root);
 		enableApi.setOnCheckedChangeListener(this);

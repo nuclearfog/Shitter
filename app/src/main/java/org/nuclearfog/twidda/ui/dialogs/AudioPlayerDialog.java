@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
@@ -53,15 +54,15 @@ public class AudioPlayerDialog extends Dialog implements OnClickListener, Closea
 	/**
 	 * @inheritDoc
 	 */
-	public AudioPlayerDialog(@NonNull Context context) {
-		super(context, R.style.AudioDialog);
+	public AudioPlayerDialog(Activity activity) {
+		super(activity, R.style.AudioDialog);
 		setContentView(R.layout.dialog_audio_player);
 		controls = findViewById(R.id.dialog_audio_player_controls);
 		mediaLink = findViewById(R.id.dialog_audio_player_share);
 
 		controls.setShowNextButton(false);
 		controls.setShowPreviousButton(false);
-		player = new ExoPlayer.Builder(context, createRenderer(context)).build();
+		player = new ExoPlayer.Builder(activity.getApplicationContext(), createRenderer(activity.getApplicationContext())).build();
 		controls.setPlayer(player);
 		controls.setShowTimeoutMs(-1);
 
