@@ -91,6 +91,14 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 	}
 
 	/**
+	 * clear adapter
+	 */
+	public void clear() {
+		items.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * listener for filterlist items
 	 */
 	public interface OnFilterClickListener {

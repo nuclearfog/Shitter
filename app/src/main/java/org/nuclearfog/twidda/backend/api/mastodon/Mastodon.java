@@ -993,13 +993,14 @@ public class Mastodon implements Connection {
 				params.add("keywords_attributes[][whole_word]=false");
 			for (String keyword : update.getKeywords())
 				params.add("keywords_attributes[][keyword]=" + StringUtils.encode(keyword));
-			Response response;
-			if (update.getId() != 0L)
-				response = put(ENDPOINT_FILTER + '/' + update.getId(), params);
-			else
-				response = post(ENDPOINT_FILTER, params);
+			// create new filter
+			Response response = post(ENDPOINT_FILTER, params);
 			if (response.code() != 200) {
 				throw new MastodonException(response);
+			}
+			// delete old filter if exists
+			if (update.getId() != 0L) {
+				deleteFilter(update.getId());
 			}
 		} catch (IOException exception) {
 			throw new MastodonException(exception);

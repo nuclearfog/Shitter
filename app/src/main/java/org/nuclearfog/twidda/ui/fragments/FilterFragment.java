@@ -67,6 +67,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 
 	@Override
 	protected void onReset() {
+		adapter.clear();
 		filterLoader.execute(null, filterLoadCallback);
 		setRefresh(true);
 	}
@@ -110,7 +111,9 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 		if (result.mode == FilterActionResult.DELETE) {
 			adapter.removeItem(result.id);
 		} else if (result.mode == FilterActionResult.ERROR) {
-			// todo add error message
+			if (getContext() != null) {
+				ErrorUtils.showErrorMessage(requireContext(), result.exception);
+			}
 		}
 	}
 }

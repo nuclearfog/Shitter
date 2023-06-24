@@ -78,6 +78,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 
 	@Override
 	protected void onReset() {
+		adapter.clear();
 		setRefresh(true);
 		load(DomainAdapter.NO_INDEX, DomainParam.NO_CURSOR);
 	}

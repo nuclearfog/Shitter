@@ -153,6 +153,14 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	}
 
 	/**
+	 * clear adapter
+	 */
+	public void clear() {
+		items.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * disable placeholder view loading animation
 	 */
 	public void disableLoading() {

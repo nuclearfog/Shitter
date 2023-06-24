@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.helper.update;
 
 import org.nuclearfog.twidda.model.Filter;
+import org.nuclearfog.twidda.model.Filter.Keyword;
 
 import java.io.Serializable;
 
@@ -15,9 +16,34 @@ public class FilterUpdate implements Serializable {
 
 	private long id = 0L;
 	private String title;
-	private String[] keywords = {};
+	private String[] keyWordStr = {};
 	private int expires_at = 0, action = Filter.ACTION_WARN;
 	private boolean filterHome, filterNotification, filterPublic, filterUser, filterThread, wholeWord;
+
+	/**
+	 *
+	 */
+	public FilterUpdate() {
+	}
+
+	/**
+	 * create filter update with existing filter configuration
+	 *
+	 * @param filter existing filter
+	 */
+	public FilterUpdate(Filter filter) {
+		id = filter.getId();
+		title = filter.getTitle();
+		Keyword[] keywords = filter.getKeywords();
+		keyWordStr = new String[keywords.length];
+		for (int i = 0 ; i < keywords.length ; i++) {
+			keyWordStr[i] = keywords[i].getKeyword();
+		}
+		int expires_at = (int) (filter.getExpirationTime() - System.currentTimeMillis());
+		if (expires_at > 0) {
+			this.expires_at = expires_at;
+		}
+	}
 
 	/**
 	 * filter ID of an existing filter or '0' if a new filter should be created
@@ -79,7 +105,7 @@ public class FilterUpdate implements Serializable {
 	 * @return array of keywords
 	 */
 	public String[] getKeywords() {
-		return keywords;
+		return keyWordStr;
 	}
 
 	/**
@@ -88,7 +114,7 @@ public class FilterUpdate implements Serializable {
 	 * @param keywords array of keywords
 	 */
 	public void setKeywords(String[] keywords) {
-		this.keywords = keywords.clone();
+		this.keyWordStr = keywords.clone();
 	}
 
 	/**
