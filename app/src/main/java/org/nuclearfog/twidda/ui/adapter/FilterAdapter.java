@@ -76,12 +76,35 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 	}
 
 	/**
+	 * add item at the bottom
+	 *
+	 * @param filter new item to add
+	 */
+	public void addItem(Filter filter) {
+		items.addLast(filter);
+		notifyItemInserted(items.size());
+	}
+
+	/**
+	 * update existing item
+	 *
+	 * @param filter filter item
+	 */
+	public void updateItem(Filter filter) {
+		int index = items.indexOf(filter);
+		if (index >= 0) {
+			items.set(index, filter);
+			notifyItemChanged(index);
+		}
+	}
+
+	/**
 	 * remove item matching an ID
 	 *
 	 * @param id ID of the item to remove
 	 */
 	public void removeItem(long id) {
-		for (int i = 0 ; i < items.size() ; i++) {
+		for (int i = 0; i < items.size(); i++) {
 			if (items.get(i).getId() == id) {
 				items.remove(i);
 				notifyItemRemoved(i);

@@ -10,16 +10,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.model.Filter;
+import org.nuclearfog.twidda.ui.dialogs.FilterDialog;
+import org.nuclearfog.twidda.ui.dialogs.FilterDialog.FilterDialogCallback;
+import org.nuclearfog.twidda.ui.fragments.FilterFragment;
 
 /**
  * Status filter viewer activity
  *
  * @author nuclearfog
  */
-public class FilterActivity extends AppCompatActivity {
+public class FilterActivity extends AppCompatActivity implements FilterDialogCallback {
+
+	private FilterDialog filterDialog;
+	private FilterFragment fragment;
 
 
 	@Override
@@ -34,6 +42,13 @@ public class FilterActivity extends AppCompatActivity {
 		setContentView(R.layout.page_filter);
 		ViewGroup root = findViewById(R.id.page_filter_root);
 		Toolbar toolbar = findViewById(R.id.page_filter_toolbar);
+		filterDialog = new FilterDialog(this, this);
+		fragment = new FilterFragment();
+
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.replace(R.id.page_filter_fragment, fragment);
+		fragmentTransaction.commit();
+
 		toolbar.setTitle(R.string.toolbar_title_filter);
 		setSupportActionBar(toolbar);
 
@@ -51,8 +66,15 @@ public class FilterActivity extends AppCompatActivity {
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_filter_create) {
+			filterDialog.show(null);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+
+	@Override
+	public void onFilterUpdated(Filter filter) {
+		fragment.onFilterAdded(filter);
 	}
 }

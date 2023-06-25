@@ -35,6 +35,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
@@ -1199,7 +1200,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public void updateFilter(FilterUpdate update) throws ConnectionException {
+	public Filter updateFilter(FilterUpdate update) throws ConnectionException {
 		throw new TwitterException("not implemented!");
 	}
 

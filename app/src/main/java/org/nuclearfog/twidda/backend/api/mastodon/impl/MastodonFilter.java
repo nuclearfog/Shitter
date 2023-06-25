@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,6 +139,14 @@ public class MastodonFilter implements Filter {
 	@Override
 	public boolean filterUserTimeline() {
 		return filterUser;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Filter))
+			return false;
+		return ((Filter) obj).getId() == getId();
 	}
 
 	/**

@@ -9,6 +9,7 @@ import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
@@ -654,8 +655,9 @@ public interface Connection {
 	 * create/update status filter
 	 *
 	 * @param update filter to update
+	 * @return created filter
 	 */
-	void updateFilter(FilterUpdate update) throws ConnectionException;
+	Filter updateFilter(FilterUpdate update) throws ConnectionException;
 
 	/**
 	 * delete status filter

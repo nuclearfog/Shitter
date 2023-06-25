@@ -967,7 +967,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public void updateFilter(FilterUpdate update) throws ConnectionException {
+	public Filter updateFilter(FilterUpdate update) throws ConnectionException {
 		try {
 			List<String> params = new ArrayList<>();
 			params.add("title=" + update.getTitle());
@@ -987,22 +987,36 @@ public class Mastodon implements Connection {
 				params.add("filter_action=warn");
 			else if (update.getFilterAction() == Filter.ACTION_HIDE)
 				params.add("filter_action=hide");
-			if (update.wholeWord())
-				params.add("keywords_attributes[][whole_word]=true");
-			else
-				params.add("keywords_attributes[][whole_word]=false");
-			for (String keyword : update.getKeywords())
-				params.add("keywords_attributes[][keyword]=" + StringUtils.encode(keyword));
-			// create new filter
-			Response response = post(ENDPOINT_FILTER, params);
-			if (response.code() != 200) {
-				throw new MastodonException(response);
-			}
-			// delete old filter if exists
 			if (update.getId() != 0L) {
-				deleteFilter(update.getId());
+				params.add("keywords_attributes[][_destroy]=true");
+				for (long keywordId : update.getKeywordIds()) {
+					params.add("keywords_attributes[][id]=" + keywordId);
+				}
 			}
-		} catch (IOException exception) {
+			for (String keyword : update.getKeywords()) {
+				if (!keyword.trim().isEmpty()) {
+					if (keyword.startsWith("\"") && keyword.endsWith("\"")) {
+						params.add("keywords_attributes[][keyword]=" + StringUtils.encode(keyword.substring(1, keyword.length() - 1)));
+						params.add("keywords_attributes[][whole_word]=true");
+					} else {
+						params.add("keywords_attributes[][keyword]=" + StringUtils.encode(keyword));
+						params.add("keywords_attributes[][whole_word]=false");
+					}
+				}
+			}
+			Response response;
+			if (update.getId() != 0L) {
+				response = put(ENDPOINT_FILTER + '/' + update.getId(), params);
+			} else {
+				response = post(ENDPOINT_FILTER, params);
+			}
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new MastodonFilter(json);
+			}
+			throw new MastodonException(response);
+		} catch (JSONException | IOException exception) {
 			throw new MastodonException(exception);
 		}
 	}

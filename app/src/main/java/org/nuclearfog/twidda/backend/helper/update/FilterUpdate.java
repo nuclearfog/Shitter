@@ -17,8 +17,9 @@ public class FilterUpdate implements Serializable {
 	private long id = 0L;
 	private String title;
 	private String[] keyWordStr = {};
-	private int expires_at = 0, action = Filter.ACTION_WARN;
-	private boolean filterHome, filterNotification, filterPublic, filterUser, filterThread, wholeWord;
+	private long[] keywordIds = {};
+	private int expires_at = 0, action = Filter.ACTION_HIDE;
+	private boolean filterHome, filterNotification, filterPublic, filterUser, filterThread;
 
 	/**
 	 *
@@ -36,7 +37,9 @@ public class FilterUpdate implements Serializable {
 		title = filter.getTitle();
 		Keyword[] keywords = filter.getKeywords();
 		keyWordStr = new String[keywords.length];
+		keywordIds = new long[keywords.length];
 		for (int i = 0 ; i < keywords.length ; i++) {
+			keywordIds[i] = keywords[i].getId();
 			keyWordStr[i] = keywords[i].getKeyword();
 		}
 		int expires_at = (int) (filter.getExpirationTime() - System.currentTimeMillis());
@@ -97,6 +100,15 @@ public class FilterUpdate implements Serializable {
 	 */
 	public void setExpirationTime(int expires_at) {
 		this.expires_at = expires_at;
+	}
+
+	/**
+	 * get IDs of existing keywords
+	 *
+	 * @return array of keyword IDs
+	 */
+	public long[] getKeywordIds() {
+		return keywordIds;
 	}
 
 	/**
@@ -213,21 +225,5 @@ public class FilterUpdate implements Serializable {
 	 */
 	public void setFilterThread(boolean filterThread) {
 		this.filterThread = filterThread;
-	}
-
-	/**
-	 * check if words of a single keyword should be interpreted as one word
-	 *
-	 * @return true if keyword should be interpreted as one word
-	 */
-	public boolean wholeWord() {
-		return wholeWord;
-	}
-
-	/**
-	 * enable/disable option to interpret words of a keyword as a single word
-	 */
-	public void setWholeWord(boolean wholeWord) {
-		this.wholeWord = wholeWord;
 	}
 }
