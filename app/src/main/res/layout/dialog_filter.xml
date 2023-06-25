@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/dialog_filter_root"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:padding="@dimen/dialog_filter_root_padding"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	tools:context=".ui.dialogs.FilterDialog">
 
 	<TextView
 		android:id="@+id/dialog_filter_title_dialog"
@@ -59,7 +61,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_filter_home"
-		android:lines="1"
+		android:maxLines="2"
 		android:textSize="@dimen/dialog_filter_textsize_label"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="1"
@@ -82,7 +84,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_filter_notification"
-		android:lines="1"
+		android:maxLines="2"
 		android:textSize="@dimen/dialog_filter_textsize_label"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="1"
@@ -105,7 +107,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_filter_public"
-		android:lines="1"
+		android:maxLines="2"
 		android:textSize="@dimen/dialog_filter_textsize_label"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="1"
@@ -128,7 +130,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_filter_user"
-		android:lines="1"
+		android:maxLines="2"
 		android:textSize="@dimen/dialog_filter_textsize_label"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="1"
@@ -151,7 +153,7 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_filter_threads"
-		android:lines="1"
+		android:maxLines="2"
 		android:textSize="@dimen/dialog_filter_textsize_label"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="1"

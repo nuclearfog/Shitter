@@ -15,9 +15,4 @@ public class Filters extends LinkedList<Filter> {
 	public Filters() {
 		super();
 	}
-
-
-	public Filters(Filters filters) {
-		super(filters);
-	}
 }

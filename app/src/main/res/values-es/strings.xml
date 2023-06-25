@@ -33,7 +33,7 @@
 	<string name="info_dm_removed">Se eliminó el mensaje directo</string>
 	<string name="info_image_saved">Se guardó la imagen</string>
 	<string name="info_status_link_copied">Se copió el enlace al portapapeles</string>
-	<string name="info_loading">Cargando...</string>
+	<string name="info_loading">Cargando…</string>
 	<string name="info_profile_updated">Se actualizó el perfil actualizado</string>
 	<string name="info_followed">Siguiendo</string>
 	<string name="info_unfollowed">Sin seguir</string>

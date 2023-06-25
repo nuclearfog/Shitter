@@ -132,6 +132,8 @@
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
 	<string name="error_translating_status">Could not translate status</string>
+	<string name="error_empty_filter_title">Filter description must not be empty</string>
+	<string name="error_empty_filter_selection">It must be at least one filter enabled</string>
 	<string name="error_empty_text">Empty text!</string>
 
 	<!-- menu icon strings -->
@@ -370,7 +372,6 @@
 	<string name="dialog_filter_public">Public timeline</string>
 	<string name="dialog_filter_user">User timeline</string>
 	<string name="dialog_filter_threads">Threads</string>
-	<string name="dialog_filter_whole_words">filter whole words</string>
 	<string name="dialog_filter_title_keywords">Words to exclude</string>
 	<string name="dialog_filter_edit_hint_exclude">word anotherword\n\"whole word\"</string>
 </resources>

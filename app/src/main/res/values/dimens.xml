@@ -344,7 +344,7 @@
 	<dimen name="dialog_filter_root_padding">2dp</dimen>
 	<dimen name="dialog_filter_textsize_title">22sp</dimen>
 	<dimen name="dialog_filter_textsize_title_sub">16sp</dimen>
-	<dimen name="dialog_filter_textsize_label">12sp</dimen>
+	<dimen name="dialog_filter_textsize_label">11sp</dimen>
 	<dimen name="dialog_filter_margin_items_layout">4dp</dimen>
 
 </resources>

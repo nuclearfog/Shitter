@@ -335,7 +335,7 @@
 	<string name="dialog_status_language">Sprache</string>
 	<string name="filter_hide">verstecke Posts die diese Wörter enthalten</string>
 	<string name="filter_warn">warne vor Posts die diese Wörter enthalten</string>
-	<string name="dialog_filter_edit_hint_exclude">Wort_1 Wort_2\n\"wzusammenhängendes Wort\"</string>
+	<string name="dialog_filter_edit_hint_exclude">Wort-1 Wort-2\n\"zusammenhängendes Wort\"</string>
 	<string name="description_filter_home_timeline">Filter für Home-Timeline aktiviert</string>
 	<string name="description_filter_notification">Filter für Benachrichtigungen aktiviert</string>
 	<string name="description_filter_public_timeline">Filter für öffentliche Timeline aktiviert</string>
@@ -351,6 +351,7 @@
 	<string name="dialog_filter_public">öffentliche Timeline</string>
 	<string name="dialog_filter_user">Nutzer-Timeline</string>
 	<string name="dialog_filter_threads">Threads</string>
-	<string name="dialog_filter_whole_words">ganze Wörter filtern</string>
 	<string name="dialog_filter_title_keywords">Zu filterne Wörter</string>
+	<string name="error_empty_filter_title">Filterbezeichnung darf nicht leer sein</string>
+	<string name="error_empty_filter_selection">es muss mindestens ein Filter aktiviert sein</string>
 </resources>

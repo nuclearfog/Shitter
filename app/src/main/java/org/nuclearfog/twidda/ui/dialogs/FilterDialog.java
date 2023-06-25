@@ -89,10 +89,17 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_filter_create) {
-			update.setTitle(txt_title.getText().toString());
-			update.setKeywords(txt_keywords.getText().toString().split("\n"));
-			FilterActionParam param = new FilterActionParam(FilterActionParam.UPDATE, 0L, update);
-			filterAction.execute(param, this);
+			if (txt_title.length() == 0) {
+				Toast.makeText(getContext(), R.string.error_empty_filter_title, Toast.LENGTH_SHORT).show();
+			} else if (!sw_home.isChecked() && !sw_notification.isChecked() && !sw_public.isChecked() && !sw_user.isChecked() && !sw_thread.isChecked()) {
+				Toast.makeText(getContext(), R.string.error_empty_filter_selection, Toast.LENGTH_SHORT).show();
+			} else {
+				if (txt_keywords.length() > 0)
+					update.setKeywords(txt_keywords.getText().toString().split("\n"));
+				update.setTitle(txt_title.getText().toString());
+				FilterActionParam param = new FilterActionParam(FilterActionParam.UPDATE, 0L, update);
+				filterAction.execute(param, this);
+			}
 		}
 	}
 
@@ -165,7 +172,7 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 				update = new FilterUpdate();
 				sw_home.setCheckedImmediately(false);
 				sw_notification.setCheckedImmediately(false);
-				sw_public.setCheckedImmediately(false);
+				sw_public.setCheckedImmediately(true);
 				sw_user.setCheckedImmediately(false);
 				sw_thread.setCheckedImmediately(false);
 				txt_title.setText("");
