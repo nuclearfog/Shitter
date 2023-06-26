@@ -162,13 +162,6 @@
 		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_thread"
 		app:layout_constraintEnd_toEndOf="parent"/>
 
-	<androidx.constraintlayout.widget.Barrier
-		android:id="@+id/dialog_filter_switch_barrier"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:constraint_referenced_ids="dialog_filter_switch_thread,dialog_filter_switch_thread_label"
-		app:barrierDirection="bottom"/>
-
 	<TextView
 		android:id="@+id/dialog_filter_title_keywords"
 		android:layout_width="0dp"
@@ -177,7 +170,7 @@
 		android:textSize="@dimen/dialog_filter_textsize_title_sub"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_switch_barrier"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_switch_thread"
 		app:layout_constraintEnd_toEndOf="parent"/>
 
 	<EditText
@@ -195,9 +188,32 @@
 		android:inputType="textMultiLine"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_keywords"
-		app:layout_constraintBottom_toTopOf="@id/dialog_filter_create"
+		app:layout_constraintBottom_toTopOf="@id/dialog_filter_switch_hide"
 		app:layout_constraintEnd_toEndOf="parent"
 		android:importantForAutofill="no" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_filter_switch_hide"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/dialog_filter_switch_thread_label" />
+
+	<TextView
+		android:id="@+id/dialog_filter_switch_hide_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_filter_hide_status"
+		android:maxLines="1"
+		android:textSize="@dimen/dialog_filter_textsize_label"
+		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
+		app:layout_constraintHorizontal_weight="1"
+		app:layout_constraintStart_toEndOf="@id/dialog_filter_switch_hide"
+		app:layout_constraintTop_toTopOf="@id/dialog_filter_switch_hide"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_hide"
+		app:layout_constraintEnd_toStartOf="@id/dialog_filter_create" />
 
 	<Button
 		android:id="@+id/dialog_filter_create"

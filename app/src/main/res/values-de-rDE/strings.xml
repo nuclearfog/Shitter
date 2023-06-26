@@ -159,8 +159,8 @@
 	<string name="descr_remove_user">Nutzer von der Liste entfernen</string>
 	<string name="menu_status">Status posten</string>
 	<string name="menu_open_home_profile">Profil anzeigen</string>
-	<string name="menu_open_twitter_search">Twitter suche</string>
-	<string name="menu_open_filter">Filter</string>
+	<string name="menu_open_twitter_search">Suchfunktion</string>
+	<string name="menu_open_filter">Filter verwalten</string>
 	<string name="menu_open_settings">Einstellungen</string>
 	<string name="menu_create_list">erstelle Nutzerliste</string>
 	<string name="menu_write_message">Direktnachricht</string>
@@ -192,7 +192,7 @@
 	<string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt! Bitte API Schlüssel überprüfen!</string>
 	<string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
 	<string name="info_location_pending">Ortung läuft, bitte warten.</string>
-	<string name="error_twitter_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
+	<string name="error_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
 	<string name="button_share">Link teilen</string>
 	<string name="settings_look">Aussehen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
@@ -264,7 +264,7 @@
 	<string name="status_replyname_empty">Antwort</string>
 	<string name="status_metrics_title">Statusmetriken</string>
 	<string name="error_empty_text">Text ist leer!</string>
-	<string name="error_api_access_limited">Fehler! API Zugang wurde von Twitter beschränkt.</string>
+	<string name="error_api_access_limited">Fehler! API Zugang wurde vom Server beschränkt.</string>
 	<string name="status_media_preview">Medienvorschau</string>
 	<string name="status_media_preview_button">Videovorschau-Button</string>
 	<string name="description_poll_vote_icon">abgestimmt</string>

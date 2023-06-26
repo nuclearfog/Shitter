@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			search.putExtra(SearchActivity.KEY_QUERY, s);
 			startActivity(search);
 		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_search, Toast.LENGTH_SHORT).show();
 		}
 		return false;
 	}

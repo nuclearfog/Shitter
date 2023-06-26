@@ -107,7 +107,7 @@
 	<string name="error_api_key_expired">¡Error, las claves API han expirado! ¡Por favor, actualiza la app!</string>
 	<string name="error_database_cleared">¡Error al limpiar la base de datos!</string>
 	<string name="error_result_cancelled">¡Error, se canceló el resultado!</string>
-	<string name="error_twitter_search">¡Error, la consulta de búsqueda es demasiado larga o contiene caracteres ilegales!</string>
+	<string name="error_search">¡Error, la consulta de búsqueda es demasiado larga o contiene caracteres ilegales!</string>
 	<string name="error_wrong_connection_settings">¡La configuración de conexión es incorrecta! ¿Descatar cambios?</string>
 	<string name="error_invalid_media">¡El archivo de medios es inválido!</string>
 	<string name="error_not_defined">¡Error no especificado!</string>

@@ -78,7 +78,7 @@ public class FilterHolder extends ViewHolder implements OnClickListener {
 	public void setContent(Filter filter) {
 		title.setText(filter.getTitle());
 		if (filter.getExpirationTime() != 0L) {
-			date.setText(StringUtils.formatCreationTime(date.getResources(), filter.getExpirationTime()));
+			date.setText(StringUtils.formatExpirationTime(date.getResources(), filter.getExpirationTime()));
 			date.setVisibility(View.VISIBLE);
 		} else {
 			date.setText("");

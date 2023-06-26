@@ -221,7 +221,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			startActivity(search);
 			return true;
 		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.error_search, Toast.LENGTH_SHORT).show();
 			return false;
 		}
 	}

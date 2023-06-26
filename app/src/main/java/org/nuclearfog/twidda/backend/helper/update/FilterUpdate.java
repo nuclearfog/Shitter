@@ -15,11 +15,15 @@ public class FilterUpdate implements Serializable {
 	private static final long serialVersionUID = 7408688572155707380L;
 
 	private long id = 0L;
-	private String title;
+	private String title = "";
 	private String[] keyWordStr = {};
 	private long[] keywordIds = {};
-	private int expires_at = 0, action = Filter.ACTION_HIDE;
-	private boolean filterHome, filterNotification, filterPublic, filterUser, filterThread;
+	private int expires_at = 0, action = Filter.ACTION_WARN;
+	private boolean filterHome = false;
+	private boolean filterNotification = false;
+	private boolean filterPublic = true;
+	private boolean filterUser = false;
+	private boolean filterThread = false;
 
 	/**
 	 *
@@ -55,15 +59,6 @@ public class FilterUpdate implements Serializable {
 	 */
 	public long getId() {
 		return id;
-	}
-
-	/**
-	 * set filter ID of an existing filter
-	 *
-	 * @param id filter ID
-	 */
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	/**

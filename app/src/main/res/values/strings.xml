@@ -124,7 +124,7 @@
 	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
 	<string name="error_database_cleared">Error while clearing database!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>
-	<string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
+	<string name="error_search">Error, search query is too long or contains illegal characters!</string>
 	<string name="error_wrong_connection_settings">wrong connection settings! Discarc changes?</string>
 	<string name="error_invalid_media">Invalid media file!</string>
 	<string name="error_not_defined">Not specified error!</string>
@@ -142,7 +142,7 @@
 	<string name="menu_hashtag_unfollow">unfollow hashtag</string>
 	<string name="menu_open_home_profile">open Profile</string>
 	<string name="menu_open_twitter_search">Search</string>
-	<string name="menu_open_filter">Filter</string>
+	<string name="menu_open_filter">manage Filter</string>
 	<string name="menu_open_settings">Settings</string>
 	<string name="menu_create_list">create Userlist</string>
 	<string name="menu_write_message">Directmessage</string>
@@ -214,6 +214,7 @@
 	<string name="confirm_retry_button">retry</string>
 	<string name="data_consumption">Data consumption</string>
 	<string name="trend_setting">Trend location</string>
+	<string name="filter_expiration">expires at %1$s</string>
 	<string name="register_link">get code</string>
 	<string name="settings_image">enable images</string>
 	<string name="settings_clear_data">clear app data</string>
@@ -372,6 +373,7 @@
 	<string name="dialog_filter_public">Public timeline</string>
 	<string name="dialog_filter_user">User timeline</string>
 	<string name="dialog_filter_threads">Threads</string>
+	<string name="dialog_filter_hide_status">hide posts matching this filter</string>
 	<string name="dialog_filter_title_keywords">Words to exclude</string>
 	<string name="dialog_filter_edit_hint_exclude">word anotherword\n\"whole word\"</string>
 </resources>

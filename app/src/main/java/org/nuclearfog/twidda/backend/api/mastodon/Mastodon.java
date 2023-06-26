@@ -987,14 +987,14 @@ public class Mastodon implements Connection {
 				params.add("filter_action=warn");
 			else if (update.getFilterAction() == Filter.ACTION_HIDE)
 				params.add("filter_action=hide");
-			if (update.getId() != 0L) {
-				params.add("keywords_attributes[][_destroy]=true");
-				for (long keywordId : update.getKeywordIds()) {
-					params.add("keywords_attributes[][id]=" + keywordId);
-				}
-			}
-			for (String keyword : update.getKeywords()) {
+			// add keywords to filter
+			for (int i = 0; i < update.getKeywords().length; i++) {
+				String keyword = update.getKeywords()[i];
 				if (!keyword.trim().isEmpty()) {
+					// add existing keyword IDs to prevent duplicates
+					if (i < update.getKeywordIds().length) {
+						params.add("keywords_attributes[][id]=" + update.getKeywordIds()[i]);
+					}
 					if (keyword.startsWith("\"") && keyword.endsWith("\"")) {
 						params.add("keywords_attributes[][keyword]=" + StringUtils.encode(keyword.substring(1, keyword.length() - 1)));
 						params.add("keywords_attributes[][whole_word]=true");
@@ -1002,6 +1002,13 @@ public class Mastodon implements Connection {
 						params.add("keywords_attributes[][keyword]=" + StringUtils.encode(keyword));
 						params.add("keywords_attributes[][whole_word]=false");
 					}
+				}
+			}
+			// remove unused keyword IDs
+			if (update.getKeywordIds().length > update.getKeywords().length) {
+				for (int i = update.getKeywords().length; i < update.getKeywordIds().length; i++) {
+					params.add("keywords_attributes[][id]=" + update.getKeywordIds()[i]);
+					params.add("keywords_attributes[][_destroy]=true");
 				}
 			}
 			Response response;
