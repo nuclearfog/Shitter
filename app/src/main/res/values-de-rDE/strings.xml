@@ -7,6 +7,7 @@
 	<string name="settings_color_settings">Farbeinstellungen</string>
 	<string name="data_consumption">Datenverbrauch</string>
 	<string name="trend_setting">Trend Standort</string>
+	<string name="filter_expiration">gültig bis %1$s</string>
 	<string name="register_link">Code erhalten</string>
 	<string name="profile_image">Profilbild</string>
 	<string name="settings_image">Bilder laden</string>
@@ -351,6 +352,7 @@
 	<string name="dialog_filter_public">öffentliche Timeline</string>
 	<string name="dialog_filter_user">Nutzer-Timeline</string>
 	<string name="dialog_filter_threads">Threads</string>
+	<string name="dialog_filter_hide_status">verstecke gefilterte Posts</string>
 	<string name="dialog_filter_title_keywords">Zu filterne Wörter</string>
 	<string name="error_empty_filter_title">Filterbezeichnung darf nicht leer sein</string>
 	<string name="error_empty_filter_selection">es muss mindestens ein Filter aktiviert sein</string>
