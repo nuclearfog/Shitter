@@ -18,7 +18,8 @@ public class FilterUpdate implements Serializable {
 	private String title = "";
 	private String[] keyWordStr = {};
 	private long[] keywordIds = {};
-	private int expires_at = 0, action = Filter.ACTION_WARN;
+	private int expires_at = 0;
+	private int action = Filter.ACTION_WARN;
 	private boolean filterHome = false;
 	private boolean filterNotification = false;
 	private boolean filterPublic = true;
@@ -37,16 +38,17 @@ public class FilterUpdate implements Serializable {
 	 * @param filter existing filter
 	 */
 	public FilterUpdate(Filter filter) {
+		int expires_at = (int) (filter.getExpirationTime() - System.currentTimeMillis());
+		Keyword[] keywords = filter.getKeywords();
 		id = filter.getId();
 		title = filter.getTitle();
-		Keyword[] keywords = filter.getKeywords();
+		action = filter.getAction();
 		keyWordStr = new String[keywords.length];
 		keywordIds = new long[keywords.length];
 		for (int i = 0 ; i < keywords.length ; i++) {
 			keywordIds[i] = keywords[i].getId();
 			keyWordStr[i] = keywords[i].getKeyword();
 		}
-		int expires_at = (int) (filter.getExpirationTime() - System.currentTimeMillis());
 		if (expires_at > 0) {
 			this.expires_at = expires_at;
 		}

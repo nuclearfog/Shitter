@@ -13,7 +13,7 @@ android {
 		targetSdkVersion 33
 		versionCode 89
 		versionName '3.2.2'
-		resConfigs 'en', 'de-rDE', 'zh-rCN'
+		resConfigs 'en', 'es', 'de-rDE', 'zh-rCN'
 	}
 
 	buildTypes {
