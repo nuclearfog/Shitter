@@ -10,11 +10,12 @@
 
 - access to statuses, users, lists and trends
 - real timelines (chronological order)
-- push notification support
 - customizable theme
 - media, link and poll viewer
-- emoji selector
+- status filter
+- emoji picker
 - multi account support
+- push notification support
 - Proxy support
 
 
