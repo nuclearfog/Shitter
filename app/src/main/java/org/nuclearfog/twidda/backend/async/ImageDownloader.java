@@ -25,29 +25,28 @@ import java.io.InputStream;
  * @author nuclearfog
  * @see ImageViewer
  */
-public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, ImageLoader.ImageResult> {
+public class ImageDownloader extends AsyncExecutor<ImageDownloader.ImageLoaderParam, ImageDownloader.ImageLoaderResult> {
 
 	private Connection connection;
 
 	/**
 	 * @param context Activity context
 	 */
-	public ImageLoader(Context context) {
+	public ImageDownloader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
 	@Override
-	protected ImageResult doInBackground(@NonNull ImageParameter request) {
+	protected ImageLoaderResult doInBackground(@NonNull ImageLoaderParam request) {
 		try {
 			// get input stream
 			MediaStatus mediaUpdate = connection.downloadImage(request.uri.toString());
 			InputStream input = mediaUpdate.getStream();
 			String mimeType = mediaUpdate.getMimeType();
 			if (input == null) {
-				return new ImageResult(null, null);
+				return null;
 			}
-
 			// create file
 			String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
 			File imageFile = new File(request.cache, StringUtils.getRandomString() + ext);
@@ -63,9 +62,9 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 			output.close();
 
 			// create Uri from cached image
-			return new ImageResult(Uri.fromFile(imageFile), null);
+			return new ImageLoaderResult(Uri.fromFile(imageFile), null);
 		} catch (ConnectionException exception) {
-			return new ImageResult(null, exception);
+			return new ImageLoaderResult(null, exception);
 		} catch (Exception exception) {
 			if (BuildConfig.DEBUG) {
 				exception.printStackTrace();
@@ -77,12 +76,12 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 	/**
 	 * Async request class to send information required to execute the task
 	 */
-	public static class ImageParameter {
+	public static class ImageLoaderParam {
 
 		final File cache;
 		final Uri uri;
 
-		public ImageParameter(Uri uri, File cache) {
+		public ImageLoaderParam(Uri uri, File cache) {
 			this.cache = cache;
 			this.uri = uri;
 		}
@@ -91,14 +90,14 @@ public class ImageLoader extends AsyncExecutor<ImageLoader.ImageParameter, Image
 	/**
 	 * Async result class
 	 */
-	public static class ImageResult {
+	public static class ImageLoaderResult {
 
 		@Nullable
 		public final Uri uri;
 		@Nullable
 		public final ConnectionException exception;
 
-		ImageResult(@Nullable Uri uri, @Nullable ConnectionException exception) {
+		ImageLoaderResult(@Nullable Uri uri, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.uri = uri;
 		}

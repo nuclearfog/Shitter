@@ -83,7 +83,7 @@ public class ImageCache {
 	 *
 	 * @return singleton instance of this class
 	 */
-	public static ImageCache getInstance(Context context) {
+	public static ImageCache get(Context context) {
 		if (instance == null)
 			instance = new ImageCache(context);
 		return instance;

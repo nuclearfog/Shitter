@@ -16,9 +16,9 @@ import androidx.appcompat.widget.Toolbar;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.ImageLoader;
-import org.nuclearfog.twidda.backend.async.ImageLoader.ImageParameter;
-import org.nuclearfog.twidda.backend.async.ImageLoader.ImageResult;
+import org.nuclearfog.twidda.backend.async.ImageDownloader;
+import org.nuclearfog.twidda.backend.async.ImageDownloader.ImageLoaderParam;
+import org.nuclearfog.twidda.backend.async.ImageDownloader.ImageLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -33,7 +33,7 @@ import java.io.File;
  *
  * @author nuclearfog
  */
-public class ImageViewer extends MediaActivity implements AsyncCallback<ImageResult> {
+public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoaderResult> {
 
 	/**
 	 * indicates a default image (jpg, png, etc.)
@@ -76,7 +76,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 	@Nullable
 	private Uri cacheUri;
 	@Nullable
-	private ImageLoader imageAsync;
+	private ImageDownloader imageAsync;
 	private GlobalSettings settings;
 	private File cacheFolder;
 	private boolean enableSave = false;
@@ -131,8 +131,8 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 				break;
 		}
 		if (!isLocalFile) {
-			ImageParameter request = new ImageParameter(data, cacheFolder);
-			imageAsync = new ImageLoader(this);
+			ImageLoaderParam request = new ImageLoaderParam(data, cacheFolder);
+			imageAsync = new ImageDownloader(this);
 			imageAsync.execute(request, this);
 			enableSave = true;
 		} else {
@@ -188,7 +188,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageRes
 
 
 	@Override
-	public void onResult(@NonNull ImageResult result) {
+	public void onResult(@NonNull ImageLoaderResult result) {
 		if (result.uri != null) {
 			loadingCircle.setVisibility(View.INVISIBLE);
 			cacheUri = result.uri;

@@ -34,7 +34,7 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, T
 	 */
 	public TextEmojiLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
-		cache = ImageCache.getInstance(context);
+		cache = ImageCache.get(context);
 	}
 
 
