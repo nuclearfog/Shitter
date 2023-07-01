@@ -27,7 +27,7 @@ public class ErrorUtils {
 	public static void showErrorMessage(Context context, @Nullable ConnectionException exception) {
 		if (context != null) {
 			String errorMessage = getErrorMessage(context, exception);
-			if (errorMessage != null) {
+			if (!errorMessage.isEmpty()) {
 				Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -70,7 +70,7 @@ public class ErrorUtils {
 					return context.getString(R.string.error_status_length);
 
 				case ConnectionException.INTERRUPTED:
-					return null; // ignore exceptions caused by task termination
+					return ""; // ignore exceptions caused by task termination
 
 				case ConnectionException.DUPLICATE_STATUS:
 					return context.getString(R.string.error_duplicate_status);
