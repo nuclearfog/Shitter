@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -38,20 +37,18 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.FilterA
 						Filter filter = connection.updateFilter(param.update);
 						return new FilterActionResult(FilterActionResult.UPDATE, param.id, filter, null);
 					}
-					break;
+					return null;
 
 				case FilterActionParam.DELETE:
 					connection.deleteFilter(param.id);
 					return new FilterActionResult(FilterActionResult.DELETE, param.id, null, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new FilterActionResult(FilterActionResult.ERROR, param.id, null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

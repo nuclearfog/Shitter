@@ -27,20 +27,18 @@ public class AccountLoader extends AsyncExecutor<AccountLoader.AccountParameter,
 
 	@Override
 	protected AccountResult doInBackground(@NonNull AccountParameter request) {
-		try {
-			switch (request.mode) {
-				case AccountParameter.LOAD:
-					Accounts accounts = db.getLogins();
-					return new AccountResult(AccountResult.LOAD, 0L, accounts);
+		switch (request.mode) {
+			case AccountParameter.LOAD:
+				Accounts accounts = db.getLogins();
+				return new AccountResult(AccountResult.LOAD, 0L, accounts);
 
-				case AccountParameter.DELETE:
-					db.removeLogin(request.id);
-					return new AccountResult(AccountResult.DELETE, request.id, null);
-			}
-		} catch (Exception e) {
-			return new AccountResult(AccountResult.ERROR, 0L, null);
+			case AccountParameter.DELETE:
+				db.removeLogin(request.id);
+				return new AccountResult(AccountResult.DELETE, request.id, null);
+
+			default:
+				return null;
 		}
-		return null;
 	}
 
 	/**

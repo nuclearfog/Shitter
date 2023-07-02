@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/dialog_report_root"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	android:padding="@dimen/dialog_report_root_padding">
 
 	<TextView
 		android:id="@+id/dialog_report_title"
@@ -11,15 +12,30 @@
 		android:layout_height="wrap_content"
 		android:lines="1"
 		android:textSize="@dimen/dialog_report_textsize_title"
+		android:layout_margin="@dimen/dialog_report_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
+
+	<TextView
+		android:id="@+id/dialog_report_category_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:lines="1"
+		android:text="@string/dialog_report_category_label"
+		android:textSize="@dimen/dialog_report_textsize_label"
+		android:layout_margin="@dimen/dialog_report_margin_items_layout"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="@id/dialog_report_category"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_report_category"
+		app:layout_constraintEnd_toStartOf="@id/dialog_report_category" />
 
 	<Spinner
 		android:id="@+id/dialog_report_category"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		app:layout_constraintStart_toStartOf="parent"
+		android:layout_margin="@dimen/dialog_report_margin_items_layout"
+		app:layout_constraintStart_toEndOf="@id/dialog_report_category_label"
 		app:layout_constraintTop_toBottomOf="@id/dialog_report_title"
 		app:layout_constraintEnd_toEndOf="parent" />
 
@@ -35,16 +51,20 @@
 		android:hint="@string/dialog_report_hint_description"
 		android:background="@android:color/transparent"
 		android:gravity="top"
+		android:layout_margin="@dimen/dialog_report_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_report_category"
-		app:layout_constraintEnd_toEndOf="parent" />
+		app:layout_constraintEnd_toEndOf="parent"
+		android:importantForAutofill="no" />
 
 	<com.kyleduo.switchbutton.SwitchButton
 		android:id="@+id/dialog_report_switch_forward"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_report_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_report_description"/>
+		app:layout_constraintTop_toBottomOf="@id/dialog_report_description"
+		app:layout_constraintBottom_toBottomOf="parent" />
 
 	<TextView
 		android:id="@+id/dialog_report_switch_forward_label"
@@ -53,9 +73,24 @@
 		android:text="@string/dialog_report_description_forward"
 		android:textSize="@dimen/dialog_report_textsize_label"
 		android:lines="1"
+		android:layout_margin="@dimen/dialog_report_margin_items_layout"
 		app:layout_constraintStart_toEndOf="@id/dialog_report_switch_forward"
 		app:layout_constraintTop_toTopOf="@id/dialog_report_switch_forward"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_report_switch_forward"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_report_apply" />
+
+	<Button
+		android:id="@+id/dialog_report_apply"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/dialog_report_button_height"
+		android:padding="@dimen/dialog_report_button_padding"
+		android:text="@string/dialog_report_apply"
+		android:layout_margin="@dimen/dialog_report_margin_items_layout"
+		android:lines="1"
+		android:textSize="@dimen/dialog_report_textsize_button"
+		app:layout_constraintTop_toBottomOf="@id/dialog_report_description"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		style="@style/FeedbackButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

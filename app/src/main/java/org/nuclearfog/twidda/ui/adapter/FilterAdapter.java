@@ -13,8 +13,8 @@ import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 /**
  * filterlist adapter
  *
- * @see org.nuclearfog.twidda.ui.fragments.FilterFragment
  * @author nuclearfog
+ * @see org.nuclearfog.twidda.ui.fragments.FilterFragment
  */
 public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClickListener {
 

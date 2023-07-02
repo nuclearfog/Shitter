@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -51,14 +50,9 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 			return new StatusUpdateResult(status, null);
 		} catch (ConnectionException exception) {
 			return new StatusUpdateResult(null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		} finally {
 			update.close();
 		}
-		return null;
 	}
 
 	/**

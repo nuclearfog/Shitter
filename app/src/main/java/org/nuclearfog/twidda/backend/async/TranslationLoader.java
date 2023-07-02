@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -34,12 +33,7 @@ public class TranslationLoader extends AsyncExecutor<Long, TranslationLoader.Tra
 			return new TranslationResult(connection.getStatusTranslation(param));
 		} catch (ConnectionException exception) {
 			return new TranslationResult(null);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

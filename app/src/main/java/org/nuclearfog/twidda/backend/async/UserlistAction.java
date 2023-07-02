@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -47,15 +46,13 @@ public class UserlistAction extends AsyncExecutor<UserlistAction.ListActionParam
 				case ListActionParam.DELETE:
 					connection.deleteUserlist(param.id);
 					return new ListActionResult(ListActionResult.DELETE, param.id, null, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new ListActionResult(ListActionResult.ERROR, param.id, null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

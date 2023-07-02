@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -41,15 +40,13 @@ public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAc
 				case PollActionParam.VOTE:
 					poll = connection.votePoll(param.poll, param.selection);
 					return new PollActionResult(PollActionResult.VOTE, poll, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new PollActionResult(PollActionResult.ERROR, null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

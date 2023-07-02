@@ -30,10 +30,13 @@
 	<string name="info_database_cleared">Datenbank gelöscht</string>
 	<string name="info_notification_dismiss">Nachricht verworfen</string>
 	<string name="info_domain_blocked">Domain gesperrt!</string>
+	<string name="info_webpush_update_progress">aktualisiere Push-Konfiguration</string>
 	<string name="info_webpush_update">Push-Konfiguration wurde aktualisiert</string>
 	<string name="info_filter_created">Filter erstellt</string>
 	<string name="info_filter_updated">Filter aktualisiert</string>
 	<string name="info_filter_removed">Filter gelöscht</string>
+	<string name="info_user_reported">Nutzer gemeldet</string>
+	<string name="info_status_reported">Status gemeldet</string>
 	<string name="info_error">Fehler!</string>
 	<string name="menu_status_edit">bearbeiten</string>
 	<string name="menu_status_delete">löschen</string>
@@ -107,6 +110,8 @@
 	<string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
 	<string name="dialog_connection_custom_host">Benutzerdefinierter Hostname</string>
 	<string name="dialog_connection_apply">anwenden</string>
+	<string name="dialog_report_hint_description">zusätzliche Beschreibung</string>
+	<string name="dialog_report_description_forward">an Quellinstanz weiterleiten</string>
 	<string name="confirm_mute">Nutzer stummschalten?</string>
 	<string name="info_gps_attached">GPS Position hinzugefügt</string>
 	<string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
@@ -240,6 +245,7 @@
 	<string name="menu_media_link">Medienlink</string>
 	<string name="info_status_text_copied">Status Text kopiert</string>
 	<string name="info_status_medialink_copied">Medienlink kopiert</string>
+	<string name="menu_status_report">melden</string>
 	<string name="menu_status_hide">Antwort ausblenden</string>
 	<string name="menu_status_unhide">Antwort einblenden</string>
 	<string name="info_reply_hidden">Antwort wurde ausgeblendet</string>
@@ -323,6 +329,10 @@
 	<string name="dialog_push_follow_request">bei neuen Follow-Anfragen</string>
 	<string name="dialog_push_title">Benachrichtigung</string>
 	<string name="dialog_push_apply">Änderungen anwenden</string>
+	<string name="dialog_report_title_user">Nutzer melden</string>
+	<string name="dialog_report_category_label">Meldegrund</string>
+	<string name="dialog_report_title_status">Status melden</string>
+	<string name="dialog_report_apply">melden</string>
 	<string name="settings_enable_push_label">aktiviere Push-Benachrichtigung\n(ntfy-App erforderlich)</string>
 	<string name="notification_favorite">%1$s hat einen Status favorisiert</string>
 	<string name="notification_repost">%1$s hat einen Status geteilt</string>

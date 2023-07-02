@@ -97,4 +97,10 @@
 		<item>2.0 X</item>
 	</string-array>
 
+	<string-array name="reports">
+		<item>Spam</item>
+		<item>Violation</item>
+		<item>Other</item>
+	</string-array>
+
 </resources>

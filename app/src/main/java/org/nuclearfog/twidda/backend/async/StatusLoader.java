@@ -5,14 +5,12 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
-
 
 /**
  * Background task to download a list of statuses from different sources
@@ -133,15 +131,13 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.StatusParameter, St
 				case StatusParameter.PUBLIC:
 					statuses = connection.getPublicTimeline(param.minId, param.maxId);
 					return new StatusResult(statuses, param.pos, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new StatusResult(null, param.pos, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

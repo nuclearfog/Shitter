@@ -27,8 +27,8 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
-import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
@@ -957,7 +957,7 @@ public class Mastodon implements Connection {
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONArray(body.string());
 				Filters result = new Filters();
-				for (int i = 0 ; i < array.length(); i++) {
+				for (int i = 0; i < array.length(); i++) {
 					result.add(new MastodonFilter(array.getJSONObject(i)));
 				}
 				return result;

@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import org.nuclearfog.twidda.BuildConfig;
+
 import java.lang.ref.WeakReference;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
@@ -58,8 +60,14 @@ public abstract class AsyncExecutor<Parameter, Result> {
 		Future<?> future = THREAD_POOL.submit(new Runnable() {
 			@Override
 			public void run() {
-				Result result = doInBackground(parameter);
-				onPostExecute(result, callbackReference);
+				try {
+					Result result = doInBackground(parameter);
+					onPostExecute(result, callbackReference);
+				} catch (Exception e) {
+					if (BuildConfig.DEBUG) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 		futureTasks.add(future);

@@ -45,7 +45,7 @@ public class FilterUpdate implements Serializable {
 		action = filter.getAction();
 		keyWordStr = new String[keywords.length];
 		keywordIds = new long[keywords.length];
-		for (int i = 0 ; i < keywords.length ; i++) {
+		for (int i = 0; i < keywords.length; i++) {
 			keywordIds[i] = keywords[i].getId();
 			if (keywords[i].isOneWord()) {
 				keyWordStr[i] = '\"' + keywords[i].getKeyword() + '\"';

@@ -11,9 +11,9 @@ import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.holder.CardHolder;
+import org.nuclearfog.twidda.ui.adapter.holder.MediaHolder;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.PollHolder;
-import org.nuclearfog.twidda.ui.adapter.holder.MediaHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;

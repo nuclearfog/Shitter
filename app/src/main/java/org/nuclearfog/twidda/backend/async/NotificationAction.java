@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -49,18 +48,16 @@ public class NotificationAction extends AsyncExecutor<NotificationAction.Notific
 					connection.dismissNotification(param.id);
 					db.removeNotification(param.id);
 					return new NotificationActionResult(NotificationActionResult.DISMISS, param.id, null, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				db.removeNotification(param.id);
 			}
 			return new NotificationActionResult(NotificationActionResult.ERROR, param.id, null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

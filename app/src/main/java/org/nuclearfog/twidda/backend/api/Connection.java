@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.backend.api;
 
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
-import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;

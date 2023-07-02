@@ -43,4 +43,9 @@
 		android:id="@+id/menu_status_delete"
 		android:title="@string/menu_status_delete"
 		android:visible="false" />
+
+	<item
+		android:id="@+id/menu_status_report"
+		android:title="@string/menu_status_report"
+		android:visible="false" />
 </menu>

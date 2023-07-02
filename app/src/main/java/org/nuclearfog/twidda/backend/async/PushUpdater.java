@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -39,12 +38,7 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.PushUpdat
 			return new PushUpdateResult(webpush, null);
 		} catch (ConnectionException e) {
 			return new PushUpdateResult(null, e);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -43,15 +42,13 @@ public class DomainAction extends AsyncExecutor<DomainAction.DomainParam, Domain
 				case DomainParam.MODE_UNBLOCK:
 					connection.unblockDomain(param.domain);
 					return new DomainResult(DomainResult.MODE_UNBLOCK, param.index, null, param.domain, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new DomainResult(DomainResult.ERROR, param.index, null, param.domain, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

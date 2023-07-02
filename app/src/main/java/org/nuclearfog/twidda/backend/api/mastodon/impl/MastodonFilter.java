@@ -44,7 +44,7 @@ public class MastodonFilter implements Filter {
 				action = ACTION_HIDE;
 				break;
 		}
-		for (int i = 0 ; i < typeArray.length() ; i++) {
+		for (int i = 0; i < typeArray.length(); i++) {
 			switch (typeArray.getString(i)) {
 				case "home":
 					filterHome = true;
@@ -68,7 +68,7 @@ public class MastodonFilter implements Filter {
 			}
 		}
 		keywords = new Keyword[keywordArray.length()];
-		for (int i = 0 ; i < keywordArray.length() ; i++) {
+		for (int i = 0; i < keywordArray.length(); i++) {
 			keywords[i] = new MastodonKeyword(keywordArray.getJSONObject(i));
 		}
 		if (!expiresStr.equals("null")) {

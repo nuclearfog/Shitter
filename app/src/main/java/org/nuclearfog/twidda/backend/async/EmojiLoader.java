@@ -4,8 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Emoji;
@@ -38,12 +38,9 @@ public class EmojiLoader extends AsyncExecutor<Void, List<Emoji>> {
 			// get online emojis
 			result = connection.getEmojis();
 			db.saveEmojis(result);
-		} catch (Exception exception) {
+		} catch (ConnectionException exception) {
 			// get offline emojis
 			result = db.getEmojis();
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
 		return result;
 	}

@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -56,17 +55,15 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 					connection.deleteDirectmessage(param.id);
 					db.removeMessage(param.id);
 					return new MessageLoaderResult(MessageLoaderResult.DELETE, param.index, param.id, null, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND)
 				db.removeMessage(param.id);
 			return new MessageLoaderResult(MessageLoaderResult.ERROR, param.index, param.id, null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

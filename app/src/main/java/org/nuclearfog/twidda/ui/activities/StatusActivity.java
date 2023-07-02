@@ -81,6 +81,7 @@ import org.nuclearfog.twidda.ui.dialogs.AudioPlayerDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
+import org.nuclearfog.twidda.ui.dialogs.ReportDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
 import org.nuclearfog.twidda.ui.views.LockableConstraintLayout.LockCallback;
@@ -176,6 +177,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private ConfirmDialog confirmDialog;
 	private MetricsDialog metricsDialog;
 	private AudioPlayerDialog audioDialog;
+	private ReportDialog reportDialog;
 
 	private ViewGroup root, header;
 	private NestedScrollView container;
@@ -236,6 +238,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		confirmDialog = new ConfirmDialog(this, this);
 		metricsDialog = new MetricsDialog(this);
 		audioDialog = new AudioPlayerDialog(this);
+		reportDialog = new ReportDialog(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
 		adapter = new PreviewAdapter(this);
@@ -399,6 +402,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		MenuItem optDelete = m.findItem(R.id.menu_status_delete);
 		MenuItem optHide = m.findItem(R.id.menu_status_hide);
 		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
+		MenuItem optReport = m.findItem(R.id.menu_status_report);
 		MenuItem optMetrics = m.findItem(R.id.menu_status_metrics);
 		MenuItem menuBookmark = m.findItem(R.id.menu_status_bookmark);
 		MenuItem editStatus = m.findItem(R.id.menu_status_edit);
@@ -428,6 +432,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (settings.getLogin().getConfiguration().isStatusEditSupported()) {
 					editStatus.setVisible(true);
 				}
+			} else {
+				optReport.setVisible(true);
 			}
 			// enable/disable status metrics option
 			if (currentStatus.getMetrics() != null) {
@@ -529,6 +535,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			intent.putExtra(StatusEditor.KEY_DATA, status);
 			intent.putExtra(StatusEditor.KEY_EDIT, true);
 			activityResultLauncher.launch(intent);
+		}
+		// report status
+		else if (item.getItemId() == R.id.menu_status_report) {
+			reportDialog.show(status.getAuthor().getId(), status.getId());
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -779,7 +789,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * load status into UI
 	 *
-	 * @param status Tweet information
+	 * @param status status information
 	 */
 	private void setStatus(@NonNull Status status) {
 		this.status = status;

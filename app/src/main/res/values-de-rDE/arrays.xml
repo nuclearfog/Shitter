@@ -28,4 +28,10 @@
 		<item>2,0 X</item>
 	</string-array>
 
+	<string-array name="reports">
+		<item>Spam</item>
+		<item>Regelmissbrauch</item>
+		<item>andere Gründe</item>
+	</string-array>
+
 </resources>

@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -63,15 +62,13 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 						minId = lastNotification.getId();
 					result = connection.getNotifications(minId, 0L);
 					return new NotificationLoaderResult(result, 0, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new NotificationLoaderResult(null, param.position, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

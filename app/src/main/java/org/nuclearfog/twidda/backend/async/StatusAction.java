@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -98,6 +97,9 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 					connection.unmuteConversation(param.id);
 					db.hideStatus(param.id, false);
 					return new StatusResult(StatusResult.UNHIDE, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
@@ -105,12 +107,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 				db.removeStatus(param.id);
 			}
 			return new StatusResult(StatusResult.ERROR, null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

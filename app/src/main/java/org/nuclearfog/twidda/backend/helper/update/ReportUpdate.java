@@ -80,7 +80,7 @@ public class ReportUpdate implements Serializable {
 	/**
 	 * add additional comment to violation
 	 *
- 	 * @param comment comment attached to the report
+	 * @param comment comment attached to the report
 	 */
 	public void setComment(String comment) {
 		this.comment = comment;
@@ -89,7 +89,7 @@ public class ReportUpdate implements Serializable {
 	/**
 	 * get additional comment to violation
 	 *
-	 * @return  comment attached to the report
+	 * @return comment attached to the report
 	 */
 	public String getComment() {
 		return comment;
@@ -116,7 +116,7 @@ public class ReportUpdate implements Serializable {
 	/**
 	 * set report forwarding to source instance
 	 *
-	 * @return true to forward report to source instance
+	 * @param forward true to forward report to source instance
 	 */
 	public void setForward(boolean forward) {
 		this.forward = forward;

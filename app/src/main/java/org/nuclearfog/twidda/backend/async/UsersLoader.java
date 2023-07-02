@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -77,15 +76,13 @@ public class UsersLoader extends AsyncExecutor<UsersLoader.UserParam, UsersLoade
 				case UserParam.REQUEST_OUT:
 					users = connection.getOutgoingFollowRequests(param.cursor);
 					return new UserResult(users, param.index, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new UserResult(null, param.index, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

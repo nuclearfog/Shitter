@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -80,15 +79,13 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 						}
 					}
 					return new LoginResult(LoginResult.MODE_LOGIN, null, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new LoginResult(LoginResult.MODE_ERROR, null, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

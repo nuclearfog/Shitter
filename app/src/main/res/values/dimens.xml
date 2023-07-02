@@ -348,7 +348,12 @@
 	<dimen name="dialog_filter_margin_items_layout">4dp</dimen>
 
 	<!--dimens of dialog_report.xml-->
+	<dimen name="dialog_report_root_padding">2dp</dimen>
 	<dimen name="dialog_report_textsize_title">22sp</dimen>
 	<dimen name="dialog_report_textsize_label">12sp</dimen>
+	<dimen name="dialog_report_textsize_button">14sp</dimen>
+	<dimen name="dialog_report_margin_items_layout">4dp</dimen>
+	<dimen name="dialog_report_button_padding">5dp</dimen>
+	<dimen name="dialog_report_button_height">24sp</dimen>
 
 </resources>

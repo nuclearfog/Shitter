@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
@@ -58,15 +57,13 @@ public class UserFilterLoader extends AsyncExecutor<UserFilterLoader.FilterParam
 				case FilterParam.BLOCK_DOMAIN:
 					connection.blockDomain(param.name);
 					return new FilterResult(FilterResult.BLOCK_DOMAIN, null);
+
+				default:
+					return null;
 			}
 		} catch (ConnectionException exception) {
 			return new FilterResult(FilterResult.ERROR, exception);
-		} catch (Exception exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
 		}
-		return null;
 	}
 
 	/**

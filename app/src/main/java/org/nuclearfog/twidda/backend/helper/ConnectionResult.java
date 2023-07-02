@@ -25,7 +25,7 @@ public class ConnectionResult {
 	}
 
 	/**
- 	 * @param authorizationUrl authorization url used to redirect to login page
+	 * @param authorizationUrl authorization url used to redirect to login page
 	 * @param tempOauth        temporary generated oauth 1.0 access token
 	 */
 	public ConnectionResult(String authorizationUrl, String tempOauth) {

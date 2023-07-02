@@ -84,6 +84,8 @@
 	<string name="info_filter_created">Filter created</string>
 	<string name="info_filter_updated">Filter updated</string>
 	<string name="info_filter_removed">Filter removed</string>
+	<string name="info_user_reported">User reported</string>
+	<string name="info_status_reported">Status reported</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -159,6 +161,7 @@
 	<string name="menu_follow_requested">follow requested</string>
 	<string name="menu_status_edit">edit</string>
 	<string name="menu_status_delete">delete</string>
+	<string name="menu_status_report">report</string>
 	<string name="menu_status_hide">hide</string>
 	<string name="menu_status_metrics">Metrics</string>
 	<string name="menu_status_unhide">unhide</string>
@@ -265,8 +268,6 @@
 	<string name="settings_key2_hint">Consumer secret</string>
 	<string name="dialog_connection_custom_host">use custom hostname</string>
 	<string name="dialog_connection_apply">apply changes</string>
-	<string name="dialog_report_status_title">Report post</string>
-	<string name="dialog_report_user_title">Report 1$s</string>
 	<string name="dialog_report_hint_description">additional description</string>
 	<string name="dialog_report_description_forward">forward report to source instance</string>
 	<string name="confirm_mute">mute user?</string>
@@ -351,6 +352,10 @@
 	<string name="dialog_push_follow_request">on follow request</string>
 	<string name="dialog_push_title">Notification</string>
 	<string name="dialog_push_apply">apply changes</string>
+	<string name="dialog_report_title_user">report user</string>
+	<string name="dialog_report_category_label">what to report</string>
+	<string name="dialog_report_title_status">report status</string>
+	<string name="dialog_report_apply">report</string>
 	<string name="settings_enable_push_label">enable push notification\n(requires ntfy app)</string>
 	<string name="notification_favorite">%1$s favorited your status</string>
 	<string name="notification_repost">%1$s reposted your status</string>

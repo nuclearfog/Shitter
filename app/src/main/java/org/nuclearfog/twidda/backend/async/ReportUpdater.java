@@ -8,48 +8,48 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.model.lists.Filters;
+import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 
 /**
- * Async loader for (server-side) status filter
+ * status/user report updater
  *
  * @author nuclearfog
+ * @see org.nuclearfog.twidda.ui.dialogs.ReportDialog
  */
-public class StatusFilterLoader extends AsyncExecutor<Void, StatusFilterLoader.FilterLoaderResult> {
+public class ReportUpdater extends AsyncExecutor<ReportUpdate, ReportUpdater.ReportResult> {
 
 	private Connection connection;
 
 	/**
 	 *
 	 */
-	public StatusFilterLoader(Context context) {
+	public ReportUpdater(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
 
 	@Override
-	protected FilterLoaderResult doInBackground(@NonNull Void param) {
+	protected ReportResult doInBackground(@NonNull ReportUpdate param) {
 		try {
-			Filters result = connection.getFilter();
-			return new FilterLoaderResult(result, null);
+			connection.createReport(param);
+			return new ReportResult(true, null);
 		} catch (ConnectionException exception) {
-			return new FilterLoaderResult(null, exception);
+			return new ReportResult(false, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class FilterLoaderResult {
+	public static class ReportResult {
 
-		@Nullable
-		public final Filters filters;
+		public final boolean reported;
 		@Nullable
 		public final ConnectionException exception;
 
-		FilterLoaderResult(@Nullable Filters filters, @Nullable ConnectionException exception) {
-			this.filters = filters;
+		ReportResult(boolean reported, @Nullable ConnectionException exception) {
 			this.exception = exception;
+			this.reported = reported;
 		}
 	}
 }

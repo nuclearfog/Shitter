@@ -37,11 +37,13 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.DatabaseParam, 
 				case DatabaseParam.LOGOUT:
 					db.removeLogin(settings.getLogin().getId());
 					return new DatabaseResult(DatabaseResult.LOGOUT);
+
+				default:
+					return null;
 			}
 		} catch (Exception exception) {
 			return new DatabaseResult(DatabaseResult.ERROR);
 		}
-		return null;
 	}
 
 	/**
