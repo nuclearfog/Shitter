@@ -751,6 +751,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private void setUser(@NonNull User user) {
 		this.user = user;
+		Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
 		following.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
 		follower.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
 		following.setVisibility(View.VISIBLE);
@@ -832,7 +833,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (settings.imagesEnabled()) {
 			String bannerImageUrl = user.getBannerImageThumbnailUrl();
 			String profileImageUrl = user.getProfileImageThumbnailUrl();
-			Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
 			if (!bannerImageUrl.isEmpty()) {
 				picasso.load(bannerImageUrl).error(R.drawable.no_banner).into(bannerImage, this);
 			} else {
@@ -846,7 +846,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				profileImage.setImageDrawable(placeholder);
 			}
 		} else {
-			Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
 			profileImage.setImageDrawable(placeholder);
 		}
 		// initialize emoji loading for username/description

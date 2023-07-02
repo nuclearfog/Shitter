@@ -6,6 +6,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BlurMaskFilter;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -154,6 +156,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * toolbar menu group ID for copy options
 	 */
 	private static final int MENU_GROUP_COPY = 0x157426;
+
+	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<StatusResult> statusCallback = this::onStatusResult;
@@ -794,6 +798,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private void setStatus(@NonNull Status status) {
 		this.status = status;
 		translated = false;
+		Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
 		if (status.getEmbeddedStatus() != null) {
 			repost_name_button.setVisibility(View.VISIBLE);
 			repost_name_button.setText(status.getAuthor().getScreenname());
@@ -914,9 +919,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// set profile image url
 		if (settings.imagesEnabled() && !author.getProfileImageThumbnailUrl().isEmpty()) {
 			Transformation roundCorner = new RoundedCornersTransformation(4, 0);
-			picasso.load(author.getProfileImageThumbnailUrl()).transform(roundCorner).error(R.drawable.no_image).into(profile_image);
+			picasso.load(author.getProfileImageThumbnailUrl()).transform(roundCorner).placeholder(placeholder).error(R.drawable.no_image).into(profile_image);
 		} else {
-			profile_image.setImageResource(0);
+			profile_image.setImageDrawable(placeholder);
 		}
 		// set location information
 		if (location != null) {
