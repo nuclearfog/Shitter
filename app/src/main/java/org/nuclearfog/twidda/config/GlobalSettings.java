@@ -1094,7 +1094,7 @@ public class GlobalSettings {
 		String pushPublicKey = settings.getString(PUSH_PUBLIC_KEY, "");
 		String pushPrivateKey = settings.getString(PUSH_PRIVATE_KEY, "");
 		String pushAuthKey = settings.getString(PUSH_AUTH_KEY, "");
-		boolean mentions = settings.getBoolean(PUSH_ALERT_MENTION, false);
+		boolean mentions = settings.getBoolean(PUSH_ALERT_MENTION, true);
 		boolean reposts = settings.getBoolean(PUSH_ALERT_REPOST, false);
 		boolean favorits = settings.getBoolean(PUSH_ALERT_FAVORITE, false);
 		boolean following = settings.getBoolean(PUSH_ALERT_FOLLOWING, false);

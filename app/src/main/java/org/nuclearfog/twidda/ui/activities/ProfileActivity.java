@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -122,6 +124,8 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 * scrollview position threshold to lock/unlock child scrolling
 	 */
 	private static final int SCROLL_THRESHOLD = 10;
+
+	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<DomainResult> domainCallback = this::setDomainResult;
@@ -828,6 +832,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (settings.imagesEnabled()) {
 			String bannerImageUrl = user.getBannerImageThumbnailUrl();
 			String profileImageUrl = user.getProfileImageThumbnailUrl();
+			Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
 			if (!bannerImageUrl.isEmpty()) {
 				picasso.load(bannerImageUrl).error(R.drawable.no_banner).into(bannerImage, this);
 			} else {
@@ -836,10 +841,13 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			}
 			if (!profileImageUrl.isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(5, 0);
-				picasso.load(profileImageUrl).transform(roundCorner).error(R.drawable.no_image).into(profileImage);
+				picasso.load(profileImageUrl).transform(roundCorner).placeholder(placeholder).error(R.drawable.no_image).into(profileImage);
 			} else {
-				profileImage.setImageResource(0);
+				profileImage.setImageDrawable(placeholder);
 			}
+		} else {
+			Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
+			profileImage.setImageDrawable(placeholder);
 		}
 		// initialize emoji loading for username/description
 		if (settings.imagesEnabled() && user.getEmojis().length > 0) {

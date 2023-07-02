@@ -112,7 +112,7 @@ public class ImageCache {
 			if (!files.containsKey(key)) {
 				try {
 					File file = new File(imageFolder, key);
-					if (file.createNewFile()) {
+					if ((file.exists() && file.canWrite()) || file.createNewFile()) {
 						FileOutputStream output = new FileOutputStream(file);
 						image.compress(Bitmap.CompressFormat.PNG, 1, output);
 						output.close();

@@ -47,7 +47,6 @@
 		<item name="android:background">@android:color/transparent</item>
 		<item name="android:windowCloseOnTouchOutside">false</item>
 		<item name="android:windowNoTitle">true</item>
-		<item name="android:textSize">@dimen/dialog_connection_textsizte_normal</item>
 		<item name="android:backgroundDimEnabled">true</item>
 	</style>
 
@@ -68,6 +67,7 @@
 	<style name="AudioDialog" parent="Theme.AppCompat.Dialog">
 		<item name="android:background">@color/player_control</item>
 		<item name="android:windowMinWidthMinor">90%</item>
+		<item name="android:windowMinWidthMajor">95%</item>
 		<item name="android:windowCloseOnTouchOutside">false</item>
 	</style>
 

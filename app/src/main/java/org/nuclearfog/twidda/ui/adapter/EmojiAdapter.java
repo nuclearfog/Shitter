@@ -111,6 +111,13 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickL
 	}
 
 	/**
+	 * @return true if adapter is empty
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
+	}
+
+	/**
 	 * Listener used to send emoji information on click
 	 */
 	public interface OnEmojiClickListener {

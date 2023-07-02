@@ -116,7 +116,9 @@ public class AudioPlayerDialog extends Dialog implements OnClickListener, Closea
 	@Override
 	protected void onStop() {
 		super.onStop();
-		player.pause();
+		if (player.isPlaying()) {
+			player.pause();
+		}
 	}
 
 

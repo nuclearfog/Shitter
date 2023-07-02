@@ -69,14 +69,23 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 
 		listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 		listView.setAdapter(adapter);
+	}
 
-		emojiLoader.execute(null, this);
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			emojiLoader.execute(null, this);
+		}
 	}
 
 
 	@Override
 	public void onResult(@NonNull List<Emoji> emojis) {
-		adapter.replaceItems(emojis);
+		if (!emojis.isEmpty()) {
+			adapter.replaceItems(emojis);
+		}
 	}
 
 

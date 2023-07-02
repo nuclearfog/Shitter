@@ -241,7 +241,6 @@
 	<string name="settings_key1_hint">Clave de consumidor</string>
 	<string name="settings_key2_hint">Secreto de consumidor</string>
 	<string name="dialog_connection_custom_host">Usar nombre de host personalizado</string>
-	<string name="dialog_connection_apply">Aplicar cambios</string>
 	<string name="confirm_mute">¿Silenciar usuario?</string>
 	<string name="item_list_pb_desc">Perfil del dueño de la lista</string>
 	<string name="list_appbar">Listas</string>
@@ -320,7 +319,7 @@
 	<string name="dialog_push_new_follower">nuevo seguidor</string>
 	<string name="dialog_push_follow_request">en solicitud para seguir</string>
 	<string name="dialog_push_title">Notificación</string>
-	<string name="dialog_push_apply">aplicar cambios</string>
+	<string name="dialog_apply">aplicar cambios</string>
 	<string name="settings_enable_push_label">habilitar notificación push\n(requiere app ntfy)</string>
 	<string name="notification_favorite">%1$s ha marcado como favorito a tu estado</string>
 	<string name="notification_repost">%1$s ha re-publicado tu estado</string>

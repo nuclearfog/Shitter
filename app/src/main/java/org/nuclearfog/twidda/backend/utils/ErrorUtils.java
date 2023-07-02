@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.utils;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
@@ -40,6 +41,7 @@ public class ErrorUtils {
 	 * @param exception connection exception
 	 * @return message string
 	 */
+	@NonNull
 	public static String getErrorMessage(Context context, @Nullable ConnectionException exception) {
 		if (exception != null) {
 			switch (exception.getErrorCode()) {

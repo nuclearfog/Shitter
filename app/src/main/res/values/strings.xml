@@ -267,7 +267,6 @@
 	<string name="settings_key1_hint">Consumer key</string>
 	<string name="settings_key2_hint">Consumer secret</string>
 	<string name="dialog_connection_custom_host">use custom hostname</string>
-	<string name="dialog_connection_apply">apply changes</string>
 	<string name="dialog_report_hint_description">additional description</string>
 	<string name="dialog_report_description_forward">forward report to source instance</string>
 	<string name="confirm_mute">mute user?</string>
@@ -351,7 +350,7 @@
 	<string name="dialog_push_new_follower">new follower</string>
 	<string name="dialog_push_follow_request">on follow request</string>
 	<string name="dialog_push_title">Notification</string>
-	<string name="dialog_push_apply">apply changes</string>
+	<string name="dialog_apply">apply</string>
 	<string name="dialog_report_title_user">report user</string>
 	<string name="dialog_report_category_label">what to report</string>
 	<string name="dialog_report_title_status">report status</string>
@@ -376,7 +375,6 @@
 	<string name="dialog_filter_create">create filter</string>
 	<string name="dialog_filter_name_hint">enter filter name</string>
 	<string name="dialog_filter_update">update filter</string>
-	<string name="dialog_filter_button_apply">apply</string>
 	<string name="dialog_filter_apply">apply filter for</string>
 	<string name="dialog_filter_home">Home timeline</string>
 	<string name="dialog_filter_notification">Notifications</string>

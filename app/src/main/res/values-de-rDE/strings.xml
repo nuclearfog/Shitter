@@ -109,7 +109,6 @@
 	<string name="proxy_password">Passwort</string>
 	<string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
 	<string name="dialog_connection_custom_host">Benutzerdefinierter Hostname</string>
-	<string name="dialog_connection_apply">anwenden</string>
 	<string name="dialog_report_hint_description">zusätzliche Beschreibung</string>
 	<string name="dialog_report_description_forward">an Quellinstanz weiterleiten</string>
 	<string name="confirm_mute">Nutzer stummschalten?</string>
@@ -241,7 +240,7 @@
 	<string name="error_media_init">Fehler beim Vorbreiten der Mediendateien!</string>
 	<string name="menu_status_copy_text">Text</string>
 	<string name="menu_add_filter">Filter erstellen</string>
-	<string name="menu_status_copy_link">Status Link</string>
+	<string name="menu_status_copy_link">Status-Link</string>
 	<string name="menu_media_link">Medienlink</string>
 	<string name="info_status_text_copied">Status Text kopiert</string>
 	<string name="info_status_medialink_copied">Medienlink kopiert</string>
@@ -328,7 +327,7 @@
 	<string name="dialog_push_new_follower">bei neuen Followern</string>
 	<string name="dialog_push_follow_request">bei neuen Follow-Anfragen</string>
 	<string name="dialog_push_title">Benachrichtigung</string>
-	<string name="dialog_push_apply">Änderungen anwenden</string>
+	<string name="dialog_apply">anwenden</string>
 	<string name="dialog_report_title_user">Nutzer melden</string>
 	<string name="dialog_report_category_label">Meldegrund</string>
 	<string name="dialog_report_title_status">Status melden</string>
@@ -355,7 +354,6 @@
 	<string name="dialog_filter_create">Filter erstellen</string>
 	<string name="dialog_filter_name_hint">Filternamen eingeben</string>
 	<string name="dialog_filter_update">Filter aktualisieren</string>
-	<string name="dialog_filter_button_apply">anwenden</string>
 	<string name="dialog_filter_apply">Filter anwenden für</string>
 	<string name="dialog_filter_home">Home-Timeline</string>
 	<string name="dialog_filter_notification">Benachrichtigungen</string>

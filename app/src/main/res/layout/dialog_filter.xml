@@ -220,7 +220,7 @@
 		android:layout_width="0dp"
 		android:layout_height="@dimen/dialog_poll_button_height"
 		android:layout_weight="1"
-		android:text="@string/dialog_filter_button_apply"
+		android:text="@string/dialog_apply"
 		android:lines="1"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintTop_toTopOf="@id/dialog_filter_switch_hide"

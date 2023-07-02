@@ -427,7 +427,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		}
 		// show push configuration dialog
 		else if (v.getId() == R.id.settings_enable_push_descr) {
-			pushDialog.show();
+			if (enablePush.isChecked()) {
+				pushDialog.show();
+			}
 		}
 	}
 
