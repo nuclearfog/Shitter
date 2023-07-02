@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -32,14 +33,16 @@ import java.util.List;
 public class PollDialog extends Dialog implements OnClickListener {
 
 	private EditOptionsAdapter optionAdapter;
+	private DropdownAdapter timeUnitAdapter;
+	private PollUpdateCallback callback;
+
 	private SwitchButton multiple_choice, hide_votes;
 	private Spinner timeUnitSelector;
 	private EditText durationInput;
 
-	private PollUpdateCallback callback;
-	private PollUpdate poll;
 	@Nullable
 	private Instance instance;
+	private PollUpdate poll;
 
 	/**
 	 *
@@ -47,6 +50,15 @@ public class PollDialog extends Dialog implements OnClickListener {
 	public PollDialog(Activity activity, PollUpdateCallback callback) {
 		super(activity, R.style.PollDialog);
 		this.callback = callback;
+		optionAdapter = new EditOptionsAdapter();
+		timeUnitAdapter = new DropdownAdapter(activity.getApplicationContext());
+		timeUnitAdapter.setItems(R.array.timeunits);
+	}
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_poll);
 		ViewGroup root = findViewById(R.id.dialog_poll_root);
 		RecyclerView optionsList = findViewById(R.id.dialog_poll_option_list);
@@ -57,17 +69,32 @@ public class PollDialog extends Dialog implements OnClickListener {
 		multiple_choice = findViewById(R.id.dialog_poll_mul_choice);
 		hide_votes = findViewById(R.id.dialog_poll_hide_total);
 
-		DropdownAdapter adapter = new DropdownAdapter(activity.getApplicationContext());
-		adapter.setItems(R.array.timeunits);
-		timeUnitSelector.setAdapter(adapter);
-		timeUnitSelector.setSelection(2);
-
-		optionAdapter = new EditOptionsAdapter();
 		optionsList.setAdapter(optionAdapter);
+		timeUnitSelector.setAdapter(timeUnitAdapter);
+		timeUnitSelector.setSelection(2);
 		AppStyles.setTheme(root);
 
 		confirm.setOnClickListener(this);
 		close.setOnClickListener(this);
+	}
+
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		optionAdapter.replaceItems(poll.getOptions());
+		multiple_choice.setCheckedImmediately(poll.multipleChoiceEnabled());
+		hide_votes.setCheckedImmediately(poll.hideTotalVotes());
+		if (poll.getDuration() > 86400000L) {
+			durationInput.setText(Long.toString(Math.round(poll.getDuration() / 86400000d)));
+			timeUnitSelector.setSelection(2);
+		} else if (poll.getDuration() > 3600000L) {
+			durationInput.setText(Long.toString(Math.round(poll.getDuration() / 3600000d)));
+			timeUnitSelector.setSelection(1);
+		} else if (poll.getDuration() > 60000L) {
+			durationInput.setText(Long.toString(Math.round(poll.getDuration() / 60000d)));
+			timeUnitSelector.setSelection(0);
+		}
 	}
 
 
@@ -91,7 +118,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 				Toast.makeText(getContext(), R.string.error_duration_time_low, Toast.LENGTH_SHORT).show();
 			} else if (instance != null && duration > instance.getMaxPollDuration()) {
 				Toast.makeText(getContext(), R.string.error_duration_time_high, Toast.LENGTH_SHORT).show();
-			} else {
+			} else if (poll != null) {
 				List<String> options = optionAdapter.getItems();
 				for (String option : options) {
 					if (option.trim().isEmpty()) {
@@ -114,6 +141,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 
 	@Override
 	public void show() {
+		// using show(PollUpdate) instead
 	}
 
 
@@ -132,19 +160,6 @@ public class PollDialog extends Dialog implements OnClickListener {
 	public void show(@Nullable PollUpdate poll) {
 		if (!isShowing()) {
 			if (poll != null) {
-				optionAdapter.replaceItems(poll.getOptions());
-				multiple_choice.setCheckedImmediately(poll.multipleChoiceEnabled());
-				hide_votes.setCheckedImmediately(poll.hideTotalVotes());
-				if (poll.getDuration() > 86400000L) {
-					durationInput.setText(Long.toString(Math.round(poll.getDuration() / 86400000d)));
-					timeUnitSelector.setSelection(2);
-				} else if (poll.getDuration() > 3600000L) {
-					durationInput.setText(Long.toString(Math.round(poll.getDuration() / 3600000d)));
-					timeUnitSelector.setSelection(1);
-				} else if (poll.getDuration() > 60000L) {
-					durationInput.setText(Long.toString(Math.round(poll.getDuration() / 60000d)));
-					timeUnitSelector.setSelection(0);
-				}
 				this.poll = poll;
 			} else {
 				this.poll = new PollUpdate();

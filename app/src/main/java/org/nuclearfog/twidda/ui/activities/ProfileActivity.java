@@ -736,8 +736,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (result.mode == DomainResult.MODE_BLOCK) {
 			Toast.makeText(getApplicationContext(), R.string.info_domain_blocked, Toast.LENGTH_SHORT).show();
 		} else if (result.mode == DomainResult.ERROR) {
-			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+			ErrorUtils.showErrorMessage(this, result.exception);
 		}
 	}
 

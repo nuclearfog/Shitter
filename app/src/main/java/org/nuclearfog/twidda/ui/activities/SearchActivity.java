@@ -256,8 +256,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 				break;
 
 			case HashtagResult.ERROR:
-				String message = ErrorUtils.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(this, result.exception);
 				break;
 		}
 	}

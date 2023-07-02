@@ -26,12 +26,14 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
-import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.ConnectionResult;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
+import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
@@ -145,6 +147,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_DOMAIN_BLOCK = "/api/v1/domain_blocks";
 	private static final String ENDPOINT_PUSH_UPDATE = "/api/v1/push/subscription";
 	private static final String ENDPOINT_FILTER = "/api/v2/filters";
+	private static final String ENDPOINT_REPORT = "/api/v1/reports";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -170,7 +173,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public String getAuthorisationLink(ConnectionConfig connection) throws MastodonException {
+	public ConnectionResult getAuthorisationLink(ConnectionUpdate connection) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("scopes=" + AUTH_SCOPES);
 		params.add("redirect_uris=" + REDIRECT_URI);
@@ -184,8 +187,8 @@ public class Mastodon implements Connection {
 				JSONObject json = new JSONObject(body.string());
 				String client_id = json.getString("client_id");
 				String client_secret = json.getString("client_secret");
-				connection.setOauthTokens(client_id, client_secret);
-				return hostname + ENDPOINT_AUTHORIZE_APP + "?scope=" + AUTH_SCOPES + "&response_type=code&redirect_uri=" + REDIRECT_URI + "&client_id=" + client_id;
+				String authLink = hostname + ENDPOINT_AUTHORIZE_APP + "?scope=" + AUTH_SCOPES + "&response_type=code&redirect_uri=" + REDIRECT_URI + "&client_id=" + client_id;
+				return new ConnectionResult(authLink, client_id, client_secret);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
@@ -195,7 +198,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Account loginApp(ConnectionConfig connection, String pin) throws MastodonException {
+	public Account loginApp(ConnectionUpdate connection, String pin) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("client_id=" + connection.getOauthConsumerToken());
 		params.add("client_secret=" + connection.getOauthTokenSecret());
@@ -1228,9 +1231,9 @@ public class Mastodon implements Connection {
 	@Override
 	public Translation getStatusTranslation(long id) throws ConnectionException {
 		try {
-			List<String> param = new ArrayList<>();
-			param.add("lang=" + Locale.getDefault().getLanguage()); // set system language as destiny for translation
-			Response response = post(ENDPOINT_STATUS + id + "/translate", param);
+			List<String> params = new ArrayList<>();
+			params.add("lang=" + Locale.getDefault().getLanguage()); // set system language as destiny for translation
+			Response response = post(ENDPOINT_STATUS + id + "/translate", params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
@@ -1238,6 +1241,35 @@ public class Mastodon implements Connection {
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public void createReport(ReportUpdate update) throws ConnectionException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("account_id=" + update.getUserId());
+			for (long statusId : update.getStatusIds())
+				params.add("status_ids[]=" + statusId);
+			for (int ruleId : update.getRuleIds())
+				params.add("rule_ids[]=" + ruleId);
+			if (!update.getComment().trim().isEmpty())
+				params.add("comment=" + StringUtils.encode(update.getComment()));
+			if (update.getCategory() == ReportUpdate.CATEGORY_OTHER)
+				params.add("category=other");
+			else if (update.getCategory() == ReportUpdate.CATEGORY_SPAM)
+				params.add("category=spam");
+			else if (update.getCategory() == ReportUpdate.CATEGORY_VIOLATION)
+				params.add("category=violation");
+			if (update.getForward())
+				params.add("forward=true");
+			Response response = post(ENDPOINT_REPORT, params);
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
 	}

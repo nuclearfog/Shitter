@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -39,9 +40,8 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	private TextView title;
 
 	private StatusFilterAction filterAction;
-
 	private FilterDialogCallback callback;
-	private FilterUpdate update = new FilterUpdate();
+	private FilterUpdate update;
 
 	/**
 	 *
@@ -49,8 +49,15 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	public FilterDialog(Activity activity, FilterDialogCallback callback) {
 		super(activity, R.style.FilterDialog);
 		this.callback = callback;
-		setContentView(R.layout.dialog_filter);
+		update = new FilterUpdate();
+		filterAction = new StatusFilterAction(activity);
+	}
 
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.dialog_filter);
 		ViewGroup root = findViewById(R.id.dialog_filter_root);
 		Button btn_create = findViewById(R.id.dialog_filter_create);
 		sw_hide = findViewById(R.id.dialog_filter_switch_hide);
@@ -63,7 +70,6 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 		txt_title = findViewById(R.id.dialog_filter_name);
 		txt_keywords = findViewById(R.id.dialog_filter_keywords);
 
-		filterAction = new StatusFilterAction(activity);
 		AppStyles.setTheme(root);
 
 		btn_create.setOnClickListener(this);
@@ -77,14 +83,52 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		if (update != null) {
+			// update an existing filter
+			if (update.getId() != 0L) {
+				title.setText(R.string.dialog_filter_update);
+				if (update.getKeywords().length > 0) {
+					StringBuilder keywordsStr = new StringBuilder();
+					for (String keyword : update.getKeywords()) {
+						keywordsStr.append(keyword).append('\n');
+					}
+					// delete last newline symbol
+					keywordsStr.deleteCharAt(keywordsStr.length() - 1);
+					txt_keywords.setText(keywordsStr);
+				} else {
+					txt_keywords.setText("");
+				}
+			}
+			// create new filter
+			else {
+				title.setText(R.string.dialog_filter_create);
+				txt_keywords.setText("");
+			}
+			sw_home.setCheckedImmediately(update.filterHomeSet());
+			sw_notification.setCheckedImmediately(update.filterNotificationSet());
+			sw_public.setCheckedImmediately(update.filterPublicSet());
+			sw_user.setCheckedImmediately(update.filterUserSet());
+			sw_thread.setCheckedImmediately(update.filterThreadSet());
+			sw_hide.setCheckedImmediately(update.getFilterAction() == Filter.ACTION_HIDE);
+			txt_title.setText(update.getTitle());
+		}
+	}
+
+
+	@Override
 	public void show() {
+		// using show(filter) instead
 	}
 
 
 	@Override
 	public void dismiss() {
-		filterAction.cancel();
-		super.dismiss();
+		if (isShowing()) {
+			filterAction.cancel();
+			super.dismiss();
+		}
 	}
 
 
@@ -150,41 +194,12 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	 */
 	public void show(@Nullable Filter filter) {
 		if (!isShowing()) {
-			super.show();
-			// update an existing filter
 			if (filter != null) {
 				update = new FilterUpdate(filter);
-				title.setText(R.string.dialog_filter_update);
-
-				if (filter.getKeywords().length > 0) {
-					StringBuilder keywordsStr = new StringBuilder();
-					for (Filter.Keyword keyword : filter.getKeywords()) {
-						if (keyword.isOneWord()) {
-							keywordsStr.append("\"").append(keyword.getKeyword()).append("\"\n");
-						} else {
-							keywordsStr.append(keyword.getKeyword()).append('\n');
-						}
-					}
-					// delete last newline symbol
-					keywordsStr.deleteCharAt(keywordsStr.length() - 1);
-					txt_keywords.setText(keywordsStr);
-				} else {
-					txt_keywords.setText("");
-				}
-			}
-			// create new filter
-			else {
+			} else {
 				update = new FilterUpdate();
-				title.setText(R.string.dialog_filter_create);
-				txt_keywords.setText("");
 			}
-			sw_home.setCheckedImmediately(update.filterHomeSet());
-			sw_notification.setCheckedImmediately(update.filterNotificationSet());
-			sw_public.setCheckedImmediately(update.filterPublicSet());
-			sw_user.setCheckedImmediately(update.filterUserSet());
-			sw_thread.setCheckedImmediately(update.filterThreadSet());
-			sw_hide.setCheckedImmediately(update.getFilterAction() == Filter.ACTION_HIDE);
-			txt_title.setText(update.getTitle());
+			super.show();
 		}
 	}
 

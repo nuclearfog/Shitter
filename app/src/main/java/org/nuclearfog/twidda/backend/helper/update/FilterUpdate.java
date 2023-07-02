@@ -47,7 +47,11 @@ public class FilterUpdate implements Serializable {
 		keywordIds = new long[keywords.length];
 		for (int i = 0 ; i < keywords.length ; i++) {
 			keywordIds[i] = keywords[i].getId();
-			keyWordStr[i] = keywords[i].getKeyword();
+			if (keywords[i].isOneWord()) {
+				keyWordStr[i] = '\"' + keywords[i].getKeyword() + '\"';
+			} else {
+				keyWordStr[i] = keywords[i].getKeyword();
+			}
 		}
 		if (expires_at > 0) {
 			this.expires_at = expires_at;

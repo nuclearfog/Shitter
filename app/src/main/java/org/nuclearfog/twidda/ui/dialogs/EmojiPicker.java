@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,18 +35,24 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 
 	private OnEmojiSelectListener listener;
 	private EmojiAdapter adapter;
+	private EmojiLoader emojiLoader;
 
 	/**
 	 * @param activity activity used to show emoji picker
 	 * @param listener emoji add listener
 	 */
-	@SuppressWarnings("ConstantConditions")
 	public EmojiPicker(Activity activity, OnEmojiSelectListener listener) {
 		super(activity, R.style.EmojiPickerDialog);
-		GlobalSettings settings = GlobalSettings.get(activity);
+		emojiLoader = new EmojiLoader(activity.getApplicationContext());
 		adapter = new EmojiAdapter(this);
 		this.listener = listener;
+	}
 
+
+	@Override
+	@SuppressWarnings("ConstantConditions")
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_emoji_picker);
 		ViewGroup root = findViewById(R.id.dialog_emoji_root);
 		RecyclerView listView = findViewById(R.id.dialog_emoji_list);
@@ -53,16 +60,16 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 
 		// set round corner background annd color
 		getWindow().setBackgroundDrawable(new ColorDrawable(0));
+		GlobalSettings settings = GlobalSettings.get(getContext());
 		background.getBackground().setColorFilter(settings.getBackgroundColor(), PorterDuff.Mode.SRC_IN);
 		// set height
 		int height = Resources.getSystem().getDisplayMetrics().heightPixels / 4;
 		BottomSheetBehavior<View> mBehavior = BottomSheetBehavior.from((View) root.getParent());
 		mBehavior.setPeekHeight(height);
 
-		listView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+		listView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 		listView.setAdapter(adapter);
 
-		EmojiLoader emojiLoader = new EmojiLoader(activity.getApplicationContext());
 		emojiLoader.execute(null, this);
 	}
 

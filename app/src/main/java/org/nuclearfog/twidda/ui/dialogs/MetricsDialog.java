@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,9 +22,19 @@ public class MetricsDialog extends Dialog {
 	private TextView views, profileClicks, linkClicks, quotes, videoViews;
 	private View linkIcon, quoteIcon, videoIcon;
 
+	private Metrics metrics;
 
+	/**
+	 *
+	 */
 	public MetricsDialog(Activity activity) {
 		super(activity, R.style.MetricsDialog);
+	}
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_metrics);
 		ViewGroup root = findViewById(R.id.dialog_metrics_root);
 		views = findViewById(R.id.dialog_metrics_views);
@@ -39,24 +50,9 @@ public class MetricsDialog extends Dialog {
 
 
 	@Override
-	public void show() {
-	}
-
-
-	@Override
-	public void dismiss() {
-		if (isShowing()) {
-			super.dismiss();
-		}
-	}
-
-	/**
-	 * show dialog window
-	 *
-	 * @param metrics status metrics to show
-	 */
-	public void show(Metrics metrics) {
-		if (!isShowing()) {
+	protected void onStart() {
+		super.onStart();
+		if (metrics != null) {
 			views.setText(StringUtils.NUMBER_FORMAT.format(metrics.getViews()));
 			profileClicks.setText(StringUtils.NUMBER_FORMAT.format(metrics.getProfileClicks()));
 			if (metrics.getLinkClicks() > 0) {
@@ -83,6 +79,31 @@ public class MetricsDialog extends Dialog {
 				videoViews.setVisibility(View.GONE);
 				videoIcon.setVisibility(View.GONE);
 			}
+		}
+	}
+
+
+	@Override
+	public void show() {
+		// using show(Metrics) instead
+	}
+
+
+	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
+	/**
+	 * show dialog window
+	 *
+	 * @param metrics status metrics to show
+	 */
+	public void show(Metrics metrics) {
+		if (!isShowing()) {
+			this.metrics = metrics;
 			super.show();
 		}
 	}

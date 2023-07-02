@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -126,18 +127,29 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int NOTIFICATION_DISMISS = 623;
 
+	/**
+	 * show notification when adding domain hostname to blocklist
+	 */
 	public static final int DOMAIN_BLOCK_ADD = 624;
 
+	/**
+	 * show notification when removing domain hostname to blocklist
+	 */
 	public static final int DOMAIN_BLOCK_REMOVE = 625;
 
+	/**
+	 * show notification when removing a filter from filterlist
+	 */
 	public static final int FILTER_REMOVE = 626;
 
 
 	private TextView title, message;
 	private Button confirm, cancel;
-	private ViewGroup root;
 
 	private OnConfirmListener listener;
+
+	private int type = 0;
+	private String messageStr = "";
 
 	/**
 	 *
@@ -145,13 +157,20 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public ConfirmDialog(Activity activity, OnConfirmListener listener) {
 		super(activity, R.style.ConfirmDialog);
 		this.listener = listener;
+	}
 
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_confirm);
-		root = findViewById(R.id.confirm_rootview);
+		ViewGroup root = findViewById(R.id.confirm_rootview);
 		confirm = findViewById(R.id.confirm_yes);
 		cancel = findViewById(R.id.confirm_no);
 		title = findViewById(R.id.confirm_title);
 		message = findViewById(R.id.confirm_message);
+
+		AppStyles.setTheme(root);
 
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
@@ -159,37 +178,8 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 
 	@Override
-	public void dismiss() {
-		if (isShowing()) {
-			super.dismiss();
-		}
-	}
-
-
-	@Override
-	public void show() {
-	}
-
-	/**
-	 * creates an alert dialog
-	 *
-	 * @param type Type of dialog to show
-	 */
-	public void show(int type) {
-		show(type, null);
-	}
-
-	/**
-	 * creates an alert dialog
-	 *
-	 * @param type       Type of dialog to show
-	 * @param messageTxt override default message text
-	 */
-	public void show(int type, @Nullable String messageTxt) {
-		if (isShowing()) {
-			return;
-		}
-		// attach type to the view
+	protected void onStart() {
+		super.onStart();
 		confirm.setTag(type);
 		// default visibility values
 		int titleVis = View.GONE;
@@ -301,13 +291,48 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		confirm.setText(confirmRes);
 		confirm.setCompoundDrawablesWithIntrinsicBounds(confirmIconRes, 0, 0, 0);
 		// setup message
-		if (messageTxt != null && !messageTxt.isEmpty()) {
-			message.setText(messageTxt);
+		if (messageStr != null && !messageStr.isEmpty()) {
+			message.setText(messageStr);
 		} else {
 			message.setText(messageRes);
 		}
-		AppStyles.setTheme(root);
-		super.show();
+	}
+
+
+	@Override
+	public void show() {
+		// using show(int) and show(int, String) instead
+	}
+
+
+	@Override
+	public void dismiss() {
+		if (isShowing()) {
+			super.dismiss();
+		}
+	}
+
+	/**
+	 * creates an alert dialog
+	 *
+	 * @param type Type of dialog to show
+	 */
+	public void show(int type) {
+		show(type, null);
+	}
+
+	/**
+	 * creates an alert dialog
+	 *
+	 * @param type       Type of dialog to show
+	 * @param messageStr override default message text
+	 */
+	public void show(int type, @Nullable String messageStr) {
+		if (!isShowing()) {
+			this.type = type;
+			this.messageStr = messageStr;
+			super.show();
+		}
 	}
 
 

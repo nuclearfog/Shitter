@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/dialog_report_root"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<TextView
+		android:id="@+id/dialog_report_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:lines="1"
+		android:textSize="@dimen/dialog_report_textsize_title"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<Spinner
+		android:id="@+id/dialog_report_category"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_report_title"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<EditText
+		android:id="@+id/dialog_report_description"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:lines="5"
+		android:inputType="textMultiLine"
+		android:fadeScrollbars="false"
+		android:scrollbars="vertical"
+		android:scrollbarStyle="outsideInset"
+		android:hint="@string/dialog_report_hint_description"
+		android:background="@android:color/transparent"
+		android:gravity="top"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_report_category"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_report_switch_forward"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_report_description"/>
+
+	<TextView
+		android:id="@+id/dialog_report_switch_forward_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_report_description_forward"
+		android:textSize="@dimen/dialog_report_textsize_label"
+		android:lines="1"
+		app:layout_constraintStart_toEndOf="@id/dialog_report_switch_forward"
+		app:layout_constraintTop_toTopOf="@id/dialog_report_switch_forward"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_report_switch_forward"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

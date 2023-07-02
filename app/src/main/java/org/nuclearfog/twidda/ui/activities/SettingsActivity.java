@@ -266,6 +266,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		hideSensitive.setOnCheckedChangeListener(this);
 		enable_proxy.setOnCheckedChangeListener(this);
 		enable_auth.setOnCheckedChangeListener(this);
+		push_label.setOnClickListener(this);
 		toolbarOverlap.setOnCheckedChangeListener(this);
 		fontSelector.setOnItemSelectedListener(this);
 		scaleSelector.setOnItemSelectedListener(this);
@@ -328,6 +329,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (requestCode == REQUEST_PERMISSION_NOTIFICATION) {
 			if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				PushSubscription.subscripe(getApplicationContext());
+				pushDialog.show();
 			} else {
 				enablePush.setChecked(false);
 			}
@@ -422,6 +424,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			mode = COLOR_FOLLOWING;
 			color = settings.getFollowIconColor();
 			showColorPicker(color, false);
+		}
+		// show push configuration dialog
+		else if (v.getId() == R.id.settings_enable_push_descr) {
+			pushDialog.show();
 		}
 	}
 
@@ -677,8 +683,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			// set listener after modifying content to prevent listener call
 			location_dropdown.setOnItemSelectedListener(this);
 		} else {
-			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+			ErrorUtils.showErrorMessage(this, result.exception);
 		}
 	}
 

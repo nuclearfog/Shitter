@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -39,7 +40,8 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	private Spinner policySelector;
 
 	private GlobalSettings settings;
-	private PushUpdater updater;
+	private PushUpdater pushUpdater;
+	private DropdownAdapter adapter;
 
 	private PushUpdate update;
 
@@ -48,6 +50,16 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	 */
 	public WebPushDialog(Activity activity) {
 		super(activity, R.style.WebPushDialog);
+		adapter = new DropdownAdapter(activity.getApplicationContext());
+		settings = GlobalSettings.get(getContext());
+		pushUpdater = new PushUpdater(getContext());
+		update = new PushUpdate(settings.getWebPush());
+		adapter.setItems(R.array.push_policy);
+	}
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.dialog_push);
 		ViewGroup root = findViewById(R.id.dialog_push_root);
 		Button apply_changes = findViewById(R.id.dialog_push_apply);
@@ -60,14 +72,10 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		status_new = findViewById(R.id.dialog_push_new_status);
 		status_edit = findViewById(R.id.dialog_push_edit_status);
 		policySelector = findViewById(R.id.dialog_push_policy);
-		settings = GlobalSettings.get(activity.getApplicationContext());
-		updater = new PushUpdater(activity.getApplicationContext());
-
-		DropdownAdapter adapter = new DropdownAdapter(activity.getApplicationContext());
-		adapter.setItems(R.array.push_policy);
-		policySelector.setAdapter(adapter);
 
 		AppStyles.setTheme(root);
+		policySelector.setAdapter(adapter);
+
 		mention.setOnCheckedChangeListener(this);
 		repost.setOnCheckedChangeListener(this);
 		favorite.setOnCheckedChangeListener(this);
@@ -82,24 +90,29 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		mention.setCheckedImmediately(update.mentionsEnabled());
+		repost.setCheckedImmediately(update.repostEnabled());
+		favorite.setCheckedImmediately(update.favoriteEnabled());
+		poll.setCheckedImmediately(update.pollEnabled());
+		follow.setCheckedImmediately(update.followEnabled());
+		request.setCheckedImmediately(update.followRequestEnabled());
+		status_new.setCheckedImmediately(update.statusPostEnabled());
+		status_edit.setCheckedImmediately(update.statusEditEnabled());
+		if (update.getPolicy() == WebPush.POLICY_ALL) {
+			policySelector.setSelection(0);
+		} else if (update.getPolicy() == WebPush.POLICY_FOLLOWING) {
+			policySelector.setSelection(1);
+		} else if (update.getPolicy() == WebPush.POLICY_FOLLOWER) {
+			policySelector.setSelection(2);
+		}
+	}
+
+
+	@Override
 	public void show() {
 		if (!isShowing()) {
-			update = new PushUpdate(settings.getWebPush());
-			mention.setCheckedImmediately(update.mentionsEnabled());
-			repost.setCheckedImmediately(update.repostEnabled());
-			favorite.setCheckedImmediately(update.favoriteEnabled());
-			poll.setCheckedImmediately(update.pollEnabled());
-			follow.setCheckedImmediately(update.followEnabled());
-			request.setCheckedImmediately(update.followRequestEnabled());
-			status_new.setCheckedImmediately(update.statusPostEnabled());
-			status_edit.setCheckedImmediately(update.statusEditEnabled());
-			if (update.getPolicy() == WebPush.POLICY_ALL) {
-				policySelector.setSelection(0);
-			} else if (update.getPolicy() == WebPush.POLICY_FOLLOWING) {
-				policySelector.setSelection(1);
-			} else if (update.getPolicy() == WebPush.POLICY_FOLLOWER) {
-				policySelector.setSelection(2);
-			}
 			super.show();
 		}
 	}
@@ -116,12 +129,13 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_push_apply) {
-			if (updater.isIdle()) {
+			if (pushUpdater.isIdle()) {
 				// fix: setting host url if empty
 				if (update.getHost().isEmpty()) {
 					update.setHost(settings.getWebPush().getHost());
 				}
-				updater.execute(update, this);
+				pushUpdater.execute(update, this);
+				Toast.makeText(getContext(), R.string.info_webpush_update_progress, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}

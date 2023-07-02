@@ -9,7 +9,8 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.ConnectionResult;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -53,8 +54,8 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 							database.saveLogin(login);
 						}
 					}
-					String redirectUrl = connection.getAuthorisationLink(param.connection);
-					return new LoginResult(LoginResult.MODE_REQUEST, redirectUrl, null);
+					ConnectionResult result = connection.getAuthorisationLink(param.connection);
+					return new LoginResult(LoginResult.MODE_REQUEST, result, null);
 
 				case LoginParam.MODE_LOGIN:
 					// login with pin and access token
@@ -98,12 +99,12 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		public static final int MODE_REQUEST = 1;
 		public static final int MODE_LOGIN = 2;
 
-		final ConnectionConfig connection;
+		final ConnectionUpdate connection;
 		final Configuration configuration;
 		final String code;
 		final int mode;
 
-		public LoginParam(int mode, Configuration configuration, ConnectionConfig connection, String code) {
+		public LoginParam(int mode, Configuration configuration, ConnectionUpdate connection, String code) {
 			this.connection = connection;
 			this.configuration = configuration;
 			this.mode = mode;
@@ -124,10 +125,10 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		@Nullable
 		public final ConnectionException exception;
 		@Nullable
-		public final String redirectUrl;
+		public final ConnectionResult connection;
 
-		LoginResult(int mode, @Nullable String redirectUrl, @Nullable ConnectionException exception) {
-			this.redirectUrl = redirectUrl;
+		LoginResult(int mode, @Nullable ConnectionResult connection, @Nullable ConnectionException exception) {
+			this.connection = connection;
 			this.exception = exception;
 			this.mode = mode;
 		}

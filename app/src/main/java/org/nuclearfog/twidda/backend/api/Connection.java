@@ -1,10 +1,12 @@
 package org.nuclearfog.twidda.backend.api;
 
-import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.ConnectionResult;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
+import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.model.Account;
@@ -45,7 +47,7 @@ public interface Connection {
 	 * @param connection connection configuration
 	 * @return authorisation link to open in a browser
 	 */
-	String getAuthorisationLink(ConnectionConfig connection) throws ConnectionException;
+	ConnectionResult getAuthorisationLink(ConnectionUpdate connection) throws ConnectionException;
 
 	/**
 	 * login app and get login credentials
@@ -54,7 +56,7 @@ public interface Connection {
 	 * @param code       verification code to login
 	 * @return account information of the created login
 	 */
-	Account loginApp(ConnectionConfig connection, String code) throws ConnectionException;
+	Account loginApp(ConnectionUpdate connection, String code) throws ConnectionException;
 
 	/**
 	 * get information about the host server
@@ -705,4 +707,11 @@ public interface Connection {
 	 * @return translation of the status
 	 */
 	Translation getStatusTranslation(long id) throws ConnectionException;
+
+	/**
+	 * report status/user
+	 *
+	 * @param update report contianing information about status/user
+	 */
+	void createReport(ReportUpdate update) throws ConnectionException;
 }

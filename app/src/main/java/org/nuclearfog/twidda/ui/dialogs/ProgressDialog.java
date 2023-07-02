@@ -2,9 +2,9 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -24,26 +24,30 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 	@Nullable
 	private OnProgressStopListener listener;
 
-	private ImageView cancel;
-
 	/**
 	 *
 	 */
-	public ProgressDialog(Activity activity) {
+	public ProgressDialog(Activity activity, @Nullable OnProgressStopListener listener) {
 		super(activity, R.style.LoadingDialog);
-		// setup dialog
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setCanceledOnTouchOutside(false);
-		setCancelable(false);
+		this.listener = listener;
+	}
 
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.item_load);
-		cancel = findViewById(R.id.kill_button);
 		ProgressBar circle = findViewById(R.id.progress_item);
+		ImageView cancel = findViewById(R.id.kill_button);
 
-		GlobalSettings settings = GlobalSettings.get(activity);
+		GlobalSettings settings = GlobalSettings.get(getContext());
 		AppStyles.setProgressColor(circle, settings.getHighlightColor());
 		AppStyles.setDrawableColor(cancel, settings.getIconColor());
-
+		if (listener != null) {
+			cancel.setVisibility(View.VISIBLE);
+		} else {
+			cancel.setVisibility(View.GONE);
+		}
 		cancel.setOnClickListener(this);
 	}
 
@@ -70,14 +74,6 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 			listener.stopProgress();
 			dismiss();
 		}
-	}
-
-	/**
-	 * enables cancel button and adds a listener
-	 */
-	public void addOnProgressStopListener(OnProgressStopListener listener) {
-		cancel.setVisibility(View.VISIBLE);
-		this.listener = listener;
 	}
 
 	/**

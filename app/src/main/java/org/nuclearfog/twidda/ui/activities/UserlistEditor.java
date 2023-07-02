@@ -90,7 +90,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		titleText = findViewById(R.id.list_edit_title);
 		descriptionText = findViewById(R.id.list_edit_descr);
 
-		loadingCircle = new ProgressDialog(this);
+		loadingCircle = new ProgressDialog(this, this);
 		confirmDialog = new ConfirmDialog(this, this);
 		listUpdater = new UserlistUpdater(this);
 
@@ -115,7 +115,6 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 			visibilityLabel.setVisibility(View.INVISIBLE);
 		}
 		updateButton.setOnClickListener(this);
-		loadingCircle.addOnProgressStopListener(this);
 		visibilitySwitch.setOnCheckedChangeListener(this);
 	}
 

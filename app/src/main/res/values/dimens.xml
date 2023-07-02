@@ -347,4 +347,8 @@
 	<dimen name="dialog_filter_textsize_label">11sp</dimen>
 	<dimen name="dialog_filter_margin_items_layout">4dp</dimen>
 
+	<!--dimens of dialog_report.xml-->
+	<dimen name="dialog_report_textsize_title">22sp</dimen>
+	<dimen name="dialog_report_textsize_label">12sp</dimen>
+
 </resources>

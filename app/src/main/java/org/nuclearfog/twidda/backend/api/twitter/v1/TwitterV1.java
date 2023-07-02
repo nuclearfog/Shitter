@@ -22,11 +22,13 @@ import org.nuclearfog.twidda.backend.api.twitter.v1.impl.TweetV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.TwitterV1Instance;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserListV1;
 import org.nuclearfog.twidda.backend.api.twitter.v1.impl.UserV1;
-import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.ConnectionResult;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
+import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
@@ -199,7 +201,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public String getAuthorisationLink(ConnectionConfig connection) throws TwitterException {
+	public ConnectionResult getAuthorisationLink(ConnectionUpdate connection) throws TwitterException {
 		try {
 			Response response;
 			if (connection.useTokens())
@@ -212,8 +214,8 @@ public class TwitterV1 implements Connection {
 				// extract oauth_token from url
 				Uri uri = Uri.parse(AUTHENTICATE + "?" + res);
 				String tempOauthToken = uri.getQueryParameter("oauth_token");
-				connection.setTempOauthToken(tempOauthToken);
-				return TwitterV1.AUTHENTICATE + "?oauth_token=" + tempOauthToken;
+				String authLink = TwitterV1.AUTHENTICATE + "?oauth_token=" + tempOauthToken;
+				return new ConnectionResult(authLink, tempOauthToken);
 			}
 			throw new TwitterException(response);
 		} catch (IOException e) {
@@ -223,7 +225,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public Account loginApp(ConnectionConfig connection, String pin) throws TwitterException {
+	public Account loginApp(ConnectionUpdate connection, String pin) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("oauth_verifier=" + pin);
 		params.add("oauth_token=" + connection.getTempOauthToken());
@@ -1237,6 +1239,12 @@ public class TwitterV1 implements Connection {
 	@Override
 	public Translation getStatusTranslation(long id) throws ConnectionException {
 		throw new TwitterException("not supported");
+	}
+
+
+	@Override
+	public void createReport(ReportUpdate update) throws ConnectionException {
+		throw new TwitterException("not implemented");
 	}
 
 	/**

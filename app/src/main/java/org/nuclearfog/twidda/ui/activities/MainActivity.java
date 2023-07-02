@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		viewPager = findViewById(R.id.home_pager);
 		tabSelector = findViewById(R.id.home_tab);
 		root = findViewById(R.id.main_layout);
-		loadingCircle = new ProgressDialog(this);
+		loadingCircle = new ProgressDialog(this, null);
 
 		settings = GlobalSettings.get(this);
 		tabSelector.addViewPager(viewPager);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 	<!--app/repository dependent strings-->
 	<string name="app_name" translatable="false">Shitter</string>
 	<string name="app_name_api" translatable="false">SH1TT3R</string>
@@ -79,6 +79,7 @@
 	<string name="info_domain_removed">domain removed from the list</string>
 	<string name="info_hashtag_followed">hashtag followed</string>
 	<string name="info_domain_blocked">domain blocked!</string>
+	<string name="info_webpush_update_progress">updating push configuration</string>
 	<string name="info_webpush_update">Push configuration updated</string>
 	<string name="info_filter_created">Filter created</string>
 	<string name="info_filter_updated">Filter updated</string>
@@ -264,6 +265,10 @@
 	<string name="settings_key2_hint">Consumer secret</string>
 	<string name="dialog_connection_custom_host">use custom hostname</string>
 	<string name="dialog_connection_apply">apply changes</string>
+	<string name="dialog_report_status_title">Report post</string>
+	<string name="dialog_report_user_title">Report 1$s</string>
+	<string name="dialog_report_hint_description">additional description</string>
+	<string name="dialog_report_description_forward">forward report to source instance</string>
 	<string name="confirm_mute">mute user?</string>
 	<string name="item_list_pb_desc">Profile of the list owner</string>
 	<string name="list_appbar">Lists</string>
@@ -363,9 +368,9 @@
 	<string name="description_filter_public_timeline">Public timeline filter enabled</string>
 	<string name="description_filter_thread">Thread filter enabled</string>
 	<string name="description_filter_user_timeline">User timeline filter enabled</string>
-	<string name="dialog_filter_create">create a filter</string>
+	<string name="dialog_filter_create">create filter</string>
 	<string name="dialog_filter_name_hint">enter filter name</string>
-	<string name="dialog_filter_update">update a filter</string>
+	<string name="dialog_filter_update">update filter</string>
 	<string name="dialog_filter_button_apply">apply</string>
 	<string name="dialog_filter_apply">apply filter for</string>
 	<string name="dialog_filter_home">Home timeline</string>

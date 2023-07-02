@@ -1019,8 +1019,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case StatusResult.ERROR:
-				String message = ErrorUtils.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(this, result.exception);
 				if (status == null) {
 					finish();
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
@@ -1066,8 +1065,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case NotificationActionResult.ERROR:
-				String message = ErrorUtils.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(this, result.exception);
 				if (notification == null) {
 					finish();
 				} else if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
@@ -1101,8 +1099,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case PollActionResult.ERROR:
-				String message = ErrorUtils.getErrorMessage(this, result.exception);
-				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+				ErrorUtils.showErrorMessage(this, result.exception);
 				break;
 		}
 	}

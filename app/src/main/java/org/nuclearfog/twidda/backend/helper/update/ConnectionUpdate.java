@@ -1,7 +1,9 @@
-package org.nuclearfog.twidda.backend.helper;
+package org.nuclearfog.twidda.backend.helper.update;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.config.Configuration;
 
 import java.io.Serializable;
@@ -11,16 +13,15 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class ConnectionConfig implements Serializable {
+public class ConnectionUpdate implements Serializable {
 
 	private static final long serialVersionUID = 2238181470544567706L;
 
 	private Configuration apiConfig;
 	private String hostname = "";
-	// these attributes below may be changed by another (background) thread
-	private volatile String consumerKey = "";
-	private volatile String consumerSecret = "";
-	private volatile String tempOauth = "";
+	private String consumerKey = "";
+	private String consumerSecret = "";
+	private String tempOauth = "";
 
 	/**
 	 * get host url used by the API
@@ -102,10 +103,10 @@ public class ConnectionConfig implements Serializable {
 	}
 
 	/**
-	 * set oauth token key pair
+	 * set custom oauth tokens
 	 *
-	 * @param consumerKey    oauth token
-	 * @param consumerSecret oauth token secret
+	 * @param consumerKey    custom oauth consumer key
+	 * @param consumerSecret custom oauth consumer secret
 	 */
 	public void setOauthTokens(String consumerKey, String consumerSecret) {
 		if (consumerKey != null) {
@@ -117,12 +118,20 @@ public class ConnectionConfig implements Serializable {
 	}
 
 	/**
-	 * set temporary oauth token
+	 * set temporary access tokens
 	 *
-	 * @param tempOauth oauth token
+	 * @param connectionResult connection containing temporary access tokens
 	 */
-	public void setTempOauthToken(String tempOauth) {
-		this.tempOauth = tempOauth;
+	public void setConnection(@Nullable ConnectionResult connectionResult) {
+		if (connectionResult != null) {
+			tempOauth = connectionResult.getOauthToken();
+			consumerKey = connectionResult.getConsumerKey();
+			consumerSecret = connectionResult.getConsumerSecret();
+		} else {
+			tempOauth = "";
+			consumerKey = "";
+			consumerSecret = "";
+		}
 	}
 
 

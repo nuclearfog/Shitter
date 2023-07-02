@@ -33,7 +33,8 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.LoginAction;
 import org.nuclearfog.twidda.backend.async.LoginAction.LoginParam;
 import org.nuclearfog.twidda.backend.async.LoginAction.LoginResult;
-import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.ConnectionResult;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
@@ -97,8 +98,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	private ViewGroup root;
 
 	@Nullable
-	private String loginLink;
-	private ConnectionConfig connection = new ConnectionConfig();
+	private ConnectionResult connectionResult;
+	private ConnectionUpdate connection = new ConnectionUpdate();
 
 
 	@Override
@@ -132,8 +133,8 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		hostSelector.setAdapter(adapter);
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
-			if (data instanceof ConnectionConfig) {
-				connection = (ConnectionConfig) data;
+			if (data instanceof ConnectionUpdate) {
+				connection = (ConnectionUpdate) data;
 			}
 		}
 
@@ -251,7 +252,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		else if (v.getId() == R.id.login_verifier) {
 			String code = pinInput.getText().toString();
 			// check if user clicked on PIN button
-			if (loginLink == null) {
+			if (connectionResult == null) {
 				Toast.makeText(getApplicationContext(), R.string.info_get_link, Toast.LENGTH_LONG).show();
 			} else if (code.isEmpty()) {
 				pinInput.setError(getString(R.string.error_enter_code));
@@ -275,12 +276,14 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		}
 		// open API settings dialog
 		else if (v.getId() == R.id.login_network_settings) {
-			if (hostSelector.getSelectedItemPosition() == IDX_TWITTER) {
-				connectionDialog.show(connection);
-			} else if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
-				connectionDialog.show(connection);
+			if (!connectionDialog.isShowing()) {
+				if (hostSelector.getSelectedItemPosition() == IDX_TWITTER) {
+					connectionDialog.show(connection);
+				} else if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
+					connectionDialog.show(connection);
+				}
+				reset();
 			}
-			loginLink = null;
 		}
 	}
 
@@ -299,7 +302,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				connection.setApiType(Configuration.TWITTER2);
 			}
 		}
-		loginLink = null;
+		reset();
 	}
 
 
@@ -317,8 +320,11 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				break;
 
 			case LoginResult.MODE_REQUEST:
-				loginLink = result.redirectUrl;
-				connect();
+				connectionResult = result.connection;
+				if (connectionResult != null) {
+					connection.setConnection(connectionResult);
+					connect(connectionResult.getAuthorizationUrl());
+				}
 				break;
 
 			case LoginResult.MODE_ERROR:
@@ -330,12 +336,20 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	/**
 	 * open login page
 	 */
-	private void connect() {
+	private void connect(String loginLink) {
 		Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(loginLink));
 		try {
 			startActivity(loginIntent);
 		} catch (ActivityNotFoundException err) {
 			Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	/**
+	 * reset connection information
+	 */
+	private void reset() {
+		connection.setConnection(null);
+		connectionResult = null;
 	}
 }

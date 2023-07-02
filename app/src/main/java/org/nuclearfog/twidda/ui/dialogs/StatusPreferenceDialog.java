@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,8 +33,8 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	private Spinner visibilitySelector;
 
+	private DropdownAdapter visibility_adapter, language_adapter;
 	private StatusUpdate statusUpdate;
-
 	private String[] languageCodes;
 
 	/**
@@ -42,24 +43,8 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	public StatusPreferenceDialog(Activity activity, StatusUpdate statusUpdate) {
 		super(activity, R.style.StatusDialog);
 		this.statusUpdate = statusUpdate;
-		setContentView(R.layout.dialog_status);
-		ViewGroup rootView = findViewById(R.id.dialog_status_root);
-		SwitchButton sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
-		SwitchButton spoilerCheck = findViewById(R.id.dialog_status_spoiler);
-		View statusVisibility = findViewById(R.id.dialog_status_visibility_container);
-		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
-		Spinner languageSelector = findViewById(R.id.dialog_status_language);
-		visibilitySelector = findViewById(R.id.dialog_status_visibility);
-		GlobalSettings settings = GlobalSettings.get(activity.getApplicationContext());
-		AppStyles.setTheme(rootView);
-
-		DropdownAdapter visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
-		DropdownAdapter language_adapter = new DropdownAdapter(activity.getApplicationContext());
-		languageSelector.setAdapter(language_adapter);
-		languageSelector.setSelected(false);
-		visibilitySelector.setAdapter(visibility_adapter);
-		visibilitySelector.setSelection(0, false);
-		visibilitySelector.setSelected(false);
+		visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
+		language_adapter = new DropdownAdapter(activity.getApplicationContext());
 
 		// initialize language selector
 		Map<String, String> languages = new TreeMap<>();
@@ -69,8 +54,29 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 			languages.put(locale.getDisplayLanguage(), locale.getLanguage());
 		}
 		languageCodes = languages.values().toArray(new String[0]);
-		String[] languageNames = languages.keySet().toArray(new String[0]);
-		language_adapter.setItems(languageNames);
+		language_adapter.setItems(languages.keySet().toArray(new String[0]));
+	}
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.dialog_status);
+		ViewGroup rootView = findViewById(R.id.dialog_status_root);
+		SwitchButton sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
+		SwitchButton spoilerCheck = findViewById(R.id.dialog_status_spoiler);
+		View statusVisibility = findViewById(R.id.dialog_status_visibility_container);
+		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
+		Spinner languageSelector = findViewById(R.id.dialog_status_language);
+		visibilitySelector = findViewById(R.id.dialog_status_visibility);
+		GlobalSettings settings = GlobalSettings.get(getContext());
+		AppStyles.setTheme(rootView);
+
+		languageSelector.setAdapter(language_adapter);
+		languageSelector.setSelected(false);
+		visibilitySelector.setAdapter(visibility_adapter);
+		visibilitySelector.setSelection(0, false);
+		visibilitySelector.setSelected(false);
 
 		// enable/disable functions
 		if (!settings.getLogin().getConfiguration().statusVisibilitySupported()) {
@@ -88,25 +94,25 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 
 	@Override
-	public void show() {
-		switch (statusUpdate.getVisibility()) {
-			case Status.VISIBLE_PUBLIC:
-				visibilitySelector.setSelection(0, false);
-				break;
-
-			case Status.VISIBLE_PRIVATE:
-				visibilitySelector.setSelection(1, false);
-				break;
-
-			case Status.VISIBLE_DIRECT:
-				visibilitySelector.setSelection(2, false);
-				break;
-
-			case Status.VISIBLE_UNLISTED:
-				visibilitySelector.setSelection(3, false);
-				break;
+	protected void onStart() {
+		super.onStart();
+		if (statusUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
+			visibilitySelector.setSelection(0, false);
+		} else if (statusUpdate.getVisibility() == Status.VISIBLE_PRIVATE) {
+			visibilitySelector.setSelection(1, false);
+		} else if (statusUpdate.getVisibility() == Status.VISIBLE_DIRECT) {
+			visibilitySelector.setSelection(2, false);
+		} else if (statusUpdate.getVisibility() == Status.VISIBLE_UNLISTED) {
+			visibilitySelector.setSelection(3, false);
 		}
-		super.show();
+	}
+
+
+	@Override
+	public void show() {
+		if (!isShowing()) {
+			super.show();
+		}
 	}
 
 

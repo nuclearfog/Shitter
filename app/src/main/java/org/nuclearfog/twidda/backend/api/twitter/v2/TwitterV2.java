@@ -19,7 +19,7 @@ import org.nuclearfog.twidda.backend.api.twitter.v2.maps.LocationV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.MediaV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.PollV2Map;
 import org.nuclearfog.twidda.backend.api.twitter.v2.maps.UserV2Map;
-import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Instance;
@@ -58,7 +58,7 @@ public class TwitterV2 extends TwitterV1 {
 
 
 	@Override
-	public Account loginApp(ConnectionConfig connection, String pin) throws TwitterException {
+	public Account loginApp(ConnectionUpdate connection, String pin) throws TwitterException {
 		Account account = super.loginApp(connection, pin);
 		return new AccountV2(account);
 	}

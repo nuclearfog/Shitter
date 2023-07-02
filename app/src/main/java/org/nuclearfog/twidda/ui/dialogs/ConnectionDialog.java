@@ -2,11 +2,11 @@ package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -17,7 +17,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.twitter.v1.Tokens;
-import org.nuclearfog.twidda.backend.helper.ConnectionConfig;
+import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.Configuration;
 
@@ -32,13 +32,19 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 	private TextView apiLabel, v2Label, hostLabel;
 	private EditText host, api1, api2;
 
-	private ConnectionConfig connection;
+	private ConnectionUpdate connection;
 
-
+	/**
+	 *
+	 */
 	public ConnectionDialog(Activity activity) {
 		super(activity, R.style.ConfirmDialog);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setCanceledOnTouchOutside(false);
+	}
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_connection);
 		ViewGroup root = findViewById(R.id.dialog_connection_root);
 		Button confirm = findViewById(R.id.dialog_connection_confirm);
@@ -53,13 +59,73 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		api1 = findViewById(R.id.dialog_connection_api1);
 		api2 = findViewById(R.id.dialog_connection_api2);
 
-		int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.9f);
-		getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
 		AppStyles.setTheme(root);
+
 		enableApi.setOnCheckedChangeListener(this);
 		enableHost.setOnCheckedChangeListener(this);
 		confirm.setOnClickListener(this);
 		discard.setOnClickListener(this);
+	}
+
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if (connection != null) {
+			switch (connection.getApiType()) {
+				case TWITTER2:
+					enableV2.setCheckedImmediately(true);
+					// fall through
+
+				case TWITTER1:
+					if (connection.useTokens()) {
+						enableApi.setCheckedImmediately(true);
+						api1.setVisibility(View.VISIBLE);
+						api2.setVisibility(View.VISIBLE);
+						api1.setText(connection.getOauthConsumerToken());
+						api2.setText(connection.getOauthTokenSecret());
+					} else {
+						enableApi.setCheckedImmediately(false);
+						api1.setVisibility(View.INVISIBLE);
+						api2.setVisibility(View.INVISIBLE);
+					}
+					enableApi.setVisibility(View.VISIBLE);
+					apiLabel.setVisibility(View.VISIBLE);
+					hostLabel.setVisibility(View.GONE);
+					enableHost.setVisibility(View.GONE);
+					host.setVisibility(View.GONE);
+					break;
+
+				case MASTODON:
+					if (connection.useHost()) {
+						enableHost.setCheckedImmediately(true);
+						host.setVisibility(View.VISIBLE);
+						host.setText(connection.getHostname());
+					} else {
+						enableHost.setCheckedImmediately(false);
+						host.setVisibility(View.INVISIBLE);
+					}
+					hostLabel.setVisibility(View.VISIBLE);
+					enableHost.setVisibility(View.VISIBLE);
+					enableApi.setVisibility(View.GONE);
+					apiLabel.setVisibility(View.GONE);
+					enableV2.setVisibility(View.GONE);
+					v2Label.setVisibility(View.GONE);
+					api1.setVisibility(View.GONE);
+					api2.setVisibility(View.GONE);
+					break;
+			}
+		}
+		// reset all error messages
+		if (api1.getError() != null) {
+			api1.setError(null);
+		}
+		if (api2.getError() != null) {
+			api2.setError(null);
+		}
+		if (host.getError() != null) {
+			host.setError(null);
+		}
 	}
 
 
@@ -142,7 +208,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 
 	@Override
 	public void show() {
-		// ignore method call, call instead show(int)
+		// using show(ConnectionConfig) instead
 	}
 
 
@@ -153,60 +219,13 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		}
 	}
 
-
-	public void show(ConnectionConfig connection) {
-		switch (connection.getApiType()) {
-			case TWITTER2:
-				enableV2.setCheckedImmediately(true);
-			case TWITTER1:
-				if (connection.useTokens()) {
-					enableApi.setCheckedImmediately(true);
-					api1.setVisibility(View.VISIBLE);
-					api2.setVisibility(View.VISIBLE);
-					api1.setText(connection.getOauthConsumerToken());
-					api2.setText(connection.getOauthTokenSecret());
-				} else {
-					enableApi.setCheckedImmediately(false);
-					api1.setVisibility(View.INVISIBLE);
-					api2.setVisibility(View.INVISIBLE);
-				}
-				enableApi.setVisibility(View.VISIBLE);
-				apiLabel.setVisibility(View.VISIBLE);
-				hostLabel.setVisibility(View.GONE);
-				enableHost.setVisibility(View.GONE);
-				host.setVisibility(View.GONE);
-				break;
-
-			case MASTODON:
-				if (connection.useHost()) {
-					enableHost.setCheckedImmediately(true);
-					host.setVisibility(View.VISIBLE);
-					host.setText(connection.getHostname());
-				} else {
-					enableHost.setCheckedImmediately(false);
-					host.setVisibility(View.INVISIBLE);
-				}
-				hostLabel.setVisibility(View.VISIBLE);
-				enableHost.setVisibility(View.VISIBLE);
-				enableApi.setVisibility(View.GONE);
-				apiLabel.setVisibility(View.GONE);
-				enableV2.setVisibility(View.GONE);
-				v2Label.setVisibility(View.GONE);
-				api1.setVisibility(View.GONE);
-				api2.setVisibility(View.GONE);
-				break;
-
-			default:
-				return;
+	/**
+	 *
+	 */
+	public void show(ConnectionUpdate connection) {
+		if (!isShowing()) {
+			this.connection = connection;
+			super.show();
 		}
-		// erase all error messages
-		if (api1.getError() != null)
-			api1.setError(null);
-		if (api2.getError() != null)
-			api2.setError(null);
-		if (host.getError() != null)
-			host.setError(null);
-		this.connection = connection;
-		super.show();
 	}
 }
