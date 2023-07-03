@@ -36,28 +36,28 @@ public class ConnectionResult {
 	}
 
 	/**
-	 *
+	 * get API consumer token
 	 */
 	public String getConsumerKey() {
 		return consumerKey;
 	}
 
 	/**
-	 *
+	 * get API consumer secret
 	 */
 	public String getConsumerSecret() {
 		return consumerSecret;
 	}
 
 	/**
-	 *
+	 * get temporary oauth token
 	 */
 	public String getOauthToken() {
 		return tempOauth;
 	}
 
 	/**
-	 *
+	 * get authorization url (link to login page)
 	 */
 	public String getAuthorizationUrl() {
 		return authorizationUrl;

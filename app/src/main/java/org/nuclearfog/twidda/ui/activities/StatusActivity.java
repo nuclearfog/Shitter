@@ -157,6 +157,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	private static final int MENU_GROUP_COPY = 0x157426;
 
+	/**
+	 * color of the profile image placeholder
+	 */
 	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);

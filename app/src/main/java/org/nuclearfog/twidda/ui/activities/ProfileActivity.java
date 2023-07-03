@@ -125,6 +125,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private static final int SCROLL_THRESHOLD = 10;
 
+	/**
+	 * color of the profile image placeholder
+	 */
 	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
@@ -335,12 +338,12 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (user != null) {
 			MenuItem listItem = m.findItem(R.id.profile_lists);
 			MenuItem domainBlock = m.findItem(R.id.profile_block_domain);
+			MenuItem requestItem = m.findItem(R.id.profile_requests);
 
 			switch (settings.getLogin().getConfiguration()) {
 				case TWITTER1:
 				case TWITTER2:
 					if (user.isCurrentUser()) {
-						MenuItem requestItem = m.findItem(R.id.profile_requests);
 						requestItem.setVisible(true);
 						listItem.setVisible(true);
 					} else if (!user.isProtected() || (relation != null && relation.isFollowing())) {
@@ -350,6 +353,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 				case MASTODON:
 					if (user.isCurrentUser()) {
+						requestItem.setVisible(true);
 						listItem.setVisible(true);
 					} else {
 						domainBlock.setVisible(true);
