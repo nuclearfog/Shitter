@@ -69,6 +69,12 @@ public class TwitterCard implements Card {
 
 
 	@Override
+	public String getBlurHash() {
+		return "";
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Card))
 			return false;

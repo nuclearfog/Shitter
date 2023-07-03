@@ -22,6 +22,7 @@ public class MastodonCard implements Card {
 	private String description;
 	private String url;
 	private String imageLink;
+	private String blurHash;
 
 	/**
 	 * @param json Mastodon card json
@@ -31,6 +32,7 @@ public class MastodonCard implements Card {
 		url = json.getString("url");
 		title = json.optString("title", "");
 		description = json.optString("description", "");
+		blurHash = json.optString("blurhash");
 		if (Patterns.WEB_URL.matcher(imageLink).matches()) {
 			this.imageLink = imageLink;
 		} else {
@@ -60,6 +62,12 @@ public class MastodonCard implements Card {
 	@Override
 	public String getImageUrl() {
 		return imageLink;
+	}
+
+
+	@Override
+	public String getBlurHash() {
+		return blurHash;
 	}
 
 

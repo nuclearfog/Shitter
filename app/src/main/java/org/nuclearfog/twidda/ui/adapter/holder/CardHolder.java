@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableStringBuilder;
@@ -19,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.wolt.blurhashkt.BlurHashDecoder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
@@ -101,7 +105,14 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 			Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
 			// set url preview image
 			if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
-				picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(preview);
+				RequestCreator picassoBuilder = picasso.load(card.getImageUrl());
+				if (!card.getBlurHash().isEmpty()) {
+					Bitmap blur = BlurHashDecoder.INSTANCE.decode(card.getBlurHash(), 16, 16, 1f, true);
+					picassoBuilder.placeholder(new BitmapDrawable(preview.getResources(), blur));
+				} else {
+					picassoBuilder.placeholder(placeholder);
+				}
+				picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).into(preview);
 			} else {
 				preview.setImageDrawable(placeholder);
 			}

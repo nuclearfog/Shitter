@@ -28,4 +28,9 @@ public interface Card extends Serializable {
 	 * @return preview image link (may be empty)
 	 */
 	String getImageUrl();
+
+	/**
+	 * @return blur hash string of the preview image
+	 */
+	String getBlurHash();
 }
