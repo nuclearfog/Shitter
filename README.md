@@ -37,6 +37,7 @@
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
 - <a href="https://github.com/UnifiedPush/android-connector">UnifiedPush connector</a>
+- <a href="https://github.com/woltapp/blurhash">blurhash</a>
 - <a href="https://jsoup.org">jsoup</a>
 
 

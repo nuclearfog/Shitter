@@ -140,6 +140,12 @@ public class MediaV2 implements Media {
 
 
 	@Override
+	public String getBlurHash() {
+		return "";
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Media))
 			return false;

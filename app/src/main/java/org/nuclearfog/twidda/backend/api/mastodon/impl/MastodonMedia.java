@@ -42,6 +42,7 @@ public class MastodonMedia implements Media {
 	private String url;
 	private String preview = "";
 	private String description = "";
+	private String blur;
 	private int type = UNDEFINED;
 
 	/**
@@ -52,6 +53,7 @@ public class MastodonMedia implements Media {
 		String url = json.getString("url");
 		String preview = json.optString("preview_url", "");
 		key = json.getString("id");
+		blur = json.optString("blurhash", "");
 
 		switch (typeStr) {
 			case TYPE_IMAGE:
@@ -111,6 +113,12 @@ public class MastodonMedia implements Media {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+
+	@Override
+	public String getBlurHash() {
+		return blur;
 	}
 
 

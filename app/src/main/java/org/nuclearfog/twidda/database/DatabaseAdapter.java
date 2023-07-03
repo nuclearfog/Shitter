@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 18;
+	private static final int DB_VERSION = 19;
 
 	/**
 	 * database file name
@@ -321,6 +321,11 @@ public class DatabaseAdapter {
 	private static final String UPDATE_MEDIA_ADD_DESCRIPTION = "ALTER TABLE " + MediaTable.NAME + " ADD " + MediaTable.DESCRIPTION + " TEXT;";
 
 	/**
+	 * add mediatable description
+	 */
+	private static final String UPDATE_MEDIA_ADD_BLUR_HASH = "ALTER TABLE " + MediaTable.NAME + " ADD " + MediaTable.BLUR + " TEXT;";
+
+	/**
 	 * singleton instance
 	 */
 	private static DatabaseAdapter instance;
@@ -415,8 +420,12 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_STATUS_ADD_MENTIONS);
 				db.setVersion(17);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 18) {
 				db.execSQL(UPDATE_MEDIA_ADD_DESCRIPTION);
+				db.setVersion(18);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_MEDIA_ADD_BLUR_HASH);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -982,6 +991,11 @@ public class DatabaseAdapter {
 		 * description of the media
 		 */
 		String DESCRIPTION = "media_description";
+
+		/**
+		 * blur hash of the preview image
+		 */
+		String BLUR = "blur_hash";
 	}
 
 	/**

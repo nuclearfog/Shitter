@@ -59,6 +59,11 @@ public interface Media extends Serializable, Comparable<Media> {
 	 */
 	String getDescription();
 
+	/**
+	 * @return get media preview hash
+	 */
+	String getBlurHash();
+
 
 	@Override
 	default int compareTo(Media o) {

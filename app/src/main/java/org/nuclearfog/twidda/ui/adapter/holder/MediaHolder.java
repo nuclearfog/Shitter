@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.wolt.blurhashkt.BlurHashDecoder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
@@ -80,12 +83,30 @@ public class MediaHolder extends ViewHolder implements OnClickListener {
 		if (!media.equals(this.media)) {
 			Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
 			if (settings.imagesEnabled() && media.getMediaType() != Media.AUDIO && media.getMediaType() != Media.UNDEFINED && !media.getPreviewUrl().trim().isEmpty()) {
-				RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
 				if (blurImage) {
-					BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);
-					picassoBuilder.transform(blurTransformation);
+					// use integrated blur generator
+					if (media.getBlurHash().isEmpty()) {
+						BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);
+						RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
+						picassoBuilder.transform(blurTransformation).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE);
+						picassoBuilder.placeholder(placeholder).into(previewImage);
+					}
+					// use hash to generate blur
+					else {
+						Bitmap blur = BlurHashDecoder.INSTANCE.decode(media.getBlurHash(), 16, 16, 1f, true);
+						previewImage.setImageBitmap(blur);
+					}
+				} else {
+					RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
+					// create blur placeholder
+					if (!media.getBlurHash().isEmpty()) {
+						Bitmap blur = BlurHashDecoder.INSTANCE.decode(media.getBlurHash(), 16, 16, 1f, true);
+						picassoBuilder.placeholder(new BitmapDrawable(previewImage.getResources(), blur));
+					}
+					// load preview image
+					picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE);
+					picassoBuilder.into(previewImage);
 				}
-				picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(placeholder).into(previewImage);
 			} else {
 				previewImage.setImageDrawable(placeholder);
 			}

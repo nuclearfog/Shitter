@@ -20,13 +20,14 @@ public class DatabaseMedia implements Media, MediaTable {
 	/**
 	 *
 	 */
-	public static final String[] PROJECTION = {KEY, URL, PREVIEW, TYPE, DESCRIPTION};
+	public static final String[] PROJECTION = {KEY, URL, PREVIEW, TYPE, DESCRIPTION, BLUR};
 
 	private int mediaType;
 	private String key = "";
 	private String url = "";
 	private String preview = "";
 	private String description = "";
+	private String blurHash = "";
 
 
 	/**
@@ -37,6 +38,7 @@ public class DatabaseMedia implements Media, MediaTable {
 		String url = cursor.getString(1);
 		String preview = cursor.getString(2);
 		String description = cursor.getString(3);
+		String blurHash = cursor.getString(4);
 		mediaType = cursor.getInt(3);
 		if (key != null)
 			this.key = key;
@@ -46,6 +48,8 @@ public class DatabaseMedia implements Media, MediaTable {
 			this.preview = preview;
 		if (description != null)
 			this.description = description;
+		if (blurHash != null)
+			this.blurHash = blurHash;
 	}
 
 
@@ -76,6 +80,12 @@ public class DatabaseMedia implements Media, MediaTable {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+
+	@Override
+	public String getBlurHash() {
+		return blurHash;
 	}
 
 
