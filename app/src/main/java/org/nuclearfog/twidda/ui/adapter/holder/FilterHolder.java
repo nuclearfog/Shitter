@@ -20,8 +20,8 @@ import org.nuclearfog.twidda.model.Filter;
 /**
  * View Holder used for FilterAdapter
  *
- * @see org.nuclearfog.twidda.ui.adapter.FilterAdapter
  * @author nuclearfog
+ * @see org.nuclearfog.twidda.ui.adapter.FilterAdapter
  */
 public class FilterHolder extends ViewHolder implements OnClickListener {
 

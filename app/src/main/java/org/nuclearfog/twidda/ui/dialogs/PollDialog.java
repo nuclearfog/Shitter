@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 import org.nuclearfog.twidda.ui.adapter.EditOptionsAdapter;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ import java.util.List;
  * @author nuclearfog
  */
 public class PollDialog extends Dialog implements OnClickListener {
+
+	private static final String KEY_SAVE = "pollupdate-save";
 
 	private EditOptionsAdapter optionAdapter;
 	private DropdownAdapter timeUnitAdapter;
@@ -95,6 +99,25 @@ public class PollDialog extends Dialog implements OnClickListener {
 			durationInput.setText(Long.toString(Math.round(poll.getDuration() / 60000d)));
 			timeUnitSelector.setSelection(0);
 		}
+	}
+
+
+	@NonNull
+	@Override
+	public Bundle onSaveInstanceState() {
+		Bundle bundle = super.onSaveInstanceState();
+		bundle.putSerializable(KEY_SAVE, poll);
+		return bundle;
+	}
+
+
+	@Override
+	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+		if (data instanceof PollUpdate) {
+			poll = (PollUpdate) data;
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 

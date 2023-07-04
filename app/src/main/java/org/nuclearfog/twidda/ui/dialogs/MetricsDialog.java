@@ -7,10 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Metrics;
+
+import java.io.Serializable;
 
 /**
  * Status metrics dialog
@@ -18,6 +22,8 @@ import org.nuclearfog.twidda.model.Metrics;
  * @author nuclearfog
  */
 public class MetricsDialog extends Dialog {
+
+	private static final String KEY_SAVE = "metrics-save";
 
 	private TextView views, profileClicks, linkClicks, quotes, videoViews;
 	private View linkIcon, quoteIcon, videoIcon;
@@ -80,6 +86,25 @@ public class MetricsDialog extends Dialog {
 				videoIcon.setVisibility(View.GONE);
 			}
 		}
+	}
+
+
+	@NonNull
+	@Override
+	public Bundle onSaveInstanceState() {
+		Bundle bundle = super.onSaveInstanceState();
+		bundle.putSerializable(KEY_SAVE, metrics);
+		return bundle;
+	}
+
+
+	@Override
+	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+		if (data instanceof Metrics) {
+			metrics = (Metrics) data;
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 

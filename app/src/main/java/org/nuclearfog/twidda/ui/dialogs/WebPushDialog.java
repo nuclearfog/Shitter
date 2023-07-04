@@ -29,12 +29,16 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 
+import java.io.Serializable;
+
 /**
  * Web push configuration dialog
  *
  * @author nuclearfog
  */
 public class WebPushDialog extends Dialog implements OnCheckedChangeListener, OnClickListener, OnItemSelectedListener, AsyncCallback<PushUpdateResult> {
+
+	private static final String KEY_SAVE = "push-update";
 
 	private SwitchButton mention, repost, favorite, poll, follow, request, status_new, status_edit;
 	private Spinner policySelector;
@@ -107,6 +111,25 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 		} else if (update.getPolicy() == WebPush.POLICY_FOLLOWER) {
 			policySelector.setSelection(2);
 		}
+	}
+
+
+	@NonNull
+	@Override
+	public Bundle onSaveInstanceState() {
+		Bundle bundle = super.onSaveInstanceState();
+		bundle.putSerializable(KEY_SAVE, update);
+		return bundle;
+	}
+
+
+	@Override
+	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+		if (data instanceof PushUpdate) {
+			update = (PushUpdate) data;
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 

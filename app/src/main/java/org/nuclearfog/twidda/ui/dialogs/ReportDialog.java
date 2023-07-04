@@ -24,12 +24,16 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
 
+import java.io.Serializable;
+
 /**
  * User/Status report dialog
  *
  * @author nuclearfog
  */
 public class ReportDialog extends Dialog implements OnClickListener, AsyncCallback<ReportResult> {
+
+	private static final String KEY_SAVE = "reportupdate-data";
 
 	private DropdownAdapter adapter;
 	private ReportUpdater reportUpdater;
@@ -67,6 +71,25 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 		reportCategory.setAdapter(adapter);
 
 		reportButton.setOnClickListener(this);
+	}
+
+
+	@NonNull
+	@Override
+	public Bundle onSaveInstanceState() {
+		Bundle bundle = super.onSaveInstanceState();
+		bundle.putSerializable(KEY_SAVE, update);
+		return bundle;
+	}
+
+
+	@Override
+	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+		if (data instanceof ReportUpdate) {
+			update = (ReportUpdate) data;
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 

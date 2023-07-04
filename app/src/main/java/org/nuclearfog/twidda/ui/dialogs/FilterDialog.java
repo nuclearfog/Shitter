@@ -28,12 +28,16 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Filter;
 
+import java.io.Serializable;
+
 /**
  * Filter update dialog
  *
  * @author nuclearfog
  */
 public class FilterDialog extends Dialog implements OnClickListener, OnCheckedChangeListener, AsyncCallback<FilterActionResult> {
+
+	private static final String KEY_SAVE = "filterupdate-save";
 
 	private SwitchButton sw_home, sw_notification, sw_public, sw_user, sw_thread, sw_hide;
 	private EditText txt_title, txt_keywords;
@@ -114,6 +118,25 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 			sw_hide.setCheckedImmediately(update.getFilterAction() == Filter.ACTION_HIDE);
 			txt_title.setText(update.getTitle());
 		}
+	}
+
+
+	@NonNull
+	@Override
+	public Bundle onSaveInstanceState() {
+		Bundle bundle = super.onSaveInstanceState();
+		bundle.putSerializable(KEY_SAVE, update);
+		return bundle;
+	}
+
+
+	@Override
+	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+		if (data instanceof FilterUpdate) {
+			update = (FilterUpdate) data;
+		}
+		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 
