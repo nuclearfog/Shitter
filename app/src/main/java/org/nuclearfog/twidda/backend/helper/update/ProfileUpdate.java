@@ -1,19 +1,12 @@
 package org.nuclearfog.twidda.backend.helper.update;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
-
-import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
 
 import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * This class is used to upload profile information
@@ -22,8 +15,7 @@ import java.io.InputStream;
  */
 public class ProfileUpdate implements Closeable {
 
-	private Uri[] imageUrls = new Uri[2];
-	private InputStream[] imageStreams = new InputStream[2];
+	private MediaStatus profileImage, bannerImage;
 
 	private String name = "";
 	private String url = "";
@@ -36,14 +28,11 @@ public class ProfileUpdate implements Closeable {
 	 */
 	@Override
 	public void close() {
-		try {
-			for (InputStream imageStream : imageStreams) {
-				if (imageStream != null) {
-					imageStream.close();
-				}
-			}
-		} catch (IOException e) {
-			// ignore
+		if (profileImage != null) {
+			profileImage.close();
+		}
+		if (bannerImage != null) {
+			bannerImage.close();
 		}
 	}
 
@@ -63,35 +52,15 @@ public class ProfileUpdate implements Closeable {
 	}
 
 	/**
-	 * add profile image Uri
-	 *
-	 * @param context  context used to resolve Uri
-	 * @param imageUrl Uri of the local image file
-	 * @return true if file is valid, false otherwise
 	 */
-	public boolean setImage(Context context, @NonNull Uri imageUrl) {
-		DocumentFile file = DocumentFile.fromSingleUri(context, imageUrl);
-		if (file != null && file.length() > 0) {
-			imageUrls[0] = imageUrl;
-			return true;
-		}
-		return false;
+	public void setProfileImage(MediaStatus profileImage) {
+		this.profileImage = profileImage;
 	}
 
 	/**
-	 * add banner image Uri
-	 *
-	 * @param context   context used to resolve Uri
-	 * @param bannerUrl Uri of the local image file
-	 * @return true if file is valid, false otherwise
 	 */
-	public boolean setBanner(Context context, @NonNull Uri bannerUrl) {
-		DocumentFile file = DocumentFile.fromSingleUri(context, bannerUrl);
-		if (file != null && file.length() > 0) {
-			imageUrls[1] = bannerUrl;
-			return true;
-		}
-		return false;
+	public void setBannerImage(MediaStatus bannerImage) {
+		this.bannerImage = bannerImage;
 	}
 
 	/**
@@ -126,23 +95,23 @@ public class ProfileUpdate implements Closeable {
 	 * @return true if any image is added
 	 */
 	public boolean imageAdded() {
-		return imageUrls[0] != null || imageUrls[1] != null;
+		return profileImage != null || bannerImage != null;
 	}
 
 	/**
-	 * @return filestream of the profile image
+	 * @return profile image media instance or null if not added
 	 */
 	@Nullable
-	public InputStream getProfileImageStream() {
-		return imageStreams[0];
+	public MediaStatus getProfileImageMedia() {
+		return profileImage;
 	}
 
 	/**
-	 * @return filestream of the banner image
+	 * @return banner image media instance or null if not added
 	 */
 	@Nullable
-	public InputStream getBannerImageStream() {
-		return imageStreams[1];
+	public MediaStatus getBannerImageMedia() {
+		return bannerImage;
 	}
 
 	/**
@@ -151,26 +120,8 @@ public class ProfileUpdate implements Closeable {
 	 *
 	 * @return true if initialization finished without any error
 	 */
-	@SuppressLint("Recycle")
 	public boolean prepare(ContentResolver resolver) {
-		try {
-			for (int i = 0; i < imageUrls.length; i++) {
-				if (imageUrls[i] != null) {
-					InputStream profileImgStream = resolver.openInputStream(imageUrls[i]);
-					if (profileImgStream != null && profileImgStream.available() > 0) {
-						this.imageStreams[i] = profileImgStream;
-					} else {
-						return false;
-					}
-				}
-			}
-		} catch (IOException exception) {
-			if (BuildConfig.DEBUG) {
-				exception.printStackTrace();
-			}
-			return false;
-		}
-		return true;
+		return (profileImage == null || profileImage.openStream(resolver)) && (bannerImage == null || bannerImage.openStream(resolver));
 	}
 
 

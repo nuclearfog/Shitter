@@ -31,6 +31,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserUpdater;
 import org.nuclearfog.twidda.backend.async.UserUpdater.UserUpdateResult;
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -41,6 +42,8 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
+
+import java.io.FileNotFoundException;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -75,7 +78,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 	@Nullable
 	private User user;
-	private ProfileUpdate holder = new ProfileUpdate();
+	private ProfileUpdate profileUpdate = new ProfileUpdate();
 
 
 	@Override
@@ -157,7 +160,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		String userLoc = profileLocation.getText().toString();
 		String userBio = userDescription.getText().toString();
 		if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
-				&& userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !holder.imageAdded()) {
+				&& userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !profileUpdate.imageAdded()) {
 			finish();
 		} else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
 			finish();
@@ -191,24 +194,23 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 	@Override
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
-		// Add image as profile image
-		if (resultType == REQUEST_PROFILE) {
-			if (holder.setImage(this, uri)) {
+		try {
+			MediaStatus mediaStatus = new MediaStatus(getApplicationContext(), uri);
+			// Add image as profile image
+			if (resultType == REQUEST_PROFILE) {
+				profileUpdate.setProfileImage(mediaStatus);
 				profile_image.setImageURI(uri);
-			} else {
-				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 			}
-		}
-		// Add image as banner image
-		else if (resultType == REQUEST_BANNER) {
-			if (holder.setBanner(this, uri)) {
+			// Add image as banner image
+			else if (resultType == REQUEST_BANNER) {
+				profileUpdate.setBannerImage(mediaStatus);
 				int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 				picasso.load(uri).resize(widthPixels, widthPixels / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
 				addBannerBtn.setVisibility(View.INVISIBLE);
 				changeBannerBtn.setVisibility(View.VISIBLE);
-			} else {
-				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 			}
+		} catch (FileNotFoundException exception) {
+			Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -290,9 +292,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 				String errMsg = getString(R.string.error_invalid_link);
 				profileUrl.setError(errMsg);
 			} else {
-				holder.setProfile(username, userLink, userBio, userLoc);
-				if (holder.prepare(getContentResolver())) {
-					editorAsync.execute(holder, this);
+				profileUpdate.setProfile(username, userLink, userBio, userLoc);
+				if (profileUpdate.prepare(getContentResolver())) {
+					editorAsync.execute(profileUpdate, this);
 					loadingCircle.show();
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();

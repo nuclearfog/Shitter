@@ -1,20 +1,15 @@
 package org.nuclearfog.twidda.backend.helper.update;
 
 import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
 
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.model.Instance;
 
 import java.io.Closeable;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.TreeSet;
 
 /**
  * This class is used to upload a message
@@ -31,9 +26,6 @@ public class MessageUpdate implements Serializable, Closeable {
 	private MediaStatus mediaStatus;
 	private String name = "";
 	private String text = "";
-
-
-	private TreeSet<String> supportedFormats = new TreeSet<>();
 
 	/**
 	 * close inputstream of media file
@@ -79,39 +71,22 @@ public class MessageUpdate implements Serializable, Closeable {
 
 
 	/**
-	 * get inputstream of the media file
+	 * get media attachment
 	 *
-	 * @return input stream
+	 * @return media attachment
 	 */
 	@Nullable
 	public MediaStatus getMediaStatus() {
 		return mediaStatus;
 	}
 
+	/**
+	 * add/update media attachment
+	 *
+	 * @param mediaStatus media attachment
+	 */
 	public void setMediaUpdate(MediaStatus mediaStatus) {
 		this.mediaStatus = mediaStatus;
-	}
-
-	/**
-	 * add media uri and create input stream
-	 *
-	 * @param context context used to create inputstream and mime type
-	 * @param uri     uri of a local media file
-	 * @return true if file is valid
-	 */
-	public boolean addMedia(Context context, @NonNull Uri uri) {
-		DocumentFile file = DocumentFile.fromSingleUri(context, uri);
-		String mime = context.getContentResolver().getType(uri);
-		// check if file is valid
-		if (mime == null || file == null || file.length() == 0 || !supportedFormats.contains(mime)) {
-			return false;
-		}
-		try {
-			mediaStatus = new MediaStatus(context, uri, "");
-		} catch (IllegalArgumentException exception) {
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -129,7 +104,6 @@ public class MessageUpdate implements Serializable, Closeable {
 	 * @param instance instance imformation
 	 */
 	public void setInstanceInformation(Instance instance) {
-		supportedFormats.addAll(Arrays.asList(instance.getSupportedFormats()));
 		this.instance = instance;
 	}
 

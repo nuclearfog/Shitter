@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.ui.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
@@ -39,9 +40,15 @@ import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
+import org.nuclearfog.twidda.model.Media;
+import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog;
+import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog.DescriptionCallback;
+
+import java.io.Serializable;
 
 import okhttp3.Call;
 
@@ -50,19 +57,13 @@ import okhttp3.Call;
  *
  * @author nuclearfog
  */
-public class VideoViewer extends AppCompatActivity implements Player.Listener {
+public class VideoViewer extends AppCompatActivity implements Player.Listener, DescriptionCallback {
 
-	/**
-	 * key for an Uri array with local links
-	 * value type is {@link Uri}
-	 */
-	public static final String KEY_LINK = "media_uri";
+	public static final String KEY_VIDEO_ONLINE = "media-video";
 
-	/**
-	 * Key to enable extra layouts for a video
-	 * value type is Boolean
-	 */
-	public static final String KEY_CONTROLS = "enable_controls";
+	public static final String KEY_VIDEO_LOCAL = "video-media-status";
+
+	public static final int RETURN_VIDEO_UPDATE = 0x1528;
 
 	/**
 	 * online video cache size
@@ -72,9 +73,13 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	private Toolbar toolbar;
 	private StyledPlayerView playerView;
 
-	private ExoPlayer player;
+	private DescriptionDialog descriptionDialog;
 
-	private Uri data;
+	private ExoPlayer player;
+	@Nullable
+	private MediaStatus mediaStatus;
+	@Nullable
+	private Media media;
 
 
 	@Override
@@ -105,39 +110,49 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 				};
 			}
 		};
+		descriptionDialog = new DescriptionDialog(this, this);
 		player = new ExoPlayer.Builder(this, renderersFactory).build();
 		player.addListener(this);
 
-		data = getIntent().getParcelableExtra(KEY_LINK);
-		boolean enableControls = getIntent().getBooleanExtra(KEY_CONTROLS, true);
-		if (!enableControls) {
-			playerView.setUseController(false);
-			player.setRepeatMode(Player.REPEAT_MODE_ONE);
-		}
+		MediaItem mediaItem;
 		DataSource.Factory dataSourceFactory;
-		MediaItem mediaItem = MediaItem.fromUri(data);
-
-		// initialize online source
-		if (data.getScheme().startsWith("http")) {
-			// configure with okhttp connection of the app
+		Serializable serializedData = getIntent().getSerializableExtra(KEY_VIDEO_ONLINE);
+		// check if video is online
+		if (serializedData instanceof Media) {
+			this.media = (Media) serializedData;
+			mediaItem = MediaItem.fromUri(media.getUrl());
 			dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
+			if (media.getMediaType() != Media.VIDEO) {
+				playerView.setUseController(false);
+				player.setRepeatMode(Player.REPEAT_MODE_ONE);
+			}
 		}
-		// initialize local source
+		// check if viceo is local
 		else {
-			toolbar.setVisibility(View.GONE);
-			dataSourceFactory = new DataSource.Factory() {
-				@NonNull
-				@Override
-				public DataSource createDataSource() {
-					return new ContentDataSource(getApplicationContext());
+			serializedData = getIntent().getSerializableExtra(KEY_VIDEO_LOCAL);
+			if (serializedData instanceof MediaStatus) {
+				this.mediaStatus = (MediaStatus) serializedData;
+				mediaItem = MediaItem.fromUri(mediaStatus.getPath());
+				dataSourceFactory = new DataSource.Factory() {
+					@NonNull
+					@Override
+					public DataSource createDataSource() {
+						return new ContentDataSource(getApplicationContext());
+					}
+				};
+				if (mediaStatus.getMediaType() != MediaStatus.VIDEO) {
+					playerView.setUseController(false);
+					player.setRepeatMode(Player.REPEAT_MODE_ONE);
 				}
-			};
+			} else {
+				return;
+			}
 		}
 		// initialize video extractor
 		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem);
 		player.setMediaSource(mediaSource);
 		playerView.setPlayer(player);
-
+		// prepare playback
 		player.prepare();
 		player.setPlayWhenReady(true);
 	}
@@ -154,8 +169,13 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+		if (mediaStatus != null) {
+			Intent intent = new Intent();
+			intent.putExtra(KEY_VIDEO_LOCAL, mediaStatus);
+			setResult(RETURN_VIDEO_UPDATE, intent);
+		}
 		player.stop();
+		super.onBackPressed();
 	}
 
 
@@ -183,7 +203,11 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.video, menu);
+		MenuItem menuOpenLink = menu.findItem(R.id.menu_video_link);
+		MenuItem menuDescription = menu.findItem(R.id.menu_video_add_description);
 		AppStyles.setMenuIconColor(menu, Color.WHITE);
+		menuOpenLink.setVisible(media != null);
+		menuDescription.setVisible(mediaStatus != null);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -191,11 +215,23 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener {
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_video_link) {
-			if (data != null) {
-				LinkUtils.openMediaLink(this, data);
+			if (media != null) {
+				LinkUtils.openMediaLink(this, Uri.parse(media.getUrl()));
 			}
 		}
+		//
+		else if (item.getItemId() == R.id.menu_video_add_description) {
+			descriptionDialog.show();
+		}
 		return super.onOptionsItemSelected(item);
+	}
+
+
+	@Override
+	public void onDescriptionSet(String description) {
+		if (mediaStatus != null) {
+			mediaStatus.setDescription(description);
+		}
 	}
 
 

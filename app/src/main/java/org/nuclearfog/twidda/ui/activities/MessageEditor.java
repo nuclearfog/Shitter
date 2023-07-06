@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.MessageUpdater;
 import org.nuclearfog.twidda.backend.async.MessageUpdater.MessageUpdateResult;
+import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.MessageUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
@@ -30,6 +31,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 
 /**
@@ -154,10 +156,12 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	@Override
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
 		if (resultType == REQUEST_IMAGE) {
-			if (messageUpdate.addMedia(this, uri)) {
+			try {
+				MediaStatus mediaStatus = new MediaStatus(getApplicationContext(), uri);
+				messageUpdate.setMediaUpdate(mediaStatus);
 				preview.setVisibility(View.VISIBLE);
 				media.setVisibility(View.GONE);
-			} else {
+			} catch (FileNotFoundException exception) {
 				Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
 			}
 		}

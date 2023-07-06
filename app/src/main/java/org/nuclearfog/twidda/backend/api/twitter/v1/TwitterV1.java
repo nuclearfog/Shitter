@@ -1033,10 +1033,10 @@ public class TwitterV1 implements Connection {
 			params.add("command=INIT");
 			params.add("media_type=" + mediaUpdate.getMimeType());
 			params.add("total_bytes=" + mediaUpdate.available());
-			if (mediaUpdate.getMimeType().startsWith("video/")) {
+			if (mediaUpdate.getMimeType() != null && mediaUpdate.getMimeType().startsWith("video/")) {
 				params.add("media_category=tweet_video");
 				enableChunk = true;
-			} else if (mediaUpdate.getMimeType().startsWith("image/gif")) {
+			} else if (mediaUpdate.getMimeType() != null && mediaUpdate.getMimeType().startsWith("image/gif")) {
 				params.add("media_category=tweet_gif");
 				enableChunk = true;
 			} else {
@@ -1158,11 +1158,11 @@ public class TwitterV1 implements Connection {
 		params.add("url=" + StringUtils.encode(update.getUrl()));
 		params.add("location=" + StringUtils.encode(update.getLocation()));
 		params.add("description=" + StringUtils.encode(update.getDescription()));
-		if (update.getProfileImageStream() != null) {
-			updateImage(PROFILE_UPDATE_IMAGE, update.getProfileImageStream(), "image");
+		if (update.getProfileImageMedia() != null) {
+			updateImage(PROFILE_UPDATE_IMAGE, update.getProfileImageMedia().getStream(), "image");
 		}
-		if (update.getBannerImageStream() != null) {
-			updateImage(PROFILE_UPDATE_BANNER, update.getBannerImageStream(), "banner");
+		if (update.getBannerImageMedia() != null) {
+			updateImage(PROFILE_UPDATE_BANNER, update.getBannerImageMedia().getStream(), "banner");
 		}
 		return getUser(PROFILE_UPDATE, params);
 	}

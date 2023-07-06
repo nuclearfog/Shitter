@@ -751,17 +751,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				audioDialog.show(uri);
 				break;
 
+			case Media.GIF:
 			case Media.VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.KEY_LINK, uri);
-				intent.putExtra(VideoViewer.KEY_CONTROLS, true);
-				startActivity(intent);
-				break;
-
-			case Media.GIF:
-				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.KEY_LINK, uri);
-				intent.putExtra(VideoViewer.KEY_CONTROLS, false);
+				intent.putExtra(VideoViewer.KEY_VIDEO_ONLINE, media);
 				startActivity(intent);
 				break;
 		}

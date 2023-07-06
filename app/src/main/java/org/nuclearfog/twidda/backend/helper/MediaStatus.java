@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.model.Media;
 
 import java.io.Closeable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -76,20 +77,18 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * create MediaStatus from an offline source
 	 *
-	 * @param uri         path to the local file
-	 * @param description description of the media source
-	 * @throws IllegalArgumentException when the file is invalid
+	 * @param uri                    path to the local file
+	 * @throws FileNotFoundException if the file is invalid
 	 */
-	public MediaStatus(Context context, Uri uri, String description) throws IllegalArgumentException {
+	public MediaStatus(Context context, Uri uri) throws FileNotFoundException {
 		DocumentFile file = DocumentFile.fromSingleUri(context, uri);
 		if (file != null && file.length() > 0) {
-			this.description = description;
 			mimeType = context.getContentResolver().getType(uri);
 			type = getType(mimeType);
 			path = uri.toString();
 			local = true;
 		} else {
-			throw new IllegalArgumentException();
+			throw new FileNotFoundException("file not supported!");
 		}
 	}
 
@@ -246,7 +245,7 @@ public class MediaStatus implements Serializable, Closeable {
 	 * @param mimeType mime type of the media file
 	 * @return media type {@link #GIF,#PHOTO ,#VIDEO,#AUDIO} or {@link #INVALID} if media file is not supported
 	 */
-	private int getType(String mimeType) throws IllegalArgumentException {
+	private int getType(String mimeType) {
 		if (mimeType.equals("image/gif"))
 			return GIF;
 		if (mimeType.startsWith("image/"))

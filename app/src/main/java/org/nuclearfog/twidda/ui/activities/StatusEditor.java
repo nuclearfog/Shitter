@@ -51,6 +51,7 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 
 /**
@@ -248,11 +249,21 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	@Override
 	public void onActivityResult(ActivityResult result) {
-		if (result.getResultCode() == ImageViewer.RETURN_MEDIA_STATUS_UPDATE && result.getData() != null) {
-			Serializable data = result.getData().getSerializableExtra(ImageViewer.KEY_MEDIA_LOCAL);
-			if (data instanceof MediaStatus) {
-				MediaStatus mediaStatus = (MediaStatus) data;
-				statusUpdate.updateMediaStatus(mediaStatus);
+		if (result.getResultCode() == ImageViewer.RETURN_MEDIA_STATUS_UPDATE) {
+			if (result.getData() != null) {
+				Serializable data = result.getData().getSerializableExtra(ImageViewer.KEY_MEDIA_LOCAL);
+				if (data instanceof MediaStatus) {
+					MediaStatus mediaStatus = (MediaStatus) data;
+					statusUpdate.updateMediaStatus(mediaStatus);
+				}
+			}
+		} else if (result.getResultCode() == VideoViewer.RETURN_VIDEO_UPDATE) {
+			if (result.getData() != null) {
+				Serializable data = result.getData().getSerializableExtra(VideoViewer.KEY_VIDEO_LOCAL);
+				if (data instanceof MediaStatus) {
+					MediaStatus mediaStatus = (MediaStatus) data;
+					statusUpdate.updateMediaStatus(mediaStatus);
+				}
 			}
 		} else {
 			super.onActivityResult(result);
@@ -356,9 +367,13 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	@Override
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
-		MediaStatus mediaStatus = new MediaStatus(getApplicationContext(), uri, "");
-		int mediaType = statusUpdate.addMedia(mediaStatus);
-		addMedia(mediaType);
+		try {
+			MediaStatus mediaStatus = new MediaStatus(getApplicationContext(), uri);
+			int mediaType = statusUpdate.addMedia(mediaStatus);
+			addMedia(mediaType);
+		} catch (FileNotFoundException e) {
+			Toast.makeText(getApplicationContext(), R.string.error_adding_media, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 
@@ -386,8 +401,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		if (statusUpdate.getMediaStatuses().isEmpty())
 			return;
 		MediaStatus media = statusUpdate.getMediaStatuses().get(index);
-		if (media.getPath() == null)
-			return;
 		switch (media.getMediaType()) {
 			case MediaStatus.PHOTO:
 			case MediaStatus.GIF:
@@ -399,13 +412,13 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 			case MediaStatus.VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.KEY_LINK, Uri.parse(media.getPath()));
-				intent.putExtra(VideoViewer.KEY_CONTROLS, true);
-				startActivity(intent);
+				intent.putExtra(VideoViewer.KEY_VIDEO_LOCAL, media);
+				activityResultLauncher.launch(intent);
 				break;
 
 			case MediaStatus.AUDIO:
-				audioDialog.show(Uri.parse(media.getPath()));
+				if (media.getPath() != null)
+					audioDialog.show(Uri.parse(media.getPath()));
 				break;
 		}
 	}

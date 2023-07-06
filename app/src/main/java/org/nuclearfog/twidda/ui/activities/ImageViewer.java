@@ -44,21 +44,32 @@ import java.io.Serializable;
  */
 public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoaderResult>, DescriptionCallback {
 
-	public static final int IMAGE_LOCAL = 900;
-
-	public static final int GIF_LOCAL = 901;
-
+	/**
+	 * mode used to show local image/gif file
+	 * requires {@link #KEY_MEDIA_LOCAL} to be set
+	 */
 	public static final int MEDIA_LOCAL = 902;
 
+	/**
+	 * mode used to show online image
+	 * requires {@link #KEY_MEDIA_URL} to be set
+	 */
 	public static final int IMAGE_ONLINE = 903;
 
+	/**
+	 * mode used to show online image
+	 * requires {@link #KEY_MEDIA_ONLINE} to be set
+	 */
 	public static final int MEDIA_ONLINE = 904;
 
+	/**
+	 * activity result code indicates that {@link MediaStatus} data has been updated
+	 */
 	public static final int RETURN_MEDIA_STATUS_UPDATE = 0x5895;
 
 	/**
 	 * key to set image format (image or gif)
-	 * value type is Integer {@link #IMAGE_LOCAL,#IMAGE_ONLINE,#GIF_LOCAL,#MEDIA_LOCAL}
+	 * value type is Integer {@link #IMAGE_ONLINE,#GIF_LOCAL,#MEDIA_LOCAL}
 	 */
 	public static final String TYPE = "image-type";
 
@@ -130,29 +141,15 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
 		cacheFolder.mkdirs();
 
-		mode = getIntent().getIntExtra(TYPE, IMAGE_LOCAL);
+		mode = getIntent().getIntExtra(TYPE, 0);
 		switch (mode) {
-			case IMAGE_LOCAL:
-				zoomImage.setVisibility(View.VISIBLE);
-				gifImage.setVisibility(View.INVISIBLE);
-				Uri data = getIntent().getParcelableExtra(KEY_MEDIA_URL);
-				zoomImage.setImageURI(data);
-				break;
-
 			case IMAGE_ONLINE:
 				zoomImage.setVisibility(View.VISIBLE);
 				gifImage.setVisibility(View.INVISIBLE);
 				loadingCircle.setVisibility(View.VISIBLE);
-				data = getIntent().getParcelableExtra(KEY_MEDIA_URL);
+				Uri data = getIntent().getParcelableExtra(KEY_MEDIA_URL);
 				ImageLoaderParam request = new ImageLoaderParam(data, cacheFolder);
 				imageAsync.execute(request, this);
-				break;
-
-			case GIF_LOCAL:
-				zoomImage.setVisibility(View.INVISIBLE);
-				gifImage.setVisibility(View.VISIBLE);
-				data = getIntent().getParcelableExtra(KEY_MEDIA_URL);
-				gifImage.setImageURI(data);
 				break;
 
 			case MEDIA_LOCAL:
@@ -178,6 +175,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 			case MEDIA_ONLINE:
 				serializedData = getIntent().getSerializableExtra(KEY_MEDIA_ONLINE);
 				if (serializedData instanceof Media) {
+					loadingCircle.setVisibility(View.VISIBLE);
 					Media media = (Media) serializedData;
 					if (!media.getBlurHash().isEmpty()) {
 						Bitmap blur = BlurHashDecoder.INSTANCE.decode(media.getBlurHash(), 16, 16, 1f, true);

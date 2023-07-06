@@ -1074,12 +1074,12 @@ public class Mastodon implements Connection {
 
 		params.add("display_name=" + StringUtils.encode(update.getName()));
 		params.add("note=" + StringUtils.encode(update.getDescription()));
-		if (update.getProfileImageStream() != null) {
-			streams.add(update.getProfileImageStream());
+		if (update.getProfileImageMedia() != null) {
+			streams.add(update.getProfileImageMedia().getStream());
 			keys.add("avatar");
 		}
-		if (update.getBannerImageStream() != null) {
-			streams.add(update.getBannerImageStream());
+		if (update.getBannerImageMedia() != null) {
+			streams.add(update.getBannerImageMedia().getStream());
 			keys.add("header");
 		}
 		try {
