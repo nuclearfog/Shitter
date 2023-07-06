@@ -128,7 +128,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	public void onBackPressed() {
-		if (receiver.getText().length() == 0 && message.getText().length() == 0 && messageUpdate.getMediaUri() == null) {
+		if (receiver.getText().length() == 0 && message.getText().length() == 0 && messageUpdate.getMediaStatus() == null) {
 			loadingCircle.dismiss();
 			super.onBackPressed();
 		} else {
@@ -178,10 +178,10 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		}
 		// open media
 		else if (v.getId() == R.id.popup_message_preview) {
-			if (messageUpdate.getMediaUri() != null) {
+			if (messageUpdate.getMediaStatus() != null) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.LINK, messageUpdate.getMediaUri());
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.KEY_MEDIA_LOCAL, messageUpdate.getMediaStatus());
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.MEDIA_LOCAL);
 				startActivity(intent);
 			}
 		}
@@ -212,7 +212,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 	private void sendMessage() {
 		String username = receiver.getText().toString();
 		String message = this.message.getText().toString();
-		if (!username.trim().isEmpty() && (!message.trim().isEmpty() || messageUpdate.getMediaUri() != null)) {
+		if (!username.trim().isEmpty() && (!message.trim().isEmpty() || messageUpdate.getMediaStatus() != null)) {
 			if (messageUpdate.prepare(getContentResolver())) {
 				messageUpdate.setReceiver(username);
 				messageUpdate.setText(message);

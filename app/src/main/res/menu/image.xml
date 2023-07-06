@@ -5,6 +5,10 @@
 	<item
 		android:id="@+id/menu_image_save"
 		android:icon="@drawable/save"
-		android:title="@string/item_image_save"
-		app:showAsAction="always" />
+		android:title="@string/item_image_save" />
+
+	<item
+		android:id="@+id/menu_image_add_description"
+		android:title="@string/menu_media_add_description"
+		android:visible="false"/>
 </menu>

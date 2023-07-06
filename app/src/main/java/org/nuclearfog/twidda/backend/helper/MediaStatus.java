@@ -28,7 +28,7 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * indicates that the media file is a photo
 	 */
-	public static final int IMAGE = 10;
+	public static final int PHOTO = 10;
 
 	/**
 	 * indicates that the media file is a video
@@ -45,13 +45,17 @@ public class MediaStatus implements Serializable, Closeable {
 	 */
 	public static final int GIF = 13;
 
-	@Nullable
-	private transient InputStream inputStream = null;
+	public static final int INVALID = -1;
 
+	@Nullable
+	private transient InputStream inputStream;
+	@Nullable
 	private String mimeType;
+	@Nullable
 	private String path;
-	private String description;
+	@Nullable
 	private String key;
+	private String description = "";
 	private int type;
 	private boolean local;
 
@@ -60,14 +64,12 @@ public class MediaStatus implements Serializable, Closeable {
 	 *
 	 * @param inputStream inputstream to fetch data from internet
 	 * @param mimeType    MIME type of the media
-	 * @throws IllegalArgumentException when the file is invalid
 	 */
-	public MediaStatus(@Nullable InputStream inputStream, String mimeType, String key) throws IllegalArgumentException {
+	public MediaStatus(@Nullable InputStream inputStream, @NonNull String mimeType, @NonNull String key) {
 		this.inputStream = inputStream;
 		this.mimeType = mimeType;
 		this.key = key;
 		type = getType(mimeType);
-		description = "";
 		local = false;
 	}
 
@@ -151,6 +153,7 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * @return MIME type of the stream
 	 */
+	@Nullable
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -158,8 +161,18 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * @return media description if any
 	 */
+	@NonNull
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * set media description
+	 *
+	 * @param description media description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**
@@ -185,7 +198,7 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * get type of the media file
 	 *
-	 * @return media type {@link #VIDEO,#AUDIO,#IMAGE,#GIF}
+	 * @return media type {@link #VIDEO,#AUDIO,#PHOTO ,#GIF}
 	 */
 	public int getMediaType() {
 		return type;
@@ -206,6 +219,7 @@ public class MediaStatus implements Serializable, Closeable {
 	 *
 	 * @return path or url
 	 */
+	@Nullable
 	public String getPath() {
 		return path;
 	}
@@ -218,19 +232,38 @@ public class MediaStatus implements Serializable, Closeable {
 	}
 
 
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof MediaStatus))
+			return false;
+		MediaStatus mediaStatus = (MediaStatus) obj;
+		return mediaStatus.getMediaType() == getMediaType() && ((mediaStatus.getPath() == null && getPath() == null) || mediaStatus.getPath().equals(getPath()));
+	}
+
+	/**
+	 * get media type
+	 *
+	 * @param mimeType mime type of the media file
+	 * @return media type {@link #GIF,#PHOTO ,#VIDEO,#AUDIO} or {@link #INVALID} if media file is not supported
+	 */
 	private int getType(String mimeType) throws IllegalArgumentException {
 		if (mimeType.equals("image/gif"))
 			return GIF;
 		if (mimeType.startsWith("image/"))
-			return IMAGE;
+			return PHOTO;
 		if (mimeType.startsWith("video/"))
 			return VIDEO;
 		if (mimeType.startsWith("audio/"))
 			return AUDIO;
-		throw new IllegalArgumentException("wrong format!");
+		return INVALID;
 	}
 
-
+	/**
+	 * get media type
+	 *
+	 * @param mediaType media type {@link Media#AUDIO,Media#VIDEO,#Media#GIF,Media#PHOTO}
+	 * @return media type {@link #GIF,#PHOTO ,#VIDEO,#AUDIO} or {@link #INVALID} if media file is not supported
+	 */
 	private int getType(int mediaType) {
 		switch (mediaType) {
 			case Media.AUDIO:
@@ -243,10 +276,10 @@ public class MediaStatus implements Serializable, Closeable {
 				return GIF;
 
 			case Media.PHOTO:
-				return IMAGE;
+				return PHOTO;
 
 			default:
-				return 0;
+				return INVALID;
 		}
 	}
 }

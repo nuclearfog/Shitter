@@ -358,4 +358,9 @@
 	<dimen name="dialog_report_button_padding">5dp</dimen>
 	<dimen name="dialog_report_button_height">24sp</dimen>
 
+	<!--dimens of dialog_description.xml-->
+	<dimen name="dialog_description_textsize_title">22sp</dimen>
+	<dimen name="dialog_description_button_padding">5dp</dimen>
+	<dimen name="dialog_description_layout_margin">5dp</dimen>
+
 </resources>

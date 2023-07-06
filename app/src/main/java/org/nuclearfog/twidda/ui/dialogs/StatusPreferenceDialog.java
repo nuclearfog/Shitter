@@ -41,7 +41,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	 * @param statusUpdate status information from status editor
 	 */
 	public StatusPreferenceDialog(Activity activity, StatusUpdate statusUpdate) {
-		super(activity, R.style.StatusDialog);
+		super(activity, R.style.DefaultDialog);
 		this.statusUpdate = statusUpdate;
 		visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
 		language_adapter = new DropdownAdapter(activity.getApplicationContext());

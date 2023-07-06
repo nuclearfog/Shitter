@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/dialog_description_root"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_dexcription_title"
+		android:lines="1"
+		android:textSize="@dimen/dialog_description_textsize_title"
+		android:layout_margin="@dimen/dialog_description_layout_margin"/>
+
+	<EditText
+		android:id="@+id/dialog_description_input"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent"
+		android:lines="4"
+		android:gravity="top"
+		android:layout_margin="@dimen/dialog_description_layout_margin"
+		android:importantForAutofill="no"
+		android:inputType="textMultiLine"
+		android:fadeScrollbars="false"
+		android:scrollbars="vertical"
+		android:scrollbarStyle="outsideInset" />
+
+	<Button
+		android:id="@+id/dialog_description_apply"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/dialog_push_button_height"
+		android:padding="@dimen/dialog_description_button_padding"
+		android:text="@string/dialog_apply"
+		android:layout_margin="@dimen/dialog_description_layout_margin"
+		android:lines="1"
+		android:layout_gravity="end"
+		style="@style/FeedbackButton" />
+
+</LinearLayout>

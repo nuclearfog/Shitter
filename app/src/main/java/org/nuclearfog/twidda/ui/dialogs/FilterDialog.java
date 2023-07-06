@@ -51,7 +51,7 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	 *
 	 */
 	public FilterDialog(Activity activity, FilterDialogCallback callback) {
-		super(activity, R.style.FilterDialog);
+		super(activity, R.style.DefaultDialog);
 		this.callback = callback;
 		update = new FilterUpdate();
 		filterAction = new StatusFilterAction(activity);

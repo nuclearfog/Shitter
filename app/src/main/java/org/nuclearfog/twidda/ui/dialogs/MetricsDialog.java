@@ -34,7 +34,7 @@ public class MetricsDialog extends Dialog {
 	 *
 	 */
 	public MetricsDialog(Activity activity) {
-		super(activity, R.style.MetricsDialog);
+		super(activity, R.style.DefaultDialog);
 	}
 
 

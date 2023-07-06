@@ -553,10 +553,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onActivityResult(ActivityResult result) {
-		if (result.getData() != null && result.getResultCode() == StatusEditor.RETURN_STATUS_UPDATE) {
-			Serializable data = result.getData().getSerializableExtra(StatusEditor.KEY_DATA);
-			if (data instanceof Status) {
-				setStatus((Status) data);
+		if (result.getData() != null) {
+			if (result.getResultCode() == StatusEditor.RETURN_STATUS_UPDATE) {
+				Serializable data = result.getData().getSerializableExtra(StatusEditor.KEY_DATA);
+				if (data instanceof Status) {
+					setStatus((Status) data);
+				}
 			}
 		}
 	}
@@ -726,8 +728,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.LINK, Uri.parse(card.getImageUrl()));
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.KEY_MEDIA_URL, Uri.parse(card.getImageUrl()));
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_ONLINE);
 				startActivity(intent);
 			}
 		}
@@ -740,9 +742,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		switch (media.getMediaType()) {
 			case Media.PHOTO:
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.LINK, uri);
-				intent.putExtra(ImageViewer.DESCRIPTION, media.getDescription());
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
+				intent.putExtra(ImageViewer.KEY_MEDIA_ONLINE, media);
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.MEDIA_ONLINE);
 				startActivity(intent);
 				break;
 

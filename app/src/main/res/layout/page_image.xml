@@ -43,6 +43,7 @@
 		android:layout_width="@dimen/mediapage_circle_size"
 		android:layout_height="@dimen/mediapage_circle_size"
 		android:layout_marginTop="@dimen/mediapage_preview_margin"
+		android:visibility="invisible"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"

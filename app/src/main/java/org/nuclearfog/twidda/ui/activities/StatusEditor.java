@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,7 +58,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class StatusEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener,
+public class StatusEditor extends MediaActivity implements ActivityResultCallback<ActivityResult>, OnClickListener, OnProgressStopListener, OnConfirmListener,
 		OnMediaClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener {
 
 	/**
@@ -86,6 +90,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	 */
 	private static final String KEY_SAVE = "status_update";
 
+	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<StatusUpdateResult> statusUpdateResult = this::onStatusUpdated;
 	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
 
@@ -242,6 +247,20 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 
 	@Override
+	public void onActivityResult(ActivityResult result) {
+		if (result.getResultCode() == ImageViewer.RETURN_MEDIA_STATUS_UPDATE && result.getData() != null) {
+			Serializable data = result.getData().getSerializableExtra(ImageViewer.KEY_MEDIA_LOCAL);
+			if (data instanceof MediaStatus) {
+				MediaStatus mediaStatus = (MediaStatus) data;
+				statusUpdate.updateMediaStatus(mediaStatus);
+			}
+		} else {
+			super.onActivityResult(result);
+		}
+	}
+
+
+	@Override
 	public void onClick(View v) {
 		// send status
 		if (v.getId() == R.id.popup_status_send) {
@@ -337,7 +356,8 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 
 	@Override
 	protected void onMediaFetched(int resultType, @NonNull Uri uri) {
-		int mediaType = statusUpdate.addMedia(this, uri);
+		MediaStatus mediaStatus = new MediaStatus(getApplicationContext(), uri, "");
+		int mediaType = statusUpdate.addMedia(mediaStatus);
 		addMedia(mediaType);
 	}
 
@@ -366,19 +386,15 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 		if (statusUpdate.getMediaStatuses().isEmpty())
 			return;
 		MediaStatus media = statusUpdate.getMediaStatuses().get(index);
+		if (media.getPath() == null)
+			return;
 		switch (media.getMediaType()) {
-			case MediaStatus.IMAGE:
-				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.LINK, Uri.parse(media.getPath()));
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_DEFAULT);
-				startActivity(intent);
-				break;
-
+			case MediaStatus.PHOTO:
 			case MediaStatus.GIF:
-				intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.LINK, Uri.parse(media.getPath()));
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_GIF);
-				startActivity(intent);
+				Intent intent = new Intent(this, ImageViewer.class);
+				intent.putExtra(ImageViewer.KEY_MEDIA_LOCAL, media);
+				intent.putExtra(ImageViewer.TYPE, ImageViewer.MEDIA_LOCAL);
+				activityResultLauncher.launch(intent);
 				break;
 
 			case MediaStatus.VIDEO:
@@ -422,7 +438,7 @@ public class StatusEditor extends MediaActivity implements OnClickListener, OnPr
 	private void addMedia(int mediaType) {
 		switch (mediaType) {
 			case Media.PHOTO:
-			case MediaStatus.IMAGE:
+			case MediaStatus.PHOTO:
 				adapter.addImageItem();
 				break;
 

@@ -53,7 +53,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	 *
 	 */
 	public WebPushDialog(Activity activity) {
-		super(activity, R.style.WebPushDialog);
+		super(activity, R.style.DefaultDialog);
 		adapter = new DropdownAdapter(activity.getApplicationContext());
 		settings = GlobalSettings.get(getContext());
 		pushUpdater = new PushUpdater(getContext());

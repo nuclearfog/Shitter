@@ -1,9 +1,7 @@
 package org.nuclearfog.twidda.backend.helper.update;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.location.Location;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -127,23 +125,21 @@ public class StatusUpdate implements Serializable, Closeable {
 	/**
 	 * Add file uri and check if file is valid
 	 *
-	 * @param mediaUri uri to a local file
+	 * @param mediaStatus meida to add
 	 * @return number of media attached to this holder or {@link #MEDIA_ERROR} if an error occured
 	 */
-	public int addMedia(Context context, Uri mediaUri) {
-		String mime = context.getContentResolver().getType(mediaUri);
-		if (mime == null || instance == null || !supportedFormats.contains(mime) || attachmentLimitReached) {
+	public int addMedia(MediaStatus mediaStatus) {
+		if (instance == null || mediaStatus.getMimeType() == null || !supportedFormats.contains(mediaStatus.getMimeType()) || attachmentLimitReached) {
 			return MEDIA_ERROR;
 		}
 		try {
-			MediaStatus mediaStatus = new MediaStatus(context, mediaUri, "");
 			switch (mediaStatus.getMediaType()) {
-				case MediaStatus.IMAGE:
-					if (mediaStatuses.isEmpty() || mediaStatuses.get(0).getMediaType() == MediaStatus.IMAGE) {
+				case MediaStatus.PHOTO:
+					if (mediaStatuses.isEmpty() || mediaStatuses.get(0).getMediaType() == MediaStatus.PHOTO) {
 						mediaStatuses.add(mediaStatus);
 						if (mediaStatuses.size() == instance.getImageLimit())
 							attachmentLimitReached = true;
-						return MediaStatus.IMAGE;
+						return MediaStatus.PHOTO;
 					}
 					return MEDIA_ERROR;
 
@@ -281,6 +277,18 @@ public class StatusUpdate implements Serializable, Closeable {
 	 */
 	public List<MediaStatus> getMediaStatuses() {
 		return new ArrayList<>(mediaStatuses);
+	}
+
+	/**
+	 * update existing media status
+	 *
+	 * @param mediaStatus media status to update
+	 */
+	public void updateMediaStatus(MediaStatus mediaStatus) {
+		int index = mediaStatuses.indexOf(mediaStatus);
+		if (index >= 0) {
+			mediaStatuses.set(index, mediaStatus);
+		}
 	}
 
 	/**

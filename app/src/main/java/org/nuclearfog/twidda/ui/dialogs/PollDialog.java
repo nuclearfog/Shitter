@@ -52,7 +52,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 	 *
 	 */
 	public PollDialog(Activity activity, PollUpdateCallback callback) {
-		super(activity, R.style.PollDialog);
+		super(activity, R.style.DefaultDialog);
 		this.callback = callback;
 		optionAdapter = new EditOptionsAdapter();
 		timeUnitAdapter = new DropdownAdapter(activity.getApplicationContext());

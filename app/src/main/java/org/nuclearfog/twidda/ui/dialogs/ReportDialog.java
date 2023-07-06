@@ -49,7 +49,7 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 	 *
 	 */
 	public ReportDialog(Activity activity) {
-		super(activity, R.style.ReportDialog);
+		super(activity, R.style.DefaultDialog);
 		adapter = new DropdownAdapter(activity.getApplicationContext());
 		reportUpdater = new ReportUpdater(activity.getApplicationContext());
 		adapter.setItems(R.array.reports);

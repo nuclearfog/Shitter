@@ -28,9 +28,7 @@ public class MessageUpdate implements Serializable, Closeable {
 	@Nullable
 	private Instance instance;
 	@Nullable
-	private String mediaUri;
-	@Nullable
-	private MediaStatus mediaUpdate;
+	private MediaStatus mediaStatus;
 	private String name = "";
 	private String text = "";
 
@@ -42,8 +40,8 @@ public class MessageUpdate implements Serializable, Closeable {
 	 */
 	@Override
 	public void close() {
-		if (mediaUpdate != null) {
-			mediaUpdate.close();
+		if (mediaStatus != null) {
+			mediaStatus.close();
 		}
 	}
 
@@ -86,18 +84,12 @@ public class MessageUpdate implements Serializable, Closeable {
 	 * @return input stream
 	 */
 	@Nullable
-	public MediaStatus getMediaUpdate() {
-		return mediaUpdate;
+	public MediaStatus getMediaStatus() {
+		return mediaStatus;
 	}
 
-	/**
-	 *
-	 */
-	@Nullable
-	public Uri getMediaUri() {
-		if (mediaUri != null)
-			return Uri.parse(mediaUri);
-		return null;
+	public void setMediaUpdate(MediaStatus mediaStatus) {
+		this.mediaStatus = mediaStatus;
 	}
 
 	/**
@@ -114,9 +106,8 @@ public class MessageUpdate implements Serializable, Closeable {
 		if (mime == null || file == null || file.length() == 0 || !supportedFormats.contains(mime)) {
 			return false;
 		}
-		this.mediaUri = uri.toString();
 		try {
-			mediaUpdate = new MediaStatus(context, uri, "");
+			mediaStatus = new MediaStatus(context, uri, "");
 		} catch (IllegalArgumentException exception) {
 			return false;
 		}
@@ -129,7 +120,7 @@ public class MessageUpdate implements Serializable, Closeable {
 	 * @return true if initialization succeded
 	 */
 	public boolean prepare(ContentResolver resolver) {
-		return mediaUpdate == null || mediaUpdate.openStream(resolver);
+		return mediaStatus == null || mediaStatus.openStream(resolver);
 	}
 
 	/**
@@ -154,6 +145,6 @@ public class MessageUpdate implements Serializable, Closeable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "to=\"" + name + "\" text=\"" + text + "\" " + mediaUpdate;
+		return "to=\"" + name + "\" text=\"" + text + "\" " + mediaStatus;
 	}
 }

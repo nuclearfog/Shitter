@@ -18,6 +18,11 @@
 		<item name="android:backgroundDimEnabled">true</item>
 	</style>
 
+	<style name="DefaultDialog" parent="Theme.AppCompat.Dialog">
+		<item name="android:windowMinWidthMinor">90%</item>
+		<item name="android:windowCloseOnTouchOutside">false</item>
+	</style>
+
 	<style name="AppInfoDialog" parent="Theme.AppCompat.Dialog">
 		<item name="android:background">@android:color/white</item>
 		<item name="android:textColor">@android:color/black</item>
@@ -50,38 +55,10 @@
 		<item name="android:backgroundDimEnabled">true</item>
 	</style>
 
-	<style name="MetricsDialog" parent="Theme.AppCompat.Dialog">
-		<item name="android:windowMinWidthMinor">80%</item>
-	</style>
-
-	<style name="PollDialog" parent="Theme.AppCompat.Dialog">
-		<item name="android:windowMinWidthMinor">80%</item>
-		<item name="android:windowCloseOnTouchOutside">false</item>
-	</style>
-
-	<style name="WebPushDialog" parent="Theme.AppCompat.Dialog">
-		<item name="android:windowMinWidthMinor">80%</item>
-		<item name="android:windowCloseOnTouchOutside">false</item>
-	</style>
-
 	<style name="AudioDialog" parent="Theme.AppCompat.Dialog">
 		<item name="android:background">@color/player_control</item>
 		<item name="android:windowMinWidthMinor">90%</item>
 		<item name="android:windowMinWidthMajor">95%</item>
-		<item name="android:windowCloseOnTouchOutside">false</item>
-	</style>
-
-	<style name="StatusDialog" parent="Theme.AppCompat.Dialog">
-		<item name="android:windowMinWidthMinor">80%</item>
-	</style>
-
-	<style name="FilterDialog" parent="Theme.AppCompat.Dialog">
-		<item name="android:windowMinWidthMinor">90%</item>
-		<item name="android:windowCloseOnTouchOutside">false</item>
-	</style>
-
-	<style name="ReportDialog" parent="Theme.AppCompat.Dialog">
-		<item name="android:windowMinWidthMinor">90%</item>
 		<item name="android:windowCloseOnTouchOutside">false</item>
 	</style>
 

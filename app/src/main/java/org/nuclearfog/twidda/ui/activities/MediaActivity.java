@@ -179,7 +179,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 
 
 	@Override
-	public final void onActivityResult(ActivityResult result) {
+	public void onActivityResult(ActivityResult result) {
 		Intent intent = result.getData();
 		if (result.getResultCode() == RESULT_OK && intent != null && intent.getData() != null) {
 			onMediaFetched(requestCode, intent.getData());

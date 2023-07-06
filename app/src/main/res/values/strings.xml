@@ -191,6 +191,7 @@
 	<string name="menu_status_copy_link">Status link</string>
 	<string name="menu_toolbar_request">Follow requests</string>
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
+	<string name="menu_media_add_description">add description</string>
 	<string name="menu_message">write message</string>
 	<string name="dialog_link_image_preview">Link preview image</string>
 	<string name="app_info_icons">svg icons from:</string>
@@ -230,6 +231,7 @@
 	<string name="status_sent_from">"sent from: "</string>
 	<string name="username">Username</string>
 	<string name="dm_message">Message</string>
+	<string name="dialog_dexcription_title">add description</string>
 	<string name="confirm_cancel_message">discard message?</string>
 	<string name="settings_logout">log out</string>
 	<string name="dm_answer">answer</string>
