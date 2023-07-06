@@ -231,7 +231,7 @@
 	<string name="status_sent_from">"sent from: "</string>
 	<string name="username">Username</string>
 	<string name="dm_message">Message</string>
-	<string name="dialog_dexcription_title">add description</string>
+	<string name="dialog_description_title">Media description</string>
 	<string name="confirm_cancel_message">discard message?</string>
 	<string name="settings_logout">log out</string>
 	<string name="dm_answer">answer</string>

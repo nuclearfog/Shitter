@@ -8,7 +8,7 @@
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/dialog_dexcription_title"
+		android:text="@string/dialog_description_title"
 		android:lines="1"
 		android:textSize="@dimen/dialog_description_textsize_title"
 		android:layout_margin="@dimen/dialog_description_layout_margin"/>
@@ -18,6 +18,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:background="@android:color/transparent"
+		android:hint="@string/menu_media_add_description"
 		android:lines="4"
 		android:gravity="top"
 		android:layout_margin="@dimen/dialog_description_layout_margin"
