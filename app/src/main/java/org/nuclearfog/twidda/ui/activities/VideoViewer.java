@@ -30,7 +30,6 @@ import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSource;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector;
 import com.google.android.exoplayer2.metadata.MetadataOutput;
-import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.text.TextOutput;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
@@ -47,6 +46,7 @@ import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog;
 import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog.DescriptionCallback;
+import org.nuclearfog.twidda.ui.views.DescriptionView;
 
 import java.io.Serializable;
 
@@ -57,19 +57,32 @@ import okhttp3.Call;
  *
  * @author nuclearfog
  */
-public class VideoViewer extends AppCompatActivity implements Player.Listener, DescriptionCallback {
+public class VideoViewer extends AppCompatActivity implements Player.Listener, DescriptionCallback, RenderersFactory {
 
+	/**
+	 * bundle key used for media information
+	 * value type is {@link Media}
+	 */
 	public static final String KEY_VIDEO_ONLINE = "media-video";
 
+	/**
+	 * bundle key used for mediastatus information
+	 * value type is {@link MediaStatus}
+	 */
 	public static final String KEY_VIDEO_LOCAL = "video-media-status";
 
-	public static final int RETURN_VIDEO_UPDATE = 0x1528;
+	/**
+	 * Activity result code used to update {@link MediaStatus} information
+	 */
+	public static final int RESULT_VIDEO_UPDATE = 0x1528;
 
 	/**
 	 * online video cache size
 	 */
 	private static final int CACHE_SIZE = 64000000;
 
+	@Nullable
+	private DescriptionView descriptionView;
 	private Toolbar toolbar;
 	private StyledPlayerView playerView;
 
@@ -89,70 +102,72 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 
 
 	@Override
-	protected void onCreate(@Nullable Bundle b) {
-		super.onCreate(b);
+	protected void onCreate(@Nullable Bundle savedInstance) {
+		super.onCreate(savedInstance);
 		setContentView(R.layout.page_video);
 		playerView = findViewById(R.id.page_video_player);
 		toolbar = findViewById(R.id.page_video_toolbar);
-		playerView.setShowNextButton(false);
-		playerView.setShowPreviousButton(false);
+		descriptionView = findViewById(R.id.page_video_description);
+		descriptionDialog = new DescriptionDialog(this, this);
+		player = new ExoPlayer.Builder(this, this).build();
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
-
-		RenderersFactory renderersFactory = new RenderersFactory() {
-			@Override
-			public Renderer[] createRenderers(Handler eventHandler, VideoRendererEventListener videoRendererEventListener,
-			                                  AudioRendererEventListener audioRendererEventListener, TextOutput textRendererOutput, MetadataOutput metadataRendererOutput) {
-				return new Renderer[]{
-						new MediaCodecVideoRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, 0L, eventHandler, videoRendererEventListener, 4),
-						new MediaCodecAudioRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)
-				};
-			}
-		};
-		descriptionDialog = new DescriptionDialog(this, this);
-		player = new ExoPlayer.Builder(this, renderersFactory).build();
-		player.addListener(this);
+		playerView.setShowNextButton(false);
+		playerView.setShowPreviousButton(false);
 
 		MediaItem mediaItem;
 		DataSource.Factory dataSourceFactory;
-		Serializable serializedData = getIntent().getSerializableExtra(KEY_VIDEO_ONLINE);
+		Serializable serializedMedia, serializedMediaStatus;
+		if (savedInstance != null) {
+			serializedMedia = savedInstance.getSerializable(KEY_VIDEO_ONLINE);
+			serializedMediaStatus = savedInstance.getSerializable(KEY_VIDEO_LOCAL);
+		} else {
+			serializedMedia = getIntent().getSerializableExtra(KEY_VIDEO_ONLINE);
+			serializedMediaStatus = getIntent().getSerializableExtra(KEY_VIDEO_LOCAL);
+		}
 		// check if video is online
-		if (serializedData instanceof Media) {
-			this.media = (Media) serializedData;
+		if (serializedMedia instanceof Media) {
+			this.media = (Media) serializedMedia;
 			mediaItem = MediaItem.fromUri(media.getUrl());
 			dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
 			if (media.getMediaType() != Media.VIDEO) {
 				playerView.setUseController(false);
 				player.setRepeatMode(Player.REPEAT_MODE_ONE);
 			}
-		}
-		// check if viceo is local
-		else {
-			serializedData = getIntent().getSerializableExtra(KEY_VIDEO_LOCAL);
-			if (serializedData instanceof MediaStatus) {
-				this.mediaStatus = (MediaStatus) serializedData;
-				mediaItem = MediaItem.fromUri(mediaStatus.getPath());
-				dataSourceFactory = new DataSource.Factory() {
-					@NonNull
-					@Override
-					public DataSource createDataSource() {
-						return new ContentDataSource(getApplicationContext());
-					}
-				};
-				if (mediaStatus.getMediaType() != MediaStatus.VIDEO) {
-					playerView.setUseController(false);
-					player.setRepeatMode(Player.REPEAT_MODE_ONE);
-				}
-			} else {
-				return;
+			if (descriptionView != null && !media.getDescription().isEmpty()) {
+				descriptionView.setVisibility(View.VISIBLE);
+				descriptionView.setDescription(media.getDescription());
 			}
 		}
+		// check if viceo is local
+		else if (serializedMediaStatus instanceof MediaStatus) {
+			this.mediaStatus = (MediaStatus) serializedMediaStatus;
+			mediaItem = MediaItem.fromUri(mediaStatus.getPath());
+			dataSourceFactory = new DataSource.Factory() {
+				@NonNull
+				@Override
+				public DataSource createDataSource() {
+					return new ContentDataSource(getApplicationContext());
+				}
+			};
+			if (mediaStatus.getMediaType() != MediaStatus.VIDEO) {
+				playerView.setUseController(false);
+				player.setRepeatMode(Player.REPEAT_MODE_ONE);
+			}
+			if (descriptionView != null && !mediaStatus.getDescription().isEmpty()) {
+				descriptionView.setVisibility(View.VISIBLE);
+				descriptionView.setDescription(mediaStatus.getDescription());
+			}
+		} else {
+			finish();
+			return;
+		}
 		// initialize video extractor
-		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem);
-		player.setMediaSource(mediaSource);
+		player.setMediaSource(new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem));
 		playerView.setPlayer(player);
 		// prepare playback
+		player.addListener(this);
 		player.prepare();
 		player.setPlayWhenReady(true);
 	}
@@ -172,10 +187,18 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		if (mediaStatus != null) {
 			Intent intent = new Intent();
 			intent.putExtra(KEY_VIDEO_LOCAL, mediaStatus);
-			setResult(RETURN_VIDEO_UPDATE, intent);
+			setResult(RESULT_VIDEO_UPDATE, intent);
 		}
 		player.stop();
 		super.onBackPressed();
+	}
+
+
+	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_VIDEO_LOCAL, mediaStatus);
+		outState.putSerializable(KEY_VIDEO_ONLINE, media);
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -232,6 +255,15 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		if (mediaStatus != null) {
 			mediaStatus.setDescription(description);
 		}
+		if (descriptionView != null) {
+			if (!description.trim().isEmpty()) {
+				descriptionView.setDescription(description);
+				descriptionView.setVisibility(View.VISIBLE);
+			} else {
+				descriptionView.setDescription("");
+				descriptionView.setVisibility(View.INVISIBLE);
+			}
+		}
 	}
 
 
@@ -239,5 +271,15 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	public void onPlayerError(PlaybackException error) {
 		Toast.makeText(getApplicationContext(), "ExoPlayer: " + error.getErrorCodeName(), Toast.LENGTH_SHORT).show();
 		finish();
+	}
+
+
+	@Override
+	public Renderer[] createRenderers(Handler eventHandler, VideoRendererEventListener videoRendererEventListener, AudioRendererEventListener audioRendererEventListener,
+	                                  TextOutput textRendererOutput, MetadataOutput metadataRendererOutput) {
+		return new Renderer[]{
+				new MediaCodecVideoRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, 0L, eventHandler, videoRendererEventListener, 4),
+				new MediaCodecAudioRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)
+		};
 	}
 }

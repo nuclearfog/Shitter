@@ -257,7 +257,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 					statusUpdate.updateMediaStatus(mediaStatus);
 				}
 			}
-		} else if (result.getResultCode() == VideoViewer.RETURN_VIDEO_UPDATE) {
+		} else if (result.getResultCode() == VideoViewer.RESULT_VIDEO_UPDATE) {
 			if (result.getData() != null) {
 				Serializable data = result.getData().getSerializableExtra(VideoViewer.KEY_VIDEO_LOCAL);
 				if (data instanceof MediaStatus) {
