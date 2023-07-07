@@ -21,8 +21,8 @@
 
 ## Download
 
-<!-- please change the hardcoded links to match your repository name -->
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](../../releases/latest/download/SH1TT3R.apk)
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/org.nuclearfog.twidda)
 
 
 ## 3rd party libraries and licenses
