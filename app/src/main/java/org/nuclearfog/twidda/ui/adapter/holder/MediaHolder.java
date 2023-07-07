@@ -115,7 +115,6 @@ public class MediaHolder extends ViewHolder implements OnClickListener {
 				case Media.VIDEO:
 					playIcon.setVisibility(View.VISIBLE);
 					playIcon.setImageResource(R.drawable.play);
-
 					break;
 
 				case Media.GIF:

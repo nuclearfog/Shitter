@@ -7,6 +7,7 @@ import android.webkit.WebView;
 
 import org.nuclearfog.twidda.R;
 
+
 /**
  * Dialog class to show 3rd party licenses
  *
@@ -25,9 +26,9 @@ public class LicenseDialog extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		WebView htmlViewer = new WebView(getContext());
+		setContentView(R.layout.dialog_license);
+		WebView htmlViewer = findViewById(R.id.dialog_license_view);
 		htmlViewer.loadUrl("file:///android_asset/licenses.html");
-		setContentView(htmlViewer);
 	}
 
 

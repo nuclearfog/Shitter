@@ -43,6 +43,7 @@ public enum Configuration {
 	private final boolean emojiSupported;
 	private final boolean statusEditSupported;
 	private final boolean webpushSupported;
+	private final boolean filterSupported;
 	private final int arrayResHome;
 
 	/**
@@ -68,6 +69,7 @@ public enum Configuration {
 				emojiSupported = false;
 				statusEditSupported = false;
 				webpushSupported = false;
+				filterSupported = false;
 				arrayResHome = R.array.home_twitter_tab_icons;
 				break;
 
@@ -88,6 +90,7 @@ public enum Configuration {
 				emojiSupported = true;
 				statusEditSupported = true;
 				webpushSupported = true;
+				filterSupported = true;
 				arrayResHome = R.array.home_mastodon_tab_icons;
 				break;
 		}
@@ -203,6 +206,13 @@ public enum Configuration {
 	 */
 	public boolean isWebpushSupported() {
 		return webpushSupported;
+	}
+
+	/**
+	 * @return true if status filter is supported
+	 */
+	public boolean isFilterSupported() {
+		return filterSupported;
 	}
 
 	/**

@@ -146,7 +146,9 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		getMenuInflater().inflate(R.menu.home, menu);
 		AppStyles.setMenuIconColor(menu, settings.getIconColor());
 		MenuItem search = menu.findItem(R.id.menu_search);
+		MenuItem filter = menu.findItem(R.id.menu_filter);
 		SearchView searchView = (SearchView) search.getActionView();
+		filter.setVisible(settings.getLogin().getConfiguration().isFilterSupported());
 		searchView.setOnQueryTextListener(this);
 		return true;
 	}

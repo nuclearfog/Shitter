@@ -763,9 +763,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onTagClick(String tag) {
-		Intent intent = new Intent(this, SearchActivity.class);
-		intent.putExtra(SearchActivity.KEY_QUERY, tag);
-		startActivity(intent);
+		// proceed click when there is no text blur
+		if (status_text.getPaint().getMaskFilter() == null) {
+			Intent intent = new Intent(this, SearchActivity.class);
+			intent.putExtra(SearchActivity.KEY_QUERY, tag);
+			startActivity(intent);
+		}
 	}
 
 	/**
@@ -775,7 +778,10 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 */
 	@Override
 	public void onLinkClick(String tag) {
-		LinkUtils.openLink(this, tag);
+		// proceed click when there is no text blur
+		if (status_text.getPaint().getMaskFilter() == null) {
+			LinkUtils.openLink(this, tag);
+		}
 	}
 
 

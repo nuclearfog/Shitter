@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,8 +23,8 @@ public class DescriptionDialog extends Dialog implements OnClickListener {
 	private EditText descriptionEdit;
 
 
-	public DescriptionDialog(Context context, DescriptionCallback callback) {
-		super(context, R.style.DefaultDialog);
+	public DescriptionDialog(Activity activity, DescriptionCallback callback) {
+		super(activity, R.style.DefaultDialog);
 		this.callback = callback;
 	}
 

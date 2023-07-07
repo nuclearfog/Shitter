@@ -82,7 +82,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	private static final int CACHE_SIZE = 64000000;
 
 	@Nullable
-	private DescriptionView descriptionView;
+	private DescriptionView descriptionView; // only used in portrait layout
 	private Toolbar toolbar;
 	private StyledPlayerView playerView;
 
