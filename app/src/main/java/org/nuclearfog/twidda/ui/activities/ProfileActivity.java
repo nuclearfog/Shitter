@@ -583,8 +583,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (v.getId() == R.id.profile_img) {
 			if (!user.getOriginalProfileImageUrl().isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.KEY_MEDIA_URL, Uri.parse(user.getOriginalProfileImageUrl()));
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_ONLINE);
+				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, user.getOriginalProfileImageUrl());
 				startActivity(intent);
 			}
 		}
@@ -592,8 +591,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		else if (v.getId() == R.id.profile_banner) {
 			if (!user.getOriginalBannerImageUrl().isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.KEY_MEDIA_URL, Uri.parse(user.getOriginalBannerImageUrl()));
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_ONLINE);
+				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, user.getOriginalBannerImageUrl());
 				startActivity(intent);
 			}
 		}

@@ -539,7 +539,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// edit status
 		else if (item.getItemId() == R.id.menu_status_edit) {
 			Intent intent = new Intent(this, StatusEditor.class);
-			intent.putExtra(StatusEditor.KEY_DATA, status);
+			intent.putExtra(StatusEditor.KEY_STATUS_DATA, status);
 			intent.putExtra(StatusEditor.KEY_EDIT, true);
 			activityResultLauncher.launch(intent);
 		}
@@ -555,7 +555,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onActivityResult(ActivityResult result) {
 		if (result.getData() != null) {
 			if (result.getResultCode() == StatusEditor.RETURN_STATUS_UPDATE) {
-				Serializable data = result.getData().getSerializableExtra(StatusEditor.KEY_DATA);
+				Serializable data = result.getData().getSerializableExtra(StatusEditor.KEY_STATUS_DATA);
 				if (data instanceof Status) {
 					setStatus((Status) data);
 				}
@@ -573,7 +573,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// answer to the status
 			if (v.getId() == R.id.page_status_reply) {
 				Intent intent = new Intent(this, StatusEditor.class);
-				intent.putExtra(StatusEditor.KEY_DATA, status);
+				intent.putExtra(StatusEditor.KEY_STATUS_DATA, status);
 				startActivity(intent);
 			}
 			// show user reposting this status
@@ -728,8 +728,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.KEY_MEDIA_URL, Uri.parse(card.getImageUrl()));
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_ONLINE);
+				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, card.getImageUrl());
 				startActivity(intent);
 			}
 		}
@@ -742,8 +741,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		switch (media.getMediaType()) {
 			case Media.PHOTO:
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.KEY_MEDIA_ONLINE, media);
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.MEDIA_ONLINE);
+				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, media);
 				startActivity(intent);
 				break;
 
@@ -754,7 +752,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			case Media.GIF:
 			case Media.VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.KEY_VIDEO_ONLINE, media);
+				intent.putExtra(VideoViewer.KEY_VIDEO_DATA, media);
 				startActivity(intent);
 				break;
 		}

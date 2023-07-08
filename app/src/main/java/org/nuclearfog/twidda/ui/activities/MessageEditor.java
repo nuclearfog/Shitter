@@ -184,8 +184,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 		else if (v.getId() == R.id.popup_message_preview) {
 			if (messageUpdate.getMediaStatus() != null) {
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.KEY_MEDIA_LOCAL, messageUpdate.getMediaStatus());
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.MEDIA_LOCAL);
+				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, messageUpdate.getMediaStatus());
 				startActivity(intent);
 			}
 		}

@@ -45,51 +45,15 @@ import java.io.Serializable;
 public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoaderResult>, DescriptionCallback {
 
 	/**
-	 * mode used to show local image/gif file
-	 * requires {@link #KEY_MEDIA_LOCAL} to be set
-	 */
-	public static final int MEDIA_LOCAL = 902;
-
-	/**
-	 * mode used to show online image
-	 * requires {@link #KEY_MEDIA_URL} to be set
-	 */
-	public static final int IMAGE_ONLINE = 903;
-
-	/**
-	 * mode used to show online image
-	 * requires {@link #KEY_MEDIA_ONLINE} to be set
-	 */
-	public static final int MEDIA_ONLINE = 904;
-
-	/**
 	 * activity result code indicates that {@link MediaStatus} data has been updated
 	 */
 	public static final int RETURN_MEDIA_STATUS_UPDATE = 0x5895;
 
 	/**
-	 * key to set image format (image or gif)
-	 * value type is Integer {@link #IMAGE_ONLINE,#GIF_LOCAL,#MEDIA_LOCAL}
+	 * key to add media data (online or local)
+	 * value type can be {@link Media} for online media, {@link MediaStatus} for local media or {@link Uri} for media links
 	 */
-	public static final String TYPE = "image-type";
-
-	/**
-	 * key to add URI of the image (online or local)
-	 * value type is {@link Uri}
-	 */
-	public static final String KEY_MEDIA_URL = "image-url";
-
-	/**
-	 * key to add offline media
-	 * value type is {@link MediaStatus}
-	 */
-	public static final String KEY_MEDIA_LOCAL = "media-status";
-
-	/**
-	 * key to add online media
-	 * value type is {@link Media}
-	 */
-	public static final String KEY_MEDIA_ONLINE = "media-online";
+	public static final String KEY_IMAGE_DATA = "image-data";
 
 	/**
 	 * name of the cache folder where online images will be stored
@@ -111,7 +75,6 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 	private ImageDownloader imageAsync;
 	private GlobalSettings settings;
 	private File cacheFolder;
-	private int mode = 0;
 
 
 	@Override
@@ -141,58 +104,66 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
 		cacheFolder.mkdirs();
 
-		mode = getIntent().getIntExtra(TYPE, 0);
-		switch (mode) {
-			case IMAGE_ONLINE:
-				zoomImage.setVisibility(View.VISIBLE);
+		// get parameters
+		String imageUrl = null;
+		String blurHash = null;
+		String description = null;
+		boolean animated = false;
+		boolean local = false;
+		Serializable serializedData;
+		if (savedInstanceState != null) {
+			serializedData = savedInstanceState.getSerializable(KEY_IMAGE_DATA);
+		} else {
+			serializedData = getIntent().getSerializableExtra(KEY_IMAGE_DATA);
+		}
+		if (serializedData instanceof MediaStatus) {
+			mediaStatus = (MediaStatus) serializedData;
+			imageUrl = mediaStatus.getPath();
+			animated = mediaStatus.getMediaType() == MediaStatus.GIF;
+			local = imageUrl != null && !imageUrl.startsWith("http");
+			description = mediaStatus.getDescription();
+		} else if (serializedData instanceof Media) {
+			Media media = (Media) serializedData;
+			blurHash = media.getBlurHash();
+			imageUrl = media.getUrl();
+			description = media.getDescription();
+			animated = media.getMediaType() == Media.GIF;
+		} else if (serializedData instanceof String) {
+			imageUrl = (String) serializedData;
+		} else {
+			finish();
+		}
+		// setup image view
+		if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+			// select view to show image
+			if (animated) {
+				gifImage.setVisibility(View.VISIBLE);
+				zoomImage.setVisibility(View.INVISIBLE);
+			} else {
 				gifImage.setVisibility(View.INVISIBLE);
+				zoomImage.setVisibility(View.VISIBLE);
+			}
+			//  load image
+			if (local) {
+				if (animated) {
+					gifImage.setImageURI(Uri.parse(imageUrl));
+				} else {
+					zoomImage.setImageURI(Uri.parse(imageUrl));
+				}
+			} else {
 				loadingCircle.setVisibility(View.VISIBLE);
-				Uri data = getIntent().getParcelableExtra(KEY_MEDIA_URL);
-				ImageLoaderParam request = new ImageLoaderParam(data, cacheFolder);
+				ImageLoaderParam request = new ImageLoaderParam(Uri.parse(imageUrl), cacheFolder);
 				imageAsync.execute(request, this);
-				break;
-
-			case MEDIA_LOCAL:
-				Serializable serializedData = getIntent().getSerializableExtra(KEY_MEDIA_LOCAL);
-				if (serializedData instanceof  MediaStatus) {
-					mediaStatus = (MediaStatus) serializedData;
-					if (!mediaStatus.getDescription().trim().isEmpty()) {
-						descriptionView.setVisibility(View.VISIBLE);
-						descriptionView.setDescription(mediaStatus.getDescription());
-					}
-					if (mediaStatus.getMediaType() == MediaStatus.PHOTO) {
-						zoomImage.setVisibility(View.VISIBLE);
-						gifImage.setVisibility(View.INVISIBLE);
-						zoomImage.setImageURI(Uri.parse(mediaStatus.getPath()));
-					} else if (mediaStatus.getMediaType() == MediaStatus.GIF) {
-						zoomImage.setVisibility(View.INVISIBLE);
-						gifImage.setVisibility(View.VISIBLE);
-						gifImage.setImageURI(Uri.parse(mediaStatus.getPath()));
-					}
-				}
-				break;
-
-			case MEDIA_ONLINE:
-				serializedData = getIntent().getSerializableExtra(KEY_MEDIA_ONLINE);
-				if (serializedData instanceof Media) {
-					loadingCircle.setVisibility(View.VISIBLE);
-					Media media = (Media) serializedData;
-					if (!media.getBlurHash().isEmpty()) {
-						Bitmap blur = BlurHashDecoder.INSTANCE.decode(media.getBlurHash(), 16, 16, 1f, true);
-						zoomImage.setImageBitmap(blur);
-					}
-					if (!media.getDescription().isEmpty()) {
-						descriptionView.setVisibility(View.VISIBLE);
-						descriptionView.setDescription(media.getDescription());
-					}
-					if (media.getMediaType() == Media.PHOTO) {
-						zoomImage.setVisibility(View.VISIBLE);
-						gifImage.setVisibility(View.INVISIBLE);
-						request = new ImageLoaderParam(Uri.parse(media.getUrl()), cacheFolder);
-						imageAsync.execute(request, this);
-					}
-				}
-				break;
+			}
+		}
+		// set image description
+		if (description != null && !description.trim().isEmpty()) {
+			descriptionView.setDescription(description);
+		}
+		// set image blur placeholder
+		if (blurHash != null && !blurHash.trim().isEmpty()) {
+			Bitmap blur = BlurHashDecoder.INSTANCE.decode(blurHash, 16, 16, 1f, true);
+			zoomImage.setImageBitmap(blur);
 		}
 	}
 
@@ -201,7 +172,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 	public void onBackPressed() {
 		if (mediaStatus != null) {
 			Intent intent = new Intent();
-			intent.putExtra(KEY_MEDIA_LOCAL, mediaStatus);
+			intent.putExtra(KEY_IMAGE_DATA, mediaStatus);
 			setResult(RETURN_MEDIA_STATUS_UPDATE, intent);
 		}
 		super.onBackPressed();
@@ -220,11 +191,17 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.image, menu);
-		MenuItem itemSave = menu.findItem(R.id.menu_image_save);
 		MenuItem itemDescription = menu.findItem(R.id.menu_image_add_description);
-		AppStyles.setMenuIconColor(menu, settings.getIconColor());
-		itemSave.setVisible(mode == IMAGE_ONLINE || mode == MEDIA_ONLINE);
 		itemDescription.setVisible(mediaStatus != null);
+		AppStyles.setMenuIconColor(menu, settings.getIconColor());
+		return true;
+	}
+
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem itemSave = menu.findItem(R.id.menu_image_save);
+		itemSave.setVisible(cacheUri != null);
 		return true;
 	}
 
@@ -239,6 +216,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		}
 		else if (item.getItemId() == R.id.menu_image_add_description) {
 			descriptionDialog.show();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -261,6 +239,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 			cacheUri = result.uri;
 			zoomImage.reset();
 			zoomImage.setImageURI(cacheUri);
+			invalidateMenu();
 		} else {
 			ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 			finish();

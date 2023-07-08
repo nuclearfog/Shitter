@@ -71,10 +71,10 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	 * key to add the status to reply
 	 * value type is {@link Status}
 	 */
-	public static final String KEY_DATA = "status_data";
+	public static final String KEY_STATUS_DATA = "status_data";
 
 	/**
-	 * key to edit status send with {@link #KEY_DATA}
+	 * key to edit status send with {@link #KEY_STATUS_DATA}
 	 * value type is Boolean
 	 */
 	public static final String KEY_EDIT = "status_edit";
@@ -84,12 +84,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	 * value type is String
 	 */
 	public static final String KEY_TEXT = "status_text";
-
-	/**
-	 * key for status update to restore
-	 * value type is {@link StatusUpdate}
-	 */
-	private static final String KEY_SAVE = "status_update";
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<StatusUpdateResult> statusUpdateResult = this::onStatusUpdated;
@@ -148,10 +142,10 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		audioDialog = new AudioPlayerDialog(this);
 		emojiPicker = new EmojiPicker(this, this);
 		adapter = new IconAdapter(this, true);
+
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
 		iconList.setAdapter(adapter);
 		AppStyles.setEditorTheme(root, background);
-
 		if (!settings.getLogin().getConfiguration().locationSupported()) {
 			locationBtn.setVisibility(View.GONE);
 		}
@@ -159,34 +153,42 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			emojiButton.setVisibility(View.GONE);
 		}
 		// fetch parameters
-		if (savedInstanceState == null)
-			savedInstanceState = getIntent().getExtras();
+		boolean editStatus;
+		String prefix;
+		Serializable serializedData;
 		if (savedInstanceState != null) {
-			Serializable serializedStatus = savedInstanceState.getSerializable(KEY_DATA);
-			Serializable serializedStatusUpdate = savedInstanceState.getSerializable(KEY_SAVE);
-			boolean editStatus = savedInstanceState.getBoolean(KEY_EDIT, false);
-			String prefix = savedInstanceState.getString(KEY_TEXT);
-			if (serializedStatusUpdate instanceof StatusUpdate) {
-				statusUpdate = (StatusUpdate) serializedStatusUpdate;
-			} else if (serializedStatus instanceof Status) {
-				Status status = (Status) serializedStatus;
-				if (editStatus) {
-					statusUpdate.setStatus(status);
-					statusText.append(status.getText());
-					for (Media media : status.getMedia()) {
-						addMedia(media.getMediaType());
-					}
-					mediaBtn.setVisibility(View.GONE);
-				} else {
-					statusUpdate.addReplyStatusId(status.getId());
-					statusUpdate.setVisibility(status.getVisibility());
-					statusUpdate.addText(status.getUserMentions());
-					statusText.append(status.getUserMentions());
-				}
+			serializedData = savedInstanceState.getSerializable(KEY_STATUS_DATA);
+			editStatus = savedInstanceState.getBoolean(KEY_EDIT, false);
+			prefix = savedInstanceState.getString(KEY_TEXT, "");
+		} else {
+			serializedData = getIntent().getSerializableExtra(KEY_STATUS_DATA);
+			editStatus = getIntent().getBooleanExtra(KEY_EDIT, false);
+			if (getIntent().hasExtra(KEY_TEXT)) {
+				prefix = getIntent().getStringExtra(KEY_TEXT);
 			} else {
-				statusUpdate.addText(prefix);
-				statusText.append(prefix);
+				prefix = "";
 			}
+		}
+		if (serializedData instanceof StatusUpdate) {
+			statusUpdate = (StatusUpdate) serializedData;
+		} else if (serializedData instanceof Status) {
+			Status status = (Status) serializedData;
+			if (editStatus) {
+				statusUpdate.setStatus(status);
+				statusText.append(status.getText());
+				for (Media media : status.getMedia()) {
+					addMedia(media.getMediaType());
+				}
+				mediaBtn.setVisibility(View.GONE);
+			} else {
+				statusUpdate.addReplyStatusId(status.getId());
+				statusUpdate.setVisibility(status.getVisibility());
+				statusUpdate.addText(status.getUserMentions());
+				statusText.append(status.getUserMentions());
+			}
+		} else {
+			statusUpdate.addText(prefix);
+			statusText.append(prefix);
 		}
 
 		statusText.addTextChangedListener(this);
@@ -226,7 +228,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	@Override
 	protected void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_SAVE, statusUpdate);
+		outState.putSerializable(KEY_STATUS_DATA, statusUpdate);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -251,7 +253,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	public void onActivityResult(ActivityResult result) {
 		if (result.getResultCode() == ImageViewer.RETURN_MEDIA_STATUS_UPDATE) {
 			if (result.getData() != null) {
-				Serializable data = result.getData().getSerializableExtra(ImageViewer.KEY_MEDIA_LOCAL);
+				Serializable data = result.getData().getSerializableExtra(ImageViewer.KEY_IMAGE_DATA);
 				if (data instanceof MediaStatus) {
 					MediaStatus mediaStatus = (MediaStatus) data;
 					statusUpdate.updateMediaStatus(mediaStatus);
@@ -259,7 +261,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			}
 		} else if (result.getResultCode() == VideoViewer.RESULT_VIDEO_UPDATE) {
 			if (result.getData() != null) {
-				Serializable data = result.getData().getSerializableExtra(VideoViewer.KEY_VIDEO_LOCAL);
+				Serializable data = result.getData().getSerializableExtra(VideoViewer.KEY_VIDEO_DATA);
 				if (data instanceof MediaStatus) {
 					MediaStatus mediaStatus = (MediaStatus) data;
 					statusUpdate.updateMediaStatus(mediaStatus);
@@ -405,14 +407,13 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			case MediaStatus.PHOTO:
 			case MediaStatus.GIF:
 				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.KEY_MEDIA_LOCAL, media);
-				intent.putExtra(ImageViewer.TYPE, ImageViewer.MEDIA_LOCAL);
+				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, media);
 				activityResultLauncher.launch(intent);
 				break;
 
 			case MediaStatus.VIDEO:
 				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.KEY_VIDEO_LOCAL, media);
+				intent.putExtra(VideoViewer.KEY_VIDEO_DATA, media);
 				activityResultLauncher.launch(intent);
 				break;
 
@@ -490,7 +491,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	private void onStatusUpdated(@NonNull StatusUpdateResult result) {
 		if (result.status != null) {
 			Intent intent = new Intent();
-			intent.putExtra(KEY_DATA, result.status);
+			intent.putExtra(KEY_STATUS_DATA, result.status);
 			setResult(RETURN_STATUS_UPDATE, intent);
 			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
 			finish();

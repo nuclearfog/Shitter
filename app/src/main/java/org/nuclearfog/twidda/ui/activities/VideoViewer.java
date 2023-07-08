@@ -61,15 +61,9 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 
 	/**
 	 * bundle key used for media information
-	 * value type is {@link Media}
+	 * value type can be {@link Media} or {@link MediaStatus}
 	 */
-	public static final String KEY_VIDEO_ONLINE = "media-video";
-
-	/**
-	 * bundle key used for mediastatus information
-	 * value type is {@link MediaStatus}
-	 */
-	public static final String KEY_VIDEO_LOCAL = "video-media-status";
+	public static final String KEY_VIDEO_DATA = "media-video";
 
 	/**
 	 * Activity result code used to update {@link MediaStatus} information
@@ -116,21 +110,18 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		playerView.setShowNextButton(false);
 		playerView.setShowPreviousButton(false);
 
-		MediaItem mediaItem;
-		DataSource.Factory dataSourceFactory;
-		Serializable serializedMedia, serializedMediaStatus;
+		ProgressiveMediaSource mediaSource = null;
+		Serializable serializedData;
 		if (savedInstance != null) {
-			serializedMedia = savedInstance.getSerializable(KEY_VIDEO_ONLINE);
-			serializedMediaStatus = savedInstance.getSerializable(KEY_VIDEO_LOCAL);
+			serializedData = savedInstance.getSerializable(KEY_VIDEO_DATA);
 		} else {
-			serializedMedia = getIntent().getSerializableExtra(KEY_VIDEO_ONLINE);
-			serializedMediaStatus = getIntent().getSerializableExtra(KEY_VIDEO_LOCAL);
+			serializedData = getIntent().getSerializableExtra(KEY_VIDEO_DATA);
 		}
 		// check if video is online
-		if (serializedMedia instanceof Media) {
-			this.media = (Media) serializedMedia;
-			mediaItem = MediaItem.fromUri(media.getUrl());
-			dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
+		if (serializedData instanceof Media) {
+			this.media = (Media) serializedData;
+			MediaItem mediaItem = MediaItem.fromUri(media.getUrl());
+			DataSource.Factory dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
 			if (media.getMediaType() != Media.VIDEO) {
 				playerView.setUseController(false);
 				player.setRepeatMode(Player.REPEAT_MODE_ONE);
@@ -139,37 +130,46 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 				descriptionView.setVisibility(View.VISIBLE);
 				descriptionView.setDescription(media.getDescription());
 			}
+			mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem);
 		}
-		// check if viceo is local
-		else if (serializedMediaStatus instanceof MediaStatus) {
-			this.mediaStatus = (MediaStatus) serializedMediaStatus;
-			mediaItem = MediaItem.fromUri(mediaStatus.getPath());
-			dataSourceFactory = new DataSource.Factory() {
-				@NonNull
-				@Override
-				public DataSource createDataSource() {
-					return new ContentDataSource(getApplicationContext());
+		// check if viceo is from an editable status
+		else if (serializedData instanceof MediaStatus) {
+			this.mediaStatus = (MediaStatus) serializedData;
+			if (mediaStatus.getPath() != null) {
+				DataSource.Factory dataSourceFactory;
+				MediaItem mediaItem = MediaItem.fromUri(mediaStatus.getPath());
+				if (mediaStatus.getPath().startsWith("http")) {
+					dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
+				} else {
+					dataSourceFactory = new DataSource.Factory() {
+						@NonNull
+						@Override
+						public DataSource createDataSource() {
+							return new ContentDataSource(getApplicationContext());
+						}
+					};
 				}
-			};
-			if (mediaStatus.getMediaType() != MediaStatus.VIDEO) {
-				playerView.setUseController(false);
-				player.setRepeatMode(Player.REPEAT_MODE_ONE);
+				if (mediaStatus.getMediaType() != MediaStatus.VIDEO) {
+					playerView.setUseController(false);
+					player.setRepeatMode(Player.REPEAT_MODE_ONE);
+				}
+				if (descriptionView != null && !mediaStatus.getDescription().isEmpty()) {
+					descriptionView.setVisibility(View.VISIBLE);
+					descriptionView.setDescription(mediaStatus.getDescription());
+				}
+				mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem);
 			}
-			if (descriptionView != null && !mediaStatus.getDescription().isEmpty()) {
-				descriptionView.setVisibility(View.VISIBLE);
-				descriptionView.setDescription(mediaStatus.getDescription());
-			}
+		}
+		// prepare playback
+		if (mediaSource != null) {
+			player.setMediaSource(mediaSource);
+			playerView.setPlayer(player);
+			player.addListener(this);
+			player.prepare();
+			player.setPlayWhenReady(true);
 		} else {
 			finish();
-			return;
 		}
-		// initialize video extractor
-		player.setMediaSource(new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem));
-		playerView.setPlayer(player);
-		// prepare playback
-		player.addListener(this);
-		player.prepare();
-		player.setPlayWhenReady(true);
 	}
 
 
@@ -186,7 +186,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	public void onBackPressed() {
 		if (mediaStatus != null) {
 			Intent intent = new Intent();
-			intent.putExtra(KEY_VIDEO_LOCAL, mediaStatus);
+			intent.putExtra(KEY_VIDEO_DATA, mediaStatus);
 			setResult(RESULT_VIDEO_UPDATE, intent);
 		}
 		player.stop();
@@ -196,8 +196,11 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 
 	@Override
 	protected void onSaveInstanceState(@NonNull Bundle outState) {
-		outState.putSerializable(KEY_VIDEO_LOCAL, mediaStatus);
-		outState.putSerializable(KEY_VIDEO_ONLINE, media);
+		if (mediaStatus != null) {
+			outState.putSerializable(KEY_VIDEO_DATA, mediaStatus);
+		} else if (media != null) {
+			outState.putSerializable(KEY_VIDEO_DATA, media);
+		}
 		super.onSaveInstanceState(outState);
 	}
 
@@ -226,10 +229,10 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.video, menu);
-		MenuItem menuOpenLink = menu.findItem(R.id.menu_video_link);
+		MenuItem menuOpenUrl = menu.findItem(R.id.menu_video_link);
 		MenuItem menuDescription = menu.findItem(R.id.menu_video_add_description);
 		AppStyles.setMenuIconColor(menu, Color.WHITE);
-		menuOpenLink.setVisible(media != null);
+		menuOpenUrl.setVisible(media != null);
 		menuDescription.setVisible(mediaStatus != null);
 		return super.onCreateOptionsMenu(menu);
 	}

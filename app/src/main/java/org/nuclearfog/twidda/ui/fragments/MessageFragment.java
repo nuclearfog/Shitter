@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -142,8 +141,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 						int mediaIndex = extras[0];
 						if (mediaIndex >= 0 && mediaIndex < message.getMedia().length) {
 							Intent intent = new Intent(requireContext(), ImageViewer.class);
-							intent.putExtra(ImageViewer.KEY_MEDIA_URL, Uri.parse(message.getMedia()[mediaIndex].getUrl()));
-							intent.putExtra(ImageViewer.TYPE, ImageViewer.IMAGE_ONLINE);
+							intent.putExtra(ImageViewer.KEY_IMAGE_DATA, message.getMedia()[mediaIndex].getUrl());
 							startActivity(intent);
 						}
 					}

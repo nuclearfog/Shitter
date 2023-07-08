@@ -31,7 +31,8 @@ import java.util.TreeMap;
  */
 public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeListener, OnItemSelectedListener {
 
-	private Spinner visibilitySelector;
+	private Spinner visibilitySelector, languageSelector;
+	private SwitchButton sensitiveCheck, spoilerCheck;
 
 	private DropdownAdapter visibility_adapter, language_adapter;
 	private StatusUpdate statusUpdate;
@@ -63,16 +64,17 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_status);
 		ViewGroup rootView = findViewById(R.id.dialog_status_root);
-		SwitchButton sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
-		SwitchButton spoilerCheck = findViewById(R.id.dialog_status_spoiler);
 		View statusVisibility = findViewById(R.id.dialog_status_visibility_container);
 		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
-		Spinner languageSelector = findViewById(R.id.dialog_status_language);
+		languageSelector = findViewById(R.id.dialog_status_language);
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
+		sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
+		spoilerCheck = findViewById(R.id.dialog_status_spoiler);
 		GlobalSettings settings = GlobalSettings.get(getContext());
 		AppStyles.setTheme(rootView);
 
 		languageSelector.setAdapter(language_adapter);
+		languageSelector.setSelection(0, false);
 		languageSelector.setSelected(false);
 		visibilitySelector.setAdapter(visibility_adapter);
 		visibilitySelector.setSelection(0, false);
@@ -95,7 +97,6 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	@Override
 	protected void onStart() {
-		super.onStart();
 		if (statusUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
 			visibilitySelector.setSelection(0, false);
 		} else if (statusUpdate.getVisibility() == Status.VISIBLE_PRIVATE) {
@@ -105,6 +106,16 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		} else if (statusUpdate.getVisibility() == Status.VISIBLE_UNLISTED) {
 			visibilitySelector.setSelection(3, false);
 		}
+		sensitiveCheck.setCheckedImmediately(statusUpdate.isSensitive());
+		spoilerCheck.setCheckedImmediately(statusUpdate.isSpoiler());
+		if (!statusUpdate.getLanguageCode().isEmpty()) {
+			for (int i = 0; i < languageCodes.length; i++) {
+				if (languageCodes[i].equals(statusUpdate.getLanguageCode())) {
+					languageSelector.setSelection(i);
+				}
+			}
+		}
+		super.onStart();
 	}
 
 
@@ -136,8 +147,6 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		if (!isShowing())
-			return;
 		if (parent.getId() == R.id.dialog_status_visibility) {
 			switch (position) {
 				case 0:
