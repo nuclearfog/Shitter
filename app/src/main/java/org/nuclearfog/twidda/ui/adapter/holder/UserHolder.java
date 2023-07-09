@@ -63,13 +63,15 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 
 	private long tagId = 0L;
 
-
-	public UserHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnHolderClickListener listener, boolean enableDelete) {
+	/**
+	 * @param enableRemoveButton true to enable remove button
+	 */
+	public UserHolder(ViewGroup parent, OnHolderClickListener listener, boolean enableRemoveButton) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false));
-		this.settings = GlobalSettings.get(parent.getContext());
-		this.picasso = PicassoBuilder.get(parent.getContext());
+		settings = GlobalSettings.get(parent.getContext());
+		picasso = PicassoBuilder.get(parent.getContext());
+		emojiLoader = new TextEmojiLoader(parent.getContext());
 		this.listener = listener;
-		this.emojiLoader = emojiLoader;
 
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_user_container);
@@ -87,7 +89,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
-		if (enableDelete) {
+		if (enableRemoveButton) {
 			delete.setVisibility(View.VISIBLE);
 		} else {
 			delete.setVisibility(View.GONE);

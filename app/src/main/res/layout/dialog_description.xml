@@ -11,7 +11,7 @@
 		android:text="@string/dialog_description_title"
 		android:lines="1"
 		android:textSize="@dimen/dialog_description_textsize_title"
-		android:layout_margin="@dimen/dialog_description_layout_margin"/>
+		android:layout_margin="@dimen/dialog_description_layout_margin" />
 
 	<EditText
 		android:id="@+id/dialog_description_input"

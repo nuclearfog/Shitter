@@ -4,10 +4,10 @@
 	<item
 		android:id="@+id/menu_video_link"
 		android:title="@string/button_share"
-		android:visible="true"/>
+		android:visible="true" />
 
 	<item
 		android:id="@+id/menu_video_add_description"
 		android:title="@string/menu_media_add_description"
-		android:visible="false"/>
+		android:visible="false" />
 </menu>

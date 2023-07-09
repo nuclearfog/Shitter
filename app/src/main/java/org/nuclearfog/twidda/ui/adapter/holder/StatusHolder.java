@@ -72,13 +72,15 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 
 	private long tagId = 0L;
 
-
-	public StatusHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
+	/**
+	 *
+	 */
+	public StatusHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
 		settings = GlobalSettings.get(parent.getContext());
 		picasso = PicassoBuilder.get(parent.getContext());
+		emojiLoader = new TextEmojiLoader(parent.getContext());
 		this.listener = listener;
-		this.emojiLoader = emojiLoader;
 
 		CardView cardLayout = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_status_container);

@@ -127,7 +127,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		statusLoader = new StatusLoader(requireContext());
-		adapter = new StatusAdapter(requireContext(), this);
+		adapter = new StatusAdapter(this);
 		setAdapter(adapter);
 
 		Bundle param = getArguments();

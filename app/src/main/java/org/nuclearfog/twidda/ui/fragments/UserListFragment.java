@@ -79,7 +79,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		userlistLoader = new UserlistLoader(requireContext());
-		adapter = new UserlistAdapter(requireContext(), this);
+		adapter = new UserlistAdapter(this);
 		setAdapter(adapter);
 
 		Bundle param = getArguments();

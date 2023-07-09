@@ -62,13 +62,13 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	private long tagId;
 
 	/**
-	 * @param parent Parent view from adapter
+	 *
 	 */
-	public UserlistHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnHolderClickListener listener) {
+	public UserlistHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
 		settings = GlobalSettings.get(parent.getContext());
 		picasso = PicassoBuilder.get(parent.getContext());
-		this.emojiLoader = emojiLoader;
+		emojiLoader = new TextEmojiLoader(parent.getContext());
 		this.listener = listener;
 
 		CardView background = (CardView) itemView;

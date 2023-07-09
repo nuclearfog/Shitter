@@ -1,13 +1,11 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.lists.UserLists;
@@ -48,7 +46,6 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 */
 
 	private ListClickListener listener;
-	private TextEmojiLoader emojiLoader;
 
 	private UserLists userlists = new UserLists();
 	private int loadingIndex = NO_LOADING;
@@ -56,9 +53,8 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	/**
 	 * @param listener item click listener
 	 */
-	public UserlistAdapter(Context context, ListClickListener listener) {
+	public UserlistAdapter(ListClickListener listener) {
 		this.listener = listener;
-		emojiLoader = new TextEmojiLoader(context);
 	}
 
 
@@ -80,7 +76,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_LIST) {
-			return new UserlistHolder(parent, emojiLoader, this);
+			return new UserlistHolder(parent, this);
 		} else {
 			return new PlaceHolder(parent, this, false);
 		}

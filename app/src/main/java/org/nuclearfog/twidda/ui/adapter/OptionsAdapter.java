@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.ui.adapter.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.holder.Optionholder;
@@ -22,6 +23,7 @@ public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderCli
 	private int totalVotes, limitVotes;
 
 	private Poll.Option[] options = {};
+	private Emoji[] emojis = {};
 	private Set<Integer> selection = new TreeSet<>();
 
 
@@ -34,7 +36,7 @@ public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderCli
 
 	@Override
 	public void onBindViewHolder(@NonNull Optionholder holder, int position) {
-		holder.setContent(options[position], selection.contains(position), totalVotes);
+		holder.setContent(options[position], emojis, selection.contains(position), totalVotes);
 	}
 
 
@@ -70,6 +72,7 @@ public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderCli
 	 */
 	public void addItems(Poll poll) {
 		options = poll.getOptions();
+		emojis = poll.getEmojis();
 		for (int i = 0; i < options.length; i++) {
 			Poll.Option option = options[i];
 			if (option.isSelected()) {
@@ -84,7 +87,6 @@ public class OptionsAdapter extends Adapter<Optionholder> implements OnHolderCli
 			limitVotes = 1;
 		}
 		totalVotes = poll.voteCount();
-
 		notifyDataSetChanged();
 	}
 

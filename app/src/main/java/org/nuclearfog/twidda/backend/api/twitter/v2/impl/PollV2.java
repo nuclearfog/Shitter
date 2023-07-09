@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Poll;
 
 /**
@@ -95,6 +96,12 @@ public class PollV2 implements Poll {
 	@Override
 	public Option[] getOptions() {
 		return options;
+	}
+
+
+	@Override
+	public Emoji[] getEmojis() {
+		return new Emoji[0];
 	}
 
 

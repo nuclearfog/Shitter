@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 
 import java.io.Closeable;
@@ -52,12 +53,14 @@ public class ProfileUpdate implements Closeable {
 	}
 
 	/**
+	 *
 	 */
 	public void setProfileImage(MediaStatus profileImage) {
 		this.profileImage = profileImage;
 	}
 
 	/**
+	 *
 	 */
 	public void setBannerImage(MediaStatus bannerImage) {
 		this.bannerImage = bannerImage;

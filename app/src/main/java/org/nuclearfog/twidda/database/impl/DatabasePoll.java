@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Poll;
 
 import java.util.regex.Pattern;
@@ -83,6 +84,12 @@ public class DatabasePoll implements Poll, PollTable {
 	@Override
 	public Option[] getOptions() {
 		return options;
+	}
+
+
+	@Override
+	public Emoji[] getEmojis() {
+		return new Emoji[0];
 	}
 
 

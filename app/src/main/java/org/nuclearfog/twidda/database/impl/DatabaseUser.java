@@ -212,6 +212,12 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 
 
 	@Override
+	public Field[] getFields() {
+		return new Field[0];// todo implement this
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof User))
 			return false;

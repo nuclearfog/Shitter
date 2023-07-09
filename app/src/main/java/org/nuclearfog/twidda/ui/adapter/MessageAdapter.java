@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -8,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.ui.adapter.holder.MessageHolder;
@@ -44,7 +42,6 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	public static final int CLEAR_LIST = -1;
 
 	private OnMessageClickListener itemClickListener;
-	private TextEmojiLoader emojiLoader;
 
 	private Messages messages = new Messages();
 	private int loadingIndex = NO_LOADING;
@@ -52,8 +49,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	/**
 	 * @param itemClickListener click listener
 	 */
-	public MessageAdapter(Context context, OnMessageClickListener itemClickListener) {
-		emojiLoader = new TextEmojiLoader(context);
+	public MessageAdapter(OnMessageClickListener itemClickListener) {
 		this.itemClickListener = itemClickListener;
 	}
 
@@ -76,7 +72,7 @@ public class MessageAdapter extends Adapter<ViewHolder> implements OnItemClickLi
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_MESSAGE) {
-			return new MessageHolder(parent, emojiLoader, this);
+			return new MessageHolder(parent, this);
 		} else {
 			return new PlaceHolder(parent, this, false);
 		}

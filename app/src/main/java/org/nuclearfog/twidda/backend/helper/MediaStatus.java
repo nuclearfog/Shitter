@@ -77,7 +77,7 @@ public class MediaStatus implements Serializable, Closeable {
 	/**
 	 * create MediaStatus from an offline source
 	 *
-	 * @param uri                    path to the local file
+	 * @param uri path to the local file
 	 * @throws FileNotFoundException if the file is invalid
 	 */
 	public MediaStatus(Context context, Uri uri) throws FileNotFoundException {

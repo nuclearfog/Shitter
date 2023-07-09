@@ -44,6 +44,10 @@ public interface Poll extends Serializable {
 	 */
 	Option[] getOptions();
 
+	/**
+	 * @return emojis used in option titles
+	 */
+	Emoji[] getEmojis();
 
 	/**
 	 * represents a vote option

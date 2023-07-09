@@ -37,6 +37,7 @@ public class MastodonUser implements User {
 	private boolean locked;
 	private boolean isCurrentUser;
 	private Emoji[] emojis = {};
+	private Field[] fields = {};
 
 	/**
 	 * constructor used to create an user instance of the current user
@@ -56,6 +57,7 @@ public class MastodonUser implements User {
 	 */
 	public MastodonUser(JSONObject json, long currentUserId) throws JSONException {
 		JSONArray emojiArray = json.optJSONArray("emojis");
+		JSONArray fieldsArray = json.optJSONArray("fields");
 		String idStr = json.getString("id");
 		String description = json.optString("note", "");
 		String profileUrl = json.optString("avatar_static", "");
@@ -83,6 +85,13 @@ public class MastodonUser implements User {
 			for (int i = 0; i < emojis.length; i++) {
 				JSONObject emojiJson = emojiArray.getJSONObject(i);
 				emojis[i] = new MastodonEmoji(emojiJson);
+			}
+		}
+		if (fieldsArray != null && fieldsArray.length() > 0) {
+			fields = new Field[fieldsArray.length()];
+			for (int i = 0; i < fields.length; i++) {
+				JSONObject fieldJson = fieldsArray.getJSONObject(i);
+				fields[i] = new MastodonField(fieldJson);
 			}
 		}
 		try {
@@ -217,6 +226,12 @@ public class MastodonUser implements User {
 	@Override
 	public Emoji[] getEmojis() {
 		return emojis;
+	}
+
+
+	@Override
+	public Field[] getFields() {
+		return fields;
 	}
 
 

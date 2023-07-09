@@ -1,13 +1,11 @@
 package org.nuclearfog.twidda.ui.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Notifications;
@@ -46,7 +44,6 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	private static final int TYPE_USER = 2;
 
 	private OnNotificationClickListener listener;
-	private TextEmojiLoader emojiLoader;
 
 	private Notifications notifications = new Notifications();
 	private int loadingIndex = NO_LOADING;
@@ -54,8 +51,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	/**
 	 *
 	 */
-	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
-		emojiLoader = new TextEmojiLoader(context);
+	public NotificationAdapter(OnNotificationClickListener listener) {
 		this.listener = listener;
 	}
 
@@ -64,9 +60,9 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_STATUS) {
-			return new StatusHolder(parent, emojiLoader, this);
+			return new StatusHolder(parent, this);
 		} else if (viewType == TYPE_USER) {
-			return new UserHolder(parent, emojiLoader, this, false);
+			return new UserHolder(parent, this, false);
 		} else {
 			return new PlaceHolder(parent, this, false);
 		}

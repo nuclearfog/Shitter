@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.ui.adapter.holder;
 
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -8,13 +10,20 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Poll.Option;
 
 /**
@@ -22,14 +31,17 @@ import org.nuclearfog.twidda.model.Poll.Option;
  *
  * @author nuclearfog
  */
-public class Optionholder extends ViewHolder implements OnClickListener {
+public class Optionholder extends ViewHolder implements OnClickListener, AsyncCallback<EmojiResult> {
 
 	private SeekBar voteProgress;
 	private TextView optionName, optionVotes;
 	private ImageView checkIcon;
 
 	private OnHolderClickListener listener;
+	private TextEmojiLoader emojiLoader;
 	private GlobalSettings settings;
+
+	private long tagId;
 
 	/**
 	 *
@@ -37,6 +49,7 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 	public Optionholder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_option, parent, false));
 		settings = GlobalSettings.get(parent.getContext());
+		emojiLoader = new TextEmojiLoader(parent.getContext());
 		this.listener = listener;
 
 		optionName = itemView.findViewById(R.id.item_option_name);
@@ -66,6 +79,15 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 		}
 	}
 
+
+	@Override
+	public void onResult(@NonNull EmojiResult result) {
+		if (result.images != null && result.id == tagId) {
+			Spannable spannable = EmojiUtils.addEmojis(optionName.getContext(), result.spannable, result.images);
+			optionName.setText(spannable);
+		}
+	}
+
 	/**
 	 * set viewholder content
 	 *
@@ -73,16 +95,24 @@ public class Optionholder extends ViewHolder implements OnClickListener {
 	 * @param selected   true if option is selected
 	 * @param totalCount total vote count
 	 */
-	public void setContent(Option option, boolean selected, int totalCount) {
+	public void setContent(Option option, Emoji[] emojis, boolean selected, int totalCount) {
+		voteProgress.setMax(Math.max(totalCount, 1));
+		AppStyles.setDrawableColor(checkIcon, settings.getIconColor());
+		voteProgress.setProgress(option.getVotes());
+		optionVotes.setText(StringUtils.NUMBER_FORMAT.format(option.getVotes()));
+		if (emojis.length > 0 && settings.imagesEnabled()) {
+			tagId = option.getTitle().hashCode();
+			SpannableString optionSpan = new SpannableString(option.getTitle());
+			EmojiParam param = new EmojiParam(tagId, emojis, optionSpan, optionName.getResources().getDimensionPixelSize(R.dimen.item_option_emoji_size));
+			optionName.setText(EmojiUtils.removeTags(optionSpan));
+			emojiLoader.execute(param, this);
+		} else {
+			optionName.setText(option.getTitle());
+		}
 		if (option.isSelected() | selected) {
 			checkIcon.setImageResource(R.drawable.check);
 		} else {
 			checkIcon.setImageResource(R.drawable.circle);
 		}
-		voteProgress.setMax(Math.max(totalCount, 1));
-		AppStyles.setDrawableColor(checkIcon, settings.getIconColor());
-		optionName.setText(option.getTitle());
-		voteProgress.setProgress(option.getVotes());
-		optionVotes.setText(StringUtils.NUMBER_FORMAT.format(option.getVotes()));
 	}
 }

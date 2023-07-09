@@ -69,13 +69,15 @@ public class MessageHolder extends ViewHolder implements OnClickListener, OnTagC
 
 	private long tagId;
 
-
-	public MessageHolder(ViewGroup parent, TextEmojiLoader emojiLoader, OnItemClickListener listener) {
+	/**
+	 *
+	 */
+	public MessageHolder(ViewGroup parent, OnItemClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false));
 		settings = GlobalSettings.get(parent.getContext());
 		picasso = PicassoBuilder.get(parent.getContext());
+		emojiLoader = new TextEmojiLoader(parent.getContext());
 		this.listener = listener;
-		this.emojiLoader = emojiLoader;
 
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_message_container);

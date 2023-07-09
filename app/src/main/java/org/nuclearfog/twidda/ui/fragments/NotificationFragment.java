@@ -64,7 +64,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
-		adapter = new NotificationAdapter(requireContext(), this);
+		adapter = new NotificationAdapter(this);
 		setAdapter(adapter);
 
 		if (savedInstanceState != null) {

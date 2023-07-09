@@ -221,6 +221,12 @@ public class UserV2 implements User {
 
 
 	@Override
+	public Field[] getFields() {
+		return new Field[0];
+	}
+
+
+	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof User))
 			return false;

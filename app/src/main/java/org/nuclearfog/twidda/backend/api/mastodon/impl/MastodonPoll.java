@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Poll;
 
 /**
@@ -25,15 +26,17 @@ public class MastodonPoll implements Poll {
 	private boolean multipleChoice;
 	private int voteCount;
 	private MastodonOption[] options;
+	private Emoji[] emojis = {};
 
 	/**
 	 * @param json Mastodon poll jswon format
 	 */
 	public MastodonPoll(JSONObject json) throws JSONException {
-		String idStr = json.getString("id");
+		JSONArray optionArray = json.getJSONArray("options");
+		JSONArray voteArray = json.optJSONArray("own_votes");
+		JSONArray emojiArray = json.optJSONArray("emojis");
 		String exTimeStr = json.getString("expires_at");
-		JSONArray optionsJson = json.getJSONArray("options");
-		JSONArray votesJson = json.optJSONArray("own_votes");
+		String idStr = json.getString("id");
 		exTime = StringUtils.getTime(exTimeStr, StringUtils.TIME_MASTODON);
 		expired = json.getBoolean("expired");
 		voted = json.optBoolean("voted", false);
@@ -41,18 +44,23 @@ public class MastodonPoll implements Poll {
 		if (!json.isNull("voters_count")) {
 			voteCount = json.getInt("voters_count");
 		}
-
-		options = new MastodonOption[optionsJson.length()];
-		for (int i = 0; i < optionsJson.length(); i++) {
-			JSONObject option = optionsJson.getJSONObject(i);
+		options = new MastodonOption[optionArray.length()];
+		for (int i = 0; i < optionArray.length(); i++) {
+			JSONObject option = optionArray.getJSONObject(i);
 			options[i] = new MastodonOption(option);
 		}
-		if (votesJson != null) {
-			for (int i = 0; i < votesJson.length(); i++) {
-				int index = votesJson.getInt(i);
+		if (voteArray != null) {
+			for (int i = 0; i < voteArray.length(); i++) {
+				int index = voteArray.getInt(i);
 				if (index >= 0 && index < options.length) {
 					options[index].setSelected();
 				}
+			}
+		}
+		if (emojiArray != null && emojiArray.length() > 0) {
+			emojis = new Emoji[emojiArray.length()];
+			for (int i = 0; i < emojis.length; i++) {
+				emojis[i] = new MastodonEmoji(emojiArray.getJSONObject(i));
 			}
 		}
 		try {
@@ -102,6 +110,12 @@ public class MastodonPoll implements Poll {
 	@Override
 	public Option[] getOptions() {
 		return options;
+	}
+
+
+	@Override
+	public Emoji[] getEmojis() {
+		return emojis;
 	}
 
 

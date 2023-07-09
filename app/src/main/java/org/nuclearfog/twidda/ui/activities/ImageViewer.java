@@ -213,8 +213,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 				storeImage(cacheUri);
 				return true;
 			}
-		}
-		else if (item.getItemId() == R.id.menu_image_add_description) {
+		} else if (item.getItemId() == R.id.menu_image_add_description) {
 			descriptionDialog.show();
 			return true;
 		}
