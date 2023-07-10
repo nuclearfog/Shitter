@@ -321,7 +321,7 @@
 	<string name="status_translate_text">translate</string>
 	<string name="status_translate_source">Translated by:\u0020</string>
 	<string name="status_translate_source_language">Language:\u0020</string>
-	<string name="field_verified_in">verified in\u0020</string>
+	<string name="field_verified">verified:\u0020</string>
 	<string name="confirm_remove_account">remove account from list?</string>
 	<string name="confirm_remove_filter">delete filter?</string>
 	<string name="account_user_unnamed">\'unnamed\'</string>

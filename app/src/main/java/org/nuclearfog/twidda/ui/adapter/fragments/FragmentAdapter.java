@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.ui.adapter;
+package org.nuclearfog.twidda.ui.adapter.fragments;
 
 import android.os.Bundle;
 

@@ -66,7 +66,7 @@ import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
-import org.nuclearfog.twidda.ui.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.fragments.ProfileAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.views.LockableLinearLayout;
@@ -137,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	private AsyncCallback<EmojiResult> usernameUpdate = this::onUsernameUpdate;
 	private AsyncCallback<EmojiResult> userDescriptionUpdate = this::onUserDescriptionUpdate;
 
-	private FragmentAdapter adapter;
+	private ProfileAdapter adapter;
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private ConfirmDialog confirmDialog;
@@ -192,7 +192,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		tabSelector = findViewById(R.id.profile_tab);
 		viewPager = findViewById(R.id.profile_pager);
 
-		adapter = new FragmentAdapter(this);
+		adapter = new ProfileAdapter(this);
 		relationLoader = new RelationLoader(this);
 		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
@@ -261,13 +261,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
 			relationLoader.execute(param, relationCallback);
 		}
-		adapter.setupProfilePage(userId);
-		if (settings.likeEnabled()) {
+		adapter.setUser(userId);
+		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && userId != settings.getLogin().getId()) {
+			tabSelector.addTabIcons(R.array.profile_tab_icons);
+		} else if (settings.likeEnabled()) {
 			tabSelector.addTabIcons(R.array.profile_tab_icons_like);
 		} else {
-			tabSelector.addTabIcons(R.array.profile_tab_icons);
+			tabSelector.addTabIcons(R.array.profile_tab_icons_favorite);
 		}
-
 		tabSelector.addOnTabSelectedListener(this);
 		following.setOnClickListener(this);
 		follower.setOnClickListener(this);
@@ -862,6 +863,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				EmojiParam param = new EmojiParam(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
 				emojiLoader.execute(param, userDescriptionUpdate);
 			}
+		}
+		if (user.getFields().length > 0) {
+			adapter.setFields(user.getFields());
 		}
 	}
 

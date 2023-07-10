@@ -3,6 +3,9 @@ package org.nuclearfog.twidda.backend.utils;
 import android.content.res.Resources;
 import android.util.Base64;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Safelist;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 
@@ -60,6 +63,8 @@ public class StringUtils {
 	private static final SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
 
 	private static final TimeZone TIME_ZONE = TimeZone.getDefault();
+
+	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false);
 
 	/**
 	 * fallback date if parsing failed
@@ -192,6 +197,31 @@ public class StringUtils {
 			buf.append(item).append(' ');
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * extract text from html doc
+	 *
+	 * @param text html string
+	 * @return text string
+	 */
+	public static String extractText(String text) {
+		try {
+			// create newlines at every <br> or <p> tag
+			Document jsoupDoc = Jsoup.parse(text);
+			jsoupDoc.outputSettings(OUTPUT_SETTINGS);
+			jsoupDoc.select("br").after("\\n");
+			jsoupDoc.select("p").before("\\n");
+			String str = jsoupDoc.html().replace("\\n", "\n");
+			text = Jsoup.clean(str, "", Safelist.none(), OUTPUT_SETTINGS);
+			text = text.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("&nbsp;", "\u00A0");
+			if (text.startsWith("\n")) {
+				text = text.substring(1);
+			}
+		} catch (Exception exception) {
+			// use fallback text string from json
+		}
+		return text;
 	}
 
 	/**

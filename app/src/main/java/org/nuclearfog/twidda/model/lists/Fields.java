@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.User.Field;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -21,6 +22,11 @@ public class Fields extends LinkedList<Field> {
 
 	public Fields(Fields fields) {
 		super(fields);
+	}
+
+
+	public Fields(Field[] fields) {
+		super(Arrays.asList(fields));
 	}
 
 

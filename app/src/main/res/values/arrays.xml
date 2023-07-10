@@ -50,14 +50,21 @@
 
 	<integer-array name="profile_tab_icons">
 		<item>@drawable/home</item>
+		<item>@drawable/info</item>
+	</integer-array>
+
+	<integer-array name="profile_tab_icons_favorite">
+		<item>@drawable/home</item>
 		<item>@drawable/favorite</item>
 		<item>@drawable/bookmark</item>
+		<item>@drawable/info</item>
 	</integer-array>
 
 	<integer-array name="profile_tab_icons_like">
 		<item>@drawable/home</item>
 		<item>@drawable/like</item>
 		<item>@drawable/bookmark</item>
+		<item>@drawable/info</item>
 	</integer-array>
 
 	<integer-array name="userlist_tab_icons">

@@ -6,10 +6,6 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Document.OutputSettings;
-import org.jsoup.safety.Safelist;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Emoji;
@@ -30,8 +26,6 @@ import java.util.Locale;
 public class MastodonStatus implements Status {
 
 	private static final long serialVersionUID = 1184375228249441241L;
-
-	private static final OutputSettings OUTPUT_SETTINGS = new OutputSettings().prettyPrint(false);
 
 	private long id;
 	private long replyId;
@@ -90,24 +84,7 @@ public class MastodonStatus implements Status {
 		sensitive = json.optBoolean("sensitive", false);
 		spoiler = json.optBoolean("spoiler_text", false);
 		bookmarked = json.optBoolean("bookmarked", false);
-		String text = json.optString("content", "");
-
-		try {
-			// create newlines at every <br> or <p> tag
-			Document jsoupDoc = Jsoup.parse(text);
-			jsoupDoc.outputSettings(OUTPUT_SETTINGS);
-			jsoupDoc.select("br").after("\\n");
-			jsoupDoc.select("p").before("\\n");
-			String str = jsoupDoc.html().replace("\\n", "\n");
-			text = Jsoup.clean(str, "", Safelist.none(), OUTPUT_SETTINGS);
-			text = text.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("&nbsp;", "\u00A0");
-			if (text.startsWith("\n")) {
-				text = text.substring(1);
-			}
-		} catch (Exception exception) {
-			// use fallback text string from json
-		}
-		this.text = text;
+		text = StringUtils.extractText(json.optString("content", ""));
 
 		if (author.getId() != currentUserId)
 			mentions = author.getScreenname() + ' ';

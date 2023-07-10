@@ -69,15 +69,14 @@
 
 		<TextView
 			android:id="@+id/item_message_screenname"
-			android:layout_width="wrap_content"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginStart="@dimen/dmitem_text_margin"
-			android:layout_marginEnd="@dimen/dmitem_text_margin"
 			android:lines="1"
 			android:textSize="@dimen/dmitem_textsize_name"
 			app:layout_constraintStart_toEndOf="@id/item_message_private"
 			app:layout_constraintTop_toBottomOf="@id/item_message_username"
-			app:layout_constraintBottom_toBottomOf="@id/item_message_profile"
+			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.0"
 			app:layout_constraintHorizontal_chainStyle="packed" />
 
@@ -104,6 +103,7 @@
 			android:id="@+id/item_message_attachment_list"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/dmitem_indicator_size"
+			android:layout_marginTop="@dimen/dmitem_text_margin"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_message_text"
 			app:layout_constraintEnd_toEndOf="parent" />
