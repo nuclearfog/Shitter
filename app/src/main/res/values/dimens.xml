@@ -364,4 +364,12 @@
 	<dimen name="dialog_description_button_padding">5dp</dimen>
 	<dimen name="dialog_description_layout_margin">5dp</dimen>
 
+	<!--dimens of item_fields.xml-->
+	<dimen name="item_field_card_padding">5dp</dimen>
+	<dimen name="item_field_layout_margin">5dp</dimen>
+	<dimen name="item_field_textsize_title">18sp</dimen>
+	<dimen name="item_field_textsize_value">14sp</dimen>
+	<dimen name="item_field_textsize_time">10sp</dimen>
+	<dimen name="item_field_icon_size">18sp</dimen>
+
 </resources>

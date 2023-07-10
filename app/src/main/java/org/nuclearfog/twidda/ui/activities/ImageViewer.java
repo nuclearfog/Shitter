@@ -15,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
-import com.wolt.blurhashkt.BlurHashDecoder;
-
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
@@ -25,6 +23,7 @@ import org.nuclearfog.twidda.backend.async.ImageDownloader.ImageLoaderParam;
 import org.nuclearfog.twidda.backend.async.ImageDownloader.ImageLoaderResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.BlurHashDecoder;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
@@ -162,7 +161,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		}
 		// set image blur placeholder
 		if (blurHash != null && !blurHash.trim().isEmpty()) {
-			Bitmap blur = BlurHashDecoder.INSTANCE.decode(blurHash, 16, 16, 1f, true);
+			Bitmap blur = BlurHashDecoder.decode(blurHash);
 			zoomImage.setImageBitmap(blur);
 		}
 	}

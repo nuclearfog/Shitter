@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.nuclearfog.twidda.backend.image.ImageCache;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.BlurHashDecoder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.notification.PushSubscription;
 
@@ -39,6 +40,7 @@ public class ClientApplication extends Application {
 	public void onLowMemory() {
 		ImageCache.clear();
 		PicassoBuilder.clear();
+		BlurHashDecoder.clearCache();
 		super.onLowMemory();
 	}
 }

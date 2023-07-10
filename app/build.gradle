@@ -11,8 +11,8 @@ android {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 91
-		versionName '3.2.4'
+		versionCode 92
+		versionName '3.2.5'
 		resConfigs 'en', 'es', 'de-rDE', 'zh-rCN'
 	}
 
@@ -62,5 +62,4 @@ dependencies {
 	implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4.1'
 	implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
 	implementation 'com.github.UnifiedPush:android-connector:2.1.1'
-	implementation 'com.github.woltapp:blurhash:f9589f03ee'
 }

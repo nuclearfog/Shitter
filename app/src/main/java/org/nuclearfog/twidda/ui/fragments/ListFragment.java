@@ -42,6 +42,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	private SwipeRefreshLayout reload;
 	protected GlobalSettings settings;
 
+	private boolean enableSwipe = true;
 	private boolean isRefreshing = false;
 	private long sessionId = rand.nextLong();
 
@@ -80,13 +81,15 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * @param enable true to enable swipe view delayed, false to stop immediately
 	 */
 	protected void setRefresh(boolean enable) {
-		isRefreshing = enable;
-		if (enable) {
-			reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
-			reload.setEnabled(false);
-		} else {
-			reload.setRefreshing(false);
-			reload.setEnabled(true);
+		if (enableSwipe) {
+			isRefreshing = enable;
+			if (enable) {
+				reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
+				reload.setEnabled(false);
+			} else {
+				reload.setRefreshing(false);
+				reload.setEnabled(true);
+			}
 		}
 	}
 
@@ -96,7 +99,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * @return true if swipe view is active
 	 */
 	protected boolean isRefreshing() {
-		return isRefreshing || reload.isRefreshing();
+		return enableSwipe && (isRefreshing || reload.isRefreshing());
 	}
 
 	/**
@@ -139,6 +142,10 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 */
 	public long getSessionId() {
 		return sessionId;
+	}
+
+	protected void disableSwipe() {
+		reload.setEnabled(false);
 	}
 
 	/**

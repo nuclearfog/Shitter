@@ -17,11 +17,11 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
-import com.wolt.blurhashkt.BlurHashDecoder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.BlurHashDecoder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
 
@@ -93,14 +93,14 @@ public class MediaHolder extends ViewHolder implements OnClickListener {
 					}
 					// use hash to generate blur
 					else {
-						Bitmap blur = BlurHashDecoder.INSTANCE.decode(media.getBlurHash(), 16, 16, 1f, true);
+						Bitmap blur = BlurHashDecoder.decode(media.getBlurHash());
 						previewImage.setImageBitmap(blur);
 					}
 				} else {
 					RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
 					// create blur placeholder
 					if (!media.getBlurHash().isEmpty()) {
-						Bitmap blur = BlurHashDecoder.INSTANCE.decode(media.getBlurHash(), 16, 16, 1f, true);
+						Bitmap blur = BlurHashDecoder.decode(media.getBlurHash());
 						picassoBuilder.placeholder(new BitmapDrawable(previewImage.getResources(), blur));
 					}
 					// load preview image

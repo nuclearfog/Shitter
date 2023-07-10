@@ -22,10 +22,10 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
-import com.wolt.blurhashkt.BlurHashDecoder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
+import org.nuclearfog.twidda.backend.utils.BlurHashDecoder;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.ui.adapter.PreviewAdapter;
@@ -107,7 +107,7 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 			if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
 				RequestCreator picassoBuilder = picasso.load(card.getImageUrl());
 				if (!card.getBlurHash().isEmpty()) {
-					Bitmap blur = BlurHashDecoder.INSTANCE.decode(card.getBlurHash(), 16, 16, 1f, true);
+					Bitmap blur = BlurHashDecoder.decode(card.getBlurHash());
 					picassoBuilder.placeholder(new BitmapDrawable(preview.getResources(), blur));
 				} else {
 					picassoBuilder.placeholder(placeholder);
