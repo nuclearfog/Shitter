@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.WebPush;
-import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.DropdownAdapter;
 
 import java.io.Serializable;
 

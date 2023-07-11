@@ -24,10 +24,9 @@ import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagParam;
 import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
-import org.nuclearfog.twidda.ui.adapter.fragments.SearchAdapter;
+import org.nuclearfog.twidda.ui.adapter.viewpager.SearchAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -83,16 +82,8 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		toolbar = findViewById(R.id.search_toolbar);
 		viewPager = findViewById(R.id.search_pager);
 
-		toolbar.setTitle("");
-		setSupportActionBar(toolbar);
-
 		settings = GlobalSettings.get(this);
-		adapter = new SearchAdapter(this);
 		hashtagAction = new HashtagAction(this);
-		tabSelector.addViewPager(viewPager);
-		tabSelector.addOnTabSelectedListener(this);
-		viewPager.setAdapter(adapter);
-		viewPager.setOffscreenPageLimit(3);
 
 		String query = getIntent().getStringExtra(KEY_QUERY);
 		Serializable data = getIntent().getSerializableExtra(KEY_DATA);
@@ -106,10 +97,16 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 				hashtagAction.execute(param, this);
 			}
 		}
-		boolean enableHashtags = !search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON;
-		adapter.setSearch(search, enableHashtags);
+		toolbar.setTitle("");
+		setSupportActionBar(toolbar);
+		viewPager.setOffscreenPageLimit(3);
+		adapter = new SearchAdapter(this, search);
+		viewPager.setAdapter(adapter);
+		tabSelector.addViewPager(viewPager);
 		tabSelector.addTabIcons(R.array.search_tab_icons);
 		AppStyles.setTheme(root);
+
+		tabSelector.addOnTabSelectedListener(this);
 	}
 
 

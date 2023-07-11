@@ -14,8 +14,8 @@ import org.nuclearfog.twidda.backend.async.DomainAction.DomainParam;
 import org.nuclearfog.twidda.backend.async.DomainAction.DomainResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.lists.Domains;
-import org.nuclearfog.twidda.ui.adapter.DomainAdapter;
-import org.nuclearfog.twidda.ui.adapter.DomainAdapter.OnDomainClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.DomainAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.DomainAdapter.OnDomainClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 

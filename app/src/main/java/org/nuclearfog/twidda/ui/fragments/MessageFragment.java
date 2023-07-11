@@ -22,8 +22,8 @@ import org.nuclearfog.twidda.ui.activities.ImageViewer;
 import org.nuclearfog.twidda.ui.activities.MessageEditor;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
-import org.nuclearfog.twidda.ui.adapter.MessageAdapter;
-import org.nuclearfog.twidda.ui.adapter.MessageAdapter.OnMessageClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.MessageAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.MessageAdapter.OnMessageClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 

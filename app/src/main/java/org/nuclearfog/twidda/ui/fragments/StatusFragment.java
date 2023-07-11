@@ -19,8 +19,8 @@ import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
-import org.nuclearfog.twidda.ui.adapter.StatusAdapter;
-import org.nuclearfog.twidda.ui.adapter.StatusAdapter.StatusSelectListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.StatusAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.StatusAdapter.StatusSelectListener;
 
 import java.io.Serializable;
 

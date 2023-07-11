@@ -25,8 +25,8 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
-import org.nuclearfog.twidda.ui.adapter.NotificationAdapter;
-import org.nuclearfog.twidda.ui.adapter.NotificationAdapter.OnNotificationClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.NotificationAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.NotificationAdapter.OnNotificationClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 

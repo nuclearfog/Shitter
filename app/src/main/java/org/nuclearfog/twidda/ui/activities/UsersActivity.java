@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.adapter.fragments.UserAdapter;
+import org.nuclearfog.twidda.ui.adapter.viewpager.UserAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -136,6 +136,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			case USERS_FOLLOWING:
 				toolbar.setTitle(R.string.userlist_following);
 				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWING);
+				viewPager.setAdapter(adapter);
 				if (settings.getLogin().getConfiguration() == Configuration.MASTODON && settings.getLogin().getId() == id) {
 					tabSelector.addTabIcons(R.array.user_hashtag_following);
 					tabSelector.addViewPager(viewPager);
@@ -147,12 +148,14 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 			case USERS_FOLLOWER:
 				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWER);
+				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.userlist_follower);
 				break;
 
 			case USERS_REPOST:
 				adapter = new UserAdapter(this, id, UserAdapter.REPOSTER);
+				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.toolbar_userlist_repost);
 				break;
@@ -160,12 +163,14 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			case USERS_FAVORIT:
 				int title = settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter;
 				adapter = new UserAdapter(this, id, UserAdapter.FAVORITER);
+				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(title);
 				break;
 
 			case USERS_EXCLUDED:
 				adapter = new UserAdapter(this, id, UserAdapter.BLOCKS);
+				viewPager.setAdapter(adapter);
 				tabSelector.addTabIcons(R.array.user_domain_exclude);
 				tabSelector.addViewPager(viewPager);
 				tabSelector.addOnTabSelectedListener(this);
@@ -174,6 +179,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 			case USERS_REQUESTS:
 				adapter = new UserAdapter(this, id, UserAdapter.REQUESTS);
+				viewPager.setAdapter(adapter);
 				tabSelector.addViewPager(viewPager);
 				tabSelector.addOnTabSelectedListener(this);
 				tabSelector.addTabIcons(R.array.user_requests_icon);
@@ -184,7 +190,6 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				finish();
 				return;
 		}
-		viewPager.setAdapter(adapter);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 	}

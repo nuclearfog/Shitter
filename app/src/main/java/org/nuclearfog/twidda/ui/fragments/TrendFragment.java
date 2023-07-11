@@ -19,8 +19,8 @@ import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
-import org.nuclearfog.twidda.ui.adapter.TrendAdapter;
-import org.nuclearfog.twidda.ui.adapter.TrendAdapter.TrendClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.TrendAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.TrendAdapter.TrendClickListener;
 
 import java.io.Serializable;
 

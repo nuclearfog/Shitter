@@ -20,8 +20,8 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.notification.PushSubscription;
 import org.nuclearfog.twidda.ui.activities.AccountActivity;
-import org.nuclearfog.twidda.ui.adapter.AccountAdapter;
-import org.nuclearfog.twidda.ui.adapter.AccountAdapter.OnAccountClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.AccountAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 

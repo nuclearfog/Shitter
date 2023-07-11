@@ -23,8 +23,8 @@ import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Users;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
-import org.nuclearfog.twidda.ui.adapter.UserAdapter;
-import org.nuclearfog.twidda.ui.adapter.UserAdapter.UserClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.UserAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 

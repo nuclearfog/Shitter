@@ -21,8 +21,8 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.EmojiLoader;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
-import org.nuclearfog.twidda.ui.adapter.EmojiAdapter;
-import org.nuclearfog.twidda.ui.adapter.EmojiAdapter.OnEmojiClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.EmojiAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.EmojiAdapter.OnEmojiClickListener;
 
 import java.util.List;
 

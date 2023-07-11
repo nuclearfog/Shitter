@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
-import org.nuclearfog.twidda.ui.adapter.DropdownAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.DropdownAdapter;
 
 import java.util.Locale;
 import java.util.Map;

@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.lists.Fields;
-import org.nuclearfog.twidda.ui.adapter.FieldAdapter;
-import org.nuclearfog.twidda.ui.adapter.FieldAdapter.OnLinkClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.FieldAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.FieldAdapter.OnLinkClickListener;
 
 /**
  * User field list fragment

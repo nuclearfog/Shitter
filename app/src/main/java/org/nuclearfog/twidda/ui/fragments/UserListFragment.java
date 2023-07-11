@@ -21,8 +21,8 @@ import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
-import org.nuclearfog.twidda.ui.adapter.UserlistAdapter;
-import org.nuclearfog.twidda.ui.adapter.UserlistAdapter.ListClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.UserlistAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.UserlistAdapter.ListClickListener;
 
 import java.io.Serializable;
 

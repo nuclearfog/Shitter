@@ -34,7 +34,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
-import org.nuclearfog.twidda.ui.adapter.fragments.UserlistAdapter;
+import org.nuclearfog.twidda.ui.adapter.viewpager.UserlistAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.views.TabSelector;

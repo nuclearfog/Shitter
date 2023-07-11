@@ -25,7 +25,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.adapter.fragments.HomeAdapter;
+import org.nuclearfog.twidda.ui.adapter.viewpager.HomeAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;

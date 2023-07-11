@@ -66,7 +66,7 @@ import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
-import org.nuclearfog.twidda.ui.adapter.fragments.ProfileAdapter;
+import org.nuclearfog.twidda.ui.adapter.viewpager.ProfileAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.views.LockableLinearLayout;
@@ -192,7 +192,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		tabSelector = findViewById(R.id.profile_tab);
 		viewPager = findViewById(R.id.profile_pager);
 
-		adapter = new ProfileAdapter(this);
 		relationLoader = new RelationLoader(this);
 		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
@@ -225,7 +224,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 
-		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(3);
 		tabSelector.addViewPager(viewPager);
 
@@ -248,6 +246,9 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			user = (User) serializedUser;
 			userId = user.getId();
 		}
+		// setup pager fragments
+		adapter = new ProfileAdapter(this, userId);
+		viewPager.setAdapter(adapter);
 		// set user/relation data and initialize loaders
 		if (user != null) {
 			setUser(user);
@@ -261,7 +262,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
 			relationLoader.execute(param, relationCallback);
 		}
-		adapter.setUser(userId);
 		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && userId != settings.getLogin().getId()) {
 			tabSelector.addTabIcons(R.array.profile_tab_icons);
 		} else if (settings.likeEnabled()) {
