@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Trend;
-import org.nuclearfog.twidda.ui.adapter.fragments.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.fragments.SearchAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -58,7 +58,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 
 	private HashtagAction hashtagAction;
 
-	private FragmentAdapter adapter;
+	private SearchAdapter adapter;
 	private GlobalSettings settings;
 	private ViewPager2 viewPager;
 	private Toolbar toolbar;
@@ -87,7 +87,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		setSupportActionBar(toolbar);
 
 		settings = GlobalSettings.get(this);
-		adapter = new FragmentAdapter(this);
+		adapter = new SearchAdapter(this);
 		hashtagAction = new HashtagAction(this);
 		tabSelector.addViewPager(viewPager);
 		tabSelector.addOnTabSelectedListener(this);
@@ -107,7 +107,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 			}
 		}
 		boolean enableHashtags = !search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON;
-		adapter.setupSearchPage(search, enableHashtags);
+		adapter.setSearch(search, enableHashtags);
 		tabSelector.addTabIcons(R.array.search_tab_icons);
 		AppStyles.setTheme(root);
 	}

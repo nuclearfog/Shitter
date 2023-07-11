@@ -20,7 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.adapter.fragments.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.fragments.UserListsAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -40,7 +40,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private FragmentAdapter adapter;
+	private UserListsAdapter adapter;
 	private GlobalSettings settings;
 	private ViewPager2 viewPager;
 
@@ -63,7 +63,6 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		viewPager = findViewById(R.id.list_pager);
 
 		settings = GlobalSettings.get(this);
-		adapter = new FragmentAdapter(this);
 
 		toolbar.setTitle(R.string.list_appbar);
 		setSupportActionBar(toolbar);
@@ -71,7 +70,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		long ownerId = getIntent().getLongExtra(KEY_ID, 0L);
 		isHome = ownerId == settings.getLogin().getId();
 
-		adapter.setupListPage(ownerId);
+		adapter = new UserListsAdapter(this, ownerId);
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
 		tabSelector.addViewPager(viewPager);

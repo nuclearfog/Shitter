@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 
 import java.util.ArrayList;
@@ -15,12 +16,14 @@ import java.util.ArrayList;
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
 	protected ArrayList<ListFragment> fragments = new ArrayList<>();
+	protected GlobalSettings settings;
 
 	/**
 	 *
 	 */
 	public ViewPagerAdapter(FragmentActivity fragmentActivity) {
 		super(fragmentActivity);
+		settings = GlobalSettings.get(fragmentActivity.getApplicationContext());
 	}
 
 

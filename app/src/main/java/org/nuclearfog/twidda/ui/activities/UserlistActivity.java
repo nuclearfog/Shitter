@@ -34,7 +34,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
-import org.nuclearfog.twidda.ui.adapter.fragments.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.fragments.UserlistAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.views.TabSelector;
@@ -84,7 +84,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	private AsyncCallback<ListManagerResult> userlistUpdate = this::updateList;
 
 
-	private FragmentAdapter adapter;
+	private UserlistAdapter adapter;
 	private UserlistAction listLoaderAsync;
 	private UserlistManager listManagerAsync;
 
@@ -118,19 +118,17 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		confirmDialog = new ConfirmDialog(this, this);
 		listLoaderAsync = new UserlistAction(this);
 		listManagerAsync = new UserlistManager(this);
-		adapter = new FragmentAdapter(this);
-
-		viewPager.setOffscreenPageLimit(3);
-		viewPager.setAdapter(adapter);
-		tabSelector.addViewPager(viewPager);
 
 		Object data = getIntent().getSerializableExtra(KEY_DATA);
 		if (data instanceof UserList) {
 			userList = (UserList) data;
 			toolbar.setTitle(userList.getTitle());
 			toolbar.setSubtitle(userList.getDescription());
-			adapter.setupListContentPage(userList.getId(), userList.isEdiatable());
+			adapter = new UserlistAdapter(this, userList);
 		}
+		viewPager.setOffscreenPageLimit(3);
+		viewPager.setAdapter(adapter);
+		tabSelector.addViewPager(viewPager);
 		setSupportActionBar(toolbar);
 
 		AppStyles.setTheme(root);

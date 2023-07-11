@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Fields;
 import org.nuclearfog.twidda.ui.fragments.FieldFragment;
@@ -18,14 +17,11 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
  */
 public class ProfileAdapter extends ViewPagerAdapter {
 
-	private GlobalSettings settings;
-
 	/**
 	 *
 	 */
 	public ProfileAdapter(FragmentActivity fragmentActivity) {
 		super(fragmentActivity);
-		settings = GlobalSettings.get(fragmentActivity);
 	}
 
 	/**

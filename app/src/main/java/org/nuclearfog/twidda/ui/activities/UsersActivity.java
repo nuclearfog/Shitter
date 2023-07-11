@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.adapter.fragments.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.fragments.UserAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -101,7 +101,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	private GlobalSettings settings;
 	private UserFilterLoader filterLoader;
-	private FragmentAdapter adapter;
+	private UserAdapter adapter;
 
 	private Toolbar toolbar;
 	private TabSelector tabSelector;
@@ -127,8 +127,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 		filterLoader = new UserFilterLoader(this);
 		settings = GlobalSettings.get(this);
-		adapter = new FragmentAdapter(this);
-		viewPager.setAdapter(adapter);
+		viewPager.setOffscreenPageLimit(3);
 
 		mode = getIntent().getIntExtra(KEY_MODE, 0);
 		long id = getIntent().getLongExtra(KEY_ID, 0L);
@@ -136,65 +135,56 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		switch (mode) {
 			case USERS_FOLLOWING:
 				toolbar.setTitle(R.string.userlist_following);
+				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWING);
 				if (settings.getLogin().getConfiguration() == Configuration.MASTODON && settings.getLogin().getId() == id) {
-					adapter.setupFollowingPage(id, true);
-					viewPager.setOffscreenPageLimit(2);
 					tabSelector.addTabIcons(R.array.user_hashtag_following);
 					tabSelector.addViewPager(viewPager);
 					tabSelector.addOnTabSelectedListener(this);
 				} else {
-					adapter.setupFollowingPage(id, false);
-					viewPager.setOffscreenPageLimit(1);
 					tabSelector.setVisibility(View.GONE);
 				}
 				break;
 
 			case USERS_FOLLOWER:
-				adapter.setupFollowerPage(id);
-				viewPager.setOffscreenPageLimit(1);
+				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWER);
 				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.userlist_follower);
 				break;
 
 			case USERS_REPOST:
-				adapter.setupReposterPage(id);
-				viewPager.setOffscreenPageLimit(1);
+				adapter = new UserAdapter(this, id, UserAdapter.REPOSTER);
 				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(R.string.toolbar_userlist_repost);
 				break;
 
 			case USERS_FAVORIT:
 				int title = settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter;
-				adapter.setFavoriterPage(id);
-				viewPager.setOffscreenPageLimit(1);
+				adapter = new UserAdapter(this, id, UserAdapter.FAVORITER);
 				tabSelector.setVisibility(View.GONE);
 				toolbar.setTitle(title);
 				break;
 
 			case USERS_EXCLUDED:
-				if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
-					adapter.setupBlockPage(true);
-					viewPager.setOffscreenPageLimit(3);
-					tabSelector.addTabIcons(R.array.user_domain_exclude_icons);
-				} else {
-					adapter.setupBlockPage(false);
-					viewPager.setOffscreenPageLimit(2);
-					tabSelector.addTabIcons(R.array.user_exclude_icons);
-				}
+				adapter = new UserAdapter(this, id, UserAdapter.BLOCKS);
+				tabSelector.addTabIcons(R.array.user_domain_exclude);
 				tabSelector.addViewPager(viewPager);
 				tabSelector.addOnTabSelectedListener(this);
 				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
 				break;
 
 			case USERS_REQUESTS:
-				adapter.setupFollowRequestPage();
-				viewPager.setOffscreenPageLimit(2);
+				adapter = new UserAdapter(this, id, UserAdapter.REQUESTS);
 				tabSelector.addViewPager(viewPager);
 				tabSelector.addOnTabSelectedListener(this);
 				tabSelector.addTabIcons(R.array.user_requests_icon);
 				toolbar.setTitle(R.string.menu_toolbar_request);
 				break;
+
+			default:
+				finish();
+				return;
 		}
+		viewPager.setAdapter(adapter);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 	}

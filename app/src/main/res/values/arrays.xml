@@ -27,12 +27,7 @@
 		<item>@drawable/subscriber</item>
 	</integer-array>
 
-	<integer-array name="user_exclude_icons">
-		<item>@drawable/mute</item>
-		<item>@drawable/block</item>
-	</integer-array>
-
-	<integer-array name="user_domain_exclude_icons">
+	<integer-array name="user_domain_exclude">
 		<item>@drawable/mute</item>
 		<item>@drawable/block</item>
 		<item>@drawable/link</item>

@@ -25,7 +25,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.adapter.fragments.FragmentAdapter;
+import org.nuclearfog.twidda.ui.adapter.fragments.HomeAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
@@ -41,11 +41,11 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private FragmentAdapter adapter;
-	private GlobalSettings settings;
-
 	@Nullable
 	private Intent loginIntent;
+	@Nullable
+	private HomeAdapter adapter;
+	private GlobalSettings settings;
 
 	private Dialog loadingCircle;
 	private TabSelector tabSelector;
@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		settings = GlobalSettings.get(this);
 		tabSelector.addViewPager(viewPager);
 		viewPager.setOffscreenPageLimit(4);
-		adapter = new FragmentAdapter(this);
-		viewPager.setAdapter(adapter);
 
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
@@ -94,8 +92,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			activityResultLauncher.launch(loginIntent);
 		}
 		// initialize lists
-		else if (adapter.isEmpty()) {
-			setupAdapter();
+		else if (adapter == null) {
+			adapter = new HomeAdapter(this);
+			viewPager.setAdapter(adapter);
+			setStyle();
 			if (getIntent().getBooleanExtra(KEY_SELECT_NOTIFICATION, false)) {
 				// select notification page if user clicks on notification
 				viewPager.setCurrentItem(adapter.getItemCount() - 1, false);
@@ -120,7 +120,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				break;
 
 			case SettingsActivity.RETURN_APP_LOGOUT:
-				adapter.clear();
+				viewPager.setAdapter(null);
+				adapter = null;
 				break;
 
 			case SettingsActivity.RETURN_FONT_SCALE_CHANGED:
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			default:
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
-				setupAdapter();
+				setStyle();
 				break;
 		}
 	}
@@ -244,16 +245,17 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	@Override
 	public void onTabSelected(int oldPosition) {
-		adapter.scrollToTop(oldPosition);
+		if (adapter != null) {
+			adapter.scrollToTop(oldPosition);
+		}
 	}
 
 	/**
-	 * initialize pager content
+	 *
 	 */
-	private void setupAdapter() {
+	private void setStyle() {
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-		adapter.setupForHomePage();
 		tabSelector.addTabIcons(settings.getLogin().getConfiguration().getHomeTabIcons());
 		tabSelector.updateTheme();
 	}
