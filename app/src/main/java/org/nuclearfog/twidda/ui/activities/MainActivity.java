@@ -136,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			default:
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
+				if (adapter != null)
+					adapter.notifySettingsChanged();
 				setStyle();
 				break;
 		}

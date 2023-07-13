@@ -19,7 +19,7 @@ public class FilterUpdate implements Serializable {
 	private String[] keyWordStr = {};
 	private long[] keywordIds = {};
 	private int expires_at = 0;
-	private int action = Filter.ACTION_WARN;
+	private int action = Filter.ACTION_HIDE;
 	private boolean filterHome = false;
 	private boolean filterNotification = false;
 	private boolean filterPublic = true;

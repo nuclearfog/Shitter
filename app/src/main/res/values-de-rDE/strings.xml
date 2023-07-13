@@ -204,6 +204,7 @@
 	<string name="account_page">Accounts</string>
 	<string name="toolbar_title_filter">Status-Filter</string>
 	<string name="status_translate_text">übersetzen</string>
+	<string name="field_verified">verifiziert:\\u0020</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
 	<string name="menu_select_account">Logins</string>
 	<string name="menu_add_account">Account hinzufügen</string>

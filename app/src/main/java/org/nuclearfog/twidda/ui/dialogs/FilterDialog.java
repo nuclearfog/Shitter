@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,11 +28,12 @@ import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Filter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.DropdownAdapter;
 
 import java.io.Serializable;
 
 /**
- * Filter update dialog
+ * Filter create dialog
  *
  * @author nuclearfog
  */
@@ -40,9 +42,11 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	private static final String KEY_SAVE = "filterupdate-save";
 
 	private SwitchButton sw_home, sw_notification, sw_public, sw_user, sw_thread, sw_hide;
-	private EditText txt_title, txt_keywords;
+	private EditText txt_title, txt_keywords, txt_duration;
+	private Spinner timeunit;
 	private TextView title;
 
+	private DropdownAdapter timeUnitAdapter;
 	private StatusFilterAction filterAction;
 	private FilterDialogCallback callback;
 	private FilterUpdate update;
@@ -55,6 +59,8 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 		this.callback = callback;
 		update = new FilterUpdate();
 		filterAction = new StatusFilterAction(activity);
+		timeUnitAdapter = new DropdownAdapter(activity.getApplicationContext());
+		timeUnitAdapter.setItems(R.array.timeunits);
 	}
 
 
@@ -73,7 +79,10 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 		sw_thread = findViewById(R.id.dialog_filter_switch_thread);
 		txt_title = findViewById(R.id.dialog_filter_name);
 		txt_keywords = findViewById(R.id.dialog_filter_keywords);
+		timeunit = findViewById(R.id.dialog_filter_timeunit);
+		txt_duration = findViewById(R.id.dialog_filter_time);
 
+		timeunit.setAdapter(timeUnitAdapter);
 		AppStyles.setTheme(root);
 
 		btn_create.setOnClickListener(this);
@@ -117,6 +126,18 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 			sw_thread.setCheckedImmediately(update.filterThreadSet());
 			sw_hide.setCheckedImmediately(update.getFilterAction() == Filter.ACTION_HIDE);
 			txt_title.setText(update.getTitle());
+			if (update.getExpirationTime() > 86400000L) {
+				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 86400000d)));
+				timeunit.setSelection(2);
+			} else if (update.getExpirationTime() > 3600000L) {
+				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 3600000d)));
+				timeunit.setSelection(1);
+			} else if (update.getExpirationTime() > 60000L) {
+				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 60000d)));
+				timeunit.setSelection(0);
+			} else {
+				timeunit.setSelection(2);
+			}
 		}
 	}
 
@@ -163,6 +184,17 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 			} else if (!sw_home.isChecked() && !sw_notification.isChecked() && !sw_public.isChecked() && !sw_user.isChecked() && !sw_thread.isChecked()) {
 				Toast.makeText(getContext(), R.string.error_empty_filter_selection, Toast.LENGTH_SHORT).show();
 			} else {
+				String durationStr = txt_duration.getText().toString();
+				int duration = 0;
+				if (durationStr.matches("\\d{1,3}"))
+					duration = Integer.parseInt(durationStr);
+				if (timeunit.getSelectedItemPosition() == 0)
+					duration *= 60;
+				else if (timeunit.getSelectedItemPosition() == 1)
+					duration *= 3600;
+				else if (timeunit.getSelectedItemPosition() == 2)
+					duration *= 86400;
+				update.setExpirationTime(duration);
 				if (txt_keywords.length() > 0)
 					update.setKeywords(txt_keywords.getText().toString().split("\n"));
 				update.setTitle(txt_title.getText().toString());

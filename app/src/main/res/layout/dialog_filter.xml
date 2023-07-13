@@ -160,7 +160,30 @@
 		app:layout_constraintStart_toEndOf="@id/dialog_filter_switch_thread"
 		app:layout_constraintTop_toTopOf="@id/dialog_filter_switch_thread"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_thread"
-		app:layout_constraintEnd_toEndOf="parent" />
+		app:layout_constraintEnd_toStartOf="@id/dialog_filter_switch_hide" />
+
+	<com.kyleduo.switchbutton.SwitchButton
+		android:id="@+id/dialog_filter_switch_hide"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
+		app:layout_constraintStart_toEndOf="@id/dialog_filter_switch_thread_label"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_switch_user"
+		app:layout_constraintEnd_toStartOf="@id/dialog_filter_switch_hide_label"/>
+
+	<TextView
+		android:id="@+id/dialog_filter_switch_hide_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/dialog_filter_hide_status"
+		android:maxLines="2"
+		android:textSize="@dimen/dialog_filter_textsize_label"
+		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
+		app:layout_constraintHorizontal_weight="1"
+		app:layout_constraintStart_toEndOf="@id/dialog_filter_switch_hide"
+		app:layout_constraintTop_toTopOf="@id/dialog_filter_switch_hide"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_hide"
+		app:layout_constraintEnd_toEndOf="parent"/>
 
 	<TextView
 		android:id="@+id/dialog_filter_title_keywords"
@@ -191,40 +214,39 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		android:importantForAutofill="no" />
 
-	<com.kyleduo.switchbutton.SwitchButton
-		android:id="@+id/dialog_filter_switch_hide"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/dialog_filter_switch_thread_label" />
-
-	<TextView
-		android:id="@+id/dialog_filter_switch_hide_label"
+	<EditText
+		android:id="@+id/dialog_filter_time"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:text="@string/dialog_filter_hide_status"
-		android:maxLines="2"
-		android:textSize="@dimen/dialog_filter_textsize_label"
-		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
-		app:layout_constraintHorizontal_weight="1"
-		app:layout_constraintStart_toEndOf="@id/dialog_filter_switch_hide"
-		app:layout_constraintTop_toTopOf="@id/dialog_filter_switch_hide"
-		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_hide"
+		android:background="@android:color/transparent"
+		android:hint="@string/dialog_poll_duration_hint"
+		android:inputType="numberDecimal"
+		android:maxLength="3"
+		android:autofillHints=""
+		app:layout_constraintHorizontal_weight="2"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
+		app:layout_constraintEnd_toStartOf="@id/dialog_filter_timeunit" />
+
+	<Spinner
+		android:id="@+id/dialog_filter_timeunit"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:layout_constraintHorizontal_weight="3"
+		app:layout_constraintStart_toEndOf="@id/dialog_filter_time"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
 		app:layout_constraintEnd_toStartOf="@id/dialog_filter_create" />
 
 	<Button
 		android:id="@+id/dialog_filter_create"
 		android:layout_width="0dp"
 		android:layout_height="@dimen/dialog_poll_button_height"
-		android:layout_weight="1"
 		android:text="@string/dialog_apply"
 		android:lines="1"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
-		app:layout_constraintTop_toTopOf="@id/dialog_filter_switch_hide"
-		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_hide"
+		app:layout_constraintHorizontal_weight="2"
+		app:layout_constraintStart_toEndOf="@id/dialog_filter_timeunit"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
 		app:layout_constraintEnd_toEndOf="parent"
 		style="@style/FeedbackButton" />
 
