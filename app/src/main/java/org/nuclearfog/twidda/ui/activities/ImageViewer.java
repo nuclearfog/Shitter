@@ -163,6 +163,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		if (blurHash != null && !blurHash.trim().isEmpty()) {
 			Bitmap blur = BlurHashDecoder.decode(blurHash);
 			zoomImage.setImageBitmap(blur);
+			zoomImage.setMovable(false);
 		}
 	}
 
@@ -237,6 +238,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 			cacheUri = result.uri;
 			zoomImage.reset();
 			zoomImage.setImageURI(cacheUri);
+			zoomImage.setMovable(true);
 			invalidateMenu();
 		} else {
 			ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
