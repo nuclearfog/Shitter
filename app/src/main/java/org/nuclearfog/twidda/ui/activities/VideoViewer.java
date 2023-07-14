@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -17,26 +18,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.Renderer;
-import com.google.android.exoplayer2.RenderersFactory;
-import com.google.android.exoplayer2.audio.AudioRendererEventListener;
-import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSource;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.mediacodec.MediaCodecSelector;
-import com.google.android.exoplayer2.metadata.MetadataOutput;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.text.TextOutput;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.google.android.exoplayer2.upstream.ContentDataSource;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
-import com.google.android.exoplayer2.video.VideoRendererEventListener;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.Player;
+import androidx.media3.datasource.ContentDataSource;
+import androidx.media3.ui.PlayerView;
+import androidx.media3.datasource.DataSource;
+import androidx.media3.datasource.okhttp.OkHttpDataSource;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.Renderer;
+import androidx.media3.exoplayer.RenderersFactory;
+import androidx.media3.exoplayer.audio.AudioRendererEventListener;
+import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer;
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector;
+import androidx.media3.exoplayer.metadata.MetadataOutput;
+import androidx.media3.exoplayer.source.ProgressiveMediaSource;
+import androidx.media3.exoplayer.text.TextOutput;
+import androidx.media3.exoplayer.video.MediaCodecVideoRenderer;
+import androidx.media3.exoplayer.video.VideoRendererEventListener;
+import androidx.media3.extractor.DefaultExtractorsFactory;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
@@ -52,11 +52,13 @@ import java.io.Serializable;
 
 import okhttp3.Call;
 
+
 /**
  * video player activity to show local and online videos/animations
  *
  * @author nuclearfog
  */
+@SuppressLint("UnsafeOptInUsageError")
 public class VideoViewer extends AppCompatActivity implements Player.Listener, DescriptionCallback, RenderersFactory {
 
 	/**
@@ -78,7 +80,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	@Nullable
 	private DescriptionView descriptionView; // only used in portrait layout
 	private Toolbar toolbar;
-	private StyledPlayerView playerView;
+	private PlayerView playerView;
 
 	private DescriptionDialog descriptionDialog;
 
@@ -277,9 +279,11 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	}
 
 
+	@NonNull
 	@Override
-	public Renderer[] createRenderers(Handler eventHandler, VideoRendererEventListener videoRendererEventListener, AudioRendererEventListener audioRendererEventListener,
-	                                  TextOutput textRendererOutput, MetadataOutput metadataRendererOutput) {
+	public Renderer[] createRenderers(@NonNull Handler eventHandler, @NonNull VideoRendererEventListener videoRendererEventListener,
+	                                  @NonNull AudioRendererEventListener audioRendererEventListener, @NonNull TextOutput textRendererOutput,
+	                                  @NonNull MetadataOutput metadataRendererOutput) {
 		return new Renderer[]{
 				new MediaCodecVideoRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, 0L, eventHandler, videoRendererEventListener, 4),
 				new MediaCodecAudioRenderer(getApplicationContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)

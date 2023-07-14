@@ -305,6 +305,7 @@
 	<dimen name="dialog_status_dropdown_height">28sp</dimen>
 
 	<!--dimens of dialog_audio_player.xml-->
+	<dimen name="dialog_audio_player_height">200sp</dimen>
 	<dimen name="dialog_audio_player_drawable_padding">5dp</dimen>
 	<dimen name="dialog_audio_player_layout_padding">5dp</dimen>
 	<dimen name="dialog_audio_player_layout_margin">5dp</dimen>
