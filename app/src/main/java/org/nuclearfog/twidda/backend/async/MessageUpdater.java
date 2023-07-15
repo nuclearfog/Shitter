@@ -30,7 +30,7 @@ public class MessageUpdater extends AsyncExecutor<MessageUpdate, MessageUpdater.
 
 
 	@Override
-	protected MessageUpdateResult doInBackground(@NonNull MessageUpdate update) {
+	protected MessageUpdateResult doInBackground(@NonNull MessageUpdate update) throws InterruptedException {
 		try {
 			// first check if user exists
 			long id = connection.showUser(update.getReceiver()).getId();

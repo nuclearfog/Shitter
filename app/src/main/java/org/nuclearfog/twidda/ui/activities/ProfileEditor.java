@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserUpdater;
 import org.nuclearfog.twidda.backend.async.UserUpdater.UserUpdateResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
@@ -69,7 +69,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private ProgressDialog loadingCircle;
+	private ProgressDialog progressDialog;
 	private ConfirmDialog confirmDialog;
 
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
@@ -78,7 +78,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 	@Nullable
 	private User user;
-	private ProfileUpdate profileUpdate = new ProfileUpdate();
+	private UserUpdate userUpdate = new UserUpdate();
 
 
 	@Override
@@ -105,7 +105,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		profileLocation = findViewById(R.id.profile_edit_change_location);
 		userDescription = findViewById(R.id.profile_edit_change_description);
 
-		loadingCircle = new ProgressDialog(this, null);
+		progressDialog = new ProgressDialog(this, null);
 		confirmDialog = new ConfirmDialog(this, this);
 		editorAsync = new UserUpdater(this);
 		settings = GlobalSettings.get(this);
@@ -147,7 +147,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 	@Override
 	protected void onDestroy() {
-		loadingCircle.dismiss();
+		progressDialog.dismiss();
 		editorAsync.cancel();
 		super.onDestroy();
 	}
@@ -160,7 +160,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		String userLoc = profileLocation.getText().toString();
 		String userBio = userDescription.getText().toString();
 		if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
-				&& userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !profileUpdate.imageAdded()) {
+				&& userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !userUpdate.imageAdded()) {
 			finish();
 		} else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
 			finish();
@@ -198,12 +198,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			MediaStatus mediaStatus = new MediaStatus(getApplicationContext(), uri);
 			// Add image as profile image
 			if (resultType == REQUEST_PROFILE) {
-				profileUpdate.setProfileImage(mediaStatus);
+				userUpdate.setProfileImage(mediaStatus);
 				profile_image.setImageURI(uri);
 			}
 			// Add image as banner image
 			else if (resultType == REQUEST_BANNER) {
-				profileUpdate.setBannerImage(mediaStatus);
+				userUpdate.setBannerImage(mediaStatus);
 				int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 				picasso.load(uri).resize(widthPixels, widthPixels / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
 				addBannerBtn.setVisibility(View.INVISIBLE);
@@ -252,7 +252,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		} else {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
-			loadingCircle.dismiss();
+			progressDialog.dismiss();
 		}
 	}
 
@@ -292,10 +292,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 				String errMsg = getString(R.string.error_invalid_link);
 				profileUrl.setError(errMsg);
 			} else {
-				profileUpdate.setProfile(username, userLink, userBio, userLoc);
-				if (profileUpdate.prepare(getContentResolver())) {
-					editorAsync.execute(profileUpdate, this);
-					loadingCircle.show();
+				userUpdate.setProfile(username, userLink, userBio, userLoc);
+				if (userUpdate.prepare(getContentResolver())) {
+					editorAsync.execute(userUpdate, this);
+					progressDialog.show();
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();
 				}

@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
-import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
@@ -64,6 +64,7 @@ import org.nuclearfog.twidda.model.lists.Users;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -1067,7 +1068,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public User updateProfile(ProfileUpdate update) throws MastodonException {
+	public User updateUser(UserUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		List<InputStream> streams = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
@@ -1097,7 +1098,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public long updateMedia(MediaStatus mediaUpdate) throws MastodonException {
+	public long updateMedia(MediaStatus mediaUpdate) throws MastodonException, InterruptedException {
 		try {
 			List<String> params = new ArrayList<>();
 			if (!mediaUpdate.getDescription().isEmpty())
@@ -1123,7 +1124,9 @@ public class Mastodon implements Connection {
 				}
 			}
 			throw new MastodonException(response);
-		} catch (IOException | JSONException | NumberFormatException | InterruptedException e) {
+		} catch (InterruptedIOException e) {
+			throw new InterruptedException();
+		} catch (IOException | JSONException | NumberFormatException e) {
 			throw new MastodonException(e);
 		}
 	}

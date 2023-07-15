@@ -26,7 +26,7 @@ import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
-import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
@@ -60,6 +60,7 @@ import org.nuclearfog.twidda.model.lists.Users;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1022,7 +1023,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public long updateMedia(MediaStatus mediaUpdate) throws TwitterException {
+	public long updateMedia(MediaStatus mediaUpdate) throws TwitterException, InterruptedException {
 		List<String> params = new ArrayList<>();
 		boolean enableChunk;
 		final long mediaId;
@@ -1079,8 +1080,7 @@ public class TwitterV1 implements Connection {
 			params.add("command=STATUS");
 			params.add("media_id=" + mediaId);
 			// poll media processing information frequently
-			do
-			{
+			do {
 				response = get(MEDIA_UPLOAD, params);
 				body = response.body();
 				if (response.code() < 200 || response.code() >= 300 || body == null)
@@ -1099,10 +1099,10 @@ public class TwitterV1 implements Connection {
 				throw new TwitterException(message);
 			}
 			return mediaId;
+		}  catch (InterruptedIOException e) {
+			throw new InterruptedException();
 		} catch (IOException | JSONException err) {
 			throw new TwitterException(err);
-		} catch (InterruptedException e) {
-			return -1L; //ignore
 		}
 	}
 
@@ -1152,7 +1152,7 @@ public class TwitterV1 implements Connection {
 
 
 	@Override
-	public User updateProfile(ProfileUpdate update) throws TwitterException {
+	public User updateUser(UserUpdate update) throws TwitterException {
 		List<String> params = new ArrayList<>();
 		params.add("name=" + StringUtils.encode(update.getName()));
 		params.add("url=" + StringUtils.encode(update.getUrl()));

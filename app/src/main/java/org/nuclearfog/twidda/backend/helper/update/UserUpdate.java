@@ -14,7 +14,7 @@ import java.io.Closeable;
  *
  * @author nuclearfog
  */
-public class ProfileUpdate implements Closeable {
+public class UserUpdate implements Closeable {
 
 	private MediaStatus profileImage, bannerImage;
 

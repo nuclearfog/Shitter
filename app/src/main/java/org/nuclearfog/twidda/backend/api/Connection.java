@@ -4,7 +4,7 @@ import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
-import org.nuclearfog.twidda.backend.helper.update.ProfileUpdate;
+import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
@@ -508,7 +508,7 @@ public interface Connection {
 	 * @param update profile update information
 	 * @return updated user information
 	 */
-	User updateProfile(ProfileUpdate update) throws ConnectionException;
+	User updateUser(UserUpdate update) throws ConnectionException;
 
 	/**
 	 * upload media file and generate a media ID
@@ -516,7 +516,7 @@ public interface Connection {
 	 * @param mediaUpdate inputstream with MIME type of the media
 	 * @return media ID
 	 */
-	long updateMedia(MediaStatus mediaUpdate) throws ConnectionException;
+	long updateMedia(MediaStatus mediaUpdate) throws ConnectionException, InterruptedException;
 
 	/**
 	 * create Web push subscription
