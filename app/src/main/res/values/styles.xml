@@ -23,6 +23,10 @@
 		<item name="android:windowCloseOnTouchOutside">false</item>
 	</style>
 
+	<style name="MetaDialog" parent="DefaultDialog">
+		<item name="android:windowMinWidthMinor">60%</item>
+	</style>
+
 	<style name="AppInfoDialog" parent="DefaultDialog">
 		<item name="android:background">@android:color/white</item>
 		<item name="android:textColor">@android:color/black</item>

@@ -11,6 +11,15 @@ import android.util.SparseArray;
  */
 public class BlurHashDecoder {
 
+	/**
+	 * use in memory cache for the calculated math, reused by images with same size.
+	 * if the cache does not exist yet it will be created and populated with new calculations.
+	 * By default it is true.
+	 */
+	private static final boolean USE_CACHE = true;
+
+	private static final int DEFAULT_SIZE = 16;
+
 	// cache Math.cos() calculations to improve performance.
 	// The number of calculations can be huge for many bitmaps: width * height * numCompX * numCompY * 2 * nBitmaps
 	// the cache is enabled by default, it is recommended to disable it only when just a few images are displayed
@@ -36,20 +45,40 @@ public class BlurHashDecoder {
 	}
 
 	/**
+	 * create blurred bitmap using hash string
 	 *
+	 * @param blurHash hash string
+	 * @return blurred bitmap
 	 */
 	public static Bitmap decode(String blurHash) {
-		return decode(blurHash, 16, 16, 1f, true);
+		return decode(blurHash, DEFAULT_SIZE, DEFAULT_SIZE, 1f);
 	}
 
 	/**
-	 * Decode a blur hash into a new bitmap.
+	 * create scaled bitmap using hash string
 	 *
-	 * @param useCache use in memory cache for the calculated math, reused by images with same size.
-	 *                 if the cache does not exist yet it will be created and populated with new calculations.
-	 *                 By default it is true.
+	 * @param blurHash hash string
+	 * @param ratio    ratio ob the bitmap to generate
+	 * @return blurred bitmap
 	 */
-	public static Bitmap decode(String blurHash, int width, int height, float punch, boolean useCache) {
+	public static Bitmap decode(String blurHash, float ratio) {
+		if (ratio > 1.0f) {
+			return decode(blurHash, DEFAULT_SIZE, (int) (DEFAULT_SIZE / ratio), 1f);
+		} else if (ratio < 1.0f && ratio > 0.0f) {
+			return decode(blurHash, (int) (DEFAULT_SIZE * ratio), DEFAULT_SIZE, 1f);
+		}
+		return decode(blurHash, DEFAULT_SIZE, DEFAULT_SIZE, 1f);
+	}
+
+	/**
+	 * create blurred bitmap with custom size
+	 *
+	 * @param blurHash hash string
+	 * @param width    bitmap width
+	 * @param height   bitmap height
+	 * @return blurred bitmap
+	 */
+	public static Bitmap decode(String blurHash, int width, int height, float punch) {
 		if (blurHash == null || blurHash.length() < 6)
 			return null;
 		int numCompEnc = decode83(blurHash, 0, 1);
@@ -66,7 +95,7 @@ public class BlurHashDecoder {
 			int colorEnc = decode83(blurHash, from, from + 2);
 			colors[i] = decodeAc(colorEnc, maxAc * punch);
 		}
-		return composeBitmap(width, height, numCompX, numCompY, colors, useCache);
+		return composeBitmap(width, height, numCompX, numCompY, colors);
 	}
 
 	/**
@@ -120,12 +149,12 @@ public class BlurHashDecoder {
 	/**
 	 *
 	 */
-	private static Bitmap composeBitmap(int width, int height, int numCompX, int numCompY, float[][] colors, boolean useCache) {
+	private static Bitmap composeBitmap(int width, int height, int numCompX, int numCompY, float[][] colors) {
 		// use an array for better performance when writing pixel colors
 		int[] imageArray = new int[width * height];
-		boolean calculateCosX = !useCache || cacheCosinesX.get(width * numCompX) == null;
+		boolean calculateCosX = !USE_CACHE || cacheCosinesX.get(width * numCompX) == null;
 		double[] cosinesX = getArrayForCosinesX(calculateCosX, width, numCompX);
-		boolean calculateCosY = !useCache || cacheCosinesY.get(height * numCompY) == null;
+		boolean calculateCosY = !USE_CACHE || cacheCosinesY.get(height * numCompY) == null;
 		double[] cosinesY = getArrayForCosinesY(calculateCosY, height, numCompY);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {

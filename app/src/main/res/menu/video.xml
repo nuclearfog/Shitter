@@ -7,6 +7,11 @@
 		android:visible="true" />
 
 	<item
+		android:id="@+id/menu_video_show_meta"
+		android:title="@string/menu_media_show_meta"
+		android:visible="false" />
+
+	<item
 		android:id="@+id/menu_video_add_description"
 		android:title="@string/menu_media_add_description"
 		android:visible="false" />

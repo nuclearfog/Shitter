@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.model;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 /**
@@ -64,9 +66,62 @@ public interface Media extends Serializable, Comparable<Media> {
 	 */
 	String getBlurHash();
 
+	/**
+	 * @return media information
+	 */
+	@Nullable
+	Meta getMeta();
+
 
 	@Override
 	default int compareTo(Media o) {
 		return String.CASE_INSENSITIVE_ORDER.compare(getKey(), o.getKey());
+	}
+
+	/**
+	 * Media information
+	 */
+	interface Meta extends Serializable {
+
+		/**
+		 * get duration if video
+		 *
+		 * @return video duration in seconds
+		 */
+		double getDuration();
+
+		/**
+		 * @return image width of the thumbnail
+		 */
+		int getWidthPreview();
+
+		/**
+		 * @return image height of the thumbnail
+		 */
+		int getHeightPreview();
+
+		/**
+		 * @return image/video with
+		 */
+		int getWidth();
+
+		/**
+		 * @return image/video height
+		 */
+		int getHeight();
+
+		/**
+		 * get audio/video if any
+		 *
+		 * @return bitrate in kbit/s
+		 */
+		int getBitrate();
+
+		/**
+		 * get video framerate if any
+		 *
+		 * @return frame rate
+		 */
+		float getFrameRate();
 	}
 }

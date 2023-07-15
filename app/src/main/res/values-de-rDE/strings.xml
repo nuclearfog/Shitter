@@ -268,6 +268,7 @@
 	<string name="popup_status_text_hint">Status</string>
 	<string name="info_account_selected">%1$s ausgewählt</string>
 	<string name="menu_media_add_description">Beschreibung hinzufügen</string>
+	<string name="menu_media_show_meta">zeige Medieninformationen</string>
 	<string name="menu_message">Nachricht schreiben</string>
 	<string name="status_replyname_empty">Antwort</string>
 	<string name="status_metrics_title">Statusmetriken</string>
@@ -334,6 +335,12 @@
 	<string name="dialog_report_category_label">Meldegrund</string>
 	<string name="dialog_report_title_status">Status melden</string>
 	<string name="dialog_report_apply">melden</string>
+	<string name="dialog_meta_title">Medieninformationen</string>
+	<string name="dialog_meta_width">Breite</string>
+	<string name="dialog_meta_height">Höhe</string>
+	<string name="dialog_meta_bitrate">Bitrate</string>
+	<string name="dialog_meta_framerate">Framerate</string>
+	<string name="dialog_meta_duration">Dauer</string>
 	<string name="settings_enable_push_label">aktiviere Push-Benachrichtigung\n(ntfy-App erforderlich)</string>
 	<string name="notification_favorite">%1$s hat einen Status favorisiert</string>
 	<string name="notification_repost">%1$s hat einen Status geteilt</string>

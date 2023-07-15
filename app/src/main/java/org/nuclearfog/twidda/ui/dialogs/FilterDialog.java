@@ -28,7 +28,7 @@ import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Filter;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.DropdownAdapter;
+import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 
 import java.io.Serializable;
 

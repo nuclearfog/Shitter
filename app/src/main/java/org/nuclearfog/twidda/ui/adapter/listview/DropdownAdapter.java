@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.ui.adapter.recyclerview;
+package org.nuclearfog.twidda.ui.adapter.listview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -60,7 +60,7 @@ public class DropdownAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView textItem;
 		if (convertView == null) {
-			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+			LayoutInflater inflater = LayoutInflater.from(context);
 			convertView = inflater.inflate(R.layout.item_dropdown, parent, false);
 			textItem = convertView.findViewById(R.id.dropdown_textitem);
 			textItem.setTextColor(settings.getTextColor());

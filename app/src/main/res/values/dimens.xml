@@ -373,4 +373,11 @@
 	<dimen name="item_field_textsize_time">10sp</dimen>
 	<dimen name="item_field_icon_size">18sp</dimen>
 
+	<!--dimens of dialog_meta.xml-->
+	<dimen name="dialog_meta_textsize_title">22sp</dimen>
+	<dimen name="dialog_meta_margin_layout">5dp</dimen>
+
+	<!--dimens of item_media_field.xml-->
+	<dimen name="dialog_media_field_layout_margin">5dp</dimen>
+
 </resources>

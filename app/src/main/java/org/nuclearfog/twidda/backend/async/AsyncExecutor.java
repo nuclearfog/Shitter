@@ -9,7 +9,6 @@ import androidx.annotation.WorkerThread;
 
 import org.nuclearfog.twidda.BuildConfig;
 
-import java.io.InterruptedIOException;
 import java.lang.ref.WeakReference;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
@@ -64,7 +63,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 				try {
 					Result result = doInBackground(parameter);
 					onPostExecute(result, callbackReference);
-				} catch (InterruptedException | InterruptedIOException e) {
+				} catch (InterruptedException e) {
 					// caused by user interaction. No need to handle exception.
 				} catch (Exception e) {
 					if (BuildConfig.DEBUG) {
@@ -121,7 +120,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @return result of the background task
 	 */
 	@WorkerThread
-	protected abstract Result doInBackground(@NonNull Parameter param) throws InterruptedException, InterruptedIOException;
+	protected abstract Result doInBackground(@NonNull Parameter param) throws InterruptedException;
 
 	/**
 	 * Callback used to send task result to main thread

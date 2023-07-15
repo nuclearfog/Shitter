@@ -145,6 +145,13 @@ public class MediaV2 implements Media {
 	}
 
 
+	@Nullable
+	@Override
+	public Meta getMeta() {
+		return null;
+	}
+
+
 	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Media))

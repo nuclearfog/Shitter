@@ -89,6 +89,13 @@ public class DatabaseMedia implements Media, MediaTable {
 	}
 
 
+	@Nullable
+	@Override
+	public Meta getMeta() {
+		return null; // todo implement this
+	}
+
+
 	@Override
 	public boolean equals(@Nullable Object obj) {
 		if (!(obj instanceof Media))

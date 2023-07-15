@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.model.Instance;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.DropdownAdapter;
+import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.EditOptionsAdapter;
 
 import java.io.Serializable;

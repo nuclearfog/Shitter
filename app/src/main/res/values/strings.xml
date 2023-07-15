@@ -192,6 +192,7 @@
 	<string name="menu_toolbar_request">Follow requests</string>
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
 	<string name="menu_media_add_description">add description</string>
+	<string name="menu_media_show_meta">show metadata</string>
 	<string name="menu_message">write message</string>
 	<string name="dialog_link_image_preview">Link preview image</string>
 	<string name="app_info_icons">svg icons from:</string>
@@ -358,6 +359,12 @@
 	<string name="dialog_report_category_label">what to report</string>
 	<string name="dialog_report_title_status">report status</string>
 	<string name="dialog_report_apply">report</string>
+	<string name="dialog_meta_title">Media information</string>
+	<string name="dialog_meta_width">width</string>
+	<string name="dialog_meta_height">height</string>
+	<string name="dialog_meta_bitrate">bitrate</string>
+	<string name="dialog_meta_framerate">framerate</string>
+	<string name="dialog_meta_duration">duration</string>
 	<string name="settings_enable_push_label">enable push notification\n(requires ntfy app)</string>
 	<string name="notification_favorite">%1$s favorited your status</string>
 	<string name="notification_repost">%1$s reposted your status</string>

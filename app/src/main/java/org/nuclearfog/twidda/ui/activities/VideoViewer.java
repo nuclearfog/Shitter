@@ -46,6 +46,7 @@ import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog;
 import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog.DescriptionCallback;
+import org.nuclearfog.twidda.ui.dialogs.MetaDialog;
 import org.nuclearfog.twidda.ui.views.DescriptionView;
 
 import java.io.Serializable;
@@ -83,6 +84,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	private PlayerView playerView;
 
 	private DescriptionDialog descriptionDialog;
+	private MetaDialog metaDialog;
 
 	private ExoPlayer player;
 	@Nullable
@@ -105,6 +107,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		toolbar = findViewById(R.id.page_video_toolbar);
 		descriptionView = findViewById(R.id.page_video_description);
 		descriptionDialog = new DescriptionDialog(this, this);
+		metaDialog = new MetaDialog(this);
 		player = new ExoPlayer.Builder(this, this).build();
 
 		toolbar.setTitle("");
@@ -233,9 +236,11 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		getMenuInflater().inflate(R.menu.video, menu);
 		MenuItem menuOpenUrl = menu.findItem(R.id.menu_video_link);
 		MenuItem menuDescription = menu.findItem(R.id.menu_video_add_description);
+		MenuItem menuMeta = menu.findItem(R.id.menu_video_show_meta);
 		AppStyles.setMenuIconColor(menu, Color.WHITE);
 		menuOpenUrl.setVisible(media != null);
 		menuDescription.setVisible(mediaStatus != null);
+		menuMeta.setVisible(media != null && media.getMeta() != null);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -246,9 +251,11 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 			if (media != null) {
 				LinkUtils.openMediaLink(this, Uri.parse(media.getUrl()));
 			}
-		}
-		//
-		else if (item.getItemId() == R.id.menu_video_add_description) {
+		} else if (item.getItemId() == R.id.menu_video_show_meta) {
+			if (media != null && media.getMeta() != null) {
+				metaDialog.show(media.getMeta());
+			}
+		} else if (item.getItemId() == R.id.menu_video_add_description) {
 			descriptionDialog.show();
 		}
 		return super.onOptionsItemSelected(item);

@@ -29,6 +29,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog;
 import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog.DescriptionCallback;
+import org.nuclearfog.twidda.ui.dialogs.MetaDialog;
 import org.nuclearfog.twidda.ui.views.AnimatedImageView;
 import org.nuclearfog.twidda.ui.views.DescriptionView;
 import org.nuclearfog.zoomview.ZoomView;
@@ -65,6 +66,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 	private DescriptionView descriptionView;
 
 	private DescriptionDialog descriptionDialog;
+	private MetaDialog metaDialog;
 
 	@Nullable
 	private Uri cacheUri;
@@ -74,6 +76,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 	private ImageDownloader imageAsync;
 	private GlobalSettings settings;
 	private File cacheFolder;
+	private Media.Meta meta;
 
 
 	@Override
@@ -100,6 +103,8 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 
 		imageAsync = new ImageDownloader(this);
 		descriptionDialog = new DescriptionDialog(this, this);
+		metaDialog = new MetaDialog(this);
+
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
 		cacheFolder.mkdirs();
 
@@ -109,6 +114,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		String description = null;
 		boolean animated = false;
 		boolean local = false;
+		float ratio = 1.0f;
 		Serializable serializedData;
 		if (savedInstanceState != null) {
 			serializedData = savedInstanceState.getSerializable(KEY_IMAGE_DATA);
@@ -123,10 +129,14 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 			description = mediaStatus.getDescription();
 		} else if (serializedData instanceof Media) {
 			Media media = (Media) serializedData;
+			meta = media .getMeta();
 			blurHash = media.getBlurHash();
 			imageUrl = media.getUrl();
 			description = media.getDescription();
 			animated = media.getMediaType() == Media.GIF;
+			if (meta != null) {
+				ratio = meta.getWidth() / (float) meta.getHeight();
+			}
 		} else if (serializedData instanceof String) {
 			imageUrl = (String) serializedData;
 		} else {
@@ -161,7 +171,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		}
 		// set image blur placeholder
 		if (blurHash != null && !blurHash.trim().isEmpty()) {
-			Bitmap blur = BlurHashDecoder.decode(blurHash);
+			Bitmap blur = BlurHashDecoder.decode(blurHash, ratio);
 			zoomImage.setImageBitmap(blur);
 			zoomImage.setMovable(false);
 		}
@@ -201,7 +211,9 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		MenuItem itemSave = menu.findItem(R.id.menu_image_save);
+		MenuItem itemMeta = menu.findItem(R.id.menu_image_show_meta);
 		itemSave.setVisible(cacheUri != null);
+		itemMeta.setVisible(meta != null);
 		return true;
 	}
 
@@ -215,6 +227,11 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 			}
 		} else if (item.getItemId() == R.id.menu_image_add_description) {
 			descriptionDialog.show();
+			return true;
+		} else if (item.getItemId() == R.id.menu_image_show_meta) {
+			if (meta != null) {
+				metaDialog.show(meta);
+			}
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
