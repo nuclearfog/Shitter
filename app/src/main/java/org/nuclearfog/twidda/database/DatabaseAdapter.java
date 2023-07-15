@@ -130,6 +130,7 @@ public class DatabaseAdapter {
 			+ MediaTable.TYPE + " INTEGER,"
 			+ MediaTable.URL + " TEXT,"
 			+ MediaTable.DESCRIPTION + " TEXT,"
+			+ MediaTable.BLUR + " TEXT,"
 			+ MediaTable.PREVIEW + " TEXT);";
 
 	/**

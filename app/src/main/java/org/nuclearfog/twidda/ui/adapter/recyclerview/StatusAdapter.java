@@ -91,7 +91,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 		if (holder instanceof StatusHolder) {
 			Status status = items.get(index);
 			if (status != null) {
-				StatusHolder statusHolder = ((StatusHolder) holder);
+				StatusHolder statusHolder = (StatusHolder) holder;
 				statusHolder.setContent(status);
 			}
 		} else if (holder instanceof PlaceHolder) {

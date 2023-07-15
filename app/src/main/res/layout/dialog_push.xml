@@ -53,7 +53,7 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/dialog_push_layout_margin"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_push_mention_label" />
+		app:layout_constraintTop_toBottomOf="@id/dialog_push_mention" />
 
 	<TextView
 		android:id="@+id/dialog_push_repost_label"
