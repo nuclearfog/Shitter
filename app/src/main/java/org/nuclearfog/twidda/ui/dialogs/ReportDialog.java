@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.backend.async.ReportUpdater.ReportResult;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 
 import java.io.Serializable;
@@ -37,6 +38,7 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 
 	private DropdownAdapter adapter;
 	private ReportUpdater reportUpdater;
+	private GlobalSettings settings;
 
 	private TextView textTitle;
 	private SwitchButton switchForward;
@@ -52,6 +54,7 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 		super(activity, R.style.DefaultDialog);
 		adapter = new DropdownAdapter(activity.getApplicationContext());
 		reportUpdater = new ReportUpdater(activity.getApplicationContext());
+		settings = GlobalSettings.get(getContext());
 		adapter.setItems(R.array.reports);
 	}
 
@@ -60,14 +63,14 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_report);
-		ViewGroup root = findViewById(R.id.dialog_report_root);
+		ViewGroup rootView = findViewById(R.id.dialog_report_root);
 		View reportButton = findViewById(R.id.dialog_report_apply);
 		reportCategory = findViewById(R.id.dialog_report_category);
 		textTitle = findViewById(R.id.dialog_report_title);
 		switchForward = findViewById(R.id.dialog_report_switch_forward);
 		editDescription = findViewById(R.id.dialog_report_description);
-		AppStyles.setTheme(root);
 
+		AppStyles.setTheme(rootView, settings.getPopupColor());
 		reportCategory.setAdapter(adapter);
 
 		reportButton.setOnClickListener(this);

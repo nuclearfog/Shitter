@@ -449,9 +449,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Trends getTrends() throws MastodonException {
-		List<String> params = new ArrayList<>();
-		params.add("limit=" + settings.getListSize());
-		Trends result = getTrends(ENDPOINT_TRENDS, params);
+		Trends result = getTrends(ENDPOINT_TRENDS, new ArrayList<>());
 		Collections.sort(result);
 		return result;
 	}
@@ -461,7 +459,6 @@ public class Mastodon implements Connection {
 	public Trends searchHashtags(String search) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringUtils.encode(search));
-		params.add("limit=" + settings.getListSize());
 		params.add("type=hashtags");
 		Trends result = getTrends(ENDPOINT_SEARCH_TIMELINE, params);
 		Collections.sort(result);
@@ -472,7 +469,6 @@ public class Mastodon implements Connection {
 	@Override
 	public Trends showHashtagFollowing(long cursor) throws ConnectionException {
 		List<String> params = new ArrayList<>();
-		params.add("limit=" + settings.getListSize());
 		if (cursor != 0L)
 			params.add("max_id=" + cursor);
 		return getTrends(ENDPOINT_HASHTAG_FOLLOWING, params);
@@ -661,8 +657,10 @@ public class Mastodon implements Connection {
 			params.add("status=" + StringUtils.encode(update.getText()));
 		if (!update.getLanguageCode().isEmpty())
 			params.add("language=" + update.getLanguageCode());
-		if (update.getReplyId() != 0)
+		if (update.getReplyId() != 0L)
 			params.add("in_reply_to_id=" + update.getReplyId());
+		if (update.getScheduleTime() != 0L)
+			params.add("scheduled_at=" + update.getScheduleTime());
 		if (update.getVisibility() == Status.VISIBLE_DIRECT)
 			params.add("visibility=direct");
 		else if (update.getVisibility() == Status.VISIBLE_PRIVATE)
@@ -1380,6 +1378,7 @@ public class Mastodon implements Connection {
 	 */
 	private Trends getTrends(String endpoint, List<String> params) throws MastodonException {
 		try {
+			params.add("limit=" + settings.getListSize());
 			Response response = get(endpoint, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {

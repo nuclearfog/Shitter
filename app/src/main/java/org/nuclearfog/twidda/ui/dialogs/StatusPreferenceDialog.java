@@ -35,6 +35,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	private SwitchButton sensitiveCheck, spoilerCheck;
 
 	private DropdownAdapter visibility_adapter, language_adapter;
+	private GlobalSettings settings;
 	private StatusUpdate statusUpdate;
 	private String[] languageCodes;
 
@@ -46,6 +47,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		this.statusUpdate = statusUpdate;
 		visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
 		language_adapter = new DropdownAdapter(activity.getApplicationContext());
+		settings = GlobalSettings.get(getContext());
 
 		// initialize language selector
 		Map<String, String> languages = new TreeMap<>();
@@ -70,9 +72,8 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
 		sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
 		spoilerCheck = findViewById(R.id.dialog_status_spoiler);
-		GlobalSettings settings = GlobalSettings.get(getContext());
-		AppStyles.setTheme(rootView);
 
+		AppStyles.setTheme(rootView, settings.getPopupColor());
 		languageSelector.setAdapter(language_adapter);
 		languageSelector.setSelection(0, false);
 		languageSelector.setSelected(false);

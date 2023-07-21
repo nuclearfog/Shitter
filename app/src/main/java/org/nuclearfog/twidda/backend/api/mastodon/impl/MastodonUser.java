@@ -135,7 +135,7 @@ public class MastodonUser implements User {
 
 	@Override
 	public String getProfileImageThumbnailUrl() {
-		return profileUrl;
+		return profileUrl; // todo switch to thumbnail url if supported by API
 	}
 
 
@@ -147,7 +147,7 @@ public class MastodonUser implements User {
 
 	@Override
 	public String getBannerImageThumbnailUrl() {
-		return bannerUrl;
+		return bannerUrl; // todo switch to thumbnail url if supported by API
 	}
 
 
@@ -171,6 +171,7 @@ public class MastodonUser implements User {
 
 	@Override
 	public boolean isVerified() {
+		// using getFields() instead
 		return false;
 	}
 

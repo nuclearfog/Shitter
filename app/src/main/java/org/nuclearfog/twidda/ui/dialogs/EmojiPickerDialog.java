@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List<Emoji>>, OnEmojiClickListener {
+public class EmojiPickerDialog extends BottomSheetDialog implements AsyncCallback<List<Emoji>>, OnEmojiClickListener {
 
 	private OnEmojiSelectListener listener;
 	private EmojiAdapter adapter;
@@ -41,7 +41,7 @@ public class EmojiPicker extends BottomSheetDialog implements AsyncCallback<List
 	 * @param activity activity used to show emoji picker
 	 * @param listener emoji add listener
 	 */
-	public EmojiPicker(Activity activity, OnEmojiSelectListener listener) {
+	public EmojiPickerDialog(Activity activity, OnEmojiSelectListener listener) {
 		super(activity, R.style.EmojiPickerDialog);
 		emojiLoader = new EmojiLoader(activity.getApplicationContext());
 		adapter = new EmojiAdapter(this);

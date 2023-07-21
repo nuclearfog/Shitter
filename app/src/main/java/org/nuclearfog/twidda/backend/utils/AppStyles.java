@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -76,7 +77,7 @@ public class AppStyles {
 	public static void setTheme(ViewGroup root) {
 		AppStyles instance = new AppStyles(root.getContext());
 		root.setBackgroundColor(instance.settings.getBackgroundColor());
-		instance.setSubViewTheme(root);
+		instance.setSubViewTheme(root, instance.settings.getBackgroundColor());
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class AppStyles {
 	public static void setTheme(ViewGroup root, @ColorInt int background) {
 		AppStyles instance = new AppStyles(root.getContext());
 		root.setBackgroundColor(background);
-		instance.setSubViewTheme(root);
+		instance.setSubViewTheme(root, background);
 	}
 
 	/**
@@ -99,7 +100,7 @@ public class AppStyles {
 	 */
 	public static void setEditorTheme(ViewGroup root, ImageView background) {
 		AppStyles instance = new AppStyles(root.getContext());
-		instance.setSubViewTheme(root);
+		instance.setSubViewTheme(root, instance.settings.getPopupColor());
 		setDrawableColor(background, instance.settings.getPopupColor());
 	}
 
@@ -351,20 +352,22 @@ public class AppStyles {
 	 * parsing all views from a sub ViewGroup recursively and set all colors and fonts
 	 *
 	 * @param group current ViewGroup to parse for sub views
+	 * @param color root background color
 	 */
-	private void setSubViewTheme(ViewGroup group) {
+	private void setSubViewTheme(ViewGroup group, int color) {
 		for (int pos = 0; pos < group.getChildCount(); pos++) {
 			View child = group.getChildAt(pos);
 			if (child instanceof SwitchButton) {
 				SwitchButton sw = (SwitchButton) child;
-				int[] color = {settings.getIconColor()};
+				int[] thumbColor = {settings.getIconColor()};
 				sw.setTintColor(settings.getHighlightColor());
-				sw.setThumbColor(new ColorStateList(SWITCH_STATES, color));
+				sw.setThumbColor(new ColorStateList(SWITCH_STATES, thumbColor));
 			} else if (child instanceof SeekBar) {
 				SeekBar seekBar = (SeekBar) child;
 				setSeekBarColor(seekBar, settings);
 			} else if (child instanceof Spinner) {
 				Spinner dropdown = (Spinner) child;
+				dropdown.setPopupBackgroundDrawable(new ColorDrawable(color));
 				setDrawableColor(dropdown.getBackground(), settings.getIconColor());
 			} else if (child instanceof TextView) {
 				TextView tv = (TextView) child;
@@ -389,9 +392,9 @@ public class AppStyles {
 				if (child instanceof CardView) {
 					CardView card = (CardView) child;
 					card.setCardBackgroundColor(settings.getCardColor());
-					setSubViewTheme(card);
+					setSubViewTheme(card, color);
 				} else if (!(child instanceof ViewPager2)) {
-					setSubViewTheme((ViewGroup) child);
+					setSubViewTheme((ViewGroup) child, color);
 				}
 			}
 		}

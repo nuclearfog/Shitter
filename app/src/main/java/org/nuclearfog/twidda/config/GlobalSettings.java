@@ -132,7 +132,7 @@ public class GlobalSettings {
 	private static final int DEFAULT_BACKGROUND_COLOR = 0xff0f114a;
 	private static final int DEFAULT_HIGHLIGHT_COLOR = 0xffff00ff;
 	private static final int DEFAULT_FONT_COLOR = Color.WHITE;
-	private static final int DEFAULT_POPUP_COLOR = 0xff19aae8;
+	private static final int DEFAULT_POPUP_COLOR = 0xFF0B509C;
 	private static final int DEFAULT_CARD_COLOR = 0x40000000;
 	private static final int DEFAULT_ICON_COLOR = Color.WHITE;
 	private static final int DEFAULT_RT_ICON_COLOR = Color.GREEN;

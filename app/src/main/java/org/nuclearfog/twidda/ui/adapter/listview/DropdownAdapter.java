@@ -66,12 +66,11 @@ public class DropdownAdapter extends BaseAdapter {
 			textItem.setTextColor(settings.getTextColor());
 			textItem.setTypeface(settings.getTypeFace());
 			textItem.setBackgroundColor(settings.getCardColor());
-			convertView.setBackgroundColor(settings.getBackgroundColor());
 		} else {
 			textItem = convertView.findViewById(R.id.dropdown_textitem);
 		}
 		textItem.setText(items[position]);
-		if (fonts.length >= items.length) {
+		if (position < fonts.length) {
 			textItem.setTypeface(fonts[position]);
 		}
 		return convertView;

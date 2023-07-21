@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Metrics;
 
 import java.io.Serializable;
@@ -28,6 +29,8 @@ public class MetricsDialog extends Dialog {
 	private TextView views, profileClicks, linkClicks, quotes, videoViews;
 	private View linkIcon, quoteIcon, videoIcon;
 
+	private GlobalSettings settings;
+
 	private Metrics metrics;
 
 	/**
@@ -35,6 +38,7 @@ public class MetricsDialog extends Dialog {
 	 */
 	public MetricsDialog(Activity activity) {
 		super(activity, R.style.DefaultDialog);
+		settings = GlobalSettings.get(activity);
 	}
 
 
@@ -51,7 +55,7 @@ public class MetricsDialog extends Dialog {
 		linkIcon = findViewById(R.id.dialog_metrics_link_clicks_icon);
 		quoteIcon = findViewById(R.id.dialog_metrics_quotes_icon);
 		videoIcon = findViewById(R.id.dialog_metrics_video_view_icon);
-		AppStyles.setTheme(root);
+		AppStyles.setTheme(root, settings.getPopupColor());
 	}
 
 

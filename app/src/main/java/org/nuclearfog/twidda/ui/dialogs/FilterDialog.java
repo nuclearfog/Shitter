@@ -27,6 +27,7 @@ import org.nuclearfog.twidda.backend.async.StatusFilterAction.FilterActionResult
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 
@@ -50,6 +51,7 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	private StatusFilterAction filterAction;
 	private FilterDialogCallback callback;
 	private FilterUpdate update;
+	private GlobalSettings settings;
 
 	/**
 	 *
@@ -58,6 +60,7 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 		super(activity, R.style.DefaultDialog);
 		this.callback = callback;
 		update = new FilterUpdate();
+		settings = GlobalSettings.get(activity);
 		filterAction = new StatusFilterAction(activity);
 		timeUnitAdapter = new DropdownAdapter(activity.getApplicationContext());
 		timeUnitAdapter.setItems(R.array.timeunits);
@@ -83,7 +86,7 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 		txt_duration = findViewById(R.id.dialog_filter_time);
 
 		timeunit.setAdapter(timeUnitAdapter);
-		AppStyles.setTheme(root);
+		AppStyles.setTheme(root, settings.getPopupColor());
 
 		btn_create.setOnClickListener(this);
 		sw_home.setOnCheckedChangeListener(this);

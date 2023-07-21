@@ -36,6 +36,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	// main attributes
 	private long statusId = 0L;
 	private long replyId = 0L;
+	private long scheduleTime = 0L;
 	private boolean sensitive = false;
 	private boolean spoiler = false;
 	private int visibility = Status.VISIBLE_PUBLIC;
@@ -200,6 +201,15 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
+	 * set time to schedule the post
+	 *
+	 * @param scheduleTime future time
+	 */
+	public void setScheduleTime(long scheduleTime) {
+		this.scheduleTime = scheduleTime;
+	}
+
+	/**
 	 * set status visibility
 	 *
 	 * @param visibility visibility states {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DIRECT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
@@ -336,6 +346,13 @@ public class StatusUpdate implements Serializable, Closeable {
 	 */
 	public boolean isSpoiler() {
 		return spoiler;
+	}
+
+	/**
+	 * @return time to post the status
+	 */
+	public long getScheduleTime() {
+		return scheduleTime;
 	}
 
 	/**

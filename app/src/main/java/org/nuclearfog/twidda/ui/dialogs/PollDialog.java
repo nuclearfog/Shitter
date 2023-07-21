@@ -20,6 +20,7 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.EditOptionsAdapter;
@@ -39,6 +40,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 	private EditOptionsAdapter optionAdapter;
 	private DropdownAdapter timeUnitAdapter;
 	private PollUpdateCallback callback;
+	private GlobalSettings settings;
 
 	private SwitchButton multiple_choice, hide_votes;
 	private Spinner timeUnitSelector;
@@ -57,6 +59,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		optionAdapter = new EditOptionsAdapter();
 		timeUnitAdapter = new DropdownAdapter(activity.getApplicationContext());
 		timeUnitAdapter.setItems(R.array.timeunits);
+		settings = GlobalSettings.get(activity);
 	}
 
 
@@ -76,7 +79,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		optionsList.setAdapter(optionAdapter);
 		timeUnitSelector.setAdapter(timeUnitAdapter);
 		timeUnitSelector.setSelection(2);
-		AppStyles.setTheme(root);
+		AppStyles.setTheme(root, settings.getPopupColor());
 
 		confirm.setOnClickListener(this);
 		close.setOnClickListener(this);

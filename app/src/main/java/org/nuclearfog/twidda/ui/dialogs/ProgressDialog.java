@@ -23,12 +23,14 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 
 	@Nullable
 	private OnProgressStopListener listener;
+	private GlobalSettings settings;
 
 	/**
 	 *
 	 */
 	public ProgressDialog(Activity activity, @Nullable OnProgressStopListener listener) {
 		super(activity, R.style.LoadingDialog);
+		settings = GlobalSettings.get(getContext());
 		this.listener = listener;
 	}
 
@@ -40,7 +42,6 @@ public class ProgressDialog extends Dialog implements OnClickListener {
 		ProgressBar circle = findViewById(R.id.progress_item);
 		ImageView cancel = findViewById(R.id.kill_button);
 
-		GlobalSettings settings = GlobalSettings.get(getContext());
 		AppStyles.setProgressColor(circle, settings.getHighlightColor());
 		AppStyles.setDrawableColor(cancel, settings.getIconColor());
 		if (listener != null) {

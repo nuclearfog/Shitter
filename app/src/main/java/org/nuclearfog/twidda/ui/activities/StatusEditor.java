@@ -43,8 +43,8 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter.OnMediaClickLis
 import org.nuclearfog.twidda.ui.dialogs.AudioPlayerDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.ui.dialogs.EmojiPicker;
-import org.nuclearfog.twidda.ui.dialogs.EmojiPicker.OnEmojiSelectListener;
+import org.nuclearfog.twidda.ui.dialogs.EmojiPickerDialog;
+import org.nuclearfog.twidda.ui.dialogs.EmojiPickerDialog.OnEmojiSelectListener;
 import org.nuclearfog.twidda.ui.dialogs.PollDialog;
 import org.nuclearfog.twidda.ui.dialogs.PollDialog.PollUpdateCallback;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
@@ -103,7 +103,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	private ProgressDialog loadingCircle;
 	private PollDialog pollDialog;
 	private AudioPlayerDialog audioDialog;
-	private EmojiPicker emojiPicker;
+	private EmojiPickerDialog emojiPicker;
 	private StatusPreferenceDialog preferenceDialog;
 	private IconAdapter adapter;
 
@@ -140,7 +140,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
 		audioDialog = new AudioPlayerDialog(this);
-		emojiPicker = new EmojiPicker(this, this);
+		emojiPicker = new EmojiPickerDialog(this, this);
 		adapter = new IconAdapter(this, true);
 
 		iconList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));

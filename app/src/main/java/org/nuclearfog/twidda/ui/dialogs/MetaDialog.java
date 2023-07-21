@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Media.Meta;
 import org.nuclearfog.twidda.ui.adapter.listview.MetaAdapter;
 
@@ -21,6 +22,7 @@ import org.nuclearfog.twidda.ui.adapter.listview.MetaAdapter;
 public class MetaDialog extends Dialog {
 
 	private MetaAdapter adapter;
+	private GlobalSettings settings;
 
 	/**
 	 *
@@ -28,6 +30,7 @@ public class MetaDialog extends Dialog {
 	public MetaDialog(Activity activity) {
 		super(activity, R.style.MetaDialog);
 		adapter = new MetaAdapter(activity.getApplicationContext());
+		settings = GlobalSettings.get(activity);
 	}
 
 
@@ -39,7 +42,7 @@ public class MetaDialog extends Dialog {
 		ListView list = findViewById(R.id.dialog_meta_list);
 
 		list.setAdapter(adapter);
-		AppStyles.setTheme(root);
+		AppStyles.setTheme(root, settings.getPopupColor());
 	}
 
 

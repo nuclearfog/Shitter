@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.config.GlobalSettings;
 
 
 public class DescriptionDialog extends Dialog implements OnClickListener {
@@ -19,12 +20,14 @@ public class DescriptionDialog extends Dialog implements OnClickListener {
 	private static final String KEY_SAVE = " description-save";
 
 	private DescriptionCallback callback;
+	private GlobalSettings settings;
 
 	private EditText descriptionEdit;
 
 
 	public DescriptionDialog(Activity activity, DescriptionCallback callback) {
 		super(activity, R.style.DefaultDialog);
+		settings = GlobalSettings.get(activity);
 		this.callback = callback;
 	}
 
@@ -36,7 +39,7 @@ public class DescriptionDialog extends Dialog implements OnClickListener {
 		ViewGroup root = findViewById(R.id.dialog_description_root);
 		View applyButton = findViewById(R.id.dialog_description_apply);
 		descriptionEdit = findViewById(R.id.dialog_description_input);
-		AppStyles.setTheme(root);
+		AppStyles.setTheme(root, settings.getPopupColor());
 
 		applyButton.setOnClickListener(this);
 	}
