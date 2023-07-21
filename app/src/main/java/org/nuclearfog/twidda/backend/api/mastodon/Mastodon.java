@@ -110,7 +110,7 @@ public class Mastodon implements Connection {
 	/**
 	 * oauth no redirect (oob)
 	 */
-	private static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
+	private static final String REDIRECT_URI = "urn%3aietf%3awg%3aoauth%3a2.0%3aoob";
 
 	// Mastodon endpoints see https://docs.joinmastodon.org/methods/
 	private static final String ENDPOINT_REGISTER_APP = "/api/v1/apps";
@@ -178,8 +178,11 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		params.add("scopes=" + AUTH_SCOPES);
 		params.add("redirect_uris=" + REDIRECT_URI);
-		params.add("client_name=" + app_name);
-		params.add("website=" + app_website);
+		params.add("website=" + StringUtils.encode(app_website));
+		if (!connection.getAppName().isEmpty())
+			params.add("client_name=" + StringUtils.encode(connection.getAppName()));
+		else
+			params.add("client_name=" + StringUtils.encode(app_name));
 		String hostname = connection.useHost() ? connection.getHostname() : DEFAULT_HOST;
 		try {
 			Response response = post(hostname, ENDPOINT_REGISTER_APP, null, params);

@@ -17,11 +17,12 @@ public class ConnectionUpdate implements Serializable {
 
 	private static final long serialVersionUID = 2238181470544567706L;
 
-	private Configuration apiConfig;
+	private Configuration apiConfig = Configuration.MASTODON;
 	private String hostname = "";
 	private String consumerKey = "";
 	private String consumerSecret = "";
 	private String tempOauth = "";
+	private String appName = "";
 
 	/**
 	 * get host url used by the API
@@ -30,6 +31,57 @@ public class ConnectionUpdate implements Serializable {
 	 */
 	public String getHostname() {
 		return hostname;
+	}
+
+	/**
+	 * override host url
+	 *
+	 * @param hostname new host url
+	 */
+	public void setHostname(@NonNull String hostname) {
+		if (!hostname.trim().isEmpty()) {
+			if (!hostname.startsWith("http"))
+				this.hostname = "https://" + hostname;
+			else
+				this.hostname = hostname;
+		} else {
+			this.hostname = "";
+		}
+	}
+
+	/**
+	 * get app name used by the API access
+	 *
+	 * @return short app name or empty if not set
+	 */
+	public String getAppName() {
+		return appName;
+	}
+
+	/**
+	 * set app name used by the API
+	 *
+	 * @param appname short app name
+	 */
+	public void setAppName(@NonNull String appname) {
+		this.appName = appname;
+	}
+
+	/**
+	 * get configured API type
+	 *
+	 * @return API type
+	 */
+
+	public Configuration getApiType() {
+		return apiConfig;
+	}
+
+	/**
+	 * override default API type
+	 */
+	public void setApiType(Configuration apiConfig) {
+		this.apiConfig = apiConfig;
 	}
 
 	/**
@@ -60,35 +112,6 @@ public class ConnectionUpdate implements Serializable {
 	}
 
 	/**
-	 * get configured API type
-	 *
-	 * @return API type
-	 */
-	public Configuration getApiType() {
-		return apiConfig;
-	}
-
-	/**
-	 * override default API type
-	 */
-	public void setApiType(Configuration apiConfig) {
-		this.apiConfig = apiConfig;
-	}
-
-	/**
-	 * override host url
-	 *
-	 * @param hostname new host url
-	 */
-	public void setHost(String hostname) {
-		if (hostname != null && !hostname.trim().isEmpty() && !hostname.startsWith("http")) {
-			this.hostname = "https://" + hostname;
-		} else {
-			this.hostname = "";
-		}
-	}
-
-	/**
 	 * @return true if token key pair is set
 	 */
 	public boolean useTokens() {
@@ -108,13 +131,9 @@ public class ConnectionUpdate implements Serializable {
 	 * @param consumerKey    custom oauth consumer key
 	 * @param consumerSecret custom oauth consumer secret
 	 */
-	public void setOauthTokens(String consumerKey, String consumerSecret) {
-		if (consumerKey != null) {
-			this.consumerKey = consumerKey;
-		}
-		if (consumerSecret != null) {
-			this.consumerSecret = consumerSecret;
-		}
+	public void setOauthTokens(@NonNull String consumerKey, @NonNull String consumerSecret) {
+		this.consumerKey = consumerKey;
+		this.consumerSecret = consumerSecret;
 	}
 
 	/**

@@ -91,27 +91,16 @@
 		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
 		app:layout_constraintEnd_toEndOf="parent" />
 
-	<com.kyleduo.switchbutton.SwitchButton
-		android:id="@+id/dialog_connection_custom_host"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_connection_api1"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_host_label" />
-
 	<TextView
-		android:id="@+id/dialog_connection_custom_host_label"
+		android:id="@+id/dialog_connection_hostname_label"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_connection_custom_host"
 		android:lines="1"
-		android:layout_weight="1"
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		android:textSize="@dimen/dialog_connection_textsize_label"
-		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_host"
-		app:layout_constraintTop_toTopOf="@id/dialog_connection_custom_host"
-		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_custom_host"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_api1"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<EditText
@@ -123,12 +112,39 @@
 		android:lines="1"
 		android:layout_weight="1"
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		android:visibility="invisible"
 		android:inputType="textUri"
 		android:importantForAutofill="no"
 		android:textSize="@dimen/dialog_connection_textsize_input"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_host"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname_label"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<TextView
+		android:id="@+id/dialog_connection_app_name_label"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/login_app_name_label"
+		android:lines="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		android:textSize="@dimen/dialog_connection_textsize_label"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<EditText
+		android:id="@+id/dialog_connection_app_name"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:background="@android:color/transparent"
+		android:hint="@string/app_name_api"
+		android:lines="1"
+		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_connection_layout_margin"
+		android:inputType="text"
+		android:importantForAutofill="no"
+		android:textSize="@dimen/dialog_connection_textsize_input"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_app_name_label"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<Button
@@ -140,7 +156,7 @@
 		android:padding="@dimen/dialog_connection_button_padding"
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		android:textSize="@dimen/dialog_connection_textsize_button"
-		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_app_name"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/dialog_connection_confirm"
 		style="@style/FeedbackButton" />
@@ -154,7 +170,7 @@
 		android:padding="@dimen/dialog_connection_button_padding"
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		android:textSize="@dimen/dialog_connection_textsize_button"
-		app:layout_constraintTop_toBottomOf="@id/dialog_connection_hostname"
+		app:layout_constraintTop_toBottomOf="@id/dialog_connection_app_name"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		style="@style/FeedbackButton" />
