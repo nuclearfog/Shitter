@@ -37,6 +37,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.BuildConfig;
@@ -362,6 +364,10 @@ public class AppStyles {
 				int[] thumbColor = {settings.getIconColor()};
 				sw.setTintColor(settings.getHighlightColor());
 				sw.setThumbColor(new ColorStateList(SWITCH_STATES, thumbColor));
+			} else if (child instanceof FloatingActionButton) {
+				FloatingActionButton floatingButton = (FloatingActionButton) child;
+				floatingButton.setBackgroundTintList(ColorStateList.valueOf(settings.getHighlightColor()));
+				setDrawableColor(floatingButton, settings.getIconColor());
 			} else if (child instanceof SeekBar) {
 				SeekBar seekBar = (SeekBar) child;
 				setSeekBarColor(seekBar, settings);
@@ -393,6 +399,9 @@ public class AppStyles {
 					CardView card = (CardView) child;
 					card.setCardBackgroundColor(settings.getCardColor());
 					setSubViewTheme(card, color);
+				} else if (child instanceof NavigationView) {
+					child.setBackgroundColor(settings.getBackgroundColor());
+					setSubViewTheme((ViewGroup) child, color);
 				} else if (!(child instanceof ViewPager2)) {
 					setSubViewTheme((ViewGroup) child, color);
 				}

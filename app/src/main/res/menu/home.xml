@@ -9,35 +9,4 @@
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 		app:showAsAction="always|collapseActionView" />
 
-	<item
-		android:id="@+id/menu_profile"
-		android:title="@string/menu_open_home_profile"
-		android:icon="@drawable/user"
-		app:showAsAction="ifRoom" />
-
-	<item
-		android:id="@+id/menu_post"
-		android:title="@string/menu_status"
-		app:showAsAction="withText" />
-
-	<item
-		android:id="@+id/menu_message"
-		android:title="@string/menu_message"
-		app:showAsAction="withText" />
-
-	<item
-		android:id="@+id/menu_filter"
-		android:title="@string/menu_open_filter"
-		app:showAsAction="withText" />
-
-	<item
-		android:id="@+id/menu_account"
-		android:title="@string/menu_select_account"
-		app:showAsAction="withText" />
-
-	<item
-		android:id="@+id/menu_settings"
-		android:title="@string/menu_open_settings"
-		app:showAsAction="withText" />
-
 </menu>
