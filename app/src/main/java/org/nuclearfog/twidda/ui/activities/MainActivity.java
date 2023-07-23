@@ -199,11 +199,20 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	public void onActivityResult(ActivityResult result) {
 		invalidateMenu();
 		switch (result.getResultCode()) {
+			case ProfileEditor.RETURN_PROFILE_CHANGED:
 			case ProfileActivity.RETURN_USER_UPDATED:
 				if (result.getData() != null) {
-					Object object = result.getData().getSerializableExtra(ProfileActivity.KEY_USER);
-					if (object instanceof User) {
-						setCurrentUser((User) object);
+					Object data;
+					if (result.getData().hasExtra(ProfileActivity.KEY_USER)) {
+						data = result.getData().getSerializableExtra(ProfileActivity.KEY_USER);
+						if (data instanceof User) {
+							setCurrentUser((User) data);
+						}
+					} else if (result.getData().hasExtra(ProfileEditor.KEY_USER)) {
+						data = result.getData().getSerializableExtra(ProfileEditor.KEY_USER);
+						if (data instanceof User) {
+							setCurrentUser((User) data);
+						}
 					}
 				}
 				break;
@@ -308,6 +317,22 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			Intent intent = new Intent(this, UserlistsActivity.class);
 			intent.putExtra(UserlistsActivity.KEY_ID, settings.getLogin().getId());
 			startActivity(intent);
+			selected = true;
+		}
+		// open profile editor
+		else if (item.getItemId() == R.id.menu_navigator_profile_settings) {
+			if (currentUser != null) {
+				Intent editProfile = new Intent(this, ProfileEditor.class);
+				editProfile.putExtra(ProfileEditor.KEY_USER, currentUser);
+				activityResultLauncher.launch(editProfile);
+				selected = true;
+			}
+		}
+		// open request list
+		else if (item.getItemId() == R.id.menu_navigator_requests) {
+			Intent usersIntent = new Intent(this, UsersActivity.class);
+			usersIntent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_REQUESTS);
+			startActivity(usersIntent);
 			selected = true;
 		}
 		if (selected) {

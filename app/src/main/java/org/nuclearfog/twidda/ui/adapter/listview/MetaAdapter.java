@@ -18,8 +18,8 @@ import java.util.List;
 /**
  * ListView adapter used to show Meta items
  *
- * @see org.nuclearfog.twidda.ui.dialogs.MetaDialog
  * @author nuclearfog
+ * @see org.nuclearfog.twidda.ui.dialogs.MetaDialog
  */
 public class MetaAdapter extends BaseAdapter {
 
@@ -46,7 +46,7 @@ public class MetaAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		return new String[] {keys.get(position), values.get(position)};
+		return new String[]{keys.get(position), values.get(position)};
 	}
 
 

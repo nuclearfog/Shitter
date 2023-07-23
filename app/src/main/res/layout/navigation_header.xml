@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/navogation_header_root"
@@ -16,7 +15,7 @@
 		android:layout_height="0dp"
 		android:contentDescription="@string/profile_image"
 		android:layout_margin="@dimen/navigation_header_layout_margin"
-		app:layout_constraintWidth_percent="0.2"
+		app:layout_constraintWidth_percent="0.25"
 		app:layout_constraintDimensionRatio="1.0"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
@@ -28,6 +27,7 @@
 		android:lines="1"
 		android:layout_marginStart="@dimen/navigation_header_layout_margin"
 		android:layout_marginEnd="@dimen/navigation_header_layout_margin"
+		android:textSize="@dimen/navigation_header_textsize"
 		app:layout_constraintStart_toEndOf="@id/navigation_profile_image"
 		app:layout_constraintTop_toTopOf="@id/navigation_profile_image"
 		app:layout_constraintEnd_toEndOf="parent" />
@@ -39,6 +39,7 @@
 		android:lines="1"
 		android:layout_marginStart="@dimen/navigation_header_layout_margin"
 		android:layout_marginEnd="@dimen/navigation_header_layout_margin"
+		android:textSize="@dimen/navigation_header_textsize"
 		app:layout_constraintStart_toEndOf="@id/navigation_profile_image"
 		app:layout_constraintTop_toBottomOf="@id/navigation_profile_username"
 		app:layout_constraintEnd_toEndOf="parent" />
@@ -48,7 +49,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:constraint_referenced_ids="navigation_profile_screenname,navigation_profile_image"
-		app:barrierDirection="bottom"/>
+		app:barrierDirection="bottom" />
 
 	<TextView
 		android:id="@+id/navigation_profile_following"
@@ -58,6 +59,7 @@
 		android:drawableStart="@drawable/following"
 		android:layout_margin="@dimen/navigation_header_layout_margin"
 		android:drawablePadding="@dimen/navigation_header_drawable_padding"
+		android:textSize="@dimen/navigation_header_textsize"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/navigation_profile_image_barrier"
 		app:layout_constraintEnd_toStartOf="@id/navigation_profile_follower" />
@@ -70,8 +72,9 @@
 		android:drawableStart="@drawable/follower"
 		android:layout_margin="@dimen/navigation_header_layout_margin"
 		android:drawablePadding="@dimen/navigation_header_drawable_padding"
+		android:textSize="@dimen/navigation_header_textsize"
 		app:layout_constraintStart_toEndOf="@id/navigation_profile_following"
 		app:layout_constraintTop_toBottomOf="@id/navigation_profile_image_barrier"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

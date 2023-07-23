@@ -26,11 +26,11 @@ import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
-import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
+import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -1099,7 +1099,7 @@ public class TwitterV1 implements Connection {
 				throw new TwitterException(message);
 			}
 			return mediaId;
-		}  catch (InterruptedIOException e) {
+		} catch (InterruptedIOException e) {
 			throw new InterruptedException();
 		} catch (IOException | JSONException err) {
 			throw new TwitterException(err);

@@ -22,7 +22,6 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.datasource.ContentDataSource;
-import androidx.media3.ui.PlayerView;
 import androidx.media3.datasource.DataSource;
 import androidx.media3.datasource.okhttp.OkHttpDataSource;
 import androidx.media3.exoplayer.ExoPlayer;
@@ -37,6 +36,7 @@ import androidx.media3.exoplayer.text.TextOutput;
 import androidx.media3.exoplayer.video.MediaCodecVideoRenderer;
 import androidx.media3.exoplayer.video.VideoRendererEventListener;
 import androidx.media3.extractor.DefaultExtractorsFactory;
+import androidx.media3.ui.PlayerView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;

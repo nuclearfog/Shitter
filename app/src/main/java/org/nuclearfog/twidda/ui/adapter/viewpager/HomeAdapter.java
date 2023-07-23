@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 public class HomeAdapter extends ViewPagerAdapter {
 
 	/**
+	 *
 	 */
 	public HomeAdapter(FragmentActivity fragmentActivity) {
 		super(fragmentActivity);

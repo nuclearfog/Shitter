@@ -15,7 +15,7 @@
 		app:show_shuffle_button="false"
 		app:show_previous_button="false"
 		app:show_next_button="false"
-		app:show_timeout="-1"/>
+		app:show_timeout="-1" />
 
 	<TextView
 		android:id="@+id/dialog_audio_player_share"

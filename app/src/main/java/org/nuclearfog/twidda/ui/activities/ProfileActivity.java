@@ -20,10 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -84,7 +80,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnScrollChangeListener,
+public class ProfileActivity extends AppCompatActivity implements OnScrollChangeListener,
 		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback, LockCallback, OnPreDrawListener {
 
 	/**
@@ -130,7 +126,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 	 */
 	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
-	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<DomainResult> domainCallback = this::setDomainResult;
 	private AsyncCallback<RelationResult> relationCallback = this::setRelationResult;
 	private AsyncCallback<UserResult> userCallback = this::setUserResult;
@@ -308,27 +303,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 
 	@Override
-	public void onActivityResult(ActivityResult result) {
-		if (result.getData() != null) {
-			if (result.getResultCode() == ProfileEditor.RETURN_PROFILE_CHANGED) {
-				Object data = result.getData().getSerializableExtra(ProfileEditor.KEY_USER);
-				if (data instanceof User) {
-					// remove blur background
-					toolbarBackground.setImageResource(0);
-					// re initialize updated user
-					setUser((User) data);
-					adapter.notifySettingsChanged();
-				}
-			}
-		}
-	}
-
-
-	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.profile, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
+		if (settings.getLogin().getConfiguration().directmessageSupported()) {
+			MenuItem dmIcon = m.findItem(R.id.profile_message);
+			dmIcon.setVisible(true);
+		}
 		return super.onCreateOptionsMenu(m);
 	}
 
@@ -339,13 +321,11 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 		if (user != null) {
 			MenuItem listItem = m.findItem(R.id.profile_lists);
 			MenuItem domainBlock = m.findItem(R.id.profile_block_domain);
-			MenuItem requestItem = m.findItem(R.id.profile_requests);
 
 			switch (settings.getLogin().getConfiguration()) {
 				case TWITTER1:
 				case TWITTER2:
 					if (user.isCurrentUser()) {
-						requestItem.setVisible(true);
 						listItem.setVisible(true);
 					} else if (!user.isProtected() || (relation != null && relation.isFollowing())) {
 						listItem.setVisible(true);
@@ -354,7 +334,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 
 				case MASTODON:
 					if (user.isCurrentUser()) {
-						requestItem.setVisible(true);
 						listItem.setVisible(true);
 					} else {
 						domainBlock.setVisible(true);
@@ -366,10 +345,7 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				AppStyles.setMenuItemColor(followIcon, settings.getFollowPendingColor());
 				followIcon.setTitle(R.string.menu_follow_requested);
 			}
-			if (user.isCurrentUser()) {
-				MenuItem setting = m.findItem(R.id.profile_settings);
-				setting.setVisible(true);
-			} else {
+			if (!user.isCurrentUser()) {
 				MenuItem followIcon = m.findItem(R.id.profile_follow);
 				MenuItem blockIcon = m.findItem(R.id.profile_block);
 				MenuItem muteIcon = m.findItem(R.id.profile_mute);
@@ -393,10 +369,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				MenuItem muteIcon = m.findItem(R.id.profile_mute);
 				muteIcon.setTitle(R.string.menu_unmute_user);
 			}
-			if (relation.privateMessagingEnabled()) {
-				MenuItem dmIcon = m.findItem(R.id.profile_message);
-				dmIcon.setVisible(true);
-			}
 			if (relation.isFollower()) {
 				follow_back.setVisibility(View.VISIBLE);
 			}
@@ -416,6 +388,14 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				String prefix = user.getScreenname() + " ";
 				intent.putExtra(StatusEditor.KEY_TEXT, prefix);
 			}
+			startActivity(intent);
+			return true;
+		}
+		// open direct message
+		else if (item.getItemId() == R.id.profile_message) {
+			Intent intent = new Intent(this, MessageEditor.class);
+			if (user != null && !user.isCurrentUser())
+				intent.putExtra(MessageEditor.KEY_MESSAGE_PREFIX, user.getScreenname());
 			startActivity(intent);
 			return true;
 		}
@@ -461,20 +441,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 			}
 			return true;
 		}
-		// open profile editor
-		else if (item.getItemId() == R.id.profile_settings) {
-			Intent editProfile = new Intent(this, ProfileEditor.class);
-			editProfile.putExtra(ProfileEditor.KEY_USER, user);
-			activityResultLauncher.launch(editProfile);
-		}
-		// open direct message
-		else if (item.getItemId() == R.id.profile_message) {
-			Intent intent = new Intent(this, MessageEditor.class);
-			if (user != null && !user.isCurrentUser())
-				intent.putExtra(MessageEditor.KEY_MESSAGE_PREFIX, user.getScreenname());
-			startActivity(intent);
-			return true;
-		}
 		// open users list
 		else if (item.getItemId() == R.id.profile_lists) {
 			if (user != null) {
@@ -482,13 +448,6 @@ public class ProfileActivity extends AppCompatActivity implements ActivityResult
 				intent.putExtra(UserlistsActivity.KEY_ID, user.getId());
 				startActivity(intent);
 			}
-			return true;
-		}
-		// open request list
-		else if (item.getItemId() == R.id.profile_requests) {
-			Intent usersIntent = new Intent(this, UsersActivity.class);
-			usersIntent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_REQUESTS);
-			startActivity(usersIntent);
 			return true;
 		}
 		// block user domain

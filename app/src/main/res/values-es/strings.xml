@@ -125,7 +125,6 @@
 	<string name="menu_open_twitter_search">Buscar</string>
 	<string name="menu_open_settings">Configuración</string>
 	<string name="menu_create_list">crear lista de usuarios</string>
-	<string name="menu_write_message">Mensaje directo</string>
 	<string name="menu_follow_user">Seguir</string>
 	<string name="menu_goto_lists">Listas de usuarios</string>
 	<string name="menu_app_info">Acerca de</string>

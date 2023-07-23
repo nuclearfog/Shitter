@@ -33,7 +33,7 @@
 	<item
 		android:id="@+id/profile_message"
 		android:icon="@drawable/message"
-		android:title="@string/menu_write_message"
+		android:title="@string/menu_message"
 		android:visible="false"
 		app:showAsAction="ifRoom" />
 
@@ -42,13 +42,4 @@
 		android:visible="false"
 		android:title="@string/menu_goto_lists" />
 
-	<item
-		android:id="@+id/profile_requests"
-		android:visible="false"
-		android:title="@string/menu_follow_requests" />
-
-	<item
-		android:id="@+id/profile_settings"
-		android:visible="false"
-		android:title="@string/menu_edit_profile" />
 </menu>

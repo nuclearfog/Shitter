@@ -148,7 +148,6 @@
 	<string name="menu_open_filter">manage Filter</string>
 	<string name="menu_open_settings">Settings</string>
 	<string name="menu_create_list">create Userlist</string>
-	<string name="menu_write_message">Directmessage</string>
 	<string name="menu_follow_user">follow</string>
 	<string name="menu_goto_lists">Userlists</string>
 	<string name="menu_app_info">About</string>

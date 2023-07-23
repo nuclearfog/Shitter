@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<item
-		android:id="@+id/menu_navigator_status"
-		android:title="@string/menu_status" />
+		android:id="@+id/menu_navigator_profile_settings"
+		android:title="@string/menu_edit_profile" />
 
 	<item
 		android:id="@+id/menu_navigator_filter"
@@ -12,6 +12,14 @@
 	<item
 		android:id="@+id/menu_navigator_lists"
 		android:title="@string/menu_goto_lists" />
+
+	<item
+		android:id="@+id/menu_navigator_requests"
+		android:title="@string/menu_follow_requests" />
+
+	<item
+		android:id="@+id/menu_navigator_status"
+		android:title="@string/menu_status" />
 
 	<item
 		android:id="@+id/menu_navigator_account"

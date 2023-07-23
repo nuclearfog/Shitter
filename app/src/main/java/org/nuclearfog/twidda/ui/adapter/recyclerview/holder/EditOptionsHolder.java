@@ -57,7 +57,7 @@ public class EditOptionsHolder extends ViewHolder implements OnClickListener, Te
 
 		option_name = itemView.findViewById(R.id.item_option_edit_name);
 		option_button = itemView.findViewById(R.id.item_option_edit_action);
-		AppStyles.setTheme((ViewGroup) itemView);
+		AppStyles.setTheme((ViewGroup) itemView, settings.getPopupColor());
 
 		option_button.setOnClickListener(this);
 		option_name.addTextChangedListener(this);

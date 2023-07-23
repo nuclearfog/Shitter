@@ -168,7 +168,6 @@
 	<string name="menu_open_filter">Filter verwalten</string>
 	<string name="menu_open_settings">Einstellungen</string>
 	<string name="menu_create_list">erstelle Nutzerliste</string>
-	<string name="menu_write_message">Direktnachricht</string>
 	<string name="time_now">jetzt</string>
 	<string name="menu_follow_user">folgen</string>
 	<string name="menu_goto_lists">Nutzerlisten</string>

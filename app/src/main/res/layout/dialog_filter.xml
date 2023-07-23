@@ -169,7 +169,7 @@
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintStart_toEndOf="@id/dialog_filter_switch_thread_label"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_switch_user"
-		app:layout_constraintEnd_toStartOf="@id/dialog_filter_switch_hide_label"/>
+		app:layout_constraintEnd_toStartOf="@id/dialog_filter_switch_hide_label" />
 
 	<TextView
 		android:id="@+id/dialog_filter_switch_hide_label"
@@ -183,7 +183,7 @@
 		app:layout_constraintStart_toEndOf="@id/dialog_filter_switch_hide"
 		app:layout_constraintTop_toTopOf="@id/dialog_filter_switch_hide"
 		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_switch_hide"
-		app:layout_constraintEnd_toEndOf="parent"/>
+		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
 		android:id="@+id/dialog_filter_title_keywords"

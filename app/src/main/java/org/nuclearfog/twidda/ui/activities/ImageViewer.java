@@ -129,7 +129,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 			description = mediaStatus.getDescription();
 		} else if (serializedData instanceof Media) {
 			Media media = (Media) serializedData;
-			meta = media .getMeta();
+			meta = media.getMeta();
 			blurHash = media.getBlurHash();
 			imageUrl = media.getUrl();
 			description = media.getDescription();
