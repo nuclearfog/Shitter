@@ -59,7 +59,7 @@
 		android:layout_height="match_parent"
 		android:fitsSystemWindows="false"
 		android:layout_gravity="start"
-		android:layout_marginTop="@dimen/mainpage_toolbar_height"
+		android:maxWidth="@dimen/mainpage_navigation_max_width"
 		app:headerLayout="@layout/navigation_header"
 		app:menu="@menu/main_navigation"/>
 

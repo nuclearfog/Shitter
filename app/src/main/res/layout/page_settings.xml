@@ -227,12 +227,34 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
+						android:id="@+id/settings_enable_floating_button"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="@dimen/settings_column_margin"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/settings_toolbar_ov" />
+
+					<TextView
+						android:id="@+id/settings_enable_floating_button_descr"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:lines="1"
+						android:text="@string/settings_enable_floating_button"
+						android:textSize="@dimen/settings_textsize_small"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_marginEnd="@dimen/settings_switch_margin"
+						app:layout_constraintStart_toEndOf="@id/settings_enable_floating_button"
+						app:layout_constraintTop_toTopOf="@id/settings_enable_floating_button"
+						app:layout_constraintBottom_toBottomOf="@id/settings_enable_floating_button"
+						app:layout_constraintEnd_toEndOf="parent" />
+
+					<com.kyleduo.switchbutton.SwitchButton
 						android:id="@+id/enable_like"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_toolbar_ov"
+						app:layout_constraintTop_toBottomOf="@id/settings_enable_floating_button"
 						app:layout_constraintEnd_toStartOf="@id/enable_like_descr" />
 
 					<TextView

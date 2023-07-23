@@ -289,6 +289,7 @@
 	<string name="editprofile_add_banner">add banner</string>
 	<string name="settings_app_information">App source code:</string>
 	<string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
+	<string name="settings_enable_floating_button">enable floating button</string>
 	<string name="settings_look">Look</string>
 	<string name="settings_description_enable_twitter_alt">use Nitter to open Twitter links</string>
 	<string name="settings_description_local_timeline">show local timelines only</string>

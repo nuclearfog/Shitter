@@ -93,6 +93,7 @@ public class GlobalSettings {
 	private static final String FILTER_RESULTS = "filter_results";
 	private static final String MASTODON_LOCAL_TIMELINE = "mastodon_local_timeline";
 	private static final String HIDE_SENSITIVE = "hide_sensitive";
+	private static final String FLOATING_BUTTON = "floating_button_enabled";
 	private static final String PUSH_ENABLED = "push_enabled";
 	private static final String LOGIN_ENABLED = "login";
 
@@ -162,6 +163,7 @@ public class GlobalSettings {
 	private boolean twitterAlt;
 	private boolean localOnly;
 	private boolean hideSensitive;
+	private boolean floatingEnabled;
 	private int background_color;
 	private int font_color;
 	private int highlight_color;
@@ -501,14 +503,14 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * @return true if tweet indicators enabled
+	 * @return true if status indicators enabled
 	 */
 	public boolean statusIndicatorsEnabled() {
 		return tweetIndicators;
 	}
 
 	/**
-	 * enable/disable tweet indicators
+	 * enable/disable status indicators
 	 *
 	 * @param enable true to enable tweet indicators
 	 */
@@ -517,6 +519,26 @@ public class GlobalSettings {
 
 		Editor edit = settings.edit();
 		edit.putBoolean(TWEET_INDICATOR, enable);
+		edit.apply();
+	}
+
+	/**
+	 * @return true if floating button (status posting) is enabled
+	 */
+	public boolean floatingButtonEnabled() {
+		return floatingEnabled;
+	}
+
+	/**
+	 * enable/disable floating button (status posting)
+	 *
+	 * @param enable true to enable floating button
+	 */
+	public void enableFloatingButton(boolean enable) {
+		floatingEnabled = enable;
+
+		Editor edit = settings.edit();
+		edit.putBoolean(FLOATING_BUTTON, enable);
 		edit.apply();
 	}
 
@@ -1054,6 +1076,7 @@ public class GlobalSettings {
 		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
 		localOnly = settings.getBoolean(MASTODON_LOCAL_TIMELINE, false);
 		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
+		floatingEnabled = settings.getBoolean(FLOATING_BUTTON, true);
 		pushInstance = settings.getString(PUSH_INSTANCE, ConstantsKt.INSTANCE_DEFAULT);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");

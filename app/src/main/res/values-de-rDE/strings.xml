@@ -199,6 +199,7 @@
 	<string name="info_location_pending">Ortung läuft, bitte warten.</string>
 	<string name="error_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
 	<string name="button_share">Link teilen</string>
+	<string name="settings_enable_floating_button">Floating-Button aktivieren</string>
 	<string name="settings_look">Aussehen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
 	<string name="account_page">Accounts</string>

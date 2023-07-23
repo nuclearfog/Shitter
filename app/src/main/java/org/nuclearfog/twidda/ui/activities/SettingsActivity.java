@@ -150,6 +150,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
 		SwitchButton hideSensitive = findViewById(R.id.enable_status_hide_sensitive);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
+		SwitchButton enableFloatingButton = findViewById(R.id.settings_enable_floating_button);
 		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.spinner_font);
 		Spinner scaleSelector = findViewById(R.id.spinner_scale);
@@ -242,6 +243,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLocalTl.setCheckedImmediately(settings.useLocalTimeline());
 		hideSensitive.setCheckedImmediately(settings.hideSensitiveEnabled());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
+		enableFloatingButton.setCheckedImmediately(settings.floatingButtonEnabled());
 		enablePush.setCheckedImmediately(settings.pushEnabled());
 		enable_proxy.setCheckedImmediately(settings.isProxyEnabled());
 		enable_auth.setCheckedImmediately(settings.isProxyAuthSet());
@@ -264,6 +266,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enableLocalTl.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
 		hideSensitive.setOnCheckedChangeListener(this);
+		enableFloatingButton.setOnCheckedChangeListener(this);
 		enable_proxy.setOnCheckedChangeListener(this);
 		enable_auth.setOnCheckedChangeListener(this);
 		push_label.setOnClickListener(this);
@@ -538,6 +541,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// enable status indicators
 		else if (c.getId() == R.id.enable_status_indicators) {
 			settings.enableStatusIndicators(checked);
+		}
+		// enable floating button
+		else if (c.getId() == R.id.settings_enable_floating_button) {
+			settings.enableFloatingButton(checked);
 		}
 		// enable/disable local timeline (Mastodon)
 		else if (c.getId() == R.id.settings_local_timeline) {

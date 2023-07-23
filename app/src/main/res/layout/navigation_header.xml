@@ -6,6 +6,7 @@
 	android:id="@+id/navogation_header_root"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	android:layout_marginTop="@dimen/mainpage_toolbar_height"
 	android:padding="@dimen/navigation_header_layout_padding"
 	tools:ignore="UseCompatTextViewDrawableXml">
 

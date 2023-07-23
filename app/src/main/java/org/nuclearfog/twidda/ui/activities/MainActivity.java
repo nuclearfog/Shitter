@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private ImageView profileImage;
 	private TextView username, screenname;
 	private TextView followingCount, followerCount;
+	private View floatingButton;
 
 	@Nullable
 	private User currentUser;
@@ -99,10 +100,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_main);
+		Toolbar toolbar = findViewById(R.id.home_toolbar);
 		NavigationView navigationView = findViewById(R.id.home_navigator);
 		ViewGroup header = (ViewGroup) navigationView.getHeaderView(0);
-		Toolbar toolbar = findViewById(R.id.home_toolbar);
-		View floatingButton = findViewById(R.id.home_post);
+		floatingButton = findViewById(R.id.home_post);
 		drawerLayout = findViewById(R.id.main_layout);
 		viewPager = findViewById(R.id.home_pager);
 		tabSelector = findViewById(R.id.home_tab);
@@ -118,6 +119,9 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		picasso = PicassoBuilder.get(this);
 		tabSelector.addViewPager(viewPager);
 		viewPager.setOffscreenPageLimit(4);
+		if (!settings.floatingButtonEnabled()) {
+			floatingButton.setVisibility(View.INVISIBLE);
+		}
 
 		toolbar.setTitle("");
 		toolbar.setNavigationIcon(R.drawable.menu);
@@ -226,8 +230,14 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			default:
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
-				if (adapter != null)
+				if (settings.floatingButtonEnabled()) {
+					floatingButton.setVisibility(View.VISIBLE);
+				} else {
+					floatingButton.setVisibility(View.INVISIBLE);
+				}
+				if (adapter != null) {
 					adapter.notifySettingsChanged();
+				}
 				setStyle();
 				setCurrentUser(currentUser);
 				break;
@@ -268,37 +278,42 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+		boolean selected = false;
 		// open filter page
 		if (item.getItemId() == R.id.menu_navigator_filter) {
 			Intent intent = new Intent(this, FilterActivity.class);
 			startActivity(intent);
-			return true;
+			selected = true;
 		}
 		// open status editor
 		else if (item.getItemId() == R.id.menu_navigator_status) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			startActivity(intent);
-			return true;
+			selected = true;
 		}
 		// open app settings
 		else if (item.getItemId() == R.id.menu_navigator_settings) {
 			Intent intent = new Intent(this, SettingsActivity.class);
 			activityResultLauncher.launch(intent);
-			return true;
+			selected = true;
 		}
 		// open account manager
 		else if (item.getItemId() == R.id.menu_navigator_account) {
 			Intent intent = new Intent(this, AccountActivity.class);
 			activityResultLauncher.launch(intent);
-			return true;
+			selected = true;
 		}
 		// open user lists
 		else if (item.getItemId() == R.id.menu_navigator_lists) {
 			Intent intent = new Intent(this, UserlistsActivity.class);
 			intent.putExtra(UserlistsActivity.KEY_ID, settings.getLogin().getId());
 			startActivity(intent);
+			selected = true;
 		}
-		return false;
+		if (selected) {
+			drawerLayout.close();
+		}
+		return selected;
 	}
 
 
