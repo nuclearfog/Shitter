@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,8 +66,8 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.viewpager.ProfileAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.ui.views.LockableLinearLayout;
-import org.nuclearfog.twidda.ui.views.LockableLinearLayout.LockCallback;
+import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
+import org.nuclearfog.twidda.ui.views.LockableConstraintLayout.LockCallback;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -142,9 +143,9 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 	private UserLoader userLoader;
 	private TextEmojiLoader emojiLoader;
 
-	private NestedScrollView root;
+	private NestedScrollView scroll;
 	private ConstraintLayout header;
-	private LockableLinearLayout body;
+	private LockableConstraintLayout body;
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
 	private Button following, follower;
@@ -168,9 +169,11 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_profile);
+		ViewGroup root = findViewById(R.id.page_profile_root);
+		View floatingButton = findViewById(R.id.page_profile_post_button);
 		header = findViewById(R.id.page_profile_header);
 		body = findViewById(R.id.page_profile_body);
-		root = findViewById(R.id.user_view);
+		scroll = findViewById(R.id.page_profile_scroll);
 		toolbar = findViewById(R.id.profile_toolbar);
 		description = findViewById(R.id.bio);
 		following = findViewById(R.id.following);
@@ -200,6 +203,9 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 			constraints.clone(header);
 			constraints.connect(R.id.profile_banner, ConstraintSet.TOP, R.id.profile_toolbar, ConstraintSet.BOTTOM);
 			constraints.applyTo(header);
+		}
+		if (!settings.floatingButtonEnabled()) {
+			floatingButton.setVisibility(View.INVISIBLE);
 		}
 		following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
 		follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
@@ -270,8 +276,9 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 		profileImage.setOnClickListener(this);
 		bannerImage.setOnClickListener(this);
 		user_website.setOnClickListener(this);
-		root.setOnScrollChangeListener(this);
-		root.getViewTreeObserver().addOnPreDrawListener(this);
+		floatingButton.setOnClickListener(this);
+		scroll.setOnScrollChangeListener(this);
+		scroll.getViewTreeObserver().addOnPreDrawListener(this);
 		body.addLockCallback(this);
 	}
 
@@ -295,9 +302,9 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 
 	@Override
 	public boolean onPreDraw() {
-		root.getViewTreeObserver().removeOnPreDrawListener(this);
-		body.getLayoutParams().height = root.getMeasuredHeight();
-		root.scrollTo(0, 0);
+		scroll.getViewTreeObserver().removeOnPreDrawListener(this);
+		body.getLayoutParams().height = scroll.getMeasuredHeight();
+		scroll.scrollTo(0, 0);
 		return true;
 	}
 
@@ -555,6 +562,16 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 				startActivity(intent);
 			}
 		}
+		// open status editor
+		else if (v.getId() == R.id.page_profile_post_button) {
+			Intent intent = new Intent(this, StatusEditor.class);
+			if (user != null && !user.isCurrentUser()) {
+				// add username to status
+				String prefix = user.getScreenname() + " ";
+				intent.putExtra(StatusEditor.KEY_TEXT, prefix);
+			}
+			startActivity(intent);
+		}
 	}
 
 
@@ -600,7 +617,7 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 
 	@Override
 	public boolean aquireLock() {
-		return root.getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
+		return scroll.getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
 	}
 
 

@@ -16,7 +16,8 @@
 		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/fragment_list_recyclerview"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent" />
+			android:layout_height="match_parent"
+			android:overScrollMode="never" />
 
 	</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -36,7 +36,7 @@ import com.google.android.material.navigation.NavigationView.OnNavigationItemSel
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.async.AsyncExecutor;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserLoader;
 import org.nuclearfog.twidda.backend.async.UserLoader.UserParam;
 import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
@@ -57,7 +57,7 @@ import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
  * @author nuclearfog
  */
 public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener,
-		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncExecutor.AsyncCallback<UserLoader.UserResult> {
+		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<UserResult> {
 
 	public static final String KEY_SELECT_NOTIFICATION = "main_notification";
 
@@ -119,8 +119,14 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		picasso = PicassoBuilder.get(this);
 		tabSelector.addViewPager(viewPager);
 		viewPager.setOffscreenPageLimit(4);
+		if (navigationView.getLayoutParams() != null) {
+			navigationView.getLayoutParams().width = Math.round(getResources().getDisplayMetrics().widthPixels / 2.0f);
+		}
 		if (!settings.floatingButtonEnabled()) {
 			floatingButton.setVisibility(View.INVISIBLE);
+		}
+		if (!settings.getLogin().getConfiguration().isFilterSupported()) {
+			navigationView.getMenu().findItem(R.id.menu_navigator_filter).setVisible(false);
 		}
 
 		toolbar.setTitle("");
@@ -378,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			else
 				intent.putExtra(ProfileActivity.KEY_ID, settings.getLogin().getId());
 			activityResultLauncher.launch(intent);
+			drawerLayout.close();
 		} else if (v.getId() == R.id.home_post) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			startActivity(intent);

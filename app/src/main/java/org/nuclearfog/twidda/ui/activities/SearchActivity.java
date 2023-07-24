@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -37,7 +39,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class SearchActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, AsyncCallback<HashtagResult> {
+public class SearchActivity extends AppCompatActivity implements OnClickListener, OnTabSelectedListener, OnQueryTextListener, AsyncCallback<HashtagResult> {
 
 	/**
 	 * Key for the search query, required
@@ -79,6 +81,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		setContentView(R.layout.page_search);
 		ViewGroup root = findViewById(R.id.search_layout);
 		TabSelector tabSelector = findViewById(R.id.search_tab);
+		View floatingButton = findViewById(R.id.search_post_button);
 		toolbar = findViewById(R.id.search_toolbar);
 		viewPager = findViewById(R.id.search_pager);
 
@@ -97,6 +100,9 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 				hashtagAction.execute(param, this);
 			}
 		}
+		if (!settings.floatingButtonEnabled()) {
+			floatingButton.setVisibility(View.INVISIBLE);
+		}
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 		viewPager.setOffscreenPageLimit(3);
@@ -107,6 +113,7 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 		AppStyles.setTheme(root);
 
 		tabSelector.addOnTabSelectedListener(this);
+		floatingButton.setOnClickListener(this);
 	}
 
 
@@ -227,6 +234,17 @@ public class SearchActivity extends AppCompatActivity implements OnTabSelectedLi
 	@Override
 	public boolean onQueryTextChange(String s) {
 		return false;
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.search_post_button) {
+			Intent intent = new Intent(this, StatusEditor.class);
+			if (search.startsWith("#"))
+				intent.putExtra(StatusEditor.KEY_TEXT, search + " ");
+			startActivity(intent);
+		}
 	}
 
 

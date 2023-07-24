@@ -16,8 +16,10 @@ public class LockableConstraintLayout extends ConstraintLayout {
 
 	@Nullable
 	private LockCallback callback;
-	private boolean lock = false;
+	private boolean xLock = false;
+	private boolean yLock = false;
 	private float yPos = 0.0f;
+	private float xPos = 0.0f;
 
 	/**
 	 * @inheritDoc
@@ -37,20 +39,28 @@ public class LockableConstraintLayout extends ConstraintLayout {
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		switch (ev.getAction()) {
+			case MotionEvent.ACTION_MOVE:
+				float deltaX = ev.getX() - xPos;
+				float deltaY = ev.getY() - yPos;
+				// detect scroll down, then aquire scroll lock
+				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * 3.0f) {
+					xLock = true;
+				}
+				if (xLock && deltaY < 0.0f && callback != null) {
+					yLock = callback.aquireLock();
+				}
+				// fall through
+
 			case MotionEvent.ACTION_DOWN:
+				xPos = ev.getX();
 				yPos = ev.getY();
 				break;
 
-			case MotionEvent.ACTION_MOVE:
-				// detect scroll down, then aquire scroll lock
-				float deltaY = ev.getY() - yPos;
-				if (deltaY < 0.0f && callback != null) {
-					lock = callback.aquireLock();
-				}
-				yPos = ev.getY();
+			case MotionEvent.ACTION_UP:
+				xLock = false;
 				break;
 		}
-		return lock;
+		return yLock;
 	}
 
 	/**
@@ -59,7 +69,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 	 * @param lock true to prevent child views to be scrolled
 	 */
 	public void lock(boolean lock) {
-		this.lock = lock;
+		this.yLock = lock;
 	}
 
 	/**
