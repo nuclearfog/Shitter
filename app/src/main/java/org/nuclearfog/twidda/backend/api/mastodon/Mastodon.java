@@ -207,7 +207,7 @@ public class Mastodon implements Connection {
 		params.add("client_id=" + connection.getOauthConsumerToken());
 		params.add("client_secret=" + connection.getOauthTokenSecret());
 		params.add("grant_type=authorization_code");
-		params.add("code=" + pin);
+		params.add("code=" + StringUtils.encode(pin));
 		params.add("redirect_uri=" + REDIRECT_URI);
 		params.add("scope=" + AUTH_SCOPES);
 		String hostname = connection.useHost() ? connection.getHostname() : DEFAULT_HOST;
@@ -258,7 +258,7 @@ public class Mastodon implements Connection {
 	@Override
 	public User showUser(String name) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("acct=" + name);
+		params.add("acct=" + StringUtils.encode(name));
 		try {
 			return createUser(get(ENDPOINT_LOOKUP_USER, params));
 		} catch (IOException e) {
@@ -431,7 +431,8 @@ public class Mastodon implements Connection {
 	@Override
 	public Statuses searchStatuses(String search, long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("local=" + settings.useLocalTimeline());
+		if (settings.useLocalTimeline())
+			params.add("local=true");
 		if (search.matches("#\\S+")) {
 			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + search.substring(1), params, minId, maxId);
 		} else {
@@ -445,7 +446,8 @@ public class Mastodon implements Connection {
 	@Override
 	public Statuses getPublicTimeline(long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("local=" + settings.useLocalTimeline());
+		if (settings.useLocalTimeline())
+			params.add("local=true");
 		return getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
 	}
 
@@ -689,8 +691,16 @@ public class Mastodon implements Connection {
 			for (String option : poll.getOptions())
 				params.add("poll[options][]=" + StringUtils.encode(option));
 			params.add("poll[expires_in]=" + poll.getDuration());
-			params.add("poll[multiple]=" + poll.multipleChoiceEnabled());
-			params.add("poll[hide_totals]=" + poll.hideTotalVotes());
+			if (poll.multipleChoiceEnabled()) {
+				params.add("poll[multiple]=true");
+			} else {
+				params.add("poll[multiple]=false");
+			}
+			if (poll.hideTotalVotes()) {
+				params.add("poll[hide_totals]=true");
+			} else {
+				params.add("poll[hide_totals]=false");
+			}
 		}
 		try {
 			Response response;
@@ -738,7 +748,7 @@ public class Mastodon implements Connection {
 	public void blockDomain(String domain) throws ConnectionException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("domain=" + domain);
+			params.add("domain=" + StringUtils.encode(domain));
 			Response response = post(ENDPOINT_DOMAIN_BLOCK, params);
 			if (response.code() != 200) {
 				throw new MastodonException(response);
@@ -753,7 +763,7 @@ public class Mastodon implements Connection {
 	public void unblockDomain(String domain) throws ConnectionException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("domain=" + domain);
+			params.add("domain=" + StringUtils.encode(domain));
 			Response response = delete(ENDPOINT_DOMAIN_BLOCK, params);
 			if (response.code() != 200) {
 				throw new MastodonException(response);
@@ -975,7 +985,7 @@ public class Mastodon implements Connection {
 	public Filter updateFilter(FilterUpdate update) throws ConnectionException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("title=" + update.getTitle());
+			params.add("title=" + StringUtils.encode(update.getTitle()));
 			if (update.getExpirationTime() > 0)
 				params.add("expires_in=" + update.getExpirationTime());
 			if (update.filterHomeSet())
@@ -1103,7 +1113,7 @@ public class Mastodon implements Connection {
 		try {
 			List<String> params = new ArrayList<>();
 			if (!mediaUpdate.getDescription().isEmpty())
-				params.add("description=" + mediaUpdate.getDescription());
+				params.add("description=" + StringUtils.encode(mediaUpdate.getDescription()));
 			Response response = post(ENDPOINT_UPLOAD_MEDIA, params, mediaUpdate.getStream(), "file");
 			ResponseBody body = response.body();
 			if (body != null) {
@@ -1149,7 +1159,7 @@ public class Mastodon implements Connection {
 			String randomString = StringUtils.getRandomString();
 
 			List<String> params = new ArrayList<>();
-			params.add("subscription[endpoint]=" + pushUpdate.getHost());
+			params.add("subscription[endpoint]=" + StringUtils.encode(pushUpdate.getHost()));
 			params.add("subscription[keys][p256dh]=" + encodedPublicKey);
 			params.add("subscription[keys][auth]=" + randomString);
 			if (pushUpdate.mentionsEnabled())
