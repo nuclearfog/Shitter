@@ -143,7 +143,6 @@
 	<string name="error_wrong_connection_settings">Falsche Proxykonfiguration! Änderung verwerfen?</string>
 	<string name="error_open_link">Link konnte nicht geöffnet werden!</string>
 	<string name="status_sensitive_media">sensible Inhalte</string>
-	<string name="status_visibility_public">öffentlich</string>
 	<string name="status_visibility_unlisted">ungelistet</string>
 	<string name="status_visibility_private">privat</string>
 	<string name="status_visibility_direct">direkt</string>

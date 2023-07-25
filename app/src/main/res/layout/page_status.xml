@@ -241,6 +241,13 @@
 					app:layout_constraintTop_toBottomOf="@id/page_status_cards_container"
 					app:layout_constraintHorizontal_bias="0.0" />
 
+				<androidx.constraintlayout.widget.Barrier
+					android:id="@+id/page_status_location_barrier"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					app:constraint_referenced_ids="page_status_visibility,page_status_sensitive,page_status_spoiler"
+					app:barrierDirection="bottom" />
+
 				<TextView
 					android:id="@+id/page_status_location_name"
 					android:layout_width="0dp"
@@ -253,7 +260,7 @@
 					android:lines="1"
 					android:textSize="@dimen/page_status_textsize_locale"
 					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/page_status_sensitive"
+					app:layout_constraintTop_toBottomOf="@id/page_status_location_barrier"
 					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintHorizontal_bias="0.0"
 					app:layout_constraintHorizontal_chainStyle="packed" />
@@ -262,6 +269,7 @@
 					android:id="@+id/page_status_api"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
+					android:visibility="invisible"
 					android:layout_marginStart="@dimen/page_status_textview_margin"
 					android:layout_marginEnd="@dimen/page_status_textview_margin"
 					android:linksClickable="false"

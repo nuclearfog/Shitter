@@ -299,7 +299,6 @@
 	<string name="settings_enable_proxy_auth">enable proxy authentication</string>
 	<string name="status_sensitive_media">sensitive content</string>
 	<string name="status_contains_spoiler">Spoiler</string>
-	<string name="status_visibility_public">public</string>
 	<string name="status_visibility_unlisted">unlisted</string>
 	<string name="status_visibility_private">private</string>
 	<string name="status_visibility_direct">direct</string>

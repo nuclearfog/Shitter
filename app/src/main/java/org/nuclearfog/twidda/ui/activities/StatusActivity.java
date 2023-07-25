@@ -919,10 +919,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			spoiler.setVisibility(View.GONE);
 			spoiler_hint.setVisibility(View.INVISIBLE);
 		}
-		if (status.getVisibility() == Status.VISIBLE_PUBLIC) {
-			visibility.setText(R.string.status_visibility_public);
-			visibility.setVisibility(View.VISIBLE);
-		} else if (status.getVisibility() == Status.VISIBLE_UNLISTED) {
+		if (status.getVisibility() == Status.VISIBLE_UNLISTED) {
 			visibility.setText(R.string.status_visibility_unlisted);
 			visibility.setVisibility(View.VISIBLE);
 		} else if (status.getVisibility() == Status.VISIBLE_PRIVATE) {
