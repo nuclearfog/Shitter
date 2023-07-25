@@ -189,7 +189,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private ViewGroup root, header;
 	private NestedScrollView container;
 	private LockableConstraintLayout body;
-	private TextView status_source, created_at, status_text, screen_name, username, location_name, sensitive, spoiler, spoiler_hint, translate_text;
+	private TextView status_source, created_at, status_text, screen_name, username, location_name, sensitive, visibility, spoiler, spoiler_hint, translate_text;
 	private Button reply_button, repost_button, like_button, reply_name, repost_name_button;
 	private ImageView profile_image;
 	private Toolbar toolbar;
@@ -230,6 +230,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		location_name = findViewById(R.id.page_status_location_name);
 		sensitive = findViewById(R.id.page_status_sensitive);
 		spoiler = findViewById(R.id.page_status_spoiler);
+		visibility = findViewById(R.id.page_status_visibility);
 		repost_name_button = findViewById(R.id.page_status_reposter_reference);
 		translate_text = findViewById(R.id.page_status_text_translate);
 		spoiler_hint = findViewById(R.id.page_status_text_sensitive_hint);
@@ -255,6 +256,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		location_name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
 		sensitive.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
 		spoiler.setCompoundDrawablesWithIntrinsicBounds(R.drawable.exclamation, 0, 0, 0);
+		visibility.setCompoundDrawablesWithIntrinsicBounds(R.drawable.global, 0, 0, 0);
 		reply_name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
 		repost_name_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
 		status_text.setMovementMethod(LinkAndScrollMovement.getInstance());
@@ -916,6 +918,21 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			spoiler.setVisibility(View.GONE);
 			spoiler_hint.setVisibility(View.INVISIBLE);
+		}
+		if (status.getVisibility() == Status.VISIBLE_PUBLIC) {
+			visibility.setText(R.string.status_visibility_public);
+			visibility.setVisibility(View.VISIBLE);
+		} else if (status.getVisibility() == Status.VISIBLE_UNLISTED) {
+			visibility.setText(R.string.status_visibility_unlisted);
+			visibility.setVisibility(View.VISIBLE);
+		} else if (status.getVisibility() == Status.VISIBLE_PRIVATE) {
+			visibility.setText(R.string.status_visibility_private);
+			visibility.setVisibility(View.VISIBLE);
+		} else if (status.getVisibility() == Status.VISIBLE_DIRECT) {
+			visibility.setText(R.string.status_visibility_direct);
+			visibility.setVisibility(View.VISIBLE);
+		} else {
+			visibility.setVisibility(View.GONE);
 		}
 		// set profile image url
 		if (settings.imagesEnabled() && !author.getProfileImageThumbnailUrl().isEmpty()) {

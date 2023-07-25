@@ -192,6 +192,22 @@
 				</LinearLayout>
 
 				<TextView
+					android:id="@+id/page_status_visibility"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:visibility="gone"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginTop="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:lines="1"
+					android:textSize="@dimen/page_status_textsize_small"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_status_cards_container"
+					app:layout_constraintEnd_toStartOf="@id/page_status_sensitive"
+					app:layout_constraintHorizontal_bias="0.0" />
+
+				<TextView
 					android:id="@+id/page_status_sensitive"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -203,7 +219,7 @@
 					android:lines="1"
 					android:text="@string/status_sensitive_media"
 					android:textSize="@dimen/page_status_textsize_small"
-					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintStart_toEndOf="@id/page_status_visibility"
 					app:layout_constraintTop_toBottomOf="@id/page_status_cards_container"
 					app:layout_constraintEnd_toStartOf="@id/page_status_spoiler"
 					app:layout_constraintHorizontal_bias="0.0"
@@ -223,7 +239,6 @@
 					android:textSize="@dimen/page_status_textsize_small"
 					app:layout_constraintStart_toEndOf="@id/page_status_sensitive"
 					app:layout_constraintTop_toBottomOf="@id/page_status_cards_container"
-					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintHorizontal_bias="0.0" />
 
 				<TextView

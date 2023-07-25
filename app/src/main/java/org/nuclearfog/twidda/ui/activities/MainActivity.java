@@ -34,6 +34,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
@@ -51,6 +52,10 @@ import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
+import java.io.Serializable;
+
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 /**
  * Main Activity of the App
  *
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<UserResult> {
 
 	public static final String KEY_SELECT_NOTIFICATION = "main_notification";
+
+	private static final String KEY_USER_SAVE = "user-save";
 
 	/**
 	 * color of the profile image placeholder
@@ -128,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		if (!settings.getLogin().getConfiguration().isFilterSupported()) {
 			navigationView.getMenu().findItem(R.id.menu_navigator_filter).setVisible(false);
 		}
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_USER_SAVE);
+			if (data instanceof User) {
+				currentUser = (User) data;
+			}
+		}
 
 		toolbar.setTitle("");
 		toolbar.setNavigationIcon(R.drawable.menu);
@@ -177,6 +190,13 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				userLoader.execute(param, this);
 			}
 		}
+	}
+
+
+	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_USER_SAVE, currentUser);
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -428,7 +448,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			}
 			Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
 			if (!user.getProfileImageThumbnailUrl().isEmpty()) {
-				picasso.load(user.getProfileImageThumbnailUrl()).placeholder(placeholder).into(profileImage);
+				Transformation roundCorner = new RoundedCornersTransformation(5, 0);
+				picasso.load(user.getProfileImageThumbnailUrl()).transform(roundCorner).placeholder(placeholder).into(profileImage);
 			} else {
 				profileImage.setImageDrawable(placeholder);
 			}

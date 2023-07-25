@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 /**
- * {@link ConstraintLayout} implementation with child scroll lock
+ * custom {@link ConstraintLayout} implementation to lock/unlock child scrolling depending on scroll position and gestures
  *
  * @author nuclearfog
  */
@@ -42,22 +42,26 @@ public class LockableConstraintLayout extends ConstraintLayout {
 			case MotionEvent.ACTION_MOVE:
 				float deltaX = ev.getX() - xPos;
 				float deltaY = ev.getY() - yPos;
-				// detect scroll down, then aquire scroll lock
+				// lock x-axis when swiping up/down
 				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * 3.0f) {
 					xLock = true;
 				}
+				// detect scroll down, then aquire scroll lock
 				if (xLock && deltaY < 0.0f && callback != null) {
 					yLock = callback.aquireLock();
 				}
 				// fall through
 
 			case MotionEvent.ACTION_DOWN:
+				// note start coordinates of the gesture
 				xPos = ev.getX();
 				yPos = ev.getY();
 				break;
 
 			case MotionEvent.ACTION_UP:
+				// remove locks on gesture end
 				xLock = false;
+				yLock = false;
 				break;
 		}
 		return yLock;

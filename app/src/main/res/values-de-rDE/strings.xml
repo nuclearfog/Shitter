@@ -143,6 +143,10 @@
 	<string name="error_wrong_connection_settings">Falsche Proxykonfiguration! Änderung verwerfen?</string>
 	<string name="error_open_link">Link konnte nicht geöffnet werden!</string>
 	<string name="status_sensitive_media">sensible Inhalte</string>
+	<string name="status_visibility_public">öffentlich</string>
+	<string name="status_visibility_unlisted">ungelistet</string>
+	<string name="status_visibility_private">privat</string>
+	<string name="status_visibility_direct">direkt</string>
 	<string name="status_spoiler_hint">Zum Anzeigen tippen</string>
 	<string name="login_info">4 Schritte zum Login</string>
 	<string name="info_open_twitter_login">öffne Twitter login Seite. Bitte warten</string>
