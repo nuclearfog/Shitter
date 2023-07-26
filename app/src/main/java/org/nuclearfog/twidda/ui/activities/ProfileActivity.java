@@ -120,7 +120,7 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 	/**
 	 * scrollview position threshold to lock/unlock child scrolling
 	 */
-	private static final int SCROLL_THRESHOLD = 10;
+	private static final int SCROLL_THRESHOLD = 50;
 
 	/**
 	 * color of the profile image placeholder

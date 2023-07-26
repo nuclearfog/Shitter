@@ -43,7 +43,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				float deltaX = ev.getX() - xPos;
 				float deltaY = ev.getY() - yPos;
 				// lock x-axis when swiping up/down
-				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * 3.0f) {
+				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * 2.0f) {
 					xLock = true;
 				}
 				// detect scroll down, then aquire scroll lock
@@ -61,7 +61,6 @@ public class LockableConstraintLayout extends ConstraintLayout {
 			case MotionEvent.ACTION_UP:
 				// remove locks on gesture end
 				xLock = false;
-				yLock = false;
 				break;
 		}
 		return yLock;

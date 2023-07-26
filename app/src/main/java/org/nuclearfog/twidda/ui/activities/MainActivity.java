@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			Serializable data = savedInstanceState.getSerializable(KEY_USER_SAVE);
 			if (data instanceof User) {
 				currentUser = (User) data;
+				setCurrentUser(currentUser);
 			}
 		}
 
