@@ -269,7 +269,7 @@
 	<string name="info_open_mastodon_login">öffne Mastodon Loginseite</string>
 	<string name="info_login_to_mastodon">in Mastodon einloggen</string>
 	<string name="error_service_unavailable">Service zur Zeit nicht verfügbar!</string>
-	<string name="popup_status_text_hint">Status</string>
+	<string name="popup_status_text_hint">" Was gibt es Neues"</string>
 	<string name="info_account_selected">%1$s ausgewählt</string>
 	<string name="menu_media_add_description">Beschreibung hinzufügen</string>
 	<string name="menu_media_show_meta">zeige Medieninformationen</string>

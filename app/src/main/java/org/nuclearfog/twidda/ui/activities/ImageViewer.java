@@ -168,6 +168,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 		// set image description
 		if (description != null && !description.trim().isEmpty()) {
 			descriptionView.setDescription(description);
+			descriptionView.setVisibility(View.VISIBLE);
 		}
 		// set image blur placeholder
 		if (blurHash != null && !blurHash.trim().isEmpty()) {
