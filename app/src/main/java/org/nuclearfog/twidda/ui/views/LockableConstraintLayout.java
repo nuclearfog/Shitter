@@ -14,6 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
  */
 public class LockableConstraintLayout extends ConstraintLayout {
 
+	private static final float LOCK_RATIO = 1.1f;
+
 	@Nullable
 	private LockCallback callback;
 	private boolean xLock = false;
@@ -43,17 +45,20 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				float deltaX = ev.getX() - xPos;
 				float deltaY = ev.getY() - yPos;
 				// lock x-axis when swiping up/down
-				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * 2.0f) {
+				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * LOCK_RATIO) {
+					if (callback != null) {
+						callback.lockVerticalScroll(true);
+					}
 					xLock = true;
 				}
 				// detect scroll down, then aquire scroll lock
 				if (xLock && deltaY < 0.0f && callback != null) {
-					yLock = callback.aquireLock();
+					yLock = callback.aquireVerticalScrollLock();
 				}
 				// fall through
 
 			case MotionEvent.ACTION_DOWN:
-				// note start coordinates of the gesture
+				// note the current coordinates touch event
 				xPos = ev.getX();
 				yPos = ev.getY();
 				break;
@@ -61,6 +66,9 @@ public class LockableConstraintLayout extends ConstraintLayout {
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
 				// remove locks on gesture end
+				if (callback != null) {
+					callback.lockVerticalScroll(false);
+				}
 				xLock = false;
 				break;
 		}
@@ -89,8 +97,17 @@ public class LockableConstraintLayout extends ConstraintLayout {
 	public interface LockCallback {
 
 		/**
+		 * aquire scroll lock for child views
+		 *
 		 * @return true to lock child scroll
 		 */
-		boolean aquireLock();
+		boolean aquireVerticalScrollLock();
+
+		/**
+		 * called to lock/unlock vertical scrolling of the parent view
+		 *
+		 * @param lock true to lock vertical scrolling
+		 */
+		void lockVerticalScroll(boolean lock);
 	}
 }

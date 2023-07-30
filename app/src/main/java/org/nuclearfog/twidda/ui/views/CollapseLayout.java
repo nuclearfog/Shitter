@@ -3,10 +3,10 @@ package org.nuclearfog.twidda.ui.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
@@ -26,15 +26,17 @@ public class CollapseLayout extends NestedScrollView implements OnScrollChangeLi
 	/**
 	 * scrollview position threshold to lock/unlock child scrolling
 	 */
-	private static final int SCROLL_THRESHOLD = 50;
+	private static final int SCROLL_THRESHOLD = 10;
 
-	private int headerId, bodyId;
 	@Nullable
 	private View header;
 	@Nullable
 	private LockableConstraintLayout body;
 
-	private float xPos, yPos;
+	@IdRes
+	private int headerId = NO_ID;
+	@IdRes
+	private int bodyId = NO_ID;
 
 	/**
 	 *
@@ -68,49 +70,24 @@ public class CollapseLayout extends NestedScrollView implements OnScrollChangeLi
 
 
 	@Override
-	public boolean aquireLock() {
+	public boolean aquireVerticalScrollLock() {
 		return header != null && getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
 	}
 
 
 	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		switch (ev.getActionMasked()) {
-			case MotionEvent.ACTION_MOVE:
-				float deltaX = ev.getX() - xPos;
-				float deltaY = ev.getY() - yPos;
-				// lock x-axis when swiping up/down
-				if (Math.abs(deltaX) > Math.abs(deltaY) * 1.1f) {
-					setNestedScrollingEnabled(false);
-				}
-				// fall through
-
-			case MotionEvent.ACTION_DOWN:
-				// note start coordinates of the gesture
-				xPos = ev.getX();
-				yPos = ev.getY();
-				break;
-
-			case MotionEvent.ACTION_CANCEL:
-			case MotionEvent.ACTION_UP:
-				setNestedScrollingEnabled(true);
-				break;
-		}
-		return false;
+	public void lockVerticalScroll(boolean lock) {
+		setNestedScrollingEnabled(lock);
 	}
 
 
 	@Override
 	public boolean onPreDraw() {
 		getViewTreeObserver().removeOnPreDrawListener(this);
-		if (headerId != 0) {
-			header = findViewById(headerId);
-		}
-		if (bodyId != 0) {
-			body = findViewById(bodyId);
-			body.addLockCallback(this);
-		}
+		header = findViewById(headerId);
+		body = findViewById(bodyId);
 		if (body != null) {
+			body.addLockCallback(this);
 			body.getLayoutParams().height = getMeasuredHeight();
 			body.requestLayout();
 		}
