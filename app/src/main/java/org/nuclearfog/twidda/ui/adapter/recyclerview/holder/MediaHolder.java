@@ -93,15 +93,25 @@ public class MediaHolder extends ViewHolder implements OnClickListener {
 					}
 					// use hash to generate blur
 					else {
-						Bitmap blur = BlurHashDecoder.decode(media.getBlurHash());
-						previewImage.setImageBitmap(blur);
+						if (media.getMeta() != null) {
+							Bitmap blur = BlurHashDecoder.decode(media.getBlurHash(), media.getMeta().getWidthPreview() / (float) media.getMeta().getHeightPreview());
+							previewImage.setImageBitmap(blur);
+						} else {
+							Bitmap blur = BlurHashDecoder.decode(media.getBlurHash());
+							previewImage.setImageBitmap(blur);
+						}
 					}
 				} else {
 					RequestCreator picassoBuilder = picasso.load(media.getPreviewUrl());
 					// create blur placeholder
 					if (!media.getBlurHash().isEmpty()) {
-						Bitmap blur = BlurHashDecoder.decode(media.getBlurHash());
-						picassoBuilder.placeholder(new BitmapDrawable(previewImage.getResources(), blur));
+						if (media.getMeta() != null) {
+							Bitmap blur = BlurHashDecoder.decode(media.getBlurHash(), media.getMeta().getWidthPreview() / (float) media.getMeta().getHeightPreview());
+							picassoBuilder.placeholder(new BitmapDrawable(previewImage.getResources(), blur));
+						} else {
+							Bitmap blur = BlurHashDecoder.decode(media.getBlurHash());
+							picassoBuilder.placeholder(new BitmapDrawable(previewImage.getResources(), blur));
+						}
 					}
 					// load preview image
 					picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE);

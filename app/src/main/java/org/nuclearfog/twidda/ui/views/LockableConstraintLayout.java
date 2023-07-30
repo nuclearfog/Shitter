@@ -38,7 +38,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		switch (ev.getAction()) {
+		switch (ev.getActionMasked()) {
 			case MotionEvent.ACTION_MOVE:
 				float deltaX = ev.getX() - xPos;
 				float deltaY = ev.getY() - yPos;
@@ -58,6 +58,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				yPos = ev.getY();
 				break;
 
+			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
 				// remove locks on gesture end
 				xLock = false;

@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,8 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
-import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -85,8 +82,6 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
 import org.nuclearfog.twidda.ui.dialogs.ReportDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
-import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
-import org.nuclearfog.twidda.ui.views.LockableConstraintLayout.LockCallback;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -99,8 +94,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class StatusActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener,
-		OnConfirmListener, OnCardClickListener, OnScrollChangeListener, LockCallback, ActivityResultCallback<ActivityResult>, OnPreDrawListener {
+public class StatusActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener, OnConfirmListener,
+		OnCardClickListener, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Activity result code to update existing status information
@@ -148,11 +143,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public static final String KEY_NOTIFICATION_ID = "notification_id";
 
 	/**
-	 * scrollview position threshold to lock/unlock child scrolling
-	 */
-	private static final int SCROLL_THRESHOLD = 10;
-
-	/**
 	 * toolbar menu group ID for copy options
 	 */
 	private static final int MENU_GROUP_COPY = 0x157426;
@@ -186,9 +176,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private AudioPlayerDialog audioDialog;
 	private ReportDialog reportDialog;
 
-	private ViewGroup root, header;
-	private NestedScrollView container;
-	private LockableConstraintLayout body;
 	private TextView status_source, created_at, status_text, screen_name, username, location_name, sensitive, visibility, spoiler, spoiler_hint, translate_text;
 	private Button reply_button, repost_button, like_button, reply_name, repost_name_button;
 	private ImageView profile_image;
@@ -212,10 +199,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_status);
-		root = findViewById(R.id.page_status_root);
-		header = findViewById(R.id.page_status_header);
-		body = findViewById(R.id.page_status_body);
-		container = findViewById(R.id.page_status_scroll);
+		ViewGroup root = findViewById(R.id.page_status_root);
+		RecyclerView card_list = findViewById(R.id.page_status_cards);
 		toolbar = findViewById(R.id.page_status_toolbar);
 		reply_button = findViewById(R.id.page_status_reply);
 		repost_button = findViewById(R.id.page_status_repost);
@@ -235,7 +220,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		translate_text = findViewById(R.id.page_status_text_translate);
 		spoiler_hint = findViewById(R.id.page_status_text_sensitive_hint);
 		card_container = findViewById(R.id.page_status_cards_container);
-		RecyclerView card_list = findViewById(R.id.page_status_cards);
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		statusLoader = new StatusAction(this);
@@ -349,9 +333,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		repost_name_button.setOnLongClickListener(this);
 		location_name.setOnLongClickListener(this);
 		status_text.setOnClickListener(this);
-		container.setOnScrollChangeListener(this);
-		body.addLockCallback(this);
-		container.getViewTreeObserver().addOnPreDrawListener(this);
 	}
 
 
@@ -385,16 +366,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		emojiLoader.cancel();
 		audioDialog.close();
 		super.onDestroy();
-	}
-
-
-	@Override
-	public boolean onPreDraw() {
-		// when views are added to scrollview, scroll back to top
-		container.getViewTreeObserver().removeOnPreDrawListener(this);
-		body.getLayoutParams().height = root.getMeasuredHeight() - toolbar.getMeasuredHeight();
-		container.scrollTo(0, 0);
-		return true;
 	}
 
 
@@ -696,18 +667,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-		body.lock(scrollY > header.getMeasuredHeight() + SCROLL_THRESHOLD && scrollY < header.getMeasuredHeight() - SCROLL_THRESHOLD);
-	}
-
-
-	@Override
-	public boolean aquireLock() {
-		return container.getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
-	}
-
-
-	@Override
 	public void onConfirm(int type) {
 		if (type == ConfirmDialog.DELETE_STATUS) {
 			if (status != null) {
@@ -849,7 +808,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// add 'translate' label
 		if (!status.getText().isEmpty() && !status.getLanguage().isEmpty() && !status.getLanguage().equals(Locale.getDefault().getLanguage())) {
-			translate_text.setVisibility(View.VISIBLE); // todo add translation support check
+			translate_text.setVisibility(View.VISIBLE);
 		} else {
 			translate_text.setVisibility(View.GONE);
 		}

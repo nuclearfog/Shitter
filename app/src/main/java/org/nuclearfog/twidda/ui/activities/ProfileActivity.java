@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,8 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.widget.NestedScrollView;
-import androidx.core.widget.NestedScrollView.OnScrollChangeListener;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.squareup.picasso.Callback;
@@ -66,8 +63,6 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.viewpager.ProfileAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
-import org.nuclearfog.twidda.ui.views.LockableConstraintLayout.LockCallback;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -81,8 +76,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileActivity extends AppCompatActivity implements OnScrollChangeListener,
-		OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback, LockCallback, OnPreDrawListener {
+public class ProfileActivity extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnTabSelectedListener, OnConfirmListener, Callback {
 
 	/**
 	 * Key for the user ID
@@ -118,11 +112,6 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 	public static final int TOOLBAR_TRANSPARENCY = 0x5fffffff;
 
 	/**
-	 * scrollview position threshold to lock/unlock child scrolling
-	 */
-	private static final int SCROLL_THRESHOLD = 50;
-
-	/**
 	 * color of the profile image placeholder
 	 */
 	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
@@ -143,9 +132,6 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 	private UserLoader userLoader;
 	private TextEmojiLoader emojiLoader;
 
-	private NestedScrollView scroll;
-	private ConstraintLayout header;
-	private LockableConstraintLayout body;
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
 	private Button following, follower;
@@ -171,9 +157,7 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 		setContentView(R.layout.page_profile);
 		ViewGroup root = findViewById(R.id.page_profile_root);
 		View floatingButton = findViewById(R.id.page_profile_post_button);
-		header = findViewById(R.id.page_profile_header);
-		body = findViewById(R.id.page_profile_body);
-		scroll = findViewById(R.id.page_profile_scroll);
+		ConstraintLayout header = findViewById(R.id.page_profile_header);
 		toolbar = findViewById(R.id.profile_toolbar);
 		description = findViewById(R.id.bio);
 		following = findViewById(R.id.following);
@@ -277,9 +261,6 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 		bannerImage.setOnClickListener(this);
 		user_website.setOnClickListener(this);
 		floatingButton.setOnClickListener(this);
-		scroll.setOnScrollChangeListener(this);
-		scroll.getViewTreeObserver().addOnPreDrawListener(this);
-		body.addLockCallback(this);
 	}
 
 
@@ -297,15 +278,6 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 		userLoader.cancel();
 		emojiLoader.cancel();
 		super.onDestroy();
-	}
-
-
-	@Override
-	public boolean onPreDraw() {
-		scroll.getViewTreeObserver().removeOnPreDrawListener(this);
-		body.getLayoutParams().height = scroll.getMeasuredHeight();
-		scroll.scrollTo(0, 0);
-		return true;
 	}
 
 
@@ -606,18 +578,6 @@ public class ProfileActivity extends AppCompatActivity implements OnScrollChange
 	@Override
 	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
-	}
-
-
-	@Override
-	public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-		body.lock(scrollY > header.getMeasuredHeight() + SCROLL_THRESHOLD && scrollY < header.getMeasuredHeight() - SCROLL_THRESHOLD);
-	}
-
-
-	@Override
-	public boolean aquireLock() {
-		return scroll.getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
 	}
 
 
