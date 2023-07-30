@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -143,9 +144,15 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int FILTER_REMOVE = 626;
 
+	/**
+	 * show notification when opening an external link while proxy is enabled
+	 */
+	public static final int CONTINUE_BROWSER = 627;
 
-	private TextView title, message;
+
+	private TextView title, message, remember_label;
 	private Button confirm, cancel;
+	private CompoundButton remember;
 
 	private OnConfirmListener listener;
 	private GlobalSettings settings;
@@ -172,6 +179,8 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		cancel = findViewById(R.id.confirm_no);
 		title = findViewById(R.id.confirm_title);
 		message = findViewById(R.id.confirm_message);
+		remember = findViewById(R.id.confirm_remember);
+		remember_label = findViewById(R.id.confirm_remember_label);
 
 		AppStyles.setTheme(root, settings.getPopupColor());
 
@@ -282,6 +291,13 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 			case FILTER_REMOVE:
 				messageRes = R.string.confirm_remove_filter;
 				break;
+
+			case CONTINUE_BROWSER:
+				remember_label.setVisibility(View.VISIBLE);
+				remember.setVisibility(View.VISIBLE);
+				titleRes = R.string.confirm_warning;
+				messageRes = R.string.confirm_proxy_bypass;
+				break;
 		}
 		// setup title
 		title.setVisibility(titleVis);
@@ -345,7 +361,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 			Object tag = v.getTag();
 			if (tag instanceof Integer) {
 				int type = (int) tag;
-				listener.onConfirm(type);
+				listener.onConfirm(type, remember.isChecked());
 			}
 			dismiss();
 		} else if (v.getId() == R.id.confirm_no) {
@@ -361,8 +377,9 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		/**
 		 * called when the positive button was clicked
 		 *
-		 * @param type type of dialog
+		 * @param type     type of dialog
+		 * @param remember true if "remember choice" is checked
 		 */
-		void onConfirm(int type);
+		void onConfirm(int type, boolean remember);
 	}
 }

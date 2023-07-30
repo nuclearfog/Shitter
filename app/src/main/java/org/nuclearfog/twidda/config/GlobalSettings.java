@@ -86,6 +86,7 @@ public class GlobalSettings {
 	private static final String PROXY_PORT = "proxy_port";
 	private static final String PROXY_USER = "proxy_user";
 	private static final String PROXY_PASS = "proxy_pass";
+	private static final String PROXY_WARNING = "proxy_warning";
 	private static final String TREND_LOC = "location";
 	private static final String TREND_ID = "world_id_long";
 	private static final String ENABLE_LIKE = "like_enable";
@@ -156,6 +157,7 @@ public class GlobalSettings {
 	private boolean push_enabled;
 	private boolean isProxyEnabled;
 	private boolean isProxyAuthSet;
+	private boolean proxyWarning;
 	private boolean toolbarOverlap;
 	private boolean tweetIndicators;
 	private boolean filterResults;
@@ -811,14 +813,17 @@ public class GlobalSettings {
 		this.proxyPort = proxyPort;
 		this.proxyUser = proxyUser;
 		this.proxyPass = proxyPass;
+		isProxyEnabled = true;
 
 		Editor edit = settings.edit();
+		edit.putBoolean(PROXY_SET, true);
 		edit.putString(PROXY_ADDR, proxyHost);
 		edit.putString(PROXY_PORT, proxyPort);
 		edit.putString(PROXY_USER, proxyUser);
 		edit.putString(PROXY_PASS, proxyPass);
 		edit.apply();
 
+		setProxyWarning(true);
 		notifySettingsChange();
 	}
 
@@ -846,15 +851,15 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * set proxy server connection enabled
+	 * enable/disable proxy warning
 	 *
-	 * @param enable true if proxy connection is set
+	 * @param enable true to enable proxy warning
 	 */
-	public void setProxyEnabled(boolean enable) {
-		isProxyEnabled = enable;
+	public void setProxyWarning(boolean enable) {
+		proxyWarning = enable;
 
 		Editor edit = settings.edit();
-		edit.putBoolean(PROXY_SET, enable);
+		edit.putBoolean(PROXY_WARNING, enable);
 		edit.apply();
 	}
 
@@ -944,6 +949,13 @@ public class GlobalSettings {
 	 */
 	public boolean isProxyAuthSet() {
 		return isProxyAuthSet;
+	}
+
+	/**
+	 * check if proxy warning should be shown when trying to open external link
+	 */
+	public boolean isProxyWarningEnabled() {
+		return proxyWarning;
 	}
 
 	/**
@@ -1077,6 +1089,7 @@ public class GlobalSettings {
 		localOnly = settings.getBoolean(MASTODON_LOCAL_TIMELINE, false);
 		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
 		floatingEnabled = settings.getBoolean(FLOATING_BUTTON, true);
+		proxyWarning = settings.getBoolean(PROXY_WARNING, true);
 		pushInstance = settings.getString(PUSH_INSTANCE, ConstantsKt.INSTANCE_DEFAULT);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");

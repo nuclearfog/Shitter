@@ -276,7 +276,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		// remove user from list
 		if (type == ConfirmDialog.LIST_REMOVE_USER) {
 			if (userlistManager.isIdle() && selectedUser != null) {

@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -464,11 +463,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(status.getUrl()));
-			try {
-				startActivity(intent);
-			} catch (ActivityNotFoundException err) {
-				Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
+			if (!status.getUrl().isEmpty()) {
+				LinkUtils.openLink(this, status.getUrl(), true);
 			}
 			return true;
 		}
@@ -667,7 +663,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.DELETE_STATUS) {
 			if (status != null) {
 				long id = status.getId();
@@ -684,7 +680,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onCardClick(Card card, int type) {
 		if (type == OnCardClickListener.TYPE_LINK) {
-			LinkUtils.openLink(this, card.getUrl());
+			LinkUtils.openLink(this, card.getUrl(), false);
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
@@ -739,7 +735,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onLinkClick(String tag) {
 		// proceed click when there is no text blur
 		if (status_text.getPaint().getMaskFilter() == null) {
-			LinkUtils.openLink(this, tag);
+			LinkUtils.openLink(this, tag, false);
 		}
 	}
 

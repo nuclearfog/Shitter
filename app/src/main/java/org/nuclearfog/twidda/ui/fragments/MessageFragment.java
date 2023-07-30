@@ -109,7 +109,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 	@Override
 	public void onLinkClick(String tag) {
-		LinkUtils.openLink(requireActivity(), tag);
+		LinkUtils.openLink(requireActivity(), tag, false);
 	}
 
 
@@ -162,7 +162,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.MESSAGE_DELETE) {
 			MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, 0, selectedId, "");
 			messageLoader.execute(param, this);

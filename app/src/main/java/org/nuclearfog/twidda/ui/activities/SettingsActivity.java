@@ -341,7 +341,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		// remove account from database
 		if (type == ConfirmDialog.APP_LOG_OUT) {
 			settings.setLogin(null, true);
@@ -759,7 +759,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				String proxyUserStr = proxy_user.getText().toString();
 				String proxyPassStr = proxy_pass.getText().toString();
 				settings.setProxyServer(proxyAddrStr, proxyPortStr, proxyUserStr, proxyPassStr);
-				settings.setProxyEnabled(true);
 				settings.setProxyAuthSet(enable_auth.isChecked());
 			}
 		} else {

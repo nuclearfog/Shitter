@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -462,7 +461,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	@Override
 	public void onLinkClick(String tag) {
-		LinkUtils.openLink(this, tag);
+		LinkUtils.openLink(this, tag, false);
 	}
 
 
@@ -509,13 +508,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		// open link added to profile
 		else if (v.getId() == R.id.links) {
 			if (!user.getProfileUrl().isEmpty()) {
-				String link = user.getProfileUrl();
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-				try {
-					startActivity(intent);
-				} catch (ActivityNotFoundException err) {
-					Toast.makeText(getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
-				}
+				LinkUtils.openLink(this, user.getProfileUrl(), false);
 			}
 		}
 		// open profile image
@@ -548,7 +541,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		if (user != null) {
 			// confirmed unfollowing user
 			if (type == ConfirmDialog.PROFILE_UNFOLLOW) {

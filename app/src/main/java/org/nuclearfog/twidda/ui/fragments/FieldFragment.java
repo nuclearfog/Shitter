@@ -48,7 +48,7 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener {
 
 	@Override
 	public void onLinkClick(String url) {
-		LinkUtils.openLink(requireActivity(), url);
+		LinkUtils.openLink(requireActivity(), url, false);
 	}
 
 

@@ -125,7 +125,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.DOMAIN_BLOCK_REMOVE) {
 			DomainParam param = new DomainParam(DomainParam.MODE_UNBLOCK, DomainAdapter.NO_INDEX, DomainParam.NO_CURSOR, selectedDomain);
 			domainAction.execute(param, this);

@@ -386,7 +386,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		// retry uploading status
 		if (type == ConfirmDialog.STATUS_EDITOR_ERROR) {
 			updateStatus();

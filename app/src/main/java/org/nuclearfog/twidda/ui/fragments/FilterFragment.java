@@ -95,7 +95,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.FILTER_REMOVE) {
 			FilterActionParam param = new FilterActionParam(FilterActionParam.DELETE, selection.getId(), null);
 			filterAction.execute(param, filterRemoveCallback);

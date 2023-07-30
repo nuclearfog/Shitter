@@ -170,7 +170,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.NOTIFICATION_DISMISS) {
 			if (select != null) {
 				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.DISMISS, select.getId());

@@ -1,9 +1,7 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +35,7 @@ import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
@@ -337,12 +336,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	 * open login page
 	 */
 	private void connect(String loginLink) {
-		Intent loginIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(loginLink));
-		try {
-			startActivity(loginIntent);
-		} catch (ActivityNotFoundException err) {
-			Toast.makeText(getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
-		}
+		LinkUtils.openLink(this, loginLink, true);
 	}
 
 	/**

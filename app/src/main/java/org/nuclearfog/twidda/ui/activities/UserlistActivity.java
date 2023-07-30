@@ -260,7 +260,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		// delete user list
 		if (type == ConfirmDialog.LIST_DELETE && userList != null) {
 			if (listLoaderAsync.isIdle()) {

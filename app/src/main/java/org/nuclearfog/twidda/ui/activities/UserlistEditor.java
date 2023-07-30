@@ -182,7 +182,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		// retry updating list
 		if (type == ConfirmDialog.LIST_EDITOR_ERROR) {
 			updateList();

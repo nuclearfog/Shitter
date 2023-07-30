@@ -198,7 +198,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
 
 	@Override
-	public void onConfirm(int type) {
+	public void onConfirm(int type, boolean remember) {
 		// retry sending message
 		if (type == ConfirmDialog.MESSAGE_EDITOR_ERROR) {
 			sendMessage();
