@@ -115,8 +115,9 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	@Override
 	protected void onReset() {
 		adapter.clear();
-		setRefresh(true);
+		trendLoader = new TrendLoader(requireContext());
 		load(TrendParameter.NO_CURSOR, TrendAdapter.CLEAR_LIST);
+		setRefresh(true);
 	}
 
 

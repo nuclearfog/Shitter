@@ -54,11 +54,14 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener {
 
 	@Override
 	protected void onReload() {
+		// swipe disabled
 	}
 
 
 	@Override
 	protected void onReset() {
+		// reload adapter items
+		adapter.notifyDataSetChanged();
 	}
 
 	/**

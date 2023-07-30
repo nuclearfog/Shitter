@@ -97,8 +97,10 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	protected void onReset() {
 		adapter.clear();
-		setRefresh(true);
+		accountLoader = new AccountLoader(requireContext());
+		databaseAction = new DatabaseAction(requireContext());
 		load(AccountParameter.LOAD);
+		setRefresh(true);
 	}
 
 

@@ -116,7 +116,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 */
 	public void reset() {
 		// check if fragment is initialized
-		if (reload != null && list != null && settings != null) {
+		if (reload != null && list != null && settings != null && getContext() != null) {
 			// reset colors
 			AppStyles.setSwipeRefreshColor(reload, settings);
 			list.setBackgroundColor(settings.getBackgroundColor());
@@ -144,6 +144,9 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		return sessionId;
 	}
 
+	/**
+	 * disable swipe support
+	 */
 	protected void disableSwipe() {
 		reload.setEnabled(false);
 	}

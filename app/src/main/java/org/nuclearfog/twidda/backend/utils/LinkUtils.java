@@ -106,7 +106,11 @@ public class LinkUtils {
 		}
 	}
 
-
+	/**
+	 * open url with an external browser
+	 *
+	 * @param link url to open
+	 */
 	private static void redirectToBrowser(Activity activity, Uri link) {
 		// open link in a browser
 		Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -114,7 +118,7 @@ public class LinkUtils {
 		try {
 			activity.startActivity(intent);
 		} catch (Exception exception) {
-			Toast.makeText(activity.getApplicationContext(), R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
+			Toast.makeText(activity.getApplicationContext(), R.string.error_open_link, Toast.LENGTH_SHORT).show();
 		}
 	}
 }

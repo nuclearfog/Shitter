@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.MessageAction;
+import org.nuclearfog.twidda.backend.async.MessageAction.MessageActionParam;
+import org.nuclearfog.twidda.backend.async.MessageAction.MessageActionResult;
 import org.nuclearfog.twidda.backend.async.MessageLoader;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderParam;
 import org.nuclearfog.twidda.backend.async.MessageLoader.MessageLoaderResult;
@@ -34,7 +37,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class MessageFragment extends ListFragment implements OnMessageClickListener, OnConfirmListener, AsyncCallback<MessageLoaderResult> {
+public class MessageFragment extends ListFragment implements OnMessageClickListener, OnConfirmListener {
 
 	/**
 	 * bundle key used to save adapter items
@@ -42,7 +45,11 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	 */
 	private static final String KEY_SAVE = "message-save";
 
+	private AsyncCallback<MessageLoaderResult> messageLoaderCallback = this::onMessageLoaded;
+	private AsyncCallback<MessageActionResult> messageActionCallback = this::onMessageDeleted;
+
 	private MessageLoader messageLoader;
+	private MessageAction messageAction;
 	private MessageAdapter adapter;
 	private ConfirmDialog confirmDialog;
 
@@ -55,6 +62,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new MessageAdapter(this);
 		messageLoader = new MessageLoader(requireContext());
+		messageAction = new MessageAction(requireContext());
 		setAdapter(adapter);
 
 		if (savedInstanceState != null) {
@@ -79,6 +87,7 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onDestroy() {
 		messageLoader.cancel();
+		messageAction.cancel();
 		super.onDestroy();
 	}
 
@@ -92,6 +101,8 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		messageLoader = new MessageLoader(getContext());
+		messageAction = new MessageAction(getContext());
 		loadMessages(false, null, MessageAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
@@ -164,27 +175,21 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	@Override
 	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.MESSAGE_DELETE) {
-			MessageLoaderParam param = new MessageLoaderParam(MessageLoaderParam.DELETE, 0, selectedId, "");
-			messageLoader.execute(param, this);
+			MessageActionParam param = new MessageActionParam(MessageActionParam.DELETE, selectedId);
+			messageAction.execute(param, messageActionCallback);
 		}
 	}
 
-
-	@Override
-	public void onResult(@NonNull MessageLoaderResult result) {
+	/**
+	 * called when new messages were loaded
+	 */
+	private void onMessageLoaded(MessageLoaderResult result) {
 		switch (result.mode) {
 			case MessageLoaderResult.DATABASE:
 			case MessageLoaderResult.ONLINE:
 				if (result.messages != null) {
 					adapter.addItems(result.messages, result.index);
 				}
-				break;
-
-			case MessageLoaderResult.DELETE:
-				if (getContext() != null) {
-					Toast.makeText(getContext(), R.string.info_dm_removed, Toast.LENGTH_SHORT).show();
-				}
-				adapter.removeItem(result.id);
 				break;
 
 			case MessageLoaderResult.ERROR:
@@ -200,12 +205,35 @@ public class MessageFragment extends ListFragment implements OnMessageClickListe
 	}
 
 	/**
+	 * called when message was deleted
+	 */
+	private void onMessageDeleted(MessageActionResult result) {
+		switch (result.mode) {
+			case MessageActionResult.DELETE:
+				if (getContext() != null) {
+					Toast.makeText(getContext(), R.string.info_dm_removed, Toast.LENGTH_SHORT).show();
+				}
+				adapter.removeItem(result.id);
+				break;
+
+			case MessageActionResult.ERROR:
+				if (getContext() != null) {
+					ErrorUtils.showErrorMessage(getContext(), result.exception);
+				}
+				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
+					adapter.removeItem(result.id);
+				}
+				break;
+		}
+	}
+
+	/**
 	 * @param local  true to load message from database
 	 * @param cursor list cursor
 	 */
 	private void loadMessages(boolean local, String cursor, int index) {
 		int mode = local ? MessageLoaderParam.DATABASE : MessageLoaderParam.ONLINE;
 		MessageLoaderParam param = new MessageLoaderParam(mode, index, 0L, cursor);
-		messageLoader.execute(param, this);
+		messageLoader.execute(param, messageLoaderCallback);
 	}
 }

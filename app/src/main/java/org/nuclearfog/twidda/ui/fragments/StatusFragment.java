@@ -187,6 +187,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		statusLoader = new StatusLoader(requireContext());
 		load(StatusParameter.NO_ID, StatusParameter.NO_ID, StatusAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}

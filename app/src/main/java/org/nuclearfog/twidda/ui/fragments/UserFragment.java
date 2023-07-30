@@ -221,8 +221,10 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	@Override
 	protected void onReset() {
 		adapter.clear();
-		setRefresh(true);
+		userLoader = new UsersLoader(requireContext());
+		userlistManager = new UserlistManager(requireContext());
 		load(UserParam.NO_CURSOR, UserAdapter.CLEAR_LIST);
+		setRefresh(true);
 	}
 
 

@@ -10,14 +10,12 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.lists.Messages;
-import org.nuclearfog.twidda.ui.fragments.MessageFragment;
-
 
 /**
  * task to download a direct message list from twitter and handle message actions
  *
  * @author nuclearfog
- * @see MessageFragment
+ * @see org.nuclearfog.twidda.ui.fragments.MessageFragment
  */
 public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderParam, MessageLoader.MessageLoaderResult> {
 
@@ -51,17 +49,10 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 					messages = db.getMessages();
 					return new MessageLoaderResult(MessageLoaderResult.ONLINE, param.index, param.id, messages, null);
 
-				case MessageLoaderParam.DELETE:
-					connection.deleteDirectmessage(param.id);
-					db.removeMessage(param.id);
-					return new MessageLoaderResult(MessageLoaderResult.DELETE, param.index, param.id, null, null);
-
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			if (exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND)
-				db.removeMessage(param.id);
 			return new MessageLoaderResult(MessageLoaderResult.ERROR, param.index, param.id, null, exception);
 		}
 	}
@@ -73,7 +64,6 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 
 		public static final int DATABASE = 1;
 		public static final int ONLINE = 2;
-		public static final int DELETE = 3;
 
 		final int mode, index;
 		final long id;
@@ -95,7 +85,6 @@ public class MessageLoader extends AsyncExecutor<MessageLoader.MessageLoaderPara
 		public static final int ERROR = -1;
 		public static final int DATABASE = 4;
 		public static final int ONLINE = 5;
-		public static final int DELETE = 6;
 
 		public final int mode, index;
 		public final long id;

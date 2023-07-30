@@ -74,6 +74,8 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		filterLoader = new StatusFilterLoader(requireContext());
+		filterAction = new StatusFilterAction(requireContext());
 		filterLoader.execute(null, filterLoadCallback);
 		setRefresh(true);
 	}

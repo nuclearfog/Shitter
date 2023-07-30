@@ -103,6 +103,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		notificationLoader = new NotificationLoader(requireContext());
+		notificationAction = new NotificationAction(requireContext());
 		load(0L, 0L, 0);
 		setRefresh(true);
 	}
