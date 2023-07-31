@@ -114,6 +114,9 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 			visibilitySwitch.setVisibility(View.INVISIBLE);
 			visibilityLabel.setVisibility(View.INVISIBLE);
 		}
+		if (!settings.getLogin().getConfiguration().userlsitDescriptionSupported()) {
+			descriptionText.setVisibility(View.GONE);
+		}
 		updateButton.setOnClickListener(this);
 		visibilitySwitch.setOnCheckedChangeListener(this);
 	}

@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		loadingCircle = new ProgressDialog(this, null);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
+
 		tabSelector.addViewPager(viewPager);
 		viewPager.setOffscreenPageLimit(4);
 		if (navigationView.getLayoutParams() != null) {
@@ -135,6 +136,17 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		if (!settings.getLogin().getConfiguration().isFilterSupported()) {
 			navigationView.getMenu().findItem(R.id.menu_navigator_filter).setVisible(false);
 		}
+		toolbar.setTitle("");
+		toolbar.setNavigationIcon(R.drawable.menu);
+		setSupportActionBar(toolbar);
+		AppStyles.setTheme(header);
+
+		navigationView.post(new Runnable() {
+			@Override
+			public void run() {
+				AppStyles.setTheme(navigationView);
+			}
+		});
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_USER_SAVE);
 			if (data instanceof User) {
@@ -142,17 +154,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				setCurrentUser(currentUser);
 			}
 		}
-
-		toolbar.setTitle("");
-		toolbar.setNavigationIcon(R.drawable.menu);
-		setSupportActionBar(toolbar);
-		AppStyles.setTheme(header);
-		navigationView.post(new Runnable() {
-			@Override
-			public void run() {
-				AppStyles.setTheme(navigationView);
-			}
-		});
 
 		toolbar.setNavigationOnClickListener(new OnClickListener() {
 			@Override

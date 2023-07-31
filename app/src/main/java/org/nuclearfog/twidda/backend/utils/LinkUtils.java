@@ -60,11 +60,12 @@ public class LinkUtils {
 				url = "https://nitter.net" + Uri.parse(url).getPath();
 			}
 			final Uri link = Uri.parse(url);
-			if (settings.isProxyWarningEnabled()) {
+			// warn when trying to open a link externally with proxy enabled
+			if (settings.isProxyEnabled() && settings.isProxyWarningEnabled()) {
 				ConfirmDialog dialog = new ConfirmDialog(activity, new ConfirmDialog.OnConfirmListener() {
 					@Override
 					public void onConfirm(int type, boolean remember) {
-						settings.setProxyWarning(remember);
+						settings.setProxyWarning(!remember);
 						redirectToBrowser(activity, link);
 					}
 				});

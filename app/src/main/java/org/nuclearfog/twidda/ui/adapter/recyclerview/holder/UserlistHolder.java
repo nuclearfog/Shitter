@@ -91,7 +91,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 		followList = itemView.findViewById(R.id.item_list_following_indicator);
 		placeholder = new ColorDrawable(EMPTY_COLOR);
 
-		enableExtras = settings.getLogin().getConfiguration().showListExtras();
+		enableExtras = settings.getLogin().getConfiguration().showUserlistsExtras();
 		enableImages = settings.imagesEnabled();
 
 		if (!enableExtras) {

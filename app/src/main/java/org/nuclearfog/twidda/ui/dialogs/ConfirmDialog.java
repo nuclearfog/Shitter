@@ -293,6 +293,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				break;
 
 			case CONTINUE_BROWSER:
+				titleVis = View.VISIBLE;
 				remember_label.setVisibility(View.VISIBLE);
 				remember.setVisibility(View.VISIBLE);
 				titleRes = R.string.confirm_warning;

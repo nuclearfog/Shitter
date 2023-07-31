@@ -823,7 +823,9 @@ public class GlobalSettings {
 		edit.putString(PROXY_PASS, proxyPass);
 		edit.apply();
 
-		setProxyWarning(true);
+		if (!proxyWarning) {
+			setProxyWarning(true);
+		}
 		notifySettingsChange();
 	}
 

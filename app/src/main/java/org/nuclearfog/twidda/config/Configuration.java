@@ -30,6 +30,7 @@ public enum Configuration {
 	private final String name;
 	private final int accountType;
 	private final boolean userlistExtended;
+	private final boolean userlistDescriptionEnabled;
 	private final boolean searchFilterEnabled;
 	private final boolean profileLocationEnabled;
 	private final boolean profileUrlEnabled;
@@ -62,6 +63,7 @@ public enum Configuration {
 				idBlocklistEnabled = true;
 				postLocationSupported = true;
 				userlistVisibility = true;
+				userlistDescriptionEnabled = true;
 				notificationDismissSupported = false;
 				statusSpoilerSupported = false;
 				statusVisibilitySupported = false;
@@ -77,6 +79,7 @@ public enum Configuration {
 			case Account.API_MASTODON:
 				name = "Mastodon";
 				userlistExtended = false;
+				userlistDescriptionEnabled = false;
 				searchFilterEnabled = false;
 				profileLocationEnabled = false;
 				profileUrlEnabled = false;
@@ -113,8 +116,15 @@ public enum Configuration {
 	/**
 	 * @return true to show extra userlist information
 	 */
-	public boolean showListExtras() {
+	public boolean showUserlistsExtras() {
 		return userlistExtended;
+	}
+
+	/**
+	 * @return true if userlist description is supported
+	 */
+	public boolean userlsitDescriptionSupported() {
+		return userlistDescriptionEnabled;
 	}
 
 	/**
