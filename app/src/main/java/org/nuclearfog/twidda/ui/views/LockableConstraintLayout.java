@@ -46,9 +46,6 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				float deltaY = ev.getY() - yPos;
 				// lock x-axis when swiping up/down
 				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * LOCK_RATIO) {
-					if (callback != null) {
-						callback.lockVerticalScroll(true);
-					}
 					xLock = true;
 				}
 				// detect scroll down, then aquire scroll lock
@@ -65,10 +62,6 @@ public class LockableConstraintLayout extends ConstraintLayout {
 
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
-				// remove locks on gesture end
-				if (callback != null) {
-					callback.lockVerticalScroll(false);
-				}
 				xLock = false;
 				break;
 		}
@@ -102,12 +95,5 @@ public class LockableConstraintLayout extends ConstraintLayout {
 		 * @return true to lock child scroll
 		 */
 		boolean aquireVerticalScrollLock();
-
-		/**
-		 * called to lock/unlock vertical scrolling of the parent view
-		 *
-		 * @param lock true to lock vertical scrolling
-		 */
-		void lockVerticalScroll(boolean lock);
 	}
 }

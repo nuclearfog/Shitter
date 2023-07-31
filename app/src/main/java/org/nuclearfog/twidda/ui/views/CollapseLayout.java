@@ -52,8 +52,8 @@ public class CollapseLayout extends NestedScrollView implements OnScrollChangeLi
 		super(context, attrs);
 		if (attrs != null) {
 			TypedArray attrArray = context.obtainStyledAttributes(attrs, R.styleable.CollapseLayout);
-			headerId = attrArray.getResourceId(R.styleable.CollapseLayout_header, 0);
-			bodyId = attrArray.getResourceId(R.styleable.CollapseLayout_body, 0);
+			headerId = attrArray.getResourceId(R.styleable.CollapseLayout_header, NO_ID);
+			bodyId = attrArray.getResourceId(R.styleable.CollapseLayout_body, NO_ID);
 			attrArray.recycle();
 		}
 		setOnScrollChangeListener(this);
@@ -72,12 +72,6 @@ public class CollapseLayout extends NestedScrollView implements OnScrollChangeLi
 	@Override
 	public boolean aquireVerticalScrollLock() {
 		return header != null && getScrollY() < header.getMeasuredHeight() - SCROLL_THRESHOLD;
-	}
-
-
-	@Override
-	public void lockVerticalScroll(boolean lock) {
-		setNestedScrollingEnabled(lock);
 	}
 
 

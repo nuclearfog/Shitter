@@ -146,6 +146,7 @@ public class AudioPlayerDialog extends Dialog implements OnClickListener, Render
 	public void close() {
 		// remove player to prevent memory leak
 		if (controls != null) {
+			player.release();
 			controls.setPlayer(null);
 		}
 	}

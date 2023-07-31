@@ -213,6 +213,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	@Override
 	protected void onDestroy() {
 		// remove player reference to prevent memory leak
+		player.release();
 		playerView.setPlayer(null);
 		super.onDestroy();
 	}
