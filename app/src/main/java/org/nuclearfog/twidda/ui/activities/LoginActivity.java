@@ -67,6 +67,12 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	public static final int RETURN_SETTINGS_CHANGED = 0x227;
 
 	/**
+	 * key to return login information to parent activity
+	 * value type is {@link org.nuclearfog.twidda.model.Account}
+	 */
+	public static final String RETURN_ACCOUNT = "account-data";
+
+	/**
 	 * dropdown selection index of Mastodon
 	 *
 	 * @see R.array .networks
@@ -209,13 +215,23 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	@Override
 	public void onActivityResult(ActivityResult result) {
-		if (result.getResultCode() == AccountActivity.RETURN_ACCOUNT_CHANGED) {
-			// account selected, return to MainActivity
-			setResult(RETURN_LOGIN_SUCCESSFUL);
-			finish();
-		} else {
-			AppStyles.setTheme(root);
-			adapter.notifyDataSetChanged();
+		switch (result.getResultCode()) {
+			case AccountActivity.RETURN_ACCOUNT_CHANGED:
+				// account selected, return to MainActivity
+				Intent intent = new Intent();
+				if (result.getData() != null) {
+					// delegate login information
+					intent.putExtra(RETURN_ACCOUNT, result.getData().getSerializableExtra(AccountActivity.RETURN_ACCOUNT));
+				}
+				setResult(RETURN_LOGIN_SUCCESSFUL, intent);
+				finish();
+				break;
+
+			case SettingsActivity.RETURN_SETTINGS_CHANGED:
+				setResult(RETURN_SETTINGS_CHANGED);
+				AppStyles.setTheme(root);
+				adapter.notifyDataSetChanged();
+				break;
 		}
 	}
 
@@ -314,7 +330,9 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	public void onResult(@NonNull LoginResult result) {
 		switch (result.mode) {
 			case LoginResult.MODE_LOGIN:
-				setResult(RETURN_LOGIN_SUCCESSFUL);
+				Intent intent = new Intent();
+				intent.putExtra(RETURN_ACCOUNT, result.account);
+				setResult(RETURN_LOGIN_SUCCESSFUL, intent);
 				finish();
 				break;
 

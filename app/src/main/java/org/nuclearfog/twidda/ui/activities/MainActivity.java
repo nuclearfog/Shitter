@@ -46,6 +46,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.viewpager.HomeAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
@@ -64,8 +65,15 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener,
 		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<UserResult> {
 
+	/**
+	 * Bundle key used by push notification to select notification tab when creating this activity
+	 */
 	public static final String KEY_SELECT_NOTIFICATION = "main_notification";
 
+	/**
+	 * Bundle key used to save user information
+	 * value type is {@link User}
+	 */
 	private static final String KEY_USER_SAVE = "user-save";
 
 	/**
@@ -80,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	@Nullable
 	private HomeAdapter adapter;
 	private GlobalSettings settings;
-	private UserLoader userLoader;
 	private Picasso picasso;
 
 	private Dialog loadingCircle;
@@ -91,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private ImageView profileImage;
 	private TextView username, screenname;
 	private TextView followingCount, followerCount;
+	private ViewGroup header;
 	private View floatingButton;
 
 	@Nullable
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		setContentView(R.layout.page_main);
 		Toolbar toolbar = findViewById(R.id.home_toolbar);
 		NavigationView navigationView = findViewById(R.id.home_navigator);
-		ViewGroup header = (ViewGroup) navigationView.getHeaderView(0);
+		header = (ViewGroup) navigationView.getHeaderView(0);
 		floatingButton = findViewById(R.id.home_post);
 		drawerLayout = findViewById(R.id.main_layout);
 		viewPager = findViewById(R.id.home_pager);
@@ -120,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		followerCount = header.findViewById(R.id.navigation_profile_follower);
 		followingCount = header.findViewById(R.id.navigation_profile_following);
 
-		userLoader = new UserLoader(this);
+		UserLoader userLoader = new UserLoader(this);
 		loadingCircle = new ProgressDialog(this, null);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
@@ -140,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		toolbar.setNavigationIcon(R.drawable.menu);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(header);
+		setStyle();
 
 		navigationView.post(new Runnable() {
 			@Override
@@ -150,9 +159,12 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_USER_SAVE);
 			if (data instanceof User) {
-				currentUser = (User) data;
-				setCurrentUser(currentUser);
+				setCurrentUser((User) data);
 			}
+		}
+		if (settings.isLoggedIn() && currentUser == null) {
+			UserParam param = new UserParam(UserParam.DATABASE, settings.getLogin().getId());
+			userLoader.execute(param, this);
 		}
 
 		toolbar.setNavigationOnClickListener(new OnClickListener() {
@@ -177,19 +189,12 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			activityResultLauncher.launch(loginIntent);
 		}
 		// initialize lists
-		else {
-			if (adapter == null) {
-				adapter = new HomeAdapter(this);
-				viewPager.setAdapter(adapter);
-				setStyle();
-				if (getIntent().getBooleanExtra(KEY_SELECT_NOTIFICATION, false)) {
-					// select notification page if user clicks on notification
-					viewPager.setCurrentItem(adapter.getItemCount() - 1, false);
-				}
-			}
-			if (currentUser == null) {
-				UserParam param = new UserParam(UserParam.DATABASE, settings.getLogin().getId());
-				userLoader.execute(param, this);
+		else if (adapter == null) {
+			adapter = new HomeAdapter(this);
+			viewPager.setAdapter(adapter);
+			if (getIntent().getBooleanExtra(KEY_SELECT_NOTIFICATION, false)) {
+				// select notification page if user clicks on notification
+				viewPager.setCurrentItem(adapter.getItemCount() - 1, false);
 			}
 		}
 	}
@@ -226,45 +231,71 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	@Override
 	public void onActivityResult(ActivityResult result) {
 		invalidateMenu();
+		Intent data = result.getData();
 		switch (result.getResultCode()) {
-			case ProfileEditor.RETURN_PROFILE_CHANGED:
-			case ProfileActivity.RETURN_USER_UPDATED:
-				if (result.getData() != null) {
-					Object data;
-					if (result.getData().hasExtra(ProfileActivity.KEY_USER)) {
-						data = result.getData().getSerializableExtra(ProfileActivity.KEY_USER);
-						if (data instanceof User) {
-							setCurrentUser((User) data);
-						}
-					} else if (result.getData().hasExtra(ProfileEditor.KEY_USER)) {
-						data = result.getData().getSerializableExtra(ProfileEditor.KEY_USER);
-						if (data instanceof User) {
-							setCurrentUser((User) data);
-						}
+			// login process cancelled, close activity if there is no active login
+			case LoginActivity.RETURN_LOGIN_CANCELED:
+				if (!settings.isLoggedIn()) {
+					finish();
+				}
+				break;
+
+			// login process successful, set user information
+			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
+				setCurrentUser(null); // remove old user content
+				if (data != null) {
+					Serializable serializable = data.getSerializableExtra(LoginActivity.RETURN_ACCOUNT);
+					if (serializable instanceof Account) {
+						setCurrentUser(((Account) serializable).getUser());
+					}
+				}
+				loginIntent = null;
+				break;
+
+			// new account selected
+			case AccountActivity.RETURN_ACCOUNT_CHANGED:
+				setCurrentUser(null); // remove old user content
+				if (data != null) {
+					Serializable serializable = data.getSerializableExtra(AccountActivity.RETURN_ACCOUNT);
+					if (serializable instanceof Account) {
+						setCurrentUser(((Account) serializable).getUser());
 					}
 				}
 				break;
 
-			case LoginActivity.RETURN_LOGIN_CANCELED:
-				finish();
+			// current user's profile changed
+			case ProfileEditor.RETURN_PROFILE_CHANGED:
+				if (data != null) {
+					Serializable serializable = data.getSerializableExtra(ProfileEditor.KEY_USER);
+					if (serializable instanceof User) {
+						setCurrentUser((User) serializable);
+					}
+				}
 				break;
 
+			// update user information
+			case ProfileActivity.RETURN_USER_UPDATED:
+				if (data != null) {
+					Serializable serializable = data.getSerializableExtra(ProfileActivity.KEY_USER);
+					if (serializable instanceof User) {
+						setCurrentUser((User) serializable);
+					}
+				}
+				break;
+
+			// clear old login content
 			case SettingsActivity.RETURN_APP_LOGOUT:
 				viewPager.setAdapter(null);
 				setCurrentUser(null);
 				adapter = null;
 				break;
 
+			// update font scale
 			case SettingsActivity.RETURN_FONT_SCALE_CHANGED:
 				AppStyles.updateFontScale(this);
 				// fall through
 
-			case AccountActivity.RETURN_ACCOUNT_CHANGED:
-			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
-				loginIntent = null;
-				// fall through
-
-			default:
+				// update layout & theme
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
 				if (settings.floatingButtonEnabled()) {
@@ -426,6 +457,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	 */
 	private void setStyle() {
 		AppStyles.setTheme(drawerLayout);
+		AppStyles.setTheme(header);
 		tabSelector.addTabIcons(settings.getLogin().getConfiguration().getHomeTabIcons());
 		tabSelector.updateTheme();
 	}

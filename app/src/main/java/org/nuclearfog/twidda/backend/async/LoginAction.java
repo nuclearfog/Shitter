@@ -54,7 +54,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 						}
 					}
 					ConnectionResult result = connection.getAuthorisationLink(param.connection);
-					return new LoginResult(LoginResult.MODE_REQUEST, result, null);
+					return new LoginResult(LoginResult.MODE_REQUEST, null, result, null);
 
 				case LoginParam.MODE_LOGIN:
 					// login with pin and access token
@@ -78,13 +78,13 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 							settings.setPushEnabled(false);
 						}
 					}
-					return new LoginResult(LoginResult.MODE_LOGIN, null, null);
+					return new LoginResult(LoginResult.MODE_LOGIN, account, null, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new LoginResult(LoginResult.MODE_ERROR, null, exception);
+			return new LoginResult(LoginResult.MODE_ERROR, null, null, exception);
 		}
 	}
 
@@ -123,10 +123,13 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		public final ConnectionException exception;
 		@Nullable
 		public final ConnectionResult connection;
+		@Nullable
+		public final Account account;
 
-		LoginResult(int mode, @Nullable ConnectionResult connection, @Nullable ConnectionException exception) {
+		LoginResult(int mode, @Nullable Account accout, @Nullable ConnectionResult connection, @Nullable ConnectionException exception) {
 			this.connection = connection;
 			this.exception = exception;
+			this.account = accout;
 			this.mode = mode;
 		}
 	}

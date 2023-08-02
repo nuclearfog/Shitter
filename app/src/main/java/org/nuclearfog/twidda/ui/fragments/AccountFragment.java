@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -107,7 +108,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onAccountClick(Account account) {
 		settings.setLogin(account, true);
-		databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
 		if (settings.pushEnabled()) {
 			PushSubscription.subscripe(requireContext());
 		}
@@ -115,6 +115,12 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 			String message = getString(R.string.info_account_selected, account.getUser().getScreenname());
 			Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
 		}
+		// set result to the parent activity
+		Intent intent = new Intent();
+		intent.putExtra(AccountActivity.RETURN_ACCOUNT, account);
+		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED, intent);
+		// clear old database entries
+		databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
 	}
 
 
@@ -162,7 +168,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@SuppressWarnings("unused")
 	private void onDatabaseResult(DatabaseResult result) {
 		// finish activity and return to parent activity
-		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
 		requireActivity().finish();
 	}
 

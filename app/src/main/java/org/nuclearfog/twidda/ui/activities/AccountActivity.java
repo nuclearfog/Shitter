@@ -23,6 +23,8 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.fragments.AccountFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 
+import java.io.Serializable;
+
 /**
  * account manager activity
  *
@@ -39,6 +41,12 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 	 * return code to notify if settings may changed
 	 */
 	public static final int RETURN_SETTINGS_CHANGED = 0x336;
+
+	/**
+	 * key used to return selected login account
+	 * value type is {@link org.nuclearfog.twidda.model.Account}
+	 */
+	public static final String RETURN_ACCOUNT = "account";
 
 	/**
 	 * key to disable account selector option from menu
@@ -108,8 +116,13 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 	public void onActivityResult(ActivityResult result) {
 		switch (result.getResultCode()) {
 			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
+				Intent intent = new Intent();
+				if (result.getData() != null) {
+					Serializable data = result.getData().getSerializableExtra(LoginActivity.RETURN_ACCOUNT);
+					intent.putExtra(RETURN_ACCOUNT, data);
+				}
 				// new account registered, reload fragment
-				setResult(AccountActivity.RETURN_ACCOUNT_CHANGED);
+				setResult(AccountActivity.RETURN_ACCOUNT_CHANGED, intent);
 				fragment.reset();
 				break;
 
