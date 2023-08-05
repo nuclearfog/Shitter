@@ -30,6 +30,11 @@ public class PushNotification {
 	public static final String NOTIFICATION_NAME = BuildConfig.APPLICATION_ID + " UnifiedPush";
 	public static final String NOTIFICATION_ID_STR = BuildConfig.APPLICATION_ID + ".notification";
 
+	/**
+	 * maximum notifications to show
+	 */
+	private static final int NOTIFICATION_LIMIT = 3;
+
 	private static final int NOTIFICATION_ID = 0x25281;
 
 	private NotificationManagerCompat notificationManager;
@@ -73,10 +78,7 @@ public class PushNotification {
 			String title = settings.getLogin().getConfiguration().getName();
 			String content;
 			int icon;
-			if (notifications.size() > 1) {
-				content = context.getString(R.string.notification_new);
-				icon = R.drawable.bell;
-			} else {
+			if (notifications.size() == 1) {
 				Notification notification = notifications.getFirst();
 				switch (notification.getType()) {
 					case Notification.TYPE_FAVORITE:
@@ -124,6 +126,12 @@ public class PushNotification {
 						content = context.getString(R.string.notification_new);
 						break;
 				}
+			} else if (notifications.size() <= NOTIFICATION_LIMIT) {
+				content = context.getString(R.string.notification_new);
+				icon = R.drawable.bell;
+			} else {
+				// ignore new push notifications
+				return;
 			}
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || context.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
 				notificationBuilder.setContentTitle(title).setContentText(content).setSmallIcon(icon);

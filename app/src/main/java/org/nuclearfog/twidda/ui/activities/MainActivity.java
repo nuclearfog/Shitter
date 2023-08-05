@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private Dialog loadingCircle;
 
 	private DrawerLayout drawerLayout;
+	private NavigationView navigationView;
 	private TabSelector tabSelector;
 	private ViewPager2 viewPager;
 	private ImageView profileImage;
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_main);
 		Toolbar toolbar = findViewById(R.id.home_toolbar);
-		NavigationView navigationView = findViewById(R.id.home_navigator);
+		navigationView = findViewById(R.id.home_navigator);
 		header = (ViewGroup) navigationView.getHeaderView(0);
 		floatingButton = findViewById(R.id.home_post);
 		drawerLayout = findViewById(R.id.main_layout);
@@ -138,34 +139,29 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		if (navigationView.getLayoutParams() != null) {
 			navigationView.getLayoutParams().width = Math.round(getResources().getDisplayMetrics().widthPixels / 2.0f);
 		}
-		if (!settings.floatingButtonEnabled()) {
-			floatingButton.setVisibility(View.INVISIBLE);
-		}
-		if (!settings.getLogin().getConfiguration().isFilterSupported()) {
-			navigationView.getMenu().findItem(R.id.menu_navigator_filter).setVisible(false);
-		}
 		toolbar.setTitle("");
 		toolbar.setNavigationIcon(R.drawable.menu);
 		setSupportActionBar(toolbar);
-		AppStyles.setTheme(header);
-		setStyle();
+		updateUI();
 
-		navigationView.post(new Runnable() {
-			@Override
-			public void run() {
-				AppStyles.setTheme(navigationView);
-			}
-		});
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_USER_SAVE);
 			if (data instanceof User) {
 				setCurrentUser((User) data);
 			}
 		}
+		// load user information
 		if (settings.isLoggedIn() && currentUser == null) {
 			UserParam param = new UserParam(UserParam.DATABASE, settings.getLogin().getId());
 			userLoader.execute(param, this);
 		}
+		// set navigation view style
+		navigationView.post(new Runnable() {
+			@Override
+			public void run() {
+				AppStyles.setTheme(navigationView);
+			}
+		});
 
 		toolbar.setNavigationOnClickListener(new OnClickListener() {
 			@Override
@@ -298,15 +294,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				// update layout & theme
 			case SettingsActivity.RETURN_SETTINGS_CHANGED:
 			case AccountActivity.RETURN_SETTINGS_CHANGED:
-				if (settings.floatingButtonEnabled()) {
-					floatingButton.setVisibility(View.VISIBLE);
-				} else {
-					floatingButton.setVisibility(View.INVISIBLE);
-				}
 				if (adapter != null) {
 					adapter.notifySettingsChanged();
 				}
-				setStyle();
+				updateUI();
 				setCurrentUser(currentUser);
 				break;
 		}
@@ -455,11 +446,17 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	/**
 	 *
 	 */
-	private void setStyle() {
+	private void updateUI() {
 		AppStyles.setTheme(drawerLayout);
 		AppStyles.setTheme(header);
 		tabSelector.addTabIcons(settings.getLogin().getConfiguration().getHomeTabIcons());
 		tabSelector.updateTheme();
+		if (!settings.floatingButtonEnabled()) {
+			floatingButton.setVisibility(View.INVISIBLE);
+		}
+		if (!settings.getLogin().getConfiguration().isFilterSupported()) {
+			navigationView.getMenu().findItem(R.id.menu_navigator_filter).setVisible(false);
+		}
 	}
 
 	/**
@@ -470,6 +467,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private void setCurrentUser(@Nullable User user) {
 		currentUser = user;
 		if (user != null) {
+			header.setVisibility(View.VISIBLE);
 			followingCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollowing()));
 			followerCount.setText(StringUtils.NUMBER_FORMAT.format(user.getFollower()));
 			screenname.setText(user.getScreenname());
@@ -488,11 +486,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				profileImage.setImageDrawable(placeholder);
 			}
 		} else {
-			profileImage.setImageResource(0);
-			followingCount.setText("");
-			followerCount.setText("");
-			screenname.setText("");
-			username.setText("");
+			header.setVisibility(View.INVISIBLE);
 		}
 	}
 }

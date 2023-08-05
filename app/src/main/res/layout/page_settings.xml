@@ -333,6 +333,7 @@
 						android:id="@+id/spinner_font"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
+						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="@+id/enable_status_hide_sensitive_descr"
 						app:layout_constraintTop_toBottomOf="@id/enable_status_hide_sensitive"
 						app:layout_constraintEnd_toStartOf="@id/spinner_scale"
