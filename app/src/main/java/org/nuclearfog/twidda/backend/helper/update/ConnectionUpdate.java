@@ -21,7 +21,6 @@ public class ConnectionUpdate implements Serializable {
 	private String hostname = "";
 	private String consumerKey = "";
 	private String consumerSecret = "";
-	private String tempOauth = "";
 	private String appName = "";
 
 	/**
@@ -85,15 +84,6 @@ public class ConnectionUpdate implements Serializable {
 	}
 
 	/**
-	 * get temporary oauth token
-	 *
-	 * @return oauth token
-	 */
-	public String getTempOauthToken() {
-		return tempOauth;
-	}
-
-	/**
 	 * get oauth consumer token
 	 *
 	 * @return oauth token
@@ -112,28 +102,10 @@ public class ConnectionUpdate implements Serializable {
 	}
 
 	/**
-	 * @return true if token key pair is set
-	 */
-	public boolean useTokens() {
-		return !consumerKey.trim().isEmpty() && !consumerSecret.trim().isEmpty();
-	}
-
-	/**
 	 * @return true if host url is set
 	 */
 	public boolean useHost() {
 		return !hostname.trim().isEmpty();
-	}
-
-	/**
-	 * set custom oauth tokens
-	 *
-	 * @param consumerKey    custom oauth consumer key
-	 * @param consumerSecret custom oauth consumer secret
-	 */
-	public void setOauthTokens(@NonNull String consumerKey, @NonNull String consumerSecret) {
-		this.consumerKey = consumerKey;
-		this.consumerSecret = consumerSecret;
 	}
 
 	/**
@@ -143,11 +115,9 @@ public class ConnectionUpdate implements Serializable {
 	 */
 	public void setConnection(@Nullable ConnectionResult connectionResult) {
 		if (connectionResult != null) {
-			tempOauth = connectionResult.getOauthToken();
 			consumerKey = connectionResult.getConsumerKey();
 			consumerSecret = connectionResult.getConsumerSecret();
 		} else {
-			tempOauth = "";
 			consumerKey = "";
 			consumerSecret = "";
 		}
@@ -162,14 +132,6 @@ public class ConnectionUpdate implements Serializable {
 			switch (apiConfig) {
 				case MASTODON:
 					result = "network=\"Mastodon\"";
-					break;
-
-				case TWITTER1:
-					result = "network=\"Twitter V1.1\"";
-					break;
-
-				case TWITTER2:
-					result = "network=\"Twitter V2.0\"";
 					break;
 			}
 		} else {

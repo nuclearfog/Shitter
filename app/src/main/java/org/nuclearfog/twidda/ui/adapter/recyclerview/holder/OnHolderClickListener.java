@@ -21,16 +21,6 @@ public interface OnHolderClickListener {
 
 	int LIST_PROFILE = 6;
 
-	int MESSAGE_VIEW = 7;
-
-	int MESSAGE_ANSWER = 8;
-
-	int MESSAGE_PROFILE = 9;
-
-	int MESSAGE_MEDIA = 10;
-
-	int MESSAGE_DELETE = 11;
-
 	int ACCOUNT_SELECT = 12;
 
 	int ACCOUNT_REMOVE = 13;

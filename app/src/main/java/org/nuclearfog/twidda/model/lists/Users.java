@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.model.User;
 import java.util.LinkedList;
 
 /**
- * custom twitter user list containing cursor information
+ * custom list implementaion containing users and cursor information
  *
  * @author nuclearfog
  */
@@ -60,24 +60,6 @@ public class Users extends LinkedList<User> {
 	 */
 	public long getNextCursor() {
 		return nextCursor;
-	}
-
-	/**
-	 * set previous cursor
-	 *
-	 * @param prevCursor cursor value
-	 */
-	public void setPreviousCursor(long prevCursor) {
-		this.prevCursor = prevCursor;
-	}
-
-	/**
-	 * set next cursor
-	 *
-	 * @param nextCursor cursor value
-	 */
-	public void setNextCursor(long nextCursor) {
-		this.nextCursor = nextCursor;
 	}
 
 	/**

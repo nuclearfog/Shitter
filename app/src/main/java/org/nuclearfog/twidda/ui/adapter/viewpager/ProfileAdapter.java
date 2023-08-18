@@ -53,11 +53,6 @@ public class ProfileAdapter extends ViewPagerAdapter {
 				}
 				fragments.add(fieldFragment);
 				break;
-
-			case TWITTER1:
-			case TWITTER2:
-				fragments.add(favoriteFragment);
-				break;
 		}
 	}
 

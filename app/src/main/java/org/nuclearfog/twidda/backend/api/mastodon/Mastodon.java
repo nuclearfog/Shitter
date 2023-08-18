@@ -43,7 +43,6 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Instance;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
@@ -55,7 +54,6 @@ import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
-import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.Trends;
@@ -331,8 +329,8 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Users getOutgoingFollowRequests(long cursor) {
-		return new Users(); // not yet implemented in the mastodon API
+	public Users getOutgoingFollowRequests(long cursor) throws MastodonException {
+		throw new MastodonException("not supported!");
 	}
 
 
@@ -513,12 +511,6 @@ public class Mastodon implements Connection {
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
-	}
-
-
-	@Override
-	public List<Location> getLocations() {
-		return new ArrayList<>(0); // not supported yet
 	}
 
 
@@ -874,24 +866,6 @@ public class Mastodon implements Connection {
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
-	}
-
-
-	@Override
-	public void sendDirectmessage(long id, String message, long mediaId) throws MastodonException {
-		throw new MastodonException("not supported!");
-	}
-
-
-	@Override
-	public void deleteDirectmessage(long id) throws MastodonException {
-		throw new MastodonException("not supported!");
-	}
-
-
-	@Override
-	public Messages getDirectmessages(String cursor) throws MastodonException {
-		throw new MastodonException("not supported!");
 	}
 
 

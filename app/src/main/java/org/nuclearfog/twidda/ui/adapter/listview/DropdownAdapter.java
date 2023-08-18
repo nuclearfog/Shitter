@@ -77,16 +77,6 @@ public class DropdownAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * set single item
-	 *
-	 * @param item item string
-	 */
-	public void setItem(String item) {
-		this.items = new String[]{item};
-		notifyDataSetChanged();
-	}
-
-	/**
 	 * set items from string array resource
 	 *
 	 * @param arrayRes array resource containing strings

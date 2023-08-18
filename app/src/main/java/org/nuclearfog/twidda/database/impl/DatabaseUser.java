@@ -254,24 +254,6 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 		isCurrentUser = true;
 		isCurrentUser = account.getId() == id;
 		switch (account.getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				if (profileImageOrig != null && !profileImageOrig.isEmpty()) {
-					if (defaultImage) {
-						profileImageSmall = profileImageOrig;
-					} else {
-						profileImageSmall = profileImageOrig + "_bigger";
-					}
-				}
-				if (profileBannerOrig != null && !profileBannerOrig.isEmpty()) {
-					if (profileBannerOrig.endsWith("/1500x500")) {
-						profileBannerSmall = profileBannerOrig.substring(0, profileBannerOrig.length() - 9) + "/600x200";
-					} else {
-						profileBannerSmall = profileBannerOrig + "/600x200";
-					}
-				}
-				break;
-
 			case MASTODON:
 				profileImageSmall = profileImageOrig;
 				profileBannerSmall = profileBannerOrig;

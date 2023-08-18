@@ -64,6 +64,6 @@ public class LocationUpdate implements Serializable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "longitude=" + longitude + " latitude=" + latitude;
+		return "longitude=" + getLongitude() + " latitude=" + getLatitude();
 	}
 }

@@ -14,11 +14,6 @@
 		android:title="@string/menu_status" />
 
 	<item
-		android:id="@+id/profile_message"
-		android:title="@string/menu_message"
-		android:visible="false" />
-
-	<item
 		android:id="@+id/profile_block"
 		android:title="@string/menu_block_user"
 		android:visible="false" />

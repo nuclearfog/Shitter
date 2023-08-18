@@ -112,11 +112,6 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 			screenname.append(Long.toString(account.getId()));
 		}
 		switch (account.getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				screenname.append(" @twitter.com");
-				break;
-
 			case MASTODON:
 				String host = account.getHostname();
 				if (host.startsWith("https://"))

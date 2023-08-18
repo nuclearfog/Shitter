@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
@@ -28,7 +27,7 @@ public class UserListsAdapter extends ViewPagerAdapter {
 		userlistOwnerShips.setArguments(paramUserlistOwnership);
 		fragments.add(userlistOwnerShips);
 
-		if (settings.getLogin().getConfiguration() == Configuration.TWITTER1 || settings.getLogin().getConfiguration() == Configuration.TWITTER2) {
+		if (settings.getLogin().getConfiguration().isUserlistMembershipSupported()) {
 			ListFragment userlistSubscriptions = new UserListFragment();
 			Bundle paramUserlistSubscription = new Bundle();
 			paramUserlistSubscription.putLong(UserListFragment.KEY_ID, userId);

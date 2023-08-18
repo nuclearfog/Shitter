@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.mastodon.Mastodon;
-import org.nuclearfog.twidda.backend.api.twitter.v1.TwitterV1;
-import org.nuclearfog.twidda.backend.api.twitter.v2.TwitterV2;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.config.GlobalSettings.SettingsChangeObserver;
@@ -20,8 +18,6 @@ import org.nuclearfog.twidda.config.GlobalSettings.SettingsChangeObserver;
 public class ConnectionManager implements SettingsChangeObserver {
 
 	private static final int IDX_MASTODON = 0;
-	private static final int IDX_TWITTER1 = 1;
-	private static final int IDX_TWITTER2 = 2;
 
 	private static ConnectionManager instance;
 
@@ -33,10 +29,8 @@ public class ConnectionManager implements SettingsChangeObserver {
 	 *
 	 */
 	private ConnectionManager(Context context) {
-		connections = new Connection[3];
+		connections = new Connection[1];
 		connections[IDX_MASTODON] = new Mastodon(context);
-		connections[IDX_TWITTER1] = new TwitterV1(context);
-		connections[IDX_TWITTER2] = new TwitterV2(context);
 
 		settings = GlobalSettings.get(context);
 		settings.registerObserver(this);
@@ -86,12 +80,6 @@ public class ConnectionManager implements SettingsChangeObserver {
 			default:
 			case MASTODON:
 				return instance.connections[IDX_MASTODON];
-
-			case TWITTER1:
-				return instance.connections[IDX_TWITTER1];
-
-			case TWITTER2:
-				return instance.connections[IDX_TWITTER2];
 		}
 	}
 }

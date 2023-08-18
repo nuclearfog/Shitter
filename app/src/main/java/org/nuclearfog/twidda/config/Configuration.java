@@ -13,16 +13,6 @@ import org.nuclearfog.twidda.model.Account;
 public enum Configuration {
 
 	/**
-	 * configurations for Twitter API 1.1
-	 */
-	TWITTER1(Account.API_TWITTER_1),
-
-	/**
-	 * configurations for Twitter API 2.0
-	 */
-	TWITTER2(Account.API_TWITTER_2),
-
-	/**
 	 * configurations for Mastodon
 	 */
 	MASTODON(Account.API_MASTODON);
@@ -36,15 +26,17 @@ public enum Configuration {
 	private final boolean profileUrlEnabled;
 	private final boolean idBlocklistEnabled;
 	private final boolean postLocationSupported;
-	private final boolean userlistVisibility;
 	private final boolean notificationDismissSupported;
 	private final boolean statusSpoilerSupported;
 	private final boolean statusVisibilitySupported;
-	private final boolean directMessageSupported;
 	private final boolean emojiSupported;
 	private final boolean statusEditSupported;
 	private final boolean webpushSupported;
 	private final boolean filterSupported;
+	private final boolean publicTimelinesupported;
+	private final boolean userlistSubscriberSupported;
+	private final boolean userlistMembershipSupported;
+	private final boolean outgoingFollowRequestSupported;
 	private final int arrayResHome;
 
 	/**
@@ -53,28 +45,6 @@ public enum Configuration {
 	Configuration(int accountType) {
 		this.accountType = accountType;
 		switch (accountType) {
-			case Account.API_TWITTER_1:
-			case Account.API_TWITTER_2:
-				name = "Twitter";
-				userlistExtended = true;
-				searchFilterEnabled = true;
-				profileLocationEnabled = true;
-				profileUrlEnabled = true;
-				idBlocklistEnabled = true;
-				postLocationSupported = true;
-				userlistVisibility = true;
-				userlistDescriptionEnabled = true;
-				notificationDismissSupported = false;
-				statusSpoilerSupported = false;
-				statusVisibilitySupported = false;
-				directMessageSupported = true;
-				emojiSupported = false;
-				statusEditSupported = false;
-				webpushSupported = false;
-				filterSupported = false;
-				arrayResHome = R.array.home_twitter_tab_icons;
-				break;
-
 			default:
 			case Account.API_MASTODON:
 				name = "Mastodon";
@@ -85,15 +55,17 @@ public enum Configuration {
 				profileUrlEnabled = false;
 				idBlocklistEnabled = false;
 				postLocationSupported = false;
-				userlistVisibility = false;
 				notificationDismissSupported = true;
 				statusSpoilerSupported = true;
 				statusVisibilitySupported = true;
-				directMessageSupported = false;
 				emojiSupported = true;
 				statusEditSupported = true;
 				webpushSupported = true;
 				filterSupported = true;
+				publicTimelinesupported = true;
+				userlistSubscriberSupported = false;
+				userlistMembershipSupported = false;
+				outgoingFollowRequestSupported = false;
 				arrayResHome = R.array.home_mastodon_tab_icons;
 				break;
 		}
@@ -125,13 +97,6 @@ public enum Configuration {
 	 */
 	public boolean userlsitDescriptionSupported() {
 		return userlistDescriptionEnabled;
-	}
-
-	/**
-	 * @return true if userlist visibility is supported
-	 */
-	public boolean userlistVisibilitySupported() {
-		return userlistVisibility;
 	}
 
 	/**
@@ -191,13 +156,6 @@ public enum Configuration {
 	}
 
 	/**
-	 * @return true if directmessaging is supported
-	 */
-	public boolean directmessageSupported() {
-		return directMessageSupported;
-	}
-
-	/**
 	 * @return true if text emojis are supported
 	 */
 	public boolean isEmojiSupported() {
@@ -216,6 +174,34 @@ public enum Configuration {
 	 */
 	public boolean isWebpushSupported() {
 		return webpushSupported;
+	}
+
+	/**
+	 * @return true if a public timeline is supported
+	 */
+	public boolean isPublicTimelinesupported() {
+		return publicTimelinesupported;
+	}
+
+	/**
+	 * @return true if showing subscribers of an userlist is supported
+	 */
+	public boolean isUserlistSubscriberSupported() {
+		return userlistSubscriberSupported;
+	}
+
+	/**
+	 * @return true if showing userlist members is supported
+	 */
+	public boolean isUserlistMembershipSupported() {
+		return userlistMembershipSupported;
+	}
+
+	/**
+	 * @return true if showing outgoing follow request is supported
+	 */
+	public boolean isOutgoingFollowRequestSupported() {
+		return outgoingFollowRequestSupported;
 	}
 
 	/**

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
-import org.nuclearfog.twidda.ui.fragments.MessageFragment;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
@@ -39,14 +38,6 @@ public class HomeAdapter extends ViewPagerAdapter {
 		publicTimeline.setArguments(parampublicTimeline);
 
 		switch (settings.getLogin().getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				fragments.add(homeTimeline);
-				fragments.add(trendFragment);
-				fragments.add(new NotificationFragment());
-				fragments.add(new MessageFragment());
-				break;
-
 			case MASTODON:
 				fragments.add(homeTimeline);
 				fragments.add(trendFragment);

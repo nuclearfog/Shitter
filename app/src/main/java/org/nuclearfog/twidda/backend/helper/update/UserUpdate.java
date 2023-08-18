@@ -19,7 +19,6 @@ public class UserUpdate implements Closeable {
 	private MediaStatus profileImage, bannerImage;
 
 	private String name = "";
-	private String url = "";
 	private String description = "";
 	private String location = "";
 
@@ -41,13 +40,11 @@ public class UserUpdate implements Closeable {
 	 * setup profile information
 	 *
 	 * @param name        username to update
-	 * @param url         profile url
 	 * @param description description of the profile
 	 * @param location    location name
 	 */
-	public void setProfile(String name, String url, String description, String location) {
+	public void setProfile(String name, String description, String location) {
 		this.name = name;
-		this.url = url;
 		this.description = description;
 		this.location = location;
 	}
@@ -78,20 +75,6 @@ public class UserUpdate implements Closeable {
 	 */
 	public String getDescription() {
 		return description;
-	}
-
-	/**
-	 * @return location name
-	 */
-	public String getLocation() {
-		return location;
-	}
-
-	/**
-	 * @return profile url
-	 */
-	public String getUrl() {
-		return url;
 	}
 
 	/**
@@ -136,8 +119,6 @@ public class UserUpdate implements Closeable {
 			result += " bio=\"" + description + "\"";
 		if (!location.isEmpty())
 			result += " location=\"" + location + "\"";
-		if (!url.isEmpty())
-			result += " url=\"" + url + "\"";
 		return result;
 	}
 }

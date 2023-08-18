@@ -13,7 +13,6 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Instance;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
@@ -25,7 +24,6 @@ import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
-import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.Trends;
@@ -313,13 +311,6 @@ public interface Connection {
 	Trend unfollowHashtag(String name) throws ConnectionException;
 
 	/**
-	 * get available locations for trends
-	 *
-	 * @return list of locations
-	 */
-	List<Location> getLocations() throws ConnectionException;
-
-	/**
 	 * show current user's home timeline
 	 *
 	 * @param minId get statuses with ID above the min ID
@@ -590,30 +581,6 @@ public interface Connection {
 	 * @param name screen name
 	 */
 	void removeUserFromList(long id, String name) throws ConnectionException;
-
-	/**
-	 * send directmessage to user
-	 *
-	 * @param id      ID of the user
-	 * @param message message text
-	 * @param mediaId ID of uploaded media files or -1 if none
-	 */
-	void sendDirectmessage(long id, String message, long mediaId) throws ConnectionException;
-
-	/**
-	 * delete directmessage
-	 *
-	 * @param id ID of the message to delete
-	 */
-	void deleteDirectmessage(long id) throws ConnectionException;
-
-	/**
-	 * get current user's direct messages
-	 *
-	 * @param cursor list cursor
-	 * @return list of direct messages
-	 */
-	Messages getDirectmessages(String cursor) throws ConnectionException;
 
 	/**
 	 * get all custom emojis used by the network

@@ -59,12 +59,6 @@
 			android:windowSoftInputMode="stateHidden" />
 
 		<activity
-			android:name=".ui.activities.MessageEditor"
-			android:screenOrientation="portrait"
-			android:theme="@style/TransparencyDim"
-			android:windowSoftInputMode="stateHidden" />
-
-		<activity
 			android:name=".ui.activities.SettingsActivity"
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />

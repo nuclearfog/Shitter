@@ -24,10 +24,7 @@
 	<string name="info_user_removed">%1$s removed from list</string>
 	<string name="info_list_updated">Userlist updated</string>
 	<string name="info_list_created">Userlist created</string>
-	<string name="info_open_twitter_login">redirecting to Twitter login website. Please wait</string>
-	<string name="info_missing_api_keys">please add API tokens first before proceeding</string>
 	<string name="info_open_mastodon_login">redirecting to Mastodon login website. Please wait</string>
-	<string name="info_login_to_twitter">login to Twitter, please wait</string>
 	<string name="info_login_to_mastodon">login to Mastodon, please wait</string>
 	<string name="info_get_link">please open login page first to get the PIN</string>
 	<string name="info_gps_attached">GPS position added</string>
@@ -43,8 +40,6 @@
 	<string name="info_reply_unhidden">Reply is visible</string>
 	<string name="info_user_muted">User muted</string>
 	<string name="info_user_unmuted">User unmuted</string>
-	<string name="info_dm_send">Directmessage sent</string>
-	<string name="info_dm_removed">Directmessage removed</string>
 	<string name="info_image_saved">Image saved</string>
 	<string name="info_status_link_copied">Link copied to clipboard</string>
 	<string name="info_loading">loading..</string>
@@ -71,7 +66,6 @@
 	<string name="info_user_follow_request">follow request from %1$s</string>
 	<string name="info_user_mention">%1$s mentioned you</string>
 	<string name="info_user_repost">%1$s reposted your status</string>
-	<string name="info_missing_key">please enter key</string>
 	<string name="info_missing_host">please enter correct hostname</string>
 	<string name="info_database_cleared">Database cleared</string>
 	<string name="info_notification_dismiss">Notification dismissed</string>
@@ -93,7 +87,6 @@
 	<string name="error_duration_time_high">Poll duration time too high!</string>
 	<string name="error_poll_option_missing">poll option can not be empty!</string>
 	<string name="error_empty_status">Empty status!</string>
-	<string name="error_dm">enter username or message!</string>
 	<string name="error_not_found">not found!</string>
 	<string name="error_enter_code">code missing!</string>
 	<string name="error_limit_exceeded">"Rate limit exceeded! Retry after: "</string>
@@ -102,7 +95,6 @@
 	<string name="error_no_card_app">No card app found!</string>
 	<string name="error_no_media_app">No gallery app found!</string>
 	<string name="error_connection_failed">Connection failed!</string>
-	<string name="error_invalid_link">Invalid link!</string>
 	<string name="error_gps">could not fetch location information!</string>
 	<string name="error_dm_send">can\'t send directmessage to this user!</string>
 	<string name="error_image_save">could not save Image</string>
@@ -121,10 +113,7 @@
 	<string name="error_corrupt_api_key">Error, corrupt API key!</string>
 	<string name="error_acc_update">Account update failed! Please check your input!</string>
 	<string name="error_acc_loading">Error while loading login information!</string>
-	<string name="error_api_access_denied">Error, API access denied! Please check your API Keys.</string>
-	<string name="error_api_access_limited">Error, API access limited by Twitter!</string>
 	<string name="error_json_format">JSON error!</string>
-	<string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
 	<string name="error_database_cleared">Error while clearing database!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>
 	<string name="error_search">Error, search query is too long or contains illegal characters!</string>
@@ -144,7 +133,7 @@
 	<string name="menu_hashtag_follow">follow hashtag</string>
 	<string name="menu_hashtag_unfollow">unfollow hashtag</string>
 	<string name="menu_open_home_profile">open Profile</string>
-	<string name="menu_open_twitter_search">Search</string>
+	<string name="menu_open_search">Search</string>
 	<string name="menu_open_filter">manage Filter</string>
 	<string name="menu_open_settings">Settings</string>
 	<string name="menu_create_list">create Userlist</string>
@@ -192,7 +181,6 @@
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
 	<string name="menu_media_add_description">add description</string>
 	<string name="menu_media_show_meta">show metadata</string>
-	<string name="menu_message">write message</string>
 	<string name="dialog_link_image_preview">Link preview image</string>
 	<string name="app_info_icons">svg icons from:</string>
 	<string name="profile_image">Profile image</string>
@@ -218,7 +206,6 @@
 	<string name="settings_enable_like">use \'Like\' instead of ’Favorite’</string>
 	<string name="confirm_retry_button">retry</string>
 	<string name="data_consumption">Data consumption</string>
-	<string name="trend_setting">Trend location</string>
 	<string name="filter_expiration">expires at %1$s</string>
 	<string name="register_link">get code</string>
 	<string name="settings_image">enable images</string>
@@ -230,12 +217,9 @@
 	<string name="confirm_delete_database">clear app data?</string>
 	<string name="status_sent_from">"sent from: "</string>
 	<string name="username">Username</string>
-	<string name="dm_message">Message</string>
 	<string name="dialog_description_title">Media description</string>
 	<string name="confirm_cancel_message">discard message?</string>
 	<string name="settings_logout">log out</string>
-	<string name="dm_answer">answer</string>
-	<string name="delete_dm">delete</string>
 	<string name="confirm_unfollow">unfollow user?</string>
 	<string name="confirm_block">block user?</string>
 	<string name="confirm_log_lout">log out?</string>
@@ -248,7 +232,6 @@
 	<string name="status_add_poll">add poll</string>
 	<string name="status_close">close editor</string>
 	<string name="profile_link">Link</string>
-	<string name="close_dm">close directmessage</string>
 	<string name="profile_location">Location</string>
 	<string name="profile_bio">Bio</string>
 	<string name="connection_discard">discard</string>
@@ -290,7 +273,6 @@
 	<string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
 	<string name="settings_enable_floating_button">enable floating button</string>
 	<string name="settings_look">Look</string>
-	<string name="settings_description_enable_twitter_alt">use Nitter to open Twitter links</string>
 	<string name="settings_description_local_timeline">show local timelines only</string>
 	<string name="item_load_more">load more</string>
 	<string name="item_image_save">save image</string>
@@ -304,7 +286,6 @@
 	<string name="status_visibility_direct">direct</string>
 	<string name="status_spoiler_hint">Tap to view</string>
 	<string name="login_info">4 steps to login</string>
-	<string name="userlist_public_sel">public</string>
 	<string name="userlist_enter_title">enter list title</string>
 	<string name="userlist_enter_description">enter list description</string>
 	<string name="userlist_create">create userlist</string>

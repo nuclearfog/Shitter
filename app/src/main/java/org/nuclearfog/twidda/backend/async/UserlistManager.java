@@ -11,7 +11,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionManager;
 
 /**
  * Backend async task to manage users on lists
- * Twitter users can be added and removed
+ * Users can be added and removed
  *
  * @author nuclearfog
  */

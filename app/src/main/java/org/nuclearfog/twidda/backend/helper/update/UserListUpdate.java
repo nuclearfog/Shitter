@@ -16,7 +16,6 @@ public class UserListUpdate implements Serializable {
 	private long listId = 0L;
 	private String title = "";
 	private String description = "";
-	private boolean isPublic = false;
 
 
 	/**
@@ -73,30 +72,12 @@ public class UserListUpdate implements Serializable {
 		return description;
 	}
 
-	/**
-	 * set list visibility to public
-	 *
-	 * @param isPublic true to set list visibility to public
-	 */
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
-	}
-
-	/**
-	 * check if list is public
-	 *
-	 * @return true if list is public
-	 */
-	public boolean isPublic() {
-		return isPublic;
-	}
-
 
 	@NonNull
 	@Override
 	public String toString() {
-		if (listId != 0L)
-			return "id=" + listId + " title=\"" + title + "\"";
-		return "title=\"" + title + "\"";
+		if (getId() != 0L)
+			return "id=" + getId() + " title=\"" + getTitle() + "\" description=\"" + getDescription() + "\"";
+		return "title=\"" + getTitle() + "\" description=\"" + getDescription() + "\"";
 	}
 }

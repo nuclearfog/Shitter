@@ -1,4 +1,4 @@
-<p><i>Shitter</i> ist ein Android-Client für Twitter und Mastodon.</p>
+<p><i>Shitter</i> ist ein Android-Client für Mastodon.</p>
 <p><br><b>Features:</b></p>
 <ul>
     <li>Zugriff auf Posts, Nutzer und Trends</li>

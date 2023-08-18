@@ -10,10 +10,7 @@
 	<string name="info_user_removed">%1$s se eliminó de la lista</string>
 	<string name="info_list_updated">Se actualizó la lista de usuarios</string>
 	<string name="info_list_created">Se creó la lista de usuarios</string>
-	<string name="info_open_twitter_login">Redireccionando a la página de acceso de Twitter. Por favor espera</string>
-	<string name="info_missing_api_keys">Por favor, primero agrega los tokens API antes de continuar</string>
 	<string name="info_open_mastodon_login">Redireccionando a la página de acceso de Mastodon. Por favor espera</string>
-	<string name="info_login_to_twitter">Accediendo a Twitter, por favor espera</string>
 	<string name="info_login_to_mastodon">Accediendo a Mastodon, por favor espera</string>
 	<string name="info_get_link">Por favor, primero abre la página de acceso para obtener el PIN</string>
 	<string name="info_gps_attached">Se agregó la posición GPS</string>
@@ -29,8 +26,6 @@
 	<string name="info_reply_unhidden">La respuesta está visible</string>
 	<string name="info_user_muted">Se silenció al usuario</string>
 	<string name="info_user_unmuted">Se dejó de silenciar al usuario</string>
-	<string name="info_dm_send">Se envió el mensaje directo</string>
-	<string name="info_dm_removed">Se eliminó el mensaje directo</string>
 	<string name="info_image_saved">Se guardó la imagen</string>
 	<string name="info_status_link_copied">Se copió el enlace al portapapeles</string>
 	<string name="info_loading">Cargando…</string>
@@ -57,7 +52,6 @@
 	<string name="info_user_follow_request">%1$s quiere seguirte</string>
 	<string name="info_user_mention">%1$s te mencionó</string>
 	<string name="info_user_repost">%1$s re-publicó tu estado</string>
-	<string name="info_missing_key">Por favor, ingresa la clave</string>
 	<string name="info_missing_host">Por favor, ingresa el nombre de host correcto</string>
 	<string name="info_database_cleared">Se limpió la base de datos</string>
 	<string name="info_notification_dismiss">Se desechó la notificación</string>
@@ -73,7 +67,6 @@
 	<string name="error_duration_time_high">¡Tiempo de duración de la encuesta muy alto!</string>
 	<string name="error_poll_option_missing">¡La opción de encuesta no puede estar vacía!</string>
 	<string name="error_empty_status">¡Estado vacío!</string>
-	<string name="error_dm">¡Ingresa nombre de usuario o mensaje!</string>
 	<string name="error_not_found">¡No se encontró!</string>
 	<string name="error_enter_code">¡Falta el código!</string>
 	<string name="error_limit_exceeded">"¡Has excedido la tasa de límite! Intenta después: "</string>
@@ -82,7 +75,6 @@
 	<string name="error_no_card_app">¡No se encontró ninguna aplicación de tarjeta!</string>
 	<string name="error_no_media_app">¡No se encontró ninguna aplicación de galería!</string>
 	<string name="error_connection_failed">¡La conexión falló!</string>
-	<string name="error_invalid_link">¡El enlace no es válido!</string>
 	<string name="error_gps">¡No se pudo obtener la información de ubicación!</string>
 	<string name="error_dm_send">¡No puedes enviar un mensaje directo a este usuario!</string>
 	<string name="error_image_save">No se pudo guardar la imagen</string>
@@ -101,10 +93,7 @@
 	<string name="error_corrupt_api_key">¡Error, clave de API corrupta!</string>
 	<string name="error_acc_update">¡Fallo al actualizar la cuenta! ¡Por favor, revisa lo que tecleaste!</string>
 	<string name="error_acc_loading">¡Error al cargar información de acceso!</string>
-	<string name="error_api_access_denied">¡Error, acceso a la API denegado! Por favor, revisa tus claves de API.</string>
-	<string name="error_api_access_limited">¡Error, acceso a la API limitado por Twitter!</string>
 	<string name="error_json_format">¡Errpr JSON!</string>
-	<string name="error_api_key_expired">¡Error, las claves API han expirado! ¡Por favor, actualiza la app!</string>
 	<string name="error_database_cleared">¡Error al limpiar la base de datos!</string>
 	<string name="error_result_cancelled">¡Error, se canceló el resultado!</string>
 	<string name="error_search">¡Error, la consulta de búsqueda es demasiado larga o contiene caracteres ilegales!</string>
@@ -122,7 +111,7 @@
 	<string name="menu_hashtag_follow">Seguir hashtag</string>
 	<string name="menu_hashtag_unfollow">Dejar de seguir hashtag</string>
 	<string name="menu_open_home_profile">Abrir perfil</string>
-	<string name="menu_open_twitter_search">Buscar</string>
+	<string name="menu_open_search">Buscar</string>
 	<string name="menu_open_settings">Configuración</string>
 	<string name="menu_create_list">crear lista de usuarios</string>
 	<string name="menu_follow_user">Seguir</string>
@@ -165,7 +154,6 @@
 	<string name="menu_status_copy_link">Enlace de estado</string>
 	<string name="menu_toolbar_request">Solicitudes de seguimiento</string>
 	<string name="menu_toolbar_excluded_users">Lista de bloqueos</string>
-	<string name="menu_message">Escribir mensaje</string>
 	<string name="dialog_link_image_preview">Enlazar vista previa de la imagen</string>
 	<string name="app_info_icons">Iconos SVG de:</string>
 	<string name="profile_image">Imagen de perfil</string>
@@ -191,7 +179,6 @@
 	<string name="settings_enable_like">Usar \'Me gusta\' en lugar de ’Favorito’</string>
 	<string name="confirm_retry_button">Intentar de nuevo</string>
 	<string name="data_consumption">Consumo de datos</string>
-	<string name="trend_setting">Ubicación de tendencia</string>
 	<string name="register_link">Obtener código</string>
 	<string name="settings_image">Habilitar imágenes</string>
 	<string name="settings_clear_data">Limpiar datos de la app</string>
@@ -202,11 +189,8 @@
 	<string name="confirm_delete_database">¿Limpiar datos de la app?</string>
 	<string name="status_sent_from">"Enviado desde: "</string>
 	<string name="username">Nombre de usuario</string>
-	<string name="dm_message">Mensaje</string>
 	<string name="confirm_cancel_message">¿Descartar mensaje?</string>
 	<string name="settings_logout">Cerrar sesión</string>
-	<string name="dm_answer">Responder</string>
-	<string name="delete_dm">Borrar</string>
 	<string name="confirm_unfollow">¿No seguir a usuario?</string>
 	<string name="confirm_block">¿Bloquear a usuario?</string>
 	<string name="confirm_log_lout">¿Cerrar sesión?</string>
@@ -219,7 +203,6 @@
 	<string name="status_add_poll">Agregar encuesta</string>
 	<string name="status_close">Cerrar el editor</string>
 	<string name="profile_link">Enlace</string>
-	<string name="close_dm">Cerrar mensaje directo</string>
 	<string name="profile_location">Ubicación</string>
 	<string name="profile_bio">Biografía</string>
 	<string name="connection_discard">Descartar</string>
@@ -257,7 +240,6 @@
 	<string name="settings_app_information">Código fuente de la app:</string>
 	<string name="settings_enable_toolbar_overlap">Diseño del perfil colapsado</string>
 	<string name="settings_look">Mirar</string>
-	<string name="settings_description_enable_twitter_alt">Usar Nitter para abrir enlaces de Twitter</string>
 	<string name="settings_description_local_timeline">Mostrar solo líneas de tiempo locales</string>
 	<string name="item_load_more">Cargar más</string>
 	<string name="item_image_save">Guardar imagen</string>
@@ -268,7 +250,6 @@
 	<string name="status_contains_spoiler">Spoiler</string>
 	<string name="status_spoiler_hint">Toca para ver</string>
 	<string name="login_info">4 pasos para acceder</string>
-	<string name="userlist_public_sel">Público</string>
 	<string name="userlist_enter_title">Ingresa el título de la lista</string>
 	<string name="userlist_enter_description">Ingresa la descripción de la lista</string>
 	<string name="userlist_create">Crear lista de usuario</string>

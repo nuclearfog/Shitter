@@ -87,7 +87,7 @@ public class UserAdapter extends ViewPagerAdapter {
 				pendingRequests.setArguments(paramFollowingRequest);
 				fragments.add(pendingRequests);
 
-				if (settings.getLogin().getConfiguration() == Configuration.TWITTER1 || settings.getLogin().getConfiguration() == Configuration.TWITTER2) {
+				if (settings.getLogin().getConfiguration().isOutgoingFollowRequestSupported()) {
 					Bundle paramFollowRequest = new Bundle();
 					paramFollowRequest.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_OUTGOING);
 					ListFragment followRequest = new UserFragment();

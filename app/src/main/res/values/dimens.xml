@@ -127,20 +127,6 @@
 	<dimen name="listitem_padding_drawable">5dp</dimen>
 	<integer name="listitem_description_max_lines">6</integer>
 
-	<!--dimens of item_message.xml-->
-	<dimen name="dmitem_profile">42sp</dimen>
-	<dimen name="dmitem_button_height">20sp</dimen>
-	<dimen name="dmitem_padding_drawable">5dp</dimen>
-	<dimen name="dmitem_textsize_button">12sp</dimen>
-	<dimen name="dmitem_textsize_name">12sp</dimen>
-	<dimen name="dmitem_textsize_date">12sp</dimen>
-	<dimen name="dmitem_text_margin">5dp</dimen>
-	<dimen name="dmitem_button_margin">5dp</dimen>
-	<dimen name="dmitem_margin_layout">5dp</dimen>
-	<dimen name="dmitem_icon_size">16sp</dimen>
-	<dimen name="dmitem_indicator_size">30sp</dimen>
-	<integer name="dmitem_text_lines_max">10</integer>
-
 	<!--dimens of item_account.xml-->
 	<dimen name="login_name_textsize_big">14sp</dimen>
 	<dimen name="login_name_textsize">12sp</dimen>
@@ -169,15 +155,8 @@
 	<dimen name="popup_status_button_padding">7dp</dimen>
 	<dimen name="popup_status_button_size">0.09</dimen>
 
-	<!--dimens of popup_message.xml-->
-	<dimen name="popup_message_margin_background">10dp</dimen>
-	<dimen name="popup_message_text_margin">5dp</dimen>
-	<dimen name="popup_message_button_margin">5dp</dimen>
-	<dimen name="popup_message_button_padding">7dp</dimen>
-
 	<!--dimen of popup_userlist.xml-->
 	<dimen name="popup_userlist_background_margin">10dp</dimen>
-	<dimen name="popup_userlist_layout_margin">5dp</dimen>
 	<dimen name="popup_userlist_text_margin">5dp</dimen>
 
 	<!--dimens of item_load.xml-->

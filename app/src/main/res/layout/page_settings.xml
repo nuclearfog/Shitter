@@ -40,7 +40,6 @@
 					android:padding="@dimen/settings_cardview_padding">
 
 					<TextView
-						android:id="@+id/settings_color_text"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_marginBottom="@dimen/settings_column_margin"
@@ -213,7 +212,6 @@
 						app:layout_constraintTop_toBottomOf="@id/settings_look_text" />
 
 					<TextView
-						android:id="@+id/settings_toolbar_ov_descr"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
@@ -235,7 +233,6 @@
 						app:layout_constraintTop_toBottomOf="@id/settings_toolbar_ov" />
 
 					<TextView
-						android:id="@+id/settings_enable_floating_button_descr"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
@@ -318,7 +315,6 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<ImageView
-						android:id="@+id/settings_fonttype_icon"
 						android:layout_width="@dimen/settings_icon_size"
 						android:layout_height="@dimen/settings_icon_size"
 						android:src="@drawable/font"
@@ -383,7 +379,6 @@
 						app:layout_constraintTop_toBottomOf="@id/settings_data_text" />
 
 					<TextView
-						android:id="@+id/toggleImg_descr"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
@@ -398,38 +393,14 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_enable_twitter_alt"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/toggleImg"
-						app:layout_constraintEnd_toStartOf="@id/settings_enable_twitter_alt_descr" />
-
-					<TextView
-						android:id="@+id/settings_enable_twitter_alt_descr"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:lines="1"
-						android:text="@string/settings_description_enable_twitter_alt"
-						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/settings_enable_twitter_alt"
-						app:layout_constraintTop_toTopOf="@id/settings_enable_twitter_alt"
-						app:layout_constraintBottom_toBottomOf="@id/settings_enable_twitter_alt"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-					<com.kyleduo.switchbutton.SwitchButton
 						android:id="@+id/settings_local_timeline"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginTop="@dimen/settings_column_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_enable_twitter_alt" />
+						app:layout_constraintTop_toBottomOf="@id/toggleImg" />
 
 					<TextView
-						android:id="@+id/settings_local_timeline_descr"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
@@ -496,43 +467,6 @@
 						app:layout_constraintStart_toEndOf="@id/settings_list_seek"
 						app:layout_constraintTop_toTopOf="@id/settings_list_seek"
 						app:layout_constraintBottom_toBottomOf="@id/settings_list_seek"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-				</androidx.constraintlayout.widget.ConstraintLayout>
-
-			</androidx.cardview.widget.CardView>
-
-			<androidx.cardview.widget.CardView
-				android:id="@+id/settings_trend_card"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				style="@style/CardViewStyle">
-
-				<androidx.constraintlayout.widget.ConstraintLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:padding="@dimen/settings_cardview_padding">
-
-					<TextView
-						android:id="@+id/settings_trend_text"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:lines="1"
-						android:text="@string/trend_setting"
-						android:textSize="@dimen/settings_textsize"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintBottom_toTopOf="@id/spinner_woeid"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-					<Spinner
-						android:id="@+id/spinner_woeid"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_trend_text"
-						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>

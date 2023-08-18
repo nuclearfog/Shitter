@@ -285,10 +285,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		getMenuInflater().inflate(R.menu.profile, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
-		if (settings.getLogin().getConfiguration().directmessageSupported()) {
-			MenuItem dmIcon = m.findItem(R.id.profile_message);
-			dmIcon.setVisible(true);
-		}
 		return super.onCreateOptionsMenu(m);
 	}
 
@@ -301,15 +297,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			MenuItem domainBlock = m.findItem(R.id.profile_block_domain);
 
 			switch (settings.getLogin().getConfiguration()) {
-				case TWITTER1:
-				case TWITTER2:
-					if (user.isCurrentUser()) {
-						listItem.setVisible(true);
-					} else if (!user.isProtected() || (relation != null && relation.isFollowing())) {
-						listItem.setVisible(true);
-					}
-					break;
-
 				case MASTODON:
 					if (user.isCurrentUser()) {
 						listItem.setVisible(true);
@@ -366,14 +353,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				String prefix = user.getScreenname() + " ";
 				intent.putExtra(StatusEditor.KEY_TEXT, prefix);
 			}
-			startActivity(intent);
-			return true;
-		}
-		// open direct message
-		else if (item.getItemId() == R.id.profile_message) {
-			Intent intent = new Intent(this, MessageEditor.class);
-			if (user != null && !user.isCurrentUser())
-				intent.putExtra(MessageEditor.KEY_MESSAGE_PREFIX, user.getScreenname());
 			startActivity(intent);
 			return true;
 		}
@@ -461,7 +440,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	@Override
 	public void onLinkClick(String tag) {
-		LinkUtils.openLink(this, tag, false);
+		LinkUtils.openLink(this, tag);
 	}
 
 
@@ -474,41 +453,19 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			Intent intent = new Intent(this, UsersActivity.class);
 			intent.putExtra(UsersActivity.KEY_ID, user.getId());
 			intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_FOLLOWING);
-			switch (settings.getLogin().getConfiguration()) {
-				case TWITTER1:
-				case TWITTER2:
-					if (!user.isProtected() || user.isCurrentUser() || (relation != null && relation.isFollowing())) {
-						startActivity(intent);
-					}
-					break;
-
-				case MASTODON:
-					startActivity(intent);
-					break;
-			}
+			startActivity(intent);
 		}
 		// open follower page
 		else if (v.getId() == R.id.follower) {
 			Intent intent = new Intent(this, UsersActivity.class);
 			intent.putExtra(UsersActivity.KEY_ID, user.getId());
 			intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_FOLLOWER);
-			switch (settings.getLogin().getConfiguration()) {
-				case TWITTER1:
-				case TWITTER2:
-					if (!user.isProtected() || user.isCurrentUser() || (relation != null && relation.isFollowing())) {
-						startActivity(intent);
-					}
-					break;
-
-				case MASTODON:
-					startActivity(intent);
-					break;
-			}
+			startActivity(intent);
 		}
 		// open link added to profile
 		else if (v.getId() == R.id.links) {
 			if (!user.getProfileUrl().isEmpty()) {
-				LinkUtils.openLink(this, user.getProfileUrl(), false);
+				LinkUtils.openLink(this, user.getProfileUrl());
 			}
 		}
 		// open profile image

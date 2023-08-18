@@ -75,7 +75,6 @@
 		app:layout_constraintBottom_toBottomOf="@id/profile_edit_banner" />
 
 	<ImageView
-		android:id="@+id/eidt_profile_change_profile_image"
 		android:layout_width="@dimen/editprofile_add_btn_size"
 		android:layout_height="@dimen/editprofile_add_btn_size"
 		android:contentDescription="@string/descr_add_profile_image"
@@ -86,7 +85,6 @@
 		app:layout_constraintEnd_toEndOf="@id/edit_profile_image" />
 
 	<ScrollView
-		android:id="@+id/profile_edit_scroll"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:layout_marginTop="@dimen/editprofile_scrollview_margin"
@@ -104,7 +102,6 @@
 			android:layout_marginEnd="@dimen/editprofile_layout_padding">
 
 			<TextView
-				android:id="@+id/profile_edit_change_name_label"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:padding="@dimen/editprofile_edittext_padding"
@@ -156,7 +153,6 @@
 				style="@style/TextInput" />
 
 			<TextView
-				android:id="@+id/profile_edit_change_description_label"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:padding="@dimen/editprofile_edittext_padding"

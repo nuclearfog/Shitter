@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 
 /**
- * This background task loads profile information about a twitter user and take actions
+ * This background task loads profile information about an user and take actions
  *
  * @author nuclearfog
  * @see ProfileActivity

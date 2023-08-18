@@ -43,13 +43,9 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
 import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
-import org.nuclearfog.twidda.backend.async.LocationLoader;
-import org.nuclearfog.twidda.backend.async.LocationLoader.LocationLoaderResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.notification.PushSubscription;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -58,7 +54,6 @@ import org.nuclearfog.twidda.ui.dialogs.InfoDialog;
 import org.nuclearfog.twidda.ui.dialogs.LicenseDialog;
 import org.nuclearfog.twidda.ui.dialogs.WebPushDialog;
 
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -100,11 +95,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private static final int COLOR_FOLLOWING = 9;
 
 	private GlobalSettings settings;
-	private Configuration configuration;
 	private DatabaseAction databaseAction;
-	private LocationLoader locationLoader;
 
-	private DropdownAdapter locationAdapter, fontAdapter, scaleAdapter;
+	private DropdownAdapter fontAdapter, scaleAdapter;
 
 	private Dialog color_dialog_selector, appInfo, license, pushDialog;
 	private ConfirmDialog confirmDialog;
@@ -112,7 +105,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private View enable_auth_label;
 	private EditText proxy_address, proxy_port, proxy_user, proxy_pass;
 	private SwitchButton enable_proxy, enable_auth, enablePush;
-	private Spinner location_dropdown;
 	private TextView list_size;
 	private ViewGroup root;
 	private Button[] colorButtons = new Button[COLOR_COUNT];
@@ -121,9 +113,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private int mode = 0;
 	private int color = 0;
 
-	private List<Location> locations;
-
-	private AsyncCallback<LocationLoaderResult> locationResult = this::onLocationResult;
 	private AsyncCallback<DatabaseResult> databaseResult = this::onDatabaseResult;
 
 
@@ -140,13 +129,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		Button delButton = findViewById(R.id.delete_db);
 		Button logout = findViewById(R.id.logout);
 		Toolbar toolbar = findViewById(R.id.toolbar_setting);
-		View trend_card = findViewById(R.id.settings_trend_card);
 		View user_card = findViewById(R.id.settings_data_card);
 		View push_label = findViewById(R.id.settings_enable_push_descr);
 		SwitchButton toggleImg = findViewById(R.id.toggleImg);
 		SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
 		SwitchButton enableLike = findViewById(R.id.enable_like);
-		SwitchButton enableNitter = findViewById(R.id.settings_enable_twitter_alt);
 		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
 		SwitchButton hideSensitive = findViewById(R.id.enable_status_hide_sensitive);
 		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
@@ -157,7 +144,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		enablePush = findViewById(R.id.settings_enable_push);
 		enable_proxy = findViewById(R.id.settings_enable_proxy);
 		enable_auth = findViewById(R.id.settings_enable_auth);
-		location_dropdown = findViewById(R.id.spinner_woeid);
 		enable_auth_label = findViewById(R.id.settings_enable_auth_descr);
 		colorButtons[COLOR_BACKGROUND] = findViewById(R.id.color_background);
 		colorButtons[COLOR_TEXT] = findViewById(R.id.color_text);
@@ -177,16 +163,14 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		root = findViewById(R.id.settings_layout);
 
 		settings = GlobalSettings.get(this);
-		configuration = settings.getLogin().getConfiguration();
+		Configuration configuration = settings.getLogin().getConfiguration();
 		confirmDialog = new ConfirmDialog(this, this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 		pushDialog = new WebPushDialog(this);
-		locationLoader = new LocationLoader(this);
 		databaseAction = new DatabaseAction(this);
 		fontAdapter = new DropdownAdapter(getApplicationContext());
 		scaleAdapter = new DropdownAdapter(getApplicationContext());
-		locationAdapter = new DropdownAdapter(getApplicationContext());
 
 		toolbar.setTitle(R.string.title_settings);
 		setSupportActionBar(toolbar);
@@ -196,20 +180,16 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		fontAdapter.setFonts(GlobalSettings.FONT_TYPES);
 		fontAdapter.setItems(GlobalSettings.FONT_NAMES);
 		scaleAdapter.setItems(R.array.scales);
-		locationAdapter.setItem(settings.getTrendLocation().getFullName());
 
-		location_dropdown.setAdapter(locationAdapter);
 		fontSelector.setAdapter(fontAdapter);
 		scaleSelector.setAdapter(scaleAdapter);
 		fontSelector.setSelection(settings.getFontIndex(), false);
 		scaleSelector.setSelection(settings.getScaleIndex(), false);
 		fontSelector.setSelected(false);
 		scaleSelector.setSelected(false);
-		location_dropdown.setSelected(false);
 
-		if (configuration != Configuration.TWITTER1 && configuration != Configuration.TWITTER2) {
+		if (configuration.isPublicTimelinesupported()) {
 			enableLocalTl.setVisibility(View.VISIBLE);
-			trend_card.setVisibility(View.GONE);
 		}
 		if (!configuration.isWebpushSupported()) {
 			push_label.setVisibility(View.GONE);
@@ -239,7 +219,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toggleImg.setCheckedImmediately(settings.imagesEnabled());
 		toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
 		enableLike.setCheckedImmediately(settings.likeEnabled());
-		enableNitter.setCheckedImmediately(settings.twitterAltSet());
 		enableLocalTl.setCheckedImmediately(settings.useLocalTimeline());
 		hideSensitive.setCheckedImmediately(settings.hideSensitiveEnabled());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
@@ -262,7 +241,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toggleImg.setOnCheckedChangeListener(this);
 		enablePush.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
-		enableNitter.setOnCheckedChangeListener(this);
 		enableLocalTl.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
 		hideSensitive.setOnCheckedChangeListener(this);
@@ -281,11 +259,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	protected void onStart() {
 		super.onStart();
 		setResult(RETURN_SETTINGS_CHANGED);
-		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
-			if (location_dropdown.getCount() <= 1) {
-				locationLoader.execute(null, locationResult);
-			}
-		}
 	}
 
 
@@ -301,7 +274,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	protected void onDestroy() {
-		locationLoader.cancel();
 		databaseAction.cancel();
 		super.onDestroy();
 	}
@@ -364,7 +336,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (v.getId() == R.id.delete_db) {
 			confirmDialog.show(ConfirmDialog.DELETE_APP_DATA);
 		}
-		// logout from twitter
+		// logout
 		else if (v.getId() == R.id.logout) {
 			confirmDialog.show(ConfirmDialog.APP_LOG_OUT);
 		}
@@ -445,9 +417,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					settings.setBackgroundColor(color);
 					fontAdapter.notifyDataSetChanged();
 					scaleAdapter.notifyDataSetChanged();
-					if (settings.isLoggedIn()) {
-						locationAdapter.notifyDataSetChanged();
-					}
 					AppStyles.setTheme(root);
 					setButtonColors();
 					break;
@@ -456,9 +425,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					settings.setTextColor(color);
 					fontAdapter.notifyDataSetChanged();
 					scaleAdapter.notifyDataSetChanged();
-					if (settings.isLoggedIn()) {
-						locationAdapter.notifyDataSetChanged();
-					}
 					AppStyles.setTheme(root);
 					setButtonColors();
 					break;
@@ -477,9 +443,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					settings.setCardColor(color);
 					fontAdapter.notifyDataSetChanged();
 					scaleAdapter.notifyDataSetChanged();
-					if (settings.isLoggedIn()) {
-						locationAdapter.notifyDataSetChanged();
-					}
 					AppStyles.setTheme(root);
 					setButtonColors();
 					break;
@@ -533,10 +496,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			} else {
 				colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_fav);
 			}
-		}
-		// enable alternative Twitter service
-		else if (c.getId() == R.id.settings_enable_twitter_alt) {
-			settings.setTwitterAlt(checked);
 		}
 		// enable status indicators
 		else if (c.getId() == R.id.enable_status_indicators) {
@@ -598,17 +557,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		// Trend location spinner
-		if (parent.getId() == R.id.spinner_woeid) {
-			settings.setTrendLocation(locations.get(position));
-		}
 		// Font type spinner
-		else if (parent.getId() == R.id.spinner_font) {
+		if (parent.getId() == R.id.spinner_font) {
 			settings.setFontIndex(position);
 			AppStyles.setFontStyle(root);
-			if (settings.isLoggedIn()) {
-				locationAdapter.notifyDataSetChanged();
-			}
 		}
 		// Font scale spinner
 		else if (parent.getId() == R.id.spinner_scale) {
@@ -665,34 +617,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
 				break;
 
-		}
-	}
-
-	/**
-	 * called from {@link LocationLoader}
-	 *
-	 * @param result result from {@link LocationLoader}
-	 */
-	private void onLocationResult(LocationLoaderResult result) {
-		if (result.locations != null) {
-			int position = -1;
-			this.locations = result.locations;
-			String[] items = new String[result.locations.size()];
-			for (int i = 0; i < items.length; i++) {
-				items[i] = result.locations.get(i).getFullName();
-				if (items[i].equals(settings.getTrendLocation().getFullName())) {
-					position = i;
-				}
-			}
-			locationAdapter.setItems(items);
-			// set item of a previously selection if exists
-			if (position >= 0) {
-				location_dropdown.setSelection(position, false);
-			}
-			// set listener after modifying content to prevent listener call
-			location_dropdown.setOnItemSelectedListener(this);
-		} else {
-			ErrorUtils.showErrorMessage(this, result.exception);
 		}
 	}
 

@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
 /**
- * Background task for downloading twitter lists created by a user
+ * Background task for downloading  userlists created by a user
  *
  * @author nuclearfog
  * @see UserListFragment

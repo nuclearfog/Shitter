@@ -16,10 +16,8 @@ import android.widget.TextView;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.api.twitter.v1.Tokens;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.config.Configuration;
 
 /**
  * API connection setup dialog
@@ -73,37 +71,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 		super.onStart();
 		if (connection != null) {
 			switch (connection.getApiType()) {
-				case TWITTER2:
-					enableV2.setCheckedImmediately(true);
-					// fall through
-
-				case TWITTER1:
-					// setup Twitter configuration views
-					if (connection.useTokens()) {
-						api1.setText(connection.getOauthConsumerToken());
-						api2.setText(connection.getOauthTokenSecret());
-						enableApi.setCheckedImmediately(true);
-						api1.setVisibility(View.VISIBLE);
-						api2.setVisibility(View.VISIBLE);
-						enableV2.setVisibility(View.VISIBLE);
-						v2Label.setVisibility(View.VISIBLE);
-					} else {
-						enableApi.setCheckedImmediately(false);
-						api1.setVisibility(View.INVISIBLE);
-						api2.setVisibility(View.INVISIBLE);
-						enableV2.setVisibility(View.INVISIBLE);
-						v2Label.setVisibility(View.INVISIBLE);
-					}
-					// enable Twitter configuration views
-					enableApi.setVisibility(View.VISIBLE);
-					apiLabel.setVisibility(View.VISIBLE);
-					// disable mastodon configuration views
-					host.setVisibility(View.GONE);
-					appNameLabel.setVisibility(View.GONE);
-					appName.setVisibility(View.GONE);
-					hostLabel.setVisibility(View.GONE);
-					break;
-
+				default:
 				case MASTODON:
 					// setup Mastodon configuration views
 					if (connection.useHost()) {
@@ -116,7 +84,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 					appNameLabel.setVisibility(View.VISIBLE);
 					appName.setVisibility(View.VISIBLE);
 					hostLabel.setVisibility(View.VISIBLE);
-					// disable Twitter configuration views
+					// todo remove these views
 					enableApi.setVisibility(View.GONE);
 					apiLabel.setVisibility(View.GONE);
 					enableV2.setVisibility(View.GONE);
@@ -143,37 +111,7 @@ public class ConnectionDialog extends Dialog implements OnCheckedChangeListener,
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_connection_confirm) {
 			switch (connection.getApiType()) {
-				case TWITTER1:
-				case TWITTER2:
-					String api1Text = api1.getText().toString();
-					String api2Text = api2.getText().toString();
-					if (enableApi.isChecked()) {
-						if (!api1Text.trim().isEmpty() && !api2Text.trim().isEmpty()) {
-							connection.setOauthTokens(api1Text, api2Text);
-						} else {
-							if (api1Text.trim().isEmpty()) {
-								api1.setError(getContext().getString(R.string.info_missing_key));
-							}
-							if (api2Text.trim().isEmpty()) {
-								api2.setError(getContext().getString(R.string.info_missing_key));
-							}
-							return;
-						}
-					} else {
-						connection.setOauthTokens("", "");
-					}
-					if (enableV2.isChecked()) {
-						connection.setApiType(Configuration.TWITTER2);
-					} else {
-						if (Tokens.DISABLE_API_V2) {
-							connection.setApiType(Configuration.TWITTER1);
-						} else {
-							connection.setApiType(Configuration.TWITTER2);
-						}
-					}
-					dismiss();
-					break;
-
+				default:
 				case MASTODON:
 					String appNameStr = appName.getText().toString();
 					String hostText = host.getText().toString();

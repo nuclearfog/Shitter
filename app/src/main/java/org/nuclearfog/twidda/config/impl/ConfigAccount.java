@@ -35,14 +35,7 @@ public class ConfigAccount implements Account {
 		hostname = account.getHostname();
 
 		switch (account.getConfiguration()) {
-			case TWITTER1:
-				apiType = API_TWITTER_1;
-				break;
-
-			case TWITTER2:
-				apiType = API_TWITTER_2;
-				break;
-
+			default:
 			case MASTODON:
 				apiType = API_MASTODON;
 				break;
@@ -123,22 +116,10 @@ public class ConfigAccount implements Account {
 	@Override
 	public Configuration getConfiguration() {
 		switch (apiType) {
-			case API_TWITTER_1:
-				return Configuration.TWITTER1;
-
-			case API_TWITTER_2:
-				return Configuration.TWITTER2;
-
 			default:
 			case API_MASTODON:
 				return Configuration.MASTODON;
 		}
-	}
-
-
-	@Override
-	public boolean usingDefaultTokens() {
-		return false;
 	}
 
 
@@ -157,12 +138,5 @@ public class ConfigAccount implements Account {
 		if (account.getUser() != null && getUser() != null)
 			return getUser().equals(account.getUser());
 		return false;
-	}
-
-	/**
-	 *
-	 */
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
 	}
 }

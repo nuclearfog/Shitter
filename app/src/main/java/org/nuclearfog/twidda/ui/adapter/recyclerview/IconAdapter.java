@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import org.nuclearfog.twidda.model.Media;
-import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.IconHolder;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -94,17 +93,6 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 		}
 		if (status.getPoll() != null) {
 			items.add(IconHolder.TYPE_POLL);
-		}
-		notifyDataSetChanged();
-	}
-
-	/**
-	 * add icons using message information
-	 */
-	public void addItems(Message message) {
-		items.clear();
-		if (message.getMedia().length > 0) {
-			addMediaIcons(message.getMedia());
 		}
 		notifyDataSetChanged();
 	}

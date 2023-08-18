@@ -5,7 +5,7 @@
 	<item
 		android:id="@+id/new_search"
 		android:icon="@drawable/search"
-		android:title="@string/menu_open_twitter_search"
+		android:title="@string/menu_open_search"
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 		app:showAsAction="always|collapseActionView" />
 

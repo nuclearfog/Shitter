@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,7 +36,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<ListUpdateResult>, OnCheckedChangeListener {
+public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<ListUpdateResult> {
 
 	/**
 	 * Key for the list ID if an existing list should be updated
@@ -85,8 +83,6 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 		ImageView background = findViewById(R.id.userlist_popup_background);
 		Button updateButton = findViewById(R.id.userlist_create_list);
 		TextView popupTitle = findViewById(R.id.popup_list_title);
-		TextView visibilityLabel = findViewById(R.id.userlist_switch_text);
-		CompoundButton visibilitySwitch = findViewById(R.id.list_edit_public_sw);
 		titleText = findViewById(R.id.list_edit_title);
 		descriptionText = findViewById(R.id.list_edit_descr);
 
@@ -102,23 +98,16 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 			UserList userList = (UserList) serializedUserlist;
 			titleText.setText(userList.getTitle());
 			descriptionText.setText(userList.getDescription());
-			visibilitySwitch.setChecked(!userList.isPrivate());
 			listUpdate.setId(userList.getId());
 			listUpdate.setDescription(userList.getDescription());
 			listUpdate.setTitle(userList.getTitle());
-			listUpdate.setPublic(!userList.isPrivate());
 			popupTitle.setText(R.string.menu_edit_list);
 			updateButton.setText(R.string.update_list);
-		}
-		if (!settings.getLogin().getConfiguration().userlistVisibilitySupported()) {
-			visibilitySwitch.setVisibility(View.INVISIBLE);
-			visibilityLabel.setVisibility(View.INVISIBLE);
 		}
 		if (!settings.getLogin().getConfiguration().userlsitDescriptionSupported()) {
 			descriptionText.setVisibility(View.GONE);
 		}
 		updateButton.setOnClickListener(this);
-		visibilitySwitch.setOnCheckedChangeListener(this);
 	}
 
 
@@ -166,14 +155,6 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 			if (listUpdater.isIdle()) {
 				updateList();
 			}
-		}
-	}
-
-
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if (buttonView.getId() == R.id.list_edit_public_sw) {
-			listUpdate.setPublic(isChecked);
 		}
 	}
 

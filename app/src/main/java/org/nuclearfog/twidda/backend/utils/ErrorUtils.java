@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
-import org.nuclearfog.twidda.config.GlobalSettings;
 
 /**
  * This class provides methods to handle {@link ConnectionException}
@@ -109,15 +108,6 @@ public class ErrorUtils {
 
 				case ConnectionException.INVALID_MEDIA:
 					return context.getString(R.string.error_invalid_media);
-
-				case ConnectionException.APP_SUSPENDED:
-					GlobalSettings settings = GlobalSettings.get(context);
-					if (settings.getLogin().usingDefaultTokens())
-						return context.getString(R.string.error_api_key_expired);
-					return context.getString(R.string.error_api_access_denied);
-
-				case ConnectionException.ERROR_API_ACCESS_DENIED:
-					return context.getString(R.string.error_api_access_limited);
 
 				case ConnectionException.JSON_FORMAT:
 					return context.getString(R.string.error_json_format);

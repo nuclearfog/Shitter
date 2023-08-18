@@ -15,7 +15,6 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.InstanceTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
@@ -29,7 +28,6 @@ import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
 import org.nuclearfog.twidda.database.impl.DatabaseInstance;
 import org.nuclearfog.twidda.database.impl.DatabaseLocation;
 import org.nuclearfog.twidda.database.impl.DatabaseMedia;
-import org.nuclearfog.twidda.database.impl.DatabaseMessage;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabasePoll;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
@@ -40,14 +38,12 @@ import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
-import org.nuclearfog.twidda.model.Message;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Trend;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Accounts;
-import org.nuclearfog.twidda.model.lists.Messages;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.Trends;
@@ -56,8 +52,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * SQLite database class to store and load status, messages, trends and user information
@@ -261,18 +255,6 @@ public class AppDatabase {
 			+ " LIMIT ?;";
 
 	/**
-	 * SQL query to get current user's messages
-	 */
-	private static final String MESSAGE_QUERY = "SELECT * FROM " + MessageTable.NAME
-			+ " INNER JOIN " + UserTable.NAME
-			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserTable.NAME + "." + UserTable.ID
-			+ " INNER JOIN " + UserRegisterTable.NAME
-			+ " ON " + MessageTable.NAME + "." + MessageTable.FROM + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.USER
-			+ " WHERE " + MessageTable.FROM + "=? OR " + MessageTable.TO + "=?"
-			+ " ORDER BY " + MessageTable.TIME + " DESC"
-			+ " LIMIT ?;";
-
-	/**
 	 * SQL query to get notifications
 	 */
 	private static final String NOTIFICATION_QUERY = "SELECT * FROM " + NOTIFICATION_SUBQUERY
@@ -318,11 +300,6 @@ public class AppDatabase {
 	 * select specific status from favorite table
 	 */
 	private static final String BOOKMARK_SELECT = BOOKMARK_SELECT_STATUS + " AND " + BOOKMARK_SELECT_OWNER;
-
-	/**
-	 * select message from message table with ID
-	 */
-	private static final String MESSAGE_SELECT = MessageTable.ID + "=?";
 
 	/**
 	 * select trends from trend table with given world ID
@@ -393,11 +370,6 @@ public class AppDatabase {
 	 * column projection for status flag register
 	 */
 	private static final String[] STATUS_REG_COLUMN = {StatusRegisterTable.REGISTER};
-
-	/**
-	 * column to fetch from the database
-	 */
-	private static final String[] LIST_ID_COL = {UserExcludeTable.USER};
 
 	/**
 	 * selection to get the exclude list of the current user
@@ -564,22 +536,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * store direct messages
-	 *
-	 * @param messages list of direct messages
-	 */
-	public void saveMessages(List<Message> messages) {
-		synchronized (LOCK) {
-			if (!messages.isEmpty()) {
-				SQLiteDatabase db = adapter.getDbWrite();
-				for (Message message : messages)
-					saveMessages(message, db);
-				adapter.commit();
-			}
-		}
-	}
-
-	/**
 	 * create a new filterlist containing user IDs
 	 *
 	 * @param ids list of user IDs
@@ -627,8 +583,6 @@ public class AppDatabase {
 
 	/**
 	 * Store user information
-	 *
-	 * @param user Twitter user
 	 */
 	public void saveUser(User user) {
 		synchronized (LOCK) {
@@ -889,40 +843,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * load direct messages
-	 *
-	 * @return list of direct messages
-	 */
-	public Messages getMessages() {
-		synchronized (LOCK) {
-			Account login = settings.getLogin();
-			String homeIdStr = Long.toString(login.getId());
-			String[] args = {homeIdStr, homeIdStr, Integer.toString(settings.getListSize())};
-			Messages result = new Messages();
-			SQLiteDatabase db = adapter.getDbRead();
-			Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
-			if (cursor.moveToFirst()) {
-				do {
-					DatabaseMessage item = new DatabaseMessage(cursor, login);
-					result.add(item);
-					if (item.getMediaKeys().length > 0) {
-						List<Media> medias = new LinkedList<>();
-						for (String key : item.getMediaKeys()) {
-							Media media = getMedia(db, key);
-							if (media != null) {
-								medias.add(media);
-							}
-						}
-						item.addMedia(medias.toArray(new Media[0]));
-					}
-				} while (cursor.moveToNext());
-			}
-			cursor.close();
-			return result;
-		}
-	}
-
-	/**
 	 * get all user logins
 	 *
 	 * @return list of all logins
@@ -1134,21 +1054,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * Delete Direct Message
-	 *
-	 * @param id Direct Message ID
-	 */
-	public void removeMessage(long id) {
-		synchronized (LOCK) {
-			String[] messageId = {Long.toString(id)};
-
-			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(MessageTable.NAME, MESSAGE_SELECT, messageId);
-			adapter.commit();
-		}
-	}
-
-	/**
 	 * remove login information from database
 	 *
 	 * @param id account ID to remove
@@ -1160,29 +1065,6 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
 			adapter.commit();
-		}
-	}
-
-	/**
-	 * return the current filterlist containing user IDs
-	 *
-	 * @return a set of user IDs
-	 */
-	public Set<Long> getFilterlistUserIds() {
-		synchronized (LOCK) {
-			String[] args = {Long.toString(settings.getLogin().getId())};
-			SQLiteDatabase db = adapter.getDbRead();
-			Cursor cursor = db.query(UserExcludeTable.NAME, LIST_ID_COL, LIST_SELECT, args, null, null, null, null);
-
-			Set<Long> result = new TreeSet<>();
-			if (cursor.moveToFirst()) {
-				do {
-					long id = cursor.getLong(0);
-					result.add(id);
-				} while (cursor.moveToNext());
-			}
-			cursor.close();
-			return result;
 		}
 	}
 
@@ -1285,7 +1167,6 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			db.delete(UserTable.NAME, null, null);
 			db.delete(StatusTable.NAME, null, null);
-			db.delete(MessageTable.NAME, null, null);
 			db.delete(FavoriteTable.NAME, null, null);
 			db.delete(BookmarkTable.NAME, null, null);
 			db.delete(TrendTable.NAME, null, null);
@@ -1836,33 +1717,6 @@ public class AppDatabase {
 		column.put(BookmarkTable.STATUS, statusId);
 		column.put(BookmarkTable.OWNER, ownerId);
 		db.insertWithOnConflict(BookmarkTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
-	}
-
-	/**
-	 * store direct message
-	 *
-	 * @param message direct message information
-	 * @param db      database instance
-	 */
-	private void saveMessages(Message message, SQLiteDatabase db) {
-		// store message information
-		ContentValues column = new ContentValues(6);
-		column.put(MessageTable.ID, message.getId());
-		column.put(MessageTable.TIME, message.getTimestamp());
-		column.put(MessageTable.FROM, message.getSender().getId());
-		column.put(MessageTable.TO, message.getReceiverId());
-		column.put(MessageTable.MESSAGE, message.getText());
-		if (message.getMedia().length > 0) {
-			StringBuilder keyBuf = new StringBuilder();
-			for (Media media : message.getMedia())
-				keyBuf.append(media.getKey()).append(';');
-			keyBuf.deleteCharAt(keyBuf.length() - 1);
-			column.put(MessageTable.MEDIA, keyBuf.toString());
-			saveMedia(message.getMedia(), db);
-		}
-		db.insertWithOnConflict(MessageTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
-		// store user information
-		saveUser(message.getSender(), db, SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	/**

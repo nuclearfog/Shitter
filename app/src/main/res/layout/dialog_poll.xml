@@ -12,7 +12,6 @@
 		android:layout_height="wrap_content">
 
 		<TextView
-			android:id="@+id/dialog_poll_title"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginEnd="@dimen/dialog_poll_layout_margins"
@@ -51,7 +50,6 @@
 			android:layout_marginEnd="@dimen/dialog_poll_layout_margins" />
 
 		<TextView
-			android:id="@+id/dialog_poll_mul_choice_label"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="2"
@@ -76,7 +74,6 @@
 			android:layout_marginEnd="@dimen/dialog_poll_layout_margins" />
 
 		<TextView
-			android:id="@+id/dialog_poll_hide_total_label"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -282,17 +281,13 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	private void updateUser() {
 		if (editorAsync.isIdle()) {
 			String username = this.username.getText().toString();
-			String userLink = profileUrl.getText().toString();
 			String userLoc = profileLocation.getText().toString();
 			String userBio = userDescription.getText().toString();
 			if (username.trim().isEmpty()) {
 				String errMsg = getString(R.string.error_empty_name);
 				this.username.setError(errMsg);
-			} else if (!userLink.isEmpty() && !Patterns.WEB_URL.matcher(userLink).matches()) {
-				String errMsg = getString(R.string.error_invalid_link);
-				profileUrl.setError(errMsg);
 			} else {
-				userUpdate.setProfile(username, userLink, userBio, userLoc);
+				userUpdate.setProfile(username, userBio, userLoc);
 				if (userUpdate.prepare(getContentResolver())) {
 					editorAsync.execute(userUpdate, this);
 					progressDialog.show();

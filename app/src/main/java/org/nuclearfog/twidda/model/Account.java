@@ -15,18 +15,6 @@ import java.io.Serializable;
 public interface Account extends Serializable {
 
 	/**
-	 * API ID for twitter version 1.1
-	 * used in database tables!
-	 */
-	int API_TWITTER_1 = 1;
-
-	/**
-	 * API ID for twitter version 2.0
-	 * used in database tables!
-	 */
-	int API_TWITTER_2 = 3;
-
-	/**
 	 * API ID used for Mastodon accounts
 	 * used in database tables!
 	 */
@@ -82,12 +70,4 @@ public interface Account extends Serializable {
 	 * @return login configuration
 	 */
 	Configuration getConfiguration();
-
-	/**
-	 * return true if the account uses the app default API tokens
-	 * currently only used by Twitter logins
-	 *
-	 * @return true if this account uses default app integrated API tokens
-	 */
-	boolean usingDefaultTokens();
 }

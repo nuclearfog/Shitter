@@ -464,7 +464,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// get status link
 		else if (item.getItemId() == R.id.menu_status_browser) {
 			if (!status.getUrl().isEmpty()) {
-				LinkUtils.openLink(this, status.getUrl(), true);
+				LinkUtils.openLink(this, status.getUrl());
 			}
 			return true;
 		}
@@ -680,7 +680,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onCardClick(Card card, int type) {
 		if (type == OnCardClickListener.TYPE_LINK) {
-			LinkUtils.openLink(this, card.getUrl(), false);
+			LinkUtils.openLink(this, card.getUrl());
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
@@ -735,7 +735,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onLinkClick(String tag) {
 		// proceed click when there is no text blur
 		if (status_text.getPaint().getMaskFilter() == null) {
-			LinkUtils.openLink(this, tag, false);
+			LinkUtils.openLink(this, tag);
 		}
 	}
 

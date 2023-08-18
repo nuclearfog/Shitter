@@ -83,18 +83,6 @@ public class DatabaseAdapter {
 			+ TrendTable.TREND + " TEXT);";
 
 	/**
-	 * SQL query to create a table for message information
-	 */
-	private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS "
-			+ MessageTable.NAME + "("
-			+ MessageTable.ID + " INTEGER PRIMARY KEY,"
-			+ MessageTable.TIME + " INTEGER,"
-			+ MessageTable.FROM + " INTEGER,"
-			+ MessageTable.TO + " INTEGER,"
-			+ MessageTable.MESSAGE + " TEXT,"
-			+ MessageTable.MEDIA + " TEXT);";
-
-	/**
 	 * SQL query to create a table for user logins
 	 */
 	private static final String TABLE_ACCOUNTS = "CREATE TABLE IF NOT EXISTS "
@@ -354,7 +342,6 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_FAVORITES);
 		db.execSQL(TABLE_BOOKMARKS);
 		db.execSQL(TABLE_TRENDS);
-		db.execSQL(TABLE_MESSAGES);
 		db.execSQL(TABLE_ACCOUNTS);
 		db.execSQL(TABLE_USER_BLOCKLIST);
 		db.execSQL(TABLE_STATUS_REGISTER);
@@ -710,7 +697,7 @@ public class DatabaseAdapter {
 	}
 
 	/**
-	 * table for twitter trends
+	 * table for trends and trending hashtags
 	 */
 	public interface TrendTable {
 		/**
@@ -737,46 +724,6 @@ public class DatabaseAdapter {
 		 * name of the trend
 		 */
 		String TREND = "trendname";
-	}
-
-	/**
-	 * Table for direct messages
-	 */
-	public interface MessageTable {
-		/**
-		 * table name
-		 */
-		String NAME = "message";
-
-		/**
-		 * ID of the message
-		 */
-		String ID = "messageID";
-
-		/**
-		 * date of the message
-		 */
-		String TIME = "time";
-
-		/**
-		 * User ID of the sender
-		 */
-		String FROM = "senderID";
-
-		/**
-		 * User ID of the receiver
-		 */
-		String TO = "receiverID";
-
-		/**
-		 * message text
-		 */
-		String MESSAGE = "message";
-
-		/**
-		 * media keys
-		 */
-		String MEDIA = "media";
 	}
 
 	/**

@@ -104,12 +104,6 @@ public class MastodonAccount implements Account {
 	}
 
 
-	@Override
-	public boolean usingDefaultTokens() {
-		return false;
-	}
-
-
 	@NonNull
 	@Override
 	public String toString() {

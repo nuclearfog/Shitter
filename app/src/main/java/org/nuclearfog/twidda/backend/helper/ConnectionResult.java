@@ -9,7 +9,6 @@ public class ConnectionResult {
 
 	private String consumerKey;
 	private String consumerSecret;
-	private String tempOauth;
 	private String authorizationUrl;
 
 	/**
@@ -21,18 +20,6 @@ public class ConnectionResult {
 		this.consumerKey = consumerKey;
 		this.consumerSecret = consumerSecret;
 		this.authorizationUrl = authorizationUrl;
-		tempOauth = "";
-	}
-
-	/**
-	 * @param authorizationUrl authorization url used to redirect to login page
-	 * @param tempOauth        temporary generated oauth 1.0 access token
-	 */
-	public ConnectionResult(String authorizationUrl, String tempOauth) {
-		this.tempOauth = tempOauth;
-		this.authorizationUrl = authorizationUrl;
-		consumerKey = "";
-		consumerSecret = "";
 	}
 
 	/**
@@ -47,13 +34,6 @@ public class ConnectionResult {
 	 */
 	public String getConsumerSecret() {
 		return consumerSecret;
-	}
-
-	/**
-	 * get temporary oauth token
-	 */
-	public String getOauthToken() {
-		return tempOauth;
 	}
 
 	/**

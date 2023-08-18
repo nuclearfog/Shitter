@@ -95,16 +95,6 @@ public abstract class ConnectionException extends Exception {
 	public static final int HTTP_FORBIDDEN = 15;
 
 	/**
-	 * indicates that the used API access is suspended
-	 */
-	public static final int APP_SUSPENDED = 16;
-
-	/**
-	 * invalid API keys
-	 */
-	public static final int ERROR_API_ACCESS_DENIED = 17;
-
-	/**
 	 * invalid media (wrong format, size)
 	 */
 	public static final int INVALID_MEDIA = 18;

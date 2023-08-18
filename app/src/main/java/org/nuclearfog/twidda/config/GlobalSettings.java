@@ -29,16 +29,6 @@ import java.util.List;
 public class GlobalSettings {
 
 	/**
-	 * alternative Twitter service
-	 */
-	private static final String TWITTER_ALT_HOST = "https://nitter.net";
-
-	/**
-	 * default twitter hostname
-	 */
-	private static final String TWITTER_HOST = "https://twitter.com";
-
-	/**
 	 * custom android font
 	 */
 	private static final Typeface SANS_SERIF_THIN = Typeface.create("sans-serif-thin", Typeface.NORMAL);
@@ -87,10 +77,7 @@ public class GlobalSettings {
 	private static final String PROXY_USER = "proxy_user";
 	private static final String PROXY_PASS = "proxy_pass";
 	private static final String PROXY_WARNING = "proxy_warning";
-	private static final String TREND_LOC = "location";
-	private static final String TREND_ID = "world_id_long";
 	private static final String ENABLE_LIKE = "like_enable";
-	private static final String ENABLE_TWITTER_ALT = "twitter_alt_set";
 	private static final String FILTER_RESULTS = "filter_results";
 	private static final String MASTODON_LOCAL_TIMELINE = "mastodon_local_timeline";
 	private static final String HIDE_SENSITIVE = "hide_sensitive";
@@ -141,12 +128,9 @@ public class GlobalSettings {
 	private static final int DEFAULT_FV_ICON_COLOR = Color.YELLOW;
 	private static final int DEFAULT_FR_ICON_COLOR = Color.YELLOW;
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
-	private static final long DEFAULT_LOCATION_ID = 1L;
-	private static final String DEFAULT_LOCATION_NAME = "Worldwide";
 
 	private SharedPreferences settings;
 
-	private Location location;
 	private ConfigPush webPush;
 	private ConfigAccount login;
 	private String proxyHost, proxyPort;
@@ -162,7 +146,6 @@ public class GlobalSettings {
 	private boolean tweetIndicators;
 	private boolean filterResults;
 	private boolean enableLike;
-	private boolean twitterAlt;
 	private boolean localOnly;
 	private boolean hideSensitive;
 	private boolean floatingEnabled;
@@ -571,27 +554,9 @@ public class GlobalSettings {
 	 */
 	public Location getTrendLocation() {
 		switch (login.getConfiguration()) {
-			case TWITTER1:
-			case TWITTER2:
-				return location;
-
 			default:
 				return new ConfigLocation();
 		}
-	}
-
-	/**
-	 * set selected location information
-	 *
-	 * @param location location information
-	 */
-	public void setTrendLocation(Location location) {
-		this.location = location;
-
-		Editor edit = settings.edit();
-		edit.putLong(TREND_ID, location.getId());
-		edit.putString(TREND_LOC, location.getFullName());
-		edit.apply();
 	}
 
 	/**
@@ -747,37 +712,6 @@ public class GlobalSettings {
 
 		Editor edit = settings.edit();
 		edit.putBoolean(ENABLE_LIKE, enableLike);
-		edit.apply();
-	}
-
-	/**
-	 * check if Twitter link alternative is set (e.G. nitter.net)
-	 *
-	 * @return true if link alternative is set
-	 */
-	public boolean twitterAltSet() {
-		return twitterAlt;
-	}
-
-	/**
-	 * enable alternative service to open tweet links (nitter.net)
-	 *
-	 * @param enable true to enable alternative service
-	 */
-	public void setTwitterAlt(boolean enable) {
-		twitterAlt = enable;
-		Editor edit = settings.edit();
-		Configuration configuration = login.getConfiguration();
-		if (configuration == Configuration.TWITTER1 || configuration == Configuration.TWITTER2) {
-			if (enable) {
-				edit.putString(HOSTNAME, TWITTER_ALT_HOST);
-				login.setHostname(TWITTER_ALT_HOST);
-			} else {
-				edit.putString(HOSTNAME, TWITTER_HOST);
-				login.setHostname(TWITTER_HOST);
-			}
-		}
-		edit.putBoolean(ENABLE_TWITTER_ALT, enable);
 		edit.apply();
 	}
 
@@ -1087,7 +1021,6 @@ public class GlobalSettings {
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
-		twitterAlt = settings.getBoolean(ENABLE_TWITTER_ALT, false);
 		localOnly = settings.getBoolean(MASTODON_LOCAL_TIMELINE, false);
 		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
 		floatingEnabled = settings.getBoolean(FLOATING_BUTTON, true);
@@ -1097,9 +1030,6 @@ public class GlobalSettings {
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
 		proxyPass = settings.getString(PROXY_PASS, "");
-		String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
-		long woeId = settings.getLong(TREND_ID, DEFAULT_LOCATION_ID);
-		location = new ConfigLocation(woeId, place);
 		// login informations
 		initLogin();
 		initWebpush();
@@ -1114,11 +1044,9 @@ public class GlobalSettings {
 		String consumerToken = settings.getString(CONSUMER_TOKEN, "");
 		String consumerSecret = settings.getString(CONSUMER_SECRET, "");
 		String bearerToken = settings.getString(BEARER_TOKEN, "");
-		String hostname = settings.getString(HOSTNAME, TWITTER_HOST);
+		String hostname = settings.getString(HOSTNAME, "");
 		int apiId = settings.getInt(CURRENT_API, 0);
 		long userId = settings.getLong(CURRENT_ID, 0L);
-		if ((apiId == Account.API_TWITTER_1 || apiId == Account.API_TWITTER_2) && twitterAlt)
-			hostname = TWITTER_ALT_HOST;
 		login = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
 	}
 
