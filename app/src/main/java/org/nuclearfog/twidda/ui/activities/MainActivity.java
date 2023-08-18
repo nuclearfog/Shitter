@@ -479,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				username.setText(user.getUsername());
 			}
 			Drawable placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
-			if (!user.getProfileImageThumbnailUrl().isEmpty()) {
+			if (settings.imagesEnabled() && !user.getProfileImageThumbnailUrl().isEmpty()) {
 				Transformation roundCorner = new RoundedCornersTransformation(5, 0);
 				picasso.load(user.getProfileImageThumbnailUrl()).transform(roundCorner).placeholder(placeholder).into(profileImage);
 			} else {

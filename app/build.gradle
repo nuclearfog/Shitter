@@ -11,8 +11,8 @@ android {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
 		targetSdkVersion 33
-		versionCode 95
-		versionName '3.3.1'
+		versionCode 96
+		versionName '3.4'
 		resConfigs 'en', 'es', 'de-rDE', 'zh-rCN'
 	}
 
@@ -31,12 +31,16 @@ android {
 	}
 
 	packagingOptions {
-		jniLibs {
-			excludes += ['/META-INF/androidx.*', '/META-INF/kotlin*', '/META-INF/com.*', '/META-INF/services/**', '/META-INF/com/**', '/kotlin/**', '/Debug*']
-		}
-		resources {
-			excludes += ['/META-INF/CHANGES', '/META-INF/DEPENDENCIES', '/META-INF/README.md', '/META-INF/androidx.*', '/META-INF/kotlin*', '/META-INF/com.*', '/META-INF/services/**', '/META-INF/com/**', '/kotlin/**', '/Debug*']
-		}
+		exclude '/META-INF/CHANGES'
+		exclude '/META-INF/DEPENDENCIES'
+		exclude '/META-INF/README.md'
+		exclude '/META-INF/androidx.*'
+		exclude '/META-INF/kotlin*'
+		exclude '/META-INF/com.*'
+		exclude '/META-INF/services/**'
+		exclude '/META-INF/com/**'
+		exclude '/kotlin/**'
+		exclude '/Debug*'
 	}
 }
 
@@ -46,9 +50,9 @@ dependencies {
 	implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 	implementation 'androidx.cardview:cardview:1.0.0'
 	implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-	implementation 'androidx.media3:media3-exoplayer:1.1.0'
-	implementation 'androidx.media3:media3-ui:1.1.0'
-	implementation 'androidx.media3:media3-datasource-okhttp:1.1.0'
+	implementation 'androidx.media3:media3-exoplayer:1.1.1'
+	implementation 'androidx.media3:media3-ui:1.1.1'
+	implementation 'androidx.media3:media3-datasource-okhttp:1.1.1'
 	//noinspection GradleDependency
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 	//noinspection GradleDependency
