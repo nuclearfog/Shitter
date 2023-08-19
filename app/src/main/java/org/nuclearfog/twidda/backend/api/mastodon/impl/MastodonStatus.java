@@ -11,7 +11,6 @@ import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
-import org.nuclearfog.twidda.model.Metrics;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
@@ -341,13 +340,6 @@ public class MastodonStatus implements Status {
 	@Override
 	public Poll getPoll() {
 		return poll;
-	}
-
-
-	@Nullable
-	@Override
-	public Metrics getMetrics() {
-		return null;
 	}
 
 

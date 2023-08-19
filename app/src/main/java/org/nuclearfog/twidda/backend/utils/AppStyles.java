@@ -315,7 +315,7 @@ public class AppStyles {
 	 * @param color    new drawable color
 	 */
 	public static void setDrawableColor(@Nullable Drawable drawable, int color) {
-		if (drawable != null) {
+		if (drawable != null && !(drawable instanceof BitmapDrawable)) {
 			drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
 		}
 	}

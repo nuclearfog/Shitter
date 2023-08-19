@@ -127,7 +127,6 @@
 	<string name="menu_status_edit">Editar</string>
 	<string name="menu_status_delete">Borrar</string>
 	<string name="menu_status_hide">Ocultar</string>
-	<string name="menu_status_metrics">Estadísticas</string>
 	<string name="menu_status_unhide">Mostrar</string>
 	<string name="menu_status_open_browser">Abrir en navegador</string>
 	<string name="menu_mute_user">Silenciar</string>
@@ -275,7 +274,6 @@
 	<string name="toolbar_status_liker">Usuario le está gustando este estado</string>
 	<string name="time_now">Ahora</string>
 	<string name="status_replyname_empty">Responder</string>
-	<string name="status_metrics_title">Estadísticas del estado</string>
 	<string name="status_media_preview">Vista previa de los medios</string>
 	<string name="status_media_preview_button">Botón de vista previa del video</string>
 	<string name="poll_finished">Votación finalizada</string>

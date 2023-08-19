@@ -199,14 +199,6 @@
 	<!--dimens of fragment_list.xml-->
 	<dimen name="fragment_list_layout_padding">3dp</dimen>
 
-	<!-- dimens of dialog_metrics.xml-->
-	<dimen name="dialog_metrics_layout_margin">5dp</dimen>
-	<dimen name="dialog_metrics_layout_padding">12dp</dimen>
-	<dimen name="dialog_metrics_drawable_padding">5dp</dimen>
-	<dimen name="dialog_metrics_title_textsize">20sp</dimen>
-	<dimen name="dialog_metrics_item_textsize">16sp</dimen>
-	<dimen name="dialog_metrics_item_iconsize">20sp</dimen>
-
 	<!--dimens of dialog_confirm.xml-->
 	<dimen name="confirm_button_margin">10dp</dimen>
 	<dimen name="confirm_text_margin">14dp</dimen>

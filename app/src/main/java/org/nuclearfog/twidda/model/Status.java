@@ -182,12 +182,6 @@ public interface Status extends Serializable, Comparable<Status> {
 	@Nullable
 	Poll getPoll();
 
-	/**
-	 * @return status metrics or null if status doesn't belong to the current user
-	 */
-	@Nullable
-	Metrics getMetrics();
-
 
 	@Override
 	default int compareTo(Status status) {

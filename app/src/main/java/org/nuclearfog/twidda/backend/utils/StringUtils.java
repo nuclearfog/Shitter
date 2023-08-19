@@ -32,16 +32,10 @@ public class StringUtils {
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 
 	/**
-	 * date format used by API 1.1
-	 * e.g. "Mon Jan 17 13:00:12 +0000 2022"
-	 */
-	private static final SimpleDateFormat dateFormat1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
-
-	/**
-	 * date format used by API 2.0
+	 * date format
 	 * e.g. "2008-08-15T13:51:34.000Z"
 	 */
-	private static final SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+	private static final SimpleDateFormat defaultDateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
 
 	private static final TimeZone TIME_ZONE = TimeZone.getDefault();
 
@@ -170,7 +164,7 @@ public class StringUtils {
 			switch (timeFormat) {
 				default:
 				case TIME_MASTODON:
-					Date result = dateFormat2.parse(timeStr);
+					Date result = defaultDateformat.parse(timeStr);
 					if (result != null)
 						return result.getTime() + TIME_ZONE.getOffset(System.currentTimeMillis());
 					break;

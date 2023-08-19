@@ -78,7 +78,6 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.PreviewAdapter.OnCardClickL
 import org.nuclearfog.twidda.ui.dialogs.AudioPlayerDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
-import org.nuclearfog.twidda.ui.dialogs.MetricsDialog;
 import org.nuclearfog.twidda.ui.dialogs.ReportDialog;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
@@ -171,7 +170,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private Picasso picasso;
 	private PreviewAdapter adapter;
 	private ConfirmDialog confirmDialog;
-	private MetricsDialog metricsDialog;
 	private AudioPlayerDialog audioDialog;
 	private ReportDialog reportDialog;
 
@@ -227,7 +225,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		translationLoader = new TranslationLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
 		confirmDialog = new ConfirmDialog(this, this);
-		metricsDialog = new MetricsDialog(this);
 		audioDialog = new AudioPlayerDialog(this);
 		reportDialog = new ReportDialog(this);
 		picasso = PicassoBuilder.get(this);
@@ -382,7 +379,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		MenuItem optHide = m.findItem(R.id.menu_status_hide);
 		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
 		MenuItem optReport = m.findItem(R.id.menu_status_report);
-		MenuItem optMetrics = m.findItem(R.id.menu_status_metrics);
 		MenuItem menuBookmark = m.findItem(R.id.menu_status_bookmark);
 		MenuItem editStatus = m.findItem(R.id.menu_status_edit);
 		SubMenu copyMenu = optCopy.getSubMenu();
@@ -413,10 +409,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				}
 			} else {
 				optReport.setVisible(true);
-			}
-			// enable/disable status metrics option
-			if (currentStatus.getMetrics() != null) {
-				optMetrics.setVisible(true);
 			}
 			// add media link items
 			// check if menu doesn't contain media links already
@@ -485,12 +477,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, Toast.LENGTH_SHORT).show();
 			}
 			return true;
-		}
-		// open status metrics page
-		else if (item.getItemId() == R.id.menu_status_metrics) {
-			if (status.getMetrics() != null) {
-				metricsDialog.show(status.getMetrics());
-			}
 		}
 		// copy media links
 		else if (item.getGroupId() == MENU_GROUP_COPY) {

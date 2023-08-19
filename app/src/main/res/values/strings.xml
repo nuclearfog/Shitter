@@ -151,7 +151,6 @@
 	<string name="menu_status_delete">delete</string>
 	<string name="menu_status_report">report</string>
 	<string name="menu_status_hide">hide</string>
-	<string name="menu_status_metrics">Metrics</string>
 	<string name="menu_status_unhide">unhide</string>
 	<string name="menu_status_open_browser">open in browser</string>
 	<string name="menu_mute_user">mute</string>
@@ -318,7 +317,6 @@
 	<string name="toolbar_status_liker">User liking this status</string>
 	<string name="time_now">now</string>
 	<string name="status_replyname_empty">Reply</string>
-	<string name="status_metrics_title">Status metrics</string>
 	<string name="status_media_preview">Media preview</string>
 	<string name="status_media_preview_button">Video preview button</string>
 	<string name="poll_finished">Vote finished</string>

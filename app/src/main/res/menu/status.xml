@@ -25,11 +25,6 @@
 		android:title="@string/menu_bookmark_add" />
 
 	<item
-		android:id="@+id/menu_status_metrics"
-		android:title="@string/menu_status_metrics"
-		android:visible="false" />
-
-	<item
 		android:id="@+id/menu_status_hide"
 		android:title="@string/menu_status_hide"
 		android:visible="false" />
