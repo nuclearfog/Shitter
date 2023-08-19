@@ -68,7 +68,7 @@ public class GlobalSettings {
 	private static final String INDEX_SCALE = "index_scale";
 	private static final String LIST_SIZE = "preload";
 	private static final String IMAGE_LOAD = "image_load";
-	private static final String TWEET_INDICATOR = "tweet_indicator";
+	private static final String STATUS_ICONS = "tweet_indicator";
 	private static final String PROFILE_OVERLAP = "profile_toolbar_overlap";
 	private static final String PROXY_SET = "proxy_enabled";
 	private static final String AUTH_SET = "proxy_auth_set";
@@ -143,7 +143,7 @@ public class GlobalSettings {
 	private boolean isProxyAuthSet;
 	private boolean proxyWarning;
 	private boolean toolbarOverlap;
-	private boolean tweetIndicators;
+	private boolean showStatusIcons;
 	private boolean filterResults;
 	private boolean enableLike;
 	private boolean localOnly;
@@ -155,7 +155,7 @@ public class GlobalSettings {
 	private int card_color;
 	private int icon_color;
 	private int popup_color;
-	private int retweet_color;
+	private int repost_color;
 	private int favorite_color;
 	private int request_color;
 	private int follow_color;
@@ -341,21 +341,21 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * get retweet icon color
+	 * get repost icon color
 	 *
 	 * @return icon color
 	 */
 	public int getRepostIconColor() {
-		return retweet_color;
+		return repost_color;
 	}
 
 	/**
-	 * set retweet icon color (enabled)
+	 * set repost icon color (enabled)
 	 *
 	 * @param color icon color
 	 */
 	public void setRepostIconColor(int color) {
-		retweet_color = color;
+		repost_color = color;
 
 		Editor edit = settings.edit();
 		edit.putInt(RT_COLOR, color);
@@ -416,7 +416,7 @@ public class GlobalSettings {
 				background_color, font_color,
 				popup_color, highlight_color,
 				card_color, icon_color,
-				retweet_color, favorite_color,
+				repost_color, favorite_color,
 				request_color, follow_color
 		};
 	}
@@ -488,22 +488,22 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * @return true if status indicators enabled
+	 * @return true if status attachment icons enabled
 	 */
 	public boolean statusIndicatorsEnabled() {
-		return tweetIndicators;
+		return showStatusIcons;
 	}
 
 	/**
-	 * enable/disable status indicators
+	 * enable/disable status attachment icons
 	 *
-	 * @param enable true to enable tweet indicators
+	 * @param enable true to enable icons
 	 */
 	public void enableStatusIndicators(boolean enable) {
-		tweetIndicators = enable;
+		showStatusIcons = enable;
 
 		Editor edit = settings.edit();
-		edit.putBoolean(TWEET_INDICATOR, enable);
+		edit.putBoolean(STATUS_ICONS, enable);
 		edit.apply();
 	}
 
@@ -608,18 +608,18 @@ public class GlobalSettings {
 
 
 	/**
-	 * get loading limit of tweets/users
+	 * get max list size to load online/offline
 	 *
-	 * @return max numbers of tweets/users should be loaded
+	 * @return max list size to load
 	 */
 	public int getListSize() {
 		return listSize;
 	}
 
 	/**
-	 * set limit of tweets/users
+	 * set max list size to load online/offline
 	 *
-	 * @param listSize max numbers of tweets/users
+	 * @param listSize max list size to load
 	 */
 	public void setListSize(int listSize) {
 		this.listSize = listSize;
@@ -1005,7 +1005,7 @@ public class GlobalSettings {
 		popup_color = settings.getInt(POPUP_COLOR, DEFAULT_POPUP_COLOR);
 		card_color = settings.getInt(CARD_COLOR, DEFAULT_CARD_COLOR);
 		icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
-		retweet_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
+		repost_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
 		favorite_color = settings.getInt(FV_COLOR, DEFAULT_FV_ICON_COLOR);
 		request_color = settings.getInt(F_REQ_COLOR, DEFAULT_FR_ICON_COLOR);
 		follow_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
@@ -1017,7 +1017,7 @@ public class GlobalSettings {
 		loggedIn = settings.getBoolean(LOGIN_ENABLED, false);
 		push_enabled = settings.getBoolean(PUSH_ENABLED, false);
 		loadImage = settings.getBoolean(IMAGE_LOAD, true);
-		tweetIndicators = settings.getBoolean(TWEET_INDICATOR, true);
+		showStatusIcons = settings.getBoolean(STATUS_ICONS, true);
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);

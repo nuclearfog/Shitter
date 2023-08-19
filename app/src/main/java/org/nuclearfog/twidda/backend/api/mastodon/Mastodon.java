@@ -1120,6 +1120,7 @@ public class Mastodon implements Connection {
 	@Override
 	public WebPush updatePush(PushUpdate pushUpdate) throws ConnectionException {
 		try {
+			// initialize encryption as required by Mastodon API (but not used yet)
 			KeyPairGenerator generator = KeyPairGenerator.getInstance("EC");
 			ECGenParameterSpec spec = new ECGenParameterSpec("prime256v1");
 			generator.initialize(spec);
@@ -1131,27 +1132,19 @@ public class Mastodon implements Connection {
 			String pushPrivateKey = Base64.encodeToString(privKeyData, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
 			String pushPublicKey = Base64.encodeToString(pubKeyData, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
 			String randomString = StringUtils.getRandomString();
-
+			//
 			List<String> params = new ArrayList<>();
 			params.add("subscription[endpoint]=" + StringUtils.encode(pushUpdate.getHost()));
 			params.add("subscription[keys][p256dh]=" + encodedPublicKey);
 			params.add("subscription[keys][auth]=" + randomString);
-			if (pushUpdate.mentionsEnabled())
-				params.add("data[alerts][mention]=true");
-			if (pushUpdate.favoriteEnabled())
-				params.add("data[alerts][favourite]=true");
-			if (pushUpdate.repostEnabled())
-				params.add("data[alerts][reblog]=true");
-			if (pushUpdate.followEnabled())
-				params.add("data[alerts][follow]=true");
-			if (pushUpdate.followRequestEnabled())
-				params.add("data[alerts][follow_request]=true");
-			if (pushUpdate.pollEnabled())
-				params.add("data[alerts][poll]=true");
-			if (pushUpdate.statusPostEnabled())
-				params.add("data[alerts][status]=true");
-			if (pushUpdate.statusEditEnabled())
-				params.add("data[alerts][update]=true");
+			params.add("data[alerts][mention]=" + pushUpdate.mentionsEnabled());
+			params.add("data[alerts][favourite]=" + pushUpdate.favoriteEnabled());
+			params.add("data[alerts][reblog]=" + pushUpdate.repostEnabled());
+			params.add("data[alerts][follow]=" + pushUpdate.followEnabled());
+			params.add("data[alerts][follow_request]=" + pushUpdate.followRequestEnabled());
+			params.add("data[alerts][poll]=" + pushUpdate.pollEnabled());
+			params.add("data[alerts][status]=" + pushUpdate.statusPostEnabled());
+			params.add("data[alerts][update]=" + pushUpdate.statusEditEnabled());
 			if (pushUpdate.getPolicy() == WebPush.POLICY_ALL)
 				params.add("data[policy]=all");
 			else if (pushUpdate.getPolicy() == WebPush.POLICY_FOLLOWER)

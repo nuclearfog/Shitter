@@ -366,7 +366,7 @@ public class AppStyles {
 				sw.setThumbColor(new ColorStateList(SWITCH_STATES, thumbColor));
 			} else if (child instanceof FloatingActionButton) {
 				FloatingActionButton floatingButton = (FloatingActionButton) child;
-				floatingButton.setBackgroundTintList(ColorStateList.valueOf(settings.getHighlightColor()));
+				floatingButton.setBackgroundTintList(ColorStateList.valueOf(settings.getPopupColor()));
 				setDrawableColor(floatingButton, settings.getIconColor());
 			} else if (child instanceof SeekBar) {
 				SeekBar seekBar = (SeekBar) child;
