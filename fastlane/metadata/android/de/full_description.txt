@@ -1,12 +1,11 @@
-<p><i>Shitter</i> ist ein Android-Client für Mastodon.</p>
 <p><br><b>Features:</b></p>
 <ul>
     <li>Zugriff auf Posts, Nutzer und Trends</li>
     <li>chronologisch aufgebaute Timelines</li>
-    <li>ünterstützt Push-Benachrichtigungen</li>
     <li>anpassbares Aussehen</li>
-    <li>unterstützt Vorschau für Medien, Links und Umfragen</li>
-    <li>Unterstützung mehrerer Accounts</li>
+    <li>Unterstützt Multi-Account</li>
+    <li>ünterstützt Push-Benachrichtigungen</li>
+    <li>integrierte Vorschau für Medien, Links und Umfragen</li>
     <li>Emoji-Unterstützung</li>
     <li>keine Werbung, kein App-Tracking, integrierte Proxy-Unterstützung</li>
 </ul>

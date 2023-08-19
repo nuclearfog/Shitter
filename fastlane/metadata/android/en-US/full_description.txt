@@ -1,4 +1,3 @@
-<p><i>Shitter</i> is a lightweight Android client for Mastodon.</p>
 <p><br><b>Features:</b></p>
 <ul>
     <li>access to statuses, users and trends</li>
