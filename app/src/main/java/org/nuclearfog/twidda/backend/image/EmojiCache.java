@@ -8,6 +8,7 @@ import android.util.LruCache;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author nuclearfog
  */
-public class ImageCache {
+public class EmojiCache {
 
 	/**
 	 * size of the lru cache (max entry count)
@@ -41,7 +42,7 @@ public class ImageCache {
 	 */
 	private static final String FOLDER = "images";
 
-	private static ImageCache instance;
+	private static EmojiCache instance;
 
 	private final LruCache<String, Bitmap> cache;
 	private Map<String, File> files;
@@ -50,7 +51,7 @@ public class ImageCache {
 	/**
 	 * @param context context used to determine cache folder path
 	 */
-	private ImageCache(Context context) {
+	private EmojiCache(Context context) {
 		files = new ConcurrentHashMap<>();
 		cache = new LruCache<>(SIZE);
 		try {
@@ -83,9 +84,9 @@ public class ImageCache {
 	 *
 	 * @return singleton instance of this class
 	 */
-	public static ImageCache get(Context context) {
+	public static EmojiCache get(Context context) {
 		if (instance == null)
-			instance = new ImageCache(context);
+			instance = new EmojiCache(context);
 		return instance;
 	}
 
@@ -103,20 +104,21 @@ public class ImageCache {
 	/**
 	 * put image to cache and save as file if not exists
 	 *
-	 * @param key   key of the image (tag)
+	 * @param url   url of the image
 	 * @param image image bitmap
 	 */
-	public void putImage(String key, Bitmap image) {
+	public void putImage(String url, Bitmap image) {
 		synchronized (instance.cache) {
-			cache.put(key, image);
-			if (!files.containsKey(key)) {
+			String hash = StringUtils.getMD5signature(url);
+			cache.put(hash, image);
+			if (!files.containsKey(hash)) {
 				try {
-					File file = new File(imageFolder, key);
+					File file = new File(imageFolder, hash);
 					if ((file.exists() && file.canWrite()) || file.createNewFile()) {
 						FileOutputStream output = new FileOutputStream(file);
 						image.compress(Bitmap.CompressFormat.PNG, 1, output);
 						output.close();
-						files.put(key, file);
+						files.put(hash, file);
 					}
 				} catch (IOException | SecurityException exception) {
 					if (BuildConfig.DEBUG) {
@@ -130,20 +132,21 @@ public class ImageCache {
 	/**
 	 * get image from cache or file
 	 *
-	 * @param key key of the image (tag)
+	 * @param url url of the image
 	 * @return image bitmap or null if not found
 	 */
 	@Nullable
-	public Bitmap getImage(String key) {
+	public Bitmap getImage(String url) {
 		synchronized (instance.cache) {
-			Bitmap result = cache.get(key);
+			String hash = StringUtils.getMD5signature(url);
+			Bitmap result = cache.get(hash);
 			if (result == null) {
 				try {
-					File file = files.get(key);
+					File file = files.get(hash);
 					if (file != null && file.canRead()) {
 						result = BitmapFactory.decodeFile(file.getAbsolutePath());
 						if (result != null) {
-							cache.put(key, result);
+							cache.put(hash, result);
 						}
 					}
 				} catch (SecurityException exception) {
@@ -161,28 +164,30 @@ public class ImageCache {
 	 * and reduce cache size by deleting old image files
 	 */
 	public void trimCache() {
-		File[] files = imageFolder.listFiles();
-		if (files != null) {
-			long size = 0L;
-			for (File file : files) {
-				size += file.length();
-			}
-			if (size > CACHE_SIZE) {
-				Arrays.sort(files, new Comparator<File>() {
-					@Override
-					public int compare(File file1, File file2) {
-						if (file1.lastModified() > file2.lastModified())
-							return 1;
-						else if (file1.lastModified() < file2.lastModified())
-							return -1;
-						return 0;
-					}
-				});
+		synchronized (instance.cache) {
+			File[] files = imageFolder.listFiles();
+			if (files != null) {
+				long size = 0L;
 				for (File file : files) {
-					size -= file.length();
-					file.delete();
-					if (size < CACHE_SIZE) {
-						break;
+					size += file.length();
+				}
+				if (size > CACHE_SIZE) {
+					Arrays.sort(files, new Comparator<File>() {
+						@Override
+						public int compare(File file1, File file2) {
+							if (file1.lastModified() > file2.lastModified())
+								return 1;
+							else if (file1.lastModified() < file2.lastModified())
+								return -1;
+							return 0;
+						}
+					});
+					for (File file : files) {
+						size -= file.length();
+						file.delete();
+						if (size < CACHE_SIZE) {
+							break;
+						}
 					}
 				}
 			}

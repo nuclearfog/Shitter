@@ -49,10 +49,14 @@ public class ImageDownloader extends AsyncExecutor<ImageDownloader.ImageLoaderPa
 			}
 			// create file
 			String ext = '.' + mimeType.substring(mimeType.indexOf('/') + 1);
-			File imageFile = new File(request.cache, StringUtils.getRandomString() + ext);
-			imageFile.createNewFile();
-
+			// use deterministic filename depending on the url
+			File imageFile = new File(request.cacheFolder, StringUtils.getMD5signature(request.uri.toString()) + ext);
+			// if file exists with this signature, use this file
+			if (imageFile.exists()) {
+				return new ImageLoaderResult(Uri.fromFile(imageFile), null);
+			}
 			// copy image to cache folder
+			imageFile.createNewFile();
 			FileOutputStream output = new FileOutputStream(imageFile);
 			int length;
 			byte[] buffer = new byte[4096];
@@ -60,7 +64,6 @@ public class ImageDownloader extends AsyncExecutor<ImageDownloader.ImageLoaderPa
 				output.write(buffer, 0, length);
 			input.close();
 			output.close();
-
 			// create Uri from cached image
 			return new ImageLoaderResult(Uri.fromFile(imageFile), null);
 		} catch (ConnectionException exception) {
@@ -75,11 +78,11 @@ public class ImageDownloader extends AsyncExecutor<ImageDownloader.ImageLoaderPa
 	 */
 	public static class ImageLoaderParam {
 
-		final File cache;
 		final Uri uri;
+		final File cacheFolder;
 
-		public ImageLoaderParam(Uri uri, File cache) {
-			this.cache = cache;
+		public ImageLoaderParam(Uri uri, File cacheFolder) {
+			this.cacheFolder = cacheFolder;
 			this.uri = uri;
 		}
 	}

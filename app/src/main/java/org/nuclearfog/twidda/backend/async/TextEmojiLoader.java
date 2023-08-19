@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
-import org.nuclearfog.twidda.backend.image.ImageCache;
+import org.nuclearfog.twidda.backend.image.EmojiCache;
 import org.nuclearfog.twidda.model.Emoji;
 
 import java.io.InputStream;
@@ -26,14 +26,14 @@ import java.util.TreeMap;
 public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, TextEmojiLoader.EmojiResult> {
 
 	private Connection connection;
-	private ImageCache cache;
+	private EmojiCache cache;
 
 	/**
 	 *
 	 */
 	public TextEmojiLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
-		cache = ImageCache.get(context);
+		cache = EmojiCache.get(context);
 	}
 
 
@@ -42,12 +42,12 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, T
 		try {
 			Map<String, Bitmap> result = new TreeMap<>();
 			for (Emoji emoji : param.emojis) {
-				Bitmap icon = cache.getImage(emoji.getCode());
+				Bitmap icon = cache.getImage(emoji.getUrl());
 				if (icon == null) {
 					MediaStatus media = connection.downloadImage(emoji.getUrl());
 					InputStream input = media.getStream();
 					icon = BitmapFactory.decodeStream(input);
-					cache.putImage(emoji.getCode(), icon);
+					cache.putImage(emoji.getUrl(), icon);
 				}
 				if (icon.getHeight() > 0 && icon.getWidth() > 0) {
 					icon = Bitmap.createScaledBitmap(icon, icon.getWidth() * param.size / icon.getHeight(), param.size, false);

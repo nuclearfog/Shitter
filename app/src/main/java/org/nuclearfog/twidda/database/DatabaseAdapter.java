@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 19;
+	private static final int DB_VERSION = 20;
 
 	/**
 	 * database file name
@@ -137,9 +137,9 @@ public class DatabaseAdapter {
 	 */
 	private static final String TABLE_EMOJI = "CREATE TABLE IF NOT EXISTS "
 			+ EmojiTable.NAME + "("
-			+ EmojiTable.CODE + " TEXT PRIMARY KEY,"
+			+ EmojiTable.URL + " TEXT PRIMARY KEY,"
 			+ EmojiTable.CATEGORY + " TEXT,"
-			+ EmojiTable.URL + " TEXT);";
+			+ EmojiTable.CODE + " TEXT);";
 
 	/**
 	 * SQL query to create a poll table
@@ -412,8 +412,13 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_MEDIA_ADD_DESCRIPTION);
 				db.setVersion(18);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 19) {
 				db.execSQL(UPDATE_MEDIA_ADD_BLUR_HASH);
+				db.setVersion(19);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.delete(EmojiTable.NAME, null, null);
+				db.execSQL(TABLE_EMOJI);
 				db.setVersion(DB_VERSION);
 			}
 		}

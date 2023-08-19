@@ -10,7 +10,10 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -185,6 +188,27 @@ public class StringUtils {
 		byte[] randomBytes = new byte[16];
 		rand.nextBytes(randomBytes);
 		return new String(Base64.encode(randomBytes, Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
+	}
+
+	/**
+	 * generate MD5 hash from string
+	 *
+	 * @param text text to hash
+	 * @return hash string
+	 */
+	public static String getMD5signature(String text) {
+		try {
+			MessageDigest m = MessageDigest.getInstance("MD5");
+			m.reset();
+			m.update(text.getBytes());
+			byte[] digest = m.digest();
+			BigInteger bigInt = new BigInteger(1, digest);
+			return bigInt.toString(16);
+		} catch (NoSuchAlgorithmException exception) {
+			if (text.length() > 200)
+				return text.substring(0, 200);
+			return text;
+		}
 	}
 
 	/**

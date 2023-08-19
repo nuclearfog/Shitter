@@ -988,10 +988,12 @@ public class GlobalSettings {
 	 * notify listener when settings changes and clear old instances
 	 */
 	private void notifySettingsChange() {
-		for (SettingsChangeObserver observer : settingsChangeObservers) {
-			observer.onSettingsChange();
+		synchronized (this) {
+			for (SettingsChangeObserver observer : settingsChangeObservers) {
+				observer.onSettingsChange();
+			}
+			settingsChangeObservers.clear();
 		}
-		settingsChangeObservers.clear();
 	}
 
 	/**
