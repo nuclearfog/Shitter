@@ -55,13 +55,13 @@ import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.viewpager.ProfileAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -134,6 +134,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
 	private Button following, follower;
+	private LockableConstraintLayout body;
 	private ViewPager2 viewPager;
 	private TabSelector tabSelector;
 	private Toolbar toolbar;
@@ -157,6 +158,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		ViewGroup root = findViewById(R.id.page_profile_root);
 		View floatingButton = findViewById(R.id.page_profile_post_button);
 		ConstraintLayout header = findViewById(R.id.page_profile_header);
+		body = findViewById(R.id.page_profile_body);
 		toolbar = findViewById(R.id.profile_toolbar);
 		description = findViewById(R.id.bio);
 		following = findViewById(R.id.following);
@@ -246,7 +248,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
 			relationLoader.execute(param, relationCallback);
 		}
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && userId != settings.getLogin().getId()) {
+		if (userId != settings.getLogin().getId()) {
 			tabSelector.addTabIcons(R.array.profile_tab_icons);
 		} else if (settings.likeEnabled()) {
 			tabSelector.addTabIcons(R.array.profile_tab_icons_like);
@@ -528,6 +530,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	@Override
 	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
+		// remove lock when changing page
+		body.lock(false);
 	}
 
 
@@ -668,11 +672,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			username.setText(user.getUsername());
 		}
 		// set user join date
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
-			user_createdAt.setText(SimpleDateFormat.getDateInstance().format(user.getTimestamp()));
-		} else {
-			user_createdAt.setText(SimpleDateFormat.getDateTimeInstance().format(user.getTimestamp()));
-		}
+		user_createdAt.setText(SimpleDateFormat.getDateInstance().format(user.getTimestamp()));
 		// set user description
 		if (!user.getDescription().isEmpty()) {
 			Spannable descriptionSpan = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
