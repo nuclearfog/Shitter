@@ -25,7 +25,6 @@ import org.nuclearfog.twidda.backend.async.UserFilterLoader.FilterParam;
 import org.nuclearfog.twidda.backend.async.UserFilterLoader.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.viewpager.UserAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
@@ -137,7 +136,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				toolbar.setTitle(R.string.userlist_following);
 				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWING);
 				viewPager.setAdapter(adapter);
-				if (settings.getLogin().getConfiguration() == Configuration.MASTODON && settings.getLogin().getId() == id) {
+				if (settings.getLogin().getId() == id) {
 					tabSelector.addTabIcons(R.array.user_hashtag_following);
 					tabSelector.addViewPager(viewPager);
 					tabSelector.addOnTabSelectedListener(this);

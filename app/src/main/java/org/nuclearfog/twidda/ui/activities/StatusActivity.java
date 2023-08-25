@@ -64,7 +64,6 @@ import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Card;
 import org.nuclearfog.twidda.model.Location;
@@ -1097,7 +1096,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * set emojis, replace emoji tags with images
 	 */
 	private void onStatusTextUpdate(@NonNull EmojiResult result) {
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
+		if (result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			status_text.setText(spannable);
 		}
@@ -1107,7 +1106,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 * set emojis, replace emoji tags with images
 	 */
 	private void onUsernameUpdate(@NonNull EmojiResult result) {
-		if (settings.getLogin().getConfiguration() == Configuration.MASTODON && result.images != null) {
+		if (result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			username.setText(spannable);
 		}

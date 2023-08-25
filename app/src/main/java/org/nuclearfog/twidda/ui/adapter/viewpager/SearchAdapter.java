@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
@@ -37,7 +36,7 @@ public class SearchAdapter extends ViewPagerAdapter {
 
 		fragments.add(statusFragment);
 		fragments.add(userFragment);
-		if (!search.startsWith("#") && settings.getLogin().getConfiguration() == Configuration.MASTODON) {
+		if (!search.startsWith("#")) {
 			ListFragment hashtagFragment = new TrendFragment();
 			Bundle paramHashtag = new Bundle();
 			paramHashtag.putInt(TrendFragment.KEY_MODE, TrendFragment.MODE_SEARCH);

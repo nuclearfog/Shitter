@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.ui.fragments.DomainFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.TrendFragment;
@@ -61,8 +60,7 @@ public class UserAdapter extends ViewPagerAdapter {
 				ListFragment following = new UserFragment();
 				following.setArguments(paramFollowing);
 				fragments.add(following);
-
-				if (settings.getLogin().getConfiguration() == Configuration.MASTODON && settings.getLogin().getId() == id) {
+				if (settings.getLogin().getId() == id) {
 					Bundle paramTrend = new Bundle();
 					paramTrend.putInt(TrendFragment.KEY_MODE, TrendFragment.MODE_FOLLOW);
 					ListFragment hashtagFollowing = new TrendFragment();
@@ -127,9 +125,8 @@ public class UserAdapter extends ViewPagerAdapter {
 				blockList.setArguments(paramBlockList);
 				fragments.add(blockList);
 
-				if (settings.getLogin().getConfiguration() == Configuration.MASTODON) {
-					fragments.add(new DomainFragment());
-				}
+				ListFragment domainFragment = new DomainFragment();
+				fragments.add(domainFragment);
 				break;
 		}
 	}
