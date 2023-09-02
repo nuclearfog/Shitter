@@ -66,9 +66,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<UserResult> {
 
 	/**
-	 * Bundle key used by push notification to select notification tab when creating this activity
+	 * Bundle key used to select page
+	 * value type is Integer
 	 */
-	public static final String KEY_SELECT_NOTIFICATION = "main_notification";
+	public static final String KEY_SELECT_PAGE = "main_page_select";
 
 	/**
 	 * Bundle key used to save user information
@@ -188,9 +189,18 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		else if (adapter == null) {
 			adapter = new HomeAdapter(this);
 			viewPager.setAdapter(adapter);
-			if (getIntent().getBooleanExtra(KEY_SELECT_NOTIFICATION, false)) {
-				// select notification page if user clicks on notification
-				viewPager.setCurrentItem(adapter.getItemCount() - 1, false);
+		}
+	}
+
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		if (intent != null) {
+			intent.getBooleanExtra(KEY_SELECT_PAGE, false);
+			int page = intent.getIntExtra(KEY_SELECT_PAGE, 0);
+			if (adapter != null && page >= 0 && page < adapter.getItemCount()) {
+				viewPager.setCurrentItem(page);
 			}
 		}
 	}

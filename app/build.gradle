@@ -3,16 +3,16 @@ plugins {
 }
 
 android {
-	compileSdkVersion 33
+	compileSdkVersion 34
 	buildToolsVersion '34.0.0'
 	namespace 'org.nuclearfog.twidda'
 
 	defaultConfig {
 		applicationId 'org.nuclearfog.twidda'
 		minSdkVersion 21
-		targetSdkVersion 33
-		versionCode 96
-		versionName '3.4'
+		targetSdkVersion 34
+		versionCode 97
+		versionName '3.4.1'
 		resConfigs 'en', 'es', 'de-rDE', 'zh-rCN'
 	}
 
@@ -53,6 +53,7 @@ dependencies {
 	implementation 'androidx.media3:media3-exoplayer:1.1.1'
 	implementation 'androidx.media3:media3-ui:1.1.1'
 	implementation 'androidx.media3:media3-datasource-okhttp:1.1.1'
+	implementation 'androidx.viewpager2:viewpager2:1.0.0'
 	//noinspection GradleDependency
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 	//noinspection GradleDependency
@@ -65,5 +66,5 @@ dependencies {
 	implementation 'com.github.UnifiedPush:android-connector:2.1.1'
 	implementation 'com.google.android.material:material:1.9.0'
 	implementation 'jp.wasabeef:picasso-transformations:2.4.0'
-	implementation 'org.jsoup:jsoup:1.15.4'
+	implementation 'org.jsoup:jsoup:1.16.1'
 }
