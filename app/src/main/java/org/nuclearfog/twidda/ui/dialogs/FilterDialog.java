@@ -129,14 +129,14 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 			sw_thread.setCheckedImmediately(update.filterThreadSet());
 			sw_hide.setCheckedImmediately(update.getFilterAction() == Filter.ACTION_HIDE);
 			txt_title.setText(update.getTitle());
-			if (update.getExpirationTime() > 86400000L) {
-				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 86400000d)));
+			if (update.getExpirationTime() > 86400) {
+				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 86400d)));
 				timeunit.setSelection(2);
-			} else if (update.getExpirationTime() > 3600000L) {
-				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 3600000d)));
+			} else if (update.getExpirationTime() > 3600) {
+				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 3600d)));
 				timeunit.setSelection(1);
-			} else if (update.getExpirationTime() > 60000L) {
-				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 60000d)));
+			} else if (update.getExpirationTime() > 60) {
+				txt_duration.setText(Long.toString(Math.round(update.getExpirationTime() / 60d)));
 				timeunit.setSelection(0);
 			} else {
 				timeunit.setSelection(2);

@@ -38,7 +38,7 @@ public class FilterUpdate implements Serializable {
 	 * @param filter existing filter
 	 */
 	public FilterUpdate(Filter filter) {
-		int expires_at = (int) (filter.getExpirationTime() - System.currentTimeMillis());
+		int expires_at = (int) ((filter.getExpirationTime() - System.currentTimeMillis()) / 1000L);
 		Keyword[] keywords = filter.getKeywords();
 		id = filter.getId();
 		title = filter.getTitle();

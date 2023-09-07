@@ -36,7 +36,7 @@ public interface Filter extends Serializable {
 	/**
 	 * get date time where the filter expires
 	 *
-	 * @return date time or '0' if not defined
+	 * @return ISO 8601 Datetime or '0' if not defined
 	 */
 	long getExpirationTime();
 
