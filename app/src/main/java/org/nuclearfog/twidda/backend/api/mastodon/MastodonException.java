@@ -13,7 +13,6 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * custom exception used by {@link Mastodon} class
@@ -26,37 +25,18 @@ public class MastodonException extends ConnectionException {
 
 	private static final String MESSAGE_NOT_FOUND = "Record not found";
 
-	/**
-	 * not defined error
-	 */
-	private static final int UNKNOWN_ERROR = -1;
 
-	/**
-	 * error caused by network connection
-	 */
-	private static final int ERROR_NETWORK = -2;
-
-	/**
-	 * error caused by parsing json format
-	 */
-	private static final int ERROR_JSON = -3;
-
-
-	private int httpCode = 0;
-	private int errorCode = UNKNOWN_ERROR;
+	private int errorCode = ERROR_NOT_DEFINED;
 	private String errorMessage = "";
-
 
 	/**
 	 *
 	 */
 	MastodonException(Exception e) {
 		super(e);
-		if (e instanceof UnknownHostException) {
-			errorCode = ERROR_NETWORK;
-		} else if (e instanceof JSONException) {
-			errorCode = ERROR_JSON;
-		} else if (e instanceof ConnectException) {
+		if (e instanceof JSONException) {
+			errorCode = JSON_FORMAT;
+		} else if (e instanceof ConnectException || e instanceof UnknownHostException) {
 			errorCode = NO_CONNECTION;
 		} else if (getCause() instanceof InterruptedException) {
 			errorCode = INTERRUPTED;
@@ -68,19 +48,15 @@ public class MastodonException extends ConnectionException {
 	 */
 	MastodonException(Response response) {
 		super(response.message());
-		httpCode = response.code();
-		ResponseBody body = response.body();
-		if (body != null) {
+		if (response.body() != null) {
 			try {
-				String jsonStr = body.string();
+				String jsonStr = response.body().string();
 				if (!jsonStr.isEmpty()) {
 					JSONObject json = new JSONObject(jsonStr);
-					String title = json.getString("error");
+					errorMessage = json.getString("error");
 					String descr = json.optString("error_description", "");
-					if (descr.isEmpty()) {
-						errorMessage = title;
-					} else {
-						errorMessage = title + ": " + descr;
+					if (!descr.isEmpty()) {
+						errorMessage += ": " + descr;
 					}
 				}
 			} catch (JSONException | IOException exception) {
@@ -88,6 +64,27 @@ public class MastodonException extends ConnectionException {
 					exception.printStackTrace();
 				}
 			}
+		}
+		switch (response.code()) {
+			case 404:
+				if (errorMessage.startsWith(MESSAGE_NOT_FOUND)) {
+					errorCode = RESOURCE_NOT_FOUND;
+					break;
+				}
+				// fall through
+
+			case 401:
+			case 403:
+				errorCode = HTTP_FORBIDDEN;
+				break;
+
+			case 429:
+				errorCode = RATE_LIMIT_EX;
+				break;
+
+			case 503:
+				errorCode = SERVICE_UNAVAILABLE;
+				break;
 		}
 	}
 
@@ -102,34 +99,13 @@ public class MastodonException extends ConnectionException {
 
 	@Override
 	public int getErrorCode() {
-		if (errorCode != UNKNOWN_ERROR)
-			return errorCode;
-		switch (httpCode) {
-			case 404:
-				if (errorMessage.startsWith(MESSAGE_NOT_FOUND)) {
-					return RESOURCE_NOT_FOUND;
-				}
-				// fall through
-
-			case 401:
-			case 403:
-				return HTTP_FORBIDDEN;
-
-			case 429:
-				return RATE_LIMIT_EX;
-
-			case 503:
-				return SERVICE_UNAVAILABLE;
-
-			default:
-				return errorCode;
-		}
+		return errorCode;
 	}
 
 
 	@Override
 	public int getTimeToWait() {
-		return 0;
+		return 0; // not used
 	}
 
 
@@ -137,12 +113,5 @@ public class MastodonException extends ConnectionException {
 	@Override
 	public String getMessage() {
 		return errorMessage;
-	}
-
-
-	@NonNull
-	@Override
-	public String toString() {
-		return "error_code=" + errorCode + " message=\"" + errorMessage + "\"";
 	}
 }

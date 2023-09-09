@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
+import androidx.annotation.NonNull;
+
 /**
  * Generic exception class used by {@link Connection} interface
  *
@@ -144,4 +146,11 @@ public abstract class ConnectionException extends Exception {
 	 * @return time in seconds
 	 */
 	public abstract int getTimeToWait();
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "error_code=" + getErrorCode() + " message=\"" + getMessage() + "\"";
+	}
 }
