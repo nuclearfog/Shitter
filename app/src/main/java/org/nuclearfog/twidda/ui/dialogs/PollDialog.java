@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Dialog class used to show poll editor
+ * Dialog class used to create/edit a poll
  *
  * @author nuclearfog
  */
@@ -70,6 +70,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		ViewGroup root = findViewById(R.id.dialog_poll_root);
 		RecyclerView optionsList = findViewById(R.id.dialog_poll_option_list);
 		Button confirm = findViewById(R.id.dialog_poll_create);
+		Button remove = findViewById(R.id.dialog_poll_remove);
 		View close = findViewById(R.id.dialog_poll_close);
 		durationInput = findViewById(R.id.dialog_poll_duration_input);
 		timeUnitSelector = findViewById(R.id.dialog_poll_duration_timeunit);
@@ -82,6 +83,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 		AppStyles.setTheme(root, settings.getPopupColor());
 
 		confirm.setOnClickListener(this);
+		remove.setOnClickListener(this);
 		close.setOnClickListener(this);
 	}
 
@@ -92,14 +94,14 @@ public class PollDialog extends Dialog implements OnClickListener {
 		optionAdapter.replaceItems(poll.getOptions());
 		multiple_choice.setCheckedImmediately(poll.multipleChoiceEnabled());
 		hide_votes.setCheckedImmediately(poll.hideTotalVotes());
-		if (poll.getDuration() > 86400000L) {
-			durationInput.setText(Long.toString(Math.round(poll.getDuration() / 86400000d)));
+		if (poll.getDuration() >= 86400) {
+			durationInput.setText(Integer.toString(Math.round(poll.getDuration() / 86400.0f)));
 			timeUnitSelector.setSelection(2);
-		} else if (poll.getDuration() > 3600000L) {
-			durationInput.setText(Long.toString(Math.round(poll.getDuration() / 3600000d)));
+		} else if (poll.getDuration() >= 3600) {
+			durationInput.setText(Integer.toString(Math.round(poll.getDuration() / 3600.0f)));
 			timeUnitSelector.setSelection(1);
-		} else if (poll.getDuration() > 60000L) {
-			durationInput.setText(Long.toString(Math.round(poll.getDuration() / 60000d)));
+		} else if (poll.getDuration() >= 60) {
+			durationInput.setText(Integer.toString(Math.round(poll.getDuration() / 60.0f)));
 			timeUnitSelector.setSelection(0);
 		}
 	}
@@ -159,6 +161,9 @@ public class PollDialog extends Dialog implements OnClickListener {
 				callback.onPollUpdate(poll);
 				dismiss();
 			}
+		} else if (v.getId() == R.id.dialog_poll_remove) {
+			callback.onPollUpdate(null);
+			dismiss();
 		} else if (v.getId() == R.id.dialog_poll_close) {
 			dismiss();
 		}
@@ -185,11 +190,13 @@ public class PollDialog extends Dialog implements OnClickListener {
 	 */
 	public void show(@Nullable PollUpdate poll) {
 		if (!isShowing()) {
-			if (poll != null) {
-				this.poll = poll;
-			} else {
-				this.poll = new PollUpdate();
+			if (poll == null)  {
+				poll = new PollUpdate();
+				if (instance != null) {
+					poll.setDuration(instance.getMinPollDuration());
+				}
 			}
+			this.poll = poll;
 			super.show();
 		}
 	}

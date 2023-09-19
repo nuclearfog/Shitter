@@ -153,7 +153,7 @@
 	<dimen name="popup_status_button_margin">7dp</dimen>
 	<dimen name="popup_status_icon_list_margin">7dp</dimen>
 	<dimen name="popup_status_button_padding">7dp</dimen>
-	<dimen name="popup_status_button_size">0.09</dimen>
+	<item name="popup_status_button_width_ratio" format="float" type="dimen">0.09</item>
 
 	<!--dimen of popup_userlist.xml-->
 	<dimen name="popup_userlist_background_margin">10dp</dimen>

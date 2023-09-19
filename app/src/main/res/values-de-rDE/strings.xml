@@ -280,7 +280,8 @@
 	<string name="menu_bookmark_remove">Lesezeichen entfernen</string>
 	<string name="notification_dismiss">Benachrichtigung verwerfen</string>
 	<string name="dialog_poll_title">Umfrage erstellen</string>
-	<string name="dialog_poll_button">erstellen</string>
+	<string name="dialog_poll_button_create">erstellen</string>
+	<string name="dialog_poll_button_remove">entfernen</string>
 	<string name="dialog_poll_mc">Mehrfachauswahl</string>
 	<string name="dialog_poll_hide">Stimmen verstecken</string>
 	<string name="dialog_poll_option_edit_hint">%1$d. Option</string>

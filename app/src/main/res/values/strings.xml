@@ -235,7 +235,8 @@
 	<string name="profile_bio">Bio</string>
 	<string name="connection_discard">discard</string>
 	<string name="dialog_poll_title">create poll</string>
-	<string name="dialog_poll_button">create</string>
+	<string name="dialog_poll_button_create">create</string>
+	<string name="dialog_poll_button_remove">remove</string>
 	<string name="dialog_poll_mc">multiple choice</string>
 	<string name="dialog_poll_hide">hide votes</string>
 	<string name="dialog_poll_option_edit_hint">Option %1$d</string>

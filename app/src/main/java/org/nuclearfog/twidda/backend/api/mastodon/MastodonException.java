@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend.api.mastodon;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.json.JSONException;

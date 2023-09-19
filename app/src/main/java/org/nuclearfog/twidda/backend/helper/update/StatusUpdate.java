@@ -349,7 +349,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 * @return time to post the status
+	 * @return datetime to post the status
 	 */
 	public long getScheduleTime() {
 		return scheduleTime;

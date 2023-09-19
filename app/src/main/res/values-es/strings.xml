@@ -206,7 +206,7 @@
 	<string name="profile_bio">Biografía</string>
 	<string name="connection_discard">Descartar</string>
 	<string name="dialog_poll_title">Crear encuesta</string>
-	<string name="dialog_poll_button">Crear</string>
+	<string name="dialog_poll_button_create">Crear</string>
 	<string name="dialog_poll_mc">Opción múltiple</string>
 	<string name="dialog_poll_hide">Ocultar votos</string>
 	<string name="dialog_poll_option_edit_hint">Opción %1$d</string>
