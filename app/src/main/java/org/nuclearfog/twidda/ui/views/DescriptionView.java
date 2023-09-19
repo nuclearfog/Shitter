@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -61,6 +62,7 @@ public class DescriptionView extends LinearLayout implements OnClickListener {
 		label.setMaxLines(4);
 		label.setMaxWidth(displayWidth / 2);
 		label.setTextColor(settings.getTextColor());
+		label.setMovementMethod(ScrollingMovementMethod.getInstance());
 		closeButton.setImageDrawable(closeIcon);
 
 		setBackground(background);

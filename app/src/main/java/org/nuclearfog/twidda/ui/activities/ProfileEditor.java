@@ -62,7 +62,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	/**
 	 * return code used if profile information has changed
 	 */
-	public static final int RETURN_PROFILE_CHANGED = 0xF5C0E570;
+	public static final int RETURN_PROFILE_UPDATED = 0xF5C0E570;
 
 	private UserUpdater editorAsync;
 	private GlobalSettings settings;
@@ -246,7 +246,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			Intent data = new Intent();
 			data.putExtra(KEY_USER, result.user);
 			Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
-			setResult(RETURN_PROFILE_CHANGED, data);
+			setResult(RETURN_PROFILE_UPDATED, data);
 			finish();
 		} else {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);

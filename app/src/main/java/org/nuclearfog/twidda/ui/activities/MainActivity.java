@@ -217,12 +217,11 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	public void onBackPressed() {
 		if (viewPager.getCurrentItem() > 0) {
 			viewPager.setCurrentItem(0);
-		} else {
-			if (drawerLayout.isOpen()) {
-				drawerLayout.close();
-			} else {
-				super.onBackPressed();
-			}
+		} else if (!drawerLayout.isOpen()) {
+			super.onBackPressed();
+		}
+		if (drawerLayout.isOpen()) {
+			drawerLayout.close();
 		}
 	}
 
@@ -267,10 +266,13 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 						setCurrentUser(((Account) serializable).getUser());
 					}
 				}
+				// reset tab pages
+				adapter = new HomeAdapter(this);
+				viewPager.setAdapter(adapter);
 				break;
 
-			// current user's profile changed
-			case ProfileEditor.RETURN_PROFILE_CHANGED:
+			// current user's profile information like name or images were updated
+			case ProfileEditor.RETURN_PROFILE_UPDATED:
 				if (data != null) {
 					Serializable serializable = data.getSerializableExtra(ProfileEditor.KEY_USER);
 					if (serializable instanceof User) {
