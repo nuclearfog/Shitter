@@ -29,7 +29,6 @@
 
 - <a href="https://github.com/square/okhttp">okhttp</a>
 - <a href="https://github.com/square/picasso">picasso</a>
-- <a href="https://github.com/google/ExoPlayer">ExoPlayer</a>
 - <a href="https://github.com/wasabeef/picasso-transformations">picasso Transformations</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
 - <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
@@ -37,7 +36,6 @@
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
 - <a href="https://github.com/UnifiedPush/android-connector">UnifiedPush connector</a>
-- <a href="https://github.com/woltapp/blurhash">blurhash</a>
 - <a href="https://jsoup.org">jsoup</a>
 
 

@@ -1,1 +1,1 @@
-Ein einfacher Mastodon-Client mit Schwerpunkt auf Datenschutz und geringem Datenverbrauch
+Einfacher Mastodon-Client fokusiert auf Datenschutz und geringem Verbrauch

@@ -185,6 +185,7 @@ public class AppDatabase {
 	 */
 	private static final String HOME_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
 			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + MASK_STATUS_HOME_TIMELINE + " IS NOT 0"
+			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + MASK_USER_FILTERED + " IS 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.TIME + " DESC"
@@ -1117,10 +1118,10 @@ public class AppDatabase {
 	}
 
 	/**
-	 * remove user from mention results
+	 * remove user from notification results
 	 *
 	 * @param id   user ID
-	 * @param mute true remove user status from mention results
+	 * @param mute true remove user notifications
 	 */
 	public void muteUser(long id, boolean mute) {
 		synchronized (LOCK) {

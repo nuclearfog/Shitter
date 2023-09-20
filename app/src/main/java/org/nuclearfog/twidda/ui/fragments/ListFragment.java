@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
@@ -36,7 +35,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 */
 	private static final int REFRESH_DELAY_MS = 1000;
 
-	private static final Random rand = new Random();
+	private static final Random RAND = new Random();
 
 	private RecyclerView list;
 	private SwipeRefreshLayout reload;
@@ -44,21 +43,21 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 	private boolean enableSwipe = true;
 	private boolean isRefreshing = false;
-	private long sessionId = rand.nextLong();
+	private long sessionId = RAND.nextLong();
 
 
 	@Override
 	public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
-		View view = inflater.inflate(R.layout.fragment_list, parent, false);
-		list = view.findViewById(R.id.fragment_list_recyclerview);
-		reload = view.findViewById(R.id.fragment_list_swipe);
+		list = new RecyclerView(inflater.getContext());
+		reload = new SwipeRefreshLayout(inflater.getContext());
+		reload.addView(list);
 		settings = GlobalSettings.get(requireContext());
 
 		list.setLayoutManager(new LinearLayoutManager(requireContext()));
 		AppStyles.setSwipeRefreshColor(reload, settings);
 
 		reload.setOnRefreshListener(this);
-		return view;
+		return reload;
 	}
 
 
