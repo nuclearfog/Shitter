@@ -60,21 +60,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int STATUS_EDITOR_ERROR = 609;
 
 	/**
-	 * show dialog to delete message
-	 */
-	public static final int MESSAGE_DELETE = 610;
-
-	/**
-	 * show dialog to discard message
-	 */
-	public static final int MESSAGE_EDITOR_LEAVE = 611;
-
-	/**
-	 * show dialog if an error occurs while uploading a message
-	 */
-	public static final int MESSAGE_EDITOR_ERROR = 612;
-
-	/**
 	 * show "discard profile changes" dialog
 	 */
 	public static final int PROFILE_EDITOR_LEAVE = 613;
@@ -205,10 +190,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 		int cancelIconRes = R.drawable.cross;
 		// override values depending on type
 		switch (type) {
-			case MESSAGE_DELETE:
-				messageRes = R.string.confirm_delete_message;
-				break;
-
 			case WRONG_PROXY:
 				titleVis = View.VISIBLE;
 				messageRes = R.string.error_wrong_connection_settings;
@@ -231,12 +212,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				messageRes = R.string.confirm_cancel_status;
 				break;
 
-			case MESSAGE_EDITOR_LEAVE:
-				messageRes = R.string.confirm_cancel_message;
-				break;
-
 			case LIST_EDITOR_ERROR:
-			case MESSAGE_EDITOR_ERROR:
 			case STATUS_EDITOR_ERROR:
 			case PROFILE_EDITOR_ERROR:
 				titleVis = View.VISIBLE;

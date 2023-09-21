@@ -187,7 +187,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	public void addPoll(PollUpdate poll) {
 		if (mediaStatuses.isEmpty()) {
 			this.poll = poll;
-			attachmentLimitReached = true;
+			attachmentLimitReached = poll != null;
 		}
 	}
 

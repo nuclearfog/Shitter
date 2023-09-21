@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
@@ -475,6 +477,7 @@ public interface Connection {
 	 * @param mediaIds IDs of the uploaded media files if any
 	 * @return uploaded status
 	 */
+	@Nullable
 	Status updateStatus(StatusUpdate update, List<Long> mediaIds) throws ConnectionException;
 
 	/**

@@ -188,7 +188,6 @@
 	<string name="confirm_delete_database">¿Limpiar datos de la app?</string>
 	<string name="status_sent_from">"Enviado desde: "</string>
 	<string name="username">Nombre de usuario</string>
-	<string name="confirm_cancel_message">¿Descartar mensaje?</string>
 	<string name="settings_logout">Cerrar sesión</string>
 	<string name="confirm_unfollow">¿No seguir a usuario?</string>
 	<string name="confirm_block">¿Bloquear a usuario?</string>
@@ -230,7 +229,6 @@
 	<string name="edit_description_hint">Ingresar descripción del perfil</string>
 	<string name="page_profile_editor">Editar perfil</string>
 	<string name="confirm_delete_list">¿Borrar lista de usuario?</string>
-	<string name="confirm_delete_message">¿Borrar mensaje?</string>
 	<string name="confirm_unfollow_list">¿No seguir lista?</string>
 	<string name="trend_range">\u0020Publicaciones</string>
 	<string name="enter_username">Ingresar nombre de usuario</string>

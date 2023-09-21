@@ -217,7 +217,6 @@
 	<string name="status_sent_from">"sent from: "</string>
 	<string name="username">Username</string>
 	<string name="dialog_description_title">Media description</string>
-	<string name="confirm_cancel_message">discard message?</string>
 	<string name="settings_logout">log out</string>
 	<string name="confirm_unfollow">unfollow user?</string>
 	<string name="confirm_block">block user?</string>
@@ -263,7 +262,6 @@
 	<string name="page_profile_editor">edit profile</string>
 	<string name="delete_list">delete userlist</string>
 	<string name="confirm_delete_list">delete userlist?</string>
-	<string name="confirm_delete_message">delete message?</string>
 	<string name="confirm_unfollow_list">unfollow list?</string>
 	<string name="trend_range">\u0020Posts</string>
 	<string name="enter_username">enter username</string>
@@ -332,6 +330,7 @@
 	<string name="dialog_status_spoiler">mark content as spoiler</string>
 	<string name="dialog_status_visibility">Visibility</string>
 	<string name="dialog_status_language">Language</string>
+	<string name="dialog_status_schedule_set">schedule post</string>
 	<string name="dialog_push_repost">on repost</string>
 	<string name="dialog_push_favorite">on favorite</string>
 	<string name="dialog_push_mention">on mention</string>

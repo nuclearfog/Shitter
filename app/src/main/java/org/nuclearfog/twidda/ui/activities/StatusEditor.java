@@ -428,8 +428,14 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	@Override
 	public void onPollUpdate(@Nullable PollUpdate update) {
 		statusUpdate.addPoll(update);
-		if (statusUpdate.mediaLimitReached()) {
-			mediaBtn.setVisibility(View.GONE);
+		if (update != null) {
+			if (statusUpdate.mediaLimitReached()) {
+				mediaBtn.setVisibility(View.GONE);
+			}
+		} else {
+			if (!statusUpdate.mediaLimitReached()) {
+				mediaBtn.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 

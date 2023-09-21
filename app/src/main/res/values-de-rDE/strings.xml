@@ -54,7 +54,6 @@
 	<string name="info_user_muted">stummgeschaltet!</string>
 	<string name="info_user_unmuted">Stummschaltung aufgehoben!</string>
 	<string name="username">Username</string>
-	<string name="confirm_cancel_message">Nachricht verwerfen?</string>
 	<string name="error_empty_status">Status leer!</string>
 	<string name="settings_logout">ausloggen</string>
 	<string name="confirm_cancel_status">Status verwerfen?</string>
@@ -117,7 +116,6 @@
 	<string name="error_no_media_app">Keine Galerie App gefunden!</string>
 	<string name="delete_list">Liste löschen</string>
 	<string name="confirm_delete_list">Liste löschen?</string>
-	<string name="confirm_delete_message">Nachricht löschen?</string>
 	<string name="confirm_unfollow_list">Liste entfolgen?</string>
 	<string name="trend_range">\u0020Posts</string>
 	<string name="error_connection_failed">Verbindung fehlgeschlagen!</string>

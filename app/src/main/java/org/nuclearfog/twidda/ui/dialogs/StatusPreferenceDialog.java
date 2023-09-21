@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
@@ -29,12 +31,13 @@ import java.util.TreeMap;
  *
  * @author nuclearfog
  */
-public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeListener, OnItemSelectedListener {
+public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeListener, OnItemSelectedListener, OnClickListener, TimePickerDialog.TimeSelectedCallback {
 
 	private Spinner visibilitySelector, languageSelector;
 	private SwitchButton sensitiveCheck, spoilerCheck;
 
 	private DropdownAdapter visibility_adapter, language_adapter;
+	private TimePickerDialog timePicker;
 	private GlobalSettings settings;
 	private StatusUpdate statusUpdate;
 	private String[] languageCodes;
@@ -47,6 +50,8 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		this.statusUpdate = statusUpdate;
 		visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
 		language_adapter = new DropdownAdapter(activity.getApplicationContext());
+		timePicker = new TimePickerDialog(activity, this);
+
 		settings = GlobalSettings.get(getContext());
 
 		// initialize language selector
@@ -68,6 +73,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		ViewGroup rootView = findViewById(R.id.dialog_status_root);
 		View statusVisibility = findViewById(R.id.dialog_status_visibility_container);
 		View statusSpoiler = findViewById(R.id.dialog_status_spoiler_container);
+		Button timePicker = findViewById(R.id.dialog_status_time_picker);
 		languageSelector = findViewById(R.id.dialog_status_language);
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
 		sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
@@ -93,6 +99,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		spoilerCheck.setOnCheckedChangeListener(this);
 		languageSelector.setOnItemSelectedListener(this);
 		visibilitySelector.setOnItemSelectedListener(this);
+		timePicker.setOnClickListener(this);
 	}
 
 
@@ -137,6 +144,14 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 
 	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.dialog_status_time_picker) {
+			timePicker.show();
+		}
+	}
+
+
+	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if (buttonView.getId() == R.id.dialog_status_sensitive) {
 			statusUpdate.setSensitive(isChecked);
@@ -176,5 +191,11 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
+	}
+
+
+	@Override
+	public void onTimeSelected(long time) {
+		statusUpdate.setScheduleTime(time);
 	}
 }

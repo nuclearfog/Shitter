@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.api.mastodon;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Base64;
 
@@ -70,9 +71,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECPoint;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -147,6 +151,9 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_PUSH_UPDATE = "/api/v1/push/subscription";
 	private static final String ENDPOINT_FILTER = "/api/v2/filters";
 	private static final String ENDPOINT_REPORT = "/api/v1/reports";
+
+	@SuppressLint("SimpleDateFormat")
+	private static final DateFormat ISO_8601_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -641,6 +648,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
+	@Nullable
 	public Status updateStatus(StatusUpdate update, List<Long> mediaIds) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		// add identifier to prevent duplicate posts
@@ -657,7 +665,7 @@ public class Mastodon implements Connection {
 		if (update.getReplyId() != 0L)
 			params.add("in_reply_to_id=" + update.getReplyId());
 		if (update.getScheduleTime() != 0L)
-			params.add("scheduled_at=" + update.getScheduleTime());
+			params.add("scheduled_at=" + ISO_8601_FORMAT.format(new Date(update.getScheduleTime())));
 		if (update.getVisibility() == Status.VISIBLE_DIRECT)
 			params.add("visibility=direct");
 		else if (update.getVisibility() == Status.VISIBLE_PRIVATE)
@@ -701,7 +709,9 @@ public class Mastodon implements Connection {
 			else
 				response = post(ENDPOINT_STATUS, params);
 			if (response.code() == 200) {
-				return createStatus(response);
+				if (update.getScheduleTime() == 0L)
+					return createStatus(response);
+				return null; // when scheduling, ScheduledStatus will be returned from API instead, which is not compatible to Status
 			}
 			throw new MastodonException(response);
 		} catch (IOException e) {

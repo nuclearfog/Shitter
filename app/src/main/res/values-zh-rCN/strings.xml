@@ -22,7 +22,6 @@
 	<string name="confirm_delete_database">清除应用数据？</string>
 	<string name="status_sent_from">"来自："</string>
 	<string name="username">用户名</string>
-	<string name="confirm_cancel_message">取消发送消息？</string>
 	<string name="settings_logout">登出</string>
 	<string name="confirm_unfollow">取消关注该用户？</string>
 	<string name="confirm_block">屏蔽该用户？</string>
@@ -54,7 +53,6 @@
 	<string name="page_profile_editor">编辑个人资料</string>
 	<string name="delete_list">删除列表</string>
 	<string name="confirm_delete_list">删除列表？</string>
-	<string name="confirm_delete_message">删除消息？</string>
 	<string name="enter_username">输入用户名</string>
 	<string name="profile_banner">主页背景</string>
 	<string name="editprofile_add_banner">添加主页背景</string>
