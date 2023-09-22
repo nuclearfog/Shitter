@@ -63,6 +63,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		}
 		languageCodes = languages.values().toArray(new String[0]);
 		language_adapter.setItems(languages.keySet().toArray(new String[0]));
+		visibility_adapter.setItems(R.array.visibility);
 	}
 
 
@@ -94,7 +95,6 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		if (!settings.getLogin().getConfiguration().statusSpoilerSupported()) {
 			statusSpoiler.setVisibility(View.GONE);
 		}
-		visibility_adapter.setItems(R.array.visibility);
 		sensitiveCheck.setOnCheckedChangeListener(this);
 		spoilerCheck.setOnCheckedChangeListener(this);
 		languageSelector.setOnItemSelectedListener(this);
@@ -146,7 +146,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_status_time_picker) {
-			timePicker.show();
+			timePicker.show(statusUpdate.getScheduleTime());
 		}
 	}
 
@@ -166,18 +166,22 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		if (parent.getId() == R.id.dialog_status_visibility) {
 			switch (position) {
 				case 0:
-					statusUpdate.setVisibility(Status.VISIBLE_PUBLIC);
+					statusUpdate.setVisibility(Status.VISIBLE_DEFAULT);
 					break;
 
 				case 1:
-					statusUpdate.setVisibility(Status.VISIBLE_PRIVATE);
+					statusUpdate.setVisibility(Status.VISIBLE_PUBLIC);
 					break;
 
 				case 2:
-					statusUpdate.setVisibility(Status.VISIBLE_DIRECT);
+					statusUpdate.setVisibility(Status.VISIBLE_PRIVATE);
 					break;
 
 				case 3:
+					statusUpdate.setVisibility(Status.VISIBLE_DIRECT);
+					break;
+
+				case 4:
 					statusUpdate.setVisibility(Status.VISIBLE_UNLISTED);
 					break;
 			}

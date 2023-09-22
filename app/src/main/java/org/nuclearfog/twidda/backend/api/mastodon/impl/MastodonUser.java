@@ -62,10 +62,9 @@ public class MastodonUser implements User {
 		String description = json.optString("note", "");
 		String profileUrl = json.optString("avatar_static", "");
 		String bannerUrl = json.optString("header_static", "");
-		String createdAtStr = json.optString("created_at", "");
 		screenname = '@' + json.optString("acct", "");
 		username = json.optString("display_name", "");
-		createdAt = StringUtils.getTime(createdAtStr, StringUtils.TIME_MASTODON);
+		createdAt = StringUtils.getIsoTime(json.optString("created_at", ""));
 		url = json.optString("url", "");
 		following = json.optInt("following_count");
 		follower = json.optInt("followers_count");
@@ -267,10 +266,9 @@ public class MastodonUser implements User {
 		public MastodonField(JSONObject json) throws JSONException {
 			key = json.getString("name");
 			value = StringUtils.extractText(json.optString("value", ""));
-
-			String timeStr = json.getString("verified_at");
+			String timeStr = json.optString("verified_at", "");
 			if (!timeStr.equals("null")) {
-				timestamp = StringUtils.getTime(timeStr, StringUtils.TIME_MASTODON);
+				timestamp = StringUtils.getIsoTime(timeStr);
 			}
 		}
 

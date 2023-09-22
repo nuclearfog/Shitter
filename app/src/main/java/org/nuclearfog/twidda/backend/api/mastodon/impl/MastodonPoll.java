@@ -35,9 +35,8 @@ public class MastodonPoll implements Poll {
 		JSONArray optionArray = json.getJSONArray("options");
 		JSONArray voteArray = json.optJSONArray("own_votes");
 		JSONArray emojiArray = json.optJSONArray("emojis");
-		String exTimeStr = json.getString("expires_at");
 		String idStr = json.getString("id");
-		exTime = StringUtils.getTime(exTimeStr, StringUtils.TIME_MASTODON);
+		exTime = StringUtils.getIsoTime(json.getString("expires_at"));
 		expired = json.getBoolean("expired");
 		voted = json.optBoolean("voted", false);
 		multipleChoice = json.getBoolean("multiple");

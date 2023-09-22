@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import org.joda.time.DateTime;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -58,9 +59,7 @@ public class TimePickerDialog extends Dialog implements OnClickListener {
 
 	@Override
 	public void show() {
-		if (!isShowing()) {
-			super.show();
-		}
+		// using show(long) instead
 	}
 
 
@@ -90,6 +89,26 @@ public class TimePickerDialog extends Dialog implements OnClickListener {
 			callback.onTimeSelected(0L);
 			if (isShowing())
 				dismiss();
+		}
+	}
+
+	/**
+	 * show timepicker with default value
+	 *
+	 * @param time selected time or '0' to select the current time
+	 */
+	public void show(long time) {
+		if (!isShowing()) {
+			super.show();
+			DateTime selectedTime;
+			if (time != 0L) {
+				selectedTime = new DateTime(time);
+			} else {
+				selectedTime = new DateTime();
+			}
+			datePicker.updateDate(selectedTime.getYear(), selectedTime.getMonthOfYear() - 1, selectedTime.getDayOfMonth());
+			timePicker.setCurrentHour(selectedTime.getHourOfDay());
+			timePicker.setCurrentMinute(selectedTime.getMinuteOfHour());
 		}
 	}
 

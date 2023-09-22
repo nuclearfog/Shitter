@@ -495,16 +495,18 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	 * called when the status was successfully updated
 	 */
 	private void onStatusUpdated(@NonNull StatusUpdateResult result) {
-		if (result.status != null) {
-			Intent intent = new Intent();
-			intent.putExtra(KEY_STATUS_DATA, result.status);
-			setResult(RETURN_STATUS_UPDATE, intent);
-			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
-			finish();
-		} else {
+		if (result.exception != null) {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
+		} else {
+			if (result.status != null) {
+				Intent intent = new Intent();
+				intent.putExtra(KEY_STATUS_DATA, result.status);
+				setResult(RETURN_STATUS_UPDATE, intent);
+			}
+			Toast.makeText(getApplicationContext(), R.string.info_status_sent, Toast.LENGTH_LONG).show();
+			finish();
 		}
 	}
 

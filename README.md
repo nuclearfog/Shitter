@@ -36,6 +36,7 @@
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
 - <a href="https://github.com/UnifiedPush/android-connector">UnifiedPush connector</a>
+- <a href="https://github.com/dlew/joda-time-android">joda time</a>
 - <a href="https://jsoup.org">jsoup</a>
 
 

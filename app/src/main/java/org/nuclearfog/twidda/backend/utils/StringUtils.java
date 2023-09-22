@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.utils;
 import android.content.res.Resources;
 import android.util.Base64;
 
+import org.joda.time.format.ISODateTimeFormat;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
@@ -15,12 +16,8 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Random;
-import java.util.TimeZone;
 
 /**
  * this class creates time strings
@@ -35,24 +32,14 @@ public class StringUtils {
 	public static final NumberFormat NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 
 	/**
-	 * date format
-	 * e.g. "2008-08-15T13:51:34.000Z"
+	 *
 	 */
-	private static final SimpleDateFormat defaultDateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-
-	private static final TimeZone TIME_ZONE = TimeZone.getDefault();
-
 	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false);
 
 	/**
 	 * fallback date if parsing failed
 	 */
 	private static final long DEFAULT_TIME = 0x61D99F64;
-
-	/**
-	 *
-	 */
-	public static final int TIME_MASTODON = 0x5105;
 
 	/**
 	 * random generator used to generate random strings
@@ -156,25 +143,18 @@ public class StringUtils {
 	}
 
 	/**
-	 * convert time strings from different APIs to the local format
+	 * parse ISO 8601 Format into long
 	 *
-	 * @param timeStr    time string
-	 * @param timeFormat API format to use {@link #TIME_MASTODON}
+	 * @param timeStr time string
 	 * @return date time
 	 */
-	public static long getTime(String timeStr, int timeFormat) {
+	public static long getIsoTime(String timeStr) {
 		try {
-			switch (timeFormat) {
-				default:
-				case TIME_MASTODON:
-					Date result = defaultDateformat.parse(timeStr);
-					if (result != null)
-						return result.getTime() + TIME_ZONE.getOffset(System.currentTimeMillis());
-					break;
-			}
-		} catch (ParseException exception) {
-			if (BuildConfig.DEBUG)
+			return ISODateTimeFormat.dateTime().parseMillis(timeStr);
+		} catch (Exception exception) {
+			if (BuildConfig.DEBUG) {
 				exception.printStackTrace();
+			}
 		}
 		return DEFAULT_TIME;
 	}

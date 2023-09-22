@@ -13,6 +13,11 @@ import java.io.Serializable;
 public interface Status extends Serializable, Comparable<Status> {
 
 	/**
+	 * use default server side settings
+	 */
+	int VISIBLE_DEFAULT = 0;
+
+	/**
 	 * Status is visible to everyone, shown in public timelines.
 	 */
 	int VISIBLE_PUBLIC = 1;
@@ -101,7 +106,7 @@ public interface Status extends Serializable, Comparable<Status> {
 	/**
 	 * get status visibility
 	 *
-	 * @return {@link #VISIBLE_DIRECT,#VISIBLE_PRIVATE,#VISIBLE_PUBLIC}
+	 * @return {@link #VISIBLE_DIRECT,#VISIBLE_PRIVATE,#VISIBLE_PUBLIC,#VISIBLE_DEFAULT}
 	 */
 	int getVisibility();
 

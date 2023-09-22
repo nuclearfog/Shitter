@@ -73,7 +73,7 @@ public class MastodonStatus implements Status {
 		String visibilityStr = json.getString("visibility");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
-		createdAt = StringUtils.getTime(json.optString("created_at"), StringUtils.TIME_MASTODON);
+		createdAt = StringUtils.getIsoTime(json.optString("created_at"));
 		replyCount = json.optInt("replies_count");
 		reblogCount = json.optInt("reblogs_count");
 		favoriteCount = json.optInt("favourites_count");
@@ -140,7 +140,6 @@ public class MastodonStatus implements Status {
 			}
 		}
 		switch (visibilityStr) {
-			default:
 			case "public":
 				visibility = VISIBLE_PUBLIC;
 				break;
@@ -155,6 +154,10 @@ public class MastodonStatus implements Status {
 
 			case "unlisted":
 				visibility = VISIBLE_UNLISTED;
+				break;
+
+			default:
+				visibility = VISIBLE_DEFAULT;
 				break;
 		}
 		try {

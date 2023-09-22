@@ -72,7 +72,7 @@ public class MastodonFilter implements Filter {
 			keywords[i] = new MastodonKeyword(keywordArray.getJSONObject(i));
 		}
 		if (!expiresStr.equals("null")) {
-			expiresAt = StringUtils.getTime(expiresStr, StringUtils.TIME_MASTODON);
+			expiresAt = StringUtils.getIsoTime(expiresStr);
 		}
 		try {
 			id = Long.parseLong(idStr);

@@ -8,6 +8,7 @@
 	</string-array>
 
 	<string-array name="visibility">
+		<item>Standard</item>
 		<item>Öffentlich</item>
 		<item>Privat</item>
 		<item>Direkt</item>
