@@ -274,6 +274,7 @@
 	<!--dimens of dialog_status.xml-->
 	<dimen name="dialog_status_textsize_title">20sp</dimen>
 	<dimen name="dialog_status_textsize_small">11sp</dimen>
+	<dimen name="dialog_status_textsize_default">13sp</dimen>
 	<dimen name="dialog_status_layout_padding">10dp</dimen>
 	<dimen name="dialog_status_layout_margins">5dp</dimen>
 	<dimen name="dialog_status_dropdown_height">28sp</dimen>

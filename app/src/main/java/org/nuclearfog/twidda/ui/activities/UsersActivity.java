@@ -96,7 +96,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	/**
 	 * regex pattern to validate username
 	 */
-	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
+	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w+(@\\w+\\.\\w+)?");
 
 	private GlobalSettings settings;
 	private UserFilterLoader filterLoader;
@@ -284,11 +284,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
 		} else if (viewPager.getCurrentItem() == 2) {
 			if (Patterns.WEB_URL.matcher(query).matches()) {
-				FilterParam param;
-				if (query.startsWith("https://"))
-					param = new FilterParam(FilterParam.BLOCK_DOMAIN, Uri.parse(query).getHost());
-				else
-					param = new FilterParam(FilterParam.BLOCK_DOMAIN, query);
+				FilterParam param = new FilterParam(FilterParam.BLOCK_DOMAIN, Uri.parse(query).getHost());
 				filterLoader.execute(param, this);
 				return true;
 			}

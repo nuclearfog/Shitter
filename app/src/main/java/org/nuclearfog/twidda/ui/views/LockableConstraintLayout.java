@@ -63,6 +63,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
 				xLock = false;
+				yLock = false;
 				break;
 		}
 		return yLock;

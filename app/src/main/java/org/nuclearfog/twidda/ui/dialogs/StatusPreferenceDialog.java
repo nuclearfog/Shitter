@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.kyleduo.switchbutton.SwitchButton;
 
@@ -22,6 +23,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,6 +37,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	private Spinner visibilitySelector, languageSelector;
 	private SwitchButton sensitiveCheck, spoilerCheck;
+	private TextView scheduleText;
 
 	private DropdownAdapter visibility_adapter, language_adapter;
 	private TimePickerDialog timePicker;
@@ -79,6 +82,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		visibilitySelector = findViewById(R.id.dialog_status_visibility);
 		sensitiveCheck = findViewById(R.id.dialog_status_sensitive);
 		spoilerCheck = findViewById(R.id.dialog_status_spoiler);
+		scheduleText = findViewById(R.id.dialog_status_time_set);
 
 		AppStyles.setTheme(rootView, settings.getPopupColor());
 		languageSelector.setAdapter(language_adapter);
@@ -201,5 +205,10 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	@Override
 	public void onTimeSelected(long time) {
 		statusUpdate.setScheduleTime(time);
+		if (time != 0L) {
+			scheduleText.setText(new Date(time).toString());
+		} else {
+			scheduleText.setText("");
+		}
 	}
 }
