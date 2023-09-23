@@ -71,6 +71,7 @@ public class MastodonStatus implements Status {
 		String replyUserIdStr = json.optString("in_reply_to_account_id", "0");
 		String idStr = json.getString("id");
 		String visibilityStr = json.getString("visibility");
+		String language = json.optString("language", "");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 		createdAt = StringUtils.getIsoTime(json.optString("created_at"));
@@ -133,11 +134,8 @@ public class MastodonStatus implements Status {
 		if (cardJson != null) {
 			cards = new Card[]{new MastodonCard(cardJson)};
 		}
-		if (json.has("language") && !json.isNull("language")) {
-			String language = json.getString("language");
-			if (!language.equals(Locale.getDefault().getLanguage())) {
-				this.language = language;
-			}
+		if (!language.isEmpty() && !language.equals("null") && !language.equals(Locale.getDefault().getLanguage())) {
+			this.language = language;
 		}
 		switch (visibilityStr) {
 			case "public":

@@ -27,6 +27,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.ScheduledMastodonStatus;
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
@@ -47,6 +48,7 @@ import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
@@ -56,6 +58,7 @@ import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.model.lists.UserLists;
@@ -148,6 +151,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_PUSH_UPDATE = "/api/v1/push/subscription";
 	private static final String ENDPOINT_FILTER = "/api/v2/filters";
 	private static final String ENDPOINT_REPORT = "/api/v1/reports";
+	private static final String ENDPOINT_SCHEDULED_STATUS = "/api/v1/scheduled_statuses";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -711,6 +715,62 @@ public class Mastodon implements Connection {
 			throw new MastodonException(response);
 		} catch (IOException e) {
 			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public ScheduledStatuses getScheduledStatuses(long minId, long maxId) throws ConnectionException {
+		try {
+			List<String> params = new ArrayList<>();
+			params.add("min_id" + minId);
+			params.add("max_id" + maxId);
+			params.add("limit" + settings.getListSize());
+			Response response = get(ENDPOINT_SCHEDULED_STATUS, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray jsonArray = new JSONArray(body.string());
+				ScheduledStatuses result = new ScheduledStatuses();
+				for (int i = 0 ; i < jsonArray.length() ; i++) {
+					result.add(new ScheduledMastodonStatus(jsonArray.getJSONObject(i)));
+				}
+				return result;
+			}
+			throw new MastodonException(response);
+		} catch (JSONException | IOException exception) {
+			throw new MastodonException(exception);
+		}
+	}
+
+
+	@Override
+	public ScheduledStatus updateScheduledStatus(long id, long schedule) throws ConnectionException {
+		try {
+			List<String> params = new ArrayList<>();
+			String dateFormat = ISODateTimeFormat.dateTimeNoMillis().print(schedule);
+			params.add("scheduled_at=" + StringUtils.encode(dateFormat));
+			Response response = put(ENDPOINT_SCHEDULED_STATUS + "/" + id, params);
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONObject json = new JSONObject(body.string());
+				return new ScheduledMastodonStatus(json);
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException exception) {
+			throw new MastodonException(exception);
+		}
+	}
+
+
+	@Override
+	public void canselScheduledStatus(long id) throws ConnectionException {
+		try {
+			Response response = delete(ENDPOINT_SCHEDULED_STATUS + "/" + id, new ArrayList<>());
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException exception) {
+			throw new MastodonException(exception);
 		}
 	}
 

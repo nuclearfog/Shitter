@@ -358,7 +358,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	/**
 	 * get visibility states
 	 *
-	 * @return visibility states {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DIRECT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
+	 * @return visibility of the status {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DIRECT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
 	 */
 	public int getVisibility() {
 		return visibility;

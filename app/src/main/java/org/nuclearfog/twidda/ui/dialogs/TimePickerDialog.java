@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.ui.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -51,6 +53,8 @@ public class TimePickerDialog extends Dialog implements OnClickListener {
 
 		GlobalSettings settings = GlobalSettings.get(getContext());
 		AppStyles.setTheme(root, settings.getPopupColor());
+		timePicker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
+		datePicker.setFirstDayOfWeek(Calendar.getInstance().getFirstDayOfWeek());
 
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);

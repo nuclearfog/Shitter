@@ -18,6 +18,7 @@ import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.Trend;
@@ -27,6 +28,7 @@ import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.model.lists.UserLists;
@@ -447,6 +449,29 @@ public interface Connection {
 	 * @param id status ID
 	 */
 	void deleteStatus(long id) throws ConnectionException;
+
+	/**
+	 * get a list of current scheduled status
+	 *
+	 * @param minId minimum ID of the status
+	 * @param maxId maximum ID of the status
+	 */
+	ScheduledStatuses getScheduledStatuses(long minId, long maxId) throws ConnectionException;
+
+	/**
+	 * update schedule time of a status
+	 *
+	 * @param id       scheduled status ID
+	 * @param schedule new schedule time
+	 */
+	ScheduledStatus updateScheduledStatus(long id, long schedule) throws ConnectionException;
+
+	/**
+	 * remove scheduled status
+	 *
+	 * @param id scheduled status ID
+	 */
+	void canselScheduledStatus(long id) throws ConnectionException;
 
 	/**
 	 * return a list of domain names the current user has blocked
