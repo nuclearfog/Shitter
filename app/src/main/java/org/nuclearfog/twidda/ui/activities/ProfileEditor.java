@@ -35,6 +35,7 @@ import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.backend.utils.ToolbarUpdater;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
@@ -260,13 +261,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	public void onSuccess() {
 		// set toolbar background
 		if (settings.toolbarOverlapEnabled()) {
-			// fixme may cause memory leak
-			profile_banner.post(new Runnable() {
-				@Override
-				public void run() {
-					AppStyles.setToolbarBackground(ProfileEditor.this, profile_banner, toolbar_background);
-				}
-			});
+			profile_banner.post(new ToolbarUpdater(profile_banner, toolbar_background));
 		}
 	}
 

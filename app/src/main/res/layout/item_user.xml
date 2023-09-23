@@ -168,8 +168,7 @@
 			android:contentDescription="@string/descr_remove_user"
 			android:scaleType="fitCenter"
 			android:src="@drawable/cross"
-			app:layout_constraintTop_toTopOf="@id/item_user_profile"
-			app:layout_constraintBottom_toBottomOf="@id/item_user_profile"
+			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			style="@style/RoundButton" />
 

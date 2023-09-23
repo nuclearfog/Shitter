@@ -14,14 +14,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
  */
 public class LockableConstraintLayout extends ConstraintLayout {
 
-	private static final float LOCK_RATIO = 1.1f;
-
 	@Nullable
 	private LockCallback callback;
-	private boolean xLock = false;
 	private boolean yLock = false;
 	private float yPos = 0.0f;
-	private float xPos = 0.0f;
 
 	/**
 	 * @inheritDoc
@@ -42,27 +38,20 @@ public class LockableConstraintLayout extends ConstraintLayout {
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		switch (ev.getActionMasked()) {
 			case MotionEvent.ACTION_MOVE:
-				float deltaX = ev.getX() - xPos;
-				float deltaY = ev.getY() - yPos;
-				// lock x-axis when swiping up/down
-				if (!xLock && Math.abs(deltaY) > Math.abs(deltaX) * LOCK_RATIO) {
-					xLock = true;
-				}
+				float deltaY =  ev.getAxisValue(MotionEvent.AXIS_Y) - yPos;
 				// detect scroll down, then aquire scroll lock
-				if (xLock && deltaY < 0.0f && callback != null) {
+				if (!yLock && deltaY < 0.0f && callback != null) {
 					yLock = callback.aquireVerticalScrollLock();
 				}
 				// fall through
 
 			case MotionEvent.ACTION_DOWN:
 				// note the current coordinates touch event
-				xPos = ev.getX();
-				yPos = ev.getY();
+				yPos =  ev.getAxisValue(MotionEvent.AXIS_Y);
 				break;
 
 			case MotionEvent.ACTION_CANCEL:
 			case MotionEvent.ACTION_UP:
-				xLock = false;
 				yLock = false;
 				break;
 		}

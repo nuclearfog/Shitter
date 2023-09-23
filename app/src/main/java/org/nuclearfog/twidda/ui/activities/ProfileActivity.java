@@ -55,6 +55,7 @@ import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
+import org.nuclearfog.twidda.backend.utils.ToolbarUpdater;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.User;
@@ -539,13 +540,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	public void onSuccess() {
 		// setup toolbar background
 		if (settings.toolbarOverlapEnabled()) {
-			// fixme may cause memory leak
-			bannerImage.post(new Runnable() {
-				@Override
-				public void run() {
-					AppStyles.setToolbarBackground(ProfileActivity.this, bannerImage, toolbarBackground);
-				}
-			});
+			bannerImage.post(new ToolbarUpdater(bannerImage, toolbarBackground));
 		}
 	}
 

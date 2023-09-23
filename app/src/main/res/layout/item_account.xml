@@ -9,25 +9,17 @@
 		android:id="@+id/item_account_container"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="@dimen/login_layout_padding">
+		android:padding="@dimen/login_card_padding">
 
 		<ImageView
 			android:id="@+id/item_account_profile"
 			android:layout_width="@dimen/login_image_size"
 			android:layout_height="@dimen/login_image_size"
-			android:layout_marginEnd="@dimen/login_layout_padding"
+			android:layout_marginEnd="@dimen/login_layout_margin"
 			android:contentDescription="@string/profile_image"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/item_account_profile_barrier" />
-
-		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/item_account_profile_barrier"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			app:barrierDirection="start"
-			app:constraint_referenced_ids="item_account_username,item_account_screenname,item_account_date" />
+			app:layout_constraintBottom_toBottomOf="parent" />
 
 		<TextView
 			android:id="@+id/item_account_username"
@@ -35,9 +27,11 @@
 			android:layout_height="wrap_content"
 			android:lines="1"
 			android:textSize="@dimen/login_name_textsize_big"
-			app:layout_constraintStart_toEndOf="@id/item_account_profile_barrier"
+			android:layout_marginStart="@dimen/login_layout_margin"
+			android:layout_marginEnd="@dimen/login_layout_margin"
+			app:layout_constraintStart_toEndOf="@id/item_account_profile"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/item_login_button_barrier" />
+			app:layout_constraintEnd_toStartOf="@id/item_account_remove" />
 
 		<TextView
 			android:id="@+id/item_account_screenname"
@@ -45,40 +39,34 @@
 			android:layout_height="wrap_content"
 			android:lines="1"
 			android:textSize="@dimen/login_name_textsize"
-			app:layout_constraintStart_toEndOf="@id/item_account_profile_barrier"
+			android:layout_marginStart="@dimen/login_layout_margin"
+			android:layout_marginEnd="@dimen/login_layout_margin"
+			app:layout_constraintStart_toEndOf="@id/item_account_profile"
 			app:layout_constraintTop_toBottomOf="@id/item_account_username"
 			app:layout_constraintBottom_toTopOf="@id/item_account_date"
-			app:layout_constraintEnd_toStartOf="@id/item_login_button_barrier" />
+			app:layout_constraintEnd_toStartOf="@id/item_account_remove" />
 
 		<TextView
 			android:id="@+id/item_account_date"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:textSize="@dimen/login_date_textsize"
-			app:layout_constraintStart_toEndOf="@id/item_account_profile_barrier"
+			android:layout_marginStart="@dimen/login_layout_margin"
+			android:layout_marginEnd="@dimen/login_layout_margin"
+			app:layout_constraintStart_toEndOf="@id/item_account_profile"
 			app:layout_constraintTop_toBottomOf="@id/item_account_screenname"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/item_login_button_barrier" />
-
-		<androidx.constraintlayout.widget.Barrier
-			android:id="@+id/item_login_button_barrier"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			app:barrierDirection="end"
-			app:constraint_referenced_ids="item_account_username,item_account_screenname,item_account_date" />
+			app:layout_constraintEnd_toStartOf="@id/item_account_remove" />
 
 		<ImageButton
 			android:id="@+id/item_account_remove"
 			android:layout_width="@dimen/login_button_size"
 			android:layout_height="@dimen/login_button_size"
 			android:padding="@dimen/login_button_padding"
-			android:layout_marginStart="@dimen/login_layout_padding"
 			android:contentDescription="@string/descr_remove_user"
 			android:scaleType="fitCenter"
 			android:src="@drawable/cross"
-			app:layout_constraintStart_toEndOf="@id/item_login_button_barrier"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			style="@style/RoundButton" />
 

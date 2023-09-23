@@ -105,10 +105,10 @@
 	<dimen name="item_user_layout_padding">5dp</dimen>
 	<dimen name="item_user_textview_padding">5dp</dimen>
 	<dimen name="item_user_drawable_margin">5dp</dimen>
-	<dimen name="item_user_button_size">36dp</dimen>
+	<dimen name="item_user_button_size">20sp</dimen>
 	<dimen name="item_user_notification_button_size">20sp</dimen>
 	<dimen name="item_user_notification_button_drawable_padding">1dp</dimen>
-	<dimen name="item_user_button_padding">7dp</dimen>
+	<dimen name="item_user_button_padding">1dp</dimen>
 	<dimen name="item_user_textsize_small">12sp</dimen>
 	<dimen name="item_user_icon_size">14sp</dimen>
 	<dimen name="item_user_image_margin">8dp</dimen>
@@ -131,9 +131,10 @@
 	<dimen name="login_name_textsize_big">14sp</dimen>
 	<dimen name="login_name_textsize">12sp</dimen>
 	<dimen name="login_date_textsize">11sp</dimen>
-	<dimen name="login_layout_padding">8dp</dimen>
-	<dimen name="login_button_size">36dp</dimen>
-	<dimen name="login_button_padding">7dp</dimen>
+	<dimen name="login_card_padding">8dp</dimen>
+	<dimen name="login_layout_margin">8dp</dimen>
+	<dimen name="login_button_size">20sp</dimen>
+	<dimen name="login_button_padding">1dp</dimen>
 	<dimen name="login_image_size">64dp</dimen>
 
 	<!--dimens of item_dropdown-->

@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -248,11 +247,10 @@ public class AppStyles {
 	/**
 	 * setup a transparent blurry toolbar
 	 *
-	 * @param activity          activity reference to get the measures
 	 * @param background        background overlapped by the toolbar at the top
 	 * @param toolbarBackground background image of the toolbar
 	 */
-	public static void setToolbarBackground(Activity activity, ImageView background, ImageView toolbarBackground) {
+	public static void setToolbarBackground(ImageView background, ImageView toolbarBackground) {
 		Drawable backgroundDrawable = background.getDrawable();
 		if (backgroundDrawable instanceof BitmapDrawable) {
 			try {
@@ -278,9 +276,9 @@ public class AppStyles {
 					}
 					int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
 					int blurRadius = Math.max(Math.round((image.getWidth() * 20.0f) / widthPixels), 10);
-					float toolbarRatio = activity.getResources().getDimension(R.dimen.profile_toolbar_height) / widthPixels;
+					float toolbarRatio = background.getResources().getDimension(R.dimen.profile_toolbar_height) / widthPixels;
 					// do final transformations (crop first image to toolbar background size, then blur)
-					BlurTransformation blur = new BlurTransformation(activity.getApplicationContext(), blurRadius);
+					BlurTransformation blur = new BlurTransformation(background.getContext(), blurRadius);
 					CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() * toolbarRatio), GravityHorizontal.CENTER, GravityVertical.TOP);
 					image = blur.transform(crop.transform(image));
 					toolbarBackground.setImageBitmap(image);
