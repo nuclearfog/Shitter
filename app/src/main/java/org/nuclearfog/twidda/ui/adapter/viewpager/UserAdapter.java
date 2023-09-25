@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.ui.fragments.DomainFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
-import org.nuclearfog.twidda.ui.fragments.TrendFragment;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
 
 /**
@@ -19,32 +18,27 @@ public class UserAdapter extends ViewPagerAdapter {
 	/**
 	 * used to show following pages
 	 */
-	public static final int FOLLOWING = 1;
+	public static final int FOLLOWING = 10;
 
 	/**
 	 * used to show follower pages
 	 */
-	public static final int FOLLOWER = 2;
-
-	/**
-	 * used to show follow/pending requests
-	 */
-	public static final int REQUESTS = 3;
+	public static final int FOLLOWER = 11;
 
 	/**
 	 * used to show reposter of a status
 	 */
-	public static final int REPOSTER = 4;
+	public static final int REPOSTER = 12;
 
 	/**
 	 * used to show users favoriting a status
 	 */
-	public static final int FAVORITER = 5;
+	public static final int FAVORITER = 13;
 
 	/**
 	 * used to show block/mute pages
 	 */
-	public static final int BLOCKS = 6;
+	public static final int BLOCKS = 14;
 
 	/**
 	 * @param id   Status ID, List ID or User ID, depending on mode
@@ -61,11 +55,11 @@ public class UserAdapter extends ViewPagerAdapter {
 				following.setArguments(paramFollowing);
 				fragments.add(following);
 				if (settings.getLogin().getId() == id) {
-					Bundle paramTrend = new Bundle();
-					paramTrend.putInt(TrendFragment.KEY_MODE, TrendFragment.MODE_FOLLOW);
-					ListFragment hashtagFollowing = new TrendFragment();
-					hashtagFollowing.setArguments(paramTrend);
-					fragments.add(hashtagFollowing);
+					Bundle paramFollowingRequest = new Bundle();
+					paramFollowingRequest.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_INCOMING);
+					ListFragment pendingRequests = new UserFragment();
+					pendingRequests.setArguments(paramFollowingRequest);
+					fragments.add(pendingRequests);
 				}
 				break;
 
@@ -76,16 +70,8 @@ public class UserAdapter extends ViewPagerAdapter {
 				ListFragment followerList = new UserFragment();
 				followerList.setArguments(paramFollower);
 				fragments.add(followerList);
-				break;
 
-			case REQUESTS:
-				Bundle paramFollowingRequest = new Bundle();
-				paramFollowingRequest.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_INCOMING);
-				ListFragment pendingRequests = new UserFragment();
-				pendingRequests.setArguments(paramFollowingRequest);
-				fragments.add(pendingRequests);
-
-				if (settings.getLogin().getConfiguration().isOutgoingFollowRequestSupported()) {
+				if (settings.getLogin().getConfiguration().isOutgoingFollowRequestSupported() && settings.getLogin().getId() == id) {
 					Bundle paramFollowRequest = new Bundle();
 					paramFollowRequest.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_OUTGOING);
 					ListFragment followRequest = new UserFragment();

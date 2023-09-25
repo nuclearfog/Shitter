@@ -212,7 +212,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		setSupportActionBar(toolbar);
 
 		viewPager.setOffscreenPageLimit(3);
-		tabSelector.addViewPager(viewPager);
 
 		// get parameters
 		if (savedInstanceState == null) {

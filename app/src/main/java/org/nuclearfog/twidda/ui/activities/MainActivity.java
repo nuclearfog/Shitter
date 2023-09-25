@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
 
-		tabSelector.addViewPager(viewPager);
 		viewPager.setOffscreenPageLimit(4);
 		if (navigationView.getLayoutParams() != null) {
 			navigationView.getLayoutParams().width = Math.round(getResources().getDisplayMetrics().widthPixels / 2.0f);
@@ -349,58 +348,60 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-		boolean selected = false;
 		// open filter page
 		if (item.getItemId() == R.id.menu_navigator_filter) {
 			Intent intent = new Intent(this, FilterActivity.class);
 			startActivity(intent);
-			selected = true;
+			drawerLayout.close();
+			return true;
 		}
 		// open status editor
 		else if (item.getItemId() == R.id.menu_navigator_status) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			startActivity(intent);
-			selected = true;
+			drawerLayout.close();
+			return true;
 		}
 		// open app settings
 		else if (item.getItemId() == R.id.menu_navigator_settings) {
 			Intent intent = new Intent(this, SettingsActivity.class);
 			activityResultLauncher.launch(intent);
-			selected = true;
+			drawerLayout.close();
+			return true;
 		}
 		// open account manager
 		else if (item.getItemId() == R.id.menu_navigator_account) {
 			Intent intent = new Intent(this, AccountActivity.class);
 			activityResultLauncher.launch(intent);
-			selected = true;
+			drawerLayout.close();
+			return true;
 		}
 		// open user lists
 		else if (item.getItemId() == R.id.menu_navigator_lists) {
 			Intent intent = new Intent(this, UserlistsActivity.class);
 			intent.putExtra(UserlistsActivity.KEY_ID, settings.getLogin().getId());
 			startActivity(intent);
-			selected = true;
+			drawerLayout.close();
+			return true;
 		}
 		// open profile editor
 		else if (item.getItemId() == R.id.menu_navigator_profile_settings) {
 			if (currentUser != null) {
-				Intent editProfile = new Intent(this, ProfileEditor.class);
-				editProfile.putExtra(ProfileEditor.KEY_USER, currentUser);
-				activityResultLauncher.launch(editProfile);
-				selected = true;
+				Intent intent = new Intent(this, ProfileEditor.class);
+				intent.putExtra(ProfileEditor.KEY_USER, currentUser);
+				activityResultLauncher.launch(intent);
+				drawerLayout.close();
+				return true;
 			}
 		}
-		// open request list
-		else if (item.getItemId() == R.id.menu_navigator_requests) {
-			Intent usersIntent = new Intent(this, UsersActivity.class);
-			usersIntent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_REQUESTS);
-			startActivity(usersIntent);
-			selected = true;
-		}
-		if (selected) {
+		// open hashtag activity
+		else if (item.getItemId() == R.id.menu_navigator_hashtag) {
+			Intent intent = new Intent(this, HashtagActivity.class);
+			startActivity(intent);
 			drawerLayout.close();
+			return true;
 		}
-		return selected;
+		return false;
 	}
 
 

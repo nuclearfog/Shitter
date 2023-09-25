@@ -11,6 +11,11 @@
 	<integer-array name="search_tab_icons">
 		<item>@drawable/search</item>
 		<item>@drawable/user</item>
+	</integer-array>
+
+	<integer-array name="search_hashtag_tab_icons">
+		<item>@drawable/search</item>
+		<item>@drawable/user</item>
 		<item>@drawable/hash</item>
 	</integer-array>
 
@@ -26,14 +31,14 @@
 		<item>@drawable/link</item>
 	</integer-array>
 
-	<integer-array name="user_hashtag_following">
-		<item>@drawable/user</item>
-		<item>@drawable/hash</item>
+	<integer-array name="user_following">
+		<item>@drawable/following</item>
+		<item>@drawable/following_request</item>
 	</integer-array>
 
-	<integer-array name="user_requests_icon">
+	<integer-array name="user_follower">
+		<item>@drawable/follower</item>
 		<item>@drawable/follower_request</item>
-		<item>@drawable/following_request</item>
 	</integer-array>
 
 	<integer-array name="profile_tab_icons">
@@ -58,6 +63,11 @@
 	<integer-array name="userlist_tab_icons">
 		<item>@drawable/following</item>
 		<item>@drawable/follower</item>
+	</integer-array>
+
+	<integer-array name="userlist_hashtag_icons">
+		<item>@drawable/hash</item>
+		<item>@drawable/hash</item>
 	</integer-array>
 
 	<string-array name="networks">
@@ -96,6 +106,11 @@
 		<item>Spam</item>
 		<item>Violation</item>
 		<item>Other</item>
+	</string-array>
+
+	<string-array name="hashtag_labels">
+		<item>followed</item>
+		<item>featured</item>
 	</string-array>
 
 </resources>

@@ -29,7 +29,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class TrendFragment extends ListFragment implements TrendClickListener, AsyncCallback<TrendResult>, ActivityResultCallback<ActivityResult> {
+public class HashtagFragment extends ListFragment implements TrendClickListener, AsyncCallback<TrendResult>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * setup fragment to show popular trends of an instance/location
@@ -46,6 +46,11 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 	 * setup fragment to show hashtags followed by the current user
 	 */
 	public static final int MODE_FOLLOW = 0x50545981;
+
+	/**
+	 * setup fragment to view featured hashtags
+	 */
+	public static final int MODE_FEATURE = 0x16347583;
 
 	/**
 	 * key used to define what type of trends should be shown, see {@link #MODE_FOLLOW ,#MODE_POPULAR ,#KEY_FRAGMENT_TREND_SEARCH}
@@ -200,6 +205,11 @@ public class TrendFragment extends ListFragment implements TrendClickListener, A
 
 			case MODE_FOLLOW:
 				param = new TrendParameter(TrendParameter.FOLLOWING, index, search, cursor);
+				trendLoader.execute(param, this);
+				break;
+
+			case MODE_FEATURE:
+				param = new TrendParameter(TrendParameter.FEATURING, index, search, cursor);
 				trendLoader.execute(param, this);
 				break;
 

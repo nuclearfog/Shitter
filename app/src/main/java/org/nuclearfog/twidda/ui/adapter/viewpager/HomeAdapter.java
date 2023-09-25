@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
-import org.nuclearfog.twidda.ui.fragments.TrendFragment;
+import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 
 /**
  * ViewPager fragment adapter for {@link org.nuclearfog.twidda.ui.activities.MainActivity}
@@ -27,9 +27,9 @@ public class HomeAdapter extends ViewPagerAdapter {
 		paramHomeTimeline.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_HOME);
 		homeTimeline.setArguments(paramHomeTimeline);
 
-		ListFragment trendFragment = new TrendFragment();
+		ListFragment trendFragment = new HashtagFragment();
 		Bundle paramTrend = new Bundle();
-		paramTrend.putInt(TrendFragment.KEY_MODE, TrendFragment.MODE_POPULAR);
+		paramTrend.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_POPULAR);
 		trendFragment.setArguments(paramTrend);
 
 		ListFragment publicTimeline = new StatusFragment();

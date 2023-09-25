@@ -183,6 +183,10 @@
 	<!--dimens of page_main.xml-->
 	<dimen name="mainpage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="mainpage_floating_button_margin">20dp</dimen>
+	<dimen name="mainpage_navigation_padding_item">20dp</dimen>
+
+	<!--dimens of page_hashtag.xml-->
+	<dimen name="page_hashtag_tabselector_height">52dp</dimen>
 
 	<!--dimens of page_list.xml-->
 	<dimen name="listpage_toolbar_height">@dimen/toolbar_height</dimen>

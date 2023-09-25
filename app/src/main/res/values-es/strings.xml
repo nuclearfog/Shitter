@@ -130,7 +130,6 @@
 	<string name="menu_status_unhide">Mostrar</string>
 	<string name="menu_status_open_browser">Abrir en navegador</string>
 	<string name="menu_mute_user">Silenciar</string>
-	<string name="menu_follow_requests">Solicitudes</string>
 	<string name="menu_edit_profile">Editar perfil</string>
 	<string name="menu_edit_save">Guardar</string>
 	<string name="menu_add_user">Agregar usuario a la lista</string>
@@ -151,7 +150,6 @@
 	<string name="menu_status_copy_text">Texto</string>
 	<string name="menu_media_link">Enlace de medios</string>
 	<string name="menu_status_copy_link">Enlace de estado</string>
-	<string name="menu_toolbar_request">Solicitudes de seguimiento</string>
 	<string name="menu_toolbar_excluded_users">Lista de bloqueos</string>
 	<string name="dialog_link_image_preview">Enlazar vista previa de la imagen</string>
 	<string name="app_info_icons">Iconos SVG de:</string>

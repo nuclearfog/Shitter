@@ -25,6 +25,7 @@
 			android:id="@+id/home_tab"
 			android:layout_width="match_parent"
 			android:layout_height="@dimen/tabselector_height"
+			app:viewpager="@id/home_pager"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/home_toolbar"
 			app:layout_constraintEnd_toEndOf="parent" />
@@ -58,6 +59,7 @@
 		android:layout_height="match_parent"
 		android:fitsSystemWindows="false"
 		android:layout_gravity="start"
+		app:itemHorizontalPadding="@dimen/mainpage_navigation_padding_item"
 		app:headerLayout="@layout/navigation_header"
 		app:menu="@menu/main_navigation" />
 

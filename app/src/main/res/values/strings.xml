@@ -130,6 +130,7 @@
 
 	<!-- menu icon strings -->
 	<string name="menu_status">write status</string>
+	<string name="menu_hashtags">Hashtags</string>
 	<string name="menu_hashtag_follow">follow hashtag</string>
 	<string name="menu_hashtag_unfollow">unfollow hashtag</string>
 	<string name="menu_open_home_profile">open Profile</string>
@@ -154,7 +155,6 @@
 	<string name="menu_status_unhide">unhide</string>
 	<string name="menu_status_open_browser">open in browser</string>
 	<string name="menu_mute_user">mute</string>
-	<string name="menu_follow_requests">Requests</string>
 	<string name="menu_edit_profile">edit profile</string>
 	<string name="menu_edit_save">save</string>
 	<string name="menu_add_user">add user to list</string>
@@ -176,7 +176,6 @@
 	<string name="menu_media_link">Media link</string>
 	<string name="menu_add_filter">create filter</string>
 	<string name="menu_status_copy_link">Status link</string>
-	<string name="menu_toolbar_request">Follow requests</string>
 	<string name="menu_toolbar_excluded_users">Blocklists</string>
 	<string name="menu_media_add_description">add description</string>
 	<string name="menu_media_show_meta">show metadata</string>

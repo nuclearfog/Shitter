@@ -5,4 +5,8 @@
 		<attr name="body" format="reference" />
 	</declare-styleable>
 
+	<declare-styleable name="TabSelector">
+		<attr name="viewpager" format="reference" />
+	</declare-styleable>
+
 </resources>

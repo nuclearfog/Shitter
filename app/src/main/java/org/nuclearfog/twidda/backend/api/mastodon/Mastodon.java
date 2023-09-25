@@ -125,6 +125,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_SEARCH_TIMELINE = "/api/v2/search";
 	private static final String ENDPOINT_HASHTAG_TIMELINE = "/api/v1/timelines/tag/";
 	private static final String ENDPOINT_HASHTAG_FOLLOWING = "/api/v1/followed_tags";
+	private static final String ENDPOINT_HASHTAG_FEATURE = "/api/v1/featured_tags";
 	private static final String ENDPOINT_HASHTAG_GET = "/api/v1/tags/";
 	private static final String ENDPOINT_USER_TIMELINE = "/api/v1/accounts/";
 	private static final String ENDPOINT_USER_FAVORITS = "/api/v1/favourites";
@@ -480,6 +481,12 @@ public class Mastodon implements Connection {
 		if (cursor != 0L)
 			params.add("max_id=" + cursor);
 		return getTrends(ENDPOINT_HASHTAG_FOLLOWING, params);
+	}
+
+
+	@Override
+	public Trends showHashtagFeaturing() throws ConnectionException {
+		return getTrends(ENDPOINT_HASHTAG_FEATURE,  new ArrayList<>());
 	}
 
 

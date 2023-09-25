@@ -10,13 +10,13 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.lists.Trends;
-import org.nuclearfog.twidda.ui.fragments.TrendFragment;
+import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 
 /**
  * Background task to load a list of location specific trends
  *
  * @author nuclearfog
- * @see TrendFragment
+ * @see HashtagFragment
  */
 public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, TrendLoader.TrendResult> {
 
@@ -56,6 +56,10 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 					trends = connection.showHashtagFollowing(param.cursor);
 					return new TrendResult(TrendResult.FOLLOWING, trends, param.index, null);
 
+				case TrendParameter.FEATURING:
+					trends = connection.showHashtagFeaturing();
+					return new TrendResult(TrendResult.FEATURING, trends, param.index, null);
+
 				default:
 					return null;
 			}
@@ -73,6 +77,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		public static final int POPULAR_ONLINE = 2;
 		public static final int SEARCH = 3;
 		public static final int FOLLOWING = 4;
+		public static final int FEATURING = 5;
 
 		public static final long NO_CURSOR = 0L;
 
@@ -95,9 +100,10 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	public static class TrendResult {
 
 		public static final int ERROR = -1;
-		public static final int POPULAR = 4;
-		public static final int SEARCH = 5;
-		public static final int FOLLOWING = 6;
+		public static final int POPULAR = 20;
+		public static final int SEARCH = 21;
+		public static final int FOLLOWING = 22;
+		public static final int FEATURING = 23;
 
 		public final int mode;
 		public final int index;

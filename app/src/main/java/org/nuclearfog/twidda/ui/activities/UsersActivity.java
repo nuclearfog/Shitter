@@ -87,13 +87,6 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	public static final int USERS_EXCLUDED = 0x896a786;
 
 	/**
-	 * setup list to show incoming & outgoing follow requests
-	 *
-	 * @see #KEY_MODE
-	 */
-	public static final int USERS_REQUESTS = 0x0948693;
-
-	/**
 	 * regex pattern to validate username
 	 */
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w+(@\\w+\\.\\w+)?");
@@ -136,9 +129,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				toolbar.setTitle(R.string.userlist_following);
 				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWING);
 				viewPager.setAdapter(adapter);
-				if (settings.getLogin().getId() == id) {
-					tabSelector.addTabIcons(R.array.user_hashtag_following);
-					tabSelector.addViewPager(viewPager);
+				if (adapter.getItemCount() > 1) {
+					tabSelector.addTabIcons(R.array.user_following);
 					tabSelector.addOnTabSelectedListener(this);
 				} else {
 					tabSelector.setVisibility(View.GONE);
@@ -146,43 +138,39 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				break;
 
 			case USERS_FOLLOWER:
+				toolbar.setTitle(R.string.userlist_follower);
 				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWER);
 				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
-				toolbar.setTitle(R.string.userlist_follower);
+				if (adapter.getItemCount() > 1) {
+					tabSelector.addTabIcons(R.array.user_follower);
+					tabSelector.addOnTabSelectedListener(this);
+				} else {
+					tabSelector.setVisibility(View.GONE);
+				}
 				break;
 
 			case USERS_REPOST:
+				toolbar.setTitle(R.string.toolbar_userlist_repost);
 				adapter = new UserAdapter(this, id, UserAdapter.REPOSTER);
 				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
-				toolbar.setTitle(R.string.toolbar_userlist_repost);
 				break;
 
 			case USERS_FAVORIT:
 				int title = settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter;
+				toolbar.setTitle(title);
 				adapter = new UserAdapter(this, id, UserAdapter.FAVORITER);
 				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
-				toolbar.setTitle(title);
 				break;
 
 			case USERS_EXCLUDED:
+				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
 				adapter = new UserAdapter(this, id, UserAdapter.BLOCKS);
 				viewPager.setAdapter(adapter);
 				tabSelector.addTabIcons(R.array.user_domain_exclude);
-				tabSelector.addViewPager(viewPager);
 				tabSelector.addOnTabSelectedListener(this);
-				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
-				break;
-
-			case USERS_REQUESTS:
-				adapter = new UserAdapter(this, id, UserAdapter.REQUESTS);
-				viewPager.setAdapter(adapter);
-				tabSelector.addViewPager(viewPager);
-				tabSelector.addOnTabSelectedListener(this);
-				tabSelector.addTabIcons(R.array.user_requests_icon);
-				toolbar.setTitle(R.string.menu_toolbar_request);
 				break;
 
 			default:

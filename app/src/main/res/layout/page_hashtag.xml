@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/page_users_root"
-	android:fitsSystemWindows="true"
-	android:orientation="vertical"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/page_hashtag_root"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.activities.UsersActivity">
+	android:orientation="vertical">
 
 	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/page_users_toolbar"
+		android:id="@+id/page_hashtag_toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" />
 
 	<org.nuclearfog.twidda.ui.views.TabSelector
-		android:id="@+id/page_exclude_tab"
+		android:id="@+id/page_hashtag_tab"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/tabselector_height"
-		app:viewpager="@id/page_users_pager" />
+		android:layout_height="@dimen/page_hashtag_tabselector_height"
+		app:viewpager="@id/page_hashtag_pager"/>
 
 	<androidx.viewpager2.widget.ViewPager2
-		android:id="@+id/page_users_pager"
+		android:id="@+id/page_hashtag_pager"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		tools:ignore="SpeakableTextPresentCheck" />

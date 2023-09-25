@@ -244,9 +244,7 @@
 	<string name="descr_remove_domain">entferne Domain von der Liste</string>
 	<string name="confirm_unknown_error">Unbekannter Fehler!</string>
 	<string name="error_invalid_media">Ungültige Mediendatei!</string>
-	<string name="menu_follow_requests">Anfragen</string>
 	<string name="menu_toolbar_excluded_users">Blocklisten</string>
-	<string name="menu_toolbar_request">Follow Anfragen</string>
 	<string name="info_status_location_copied">Standortkoordinaten kopiert</string>
 	<string name="settings_enable_indicators">zeige zusätzliche Status Informationen an</string>
 	<string name="login_key_enable">Token einfügen</string>

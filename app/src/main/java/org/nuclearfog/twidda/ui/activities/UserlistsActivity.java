@@ -73,7 +73,6 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		adapter = new UserListsAdapter(this, ownerId);
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
-		tabSelector.addViewPager(viewPager);
 		tabSelector.addTabIcons(R.array.userlist_tab_icons);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		AppStyles.setTheme(root);

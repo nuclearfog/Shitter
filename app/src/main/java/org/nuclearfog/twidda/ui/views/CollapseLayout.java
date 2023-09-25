@@ -79,8 +79,9 @@ public class CollapseLayout extends NestedScrollView implements OnScrollChangeLi
 	public boolean onPreDraw() {
 		getViewTreeObserver().removeOnPreDrawListener(this);
 		header = findViewById(headerId);
-		body = findViewById(bodyId);
-		if (body != null) {
+		View bodyView = findViewById(bodyId);
+		if (bodyView instanceof LockableConstraintLayout) {
+			body = (LockableConstraintLayout) bodyView;
 			body.addLockCallback(this);
 			body.getLayoutParams().height = getMeasuredHeight();
 			body.requestLayout();

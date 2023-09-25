@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.TrendHolder;
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show trends
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.ui.fragments.TrendFragment
+ * @see org.nuclearfog.twidda.ui.fragments.HashtagFragment
  */
 public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 

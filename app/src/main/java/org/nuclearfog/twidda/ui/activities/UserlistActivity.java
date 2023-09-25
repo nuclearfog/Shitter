@@ -128,7 +128,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		}
 		viewPager.setOffscreenPageLimit(3);
 		viewPager.setAdapter(adapter);
-		tabSelector.addViewPager(viewPager);
 		setSupportActionBar(toolbar);
 
 		AppStyles.setTheme(root);

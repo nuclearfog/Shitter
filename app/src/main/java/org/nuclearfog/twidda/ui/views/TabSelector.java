@@ -7,11 +7,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ArrayRes;
+import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
@@ -26,7 +28,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class TabSelector extends LinearLayout implements OnClickListener, OnGlobalLayoutListener {
+public class TabSelector extends LinearLayout implements OnClickListener, OnGlobalLayoutListener, OnPreDrawListener {
 
 	@Nullable
 	private ViewPager2 viewPager;
@@ -38,6 +40,9 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	@Nullable
 	private OnTabSelectedListener listener;
 	private GlobalSettings settings;
+
+	@IdRes
+	private int pagerId;
 
 	private int oldPosition;
 	private int tabCount;
@@ -54,6 +59,11 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	 */
 	public TabSelector(Context context, @Nullable AttributeSet attrs) {
 		super(context, attrs);
+		if (attrs != null) {
+			TypedArray attrArray = context.obtainStyledAttributes(attrs, R.styleable.TabSelector);
+			pagerId = attrArray.getResourceId(R.styleable.TabSelector_viewpager, NO_ID);
+			attrArray.recycle();
+		}
 		setOrientation(VERTICAL);
 		settings = GlobalSettings.get(context);
 		tabContainer = new LinearLayout(context);
@@ -68,15 +78,18 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		setVisibility(INVISIBLE);
 		addView(tabContainer);
 		addView(indicator);
+
+		getViewTreeObserver().addOnPreDrawListener(this);
 	}
 
 
 	@Override
 	public void onClick(View v) {
 		for (int i = 0; i < tabContainer.getChildCount(); i++) {
-			if (tabContainer.getChildAt(i) == v && listener != null) {
+			if (tabContainer.getChildAt(i) == v) {
 				if (viewPager != null && viewPager.getAdapter() != null && i < viewPager.getAdapter().getItemCount()) {
-					listener.onTabSelected(oldPosition);
+					if (listener != null)
+						listener.onTabSelected(oldPosition);
 					viewPager.setCurrentItem(i);
 					oldPosition = i;
 				}
@@ -116,15 +129,17 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		post(new VisibilityDelay(this, true));
 	}
 
-	/**
-	 * attach {@link ViewPager2} to this view
-	 *
-	 * @param viewPager ViewPager to interact with
-	 */
-	public void addViewPager(ViewPager2 viewPager) {
-		this.viewPager = viewPager;
-		viewPager.registerOnPageChangeCallback(new ViewPagerCallback());
-		setPosition((float) viewPager.getCurrentItem());
+
+	@Override
+	public boolean onPreDraw() {
+		getViewTreeObserver().removeOnPreDrawListener(this);
+		View view = getRootView().findViewById(pagerId);
+		if (view instanceof ViewPager2) {
+			viewPager = (ViewPager2) view;
+			setPosition((float) viewPager.getCurrentItem());
+			viewPager.registerOnPageChangeCallback(new ViewPagerCallback());
+		}
+		return true;
 	}
 
 	/**
@@ -151,6 +166,24 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		tArray.recycle();
 		setVisibility(INVISIBLE);
 		getViewTreeObserver().addOnGlobalLayoutListener(this);
+	}
+
+	/**
+	 * add tab item labels using string array resource
+	 *
+	 * @param stringArray resource id of the string array
+	 */
+	public void addTabLabels(@ArrayRes int stringArray) {
+		TypedArray tArray = getResources().obtainTypedArray(stringArray);
+		if (viewPager != null && viewPager.getAdapter() != null) {
+			tabCount = Math.min(tArray.length(), viewPager.getAdapter().getItemCount());
+		} else {
+			tabCount = tArray.length();
+		}
+		for (int i = 0; i < tabCount; i++) {
+			setLabel(i, tArray.getString(i));
+		}
+		tArray.recycle();
 	}
 
 	/**

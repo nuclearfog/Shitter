@@ -35,4 +35,9 @@
 		<item>andere Gründe</item>
 	</string-array>
 
+	<string-array name="hashtag_labels">
+		<item>gefolgt</item>
+		<item>vorgestellt</item>
+	</string-array>
+
 </resources>

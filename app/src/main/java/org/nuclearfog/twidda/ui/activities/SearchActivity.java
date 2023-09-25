@@ -108,8 +108,10 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		viewPager.setOffscreenPageLimit(3);
 		adapter = new SearchAdapter(this, search);
 		viewPager.setAdapter(adapter);
-		tabSelector.addViewPager(viewPager);
-		tabSelector.addTabIcons(R.array.search_tab_icons);
+		if (adapter.getItemCount() == 3)
+			tabSelector.addTabIcons(R.array.search_hashtag_tab_icons);
+		else
+			tabSelector.addTabIcons(R.array.search_tab_icons);
 		AppStyles.setTheme(root);
 
 		tabSelector.addOnTabSelectedListener(this);
