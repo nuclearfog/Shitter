@@ -6,14 +6,14 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Location;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 
 /**
- * Trend implementation used for Mastodon API
+ * Hashtag implementation used by Mastodon API
  *
  * @author nuclearfog
  */
-public class MastodonTrend implements Trend {
+public class MastodonHashtag implements Hashtag {
 
 	private static final long serialVersionUID = 4328931229081239280L;
 
@@ -24,7 +24,7 @@ public class MastodonTrend implements Trend {
 	/**
 	 * @param json trend json object
 	 */
-	public MastodonTrend(JSONObject json) {
+	public MastodonHashtag(JSONObject json) {
 		JSONArray history = json.optJSONArray("history");
 		name = '#' + json.optString("name", "");
 		following = json.optBoolean("following", false);
@@ -33,6 +33,8 @@ public class MastodonTrend implements Trend {
 			if (latest != null) {
 				popularity = latest.optInt("uses", 0);
 			}
+		} else {
+			popularity = json.optInt("statuses_count", 0);
 		}
 	}
 
@@ -69,10 +71,10 @@ public class MastodonTrend implements Trend {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Trend))
+		if (!(obj instanceof Hashtag))
 			return false;
-		Trend trend = (Trend) obj;
-		return getName().equals(trend.getName()) && getLocationId() == trend.getLocationId();
+		Hashtag hashtag = (Hashtag) obj;
+		return getName().equals(hashtag.getName()) && getLocationId() == hashtag.getLocationId();
 	}
 
 

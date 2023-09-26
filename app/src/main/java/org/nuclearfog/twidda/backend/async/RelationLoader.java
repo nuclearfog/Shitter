@@ -51,7 +51,6 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 				case RelationParam.BLOCK:
 					relation = connection.blockUser(param.id);
 					db.muteUser(param.id, true);
-					db.saveUserToFilterlist(param.id);
 					return new RelationResult(RelationResult.BLOCK, relation);
 
 				case RelationParam.UNBLOCK:
@@ -59,7 +58,6 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 					// remove from exclude list only if user is not muted
 					if (!relation.isMuted()) {
 						db.muteUser(param.id, false);
-						db.removeUserFromFilterlist(param.id);
 					}
 					return new RelationResult(RelationResult.UNBLOCK, relation);
 
@@ -73,7 +71,6 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 					// remove from exclude list only if user is not blocked
 					if (!relation.isBlocked()) {
 						db.muteUser(param.id, false);
-						db.removeUserFromFilterlist(param.id);
 					}
 					return new RelationResult(RelationResult.UNMUTE, relation);
 

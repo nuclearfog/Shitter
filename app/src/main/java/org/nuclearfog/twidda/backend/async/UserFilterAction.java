@@ -12,16 +12,13 @@ import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.ui.activities.UsersActivity;
 
-import java.util.List;
-
 /**
  * Backend of {@link UsersActivity}
- * performs user mute or block actions and stores a list of IDs with blocked/muted users
- * This list is used to filter search results
+ * used to block/mute users/domains
  *
  * @author nuclearfog
  */
-public class UserFilterLoader extends AsyncExecutor<UserFilterLoader.FilterParam, UserFilterLoader.FilterResult> {
+public class UserFilterAction extends AsyncExecutor<UserFilterAction.FilterParam, UserFilterAction.FilterResult> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -29,7 +26,7 @@ public class UserFilterLoader extends AsyncExecutor<UserFilterLoader.FilterParam
 	/**
 	 *
 	 */
-	public UserFilterLoader(Context context) {
+	public UserFilterAction(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
@@ -39,11 +36,6 @@ public class UserFilterLoader extends AsyncExecutor<UserFilterLoader.FilterParam
 	protected FilterResult doInBackground(@NonNull FilterParam param) {
 		try {
 			switch (param.mode) {
-				case FilterParam.RELOAD:
-					List<Long> ids = connection.getIdBlocklist();
-					db.saveFilterlist(ids);
-					return new FilterResult(FilterResult.RELOAD, null);
-
 				case FilterParam.MUTE_USER:
 					Relation relation = connection.muteUser(param.name);
 					db.muteUser(relation.getId(), true);
@@ -71,7 +63,6 @@ public class UserFilterLoader extends AsyncExecutor<UserFilterLoader.FilterParam
 	 */
 	public static class FilterParam {
 
-		public static final int RELOAD = 1;
 		public static final int MUTE_USER = 2;
 		public static final int BLOCK_USER = 3;
 		public static final int BLOCK_DOMAIN = 4;
@@ -96,7 +87,6 @@ public class UserFilterLoader extends AsyncExecutor<UserFilterLoader.FilterParam
 	public static class FilterResult {
 
 		public static final int ERROR = -1;
-		public static final int RELOAD = 5;
 		public static final int MUTE_USER = 6;
 		public static final int BLOCK_USER = 7;
 		public static final int BLOCK_DOMAIN = 8;

@@ -196,7 +196,7 @@
 	<string name="confirm_warning">Warnung</string>
 	<string name="confirm_proxy_bypass">Das Öffnen des Links umgeht die eingestellte Proxy-Verbindung. Fortsetzen?</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
-	<string name="menu_select_account">Logins</string>
+	<string name="menu_select_account">Accounts</string>
 	<string name="menu_add_account">Account hinzufügen</string>
 	<string name="settings_rt_icon_color">Repost</string>
 	<string name="settings_follow_req_color">Anfrage Icon</string>
@@ -211,9 +211,6 @@
 	<string name="menu_exclude_user">Nutzer ausschließen</string>
 	<string name="menu_search_filter">Ergebnisse filtern</string>
 	<string name="menu_hint_block_domain">domain.namen eingeben</string>
-	<string name="menu_refresh_exclude">Filterliste aktualisieren</string>
-	<string name="info_refreshing_exclude_list">aktualisiere Filterliste</string>
-	<string name="info_exclude_list_updated">Filterliste aktualisiert!</string>
 	<string name="menu_licenses">Lizenzen</string>
 	<string name="info_permission_write">Schreibrechte werden benötigt um Bilder zu speichern.</string>
 	<string name="info_permission_read">Leserechte werden benötigt um Bilder und Videos einzufügen.</string>

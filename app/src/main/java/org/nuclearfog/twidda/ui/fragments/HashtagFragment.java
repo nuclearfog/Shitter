@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.backend.async.TrendLoader;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendParameter;
 import org.nuclearfog.twidda.backend.async.TrendLoader.TrendResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.TrendAdapter;
@@ -137,8 +137,8 @@ public class HashtagFragment extends ListFragment implements TrendClickListener,
 		if (result.getResultCode() == SearchActivity.RETURN_TREND) {
 			if (result.getData() != null) {
 				Serializable data = result.getData().getSerializableExtra(SearchActivity.KEY_DATA);
-				if (data instanceof Trend) {
-					Trend update = (Trend) data;
+				if (data instanceof Hashtag) {
+					Hashtag update = (Hashtag) data;
 					// remove hashtag if unfollowed
 					if (mode == MODE_FOLLOW && !update.following()) {
 						adapter.removeItem(update);
@@ -150,15 +150,15 @@ public class HashtagFragment extends ListFragment implements TrendClickListener,
 
 
 	@Override
-	public void onTrendClick(Trend trend) {
+	public void onTrendClick(Hashtag hashtag) {
 		if (!isRefreshing()) {
 			Intent intent = new Intent(requireContext(), SearchActivity.class);
-			String name = trend.getName();
+			String name = hashtag.getName();
 			if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\"")) {
 				name = "\"" + name + "\"";
 				intent.putExtra(SearchActivity.KEY_QUERY, name);
 			} else {
-				intent.putExtra(SearchActivity.KEY_DATA, trend);
+				intent.putExtra(SearchActivity.KEY_DATA, hashtag);
 			}
 			activityResultLauncher.launch(intent);
 		}

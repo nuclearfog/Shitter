@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPush;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
-import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTrend;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonHashtag;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.ScheduledMastodonStatus;
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
@@ -51,7 +51,7 @@ import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
@@ -126,7 +126,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_HASHTAG_TIMELINE = "/api/v1/timelines/tag/";
 	private static final String ENDPOINT_HASHTAG_FOLLOWING = "/api/v1/followed_tags";
 	private static final String ENDPOINT_HASHTAG_FEATURE = "/api/v1/featured_tags";
-	private static final String ENDPOINT_HASHTAG_GET = "/api/v1/tags/";
+	private static final String ENDPOINT_HASHTAG = "/api/v1/tags/";
 	private static final String ENDPOINT_USER_TIMELINE = "/api/v1/accounts/";
 	private static final String ENDPOINT_USER_FAVORITS = "/api/v1/favourites";
 	private static final String ENDPOINT_TRENDS = "/api/v1/trends/tags";
@@ -491,11 +491,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Trend showHashtag(String name) throws ConnectionException {
+	public Hashtag showHashtag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			return createTrend(get(ENDPOINT_HASHTAG_GET + StringUtils.encode(name), new ArrayList<>()));
+			return createTag(get(ENDPOINT_HASHTAG + StringUtils.encode(name), new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -503,11 +503,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Trend followHashtag(String name) throws ConnectionException {
+	public Hashtag followHashtag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			return createTrend(post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/follow", new ArrayList<>()));
+			return createTag(post(ENDPOINT_HASHTAG + StringUtils.encode(name) + "/follow", new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -515,11 +515,39 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Trend unfollowHashtag(String name) throws ConnectionException {
+	public Hashtag unfollowHashtag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			return createTrend(post(ENDPOINT_HASHTAG_GET + StringUtils.encode(name) + "/unfollow", new ArrayList<>()));
+			return createTag(post(ENDPOINT_HASHTAG + StringUtils.encode(name) + "/unfollow", new ArrayList<>()));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public Hashtag featureHashtag(String name) throws ConnectionException {
+		try {
+			if (name.startsWith("#"))
+				name = name.substring(1);
+			List<String> params = new ArrayList<>();
+			params.add("name=" + StringUtils.encode(name));
+			return createTag(post(ENDPOINT_HASHTAG_FEATURE, params));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public Hashtag unfeatureHashtag(String name) throws ConnectionException {
+		try {
+			if (name.startsWith("#"))
+				name = name.substring(1);
+			List<String> params = new ArrayList<>();
+			params.add("name=" + StringUtils.encode(name));
+			return createTag(delete(ENDPOINT_HASHTAG_FEATURE, params));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -1002,12 +1030,6 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public List<Long> getIdBlocklist() throws MastodonException {
-		throw new MastodonException("not supported!");
-	}
-
-
-	@Override
 	public Filters getFilter() throws ConnectionException {
 		try {
 			Response response = get(ENDPOINT_FILTER, new ArrayList<>());
@@ -1444,7 +1466,7 @@ public class Mastodon implements Connection {
 				long[] cursors = getCursors(response);
 				Trends result = new Trends(cursors[0], cursors[1]);
 				for (int i = 0; i < jsonArray.length(); i++) {
-					result.add(new MastodonTrend(jsonArray.getJSONObject(i)));
+					result.add(new MastodonHashtag(jsonArray.getJSONObject(i)));
 				}
 				Collections.sort(result);
 				return result;
@@ -1649,12 +1671,12 @@ public class Mastodon implements Connection {
 	 * @param response response from a trend endpoint
 	 * @return trend information
 	 */
-	private Trend createTrend(Response response) throws MastodonException {
+	private Hashtag createTag(Response response) throws MastodonException {
 		try {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				return new MastodonTrend(json);
+				return new MastodonHashtag(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

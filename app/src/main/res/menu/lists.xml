@@ -6,11 +6,9 @@
 		android:id="@+id/list_create"
 		android:icon="@drawable/new_list"
 		android:title="@string/menu_create_list"
-		android:visible="false"
 		app:showAsAction="always" />
 
 	<item
 		android:id="@+id/list_blocklists"
-		android:title="@string/menu_excluded_users"
-		android:visible="false" />
+		android:title="@string/menu_excluded_users" />
 </menu>

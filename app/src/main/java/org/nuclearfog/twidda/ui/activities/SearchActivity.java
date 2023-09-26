@@ -27,7 +27,7 @@ import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.ui.adapter.viewpager.SearchAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
@@ -49,7 +49,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	/**
 	 * key to add trend information to search for
-	 * value type is {@link Trend}
+	 * value type is {@link Hashtag}
 	 */
 	public static final String KEY_DATA = "trend_data";
 
@@ -66,7 +66,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	private String search = "";
 	@Nullable
-	private Trend trend;
+	private Hashtag hashtag;
 
 
 	@Override
@@ -90,13 +90,13 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 		String query = getIntent().getStringExtra(KEY_QUERY);
 		Serializable data = getIntent().getSerializableExtra(KEY_DATA);
-		if (data instanceof Trend) {
-			trend = (Trend) data;
-			search = trend.getName();
+		if (data instanceof Hashtag) {
+			hashtag = (Hashtag) data;
+			search = hashtag.getName();
 		} else if (query != null) {
 			search = query;
 			if (search.startsWith("#") && search.matches("\\S+")) {
-				HashtagParam param = new HashtagParam(search, HashtagParam.LOAD);
+				HashtagParam param = new HashtagParam(HashtagParam.LOAD, search);
 				hashtagAction.execute(param, this);
 			}
 		}
@@ -124,9 +124,9 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		if (viewPager.getCurrentItem() > 0) {
 			viewPager.setCurrentItem(0);
 		} else {
-			if (trend != null) {
+			if (hashtag != null) {
 				Intent intent = new Intent();
-				intent.putExtra(KEY_DATA, trend);
+				intent.putExtra(KEY_DATA, hashtag);
 				setResult(RETURN_TREND, intent);
 			}
 			super.onBackPressed();
@@ -146,15 +146,15 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		getMenuInflater().inflate(R.menu.search, menu);
 		MenuItem searchItem = menu.findItem(R.id.new_search);
 		MenuItem searchFilter = menu.findItem(R.id.search_filter);
-		MenuItem hashtag = menu.findItem(R.id.search_hashtag);
+		MenuItem menuHashtag = menu.findItem(R.id.search_hashtag);
 		SearchView searchView = (SearchView) searchItem.getActionView();
 
 		boolean enableSearchFilter = settings.getLogin().getConfiguration().filterEnabled();
 		searchFilter.setVisible(enableSearchFilter);
 		searchFilter.setChecked(settings.filterResults() & enableSearchFilter);
 		searchView.setQueryHint(search);
-		if (trend != null && trend.getName().startsWith("#")) {
-			hashtag.setVisible(true);
+		if (hashtag != null && hashtag.getName().startsWith("#")) {
+			menuHashtag.setVisible(true);
 		}
 		// set theme
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);
@@ -168,13 +168,13 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem hashtag = menu.findItem(R.id.search_hashtag);
+		MenuItem menuHashtag = menu.findItem(R.id.search_hashtag);
 		// set menu option depending on trend follow status
-		if (trend != null) {
-			if (trend.following()) {
-				hashtag.setTitle(R.string.menu_hashtag_unfollow);
+		if (hashtag != null) {
+			if (hashtag.following()) {
+				menuHashtag.setTitle(R.string.menu_hashtag_unfollow);
 			} else {
-				hashtag.setTitle(R.string.menu_hashtag_follow);
+				menuHashtag.setTitle(R.string.menu_hashtag_follow);
 			}
 		}
 		return super.onPrepareOptionsMenu(menu);
@@ -206,12 +206,12 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		}
 		// follow/unfollow hashtag
 		else if (item.getItemId() == R.id.search_hashtag) {
-			if (trend != null && hashtagAction.isIdle()) {
+			if (hashtag != null && hashtagAction.isIdle()) {
 				HashtagParam param;
-				if (trend.following())
-					param = new HashtagParam(trend.getName(), HashtagParam.UNFOLLOW);
+				if (hashtag.following())
+					param = new HashtagParam(HashtagParam.UNFOLLOW, hashtag.getName());
 				else
-					param = new HashtagParam(trend.getName(), HashtagParam.FOLLOW);
+					param = new HashtagParam(HashtagParam.FOLLOW, hashtag.getName());
 				hashtagAction.execute(param, this);
 			}
 		}
@@ -259,8 +259,8 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onResult(@NonNull HashtagResult result) {
-		if (result.trend != null) {
-			this.trend = result.trend;
+		if (result.hashtag != null) {
+			this.hashtag = result.hashtag;
 			invalidateMenu();
 		}
 		switch (result.mode) {

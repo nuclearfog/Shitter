@@ -125,13 +125,16 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			toolbar.setTitle(userList.getTitle());
 			toolbar.setSubtitle(userList.getDescription());
 			adapter = new UserlistAdapter(this, userList);
+			viewPager.setAdapter(adapter);
+			if (adapter.getItemCount() == 2) {
+				tabSelector.addTabIcons(R.array.list_tab_icons);
+			} else if (adapter.getItemCount() == 3) {
+				tabSelector.addTabIcons(R.array.list_subscriber_tab_icons);
+			}
 		}
 		viewPager.setOffscreenPageLimit(3);
-		viewPager.setAdapter(adapter);
 		setSupportActionBar(toolbar);
-
 		AppStyles.setTheme(root);
-		tabSelector.addTabIcons(R.array.list_tab_icons);
 
 		tabSelector.addOnTabSelectedListener(this);
 	}

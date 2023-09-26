@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 
 /**
  * ViewHolder for a trend item
@@ -61,15 +61,15 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set view content
 	 *
-	 * @param trend content information
+	 * @param hashtag content information
 	 * @param index index of the item
 	 */
-	public void setContent(Trend trend, int index) {
+	public void setContent(Hashtag hashtag, int index) {
 		rank.setText(index + 1 + ".");
-		name.setText(trend.getName());
-		if (trend.getPopularity() > 0) {
+		name.setText(hashtag.getName());
+		if (hashtag.getPopularity() > 0) {
 			Resources resources = vol.getResources();
-			String trendVol = StringUtils.NUMBER_FORMAT.format(trend.getPopularity()) + resources.getString(R.string.trend_range);
+			String trendVol = StringUtils.NUMBER_FORMAT.format(hashtag.getPopularity()) + resources.getString(R.string.trend_range);
 			vol.setText(trendVol);
 			vol.setVisibility(View.VISIBLE);
 		} else {

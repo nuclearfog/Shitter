@@ -3,16 +3,10 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/menu_exclude_user"
+		android:id="@+id/menu_user_add"
 		android:title="@string/menu_exclude_user"
 		android:icon="@drawable/plus"
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 		app:showAsAction="ifRoom|collapseActionView" />
-
-	<item
-		android:id="@+id/menu_exclude_refresh"
-		android:title="@string/menu_refresh_exclude"
-		android:icon="@drawable/refresh"
-		app:showAsAction="ifRoom" />
 
 </menu>

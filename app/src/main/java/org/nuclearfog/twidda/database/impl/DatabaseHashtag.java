@@ -5,15 +5,15 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.database.DatabaseAdapter.HashtagTable;
+import org.nuclearfog.twidda.model.Hashtag;
 
 /**
- * database implementation for a trend
+ * database implementation of a hashtag
  *
  * @author nuclearfog
  */
-public class DatabaseTrend implements Trend, TrendTable {
+public class DatabaseHashtag implements Hashtag, HashtagTable {
 
 	private static final long serialVersionUID = 1799880502954768985L;
 
@@ -30,7 +30,7 @@ public class DatabaseTrend implements Trend, TrendTable {
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
 	 */
-	public DatabaseTrend(Cursor cursor) {
+	public DatabaseHashtag(Cursor cursor) {
 		String name = cursor.getString(0);
 		popularity = cursor.getInt(1);
 		rank = cursor.getInt(2);
@@ -73,10 +73,10 @@ public class DatabaseTrend implements Trend, TrendTable {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Trend))
+		if (!(obj instanceof Hashtag))
 			return false;
-		Trend trend = (Trend) obj;
-		return getName().equals(trend.getName()) && getLocationId() == trend.getLocationId();
+		Hashtag hashtag = (Hashtag) obj;
+		return getName().equals(hashtag.getName()) && getLocationId() == hashtag.getLocationId();
 	}
 
 

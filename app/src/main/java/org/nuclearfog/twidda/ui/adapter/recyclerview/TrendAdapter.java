@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
@@ -73,9 +73,9 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
 		if (vh instanceof TrendHolder) {
 			TrendHolder holder = (TrendHolder) vh;
-			Trend trend = items.get(index);
-			if (trend != null) {
-				holder.setContent(trend, index);
+			Hashtag hashtag = items.get(index);
+			if (hashtag != null) {
+				holder.setContent(hashtag, index);
 			}
 		} else if (vh instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) vh;
@@ -138,10 +138,10 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	/**
 	 * remove item from adapter
 	 *
-	 * @param trend item to remove
+	 * @param hashtag item to remove
 	 */
-	public void removeItem(Trend trend) {
-		int index = items.indexOf(trend);
+	public void removeItem(Hashtag hashtag) {
+		int index = items.indexOf(hashtag);
 		if (index >= 0) {
 			items.remove(index);
 			notifyItemRemoved(index);
@@ -184,9 +184,9 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 		/**
 		 * called when a trend item is clicked
 		 *
-		 * @param trend trend name
+		 * @param hashtag trend name
 		 */
-		void onTrendClick(Trend trend);
+		void onTrendClick(Hashtag hashtag);
 
 
 		boolean onPlaceholderClick(long cursor, int index);

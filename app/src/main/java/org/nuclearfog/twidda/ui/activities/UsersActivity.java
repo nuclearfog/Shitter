@@ -20,9 +20,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.UserFilterLoader;
-import org.nuclearfog.twidda.backend.async.UserFilterLoader.FilterParam;
-import org.nuclearfog.twidda.backend.async.UserFilterLoader.FilterResult;
+import org.nuclearfog.twidda.backend.async.UserFilterAction;
+import org.nuclearfog.twidda.backend.async.UserFilterAction.FilterParam;
+import org.nuclearfog.twidda.backend.async.UserFilterAction.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -92,10 +92,9 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w+(@\\w+\\.\\w+)?");
 
 	private GlobalSettings settings;
-	private UserFilterLoader filterLoader;
+	private UserFilterAction filterLoader;
 	private UserAdapter adapter;
 
-	private Toolbar toolbar;
 	private TabSelector tabSelector;
 	private ViewPager2 viewPager;
 
@@ -113,11 +112,11 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		super.onCreate(savedInst);
 		setContentView(R.layout.page_users);
 		ViewGroup root = findViewById(R.id.page_users_root);
-		toolbar = findViewById(R.id.page_users_toolbar);
+		Toolbar toolbar = findViewById(R.id.page_users_toolbar);
 		tabSelector = findViewById(R.id.page_exclude_tab);
 		viewPager = findViewById(R.id.page_users_pager);
 
-		filterLoader = new UserFilterLoader(this);
+		filterLoader = new UserFilterAction(this);
 		settings = GlobalSettings.get(this);
 		viewPager.setOffscreenPageLimit(3);
 
@@ -195,15 +194,12 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		if (mode == USERS_EXCLUDED) {
-			getMenuInflater().inflate(R.menu.excludelist, m);
-			MenuItem search = m.findItem(R.id.menu_exclude_user);
-			MenuItem refresh = m.findItem(R.id.menu_exclude_refresh);
+			getMenuInflater().inflate(R.menu.users, m);
+			MenuItem search = m.findItem(R.id.menu_user_add);
 			SearchView searchView = (SearchView) search.getActionView();
-			refresh.setVisible(settings.getLogin().getConfiguration().filterlistEnabled());
 			searchView.setOnQueryTextListener(this);
 			AppStyles.setTheme(searchView, Color.TRANSPARENT);
 			AppStyles.setMenuIconColor(m, settings.getIconColor());
-			AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 			return true;
 		}
 		return super.onCreateOptionsMenu(m);
@@ -213,34 +209,17 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	public boolean onPrepareOptionsMenu(Menu m) {
 		if (mode == USERS_EXCLUDED) {
-			SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
+			SearchView searchView = (SearchView) m.findItem(R.id.menu_user_add).getActionView();
 			if (viewPager.getCurrentItem() == 0) {
-				String hint = getString(R.string.menu_hint_mute_user);
-				searchView.setQueryHint(hint);
+				searchView.setQueryHint(getString(R.string.menu_hint_mute_user));
 			} else if (viewPager.getCurrentItem() == 1) {
-				String hint = getString(R.string.menu_hint_block_user);
-				searchView.setQueryHint(hint);
+				searchView.setQueryHint(getString(R.string.menu_hint_block_user));
 			} else if (viewPager.getCurrentItem() == 2) {
-				String hint = getString(R.string.menu_hint_block_domain);
-				searchView.setQueryHint(hint);
+				searchView.setQueryHint(getString(R.string.menu_hint_block_domain));
 			}
 			return true;
 		}
 		return super.onPrepareOptionsMenu(m);
-	}
-
-
-	@Override
-	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (item.getItemId() == R.id.menu_exclude_refresh) {
-			if (filterLoader.isIdle()) {
-				Toast.makeText(getApplicationContext(), R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
-				FilterParam param = new FilterParam(FilterParam.RELOAD);
-				filterLoader.execute(param, this);
-			}
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 
@@ -300,10 +279,6 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			case FilterResult.BLOCK_USER:
 				Toast.makeText(getApplicationContext(), R.string.info_blocked, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
-				break;
-
-			case FilterResult.RELOAD:
-				Toast.makeText(getApplicationContext(), R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
 				break;
 
 			default:

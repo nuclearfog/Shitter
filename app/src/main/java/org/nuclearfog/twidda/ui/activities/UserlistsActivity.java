@@ -44,8 +44,6 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	private GlobalSettings settings;
 	private ViewPager2 viewPager;
 
-	private boolean isHome = false;
-
 
 	@Override
 	protected void attachBaseContext(Context newBase) {
@@ -68,7 +66,6 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		setSupportActionBar(toolbar);
 
 		long ownerId = getIntent().getLongExtra(KEY_ID, 0L);
-		isHome = ownerId == settings.getLogin().getId();
 
 		adapter = new UserListsAdapter(this, ownerId);
 		viewPager.setAdapter(adapter);
@@ -102,8 +99,6 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.lists, m);
-		m.findItem(R.id.list_create).setVisible(isHome);
-		m.findItem(R.id.list_blocklists).setVisible(isHome);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
 		return super.onCreateOptionsMenu(m);
 	}

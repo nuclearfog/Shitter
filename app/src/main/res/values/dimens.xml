@@ -310,8 +310,8 @@
 	<!--dimens of item_domain.xml-->
 	<dimen name="item_domain_layout_margin">8dp</dimen>
 	<dimen name="item_domain_text_size">20sp</dimen>
-	<dimen name="item_domain_button_size">36dp</dimen>
-	<dimen name="item_domain_button_padding">7dp</dimen>
+	<dimen name="item_domain_button_size">20sp</dimen>
+	<dimen name="item_domain_button_padding">1dp</dimen>
 
 	<!--dimens of item_filter.xml-->
 	<dimen name="item_filter_title_textsize">18sp</dimen>

@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.model.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 
 import java.util.LinkedList;
 
@@ -12,7 +12,7 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class Trends extends LinkedList<Trend> {
+public class Trends extends LinkedList<Hashtag> {
 
 	private static final long serialVersionUID = 7646437787602696292L;
 
@@ -49,7 +49,7 @@ public class Trends extends LinkedList<Trend> {
 	 */
 	@Nullable
 	@Override
-	public Trend get(int index) {
+	public Hashtag get(int index) {
 		return super.get(index);
 	}
 

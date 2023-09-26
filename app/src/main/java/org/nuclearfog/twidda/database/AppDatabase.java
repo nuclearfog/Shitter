@@ -19,8 +19,7 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.UserExcludeTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.HashtagTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 import org.nuclearfog.twidda.database.impl.DatabaseAccount;
@@ -31,7 +30,7 @@ import org.nuclearfog.twidda.database.impl.DatabaseMedia;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabasePoll;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
-import org.nuclearfog.twidda.database.impl.DatabaseTrend;
+import org.nuclearfog.twidda.database.impl.DatabaseHashtag;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
@@ -41,7 +40,7 @@ import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.model.lists.Notifications;
@@ -305,7 +304,7 @@ public class AppDatabase {
 	/**
 	 * select trends from trend table with given world ID
 	 */
-	private static final String TREND_SELECT = TrendTable.ID + "=?";
+	private static final String TREND_SELECT = HashtagTable.ID + "=?";
 
 	/**
 	 * select status from status table matching ID
@@ -371,16 +370,6 @@ public class AppDatabase {
 	 * column projection for status flag register
 	 */
 	private static final String[] STATUS_REG_COLUMN = {StatusRegisterTable.REGISTER};
-
-	/**
-	 * selection to get the exclude list of the current user
-	 */
-	private static final String LIST_SELECT = UserExcludeTable.OWNER + "=?";
-
-	/**
-	 * selection to get a column
-	 */
-	private static final String FILTER_SELECT = LIST_SELECT + " AND " + UserExcludeTable.USER + "=?";
 
 	/**
 	 * default sort order for logins
@@ -537,46 +526,22 @@ public class AppDatabase {
 	}
 
 	/**
-	 * create a new filterlist containing user IDs
-	 *
-	 * @param ids list of user IDs
-	 */
-	public void saveFilterlist(List<Long> ids) {
-		synchronized (LOCK) {
-			long homeId = settings.getLogin().getId();
-			String[] args = {Long.toString(homeId)};
-			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(UserExcludeTable.NAME, LIST_SELECT, args);
-
-			if (!ids.isEmpty()) {
-				for (long id : ids) {
-					ContentValues column = new ContentValues(2);
-					column.put(UserExcludeTable.USER, id);
-					column.put(UserExcludeTable.OWNER, homeId);
-					db.insert(UserExcludeTable.NAME, null, column);
-				}
-			}
-			adapter.commit();
-		}
-	}
-
-	/**
 	 * store location specific trends
 	 *
-	 * @param trends List of Trends
+	 * @param hashtags List of Trends
 	 */
-	public void saveTrends(List<Trend> trends) {
+	public void saveTrends(List<Hashtag> hashtags) {
 		synchronized (LOCK) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(TrendTable.NAME, TREND_SELECT, args);
-			for (Trend trend : trends) {
+			db.delete(HashtagTable.NAME, TREND_SELECT, args);
+			for (Hashtag hashtag : hashtags) {
 				ContentValues column = new ContentValues(4);
-				column.put(TrendTable.ID, trend.getLocationId());
-				column.put(TrendTable.VOL, trend.getPopularity());
-				column.put(TrendTable.TREND, trend.getName());
-				column.put(TrendTable.INDEX, trend.getRank());
-				db.insert(TrendTable.NAME, null, column);
+				column.put(HashtagTable.ID, hashtag.getLocationId());
+				column.put(HashtagTable.VOL, hashtag.getPopularity());
+				column.put(HashtagTable.TREND, hashtag.getName());
+				column.put(HashtagTable.INDEX, hashtag.getRank());
+				db.insert(HashtagTable.NAME, null, column);
 			}
 			adapter.commit();
 		}
@@ -675,22 +640,6 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveStatus(status, db, 0);
 			saveBookmark(status.getId(), settings.getLogin().getId(), db);
-			adapter.commit();
-		}
-	}
-
-	/**
-	 * add user to the exclude database
-	 *
-	 * @param userId ID of the user
-	 */
-	public void saveUserToFilterlist(long userId) {
-		synchronized (LOCK) {
-			SQLiteDatabase db = adapter.getDbWrite();
-			ContentValues column = new ContentValues(2);
-			column.put(UserExcludeTable.USER, userId);
-			column.put(UserExcludeTable.OWNER, settings.getLogin().getId());
-			db.insert(UserExcludeTable.NAME, null, column);
 			adapter.commit();
 		}
 	}
@@ -830,11 +779,11 @@ public class AppDatabase {
 		synchronized (LOCK) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbRead();
-			Cursor cursor = db.query(TrendTable.NAME, DatabaseTrend.COLUMNS, TREND_SELECT, args, null, null, null);
+			Cursor cursor = db.query(HashtagTable.NAME, DatabaseHashtag.COLUMNS, TREND_SELECT, args, null, null, null);
 			Trends trends = new Trends();
 			if (cursor.moveToFirst()) {
 				do {
-					trends.add(new DatabaseTrend(cursor));
+					trends.add(new DatabaseHashtag(cursor));
 				} while (cursor.moveToNext());
 			}
 			cursor.close();
@@ -1070,20 +1019,6 @@ public class AppDatabase {
 	}
 
 	/**
-	 * remove user from the exclude database
-	 *
-	 * @param userId ID of the user
-	 */
-	public void removeUserFromFilterlist(long userId) {
-		synchronized (LOCK) {
-			String[] args = {Long.toString(settings.getLogin().getId()), Long.toString(userId)};
-			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(UserExcludeTable.NAME, FILTER_SELECT, args);
-			adapter.commit();
-		}
-	}
-
-	/**
 	 * check if status exists in database
 	 *
 	 * @param id status ID
@@ -1170,10 +1105,9 @@ public class AppDatabase {
 			db.delete(StatusTable.NAME, null, null);
 			db.delete(FavoriteTable.NAME, null, null);
 			db.delete(BookmarkTable.NAME, null, null);
-			db.delete(TrendTable.NAME, null, null);
+			db.delete(HashtagTable.NAME, null, null);
 			db.delete(StatusRegisterTable.NAME, null, null);
 			db.delete(UserRegisterTable.NAME, null, null);
-			db.delete(UserExcludeTable.NAME, null, null);
 			db.delete(NotificationTable.NAME, null, null);
 			db.delete(MediaTable.NAME, null, null);
 			db.delete(LocationTable.NAME, null, null);

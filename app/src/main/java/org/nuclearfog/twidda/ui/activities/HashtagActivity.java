@@ -1,23 +1,42 @@
 package org.nuclearfog.twidda.ui.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.HashtagAction;
+import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagParam;
+import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.viewpager.HashtagAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
+import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 /**
  * Activity class used to show hashtag following/featuring
  *
  * @author nuclearfog
  */
-public class HashtagActivity extends AppCompatActivity {
+public class HashtagActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, OnTabSelectedListener, AsyncCallback<HashtagResult> {
+
+	private GlobalSettings settings;
+	private HashtagAction hashtagAction;
+	private HashtagAdapter adapter;
+
+	private ViewPager2 viewPager;
 
 
 	@Override
@@ -26,16 +45,95 @@ public class HashtagActivity extends AppCompatActivity {
 		setContentView(R.layout.page_hashtag);
 
 		ViewGroup root = findViewById(R.id.page_hashtag_root);
+		Toolbar toolbar = findViewById(R.id.page_hashtag_toolbar);
 		TabSelector tabSelector = findViewById(R.id.page_hashtag_tab);
-		ViewPager2 viewPager = findViewById(R.id.page_hashtag_pager);
+		viewPager = findViewById(R.id.page_hashtag_pager);
 
-		HashtagAdapter adapter = new HashtagAdapter(this);
+		hashtagAction = new HashtagAction(this);
+		settings = GlobalSettings.get(this);
+		adapter = new HashtagAdapter(this);
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
 
 		tabSelector.addTabIcons(R.array.userlist_hashtag_icons);
 		tabSelector.addTabLabels(R.array.hashtag_labels);
 
+		toolbar.setTitle("");
+		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
+
+		tabSelector.addOnTabSelectedListener(this);
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+		getMenuInflater().inflate(R.menu.hashtags, menu);
+		MenuItem search = menu.findItem(R.id.menu_hashtag_add);
+		SearchView searchView = (SearchView) search.getActionView();
+		searchView.setQueryHint(getString(R.string.menu_hashtag_add));
+		searchView.setOnQueryTextListener(this);
+		AppStyles.setTheme(searchView, Color.TRANSPARENT);
+		AppStyles.setMenuIconColor(menu, settings.getIconColor());
+		return true;
+	}
+
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem search = menu.findItem(R.id.menu_hashtag_add);
+		search.collapseActionView();
+		return true;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		if (hashtagAction.isIdle()) {
+			if (viewPager.getCurrentItem() == 0) {
+				HashtagParam param = new HashtagParam(HashtagParam.FOLLOW, query);
+				hashtagAction.execute(param, this);
+				return true;
+			} else if (viewPager.getCurrentItem() == 1) {
+				HashtagParam param = new HashtagParam(HashtagParam.FEATURE, query);
+				hashtagAction.execute(param, this);
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		return false;
+	}
+
+
+	@Override
+	public void onResult(@NonNull HashtagResult result) {
+		switch (result.mode) {
+			case HashtagResult.FEATURE:
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_featured, Toast.LENGTH_SHORT).show();
+				adapter.notifySettingsChanged();
+				invalidateOptionsMenu();
+				break;
+
+			case HashtagResult.FOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
+				adapter.notifySettingsChanged();
+				invalidateOptionsMenu();
+				break;
+
+			case HashtagResult.ERROR:
+				break;
+		}
+	}
+
+
+	@Override
+	public void onTabSelected(int oldPosition) {
+		adapter.scrollToTop(oldPosition);
+		// reset menu
+		invalidateOptionsMenu();
 	}
 }

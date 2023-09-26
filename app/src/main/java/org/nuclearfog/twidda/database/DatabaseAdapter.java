@@ -76,11 +76,11 @@ public class DatabaseAdapter {
 	 * SQL query to create a table for trend information
 	 */
 	private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS "
-			+ TrendTable.NAME + "("
-			+ TrendTable.ID + " INTEGER,"
-			+ TrendTable.INDEX + " INTEGER,"
-			+ TrendTable.VOL + " INTEGER,"
-			+ TrendTable.TREND + " TEXT);";
+			+ HashtagTable.NAME + "("
+			+ HashtagTable.ID + " INTEGER,"
+			+ HashtagTable.INDEX + " INTEGER,"
+			+ HashtagTable.VOL + " INTEGER,"
+			+ HashtagTable.TREND + " TEXT);";
 
 	/**
 	 * SQL query to create a table for user logins
@@ -185,14 +185,6 @@ public class DatabaseAdapter {
 			+ BookmarkTable.NAME + "("
 			+ BookmarkTable.OWNER + " INTEGER,"
 			+ BookmarkTable.STATUS + " INTEGER);";
-
-	/**
-	 * SQL query to create user blocklist table
-	 */
-	private static final String TABLE_USER_BLOCKLIST = "CREATE TABLE IF NOT EXISTS "
-			+ UserExcludeTable.NAME + "("
-			+ UserExcludeTable.OWNER + " INTEGER,"
-			+ UserExcludeTable.USER + " INTEGER);";
 
 	/**
 	 * SQL query to create instance table
@@ -343,7 +335,6 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_BOOKMARKS);
 		db.execSQL(TABLE_TRENDS);
 		db.execSQL(TABLE_ACCOUNTS);
-		db.execSQL(TABLE_USER_BLOCKLIST);
 		db.execSQL(TABLE_STATUS_REGISTER);
 		db.execSQL(TABLE_USER_REGISTER);
 		db.execSQL(TABLE_NOTIFICATION);
@@ -704,19 +695,19 @@ public class DatabaseAdapter {
 	/**
 	 * table for trends and trending hashtags
 	 */
-	public interface TrendTable {
+	public interface HashtagTable {
 		/**
 		 * table name
 		 */
 		String NAME = "trend";
 
 		/**
-		 * Location ID of the trend
+		 * Location ID
 		 */
 		String ID = "woeID";
 
 		/**
-		 * rank of the trend
+		 * rank of the hashtag
 		 */
 		String INDEX = "trendpos";
 
@@ -726,7 +717,7 @@ public class DatabaseAdapter {
 		String VOL = "vol";
 
 		/**
-		 * name of the trend
+		 * hashtag name
 		 */
 		String TREND = "trendname";
 	}
@@ -846,26 +837,6 @@ public class DatabaseAdapter {
 		 * Register with status bits
 		 */
 		String REGISTER = "userRegister";
-	}
-
-	/**
-	 * table for user filter list
-	 */
-	public interface UserExcludeTable {
-		/**
-		 * table name
-		 */
-		String NAME = "userExclude";
-
-		/**
-		 * owner ID of the list
-		 */
-		String OWNER = "listOwner";
-
-		/**
-		 * user ID to filter
-		 */
-		String USER = "userID";
 	}
 
 	/**

@@ -37,8 +37,6 @@
 	<string name="info_status_removed">Se eliminó el estado</string>
 	<string name="info_status_sent">Se compartió el estado</string>
 	<string name="info_location_pending">Solicitando ubicación, por favor espera</string>
-	<string name="info_refreshing_exclude_list">Actualizando la lista de exclusión</string>
-	<string name="info_exclude_list_updated">¡Se actualizó la lista de exclusión!</string>
 	<string name="info_permission_read">Se necesita permiso de lectura para acceder a imágenes y videos</string>
 	<string name="info_permission_location">Se necesita permiso de ubicación solo para adjuntar ubicación al estado</string>
 	<string name="info_permission_write">Se usa el permiso de escritura para guardar imágenes.</string>
@@ -144,7 +142,6 @@
 	<string name="menu_hint_mute_user">Ingresa @nombre a silenciar</string>
 	<string name="menu_hint_block_user">Ingresa @nombre a bloquear</string>
 	<string name="menu_hint_block_domain">Ingresa nombre de dominio</string>
-	<string name="menu_refresh_exclude">Actualizar lista de exclusión</string>
 	<string name="menu_select_account">Accesos</string>
 	<string name="menu_add_account">Agregar cuenta</string>
 	<string name="menu_status_copy_text">Texto</string>

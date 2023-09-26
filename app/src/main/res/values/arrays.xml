@@ -22,6 +22,11 @@
 	<integer-array name="list_tab_icons">
 		<item>@drawable/list</item>
 		<item>@drawable/user</item>
+	</integer-array>
+
+	<integer-array name="list_subscriber_tab_icons">
+		<item>@drawable/list</item>
+		<item>@drawable/user</item>
 		<item>@drawable/subscriber</item>
 	</integer-array>
 
@@ -62,7 +67,6 @@
 
 	<integer-array name="userlist_tab_icons">
 		<item>@drawable/following</item>
-		<item>@drawable/follower</item>
 	</integer-array>
 
 	<integer-array name="userlist_hashtag_icons">

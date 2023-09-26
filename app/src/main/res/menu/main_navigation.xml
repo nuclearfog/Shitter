@@ -14,19 +14,18 @@
 		android:title="@string/menu_select_account" />
 
 	<item
-		android:id="@+id/menu_navigator_filter"
-		android:title="@string/menu_open_filter" />
-
-	<item
 		android:id="@+id/menu_navigator_lists"
 		android:title="@string/menu_goto_lists" />
-
-	<item
-		android:id="@+id/menu_navigator_status"
-		android:title="@string/menu_status" />
 
 	<item
 		android:id="@+id/menu_navigator_hashtag"
 		android:title="@string/menu_hashtags" />
 
+	<item
+		android:id="@+id/menu_navigator_filter"
+		android:title="@string/menu_open_filter" />
+
+	<item
+		android:id="@+id/menu_navigator_status"
+		android:title="@string/menu_status" />
 </menu>

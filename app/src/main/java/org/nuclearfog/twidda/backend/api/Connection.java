@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
-import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
@@ -303,7 +303,7 @@ public interface Connection {
 	 * @param name hashtag name
 	 * @return hashtag information
 	 */
-	Trend showHashtag(String name) throws ConnectionException;
+	Hashtag showHashtag(String name) throws ConnectionException;
 
 	/**
 	 * follow hashtag by name
@@ -311,7 +311,7 @@ public interface Connection {
 	 * @param name name of the hashtag
 	 * @return updated hashtag information
 	 */
-	Trend followHashtag(String name) throws ConnectionException;
+	Hashtag followHashtag(String name) throws ConnectionException;
 
 	/**
 	 * unfollow hashtag by name
@@ -319,7 +319,21 @@ public interface Connection {
 	 * @param name name of the hashtag
 	 * @return updated hashtag information
 	 */
-	Trend unfollowHashtag(String name) throws ConnectionException;
+	Hashtag unfollowHashtag(String name) throws ConnectionException;
+
+	/**
+	 *
+	 * @param name name of the hashtag
+	 * @return updated hashtag information
+	 */
+	Hashtag featureHashtag(String name) throws ConnectionException;
+
+	/**
+	 *
+	 * @param name name of the hashtag
+	 * @return updated hashtag information
+	 */
+	Hashtag unfeatureHashtag(String name) throws ConnectionException;
 
 	/**
 	 * show current user's home timeline
@@ -640,13 +654,6 @@ public interface Connection {
 	 * @return updated poll
 	 */
 	Poll votePoll(Poll poll, int[] selection) throws ConnectionException;
-
-	/**
-	 * returns a list of blocked user IDs
-	 *
-	 * @return list of IDs
-	 */
-	List<Long> getIdBlocklist() throws ConnectionException;
 
 	/**
 	 * returns used filter

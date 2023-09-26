@@ -67,6 +67,7 @@
 		android:inputType="textMultiLine"
 		app:layout_constraintStart_toStartOf="@id/userlist_popup_background"
 		app:layout_constraintTop_toBottomOf="@id/list_edit_title"
+		app:layout_constraintBottom_toTopOf="@id/userlist_create_list"
 		app:layout_constraintEnd_toEndOf="@id/userlist_popup_background" />
 
 	<Button
@@ -75,10 +76,10 @@
 		android:layout_height="@dimen/userlist_button_height"
 		android:paddingLeft="@dimen/userlist_button_padding"
 		android:paddingRight="@dimen/userlist_button_padding"
-		android:layout_marginEnd="@dimen/popup_userlist_background_margin"
+		android:layout_margin="@dimen/popup_userlist_background_margin"
 		android:text="@string/userlist_create"
 		app:layout_constraintStart_toStartOf="@id/userlist_popup_background"
-		app:layout_constraintTop_toBottomOf="@id/list_edit_descr"
+		app:layout_constraintBottom_toBottomOf="@id/userlist_popup_background"
 		app:layout_constraintEnd_toEndOf="@id/userlist_popup_background"
 		app:layout_constraintHorizontal_weight="3"
 		style="@style/FeedbackButton" />

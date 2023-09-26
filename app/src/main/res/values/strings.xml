@@ -51,8 +51,6 @@
 	<string name="info_status_removed">Status removed</string>
 	<string name="info_status_sent">Status shared</string>
 	<string name="info_location_pending">requesting location, please wait</string>
-	<string name="info_refreshing_exclude_list">refreshing exclude list</string>
-	<string name="info_exclude_list_updated">exclude list updated!</string>
 	<string name="info_permission_read">Read permission needed to access images and videos.</string>
 	<string name="info_permission_location">Location permission only needed to attach location to a status</string>
 	<string name="info_permission_write">Write permission used to store images.</string>
@@ -69,9 +67,7 @@
 	<string name="info_missing_host">please enter correct hostname</string>
 	<string name="info_database_cleared">Database cleared</string>
 	<string name="info_notification_dismiss">Notification dismissed</string>
-	<string name="info_hashtag_unfollowed">hashtag unfollowed</string>
 	<string name="info_domain_removed">domain removed from the list</string>
-	<string name="info_hashtag_followed">hashtag followed</string>
 	<string name="info_domain_blocked">domain blocked!</string>
 	<string name="info_webpush_update_progress">updating push configuration</string>
 	<string name="info_webpush_update">Push configuration updated</string>
@@ -79,6 +75,9 @@
 	<string name="info_filter_updated">Filter updated</string>
 	<string name="info_filter_removed">Filter removed</string>
 	<string name="info_user_reported">User reported</string>
+	<string name="info_hashtag_featured">Hashtag featured</string>
+	<string name="info_hashtag_followed">Hashtag followed</string>
+	<string name="info_hashtag_unfollowed">Hashtag unfollowed</string>
 	<string name="info_status_reported">Status reported</string>
 	<string name="info_error">Error</string>
 
@@ -165,12 +164,12 @@
 	<string name="menu_user_unblock">unblock</string>
 	<string name="menu_excluded_users">Blocklists</string>
 	<string name="menu_exclude_user">exclude user</string>
+	<string name="menu_hashtag_add">add hashtag</string>
 	<string name="menu_search_filter">filter results</string>
 	<string name="menu_hint_mute_user">enter @name to mute</string>
 	<string name="menu_hint_block_user">enter @name to block</string>
 	<string name="menu_hint_block_domain">enter domain.name</string>
-	<string name="menu_refresh_exclude">refresh exclude list</string>
-	<string name="menu_select_account">Logins</string>
+	<string name="menu_select_account">Accounts</string>
 	<string name="menu_add_account">add account</string>
 	<string name="menu_status_copy_text">Text</string>
 	<string name="menu_media_link">Media link</string>
