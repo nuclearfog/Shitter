@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.lists.Trends;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.TrendHolder;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.HashtagHolder;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show trends
@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.TrendHolder;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.fragments.HashtagFragment
  */
-public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
+public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * "index" used to replace the whole list with new items
@@ -31,15 +31,16 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 	private static final int NO_LOADING = -1;
 
-	private TrendClickListener itemClickListener;
+	private OnHashtagClickListener itemClickListener;
 
 	private Trends items = new Trends();
 	private int loadingIndex = NO_LOADING;
+	private boolean enableDelete = false;
 
 	/**
 	 * @param itemClickListener Listener for item click
 	 */
-	public TrendAdapter(TrendClickListener itemClickListener) {
+	public HashtagAdapter(OnHashtagClickListener itemClickListener) {
 		this.itemClickListener = itemClickListener;
 	}
 
@@ -62,7 +63,7 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_TREND) {
-			return new TrendHolder(parent, this);
+			return new HashtagHolder(parent, this, enableDelete);
 		} else {
 			return new PlaceHolder(parent, this, false);
 		}
@@ -71,8 +72,8 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
-		if (vh instanceof TrendHolder) {
-			TrendHolder holder = (TrendHolder) vh;
+		if (vh instanceof HashtagHolder) {
+			HashtagHolder holder = (HashtagHolder) vh;
 			Hashtag hashtag = items.get(index);
 			if (hashtag != null) {
 				holder.setContent(hashtag, index);
@@ -86,7 +87,11 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		itemClickListener.onTrendClick(items.get(position));
+		if (type == HASHTAG_CLICK) {
+			itemClickListener.onHashtagClick(items.get(position), OnHashtagClickListener.SELECT);
+		} else if (type == HASHTAG_REMOVE) {
+			itemClickListener.onHashtagClick(items.get(position), OnHashtagClickListener.REMOVE);
+		}
 	}
 
 
@@ -177,18 +182,32 @@ public class TrendAdapter extends Adapter<ViewHolder> implements OnHolderClickLi
 	}
 
 	/**
-	 * Listener for trend list
+	 *
 	 */
-	public interface TrendClickListener {
+	public void enableDelete() {
+		enableDelete = true;
+	}
+
+	/**
+	 * Listener for hashtag list
+	 */
+	public interface OnHashtagClickListener {
+
+		int SELECT = 1;
+
+		int REMOVE = 2;
 
 		/**
 		 * called when a trend item is clicked
 		 *
 		 * @param hashtag trend name
+		 * @param action  action to take {@link #SELECT,#REMOVE}
 		 */
-		void onTrendClick(Hashtag hashtag);
+		void onHashtagClick(Hashtag hashtag, int action);
 
-
+		/**
+		 *
+		 */
 		boolean onPlaceholderClick(long cursor, int index);
 	}
 }

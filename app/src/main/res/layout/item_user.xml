@@ -80,7 +80,7 @@
 			app:layout_constraintStart_toEndOf="@id/item_user_verified"
 			app:layout_constraintTop_toTopOf="@id/item_user_profile"
 			app:layout_constraintBottom_toTopOf="@id/item_user_screenname"
-			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
+			app:layout_constraintEnd_toStartOf="@id/item_user_delete_button" />
 
 		<ImageView
 			android:id="@+id/item_user_private"
@@ -106,7 +106,7 @@
 			app:layout_constraintStart_toEndOf="@id/item_user_private"
 			app:layout_constraintTop_toBottomOf="@id/item_user_username"
 			app:layout_constraintBottom_toTopOf="@id/item_user_following_icon"
-			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
+			app:layout_constraintEnd_toStartOf="@id/item_user_delete_button" />
 
 		<ImageView
 			android:id="@+id/item_user_following_icon"
@@ -157,10 +157,10 @@
 			app:layout_constraintStart_toEndOf="@id/item_user_follower_icon"
 			app:layout_constraintTop_toTopOf="@id/item_user_follower_icon"
 			app:layout_constraintBottom_toBottomOf="@id/item_user_follower_icon"
-			app:layout_constraintEnd_toStartOf="@id/item_user_delete_buton" />
+			app:layout_constraintEnd_toStartOf="@id/item_user_delete_button" />
 
 		<ImageButton
-			android:id="@+id/item_user_delete_buton"
+			android:id="@+id/item_user_delete_button"
 			android:layout_width="@dimen/item_user_button_size"
 			android:layout_height="@dimen/item_user_button_size"
 			android:visibility="invisible"

@@ -5,8 +5,8 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Hashtag;
+import org.nuclearfog.twidda.model.Location;
 
 /**
  * Hashtag implementation used by Mastodon API
@@ -20,12 +20,15 @@ public class MastodonHashtag implements Hashtag {
 	private int popularity;
 	private String name;
 	private boolean following;
+	private long id;
+	private int rank;
 
 	/**
 	 * @param json trend json object
 	 */
 	public MastodonHashtag(JSONObject json) {
 		JSONArray history = json.optJSONArray("history");
+		String idStr = json.optString("id", "0");
 		name = '#' + json.optString("name", "");
 		following = json.optBoolean("following", false);
 		if (history != null && history.length() > 0) {
@@ -36,6 +39,17 @@ public class MastodonHashtag implements Hashtag {
 		} else {
 			popularity = json.optInt("statuses_count", 0);
 		}
+		try {
+			id = Long.parseLong(idStr);
+		} catch (NumberFormatException exception) {
+			// proceed without ID
+		}
+	}
+
+
+	@Override
+	public long getId() {
+		return id;
 	}
 
 
@@ -53,7 +67,7 @@ public class MastodonHashtag implements Hashtag {
 
 	@Override
 	public int getRank() {
-		return -1;
+		return rank;
 	}
 
 
@@ -66,6 +80,13 @@ public class MastodonHashtag implements Hashtag {
 	@Override
 	public boolean following() {
 		return following;
+	}
+
+	/**
+	 *
+	 */
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 
 

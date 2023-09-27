@@ -17,26 +17,28 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Hashtag;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.HashtagAdapter;
 
 /**
  * ViewHolder for a trend item
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.ui.adapter.recyclerview.TrendAdapter
+ * @see HashtagAdapter
  */
-public class TrendHolder extends ViewHolder implements OnClickListener {
+public class HashtagHolder extends ViewHolder implements OnClickListener {
 
 	private TextView name, rank, vol;
 
 	private OnHolderClickListener listener;
 
 
-	public TrendHolder(ViewGroup parent, OnHolderClickListener listener) {
-		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false));
+	public HashtagHolder(ViewGroup parent, OnHolderClickListener listener, boolean enableRemove) {
+		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_hashtag, parent, false));
 		this.listener = listener;
 
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_trend_container);
+		View btnRemove = itemView.findViewById(R.id.item_trend_delete_button);
 		rank = itemView.findViewById(R.id.item_trend_rank);
 		name = itemView.findViewById(R.id.item_trend_name);
 		vol = itemView.findViewById(R.id.item_trend_vol);
@@ -44,16 +46,26 @@ public class TrendHolder extends ViewHolder implements OnClickListener {
 		GlobalSettings settings = GlobalSettings.get(parent.getContext());
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
+		if (enableRemove) {
+			btnRemove.setVisibility(View.VISIBLE);
+		} else {
+			btnRemove.setVisibility(View.GONE);
+		}
 		itemView.setOnClickListener(this);
+		btnRemove.setOnClickListener(this);
 	}
 
 
 	@Override
 	public void onClick(View v) {
-		if (v == itemView) {
-			int position = getLayoutPosition();
+		int position = getLayoutPosition();
+		if (v.getId() == R.id.item_trend_delete_button) {
 			if (position != RecyclerView.NO_POSITION) {
-				listener.onItemClick(position, OnHolderClickListener.NO_TYPE);
+				listener.onItemClick(position, OnHolderClickListener.HASHTAG_REMOVE);
+			}
+		} else if (v == itemView) {
+			if (position != RecyclerView.NO_POSITION) {
+				listener.onItemClick(position, OnHolderClickListener.HASHTAG_CLICK);
 			}
 		}
 	}

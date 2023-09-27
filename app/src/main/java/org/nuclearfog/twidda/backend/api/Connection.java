@@ -330,10 +330,10 @@ public interface Connection {
 
 	/**
 	 *
-	 * @param name name of the hashtag
+	 * @param id of the featured hashtag
 	 * @return updated hashtag information
 	 */
-	Hashtag unfeatureHashtag(String name) throws ConnectionException;
+	Hashtag unfeatureHashtag(long id) throws ConnectionException;
 
 	/**
 	 * show current user's home timeline

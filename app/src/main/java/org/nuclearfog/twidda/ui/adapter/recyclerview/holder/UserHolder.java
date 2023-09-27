@@ -84,7 +84,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		profileImg = itemView.findViewById(R.id.item_user_profile);
 		verifyIcon = itemView.findViewById(R.id.item_user_verified);
 		lockedIcon = itemView.findViewById(R.id.item_user_private);
-		delete = itemView.findViewById(R.id.item_user_delete_buton);
+		delete = itemView.findViewById(R.id.item_user_delete_button);
 		placeholder = new ColorDrawable(EMPTY_COLOR);
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);

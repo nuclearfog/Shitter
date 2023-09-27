@@ -304,7 +304,7 @@ public class AppDatabase {
 	/**
 	 * select trends from trend table with given world ID
 	 */
-	private static final String TREND_SELECT = HashtagTable.ID + "=?";
+	private static final String TREND_SELECT = HashtagTable.LOCATION + "=?";
 
 	/**
 	 * select status from status table matching ID
@@ -537,10 +537,11 @@ public class AppDatabase {
 			db.delete(HashtagTable.NAME, TREND_SELECT, args);
 			for (Hashtag hashtag : hashtags) {
 				ContentValues column = new ContentValues(4);
-				column.put(HashtagTable.ID, hashtag.getLocationId());
+				column.put(HashtagTable.LOCATION, hashtag.getLocationId());
 				column.put(HashtagTable.VOL, hashtag.getPopularity());
 				column.put(HashtagTable.TREND, hashtag.getName());
 				column.put(HashtagTable.INDEX, hashtag.getRank());
+				column.put(HashtagTable.ID, hashtag.getId());
 				db.insert(HashtagTable.NAME, null, column);
 			}
 			adapter.commit();

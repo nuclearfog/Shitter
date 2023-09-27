@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 20;
+	private static final int DB_VERSION = 21;
 
 	/**
 	 * database file name
@@ -78,6 +78,7 @@ public class DatabaseAdapter {
 	private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS "
 			+ HashtagTable.NAME + "("
 			+ HashtagTable.ID + " INTEGER,"
+			+ HashtagTable.LOCATION + " INTEGER,"
 			+ HashtagTable.INDEX + " INTEGER,"
 			+ HashtagTable.VOL + " INTEGER,"
 			+ HashtagTable.TREND + " TEXT);";
@@ -307,6 +308,11 @@ public class DatabaseAdapter {
 	private static final String UPDATE_MEDIA_ADD_BLUR_HASH = "ALTER TABLE " + MediaTable.NAME + " ADD " + MediaTable.BLUR + " TEXT;";
 
 	/**
+	 * add mediatable description
+	 */
+	private static final String UPDATE_HASHTAG_ADD_ID = "ALTER TABLE " + HashtagTable.NAME + " ADD " + HashtagTable.ID + " INTEGER;";
+
+	/**
 	 * singleton instance
 	 */
 	private static DatabaseAdapter instance;
@@ -407,9 +413,13 @@ public class DatabaseAdapter {
 				db.execSQL(UPDATE_MEDIA_ADD_BLUR_HASH);
 				db.setVersion(19);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 20) {
 				db.delete(EmojiTable.NAME, null, null);
 				db.execSQL(TABLE_EMOJI);
+				db.setVersion(20);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_HASHTAG_ADD_ID);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -702,9 +712,14 @@ public class DatabaseAdapter {
 		String NAME = "trend";
 
 		/**
+		 * id of the hashtag
+		 */
+		String ID = "id";
+
+		/**
 		 * Location ID
 		 */
-		String ID = "woeID";
+		String LOCATION = "woeID";
 
 		/**
 		 * rank of the hashtag

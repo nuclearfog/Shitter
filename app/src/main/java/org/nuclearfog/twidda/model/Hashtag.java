@@ -10,27 +10,32 @@ import java.io.Serializable;
 public interface Hashtag extends Serializable, Comparable<Hashtag> {
 
 	/**
-	 * @return trend name
+	 * @return hashtag name
 	 */
 	String getName();
 
 	/**
-	 * @return ID of the trend location
+	 * @return trend ID if any
+	 */
+	long getId();
+
+	/**
+	 * @return hashtag ID
 	 */
 	long getLocationId();
 
 	/**
-	 * @return rank of the trend
+	 * @return rank of the hashtag if any
 	 */
 	int getRank();
 
 	/**
-	 * @return popularity of the trend
+	 * @return popularity of the hashtag
 	 */
 	int getPopularity();
 
 	/**
-	 * @return true if current user follows trend (hashtag)
+	 * @return true if current user follows hashtag
 	 */
 	boolean following();
 

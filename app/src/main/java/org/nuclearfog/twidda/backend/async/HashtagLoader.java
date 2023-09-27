@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
  * @author nuclearfog
  * @see HashtagFragment
  */
-public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, TrendLoader.TrendResult> {
+public class HashtagLoader extends AsyncExecutor<HashtagLoader.HashtagLoaderParam, HashtagLoader.HashtagLoaderResult> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -26,52 +26,52 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	/**
 	 *
 	 */
-	public TrendLoader(Context context) {
+	public HashtagLoader(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 		db = new AppDatabase(context);
 	}
 
 
 	@Override
-	protected TrendResult doInBackground(@NonNull TrendParameter param) {
+	protected HashtagLoaderResult doInBackground(@NonNull HashtagLoaderParam param) {
 		try {
 			switch (param.mode) {
-				case TrendParameter.POPULAR_OFFLINE:
+				case HashtagLoaderParam.POPULAR_OFFLINE:
 					Trends trends = db.getTrends();
 					if (!trends.isEmpty()) {
-						return new TrendResult(TrendResult.POPULAR, trends, param.index, null);
+						return new HashtagLoaderResult(HashtagLoaderResult.POPULAR, trends, param.index, null);
 					}
 					// fall through
 
-				case TrendParameter.POPULAR_ONLINE:
+				case HashtagLoaderParam.POPULAR_ONLINE:
 					trends = connection.getTrends();
 					db.saveTrends(trends);
-					return new TrendResult(TrendResult.POPULAR, trends, param.index, null);
+					return new HashtagLoaderResult(HashtagLoaderResult.POPULAR, trends, param.index, null);
 
-				case TrendParameter.SEARCH:
+				case HashtagLoaderParam.SEARCH:
 					trends = connection.searchHashtags(param.trend);
-					return new TrendResult(TrendResult.SEARCH, trends, param.index, null);
+					return new HashtagLoaderResult(HashtagLoaderResult.SEARCH, trends, param.index, null);
 
-				case TrendParameter.FOLLOWING:
+				case HashtagLoaderParam.FOLLOWING:
 					trends = connection.showHashtagFollowing(param.cursor);
-					return new TrendResult(TrendResult.FOLLOWING, trends, param.index, null);
+					return new HashtagLoaderResult(HashtagLoaderResult.FOLLOWING, trends, param.index, null);
 
-				case TrendParameter.FEATURING:
+				case HashtagLoaderParam.FEATURING:
 					trends = connection.showHashtagFeaturing();
-					return new TrendResult(TrendResult.FEATURING, trends, param.index, null);
+					return new HashtagLoaderResult(HashtagLoaderResult.FEATURING, trends, param.index, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new TrendResult(TrendResult.ERROR, null, param.index, exception);
+			return new HashtagLoaderResult(HashtagLoaderResult.ERROR, null, param.index, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class TrendParameter {
+	public static class HashtagLoaderParam {
 
 		public static final int POPULAR_OFFLINE = 1;
 		public static final int POPULAR_ONLINE = 2;
@@ -86,7 +86,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		final int index;
 		final long cursor;
 
-		public TrendParameter(int mode, int index, String trend, long cursor) {
+		public HashtagLoaderParam(int mode, int index, String trend, long cursor) {
 			this.mode = mode;
 			this.trend = trend;
 			this.index = index;
@@ -97,7 +97,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 	/**
 	 *
 	 */
-	public static class TrendResult {
+	public static class HashtagLoaderResult {
 
 		public static final int ERROR = -1;
 		public static final int POPULAR = 20;
@@ -112,7 +112,7 @@ public class TrendLoader extends AsyncExecutor<TrendLoader.TrendParameter, Trend
 		@Nullable
 		public final ConnectionException exception;
 
-		TrendResult(int mode, @Nullable Trends trends, int index, @Nullable ConnectionException exception) {
+		HashtagLoaderResult(int mode, @Nullable Trends trends, int index, @Nullable ConnectionException exception) {
 			this.trends = trends;
 			this.exception = exception;
 			this.index = index;

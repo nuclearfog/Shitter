@@ -45,6 +45,10 @@ public interface OnHolderClickListener {
 
 	int FILTER_REMOVE = 23;
 
+	int HASHTAG_CLICK = 24;
+
+	int HASHTAG_REMOVE = 25;
+
 	/**
 	 * called when an item was clicked
 	 *

@@ -541,13 +541,9 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Hashtag unfeatureHashtag(String name) throws ConnectionException {
+	public Hashtag unfeatureHashtag(long id) throws ConnectionException {
 		try {
-			if (name.startsWith("#"))
-				name = name.substring(1);
-			List<String> params = new ArrayList<>();
-			params.add("name=" + StringUtils.encode(name));
-			return createTag(delete(ENDPOINT_HASHTAG_FEATURE, params));
+			return createTag(delete(ENDPOINT_HASHTAG_FEATURE + "/" + id, new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -1466,7 +1462,9 @@ public class Mastodon implements Connection {
 				long[] cursors = getCursors(response);
 				Trends result = new Trends(cursors[0], cursors[1]);
 				for (int i = 0; i < jsonArray.length(); i++) {
-					result.add(new MastodonHashtag(jsonArray.getJSONObject(i)));
+					MastodonHashtag item = new MastodonHashtag(jsonArray.getJSONObject(i));
+					item.setRank(i + 1);
+					result.add(item);
 				}
 				Collections.sort(result);
 				return result;

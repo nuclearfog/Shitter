@@ -20,12 +20,13 @@ public class DatabaseHashtag implements Hashtag, HashtagTable {
 	/**
 	 * SQLite columns
 	 */
-	public static final String[] COLUMNS = {TREND, VOL, INDEX, ID};
+	public static final String[] COLUMNS = {TREND, VOL, INDEX, LOCATION, ID};
 
 	private String name = "";
 	private int popularity;
 	private int rank;
 	private long id;
+	private long locationId;
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
@@ -34,10 +35,17 @@ public class DatabaseHashtag implements Hashtag, HashtagTable {
 		String name = cursor.getString(0);
 		popularity = cursor.getInt(1);
 		rank = cursor.getInt(2);
-		id = cursor.getLong(3);
+		locationId = cursor.getLong(3);
+		id = cursor.getLong(4);
 		if (name != null) {
 			this.name = name;
 		}
+	}
+
+
+	@Override
+	public long getId() {
+		return id;
 	}
 
 
@@ -49,7 +57,7 @@ public class DatabaseHashtag implements Hashtag, HashtagTable {
 
 	@Override
 	public long getLocationId() {
-		return id;
+		return locationId;
 	}
 
 
@@ -83,6 +91,6 @@ public class DatabaseHashtag implements Hashtag, HashtagTable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "name=\"" + getName() + "\"";
+		return "name=\"" + getName() + "\" rank=" + rank;
 	}
 }

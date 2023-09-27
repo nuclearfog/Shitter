@@ -134,6 +134,16 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int CONTINUE_BROWSER = 627;
 
+	/**
+	 *
+	 */
+	public static final int UNFOLLOW_HASHTAG = 628;
+
+	/**
+	 *
+	 */
+	public static final int UNFEATURE_HASHTAG = 629;
+
 
 	private TextView title, message, remember_label;
 	private Button confirm, cancel;
@@ -274,6 +284,14 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				remember.setVisibility(View.VISIBLE);
 				titleRes = R.string.confirm_warning;
 				messageRes = R.string.confirm_proxy_bypass;
+				break;
+
+			case UNFOLLOW_HASHTAG:
+				messageRes = R.string.confirm_hashtag_unfollow;
+				break;
+
+			case UNFEATURE_HASHTAG:
+				messageRes = R.string.confirm_hashtag_unfeature;
 				break;
 		}
 		// setup title

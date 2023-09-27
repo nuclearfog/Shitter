@@ -78,6 +78,7 @@
 	<string name="info_hashtag_featured">Hashtag featured</string>
 	<string name="info_hashtag_followed">Hashtag followed</string>
 	<string name="info_hashtag_unfollowed">Hashtag unfollowed</string>
+	<string name="info_hashtag_unfeatured">Hashtag unfeatured</string>
 	<string name="info_status_reported">Status reported</string>
 	<string name="info_error">Error</string>
 
@@ -289,6 +290,7 @@
 	<string name="update_list">update list</string>
 	<string name="confirm_remove_user_from_list">remove user from list?</string>
 	<string name="descr_remove_user">remove user from list</string>
+	<string name="descr_remove_hashtag">remove hashtag from list</string>
 	<string name="descr_remove_domain">remove domain from list</string>
 	<string name="confirm_unknown_error">unknown error!</string>
 	<string name="list_following_indicator">following list</string>
@@ -307,6 +309,8 @@
 	<string name="confirm_remember">remember choice</string>
 	<string name="confirm_warning">Warning</string>
 	<string name="confirm_proxy_bypass">Opening an external link would bypass proxy connection. Proceed?</string>
+	<string name="confirm_hashtag_unfollow">unfollow hashtag?</string>
+	<string name="confirm_hashtag_unfeature">unfeature hashtag?</string>
 	<string name="confirm_remove_account">remove account from list?</string>
 	<string name="confirm_remove_filter">delete filter?</string>
 	<string name="account_user_unnamed">\'unnamed\'</string>
