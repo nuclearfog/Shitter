@@ -8,50 +8,7 @@
 	android:fitsSystemWindows="false"
 	tools:context=".ui.activities.MainActivity">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
-
-		<androidx.appcompat.widget.Toolbar
-			android:id="@+id/home_toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="@dimen/mainpage_toolbar_height"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" />
-
-		<org.nuclearfog.twidda.ui.views.TabSelector
-			android:id="@+id/home_tab"
-			android:layout_width="match_parent"
-			android:layout_height="@dimen/tabselector_height"
-			app:viewpager="@id/home_pager"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/home_toolbar"
-			app:layout_constraintEnd_toEndOf="parent" />
-
-		<androidx.viewpager2.widget.ViewPager2
-			android:id="@+id/home_pager"
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:orientation="horizontal"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/home_tab"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" />
-
-		<com.google.android.material.floatingactionbutton.FloatingActionButton
-			android:id="@+id/home_post"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="end|bottom"
-			android:src="@drawable/post"
-			android:contentDescription="@string/menu_status"
-			android:layout_margin="@dimen/mainpage_floating_button_margin"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" />
-
-	</androidx.constraintlayout.widget.ConstraintLayout>
+	<include layout="@layout/page_tab_view" />
 
 	<com.google.android.material.navigation.NavigationView
 		android:id="@+id/home_navigator"

@@ -4,7 +4,6 @@
 	android:layout_width="wrap_content"
 	android:layout_height="match_parent"
 	android:padding="@dimen/item_card_layout_padding"
-	android:orientation="vertical"
 	style="@style/CardViewStyle">
 
 	<ImageView

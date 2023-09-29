@@ -19,6 +19,7 @@ public class ScheduledMastodonStatus implements ScheduledStatus {
 	private static final long serialVersionUID = -1340937182294786469L;
 
 	private long id;
+	private long time;
 	private String text;
 	private String language = "";
 	private int visibility;
@@ -37,6 +38,7 @@ public class ScheduledMastodonStatus implements ScheduledStatus {
 		String idStr = json.getString("id");
 		String visibilityStr = json.getString("visibility");
 		text = StringUtils.extractText(json.optString("text", ""));
+		time = StringUtils.getIsoTime(json.optString("scheduled_at", ""));
 		sensitive = params.optBoolean("sensitive", false);
 		spoiler = params.optBoolean("spoiler_text", false);
 
@@ -85,6 +87,12 @@ public class ScheduledMastodonStatus implements ScheduledStatus {
 	@Override
 	public long getId() {
 		return id;
+	}
+
+
+	@Override
+	public long getPublishTime() {
+		return time;
 	}
 
 

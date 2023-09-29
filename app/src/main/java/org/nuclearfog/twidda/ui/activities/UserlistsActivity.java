@@ -54,11 +54,11 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	@Override
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
-		setContentView(R.layout.page_list);
-		ViewGroup root = findViewById(R.id.list_view);
-		Toolbar toolbar = findViewById(R.id.list_toolbar);
-		TabSelector tabSelector = findViewById(R.id.list_tab);
-		viewPager = findViewById(R.id.list_pager);
+		setContentView(R.layout.page_tab_view);
+		ViewGroup root = findViewById(R.id.page_tab_view_root);
+		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
+		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
+		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		settings = GlobalSettings.get(this);
 

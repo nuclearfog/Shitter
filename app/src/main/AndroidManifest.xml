@@ -129,6 +129,10 @@
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
+		<activity android:name=".ui.activities.ScheduleActivity"
+			android:screenOrientation="portrait"
+			android:theme="@style/AppTheme" />
+
 		<receiver
 			android:name=".notification.PushNotificationReceiver"
 			android:enabled="true"

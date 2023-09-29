@@ -42,12 +42,12 @@ public class HashtagActivity extends AppCompatActivity implements SearchView.OnQ
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.page_hashtag);
+		setContentView(R.layout.page_tab_view);
 
-		ViewGroup root = findViewById(R.id.page_hashtag_root);
-		Toolbar toolbar = findViewById(R.id.page_hashtag_toolbar);
-		TabSelector tabSelector = findViewById(R.id.page_hashtag_tab);
-		viewPager = findViewById(R.id.page_hashtag_pager);
+		ViewGroup root = findViewById(R.id.page_tab_view_root);
+		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
+		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
+		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		hashtagAction = new HashtagAction(this);
 		settings = GlobalSettings.get(this);

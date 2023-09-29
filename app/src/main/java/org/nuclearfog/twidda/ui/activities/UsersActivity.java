@@ -110,11 +110,11 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	@Override
 	protected void onCreate(Bundle savedInst) {
 		super.onCreate(savedInst);
-		setContentView(R.layout.page_users);
-		ViewGroup root = findViewById(R.id.page_users_root);
-		Toolbar toolbar = findViewById(R.id.page_users_toolbar);
-		tabSelector = findViewById(R.id.page_exclude_tab);
-		viewPager = findViewById(R.id.page_users_pager);
+		setContentView(R.layout.page_tab_view);
+		ViewGroup root = findViewById(R.id.page_tab_view_root);
+		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
+		tabSelector = findViewById(R.id.page_tab_view_tabs);
+		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		filterLoader = new UserFilterAction(this);
 		settings = GlobalSettings.get(this);

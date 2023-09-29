@@ -226,6 +226,8 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 		} else if (result.mode == HashtagActionResult.UNFOLLOW) {
 			Toast.makeText(requireContext(), R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
 			adapter.removeItem(result.hashtag);
+		} else if (result.mode == HashtagActionResult.ERROR) {
+			ErrorUtils.showErrorMessage(requireContext(), result.exception);
 		}
 	}
 

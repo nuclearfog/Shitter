@@ -3,7 +3,6 @@
 	<!--global dimens-->
 	<dimen name="toolbar_height">56dp</dimen>
 	<dimen name="toolbar_height_small">48dp</dimen>
-	<dimen name="tabselector_height">40dp</dimen>
 	<dimen name="tabs_indicator_height">2dp</dimen>
 	<dimen name="edittext_background_padding">5dp</dimen>
 	<dimen name="edittext_textsize">16sp</dimen>
@@ -58,7 +57,7 @@
 	<dimen name="profile_textsize_big">14sp</dimen>
 	<dimen name="profile_textsize_small">12sp</dimen>
 	<dimen name="profile_icon_size">14sp</dimen>
-	<dimen name="profile_tabselector_height">52dp</dimen>
+	<dimen name="profile_tabselector_height">52sp</dimen>
 	<dimen name="profile_floating_button_margin">20dp</dimen>
 	<integer name="profile_text_bio_lines">6</integer>
 
@@ -142,6 +141,9 @@
 	<!--dimens of item_dropdown-->
 	<dimen name="dropdown_drawable_padding">5dp</dimen>
 
+	<!--dimens of item_schedule-xml-->
+	<dimen name="item_schedule_layout_padding">5dp</dimen>
+
 	<!--dimens of page_login.xml-->
 	<dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="loginpage_layout_margin">8dp</dimen>
@@ -178,17 +180,12 @@
 	<dimen name="item_placeholder_margin">10dp</dimen>
 	<dimen name="item_placeholder_button_textsize">16sp</dimen>
 
-	<!--dimens of page_search.xml-->
-	<dimen name="searchpage_toolbar_height">@dimen/toolbar_height</dimen>
-	<dimen name="searchpage_floating_button_margin">20dp</dimen>
+	<!--dimens of page_tab_view-->
+	<dimen name="page_tab_view_floating_button_margin">20dp</dimen>
 
 	<!--dimens of page_main.xml-->
 	<dimen name="mainpage_toolbar_height">@dimen/toolbar_height</dimen>
-	<dimen name="mainpage_floating_button_margin">20dp</dimen>
 	<dimen name="mainpage_navigation_padding_item">20dp</dimen>
-
-	<!--dimens of page_hashtag.xml-->
-	<dimen name="page_hashtag_tabselector_height">52dp</dimen>
 
 	<!--dimens of page_list.xml-->
 	<dimen name="listpage_toolbar_height">@dimen/toolbar_height</dimen>

@@ -117,13 +117,13 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_main);
-		Toolbar toolbar = findViewById(R.id.home_toolbar);
+		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
 		navigationView = findViewById(R.id.home_navigator);
 		header = (ViewGroup) navigationView.getHeaderView(0);
-		floatingButton = findViewById(R.id.home_post);
+		floatingButton = findViewById(R.id.page_tab_view_post_button);
 		drawerLayout = findViewById(R.id.main_layout);
-		viewPager = findViewById(R.id.home_pager);
-		tabSelector = findViewById(R.id.home_tab);
+		viewPager = findViewById(R.id.page_tab_view_pager);
+		tabSelector = findViewById(R.id.page_tab_view_tabs);
 		profileImage = header.findViewById(R.id.navigation_profile_image);
 		username = header.findViewById(R.id.navigation_profile_username);
 		screenname = header.findViewById(R.id.navigation_profile_screenname);
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				intent.putExtra(ProfileActivity.KEY_ID, settings.getLogin().getId());
 			activityResultLauncher.launch(intent);
 			drawerLayout.close();
-		} else if (v.getId() == R.id.home_post) {
+		} else if (v.getId() == R.id.page_tab_view_post_button) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			startActivity(intent);
 		}
@@ -464,8 +464,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		AppStyles.setTheme(header);
 		tabSelector.addTabIcons(settings.getLogin().getConfiguration().getHomeTabIcons());
 		tabSelector.updateTheme();
-		if (!settings.floatingButtonEnabled()) {
-			floatingButton.setVisibility(View.INVISIBLE);
+		if (settings.floatingButtonEnabled()) {
+			floatingButton.setVisibility(View.VISIBLE);
+		} else {
+			floatingButton.setVisibility(View.GONE);
 		}
 		if (!settings.getLogin().getConfiguration().isFilterSupported()) {
 			navigationView.getMenu().findItem(R.id.menu_navigator_filter).setVisible(false);

@@ -285,9 +285,8 @@
 
 			<org.nuclearfog.twidda.ui.views.LockableConstraintLayout
 				android:id="@+id/page_status_body"
-				android:orientation="vertical"
 				android:layout_width="match_parent"
-				android:layout_height="400dp">
+				android:layout_height="wrap_content">
 
 				<Button
 					android:id="@+id/page_status_reply"
@@ -347,8 +346,7 @@
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/page_status_favorite"
 					app:layout_constraintBottom_toBottomOf="parent"
-					app:layout_constraintEnd_toEndOf="parent"
-					tools:layout="@layout/page_list" />
+					app:layout_constraintEnd_toEndOf="parent" />
 
 			</org.nuclearfog.twidda.ui.views.LockableConstraintLayout>
 

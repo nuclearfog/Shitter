@@ -33,7 +33,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/dialog_poll_list_height"
 		android:layout_marginTop="@dimen/dialog_poll_layout_margins"
-		android:orientation="vertical"
 		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 	<LinearLayout

@@ -108,11 +108,11 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	@Override
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
-		setContentView(R.layout.page_listdetail);
-		ViewGroup root = findViewById(R.id.listdetail_root);
-		TabSelector tabSelector = findViewById(R.id.listdetail_tab);
-		toolbar = findViewById(R.id.listdetail_toolbar);
-		viewPager = findViewById(R.id.listdetail_pager);
+		setContentView(R.layout.page_tab_view);
+		ViewGroup root = findViewById(R.id.page_tab_view_root);
+		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
+		toolbar = findViewById(R.id.page_tab_view_toolbar);
+		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		settings = GlobalSettings.get(this);
 		confirmDialog = new ConfirmDialog(this, this);

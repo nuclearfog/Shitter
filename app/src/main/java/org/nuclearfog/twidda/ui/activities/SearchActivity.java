@@ -78,12 +78,12 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
-		setContentView(R.layout.page_search);
-		ViewGroup root = findViewById(R.id.search_layout);
-		TabSelector tabSelector = findViewById(R.id.search_tab);
-		View floatingButton = findViewById(R.id.search_post_button);
-		toolbar = findViewById(R.id.search_toolbar);
-		viewPager = findViewById(R.id.search_pager);
+		setContentView(R.layout.page_tab_view);
+		ViewGroup root = findViewById(R.id.page_tab_view_root);
+		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
+		View floatingButton = findViewById(R.id.page_tab_view_post_button);
+		toolbar = findViewById(R.id.page_tab_view_toolbar);
+		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		settings = GlobalSettings.get(this);
 		hashtagAction = new HashtagAction(this);
@@ -241,7 +241,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
-		if (v.getId() == R.id.search_post_button) {
+		if (v.getId() == R.id.page_tab_view_post_button) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			if (search.startsWith("#"))
 				intent.putExtra(StatusEditor.KEY_TEXT, search + " ");
