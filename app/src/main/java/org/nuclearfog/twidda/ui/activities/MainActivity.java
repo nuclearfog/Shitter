@@ -401,6 +401,13 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			drawerLayout.close();
 			return true;
 		}
+		// open status schedule viewer
+		else if (item.getItemId() == R.id.menu_navigator_schedule) {
+			Intent intent = new Intent(this, ScheduleActivity.class);
+			startActivity(intent);
+			drawerLayout.close();
+			return true;
+		}
 		return false;
 	}
 

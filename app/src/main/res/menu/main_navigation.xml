@@ -26,6 +26,10 @@
 		android:title="@string/menu_open_filter" />
 
 	<item
+		android:id="@+id/menu_navigator_schedule"
+		android:title="@string/menu_schedule" />
+
+	<item
 		android:id="@+id/menu_navigator_status"
 		android:title="@string/menu_status" />
 </menu>

@@ -492,7 +492,7 @@ public interface Connection {
 	 *
 	 * @param id scheduled status ID
 	 */
-	void canselScheduledStatus(long id) throws ConnectionException;
+	void cancelScheduledStatus(long id) throws ConnectionException;
 
 	/**
 	 * return a list of domain names the current user has blocked

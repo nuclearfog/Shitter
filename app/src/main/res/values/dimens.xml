@@ -142,7 +142,12 @@
 	<dimen name="dropdown_drawable_padding">5dp</dimen>
 
 	<!--dimens of item_schedule-xml-->
+	<dimen name="item_schedule_layout_margins">3dp</dimen>
 	<dimen name="item_schedule_layout_padding">5dp</dimen>
+	<dimen name="item_schedule_button_padding">1dp</dimen>
+	<dimen name="item_schedule_button_size">20sp</dimen>
+	<dimen name="item_schedule_drawable_padding">5dp</dimen>
+	<integer name="item_schedule_text_max_lines">12</integer>
 
 	<!--dimens of page_login.xml-->
 	<dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>

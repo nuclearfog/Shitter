@@ -794,7 +794,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public void canselScheduledStatus(long id) throws ConnectionException {
+	public void cancelScheduledStatus(long id) throws ConnectionException {
 		try {
 			Response response = delete(ENDPOINT_SCHEDULED_STATUS + "/" + id, new ArrayList<>());
 			if (response.code() != 200) {

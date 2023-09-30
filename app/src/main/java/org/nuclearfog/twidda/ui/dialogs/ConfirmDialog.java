@@ -144,6 +144,8 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int UNFEATURE_HASHTAG = 629;
 
+	public static final int SCHEDULE_REMOVE = 630;
+
 
 	private TextView title, message, remember_label;
 	private Button confirm, cancel;
@@ -292,6 +294,10 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 			case UNFEATURE_HASHTAG:
 				messageRes = R.string.confirm_hashtag_unfeature;
+				break;
+
+			case SCHEDULE_REMOVE:
+				messageRes = R.string.confirm_schedule_remove;
 				break;
 		}
 		// setup title

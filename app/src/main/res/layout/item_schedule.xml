@@ -7,19 +7,43 @@
 	<LinearLayout
 		android:id="@+id/item_schedule_container"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
+		android:layout_height="match_parent"
+		android:orientation="horizontal"
 		android:padding="@dimen/item_schedule_layout_padding">
 
-		<TextView
-			android:id="@+id/item_schedule_time"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+		<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_weight="1">
 
-		<TextView
-			android:id="@+id/item_schedule_text"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			<TextView
+				android:id="@+id/item_schedule_time"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_margin="@dimen/item_schedule_layout_margins"
+				android:lines="1"
+				android:drawablePadding="@dimen/item_schedule_drawable_padding" />
+
+			<TextView
+				android:id="@+id/item_schedule_text"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_margin="@dimen/item_schedule_layout_margins"
+				android:maxLines="@integer/item_schedule_text_max_lines" />
+
+		</LinearLayout>
+
+		<ImageButton
+			android:id="@+id/item_schedule_delete_button"
+			android:layout_width="@dimen/item_schedule_button_size"
+			android:layout_height="@dimen/item_schedule_button_size"
+			android:padding="@dimen/item_schedule_button_padding"
+			android:layout_margin="@dimen/item_schedule_layout_margins"
+			android:contentDescription="@string/descr_remove_schedule"
+			android:scaleType="fitCenter"
+			android:src="@drawable/cross"
+			style="@style/RoundButton" />
 
 	</LinearLayout>
 

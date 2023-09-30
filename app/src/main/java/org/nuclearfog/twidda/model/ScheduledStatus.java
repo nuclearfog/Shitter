@@ -14,6 +14,9 @@ public interface ScheduledStatus extends Serializable {
 	 */
 	long getId();
 
+	/**
+	 * @return time to publish status
+	 */
 	long getPublishTime();
 
 	/**

@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,8 +38,8 @@ public class ScheduledMastodonStatus implements ScheduledStatus {
 		JSONObject pollJson = params.optJSONObject("poll");
 		JSONArray mediaArray = json.optJSONArray("media_attachments");
 		String idStr = json.getString("id");
-		String visibilityStr = json.getString("visibility");
-		text = StringUtils.extractText(json.optString("text", ""));
+		String visibilityStr = params.optString("visibility", "");
+		text = StringUtils.extractText(params.optString("text", ""));
 		time = StringUtils.getIsoTime(json.optString("scheduled_at", ""));
 		sensitive = params.optBoolean("sensitive", false);
 		spoiler = params.optBoolean("spoiler_text", false);
@@ -135,5 +137,13 @@ public class ScheduledMastodonStatus implements ScheduledStatus {
 	@Override
 	public boolean isSpoiler() {
 		return spoiler;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof ScheduledStatus))
+			return false;
+		return ((ScheduledStatus) obj).getId() == getId();
 	}
 }

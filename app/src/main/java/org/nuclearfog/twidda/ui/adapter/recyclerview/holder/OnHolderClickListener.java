@@ -49,6 +49,10 @@ public interface OnHolderClickListener {
 
 	int HASHTAG_REMOVE = 25;
 
+	int SCHEDULE_CLICK = 26;
+
+	int SCHEDULE_REMOVE = 27;
+
 	/**
 	 * called when an item was clicked
 	 *
