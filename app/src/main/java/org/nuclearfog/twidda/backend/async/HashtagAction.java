@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.model.Hashtag;
  *
  * @author nuclearfog
  */
-public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagActionParam, HashtagAction.HashtagActionResult> {
+public class HashtagAction extends AsyncExecutor<HashtagAction.Param, HashtagAction.Result> {
 
 	private Connection connection;
 
@@ -28,41 +28,41 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagActionPara
 
 
 	@Override
-	protected HashtagActionResult doInBackground(@NonNull HashtagActionParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case HashtagActionParam.LOAD:
+				case Param.LOAD:
 					Hashtag result = connection.showHashtag(param.name);
-					return new HashtagActionResult(HashtagActionResult.LOAD, result, null);
+					return new Result(Result.LOAD, result, null);
 
-				case HashtagActionParam.FOLLOW:
+				case Param.FOLLOW:
 					result = connection.followHashtag(param.name);
-					return new HashtagActionResult(HashtagActionResult.FOLLOW, result, null);
+					return new Result(Result.FOLLOW, result, null);
 
-				case HashtagActionParam.UNFOLLOW:
+				case Param.UNFOLLOW:
 					result = connection.unfollowHashtag(param.name);
-					return new HashtagActionResult(HashtagActionResult.UNFOLLOW, result, null);
+					return new Result(Result.UNFOLLOW, result, null);
 
-				case HashtagActionParam.FEATURE:
+				case Param.FEATURE:
 					result = connection.featureHashtag(param.name);
-					return new HashtagActionResult(HashtagActionResult.FEATURE, result, null);
+					return new Result(Result.FEATURE, result, null);
 
-				case HashtagActionParam.UNFEATURE:
+				case Param.UNFEATURE:
 					result = connection.unfeatureHashtag(param.id);
-					return new HashtagActionResult(HashtagActionResult.UNFEATURE, result, null);
+					return new Result(Result.UNFEATURE, result, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new HashtagActionResult(HashtagActionResult.ERROR, null, exception);
+			return new Result(Result.ERROR, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class HashtagActionParam {
+	public static class Param {
 
 		public static final int LOAD = 1;
 		public static final int FOLLOW = 2;
@@ -74,13 +74,13 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagActionPara
 		final int mode;
 		final long id;
 
-		public HashtagActionParam(int mode, String name) {
+		public Param(int mode, String name) {
 			this.name = name;
 			this.mode = mode;
 			id = 0L;
 		}
 
-		public HashtagActionParam(int mode, String name, long id) {
+		public Param(int mode, String name, long id) {
 			this.name = name;
 			this.mode = mode;
 			this.id = id;
@@ -90,7 +90,7 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagActionPara
 	/**
 	 *
 	 */
-	public static class HashtagActionResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int LOAD = 10;
@@ -105,7 +105,7 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.HashtagActionPara
 		public final Hashtag hashtag;
 		public final int mode;
 
-		HashtagActionResult(int mode, @Nullable Hashtag hashtag, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable Hashtag hashtag, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.hashtag = hashtag;
 			this.mode = mode;

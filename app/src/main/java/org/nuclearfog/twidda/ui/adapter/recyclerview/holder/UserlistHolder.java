@@ -23,8 +23,8 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Param;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Result;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -47,7 +47,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 
 	private static final int EMPTY_COLOR = 0x2F000000;
 
-	private AsyncExecutor.AsyncCallback<EmojiResult> usernameResult = this::setUsernameEmojis;
+	private AsyncExecutor.AsyncCallback<Result> usernameResult = this::setUsernameEmojis;
 
 	private ImageView profileImage, userVerified, userLocked, privateIcon, followIcon;
 	private TextView title, description, username, screenname, date, member, subscriber, followList;
@@ -143,7 +143,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 			String profileImageUrl = owner.getProfileImageThumbnailUrl();
 			if (owner.getEmojis().length > 0 && !owner.getUsername().trim().isEmpty() && settings.imagesEnabled()) {
 				SpannableString usernameSpan = new SpannableString(owner.getUsername());
-				EmojiParam param = new EmojiParam(tagId, owner.getEmojis(), usernameSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
+				Param param = new Param(tagId, owner.getEmojis(), usernameSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
 				emojiLoader.execute(param, usernameResult);
 				username.setText(EmojiUtils.removeTags(usernameSpan));
 			} else {
@@ -193,7 +193,7 @@ public class UserlistHolder extends ViewHolder implements OnClickListener {
 	 *
 	 * @param result username text with emojis
 	 */
-	private void setUsernameEmojis(@NonNull EmojiResult result) {
+	private void setUsernameEmojis(@NonNull Result result) {
 		if (result.id == tagId && result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(username.getContext(), result.spannable, result.images);
 			username.setText(spannable);

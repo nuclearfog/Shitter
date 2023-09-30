@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.Filter;
  *
  * @author nuclearfog
  */
-public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.FilterActionParam, StatusFilterAction.FilterActionResult> {
+public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.Param, StatusFilterAction.Result> {
 
 	private Connection connection;
 
@@ -29,32 +29,32 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.FilterA
 
 
 	@Override
-	protected FilterActionResult doInBackground(@NonNull FilterActionParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case FilterActionParam.UPDATE:
+				case Param.UPDATE:
 					if (param.update != null) {
 						Filter filter = connection.updateFilter(param.update);
-						return new FilterActionResult(FilterActionResult.UPDATE, param.id, filter, null);
+						return new Result(Result.UPDATE, param.id, filter, null);
 					}
 					return null;
 
-				case FilterActionParam.DELETE:
+				case Param.DELETE:
 					connection.deleteFilter(param.id);
-					return new FilterActionResult(FilterActionResult.DELETE, param.id, null, null);
+					return new Result(Result.DELETE, param.id, null, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new FilterActionResult(FilterActionResult.ERROR, param.id, null, exception);
+			return new Result(Result.ERROR, param.id, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class FilterActionParam {
+	public static class Param {
 
 		public static final int UPDATE = 1;
 		public static final int DELETE = 2;
@@ -64,7 +64,7 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.FilterA
 		final long id;
 		final int mode;
 
-		public FilterActionParam(int mode, long id, @Nullable FilterUpdate update) {
+		public Param(int mode, long id, @Nullable FilterUpdate update) {
 			this.mode = mode;
 			this.id = id;
 			this.update = update;
@@ -74,7 +74,7 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.FilterA
 	/**
 	 *
 	 */
-	public static class FilterActionResult {
+	public static class Result {
 
 		public static final int UPDATE = 3;
 		public static final int DELETE = 4;
@@ -87,7 +87,7 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.FilterA
 		public final long id;
 		public final int mode;
 
-		public FilterActionResult(int mode, long id, @Nullable Filter filter, @Nullable ConnectionException exception) {
+		public Result(int mode, long id, @Nullable Filter filter, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.id = id;
 			this.filter = filter;

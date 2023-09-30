@@ -29,7 +29,6 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserUpdater;
-import org.nuclearfog.twidda.backend.async.UserUpdater.UserUpdateResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
@@ -52,7 +51,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, AsyncCallback<UserUpdateResult>, OnConfirmListener, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, AsyncCallback<UserUpdater.Result>, OnConfirmListener, Callback {
 
 	/**
 	 * key to preload user data
@@ -242,7 +241,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 
 	@Override
-	public void onResult(@NonNull UserUpdateResult result) {
+	public void onResult(@NonNull UserUpdater.Result result) {
 		if (result.user != null) {
 			Intent data = new Intent();
 			data.putExtra(KEY_USER, result.user);

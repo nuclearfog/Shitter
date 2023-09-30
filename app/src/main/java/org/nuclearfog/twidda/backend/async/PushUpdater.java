@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.WebPush;
  *
  * @author nuclearfog
  */
-public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.PushUpdateResult> {
+public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.Result> {
 
 	private Connection connection;
 	private GlobalSettings settings;
@@ -31,25 +31,25 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.PushUpdat
 
 
 	@Override
-	protected PushUpdateResult doInBackground(@NonNull PushUpdate param) {
+	protected Result doInBackground(@NonNull PushUpdate param) {
 		try {
 			WebPush webpush = connection.updatePush(param);
 			settings.setWebPush(webpush);
-			return new PushUpdateResult(webpush, null);
+			return new Result(webpush, null);
 		} catch (ConnectionException e) {
-			return new PushUpdateResult(null, e);
+			return new Result(null, e);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class PushUpdateResult {
+	public static class Result {
 
 		public final WebPush push;
 		public final ConnectionException exception;
 
-		PushUpdateResult(WebPush push, ConnectionException exception) {
+		Result(WebPush push, ConnectionException exception) {
 			this.push = push;
 			this.exception = exception;
 		}

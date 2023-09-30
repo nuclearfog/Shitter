@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.activities.UsersActivity;
  *
  * @author nuclearfog
  */
-public class UserFilterAction extends AsyncExecutor<UserFilterAction.FilterParam, UserFilterAction.FilterResult> {
+public class UserFilterAction extends AsyncExecutor<UserFilterAction.Param, UserFilterAction.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -33,35 +33,35 @@ public class UserFilterAction extends AsyncExecutor<UserFilterAction.FilterParam
 
 
 	@Override
-	protected FilterResult doInBackground(@NonNull FilterParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case FilterParam.MUTE_USER:
+				case Param.MUTE_USER:
 					Relation relation = connection.muteUser(param.name);
 					db.muteUser(relation.getId(), true);
-					return new FilterResult(FilterResult.MUTE_USER, null);
+					return new Result(Result.MUTE_USER, null);
 
-				case FilterParam.BLOCK_USER:
+				case Param.BLOCK_USER:
 					relation = connection.blockUser(param.name);
 					db.muteUser(relation.getId(), true);
-					return new FilterResult(FilterResult.BLOCK_USER, null);
+					return new Result(Result.BLOCK_USER, null);
 
-				case FilterParam.BLOCK_DOMAIN:
+				case Param.BLOCK_DOMAIN:
 					connection.blockDomain(param.name);
-					return new FilterResult(FilterResult.BLOCK_DOMAIN, null);
+					return new Result(Result.BLOCK_DOMAIN, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new FilterResult(FilterResult.ERROR, exception);
+			return new Result(Result.ERROR, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class FilterParam {
+	public static class Param {
 
 		public static final int MUTE_USER = 2;
 		public static final int BLOCK_USER = 3;
@@ -70,12 +70,7 @@ public class UserFilterAction extends AsyncExecutor<UserFilterAction.FilterParam
 		final String name;
 		final int mode;
 
-		public FilterParam(int mode) {
-			this.mode = mode;
-			name = "";
-		}
-
-		public FilterParam(int mode, String name) {
+		public Param(int mode, String name) {
 			this.mode = mode;
 			this.name = name;
 		}
@@ -84,7 +79,7 @@ public class UserFilterAction extends AsyncExecutor<UserFilterAction.FilterParam
 	/**
 	 *
 	 */
-	public static class FilterResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int MUTE_USER = 6;
@@ -95,7 +90,7 @@ public class UserFilterAction extends AsyncExecutor<UserFilterAction.FilterParam
 		@Nullable
 		public final ConnectionException exception;
 
-		FilterResult(int mode, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.exception = exception;
 		}

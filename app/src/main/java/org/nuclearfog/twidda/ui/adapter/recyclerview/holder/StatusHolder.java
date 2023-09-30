@@ -27,8 +27,8 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Param;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Result;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -66,8 +66,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 	private IconAdapter adapter;
 	private OnHolderClickListener listener;
 
-	private AsyncCallback<EmojiResult> textResult = this::setTextEmojis;
-	private AsyncCallback<EmojiResult> usernameResult = this::setUsernameEmojis;
+	private AsyncCallback<Result> textResult = this::setTextEmojis;
+	private AsyncCallback<Result> usernameResult = this::setUsernameEmojis;
 
 	private long tagId = 0L;
 
@@ -169,7 +169,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 		// set username and emojis
 		if (author.getEmojis().length > 0 && !author.getUsername().trim().isEmpty() && settings.imagesEnabled()) {
 			SpannableString usernameSpan = new SpannableString(author.getUsername());
-			EmojiParam param = new EmojiParam(tagId, author.getEmojis(), usernameSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+			Param param = new Param(tagId, author.getEmojis(), usernameSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
 			emojiLoader.execute(param, usernameResult);
 			username.setText(EmojiUtils.removeTags(usernameSpan));
 		} else {
@@ -179,7 +179,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 		if (!status.getText().trim().isEmpty()) {
 			Spannable textSpan = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor());
 			if (status.getEmojis().length > 0 && settings.imagesEnabled()) {
-				EmojiParam param = new EmojiParam(tagId, status.getEmojis(), textSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
+				Param param = new Param(tagId, status.getEmojis(), textSpan, statusText.getResources().getDimensionPixelSize(R.dimen.item_status_icon_size));
 				emojiLoader.execute(param, textResult);
 				textSpan = EmojiUtils.removeTags(textSpan);
 			}
@@ -309,7 +309,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 	 *
 	 * @param result username with emojis
 	 */
-	private void setUsernameEmojis(@NonNull EmojiResult result) {
+	private void setUsernameEmojis(@NonNull Result result) {
 		if (result.id == tagId && result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(username.getContext(), result.spannable, result.images);
 			username.setText(spannable);
@@ -321,7 +321,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 	 *
 	 * @param result status text with emojis
 	 */
-	private void setTextEmojis(@NonNull EmojiResult result) {
+	private void setTextEmojis(@NonNull Result result) {
 		if (result.id == tagId && result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(statusText.getContext(), result.spannable, result.images);
 			statusText.setText(spannable);

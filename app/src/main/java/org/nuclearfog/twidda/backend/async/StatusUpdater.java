@@ -22,7 +22,7 @@ import java.util.List;
  * @author nuclearfog
  * @see StatusEditor
  */
-public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.StatusUpdateResult> {
+public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Result> {
 
 	private Connection connection;
 
@@ -35,7 +35,7 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 
 
 	@Override
-	protected StatusUpdateResult doInBackground(@NonNull StatusUpdate update) throws InterruptedException {
+	protected Result doInBackground(@NonNull StatusUpdate update) throws InterruptedException {
 		try {
 			// upload media first
 			List<Long> mediaIds = new LinkedList<>();
@@ -47,9 +47,9 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 			}
 			// upload status
 			Status status = connection.updateStatus(update, mediaIds);
-			return new StatusUpdateResult(status, null);
+			return new Result(status, null);
 		} catch (ConnectionException exception) {
-			return new StatusUpdateResult(null, exception);
+			return new Result(null, exception);
 		} finally {
 			update.close();
 		}
@@ -58,14 +58,14 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Sta
 	/**
 	 *
 	 */
-	public static class StatusUpdateResult {
+	public static class Result {
 
 		@Nullable
 		public final Status status;
 		@Nullable
 		public final ConnectionException exception;
 
-		StatusUpdateResult(@Nullable Status status, @Nullable ConnectionException exception) {
+		Result(@Nullable Status status, @Nullable ConnectionException exception) {
 			this.status = status;
 			this.exception = exception;
 		}

@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.activities.UserlistEditor;
  *
  * @author nuclearfog
  */
-public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdater.ListUpdateResult> {
+public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdater.Result> {
 
 	private Connection connection;
 
@@ -31,24 +31,24 @@ public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdat
 
 
 	@Override
-	protected ListUpdateResult doInBackground(@NonNull UserListUpdate update) {
+	protected Result doInBackground(@NonNull UserListUpdate update) {
 		try {
 			if (update.getId() != 0L) {
 				UserList result = connection.updateUserlist(update);
-				return new ListUpdateResult(result, true, null);
+				return new Result(result, true, null);
 			} else {
 				UserList result = connection.createUserlist(update);
-				return new ListUpdateResult(result, false, null);
+				return new Result(result, false, null);
 			}
 		} catch (ConnectionException exception) {
-			return new ListUpdateResult(null, false, exception);
+			return new Result(null, false, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class ListUpdateResult {
+	public static class Result {
 
 		public final boolean updated;
 		@Nullable
@@ -56,7 +56,7 @@ public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdat
 		@Nullable
 		public final ConnectionException exception;
 
-		ListUpdateResult(@Nullable UserList userlist, boolean updated, @Nullable ConnectionException exception) {
+		Result(@Nullable UserList userlist, boolean updated, @Nullable ConnectionException exception) {
 			this.userlist = userlist;
 			this.updated = updated;
 			this.exception = exception;

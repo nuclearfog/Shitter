@@ -25,11 +25,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserlistAction;
-import org.nuclearfog.twidda.backend.async.UserlistAction.ListActionParam;
-import org.nuclearfog.twidda.backend.async.UserlistAction.ListActionResult;
 import org.nuclearfog.twidda.backend.async.UserlistManager;
-import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerParam;
-import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -80,8 +76,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private AsyncCallback<ListActionResult> userlistSet = this::setList;
-	private AsyncCallback<ListManagerResult> userlistUpdate = this::updateList;
+	private AsyncCallback<UserlistAction.Result> userlistSet = this::setList;
+	private AsyncCallback<UserlistManager.Result> userlistUpdate = this::updateList;
 
 
 	private UserlistAdapter adapter;
@@ -145,7 +141,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		super.onStart();
 		if (userList != null) {
 			// update list information
-			ListActionParam param = new ListActionParam(ListActionParam.LOAD, userList.getId());
+			UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.LOAD, userList.getId());
 			listLoaderAsync.execute(param, userlistSet);
 		}
 	}
@@ -216,7 +212,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				if (userList.isFollowing()) {
 					confirmDialog.show(ConfirmDialog.LIST_UNFOLLOW);
 				} else {
-					ListActionParam param = new ListActionParam(ListActionParam.FOLLOW, userList.getId());
+					UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.FOLLOW, userList.getId());
 					listLoaderAsync.execute(param, userlistSet);
 				}
 				return true;
@@ -266,14 +262,14 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		// delete user list
 		if (type == ConfirmDialog.LIST_DELETE && userList != null) {
 			if (listLoaderAsync.isIdle()) {
-				ListActionParam param = new ListActionParam(ListActionParam.DELETE, userList.getId());
+				UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.DELETE, userList.getId());
 				listLoaderAsync.execute(param, userlistSet);
 			}
 		}
 		// unfollow user list
 		else if (type == ConfirmDialog.LIST_UNFOLLOW) {
 			if (listLoaderAsync.isIdle() && userList != null) {
-				ListActionParam param = new ListActionParam(ListActionParam.UNFOLLOW, userList.getId());
+				UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.UNFOLLOW, userList.getId());
 				listLoaderAsync.execute(param, userlistSet);
 			}
 		}
@@ -299,7 +295,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (USERNAME_PATTERN.matcher(query).matches()) {
 			if (listManagerAsync.isIdle()) {
 				Toast.makeText(getApplicationContext(), R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-				ListManagerParam param = new ListManagerParam(ListManagerParam.ADD, userList.getId(), query);
+				UserlistManager.Param param = new UserlistManager.Param(UserlistManager.Param.ADD, userList.getId(), query);
 				listManagerAsync.execute(param, userlistUpdate);
 				return true;
 			}
@@ -312,9 +308,9 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	/**
 	 * update userlist member
 	 */
-	private void updateList(@NonNull ListManagerResult result) {
+	private void updateList(@NonNull UserlistManager.Result result) {
 		switch (result.mode) {
-			case ListManagerResult.ADD_USER:
+			case UserlistManager.Result.ADD_USER:
 				String name;
 				if (!result.name.startsWith("@"))
 					name = '@' + result.name;
@@ -325,7 +321,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				invalidateOptionsMenu();
 				break;
 
-			case ListManagerResult.ERROR:
+			case UserlistManager.Result.ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}
@@ -334,9 +330,9 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	/**
 	 * update userlist content
 	 */
-	private void setList(@NonNull ListActionResult result) {
+	private void setList(@NonNull UserlistAction.Result result) {
 		switch (result.mode) {
-			case ListActionResult.LOAD:
+			case UserlistAction.Result.LOAD:
 				if (result.userlist != null) {
 					toolbar.setTitle(result.userlist.getTitle());
 					toolbar.setSubtitle(result.userlist.getDescription());
@@ -344,17 +340,17 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				}
 				break;
 
-			case ListActionResult.FOLLOW:
+			case UserlistAction.Result.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_list_followed, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case ListActionResult.UNFOLLOW:
+			case UserlistAction.Result.UNFOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_list_unfollowed, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case ListActionResult.DELETE:
+			case UserlistAction.Result.DELETE:
 				Intent intent = new Intent();
 				intent.putExtra(KEY_ID, result.id);
 				setResult(RETURN_LIST_REMOVED, intent);
@@ -362,7 +358,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 				finish();
 				break;
 
-			case ListActionResult.ERROR:
+			case UserlistAction.Result.ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 					// List does not exist

@@ -17,9 +17,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.HashtagAction;
-import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagActionParam;
-import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagActionResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.viewpager.HashtagAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
@@ -30,7 +29,7 @@ import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
  *
  * @author nuclearfog
  */
-public class HashtagActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, OnTabSelectedListener, AsyncCallback<HashtagActionResult> {
+public class HashtagActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, OnTabSelectedListener, AsyncCallback<HashtagAction.Result> {
 
 	private GlobalSettings settings;
 	private HashtagAction hashtagAction;
@@ -90,11 +89,11 @@ public class HashtagActivity extends AppCompatActivity implements SearchView.OnQ
 	public boolean onQueryTextSubmit(String query) {
 		if (hashtagAction.isIdle()) {
 			if (viewPager.getCurrentItem() == 0) {
-				HashtagActionParam param = new HashtagActionParam(HashtagActionParam.FOLLOW, query);
+				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FOLLOW, query);
 				hashtagAction.execute(param, this);
 				return true;
 			} else if (viewPager.getCurrentItem() == 1) {
-				HashtagActionParam param = new HashtagActionParam(HashtagActionParam.FEATURE, query);
+				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FEATURE, query);
 				hashtagAction.execute(param, this);
 				return true;
 			}
@@ -110,21 +109,22 @@ public class HashtagActivity extends AppCompatActivity implements SearchView.OnQ
 
 
 	@Override
-	public void onResult(@NonNull HashtagActionResult result) {
+	public void onResult(@NonNull HashtagAction.Result result) {
 		switch (result.mode) {
-			case HashtagActionResult.FEATURE:
+			case HashtagAction.Result.FEATURE:
 				Toast.makeText(getApplicationContext(), R.string.info_hashtag_featured, Toast.LENGTH_SHORT).show();
 				adapter.notifySettingsChanged();
 				invalidateOptionsMenu();
 				break;
 
-			case HashtagActionResult.FOLLOW:
+			case HashtagAction.Result.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
 				adapter.notifySettingsChanged();
 				invalidateOptionsMenu();
 				break;
 
-			case HashtagActionResult.ERROR:
+			case HashtagAction.Result.ERROR:
+				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}
 	}

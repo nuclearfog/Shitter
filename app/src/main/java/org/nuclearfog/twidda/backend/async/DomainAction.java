@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.model.lists.Domains;
  *
  * @author nuclearfog
  */
-public class DomainAction extends AsyncExecutor<DomainAction.DomainParam, DomainAction.DomainResult> {
+public class DomainAction extends AsyncExecutor<DomainAction.Param, DomainAction.Result> {
 
 	private Connection connection;
 
@@ -28,33 +28,33 @@ public class DomainAction extends AsyncExecutor<DomainAction.DomainParam, Domain
 
 
 	@Override
-	protected DomainResult doInBackground(@NonNull DomainParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case DomainParam.MODE_LOAD:
+				case Param.MODE_LOAD:
 					Domains result = connection.getDomainBlocks(param.cursor);
-					return new DomainResult(DomainResult.MODE_LOAD, param.index, result, param.domain, null);
+					return new Result(Result.MODE_LOAD, param.index, result, param.domain, null);
 
-				case DomainParam.MODE_BLOCK:
+				case Param.MODE_BLOCK:
 					connection.blockDomain(param.domain);
-					return new DomainResult(DomainResult.MODE_BLOCK, param.index, null, param.domain, null);
+					return new Result(Result.MODE_BLOCK, param.index, null, param.domain, null);
 
-				case DomainParam.MODE_UNBLOCK:
+				case Param.MODE_UNBLOCK:
 					connection.unblockDomain(param.domain);
-					return new DomainResult(DomainResult.MODE_UNBLOCK, param.index, null, param.domain, null);
+					return new Result(Result.MODE_UNBLOCK, param.index, null, param.domain, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new DomainResult(DomainResult.ERROR, param.index, null, param.domain, exception);
+			return new Result(Result.ERROR, param.index, null, param.domain, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class DomainParam {
+	public static class Param {
 
 		public static final int MODE_LOAD = 1;
 		public static final int MODE_BLOCK = 2;
@@ -67,7 +67,7 @@ public class DomainAction extends AsyncExecutor<DomainAction.DomainParam, Domain
 		final int mode;
 		final int index;
 
-		public DomainParam(int mode, int index, long cursor, String domain) {
+		public Param(int mode, int index, long cursor, String domain) {
 			this.mode = mode;
 			this.cursor = cursor;
 			this.domain = domain;
@@ -78,7 +78,7 @@ public class DomainAction extends AsyncExecutor<DomainAction.DomainParam, Domain
 	/**
 	 *
 	 */
-	public static class DomainResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int MODE_LOAD = 4;
@@ -94,7 +94,7 @@ public class DomainAction extends AsyncExecutor<DomainAction.DomainParam, Domain
 		@Nullable
 		public final String domain;
 
-		DomainResult(int mode, int index, @Nullable Domains domains, @Nullable String domain, @Nullable ConnectionException exception) {
+		Result(int mode, int index, @Nullable Domains domains, @Nullable String domain, @Nullable ConnectionException exception) {
 			this.domains = domains;
 			this.domain = domain;
 			this.exception = exception;

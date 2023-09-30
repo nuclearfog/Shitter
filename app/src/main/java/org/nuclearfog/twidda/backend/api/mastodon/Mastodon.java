@@ -754,9 +754,11 @@ public class Mastodon implements Connection {
 	public ScheduledStatuses getScheduledStatuses(long minId, long maxId) throws ConnectionException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("min_id" + minId);
-			params.add("max_id" + maxId);
-			params.add("limit" + settings.getListSize());
+			if (minId != 0L)
+				params.add("since_id=" + minId);
+			if (maxId != 0L)
+				params.add("max_id=" + maxId);
+			params.add("limit=" + settings.getListSize());
 			Response response = get(ENDPOINT_SCHEDULED_STATUS, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {

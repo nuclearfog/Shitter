@@ -23,7 +23,7 @@ import java.util.TreeMap;
  *
  * @author nuclearfog
  */
-public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, TextEmojiLoader.EmojiResult> {
+public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.Param, TextEmojiLoader.Result> {
 
 	private Connection connection;
 	private EmojiCache cache;
@@ -38,7 +38,7 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, T
 
 
 	@Override
-	protected EmojiResult doInBackground(@NonNull EmojiParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			Map<String, Bitmap> result = new TreeMap<>();
 			for (Emoji emoji : param.emojis) {
@@ -57,27 +57,27 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, T
 				result.put(emoji.getCode(), icon);
 			}
 			cache.trimCache();
-			return new EmojiResult(param.id, param.spannable, result);
+			return new Result(param.id, param.spannable, result);
 		} catch (Exception exception) {
-			return new EmojiResult(param.id, param.spannable, null);
+			return new Result(param.id, param.spannable, null);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class EmojiParam {
+	public static class Param {
 
 		final Emoji[] emojis;
 		final Spannable spannable;
 		final long id;
 		final int size;
 
-		public EmojiParam(Emoji[] emojis, Spannable spannable, int size) {
+		public Param(Emoji[] emojis, Spannable spannable, int size) {
 			this(0L, emojis, spannable, size);
 		}
 
-		public EmojiParam(long id, Emoji[] emojis, Spannable spannable, int size) {
+		public Param(long id, Emoji[] emojis, Spannable spannable, int size) {
 			this.emojis = emojis;
 			this.spannable = spannable;
 			this.size = size;
@@ -88,14 +88,14 @@ public class TextEmojiLoader extends AsyncExecutor<TextEmojiLoader.EmojiParam, T
 	/**
 	 *
 	 */
-	public static class EmojiResult {
+	public static class Result {
 
 		@Nullable
 		public final Map<String, Bitmap> images;
 		public final Spannable spannable;
 		public final long id;
 
-		EmojiResult(long id, Spannable spannable, @Nullable Map<String, Bitmap> images) {
+		Result(long id, Spannable spannable, @Nullable Map<String, Bitmap> images) {
 			this.images = images;
 			this.spannable = spannable;
 			this.id = id;

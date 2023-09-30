@@ -27,7 +27,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
-import org.nuclearfog.twidda.backend.async.StatusUpdater.StatusUpdateResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
@@ -86,7 +85,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	public static final String KEY_TEXT = "status_text";
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
-	private AsyncCallback<StatusUpdateResult> statusUpdateResult = this::onStatusUpdated;
+	private AsyncCallback<StatusUpdater.Result> statusUpdateResult = this::onStatusUpdated;
 	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
 
 	private View mediaBtn;
@@ -494,7 +493,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	/**
 	 * called when the status was successfully updated
 	 */
-	private void onStatusUpdated(@NonNull StatusUpdateResult result) {
+	private void onStatusUpdated(@NonNull StatusUpdater.Result result) {
 		if (result.exception != null) {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);

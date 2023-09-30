@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.model.Translation;
  *
  * @author nuclearfog
  */
-public class TranslationLoader extends AsyncExecutor<Long, TranslationLoader.TranslationResult> {
+public class TranslationLoader extends AsyncExecutor<Long, TranslationLoader.Result> {
 
 	private Connection connection;
 
@@ -28,23 +28,23 @@ public class TranslationLoader extends AsyncExecutor<Long, TranslationLoader.Tra
 
 
 	@Override
-	protected TranslationResult doInBackground(@NonNull Long param) {
+	protected Result doInBackground(@NonNull Long param) {
 		try {
-			return new TranslationResult(connection.getStatusTranslation(param));
+			return new Result(connection.getStatusTranslation(param));
 		} catch (ConnectionException exception) {
-			return new TranslationResult(null);
+			return new Result(null);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class TranslationResult {
+	public static class Result {
 
 		@Nullable
 		public Translation translation;
 
-		TranslationResult(@Nullable Translation translation) {
+		Result(@Nullable Translation translation) {
 			this.translation = translation;
 		}
 	}

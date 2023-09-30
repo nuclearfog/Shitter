@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.activities.ProfileActivity;
  * @author nuclearfog
  * @see ProfileActivity
  */
-public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, RelationLoader.RelationResult> {
+public class RelationLoader extends AsyncExecutor<RelationLoader.Param, RelationLoader.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -33,59 +33,59 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 
 
 	@Override
-	protected RelationResult doInBackground(@NonNull RelationParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case RelationParam.LOAD:
+				case Param.LOAD:
 					Relation relation = connection.getUserRelationship(param.id);
-					return new RelationResult(RelationResult.LOAD, relation);
+					return new Result(Result.LOAD, relation);
 
-				case RelationParam.FOLLOW:
+				case Param.FOLLOW:
 					relation = connection.followUser(param.id);
-					return new RelationResult(RelationResult.FOLLOW, relation);
+					return new Result(Result.FOLLOW, relation);
 
-				case RelationParam.UNFOLLOW:
+				case Param.UNFOLLOW:
 					relation = connection.unfollowUser(param.id);
-					return new RelationResult(RelationResult.UNFOLLOW, relation);
+					return new Result(Result.UNFOLLOW, relation);
 
-				case RelationParam.BLOCK:
+				case Param.BLOCK:
 					relation = connection.blockUser(param.id);
 					db.muteUser(param.id, true);
-					return new RelationResult(RelationResult.BLOCK, relation);
+					return new Result(Result.BLOCK, relation);
 
-				case RelationParam.UNBLOCK:
+				case Param.UNBLOCK:
 					relation = connection.unblockUser(param.id);
 					// remove from exclude list only if user is not muted
 					if (!relation.isMuted()) {
 						db.muteUser(param.id, false);
 					}
-					return new RelationResult(RelationResult.UNBLOCK, relation);
+					return new Result(Result.UNBLOCK, relation);
 
-				case RelationParam.MUTE:
+				case Param.MUTE:
 					relation = connection.muteUser(param.id);
 					db.muteUser(param.id, true);
-					return new RelationResult(RelationResult.MUTE, relation);
+					return new Result(Result.MUTE, relation);
 
-				case RelationParam.UNMUTE:
+				case Param.UNMUTE:
 					relation = connection.unmuteUser(param.id);
 					// remove from exclude list only if user is not blocked
 					if (!relation.isBlocked()) {
 						db.muteUser(param.id, false);
 					}
-					return new RelationResult(RelationResult.UNMUTE, relation);
+					return new Result(Result.UNMUTE, relation);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new RelationResult(RelationResult.ERROR, null, exception);
+			return new Result(Result.ERROR, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class RelationParam {
+	public static class Param {
 
 		public static final int LOAD = 1;
 		public static final int FOLLOW = 2;
@@ -98,7 +98,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 		final long id;
 		final int mode;
 
-		public RelationParam(long id, int mode) {
+		public Param(long id, int mode) {
 			this.id = id;
 			this.mode = mode;
 		}
@@ -107,7 +107,7 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 	/**
 	 *
 	 */
-	public static class RelationResult {
+	public static class Result {
 
 		public static final int LOAD = 8;
 		public static final int FOLLOW = 9;
@@ -124,11 +124,11 @@ public class RelationLoader extends AsyncExecutor<RelationLoader.RelationParam, 
 		@Nullable
 		public final ConnectionException exception;
 
-		RelationResult(int mode, Relation relation) {
+		Result(int mode, Relation relation) {
 			this(mode, relation, null);
 		}
 
-		RelationResult(int mode, @Nullable Relation relation, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable Relation relation, @Nullable ConnectionException exception) {
 			this.relation = relation;
 			this.exception = exception;
 			this.mode = mode;

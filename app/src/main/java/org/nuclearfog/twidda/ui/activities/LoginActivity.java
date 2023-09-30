@@ -28,8 +28,6 @@ import androidx.appcompat.widget.Toolbar;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.LoginAction;
-import org.nuclearfog.twidda.backend.async.LoginAction.LoginParam;
-import org.nuclearfog.twidda.backend.async.LoginAction.LoginResult;
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -48,7 +46,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class LoginActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, AsyncCallback<LoginResult>, OnClickListener, OnItemSelectedListener {
+public class LoginActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, AsyncCallback<LoginAction.Result>, OnClickListener, OnItemSelectedListener {
 
 	/**
 	 * return code to notify if a login process was successful
@@ -234,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// generate Mastodon login
 			if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_open_mastodon_login, Toast.LENGTH_LONG).show();
-				LoginParam param = new LoginParam(LoginParam.MODE_REQUEST, connection.getApiType(), connection, "");
+				LoginAction.Param param = new LoginAction.Param(LoginAction.Param.MODE_REQUEST, connection.getApiType(), connection, "");
 				loginAsync.execute(param, this);
 			}
 		}
@@ -250,7 +248,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 			// login to mastodon
 			else if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
 				Toast.makeText(getApplicationContext(), R.string.info_login_to_mastodon, Toast.LENGTH_LONG).show();
-				LoginParam param = new LoginParam(LoginParam.MODE_LOGIN, connection.getApiType(), connection, code);
+				LoginAction.Param param = new LoginAction.Param(LoginAction.Param.MODE_LOGIN, connection.getApiType(), connection, code);
 				loginAsync.execute(param, this);
 			}
 		}
@@ -282,16 +280,16 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 
 	@Override
-	public void onResult(@NonNull LoginResult result) {
+	public void onResult(@NonNull LoginAction.Result result) {
 		switch (result.mode) {
-			case LoginResult.MODE_LOGIN:
+			case LoginAction.Result.MODE_LOGIN:
 				Intent intent = new Intent();
 				intent.putExtra(RETURN_ACCOUNT, result.account);
 				setResult(RETURN_LOGIN_SUCCESSFUL, intent);
 				finish();
 				break;
 
-			case LoginResult.MODE_REQUEST:
+			case LoginAction.Result.MODE_REQUEST:
 				connectionResult = result.connection;
 				if (connectionResult != null) {
 					connection.setConnection(connectionResult);
@@ -299,7 +297,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				}
 				break;
 
-			case LoginResult.MODE_ERROR:
+			case LoginAction.Result.MODE_ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}

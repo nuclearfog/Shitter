@@ -22,8 +22,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.HashtagAction;
-import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagActionParam;
-import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagActionResult;
+import org.nuclearfog.twidda.backend.async.HashtagAction.Param;
+import org.nuclearfog.twidda.backend.async.HashtagAction.Result;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -39,7 +39,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class SearchActivity extends AppCompatActivity implements OnClickListener, OnTabSelectedListener, OnQueryTextListener, AsyncCallback<HashtagActionResult> {
+public class SearchActivity extends AppCompatActivity implements OnClickListener, OnTabSelectedListener, OnQueryTextListener, AsyncCallback<Result> {
 
 	/**
 	 * Key for the search query, required
@@ -96,7 +96,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		} else if (query != null) {
 			search = query;
 			if (search.startsWith("#") && search.matches("\\S+")) {
-				HashtagActionParam param = new HashtagActionParam(HashtagActionParam.LOAD, search);
+				Param param = new Param(Param.LOAD, search);
 				hashtagAction.execute(param, this);
 			}
 		}
@@ -207,11 +207,11 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		// follow/unfollow hashtag
 		else if (item.getItemId() == R.id.search_hashtag) {
 			if (hashtag != null && hashtagAction.isIdle()) {
-				HashtagActionParam param;
+				Param param;
 				if (hashtag.following())
-					param = new HashtagActionParam(HashtagActionParam.UNFOLLOW, hashtag.getName());
+					param = new Param(Param.UNFOLLOW, hashtag.getName());
 				else
-					param = new HashtagActionParam(HashtagActionParam.FOLLOW, hashtag.getName());
+					param = new Param(Param.FOLLOW, hashtag.getName());
 				hashtagAction.execute(param, this);
 			}
 		}
@@ -258,21 +258,21 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onResult(@NonNull HashtagActionResult result) {
+	public void onResult(@NonNull Result result) {
 		if (result.hashtag != null) {
 			this.hashtag = result.hashtag;
 			invalidateMenu();
 		}
 		switch (result.mode) {
-			case HashtagActionResult.FOLLOW:
+			case Result.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case HashtagActionResult.UNFOLLOW:
+			case Result.UNFOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case HashtagActionResult.ERROR:
+			case Result.ERROR:
 				ErrorUtils.showErrorMessage(this, result.exception);
 				break;
 		}

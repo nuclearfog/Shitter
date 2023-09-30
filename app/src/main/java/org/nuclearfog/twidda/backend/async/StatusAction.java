@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.activities.StatusActivity;
  * @author nuclearfog
  * @see StatusActivity
  */
-public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, StatusAction.StatusResult> {
+public class StatusAction extends AsyncExecutor<StatusAction.Param, StatusAction.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -33,70 +33,70 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 
 
 	@Override
-	protected StatusResult doInBackground(@NonNull StatusParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case StatusParam.DATABASE:
+				case Param.DATABASE:
 					Status status = db.getStatus(param.id);
 					if (status != null) {
-						return new StatusResult(StatusResult.DATABASE, status);
+						return new Result(Result.DATABASE, status);
 					}
 					// fall through
 
-				case StatusParam.ONLINE:
+				case Param.ONLINE:
 					status = connection.showStatus(param.id);
 					if (db.containsStatus(param.id)) {
 						// update status if there is a database entry
 						db.saveStatus(status);
 					}
-					return new StatusResult(StatusResult.ONLINE, status);
+					return new Result(Result.ONLINE, status);
 
-				case StatusParam.DELETE:
+				case Param.DELETE:
 					connection.deleteStatus(param.id);
 					db.removeStatus(param.id);
-					return new StatusResult(StatusResult.DELETE, null);
+					return new Result(Result.DELETE, null);
 
-				case StatusParam.REPOST:
+				case Param.REPOST:
 					status = connection.repostStatus(param.id);
 					db.saveStatus(status);
 					if (status.getEmbeddedStatus() != null)
-						return new StatusResult(StatusResult.REPOST, status.getEmbeddedStatus());
-					return new StatusResult(StatusResult.REPOST, status);
+						return new Result(Result.REPOST, status.getEmbeddedStatus());
+					return new Result(Result.REPOST, status);
 
-				case StatusParam.UNREPOST:
+				case Param.UNREPOST:
 					status = connection.removeRepost(param.id);
 					db.saveStatus(status);
-					return new StatusResult(StatusResult.UNREPOST, status);
+					return new Result(Result.UNREPOST, status);
 
-				case StatusParam.FAVORITE:
+				case Param.FAVORITE:
 					status = connection.favoriteStatus(param.id);
 					db.saveToFavorits(status);
-					return new StatusResult(StatusResult.FAVORITE, status);
+					return new Result(Result.FAVORITE, status);
 
-				case StatusParam.UNFAVORITE:
+				case Param.UNFAVORITE:
 					status = connection.unfavoriteStatus(param.id);
 					db.removeFromFavorite(status);
-					return new StatusResult(StatusResult.UNFAVORITE, status);
+					return new Result(Result.UNFAVORITE, status);
 
-				case StatusParam.BOOKMARK:
+				case Param.BOOKMARK:
 					status = connection.bookmarkStatus(param.id);
 					db.saveToBookmarks(status);
-					return new StatusResult(StatusResult.BOOKMARK, status);
+					return new Result(Result.BOOKMARK, status);
 
-				case StatusParam.UNBOOKMARK:
+				case Param.UNBOOKMARK:
 					status = connection.removeBookmark(param.id);
 					db.removeFromBookmarks(status);
-					return new StatusResult(StatusResult.UNBOOKMARK, status);
+					return new Result(Result.UNBOOKMARK, status);
 
-				case StatusParam.HIDE:
+				case Param.HIDE:
 					connection.muteConversation(param.id);
 					db.hideStatus(param.id, true);
-					return new StatusResult(StatusResult.HIDE, null);
+					return new Result(Result.HIDE, null);
 
-				case StatusParam.UNHIDE:
+				case Param.UNHIDE:
 					connection.unmuteConversation(param.id);
 					db.hideStatus(param.id, false);
-					return new StatusResult(StatusResult.UNHIDE, null);
+					return new Result(Result.UNHIDE, null);
 
 				default:
 					return null;
@@ -106,14 +106,14 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 				// delete database entry if status was not found
 				db.removeStatus(param.id);
 			}
-			return new StatusResult(StatusResult.ERROR, null, exception);
+			return new Result(Result.ERROR, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class StatusParam {
+	public static class Param {
 
 		public static final int ONLINE = 1;
 		public static final int DATABASE = 2;
@@ -130,7 +130,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 		final int mode;
 		final long id;
 
-		public StatusParam(int mode, long id) {
+		public Param(int mode, long id) {
 			this.mode = mode;
 			this.id = id;
 		}
@@ -139,7 +139,7 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 	/**
 	 *
 	 */
-	public static class StatusResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int ONLINE = 12;
@@ -160,11 +160,11 @@ public class StatusAction extends AsyncExecutor<StatusAction.StatusParam, Status
 		@Nullable
 		public final ConnectionException exception;
 
-		StatusResult(int mode, Status status) {
+		Result(int mode, Status status) {
 			this(mode, status, null);
 		}
 
-		StatusResult(int mode, @Nullable Status status, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable Status status, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.status = status;
 			this.exception = exception;

@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.dialogs.ReportDialog
  */
-public class ReportUpdater extends AsyncExecutor<ReportUpdate, ReportUpdater.ReportResult> {
+public class ReportUpdater extends AsyncExecutor<ReportUpdate, ReportUpdater.Result> {
 
 	private Connection connection;
 
@@ -29,25 +29,25 @@ public class ReportUpdater extends AsyncExecutor<ReportUpdate, ReportUpdater.Rep
 
 
 	@Override
-	protected ReportResult doInBackground(@NonNull ReportUpdate param) {
+	protected Result doInBackground(@NonNull ReportUpdate param) {
 		try {
 			connection.createReport(param);
-			return new ReportResult(true, null);
+			return new Result(true, null);
 		} catch (ConnectionException exception) {
-			return new ReportResult(false, exception);
+			return new Result(false, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class ReportResult {
+	public static class Result {
 
 		public final boolean reported;
 		@Nullable
 		public final ConnectionException exception;
 
-		ReportResult(boolean reported, @Nullable ConnectionException exception) {
+		Result(boolean reported, @Nullable ConnectionException exception) {
 			this.exception = exception;
 			this.reported = reported;
 		}

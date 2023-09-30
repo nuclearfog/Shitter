@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Param;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Result;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.model.Poll.Option;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.adapter.recyclerview.OptionsAdapter
  */
-public class Optionholder extends ViewHolder implements OnClickListener, AsyncCallback<EmojiResult> {
+public class Optionholder extends ViewHolder implements OnClickListener, AsyncCallback<Result> {
 
 	private SeekBar voteProgress;
 	private TextView optionName, optionVotes;
@@ -82,7 +82,7 @@ public class Optionholder extends ViewHolder implements OnClickListener, AsyncCa
 
 
 	@Override
-	public void onResult(@NonNull EmojiResult result) {
+	public void onResult(@NonNull Result result) {
 		if (result.images != null && result.id == tagId) {
 			Spannable spannable = EmojiUtils.addEmojis(optionName.getContext(), result.spannable, result.images);
 			optionName.setText(spannable);
@@ -104,7 +104,7 @@ public class Optionholder extends ViewHolder implements OnClickListener, AsyncCa
 		if (emojis.length > 0 && settings.imagesEnabled()) {
 			tagId = option.getTitle().hashCode();
 			SpannableString optionSpan = new SpannableString(option.getTitle());
-			EmojiParam param = new EmojiParam(tagId, emojis, optionSpan, optionName.getResources().getDimensionPixelSize(R.dimen.item_option_emoji_size));
+			Param param = new Param(tagId, emojis, optionSpan, optionName.getResources().getDimensionPixelSize(R.dimen.item_option_emoji_size));
 			optionName.setText(EmojiUtils.removeTags(optionSpan));
 			emojiLoader.execute(param, this);
 		} else {

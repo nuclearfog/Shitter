@@ -13,8 +13,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserlistLoader;
-import org.nuclearfog.twidda.backend.async.UserlistLoader.UserlistParam;
-import org.nuclearfog.twidda.backend.async.UserlistLoader.UserlistResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
@@ -31,7 +29,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class UserListFragment extends ListFragment implements ListClickListener, AsyncCallback<UserlistResult>, ActivityResultCallback<ActivityResult> {
+public class UserListFragment extends ListFragment implements ListClickListener, AsyncCallback<UserlistLoader.Result>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Key for the owner ID
@@ -95,7 +93,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 			}
 		}
 		setRefresh(true);
-		load(UserlistParam.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
+		load(UserlistLoader.Param.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
 	}
 
 
@@ -115,7 +113,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	protected void onReload() {
-		load(UserlistParam.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
+		load(UserlistLoader.Param.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
 	}
 
 
@@ -123,7 +121,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	protected void onReset() {
 		adapter.clear();
 		userlistLoader = new UserlistLoader(requireContext());
-		load(UserlistParam.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
+		load(UserlistLoader.Param.NO_CURSOR, UserlistAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
@@ -176,16 +174,16 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 
 	@Override
-	public void onResult(@NonNull UserlistResult result) {
+	public void onResult(@NonNull UserlistLoader.Result result) {
 		switch (result.mode) {
-			case UserlistResult.MEMBERSHIP:
-			case UserlistResult.OWNERSHIP:
+			case UserlistLoader.Result.MEMBERSHIP:
+			case UserlistLoader.Result.OWNERSHIP:
 				if (result.userlists != null) {
 					adapter.addItems(result.userlists, result.index);
 				}
 				break;
 
-			case UserlistResult.ERROR:
+			case UserlistLoader.Result.ERROR:
 				if (getContext() != null) {
 					ErrorUtils.showErrorMessage(getContext(), result.exception);
 				}
@@ -199,14 +197,14 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	 * load content into the list
 	 */
 	private void load(long cursor, int index) {
-		UserlistParam param;
+		UserlistLoader.Param param;
 		switch (type) {
 			case MODE_OWNERSHIP:
-				param = new UserlistParam(UserlistParam.OWNERSHIP, index, id, cursor);
+				param = new UserlistLoader.Param(UserlistLoader.Param.OWNERSHIP, index, id, cursor);
 				break;
 
 			case MODE_MEMBERSHIP:
-				param = new UserlistParam(UserlistParam.MEMBERSHIP, index, id, cursor);
+				param = new UserlistLoader.Param(UserlistLoader.Param.MEMBERSHIP, index, id, cursor);
 				break;
 
 			default:

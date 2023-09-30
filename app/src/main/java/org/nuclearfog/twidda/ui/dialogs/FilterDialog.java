@@ -22,8 +22,6 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.StatusFilterAction;
-import org.nuclearfog.twidda.backend.async.StatusFilterAction.FilterActionParam;
-import org.nuclearfog.twidda.backend.async.StatusFilterAction.FilterActionResult;
 import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
@@ -38,7 +36,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class FilterDialog extends Dialog implements OnClickListener, OnCheckedChangeListener, AsyncCallback<FilterActionResult> {
+public class FilterDialog extends Dialog implements OnClickListener, OnCheckedChangeListener, AsyncCallback<StatusFilterAction.Result> {
 
 	private static final String KEY_SAVE = "filterupdate-save";
 
@@ -201,7 +199,7 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 				if (txt_keywords.length() > 0)
 					update.setKeywords(txt_keywords.getText().toString().split("\n"));
 				update.setTitle(txt_title.getText().toString());
-				FilterActionParam param = new FilterActionParam(FilterActionParam.UPDATE, 0L, update);
+				StatusFilterAction.Param param = new StatusFilterAction.Param(StatusFilterAction.Param.UPDATE, 0L, update);
 				filterAction.execute(param, this);
 			}
 		}
@@ -234,13 +232,13 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 
 
 	@Override
-	public void onResult(@NonNull FilterActionResult result) {
-		if (result.mode == FilterActionResult.UPDATE) {
+	public void onResult(@NonNull StatusFilterAction.Result result) {
+		if (result.mode == StatusFilterAction.Result.UPDATE) {
 			Toast.makeText(getContext(), R.string.info_filter_created, Toast.LENGTH_SHORT).show();
 			if (result.filter != null)
 				callback.onFilterUpdated(result.filter);
 			dismiss();
-		} else if (result.mode == FilterActionResult.ERROR) {
+		} else if (result.mode == StatusFilterAction.Result.ERROR) {
 			ErrorUtils.showErrorMessage(getContext(), result.exception);
 		}
 	}

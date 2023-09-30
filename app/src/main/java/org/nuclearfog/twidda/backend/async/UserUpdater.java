@@ -19,7 +19,7 @@ import org.nuclearfog.twidda.ui.activities.ProfileEditor;
  * @author nuclearfog
  * @see ProfileEditor
  */
-public class UserUpdater extends AsyncExecutor<UserUpdate, UserUpdater.UserUpdateResult> {
+public class UserUpdater extends AsyncExecutor<UserUpdate, UserUpdater.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -34,13 +34,13 @@ public class UserUpdater extends AsyncExecutor<UserUpdate, UserUpdater.UserUpdat
 
 
 	@Override
-	protected UserUpdateResult doInBackground(@NonNull UserUpdate param) {
+	protected Result doInBackground(@NonNull UserUpdate param) {
 		try {
 			User user = connection.updateUser(param);
 			db.saveUser(user);
-			return new UserUpdateResult(user, null);
+			return new Result(user, null);
 		} catch (ConnectionException exception) {
-			return new UserUpdateResult(null, exception);
+			return new Result(null, exception);
 		} finally {
 			param.close();
 		}
@@ -49,14 +49,14 @@ public class UserUpdater extends AsyncExecutor<UserUpdate, UserUpdater.UserUpdat
 	/**
 	 *
 	 */
-	public static class UserUpdateResult {
+	public static class Result {
 
 		@Nullable
 		public final User user;
 		@Nullable
 		public final ConnectionException exception;
 
-		UserUpdateResult(@Nullable User user, @Nullable ConnectionException exception) {
+		Result(@Nullable User user, @Nullable ConnectionException exception) {
 			this.user = user;
 			this.exception = exception;
 		}

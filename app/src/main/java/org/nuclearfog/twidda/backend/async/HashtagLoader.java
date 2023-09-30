@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
  * @author nuclearfog
  * @see HashtagFragment
  */
-public class HashtagLoader extends AsyncExecutor<HashtagLoader.HashtagLoaderParam, HashtagLoader.HashtagLoaderResult> {
+public class HashtagLoader extends AsyncExecutor<HashtagLoader.Param, HashtagLoader.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -33,45 +33,45 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.HashtagLoaderPara
 
 
 	@Override
-	protected HashtagLoaderResult doInBackground(@NonNull HashtagLoaderParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case HashtagLoaderParam.POPULAR_OFFLINE:
+				case Param.POPULAR_OFFLINE:
 					Trends trends = db.getTrends();
 					if (!trends.isEmpty()) {
-						return new HashtagLoaderResult(HashtagLoaderResult.POPULAR, trends, param.index, null);
+						return new Result(Result.POPULAR, trends, param.index, null);
 					}
 					// fall through
 
-				case HashtagLoaderParam.POPULAR_ONLINE:
+				case Param.POPULAR_ONLINE:
 					trends = connection.getTrends();
 					db.saveTrends(trends);
-					return new HashtagLoaderResult(HashtagLoaderResult.POPULAR, trends, param.index, null);
+					return new Result(Result.POPULAR, trends, param.index, null);
 
-				case HashtagLoaderParam.SEARCH:
+				case Param.SEARCH:
 					trends = connection.searchHashtags(param.trend);
-					return new HashtagLoaderResult(HashtagLoaderResult.SEARCH, trends, param.index, null);
+					return new Result(Result.SEARCH, trends, param.index, null);
 
-				case HashtagLoaderParam.FOLLOWING:
+				case Param.FOLLOWING:
 					trends = connection.showHashtagFollowing(param.cursor);
-					return new HashtagLoaderResult(HashtagLoaderResult.FOLLOWING, trends, param.index, null);
+					return new Result(Result.FOLLOWING, trends, param.index, null);
 
-				case HashtagLoaderParam.FEATURING:
+				case Param.FEATURING:
 					trends = connection.showHashtagFeaturing();
-					return new HashtagLoaderResult(HashtagLoaderResult.FEATURING, trends, param.index, null);
+					return new Result(Result.FEATURING, trends, param.index, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new HashtagLoaderResult(HashtagLoaderResult.ERROR, null, param.index, exception);
+			return new Result(Result.ERROR, null, param.index, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class HashtagLoaderParam {
+	public static class Param {
 
 		public static final int POPULAR_OFFLINE = 1;
 		public static final int POPULAR_ONLINE = 2;
@@ -86,7 +86,7 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.HashtagLoaderPara
 		final int index;
 		final long cursor;
 
-		public HashtagLoaderParam(int mode, int index, String trend, long cursor) {
+		public Param(int mode, int index, String trend, long cursor) {
 			this.mode = mode;
 			this.trend = trend;
 			this.index = index;
@@ -97,7 +97,7 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.HashtagLoaderPara
 	/**
 	 *
 	 */
-	public static class HashtagLoaderResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int POPULAR = 20;
@@ -112,7 +112,7 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.HashtagLoaderPara
 		@Nullable
 		public final ConnectionException exception;
 
-		HashtagLoaderResult(int mode, @Nullable Trends trends, int index, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable Trends trends, int index, @Nullable ConnectionException exception) {
 			this.trends = trends;
 			this.exception = exception;
 			this.index = index;

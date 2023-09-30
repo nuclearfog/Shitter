@@ -21,7 +21,6 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.PushUpdater;
-import org.nuclearfog.twidda.backend.async.PushUpdater.PushUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
@@ -36,7 +35,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class WebPushDialog extends Dialog implements OnCheckedChangeListener, OnClickListener, OnItemSelectedListener, AsyncCallback<PushUpdateResult> {
+public class WebPushDialog extends Dialog implements OnCheckedChangeListener, OnClickListener, OnItemSelectedListener, AsyncCallback<PushUpdater.Result> {
 
 	private static final String KEY_SAVE = "push-update";
 
@@ -208,7 +207,7 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 
 
 	@Override
-	public void onResult(@NonNull PushUpdateResult result) {
+	public void onResult(@NonNull PushUpdater.Result result) {
 		if (result.push != null) {
 			Toast.makeText(getContext(), R.string.info_webpush_update, Toast.LENGTH_SHORT).show();
 			dismiss();

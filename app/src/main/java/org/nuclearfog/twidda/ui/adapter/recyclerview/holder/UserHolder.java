@@ -25,8 +25,8 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Param;
+import org.nuclearfog.twidda.backend.async.TextEmojiLoader.Result;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -43,7 +43,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.adapter.recyclerview.UserAdapter
  */
-public class UserHolder extends ViewHolder implements OnClickListener, AsyncCallback<EmojiResult> {
+public class UserHolder extends ViewHolder implements OnClickListener, AsyncCallback<Result> {
 
 	private static final int EMPTY_COLOR = 0x2F000000;
 
@@ -116,7 +116,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 
 
 	@Override
-	public void onResult(@NonNull EmojiResult result) {
+	public void onResult(@NonNull Result result) {
 		if (result.id == tagId && result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(username.getContext(), result.spannable, result.images);
 			username.setText(spannable);
@@ -145,7 +145,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		}
 		if (user.getEmojis().length > 0 && !user.getUsername().trim().isEmpty() && settings.imagesEnabled()) {
 			Spannable usernameSpan = new SpannableString(user.getUsername());
-			EmojiParam param = new EmojiParam(tagId, user.getEmojis(), usernameSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
+			Param param = new Param(tagId, user.getEmojis(), usernameSpan, username.getResources().getDimensionPixelSize(R.dimen.item_user_icon_size));
 			emojiLoader.execute(param, this);
 			username.setText(EmojiUtils.removeTags(usernameSpan));
 		} else {

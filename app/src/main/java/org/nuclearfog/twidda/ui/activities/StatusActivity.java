@@ -45,19 +45,10 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
-import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
-import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
 import org.nuclearfog.twidda.backend.async.PollAction;
-import org.nuclearfog.twidda.backend.async.PollAction.PollActionParam;
-import org.nuclearfog.twidda.backend.async.PollAction.PollActionResult;
 import org.nuclearfog.twidda.backend.async.StatusAction;
-import org.nuclearfog.twidda.backend.async.StatusAction.StatusParam;
-import org.nuclearfog.twidda.backend.async.StatusAction.StatusResult;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.TranslationLoader;
-import org.nuclearfog.twidda.backend.async.TranslationLoader.TranslationResult;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -150,12 +141,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
-	private AsyncCallback<StatusResult> statusCallback = this::onStatusResult;
-	private AsyncCallback<PollActionResult> pollResult = this::onPollResult;
-	private AsyncCallback<TranslationResult> translationResult = this::onTranslationResult;
-	private AsyncCallback<NotificationActionResult> notificationCallback = this::onNotificationResult;
-	private AsyncCallback<EmojiResult> statusTextUpdate = this::onStatusTextUpdate;
-	private AsyncCallback<EmojiResult> usernameUpdate = this::onUsernameUpdate;
+	private AsyncCallback<StatusAction.Result> statusCallback = this::onStatusResult;
+	private AsyncCallback<PollAction.Result> pollResult = this::onPollResult;
+	private AsyncCallback<TranslationLoader.Result> translationResult = this::onTranslationResult;
+	private AsyncCallback<NotificationAction.Result> notificationCallback = this::onNotificationResult;
+	private AsyncCallback<TextEmojiLoader.Result> statusTextUpdate = this::onStatusTextUpdate;
+	private AsyncCallback<TextEmojiLoader.Result> usernameUpdate = this::onUsernameUpdate;
 
 	private StatusAction statusLoader;
 	private NotificationAction notificationLoader;
@@ -271,8 +262,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			Status status = (Status) serialized;
 			Status embeddedStatus = status.getEmbeddedStatus();
 			setStatus(status);
-			StatusParam statusParam = new StatusParam(StatusParam.ONLINE, status.getId());
-			statusLoader.execute(statusParam, statusCallback);
+			StatusAction.Param param = new StatusAction.Param(StatusAction.Param.ONLINE, status.getId());
+			statusLoader.execute(param, statusCallback);
 			if (embeddedStatus != null) {
 				statusId = embeddedStatus.getId();
 				replyUsername = embeddedStatus.getAuthor().getScreenname();
@@ -286,7 +277,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// set notification data
 		else if (serialized instanceof Notification) {
 			Notification notification = (Notification) serialized;
-			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notification.getId());
+			NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notification.getId());
 			notificationLoader.execute(notificationParam, notificationCallback);
 			if (notification.getStatus() != null) {
 				setNotification(notification);
@@ -297,13 +288,13 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// get status data using status ID
 		else if (statusId != 0L) {
 			replyUsername = savedInstanceState.getString(KEY_NAME);
-			StatusParam statusParam = new StatusParam(StatusParam.DATABASE, statusId);
-			statusLoader.execute(statusParam, statusCallback);
+			StatusAction.Param param = new StatusAction.Param(StatusAction.Param.DATABASE, statusId);
+			statusLoader.execute(param, statusCallback);
 		}
 		// get notification data using notification ID
 		else if (notificationId != 0L) {
 			replyUsername = savedInstanceState.getString(KEY_NAME);
-			NotificationActionParam notificationParam = new NotificationActionParam(NotificationActionParam.ONLINE, notificationId);
+			NotificationAction.Param notificationParam = new NotificationAction.Param(NotificationAction.Param.ONLINE, notificationId);
 			notificationLoader.execute(notificationParam, notificationCallback);
 		}
 		// initialize status reply list
@@ -440,15 +431,15 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		// add/remove bookmark
 		else if (item.getItemId() == R.id.menu_status_bookmark) {
 			Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-			int mode = status.isBookmarked() ? StatusParam.UNBOOKMARK : StatusParam.BOOKMARK;
-			StatusParam param = new StatusParam(mode, status.getId());
+			int mode = status.isBookmarked() ? StatusAction.Param.UNBOOKMARK : StatusAction.Param.BOOKMARK;
+			StatusAction.Param param = new StatusAction.Param(mode, status.getId());
 			statusLoader.execute(param, statusCallback);
 			return true;
 		}
 		// hide status
 		else if (item.getItemId() == R.id.menu_status_hide) {
-			int mode = hidden ? StatusParam.UNHIDE : StatusParam.HIDE;
-			StatusParam param = new StatusParam(mode, status.getId());
+			int mode = hidden ? StatusAction.Param.UNHIDE : StatusAction.Param.HIDE;
+			StatusAction.Param param = new StatusAction.Param(mode, status.getId());
 			statusLoader.execute(param, statusCallback);
 			return true;
 		}
@@ -604,16 +595,16 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// repost this status
 			if (v.getId() == R.id.page_status_repost) {
 				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-				int mode = status.isReposted() ? StatusParam.UNREPOST : StatusParam.REPOST;
-				StatusParam param = new StatusParam(mode, status.getId());
+				int mode = status.isReposted() ? StatusAction.Param.UNREPOST : StatusAction.Param.REPOST;
+				StatusAction.Param param = new StatusAction.Param(mode, status.getId());
 				statusLoader.execute(param, statusCallback);
 				return true;
 			}
 			// favorite this status
 			else if (v.getId() == R.id.page_status_favorite) {
 				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-				int mode = status.isFavorited() ? StatusParam.UNFAVORITE : StatusParam.FAVORITE;
-				StatusParam param = new StatusParam(mode, status.getId());
+				int mode = status.isFavorited() ? StatusAction.Param.UNFAVORITE : StatusAction.Param.FAVORITE;
+				StatusAction.Param param = new StatusAction.Param(mode, status.getId());
 				statusLoader.execute(param, statusCallback);
 				return true;
 			}
@@ -655,7 +646,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				if (status.getEmbeddedStatus() != null) {
 					id = status.getEmbeddedStatus().getId();
 				}
-				StatusParam param = new StatusParam(StatusParam.DELETE, id);
+				StatusAction.Param param = new StatusAction.Param(StatusAction.Param.DELETE, id);
 				statusLoader.execute(param, statusCallback);
 			}
 		}
@@ -728,7 +719,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onVoteClick(Poll poll, int[] selection) {
 		if (pollLoader.isIdle()) {
-			PollActionParam param = new PollActionParam(PollActionParam.VOTE, poll, selection);
+			PollAction.Param param = new PollAction.Param(PollAction.Param.VOTE, poll, selection);
 			pollLoader.execute(param, pollResult);
 		}
 	}
@@ -797,7 +788,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (status.getAuthor().getEmojis().length > 0) {
 			Spannable usernameSpan = new SpannableString(author.getUsername());
 			if (settings.imagesEnabled()) {
-				EmojiParam param = new EmojiParam(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+				TextEmojiLoader.Param param = new TextEmojiLoader.Param(author.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
 				emojiLoader.execute(param, usernameUpdate);
 				usernameSpan = EmojiUtils.removeTags(usernameSpan);
 			}
@@ -817,7 +808,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if (!status.getText().isEmpty()) {
 			Spannable spannableText = Tagger.makeTextWithLinks(status.getText(), settings.getHighlightColor(), this);
 			if (status.getEmojis().length > 0 && settings.imagesEnabled()) {
-				EmojiParam param = new EmojiParam(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
+				TextEmojiLoader.Param param = new TextEmojiLoader.Param(status.getEmojis(), spannableText, getResources().getDimensionPixelSize(R.dimen.page_status_icon_size));
 				emojiLoader.execute(param, statusTextUpdate);
 				spannableText = EmojiUtils.removeTags(spannableText);
 			}
@@ -918,61 +909,61 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 *
 	 */
-	private void onStatusResult(@NonNull StatusResult result) {
+	private void onStatusResult(@NonNull StatusAction.Result result) {
 		if (result.status != null) {
 			setStatus(result.status);
 		}
 		switch (result.mode) {
-			case StatusResult.DATABASE:
+			case StatusAction.Result.DATABASE:
 				if (result.status != null) {
-					StatusParam param = new StatusParam(StatusParam.ONLINE, result.status.getId());
+					StatusAction.Param param = new StatusAction.Param(StatusAction.Param.ONLINE, result.status.getId());
 					statusLoader.execute(param, statusCallback);
 				}
 				break;
 
-			case StatusResult.REPOST:
+			case StatusAction.Result.REPOST:
 				Toast.makeText(getApplicationContext(), R.string.info_status_reposted, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.UNREPOST:
+			case StatusAction.Result.UNREPOST:
 				Toast.makeText(getApplicationContext(), R.string.info_status_unreposted, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.FAVORITE:
+			case StatusAction.Result.FAVORITE:
 				if (settings.likeEnabled())
 					Toast.makeText(getApplicationContext(), R.string.info_status_liked, Toast.LENGTH_SHORT).show();
 				else
 					Toast.makeText(getApplicationContext(), R.string.info_status_favored, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.UNFAVORITE:
+			case StatusAction.Result.UNFAVORITE:
 				if (settings.likeEnabled())
 					Toast.makeText(getApplicationContext(), R.string.info_status_unliked, Toast.LENGTH_SHORT).show();
 				else
 					Toast.makeText(getApplicationContext(), R.string.info_status_unfavored, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.BOOKMARK:
+			case StatusAction.Result.BOOKMARK:
 				Toast.makeText(getApplicationContext(), R.string.info_status_bookmarked, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.UNBOOKMARK:
+			case StatusAction.Result.UNBOOKMARK:
 				Toast.makeText(getApplicationContext(), R.string.info_status_unbookmarked, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.HIDE:
+			case StatusAction.Result.HIDE:
 				hidden = true;
 				invalidateOptionsMenu();
 				Toast.makeText(getApplicationContext(), R.string.info_reply_hidden, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.UNHIDE:
+			case StatusAction.Result.UNHIDE:
 				hidden = false;
 				invalidateOptionsMenu();
 				Toast.makeText(getApplicationContext(), R.string.info_reply_unhidden, Toast.LENGTH_SHORT).show();
 				break;
 
-			case StatusResult.DELETE:
+			case StatusAction.Result.DELETE:
 				if (notification != null) {
 					Toast.makeText(getApplicationContext(), R.string.info_status_removed, Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
@@ -988,7 +979,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				}
 				break;
 
-			case StatusResult.ERROR:
+			case StatusAction.Result.ERROR:
 				ErrorUtils.showErrorMessage(this, result.exception);
 				if (status == null) {
 					finish();
@@ -1008,23 +999,23 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result notification containing status information
 	 */
-	private void onNotificationResult(@NonNull NotificationActionResult result) {
+	private void onNotificationResult(@NonNull NotificationAction.Result result) {
 		switch (result.mode) {
-			case NotificationActionResult.DATABASE:
+			case NotificationAction.Result.DATABASE:
 				if (result.notification != null) {
-					NotificationActionParam param = new NotificationActionParam(NotificationActionParam.ONLINE, result.notification.getId());
+					NotificationAction.Param param = new NotificationAction.Param(NotificationAction.Param.ONLINE, result.notification.getId());
 					notificationLoader.execute(param, notificationCallback);
 				}
 				// fall through
 
-			case NotificationActionResult.ONLINE:
+			case NotificationAction.Result.ONLINE:
 				if (result.notification != null && result.notification.getStatus() != null) {
 					notification = result.notification;
 					setStatus(result.notification.getStatus());
 				}
 				break;
 
-			case NotificationActionResult.DISMISS:
+			case NotificationAction.Result.DISMISS:
 				if (notification != null) {
 					Intent intent = new Intent();
 					intent.putExtra(KEY_NOTIFICATION_ID, notification.getId());
@@ -1034,7 +1025,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				finish();
 				break;
 
-			case NotificationActionResult.ERROR:
+			case NotificationAction.Result.ERROR:
 				ErrorUtils.showErrorMessage(this, result.exception);
 				if (notification == null) {
 					finish();
@@ -1053,22 +1044,22 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	 *
 	 * @param result poll result
 	 */
-	private void onPollResult(@NonNull PollActionResult result) {
+	private void onPollResult(@NonNull PollAction.Result result) {
 		switch (result.mode) {
-			case PollActionResult.LOAD:
+			case PollAction.Result.LOAD:
 				if (result.poll != null) {
 					adapter.updatePoll(result.poll);
 				}
 				break;
 
-			case PollActionResult.VOTE:
+			case PollAction.Result.VOTE:
 				if (result.poll != null) {
 					adapter.updatePoll(result.poll);
 					Toast.makeText(getApplicationContext(), R.string.info_poll_voted, Toast.LENGTH_SHORT).show();
 				}
 				break;
 
-			case PollActionResult.ERROR:
+			case PollAction.Result.ERROR:
 				ErrorUtils.showErrorMessage(this, result.exception);
 				break;
 		}
@@ -1077,7 +1068,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * @param result status translation result
 	 */
-	private void onTranslationResult(@NonNull TranslationResult result) {
+	private void onTranslationResult(@NonNull TranslationLoader.Result result) {
 		if (result.translation != null) {
 			Spannable textSpan = Tagger.makeTextWithLinks(result.translation.getText(), settings.getHighlightColor(), this);
 			// append translation
@@ -1095,7 +1086,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * set emojis, replace emoji tags with images
 	 */
-	private void onStatusTextUpdate(@NonNull EmojiResult result) {
+	private void onStatusTextUpdate(@NonNull TextEmojiLoader.Result result) {
 		if (result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			status_text.setText(spannable);
@@ -1105,7 +1096,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	/**
 	 * set emojis, replace emoji tags with images
 	 */
-	private void onUsernameUpdate(@NonNull EmojiResult result) {
+	private void onUsernameUpdate(@NonNull TextEmojiLoader.Result result) {
 		if (result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			username.setText(spannable);

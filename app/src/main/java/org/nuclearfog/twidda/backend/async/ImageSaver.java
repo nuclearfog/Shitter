@@ -14,11 +14,11 @@ import java.io.OutputStream;
  * @author nuclearfog
  * @see MediaActivity
  */
-public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
+public class ImageSaver extends AsyncExecutor<ImageSaver.Param, Boolean> {
 
 
 	@Override
-	protected Boolean doInBackground(@NonNull ImageParam param) {
+	protected Boolean doInBackground(@NonNull Param param) {
 		try {
 			int length;
 			byte[] buffer = new byte[4096];
@@ -36,12 +36,12 @@ public class ImageSaver extends AsyncExecutor<ImageSaver.ImageParam, Boolean> {
 	/**
 	 *
 	 */
-	public static class ImageParam {
+	public static class Param {
 
 		final InputStream inputStream;
 		final OutputStream outputStream;
 
-		public ImageParam(InputStream inputStream, OutputStream outputStream) {
+		public Param(InputStream inputStream, OutputStream outputStream) {
 			this.inputStream = inputStream;
 			this.outputStream = outputStream;
 		}

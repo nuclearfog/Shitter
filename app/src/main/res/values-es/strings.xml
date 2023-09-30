@@ -90,7 +90,6 @@
 	<string name="error_cant_reply_to_status">¡No puedes responder a este estado!</string>
 	<string name="error_corrupt_api_key">¡Error, clave de API corrupta!</string>
 	<string name="error_acc_update">¡Fallo al actualizar la cuenta! ¡Por favor, revisa lo que tecleaste!</string>
-	<string name="error_acc_loading">¡Error al cargar información de acceso!</string>
 	<string name="error_json_format">¡Errpr JSON!</string>
 	<string name="error_database_cleared">¡Error al limpiar la base de datos!</string>
 	<string name="error_result_cancelled">¡Error, se canceló el resultado!</string>

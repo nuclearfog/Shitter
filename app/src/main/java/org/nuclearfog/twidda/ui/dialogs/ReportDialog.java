@@ -18,7 +18,6 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ReportUpdater;
-import org.nuclearfog.twidda.backend.async.ReportUpdater.ReportResult;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
@@ -32,7 +31,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class ReportDialog extends Dialog implements OnClickListener, AsyncCallback<ReportResult> {
+public class ReportDialog extends Dialog implements OnClickListener, AsyncCallback<ReportUpdater.Result> {
 
 	private static final String KEY_SAVE = "reportupdate-data";
 
@@ -130,15 +129,15 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 
 
 	@Override
-	public void onResult(@NonNull ReportResult reportResult) {
-		if (reportResult.reported) {
+	public void onResult(@NonNull ReportUpdater.Result result) {
+		if (result.reported) {
 			if (update != null && update.getStatusIds().length > 0) {
 				Toast.makeText(getContext(), R.string.info_status_reported, Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getContext(), R.string.info_user_reported, Toast.LENGTH_SHORT).show();
 			}
 		} else {
-			ErrorUtils.showErrorMessage(getContext(), reportResult.exception);
+			ErrorUtils.showErrorMessage(getContext(), result.exception);
 		}
 	}
 

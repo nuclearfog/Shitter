@@ -13,8 +13,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.StatusLoader;
-import org.nuclearfog.twidda.backend.async.StatusLoader.StatusParameter;
-import org.nuclearfog.twidda.backend.async.StatusLoader.StatusResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.lists.Statuses;
@@ -29,7 +27,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class StatusFragment extends ListFragment implements StatusSelectListener, AsyncCallback<StatusResult>, ActivityResultCallback<ActivityResult> {
+public class StatusFragment extends ListFragment implements StatusSelectListener, AsyncCallback<StatusLoader.Result>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * Key to define what type of status should be loaded
@@ -143,7 +141,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				return;
 			}
 		}
-		load(StatusParameter.NO_ID, StatusParameter.NO_ID, StatusAdapter.CLEAR_LIST);
+		load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, StatusAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
@@ -188,14 +186,14 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	protected void onReset() {
 		adapter.clear();
 		statusLoader = new StatusLoader(requireContext());
-		load(StatusParameter.NO_ID, StatusParameter.NO_ID, StatusAdapter.CLEAR_LIST);
+		load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, StatusAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopItemId(), StatusParameter.NO_ID, 0);
+		load(adapter.getTopItemId(), StatusLoader.Param.NO_ID, 0);
 	}
 
 
@@ -220,9 +218,9 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 
 	@Override
-	public void onResult(@NonNull StatusResult result) {
+	public void onResult(@NonNull StatusLoader.Result result) {
 		if (result.statuses != null) {
-			if (result.position == StatusResult.CLEAR) {
+			if (result.position == StatusLoader.Result.CLEAR) {
 				adapter.replaceItems(result.statuses);
 			} else {
 				adapter.addItems(result.statuses, result.position);
@@ -244,41 +242,41 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 * @param index   index where status list should be added
 	 */
 	private void load(long sinceId, long maxId, int index) {
-		StatusParameter request;
+		StatusLoader.Param request;
 		switch (mode) {
 			case MODE_HOME:
-				request = new StatusParameter(StatusParameter.HOME, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.HOME, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_USER:
-				request = new StatusParameter(StatusParameter.USER, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.USER, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_FAVORIT:
-				request = new StatusParameter(StatusParameter.FAVORIT, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.FAVORIT, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_REPLY:
 				if (index == StatusAdapter.CLEAR_LIST)
-					request = new StatusParameter(StatusParameter.REPLIES_LOCAL, id, sinceId, maxId, index, search);
+					request = new StatusLoader.Param(StatusLoader.Param.REPLIES_LOCAL, id, sinceId, maxId, index, search);
 				else
-					request = new StatusParameter(StatusParameter.REPLIES, id, sinceId, maxId, index, search);
+					request = new StatusLoader.Param(StatusLoader.Param.REPLIES, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_SEARCH:
-				request = new StatusParameter(StatusParameter.SEARCH, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.SEARCH, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_USERLIST:
-				request = new StatusParameter(StatusParameter.USERLIST, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.USERLIST, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_PUBLIC:
-				request = new StatusParameter(StatusParameter.PUBLIC, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.PUBLIC, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_BOOKMARK:
-				request = new StatusLoader.StatusParameter(StatusParameter.BOOKMARKS, id, sinceId, maxId, index, search);
+				request = new StatusLoader.Param(StatusLoader.Param.BOOKMARKS, id, sinceId, maxId, index, search);
 				break;
 
 			default:

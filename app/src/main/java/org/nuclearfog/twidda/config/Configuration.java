@@ -24,7 +24,6 @@ public enum Configuration {
 	private final boolean searchFilterEnabled;
 	private final boolean profileLocationEnabled;
 	private final boolean profileUrlEnabled;
-	private final boolean idBlocklistEnabled;
 	private final boolean postLocationSupported;
 	private final boolean notificationDismissSupported;
 	private final boolean statusSpoilerSupported;
@@ -53,7 +52,6 @@ public enum Configuration {
 				searchFilterEnabled = false;
 				profileLocationEnabled = false;
 				profileUrlEnabled = false;
-				idBlocklistEnabled = false;
 				postLocationSupported = false;
 				notificationDismissSupported = true;
 				statusSpoilerSupported = true;
@@ -118,13 +116,6 @@ public enum Configuration {
 	 */
 	public boolean profileUrlEnabled() {
 		return profileUrlEnabled;
-	}
-
-	/**
-	 * @return true to enable user ID filtering
-	 */
-	public boolean filterlistEnabled() {
-		return idBlocklistEnabled;
 	}
 
 	/**

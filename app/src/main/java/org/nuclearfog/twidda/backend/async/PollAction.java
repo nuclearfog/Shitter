@@ -17,7 +17,7 @@ import java.util.Arrays;
  *
  * @author nuclearfog
  */
-public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAction.PollActionResult> {
+public class PollAction extends AsyncExecutor<PollAction.Param, PollAction.Result> {
 
 	private Connection connection;
 
@@ -30,29 +30,29 @@ public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAc
 
 
 	@Override
-	protected PollActionResult doInBackground(@NonNull PollActionParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case PollActionParam.LOAD:
+				case Param.LOAD:
 					Poll poll = connection.getPoll(param.poll.getId());
-					return new PollActionResult(PollActionResult.LOAD, poll, null);
+					return new Result(Result.LOAD, poll, null);
 
-				case PollActionParam.VOTE:
+				case Param.VOTE:
 					poll = connection.votePoll(param.poll, param.selection);
-					return new PollActionResult(PollActionResult.VOTE, poll, null);
+					return new Result(Result.VOTE, poll, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new PollActionResult(PollActionResult.ERROR, null, exception);
+			return new Result(Result.ERROR, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class PollActionParam {
+	public static class Param {
 
 		public static final int LOAD = 1;
 		public static final int VOTE = 2;
@@ -61,7 +61,7 @@ public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAc
 		final Poll poll;
 		final int[] selection;
 
-		public PollActionParam(int mode, Poll poll, int[] selection) {
+		public Param(int mode, Poll poll, int[] selection) {
 			this.mode = mode;
 			this.poll = poll;
 			this.selection = Arrays.copyOf(selection, selection.length);
@@ -71,7 +71,7 @@ public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAc
 	/**
 	 *
 	 */
-	public static class PollActionResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int LOAD = 3;
@@ -83,7 +83,7 @@ public class PollAction extends AsyncExecutor<PollAction.PollActionParam, PollAc
 		@Nullable
 		public final ConnectionException exception;
 
-		PollActionResult(int mode, @Nullable Poll poll, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable Poll poll, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.poll = poll;
 			this.exception = exception;

@@ -15,11 +15,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.HashtagAction;
-import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagActionParam;
-import org.nuclearfog.twidda.backend.async.HashtagAction.HashtagActionResult;
 import org.nuclearfog.twidda.backend.async.HashtagLoader;
-import org.nuclearfog.twidda.backend.async.HashtagLoader.HashtagLoaderParam;
-import org.nuclearfog.twidda.backend.async.HashtagLoader.HashtagLoaderResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.lists.Trends;
@@ -78,8 +74,8 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private AsyncCallback<HashtagActionResult> hashtagActionCallback = this::onHashtagActionResult;
-	private AsyncCallback<HashtagLoaderResult> hashtagLoaderCallback = this::onHashtagLoaderResult;
+	private AsyncCallback<HashtagAction.Result> hashtagActionCallback = this::onHashtagActionResult;
+	private AsyncCallback<HashtagLoader.Result> hashtagLoaderCallback = this::onHashtagLoaderResult;
 
 	private HashtagLoader hashtagLoader;
 	private HashtagAction hashtagAction;
@@ -116,7 +112,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 			}
 		}
 		setRefresh(true);
-		load(HashtagLoaderParam.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
+		load(HashtagLoader.Param.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
 	}
 
 
@@ -138,14 +134,14 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	protected void onReset() {
 		adapter.clear();
 		hashtagLoader = new HashtagLoader(requireContext());
-		load(HashtagLoaderParam.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
+		load(HashtagLoader.Param.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(HashtagLoaderParam.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
+		load(HashtagLoader.Param.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
 	}
 
 
@@ -207,10 +203,10 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	public void onConfirm(int type, boolean remember) {
 		if (selection != null) {
 			if (type == ConfirmDialog.UNFOLLOW_HASHTAG) {
-				HashtagActionParam param = new HashtagActionParam(HashtagActionParam.UNFOLLOW, selection.getName(), selection.getId());
+				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.UNFOLLOW, selection.getName(), selection.getId());
 				hashtagAction.execute(param, hashtagActionCallback);
 			} else if (type == ConfirmDialog.UNFEATURE_HASHTAG) {
-				HashtagActionParam param = new HashtagActionParam(HashtagActionParam.UNFEATURE, selection.getName(), selection.getId());
+				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.UNFEATURE, selection.getName(), selection.getId());
 				hashtagAction.execute(param, hashtagActionCallback);
 			}
 		}
@@ -219,14 +215,14 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	/**
 	 * callback for {@link HashtagAction}
 	 */
-	private void onHashtagActionResult(@NonNull HashtagActionResult result) {
-		if (result.mode == HashtagActionResult.UNFEATURE) {
+	private void onHashtagActionResult(@NonNull HashtagAction.Result result) {
+		if (result.mode == HashtagAction.Result.UNFEATURE) {
 			Toast.makeText(requireContext(), R.string.info_hashtag_unfeatured, Toast.LENGTH_SHORT).show();
 			adapter.removeItem(result.hashtag);
-		} else if (result.mode == HashtagActionResult.UNFOLLOW) {
+		} else if (result.mode == HashtagAction.Result.UNFOLLOW) {
 			Toast.makeText(requireContext(), R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
 			adapter.removeItem(result.hashtag);
-		} else if (result.mode == HashtagActionResult.ERROR) {
+		} else if (result.mode == HashtagAction.Result.ERROR) {
 			ErrorUtils.showErrorMessage(requireContext(), result.exception);
 		}
 	}
@@ -234,8 +230,8 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	/**
 	 * callback for {@link HashtagLoader}
 	 */
-	private void onHashtagLoaderResult(@NonNull HashtagLoaderResult result) {
-		if (result.mode == HashtagLoaderResult.ERROR) {
+	private void onHashtagLoaderResult(@NonNull HashtagLoader.Result result) {
+		if (result.mode == HashtagLoader.Result.ERROR) {
 			if (getContext() != null) {
 				ErrorUtils.showErrorMessage(getContext(), result.exception);
 			}
@@ -250,29 +246,29 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	 * load content into the list
 	 */
 	private void load(long cursor, int index) {
-		HashtagLoaderParam param;
+		HashtagLoader.Param param;
 		switch (mode) {
 			case MODE_POPULAR:
 				if (adapter.isEmpty()) {
-					param = new HashtagLoaderParam(HashtagLoaderParam.POPULAR_OFFLINE, index, search, cursor);
+					param = new HashtagLoader.Param(HashtagLoader.Param.POPULAR_OFFLINE, index, search, cursor);
 				} else {
-					param = new HashtagLoaderParam(HashtagLoaderParam.POPULAR_ONLINE, index, search, cursor);
+					param = new HashtagLoader.Param(HashtagLoader.Param.POPULAR_ONLINE, index, search, cursor);
 				}
 				hashtagLoader.execute(param, hashtagLoaderCallback);
 				break;
 
 			case MODE_FOLLOW:
-				param = new HashtagLoaderParam(HashtagLoaderParam.FOLLOWING, index, search, cursor);
+				param = new HashtagLoader.Param(HashtagLoader.Param.FOLLOWING, index, search, cursor);
 				hashtagLoader.execute(param, hashtagLoaderCallback);
 				break;
 
 			case MODE_FEATURE:
-				param = new HashtagLoaderParam(HashtagLoaderParam.FEATURING, index, search, cursor);
+				param = new HashtagLoader.Param(HashtagLoader.Param.FEATURING, index, search, cursor);
 				hashtagLoader.execute(param, hashtagLoaderCallback);
 				break;
 
 			case MODE_SEARCH:
-				param = new HashtagLoaderParam(HashtagLoaderParam.SEARCH, index, search, cursor);
+				param = new HashtagLoader.Param(HashtagLoader.Param.SEARCH, index, search, cursor);
 				hashtagLoader.execute(param, hashtagLoaderCallback);
 				break;
 		}

@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderParam;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderResult;
 import org.nuclearfog.twidda.backend.async.PushUpdater;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -18,7 +16,7 @@ import org.unifiedpush.android.connector.MessagingReceiver;
  *
  * @author nuclearfog
  */
-public class PushNotificationReceiver extends MessagingReceiver implements AsyncCallback<NotificationLoaderResult> {
+public class PushNotificationReceiver extends MessagingReceiver implements AsyncCallback<NotificationLoader.Result> {
 
 	private PushNotification notificationManager;
 
@@ -28,7 +26,7 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 		GlobalSettings settings = GlobalSettings.get(context);
 		if (settings.isLoggedIn() && settings.getLogin().getConfiguration().isWebpushSupported() && settings.pushEnabled()) {
 			NotificationLoader loader = new NotificationLoader(context);
-			NotificationLoaderParam param = new NotificationLoaderParam(NotificationLoaderParam.LOAD_UNREAD, 0, 0L, 0L);
+			NotificationLoader.Param param = new NotificationLoader.Param(NotificationLoader.Param.LOAD_UNREAD, 0, 0L, 0L);
 			notificationManager = new PushNotification(context);
 			loader.execute(param, this);
 		}
@@ -46,7 +44,7 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 
 
 	@Override
-	public void onResult(@NonNull NotificationLoaderResult result) {
+	public void onResult(@NonNull NotificationLoader.Result result) {
 		if (result.notifications != null && !result.notifications.isEmpty()) {
 			if (notificationManager != null) {
 				notificationManager.createNotification(result.notifications);

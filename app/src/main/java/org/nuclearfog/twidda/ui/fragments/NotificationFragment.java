@@ -14,11 +14,9 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
-import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionParam;
-import org.nuclearfog.twidda.backend.async.NotificationAction.NotificationActionResult;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderParam;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.NotificationLoaderResult;
+import org.nuclearfog.twidda.backend.async.NotificationLoader.Param;
+import org.nuclearfog.twidda.backend.async.NotificationLoader.Result;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.User;
@@ -47,8 +45,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
-	private AsyncCallback<NotificationActionResult> notificationActionCallback = this::onDismiss;
-	private AsyncCallback<NotificationLoaderResult> notificationLoaderCallback = this::onResult;
+	private AsyncCallback<NotificationAction.Result> notificationActionCallback = this::onDismiss;
+	private AsyncCallback<Result> notificationLoaderCallback = this::onResult;
 
 	private NotificationLoader notificationLoader;
 	private NotificationAction notificationAction;
@@ -175,14 +173,14 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.NOTIFICATION_DISMISS) {
 			if (select != null) {
-				NotificationActionParam param = new NotificationActionParam(NotificationActionParam.DISMISS, select.getId());
+				NotificationAction.Param param = new NotificationAction.Param(NotificationAction.Param.DISMISS, select.getId());
 				notificationAction.execute(param, notificationActionCallback);
 			}
 		}
 	}
 
 
-	private void onResult(@NonNull NotificationLoaderResult result) {
+	private void onResult(@NonNull Result result) {
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
 		} else {
@@ -197,10 +195,10 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	/**
 	 *
 	 */
-	private void onDismiss(@NonNull NotificationActionResult result) {
-		if (result.mode == NotificationActionResult.DISMISS) {
+	private void onDismiss(@NonNull NotificationAction.Result result) {
+		if (result.mode == NotificationAction.Result.DISMISS) {
 			adapter.removeItem(result.id);
-		} else if (result.mode == NotificationActionResult.ERROR) {
+		} else if (result.mode == NotificationAction.Result.ERROR) {
 			if (getContext() != null) {
 				ErrorUtils.showErrorMessage(getContext(), result.exception);
 			}
@@ -216,7 +214,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * @param pos   index to insert the new items
 	 */
 	private void load(long minId, long maxId, int pos) {
-		NotificationLoaderParam param = new NotificationLoaderParam(NotificationLoaderParam.LOAD_ALL, pos, minId, maxId);
+		Param param = new Param(Param.LOAD_ALL, pos, minId, maxId);
 		notificationLoader.execute(param, notificationLoaderCallback);
 	}
 }

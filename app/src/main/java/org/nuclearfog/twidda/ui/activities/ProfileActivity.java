@@ -38,17 +38,9 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DomainAction;
-import org.nuclearfog.twidda.backend.async.DomainAction.DomainParam;
-import org.nuclearfog.twidda.backend.async.DomainAction.DomainResult;
 import org.nuclearfog.twidda.backend.async.RelationLoader;
-import org.nuclearfog.twidda.backend.async.RelationLoader.RelationParam;
-import org.nuclearfog.twidda.backend.async.RelationLoader.RelationResult;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiParam;
-import org.nuclearfog.twidda.backend.async.TextEmojiLoader.EmojiResult;
 import org.nuclearfog.twidda.backend.async.UserLoader;
-import org.nuclearfog.twidda.backend.async.UserLoader.UserParam;
-import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -116,11 +108,11 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 */
 	private static final int IMAGE_PLACEHOLDER_COLOR = 0x2F000000;
 
-	private AsyncCallback<DomainResult> domainCallback = this::setDomainResult;
-	private AsyncCallback<RelationResult> relationCallback = this::setRelationResult;
-	private AsyncCallback<UserResult> userCallback = this::setUserResult;
-	private AsyncCallback<EmojiResult> usernameUpdate = this::onUsernameUpdate;
-	private AsyncCallback<EmojiResult> userDescriptionUpdate = this::onUserDescriptionUpdate;
+	private AsyncCallback<DomainAction.Result> domainCallback = this::setDomainResult;
+	private AsyncCallback<RelationLoader.Result> relationCallback = this::setRelationResult;
+	private AsyncCallback<UserLoader.Result> userCallback = this::setUserResult;
+	private AsyncCallback<TextEmojiLoader.Result> usernameUpdate = this::onUsernameUpdate;
+	private AsyncCallback<TextEmojiLoader.Result> userDescriptionUpdate = this::onUserDescriptionUpdate;
 
 	private ProfileAdapter adapter;
 	private GlobalSettings settings;
@@ -238,14 +230,14 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		// set user/relation data and initialize loaders
 		if (user != null) {
 			setUser(user);
-			UserParam param = new UserParam(UserParam.ONLINE, userId);
+			UserLoader.Param param = new UserLoader.Param(UserLoader.Param.ONLINE, userId);
 			userLoader.execute(param, userCallback);
 		} else {
-			UserParam param = new UserParam(UserParam.DATABASE, userId);
+			UserLoader.Param param = new UserLoader.Param(UserLoader.Param.DATABASE, userId);
 			userLoader.execute(param, userCallback);
 		}
 		if (relation == null && userId != settings.getLogin().getId()) {
-			RelationParam param = new RelationParam(userId, RelationParam.LOAD);
+			RelationLoader.Param param = new RelationLoader.Param(userId, RelationLoader.Param.LOAD);
 			relationLoader.execute(param, relationCallback);
 		}
 		if (userId != settings.getLogin().getId()) {
@@ -363,7 +355,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			if (relation != null && user != null) {
 				if (!relation.isFollowing()) {
 					if (relationLoader.isIdle()) {
-						RelationParam param = new RelationParam(user.getId(), RelationParam.FOLLOW);
+						RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.FOLLOW);
 						relationLoader.execute(param, relationCallback);
 					}
 				} else {
@@ -377,7 +369,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			if (relation != null && user != null) {
 				if (relation.isMuted()) {
 					if (relationLoader.isIdle()) {
-						RelationParam param = new RelationParam(user.getId(), RelationParam.UNMUTE);
+						RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.UNMUTE);
 						relationLoader.execute(param, relationCallback);
 					}
 				} else {
@@ -391,7 +383,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			if (relation != null && user != null) {
 				if (relation.isBlocked()) {
 					if (relationLoader.isIdle()) {
-						RelationParam param = new RelationParam(user.getId(), RelationParam.UNBLOCK);
+						RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.UNBLOCK);
 						relationLoader.execute(param, relationCallback);
 					}
 				} else {
@@ -504,23 +496,23 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		if (user != null) {
 			// confirmed unfollowing user
 			if (type == ConfirmDialog.PROFILE_UNFOLLOW) {
-				RelationParam param = new RelationParam(user.getId(), RelationParam.UNFOLLOW);
+				RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.UNFOLLOW);
 				relationLoader.execute(param, relationCallback);
 			}
 			// confirmed blocking user
 			else if (type == ConfirmDialog.PROFILE_BLOCK) {
-				RelationParam param = new RelationParam(user.getId(), RelationParam.BLOCK);
+				RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.BLOCK);
 				relationLoader.execute(param, relationCallback);
 			}
 			// confirmed muting user
 			else if (type == ConfirmDialog.PROFILE_MUTE) {
-				RelationParam param = new RelationParam(user.getId(), RelationParam.MUTE);
+				RelationLoader.Param param = new RelationLoader.Param(user.getId(), RelationLoader.Param.MUTE);
 				relationLoader.execute(param, relationCallback);
 			}
 			// confirmed domain block
 			else if (type == ConfirmDialog.DOMAIN_BLOCK_ADD) {
 				String url = Uri.parse(user.getProfileUrl()).getHost();
-				DomainParam param = new DomainParam(DomainParam.MODE_BLOCK, 0, DomainParam.NO_CURSOR, url);
+				DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_BLOCK, 0, DomainAction.Param.NO_CURSOR, url);
 				domainAction.execute(param, domainCallback);
 			}
 		}
@@ -553,22 +545,22 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 *
 	 * @param result user result from async executor
 	 */
-	private void setUserResult(@NonNull UserResult result) {
+	private void setUserResult(@NonNull UserLoader.Result result) {
 		switch (result.mode) {
-			case UserResult.DATABASE:
+			case UserLoader.Result.DATABASE:
 				if (result.user != null) {
-					UserParam param = new UserParam(UserParam.ONLINE, result.user.getId());
+					UserLoader.Param param = new UserLoader.Param(UserLoader.Param.ONLINE, result.user.getId());
 					userLoader.execute(param, userCallback);
 				}
 				// fall through
 
-			case UserResult.ONLINE:
+			case UserLoader.Result.ONLINE:
 				if (result.user != null) {
 					setUser(result.user);
 				}
 				break;
 
-			case UserResult.ERROR:
+			case UserLoader.Result.ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				if (user == null || (result.exception != null
 						&& (result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND
@@ -584,33 +576,33 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	 *
 	 * @param result relation result from async executor
 	 */
-	private void setRelationResult(@NonNull RelationResult result) {
+	private void setRelationResult(@NonNull RelationLoader.Result result) {
 		switch (result.mode) {
-			case RelationResult.BLOCK:
+			case RelationLoader.Result.BLOCK:
 				Toast.makeText(getApplicationContext(), R.string.info_blocked, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationResult.UNBLOCK:
+			case RelationLoader.Result.UNBLOCK:
 				Toast.makeText(getApplicationContext(), R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationResult.MUTE:
+			case RelationLoader.Result.MUTE:
 				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationResult.UNMUTE:
+			case RelationLoader.Result.UNMUTE:
 				Toast.makeText(getApplicationContext(), R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationResult.FOLLOW:
+			case RelationLoader.Result.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_followed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationResult.UNFOLLOW:
+			case RelationLoader.Result.UNFOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_unfollowed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case RelationResult.ERROR:
+			case RelationLoader.Result.ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}
@@ -623,10 +615,10 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	/**
 	 * set domain block result
 	 */
-	private void setDomainResult(DomainResult result) {
-		if (result.mode == DomainResult.MODE_BLOCK) {
+	private void setDomainResult(DomainAction.Result result) {
+		if (result.mode == DomainAction.Result.MODE_BLOCK) {
 			Toast.makeText(getApplicationContext(), R.string.info_domain_blocked, Toast.LENGTH_SHORT).show();
-		} else if (result.mode == DomainResult.ERROR) {
+		} else if (result.mode == DomainAction.Result.ERROR) {
 			ErrorUtils.showErrorMessage(this, result.exception);
 		}
 	}
@@ -735,12 +727,12 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		if (settings.imagesEnabled() && user.getEmojis().length > 0) {
 			if (!user.getUsername().isEmpty()) {
 				SpannableString usernameSpan = new SpannableString(user.getUsername());
-				EmojiParam param = new EmojiParam(user.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
+				TextEmojiLoader.Param param = new TextEmojiLoader.Param(user.getEmojis(), usernameSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
 				emojiLoader.execute(param, usernameUpdate);
 			}
 			if (!user.getDescription().trim().isEmpty()) {
 				Spannable descriptionSpan = new SpannableString(user.getDescription());
-				EmojiParam param = new EmojiParam(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
+				TextEmojiLoader.Param param = new TextEmojiLoader.Param(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
 				emojiLoader.execute(param, userDescriptionUpdate);
 			}
 		}
@@ -752,7 +744,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	/**
 	 * update username with emojis
 	 */
-	private void onUsernameUpdate(@NonNull EmojiResult result) {
+	private void onUsernameUpdate(@NonNull TextEmojiLoader.Result result) {
 		if (result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			username.setText(spannable);
@@ -762,7 +754,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	/**
 	 * update user description with emojis
 	 */
-	private void onUserDescriptionUpdate(@NonNull EmojiResult result) {
+	private void onUserDescriptionUpdate(@NonNull TextEmojiLoader.Result result) {
 		if (result.images != null) {
 			Spannable spannable = EmojiUtils.addEmojis(getApplicationContext(), result.spannable, result.images);
 			description.setText(spannable);

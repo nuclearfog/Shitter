@@ -21,8 +21,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserFilterAction;
-import org.nuclearfog.twidda.backend.async.UserFilterAction.FilterParam;
-import org.nuclearfog.twidda.backend.async.UserFilterAction.FilterResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -37,7 +35,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class UsersActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, AsyncCallback<FilterResult> {
+public class UsersActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, AsyncCallback<UserFilterAction.Result> {
 
 	/**
 	 * type of users to get from the source
@@ -237,21 +235,21 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			return false;
 		if (viewPager.getCurrentItem() == 0) {
 			if (USERNAME_PATTERN.matcher(query).matches()) {
-				FilterParam param = new FilterParam(FilterParam.MUTE_USER, query);
+				UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.MUTE_USER, query);
 				filterLoader.execute(param, this);
 				return true;
 			}
 			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
 		} else if (viewPager.getCurrentItem() == 1) {
 			if (USERNAME_PATTERN.matcher(query).matches()) {
-				FilterParam param = new FilterParam(FilterParam.BLOCK_USER, query);
+				UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.BLOCK_USER, query);
 				filterLoader.execute(param, this);
 				return true;
 			}
 			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
 		} else if (viewPager.getCurrentItem() == 2) {
 			if (Patterns.WEB_URL.matcher(query).matches()) {
-				FilterParam param = new FilterParam(FilterParam.BLOCK_DOMAIN, Uri.parse(query).getHost());
+				UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.BLOCK_DOMAIN, Uri.parse(query).getHost());
 				filterLoader.execute(param, this);
 				return true;
 			}
@@ -268,21 +266,21 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	public void onResult(@NonNull FilterResult result) {
+	public void onResult(@NonNull UserFilterAction.Result result) {
 		switch (result.mode) {
-			case FilterResult.MUTE_USER:
+			case UserFilterAction.Result.MUTE_USER:
 				Toast.makeText(getApplicationContext(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
-			case FilterResult.BLOCK_DOMAIN:
-			case FilterResult.BLOCK_USER:
+			case UserFilterAction.Result.BLOCK_DOMAIN:
+			case UserFilterAction.Result.BLOCK_USER:
 				Toast.makeText(getApplicationContext(), R.string.info_blocked, Toast.LENGTH_SHORT).show();
 				invalidateOptionsMenu();
 				break;
 
 			default:
-			case FilterResult.ERROR:
+			case UserFilterAction.Result.ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}

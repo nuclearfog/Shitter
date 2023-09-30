@@ -17,7 +17,7 @@ import org.nuclearfog.twidda.ui.fragments.UserListFragment;
  * @author nuclearfog
  * @see UserListFragment
  */
-public class UserlistLoader extends AsyncExecutor<UserlistLoader.UserlistParam, UserlistLoader.UserlistResult> {
+public class UserlistLoader extends AsyncExecutor<UserlistLoader.Param, UserlistLoader.Result> {
 
 	private Connection connection;
 
@@ -30,29 +30,29 @@ public class UserlistLoader extends AsyncExecutor<UserlistLoader.UserlistParam, 
 
 
 	@Override
-	protected UserlistResult doInBackground(@NonNull UserlistParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case UserlistParam.OWNERSHIP:
+				case Param.OWNERSHIP:
 					UserLists userlists = connection.getUserlistOwnerships(param.id, param.cursor);
-					return new UserlistResult(UserlistResult.OWNERSHIP, param.index, userlists, null);
+					return new Result(Result.OWNERSHIP, param.index, userlists, null);
 
-				case UserlistParam.MEMBERSHIP:
+				case Param.MEMBERSHIP:
 					userlists = connection.getUserlistMemberships(param.id, param.cursor);
-					return new UserlistResult(UserlistResult.MEMBERSHIP, param.index, userlists, null);
+					return new Result(Result.MEMBERSHIP, param.index, userlists, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new UserlistResult(UserlistResult.ERROR, param.index, null, exception);
+			return new Result(Result.ERROR, param.index, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class UserlistParam {
+	public static class Param {
 
 		public static final long NO_CURSOR = -1L;
 
@@ -62,7 +62,7 @@ public class UserlistLoader extends AsyncExecutor<UserlistLoader.UserlistParam, 
 		final int mode, index;
 		final long id, cursor;
 
-		public UserlistParam(int mode, int index, long id, long cursor) {
+		public Param(int mode, int index, long id, long cursor) {
 			this.mode = mode;
 			this.id = id;
 			this.index = index;
@@ -73,7 +73,7 @@ public class UserlistLoader extends AsyncExecutor<UserlistLoader.UserlistParam, 
 	/**
 	 *
 	 */
-	public static class UserlistResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int OWNERSHIP = 3;
@@ -85,7 +85,7 @@ public class UserlistLoader extends AsyncExecutor<UserlistLoader.UserlistParam, 
 		@Nullable
 		public final ConnectionException exception;
 
-		UserlistResult(int mode, int index, @Nullable UserLists userlists, @Nullable ConnectionException exception) {
+		Result(int mode, int index, @Nullable UserLists userlists, @Nullable ConnectionException exception) {
 			this.userlists = userlists;
 			this.exception = exception;
 			this.mode = mode;

@@ -10,10 +10,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.StatusFilterAction;
-import org.nuclearfog.twidda.backend.async.StatusFilterAction.FilterActionParam;
-import org.nuclearfog.twidda.backend.async.StatusFilterAction.FilterActionResult;
 import org.nuclearfog.twidda.backend.async.StatusFilterLoader;
-import org.nuclearfog.twidda.backend.async.StatusFilterLoader.FilterLoaderResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.FilterAdapter;
@@ -30,8 +27,8 @@ import org.nuclearfog.twidda.ui.dialogs.FilterDialog.FilterDialogCallback;
  */
 public class FilterFragment extends ListFragment implements OnFilterClickListener, OnConfirmListener, FilterDialogCallback {
 
-	private AsyncCallback<FilterLoaderResult> filterLoadCallback = this::onFilterLoaded;
-	private AsyncCallback<FilterActionResult> filterRemoveCallback = this::onFilterRemoved;
+	private AsyncCallback<StatusFilterLoader.Result> filterLoadCallback = this::onFilterLoaded;
+	private AsyncCallback<StatusFilterAction.Result> filterRemoveCallback = this::onFilterRemoved;
 
 	private FilterAdapter adapter;
 	private StatusFilterLoader filterLoader;
@@ -99,7 +96,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	@Override
 	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.FILTER_REMOVE) {
-			FilterActionParam param = new FilterActionParam(FilterActionParam.DELETE, selection.getId(), null);
+			StatusFilterAction.Param param = new StatusFilterAction.Param(StatusFilterAction.Param.DELETE, selection.getId(), null);
 			filterAction.execute(param, filterRemoveCallback);
 		}
 	}
@@ -125,7 +122,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	/**
 	 *
 	 */
-	private void onFilterLoaded(FilterLoaderResult result) {
+	private void onFilterLoaded(StatusFilterLoader.Result result) {
 		if (result.filters != null) {
 			adapter.replaceItems(result.filters);
 		} else if (result.exception != null && getContext() != null) {
@@ -137,13 +134,13 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	/**
 	 *
 	 */
-	private void onFilterRemoved(FilterActionResult result) {
-		if (result.mode == FilterActionResult.DELETE) {
+	private void onFilterRemoved(StatusFilterAction.Result result) {
+		if (result.mode == StatusFilterAction.Result.DELETE) {
 			adapter.removeItem(result.id);
 			if (getContext() != null) {
 				Toast.makeText(requireContext(), R.string.info_filter_removed, Toast.LENGTH_SHORT).show();
 			}
-		} else if (result.mode == FilterActionResult.ERROR) {
+		} else if (result.mode == StatusFilterAction.Result.ERROR) {
 			if (getContext() != null) {
 				ErrorUtils.showErrorMessage(requireContext(), result.exception);
 			}

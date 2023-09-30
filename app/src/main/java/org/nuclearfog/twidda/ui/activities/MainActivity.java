@@ -39,8 +39,8 @@ import com.squareup.picasso.Transformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserLoader;
-import org.nuclearfog.twidda.backend.async.UserLoader.UserParam;
-import org.nuclearfog.twidda.backend.async.UserLoader.UserResult;
+import org.nuclearfog.twidda.backend.async.UserLoader.Param;
+import org.nuclearfog.twidda.backend.async.UserLoader.Result;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -63,7 +63,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  */
 public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener,
-		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<UserResult> {
+		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<Result> {
 
 	/**
 	 * Bundle key used to select page
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		}
 		// load user information
 		if (settings.isLoggedIn() && currentUser == null) {
-			UserParam param = new UserParam(UserParam.DATABASE, settings.getLogin().getId());
+			Param param = new Param(Param.DATABASE, settings.getLogin().getId());
 			userLoader.execute(param, this);
 		}
 		// set navigation view style
@@ -457,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onResult(@NonNull UserResult userResult) {
+	public void onResult(@NonNull Result userResult) {
 		if (userResult.user != null) {
 			setCurrentUser(userResult.user);
 		}

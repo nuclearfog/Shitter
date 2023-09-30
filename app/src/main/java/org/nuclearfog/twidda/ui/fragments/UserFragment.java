@@ -15,10 +15,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserlistManager;
-import org.nuclearfog.twidda.backend.async.UserlistManager.ListManagerResult;
 import org.nuclearfog.twidda.backend.async.UsersLoader;
-import org.nuclearfog.twidda.backend.async.UsersLoader.UserParam;
-import org.nuclearfog.twidda.backend.async.UsersLoader.UserResult;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Users;
@@ -35,7 +32,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class UserFragment extends ListFragment implements UserClickListener, OnConfirmListener, AsyncCallback<UserResult>, ActivityResultCallback<ActivityResult> {
+public class UserFragment extends ListFragment implements UserClickListener, OnConfirmListener, AsyncCallback<UsersLoader.Result>, ActivityResultCallback<ActivityResult> {
 
 	/**
 	 * key to set the type of user list to show
@@ -149,7 +146,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
-	private AsyncCallback<ListManagerResult> userlistUpdate = this::updateUsers;
+	private AsyncCallback<UserlistManager.Result> userlistUpdate = this::updateUsers;
 
 	private ConfirmDialog confirmDialog;
 	private UsersLoader userLoader;
@@ -187,7 +184,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 			}
 		}
 		setRefresh(true);
-		load(UserParam.NO_CURSOR, UserAdapter.CLEAR_LIST);
+		load(UsersLoader.Param.NO_CURSOR, UserAdapter.CLEAR_LIST);
 	}
 
 
@@ -223,14 +220,14 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		adapter.clear();
 		userLoader = new UsersLoader(requireContext());
 		userlistManager = new UserlistManager(requireContext());
-		load(UserParam.NO_CURSOR, UserAdapter.CLEAR_LIST);
+		load(UsersLoader.Param.NO_CURSOR, UserAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(UserParam.NO_CURSOR, UserAdapter.CLEAR_LIST);
+		load(UsersLoader.Param.NO_CURSOR, UserAdapter.CLEAR_LIST);
 	}
 
 
@@ -264,7 +261,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 
 	@Override
-	public void onResult(@NonNull UserResult result) {
+	public void onResult(@NonNull UsersLoader.Result result) {
 		if (result.users != null) {
 			adapter.addItems(result.users, result.index);
 		} else {
@@ -282,7 +279,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		// remove user from list
 		if (type == ConfirmDialog.LIST_REMOVE_USER) {
 			if (userlistManager.isIdle() && selectedUser != null) {
-				UserlistManager.ListManagerParam param = new UserlistManager.ListManagerParam(UserlistManager.ListManagerParam.REMOVE, id, selectedUser.getScreenname());
+				UserlistManager.Param param = new UserlistManager.Param(UserlistManager.Param.REMOVE, id, selectedUser.getScreenname());
 				userlistManager.execute(param, userlistUpdate);
 			}
 		}
@@ -291,8 +288,8 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	/**
 	 * callback for userlist changes
 	 */
-	private void updateUsers(ListManagerResult result) {
-		if (result.mode == ListManagerResult.DEL_USER) {
+	private void updateUsers(UserlistManager.Result result) {
+		if (result.mode == UserlistManager.Result.DEL_USER) {
 			if (selectedUser != null) {
 				String info = getString(R.string.info_user_removed, selectedUser.getScreenname());
 				Toast.makeText(requireContext(), info, Toast.LENGTH_SHORT).show();
@@ -307,50 +304,50 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	 * @param cursor cursor of the list
 	 */
 	private void load(long cursor, int index) {
-		UserParam param;
+		UsersLoader.Param param;
 		switch (mode) {
 			case MODE_FOLLOWER:
-				param = new UserParam(UserParam.FOLLOWS, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.FOLLOWS, index, id, cursor, search);
 				break;
 
 			case MODE_FOLLOWING:
-				param = new UserParam(UserParam.FRIENDS, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.FRIENDS, index, id, cursor, search);
 				break;
 
 			case MODE_REPOSTER:
-				param = new UserParam(UserParam.REPOST, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.REPOST, index, id, cursor, search);
 				break;
 
 			case MODE_FAVORITER:
-				param = new UserParam(UserParam.FAVORIT, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.FAVORIT, index, id, cursor, search);
 				break;
 
 			case MODE_SEARCH:
-				param = new UserParam(UserParam.SEARCH, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.SEARCH, index, id, cursor, search);
 				break;
 
 			case MODE_LIST_SUBSCRIBER:
-				param = new UserParam(UserParam.SUBSCRIBER, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.SUBSCRIBER, index, id, cursor, search);
 				break;
 
 			case MODE_LIST_MEMBER:
-				param = new UserParam(UserParam.LISTMEMBER, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.LISTMEMBER, index, id, cursor, search);
 				break;
 
 			case MODE_BLOCKS:
-				param = new UserParam(UserParam.BLOCK, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.BLOCK, index, id, cursor, search);
 				break;
 
 			case MODE_MUTES:
-				param = new UserParam(UserParam.MUTE, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.MUTE, index, id, cursor, search);
 				break;
 
 			case MODE_FOLLOW_OUTGOING:
-				param = new UserParam(UserParam.REQUEST_OUT, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.REQUEST_OUT, index, id, cursor, search);
 				break;
 
 			case MODE_FOLLOW_INCOMING:
-				param = new UserParam(UserParam.REQUEST_IN, index, id, cursor, search);
+				param = new UsersLoader.Param(UsersLoader.Param.REQUEST_IN, index, id, cursor, search);
 				break;
 
 			default:

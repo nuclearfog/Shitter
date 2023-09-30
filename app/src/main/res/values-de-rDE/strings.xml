@@ -181,7 +181,6 @@
 	<string name="settings_icon_color">Symbolfarbe</string>
 	<string name="settings_key1_hint">Consumer Key</string>
 	<string name="settings_key2_hint">Consumer Secret</string>
-	<string name="error_acc_loading">Fehler beim Abrufen!</string>
 	<string name="info_location_pending">Ortung läuft, bitte warten.</string>
 	<string name="error_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
 	<string name="button_share">Link teilen</string>
@@ -359,4 +358,10 @@
 	<string name="dialog_description_title">Medienbeschreibung</string>
 	<string name="descr_remove_hashtag">Hashtag von der Liste entfernen</string>
 	<string name="confirm_hashtag_unfollow">Hashtag entfolgen?</string>
+	<string name="info_schedule_updated">geplanter Post aktualisiert</string>
+	<string name="info_schedule_removed">geplanter Post wurde entfernt</string>
+	<string name="menu_schedule">geplante Posts</string>
+	<string name="descr_remove_schedule">geplanten Post von der Liste entfernen</string>
+	<string name="confirm_schedule_remove">geplanten Post verwerfen?</string>
+	<string name="toolbar_schedule_title">geplante Posts</string>
 </resources>

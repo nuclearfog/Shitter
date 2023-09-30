@@ -114,7 +114,6 @@
 	<string name="error_cant_reply_to_status">You can\'t reply to this status!</string>
 	<string name="error_corrupt_api_key">Error, corrupt API key!</string>
 	<string name="error_acc_update">Account update failed! Please check your input!</string>
-	<string name="error_acc_loading">Error while loading login information!</string>
 	<string name="error_json_format">JSON error!</string>
 	<string name="error_database_cleared">Error while clearing database!</string>
 	<string name="error_result_cancelled">Error, result cancelled!</string>

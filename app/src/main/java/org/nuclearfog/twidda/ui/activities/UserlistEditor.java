@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserlistUpdater;
-import org.nuclearfog.twidda.backend.async.UserlistUpdater.ListUpdateResult;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
@@ -36,7 +35,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<ListUpdateResult> {
+public class UserlistEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener, AsyncCallback<UserlistUpdater.Result> {
 
 	/**
 	 * Key for the list ID if an existing list should be updated
@@ -179,7 +178,7 @@ public class UserlistEditor extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onResult(@NonNull ListUpdateResult result) {
+	public void onResult(@NonNull UserlistUpdater.Result result) {
 		if (result.userlist != null) {
 			if (result.updated) {
 				Toast.makeText(getApplicationContext(), R.string.info_list_updated, Toast.LENGTH_SHORT).show();

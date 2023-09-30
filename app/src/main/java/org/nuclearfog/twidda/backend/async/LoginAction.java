@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.ui.activities.LoginActivity;
  * @author nuclearfog
  * @see LoginActivity
  */
-public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginAction.LoginResult> {
+public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Result> {
 
 	private AppDatabase database;
 	private GlobalSettings settings;
@@ -42,11 +42,11 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 
 
 	@Override
-	protected LoginResult doInBackground(@NonNull LoginParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		Connection connection = manager.getConnection(param.configuration);
 		try {
 			switch (param.mode) {
-				case LoginParam.MODE_REQUEST:
+				case Param.MODE_REQUEST:
 					if (settings.isLoggedIn()) {
 						Account login = settings.getLogin();
 						if (!database.containsLogin(login.getId())) {
@@ -54,9 +54,9 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 						}
 					}
 					ConnectionResult result = connection.getAuthorisationLink(param.connection);
-					return new LoginResult(LoginResult.MODE_REQUEST, null, result, null);
+					return new Result(Result.MODE_REQUEST, null, result, null);
 
-				case LoginParam.MODE_LOGIN:
+				case Param.MODE_LOGIN:
 					// login with pin and access token
 					Account account = connection.loginApp(param.connection, param.code);
 					// get instance information
@@ -78,20 +78,20 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 							settings.setPushEnabled(false);
 						}
 					}
-					return new LoginResult(LoginResult.MODE_LOGIN, account, null, null);
+					return new Result(Result.MODE_LOGIN, account, null, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new LoginResult(LoginResult.MODE_ERROR, null, null, exception);
+			return new Result(Result.MODE_ERROR, null, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class LoginParam {
+	public static class Param {
 
 		public static final int MODE_REQUEST = 1;
 		public static final int MODE_LOGIN = 2;
@@ -101,7 +101,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		final String code;
 		final int mode;
 
-		public LoginParam(int mode, Configuration configuration, ConnectionUpdate connection, String code) {
+		public Param(int mode, Configuration configuration, ConnectionUpdate connection, String code) {
 			this.connection = connection;
 			this.configuration = configuration;
 			this.mode = mode;
@@ -112,7 +112,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 	/**
 	 *
 	 */
-	public static class LoginResult {
+	public static class Result {
 
 		public static final int MODE_ERROR = -1;
 		public static final int MODE_REQUEST = 3;
@@ -126,7 +126,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.LoginParam, LoginActi
 		@Nullable
 		public final Account account;
 
-		LoginResult(int mode, @Nullable Account accout, @Nullable ConnectionResult connection, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable Account accout, @Nullable ConnectionResult connection, @Nullable ConnectionException exception) {
 			this.connection = connection;
 			this.exception = exception;
 			this.account = accout;

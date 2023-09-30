@@ -41,8 +41,6 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
-import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
-import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -113,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private int mode = 0;
 	private int color = 0;
 
-	private AsyncCallback<DatabaseResult> databaseResult = this::onDatabaseResult;
+	private AsyncCallback<DatabaseAction.Result> databaseResult = this::onDatabaseResult;
 
 
 	@Override
@@ -317,11 +315,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// remove account from database
 		if (type == ConfirmDialog.APP_LOG_OUT) {
 			settings.setLogin(null, true);
-			databaseAction.execute(new DatabaseParam(DatabaseParam.LOGOUT), databaseResult);
+			databaseAction.execute(new DatabaseAction.Param(DatabaseAction.Param.LOGOUT), databaseResult);
 		}
 		// confirm delete app data and cache
 		else if (type == ConfirmDialog.DELETE_APP_DATA) {
-			databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
+			databaseAction.execute(new DatabaseAction.Param(DatabaseAction.Param.DELETE), databaseResult);
 		}
 		// confirm leaving without saving proxy changes
 		else if (type == ConfirmDialog.WRONG_PROXY) {
@@ -602,18 +600,18 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	/**
 	 * called from {@link DatabaseAction}
 	 */
-	private void onDatabaseResult(@NonNull DatabaseResult result) {
+	private void onDatabaseResult(@NonNull DatabaseAction.Result result) {
 		switch (result.mode) {
-			case DatabaseResult.DELETE:
+			case DatabaseAction.Result.DELETE:
 				Toast.makeText(getApplicationContext(), R.string.info_database_cleared, Toast.LENGTH_SHORT).show();
 				break;
 
-			case DatabaseResult.LOGOUT:
+			case DatabaseAction.Result.LOGOUT:
 				setResult(RETURN_APP_LOGOUT);
 				finish();
 				break;
 
-			case DatabaseResult.ERROR:
+			case DatabaseAction.Result.ERROR:
 				Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
 				break;
 

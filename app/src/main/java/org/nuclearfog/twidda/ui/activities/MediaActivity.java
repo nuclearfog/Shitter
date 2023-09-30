@@ -39,7 +39,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ImageSaver;
-import org.nuclearfog.twidda.backend.async.ImageSaver.ImageParam;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -234,7 +233,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 					// store images directly
 					InputStream src = getContentResolver().openInputStream(srcMediaUri);
 					OutputStream dest = new FileOutputStream(destMediaFile);
-					ImageParam param = new ImageParam(src, dest);
+					ImageSaver.Param param = new ImageSaver.Param(src, dest);
 					imageTask.execute(param, imageCallback);
 				} else {
 					// use scoped storage
@@ -250,7 +249,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Activit
 					if (imageUri != null) {
 						InputStream src = getContentResolver().openInputStream(srcMediaUri);
 						OutputStream dest = getContentResolver().openOutputStream(imageUri);
-						ImageParam param = new ImageParam(src, dest);
+						ImageSaver.Param param = new ImageSaver.Param(src, dest);
 						imageTask.execute(param, imageCallback);
 					}
 				}

@@ -74,7 +74,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopItemId(), 0L, CLEAR_LIST);
+		load(adapter.getTopItemId(), 0L, 0);
 	}
 
 

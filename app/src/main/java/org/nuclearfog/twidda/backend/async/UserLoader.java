@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.model.User;
  *
  * @author nuclearfog
  */
-public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.UserResult> {
+public class UserLoader extends AsyncExecutor<UserLoader.Param, UserLoader.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -31,33 +31,33 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 
 
 	@Override
-	protected UserResult doInBackground(@NonNull UserParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case UserParam.DATABASE:
+				case Param.DATABASE:
 					User user = db.getUser(param.id);
 					if (user != null) {
-						return new UserResult(UserResult.DATABASE, user, null);
+						return new Result(Result.DATABASE, user, null);
 					}
 					// fall through
 
-				case UserParam.ONLINE:
+				case Param.ONLINE:
 					user = connection.showUser(param.id);
 					db.saveUser(user);
-					return new UserResult(UserResult.ONLINE, user, null);
+					return new Result(Result.ONLINE, user, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new UserResult(UserResult.ERROR, null, exception);
+			return new Result(Result.ERROR, null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class UserParam {
+	public static class Param {
 
 		public static final int DATABASE = 1;
 		public static final int ONLINE = 2;
@@ -65,7 +65,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 		final int mode;
 		final long id;
 
-		public UserParam(int mode, long id) {
+		public Param(int mode, long id) {
 			this.mode = mode;
 			this.id = id;
 		}
@@ -74,11 +74,11 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 	/**
 	 *
 	 */
-	public static class UserResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
-		public static final int DATABASE = 3;
-		public static final int ONLINE = 4;
+		public static final int DATABASE = 10;
+		public static final int ONLINE = 11;
 
 		@Nullable
 		public final User user;
@@ -86,7 +86,7 @@ public class UserLoader extends AsyncExecutor<UserLoader.UserParam, UserLoader.U
 		public final ConnectionException exception;
 		public final int mode;
 
-		UserResult(int mode, @Nullable User user, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable User user, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.user = user;
 			this.exception = exception;

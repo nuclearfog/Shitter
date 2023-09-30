@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
  *
  * @author nuclearfog
  */
-public class NotificationLoader extends AsyncExecutor<NotificationLoader.NotificationLoaderParam, NotificationLoader.NotificationLoaderResult> {
+public class NotificationLoader extends AsyncExecutor<NotificationLoader.Param, NotificationLoader.Result> {
 
 	private Connection connection;
 	private AppDatabase db;
@@ -33,10 +33,10 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 
 
 	@Override
-	protected NotificationLoaderResult doInBackground(@NonNull NotificationLoaderParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case NotificationLoaderParam.LOAD_ALL:
+				case Param.LOAD_ALL:
 					Notifications result;
 					if (param.minId == 0L && param.maxId == 0L) {
 						result = db.getNotifications();
@@ -50,9 +50,9 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 							db.saveNotifications(result);
 						}
 					}
-					return new NotificationLoaderResult(result, param.position, null);
+					return new Result(result, param.position, null);
 
-				case NotificationLoaderParam.LOAD_UNREAD:
+				case Param.LOAD_UNREAD:
 					// load (known) notifications from database first
 					Notifications notifications = db.getNotifications();
 					// then load new notifications using the latest known notification
@@ -61,20 +61,20 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 					if (lastNotification != null)
 						minId = lastNotification.getId();
 					result = connection.getNotifications(minId, 0L);
-					return new NotificationLoaderResult(result, 0, null);
+					return new Result(result, 0, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new NotificationLoaderResult(null, param.position, exception);
+			return new Result(null, param.position, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class NotificationLoaderParam {
+	public static class Param {
 
 		public static final int LOAD_ALL = 1;
 		public static final int LOAD_UNREAD = 2;
@@ -83,7 +83,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 		final long minId, maxId;
 		final int mode;
 
-		public NotificationLoaderParam(int mode, int position, long minId, long maxId) {
+		public Param(int mode, int position, long minId, long maxId) {
 			this.position = position;
 			this.minId = minId;
 			this.maxId = maxId;
@@ -94,7 +94,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 	/**
 	 *
 	 */
-	public static class NotificationLoaderResult {
+	public static class Result {
 
 		public final int position;
 		@Nullable
@@ -102,7 +102,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Notific
 		@Nullable
 		public final ConnectionException exception;
 
-		NotificationLoaderResult(@Nullable Notifications notifications, int position, @Nullable ConnectionException exception) {
+		Result(@Nullable Notifications notifications, int position, @Nullable ConnectionException exception) {
 			this.notifications = notifications;
 			this.exception = exception;
 			this.position = position;

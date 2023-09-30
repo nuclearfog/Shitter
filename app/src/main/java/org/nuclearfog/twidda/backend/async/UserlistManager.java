@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionManager;
  *
  * @author nuclearfog
  */
-public class UserlistManager extends AsyncExecutor<UserlistManager.ListManagerParam, UserlistManager.ListManagerResult> {
+public class UserlistManager extends AsyncExecutor<UserlistManager.Param, UserlistManager.Result> {
 
 	private Connection connection;
 
@@ -28,29 +28,29 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.ListManagerPa
 
 
 	@Override
-	protected ListManagerResult doInBackground(@NonNull ListManagerParam param) {
+	protected Result doInBackground(@NonNull Param param) {
 		try {
 			switch (param.mode) {
-				case ListManagerParam.ADD:
+				case Param.ADD:
 					connection.addUserToList(param.id, param.username);
-					return new ListManagerResult(ListManagerResult.ADD_USER, param.username, null);
+					return new Result(Result.ADD_USER, param.username, null);
 
-				case ListManagerParam.REMOVE:
+				case Param.REMOVE:
 					connection.removeUserFromList(param.id, param.username);
-					return new ListManagerResult(ListManagerResult.DEL_USER, param.username, null);
+					return new Result(Result.DEL_USER, param.username, null);
 
 				default:
 					return null;
 			}
 		} catch (ConnectionException exception) {
-			return new ListManagerResult(ListManagerResult.ERROR, param.username, exception);
+			return new Result(Result.ERROR, param.username, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class ListManagerParam {
+	public static class Param {
 
 		public static final int ADD = 1;
 		public static final int REMOVE = 2;
@@ -59,7 +59,7 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.ListManagerPa
 		final long id;
 		final String username;
 
-		public ListManagerParam(int mode, long id, String username) {
+		public Param(int mode, long id, String username) {
 			this.id = id;
 			this.mode = mode;
 			this.username = username;
@@ -69,7 +69,7 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.ListManagerPa
 	/**
 	 *
 	 */
-	public static class ListManagerResult {
+	public static class Result {
 
 		public static final int ERROR = -1;
 		public static final int ADD_USER = 3;
@@ -80,7 +80,7 @@ public class UserlistManager extends AsyncExecutor<UserlistManager.ListManagerPa
 		@Nullable
 		public final ConnectionException exception;
 
-		ListManagerResult(int mode, String name, @Nullable ConnectionException exception) {
+		Result(int mode, String name, @Nullable ConnectionException exception) {
 			this.mode = mode;
 			this.name = name;
 			this.exception = exception;

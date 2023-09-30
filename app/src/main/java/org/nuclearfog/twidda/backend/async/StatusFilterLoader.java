@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.model.lists.Filters;
  *
  * @author nuclearfog
  */
-public class StatusFilterLoader extends AsyncExecutor<Void, StatusFilterLoader.FilterLoaderResult> {
+public class StatusFilterLoader extends AsyncExecutor<Void, StatusFilterLoader.Result> {
 
 	private Connection connection;
 
@@ -28,26 +28,26 @@ public class StatusFilterLoader extends AsyncExecutor<Void, StatusFilterLoader.F
 
 
 	@Override
-	protected FilterLoaderResult doInBackground(@NonNull Void param) {
+	protected Result doInBackground(@NonNull Void param) {
 		try {
 			Filters result = connection.getFilter();
-			return new FilterLoaderResult(result, null);
+			return new Result(result, null);
 		} catch (ConnectionException exception) {
-			return new FilterLoaderResult(null, exception);
+			return new Result(null, exception);
 		}
 	}
 
 	/**
 	 *
 	 */
-	public static class FilterLoaderResult {
+	public static class Result {
 
 		@Nullable
 		public final Filters filters;
 		@Nullable
 		public final ConnectionException exception;
 
-		FilterLoaderResult(@Nullable Filters filters, @Nullable ConnectionException exception) {
+		Result(@Nullable Filters filters, @Nullable ConnectionException exception) {
 			this.filters = filters;
 			this.exception = exception;
 		}

@@ -19,8 +19,6 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ImageDownloader;
-import org.nuclearfog.twidda.backend.async.ImageDownloader.ImageLoaderParam;
-import org.nuclearfog.twidda.backend.async.ImageDownloader.ImageLoaderResult;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.BlurHashDecoder;
@@ -42,7 +40,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoaderResult>, DescriptionCallback {
+public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDownloader.Result>, DescriptionCallback {
 
 	/**
 	 * activity result code indicates that {@link MediaStatus} data has been updated
@@ -161,7 +159,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 				}
 			} else {
 				loadingCircle.setVisibility(View.VISIBLE);
-				ImageLoaderParam request = new ImageLoaderParam(Uri.parse(imageUrl), cacheFolder);
+				ImageDownloader.Param request = new ImageDownloader.Param(Uri.parse(imageUrl), cacheFolder);
 				imageAsync.execute(request, this);
 			}
 		}
@@ -250,7 +248,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageLoa
 
 
 	@Override
-	public void onResult(@NonNull ImageLoaderResult result) {
+	public void onResult(@NonNull ImageDownloader.Result result) {
 		if (result.uri != null) {
 			loadingCircle.setVisibility(View.INVISIBLE);
 			cacheUri = result.uri;

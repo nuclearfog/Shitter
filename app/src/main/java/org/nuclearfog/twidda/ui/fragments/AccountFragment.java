@@ -9,13 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.async.AccountAction;
 import org.nuclearfog.twidda.backend.async.AccountLoader;
-import org.nuclearfog.twidda.backend.async.AccountLoader.AccountParameter;
-import org.nuclearfog.twidda.backend.async.AccountLoader.AccountResult;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DatabaseAction;
-import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseParam;
-import org.nuclearfog.twidda.backend.async.DatabaseAction.DatabaseResult;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.lists.Accounts;
@@ -33,7 +30,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener, AsyncCallback<AccountResult> {
+public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener {
 
 	/**
 	 * internal Bundle key used to save adapter items
@@ -42,6 +39,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	private static final String KEY_SAVE = "account-data";
 
 	private AccountLoader accountLoader;
+	private AccountAction accountAction;
 	private DatabaseAction databaseAction;
 	private GlobalSettings settings;
 	private AccountAdapter adapter;
@@ -49,7 +47,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	private long selectedId;
 
-	private AsyncCallback<DatabaseResult> databaseResult = this::onDatabaseResult;
+	private AsyncCallback<AccountLoader.Result> accountLoaderResult = this::onLoaderResult;
+	private AsyncCallback<AccountAction.Result> accountActionResult = this::onActionResult;
+	private AsyncCallback<DatabaseAction.Result> databaseResult = this::onDatabaseResult;
 
 
 	@Override
@@ -58,6 +58,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		dialog = new ConfirmDialog(requireActivity(), this);
 		settings = GlobalSettings.get(requireContext());
 		accountLoader = new AccountLoader(requireContext());
+		accountAction = new AccountAction(requireContext());
 		databaseAction = new DatabaseAction(requireContext());
 		adapter = new AccountAdapter(this);
 		setAdapter(adapter);
@@ -69,7 +70,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 				return;
 			}
 		}
-		load(AccountParameter.LOAD);
+		load();
 		setRefresh(true);
 	}
 
@@ -91,7 +92,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	protected void onReload() {
-		load(AccountParameter.LOAD);
+		load();
 	}
 
 
@@ -100,7 +101,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		adapter.clear();
 		accountLoader = new AccountLoader(requireContext());
 		databaseAction = new DatabaseAction(requireContext());
-		load(AccountParameter.LOAD);
+		load();
 		setRefresh(true);
 	}
 
@@ -120,13 +121,13 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		intent.putExtra(AccountActivity.RETURN_ACCOUNT, account);
 		requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED, intent);
 		// clear old database entries
-		databaseAction.execute(new DatabaseParam(DatabaseParam.DELETE), databaseResult);
+		databaseAction.execute(new DatabaseAction.Param(DatabaseAction.Param.DELETE), databaseResult);
 	}
 
 
 	@Override
 	public void onAccountRemove(Account account) {
-		if (!dialog.isShowing()) {
+		if (!dialog.isShowing() && accountLoader.isIdle() && accountAction.isIdle()) {
 			selectedId = account.getId();
 			dialog.show(ConfirmDialog.REMOVE_ACCOUNT);
 		}
@@ -136,37 +137,16 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.REMOVE_ACCOUNT) {
-			load(AccountParameter.DELETE);
+			AccountAction.Param param = new AccountAction.Param(selectedId);
+			accountAction.execute(param, accountActionResult);
 		}
-	}
-
-
-	@Override
-	public void onResult(@NonNull AccountResult result) {
-		switch (result.mode) {
-			case AccountResult.LOAD:
-				if (result.accounts != null) {
-					adapter.replaceItems(result.accounts);
-				}
-				break;
-
-			case AccountResult.DELETE:
-				adapter.removeItem(result.id);
-				break;
-
-			case AccountResult.ERROR:
-				if (getContext() != null)
-					Toast.makeText(getContext(), R.string.error_acc_loading, Toast.LENGTH_SHORT).show();
-				break;
-		}
-		setRefresh(false);
 	}
 
 	/**
 	 * called from {@link DatabaseAction} when all data of the previous login were removed
 	 */
 	@SuppressWarnings("unused")
-	private void onDatabaseResult(DatabaseResult result) {
+	private void onDatabaseResult(DatabaseAction.Result result) {
 		// finish activity and return to parent activity
 		requireActivity().finish();
 	}
@@ -174,8 +154,22 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	/**
 	 *
 	 */
-	private void load(int mode) {
-		AccountParameter request = new AccountParameter(mode, selectedId);
-		accountLoader.execute(request, this);
+	private void load() {
+		accountLoader.execute(null, accountLoaderResult);
+	}
+
+	/**
+	 *
+	 */
+	private void onLoaderResult(AccountLoader.Result result) {
+		adapter.replaceItems(result.accounts);
+		setRefresh(false);
+	}
+
+	/**
+	 *
+	 */
+	private void onActionResult(AccountAction.Result result) {
+		adapter.removeItem(result.id);
 	}
 }
