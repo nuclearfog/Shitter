@@ -115,19 +115,6 @@
 	<dimen name="item_user_image_margin">8dp</dimen>
 	<dimen name="item_user_textsize_notification">12sp</dimen>
 
-	<!--dimens of item_list.xml-->
-	<dimen name="listitem_padding">5dp</dimen>
-	<dimen name="listitem_icon_size">12sp</dimen>
-	<dimen name="listitem_icon_size_big">16sp</dimen>
-	<dimen name="listitem_profile">56sp</dimen>
-	<dimen name="listitem_text_margin">5dp</dimen>
-	<dimen name="listitem_textsize_date">12sp</dimen>
-	<dimen name="listitem_textsize_title">18sp</dimen>
-	<dimen name="listitem_textsize_name">14sp</dimen>
-	<dimen name="listitem_textsize_small">12sp</dimen>
-	<dimen name="listitem_padding_drawable">5dp</dimen>
-	<integer name="listitem_description_max_lines">6</integer>
-
 	<!--dimens of item_account.xml-->
 	<dimen name="login_name_textsize_big">14sp</dimen>
 	<dimen name="login_name_textsize">12sp</dimen>
@@ -167,9 +154,9 @@
 	<dimen name="popup_status_button_padding">7dp</dimen>
 	<item name="popup_status_button_width_ratio" format="float" type="dimen">0.09</item>
 
-	<!--dimen of popup_userlist.xml-->
-	<dimen name="popup_userlist_background_margin">10dp</dimen>
-	<dimen name="popup_userlist_text_margin">5dp</dimen>
+	<!--dimen of item_list.xml-->
+	<dimen name="item_list_text_margin">5dp</dimen>
+	<dimen name="item_list_textsize_title">22sp</dimen>
 
 	<!--dimens of item_load.xml-->
 	<dimen name="loaditem_button_size">36sp</dimen>
@@ -221,9 +208,13 @@
 	<integer name="confirm_message_max_ines">8</integer>
 
 	<!--dimens of dialog_userlist.xml-->
-	<dimen name="userlist_button_height">20dp</dimen>
-	<dimen name="userlist_button_padding">5dp</dimen>
-	<dimen name="userlist_title_textsize">20sp</dimen>
+	<dimen name="userlist_button_height">26dp</dimen>
+	<dimen name="userlist_button_padding">8dp</dimen>
+	<dimen name="userlist_layout_margin">5dp</dimen>
+	<dimen name="userlist_textsize_title">20sp</dimen>
+	<dimen name="userlist_textsize_label">12sp</dimen>
+	<dimen name="userlist_textsize_button">14sp</dimen>
+	<dimen name="userlist_textsize_input">16sp</dimen>
 
 	<!--dimens of dialog_connection.xml-->
 	<dimen name="dialog_connection_button_height">26sp</dimen>

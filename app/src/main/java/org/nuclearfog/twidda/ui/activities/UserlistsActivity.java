@@ -7,10 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +16,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.adapter.viewpager.UserListsAdapter;
+import org.nuclearfog.twidda.ui.dialogs.UserlistDialog;
+import org.nuclearfog.twidda.ui.dialogs.UserlistDialog.UserlistUpdatedCallback;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -29,7 +28,7 @@ import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
  *
  * @author nuclearfog
  */
-public class UserlistsActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener {
+public class UserlistsActivity extends AppCompatActivity implements UserlistUpdatedCallback, OnTabSelectedListener {
 
 	/**
 	 * Key for the ID the list owner
@@ -37,12 +36,11 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	 */
 	public static final String KEY_ID = "userlist-owner-id";
 
+	private ViewPager2 viewPager;
 
-	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
-
+	private UserlistDialog userlistDialog;
 	private UserListsAdapter adapter;
 	private GlobalSettings settings;
-	private ViewPager2 viewPager;
 
 
 	@Override
@@ -60,6 +58,7 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
 		viewPager = findViewById(R.id.page_tab_view_pager);
 
+		userlistDialog = new UserlistDialog(this, this);
 		settings = GlobalSettings.get(this);
 
 		toolbar.setTitle(R.string.list_appbar);
@@ -75,14 +74,6 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 		AppStyles.setTheme(root);
 
 		tabSelector.addOnTabSelectedListener(this);
-	}
-
-
-	@Override
-	public void onActivityResult(ActivityResult result) {
-		if (result.getResultCode() == UserlistEditor.RETURN_LIST_CREATED) {
-			adapter.notifySettingsChanged();
-		}
 	}
 
 
@@ -108,8 +99,9 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		// open list editor
 		if (item.getItemId() == R.id.list_create) {
-			Intent createList = new Intent(this, UserlistEditor.class);
-			activityResultLauncher.launch(createList);
+			if (!userlistDialog.isShowing()) {
+				userlistDialog.show(null);
+			}
 			return true;
 		}
 		// open mute/block list
@@ -126,5 +118,11 @@ public class UserlistsActivity extends AppCompatActivity implements ActivityResu
 	@Override
 	public void onTabSelected(int oldPosition) {
 		adapter.scrollToTop(oldPosition);
+	}
+
+
+	@Override
+	public void onUserlistUpdate(UserList userlist) {
+		adapter.notifySettingsChanged();
 	}
 }

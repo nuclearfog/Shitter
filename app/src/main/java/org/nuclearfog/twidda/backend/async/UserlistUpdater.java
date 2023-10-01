@@ -10,11 +10,10 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.model.UserList;
-import org.nuclearfog.twidda.ui.activities.UserlistEditor;
 
 /**
  * This class creates and updates user lists
- * Backend for {@link UserlistEditor}
+ * Backend for {@link org.nuclearfog.twidda.ui.dialogs.UserlistDialog}
  *
  * @author nuclearfog
  */
@@ -33,15 +32,12 @@ public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdat
 	@Override
 	protected Result doInBackground(@NonNull UserListUpdate update) {
 		try {
-			if (update.getId() != 0L) {
-				UserList result = connection.updateUserlist(update);
-				return new Result(result, true, null);
-			} else {
-				UserList result = connection.createUserlist(update);
-				return new Result(result, false, null);
-			}
+			UserList result = connection.updateUserlist(update);
+			if (update.getId() != 0L)
+				return new Result(Result.UPDATED, result, null);
+			return new Result(Result.CREATED, result, null);
 		} catch (ConnectionException exception) {
-			return new Result(null, false, exception);
+			return new Result(Result.ERROR, null, exception);
 		}
 	}
 
@@ -50,15 +46,19 @@ public class UserlistUpdater extends AsyncExecutor<UserListUpdate, UserlistUpdat
 	 */
 	public static class Result {
 
-		public final boolean updated;
+		public static final int CREATED = 1;
+		public static final int UPDATED = 2;
+		public static final int ERROR = -1;
+
+		public final int mode;
 		@Nullable
 		public final UserList userlist;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(@Nullable UserList userlist, boolean updated, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable UserList userlist, @Nullable ConnectionException exception) {
+			this.mode = mode;
 			this.userlist = userlist;
-			this.updated = updated;
 			this.exception = exception;
 		}
 	}

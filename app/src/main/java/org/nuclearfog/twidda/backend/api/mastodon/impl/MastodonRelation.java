@@ -69,12 +69,6 @@ public class MastodonRelation implements Relation {
 	}
 
 
-	@Override
-	public boolean privateMessagingEnabled() {
-		return false;
-	}
-
-
 	public void setFollowing(boolean isFollowing) {
 		this.isFollowing = isFollowing;
 	}
@@ -96,7 +90,7 @@ public class MastodonRelation implements Relation {
 			return false;
 		Relation relation = (Relation) obj;
 		return relation.getId() == getId() && relation.isBlocked() == isBlocked() && relation.isFollower() == isFollower()
-				&& relation.isFollowing() == isFollowing() && relation.isMuted() == isMuted() && relation.privateMessagingEnabled() == privateMessagingEnabled();
+				&& relation.isFollowing() == isFollowing() && relation.isMuted() == isMuted();
 	}
 
 
@@ -104,6 +98,6 @@ public class MastodonRelation implements Relation {
 	@Override
 	public String toString() {
 		return "following=" + isFollowing() + " follower=" + isFollower() +
-				" blocked=" + isBlocked() + " muted=" + isMuted() + " dm open=" + privateMessagingEnabled();
+				" blocked=" + isBlocked() + " muted=" + isMuted();
 	}
 }

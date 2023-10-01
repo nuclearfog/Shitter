@@ -17,8 +17,6 @@
 
 	<!-- toast messages to inform user -->
 	<string name="info_list_removed">Userlist removed</string>
-	<string name="info_list_followed">Userlist followed</string>
-	<string name="info_list_unfollowed">Userlist unfollowed</string>
 	<string name="info_adding_user_to_list">adding user to list</string>
 	<string name="info_user_added_to_list">%1$s added to List</string>
 	<string name="info_user_removed">%1$s removed from list</string>
@@ -161,8 +159,6 @@
 	<string name="menu_edit_save">save</string>
 	<string name="menu_add_user">add user to list</string>
 	<string name="menu_edit_list">edit list</string>
-	<string name="menu_list_follow">follow list</string>
-	<string name="menu_unfollow_list">unfollow list</string>
 	<string name="menu_user_unfollow">unfollow</string>
 	<string name="menu_user_unblock">unblock</string>
 	<string name="menu_excluded_users">Blocklists</string>
@@ -255,7 +251,6 @@
 	<string name="dialog_report_hint_description">additional description</string>
 	<string name="dialog_report_description_forward">forward report to source instance</string>
 	<string name="confirm_mute">mute user?</string>
-	<string name="item_list_pb_desc">Profile of the list owner</string>
 	<string name="list_appbar">Lists</string>
 	<string name="edit_location_hint">enter location</string>
 	<string name="edit_hint_link">enter website link</string>
@@ -286,17 +281,17 @@
 	<string name="status_spoiler_hint">Tap to view</string>
 	<string name="login_info">4 steps to login</string>
 	<string name="userlist_enter_title">enter list title</string>
-	<string name="userlist_enter_description">enter list description</string>
-	<string name="userlist_create">create userlist</string>
+	<string name="userlist_exclusive">exclude members from home feed</string>
+	<string name="userlist_create">create</string>
+	<string name="userlist_update">update</string>
 	<string name="userlist_create_new_list">create a new userlist</string>
-	<string name="update_list">update list</string>
+	<string name="userlist_update_list">edit userlist</string>
 	<string name="confirm_remove_user_from_list">remove user from list?</string>
 	<string name="descr_remove_user">remove user from list</string>
 	<string name="descr_remove_hashtag">remove hashtag from list</string>
 	<string name="descr_remove_schedule">remove scheduled status from list</string>
 	<string name="descr_remove_domain">remove domain from list</string>
 	<string name="confirm_unknown_error">unknown error!</string>
-	<string name="list_following_indicator">following list</string>
 	<string name="descr_add_profile_image">change profile image</string>
 	<string name="button_share">share link</string>
 	<string name="settings_rt_icon_color">Reposts</string>

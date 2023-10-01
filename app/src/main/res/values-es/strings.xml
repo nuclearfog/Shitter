@@ -3,8 +3,6 @@
 
 	<!-- toast messages to inform user -->
 	<string name="info_list_removed">Se eliminó la lista de usuarios</string>
-	<string name="info_list_followed">Seguiste a la lista de usuarios</string>
-	<string name="info_list_unfollowed">Dejaste de seguir a la lista de usuarios</string>
 	<string name="info_adding_user_to_list">Agregando usuario a la lista</string>
 	<string name="info_user_added_to_list">%1$s se agregó a la lista</string>
 	<string name="info_user_removed">%1$s se eliminó de la lista</string>
@@ -131,8 +129,6 @@
 	<string name="menu_edit_save">Guardar</string>
 	<string name="menu_add_user">Agregar usuario a la lista</string>
 	<string name="menu_edit_list">Editar lista</string>
-	<string name="menu_list_follow">Seguir lista</string>
-	<string name="menu_unfollow_list">No seguir lista</string>
 	<string name="menu_user_unfollow">No seguir</string>
 	<string name="menu_user_unblock">Desbloquear</string>
 	<string name="menu_excluded_users">Listas de bloqueo</string>
@@ -216,7 +212,6 @@
 	<string name="settings_key2_hint">Secreto de consumidor</string>
 	<string name="dialog_connection_custom_host">Usar nombre de host personalizado</string>
 	<string name="confirm_mute">¿Silenciar usuario?</string>
-	<string name="item_list_pb_desc">Perfil del dueño de la lista</string>
 	<string name="list_appbar">Listas</string>
 	<string name="edit_location_hint">Ingresar ubicación</string>
 	<string name="edit_hint_link">Ingresar enlace de sitio web</string>
@@ -242,15 +237,13 @@
 	<string name="status_spoiler_hint">Toca para ver</string>
 	<string name="login_info">4 pasos para acceder</string>
 	<string name="userlist_enter_title">Ingresa el título de la lista</string>
-	<string name="userlist_enter_description">Ingresa la descripción de la lista</string>
 	<string name="userlist_create">Crear lista de usuario</string>
 	<string name="userlist_create_new_list">Crear una nueva lista de usuario</string>
-	<string name="update_list">Actualizar lista</string>
+	<string name="userlist_update">Actualizar lista</string>
 	<string name="confirm_remove_user_from_list">¿Eliminar usuario de la lista?</string>
 	<string name="descr_remove_user">Eliminar usuario de la lista</string>
 	<string name="descr_remove_domain">Eliminar dominio de la lista</string>
 	<string name="confirm_unknown_error">¡Error desconocido!</string>
-	<string name="list_following_indicator">Lista de quienes sigues</string>
 	<string name="descr_add_profile_image">Cambiar imagen de perfil</string>
 	<string name="button_share">Compartir enlace</string>
 	<string name="settings_rt_icon_color">Re-publicar</string>

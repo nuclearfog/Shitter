@@ -14,10 +14,8 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserlistLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.lists.UserLists;
-import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.UserlistAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.UserlistAdapter.ListClickListener;
@@ -152,14 +150,6 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		Intent listIntent = new Intent(requireContext(), UserlistActivity.class);
 		listIntent.putExtra(UserlistActivity.KEY_DATA, listItem);
 		activityResultLauncher.launch(listIntent);
-	}
-
-
-	@Override
-	public void onProfileClick(User user) {
-		Intent profile = new Intent(requireContext(), ProfileActivity.class);
-		profile.putExtra(ProfileActivity.KEY_USER, user);
-		startActivity(profile);
 	}
 
 

@@ -45,7 +45,6 @@
 	<string name="settings_key1_hint">Consumer key</string>
 	<string name="settings_key2_hint">Consumer secret</string>
 	<string name="confirm_mute">隐藏用户？</string>
-	<string name="item_list_pb_desc">列表创建者的用户信息</string>
 	<string name="list_appbar">列表</string>
 	<string name="edit_location_hint">输入位置</string>
 	<string name="edit_hint_link">输入网站链接</string>
@@ -64,16 +63,12 @@
 	<string name="status_sensitive_media">敏感内容</string>
 	<!--<string name="login_info">只需三步即可登录</string>-->
 	<string name="userlist_enter_title">全名</string>
-	<string name="userlist_enter_description">描述</string>
 	<string name="userlist_create">创建列表</string>
 	<string name="userlist_create_new_list">新建列表</string>
-	<string name="update_list">更新列表</string>
+	<string name="userlist_update">更新列表</string>
 	<string name="confirm_remove_user_from_list">从列表中删除该用户？</string>
 	<string name="descr_remove_user">从列表中删除该用户</string>
-	<string name="list_following_indicator">关注中的列表</string>
 	<string name="info_list_removed">已删除列表</string>
-	<string name="info_list_followed">已关注列表</string>
-	<string name="info_list_unfollowed">已取消关注列表</string>
 	<string name="descr_add_profile_image">更换头像</string>
 	<string name="button_share">分享链接</string>
 
@@ -151,8 +146,6 @@
 	<string name="menu_edit_save">保存</string>
 	<string name="menu_add_user">添加用户</string>
 	<string name="menu_edit_list">编辑列表</string>
-	<string name="menu_list_follow">关注该列表</string>
-	<string name="menu_unfollow_list">取消关注该列表</string>
 	<string name="menu_user_unfollow">取消关注</string>
 	<string name="menu_user_unblock">取消屏蔽</string>
 

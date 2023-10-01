@@ -9,10 +9,6 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +29,8 @@ import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.adapter.viewpager.UserlistAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.dialogs.UserlistDialog;
+import org.nuclearfog.twidda.ui.dialogs.UserlistDialog.UserlistUpdatedCallback;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -44,7 +42,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class UserlistActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener, OnQueryTextListener, OnConfirmListener {
+public class UserlistActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, OnConfirmListener, UserlistUpdatedCallback {
 
 	/**
 	 * key to add list information
@@ -74,8 +72,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	 */
 	private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,20}(@[\\w.]{1,50})?");
 
-	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
-
 	private AsyncCallback<UserlistAction.Result> userlistSet = this::setList;
 	private AsyncCallback<UserlistManager.Result> userlistUpdate = this::updateList;
 
@@ -87,6 +83,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 	private GlobalSettings settings;
 
 	private ConfirmDialog confirmDialog;
+	private UserlistDialog userlistDialog;
 
 	private ViewPager2 viewPager;
 	private Toolbar toolbar;
@@ -112,6 +109,7 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 		settings = GlobalSettings.get(this);
 		confirmDialog = new ConfirmDialog(this, this);
+		userlistDialog = new UserlistDialog(this, this);
 		listLoaderAsync = new UserlistAction(this);
 		listManagerAsync = new UserlistManager(this);
 
@@ -119,7 +117,6 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (data instanceof UserList) {
 			userList = (UserList) data;
 			toolbar.setTitle(userList.getTitle());
-			toolbar.setSubtitle(userList.getDescription());
 			adapter = new UserlistAdapter(this, userList);
 			viewPager.setAdapter(adapter);
 			if (adapter.getItemCount() == 2) {
@@ -165,30 +162,12 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu m) {
-		MenuItem editList = m.findItem(R.id.menu_list_edit);
-		MenuItem deleteList = m.findItem(R.id.menu_delete_list);
-		MenuItem followList = m.findItem(R.id.menu_follow_list);
 		MenuItem search = m.findItem(R.id.menu_list_add_user);
 		SearchView searchUser = (SearchView) search.getActionView();
 		AppStyles.setTheme(searchUser, Color.TRANSPARENT);
-		if (userList != null) {
-			if (userList.isEdiatable()) {
-				searchUser.setQueryHint(getString(R.string.menu_add_user));
-				searchUser.setOnQueryTextListener(this);
-				editList.setVisible(true);
-				deleteList.setVisible(true);
-				search.setVisible(true);
-			} else {
-				followList.setVisible(true);
-				if (userList.isFollowing()) {
-					followList.setTitle(R.string.menu_unfollow_list);
-				} else {
-					followList.setTitle(R.string.menu_list_follow);
-				}
-			}
-			return true;
-		}
-		return super.onPrepareOptionsMenu(m);
+		searchUser.setQueryHint(getString(R.string.menu_add_user));
+		searchUser.setOnQueryTextListener(this);
+		return true;
 	}
 
 
@@ -197,24 +176,12 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		if (userList != null && listLoaderAsync.isIdle()) {
 			// open user list editor
 			if (item.getItemId() == R.id.menu_list_edit) {
-				Intent editList = new Intent(this, UserlistEditor.class);
-				editList.putExtra(UserlistEditor.KEY_DATA, userList);
-				activityResultLauncher.launch(editList);
+				userlistDialog.show(userList);
 				return true;
 			}
 			// delete user list
 			else if (item.getItemId() == R.id.menu_delete_list) {
 				confirmDialog.show(ConfirmDialog.LIST_DELETE);
-				return true;
-			}
-			// follow user list
-			else if (item.getItemId() == R.id.menu_follow_list) {
-				if (userList.isFollowing()) {
-					confirmDialog.show(ConfirmDialog.LIST_UNFOLLOW);
-				} else {
-					UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.FOLLOW, userList.getId());
-					listLoaderAsync.execute(param, userlistSet);
-				}
 				return true;
 			}
 			// theme expanded search view
@@ -242,34 +209,11 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 
 
 	@Override
-	public void onActivityResult(ActivityResult result) {
-		if (result.getData() != null) {
-			if (result.getResultCode() == UserlistEditor.RETURN_LIST_CHANGED) {
-				Object data = result.getData().getSerializableExtra(UserlistEditor.KEY_DATA);
-				if (data instanceof UserList) {
-					userList = (UserList) data;
-					toolbar.setTitle(userList.getTitle());
-					toolbar.setSubtitle(userList.getDescription());
-					invalidateOptionsMenu();
-				}
-			}
-		}
-	}
-
-
-	@Override
 	public void onConfirm(int type, boolean remember) {
 		// delete user list
 		if (type == ConfirmDialog.LIST_DELETE && userList != null) {
 			if (listLoaderAsync.isIdle()) {
 				UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.DELETE, userList.getId());
-				listLoaderAsync.execute(param, userlistSet);
-			}
-		}
-		// unfollow user list
-		else if (type == ConfirmDialog.LIST_UNFOLLOW) {
-			if (listLoaderAsync.isIdle() && userList != null) {
-				UserlistAction.Param param = new UserlistAction.Param(UserlistAction.Param.UNFOLLOW, userList.getId());
 				listLoaderAsync.execute(param, userlistSet);
 			}
 		}
@@ -305,6 +249,14 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 		return false;
 	}
 
+
+	@Override
+	public void onUserlistUpdate(UserList userlist) {
+		this.userList = userlist;
+		toolbar.setTitle(userList.getTitle());
+		invalidateOptionsMenu();
+	}
+
 	/**
 	 * update userlist member
 	 */
@@ -335,19 +287,8 @@ public class UserlistActivity extends AppCompatActivity implements ActivityResul
 			case UserlistAction.Result.LOAD:
 				if (result.userlist != null) {
 					toolbar.setTitle(result.userlist.getTitle());
-					toolbar.setSubtitle(result.userlist.getDescription());
 					invalidateOptionsMenu();
 				}
-				break;
-
-			case UserlistAction.Result.FOLLOW:
-				Toast.makeText(getApplicationContext(), R.string.info_list_followed, Toast.LENGTH_SHORT).show();
-				invalidateOptionsMenu();
-				break;
-
-			case UserlistAction.Result.UNFOLLOW:
-				Toast.makeText(getApplicationContext(), R.string.info_list_unfollowed, Toast.LENGTH_SHORT).show();
-				invalidateOptionsMenu();
 				break;
 
 			case UserlistAction.Result.DELETE:

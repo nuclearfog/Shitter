@@ -122,7 +122,7 @@
 			android:lines="1"
 			android:text="@string/dialog_status_schedule_set"
 			android:padding="@dimen/dialog_status_button_padding"
-			style="@style/FeedbackButton"/>
+			style="@style/FeedbackButton" />
 
 		<TextView
 			android:id="@+id/dialog_status_time_set"

@@ -74,7 +74,7 @@ public class HashtagHolder extends ViewHolder implements OnClickListener {
 	 * set view content
 	 *
 	 * @param hashtag content information
-	 * @param index index of the item
+	 * @param index   index of the item
 	 */
 	public void setContent(Hashtag hashtag, int index) {
 		rank.setText(index + 1 + ".");

@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.model;
 
-import androidx.annotation.Nullable;
-
 import java.io.Serializable;
 
 /**
@@ -11,15 +9,16 @@ import java.io.Serializable;
  */
 public interface UserList extends Serializable, Comparable<UserList> {
 
+	int NONE = 0;
+
+	int FOLLOWED = 1;
+
+	int LIST = 2;
+
 	/**
 	 * @return ID of the user list
 	 */
 	long getId();
-
-	/**
-	 * @return date of creation
-	 */
-	long getTimestamp();
 
 	/**
 	 * @return title of the list
@@ -27,46 +26,13 @@ public interface UserList extends Serializable, Comparable<UserList> {
 	String getTitle();
 
 	/**
-	 * @return description of the list
+	 * @return Which replies should be shown in the list {@link #NONE,#FOLLOWED,#LIST}
 	 */
-	String getDescription();
-
-	/**
-	 * @return owner of the list
-	 */
-	@Nullable
-	User getListOwner();
-
-	/**
-	 * @return true if list is owned by the current user or the user can edit/delete the list
-	 */
-	boolean isEdiatable();
-
-	/**
-	 * @return true if list is private
-	 */
-	boolean isPrivate();
-
-	/**
-	 * @return true if current user is following the list
-	 */
-	boolean isFollowing();
-
-	/**
-	 * @return list member count
-	 */
-	int getMemberCount();
-
-	/**
-	 * @return list subscriber count
-	 */
-	int getSubscriberCount();
+	int getReplyPolicy();
 
 
 	@Override
 	default int compareTo(UserList userlist) {
-		if (userlist.getTimestamp() != getTimestamp())
-			return Long.compare(userlist.getTimestamp(), getTimestamp());
 		return Long.compare(userlist.getId(), getId());
 	}
 }

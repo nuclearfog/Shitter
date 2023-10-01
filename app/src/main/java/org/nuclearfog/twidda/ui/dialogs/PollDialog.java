@@ -190,7 +190,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 	 */
 	public void show(@Nullable PollUpdate poll) {
 		if (!isShowing()) {
-			if (poll == null)  {
+			if (poll == null) {
 				poll = new PollUpdate();
 				if (instance != null) {
 					poll.setDuration(instance.getMinPollDuration());

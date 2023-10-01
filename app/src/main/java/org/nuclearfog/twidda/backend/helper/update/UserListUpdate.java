@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.helper.update;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.model.UserList;
+
 import java.io.Serializable;
 
 /**
@@ -15,7 +17,8 @@ public class UserListUpdate implements Serializable {
 
 	private long listId = 0L;
 	private String title = "";
-	private String description = "";
+	private int policy = UserList.NONE;
+	private boolean isExclusive = false;
 
 
 	/**
@@ -55,21 +58,31 @@ public class UserListUpdate implements Serializable {
 	}
 
 	/**
-	 * set list description
 	 *
-	 * @param description text description
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setPolicy(int policy) {
+		this.policy = policy;
 	}
 
 	/**
-	 * get short description of the list
 	 *
-	 * @return description
 	 */
-	public String getDescription() {
-		return description;
+	public int getPolicy() {
+		return policy;
+	}
+
+	/**
+	 *
+	 */
+	public void setExclusive(boolean exclusive) {
+		this.isExclusive = exclusive;
+	}
+
+	/**
+	 *
+	 */
+	public boolean isExclusive() {
+		return isExclusive;
 	}
 
 
@@ -77,7 +90,7 @@ public class UserListUpdate implements Serializable {
 	@Override
 	public String toString() {
 		if (getId() != 0L)
-			return "id=" + getId() + " title=\"" + getTitle() + "\" description=\"" + getDescription() + "\"";
-		return "title=\"" + getTitle() + "\" description=\"" + getDescription() + "\"";
+			return "id=" + getId() + " title=\"" + getTitle() + "\"";
+		return "title=\"" + getTitle() + "\"";
 	}
 }

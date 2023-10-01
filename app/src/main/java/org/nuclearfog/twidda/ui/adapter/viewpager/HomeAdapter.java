@@ -4,10 +4,10 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
+import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
-import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 
 /**
  * ViewPager fragment adapter for {@link org.nuclearfog.twidda.ui.activities.MainActivity}

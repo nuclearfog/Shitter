@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/dialog_userlist_root"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/dialog_userlist_title_dialog"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/userlist_layout_margin"
+		android:lines="1"
+		android:textSize="@dimen/userlist_textsize_title" />
+
+	<EditText
+		android:id="@+id/dialog_userlist_title_input"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/userlist_layout_margin"
+		android:background="@android:color/transparent"
+		android:inputType="text"
+		android:maxLines="2"
+		android:autofillHints="text"
+		android:hint="@string/userlist_enter_title"
+		android:textSize="@dimen/userlist_textsize_input" />
+
+	<Spinner
+		android:id="@+id/dialog_userlist_replies_selector"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/userlist_layout_margin" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_margin="@dimen/userlist_layout_margin"
+		android:gravity="center_vertical">
+
+		<com.kyleduo.switchbutton.SwitchButton
+			android:id="@+id/dialog_userlist_exclusive"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="@dimen/userlist_layout_margin" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:lines="1"
+			android:textSize="@dimen/userlist_textsize_label"
+			android:text="@string/userlist_exclusive" />
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="end">
+
+		<Button
+			android:id="@+id/dialog_userlist_cancel"
+			android:layout_width="wrap_content"
+			android:layout_height="@dimen/userlist_button_height"
+			android:layout_margin="@dimen/userlist_layout_margin"
+			android:paddingStart="@dimen/userlist_button_padding"
+			android:paddingEnd="@dimen/userlist_button_padding"
+			android:text="@android:string/cancel"
+			android:textSize="@dimen/userlist_textsize_button"
+			style="@style/FeedbackButton" />
+
+		<Button
+			android:id="@+id/dialog_userlist_apply"
+			android:layout_width="wrap_content"
+			android:layout_height="@dimen/userlist_button_height"
+			android:layout_margin="@dimen/userlist_layout_margin"
+			android:paddingStart="@dimen/userlist_button_padding"
+			android:paddingEnd="@dimen/userlist_button_padding"
+			android:text="@string/userlist_create"
+			android:textSize="@dimen/userlist_textsize_button"
+			style="@style/FeedbackButton" />
+
+	</LinearLayout>
+
+</LinearLayout>

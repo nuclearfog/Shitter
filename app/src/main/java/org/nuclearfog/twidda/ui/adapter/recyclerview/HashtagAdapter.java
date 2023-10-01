@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.HashtagHolder;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.HashtagHolder;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show trends

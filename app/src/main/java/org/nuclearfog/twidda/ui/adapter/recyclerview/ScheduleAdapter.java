@@ -3,8 +3,8 @@ package org.nuclearfog.twidda.ui.adapter.recyclerview;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
@@ -164,7 +164,7 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 */
 	public void removeItem(long id) {
 		int pos = -1;
-		for (int i = items.size() - 1 ; i >= 0 ; i--) {
+		for (int i = items.size() - 1; i >= 0; i--) {
 			ScheduledStatus item = items.get(i);
 			if (item != null && item.getId() == id) {
 				pos = i;
@@ -181,7 +181,7 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 *
 	 */
 	public void updateItem(@NonNull ScheduledStatus item) {
-		for (int pos = items.size() - 1 ; pos >= 0 ; pos--) {
+		for (int pos = items.size() - 1; pos >= 0; pos--) {
 			ScheduledStatus current = items.get(pos);
 			if (current != null && current.getId() == item.getId()) {
 				items.set(pos, item);

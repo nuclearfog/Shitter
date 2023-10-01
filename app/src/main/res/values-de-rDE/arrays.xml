@@ -40,4 +40,10 @@
 		<item>vorgestellt</item>
 	</string-array>
 
+	<string-array name="userlist_policy">
+		<item>zeige keine Replies</item>
+		<item>zeige Replies von gefolgten Nutzern</item>
+		<item>zeige alle Replies</item>
+	</string-array>
+
 </resources>

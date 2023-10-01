@@ -59,8 +59,7 @@ public class StatusFilterAction extends AsyncExecutor<StatusFilterAction.Param, 
 		public static final int UPDATE = 1;
 		public static final int DELETE = 2;
 
-		@Nullable
-		final FilterUpdate update;
+		@Nullable final FilterUpdate update;
 		final long id;
 		final int mode;
 

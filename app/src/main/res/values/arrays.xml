@@ -117,4 +117,10 @@
 		<item>featured</item>
 	</string-array>
 
+	<string-array name="userlist_policy">
+		<item>show no replies</item>
+		<item>show replies to followed users</item>
+		<item>show all replies</item>
+	</string-array>
+
 </resources>

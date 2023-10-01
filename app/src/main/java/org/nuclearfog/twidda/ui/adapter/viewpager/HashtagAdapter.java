@@ -15,6 +15,7 @@ import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 public class HashtagAdapter extends ViewPagerAdapter {
 
 	/**
+	 *
 	 */
 	public HashtagAdapter(FragmentActivity fragmentActivity) {
 		super(fragmentActivity);

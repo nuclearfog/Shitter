@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
@@ -21,7 +22,6 @@ import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
-import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
@@ -322,14 +322,12 @@ public interface Connection {
 	Hashtag unfollowHashtag(String name) throws ConnectionException;
 
 	/**
-	 *
 	 * @param name name of the hashtag
 	 * @return updated hashtag information
 	 */
 	Hashtag featureHashtag(String name) throws ConnectionException;
 
 	/**
-	 *
 	 * @param id of the featured hashtag
 	 * @return updated hashtag information
 	 */
@@ -386,13 +384,12 @@ public interface Connection {
 	/**
 	 * get replies of a status
 	 *
-	 * @param id     Id of the status
-	 * @param minId  get statuses with ID above the min ID
-	 * @param maxId  get statuses with ID under the max ID
-	 * @param extras additional information like screen name of the status author
+	 * @param id    Id of the status
+	 * @param minId get statuses with ID above the min ID
+	 * @param maxId get statuses with ID under the max ID
 	 * @return list of statuses
 	 */
-	Statuses getStatusReplies(long id, long minId, long maxId, String... extras) throws ConnectionException;
+	Statuses getStatusReplies(long id, long minId, long maxId) throws ConnectionException;
 
 	/**
 	 * lookup status by ID
@@ -527,15 +524,7 @@ public interface Connection {
 	Status updateStatus(StatusUpdate update, List<Long> mediaIds) throws ConnectionException;
 
 	/**
-	 * create userlist
-	 *
-	 * @param update Userlist information
-	 * @return updated user list
-	 */
-	UserList createUserlist(UserListUpdate update) throws ConnectionException;
-
-	/**
-	 * update existing userlist
+	 * create/update userlist
 	 *
 	 * @param update Userlist update
 	 * @return updated user list
@@ -573,22 +562,6 @@ public interface Connection {
 	 * @return userlist information
 	 */
 	UserList getUserlist(long id) throws ConnectionException;
-
-	/**
-	 * follow an userlist
-	 *
-	 * @param id ID of the list
-	 * @return userlist information
-	 */
-	UserList followUserlist(long id) throws ConnectionException;
-
-	/**
-	 * unfollow an userlist
-	 *
-	 * @param id ID of the list
-	 * @return userlist information
-	 */
-	UserList unfollowUserlist(long id) throws ConnectionException;
 
 	/**
 	 * delete an userlist

@@ -17,6 +17,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonFilter;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonHashtag;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonInstance;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
@@ -25,7 +26,6 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPush;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
-import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonHashtag;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.ScheduledMastodonStatus;
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
@@ -44,6 +44,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
+import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
@@ -51,7 +52,6 @@ import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Translation;
-import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
@@ -486,7 +486,7 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Trends showHashtagFeaturing() throws ConnectionException {
-		return getTrends(ENDPOINT_HASHTAG_FEATURE,  new ArrayList<>());
+		return getTrends(ENDPOINT_HASHTAG_FEATURE, new ArrayList<>());
 	}
 
 
@@ -584,7 +584,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Statuses getStatusReplies(long id, long minId, long maxId, String... extras) throws MastodonException {
+	public Statuses getStatusReplies(long id, long minId, long maxId) throws MastodonException {
 		Statuses statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
 		Statuses result = new Statuses();
 		for (Status status : statusThreads) {
@@ -764,7 +764,7 @@ public class Mastodon implements Connection {
 			if (response.code() == 200 && body != null) {
 				JSONArray jsonArray = new JSONArray(body.string());
 				ScheduledStatuses result = new ScheduledStatuses();
-				for (int i = 0 ; i < jsonArray.length() ; i++) {
+				for (int i = 0; i < jsonArray.length(); i++) {
 					result.add(new ScheduledMastodonStatus(jsonArray.getJSONObject(i)));
 				}
 				return result;
@@ -865,23 +865,21 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public UserList createUserlist(UserListUpdate update) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		params.add("title=" + StringUtils.encode(update.getTitle()));
-		try {
-			return createUserlist(post(ENDPOINT_USERLIST, params));
-		} catch (IOException e) {
-			throw new MastodonException(e);
-		}
-	}
-
-
-	@Override
 	public UserList updateUserlist(UserListUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("title=" + StringUtils.encode(update.getTitle()));
+		if (update.getPolicy() == UserList.LIST)
+			params.add("replies_policy=list");
+		else if (update.getPolicy() == UserList.FOLLOWED)
+			params.add("replies_policy=followed");
+		else if (update.getPolicy() == UserList.NONE)
+			params.add("replies_policy=none");
+		if (update.isExclusive())
+			params.add("exclusive=true");
 		try {
-			return createUserlist(put(ENDPOINT_USERLIST + update.getId(), params));
+			if (update.getId() != 0L)
+				return createUserlist(put(ENDPOINT_USERLIST + update.getId(), params));
+			return createUserlist(post(ENDPOINT_USERLIST, params));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -895,18 +893,6 @@ public class Mastodon implements Connection {
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
-	}
-
-
-	@Override
-	public UserList followUserlist(long id) throws MastodonException {
-		throw new MastodonException("not supported!");
-	}
-
-
-	@Override
-	public UserList unfollowUserlist(long id) throws MastodonException {
-		throw new MastodonException("not supported!");
 	}
 
 

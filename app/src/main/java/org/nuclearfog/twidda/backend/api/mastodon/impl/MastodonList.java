@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 
 /**
@@ -20,14 +19,29 @@ public class MastodonList implements UserList {
 
 	private long id;
 	private String title;
+	private int policy;
 
 	/**
 	 * @param json userlist json object
 	 */
 	public MastodonList(JSONObject json) throws JSONException {
 		String idStr = json.getString("id");
+		String policyStr = json.optString("replies_policy", "");
 		title = json.getString("title");
 
+		switch (policyStr) {
+			case "followed":
+				policy = FOLLOWED;
+				break;
+
+			case "list":
+				policy = LIST;
+				break;
+
+			default:
+				policy = NONE;
+				break;
+		}
 		try {
 			id = Long.parseLong(idStr);
 		} catch (NumberFormatException e) {
@@ -43,57 +57,14 @@ public class MastodonList implements UserList {
 
 
 	@Override
-	public long getTimestamp() {
-		return 0;
-	}
-
-
-	@Override
 	public String getTitle() {
 		return title;
 	}
 
 
 	@Override
-	public String getDescription() {
-		return "";
-	}
-
-
-	@Override
-	public User getListOwner() {
-		return null;
-	}
-
-
-	@Override
-	public boolean isEdiatable() {
-		// Mastodon only shows lists of the current user, so all lists are editable
-		return true;
-	}
-
-
-	@Override
-	public boolean isPrivate() {
-		return false;
-	}
-
-
-	@Override
-	public boolean isFollowing() {
-		return false;
-	}
-
-
-	@Override
-	public int getMemberCount() {
-		return 0;
-	}
-
-
-	@Override
-	public int getSubscriberCount() {
-		return 0;
+	public int getReplyPolicy() {
+		return policy;
 	}
 
 

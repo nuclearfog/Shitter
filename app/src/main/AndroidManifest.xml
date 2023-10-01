@@ -106,11 +106,6 @@
 			android:theme="@style/AppTheme" />
 
 		<activity
-			android:name=".ui.activities.UserlistEditor"
-			android:screenOrientation="portrait"
-			android:theme="@style/TransparencyDim" />
-
-		<activity
 			android:name=".ui.activities.AccountActivity"
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
@@ -125,11 +120,13 @@
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
-		<activity android:name=".ui.activities.HashtagActivity"
+		<activity
+			android:name=".ui.activities.HashtagActivity"
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
-		<activity android:name=".ui.activities.ScheduleActivity"
+		<activity
+			android:name=".ui.activities.ScheduleActivity"
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 

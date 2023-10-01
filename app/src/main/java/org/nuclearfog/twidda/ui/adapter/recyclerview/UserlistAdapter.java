@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -101,16 +100,8 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
 		UserList item = userlists.get(position);
-		if (item != null) {
-			switch (type) {
-				case OnHolderClickListener.LIST_CLICK:
-					listener.onListClick(item);
-					break;
-
-				case OnHolderClickListener.LIST_PROFILE:
-					listener.onProfileClick(item.getListOwner());
-					break;
-			}
+		if (item != null && type == OnHolderClickListener.LIST_CLICK) {
+			listener.onListClick(item);
 		}
 	}
 
@@ -230,13 +221,6 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 		 * @param listItem Item data and information
 		 */
 		void onListClick(UserList listItem);
-
-		/**
-		 * called when the profile image of the owner was clicked
-		 *
-		 * @param user user information
-		 */
-		void onProfileClick(User user);
 
 		/**
 		 * called when the placeholder is clicked

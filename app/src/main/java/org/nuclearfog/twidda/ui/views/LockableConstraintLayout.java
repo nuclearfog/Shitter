@@ -38,7 +38,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		switch (ev.getActionMasked()) {
 			case MotionEvent.ACTION_MOVE:
-				float deltaY =  ev.getAxisValue(MotionEvent.AXIS_Y) - yPos;
+				float deltaY = ev.getAxisValue(MotionEvent.AXIS_Y) - yPos;
 				// detect scroll down, then aquire scroll lock
 				if (!yLock && deltaY < 0.0f && callback != null) {
 					yLock = callback.aquireVerticalScrollLock();
@@ -47,7 +47,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 
 			case MotionEvent.ACTION_DOWN:
 				// note the current coordinates touch event
-				yPos =  ev.getAxisValue(MotionEvent.AXIS_Y);
+				yPos = ev.getAxisValue(MotionEvent.AXIS_Y);
 				break;
 
 			case MotionEvent.ACTION_CANCEL:

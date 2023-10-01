@@ -106,7 +106,6 @@
 	<string name="info_gps_attached">GPS Position hinzugefügt</string>
 	<string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
 	<string name="info_get_link">Bitte zuerst die Loginseite öffnen!</string>
-	<string name="item_list_pb_desc">Profil des Listeninhabers</string>
 	<string name="list_appbar">Listen</string>
 	<string name="edit_description_hint">Profilebeschreibung eingeben</string>
 	<string name="edit_hint_link">Link eingeben</string>
@@ -138,7 +137,6 @@
 	<string name="status_spoiler_hint">Zum Anzeigen tippen</string>
 	<string name="login_info">4 Schritte zum Login</string>
 	<string name="userlist_enter_title">Titel eingeben</string>
-	<string name="userlist_enter_description">Beschreibung der Liste eingeben</string>
 	<string name="userlist_create">erstellen</string>
 	<string name="error_list_title_empty">Titel ist leer!</string>
 	<string name="info_list_updated">Liste wurde aktualisiert</string>
@@ -147,7 +145,7 @@
 	<string name="info_adding_user_to_list">Füge Nutzer zur Liste hinzu</string>
 	<string name="userlist_create_new_list">Neue Liste erstellen</string>
 	<string name="menu_edit_list">Liste bearbeiten</string>
-	<string name="update_list">aktualisieren</string>
+	<string name="userlist_update">aktualisieren</string>
 	<string name="confirm_remove_user_from_list">Nutzer von der Liste entfernen?</string>
 	<string name="info_user_removed">%1$s von der Liste entfernt</string>
 	<string name="descr_remove_user">Nutzer von der Liste entfernen</string>
@@ -160,12 +158,7 @@
 	<string name="time_now">jetzt</string>
 	<string name="menu_follow_user">folgen</string>
 	<string name="menu_goto_lists">Nutzerlisten</string>
-	<string name="list_following_indicator">Liste gefolgt</string>
 	<string name="info_list_removed">Liste gelöscht!</string>
-	<string name="menu_list_follow">Liste folgen</string>
-	<string name="menu_unfollow_list">Liste entfolgen</string>
-	<string name="info_list_followed">Liste gefolgt</string>
-	<string name="info_list_unfollowed">Liste entfolgt</string>
 	<string name="info_unfollowed">entfolgt!</string>
 	<string name="descr_add_profile_image">Profilbild ändern</string>
 	<string name="menu_app_info">Über</string>
@@ -364,4 +357,6 @@
 	<string name="descr_remove_schedule">geplanten Post von der Liste entfernen</string>
 	<string name="confirm_schedule_remove">geplanten Post verwerfen?</string>
 	<string name="toolbar_schedule_title">geplante Posts</string>
+	<string name="userlist_exclusive">Mitglieder aus den Home-Timeline filtern</string>
+	<string name="userlist_update_list">Nutzerliste bearbeiten</string>
 </resources>

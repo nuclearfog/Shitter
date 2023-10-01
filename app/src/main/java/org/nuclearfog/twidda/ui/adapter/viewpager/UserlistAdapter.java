@@ -32,7 +32,7 @@ public class UserlistAdapter extends ViewPagerAdapter {
 		ListFragment memberList = new UserFragment();
 		Bundle paramUserlistMember = new Bundle();
 		paramUserlistMember.putInt(UserFragment.KEY_MODE, UserFragment.MODE_LIST_MEMBER);
-		paramUserlistMember.putBoolean(UserFragment.KEY_DELETE, userlist.isEdiatable());
+		paramUserlistMember.putBoolean(UserFragment.KEY_DELETE, true);
 		paramUserlistMember.putLong(UserFragment.KEY_ID, userlist.getId());
 		memberList.setArguments(paramUserlistMember);
 		fragments.add(memberList);

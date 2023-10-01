@@ -35,14 +35,6 @@ public class UserlistAction extends AsyncExecutor<UserlistAction.Param, Userlist
 					UserList result = connection.getUserlist(param.id);
 					return new Result(Result.LOAD, param.id, result, null);
 
-				case Param.FOLLOW:
-					result = connection.followUserlist(param.id);
-					return new Result(Result.FOLLOW, param.id, result, null);
-
-				case Param.UNFOLLOW:
-					result = connection.unfollowUserlist(param.id);
-					return new Result(Result.UNFOLLOW, param.id, result, null);
-
 				case Param.DELETE:
 					connection.deleteUserlist(param.id);
 					return new Result(Result.DELETE, param.id, null, null);
@@ -61,8 +53,6 @@ public class UserlistAction extends AsyncExecutor<UserlistAction.Param, Userlist
 	public static class Param {
 
 		public static final int LOAD = 1;
-		public static final int FOLLOW = 2;
-		public static final int UNFOLLOW = 3;
 		public static final int DELETE = 4;
 
 		final int mode;
@@ -80,8 +70,6 @@ public class UserlistAction extends AsyncExecutor<UserlistAction.Param, Userlist
 	public static class Result {
 
 		public static final int LOAD = 5;
-		public static final int FOLLOW = 6;
-		public static final int UNFOLLOW = 7;
 		public static final int DELETE = 8;
 		public static final int ERROR = -1;
 
