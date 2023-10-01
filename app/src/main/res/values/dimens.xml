@@ -144,6 +144,8 @@
 	<!--dimens of item_schedule-xml-->
 	<dimen name="item_schedule_layout_margins">3dp</dimen>
 	<dimen name="item_schedule_layout_padding">5dp</dimen>
+	<dimen name="item_schedule_textsize_date">12sp</dimen>
+	<dimen name="item_schedule_iconlist_height">26sp</dimen>
 	<dimen name="item_schedule_button_padding">1dp</dimen>
 	<dimen name="item_schedule_button_size">20sp</dimen>
 	<dimen name="item_schedule_drawable_padding">5dp</dimen>

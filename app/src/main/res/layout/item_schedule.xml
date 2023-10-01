@@ -23,7 +23,8 @@
 				android:layout_height="wrap_content"
 				android:layout_margin="@dimen/item_schedule_layout_margins"
 				android:lines="1"
-				android:drawablePadding="@dimen/item_schedule_drawable_padding" />
+				android:drawablePadding="@dimen/item_schedule_drawable_padding"
+				android:textSize="@dimen/item_schedule_textsize_date" />
 
 			<TextView
 				android:id="@+id/item_schedule_text"
@@ -31,6 +32,13 @@
 				android:layout_height="wrap_content"
 				android:layout_margin="@dimen/item_schedule_layout_margins"
 				android:maxLines="@integer/item_schedule_text_max_lines" />
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/item_schedule_attachment"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/item_schedule_iconlist_height"
+				android:layout_margin="@dimen/item_schedule_layout_margins"
+				android:layout_gravity="center"/>
 
 		</LinearLayout>
 

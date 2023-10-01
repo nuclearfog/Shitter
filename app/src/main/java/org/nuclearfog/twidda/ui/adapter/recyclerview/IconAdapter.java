@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.ui.adapter.recyclerview;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import org.nuclearfog.twidda.model.Media;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickListener {
 
+	@Nullable
 	private OnMediaClickListener listener;
 
 	private List<Integer> items = new ArrayList<>();
@@ -28,7 +30,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	/**
 	 * @param invert true to invert item order
 	 */
-	public IconAdapter(OnMediaClickListener listener, boolean invert) {
+	public IconAdapter(@Nullable OnMediaClickListener listener, boolean invert) {
 		this.listener = listener;
 		this.invert = invert;
 	}
@@ -83,7 +85,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	/**
 	 * add icons using status information
 	 */
-	public void addItems(Status status) {
+	public void setItems(Status status) {
 		items.clear();
 		if (status.getMedia().length > 0) {
 			addMediaIcons(status.getMedia());
@@ -93,6 +95,17 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 		}
 		if (status.getPoll() != null) {
 			items.add(IconHolder.TYPE_POLL);
+		}
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * set media icons
+	 */
+	public void setItems(Media[] medias) {
+		items.clear();
+		if (medias.length > 0) {
+			addMediaIcons(medias);
 		}
 		notifyDataSetChanged();
 	}

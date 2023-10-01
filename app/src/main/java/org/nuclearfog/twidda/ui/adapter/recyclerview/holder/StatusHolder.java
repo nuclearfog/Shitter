@@ -38,7 +38,6 @@ import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter.OnMediaClickListener;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
@@ -48,7 +47,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.ui.adapter.recyclerview.StatusAdapter,org.nuclearfog.twidda.ui.adapter.recyclerview.NotificationAdapter
  */
-public class StatusHolder extends ViewHolder implements OnClickListener, OnMediaClickListener {
+public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private static final int EMPTY_COLOR = 0x2F000000;
 
@@ -105,7 +104,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 
 		placeholder = new ColorDrawable(EMPTY_COLOR);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
-		adapter = new IconAdapter(this, false);
+		adapter = new IconAdapter(null, false);
 		iconList.setAdapter(adapter);
 
 		if (settings.likeEnabled()) {
@@ -135,12 +134,6 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 			}
 		}
 	}
-
-
-	@Override
-	public void onMediaClick(int index) {
-	}
-
 
 	/**
 	 * set view content
@@ -243,7 +236,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener, OnMedia
 		// setup attachment indicators
 		if (settings.statusIndicatorsEnabled()) {
 			iconList.setVisibility(View.VISIBLE);
-			adapter.addItems(status);
+			adapter.setItems(status);
 			if (adapter.isEmpty()) {
 				iconList.setVisibility(View.GONE);
 			} else {
