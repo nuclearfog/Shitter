@@ -60,7 +60,7 @@ import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
 
@@ -457,26 +457,26 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Trends getTrends() throws MastodonException {
-		Trends result = getTrends(ENDPOINT_TRENDS, new ArrayList<>());
+	public Hashtags getTrends() throws MastodonException {
+		Hashtags result = getTrends(ENDPOINT_TRENDS, new ArrayList<>());
 		Collections.sort(result);
 		return result;
 	}
 
 
 	@Override
-	public Trends searchHashtags(String search) throws MastodonException {
+	public Hashtags searchHashtags(String search) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringUtils.encode(search));
 		params.add("type=hashtags");
-		Trends result = getTrends(ENDPOINT_SEARCH_TIMELINE, params);
+		Hashtags result = getTrends(ENDPOINT_SEARCH_TIMELINE, params);
 		Collections.sort(result);
 		return result;
 	}
 
 
 	@Override
-	public Trends showHashtagFollowing(long cursor) throws ConnectionException {
+	public Hashtags showHashtagFollowing(long cursor) throws ConnectionException {
 		List<String> params = new ArrayList<>();
 		if (cursor != 0L)
 			params.add("max_id=" + cursor);
@@ -485,8 +485,14 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Trends showHashtagFeaturing() throws ConnectionException {
+	public Hashtags showHashtagFeaturing() throws ConnectionException {
 		return getTrends(ENDPOINT_HASHTAG_FEATURE, new ArrayList<>());
+	}
+
+
+	@Override
+	public Hashtags showHashtagSuggestions() throws ConnectionException {
+		return getTrends(ENDPOINT_HASHTAG_FEATURE + "/suggestions", new ArrayList<>());
 	}
 
 
@@ -1434,7 +1440,7 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return trend list
 	 */
-	private Trends getTrends(String endpoint, List<String> params) throws MastodonException {
+	private Hashtags getTrends(String endpoint, List<String> params) throws MastodonException {
 		try {
 			params.add("limit=" + settings.getListSize());
 			Response response = get(endpoint, params);
@@ -1448,7 +1454,7 @@ public class Mastodon implements Connection {
 					jsonArray = new JSONObject(jsonStr).getJSONArray("hashtags");
 				}
 				long[] cursors = getCursors(response);
-				Trends result = new Trends(cursors[0], cursors[1]);
+				Hashtags result = new Hashtags(cursors[0], cursors[1]);
 				for (int i = 0; i < jsonArray.length(); i++) {
 					MastodonHashtag item = new MastodonHashtag(jsonArray.getJSONObject(i));
 					item.setRank(i + 1);

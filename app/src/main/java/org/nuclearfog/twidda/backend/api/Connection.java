@@ -30,7 +30,7 @@ import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
 
@@ -272,7 +272,7 @@ public interface Connection {
 	 *
 	 * @return trend list
 	 */
-	Trends getTrends() throws ConnectionException;
+	Hashtags getTrends() throws ConnectionException;
 
 	/**
 	 * search hashtags matching search string
@@ -280,7 +280,7 @@ public interface Connection {
 	 * @param search text to search hashtags
 	 * @return list of trends (Hashtags)
 	 */
-	Trends searchHashtags(String search) throws ConnectionException;
+	Hashtags searchHashtags(String search) throws ConnectionException;
 
 	/**
 	 * show hashtags the current user follows them
@@ -288,14 +288,21 @@ public interface Connection {
 	 * @param cursor cursor to parse the results
 	 * @return hashtag list
 	 */
-	Trends showHashtagFollowing(long cursor) throws ConnectionException;
+	Hashtags showHashtagFollowing(long cursor) throws ConnectionException;
 
 	/**
 	 * show featured hashtags by current user
 	 *
 	 * @return hashtag list
 	 */
-	Trends showHashtagFeaturing() throws ConnectionException;
+	Hashtags showHashtagFeaturing() throws ConnectionException;
+
+	/**
+	 * show suggestions to feature hashtags
+	 *
+	 * @return hashtag list
+	 */
+	Hashtags showHashtagSuggestions() throws ConnectionException;
 
 	/**
 	 * show information of a single hashtag

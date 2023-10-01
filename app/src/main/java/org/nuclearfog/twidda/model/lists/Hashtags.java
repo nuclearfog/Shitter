@@ -8,11 +8,11 @@ import org.nuclearfog.twidda.model.Hashtag;
 import java.util.LinkedList;
 
 /**
- * Trend list implementation with addtitional paging IDs
+ * Hashtag list implementation with addtitional paging cursors
  *
  * @author nuclearfog
  */
-public class Trends extends LinkedList<Hashtag> {
+public class Hashtags extends LinkedList<Hashtag> {
 
 	private static final long serialVersionUID = 7646437787602696292L;
 
@@ -21,7 +21,7 @@ public class Trends extends LinkedList<Hashtag> {
 	/**
 	 *
 	 */
-	public Trends() {
+	public Hashtags() {
 		this(0L, 0L);
 	}
 
@@ -29,19 +29,19 @@ public class Trends extends LinkedList<Hashtag> {
 	 * @param prevCursor minimum ID of an item
 	 * @param nextCursor maximum ID of an item
 	 */
-	public Trends(long prevCursor, long nextCursor) {
+	public Hashtags(long prevCursor, long nextCursor) {
 		super();
 		this.nextCursor = nextCursor;
 		this.prevCursor = prevCursor;
 	}
 
 	/**
-	 * @param trends trend list to clone
+	 * @param hashtags trend list to clone
 	 */
-	public Trends(Trends trends) {
-		super(trends);
-		prevCursor = trends.prevCursor;
-		nextCursor = trends.nextCursor;
+	public Hashtags(Hashtags hashtags) {
+		super(hashtags);
+		prevCursor = hashtags.prevCursor;
+		nextCursor = hashtags.nextCursor;
 	}
 
 	/**
@@ -70,31 +70,31 @@ public class Trends extends LinkedList<Hashtag> {
 	/**
 	 * add a sublist at specific position
 	 *
-	 * @param trends sublist to add
+	 * @param hashtags sublist to add
 	 * @param index  index where to insert the sublist
 	 */
-	public void addAll(int index, Trends trends) {
+	public void addAll(int index, Hashtags hashtags) {
 		if (isEmpty()) {
-			prevCursor = trends.getPreviousCursor();
-			nextCursor = trends.getNextCursor();
+			prevCursor = hashtags.getPreviousCursor();
+			nextCursor = hashtags.getNextCursor();
 		} else if (index == 0) {
-			prevCursor = trends.getPreviousCursor();
+			prevCursor = hashtags.getPreviousCursor();
 		} else if (index == size() - 1) {
-			nextCursor = trends.getNextCursor();
+			nextCursor = hashtags.getNextCursor();
 		}
-		super.addAll(index, trends);
+		super.addAll(index, hashtags);
 	}
 
 	/**
 	 * replace all items with new ones
 	 *
-	 * @param trends new items to insert
+	 * @param hashtags new items to insert
 	 */
-	public void replaceAll(Trends trends) {
+	public void replaceAll(Hashtags hashtags) {
 		clear();
-		addAll(trends);
-		prevCursor = trends.getPreviousCursor();
-		nextCursor = trends.getNextCursor();
+		addAll(hashtags);
+		prevCursor = hashtags.getPreviousCursor();
+		nextCursor = hashtags.getNextCursor();
 	}
 
 

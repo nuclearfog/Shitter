@@ -45,7 +45,7 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -776,20 +776,20 @@ public class AppDatabase {
 	 *
 	 * @return list of trends
 	 */
-	public Trends getTrends() {
+	public Hashtags getTrends() {
 		synchronized (LOCK) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.query(HashtagTable.NAME, DatabaseHashtag.COLUMNS, TREND_SELECT, args, null, null, null);
-			Trends trends = new Trends();
+			Hashtags hashtags = new Hashtags();
 			if (cursor.moveToFirst()) {
 				do {
-					trends.add(new DatabaseHashtag(cursor));
+					hashtags.add(new DatabaseHashtag(cursor));
 				} while (cursor.moveToNext());
 			}
 			cursor.close();
-			Collections.sort(trends);
-			return trends;
+			Collections.sort(hashtags);
+			return hashtags;
 		}
 	}
 

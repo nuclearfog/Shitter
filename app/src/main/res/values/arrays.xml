@@ -72,6 +72,7 @@
 	<integer-array name="userlist_hashtag_icons">
 		<item>@drawable/hash</item>
 		<item>@drawable/hash</item>
+		<item>@drawable/hash</item>
 	</integer-array>
 
 	<string-array name="networks">
@@ -115,6 +116,7 @@
 	<string-array name="hashtag_labels">
 		<item>followed</item>
 		<item>featured</item>
+		<item>suggested</item>
 	</string-array>
 
 	<string-array name="userlist_policy">

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.model.Hashtag;
-import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.HashtagHolder;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
@@ -33,7 +33,7 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 
 	private OnHashtagClickListener itemClickListener;
 
-	private Trends items = new Trends();
+	private Hashtags items = new Hashtags();
 	private int loadingIndex = NO_LOADING;
 	private boolean enableDelete = false;
 
@@ -109,8 +109,8 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	 *
 	 * @return a copy of the items
 	 */
-	public Trends getItems() {
-		return new Trends(items);
+	public Hashtags getItems() {
+		return new Hashtags(items);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	 *
 	 * @param newItems array of trend items
 	 */
-	public void addItems(Trends newItems, int index) {
+	public void addItems(Hashtags newItems, int index) {
 		disableLoading();
 		if (index < 0) {
 			this.items.replaceAll(newItems);

@@ -30,7 +30,13 @@ public class HashtagAdapter extends ViewPagerAdapter {
 		paramFeaturedTags.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_FEATURE);
 		featuredTags.setArguments(paramFeaturedTags);
 
+		HashtagFragment suggestedTags = new HashtagFragment();
+		Bundle paramSuggestedTags = new Bundle();
+		paramSuggestedTags.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_SUGGESTIONS);
+		suggestedTags.setArguments(paramSuggestedTags);
+
 		fragments.add(followedTags);
 		fragments.add(featuredTags);
+		fragments.add(suggestedTags);
 	}
 }

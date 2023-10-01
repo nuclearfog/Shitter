@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.backend.async.HashtagAction;
 import org.nuclearfog.twidda.backend.async.HashtagLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Hashtag;
-import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.HashtagAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.HashtagAdapter.OnHashtagClickListener;
@@ -55,6 +55,11 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	public static final int MODE_FEATURE = 0x16347583;
 
 	/**
+	 * setup fragment to view suggestions for hashtag features
+	 */
+	public static final int MODE_SUGGESTIONS = 0x4422755;
+
+	/**
 	 * key used to define what type of trends should be shown, see {@link #MODE_FOLLOW ,#MODE_POPULAR ,#KEY_FRAGMENT_TREND_SEARCH}
 	 * value type is Integer
 	 */
@@ -68,7 +73,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 	/**
 	 * bundle key to add adapter items
-	 * value type is {@link Trends}
+	 * value type is {@link Hashtags}
 	 */
 	private static final String KEY_DATA = "fragment_trend_data";
 
@@ -106,8 +111,8 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 		}
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
-			if (data instanceof Trends) {
-				adapter.addItems((Trends) data, HashtagAdapter.CLEAR_LIST);
+			if (data instanceof Hashtags) {
+				adapter.addItems((Hashtags) data, HashtagAdapter.CLEAR_LIST);
 				return;
 			}
 		}
@@ -237,7 +242,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 			}
 			adapter.disableLoading();
 		} else {
-			adapter.addItems(result.trends, result.index);
+			adapter.addItems(result.hashtags, result.index);
 		}
 		setRefresh(false);
 	}
@@ -271,6 +276,12 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 				param = new HashtagLoader.Param(HashtagLoader.Param.SEARCH, index, search, cursor);
 				hashtagLoader.execute(param, hashtagLoaderCallback);
 				break;
+
+			case MODE_SUGGESTIONS:
+				param = new HashtagLoader.Param(HashtagLoader.Param.SUGGESTIONS, index, search, cursor);
+				hashtagLoader.execute(param, hashtagLoaderCallback);
+				break;
+
 		}
 	}
 }

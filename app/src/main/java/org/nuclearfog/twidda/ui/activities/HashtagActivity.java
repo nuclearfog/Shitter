@@ -52,7 +52,7 @@ public class HashtagActivity extends AppCompatActivity implements SearchView.OnQ
 		settings = GlobalSettings.get(this);
 		adapter = new HashtagAdapter(this);
 		viewPager.setAdapter(adapter);
-		viewPager.setOffscreenPageLimit(2);
+		viewPager.setOffscreenPageLimit(3);
 
 		tabSelector.addTabIcons(R.array.userlist_hashtag_icons);
 		tabSelector.addTabLabels(R.array.hashtag_labels);

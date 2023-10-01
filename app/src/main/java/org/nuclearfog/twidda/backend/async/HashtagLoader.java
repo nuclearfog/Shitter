@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.model.lists.Trends;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 
 /**
@@ -37,28 +37,32 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.Param, HashtagLoa
 		try {
 			switch (param.mode) {
 				case Param.POPULAR_OFFLINE:
-					Trends trends = db.getTrends();
-					if (!trends.isEmpty()) {
-						return new Result(Result.POPULAR, trends, param.index, null);
+					Hashtags hashtags = db.getTrends();
+					if (!hashtags.isEmpty()) {
+						return new Result(Result.POPULAR, hashtags, param.index, null);
 					}
 					// fall through
 
 				case Param.POPULAR_ONLINE:
-					trends = connection.getTrends();
-					db.saveTrends(trends);
-					return new Result(Result.POPULAR, trends, param.index, null);
+					hashtags = connection.getTrends();
+					db.saveTrends(hashtags);
+					return new Result(Result.POPULAR, hashtags, param.index, null);
 
 				case Param.SEARCH:
-					trends = connection.searchHashtags(param.trend);
-					return new Result(Result.SEARCH, trends, param.index, null);
+					hashtags = connection.searchHashtags(param.trend);
+					return new Result(Result.SEARCH, hashtags, param.index, null);
 
 				case Param.FOLLOWING:
-					trends = connection.showHashtagFollowing(param.cursor);
-					return new Result(Result.FOLLOWING, trends, param.index, null);
+					hashtags = connection.showHashtagFollowing(param.cursor);
+					return new Result(Result.FOLLOWING, hashtags, param.index, null);
 
 				case Param.FEATURING:
-					trends = connection.showHashtagFeaturing();
-					return new Result(Result.FEATURING, trends, param.index, null);
+					hashtags = connection.showHashtagFeaturing();
+					return new Result(Result.FEATURING, hashtags, param.index, null);
+
+				case Param.SUGGESTIONS:
+					hashtags = connection.showHashtagSuggestions();
+					return new Result(Result.SUGGESTIONS, hashtags, param.index, null);
 
 				default:
 					return null;
@@ -78,6 +82,7 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.Param, HashtagLoa
 		public static final int SEARCH = 3;
 		public static final int FOLLOWING = 4;
 		public static final int FEATURING = 5;
+		public static final int SUGGESTIONS = 6;
 
 		public static final long NO_CURSOR = 0L;
 
@@ -104,16 +109,17 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.Param, HashtagLoa
 		public static final int SEARCH = 21;
 		public static final int FOLLOWING = 22;
 		public static final int FEATURING = 23;
+		public static final int SUGGESTIONS = 24;
 
 		public final int mode;
 		public final int index;
 		@Nullable
-		public final Trends trends;
+		public final Hashtags hashtags;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(int mode, @Nullable Trends trends, int index, @Nullable ConnectionException exception) {
-			this.trends = trends;
+		Result(int mode, @Nullable Hashtags hashtags, int index, @Nullable ConnectionException exception) {
+			this.hashtags = hashtags;
 			this.exception = exception;
 			this.index = index;
 			this.mode = mode;
