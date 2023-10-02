@@ -432,9 +432,9 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onTabSelected(int oldPosition) {
+	public void onTabSelected() {
 		if (adapter != null) {
-			adapter.scrollToTop(oldPosition);
+			adapter.scrollToTop();
 		}
 	}
 

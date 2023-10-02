@@ -251,9 +251,9 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onTabSelected(int oldPosition) {
+	public void onTabSelected() {
 		invalidateOptionsMenu();
-		adapter.scrollToTop(oldPosition);
+		adapter.scrollToTop();
 	}
 
 

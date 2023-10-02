@@ -69,6 +69,14 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	}
 
 	/**
+	 * clear all items
+	 */
+	public void clear() {
+		fields.clear();
+		notifyDataSetChanged();
+	}
+
+	/**
 	 * get all items
 	 *
 	 * @return Field list

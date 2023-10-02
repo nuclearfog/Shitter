@@ -9,13 +9,12 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.model.lists.Users;
-import org.nuclearfog.twidda.ui.fragments.UserFragment;
 
 /**
  * download a list of user such as follower, following or searched users
  *
  * @author nuclearfog
- * @see UserFragment
+ * @see org.nuclearfog.twidda.ui.fragments.UserFragment
  */
 public class UsersLoader extends AsyncExecutor<UsersLoader.Param, UsersLoader.Result> {
 

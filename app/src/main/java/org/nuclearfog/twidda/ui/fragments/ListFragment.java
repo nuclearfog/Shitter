@@ -8,6 +8,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -20,22 +25,21 @@ import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
 import org.nuclearfog.twidda.config.GlobalSettings;
 
-import java.util.Random;
-
 /**
  * this fragment class hosts a list view inside a swipe view
  * superclass for all list fragments
  *
  * @author nuclearfog
  */
-public abstract class ListFragment extends Fragment implements OnRefreshListener, RefreshCallback {
+public abstract class ListFragment extends Fragment implements OnRefreshListener, RefreshCallback, Observer<String> {
+
+	public static final String NOTIFY_SCROLL_TOP = "refresh";
+	public static final String NOTIFY_CHANGED = "settings_changed";
 
 	/**
 	 * delay to enable SwipeRefreshLayout
 	 */
 	private static final int REFRESH_DELAY_MS = 1000;
-
-	private static final Random RAND = new Random();
 
 	private RecyclerView list;
 	private SwipeRefreshLayout reload;
@@ -43,7 +47,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 	private boolean enableSwipe = true;
 	private boolean isRefreshing = false;
-	private long sessionId = RAND.nextLong();
 
 
 	@Override
@@ -55,6 +58,9 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 		list.setLayoutManager(new LinearLayoutManager(requireContext()));
 		AppStyles.setSwipeRefreshColor(reload, settings);
+
+		ItemViewModel viewModel = new ViewModelProvider(requireActivity()).get(ItemViewModel.class);
+		viewModel.getSelectedItem().observe(getViewLifecycleOwner(), this);
 
 		reload.setOnRefreshListener(this);
 		return reload;
@@ -71,6 +77,25 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	public void onRefreshDelayed() {
 		if (isRefreshing && !reload.isRefreshing()) {
 			reload.setRefreshing(true);
+		}
+	}
+
+
+	@Override
+	public void onChanged(String s) {
+		switch (s) {
+			case NOTIFY_CHANGED:
+				// reset colors
+				AppStyles.setSwipeRefreshColor(reload, settings);
+				list.setBackgroundColor(settings.getBackgroundColor());
+				// force redrawing list to apply colors
+				list.setAdapter(list.getAdapter());
+				onReset();
+				break;
+
+			case NOTIFY_SCROLL_TOP:
+				list.smoothScrollToPosition(0);
+				break;
 		}
 	}
 
@@ -111,46 +136,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	}
 
 	/**
-	 * called to reset all data
-	 */
-	public void reset() {
-		// check if fragment is initialized
-		if (reload != null && list != null && settings != null && getContext() != null) {
-			// reset colors
-			AppStyles.setSwipeRefreshColor(reload, settings);
-			list.setBackgroundColor(settings.getBackgroundColor());
-			// force redrawing list to apply colors
-			list.setAdapter(list.getAdapter());
-			onReset();
-		}
-	}
-
-	/**
-	 * called when this tab is deselected
-	 */
-	public void onTabChange() {
-		if (list != null) {
-			list.smoothScrollToPosition(0);
-		}
-	}
-
-	/**
-	 * get session fragment ID
-	 *
-	 * @return unique session ID
-	 */
-	public long getSessionId() {
-		return sessionId;
-	}
-
-	/**
-	 * disable swipe support
-	 */
-	protected void disableSwipe() {
-		reload.setEnabled(false);
-	}
-
-	/**
 	 * called when swipe refresh is active
 	 */
 	protected abstract void onReload();
@@ -159,4 +144,18 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * called to reset all data
 	 */
 	protected abstract void onReset();
+
+
+	public static class ItemViewModel extends ViewModel {
+
+		private final MutableLiveData<String> selectedItem = new MutableLiveData<>();
+
+		public void notify(String s) {
+			selectedItem.setValue(s);
+		}
+
+		public LiveData<String> getSelectedItem() {
+			return selectedItem;
+		}
+	}
 }

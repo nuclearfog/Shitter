@@ -135,8 +135,8 @@ public class HashtagActivity extends AppCompatActivity implements OnQueryTextLis
 
 
 	@Override
-	public void onTabSelected(int oldPosition) {
-		adapter.scrollToTop(oldPosition);
+	public void onTabSelected() {
+		adapter.scrollToTop();
 		// reset menu
 		invalidateOptionsMenu();
 	}

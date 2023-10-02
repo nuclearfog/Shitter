@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.ui.adapter.viewpager;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
@@ -14,26 +16,39 @@ import org.nuclearfog.twidda.ui.fragments.UserListFragment;
  */
 public class UserListsAdapter extends ViewPagerAdapter {
 
+	private long userId;
+
 	/**
 	 * @param userId ID of the user related to the userlists
 	 */
-	public UserListsAdapter(FragmentActivity fragmentActivity, long userId) {
-		super(fragmentActivity);
+	public UserListsAdapter(FragmentActivity fragmentActivity, long userId, boolean enableMember) {
+		super(fragmentActivity, enableMember ? 2 : 1);
+		this.userId = userId;
+	}
 
-		ListFragment userlistOwnerShips = new UserListFragment();
-		Bundle paramUserlistOwnership = new Bundle();
-		paramUserlistOwnership.putLong(UserListFragment.KEY_ID, userId);
-		paramUserlistOwnership.putInt(UserListFragment.KEY_MODE, UserListFragment.MODE_OWNERSHIP);
-		userlistOwnerShips.setArguments(paramUserlistOwnership);
-		fragments.add(userlistOwnerShips);
 
-		if (settings.getLogin().getConfiguration().isUserlistMembershipSupported()) {
-			ListFragment userlistSubscriptions = new UserListFragment();
-			Bundle paramUserlistSubscription = new Bundle();
-			paramUserlistSubscription.putLong(UserListFragment.KEY_ID, userId);
-			paramUserlistSubscription.putInt(UserListFragment.KEY_MODE, UserListFragment.MODE_MEMBERSHIP);
-			userlistSubscriptions.setArguments(paramUserlistSubscription);
-			fragments.add(userlistSubscriptions);
+	@NonNull
+	@Override
+	public Fragment createFragment(int position) {
+		ListFragment fragment;
+		switch(position) {
+			default:
+			case 0:
+				fragment = new UserListFragment();
+				Bundle param = new Bundle();
+				param.putLong(UserListFragment.KEY_ID, userId);
+				param.putInt(UserListFragment.KEY_MODE, UserListFragment.MODE_OWNERSHIP);
+				fragment.setArguments(param);
+				break;
+
+			case 1:
+				fragment = new UserListFragment();
+				param = new Bundle();
+				param.putLong(UserListFragment.KEY_ID, userId);
+				param.putInt(UserListFragment.KEY_MODE, UserListFragment.MODE_MEMBERSHIP);
+				fragment.setArguments(param);
+				break;
 		}
+		return fragment;
 	}
 }

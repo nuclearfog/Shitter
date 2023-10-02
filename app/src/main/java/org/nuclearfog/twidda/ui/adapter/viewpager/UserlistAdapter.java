@@ -2,9 +2,10 @@ package org.nuclearfog.twidda.ui.adapter.viewpager;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
@@ -17,33 +18,48 @@ import org.nuclearfog.twidda.ui.fragments.UserListFragment;
  */
 public class UserlistAdapter extends ViewPagerAdapter {
 
+	private long id;
+
 	/**
-	 * @param userlist userlist to show content
+	 *
 	 */
-	public UserlistAdapter(FragmentActivity fragmentActivity, UserList userlist) {
-		super(fragmentActivity);
-		ListFragment userlistTimeline = new StatusFragment();
-		Bundle paramUserlistTl = new Bundle();
-		paramUserlistTl.putLong(StatusFragment.KEY_ID, userlist.getId());
-		paramUserlistTl.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_USERLIST);
-		userlistTimeline.setArguments(paramUserlistTl);
-		fragments.add(userlistTimeline);
+	public UserlistAdapter(FragmentActivity fragmentActivity, long id, boolean enableSubscriber) {
+		super(fragmentActivity, enableSubscriber ? 3 : 2);
+		this.id = id;
+	}
 
-		ListFragment memberList = new UserFragment();
-		Bundle paramUserlistMember = new Bundle();
-		paramUserlistMember.putInt(UserFragment.KEY_MODE, UserFragment.MODE_LIST_MEMBER);
-		paramUserlistMember.putBoolean(UserFragment.KEY_DELETE, true);
-		paramUserlistMember.putLong(UserFragment.KEY_ID, userlist.getId());
-		memberList.setArguments(paramUserlistMember);
-		fragments.add(memberList);
 
-		if (settings.getLogin().getConfiguration().isUserlistSubscriberSupported()) {
-			ListFragment subscriberList = new UserListFragment();
-			Bundle paramUserlistSubscriber = new Bundle();
-			paramUserlistSubscriber.putLong(UserFragment.KEY_ID, userlist.getId());
-			paramUserlistSubscriber.putInt(UserFragment.KEY_MODE, UserFragment.MODE_LIST_SUBSCRIBER);
-			subscriberList.setArguments(paramUserlistSubscriber);
-			fragments.add(subscriberList);
+	@NonNull
+	@Override
+	public Fragment createFragment(int position) {
+		ListFragment fragment;
+		switch (position) {
+			default:
+			case 0:
+				fragment = new StatusFragment();
+				Bundle param = new Bundle();
+				param.putLong(StatusFragment.KEY_ID, id);
+				param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_USERLIST);
+				fragment.setArguments(param);
+				break;
+
+			case 1:
+				fragment = new UserFragment();
+				param = new Bundle();
+				param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_LIST_MEMBER);
+				param.putBoolean(UserFragment.KEY_DELETE, true);
+				param.putLong(UserFragment.KEY_ID, id);
+				fragment.setArguments(param);
+				break;
+
+			case 2:
+				fragment = new UserListFragment();
+				param = new Bundle();
+				param.putLong(UserFragment.KEY_ID, id);
+				param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_LIST_SUBSCRIBER);
+				fragment.setArguments(param);
+				break;
 		}
+		return fragment;
 	}
 }

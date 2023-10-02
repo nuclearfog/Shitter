@@ -6,6 +6,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.UserLoader;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.lists.Fields;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.FieldAdapter;
@@ -16,25 +19,37 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.FieldAdapter.OnLinkClickLis
  *
  * @author nuclearfog
  */
-public class FieldFragment extends ListFragment implements OnLinkClickListener {
+public class FieldFragment extends ListFragment implements OnLinkClickListener, AsyncCallback<UserLoader.Result> {
+
+	public static final String KEY_ID = "user-id";
 
 	private static final String KEY_SAVE = "fields-save";
 
+	private UserLoader userLoader;
 	private FieldAdapter adapter;
 
+	private long id;
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		userLoader = new UserLoader(requireContext());
 		adapter = new FieldAdapter(this);
-		setAdapter(adapter);
+
+		Bundle param = getArguments();
+		if (param != null) {
+			id = param.getLong(KEY_ID);
+		}
 		if (savedInstanceState != null) {
 			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Fields) {
 				adapter.replaceItems((Fields) data);
 			}
 		}
-		disableSwipe();
+		setAdapter(adapter);
+		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
+		userLoader.execute(userParam, this);
+		setRefresh(true);
 	}
 
 
@@ -54,24 +69,33 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener {
 
 	@Override
 	protected void onReload() {
-		// swipe disabled
+		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
+		userLoader.execute(userParam, this);
 	}
 
 
 	@Override
 	protected void onReset() {
 		// reload adapter items
-		adapter.notifyDataSetChanged();
+		adapter.clear();
+		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
+		userLoader.execute(userParam, this);
+		setRefresh(true);
 	}
 
-	/**
-	 * set field items
-	 *
-	 * @param items new items to show in a list
-	 */
-	public void setItems(Fields items) {
-		if (adapter != null) {
-			adapter.replaceItems(items);
+
+	@Override
+	public void onResult(@NonNull UserLoader.Result result) {
+		if (result.mode == UserLoader.Result.ONLINE) {
+			if (result.user != null) {
+				Fields fields = new Fields(result.user.getFields());
+				adapter.replaceItems(fields);
+			} else {
+				adapter.clear();
+			}
+		} else if (result.mode == UserLoader.Result.ERROR) {
+			ErrorUtils.showErrorMessage(requireContext(), result.exception);
 		}
+		setRefresh(false);
 	}
 }

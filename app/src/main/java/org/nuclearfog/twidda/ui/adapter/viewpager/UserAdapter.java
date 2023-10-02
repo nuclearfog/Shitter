@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.ui.adapter.viewpager;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.ui.fragments.DomainFragment;
@@ -40,80 +42,61 @@ public class UserAdapter extends ViewPagerAdapter {
 	 */
 	public static final int BLOCKS = 14;
 
+	private long id;
+	private int mode;
+
 	/**
 	 * @param id   Status ID, List ID or User ID, depending on mode
 	 * @param mode what type of fragments should be loaded {@link #FOLLOWER,#FOLLOWING,#REQUESTS,#REPOSTER,#FAVORITER,#BLOCKS}
 	 */
-	public UserAdapter(FragmentActivity fragmentActivity, long id, int mode) {
-		super(fragmentActivity);
-		switch (mode) {
-			case FOLLOWING:
-				Bundle paramFollowing = new Bundle();
-				paramFollowing.putLong(UserFragment.KEY_ID, id);
-				paramFollowing.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWING);
-				ListFragment following = new UserFragment();
-				following.setArguments(paramFollowing);
-				fragments.add(following);
-				if (settings.getLogin().getId() == id) {
-					Bundle paramFollowingRequest = new Bundle();
-					paramFollowingRequest.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_INCOMING);
-					ListFragment pendingRequests = new UserFragment();
-					pendingRequests.setArguments(paramFollowingRequest);
-					fragments.add(pendingRequests);
+	public UserAdapter(FragmentActivity fragmentActivity, long id, int mode, int pages) {
+		super(fragmentActivity, pages);
+		this.mode = mode;
+		this.id = id;
+	}
+
+
+	@NonNull
+	@Override
+	public Fragment createFragment(int position) {
+		ListFragment fragment;
+		switch(position) {
+			default:
+			case 0:
+				Bundle param = new Bundle();
+				param.putLong(UserFragment.KEY_ID, id);
+				if (mode == FOLLOWING) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWING);
+				} else if (mode == FOLLOWER) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWER);
+				} else if (mode == REPOSTER) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_REPOSTER);
+				} else if (mode == FAVORITER) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FAVORITER);
+				} else if (mode == BLOCKS) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_MUTES);
 				}
+				fragment = new UserFragment();
+				fragment.setArguments(param);
 				break;
 
-			case FOLLOWER:
-				Bundle paramFollower = new Bundle();
-				paramFollower.putLong(UserFragment.KEY_ID, id);
-				paramFollower.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWER);
-				ListFragment followerList = new UserFragment();
-				followerList.setArguments(paramFollower);
-				fragments.add(followerList);
-
-				if (settings.getLogin().getConfiguration().isOutgoingFollowRequestSupported() && settings.getLogin().getId() == id) {
-					Bundle paramFollowRequest = new Bundle();
-					paramFollowRequest.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_OUTGOING);
-					ListFragment followRequest = new UserFragment();
-					followRequest.setArguments(paramFollowRequest);
-					fragments.add(followRequest);
+			case 1:
+				param = new Bundle();
+				if (mode == FOLLOWING) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_INCOMING);
+				} else if (mode == FOLLOWER) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_OUTGOING);
+				} else if (mode == BLOCKS) {
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_BLOCKS);
 				}
+				fragment = new UserFragment();
+				fragment.setArguments(param);
 				break;
 
-			case REPOSTER:
-				Bundle paramReposter = new Bundle();
-				paramReposter.putLong(UserFragment.KEY_ID, id);
-				paramReposter.putInt(UserFragment.KEY_MODE, UserFragment.MODE_REPOSTER);
-				ListFragment reposter = new UserFragment();
-				reposter.setArguments(paramReposter);
-				fragments.add(reposter);
-				break;
-
-			case FAVORITER:
-				Bundle paramFavoriter = new Bundle();
-				paramFavoriter.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FAVORITER);
-				paramFavoriter.putLong(UserFragment.KEY_ID, id);
-				ListFragment favoriter = new UserFragment();
-				favoriter.setArguments(paramFavoriter);
-				fragments.add(favoriter);
-				break;
-
-			case BLOCKS:
-				Bundle paramMuteList = new Bundle();
-				paramMuteList.putInt(UserFragment.KEY_MODE, UserFragment.MODE_MUTES);
-				ListFragment muteList = new UserFragment();
-				muteList.setArguments(paramMuteList);
-				fragments.add(muteList);
-
-				Bundle paramBlockList = new Bundle();
-				paramBlockList.putInt(UserFragment.KEY_MODE, UserFragment.MODE_BLOCKS);
-				ListFragment blockList = new UserFragment();
-				blockList.setArguments(paramBlockList);
-				fragments.add(blockList);
-
-				ListFragment domainFragment = new DomainFragment();
-				fragments.add(domainFragment);
+			case 2:
+				fragment = new DomainFragment();
 				break;
 		}
+		return fragment;
 	}
 }

@@ -76,16 +76,6 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 	}
 
 	/**
-	 * add item at the bottom
-	 *
-	 * @param filter new item to add
-	 */
-	public void addItem(Filter filter) {
-		items.addLast(filter);
-		notifyItemInserted(items.size());
-	}
-
-	/**
 	 * update existing item
 	 *
 	 * @param filter filter item

@@ -225,7 +225,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			userId = user.getId();
 		}
 		// setup pager fragments
-		adapter = new ProfileAdapter(this, userId);
+		adapter = new ProfileAdapter(this, userId, settings.getLogin().getId() == userId);
 		viewPager.setAdapter(adapter);
 		// set user/relation data and initialize loaders
 		if (user != null) {
@@ -520,8 +520,8 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 
 	@Override
-	public void onTabSelected(int oldPosition) {
-		adapter.scrollToTop(oldPosition);
+	public void onTabSelected() {
+		adapter.scrollToTop();
 		// remove lock when changing page
 		body.lock(false);
 	}
@@ -735,9 +735,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				TextEmojiLoader.Param param = new TextEmojiLoader.Param(user.getEmojis(), descriptionSpan, getResources().getDimensionPixelSize(R.dimen.profile_icon_size));
 				emojiLoader.execute(param, userDescriptionUpdate);
 			}
-		}
-		if (user.getFields().length > 0) {
-			adapter.setFields(user.getFields());
 		}
 	}
 

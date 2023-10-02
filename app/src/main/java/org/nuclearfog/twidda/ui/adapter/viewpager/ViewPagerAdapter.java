@@ -1,79 +1,73 @@
 package org.nuclearfog.twidda.ui.adapter.viewpager;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 
-import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author nuclearfog
  */
 public abstract class ViewPagerAdapter extends FragmentStateAdapter {
 
-	protected ArrayList<ListFragment> fragments = new ArrayList<>();
-	protected GlobalSettings settings;
+	private static final Random RND = new Random();
+
+	private ListFragment.ItemViewModel viewModel;
+
+	private int count;
+	private long[] ids;
 
 	/**
 	 *
 	 */
-	protected ViewPagerAdapter(FragmentActivity fragmentActivity) {
+	protected ViewPagerAdapter(FragmentActivity fragmentActivity, int count) {
 		super(fragmentActivity);
-		settings = GlobalSettings.get(fragmentActivity.getApplicationContext());
+		viewModel = new ViewModelProvider(fragmentActivity).get(ListFragment.ItemViewModel.class);
+		this.count = count;
+		// create fragment session IDs
+		ids = new long[count];
+		for (int i = 0 ; i < ids.length ; i++) {
+			ids[i] = RND.nextLong();
+		}
 	}
 
 
 	@Override
-	public final long getItemId(int position) {
-		return fragments.get(position).getSessionId();
+	public int getItemCount() {
+		return count;
 	}
 
 
 	@Override
-	public final boolean containsItem(long itemId) {
-		for (ListFragment fragment : fragments) {
-			if (fragment.getSessionId() == itemId)
+	public long getItemId(int position) {
+		return ids[position];
+	}
+
+
+	@Override
+	public boolean containsItem(long itemId) {
+		for (long id : ids) {
+			if (id == itemId) {
 				return true;
+			}
 		}
 		return false;
-	}
-
-
-	@NonNull
-	@Override
-	public final Fragment createFragment(int position) {
-		return fragments.get(position);
-	}
-
-
-	@Override
-	public final int getItemCount() {
-		return fragments.size();
 	}
 
 	/**
 	 * called when app settings change
 	 */
 	public void notifySettingsChanged() {
-		for (ListFragment fragment : fragments) {
-			if (!fragment.isDetached()) {
-				fragment.reset();
-			}
-		}
+		viewModel.notify(ListFragment.NOTIFY_CHANGED);
 	}
 
 	/**
 	 * called to scroll page to top
-	 *
-	 * @param index tab position of page
 	 */
-	public void scrollToTop(int index) {
-		if (!fragments.get(index).isDetached()) {
-			fragments.get(index).onTabChange();
-		}
+	public void scrollToTop() {
+		viewModel.notify(ListFragment.NOTIFY_SCROLL_TOP);
 	}
 }

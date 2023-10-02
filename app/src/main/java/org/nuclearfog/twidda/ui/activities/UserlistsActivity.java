@@ -66,7 +66,7 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 
 		long ownerId = getIntent().getLongExtra(KEY_ID, 0L);
 
-		adapter = new UserListsAdapter(this, ownerId);
+		adapter = new UserListsAdapter(this, ownerId, settings.getLogin().getConfiguration().isUserlistMembershipSupported());
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
 		tabSelector.addTabIcons(R.array.userlist_tab_icons);
@@ -116,8 +116,8 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 
 
 	@Override
-	public void onTabSelected(int oldPosition) {
-		adapter.scrollToTop(oldPosition);
+	public void onTabSelected() {
+		adapter.scrollToTop();
 	}
 
 

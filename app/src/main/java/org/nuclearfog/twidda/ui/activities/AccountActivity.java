@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -57,9 +58,10 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
 	private GlobalSettings settings;
-	private ListFragment fragment;
 
 	private ViewGroup root;
+
+	private ListFragment.ItemViewModel viewModel;
 
 
 	@Override
@@ -74,10 +76,10 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 		setContentView(R.layout.page_fragment);
 		Toolbar tool = findViewById(R.id.page_fragment_toolbar);
 		root = findViewById(R.id.page_fragment_root);
-		fragment = new AccountFragment();
 
+		viewModel = new ViewModelProvider(this).get(ListFragment.ItemViewModel.class);
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_fragment_container, fragment);
+		fragmentTransaction.replace(R.id.page_fragment_container, AccountFragment.class, null);
 		fragmentTransaction.commit();
 
 		tool.setTitle(R.string.account_page);
@@ -123,13 +125,13 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 				}
 				// new account registered, reload fragment
 				setResult(AccountActivity.RETURN_ACCOUNT_CHANGED, intent);
-				fragment.reset();
+				viewModel.notify(ListFragment.NOTIFY_CHANGED);
 				break;
 
 			case LoginActivity.RETURN_SETTINGS_CHANGED:
 				AppStyles.setTheme(root);
 				setResult(RETURN_SETTINGS_CHANGED);
-				fragment.reset();
+				viewModel.notify(ListFragment.NOTIFY_CHANGED);
 				break;
 		}
 	}

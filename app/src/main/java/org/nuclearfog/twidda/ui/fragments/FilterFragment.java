@@ -111,15 +111,6 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	}
 
 	/**
-	 * add new filter to list
-	 *
-	 * @param filter new item to add
-	 */
-	public void onFilterAdded(Filter filter) {
-		adapter.addItem(filter);
-	}
-
-	/**
 	 *
 	 */
 	private void onFilterLoaded(StatusFilterLoader.Result result) {

@@ -88,10 +88,12 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		for (int i = 0; i < tabContainer.getChildCount(); i++) {
 			if (tabContainer.getChildAt(i) == v) {
 				if (viewPager != null && viewPager.getAdapter() != null && i < viewPager.getAdapter().getItemCount()) {
-					if (listener != null)
-						listener.onTabSelected(oldPosition);
-					viewPager.setCurrentItem(i);
-					oldPosition = i;
+					if (oldPosition == i && listener != null) {
+						listener.onTabSelected();
+					} else {
+						viewPager.setCurrentItem(i);
+						oldPosition = i;
+					}
 				}
 				break;
 			}
@@ -239,7 +241,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	private void setPage(int page) {
 		if (viewPager != null && viewPager.getAdapter() != null && page < viewPager.getAdapter().getItemCount() && page < tabCount) {
 			if (listener != null) {
-				listener.onTabSelected(oldPosition);
+				listener.onTabSelected();
 			}
 			oldPosition = page;
 		}
@@ -252,10 +254,8 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 
 		/**
 		 * called on tab item click
-		 *
-		 * @param oldPosition unselected position
 		 */
-		void onTabSelected(int oldPosition);
+		void onTabSelected();
 	}
 
 	/**
@@ -267,9 +267,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		@Override
 		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 			super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-			if (positionOffsetPixels > 0) {
-				setPosition(positionOffset + position);
-			}
+			setPosition(positionOffset + position);
 		}
 
 

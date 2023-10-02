@@ -10,13 +10,12 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.lists.Hashtags;
-import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 
 /**
  * Background task to load a list of location specific trends
  *
  * @author nuclearfog
- * @see HashtagFragment
+ * @see org.nuclearfog.twidda.ui.fragments.HashtagFragment
  */
 public class HashtagLoader extends AsyncExecutor<HashtagLoader.Param, HashtagLoader.Result> {
 

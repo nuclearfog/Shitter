@@ -117,19 +117,19 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		if (data instanceof UserList) {
 			userList = (UserList) data;
 			toolbar.setTitle(userList.getTitle());
-			adapter = new UserlistAdapter(this, userList);
+			adapter = new UserlistAdapter(this, userList.getId(), settings.getLogin().getConfiguration().isUserlistSubscriberSupported());
 			viewPager.setAdapter(adapter);
 			if (adapter.getItemCount() == 2) {
 				tabSelector.addTabIcons(R.array.list_tab_icons);
 			} else if (adapter.getItemCount() == 3) {
 				tabSelector.addTabIcons(R.array.list_subscriber_tab_icons);
 			}
-		}
-		viewPager.setOffscreenPageLimit(3);
-		setSupportActionBar(toolbar);
-		AppStyles.setTheme(root);
+			viewPager.setOffscreenPageLimit(3);
+			setSupportActionBar(toolbar);
+			AppStyles.setTheme(root);
 
-		tabSelector.addOnTabSelectedListener(this);
+			tabSelector.addOnTabSelectedListener(this);
+		}
 	}
 
 
@@ -221,8 +221,8 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 
 	@Override
-	public void onTabSelected(int oldPosition) {
-		adapter.scrollToTop(oldPosition);
+	public void onTabSelected() {
+		adapter.scrollToTop();
 	}
 
 

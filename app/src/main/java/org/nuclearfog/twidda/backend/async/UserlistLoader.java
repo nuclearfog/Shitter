@@ -9,13 +9,12 @@ import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.model.lists.UserLists;
-import org.nuclearfog.twidda.ui.fragments.UserListFragment;
 
 /**
  * Background task for downloading  userlists created by a user
  *
  * @author nuclearfog
- * @see UserListFragment
+ * @see org.nuclearfog.twidda.ui.fragments.UserListFragment
  */
 public class UserlistLoader extends AsyncExecutor<UserlistLoader.Param, UserlistLoader.Result> {
 

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -18,6 +19,7 @@ import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.ui.dialogs.FilterDialog;
 import org.nuclearfog.twidda.ui.dialogs.FilterDialog.FilterDialogCallback;
 import org.nuclearfog.twidda.ui.fragments.FilterFragment;
+import org.nuclearfog.twidda.ui.fragments.ListFragment;
 
 /**
  * Status filter viewer activity
@@ -27,7 +29,7 @@ import org.nuclearfog.twidda.ui.fragments.FilterFragment;
 public class FilterActivity extends AppCompatActivity implements FilterDialogCallback {
 
 	private FilterDialog filterDialog;
-	private FilterFragment fragment;
+	private ListFragment.ItemViewModel viewModel;
 
 
 	@Override
@@ -43,10 +45,10 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 		ViewGroup root = findViewById(R.id.page_fragment_root);
 		Toolbar toolbar = findViewById(R.id.page_fragment_toolbar);
 		filterDialog = new FilterDialog(this, this);
-		fragment = new FilterFragment();
+		viewModel = new ViewModelProvider(this).get(ListFragment.ItemViewModel.class);
 
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_fragment_container, fragment);
+		fragmentTransaction.replace(R.id.page_fragment_container, FilterFragment.class, null);
 		fragmentTransaction.commit();
 
 		toolbar.setTitle(R.string.toolbar_title_filter);
@@ -75,6 +77,6 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 
 	@Override
 	public void onFilterUpdated(Filter filter) {
-		fragment.onFilterAdded(filter);
+		viewModel.notify(ListFragment.NOTIFY_CHANGED);
 	}
 }

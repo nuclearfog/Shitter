@@ -11,13 +11,12 @@ import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.StatusHolder;
-import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter to show statuses
  *
  * @author nuclearfog
- * @see StatusFragment
+ * @see org.nuclearfog.twidda.ui.fragments.StatusFragment
  */
 public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 

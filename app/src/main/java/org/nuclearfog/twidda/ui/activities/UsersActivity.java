@@ -124,7 +124,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		switch (mode) {
 			case USERS_FOLLOWING:
 				toolbar.setTitle(R.string.userlist_following);
-				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWING);
+				if (settings.getLogin().getId() == id)
+					adapter = new UserAdapter(this, id, UserAdapter.FOLLOWING, 2);
+				else
+					adapter = new UserAdapter(this, id, UserAdapter.FOLLOWING, 1);
 				viewPager.setAdapter(adapter);
 				if (adapter.getItemCount() > 1) {
 					tabSelector.addTabIcons(R.array.user_following);
@@ -136,7 +139,10 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 			case USERS_FOLLOWER:
 				toolbar.setTitle(R.string.userlist_follower);
-				adapter = new UserAdapter(this, id, UserAdapter.FOLLOWER);
+				if (settings.getLogin().getId() == id && settings.getLogin().getConfiguration().isOutgoingFollowRequestSupported())
+					adapter = new UserAdapter(this, id, UserAdapter.FOLLOWER, 2);
+				else
+					adapter = new UserAdapter(this, id, UserAdapter.FOLLOWER, 1);
 				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
 				if (adapter.getItemCount() > 1) {
@@ -149,7 +155,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 			case USERS_REPOST:
 				toolbar.setTitle(R.string.toolbar_userlist_repost);
-				adapter = new UserAdapter(this, id, UserAdapter.REPOSTER);
+				adapter = new UserAdapter(this, id, UserAdapter.REPOSTER, 1);
 				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
 				break;
@@ -157,14 +163,14 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			case USERS_FAVORIT:
 				int title = settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter;
 				toolbar.setTitle(title);
-				adapter = new UserAdapter(this, id, UserAdapter.FAVORITER);
+				adapter = new UserAdapter(this, id, UserAdapter.FAVORITER, 1);
 				viewPager.setAdapter(adapter);
 				tabSelector.setVisibility(View.GONE);
 				break;
 
 			case USERS_EXCLUDED:
 				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
-				adapter = new UserAdapter(this, id, UserAdapter.BLOCKS);
+				adapter = new UserAdapter(this, id, UserAdapter.BLOCKS, 3);
 				viewPager.setAdapter(adapter);
 				tabSelector.addTabIcons(R.array.user_domain_exclude);
 				tabSelector.addOnTabSelectedListener(this);
@@ -222,8 +228,8 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 
 	@Override
-	public void onTabSelected(int oldPosition) {
-		adapter.scrollToTop(oldPosition);
+	public void onTabSelected() {
+		adapter.scrollToTop();
 		// reset menu
 		invalidateOptionsMenu();
 	}

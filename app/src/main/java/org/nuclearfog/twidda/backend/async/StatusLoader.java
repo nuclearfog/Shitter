@@ -10,13 +10,12 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 
 /**
  * Background task to download a list of statuses from different sources
  *
  * @author nuclearfog
- * @see StatusFragment
+ * @see org.nuclearfog.twidda.ui.fragments.StatusFragment
  */
 public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader.Result> {
 

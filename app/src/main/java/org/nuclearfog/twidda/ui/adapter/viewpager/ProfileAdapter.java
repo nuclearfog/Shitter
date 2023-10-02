@@ -2,10 +2,10 @@ package org.nuclearfog.twidda.ui.adapter.viewpager;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.model.User;
-import org.nuclearfog.twidda.model.lists.Fields;
 import org.nuclearfog.twidda.ui.fragments.FieldFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
@@ -17,55 +17,63 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
  */
 public class ProfileAdapter extends ViewPagerAdapter {
 
+	private long userId;
+	private boolean isCurrentUser;
+
 	/**
 	 * @param userId ID of the user (profile ID)
 	 */
-	public ProfileAdapter(FragmentActivity fragmentActivity, long userId) {
-		super(fragmentActivity);
-		// user timeline
-		Bundle paramUser = new Bundle();
-		paramUser.putLong(StatusFragment.KEY_ID, userId);
-		paramUser.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_USER);
-		ListFragment statusFragment = new StatusFragment();
-		statusFragment.setArguments(paramUser);
-		// user favorits
-		Bundle paramFavorite = new Bundle();
-		paramFavorite.putLong(StatusFragment.KEY_ID, userId);
-		paramFavorite.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_FAVORIT);
-		ListFragment favoriteFragment = new StatusFragment();
-		favoriteFragment.setArguments(paramFavorite);
-		// user bookmarks
-		Bundle paramBookmark = new Bundle();
-		paramBookmark.putLong(StatusFragment.KEY_ID, userId);
-		paramBookmark.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_BOOKMARK);
-		ListFragment bookmarkFragment = new StatusFragment();
-		bookmarkFragment.setArguments(paramBookmark);
-		// user fields
-		ListFragment fieldFragment = new FieldFragment();
-
-		fragments.clear();
-		fragments.add(statusFragment);
-		switch (settings.getLogin().getConfiguration()) {
-			case MASTODON:
-				if (settings.getLogin().getId() == userId) {
-					fragments.add(favoriteFragment);
-					fragments.add(bookmarkFragment);
-				}
-				fragments.add(fieldFragment);
-				break;
-		}
+	public ProfileAdapter(FragmentActivity fragmentActivity, long userId, boolean isCurrentUser) {
+		super(fragmentActivity, isCurrentUser ? 4 : 2);
+		this.isCurrentUser = isCurrentUser;
+		this.userId = userId;
 	}
 
-	/**
-	 * put user fields into FieldFragment
-	 *
-	 * @param fields user fields
-	 */
-	public void setFields(User.Field[] fields) {
-		for (ListFragment fragment : fragments) {
-			if (fragment instanceof FieldFragment) {
-				((FieldFragment) fragment).setItems(new Fields(fields));
-			}
+
+	@NonNull
+	@Override
+	public Fragment createFragment(int position) {
+		ListFragment fragment;
+		switch(position) {
+			default:
+			case 0:
+				Bundle param = new Bundle();
+				param.putLong(StatusFragment.KEY_ID, userId);
+				param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_USER);
+				fragment = new StatusFragment();
+				fragment.setArguments(param);
+				break;
+
+			case 1:
+				if (isCurrentUser) {
+					param = new Bundle();
+					param.putLong(StatusFragment.KEY_ID, userId);
+					param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_FAVORIT);
+					fragment = new StatusFragment();
+					fragment.setArguments(param);
+				} else {
+					param = new Bundle();
+					param.putLong(FieldFragment.KEY_ID, userId);
+					fragment = new FieldFragment();
+					fragment.setArguments(param);
+				}
+				break;
+
+			case 2:
+				param = new Bundle();
+				param.putLong(StatusFragment.KEY_ID, userId);
+				param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_BOOKMARK);
+				fragment = new StatusFragment();
+				fragment.setArguments(param);
+				break;
+
+			case 3:
+				param = new Bundle();
+				param.putLong(FieldFragment.KEY_ID, userId);
+				fragment = new FieldFragment();
+				fragment.setArguments(param);
+				break;
 		}
+		return fragment;
 	}
 }

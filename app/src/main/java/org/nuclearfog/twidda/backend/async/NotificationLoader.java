@@ -11,10 +11,9 @@ import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.lists.Notifications;
-import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 
 /**
- * Notification loader for {@link NotificationFragment}
+ * Notification loader for {@link org.nuclearfog.twidda.ui.fragments.NotificationFragment}
  *
  * @author nuclearfog
  */
