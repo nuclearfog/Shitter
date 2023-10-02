@@ -22,6 +22,8 @@
 	<string name="info_user_removed">%1$s removed from list</string>
 	<string name="info_list_updated">Userlist updated</string>
 	<string name="info_list_created">Userlist created</string>
+	<string name="info_hashtag_featuring">featuring hashtag..</string>
+	<string name="info_hashtag_following">following hashtag..</string>
 	<string name="info_open_mastodon_login">redirecting to Mastodon login website. Please wait</string>
 	<string name="info_login_to_mastodon">login to Mastodon, please wait</string>
 	<string name="info_get_link">please open login page first to get the PIN</string>

@@ -72,12 +72,12 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_fragment);
-		Toolbar tool = findViewById(R.id.fragment_toolbar);
-		root = findViewById(R.id.fragment_root);
+		Toolbar tool = findViewById(R.id.page_fragment_toolbar);
+		root = findViewById(R.id.page_fragment_root);
 		fragment = new AccountFragment();
 
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.fragment_container, fragment);
+		fragmentTransaction.replace(R.id.page_fragment_container, fragment);
 		fragmentTransaction.commit();
 
 		tool.setTitle(R.string.account_page);

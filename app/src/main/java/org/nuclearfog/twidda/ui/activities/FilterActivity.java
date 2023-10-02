@@ -39,14 +39,14 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.page_filter);
-		ViewGroup root = findViewById(R.id.page_filter_root);
-		Toolbar toolbar = findViewById(R.id.page_filter_toolbar);
+		setContentView(R.layout.page_fragment);
+		ViewGroup root = findViewById(R.id.page_fragment_root);
+		Toolbar toolbar = findViewById(R.id.page_fragment_toolbar);
 		filterDialog = new FilterDialog(this, this);
 		fragment = new FilterFragment();
 
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.replace(R.id.page_filter_fragment, fragment);
+		fragmentTransaction.replace(R.id.page_fragment_container, fragment);
 		fragmentTransaction.commit();
 
 		toolbar.setTitle(R.string.toolbar_title_filter);

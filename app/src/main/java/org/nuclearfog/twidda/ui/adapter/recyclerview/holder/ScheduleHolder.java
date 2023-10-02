@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.tag.Tagger;
+import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.ScheduledStatus;
+import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter;
 
 import java.text.SimpleDateFormat;
@@ -26,7 +28,7 @@ import java.text.SimpleDateFormat;
  */
 public class ScheduleHolder extends ViewHolder implements OnClickListener {
 
-	private TextView time, text;
+	private TextView time, text, visibility;
 	private RecyclerView iconList;
 
 	private IconAdapter adapter;
@@ -43,6 +45,7 @@ public class ScheduleHolder extends ViewHolder implements OnClickListener {
 		CardView cardLayout = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_schedule_container);
 		View removeButton = itemView.findViewById(R.id.item_schedule_delete_button);
+		visibility = itemView.findViewById(R.id.item_schedule_visibility);
 		iconList = itemView.findViewById(R.id.item_schedule_attachment);
 		time = itemView.findViewById(R.id.item_schedule_time);
 		text = itemView.findViewById(R.id.item_schedule_text);
@@ -50,8 +53,10 @@ public class ScheduleHolder extends ViewHolder implements OnClickListener {
 		adapter = new IconAdapter(null, false);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
 		iconList.setAdapter(adapter);
+		text.setMovementMethod(LinkAndScrollMovement.getInstance());
 
 		time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.schedule, 0, 0, 0);
+		visibility.setCompoundDrawablesWithIntrinsicBounds(R.drawable.visibility, 0, 0, 0);
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		cardLayout.setCardBackgroundColor(settings.getCardColor());
 
@@ -78,8 +83,22 @@ public class ScheduleHolder extends ViewHolder implements OnClickListener {
 	public void setContent(ScheduledStatus status) {
 		time.setText(SimpleDateFormat.getDateTimeInstance().format(status.getPublishTime()));
 		text.setText(Tagger.makeText(status.getText(), settings.getHighlightColor()));
-		if (status.getMedia().length > 0) {
+		if (status.getVisibility() == Status.VISIBLE_PRIVATE) {
+			visibility.setText(R.string.status_visibility_private);
+			visibility.setVisibility(View.VISIBLE);
+		} else if (status.getVisibility() == Status.VISIBLE_DIRECT) {
+			visibility.setText(R.string.status_visibility_direct);
+			visibility.setVisibility(View.VISIBLE);
+		} else if (status.getVisibility() == Status.VISIBLE_UNLISTED) {
+			visibility.setText(R.string.status_visibility_unlisted);
+			visibility.setVisibility(View.VISIBLE);
+		} else {
+			visibility.setVisibility(View.GONE);
+		}
+		if (status.getMedia().length > 0 || status.getPoll() != null) {
 			adapter.setItems(status.getMedia());
+			if (status.getPoll() != null)
+				adapter.addPollItem();
 			iconList.setVisibility(View.VISIBLE);
 		} else {
 			iconList.setVisibility(View.GONE);

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -29,7 +30,7 @@ import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
  *
  * @author nuclearfog
  */
-public class HashtagActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, OnTabSelectedListener, AsyncCallback<HashtagAction.Result> {
+public class HashtagActivity extends AppCompatActivity implements OnQueryTextListener, OnTabSelectedListener, AsyncCallback<HashtagAction.Result> {
 
 	private GlobalSettings settings;
 	private HashtagAction hashtagAction;
@@ -42,7 +43,6 @@ public class HashtagActivity extends AppCompatActivity implements SearchView.OnQ
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_tab_view);
-
 		ViewGroup root = findViewById(R.id.page_tab_view_root);
 		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
 		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
@@ -82,17 +82,21 @@ public class HashtagActivity extends AppCompatActivity implements SearchView.OnQ
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		MenuItem search = menu.findItem(R.id.menu_hashtag_add);
 		search.collapseActionView();
+		search.setVisible(viewPager.getCurrentItem() != 2);
 		return true;
 	}
+
 
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		if (hashtagAction.isIdle()) {
 			if (viewPager.getCurrentItem() == 0) {
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_following,Toast.LENGTH_SHORT).show();
 				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FOLLOW, query);
 				hashtagAction.execute(param, this);
 				return true;
 			} else if (viewPager.getCurrentItem() == 1) {
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_featuring,Toast.LENGTH_SHORT).show();
 				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FEATURE, query);
 				hashtagAction.execute(param, this);
 				return true;

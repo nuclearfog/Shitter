@@ -35,18 +35,22 @@ public class MastodonPoll implements Poll {
 		JSONArray optionArray = json.getJSONArray("options");
 		JSONArray voteArray = json.optJSONArray("own_votes");
 		JSONArray emojiArray = json.optJSONArray("emojis");
-		String idStr = json.getString("id");
-		exTime = StringUtils.getIsoTime(json.getString("expires_at"));
-		expired = json.getBoolean("expired");
+		String idStr = json.optString("id", "-1");
+		exTime = StringUtils.getIsoTime(json.optString("expires_at", ""));
+		expired = json.optBoolean("expired", false);
 		voted = json.optBoolean("voted", false);
-		multipleChoice = json.getBoolean("multiple");
+		multipleChoice = json.optBoolean("multiple", false);
 		if (!json.isNull("voters_count")) {
 			voteCount = json.getInt("voters_count");
 		}
 		options = new MastodonOption[optionArray.length()];
 		for (int i = 0; i < optionArray.length(); i++) {
-			JSONObject option = optionArray.getJSONObject(i);
-			options[i] = new MastodonOption(option);
+			JSONObject option = optionArray.optJSONObject(i);
+			if (option != null) {
+				options[i] = new MastodonOption(option);
+			} else {
+				options[i] = new MastodonOption(optionArray.optString(i, "-"));
+			}
 		}
 		if (voteArray != null) {
 			for (int i = 0; i < voteArray.length(); i++) {
@@ -149,11 +153,18 @@ public class MastodonPoll implements Poll {
 		private boolean selected = false;
 
 		/**
-		 * @param json mastodon poll json format
+		 * @param json mastodon poll option json
 		 */
 		private MastodonOption(JSONObject json) {
 			voteCount = json.optInt("votes_count", 0);
 			title = json.optString("title", "-");
+		}
+
+		/**
+		 * @param title poll option title string
+		 */
+		private MastodonOption(String title) {
+			this.title = title;
 		}
 
 

@@ -16,15 +16,6 @@
 -dontwarn android.support.v8.renderscript.**
 -keep,allowobfuscation, allowoptimization class android.support.v8.renderscript.** {*;}
 
--dontwarn org.bouncycastle.jsse.BCSSLParameters
--keep,allowobfuscation, allowoptimization class org.bouncycastle.jsse.BCSSLParameters {*;}
-
--dontwarn org.bouncycastle.jsse.BCSSLSocket
--keep,allowobfuscation, allowoptimization class org.bouncycastle.jsse.BCSSLSocket {*;}
-
--dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
--keep,allowobfuscation, allowoptimization class org.bouncycastle.jsse.provider.BouncyCastleJsseProvider {*;}
-
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -keep,allowobfuscation, allowoptimization class org.openjsse.javax.net.ssl.SSLParameters {*;}
 

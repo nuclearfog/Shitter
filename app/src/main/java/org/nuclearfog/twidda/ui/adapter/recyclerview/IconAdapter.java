@@ -139,6 +139,13 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	}
 
 	/**
+	 * append poll icon to the end
+	 */
+	public void addPollItem() {
+		appendItem(IconHolder.TYPE_POLL);
+	}
+
+	/**
 	 *
 	 */
 	private void appendItem(int itemType) {

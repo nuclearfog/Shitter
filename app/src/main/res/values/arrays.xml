@@ -27,7 +27,6 @@
 	<integer-array name="list_subscriber_tab_icons">
 		<item>@drawable/list</item>
 		<item>@drawable/user</item>
-		<item>@drawable/subscriber</item>
 	</integer-array>
 
 	<integer-array name="user_domain_exclude">

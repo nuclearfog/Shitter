@@ -7,51 +7,63 @@
 	<LinearLayout
 		android:id="@+id/item_schedule_container"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="horizontal"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
 		android:padding="@dimen/item_schedule_layout_padding">
 
 		<LinearLayout
-			android:layout_width="0dp"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:layout_weight="1">
+			android:orientation="horizontal"
+			android:layout_margin="@dimen/item_schedule_layout_margins"
+			android:gravity="center_vertical">
 
 			<TextView
 				android:id="@+id/item_schedule_time"
-				android:layout_width="match_parent"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_margin="@dimen/item_schedule_layout_margins"
+				android:layout_weight="1"
 				android:lines="1"
 				android:drawablePadding="@dimen/item_schedule_drawable_padding"
 				android:textSize="@dimen/item_schedule_textsize_date" />
 
-			<TextView
-				android:id="@+id/item_schedule_text"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_margin="@dimen/item_schedule_layout_margins"
-				android:maxLines="@integer/item_schedule_text_max_lines" />
-
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/item_schedule_attachment"
-				android:layout_width="wrap_content"
-				android:layout_height="@dimen/item_schedule_iconlist_height"
-				android:layout_margin="@dimen/item_schedule_layout_margins"
-				android:layout_gravity="center" />
+			<ImageButton
+				android:id="@+id/item_schedule_delete_button"
+				android:layout_width="@dimen/item_schedule_button_size"
+				android:layout_height="@dimen/item_schedule_button_size"
+				android:padding="@dimen/item_schedule_button_padding"
+				android:layout_marginStart="@dimen/item_schedule_layout_margins"
+				android:contentDescription="@string/descr_remove_schedule"
+				android:scaleType="fitCenter"
+				android:src="@drawable/cross"
+				style="@style/RoundButton" />
 
 		</LinearLayout>
 
-		<ImageButton
-			android:id="@+id/item_schedule_delete_button"
-			android:layout_width="@dimen/item_schedule_button_size"
-			android:layout_height="@dimen/item_schedule_button_size"
-			android:padding="@dimen/item_schedule_button_padding"
+		<TextView
+			android:id="@+id/item_schedule_text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
 			android:layout_margin="@dimen/item_schedule_layout_margins"
-			android:contentDescription="@string/descr_remove_schedule"
-			android:scaleType="fitCenter"
-			android:src="@drawable/cross"
-			style="@style/RoundButton" />
+			android:maxLines="@integer/item_schedule_text_max_lines"
+			android:fadeScrollbars="false"
+			android:scrollbars="vertical"/>
+
+		<TextView
+			android:id="@+id/item_schedule_visibility"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/item_schedule_layout_margins"
+			android:drawablePadding="@dimen/item_schedule_drawable_padding"
+			android:textSize="@dimen/item_schedule_textsize_small"
+			android:lines="1"/>
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/item_schedule_attachment"
+			android:layout_width="wrap_content"
+			android:layout_height="@dimen/item_schedule_iconlist_height"
+			android:layout_margin="@dimen/item_schedule_layout_margins"
+			android:layout_gravity="center" />
 
 	</LinearLayout>
 

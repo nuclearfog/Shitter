@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.model;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 
 /**
@@ -37,6 +39,7 @@ public interface ScheduledStatus extends Serializable {
 	/**
 	 * @return attached poll
 	 */
+	@Nullable
 	Poll getPoll();
 
 	/**

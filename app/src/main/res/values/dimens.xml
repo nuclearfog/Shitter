@@ -132,6 +132,7 @@
 	<dimen name="item_schedule_layout_margins">3dp</dimen>
 	<dimen name="item_schedule_layout_padding">5dp</dimen>
 	<dimen name="item_schedule_textsize_date">12sp</dimen>
+	<dimen name="item_schedule_textsize_small">10sp</dimen>
 	<dimen name="item_schedule_iconlist_height">26sp</dimen>
 	<dimen name="item_schedule_button_padding">1dp</dimen>
 	<dimen name="item_schedule_button_size">20sp</dimen>
@@ -180,9 +181,6 @@
 	<!--dimens of page_main.xml-->
 	<dimen name="mainpage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="mainpage_navigation_padding_item">20dp</dimen>
-
-	<!--dimens of page_list.xml-->
-	<dimen name="listpage_toolbar_height">@dimen/toolbar_height</dimen>
 
 	<!--dimens of page_list.xml-->
 	<dimen name="dmpage_toolbar_height">@dimen/toolbar_height</dimen>

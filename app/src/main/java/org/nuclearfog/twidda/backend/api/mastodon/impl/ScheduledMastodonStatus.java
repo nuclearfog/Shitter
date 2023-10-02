@@ -116,6 +116,7 @@ public class ScheduledMastodonStatus implements ScheduledStatus {
 	}
 
 
+	@Nullable
 	@Override
 	public Poll getPoll() {
 		return poll;
