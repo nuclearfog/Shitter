@@ -57,10 +57,10 @@ import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
 
@@ -467,7 +467,10 @@ public class Mastodon implements Connection {
 	@Override
 	public Hashtags searchHashtags(String search) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		params.add("q=" + StringUtils.encode(search));
+		if (search.startsWith("#"))
+			params.add("q=" + StringUtils.encode(search.substring(1)));
+		else
+			params.add("q=" + StringUtils.encode(search));
 		params.add("type=hashtags");
 		Hashtags result = getTrends(ENDPOINT_SEARCH_TIMELINE, params);
 		Collections.sort(result);

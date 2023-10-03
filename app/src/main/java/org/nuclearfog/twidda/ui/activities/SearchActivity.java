@@ -87,6 +87,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 		settings = GlobalSettings.get(this);
 		hashtagAction = new HashtagAction(this);
+		adapter = new SearchAdapter(this);
 
 		String query = getIntent().getStringExtra(KEY_QUERY);
 		Serializable data = getIntent().getSerializableExtra(KEY_DATA);
@@ -100,18 +101,16 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 				hashtagAction.execute(param, this);
 			}
 		}
+		adapter.setSearch(search);
+
 		if (!settings.floatingButtonEnabled()) {
 			floatingButton.setVisibility(View.INVISIBLE);
 		}
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 		viewPager.setOffscreenPageLimit(3);
-		adapter = new SearchAdapter(this, search);
 		viewPager.setAdapter(adapter);
-		if (adapter.getItemCount() == 3)
-			tabSelector.addTabIcons(R.array.search_hashtag_tab_icons);
-		else
-			tabSelector.addTabIcons(R.array.search_tab_icons);
+		tabSelector.addTabIcons(R.array.search_hashtag_tab_icons);
 		AppStyles.setTheme(root);
 
 		tabSelector.addOnTabSelectedListener(this);

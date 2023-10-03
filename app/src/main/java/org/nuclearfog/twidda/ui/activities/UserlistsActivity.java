@@ -58,18 +58,24 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
 		viewPager = findViewById(R.id.page_tab_view_pager);
 
+		adapter = new UserListsAdapter(this);
 		userlistDialog = new UserlistDialog(this, this);
 		settings = GlobalSettings.get(this);
 
-		toolbar.setTitle(R.string.list_appbar);
-		setSupportActionBar(toolbar);
-
 		long ownerId = getIntent().getLongExtra(KEY_ID, 0L);
+		adapter.setId(ownerId);
+		if (settings.getLogin().getConfiguration().isUserlistMembershipSupported()) {
+			tabSelector.addTabIcons(R.array.userlist_tab_ownership_membership_icons);
+			adapter.setPageCount(2);
+		} else {
+			tabSelector.addTabIcons(R.array.userlist_tab_ownership_icons);
+			adapter.setPageCount(1);
+		}
 
-		adapter = new UserListsAdapter(this, ownerId, settings.getLogin().getConfiguration().isUserlistMembershipSupported());
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
-		tabSelector.addTabIcons(R.array.userlist_tab_icons);
+		toolbar.setTitle(R.string.list_appbar);
+		setSupportActionBar(toolbar);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		AppStyles.setTheme(root);
 

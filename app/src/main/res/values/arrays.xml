@@ -8,11 +8,6 @@
 		<item>@drawable/bell</item>
 	</integer-array>
 
-	<integer-array name="search_tab_icons">
-		<item>@drawable/search</item>
-		<item>@drawable/user</item>
-	</integer-array>
-
 	<integer-array name="search_hashtag_tab_icons">
 		<item>@drawable/search</item>
 		<item>@drawable/user</item>
@@ -64,7 +59,11 @@
 		<item>@drawable/info</item>
 	</integer-array>
 
-	<integer-array name="userlist_tab_icons">
+	<integer-array name="userlist_tab_ownership_icons">
+		<item>@drawable/following</item>
+	</integer-array>
+
+	<integer-array name="userlist_tab_ownership_membership_icons">
 		<item>@drawable/following</item>
 	</integer-array>
 

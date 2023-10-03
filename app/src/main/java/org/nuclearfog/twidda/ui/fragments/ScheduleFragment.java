@@ -46,14 +46,13 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
 		scheduleLoader = new ScheduleLoader(requireContext());
 		scheduleAction = new ScheduleAction(requireContext());
 		adapter = new ScheduleAdapter(this);
 		confirm = new ConfirmDialog(requireActivity(), this);
 		timepicker = new TimePickerDialog(requireActivity(), this);
-		setAdapter(adapter);
 
+		setAdapter(adapter);
 		if (savedInstanceState != null) {
 			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof ScheduledStatuses) {
@@ -73,6 +72,14 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 
 	@Override
+	public void onDestroy() {
+		scheduleLoader.cancel();
+		scheduleAction.cancel();
+		super.onDestroy();
+	}
+
+
+	@Override
 	protected void onReload() {
 		load(adapter.getTopItemId(), 0L, 0);
 	}
@@ -81,6 +88,8 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		scheduleLoader = new ScheduleLoader(requireContext());
+		scheduleAction = new ScheduleAction(requireContext());
 		load(0L, 0L, CLEAR_LIST);
 		setRefresh(true);
 	}

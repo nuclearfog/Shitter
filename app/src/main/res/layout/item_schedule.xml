@@ -47,7 +47,7 @@
 			android:layout_margin="@dimen/item_schedule_layout_margins"
 			android:maxLines="@integer/item_schedule_text_max_lines"
 			android:fadeScrollbars="false"
-			android:scrollbars="vertical"/>
+			android:scrollbars="vertical" />
 
 		<TextView
 			android:id="@+id/item_schedule_visibility"
@@ -56,7 +56,7 @@
 			android:layout_margin="@dimen/item_schedule_layout_margins"
 			android:drawablePadding="@dimen/item_schedule_drawable_padding"
 			android:textSize="@dimen/item_schedule_textsize_small"
-			android:lines="1"/>
+			android:lines="1" />
 
 		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/item_schedule_attachment"

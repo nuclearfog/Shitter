@@ -175,6 +175,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		confirmDialog = new ConfirmDialog(this, this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
+		adapter = new ProfileAdapter(this);
 
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
@@ -225,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			userId = user.getId();
 		}
 		// setup pager fragments
-		adapter = new ProfileAdapter(this, userId, settings.getLogin().getId() == userId);
+		adapter.setId(userId);
 		viewPager.setAdapter(adapter);
 		// set user/relation data and initialize loaders
 		if (user != null) {

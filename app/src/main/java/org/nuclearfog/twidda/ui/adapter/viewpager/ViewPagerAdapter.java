@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.adapter.viewpager;
 
+import androidx.annotation.IntRange;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -13,25 +14,19 @@ import java.util.Random;
  */
 public abstract class ViewPagerAdapter extends FragmentStateAdapter {
 
-	private static final Random RND = new Random();
+	private static final Random RAND = new Random();
 
 	private ListFragment.ItemViewModel viewModel;
 
-	private int count;
-	private long[] ids;
+	private int count = 0;
+	private long[] ids = {};
 
 	/**
 	 *
 	 */
-	protected ViewPagerAdapter(FragmentActivity fragmentActivity, int count) {
+	protected ViewPagerAdapter(FragmentActivity fragmentActivity) {
 		super(fragmentActivity);
 		viewModel = new ViewModelProvider(fragmentActivity).get(ListFragment.ItemViewModel.class);
-		this.count = count;
-		// create fragment session IDs
-		ids = new long[count];
-		for (int i = 0 ; i < ids.length ; i++) {
-			ids[i] = RND.nextLong();
-		}
 	}
 
 
@@ -55,6 +50,20 @@ public abstract class ViewPagerAdapter extends FragmentStateAdapter {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * set page count
+	 *
+	 * @param count number of pages
+	 */
+	public void setPageCount(@IntRange(from = 1) int count) {
+		this.count = count;
+		// create fragment session IDs
+		ids = new long[count];
+		for (int i = 0; i < ids.length; i++) {
+			ids[i] = RAND.nextLong();
+		}
 	}
 
 	/**

@@ -18,13 +18,12 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
  */
 public class HomeAdapter extends ViewPagerAdapter {
 
-	private static final int SIZE = 4;
-
 	/**
 	 *
 	 */
 	public HomeAdapter(FragmentActivity fragmentActivity) {
-		super(fragmentActivity, SIZE);
+		super(fragmentActivity);
+		setPageCount(4);
 	}
 
 

@@ -19,11 +19,10 @@ public class UserListsAdapter extends ViewPagerAdapter {
 	private long userId;
 
 	/**
-	 * @param userId ID of the user related to the userlists
+	 *
 	 */
-	public UserListsAdapter(FragmentActivity fragmentActivity, long userId, boolean enableMember) {
-		super(fragmentActivity, enableMember ? 2 : 1);
-		this.userId = userId;
+	public UserListsAdapter(FragmentActivity fragmentActivity) {
+		super(fragmentActivity);
 	}
 
 
@@ -31,7 +30,7 @@ public class UserListsAdapter extends ViewPagerAdapter {
 	@Override
 	public Fragment createFragment(int position) {
 		ListFragment fragment;
-		switch(position) {
+		switch (position) {
 			default:
 			case 0:
 				fragment = new UserListFragment();
@@ -50,5 +49,12 @@ public class UserListsAdapter extends ViewPagerAdapter {
 				break;
 		}
 		return fragment;
+	}
+
+	/**
+	 *
+	 */
+	public void setId(long userId) {
+		this.userId = userId;
 	}
 }

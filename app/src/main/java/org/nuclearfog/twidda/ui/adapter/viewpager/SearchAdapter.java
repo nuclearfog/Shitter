@@ -18,14 +18,14 @@ import org.nuclearfog.twidda.ui.fragments.UserFragment;
  */
 public class SearchAdapter extends ViewPagerAdapter {
 
-	private String search;
+	private String search = "";
 
 	/**
-	 * @param search search string
+	 *
 	 */
-	public SearchAdapter(FragmentActivity fragmentActivity, String search) {
-		super(fragmentActivity, search.startsWith("#") ? 2 : 3);
-		this.search = search;
+	public SearchAdapter(FragmentActivity fragmentActivity) {
+		super(fragmentActivity);
+		setPageCount(3);
 	}
 
 
@@ -60,5 +60,12 @@ public class SearchAdapter extends ViewPagerAdapter {
 				break;
 		}
 		return fragment;
+	}
+
+	/**
+	 * set search text used by fragments
+	 */
+	public void setSearch(String search) {
+		this.search = search;
 	}
 }

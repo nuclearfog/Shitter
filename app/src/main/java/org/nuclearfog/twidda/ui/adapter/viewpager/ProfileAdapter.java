@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.fragments.FieldFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
@@ -17,16 +18,16 @@ import org.nuclearfog.twidda.ui.fragments.StatusFragment;
  */
 public class ProfileAdapter extends ViewPagerAdapter {
 
-	private long userId;
-	private boolean isCurrentUser;
+	private GlobalSettings settings;
+
+	private long userId = 0L;
 
 	/**
-	 * @param userId ID of the user (profile ID)
+	 *
 	 */
-	public ProfileAdapter(FragmentActivity fragmentActivity, long userId, boolean isCurrentUser) {
-		super(fragmentActivity, isCurrentUser ? 4 : 2);
-		this.isCurrentUser = isCurrentUser;
-		this.userId = userId;
+	public ProfileAdapter(FragmentActivity fragmentActivity) {
+		super(fragmentActivity);
+		settings = GlobalSettings.get(fragmentActivity);
 	}
 
 
@@ -34,7 +35,7 @@ public class ProfileAdapter extends ViewPagerAdapter {
 	@Override
 	public Fragment createFragment(int position) {
 		ListFragment fragment;
-		switch(position) {
+		switch (position) {
 			default:
 			case 0:
 				Bundle param = new Bundle();
@@ -45,16 +46,16 @@ public class ProfileAdapter extends ViewPagerAdapter {
 				break;
 
 			case 1:
-				if (isCurrentUser) {
+				if (getItemCount() == 2) {
+					param = new Bundle();
+					param.putLong(FieldFragment.KEY_ID, userId);
+					fragment = new FieldFragment();
+					fragment.setArguments(param);
+				} else {
 					param = new Bundle();
 					param.putLong(StatusFragment.KEY_ID, userId);
 					param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_FAVORIT);
 					fragment = new StatusFragment();
-					fragment.setArguments(param);
-				} else {
-					param = new Bundle();
-					param.putLong(FieldFragment.KEY_ID, userId);
-					fragment = new FieldFragment();
 					fragment.setArguments(param);
 				}
 				break;
@@ -75,5 +76,19 @@ public class ProfileAdapter extends ViewPagerAdapter {
 				break;
 		}
 		return fragment;
+	}
+
+	/**
+	 * set user ID of the profile
+	 *
+	 * @param userId user ID
+	 */
+	public void setId(long userId) {
+		this.userId = userId;
+		if (settings.getLogin().getId() == userId) {
+			setPageCount(4);
+		} else {
+			setPageCount(2);
+		}
 	}
 }

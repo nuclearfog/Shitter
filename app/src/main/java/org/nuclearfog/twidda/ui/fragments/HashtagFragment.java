@@ -131,6 +131,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	@Override
 	public void onDestroy() {
 		hashtagLoader.cancel();
+		hashtagAction.cancel();
 		super.onDestroy();
 	}
 
@@ -139,6 +140,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	protected void onReset() {
 		adapter.clear();
 		hashtagLoader = new HashtagLoader(requireContext());
+		hashtagAction = new HashtagAction(requireContext());
 		load(HashtagLoader.Param.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}

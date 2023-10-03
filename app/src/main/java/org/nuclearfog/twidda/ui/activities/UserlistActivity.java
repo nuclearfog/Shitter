@@ -112,24 +112,25 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		userlistDialog = new UserlistDialog(this, this);
 		listLoaderAsync = new UserlistAction(this);
 		listManagerAsync = new UserlistManager(this);
+		adapter = new UserlistAdapter(this);
 
 		Object data = getIntent().getSerializableExtra(KEY_DATA);
 		if (data instanceof UserList) {
 			userList = (UserList) data;
 			toolbar.setTitle(userList.getTitle());
-			adapter = new UserlistAdapter(this, userList.getId(), settings.getLogin().getConfiguration().isUserlistSubscriberSupported());
+			adapter.setId(userList.getId());
 			viewPager.setAdapter(adapter);
 			if (adapter.getItemCount() == 2) {
 				tabSelector.addTabIcons(R.array.list_tab_icons);
 			} else if (adapter.getItemCount() == 3) {
 				tabSelector.addTabIcons(R.array.list_subscriber_tab_icons);
 			}
-			viewPager.setOffscreenPageLimit(3);
-			setSupportActionBar(toolbar);
-			AppStyles.setTheme(root);
-
-			tabSelector.addOnTabSelectedListener(this);
 		}
+		viewPager.setOffscreenPageLimit(3);
+		setSupportActionBar(toolbar);
+		AppStyles.setTheme(root);
+
+		tabSelector.addOnTabSelectedListener(this);
 	}
 
 

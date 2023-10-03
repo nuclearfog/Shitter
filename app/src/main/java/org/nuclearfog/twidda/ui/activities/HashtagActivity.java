@@ -91,12 +91,12 @@ public class HashtagActivity extends AppCompatActivity implements OnQueryTextLis
 	public boolean onQueryTextSubmit(String query) {
 		if (hashtagAction.isIdle()) {
 			if (viewPager.getCurrentItem() == 0) {
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_following,Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_following, Toast.LENGTH_SHORT).show();
 				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FOLLOW, query);
 				hashtagAction.execute(param, this);
 				return true;
 			} else if (viewPager.getCurrentItem() == 1) {
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_featuring,Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_hashtag_featuring, Toast.LENGTH_SHORT).show();
 				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FEATURE, query);
 				hashtagAction.execute(param, this);
 				return true;

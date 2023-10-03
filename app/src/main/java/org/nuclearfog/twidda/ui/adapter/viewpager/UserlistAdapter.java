@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
@@ -23,9 +24,14 @@ public class UserlistAdapter extends ViewPagerAdapter {
 	/**
 	 *
 	 */
-	public UserlistAdapter(FragmentActivity fragmentActivity, long id, boolean enableSubscriber) {
-		super(fragmentActivity, enableSubscriber ? 3 : 2);
-		this.id = id;
+	public UserlistAdapter(FragmentActivity fragmentActivity) {
+		super(fragmentActivity);
+		GlobalSettings settings = GlobalSettings.get(fragmentActivity);
+		if (settings.getLogin().getConfiguration().isUserlistSubscriberSupported()) {
+			setPageCount(3);
+		} else {
+			setPageCount(2);
+		}
 	}
 
 
@@ -61,5 +67,12 @@ public class UserlistAdapter extends ViewPagerAdapter {
 				break;
 		}
 		return fragment;
+	}
+
+	/**
+	 *
+	 */
+	public void setId(long id) {
+		this.id = id;
 	}
 }

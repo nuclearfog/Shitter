@@ -239,6 +239,7 @@
 	<string name="settings_enable_indicators">zeige zusätzliche Status Informationen an</string>
 	<string name="login_key_enable">Token einfügen</string>
 	<string name="login_key_enable_v2">API v2 nutzen</string>
+	<string name="info_hashtag_following">folge Hashtag..</string>
 	<string name="info_open_mastodon_login">öffne Mastodon Loginseite</string>
 	<string name="info_login_to_mastodon">in Mastodon einloggen</string>
 	<string name="error_service_unavailable">Service zur Zeit nicht verfügbar!</string>

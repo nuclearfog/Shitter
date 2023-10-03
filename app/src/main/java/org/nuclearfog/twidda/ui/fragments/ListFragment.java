@@ -33,7 +33,14 @@ import org.nuclearfog.twidda.config.GlobalSettings;
  */
 public abstract class ListFragment extends Fragment implements OnRefreshListener, RefreshCallback, Observer<String> {
 
+	/**
+	 * used by {@link ItemViewModel} to notify {@link ListFragment} subclasses to scroll the lists to the first position
+	 */
 	public static final String NOTIFY_SCROLL_TOP = "refresh";
+
+	/**
+	 * used by {@link ItemViewModel} to notify {@link ListFragment} subclassed that settings may have changed
+	 */
 	public static final String NOTIFY_CHANGED = "settings_changed";
 
 	/**
@@ -145,15 +152,25 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 */
 	protected abstract void onReset();
 
-
+	/**
+	 * View model used by Activities to communicate with {@link ListFragment} subclasses
+	 */
 	public static class ItemViewModel extends ViewModel {
 
 		private final MutableLiveData<String> selectedItem = new MutableLiveData<>();
 
+		/**
+		 * send notification to {@link ListFragment} subclasses
+		 *
+		 * @param s notification type {@link ListFragment#NOTIFY_CHANGED,#ListFragment#NOTIFY_SCROLL_TOP}
+		 */
 		public void notify(String s) {
 			selectedItem.setValue(s);
 		}
 
+		/**
+		 *
+		 */
 		public LiveData<String> getSelectedItem() {
 			return selectedItem;
 		}

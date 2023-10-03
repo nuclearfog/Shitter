@@ -43,16 +43,13 @@ public class UserAdapter extends ViewPagerAdapter {
 	public static final int BLOCKS = 14;
 
 	private long id;
-	private int mode;
+	private int type;
 
 	/**
-	 * @param id   Status ID, List ID or User ID, depending on mode
-	 * @param mode what type of fragments should be loaded {@link #FOLLOWER,#FOLLOWING,#REQUESTS,#REPOSTER,#FAVORITER,#BLOCKS}
+	 *
 	 */
-	public UserAdapter(FragmentActivity fragmentActivity, long id, int mode, int pages) {
-		super(fragmentActivity, pages);
-		this.mode = mode;
-		this.id = id;
+	public UserAdapter(FragmentActivity fragmentActivity) {
+		super(fragmentActivity);
 	}
 
 
@@ -60,20 +57,20 @@ public class UserAdapter extends ViewPagerAdapter {
 	@Override
 	public Fragment createFragment(int position) {
 		ListFragment fragment;
-		switch(position) {
+		switch (position) {
 			default:
 			case 0:
 				Bundle param = new Bundle();
 				param.putLong(UserFragment.KEY_ID, id);
-				if (mode == FOLLOWING) {
+				if (type == FOLLOWING) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWING);
-				} else if (mode == FOLLOWER) {
+				} else if (type == FOLLOWER) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWER);
-				} else if (mode == REPOSTER) {
+				} else if (type == REPOSTER) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_REPOSTER);
-				} else if (mode == FAVORITER) {
+				} else if (type == FAVORITER) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FAVORITER);
-				} else if (mode == BLOCKS) {
+				} else if (type == BLOCKS) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_MUTES);
 				}
 				fragment = new UserFragment();
@@ -82,11 +79,11 @@ public class UserAdapter extends ViewPagerAdapter {
 
 			case 1:
 				param = new Bundle();
-				if (mode == FOLLOWING) {
+				if (type == FOLLOWING) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_INCOMING);
-				} else if (mode == FOLLOWER) {
+				} else if (type == FOLLOWER) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOW_OUTGOING);
-				} else if (mode == BLOCKS) {
+				} else if (type == BLOCKS) {
 					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_BLOCKS);
 				}
 				fragment = new UserFragment();
@@ -98,5 +95,21 @@ public class UserAdapter extends ViewPagerAdapter {
 				break;
 		}
 		return fragment;
+	}
+
+	/**
+	 * set content type to view
+	 *
+	 * @param type what type of fragments should be loaded {@link #FOLLOWER,#FOLLOWING,#REQUESTS,#REPOSTER,#FAVORITER,#BLOCKS}
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	/**
+	 *
+	 */
+	public void setId(long id) {
+		this.id = id;
 	}
 }

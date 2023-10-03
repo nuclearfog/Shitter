@@ -43,9 +43,9 @@ import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Accounts;
+import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Statuses;
-import org.nuclearfog.twidda.model.lists.Hashtags;
 
 import java.util.ArrayList;
 import java.util.Collections;

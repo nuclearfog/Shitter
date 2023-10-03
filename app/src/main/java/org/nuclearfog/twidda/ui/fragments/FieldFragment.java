@@ -47,8 +47,7 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 			}
 		}
 		setAdapter(adapter);
-		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
-		userLoader.execute(userParam, this);
+		load();
 		setRefresh(true);
 	}
 
@@ -62,6 +61,13 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 
 
 	@Override
+	public void onDestroy() {
+		userLoader.cancel();
+		super.onDestroy();
+	}
+
+
+	@Override
 	public void onLinkClick(String url) {
 		LinkUtils.openLink(requireActivity(), url);
 	}
@@ -69,8 +75,7 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 
 	@Override
 	protected void onReload() {
-		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
-		userLoader.execute(userParam, this);
+		load();
 	}
 
 
@@ -78,8 +83,8 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 	protected void onReset() {
 		// reload adapter items
 		adapter.clear();
-		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
-		userLoader.execute(userParam, this);
+		userLoader = new UserLoader(requireContext());
+		load();
 		setRefresh(true);
 	}
 
@@ -97,5 +102,13 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 			ErrorUtils.showErrorMessage(requireContext(), result.exception);
 		}
 		setRefresh(false);
+	}
+
+	/**
+	 *
+	 */
+	private void load() {
+		UserLoader.Param userParam = new UserLoader.Param(UserLoader.Param.ONLINE, id);
+		userLoader.execute(userParam, this);
 	}
 }

@@ -58,6 +58,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	@Override
 	public void onDestroy() {
 		filterLoader.cancel();
+		filterAction.cancel();
 		super.onDestroy();
 	}
 

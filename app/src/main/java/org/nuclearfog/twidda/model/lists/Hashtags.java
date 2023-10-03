@@ -71,7 +71,7 @@ public class Hashtags extends LinkedList<Hashtag> {
 	 * add a sublist at specific position
 	 *
 	 * @param hashtags sublist to add
-	 * @param index  index where to insert the sublist
+	 * @param index    index where to insert the sublist
 	 */
 	public void addAll(int index, Hashtags hashtags) {
 		if (isEmpty()) {

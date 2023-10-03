@@ -16,13 +16,12 @@ import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
  */
 public class HashtagAdapter extends ViewPagerAdapter {
 
-	private static final int COUNT = 3;
-
 	/**
 	 *
 	 */
 	public HashtagAdapter(FragmentActivity fragmentActivity) {
-		super(fragmentActivity, COUNT);
+		super(fragmentActivity);
+		setPageCount(3);
 	}
 
 
@@ -30,7 +29,7 @@ public class HashtagAdapter extends ViewPagerAdapter {
 	@Override
 	public Fragment createFragment(int position) {
 		HashtagFragment fragment = new HashtagFragment();
-		switch(position) {
+		switch (position) {
 			case 0:
 				Bundle paramFollowedTags = new Bundle();
 				paramFollowedTags.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_FOLLOW);
