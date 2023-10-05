@@ -160,9 +160,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		String userBio = userDescription.getText().toString();
 		if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
 				&& userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription()) && !userUpdate.imageAdded()) {
-			finish();
+			super.onBackPressed();
 		} else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
-			finish();
+			super.onBackPressed();
 		} else {
 			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_LEAVE);
 		}

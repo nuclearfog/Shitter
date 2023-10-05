@@ -234,7 +234,11 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	@Override
 	public void onBackPressed() {
-		showClosingMsg();
+		if (statusUpdate.isEmpty()) {
+			super.onBackPressed();
+		} else {
+			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_LEAVE);
+		}
 	}
 
 
@@ -435,17 +439,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			if (!statusUpdate.mediaLimitReached()) {
 				mediaBtn.setVisibility(View.VISIBLE);
 			}
-		}
-	}
-
-	/**
-	 * show confirmation dialog when closing edited status
-	 */
-	private void showClosingMsg() {
-		if (statusUpdate.isEmpty()) {
-			finish();
-		} else {
-			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_LEAVE);
 		}
 	}
 
