@@ -50,6 +50,8 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 	private RecyclerView list;
 	private SwipeRefreshLayout reload;
+
+	private ItemViewModel viewModel;
 	protected GlobalSettings settings;
 
 	private boolean enableSwipe = true;
@@ -66,11 +68,18 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		list.setLayoutManager(new LinearLayoutManager(requireContext()));
 		AppStyles.setSwipeRefreshColor(reload, settings);
 
-		ItemViewModel viewModel = new ViewModelProvider(requireActivity()).get(ItemViewModel.class);
+		viewModel = new ViewModelProvider(requireActivity()).get(ItemViewModel.class);
 		viewModel.getSelectedItem().observe(getViewLifecycleOwner(), this);
 
 		reload.setOnRefreshListener(this);
 		return reload;
+	}
+
+
+	@Override
+	public void onDestroyView() {
+		viewModel.getSelectedItem().removeObserver(this);
+		super.onDestroyView();
 	}
 
 

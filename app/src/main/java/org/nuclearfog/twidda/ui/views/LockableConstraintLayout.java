@@ -40,8 +40,8 @@ public class LockableConstraintLayout extends ConstraintLayout {
 			case MotionEvent.ACTION_SCROLL:
 			case MotionEvent.ACTION_MOVE:
 				float deltaY = ev.getAxisValue(MotionEvent.AXIS_Y) - yPos;
-				// detect scroll down, then aquire scroll lock
-				if (!yLock && deltaY < 0.0f && callback != null) {
+				// detect swipe up, then aquire scroll lock
+				if (deltaY < 0.0f && callback != null) {
 					yLock = callback.aquireVerticalScrollLock();
 				}
 				// fall through
