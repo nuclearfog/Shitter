@@ -552,7 +552,7 @@ public interface Connection {
 	 * @param mediaUpdate inputstream with MIME type of the media
 	 * @return media ID
 	 */
-	long updateMedia(MediaStatus mediaUpdate) throws ConnectionException, InterruptedException;
+	long updateMedia(MediaStatus mediaUpdate) throws ConnectionException;
 
 	/**
 	 * create Web push subscription

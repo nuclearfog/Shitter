@@ -63,11 +63,9 @@ public abstract class AsyncExecutor<Parameter, Result> {
 				try {
 					Result result = doInBackground(parameter);
 					onPostExecute(result, callbackReference);
-				} catch (InterruptedException e) {
-					// caused by user interaction. No need to handle exception.
-				} catch (Exception e) {
+				} catch (RuntimeException exception) {
 					if (BuildConfig.DEBUG) {
-						e.printStackTrace();
+						exception.printStackTrace();
 					}
 				}
 			}
@@ -120,7 +118,7 @@ public abstract class AsyncExecutor<Parameter, Result> {
 	 * @return result of the background task
 	 */
 	@WorkerThread
-	protected abstract Result doInBackground(@NonNull Parameter param) throws InterruptedException;
+	protected abstract Result doInBackground(@NonNull Parameter param);
 
 	/**
 	 * Callback used to send task result to main thread

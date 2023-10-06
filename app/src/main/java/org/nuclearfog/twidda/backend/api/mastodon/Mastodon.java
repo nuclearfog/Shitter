@@ -66,7 +66,6 @@ import org.nuclearfog.twidda.model.lists.Users;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -1170,7 +1169,7 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public long updateMedia(MediaStatus mediaUpdate) throws MastodonException, InterruptedException {
+	public long updateMedia(MediaStatus mediaUpdate) throws MastodonException {
 		try {
 			List<String> params = new ArrayList<>();
 			if (!mediaUpdate.getDescription().isEmpty())
@@ -1196,9 +1195,7 @@ public class Mastodon implements Connection {
 				}
 			}
 			throw new MastodonException(response);
-		} catch (InterruptedIOException e) {
-			throw new InterruptedException();
-		} catch (IOException | JSONException | NumberFormatException e) {
+		} catch (IOException | JSONException | NumberFormatException | InterruptedException e) {
 			throw new MastodonException(e);
 		}
 	}

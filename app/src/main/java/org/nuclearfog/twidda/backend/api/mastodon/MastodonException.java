@@ -8,7 +8,9 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import okhttp3.Response;
@@ -35,9 +37,9 @@ public class MastodonException extends ConnectionException {
 		super(e);
 		if (e instanceof JSONException) {
 			errorCode = JSON_FORMAT;
-		} else if (e instanceof ConnectException || e instanceof UnknownHostException) {
+		} else if (e instanceof ConnectException || e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
 			errorCode = NO_CONNECTION;
-		} else if (getCause() instanceof InterruptedException) {
+		} else if (getCause() instanceof InterruptedException || e instanceof InterruptedIOException) {
 			errorCode = INTERRUPTED;
 		}
 	}

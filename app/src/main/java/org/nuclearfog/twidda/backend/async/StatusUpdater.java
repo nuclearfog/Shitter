@@ -35,7 +35,7 @@ public class StatusUpdater extends AsyncExecutor<StatusUpdate, StatusUpdater.Res
 
 
 	@Override
-	protected Result doInBackground(@NonNull StatusUpdate update) throws InterruptedException {
+	protected Result doInBackground(@NonNull StatusUpdate update) {
 		try {
 			// upload media first
 			List<Long> mediaIds = new LinkedList<>();
