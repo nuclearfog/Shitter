@@ -36,7 +36,7 @@
 		android:id="@+id/page_tab_view_post_button"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/page_tab_view_floating_button_margin"
+		android:layout_margin="@dimen/floating_button_margin"
 		android:visibility="gone"
 		android:src="@drawable/post"
 		android:contentDescription="@string/menu_status"

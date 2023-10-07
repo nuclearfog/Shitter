@@ -261,7 +261,7 @@
 		android:layout_gravity="end|bottom"
 		android:src="@drawable/post"
 		android:contentDescription="@string/menu_status"
-		android:layout_margin="@dimen/profile_floating_button_margin"
+		android:layout_margin="@dimen/floating_button_margin"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
 

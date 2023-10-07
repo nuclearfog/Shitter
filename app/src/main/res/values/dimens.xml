@@ -7,6 +7,7 @@
 	<dimen name="edittext_background_padding">5dp</dimen>
 	<dimen name="edittext_textsize">16sp</dimen>
 	<dimen name="edittext_margin">2dp</dimen>
+	<dimen name="floating_button_margin">20dp</dimen>
 
 	<!--dimens of page_settings.xml-->
 	<dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>
@@ -58,7 +59,6 @@
 	<dimen name="profile_textsize_small">12sp</dimen>
 	<dimen name="profile_icon_size">14sp</dimen>
 	<dimen name="profile_tabselector_height">52sp</dimen>
-	<dimen name="profile_floating_button_margin">20dp</dimen>
 	<integer name="profile_text_bio_lines">6</integer>
 
 	<!--dimens of page_editprofile.xml-->
@@ -175,15 +175,12 @@
 	<dimen name="item_placeholder_margin">10dp</dimen>
 	<dimen name="item_placeholder_button_textsize">16sp</dimen>
 
-	<!--dimens of page_tab_view-->
-	<dimen name="page_tab_view_floating_button_margin">20dp</dimen>
-
 	<!--dimens of page_main.xml-->
 	<dimen name="mainpage_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="mainpage_navigation_padding_item">20dp</dimen>
 
-	<!--dimens of page_list.xml-->
-	<dimen name="dmpage_toolbar_height">@dimen/toolbar_height</dimen>
+	<!--dimens of page_fragment.xml-->
+	  <dimen name="page_fragment_toolbar_height">@dimen/toolbar_height</dimen>
 
 	<!--dimens of dialog_app_info.xml-->
 	<dimen name="infopopup_text_padding">5dp</dimen>

@@ -101,11 +101,10 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 				hashtagAction.execute(param, this);
 			}
 		}
-		adapter.setSearch(search);
-
-		if (!settings.floatingButtonEnabled()) {
-			floatingButton.setVisibility(View.INVISIBLE);
+		if (settings.floatingButtonEnabled()) {
+			floatingButton.setVisibility(View.VISIBLE);
 		}
+		adapter.setSearch(search);
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 		viewPager.setOffscreenPageLimit(3);

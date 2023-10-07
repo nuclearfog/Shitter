@@ -9,12 +9,28 @@
 	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/page_fragment_toolbar"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/dmpage_toolbar_height" />
+		android:layout_height="@dimen/page_fragment_toolbar_height" />
 
-	<androidx.fragment.app.FragmentContainerView
-		android:id="@+id/page_fragment_container"
+	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="1" />
+		android:layout_weight="1">
+
+		<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/page_fragment_container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+		<com.google.android.material.floatingactionbutton.FloatingActionButton
+			android:id="@+id/page_fragment_floating_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="@dimen/floating_button_margin"
+			android:src="@drawable/post"
+			android:visibility="gone"
+			android:layout_gravity="bottom|end"
+			android:contentDescription="@string/menu_status" />
+
+	</FrameLayout>
 
 </LinearLayout>
