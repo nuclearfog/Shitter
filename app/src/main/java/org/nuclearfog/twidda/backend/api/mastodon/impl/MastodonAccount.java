@@ -23,23 +23,20 @@ public class MastodonAccount implements Account {
 	private String bearer;
 	private String client_id, client_secret;
 
-	private User user;
-
 	/**
-	 * @param user          user information
+	 * @param id            user ID
 	 * @param hostname      hostname of the Mastodon isntance
 	 * @param bearer        bearer token
 	 * @param client_id     app client ID
 	 * @param client_secret app client secret
 	 */
-	public MastodonAccount(User user, String hostname, String bearer, String client_id, String client_secret) {
-		this.user = user;
+	public MastodonAccount(long id, String hostname, String bearer, String client_id, String client_secret) {
+		this.id = id;
 		this.hostname = hostname;
 		this.bearer = bearer;
 		this.client_id = client_id;
 		this.client_secret = client_secret;
 		timestamp = System.currentTimeMillis();
-		id = user.getId();
 	}
 
 
@@ -58,7 +55,7 @@ public class MastodonAccount implements Account {
 	@Nullable
 	@Override
 	public User getUser() {
-		return user;
+		return null;
 	}
 
 
@@ -107,7 +104,7 @@ public class MastodonAccount implements Account {
 	@NonNull
 	@Override
 	public String toString() {
-		return "hostname=\"" + getHostname() + "\" configuration=\"" + getConfiguration().getName() + "\" " + user;
+		return "hostname=\"" + getHostname() + "\" configuration=\"" + getConfiguration().getName() + "\" id=" + id;
 	}
 
 

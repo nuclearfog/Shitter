@@ -15,6 +15,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonCredentials;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonFilter;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonHashtag;
@@ -42,6 +43,7 @@ import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Hashtag;
@@ -220,8 +222,8 @@ public class Mastodon implements Connection {
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
 				String bearer = json.getString("access_token");
-				User user = getCredentials(hostname, bearer);
-				Account account = new MastodonAccount(user, hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
+				Credentials credentials = getCredentials(hostname, bearer);
+				Account account = new MastodonAccount(credentials.getId(), hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
 				return account;
 			}
@@ -1139,7 +1141,13 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public User updateUser(UserUpdate update) throws MastodonException {
+	public Credentials getCredentials() throws ConnectionException {
+		return getCredentials(settings.getLogin().getHostname(), settings.getLogin().getBearerToken());
+	}
+
+
+	@Override
+	public User updateCredentials(UserUpdate update) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		List<InputStream> streams = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
@@ -1346,13 +1354,13 @@ public class Mastodon implements Connection {
 	 * @param bearer bearer token to use
 	 * @return current user information
 	 */
-	private User getCredentials(String host, @NonNull String bearer) throws MastodonException {
+	private Credentials getCredentials(String host, @NonNull String bearer) throws MastodonException {
 		try {
 			Response response = get(host, ENDPOINT_VERIFY_CREDENTIALS, bearer, new ArrayList<>());
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				return new MastodonUser(json);
+				return new MastodonCredentials(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

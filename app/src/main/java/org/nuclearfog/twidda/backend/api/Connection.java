@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.model.Hashtag;
@@ -539,12 +540,19 @@ public interface Connection {
 	UserList updateUserlist(UserListUpdate update) throws ConnectionException;
 
 	/**
-	 * updates current user's profile
+	 * get current user's credentials
+	 *
+	 * @return user credentials
+	 */
+	Credentials getCredentials() throws ConnectionException;
+
+	/**
+	 * updates current user's credentials
 	 *
 	 * @param update profile update information
 	 * @return updated user information
 	 */
-	User updateUser(UserUpdate update) throws ConnectionException;
+	User updateCredentials(UserUpdate update) throws ConnectionException;
 
 	/**
 	 * upload media file and generate a media ID
