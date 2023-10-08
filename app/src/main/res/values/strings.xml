@@ -231,6 +231,9 @@
 	<string name="profile_link">Link</string>
 	<string name="profile_location">Location</string>
 	<string name="profile_bio">Bio</string>
+	<string name="profile_other">Other settings</string>
+	<string name="profile_privacy">enable follower approval</string>
+	<string name="profile_status_pref">set default status preferences</string>
 	<string name="connection_discard">discard</string>
 	<string name="dialog_poll_title">create poll</string>
 	<string name="dialog_poll_button_create">create</string>

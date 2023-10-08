@@ -14,10 +14,14 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
+import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
@@ -42,21 +46,42 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	private DropdownAdapter visibility_adapter, language_adapter;
 	private TimePickerDialog timePicker;
 	private GlobalSettings settings;
-	private StatusUpdate statusUpdate;
 	private String[] languageCodes;
 
+	@Nullable
+	private StatusUpdate statusUpdate;
+	@Nullable
+	private UserUpdate userUpdate;
+
 	/**
-	 * @param statusUpdate status information from status editor
+	 * create dialog to set user preferences
+	 *
+	 * @param userUpdate user update holder
 	 */
-	public StatusPreferenceDialog(Activity activity, StatusUpdate statusUpdate) {
-		super(activity, R.style.DefaultDialog);
+	public StatusPreferenceDialog(Activity activity, @NonNull UserUpdate userUpdate) {
+		this(activity);
+		this.userUpdate = userUpdate;
+	}
+
+	/**
+	 * create dialog to set status preferences
+	 *
+	 * @param statusUpdate status update holder
+	 */
+	public StatusPreferenceDialog(Activity activity,  @NonNull StatusUpdate statusUpdate) {
+		this(activity);
 		this.statusUpdate = statusUpdate;
+	}
+
+	/**
+	 *
+	 */
+	private StatusPreferenceDialog(Activity activity) {
+		super(activity, R.style.DefaultDialog);
 		visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
 		language_adapter = new DropdownAdapter(activity.getApplicationContext());
 		timePicker = new TimePickerDialog(activity, this);
-
 		settings = GlobalSettings.get(getContext());
-
 		// initialize language selector
 		Map<String, String> languages = new TreeMap<>();
 		languages.put("", "");
@@ -99,6 +124,11 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		if (!settings.getLogin().getConfiguration().statusSpoilerSupported()) {
 			statusSpoiler.setVisibility(View.GONE);
 		}
+		if (userUpdate != null) {
+			scheduleText.setVisibility(View.GONE);
+			timePicker.setVisibility(View.GONE);
+			statusSpoiler.setVisibility(View.GONE);
+		}
 		sensitiveCheck.setOnCheckedChangeListener(this);
 		spoilerCheck.setOnCheckedChangeListener(this);
 		languageSelector.setOnItemSelectedListener(this);
@@ -109,21 +139,41 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	@Override
 	protected void onStart() {
-		if (statusUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
-			visibilitySelector.setSelection(0, false);
-		} else if (statusUpdate.getVisibility() == Status.VISIBLE_PRIVATE) {
-			visibilitySelector.setSelection(1, false);
-		} else if (statusUpdate.getVisibility() == Status.VISIBLE_DIRECT) {
-			visibilitySelector.setSelection(2, false);
-		} else if (statusUpdate.getVisibility() == Status.VISIBLE_UNLISTED) {
-			visibilitySelector.setSelection(3, false);
-		}
-		sensitiveCheck.setCheckedImmediately(statusUpdate.isSensitive());
-		spoilerCheck.setCheckedImmediately(statusUpdate.isSpoiler());
-		if (!statusUpdate.getLanguageCode().isEmpty()) {
-			for (int i = 0; i < languageCodes.length; i++) {
-				if (languageCodes[i].equals(statusUpdate.getLanguageCode())) {
-					languageSelector.setSelection(i);
+		if (statusUpdate != null) {
+			if (statusUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
+				visibilitySelector.setSelection(0, false);
+			} else if (statusUpdate.getVisibility() == Status.VISIBLE_PRIVATE) {
+				visibilitySelector.setSelection(1, false);
+			} else if (statusUpdate.getVisibility() == Status.VISIBLE_DIRECT) {
+				visibilitySelector.setSelection(2, false);
+			} else if (statusUpdate.getVisibility() == Status.VISIBLE_UNLISTED) {
+				visibilitySelector.setSelection(3, false);
+			}
+			sensitiveCheck.setCheckedImmediately(statusUpdate.isSensitive());
+			spoilerCheck.setCheckedImmediately(statusUpdate.isSpoiler());
+			if (!statusUpdate.getLanguageCode().isEmpty()) {
+				for (int i = 0; i < languageCodes.length; i++) {
+					if (languageCodes[i].equals(statusUpdate.getLanguageCode())) {
+						languageSelector.setSelection(i);
+					}
+				}
+			}
+		} else if (userUpdate != null) {
+			if (userUpdate.getStatusVisibility() == Status.VISIBLE_PUBLIC) {
+				visibilitySelector.setSelection(0, false);
+			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_PRIVATE) {
+				visibilitySelector.setSelection(1, false);
+			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_DIRECT) {
+				visibilitySelector.setSelection(2, false);
+			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_UNLISTED) {
+				visibilitySelector.setSelection(3, false);
+			}
+			sensitiveCheck.setCheckedImmediately(userUpdate.getContentSensitive());
+			if (!userUpdate.getLanguageCode().isEmpty()) {
+				for (int i = 0; i < languageCodes.length; i++) {
+					if (languageCodes[i].equals(userUpdate.getLanguageCode())) {
+						languageSelector.setSelection(i);
+					}
 				}
 			}
 		}
@@ -150,7 +200,9 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_status_time_picker) {
-			timePicker.show(statusUpdate.getScheduleTime());
+			if (statusUpdate != null) {
+				timePicker.show(statusUpdate.getScheduleTime());
+			}
 		}
 	}
 
@@ -158,9 +210,15 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if (buttonView.getId() == R.id.dialog_status_sensitive) {
-			statusUpdate.setSensitive(isChecked);
+			if (statusUpdate != null) {
+				statusUpdate.setSensitive(isChecked);
+			} else if (userUpdate != null) {
+				userUpdate.setContentSensitive(isChecked);
+			}
 		} else if (buttonView.getId() == R.id.dialog_status_spoiler) {
-			statusUpdate.setSpoiler(isChecked);
+			if (statusUpdate != null) {
+				statusUpdate.setSpoiler(isChecked);
+			}
 		}
 	}
 
@@ -168,30 +226,38 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		if (parent.getId() == R.id.dialog_status_visibility) {
-			switch (position) {
-				case 0:
+			if (statusUpdate != null) {
+				if (position == 0) {
 					statusUpdate.setVisibility(Status.VISIBLE_DEFAULT);
-					break;
-
-				case 1:
+				} else if (position == 1) {
 					statusUpdate.setVisibility(Status.VISIBLE_PUBLIC);
-					break;
-
-				case 2:
+				} else if (position == 2) {
 					statusUpdate.setVisibility(Status.VISIBLE_PRIVATE);
-					break;
-
-				case 3:
+				} else if (position == 3) {
 					statusUpdate.setVisibility(Status.VISIBLE_DIRECT);
-					break;
-
-				case 4:
+				} else if (position == 4) {
 					statusUpdate.setVisibility(Status.VISIBLE_UNLISTED);
-					break;
+				}
+			} else if (userUpdate != null) {
+				if (position == 0) {
+					userUpdate.setStatusVisibility(Status.VISIBLE_DEFAULT);
+				} else if (position == 1) {
+					userUpdate.setStatusVisibility(Status.VISIBLE_PUBLIC);
+				} else if (position == 2) {
+					userUpdate.setStatusVisibility(Status.VISIBLE_PRIVATE);
+				} else if (position == 3) {
+					userUpdate.setStatusVisibility(Status.VISIBLE_DIRECT);
+				} else if (position == 4) {
+					userUpdate.setStatusVisibility(Status.VISIBLE_UNLISTED);
+				}
 			}
 		} else if (parent.getId() == R.id.dialog_status_language) {
 			if (position > 0) {
-				statusUpdate.addLanguage(languageCodes[position]);
+				if (statusUpdate != null) {
+					statusUpdate.addLanguage(languageCodes[position]);
+				} else if (userUpdate != null) {
+					userUpdate.setLanguageCode(languageCodes[position]);
+				}
 			}
 		}
 	}
@@ -204,7 +270,9 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 
 	@Override
 	public void onTimeSelected(long time) {
-		statusUpdate.setScheduleTime(time);
+		if (statusUpdate != null) {
+			statusUpdate.setScheduleTime(time);
+		}
 		if (time != 0L) {
 			scheduleText.setText(new Date(time).toString());
 		} else {

@@ -50,7 +50,7 @@ public class ScheduleActivity extends AppCompatActivity implements OnClickListen
 
 	@Override
 	public void onClick(View v) {
-		if (v.getId() == R.id.page_tab_view_post_button) {
+		if (v.getId() == R.id.page_fragment_floating_button) {
 			Intent intent = new Intent(this, StatusEditor.class);
 			startActivity(intent);
 		}

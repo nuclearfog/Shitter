@@ -2,24 +2,12 @@ package org.nuclearfog.twidda.model;
 
 import java.io.Serializable;
 
-import org.nuclearfog.twidda.model.User.Field;
-
 /**
  * represents credentials of the current user
  *
  * @author nuclearfog
  */
 public interface Credentials extends Serializable {
-
-	int DEFAULT = 0;
-
-	int PUBLIC = 10;
-
-	int PRIVATE = 11;
-
-	int DIRECT = 12;
-
-	int UNLISTED = 13;
 
 	/**
 	 * get user ID
@@ -48,7 +36,7 @@ public interface Credentials extends Serializable {
 	/**
 	 * get default visibility of the user's status
 	 *
-	 * @return {@link #PUBLIC,#PRIVATE,#DIRECT,#UNLISTED}
+	 * @return {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_PRIVATE,Status#VISIBLE_DIRECT,Status#VISIBLE_UNLISTED}
 	 */
 	int getVisibility();
 
@@ -58,7 +46,7 @@ public interface Credentials extends Serializable {
 	boolean isSensitive();
 
 	/**
-	 * get user fields
+	 * check if account requires follow request
 	 */
-	Field[] getFields();
+	boolean isLocked();
 }

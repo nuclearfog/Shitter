@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend.api.mastodon.impl;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.model.Credentials;
-import org.nuclearfog.twidda.model.User.Field;
+import org.nuclearfog.twidda.model.Status;
 
 /**
  * Mastodon implementation of {@link Credentials}
@@ -20,6 +20,7 @@ public class MastodonCredentials implements Credentials {
 	private String language;
 	private int visibility;
 	private boolean sensitive;
+	private boolean locked;
 
 	/**
 	 * @param json Credentials json format
@@ -32,26 +33,27 @@ public class MastodonCredentials implements Credentials {
 		description = sourceJson.getString("note");
 		language = sourceJson.getString("language");
 		sensitive = sourceJson.getBoolean("sensitive");
+		locked = json.optBoolean("locked");
 
 		switch(visStr) {
 			case "public":
-				visibility = PUBLIC;
+				visibility = Status.VISIBLE_PUBLIC;
 				break;
 
 			case "private":
-				visibility = PRIVATE;
+				visibility = Status.VISIBLE_PRIVATE;
 				break;
 
 			case "direct":
-				visibility = DIRECT;
+				visibility = Status.VISIBLE_DIRECT;
 				break;
 
 			case "unlisted":
-				visibility = UNLISTED;
+				visibility = Status.VISIBLE_UNLISTED;
 				break;
 
 			default:
-				visibility = DEFAULT;
+				visibility = Status.VISIBLE_DEFAULT;
 				break;
 		}
 		try {
@@ -99,7 +101,7 @@ public class MastodonCredentials implements Credentials {
 
 
 	@Override
-	public Field[] getFields() {
-		return new Field[0];
+	public boolean isLocked() {
+		return locked;
 	}
 }

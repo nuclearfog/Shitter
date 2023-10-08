@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
+import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
 
 import java.io.FileNotFoundException;
 
@@ -72,11 +74,13 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	private Picasso picasso;
 
 	private ProgressDialog progressDialog;
+	private StatusPreferenceDialog prefDialog;
 	private ConfirmDialog confirmDialog;
 
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
 	private EditText username, profileUrl, profileLocation, userDescription;
 	private Button addBannerBtn;
+	private CompoundButton privacy;
 
 	@Nullable
 	private User user;
@@ -100,6 +104,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		ConstraintLayout root = findViewById(R.id.page_edit);
 		View profileLocationLabel = findViewById(R.id.profile_edit_change_location_label);
 		View profileUrlLabel = findViewById(R.id.profile_edit_change_url_label);
+		View statusPrefBtn = findViewById(R.id.profile_edit_status_pref);
 		profile_image = findViewById(R.id.edit_profile_image);
 		profile_banner = findViewById(R.id.profile_edit_banner);
 		addBannerBtn = findViewById(R.id.profile_edit_add_banner);
@@ -109,7 +114,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		profileUrl = findViewById(R.id.profile_edit_change_url);
 		profileLocation = findViewById(R.id.profile_edit_change_location);
 		userDescription = findViewById(R.id.profile_edit_change_description);
+		privacy = findViewById(R.id.profile_edit_privacy);
 
+		prefDialog = new StatusPreferenceDialog(this, userUpdate);
 		progressDialog = new ProgressDialog(this, null);
 		confirmDialog = new ConfirmDialog(this, this);
 		credentialAction = new CredentialsAction(this);
@@ -152,6 +159,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		profile_image.setOnClickListener(this);
 		profile_banner.setOnClickListener(this);
 		addBannerBtn.setOnClickListener(this);
+		statusPrefBtn.setOnClickListener(this);
 	}
 
 
@@ -238,6 +246,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		else if (v.getId() == R.id.profile_edit_add_banner || v.getId() == R.id.profile_edit_banner) {
 			getMedia(REQUEST_BANNER);
 		}
+		//
+		else if (v.getId() == R.id.profile_edit_status_pref) {
+			prefDialog.show();
+		}
 	}
 
 
@@ -315,6 +327,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 				this.username.setError(errMsg);
 			} else {
 				userUpdate.setProfile(username, userBio, userLoc);
+				userUpdate.setPrivacy(privacy.isChecked());
 				if (userUpdate.prepare(getContentResolver())) {
 					CredentialsAction.Param param = new CredentialsAction.Param(CredentialsAction.Param.UPDATE, userUpdate);
 					credentialAction.execute(param, this);
@@ -357,6 +370,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	 * set current user's credentials
 	 */
 	private void setCredentials() {
-
+		if (credentials != null) {
+			privacy.setChecked(credentials.isLocked());
+		}
 	}
 }

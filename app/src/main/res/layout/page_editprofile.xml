@@ -169,6 +169,43 @@
 				android:minHeight="@dimen/editprofile_bio_min_height"
 				style="@style/TextInput" />
 
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/editprofile_edittext_padding"
+				android:text="@string/profile_other" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical">
+
+				<com.kyleduo.switchbutton.SwitchButton
+					android:id="@+id/profile_edit_privacy"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/editprofile_button_margin" />
+
+				<TextView
+					android:id="@+id/profile_edit_privacy_label"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/profile_privacy"
+					android:lines="1" />
+
+			</LinearLayout>
+
+			<Button
+				android:id="@+id/profile_edit_status_pref"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/editprofile_button_height"
+				android:paddingLeft="@dimen/editprofile_button_padding"
+				android:paddingRight="@dimen/editprofile_button_padding"
+				android:layout_margin="@dimen/editprofile_button_margin"
+				android:text="@string/profile_status_pref"
+				style="@style/FeedbackButton" />
+
 		</LinearLayout>
 
 	</ScrollView>

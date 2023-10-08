@@ -40,16 +40,6 @@ public class MastodonUser implements User {
 	private Field[] fields = {};
 
 	/**
-	 * constructor used to create an user instance of the current user
-	 *
-	 * @param json json object used by Mastodon API
-	 */
-	public MastodonUser(JSONObject json) throws JSONException {
-		this(json, 0L);
-		isCurrentUser = true;
-	}
-
-	/**
 	 * default constructor for all user instances
 	 *
 	 * @param json          json object used by Mastodon API

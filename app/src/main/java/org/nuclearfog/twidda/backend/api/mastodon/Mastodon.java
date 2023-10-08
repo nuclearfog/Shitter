@@ -1154,6 +1154,7 @@ public class Mastodon implements Connection {
 
 		params.add("display_name=" + StringUtils.encode(update.getName()));
 		params.add("note=" + StringUtils.encode(update.getDescription()));
+		params.add("locked=" + update.privacyEnabled());
 		if (update.getProfileImageMedia() != null) {
 			streams.add(update.getProfileImageMedia().getStream());
 			keys.add("avatar");
@@ -1161,6 +1162,18 @@ public class Mastodon implements Connection {
 		if (update.getBannerImageMedia() != null) {
 			streams.add(update.getBannerImageMedia().getStream());
 			keys.add("header");
+		}
+		if (!update.getLanguageCode().isEmpty()) {
+			params.add("source[language]=" + update.getLanguageCode());
+		}
+		if (update.getStatusVisibility() == Status.VISIBLE_PUBLIC) {
+			params.add("source[privacy]=public");
+		} else if (update.getStatusVisibility() == Status.VISIBLE_PRIVATE) {
+			params.add("source[privacy]=private");
+		} else if (update.getStatusVisibility() == Status.VISIBLE_UNLISTED) {
+			params.add("source[privacy]=unlisted");
+		} else if (update.getStatusVisibility() == Status.VISIBLE_DIRECT) {
+			params.add("source[privacy]=direct");
 		}
 		try {
 			Response response = patch(ENDPOINT_UPDATE_CREDENTIALS, params, streams, keys);

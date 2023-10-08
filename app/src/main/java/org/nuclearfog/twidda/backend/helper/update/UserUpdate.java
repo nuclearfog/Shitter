@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.model.Status;
 
 import java.io.Closeable;
 
@@ -21,6 +22,11 @@ public class UserUpdate implements Closeable {
 	private String name = "";
 	private String description = "";
 	private String location = "";
+
+	private int statusVisibility = Status.VISIBLE_DEFAULT;
+	private boolean sensitiveContent = false;
+	private boolean privacy = false;
+	private String langCode = "";
 
 
 	/**
@@ -64,6 +70,40 @@ public class UserUpdate implements Closeable {
 	}
 
 	/**
+	 * set default status visibiltiy
+	 *
+	 * @param statusVisibility default status visibility {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DEFAULT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
+	 */
+	public void setStatusVisibility(int statusVisibility) {
+		this.statusVisibility = statusVisibility;
+	}
+
+	/**
+	 * set default status sensitive flag
+	 *
+	 * @param sensitiveContent true to set sensitive flag by default
+	 */
+	public void setContentSensitive(boolean sensitiveContent) {
+		this.sensitiveContent = sensitiveContent;
+	}
+
+	/**
+	 * set default language for posts
+	 *
+	 * @param langCode lang code
+	 */
+	public void setLanguageCode(@NonNull String langCode) {
+		this.langCode = langCode;
+	}
+
+	/**
+	 * enable/disable follow confirmation
+	 */
+	public void setPrivacy(boolean privacy) {
+		this.privacy = privacy;
+	}
+
+	/**
 	 * @return screen name of the user
 	 */
 	public String getName() {
@@ -75,13 +115,6 @@ public class UserUpdate implements Closeable {
 	 */
 	public String getDescription() {
 		return description;
-	}
-
-	/**
-	 * @return true if any image is added
-	 */
-	public boolean imageAdded() {
-		return profileImage != null || bannerImage != null;
 	}
 
 	/**
@@ -98,6 +131,40 @@ public class UserUpdate implements Closeable {
 	@Nullable
 	public MediaStatus getBannerImageMedia() {
 		return bannerImage;
+	}
+
+	/**
+	 * get default status visibility
+	 *
+	 * @return status visibility constant {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DEFAULT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
+	 */
+	public int getStatusVisibility() {
+		return statusVisibility;
+	}
+
+	/**
+	 * @return true if user's status should be marked as sensitive by default
+	 */
+	public boolean getContentSensitive() {
+		return sensitiveContent;
+	}
+
+	/**
+	 * get default language code used for posts
+	 *
+	 * @return language code
+	 */
+	public String getLanguageCode() {
+		return langCode;
+	}
+
+	/**
+	 * get profile privacy preference
+	 *
+	 * @return true to ask user to confirm new followers
+	 */
+	public boolean privacyEnabled() {
+		return privacy;
 	}
 
 	/**

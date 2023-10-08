@@ -80,6 +80,9 @@
 	<string name="menu_edit_save">speichern</string>
 	<string name="info_profile_updated">Profile aktualisiert!</string>
 	<string name="error_empty_name">Name leer!</string>
+	<string name="profile_other">weitere Einstellungen</string>
+	<string name="profile_privacy">aktiviere Follower-Bestätigung</string>
+	<string name="profile_status_pref">Standardeinstellungen für Posts</string>
 	<string name="connection_discard">verwerfen</string>
 	<string name="confirm_discard">Änderungen verwerfen?</string>
 	<string name="user_data">Nutzerdaten</string>
