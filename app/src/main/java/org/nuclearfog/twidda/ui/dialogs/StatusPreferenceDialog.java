@@ -168,7 +168,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_UNLISTED) {
 				visibilitySelector.setSelection(3, false);
 			}
-			sensitiveCheck.setCheckedImmediately(userUpdate.getContentSensitive());
+			sensitiveCheck.setCheckedImmediately(userUpdate.isSensitive());
 			if (!userUpdate.getLanguageCode().isEmpty()) {
 				for (int i = 0; i < languageCodes.length; i++) {
 					if (languageCodes[i].equals(userUpdate.getLanguageCode())) {

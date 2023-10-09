@@ -458,8 +458,8 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Hashtags getTrends() throws MastodonException {
-		Hashtags result = getTrends(ENDPOINT_TRENDS, new ArrayList<>());
+	public Hashtags getHashtags() throws MastodonException {
+		Hashtags result = getHashtags(ENDPOINT_TRENDS, new ArrayList<>());
 		Collections.sort(result);
 		return result;
 	}
@@ -473,7 +473,7 @@ public class Mastodon implements Connection {
 		else
 			params.add("q=" + StringUtils.encode(search));
 		params.add("type=hashtags");
-		Hashtags result = getTrends(ENDPOINT_SEARCH_TIMELINE, params);
+		Hashtags result = getHashtags(ENDPOINT_SEARCH_TIMELINE, params);
 		Collections.sort(result);
 		return result;
 	}
@@ -484,19 +484,19 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		if (cursor != 0L)
 			params.add("max_id=" + cursor);
-		return getTrends(ENDPOINT_HASHTAG_FOLLOWING, params);
+		return getHashtags(ENDPOINT_HASHTAG_FOLLOWING, params);
 	}
 
 
 	@Override
 	public Hashtags showHashtagFeaturing() throws ConnectionException {
-		return getTrends(ENDPOINT_HASHTAG_FEATURE, new ArrayList<>());
+		return getHashtags(ENDPOINT_HASHTAG_FEATURE, new ArrayList<>());
 	}
 
 
 	@Override
 	public Hashtags showHashtagSuggestions() throws ConnectionException {
-		return getTrends(ENDPOINT_HASHTAG_FEATURE + "/suggestions", new ArrayList<>());
+		return getHashtags(ENDPOINT_HASHTAG_FEATURE + "/suggestions", new ArrayList<>());
 	}
 
 
@@ -1155,6 +1155,7 @@ public class Mastodon implements Connection {
 		params.add("display_name=" + StringUtils.encode(update.getName()));
 		params.add("note=" + StringUtils.encode(update.getDescription()));
 		params.add("locked=" + update.privacyEnabled());
+		params.add("source[sensitive]=" + update.isSensitive());
 		if (update.getProfileImageMedia() != null) {
 			streams.add(update.getProfileImageMedia().getStream());
 			keys.add("avatar");
@@ -1461,7 +1462,7 @@ public class Mastodon implements Connection {
 	 * @param params   additional parameters
 	 * @return trend list
 	 */
-	private Hashtags getTrends(String endpoint, List<String> params) throws MastodonException {
+	private Hashtags getHashtags(String endpoint, List<String> params) throws MastodonException {
 		try {
 			params.add("limit=" + settings.getListSize());
 			Response response = get(endpoint, params);

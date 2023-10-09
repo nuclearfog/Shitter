@@ -20,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.HashtagAction;
 import org.nuclearfog.twidda.backend.async.HashtagAction.Param;
@@ -96,7 +97,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 			search = hashtag.getName();
 		} else if (query != null) {
 			search = query;
-			if (search.startsWith("#") && search.matches("\\S+")) {
+			if (search.matches("^#\\S+") && !search.matches("^#\\d+")) {
 				Param param = new Param(Param.LOAD, search);
 				hashtagAction.execute(param, this);
 			}
@@ -271,7 +272,8 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case Result.ERROR:
-				ErrorUtils.showErrorMessage(this, result.exception);
+				if (result.exception == null || result.exception.getErrorCode() != ConnectionException.HTTP_FORBIDDEN)
+					ErrorUtils.showErrorMessage(this, result.exception);
 				break;
 		}
 	}

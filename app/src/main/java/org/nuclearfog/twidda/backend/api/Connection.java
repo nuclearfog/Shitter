@@ -269,17 +269,17 @@ public interface Connection {
 	Statuses getPublicTimeline(long minId, long maxId) throws ConnectionException;
 
 	/**
-	 * get location trends
+	 * get trending hashtags
 	 *
-	 * @return trend list
+	 * @return hashtag list
 	 */
-	Hashtags getTrends() throws ConnectionException;
+	Hashtags getHashtags() throws ConnectionException;
 
 	/**
 	 * search hashtags matching search string
 	 *
 	 * @param search text to search hashtags
-	 * @return list of trends (Hashtags)
+	 * @return list of hashtags
 	 */
 	Hashtags searchHashtags(String search) throws ConnectionException;
 

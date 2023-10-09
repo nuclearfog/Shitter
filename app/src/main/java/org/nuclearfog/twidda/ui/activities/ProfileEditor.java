@@ -372,6 +372,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	private void setCredentials() {
 		if (credentials != null) {
 			privacy.setChecked(credentials.isLocked());
+			userUpdate.setPrivacy(credentials.isLocked());
+			userUpdate.setLanguageCode(credentials.getLanguage());
+			userUpdate.setStatusVisibility(credentials.getVisibility());
+			userUpdate.setContentSensitive(credentials.isSensitive());
 		}
 	}
 }

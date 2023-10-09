@@ -145,7 +145,7 @@ public class UserUpdate implements Closeable {
 	/**
 	 * @return true if user's status should be marked as sensitive by default
 	 */
-	public boolean getContentSensitive() {
+	public boolean isSensitive() {
 		return sensitiveContent;
 	}
 

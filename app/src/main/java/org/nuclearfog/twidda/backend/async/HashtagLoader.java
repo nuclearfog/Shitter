@@ -43,7 +43,7 @@ public class HashtagLoader extends AsyncExecutor<HashtagLoader.Param, HashtagLoa
 					// fall through
 
 				case Param.POPULAR_ONLINE:
-					hashtags = connection.getTrends();
+					hashtags = connection.getHashtags();
 					db.saveTrends(hashtags);
 					return new Result(Result.POPULAR, hashtags, param.index, null);
 
