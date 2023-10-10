@@ -256,11 +256,14 @@
 	<!-- dimens of item_icon.xml -->
 	<dimen name="item_icon_indicator_margin">2dp</dimen>
 
+	<!--dimens of item_rule.xml-->
+	<dimen name="item_rule_icon_size">20sp</dimen>
+	<dimen name="item_rule_margin_layout">5dp</dimen>
+
 	<!-- dimens of item_option.xml -->
 	<dimen name="item_option_icon_size">20sp</dimen>
 	<dimen name="item_option_text_size">13sp</dimen>
 	<dimen name="item_option_layout_padding">5dp</dimen>
-	<dimen name="item_option_button_margin">10dp</dimen>
 	<dimen name="item_option_emoji_size">13sp</dimen>
 
 	<!--dimens of item_option_edit.xml -->

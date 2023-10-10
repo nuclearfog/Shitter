@@ -20,7 +20,7 @@ public class ReportUpdate implements Serializable {
 
 	private long userId;
 	private long[] statusIds = {};
-	private int[] ruleIds = {};
+	private long[] ruleIds = {};
 	private String comment = "";
 	private int category = CATEGORY_OTHER;
 	private boolean forward = false;
@@ -64,7 +64,7 @@ public class ReportUpdate implements Serializable {
 	 *
 	 * @param ruleIds array of rule IDs
 	 */
-	public void setRuleIds(int[] ruleIds) {
+	public void setRuleIds(long[] ruleIds) {
 		this.ruleIds = Arrays.copyOf(ruleIds, ruleIds.length);
 	}
 
@@ -73,7 +73,7 @@ public class ReportUpdate implements Serializable {
 	 *
 	 * @return array of rule IDs
 	 */
-	public int[] getRuleIds() {
+	public long[] getRuleIds() {
 		return Arrays.copyOf(ruleIds, ruleIds.length);
 	}
 

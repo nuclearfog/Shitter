@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:gravity="center_vertical">
+
+	<ImageView
+		android:id="@+id/item_rule_select"
+		android:layout_width="@dimen/item_rule_icon_size"
+		android:layout_height="@dimen/item_option_icon_size"
+		android:contentDescription="@string/description_poll_vote_icon"
+		android:layout_margin="@dimen/item_rule_margin_layout" />
+
+	<TextView
+		android:id="@+id/item_rule_description"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:layout_margin="@dimen/item_rule_margin_layout"
+		android:maxLines="3" />
+
+</LinearLayout>

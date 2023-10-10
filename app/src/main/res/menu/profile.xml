@@ -29,6 +29,11 @@
 		android:visible="false" />
 
 	<item
+		android:id="@+id/profile_report"
+		android:title="@string/menu_status_report"
+		android:visible="false" />
+
+	<item
 		android:id="@+id/profile_lists"
 		android:visible="false"
 		android:title="@string/menu_goto_lists" />

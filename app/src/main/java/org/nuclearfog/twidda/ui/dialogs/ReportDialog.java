@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,11 +19,14 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ReportUpdater;
+import org.nuclearfog.twidda.backend.async.RuleLoader;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
+import org.nuclearfog.twidda.ui.adapter.listview.RuleAdapter;
 
 import java.io.Serializable;
 
@@ -31,11 +35,16 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class ReportDialog extends Dialog implements OnClickListener, AsyncCallback<ReportUpdater.Result> {
+public class ReportDialog extends Dialog implements OnClickListener {
 
 	private static final String KEY_SAVE = "reportupdate-data";
 
-	private DropdownAdapter adapter;
+	private AsyncCallback<ReportUpdater.Result> reportResult = this::onReportResult;
+	private AsyncCallback<Rules> rulesResult = this::onRulesLoaded;
+
+	private DropdownAdapter selectorAdapter;
+	private RuleAdapter ruleAdapter;
+	private RuleLoader ruleLoader;
 	private ReportUpdater reportUpdater;
 	private GlobalSettings settings;
 
@@ -51,10 +60,12 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 	 */
 	public ReportDialog(Activity activity) {
 		super(activity, R.style.DefaultDialog);
-		adapter = new DropdownAdapter(activity.getApplicationContext());
+		selectorAdapter = new DropdownAdapter(activity.getApplicationContext());
 		reportUpdater = new ReportUpdater(activity.getApplicationContext());
+		ruleLoader = new RuleLoader(activity.getApplicationContext());
+		ruleAdapter = new RuleAdapter(activity.getApplicationContext());
 		settings = GlobalSettings.get(getContext());
-		adapter.setItems(R.array.reports);
+		selectorAdapter.setItems(R.array.reports);
 	}
 
 
@@ -64,15 +75,25 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 		setContentView(R.layout.dialog_report);
 		ViewGroup rootView = findViewById(R.id.dialog_report_root);
 		View reportButton = findViewById(R.id.dialog_report_apply);
+		ListView ruleSelector = findViewById(R.id.dialog_report_rule_selector);
 		reportCategory = findViewById(R.id.dialog_report_category);
 		textTitle = findViewById(R.id.dialog_report_title);
 		switchForward = findViewById(R.id.dialog_report_switch_forward);
 		editDescription = findViewById(R.id.dialog_report_description);
 
 		AppStyles.setTheme(rootView, settings.getPopupColor());
-		reportCategory.setAdapter(adapter);
-
+		reportCategory.setAdapter(selectorAdapter);
+		ruleSelector.setAdapter(ruleAdapter);
 		reportButton.setOnClickListener(this);
+	}
+
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		if (ruleAdapter.isEmpty() && ruleLoader.isIdle()) {
+			ruleLoader.execute(null, rulesResult);
+		}
 	}
 
 
@@ -120,16 +141,37 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 				} else {
 					update.setCategory(ReportUpdate.CATEGORY_OTHER);
 				}
+				update.setRuleIds(ruleAdapter.getSelectedIds());
 				update.setComment(editDescription.getText().toString());
 				update.setForward(switchForward.isChecked());
-				reportUpdater.execute(update, this);
+				reportUpdater.execute(update, reportResult);
 			}
 		}
 	}
 
+	/**
+	 * show this dialog
+	 *
+	 * @param userId   Id of the user to report to instance
+	 * @param statusId additional status IDs
+	 */
+	public void show(long userId, long... statusId) {
+		if (!isShowing()) {
+			super.show();
+			update = new ReportUpdate(userId);
+			if (statusId.length > 0) {
+				update.setStatusIds(statusId);
+				textTitle.setText(R.string.dialog_report_title_status);
+			} else {
+				textTitle.setText(R.string.dialog_report_title_user);
+			}
+		}
+	}
 
-	@Override
-	public void onResult(@NonNull ReportUpdater.Result result) {
+	/**
+	 * callback for {@link ReportUpdater}
+	 */
+	private void onReportResult(@NonNull ReportUpdater.Result result) {
 		if (result.reported) {
 			if (update != null && update.getStatusIds().length > 0) {
 				Toast.makeText(getContext(), R.string.info_status_reported, Toast.LENGTH_SHORT).show();
@@ -142,18 +184,9 @@ public class ReportDialog extends Dialog implements OnClickListener, AsyncCallba
 	}
 
 	/**
-	 *
+	 * callback for {@link RuleLoader}
 	 */
-	public void show(long userId, long statusId) {
-		if (!isShowing()) {
-			super.show();
-			update = new ReportUpdate(userId);
-			if (statusId != 0L) {
-				update.setStatusIds(new long[]{statusId});
-				textTitle.setText(R.string.dialog_report_title_status);
-			} else {
-				textTitle.setText(R.string.dialog_report_title_user);
-			}
-		}
+	private void onRulesLoaded(@NonNull Rules rules) {
+		ruleAdapter.setItems(rules);
 	}
 }

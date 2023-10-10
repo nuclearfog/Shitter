@@ -30,6 +30,7 @@ import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.UserLists;
@@ -711,4 +712,9 @@ public interface Connection {
 	 * @param update report contianing information about status/user
 	 */
 	void createReport(ReportUpdate update) throws ConnectionException;
+
+	/**
+	 * get rules of an instance
+	 */
+	Rules getRules() throws ConnectionException;
 }

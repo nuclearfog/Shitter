@@ -39,11 +39,20 @@
 		app:layout_constraintTop_toBottomOf="@id/dialog_report_title"
 		app:layout_constraintEnd_toEndOf="parent" />
 
+	<ListView
+		android:id="@+id/dialog_report_rule_selector"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintHeight_percent="0.5"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_report_category"
+		app:layout_constraintEnd_toEndOf="parent"/>
+
 	<EditText
 		android:id="@+id/dialog_report_description"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:lines="5"
+		android:lines="3"
 		android:inputType="textMultiLine"
 		android:fadeScrollbars="false"
 		android:scrollbars="vertical"
@@ -53,7 +62,7 @@
 		android:gravity="top"
 		android:layout_margin="@dimen/dialog_report_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_report_category"
+		app:layout_constraintTop_toBottomOf="@id/dialog_report_rule_selector"
 		app:layout_constraintEnd_toEndOf="parent"
 		android:importantForAutofill="no" />
 

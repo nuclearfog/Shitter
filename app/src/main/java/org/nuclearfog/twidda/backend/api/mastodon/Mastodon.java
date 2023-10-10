@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPoll;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPush;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRule;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
@@ -61,6 +62,7 @@ import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
+import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.UserLists;
@@ -154,6 +156,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_FILTER = "/api/v2/filters";
 	private static final String ENDPOINT_REPORT = "/api/v1/reports";
 	private static final String ENDPOINT_SCHEDULED_STATUS = "/api/v1/scheduled_statuses";
+	private static final String ENDPOINT_GET_RULES = "/api/v1/instance/rules";
 
 	private static final MediaType TYPE_TEXT = MediaType.parse("text/plain");
 	private static final MediaType TYPE_STREAM = MediaType.parse("application/octet-stream");
@@ -1340,7 +1343,7 @@ public class Mastodon implements Connection {
 			params.add("account_id=" + update.getUserId());
 			for (long statusId : update.getStatusIds())
 				params.add("status_ids[]=" + statusId);
-			for (int ruleId : update.getRuleIds())
+			for (long ruleId : update.getRuleIds())
 				params.add("rule_ids[]=" + ruleId);
 			if (!update.getComment().trim().isEmpty())
 				params.add("comment=" + StringUtils.encode(update.getComment()));
@@ -1357,6 +1360,32 @@ public class Mastodon implements Connection {
 				throw new MastodonException(response);
 			}
 		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public Rules getRules() throws ConnectionException {
+		try {
+			Response response = get(ENDPOINT_GET_RULES, new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray jsonArray = new JSONArray(body.string());
+				Rules rules = new Rules(jsonArray.length());
+				for (int i = 0; i < jsonArray.length(); i++) {
+					try {
+						rules.add(new MastodonRule(jsonArray.getJSONObject(i)));
+					} catch (JSONException e) {
+						if (BuildConfig.DEBUG) {
+							e.printStackTrace();
+						}
+					}
+				}
+				return rules;
+			}
+			throw new MastodonException(response);
+		} catch (IOException | JSONException e) {
 			throw new MastodonException(e);
 		}
 	}

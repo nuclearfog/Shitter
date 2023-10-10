@@ -10,18 +10,9 @@
 		android:layout_width="@dimen/item_option_icon_size"
 		android:layout_height="@dimen/item_option_icon_size"
 		android:contentDescription="@string/description_poll_vote_icon"
-		android:layout_marginEnd="@dimen/item_option_button_margin"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/item_option_button_barrier" />
-
-	<androidx.constraintlayout.widget.Barrier
-		android:id="@+id/item_option_button_barrier"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:barrierDirection="start"
-		app:constraint_referenced_ids="item_option_count_bar,item_option_name" />
+		app:layout_constraintBottom_toBottomOf="parent"/>
 
 	<TextView
 		android:id="@+id/item_option_name"
@@ -30,9 +21,10 @@
 		android:textSize="@dimen/item_option_text_size"
 		android:maxLines="2"
 		android:ellipsize="end"
+		android:layout_marginStart="@dimen/item_option_layout_padding"
 		android:layout_marginEnd="@dimen/item_option_layout_padding"
 		app:layout_constraintHorizontal_weight="3"
-		app:layout_constraintStart_toEndOf="@id/item_option_button_barrier"
+		app:layout_constraintStart_toEndOf="@id/item_option_voted_icon"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/item_option_count_text" />
 
@@ -41,8 +33,9 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:thumb="@android:color/transparent"
+		android:layout_marginStart="@dimen/item_option_layout_padding"
 		app:layout_constraintHorizontal_weight="3"
-		app:layout_constraintStart_toEndOf="@id/item_option_button_barrier"
+		app:layout_constraintStart_toEndOf="@id/item_option_voted_icon"
 		app:layout_constraintTop_toBottomOf="@id/item_option_name"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />

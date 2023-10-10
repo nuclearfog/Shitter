@@ -54,6 +54,7 @@ import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.viewpager.ProfileAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.ui.dialogs.ReportDialog;
 import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
@@ -118,6 +119,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private ConfirmDialog confirmDialog;
+	private ReportDialog reportDialog;
 
 	private DomainAction domainAction;
 	private RelationLoader relationLoader;
@@ -173,6 +175,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
 		confirmDialog = new ConfirmDialog(this, this);
+		reportDialog = new ReportDialog(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
 		adapter = new ProfileAdapter(this);
@@ -289,15 +292,14 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		boolean result = super.onPrepareOptionsMenu(m);
 		if (user != null) {
 			MenuItem listItem = m.findItem(R.id.profile_lists);
-			MenuItem domainBlock = m.findItem(R.id.profile_block_domain);
+			MenuItem domainItem = m.findItem(R.id.profile_block_domain);
+			MenuItem reportItem = m.findItem(R.id.profile_report);
 
 			switch (settings.getLogin().getConfiguration()) {
 				case MASTODON:
-					if (user.isCurrentUser()) {
-						listItem.setVisible(true);
-					} else {
-						domainBlock.setVisible(true);
-					}
+					listItem.setVisible(user.isCurrentUser());
+					domainItem.setVisible(!user.isCurrentUser());
+					reportItem .setVisible(!user.isCurrentUser());
 					break;
 			}
 			if (user.followRequested()) {
@@ -406,6 +408,12 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		else if (item.getItemId() == R.id.profile_block_domain) {
 			if (user != null) {
 				confirmDialog.show(ConfirmDialog.DOMAIN_BLOCK_ADD);
+			}
+		}
+		// report user
+		else if (item.getItemId() == R.id.profile_report) {
+			if (user != null) {
+				reportDialog.show(user.getId());
 			}
 		}
 		return super.onOptionsItemSelected(item);
