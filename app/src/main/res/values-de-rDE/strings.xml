@@ -363,4 +363,6 @@
 	<string name="toolbar_schedule_title">geplante Posts</string>
 	<string name="userlist_exclusive">Mitglieder aus den Home-Timeline filtern</string>
 	<string name="userlist_update_list">Nutzerliste bearbeiten</string>
+	<string name="confirm_accept_follow_request">Follow-Anfrage annehmen?</string>
+	<string name="info_follow_request_accepted">Follow-Anfrage angenommen</string>
 </resources>

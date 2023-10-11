@@ -179,6 +179,20 @@ public interface Connection {
 	Users getOutgoingFollowRequests(long cursor) throws ConnectionException;
 
 	/**
+	 * accept a follow request from another user
+	 *
+	 * @param id ID of the user
+	 */
+	void acceptFollowRequest(long id) throws ConnectionException;
+
+	/**
+	 * reject a follow request from another user
+	 *
+	 * @param id ID of the user
+	 */
+	void rejectFollowRequest(long id) throws ConnectionException;
+
+	/**
 	 * get relationship information to an user
 	 *
 	 * @param id ID of the user

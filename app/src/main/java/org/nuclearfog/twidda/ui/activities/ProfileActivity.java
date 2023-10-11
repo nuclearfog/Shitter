@@ -299,7 +299,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				case MASTODON:
 					listItem.setVisible(user.isCurrentUser());
 					domainItem.setVisible(!user.isCurrentUser());
-					reportItem .setVisible(!user.isCurrentUser());
+					reportItem.setVisible(!user.isCurrentUser());
 					break;
 			}
 			if (user.followRequested()) {

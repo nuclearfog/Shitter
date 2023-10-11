@@ -140,7 +140,7 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_SEARCH_ACCOUNTS = "/api/v1/accounts/search";
 	private static final String ENDPOINT_BLOCKS = "/api/v1/blocks";
 	private static final String ENDPOINT_MUTES = "/api/v1/mutes";
-	private static final String ENDPOINT_INCOMIN_REQUESTS = "/api/v1/follow_requests";
+	private static final String ENDPOINT_FOLLOW_REQUESTS = "/api/v1/follow_requests";
 	private static final String ENDPOINT_LOOKUP_USER = "/api/v1/accounts/lookup";
 	private static final String ENDPOINT_USERLIST = "/api/v1/lists/";
 	private static final String ENDPOINT_NOTIFICATION = "/api/v1/notifications";
@@ -334,13 +334,41 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Users getIncomingFollowRequests(long cursor) throws MastodonException {
-		return getUsers(ENDPOINT_INCOMIN_REQUESTS, cursor, new ArrayList<>());
+		return getUsers(ENDPOINT_FOLLOW_REQUESTS, cursor, new ArrayList<>());
 	}
 
 
 	@Override
 	public Users getOutgoingFollowRequests(long cursor) throws MastodonException {
 		throw new MastodonException("not supported!");
+	}
+
+
+	@Override
+	public void acceptFollowRequest(long id) throws ConnectionException {
+		try {
+			Response response = get(ENDPOINT_FOLLOW_REQUESTS + "/" + id + "/authorize", new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public void rejectFollowRequest(long id) throws ConnectionException {
+		try {
+			Response response = get(ENDPOINT_FOLLOW_REQUESTS + "/" + id + "/reject", new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
 	}
 
 

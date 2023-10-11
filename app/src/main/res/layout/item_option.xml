@@ -12,7 +12,7 @@
 		android:contentDescription="@string/description_poll_vote_icon"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"/>
+		app:layout_constraintBottom_toBottomOf="parent" />
 
 	<TextView
 		android:id="@+id/item_option_name"

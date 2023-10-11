@@ -29,6 +29,7 @@
 	<string name="info_get_link">please open login page first to get the PIN</string>
 	<string name="info_gps_attached">GPS position added</string>
 	<string name="info_status_reposted">reposted</string>
+	<string name="info_follow_request_accepted">follow request accepted</string>
 	<string name="info_status_unreposted">Repost removed</string>
 	<string name="info_status_favored">Status added to favorites</string>
 	<string name="info_status_unfavored">Status removed from favorites</string>
@@ -79,7 +80,7 @@
 	<string name="info_hashtag_followed">Hashtag followed</string>
 	<string name="info_hashtag_unfollowed">Hashtag unfollowed</string>
 	<string name="info_hashtag_unfeatured">Hashtag unfeatured</string>
-	<string name="info_status_reported">Status reported</string>
+	<string name="info_status_reported">Post reported</string>
 	<string name="info_schedule_updated">scheduled post updated</string>
 	<string name="info_schedule_removed">scheduled post removed</string>
 	<string name="info_error">Error</string>
@@ -315,6 +316,7 @@
 	<string name="confirm_hashtag_unfollow">unfollow hashtag?</string>
 	<string name="confirm_hashtag_unfeature">unfeature hashtag?</string>
 	<string name="confirm_schedule_remove">cancel scheduled post?</string>
+	<string name="confirm_accept_follow_request">accept follow request?</string>
 	<string name="confirm_remove_account">remove account from list?</string>
 	<string name="confirm_remove_filter">delete filter?</string>
 	<string name="account_user_unnamed">\'unnamed\'</string>
@@ -350,7 +352,7 @@
 	<string name="dialog_apply">apply</string>
 	<string name="dialog_report_title_user">report user</string>
 	<string name="dialog_report_category_label">what to report</string>
-	<string name="dialog_report_title_status">report status</string>
+	<string name="dialog_report_title_status">report post</string>
 	<string name="dialog_report_apply">report</string>
 	<string name="dialog_meta_title">Media information</string>
 	<string name="dialog_meta_width">width</string>

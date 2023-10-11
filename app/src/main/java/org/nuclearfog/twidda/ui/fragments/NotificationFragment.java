@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -11,15 +12,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.FollowRequestAction;
 import org.nuclearfog.twidda.backend.async.NotificationAction;
 import org.nuclearfog.twidda.backend.async.NotificationLoader;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.Param;
-import org.nuclearfog.twidda.backend.async.NotificationLoader.Result;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Notification;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.ui.activities.ProfileActivity;
 import org.nuclearfog.twidda.ui.activities.StatusActivity;
@@ -46,13 +46,17 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<NotificationAction.Result> notificationActionCallback = this::onDismiss;
-	private AsyncCallback<Result> notificationLoaderCallback = this::onResult;
+	private AsyncCallback<NotificationLoader.Result> notificationLoaderCallback = this::onNotificationResult;
+	private AsyncCallback<FollowRequestAction.Result> followRequestCallback = this::onFollowRequestResult;
 
 	private NotificationLoader notificationLoader;
 	private NotificationAction notificationAction;
+	private FollowRequestAction followAction;
+
 	private NotificationAdapter adapter;
 	private ConfirmDialog confirmDialog;
 
+	@Nullable
 	private Notification select;
 
 
@@ -62,6 +66,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
+		followAction = new FollowRequestAction(requireContext());
 		adapter = new NotificationAdapter(this);
 		setAdapter(adapter);
 
@@ -88,6 +93,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onDestroy() {
 		notificationLoader.cancel();
 		notificationAction.cancel();
+		followAction.cancel();
 		super.onDestroy();
 	}
 
@@ -103,6 +109,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		adapter.clear();
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
+		followAction = new FollowRequestAction(requireContext());
 		load(0L, 0L, 0);
 		setRefresh(true);
 	}
@@ -112,27 +119,32 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onNotificationClick(Notification notification, int action) {
 		if (!isRefreshing()) {
 			switch (action) {
-				case OnNotificationClickListener.VIEW:
+				case OnNotificationClickListener.NOTIFICATION_VIEW:
 					Intent intent = new Intent(requireContext(), StatusActivity.class);
 					intent.putExtra(StatusActivity.KEY_DATA, notification);
 					activityResultLauncher.launch(intent);
 					break;
 
-				case OnNotificationClickListener.DISMISS:
-					confirmDialog.show(ConfirmDialog.NOTIFICATION_DISMISS);
-					select = notification;
+				case OnNotificationClickListener.NOTIFICATION_DISMISS:
+					if (!confirmDialog.isShowing()) {
+						confirmDialog.show(ConfirmDialog.NOTIFICATION_DISMISS);
+						select = notification;
+					}
+					break;
+
+				case OnNotificationClickListener.NOTIFICATION_USER:
+					if (notification.getType() == Notification.TYPE_REQUEST) {
+						if (!confirmDialog.isShowing()) {
+							confirmDialog.show(ConfirmDialog.FOLLOW_REQUEST);
+							select = notification;
+						}
+					} else {
+						intent = new Intent(requireContext(), ProfileActivity.class);
+						intent.putExtra(ProfileActivity.KEY_USER, notification.getUser());
+						startActivity(intent);
+					}
 					break;
 			}
-		}
-	}
-
-
-	@Override
-	public void onUserClick(User user) {
-		if (!isRefreshing()) {
-			Intent intent = new Intent(requireContext(), ProfileActivity.class);
-			intent.putExtra(ProfileActivity.KEY_USER, user);
-			startActivity(intent);
 		}
 	}
 
@@ -176,11 +188,18 @@ public class NotificationFragment extends ListFragment implements OnNotification
 				NotificationAction.Param param = new NotificationAction.Param(NotificationAction.Param.DISMISS, select.getId());
 				notificationAction.execute(param, notificationActionCallback);
 			}
+		} else if (type == ConfirmDialog.FOLLOW_REQUEST) {
+			if (select != null && select.getUser() != null) {
+				FollowRequestAction.Param param = new FollowRequestAction.Param(FollowRequestAction.Param.ACCEPT, select.getUser().getId(), select.getId());
+				followAction.execute(param, followRequestCallback);
+			}
 		}
 	}
 
-
-	private void onResult(@NonNull Result result) {
+	/**
+	 * used by {@link NotificationLoader} to set notification items
+	 */
+	private void onNotificationResult(@NonNull NotificationLoader.Result result) {
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
 		} else {
@@ -193,7 +212,19 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	}
 
 	/**
-	 *
+	 * used by {@link FollowRequestAction} to accept a follow request
+	 */
+	private void onFollowRequestResult(FollowRequestAction.Result result) {
+		if (result.mode == FollowRequestAction.Result.ACCEPT) {
+			Toast.makeText(requireContext(), R.string.info_follow_request_accepted, Toast.LENGTH_SHORT).show();
+			adapter.removeItem(result.notification_id);
+		} else if (result.mode == FollowRequestAction.Result.ERROR) {
+			ErrorUtils.showErrorMessage(requireContext(), result.exception);
+		}
+	}
+
+	/**
+	 * called by {@link NotificationAction} to take action on a selected notification
 	 */
 	private void onDismiss(@NonNull NotificationAction.Result result) {
 		if (result.mode == NotificationAction.Result.DISMISS) {
@@ -214,7 +245,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * @param pos   index to insert the new items
 	 */
 	private void load(long minId, long maxId, int pos) {
-		Param param = new Param(Param.LOAD_ALL, pos, minId, maxId);
+		NotificationLoader.Param param = new NotificationLoader.Param(NotificationLoader.Param.LOAD_ALL, pos, minId, maxId);
 		notificationLoader.execute(param, notificationLoaderCallback);
 	}
 }

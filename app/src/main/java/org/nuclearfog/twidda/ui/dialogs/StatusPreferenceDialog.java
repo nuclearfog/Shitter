@@ -68,7 +68,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	 *
 	 * @param statusUpdate status update holder
 	 */
-	public StatusPreferenceDialog(Activity activity,  @NonNull StatusUpdate statusUpdate) {
+	public StatusPreferenceDialog(Activity activity, @NonNull StatusUpdate statusUpdate) {
 		this(activity);
 		this.statusUpdate = statusUpdate;
 	}

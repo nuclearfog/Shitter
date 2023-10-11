@@ -366,7 +366,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	}
 
 	/**
-	 *
 	 * set current user's credentials
 	 */
 	private void setCredentials() {

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.model.Notification;
-import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
@@ -161,19 +160,19 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 			case OnHolderClickListener.USER_CLICK:
 			case OnHolderClickListener.STATUS_LABEL:
 				if (item != null && item.getUser() != null) {
-					listener.onUserClick(item.getUser());
+					listener.onNotificationClick(item, OnNotificationClickListener.NOTIFICATION_USER);
 				}
 				break;
 
 			case OnHolderClickListener.STATUS_CLICK:
 				if (item != null) {
-					listener.onNotificationClick(item, OnNotificationClickListener.VIEW);
+					listener.onNotificationClick(item, OnNotificationClickListener.NOTIFICATION_VIEW);
 				}
 				break;
 
 			case OnHolderClickListener.NOTIFICATION_DISMISS:
 				if (item != null) {
-					listener.onNotificationClick(item, OnNotificationClickListener.DISMISS);
+					listener.onNotificationClick(item, OnNotificationClickListener.NOTIFICATION_DISMISS);
 				}
 				break;
 		}
@@ -294,29 +293,27 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public interface OnNotificationClickListener {
 
 		/**
-		 * show a notification
+		 * used when a notification was clicked
 		 */
-		int VIEW = 1;
+		int NOTIFICATION_VIEW = 1;
 
 		/**
-		 * dismiss a notification
+		 * used when the notification dismiss button was clicked
 		 */
-		int DISMISS = 2;
+		int NOTIFICATION_DISMISS = 2;
+
+		/**
+		 * used when the user of a notification was clicked
+		 */
+		int NOTIFICATION_USER = 3;
 
 		/**
 		 * called on notification click
 		 *
 		 * @param notification clicked notification
-		 * @param action       action {@link #VIEW,#DISMISS}
+		 * @param action       action {@link #NOTIFICATION_VIEW ,#DISMISS}
 		 */
 		void onNotificationClick(Notification notification, int action);
-
-		/**
-		 * called on user item click
-		 *
-		 * @param user clicked user
-		 */
-		void onUserClick(User user);
 
 		/**
 		 * called on placeholder click

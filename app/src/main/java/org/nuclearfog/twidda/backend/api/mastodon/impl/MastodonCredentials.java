@@ -35,7 +35,7 @@ public class MastodonCredentials implements Credentials {
 		sensitive = sourceJson.getBoolean("sensitive");
 		locked = json.optBoolean("locked");
 
-		switch(visStr) {
+		switch (visStr) {
 			case "public":
 				visibility = Status.VISIBLE_PUBLIC;
 				break;

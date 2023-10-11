@@ -135,16 +135,24 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int CONTINUE_BROWSER = 627;
 
 	/**
-	 *
+	 * show 'unfollow hashtag' dialog
 	 */
 	public static final int UNFOLLOW_HASHTAG = 628;
 
 	/**
-	 *
+	 * show 'unfeature hashtag' dialog
 	 */
 	public static final int UNFEATURE_HASHTAG = 629;
 
+	/**
+	 * show notification when removing a scheduled status
+	 */
 	public static final int SCHEDULE_REMOVE = 630;
+
+	/**
+	 * show 'accept follow request' dialog
+	 */
+	public static final int FOLLOW_REQUEST = 631;
 
 
 	private TextView title, message, remember_label;
@@ -298,6 +306,10 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 			case SCHEDULE_REMOVE:
 				messageRes = R.string.confirm_schedule_remove;
+				break;
+
+			case FOLLOW_REQUEST:
+				messageRes = R.string.confirm_accept_follow_request;
 				break;
 		}
 		// setup title
