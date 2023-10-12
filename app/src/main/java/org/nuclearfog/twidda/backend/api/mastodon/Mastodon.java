@@ -467,8 +467,10 @@ public class Mastodon implements Connection {
 	@Override
 	public Statuses searchStatuses(String search, long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		if (settings.useLocalTimeline())
+		if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_LOCAL))
 			params.add("local=true");
+		else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_REMOTE))
+			params.add("remote=true");
 		if (search.matches("#\\S+")) {
 			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + search.substring(1), params, minId, maxId);
 		} else {
@@ -482,8 +484,10 @@ public class Mastodon implements Connection {
 	@Override
 	public Statuses getPublicTimeline(long minId, long maxId) throws MastodonException {
 		List<String> params = new ArrayList<>();
-		if (settings.useLocalTimeline())
+		if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_LOCAL))
 			params.add("local=true");
+		else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_REMOTE))
+			params.add("remote=true");
 		return getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
 	}
 

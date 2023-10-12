@@ -123,4 +123,10 @@
 		<item>show all replies</item>
 	</string-array>
 
+	<string-array name="public_timelines">
+		<item>show all</item>
+		<item>local only</item>
+		<item>remote only</item>
+	</string-array>
+
 </resources>

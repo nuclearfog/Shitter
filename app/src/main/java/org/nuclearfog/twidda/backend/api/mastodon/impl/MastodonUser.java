@@ -172,12 +172,6 @@ public class MastodonUser implements User {
 
 
 	@Override
-	public boolean followRequested() {
-		return false;
-	}
-
-
-	@Override
 	public int getFollowing() {
 		return following;
 	}

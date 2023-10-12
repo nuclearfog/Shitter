@@ -27,7 +27,7 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 
 	private long id, createdAt;
 	private int following, follower, statusCount, favorCount;
-	private boolean isCurrentUser, isVerified, isLocked, followReqSent, defaultImage;
+	private boolean isCurrentUser, isVerified, isLocked, defaultImage;
 	private String username = "";
 	private String screen_name = "";
 	private String bio = "";
@@ -62,7 +62,6 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
 		isVerified = (register & AppDatabase.MASK_USER_VERIFIED) != 0;
 		isLocked = (register & AppDatabase.MASK_USER_PRIVATE) != 0;
-		followReqSent = (register & AppDatabase.MASK_USER_FOLLOW_REQUESTED) != 0;
 		defaultImage = (register & AppDatabase.MASK_USER_DEFAULT_IMAGE) != 0;
 
 		if (username != null)
@@ -166,12 +165,6 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 	@Override
 	public boolean isProtected() {
 		return isLocked;
-	}
-
-
-	@Override
-	public boolean followRequested() {
-		return followReqSent;
 	}
 
 

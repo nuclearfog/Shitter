@@ -72,7 +72,6 @@
 	<string name="error_status_length">Status ist zu lang!</string>
 	<string name="error_duplicate_status">Status wurde schon versendet!</string>
 	<string name="error_dm_length">Direktnachricht länge überschritten!</string>
-	<string name="menu_follow_requested">Anfrage gesendet</string>
 	<string name="info_loading">lädt..</string>
 	<string name="profile_location">Standort</string>
 	<string name="profile_bio">Bio</string>
@@ -279,7 +278,6 @@
 	<string name="poll_option_edit_button">hinzufügen/entfernen</string>
 	<string name="status_add_poll">Umfrage hinzufügen</string>
 	<string name="status_pref">Statuseinstellungen</string>
-	<string name="settings_description_local_timeline">nur lokale Timeline zeigen</string>
 	<string name="dialog_poll_close">Dialogfenster schließen</string>
 	<string name="dialog_status_title">Statuseinstellungen</string>
 	<string name="dialog_status_sensitive">Inhalt als sensibel markieren</string>
@@ -365,4 +363,5 @@
 	<string name="userlist_update_list">Nutzerliste bearbeiten</string>
 	<string name="confirm_accept_follow_request">Follow-Anfrage annehmen?</string>
 	<string name="info_follow_request_accepted">Follow-Anfrage angenommen</string>
+	<string name="description_show_timeline">öffentl. Timeline</string>
 </resources>

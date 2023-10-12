@@ -138,7 +138,6 @@
 	<string name="menu_app_info">关于</string>
 	<string name="menu_block_user">屏蔽</string>
 	<string name="menu_unmute_user">取消隐藏</string>
-	<string name="menu_follow_requested">关注请求已发送</string>
 	<string name="menu_status_delete">删除推文</string>
 	<string name="menu_status_open_browser">在浏览器中打开</string>
 	<string name="menu_mute_user">隐藏</string>

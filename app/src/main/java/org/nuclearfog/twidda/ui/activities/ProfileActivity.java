@@ -302,11 +302,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 					reportItem.setVisible(!user.isCurrentUser());
 					break;
 			}
-			if (user.followRequested()) {
-				MenuItem followIcon = m.findItem(R.id.profile_follow);
-				AppStyles.setMenuItemColor(followIcon, settings.getFollowPendingColor());
-				followIcon.setTitle(R.string.menu_follow_requested);
-			}
 			if (!user.isCurrentUser()) {
 				MenuItem followIcon = m.findItem(R.id.profile_follow);
 				MenuItem blockIcon = m.findItem(R.id.profile_block);

@@ -79,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	/**
 	 * total count of all colors defined
 	 */
-	private static final int COLOR_COUNT = 10;
+	private static final int COLOR_COUNT = 9;
 	// app colors
 	private static final int COLOR_BACKGROUND = 0;
 	private static final int COLOR_TEXT = 1;
@@ -89,8 +89,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private static final int COLOR_ICON = 5;
 	private static final int COLOR_REPOST = 6;
 	private static final int COLOR_FAVORITE = 7;
-	private static final int COLOR_FOLLOW_REQUEST = 8;
-	private static final int COLOR_FOLLOWING = 9;
+	private static final int COLOR_FOLLOWING = 8;
 
 	private GlobalSettings settings;
 	private DatabaseAction databaseAction;
@@ -124,41 +123,40 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	protected void onCreate(@Nullable Bundle b) {
 		super.onCreate(b);
 		setContentView(R.layout.page_settings);
-		Button delButton = findViewById(R.id.delete_db);
-		Button logout = findViewById(R.id.logout);
-		Toolbar toolbar = findViewById(R.id.toolbar_setting);
-		View user_card = findViewById(R.id.settings_data_card);
-		View push_label = findViewById(R.id.settings_enable_push_descr);
-		SwitchButton toggleImg = findViewById(R.id.toggleImg);
-		SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
-		SwitchButton enableLike = findViewById(R.id.enable_like);
-		SwitchButton enableLocalTl = findViewById(R.id.settings_local_timeline);
-		SwitchButton hideSensitive = findViewById(R.id.enable_status_hide_sensitive);
-		SwitchButton enableStatusIcons = findViewById(R.id.enable_status_indicators);
-		SwitchButton enableFloatingButton = findViewById(R.id.settings_enable_floating_button);
-		SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
-		Spinner fontSelector = findViewById(R.id.spinner_font);
-		Spinner scaleSelector = findViewById(R.id.spinner_scale);
-		enablePush = findViewById(R.id.settings_enable_push);
-		enable_proxy = findViewById(R.id.settings_enable_proxy);
-		enable_auth = findViewById(R.id.settings_enable_auth);
-		enable_auth_label = findViewById(R.id.settings_enable_auth_descr);
-		colorButtons[COLOR_BACKGROUND] = findViewById(R.id.color_background);
-		colorButtons[COLOR_TEXT] = findViewById(R.id.color_text);
-		colorButtons[COLOR_WINDOW] = findViewById(R.id.color_window);
-		colorButtons[COLOR_HIGHLIGHT] = findViewById(R.id.highlight_color);
-		colorButtons[COLOR_CARD] = findViewById(R.id.color_card);
-		colorButtons[COLOR_ICON] = findViewById(R.id.color_icon);
-		colorButtons[COLOR_REPOST] = findViewById(R.id.color_rt);
-		colorButtons[COLOR_FAVORITE] = findViewById(R.id.color_fav);
-		colorButtons[COLOR_FOLLOW_REQUEST] = findViewById(R.id.color_f_req);
-		colorButtons[COLOR_FOLLOWING] = findViewById(R.id.color_follow);
-		proxy_address = findViewById(R.id.edit_proxy_address);
-		proxy_port = findViewById(R.id.edit_proxy_port);
-		proxy_user = findViewById(R.id.edit_proxyuser);
-		proxy_pass = findViewById(R.id.edit_proxypass);
-		list_size = findViewById(R.id.settings_list_size);
-		root = findViewById(R.id.settings_layout);
+		Button delButton = findViewById(R.id.page_settings_button_delete_data);
+		Button logout = findViewById(R.id.page_settings_button_logout);
+		Toolbar toolbar = findViewById(R.id.page_settings_toolbar);
+		View user_card = findViewById(R.id.page_settings_card_data);
+		View push_label = findViewById(R.id.page_settings_enable_push_label);
+		SwitchButton toggleImg = findViewById(R.id.page_settings_enable_images);
+		SwitchButton toolbarOverlap = findViewById(R.id.page_settings_toolbar_collapse);
+		SwitchButton enableLike = findViewById(R.id.page_settings_enable_like);
+		SwitchButton hideSensitive = findViewById(R.id.page_Settings_sensitive_enable);
+		SwitchButton enableStatusIcons = findViewById(R.id.page_Settings_enable_status_indicators);
+		SwitchButton enableFloatingButton = findViewById(R.id.page_settings_enable_floating_button);
+		SeekBar listSizeSelector = findViewById(R.id.page_settings_list_seek);
+		Spinner fontSelector = findViewById(R.id.page_settings_font_selector);
+		Spinner scaleSelector = findViewById(R.id.page_settings_textscale_selector);
+		Spinner publicTimelineSelector = findViewById(R.id.page_settings_public_timeline_selector);
+		enablePush = findViewById(R.id.page_settings_enable_push);
+		enable_proxy = findViewById(R.id.page_settings_enable_proxy);
+		enable_auth = findViewById(R.id.page_settings_enable_proxyauth);
+		enable_auth_label = findViewById(R.id.page_settings_enable_proxyauth_label);
+		colorButtons[COLOR_BACKGROUND] = findViewById(R.id.page_settings_color_background);
+		colorButtons[COLOR_TEXT] = findViewById(R.id.page_settings_color_text);
+		colorButtons[COLOR_WINDOW] = findViewById(R.id.page_settings_color_window);
+		colorButtons[COLOR_HIGHLIGHT] = findViewById(R.id.page_settings_highlight_color);
+		colorButtons[COLOR_CARD] = findViewById(R.id.page_settings_color_card);
+		colorButtons[COLOR_ICON] = findViewById(R.id.page_settings_color_icon);
+		colorButtons[COLOR_REPOST] = findViewById(R.id.page_settings_color_repost);
+		colorButtons[COLOR_FAVORITE] = findViewById(R.id.page_settings_color_favorite);
+		colorButtons[COLOR_FOLLOWING] = findViewById(R.id.page_settings_color_follow);
+		proxy_address = findViewById(R.id.page_settings_input_proxyaddress);
+		proxy_port = findViewById(R.id.page_settings_input_proxyport);
+		proxy_user = findViewById(R.id.page_settings_input_proxyuser);
+		proxy_pass = findViewById(R.id.page_settings_input_proxypass);
+		list_size = findViewById(R.id.page_settings_list_seek_value);
+		root = findViewById(R.id.page_settings_root);
 
 		settings = GlobalSettings.get(this);
 		Configuration configuration = settings.getLogin().getConfiguration();
@@ -175,10 +173,13 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
+		DropdownAdapter publicTimelineAdapter = new DropdownAdapter(this);
 		fontAdapter.setFonts(GlobalSettings.FONT_TYPES);
 		fontAdapter.setItems(GlobalSettings.FONT_NAMES);
 		scaleAdapter.setItems(R.array.scales);
+		publicTimelineAdapter.setItems(R.array.public_timelines);
 
+		publicTimelineSelector.setAdapter(publicTimelineAdapter);
 		fontSelector.setAdapter(fontAdapter);
 		scaleSelector.setAdapter(scaleAdapter);
 		fontSelector.setSelection(settings.getFontIndex(), false);
@@ -186,8 +187,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		fontSelector.setSelected(false);
 		scaleSelector.setSelected(false);
 
-		if (configuration.isPublicTimelinesupported()) {
-			enableLocalTl.setVisibility(View.VISIBLE);
+		if (!configuration.isPublicTimelinesupported()) {
+			publicTimelineSelector.setVisibility(View.GONE);
 		}
 		if (!configuration.isWebpushSupported()) {
 			push_label.setVisibility(View.GONE);
@@ -214,10 +215,16 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		} else {
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_fav);
 		}
+		if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_COMBINED)) {
+			publicTimelineSelector.setSelection(0);
+		} else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_LOCAL)) {
+			publicTimelineSelector.setSelection(1);
+		} else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_REMOTE)) {
+			publicTimelineSelector.setSelection(2);
+		}
 		toggleImg.setCheckedImmediately(settings.imagesEnabled());
 		toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
 		enableLike.setCheckedImmediately(settings.likeEnabled());
-		enableLocalTl.setCheckedImmediately(settings.useLocalTimeline());
 		hideSensitive.setCheckedImmediately(settings.hideSensitiveEnabled());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
 		enableFloatingButton.setCheckedImmediately(settings.floatingButtonEnabled());
@@ -239,7 +246,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toggleImg.setOnCheckedChangeListener(this);
 		enablePush.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
-		enableLocalTl.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
 		hideSensitive.setOnCheckedChangeListener(this);
 		enableFloatingButton.setOnCheckedChangeListener(this);
@@ -249,6 +255,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toolbarOverlap.setOnCheckedChangeListener(this);
 		fontSelector.setOnItemSelectedListener(this);
 		scaleSelector.setOnItemSelectedListener(this);
+		publicTimelineSelector.setOnItemSelectedListener(this);
 		listSizeSelector.setOnSeekBarChangeListener(this);
 	}
 
@@ -331,75 +338,69 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	public void onClick(View v) {
 		// delete database
-		if (v.getId() == R.id.delete_db) {
+		if (v.getId() == R.id.page_settings_button_delete_data) {
 			confirmDialog.show(ConfirmDialog.DELETE_APP_DATA);
 		}
 		// logout
-		else if (v.getId() == R.id.logout) {
+		else if (v.getId() == R.id.page_settings_button_logout) {
 			confirmDialog.show(ConfirmDialog.APP_LOG_OUT);
 		}
 		// set background color
-		else if (v.getId() == R.id.color_background) {
+		else if (v.getId() == R.id.page_settings_color_background) {
 			mode = COLOR_BACKGROUND;
 			color = settings.getBackgroundColor();
 			showColorPicker(color, false);
 		}
 		// set font color
-		else if (v.getId() == R.id.color_text) {
+		else if (v.getId() == R.id.page_settings_color_text) {
 			mode = COLOR_TEXT;
 			color = settings.getTextColor();
 			showColorPicker(color, false);
 		}
 		// set popup color
-		else if (v.getId() == R.id.color_window) {
+		else if (v.getId() == R.id.page_settings_color_window) {
 			mode = COLOR_WINDOW;
 			color = settings.getPopupColor();
 			showColorPicker(color, false);
 		}
 		// set highlight color
-		else if (v.getId() == R.id.highlight_color) {
+		else if (v.getId() == R.id.page_settings_highlight_color) {
 			mode = COLOR_HIGHLIGHT;
 			color = settings.getHighlightColor();
 			showColorPicker(color, false);
 		}
 		// set card color
-		else if (v.getId() == R.id.color_card) {
+		else if (v.getId() == R.id.page_settings_color_card) {
 			mode = COLOR_CARD;
 			color = settings.getCardColor();
 			showColorPicker(color, true);
 		}
 		// set icon color
-		else if (v.getId() == R.id.color_icon) {
+		else if (v.getId() == R.id.page_settings_color_icon) {
 			mode = COLOR_ICON;
 			color = settings.getIconColor();
 			showColorPicker(color, false);
 		}
 		// set repost icon color
-		else if (v.getId() == R.id.color_rt) {
+		else if (v.getId() == R.id.page_settings_color_repost) {
 			mode = COLOR_REPOST;
 			color = settings.getRepostIconColor();
 			showColorPicker(color, false);
 		}
 		// set favorite icon color
-		else if (v.getId() == R.id.color_fav) {
+		else if (v.getId() == R.id.page_settings_color_favorite) {
 			mode = COLOR_FAVORITE;
 			color = settings.getFavoriteIconColor();
 			showColorPicker(color, false);
 		}
 		// set follow icon color
-		else if (v.getId() == R.id.color_f_req) {
-			mode = COLOR_FOLLOW_REQUEST;
-			color = settings.getFollowPendingColor();
-			showColorPicker(color, false);
-		}
-		// set follow icon color
-		else if (v.getId() == R.id.color_follow) {
+		else if (v.getId() == R.id.page_settings_color_follow) {
 			mode = COLOR_FOLLOWING;
 			color = settings.getFollowIconColor();
 			showColorPicker(color, false);
 		}
 		// show push configuration dialog
-		else if (v.getId() == R.id.settings_enable_push_descr) {
+		else if (v.getId() == R.id.page_settings_enable_push_label) {
 			if (enablePush.isChecked()) {
 				pushDialog.show();
 			}
@@ -462,11 +463,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					AppStyles.setColorButton(colorButtons[COLOR_FAVORITE], color);
 					break;
 
-				case COLOR_FOLLOW_REQUEST:
-					settings.setFollowPendingColor(color);
-					AppStyles.setColorButton(colorButtons[COLOR_FOLLOW_REQUEST], color);
-					break;
-
 				case COLOR_FOLLOWING:
 					settings.setFollowIconColor(color);
 					AppStyles.setColorButton(colorButtons[COLOR_FOLLOWING], color);
@@ -479,15 +475,15 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	public void onCheckedChanged(CompoundButton c, boolean checked) {
 		// toggle image loading
-		if (c.getId() == R.id.toggleImg) {
+		if (c.getId() == R.id.page_settings_enable_images) {
 			settings.setImageLoad(checked);
 		}
 		// enable toolbar overlap
-		else if (c.getId() == R.id.settings_toolbar_ov) {
+		else if (c.getId() == R.id.page_settings_toolbar_collapse) {
 			settings.setToolbarOverlap(checked);
 		}
 		// enable like
-		else if (c.getId() == R.id.enable_like) {
+		else if (c.getId() == R.id.page_settings_enable_like) {
 			settings.enableLike(checked);
 			if (checked) {
 				colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_like);
@@ -496,19 +492,15 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			}
 		}
 		// enable status indicators
-		else if (c.getId() == R.id.enable_status_indicators) {
+		else if (c.getId() == R.id.page_Settings_enable_status_indicators) {
 			settings.enableStatusIndicators(checked);
 		}
 		// enable floating button
-		else if (c.getId() == R.id.settings_enable_floating_button) {
+		else if (c.getId() == R.id.page_settings_enable_floating_button) {
 			settings.enableFloatingButton(checked);
 		}
-		// enable/disable local timeline (Mastodon)
-		else if (c.getId() == R.id.settings_local_timeline) {
-			settings.setLocalTimeline(checked);
-		}
 		// enable/disable push notification
-		else if (c.getId() == R.id.settings_enable_push) {
+		else if (c.getId() == R.id.page_settings_enable_push) {
 			if (checked) {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 					requestPermissions(new String[]{POST_NOTIFICATIONS}, REQUEST_PERMISSION_NOTIFICATION);
@@ -522,7 +514,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			settings.setPushEnabled(checked);
 		}
 		// enable proxy settings
-		else if (c.getId() == R.id.settings_enable_proxy) {
+		else if (c.getId() == R.id.page_settings_enable_proxy) {
 			if (checked) {
 				proxy_address.setVisibility(View.VISIBLE);
 				proxy_port.setVisibility(View.VISIBLE);
@@ -537,7 +529,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			}
 		}
 		// enable proxy authentication
-		else if (c.getId() == R.id.settings_enable_auth) {
+		else if (c.getId() == R.id.page_settings_enable_proxyauth) {
 			if (checked) {
 				proxy_user.setVisibility(View.VISIBLE);
 				proxy_pass.setVisibility(View.VISIBLE);
@@ -547,7 +539,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			}
 		}
 		// hide sensitive content
-		else if (c.getId() == R.id.enable_status_hide_sensitive) {
+		else if (c.getId() == R.id.page_Settings_sensitive_enable) {
 			settings.hideSensitive(checked);
 		}
 	}
@@ -556,15 +548,23 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		// Font type spinner
-		if (parent.getId() == R.id.spinner_font) {
+		if (parent.getId() == R.id.page_settings_font_selector) {
 			settings.setFontIndex(position);
 			AppStyles.setFontStyle(root);
 		}
 		// Font scale spinner
-		else if (parent.getId() == R.id.spinner_scale) {
+		else if (parent.getId() == R.id.page_settings_textscale_selector) {
 			settings.setScaleIndex(position);
 			AppStyles.updateFontScale(this);
 			setResult(RETURN_FONT_SCALE_CHANGED);
+		} else if (parent.getId() == R.id.page_settings_public_timeline_selector) {
+			if (position == 0) {
+				settings.setPublicTimeline(GlobalSettings.TIMELINE_COMBINED);
+			} else if (position == 1) {
+				settings.setPublicTimeline(GlobalSettings.TIMELINE_LOCAL);
+			} else if (position == 2) {
+				settings.setPublicTimeline(GlobalSettings.TIMELINE_REMOTE);
+			}
 		}
 	}
 

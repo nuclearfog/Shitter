@@ -118,7 +118,6 @@
 	<string name="menu_bookmark_add">Marcador</string>
 	<string name="menu_bookmark_remove">Eliminar marcador</string>
 	<string name="menu_unmute_user">No silenciar</string>
-	<string name="menu_follow_requested">Se solicitó seguir</string>
 	<string name="menu_status_edit">Editar</string>
 	<string name="menu_status_delete">Borrar</string>
 	<string name="menu_status_hide">Ocultar</string>
@@ -226,7 +225,6 @@
 	<string name="settings_app_information">Código fuente de la app:</string>
 	<string name="settings_enable_toolbar_overlap">Diseño del perfil colapsado</string>
 	<string name="settings_look">Mirar</string>
-	<string name="settings_description_local_timeline">Mostrar solo líneas de tiempo locales</string>
 	<string name="item_load_more">Cargar más</string>
 	<string name="item_image_save">Guardar imagen</string>
 	<string name="item_poll_option_vote">Votar</string>

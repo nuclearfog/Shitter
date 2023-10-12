@@ -135,11 +135,6 @@ public class AppDatabase {
 	public static final int MASK_USER_PRIVATE = 1 << 1;
 
 	/**
-	 * flag indicates that the current user has sent a follow request to an user
-	 */
-	public static final int MASK_USER_FOLLOW_REQUESTED = 1 << 2;
-
-	/**
 	 * flag indicates that the statuses of an user are excluded from timeline
 	 */
 	private static final int MASK_USER_FILTERED = 1 << 3;
@@ -1356,11 +1351,6 @@ public class AppDatabase {
 			flags |= MASK_USER_PRIVATE;
 		} else {
 			flags &= ~MASK_USER_PRIVATE;
-		}
-		if (user.followRequested()) {
-			flags |= MASK_USER_FOLLOW_REQUESTED;
-		} else {
-			flags &= ~MASK_USER_FOLLOW_REQUESTED;
 		}
 		if (user.hasDefaultProfileImage()) {
 			flags |= MASK_USER_DEFAULT_IMAGE;

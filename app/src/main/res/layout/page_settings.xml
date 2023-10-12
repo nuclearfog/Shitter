@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/settings_layout"
+	android:id="@+id/page_settings_root"
 	android:fitsSystemWindows="true"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
@@ -11,7 +11,7 @@
 	tools:context=".ui.activities.SettingsActivity">
 
 	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/toolbar_setting"
+		android:id="@+id/page_settings_toolbar"
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/settings_toolbar_height" />
 
@@ -40,141 +40,131 @@
 					android:padding="@dimen/settings_cardview_padding">
 
 					<TextView
+						android:id="@+id/page_settings_title_color"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
 						android:lines="1"
 						android:text="@string/settings_color_settings"
 						android:textSize="@dimen/settings_textsize"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintBottom_toTopOf="@id/color_barrier"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<androidx.constraintlayout.widget.Barrier
-						android:id="@+id/color_barrier"
+						android:id="@+id/page_settings_barrier_color_button"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						app:barrierDirection="top"
-						app:constraint_referenced_ids="color_background,color_text" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_title_color"
+						app:constraint_referenced_ids="page_settings_color_background,page_settings_color_text" />
 
 					<Button
-						android:id="@+id/color_background"
+						android:id="@+id/page_settings_color_background"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_background"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/color_barrier"
-						app:layout_constraintBottom_toTopOf="@id/color_window"
-						app:layout_constraintEnd_toStartOf="@id/color_text"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_barrier_color_button"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_color_text"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/color_text"
+						android:id="@+id/page_settings_color_text"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_text"
-						app:layout_constraintStart_toEndOf="@id/color_background"
-						app:layout_constraintTop_toBottomOf="@id/color_barrier"
-						app:layout_constraintBottom_toTopOf="@id/highlight_color"
+						app:layout_constraintStart_toEndOf="@id/page_settings_color_background"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_barrier_color_button"
 						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/color_window"
+						android:id="@+id/page_settings_color_window"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_button_popup"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/color_background"
-						app:layout_constraintBottom_toTopOf="@id/color_card"
-						app:layout_constraintEnd_toStartOf="@id/highlight_color"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_color_background"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_highlight_color"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/highlight_color"
+						android:id="@+id/page_settings_highlight_color"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/highlight"
-						app:layout_constraintStart_toEndOf="@id/color_window"
-						app:layout_constraintTop_toBottomOf="@id/color_text"
-						app:layout_constraintBottom_toTopOf="@id/color_icon"
+						app:layout_constraintStart_toEndOf="@id/page_settings_color_window"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_color_text"
 						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/color_card"
+						android:id="@+id/page_settings_color_card"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_color_card"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/color_window"
-						app:layout_constraintBottom_toTopOf="@id/color_rt"
-						app:layout_constraintEnd_toStartOf="@id/color_icon"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_color_window"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_color_icon"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/color_icon"
+						android:id="@+id/page_settings_color_icon"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_icon_color"
-						app:layout_constraintStart_toEndOf="@id/color_card"
-						app:layout_constraintTop_toBottomOf="@id/highlight_color"
-						app:layout_constraintBottom_toTopOf="@id/color_fav"
+						app:layout_constraintStart_toEndOf="@id/page_settings_color_card"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_highlight_color"
 						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/color_rt"
+						android:id="@+id/page_settings_color_repost"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_rt_icon_color"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/color_card"
-						app:layout_constraintBottom_toTopOf="@id/color_f_req"
-						app:layout_constraintEnd_toStartOf="@id/color_fav"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_color_card"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_color_favorite"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/color_fav"
+						android:id="@+id/page_settings_color_favorite"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_color_fav"
-						app:layout_constraintStart_toEndOf="@id/color_rt"
-						app:layout_constraintTop_toBottomOf="@id/color_icon"
-						app:layout_constraintBottom_toTopOf="@id/color_follow"
+						app:layout_constraintStart_toEndOf="@id/page_settings_color_repost"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_color_icon"
 						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/ColorButton" />
 
 					<Button
-						android:id="@+id/color_f_req"
+						android:id="@+id/page_settings_color_follow"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_follow_req_color"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/color_rt"
-						app:layout_constraintBottom_toBottomOf="parent"
-						app:layout_constraintEnd_toStartOf="@id/color_follow"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_color_repost"
+						app:layout_constraintEnd_toStartOf="@id/settings_color_placeholder"
 						style="@style/ColorButton" />
 
-					<Button
-						android:id="@+id/color_follow"
+					<View
+						android:id="@+id/settings_color_placeholder"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
 						android:text="@string/settings_follow_color"
-						app:layout_constraintStart_toEndOf="@id/color_f_req"
-						app:layout_constraintTop_toBottomOf="@id/color_fav"
-						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintStart_toEndOf="@id/page_settings_color_follow"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_color_favorite"
 						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/ColorButton" />
 
@@ -193,7 +183,7 @@
 					android:padding="@dimen/settings_cardview_padding">
 
 					<TextView
-						android:id="@+id/settings_look_text"
+						android:id="@+id/page_settings_title_look"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
@@ -204,78 +194,75 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_toolbar_ov"
+						android:id="@+id/page_settings_toolbar_collapse"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_look_text" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_title_look" />
 
 					<TextView
+						android:id="@+id/page_settings_toolbar_collapse_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
 						android:text="@string/settings_enable_toolbar_overlap"
 						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/settings_toolbar_ov"
-						app:layout_constraintTop_toTopOf="@id/settings_toolbar_ov"
-						app:layout_constraintBottom_toBottomOf="@id/settings_toolbar_ov"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_toolbar_collapse"
+						app:layout_constraintTop_toTopOf="@id/page_settings_toolbar_collapse"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_toolbar_collapse"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_enable_floating_button"
+						android:id="@+id/page_settings_enable_floating_button"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_toolbar_ov" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_toolbar_collapse" />
 
 					<TextView
+						android:id="@+id/page_settings_enable_floating_button_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
 						android:text="@string/settings_enable_floating_button"
 						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/settings_enable_floating_button"
-						app:layout_constraintTop_toTopOf="@id/settings_enable_floating_button"
-						app:layout_constraintBottom_toBottomOf="@id/settings_enable_floating_button"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_enable_floating_button"
+						app:layout_constraintTop_toTopOf="@id/page_settings_enable_floating_button"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_enable_floating_button"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/enable_like"
+						android:id="@+id/page_settings_enable_like"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_enable_floating_button"
-						app:layout_constraintEnd_toStartOf="@id/enable_like_descr" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_enable_floating_button" />
 
 					<TextView
-						android:id="@+id/enable_like_descr"
+						android:id="@+id/page_settings_enable_like_descr"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
 						android:text="@string/settings_enable_like"
 						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/enable_like"
-						app:layout_constraintTop_toTopOf="@id/enable_like"
-						app:layout_constraintBottom_toBottomOf="@id/enable_like"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_enable_like"
+						app:layout_constraintTop_toTopOf="@id/page_settings_enable_like"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_enable_like"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/enable_status_indicators"
+						android:id="@+id/page_Settings_enable_status_indicators"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/enable_like"
-						app:layout_constraintEnd_toStartOf="@id/status_indicators_descr" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_enable_like" />
 
 					<TextView
 						android:id="@+id/status_indicators_descr"
@@ -284,65 +271,85 @@
 						android:lines="1"
 						android:text="@string/settings_enable_indicators"
 						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/enable_status_indicators"
-						app:layout_constraintTop_toTopOf="@id/enable_status_indicators"
-						app:layout_constraintBottom_toBottomOf="@id/enable_status_indicators"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_Settings_enable_status_indicators"
+						app:layout_constraintTop_toTopOf="@id/page_Settings_enable_status_indicators"
+						app:layout_constraintBottom_toBottomOf="@id/page_Settings_enable_status_indicators"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/enable_status_hide_sensitive"
+						android:id="@+id/page_Settings_sensitive_enable"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/enable_status_indicators"
-						app:layout_constraintEnd_toStartOf="@id/enable_status_hide_sensitive_descr" />
+						app:layout_constraintTop_toBottomOf="@id/page_Settings_enable_status_indicators" />
 
 					<TextView
-						android:id="@+id/enable_status_hide_sensitive_descr"
+						android:id="@+id/page_Settings_sensitive_enable_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
 						android:text="@string/settings_hide_sensitive"
 						android:textSize="@dimen/settings_textsize_small"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_Settings_sensitive_enable"
+						app:layout_constraintTop_toTopOf="@id/page_Settings_sensitive_enable"
+						app:layout_constraintBottom_toBottomOf="@id/page_Settings_sensitive_enable"
+						app:layout_constraintEnd_toEndOf="parent" />
+
+					<TextView
+						android:id="@+id/page_settings_public_timeline_label"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/description_show_timeline"
+						android:lines="1"
+						android:textSize="@dimen/settings_textsize_small"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="@id/page_settings_public_timeline_selector"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_public_timeline_selector"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_public_timeline_selector" />
+
+					<Spinner
+						android:id="@+id/page_settings_public_timeline_selector"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
 						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/enable_status_hide_sensitive"
-						app:layout_constraintTop_toTopOf="@id/enable_status_hide_sensitive"
-						app:layout_constraintBottom_toBottomOf="@id/enable_status_hide_sensitive"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_public_timeline_label"
+						app:layout_constraintTop_toBottomOf="@id/page_Settings_sensitive_enable"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<ImageView
+						android:id="@+id/page_settings_font_icon"
 						android:layout_width="@dimen/settings_icon_size"
 						android:layout_height="@dimen/settings_icon_size"
 						android:src="@drawable/font"
 						app:layout_constraintDimensionRatio="1.0"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toTopOf="@id/spinner_font"
-						app:layout_constraintBottom_toBottomOf="@id/spinner_font"
-						app:layout_constraintEnd_toEndOf="@id/enable_status_indicators"
+						app:layout_constraintTop_toTopOf="@id/page_settings_font_selector"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_font_selector"
+						app:layout_constraintEnd_toEndOf="@id/page_Settings_sensitive_enable"
 						tools:ignore="ContentDescription" />
 
 					<Spinner
-						android:id="@+id/spinner_font"
+						android:id="@+id/page_settings_font_selector"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
-						app:layout_constraintStart_toStartOf="@+id/enable_status_hide_sensitive_descr"
-						app:layout_constraintTop_toBottomOf="@id/enable_status_hide_sensitive"
-						app:layout_constraintEnd_toStartOf="@id/spinner_scale"
+						android:layout_marginStart="@dimen/settings_switch_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@+id/page_settings_font_icon"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_public_timeline_selector"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_textscale_selector"
 						app:layout_constraintHorizontal_weight="3" />
 
 					<Spinner
-						android:id="@+id/spinner_scale"
+						android:id="@+id/page_settings_textscale_selector"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_marginStart="@dimen/settings_spinner_margin"
 						app:layout_constraintHorizontal_weight="2"
-						app:layout_constraintStart_toEndOf="@id/spinner_font"
-						app:layout_constraintTop_toTopOf="@id/spinner_font"
+						app:layout_constraintStart_toEndOf="@id/page_settings_font_selector"
+						app:layout_constraintTop_toTopOf="@id/page_settings_font_selector"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
@@ -360,7 +367,7 @@
 					android:padding="@dimen/settings_cardview_padding">
 
 					<TextView
-						android:id="@+id/settings_data_text"
+						android:id="@+id/page_settings_title_dataconsumption"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
@@ -371,102 +378,89 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/toggleImg"
+						android:id="@+id/page_settings_enable_images"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_data_text" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_title_dataconsumption" />
 
 					<TextView
+						android:id="@+id/page_settings_enable_images_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 						android:lines="1"
 						android:text="@string/settings_image"
 						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/toggleImg"
-						app:layout_constraintTop_toTopOf="@id/toggleImg"
-						app:layout_constraintBottom_toBottomOf="@id/toggleImg"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_enable_images"
+						app:layout_constraintTop_toTopOf="@id/page_settings_enable_images"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_enable_images"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_local_timeline"
+						android:id="@+id/page_settings_enable_push"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/toggleImg" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_enable_images" />
 
 					<TextView
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:lines="1"
-						android:text="@string/settings_description_local_timeline"
-						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/settings_local_timeline"
-						app:layout_constraintTop_toTopOf="@id/settings_local_timeline"
-						app:layout_constraintBottom_toBottomOf="@id/settings_local_timeline"
-						app:layout_constraintEnd_toEndOf="parent" />
-
-					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_enable_push"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_marginTop="@dimen/settings_column_margin"
-						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_local_timeline" />
-
-					<TextView
-						android:id="@+id/settings_enable_push_descr"
+						android:id="@+id/page_settings_enable_push_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="2"
 						android:text="@string/settings_enable_push_label"
 						android:textSize="@dimen/settings_textsize_small"
-						android:layout_marginStart="@dimen/settings_switch_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
-						app:layout_constraintStart_toEndOf="@id/settings_enable_push"
-						app:layout_constraintTop_toTopOf="@id/settings_enable_push"
-						app:layout_constraintBottom_toBottomOf="@id/settings_enable_push"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_enable_push"
+						app:layout_constraintTop_toTopOf="@id/page_settings_enable_push"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_enable_push"
 						app:layout_constraintEnd_toEndOf="parent" />
 
-					<TextView
-						android:id="@+id/settings_list_seek_descr"
+					<androidx.constraintlayout.widget.Barrier
+						android:id="@+id/page_settings_barrier_list_seek"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						app:barrierDirection="bottom"
+						app:constraint_referenced_ids="page_settings_enable_push,page_settings_enable_push_label" />
+
+					<TextView
+						android:id="@+id/page_settings_list_seek_label"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_margin="@dimen/settings_layout_margin"
 						android:lines="1"
 						android:text="@string/settings_list_size"
 						android:textSize="@dimen/settings_textsize_small"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toTopOf="@id/settings_list_seek"
-						app:layout_constraintBottom_toBottomOf="@id/settings_list_seek"
-						app:layout_constraintEnd_toStartOf="@id/settings_list_seek" />
+						app:layout_constraintTop_toTopOf="@id/page_settings_list_seek"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_list_seek"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_list_seek" />
 
 					<SeekBar
-						android:id="@+id/settings_list_seek"
+						android:id="@+id/page_settings_list_seek"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 						android:max="9"
-						android:layout_marginTop="@dimen/settings_column_margin"
-						app:layout_constraintStart_toEndOf="@id/settings_list_seek_descr"
-						app:layout_constraintTop_toBottomOf="@id/settings_enable_push"
-						app:layout_constraintEnd_toStartOf="@id/settings_list_size" />
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_list_seek_label"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_barrier_list_seek"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_list_seek_value" />
 
 					<TextView
-						android:id="@+id/settings_list_size"
+						android:id="@+id/page_settings_list_seek_value"
 						android:layout_width="@dimen/settings_seek_number_width"
 						android:layout_height="wrap_content"
+						android:layout_margin="@dimen/settings_layout_margin"
 						android:lines="1"
 						android:textSize="@dimen/settings_textsize_small"
-						app:layout_constraintStart_toEndOf="@id/settings_list_seek"
-						app:layout_constraintTop_toTopOf="@id/settings_list_seek"
-						app:layout_constraintBottom_toBottomOf="@id/settings_list_seek"
+						app:layout_constraintStart_toEndOf="@id/page_settings_list_seek"
+						app:layout_constraintTop_toTopOf="@id/page_settings_list_seek"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_list_seek"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
@@ -474,7 +468,7 @@
 			</androidx.cardview.widget.CardView>
 
 			<androidx.cardview.widget.CardView
-				android:id="@+id/settings_data_card"
+				android:id="@+id/page_settings_card_data"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				style="@style/CardViewStyle">
@@ -485,7 +479,7 @@
 					android:padding="@dimen/settings_cardview_padding">
 
 					<TextView
-						android:id="@+id/user_data_text"
+						android:id="@+id/page_settings_title_userdata"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
@@ -496,27 +490,27 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<Button
-						android:id="@+id/delete_db"
+						android:id="@+id/page_settings_button_delete_data"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_button_height"
 						android:layout_marginTop="@dimen/settings_button_margin"
 						android:layout_marginEnd="@dimen/settings_button_margin"
 						android:text="@string/settings_clear_data"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/user_data_text"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_title_userdata"
 						app:layout_constraintBottom_toBottomOf="parent"
-						app:layout_constraintEnd_toStartOf="@id/logout"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_button_logout"
 						style="@style/FeedbackButton" />
 
 					<Button
-						android:id="@+id/logout"
+						android:id="@+id/page_settings_button_logout"
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_button_height"
 						android:layout_marginStart="@dimen/settings_button_margin"
 						android:layout_marginTop="@dimen/settings_button_margin"
 						android:text="@string/settings_logout"
-						app:layout_constraintStart_toEndOf="@id/delete_db"
-						app:layout_constraintTop_toBottomOf="@id/user_data_text"
+						app:layout_constraintStart_toEndOf="@id/page_settings_button_delete_data"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_title_userdata"
 						app:layout_constraintBottom_toBottomOf="parent"
 						app:layout_constraintEnd_toEndOf="parent"
 						style="@style/FeedbackButton" />
@@ -536,46 +530,44 @@
 					android:padding="@dimen/settings_cardview_padding">
 
 					<TextView
-						android:id="@+id/settings_connections_text"
+						android:id="@+id/page_settings_title_connection"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
 						android:lines="1"
 						android:text="@string/settings_connections"
 						android:textSize="@dimen/settings_textsize"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintBottom_toTopOf="@id/settings_enable_proxy"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_enable_proxy"
+						android:id="@+id/page_settings_enable_proxy"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_connections_text"
-						app:layout_constraintBottom_toTopOf="@id/edit_proxy_address"
-						app:layout_constraintEnd_toStartOf="@id/settings_enable_proxy_descr" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_title_connection"
+						app:layout_constraintBottom_toTopOf="@id/page_settings_input_proxyaddress"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_enable_proxy_label" />
 
 					<TextView
-						android:id="@+id/settings_enable_proxy_descr"
+						android:id="@+id/page_settings_enable_proxy_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
+						android:layout_margin="@dimen/settings_layout_margin"
 						android:lines="1"
 						android:text="@string/settings_enable_proxy"
 						android:textSize="@dimen/settings_textsize_small"
-						app:layout_constraintStart_toEndOf="@id/settings_enable_proxy"
-						app:layout_constraintTop_toTopOf="@id/settings_enable_proxy"
-						app:layout_constraintBottom_toBottomOf="@id/settings_enable_proxy"
+						app:layout_constraintStart_toEndOf="@id/page_settings_enable_proxy"
+						app:layout_constraintTop_toTopOf="@id/page_settings_enable_proxy"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_enable_proxy"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<EditText
-						android:id="@+id/edit_proxy_address"
+						android:id="@+id/page_settings_input_proxyaddress"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						android:digits="0123456789."
 						android:hint="@string/settings_hint_proxy_ip"
 						android:importantForAutofill="no"
@@ -583,14 +575,13 @@
 						android:maxLength="15"
 						android:lines="1"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_enable_proxy"
-						app:layout_constraintBottom_toTopOf="@id/settings_enable_auth"
-						app:layout_constraintEnd_toStartOf="@id/edit_proxy_port"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_enable_proxy"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_input_proxyport"
 						app:layout_constraintHorizontal_weight="2"
 						style="@style/TextInput" />
 
 					<EditText
-						android:id="@+id/edit_proxy_port"
+						android:id="@+id/page_settings_input_proxyport"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:hint="@string/proxy_port"
@@ -598,63 +589,62 @@
 						android:inputType="number"
 						android:maxLength="5"
 						android:lines="1"
-						app:layout_constraintStart_toEndOf="@id/edit_proxy_address"
-						app:layout_constraintTop_toTopOf="@id/edit_proxy_address"
-						app:layout_constraintBottom_toBottomOf="@id/edit_proxy_address"
+						app:layout_constraintStart_toEndOf="@id/page_settings_input_proxyaddress"
+						app:layout_constraintTop_toTopOf="@id/page_settings_input_proxyaddress"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_input_proxyaddress"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintHorizontal_weight="1"
 						style="@style/TextInput" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/settings_enable_auth"
+						android:id="@+id/page_settings_enable_proxyauth"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
-						android:layout_marginEnd="@dimen/settings_switch_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/edit_proxy_address"
-						app:layout_constraintBottom_toTopOf="@id/edit_proxyuser"
-						app:layout_constraintEnd_toStartOf="@id/settings_enable_auth_descr" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_input_proxyaddress"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_enable_proxyauth_label" />
 
 					<TextView
-						android:id="@+id/settings_enable_auth_descr"
+						android:id="@+id/page_settings_enable_proxyauth_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
+						android:layout_margin="@dimen/settings_layout_margin"
 						android:lines="1"
 						android:text="@string/settings_enable_proxy_auth"
 						android:textSize="@dimen/settings_textsize_small"
-						app:layout_constraintStart_toEndOf="@id/settings_enable_auth"
-						app:layout_constraintTop_toTopOf="@id/settings_enable_auth"
-						app:layout_constraintBottom_toBottomOf="@id/settings_enable_auth"
+						app:layout_constraintStart_toEndOf="@id/page_settings_enable_proxyauth"
+						app:layout_constraintTop_toTopOf="@id/page_settings_enable_proxyauth"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_enable_proxyauth"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<EditText
-						android:id="@+id/edit_proxyuser"
+						android:id="@+id/page_settings_input_proxyuser"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:layout_marginBottom="@dimen/settings_column_margin"
+						android:layout_margin="@dimen/settings_layout_margin"
 						android:hint="@string/edit_proxy_user"
 						android:importantForAutofill="no"
 						android:inputType="textPersonName"
 						android:lines="1"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/settings_enable_auth"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_enable_proxyauth_label"
 						app:layout_constraintBottom_toBottomOf="parent"
-						app:layout_constraintEnd_toStartOf="@id/edit_proxypass"
+						app:layout_constraintEnd_toStartOf="@id/page_settings_input_proxypass"
 						app:layout_constraintHorizontal_weight="3"
 						style="@style/TextInput" />
 
 					<EditText
-						android:id="@+id/edit_proxypass"
+						android:id="@+id/page_settings_input_proxypass"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:hint="@string/proxy_password"
 						android:importantForAutofill="no"
 						android:inputType="textPassword"
 						android:lines="1"
-						app:layout_constraintStart_toEndOf="@id/edit_proxyuser"
-						app:layout_constraintTop_toTopOf="@id/edit_proxyuser"
-						app:layout_constraintBottom_toBottomOf="@id/edit_proxyuser"
+						app:layout_constraintStart_toEndOf="@id/page_settings_input_proxyuser"
+						app:layout_constraintTop_toTopOf="@id/page_settings_input_proxyuser"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_input_proxyuser"
 						app:layout_constraintEnd_toEndOf="parent"
 						app:layout_constraintHorizontal_weight="2"
 						style="@style/TextInput" />

@@ -150,7 +150,6 @@
 	<string name="menu_bookmark_add">bookmark</string>
 	<string name="menu_bookmark_remove">remove bookmark</string>
 	<string name="menu_unmute_user">unmute</string>
-	<string name="menu_follow_requested">follow requested</string>
 	<string name="menu_status_edit">edit</string>
 	<string name="menu_status_delete">delete</string>
 	<string name="menu_status_report">report</string>
@@ -273,7 +272,6 @@
 	<string name="settings_enable_toolbar_overlap">Collapsed profile layout</string>
 	<string name="settings_enable_floating_button">enable floating button</string>
 	<string name="settings_look">Look</string>
-	<string name="settings_description_local_timeline">show local timelines only</string>
 	<string name="item_load_more">load more</string>
 	<string name="item_image_save">save image</string>
 	<string name="item_poll_option_vote">vote</string>
@@ -375,6 +373,7 @@
 	<string name="description_filter_home_timeline">Home timeline filter enabled</string>
 	<string name="description_filter_notification">Notification filter enabled</string>
 	<string name="description_filter_public_timeline">Public timeline filter enabled</string>
+	<string name="description_show_timeline">public timeline</string>
 	<string name="description_filter_thread">Thread filter enabled</string>
 	<string name="description_filter_user_timeline">User timeline filter enabled</string>
 	<string name="dialog_filter_create">create filter</string>

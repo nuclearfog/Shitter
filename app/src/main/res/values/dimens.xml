@@ -23,7 +23,7 @@
 	<dimen name="settings_button_margin">5dp</dimen>
 	<dimen name="settings_switch_margin">10dp</dimen>
 	<dimen name="settings_spinner_margin">10dp</dimen>
-	<dimen name="settings_column_margin">5dp</dimen>
+	<dimen name="settings_layout_margin">5dp</dimen>
 	<dimen name="settings_seek_number_width">30sp</dimen>
 	<dimen name="settings_scroll_padding">@dimen/fragment_list_layout_padding</dimen>
 

@@ -80,11 +80,6 @@ public interface User extends Serializable, Comparable<User> {
 	boolean isProtected();
 
 	/**
-	 * @return true if current user has requested a follow
-	 */
-	boolean followRequested();
-
-	/**
 	 * @return number of following
 	 */
 	int getFollowing();

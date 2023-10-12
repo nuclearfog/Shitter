@@ -49,6 +49,21 @@ public class GlobalSettings {
 	public static final float[] FONT_SCALES = {0.5f, 0.8f, 1.0f, 1.5f, 2.0f};
 
 	/**
+	 * indicates a remote public timelines only
+	 */
+	public static final String TIMELINE_REMOTE = "public_timeline_remote";
+
+	/**
+	 * indicates a local public timeline only
+	 */
+	public static final String TIMELINE_LOCAL = "public_timeline_local";
+
+	/**
+	 * indicates all public timelines (local&remote)
+	 */
+	public static final String TIMELINE_COMBINED = "public_timeline_all";
+
+	/**
 	 * singleton instance
 	 */
 	private static final GlobalSettings INSTANCE = new GlobalSettings();
@@ -63,7 +78,6 @@ public class GlobalSettings {
 	private static final String RT_COLOR = "retweet_color";
 	private static final String FV_COLOR = "favorite_color";
 	private static final String FOLLOW_COLOR = "following_color";
-	private static final String F_REQ_COLOR = "following_pending_color";
 	private static final String INDEX_FONT = "index_font";
 	private static final String INDEX_SCALE = "index_scale";
 	private static final String LIST_SIZE = "preload";
@@ -79,7 +93,7 @@ public class GlobalSettings {
 	private static final String PROXY_WARNING = "proxy_warning";
 	private static final String ENABLE_LIKE = "like_enable";
 	private static final String FILTER_RESULTS = "filter_results";
-	private static final String MASTODON_LOCAL_TIMELINE = "mastodon_local_timeline";
+	private static final String PUBLIC_TIMELINE = "public_timeline";
 	private static final String HIDE_SENSITIVE = "hide_sensitive";
 	private static final String FLOATING_BUTTON = "floating_button_enabled";
 	private static final String PUSH_ENABLED = "push_enabled";
@@ -126,7 +140,6 @@ public class GlobalSettings {
 	private static final int DEFAULT_ICON_COLOR = Color.WHITE;
 	private static final int DEFAULT_RT_ICON_COLOR = Color.GREEN;
 	private static final int DEFAULT_FV_ICON_COLOR = Color.YELLOW;
-	private static final int DEFAULT_FR_ICON_COLOR = Color.YELLOW;
 	private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
 
 	private SharedPreferences settings;
@@ -136,6 +149,7 @@ public class GlobalSettings {
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
 	private String pushInstance;
+	private String publicTimeline;
 	private boolean loadImage;
 	private boolean loggedIn;
 	private boolean push_enabled;
@@ -146,7 +160,6 @@ public class GlobalSettings {
 	private boolean showStatusIcons;
 	private boolean filterResults;
 	private boolean enableLike;
-	private boolean localOnly;
 	private boolean hideSensitive;
 	private boolean floatingEnabled;
 	private int background_color;
@@ -157,7 +170,6 @@ public class GlobalSettings {
 	private int popup_color;
 	private int repost_color;
 	private int favorite_color;
-	private int request_color;
 	private int follow_color;
 	private int indexFont;
 	private int indexScale;
@@ -363,28 +375,6 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * get icon color of the follow button
-	 *
-	 * @return icon color
-	 */
-	public int getFollowPendingColor() {
-		return request_color;
-	}
-
-	/**
-	 * set icon color of the follow button
-	 *
-	 * @param color icon color
-	 */
-	public void setFollowPendingColor(int color) {
-		request_color = color;
-
-		Editor edit = settings.edit();
-		edit.putInt(F_REQ_COLOR, color);
-		edit.apply();
-	}
-
-	/**
 	 * get icon color for the follow button
 	 *
 	 * @return icon color
@@ -417,7 +407,7 @@ public class GlobalSettings {
 				popup_color, highlight_color,
 				card_color, icon_color,
 				repost_color, favorite_color,
-				request_color, follow_color
+				follow_color
 		};
 	}
 
@@ -716,23 +706,24 @@ public class GlobalSettings {
 	}
 
 	/**
-	 * use public Mastodon timeline of the local server only
+	 * get public timeline type
 	 *
-	 * @return true to use local timeline only
+	 * @return type {@link #TIMELINE_LOCAL,#TIMELINE_REMOTE,#TIMELINE_COMBINED}
 	 */
-	public boolean useLocalTimeline() {
-		return localOnly;
+	public String getPublicTimeline() {
+		return publicTimeline;
 	}
 
 	/**
-	 * set public Mastodon timeline
+	 * set public timeline type
 	 *
-	 * @param enable true to use local timeline only
+	 * @param publicTimeline type {@link #TIMELINE_LOCAL,#TIMELINE_REMOTE,#TIMELINE_COMBINED}
 	 */
-	public void setLocalTimeline(boolean enable) {
-		localOnly = enable;
+	public void setPublicTimeline(String publicTimeline) {
+		this.publicTimeline = publicTimeline;
+
 		Editor edit = settings.edit();
-		edit.putBoolean(MASTODON_LOCAL_TIMELINE, enable);
+		edit.putString(PUBLIC_TIMELINE, publicTimeline);
 		edit.apply();
 	}
 
@@ -1009,7 +1000,6 @@ public class GlobalSettings {
 		icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
 		repost_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
 		favorite_color = settings.getInt(FV_COLOR, DEFAULT_FV_ICON_COLOR);
-		request_color = settings.getInt(F_REQ_COLOR, DEFAULT_FR_ICON_COLOR);
 		follow_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
 		indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
 		indexScale = settings.getInt(INDEX_SCALE, DEFAULT_SCALE_INDEX);
@@ -1023,11 +1013,11 @@ public class GlobalSettings {
 		toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
 		filterResults = settings.getBoolean(FILTER_RESULTS, true);
 		enableLike = settings.getBoolean(ENABLE_LIKE, false);
-		localOnly = settings.getBoolean(MASTODON_LOCAL_TIMELINE, false);
 		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
 		floatingEnabled = settings.getBoolean(FLOATING_BUTTON, true);
 		proxyWarning = settings.getBoolean(PROXY_WARNING, true);
 		pushInstance = settings.getString(PUSH_INSTANCE, ConstantsKt.INSTANCE_DEFAULT);
+		publicTimeline = settings.getString(PUBLIC_TIMELINE, TIMELINE_COMBINED);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
