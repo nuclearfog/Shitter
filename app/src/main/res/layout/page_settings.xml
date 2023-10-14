@@ -151,7 +151,7 @@
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
-						android:text="@string/settings_follow_req_color"
+						android:text="@string/settings_follow_color"
 						app:layout_constraintStart_toStartOf="parent"
 						app:layout_constraintTop_toBottomOf="@id/page_settings_color_repost"
 						app:layout_constraintEnd_toStartOf="@id/settings_color_placeholder"
@@ -162,11 +162,9 @@
 						android:layout_width="0dp"
 						android:layout_height="@dimen/settings_color_button_height"
 						android:layout_margin="@dimen/settings_color_button_margin"
-						android:text="@string/settings_follow_color"
 						app:layout_constraintStart_toEndOf="@id/page_settings_color_follow"
 						app:layout_constraintTop_toBottomOf="@id/page_settings_color_favorite"
-						app:layout_constraintEnd_toEndOf="parent"
-						style="@style/ColorButton" />
+						app:layout_constraintEnd_toEndOf="parent" />
 
 				</androidx.constraintlayout.widget.ConstraintLayout>
 

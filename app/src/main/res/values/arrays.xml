@@ -124,9 +124,9 @@
 	</string-array>
 
 	<string-array name="public_timelines">
-		<item>show all</item>
-		<item>local only</item>
-		<item>remote only</item>
+		<item>show all posts</item>
+		<item>show local posts</item>
+		<item>show remote posts</item>
 	</string-array>
 
 </resources>

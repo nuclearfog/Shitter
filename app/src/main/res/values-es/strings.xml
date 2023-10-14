@@ -245,7 +245,6 @@
 	<string name="descr_add_profile_image">Cambiar imagen de perfil</string>
 	<string name="button_share">Compartir enlace</string>
 	<string name="settings_rt_icon_color">Re-publicar</string>
-	<string name="settings_follow_req_color">Solicitud de seguimiento</string>
 	<string name="settings_follow_color">Icono de quienes sigues</string>
 	<string name="account_page">Cuentas</string>
 	<string name="status_translate_text">Traducir</string>

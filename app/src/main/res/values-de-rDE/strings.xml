@@ -193,7 +193,6 @@
 	<string name="menu_select_account">Accounts</string>
 	<string name="menu_add_account">Account hinzufügen</string>
 	<string name="settings_rt_icon_color">Repost</string>
-	<string name="settings_follow_req_color">Anfrage Icon</string>
 	<string name="login_app_name_label">Benutzerdefinierter App-Name</string>
 	<string name="settings_follow_color">Follow Icon</string>
 	<string name="settings_enable_toolbar_overlap">Kompakte Profilansicht</string>

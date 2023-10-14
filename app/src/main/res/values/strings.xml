@@ -299,7 +299,6 @@
 	<string name="descr_add_profile_image">change profile image</string>
 	<string name="button_share">share link</string>
 	<string name="settings_rt_icon_color">Reposts</string>
-	<string name="settings_follow_req_color">Follow request</string>
 	<string name="login_app_name_label">custom app name</string>
 	<string name="settings_follow_color">Following icon</string>
 	<string name="account_page">Accounts</string>

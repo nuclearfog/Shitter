@@ -48,9 +48,9 @@
 	</string-array>
 
 	<string-array name="public_timelines">
-		<item>zeige alle</item>
-		<item>nur lokale</item>
-		<item>nur entfernte</item>
+		<item>zeige alle Posts</item>
+		<item>zeige lokale Posts</item>
+		<item>zeige externe Posts</item>
 	</string-array>
 
 </resources>
