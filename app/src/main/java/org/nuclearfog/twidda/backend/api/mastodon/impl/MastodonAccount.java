@@ -23,6 +23,8 @@ public class MastodonAccount implements Account {
 	private String bearer;
 	private String client_id, client_secret;
 
+	private User user;
+
 	/**
 	 * @param id            user ID
 	 * @param hostname      hostname of the Mastodon isntance
@@ -55,7 +57,7 @@ public class MastodonAccount implements Account {
 	@Nullable
 	@Override
 	public User getUser() {
-		return null;
+		return user;
 	}
 
 
@@ -116,5 +118,15 @@ public class MastodonAccount implements Account {
 		if (account.getUser() != null && getUser() != null)
 			return getUser().equals(account.getUser());
 		return false;
+	}
+
+
+	/**
+	 * set user information
+	 *
+	 * @param user user information associated with this account
+	 */
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

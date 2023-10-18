@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private HomeAdapter adapter;
 	private GlobalSettings settings;
 	private Picasso picasso;
-
+	private UserLoader userLoader;
 	private Dialog loadingCircle;
 
 	private DrawerLayout drawerLayout;
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		followerCount = header.findViewById(R.id.navigation_profile_follower);
 		followingCount = header.findViewById(R.id.navigation_profile_following);
 
-		UserLoader userLoader = new UserLoader(this);
+		userLoader = new UserLoader(this);
 		loadingCircle = new ProgressDialog(this, null);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
@@ -149,11 +149,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			if (data instanceof User) {
 				setCurrentUser((User) data);
 			}
-		}
-		// load user information
-		if (settings.isLoggedIn() && currentUser == null) {
-			Param param = new Param(Param.DATABASE, settings.getLogin().getId());
-			userLoader.execute(param, this);
 		}
 		// set navigation view style
 		navigationView.post(new Runnable() {
@@ -188,6 +183,11 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		else if (adapter == null) {
 			adapter = new HomeAdapter(this);
 			viewPager.setAdapter(adapter);
+		}
+		// load user information
+		if (settings.isLoggedIn() && currentUser == null) {
+			Param param = new Param(Param.DATABASE, settings.getLogin().getId());
+			userLoader.execute(param, this);
 		}
 	}
 
@@ -260,9 +260,10 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			case AccountActivity.RETURN_ACCOUNT_CHANGED:
 				setCurrentUser(null); // remove old user content
 				if (data != null) {
-					Serializable serializable = data.getSerializableExtra(AccountActivity.RETURN_ACCOUNT);
-					if (serializable instanceof Account) {
-						setCurrentUser(((Account) serializable).getUser());
+					Serializable serializedAccount = data.getSerializableExtra(AccountActivity.RETURN_ACCOUNT);
+					if (serializedAccount instanceof Account) {
+						Account account = (Account) serializedAccount;
+						setCurrentUser(account.getUser());
 					}
 				}
 				// reset tab pages
@@ -458,10 +459,8 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onResult(@NonNull Result userResult) {
-		if (userResult.user != null) {
-			setCurrentUser(userResult.user);
-		}
+	public void onResult(@NonNull Result result) {
+		setCurrentUser(result.user);
 	}
 
 	/**
