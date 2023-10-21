@@ -79,6 +79,10 @@ public class MastodonException extends ConnectionException {
 				errorCode = HTTP_FORBIDDEN;
 				break;
 
+			case 422:
+				errorCode = INVALID_DATA;
+				break;
+
 			case 429:
 				errorCode = RATE_LIMIT_EX;
 				break;

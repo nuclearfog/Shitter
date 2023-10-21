@@ -97,6 +97,11 @@ public abstract class ConnectionException extends Exception {
 	public static final int HTTP_FORBIDDEN = 15;
 
 	/**
+	 *
+	 */
+	public static final int INVALID_DATA = 16;
+
+	/**
 	 * invalid media (wrong format, size)
 	 */
 	public static final int INVALID_MEDIA = 18;

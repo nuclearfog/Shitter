@@ -210,9 +210,11 @@ public class WebPushDialog extends Dialog implements OnCheckedChangeListener, On
 	public void onResult(@NonNull PushUpdater.Result result) {
 		if (result.push != null) {
 			Toast.makeText(getContext(), R.string.info_webpush_update, Toast.LENGTH_SHORT).show();
+			settings.setPushEnabled(true);
 			dismiss();
 		} else if (result.exception != null) {
 			ErrorUtils.showErrorMessage(getContext(), result.exception);
+			settings.setPushEnabled(false);
 		}
 	}
 }

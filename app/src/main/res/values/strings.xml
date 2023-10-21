@@ -123,6 +123,7 @@
 	<string name="error_invalid_media">Invalid media file!</string>
 	<string name="error_not_defined">Not specified error!</string>
 	<string name="error_forbidden_api_access">API does not support this operation!</string>
+	<string name="error_api_error">API error</string>
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
 	<string name="error_translating_status">Could not translate status</string>

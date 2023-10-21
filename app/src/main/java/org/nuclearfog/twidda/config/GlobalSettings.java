@@ -550,6 +550,28 @@ public class GlobalSettings {
 	}
 
 	/**
+	 * check if push notification is enabled
+	 *
+	 * @return true if push notification is enabled
+	 */
+	public boolean pushEnabled() {
+		return push_enabled;
+	}
+
+	/**
+	 * enable/disable push notification
+	 *
+	 * @param enable true to enable notification
+	 */
+	public void setPushEnabled(boolean enable) {
+		push_enabled = enable;
+
+		Editor edit = settings.edit();
+		edit.putBoolean(PUSH_ENABLED, enable);
+		edit.apply();
+	}
+
+	/**
 	 * get used web push instance
 	 */
 	public WebPush getWebPush() {
@@ -562,8 +584,6 @@ public class GlobalSettings {
 	 * @param webPush web push information
 	 */
 	public void setWebPush(WebPush webPush) {
-		this.webPush = new ConfigPush(webPush);
-
 		Editor edit = settings.edit();
 		edit.putLong(PUSH_ID, webPush.getId());
 		edit.putString(PUSH_SERVER_KEY, webPush.getServerKey());
@@ -582,12 +602,20 @@ public class GlobalSettings {
 		edit.apply();
 	}
 
-
+	/**
+	 * get push instance url
+	 *
+	 * @return instance url
+	 */
 	public String getPushInstance() {
 		return pushInstance;
 	}
 
-
+	/**
+	 * save push instance url
+	 *
+	 * @param pushInstance instance url
+	 */
 	public void setPushInstance(String pushInstance) {
 		this.pushInstance = pushInstance;
 
@@ -892,28 +920,6 @@ public class GlobalSettings {
 	 */
 	public boolean isLoggedIn() {
 		return loggedIn;
-	}
-
-	/**
-	 * check if push notification is enabled
-	 *
-	 * @return true if push notification is enabled
-	 */
-	public boolean pushEnabled() {
-		return push_enabled;
-	}
-
-	/**
-	 * enable/disable push notification
-	 *
-	 * @param enable true to enable notification
-	 */
-	public void setPushEnabled(boolean enable) {
-		push_enabled = enable;
-
-		Editor edit = settings.edit();
-		edit.putBoolean(PUSH_ENABLED, enable);
-		edit.apply();
 	}
 
 	/**

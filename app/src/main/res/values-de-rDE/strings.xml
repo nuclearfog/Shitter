@@ -363,4 +363,5 @@
 	<string name="confirm_accept_follow_request">Follow-Anfrage annehmen?</string>
 	<string name="info_follow_request_accepted">Follow-Anfrage angenommen</string>
 	<string name="description_show_timeline">öffentl. Timeline</string>
+	<string name="error_api_error">API Fehler</string>
 </resources>

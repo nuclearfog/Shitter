@@ -16,7 +16,6 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Instance;
-import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.ui.activities.LoginActivity;
 
 /**
@@ -67,14 +66,11 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 					database.saveLogin(account);
 					// save instance information
 					database.saveInstance(instance);
-					// subscripe to web push
+					// transfer push configuration
 					if (settings.pushEnabled()) {
 						try {
-							PushUpdate pushUpdate = new PushUpdate(settings.getWebPush());
-							WebPush webpush = connection.updatePush(pushUpdate);
-							settings.setWebPush(webpush);
-						} catch (ConnectionException e) {
-							// continue without webpush subscription
+							connection.updatePush(new PushUpdate(settings.getWebPush()));
+						} catch (ConnectionException exception) {
 							settings.setPushEnabled(false);
 						}
 					}
