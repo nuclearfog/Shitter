@@ -9,7 +9,7 @@
 ## Features
 
 - access to statuses, users, lists and trends
-- real timelines (chronological order)
+- real timelines (reverse chronological order)
 - customizable theme
 - media, link and poll viewer
 - status filter

@@ -1,7 +1,7 @@
 <p><br><b>Features:</b></p>
 <ul>
     <li>Zugriff auf Posts, Nutzer und Trends</li>
-    <li>chronologisch aufgebaute Timelines</li>
+    <li>umgekehrt chronologisch aufgebaute Timelines</li>
     <li>anpassbares Aussehen</li>
     <li>Unterstützt Multi-Account</li>
     <li>ünterstützt Push-Benachrichtigungen</li>

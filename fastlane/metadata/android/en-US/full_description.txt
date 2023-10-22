@@ -1,7 +1,7 @@
 <p><br><b>Features:</b></p>
 <ul>
     <li>access to statuses, users and trends</li>
-    <li>real timelines (chronological order)</li>
+    <li>real timelines (reverse chronological order)</li>
     <li>push notification support</li>
     <li>customizable theme</li>
     <li>media, link and poll viewer</li>
