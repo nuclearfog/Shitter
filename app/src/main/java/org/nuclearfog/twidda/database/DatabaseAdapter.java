@@ -20,7 +20,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 21;
+	private static final int DB_VERSION = 22;
 
 	/**
 	 * database file name
@@ -70,7 +70,8 @@ public class DatabaseAdapter {
 			+ StatusTable.SOURCE + " TEXT,"
 			+ StatusTable.MENTIONS + " TEXT,"
 			+ StatusTable.LOCATION + " INTEGER,"
-			+ StatusTable.LANGUAGE + " TEXT);";
+			+ StatusTable.LANGUAGE + " TEXT,"
+			+ StatusTable.EDITED_AT + " INTEGER);";
 
 	/**
 	 * SQL query to create a table for trend information
@@ -313,6 +314,11 @@ public class DatabaseAdapter {
 	private static final String UPDATE_HASHTAG_ADD_ID = "ALTER TABLE " + HashtagTable.NAME + " ADD " + HashtagTable.ID + " INTEGER;";
 
 	/**
+	 * add status edit timestamp
+	 */
+	private static final String UPDATE_STATUS_ADD_EDIT_TIME = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.EDITED_AT + " INTEGER;";
+
+	/**
 	 * singleton instance
 	 */
 	private static DatabaseAdapter instance;
@@ -418,8 +424,12 @@ public class DatabaseAdapter {
 				db.execSQL(TABLE_EMOJI);
 				db.setVersion(20);
 			}
-			if (db.getVersion() < DB_VERSION) {
+			if (db.getVersion() < 21) {
 				db.execSQL(UPDATE_HASHTAG_ADD_ID);
+				db.setVersion(21);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				db.execSQL(UPDATE_STATUS_ADD_EDIT_TIME);
 				db.setVersion(DB_VERSION);
 			}
 		}
@@ -660,6 +670,11 @@ public class DatabaseAdapter {
 		 * language of the status
 		 */
 		String LANGUAGE = "lang";
+
+		/**
+		 * timestamp of the last edit
+		 */
+		String EDITED_AT = "edited_at";
 	}
 
 	/**

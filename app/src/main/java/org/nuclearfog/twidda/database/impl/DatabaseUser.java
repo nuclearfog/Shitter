@@ -241,7 +241,7 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 	}
 
 	/**
-	 * setup
+	 * setup account configuration
 	 */
 	public void setAccountInformation(Account account) {
 		isCurrentUser = true;

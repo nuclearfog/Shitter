@@ -153,6 +153,11 @@ public interface Status extends Serializable, Comparable<Status> {
 	boolean isHidden();
 
 	/**
+	 * @return Timestamp of when the status was last edited or '0' if status is not edited
+	 */
+	long editedAt();
+
+	/**
 	 * @return url of the status
 	 */
 	String getUrl();

@@ -371,6 +371,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		MenuItem optReport = m.findItem(R.id.menu_status_report);
 		MenuItem menuBookmark = m.findItem(R.id.menu_status_bookmark);
 		MenuItem editStatus = m.findItem(R.id.menu_status_edit);
+		MenuItem editHistory = m.findItem(R.id.menu_status_history);
 		SubMenu copyMenu = optCopy.getSubMenu();
 
 		// set status options
@@ -400,6 +401,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			} else {
 				optReport.setVisible(true);
 			}
+			if (currentStatus.editedAt() != 0L) {
+				editHistory.setVisible(true);
+			}
 			// add media link items
 			// check if menu doesn't contain media links already
 			if (copyMenu.size() == 2) {
@@ -411,88 +415,94 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			return true;
 		}
-		return super.onPrepareOptionsMenu(m);
+		return false;
 	}
 
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		if (status == null)
-			return super.onOptionsItemSelected(item);
-
-		Status status = this.status;
-		if (status.getEmbeddedStatus() != null)
-			status = status.getEmbeddedStatus();
-		// Delete status option
-		if (item.getItemId() == R.id.menu_status_delete) {
-			confirmDialog.show(ConfirmDialog.DELETE_STATUS);
-			return true;
-		}
-		// add/remove bookmark
-		else if (item.getItemId() == R.id.menu_status_bookmark) {
-			Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-			int mode = status.isBookmarked() ? StatusAction.Param.UNBOOKMARK : StatusAction.Param.BOOKMARK;
-			StatusAction.Param param = new StatusAction.Param(mode, status.getId());
-			statusLoader.execute(param, statusCallback);
-			return true;
-		}
-		// hide status
-		else if (item.getItemId() == R.id.menu_status_hide) {
-			int mode = hidden ? StatusAction.Param.UNHIDE : StatusAction.Param.HIDE;
-			StatusAction.Param param = new StatusAction.Param(mode, status.getId());
-			statusLoader.execute(param, statusCallback);
-			return true;
-		}
-		// get status link
-		else if (item.getItemId() == R.id.menu_status_browser) {
-			if (!status.getUrl().isEmpty()) {
-				LinkUtils.openLink(this, status.getUrl());
+		if (status != null) {
+			Status status = this.status;
+			if (status.getEmbeddedStatus() != null)
+				status = status.getEmbeddedStatus();
+			// Delete status option
+			if (item.getItemId() == R.id.menu_status_delete) {
+				confirmDialog.show(ConfirmDialog.DELETE_STATUS);
+				return true;
 			}
-			return true;
-		}
-		// copy status link to clipboard
-		else if (item.getItemId() == R.id.menu_status_copy_text) {
-			if (clip != null) {
-				ClipData linkClip = ClipData.newPlainText("status text", status.getText());
-				clip.setPrimaryClip(linkClip);
-				Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, Toast.LENGTH_SHORT).show();
+			// add/remove bookmark
+			else if (item.getItemId() == R.id.menu_status_bookmark) {
+				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+				int mode = status.isBookmarked() ? StatusAction.Param.UNBOOKMARK : StatusAction.Param.BOOKMARK;
+				StatusAction.Param param = new StatusAction.Param(mode, status.getId());
+				statusLoader.execute(param, statusCallback);
+				return true;
 			}
-			return true;
-		}
-		// copy status link to clipboard
-		else if (item.getItemId() == R.id.menu_status_copy_link) {
-			if (clip != null) {
-				ClipData linkClip = ClipData.newPlainText("status link", status.getUrl());
-				clip.setPrimaryClip(linkClip);
-				Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, Toast.LENGTH_SHORT).show();
+			// hide status
+			else if (item.getItemId() == R.id.menu_status_hide) {
+				int mode = hidden ? StatusAction.Param.UNHIDE : StatusAction.Param.HIDE;
+				StatusAction.Param param = new StatusAction.Param(mode, status.getId());
+				statusLoader.execute(param, statusCallback);
+				return true;
 			}
-			return true;
-		}
-		// copy media links
-		else if (item.getGroupId() == MENU_GROUP_COPY) {
-			int index = item.getItemId();
-			Media[] medias = status.getMedia();
-			if (index >= 0 && index < medias.length) {
-				if (clip != null) {
-					ClipData linkClip = ClipData.newPlainText("status media link", medias[index].getUrl());
-					clip.setPrimaryClip(linkClip);
-					Toast.makeText(getApplicationContext(), R.string.info_status_medialink_copied, Toast.LENGTH_SHORT).show();
+			// get status link
+			else if (item.getItemId() == R.id.menu_status_browser) {
+				if (!status.getUrl().isEmpty()) {
+					LinkUtils.openLink(this, status.getUrl());
 				}
+				return true;
 			}
-			return true;
+			// copy status link to clipboard
+			else if (item.getItemId() == R.id.menu_status_copy_text) {
+				if (clip != null) {
+					ClipData linkClip = ClipData.newPlainText("status text", status.getText());
+					clip.setPrimaryClip(linkClip);
+					Toast.makeText(getApplicationContext(), R.string.info_status_text_copied, Toast.LENGTH_SHORT).show();
+				}
+				return true;
+			}
+			// copy status link to clipboard
+			else if (item.getItemId() == R.id.menu_status_copy_link) {
+				if (clip != null) {
+					ClipData linkClip = ClipData.newPlainText("status link", status.getUrl());
+					clip.setPrimaryClip(linkClip);
+					Toast.makeText(getApplicationContext(), R.string.info_status_link_copied, Toast.LENGTH_SHORT).show();
+				}
+				return true;
+			}
+			// copy media links
+			else if (item.getGroupId() == MENU_GROUP_COPY) {
+				int index = item.getItemId();
+				Media[] medias = status.getMedia();
+				if (index >= 0 && index < medias.length) {
+					if (clip != null) {
+						ClipData linkClip = ClipData.newPlainText("status media link", medias[index].getUrl());
+						clip.setPrimaryClip(linkClip);
+						Toast.makeText(getApplicationContext(), R.string.info_status_medialink_copied, Toast.LENGTH_SHORT).show();
+					}
+				}
+				return true;
+			}
+			// edit status
+			else if (item.getItemId() == R.id.menu_status_edit) {
+				Intent intent = new Intent(this, StatusEditor.class);
+				intent.putExtra(StatusEditor.KEY_STATUS_DATA, status);
+				intent.putExtra(StatusEditor.KEY_EDIT, true);
+				activityResultLauncher.launch(intent);
+				return true;
+			}
+			// report status
+			else if (item.getItemId() == R.id.menu_status_report) {
+				reportDialog.show(status.getAuthor().getId(), status.getId());
+				return true;
+			}
+			// get edit history
+			else if (item.getItemId() == R.id.menu_status_history) {
+				// todo implement history viewer
+				return true;
+			}
 		}
-		// edit status
-		else if (item.getItemId() == R.id.menu_status_edit) {
-			Intent intent = new Intent(this, StatusEditor.class);
-			intent.putExtra(StatusEditor.KEY_STATUS_DATA, status);
-			intent.putExtra(StatusEditor.KEY_EDIT, true);
-			activityResultLauncher.launch(intent);
-		}
-		// report status
-		else if (item.getItemId() == R.id.menu_status_report) {
-			reportDialog.show(status.getAuthor().getId(), status.getId());
-		}
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 

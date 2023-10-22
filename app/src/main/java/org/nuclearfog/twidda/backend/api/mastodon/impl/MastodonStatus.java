@@ -30,6 +30,7 @@ public class MastodonStatus implements Status {
 	private long replyId;
 	private long replyUserId;
 	private long createdAt;
+	private long editedAt;
 
 	private int replyCount;
 	private int favoriteCount;
@@ -72,6 +73,7 @@ public class MastodonStatus implements Status {
 		String idStr = json.getString("id");
 		String visibilityStr = json.getString("visibility");
 		String language = json.optString("language", "");
+		String editedAtStr = json.optString("edited_at");
 
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
 		createdAt = StringUtils.getIsoTime(json.optString("created_at"));
@@ -86,6 +88,8 @@ public class MastodonStatus implements Status {
 		bookmarked = json.optBoolean("bookmarked", false);
 		text = StringUtils.extractText(json.optString("content", ""));
 
+		if (!editedAtStr.isEmpty() && !editedAtStr.equals("null"))
+			editedAt = StringUtils.getIsoTime(editedAtStr);
 		if (author.getId() != currentUserId)
 			mentions = author.getScreenname() + ' ';
 		if (embeddedJson != null) {
@@ -272,6 +276,12 @@ public class MastodonStatus implements Status {
 	@Override
 	public String getUserMentions() {
 		return mentions;
+	}
+
+
+	@Override
+	public long editedAt() {
+		return editedAt;
 	}
 
 

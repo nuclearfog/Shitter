@@ -32,6 +32,7 @@ import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
+import org.nuclearfog.twidda.model.lists.StatusEditHistoy;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
@@ -282,6 +283,14 @@ public interface Connection {
 	 * @return statuses of the public timeline
 	 */
 	Statuses getPublicTimeline(long minId, long maxId) throws ConnectionException;
+
+	/**
+	 * get an edit history of a status
+	 *
+	 * @param id ID of the status
+	 * @return list of edited posts
+	 */
+	StatusEditHistoy getStatusEditHistory(long id) throws ConnectionException;
 
 	/**
 	 * get trending hashtags

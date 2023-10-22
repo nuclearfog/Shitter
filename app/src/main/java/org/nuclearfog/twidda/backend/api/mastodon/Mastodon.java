@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.EditedMastodonStatus;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonCredentials;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
@@ -64,6 +65,7 @@ import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
+import org.nuclearfog.twidda.model.lists.StatusEditHistoy;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
@@ -491,6 +493,26 @@ public class Mastodon implements Connection {
 		else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_REMOTE))
 			params.add("remote=true");
 		return getStatuses(ENDPOINT_PUBLIC_TIMELINE, params, minId, maxId);
+	}
+
+
+	@Override
+	public StatusEditHistoy getStatusEditHistory(long id) throws ConnectionException {
+		try {
+			StatusEditHistoy result = new StatusEditHistoy();
+			Response response = get(ENDPOINT_STATUS + id + "/history", new ArrayList<>());
+			ResponseBody body = response.body();
+			if (response.code() == 200 && body != null) {
+				JSONArray array = new JSONArray(body.string());
+				long currentId = settings.getLogin().getId();
+				for (int i = 0; i < array.length(); i++) {
+					result.add(new EditedMastodonStatus(array.getJSONObject(i), currentId));
+				}
+			}
+			return result;
+		} catch (IOException | JSONException exception) {
+			throw new MastodonException(exception);
+		}
 	}
 
 

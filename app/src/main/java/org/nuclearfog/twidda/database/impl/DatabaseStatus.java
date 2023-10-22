@@ -30,7 +30,7 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 
 	private static final Pattern KEY_SEPARATOR = Pattern.compile(";");
 
-	private long id, time, embeddedId, replyID, replyUserId, myRepostId, locationId, pollId;
+	private long id, time, embeddedId, replyID, replyUserId, myRepostId, locationId, pollId, editedAt;
 	private int repostCount, favoriteCount, replyCount, visibility;
 	private boolean reposted, favorited, bookmarked, sensitive, spoiler, isHidden;
 	private Status embedded;
@@ -66,6 +66,7 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(REPOST_ID));
+		editedAt =  cursor.getLong(cursor.getColumnIndexOrThrow(EDITED_AT));
 		String statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(URL));
 		String language = cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA));
@@ -192,6 +193,12 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 	@Override
 	public int getVisibility() {
 		return visibility;
+	}
+
+
+	@Override
+	public long editedAt() {
+		return editedAt;
 	}
 
 

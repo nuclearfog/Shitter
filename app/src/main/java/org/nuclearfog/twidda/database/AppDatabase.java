@@ -1442,7 +1442,7 @@ public class AppDatabase {
 			default:
 				flags &= ~MASK_STATUS_VISIBILITY_DIRECT;
 		}
-		ContentValues column = new ContentValues(20);
+		ContentValues column = new ContentValues(22);
 		column.put(StatusTable.ID, status.getId());
 		column.put(StatusTable.USER, user.getId());
 		column.put(StatusTable.TIME, status.getTimestamp());
@@ -1458,6 +1458,7 @@ public class AppDatabase {
 		column.put(StatusTable.REPLYUSER, status.getRepliedUserId());
 		column.put(StatusTable.REPLYNAME, status.getReplyName());
 		column.put(StatusTable.LANGUAGE, status.getLanguage());
+		column.put(StatusTable.EDITED_AT, status.editedAt());
 		column.put(StatusTable.MENTIONS, status.getUserMentions());
 		if (status.getLocation() != null && status.getLocation().getId() != 0L) {
 			column.put(StatusTable.LOCATION, status.getLocation().getId());
