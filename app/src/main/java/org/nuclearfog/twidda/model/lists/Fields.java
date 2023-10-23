@@ -33,6 +33,6 @@ public class Fields extends LinkedList<Field> {
 	@NonNull
 	@Override
 	public String toString() {
-		return "size=" + size();
+		return "item_count=" + size();
 	}
 }

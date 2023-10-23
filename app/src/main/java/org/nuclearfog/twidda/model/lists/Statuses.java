@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.model.lists;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.model.Status;
@@ -133,5 +134,18 @@ public class Statuses extends LinkedList<Status> {
 		addAll(statuses);
 		prevCursor = statuses.getPreviousCursor();
 		nextCursor = statuses.getNextCursor();
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		int itemCount = 0;
+		for (Status item : this) {
+			if (item != null) {
+				itemCount++;
+			}
+		}
+		return "item_count=" + itemCount + " prev=" + getPreviousCursor() + " next=" + getNextCursor();
 	}
 }

@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface EditedStatus extends Serializable {
+public interface EditedStatus extends Serializable, Comparable<EditedStatus> {
 
 	/**
 	 * @return timestamp of this revision
@@ -51,4 +51,18 @@ public interface EditedStatus extends Serializable {
 	 * @return array of emojis used in the text
 	 */
 	Emoji[] getEmojis();
+
+	/**
+	 * @return location associated with this status
+	 */
+	@Nullable
+	Location getLocation();
+
+	/**
+	 *
+	 */
+	@Override
+	default int compareTo(EditedStatus status) {
+		return Long.compare(status.getTimestamp(), getTimestamp());
+	}
 }

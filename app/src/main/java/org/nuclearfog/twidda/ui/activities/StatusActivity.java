@@ -163,11 +163,12 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private AudioPlayerDialog audioDialog;
 	private ReportDialog reportDialog;
 
-	private TextView status_source, created_at, status_text, screen_name, username, location_name, sensitive, visibility, spoiler, spoiler_hint, translate_text;
+	private TextView status_source, created_at, status_text, screen_name, username, edited;
+	private TextView location_name, sensitive, visibility, spoiler, spoiler_hint, translate_text;
 	private Button reply_button, repost_button, like_button, reply_name, repost_name_button;
 	private ImageView profile_image;
 	private Toolbar toolbar;
-	private View card_container;
+	private RecyclerView card_list;
 
 	@Nullable
 	private Status status;
@@ -187,7 +188,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.page_status);
 		ViewGroup root = findViewById(R.id.page_status_root);
-		RecyclerView card_list = findViewById(R.id.page_status_cards);
+		card_list = findViewById(R.id.page_status_cards);
 		toolbar = findViewById(R.id.page_status_toolbar);
 		reply_button = findViewById(R.id.page_status_reply);
 		repost_button = findViewById(R.id.page_status_repost);
@@ -203,10 +204,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		sensitive = findViewById(R.id.page_status_sensitive);
 		spoiler = findViewById(R.id.page_status_spoiler);
 		visibility = findViewById(R.id.page_status_visibility);
+		edited = findViewById(R.id.page_status_edited);
 		repost_name_button = findViewById(R.id.page_status_reposter_reference);
 		translate_text = findViewById(R.id.page_status_text_translate);
 		spoiler_hint = findViewById(R.id.page_status_text_sensitive_hint);
-		card_container = findViewById(R.id.page_status_cards_container);
+		//card_container = findViewById(R.id.page_status_cards_container);
 
 		clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 		statusLoader = new StatusAction(this);
@@ -229,6 +231,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		visibility.setCompoundDrawablesWithIntrinsicBounds(R.drawable.global, 0, 0, 0);
 		reply_name.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
 		repost_name_button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.repost, 0, 0, 0);
+		edited.setCompoundDrawablesWithIntrinsicBounds(R.drawable.edit, 0, 0, 0);
 		status_text.setMovementMethod(LinkAndScrollMovement.getInstance());
 		status_text.setLinkTextColor(settings.getHighlightColor());
 		card_list.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
@@ -498,7 +501,9 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// get edit history
 			else if (item.getItemId() == R.id.menu_status_history) {
-				// todo implement history viewer
+				Intent intent = new Intent(this, EditHistoryActivity.class);
+				intent.putExtra(EditHistoryActivity.KEY_ID, status.getId());
+				startActivity(intent);
 				return true;
 			}
 		}
@@ -844,6 +849,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		} else {
 			sensitive.setVisibility(View.GONE);
 		}
+		if (status.editedAt() != 0L) {
+			edited.setVisibility(View.VISIBLE);
+		} else {
+			edited.setVisibility(View.GONE);
+		}
 		// set status spoiler warning
 		if (status.isSpoiler()) {
 			spoiler.setVisibility(View.VISIBLE);
@@ -895,11 +905,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		}
 		// set status attachment preview
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
-			card_container.setVisibility(View.VISIBLE);
+			card_list.setVisibility(View.VISIBLE);
 			adapter.replaceAll(status, settings.hideSensitiveEnabled());
 			status_text.setMaxLines(5);
 		} else {
-			card_container.setVisibility(View.GONE);
+			card_list.setVisibility(View.GONE);
 			status_text.setMaxLines(10);
 		}
 	}

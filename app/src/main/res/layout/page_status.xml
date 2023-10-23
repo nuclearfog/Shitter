@@ -174,39 +174,43 @@
 					app:layout_constraintStart_toStartOf="@id/page_status_text"
 					app:layout_constraintTop_toBottomOf="@id/page_status_text" />
 
-				<LinearLayout
-					android:id="@+id/page_status_cards_container"
-					android:layout_width="0dp"
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/page_status_cards"
+					android:layout_width="wrap_content"
 					android:layout_height="@dimen/page_status_card_height"
-					android:layout_margin="@dimen/page_status_cards_list_margin"
-					android:orientation="horizontal"
+					android:padding="@dimen/page_status_cards_list_padding"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/page_status_text_translate"
-					app:layout_constraintEnd_toEndOf="parent"
-					android:gravity="center">
-
-					<androidx.recyclerview.widget.RecyclerView
-						android:id="@+id/page_status_cards"
-						android:layout_width="wrap_content"
-						android:layout_height="match_parent" />
-
-				</LinearLayout>
+					app:layout_constraintEnd_toEndOf="parent" />
 
 				<TextView
 					android:id="@+id/page_status_visibility"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:visibility="gone"
+					android:visibility="invisible"
 					android:drawablePadding="@dimen/page_status_padding_drawable"
 					android:layout_marginStart="@dimen/page_status_textview_margin"
-					android:layout_marginTop="@dimen/page_status_textview_margin"
 					android:layout_marginEnd="@dimen/page_status_textview_margin"
 					android:lines="1"
 					android:textSize="@dimen/page_status_textsize_small"
 					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/page_status_cards_container"
-					app:layout_constraintEnd_toStartOf="@id/page_status_sensitive"
-					app:layout_constraintHorizontal_bias="0.0" />
+					app:layout_constraintTop_toBottomOf="@id/page_status_cards"
+					app:layout_constraintEnd_toStartOf="@id/page_status_edited" />
+
+				<TextView
+					android:id="@+id/page_status_edited"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:visibility="invisible"
+					android:drawablePadding="@dimen/page_status_padding_drawable"
+					android:layout_marginStart="@dimen/page_status_textview_margin"
+					android:layout_marginEnd="@dimen/page_status_textview_margin"
+					android:lines="1"
+					android:textSize="@dimen/page_status_textsize_small"
+					android:text="@string/status_edited"
+					app:layout_constraintStart_toEndOf="@id/page_status_visibility"
+					app:layout_constraintTop_toBottomOf="@id/page_status_cards"
+					app:layout_constraintEnd_toStartOf="@id/page_status_sensitive" />
 
 				<TextView
 					android:id="@+id/page_status_sensitive"
@@ -215,15 +219,13 @@
 					android:visibility="invisible"
 					android:drawablePadding="@dimen/page_status_padding_drawable"
 					android:layout_marginStart="@dimen/page_status_textview_margin"
-					android:layout_marginTop="@dimen/page_status_textview_margin"
 					android:layout_marginEnd="@dimen/page_status_textview_margin"
 					android:lines="1"
 					android:text="@string/status_sensitive_media"
 					android:textSize="@dimen/page_status_textsize_small"
-					app:layout_constraintStart_toEndOf="@id/page_status_visibility"
-					app:layout_constraintTop_toBottomOf="@id/page_status_cards_container"
+					app:layout_constraintStart_toEndOf="@id/page_status_edited"
+					app:layout_constraintTop_toBottomOf="@id/page_status_cards"
 					app:layout_constraintEnd_toStartOf="@id/page_status_spoiler"
-					app:layout_constraintHorizontal_bias="0.0"
 					app:layout_constraintHorizontal_chainStyle="packed" />
 
 				<TextView
@@ -233,20 +235,18 @@
 					android:visibility="invisible"
 					android:drawablePadding="@dimen/page_status_padding_drawable"
 					android:layout_marginStart="@dimen/page_status_textview_margin"
-					android:layout_marginTop="@dimen/page_status_textview_margin"
 					android:layout_marginEnd="@dimen/page_status_textview_margin"
 					android:lines="1"
 					android:text="@string/status_contains_spoiler"
 					android:textSize="@dimen/page_status_textsize_small"
 					app:layout_constraintStart_toEndOf="@id/page_status_sensitive"
-					app:layout_constraintTop_toBottomOf="@id/page_status_cards_container"
-					app:layout_constraintHorizontal_bias="0.0" />
+					app:layout_constraintTop_toBottomOf="@id/page_status_cards" />
 
 				<androidx.constraintlayout.widget.Barrier
 					android:id="@+id/page_status_location_barrier"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					app:constraint_referenced_ids="page_status_visibility,page_status_sensitive,page_status_spoiler"
+					app:constraint_referenced_ids="page_status_visibility,page_status_edited,page_status_sensitive,page_status_spoiler"
 					app:barrierDirection="bottom" />
 
 				<TextView

@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.model.lists;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.model.Rule;
 
 import java.util.ArrayList;
@@ -22,5 +24,12 @@ public class Rules extends ArrayList<Rule> {
 	 */
 	public Rules(int cap) {
 		super(cap);
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "item_count=" + size();
 	}
 }

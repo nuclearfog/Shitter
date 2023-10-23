@@ -54,7 +54,16 @@ public class Users extends LinkedList<User> {
 	}
 
 	/**
-	 * get next link to a list
+	 * get previous cursor of this list
+	 *
+	 * @return cursor
+	 */
+	public long getPreviousCursor() {
+		return prevCursor;
+	}
+
+	/**
+	 * get next cursor of this list
 	 *
 	 * @return cursor
 	 */
@@ -96,6 +105,12 @@ public class Users extends LinkedList<User> {
 	@Override
 	@NonNull
 	public String toString() {
-		return "size=" + size() + " previous=" + prevCursor + " next=" + nextCursor;
+		int itemCount = 0;
+		for (User item : this) {
+			if (item != null) {
+				itemCount++;
+			}
+		}
+		return "item_count=" + itemCount + " previous=" + getPreviousCursor() + " next=" + getNextCursor();
 	}
 }

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.EditedStatus;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.User;
@@ -38,9 +39,8 @@ public class EditedMastodonStatus implements EditedStatus {
 		JSONArray mediaArray = json.optJSONArray("media_attachments");
 		JSONArray emojiArray = json.optJSONArray("emojis");
 		String content = json.optString("content", "");
-		String spoilerText = json.optString("spoiler_text", "");
 		text = StringUtils.extractText(content);
-		spoiler = !content.equals(spoilerText);
+		spoiler = json.optBoolean("spoiler_text", false);
 		sensitive = json.optBoolean("sensitive", false);
 		timestamp = StringUtils.getIsoTime(json.optString("created_at"));
 		author = new MastodonUser(json.getJSONObject("account"), currentUserId);
@@ -111,5 +111,12 @@ public class EditedMastodonStatus implements EditedStatus {
 	@Override
 	public Emoji[] getEmojis() {
 		return emojis;
+	}
+
+
+	@Nullable
+	@Override
+	public Location getLocation() {
+		return null;
 	}
 }

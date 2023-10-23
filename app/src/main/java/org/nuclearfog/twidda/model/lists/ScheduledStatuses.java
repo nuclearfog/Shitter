@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.model.lists;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.model.ScheduledStatus;
@@ -27,5 +28,18 @@ public class ScheduledStatuses extends LinkedList<ScheduledStatus> {
 	@Nullable
 	public ScheduledStatus get(int index) {
 		return super.get(index);
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		int itemCount = 0;
+		for (ScheduledStatus item : this) {
+			if (item != null) {
+				itemCount++;
+			}
+		}
+		return "item_count=" + itemCount;
 	}
 }

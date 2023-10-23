@@ -101,6 +101,12 @@ public class Hashtags extends LinkedList<Hashtag> {
 	@Override
 	@NonNull
 	public String toString() {
-		return "size=" + size() + " min_id=" + prevCursor + " max_id=" + nextCursor;
+		int itemCount = 0;
+		for (Hashtag item : this) {
+			if (item != null) {
+				itemCount++;
+			}
+		}
+		return "item_count=" + itemCount + " previous=" + getPreviousCursor() + " next=" + getNextCursor();
 	}
 }

@@ -52,11 +52,20 @@ public class UserLists extends LinkedList<UserList> {
 	}
 
 	/**
-	 * get next link to a list
+	 * get previous cursor of this list
 	 *
 	 * @return cursor
 	 */
-	public long getNext() {
+	public long getPreviousCursor() {
+		return prevCursor;
+	}
+
+	/**
+	 * get next cursor of this list
+	 *
+	 * @return cursor
+	 */
+	public long getNextCursor() {
 		return nextCursor;
 	}
 
@@ -111,6 +120,12 @@ public class UserLists extends LinkedList<UserList> {
 	@Override
 	@NonNull
 	public String toString() {
-		return "size=" + size() + " previous=" + prevCursor + " next=" + nextCursor;
+		int itemCount = 0;
+		for (UserList item : this) {
+			if (item != null) {
+				itemCount++;
+			}
+		}
+		return "item_count=" + itemCount + " previous=" + getPreviousCursor() + " next=" + getNextCursor();
 	}
 }

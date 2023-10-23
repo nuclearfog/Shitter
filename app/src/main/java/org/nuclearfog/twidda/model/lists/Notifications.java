@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.model.lists;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.model.Notification;
 
 import java.util.LinkedList;
@@ -23,5 +25,18 @@ public class Notifications extends LinkedList<Notification> {
 	 */
 	public Notifications(Notifications notifications) {
 		super(notifications);
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		int itemCount = 0;
+		for (Notification item : this) {
+			if (item != null) {
+				itemCount++;
+			}
+		}
+		return "item_count=" + itemCount;
 	}
 }

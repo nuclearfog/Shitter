@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.model.lists;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.model.Account;
 
 import java.util.LinkedList;
@@ -23,5 +25,12 @@ public class Accounts extends LinkedList<Account> {
 	 */
 	public Accounts(Accounts accounts) {
 		super(accounts);
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "item_count=" + size();
 	}
 }

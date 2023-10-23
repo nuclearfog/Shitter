@@ -108,7 +108,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 	@Override
 	public boolean onPlaceholderClick(int index) {
-		boolean actionPerformed = listener.onPlaceholderClick(userlists.getNext(), index);
+		boolean actionPerformed = listener.onPlaceholderClick(userlists.getNextCursor(), index);
 		if (actionPerformed)
 			loadingIndex = index;
 		return actionPerformed;
@@ -133,17 +133,17 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 		disableLoading();
 		if (index < 0) {
 			userlists.replaceAll(newUserlists);
-			if (userlists.getNext() != 0L) {
+			if (userlists.getNextCursor() != 0L) {
 				// Add placeholder
 				userlists.add(null);
 			}
 			notifyDataSetChanged();
 		} else {
 			userlists.addAll(index, newUserlists);
-			if (userlists.getNext() != 0L && userlists.peekLast() != null) {
+			if (userlists.getNextCursor() != 0L && userlists.peekLast() != null) {
 				userlists.add(null);
 				notifyItemRangeInserted(index, newUserlists.size() + 1);
-			} else if (userlists.getNext() == 0L && userlists.peekLast() == null) {
+			} else if (userlists.getNextCursor() == 0L && userlists.peekLast() == null) {
 				userlists.pollLast();
 				notifyItemRangeInserted(index, newUserlists.size() - 1);
 			} else {
@@ -159,7 +159,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 */
 	public void replaceItems(UserLists newUserlists) {
 		userlists.replaceAll(newUserlists);
-		if (userlists.getNext() != 0L && userlists.peekLast() != null) {
+		if (userlists.getNextCursor() != 0L && userlists.peekLast() != null) {
 			// Add placeholder
 			userlists.add(null);
 		}

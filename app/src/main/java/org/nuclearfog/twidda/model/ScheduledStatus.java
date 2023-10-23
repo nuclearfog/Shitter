@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface ScheduledStatus extends Serializable {
+public interface ScheduledStatus extends Serializable, Comparable<ScheduledStatus> {
 
 	/**
 	 * @return ID of the scheduled status
@@ -56,4 +56,11 @@ public interface ScheduledStatus extends Serializable {
 	 * @return true if status contains spoiler information
 	 */
 	boolean isSpoiler();
+
+	/**
+	 *
+	 */
+	default int compareTo(ScheduledStatus status) {
+		return Long.compare(status.getId(), getId());
+	}
 }

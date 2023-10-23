@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import org.nuclearfog.twidda.model.EditedStatus;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.IconHolder;
@@ -86,6 +87,23 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	 * add icons using status information
 	 */
 	public void setItems(Status status) {
+		items.clear();
+		if (status.getMedia().length > 0) {
+			addMediaIcons(status.getMedia());
+		}
+		if (status.getLocation() != null) {
+			items.add(IconHolder.TYPE_LOCATION);
+		}
+		if (status.getPoll() != null) {
+			items.add(IconHolder.TYPE_POLL);
+		}
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * add icons using edited status information
+	 */
+	public void setItems(EditedStatus status) {
 		items.clear();
 		if (status.getMedia().length > 0) {
 			addMediaIcons(status.getMedia());

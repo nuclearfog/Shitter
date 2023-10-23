@@ -267,6 +267,7 @@
 	<string name="confirm_delete_list">delete userlist?</string>
 	<string name="confirm_unfollow_list">unfollow list?</string>
 	<string name="trend_range">\u0020Posts</string>
+	<string name="status_edited">edited</string>
 	<string name="enter_username">enter username</string>
 	<string name="profile_banner">Banner Image</string>
 	<string name="editprofile_add_banner">add banner</string>
@@ -322,6 +323,7 @@
 	<string name="toolbar_status_favoriter">User favoriting this status</string>
 	<string name="toolbar_status_liker">User liking this status</string>
 	<string name="toolbar_schedule_title">scheduled Posts</string>
+	<string name="toolbar_status_history">Edit history</string>
 	<string name="time_now">now</string>
 	<string name="status_replyname_empty">Reply</string>
 	<string name="status_media_preview">Media preview</string>

@@ -65,7 +65,7 @@ import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
-import org.nuclearfog.twidda.model.lists.StatusEditHistoy;
+import org.nuclearfog.twidda.model.lists.StatusEditHistory;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
@@ -476,7 +476,7 @@ public class Mastodon implements Connection {
 		else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_REMOTE))
 			params.add("remote=true");
 		if (search.matches("#\\S+")) {
-			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + search.substring(1), params, minId, maxId);
+			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + StringUtils.encode(search.substring(1)), params, minId, maxId);
 		} else {
 			params.add("q=" + StringUtils.encode(search));
 			params.add("type=statuses");
@@ -497,9 +497,9 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public StatusEditHistoy getStatusEditHistory(long id) throws ConnectionException {
+	public StatusEditHistory getStatusEditHistory(long id) throws ConnectionException {
 		try {
-			StatusEditHistoy result = new StatusEditHistoy();
+			StatusEditHistory result = new StatusEditHistory();
 			Response response = get(ENDPOINT_STATUS + id + "/history", new ArrayList<>());
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
