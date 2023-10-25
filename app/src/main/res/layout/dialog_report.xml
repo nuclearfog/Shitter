@@ -84,7 +84,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/dialog_report_button_height"
 			android:padding="@dimen/dialog_report_button_padding"
-			android:text="@string/dialog_report_apply"
+			android:text="@string/dialog_apply"
 			android:layout_margin="@dimen/dialog_report_margin_items_layout"
 			android:lines="1"
 			android:textSize="@dimen/dialog_report_textsize_button"

@@ -168,7 +168,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		fontAdapter = new DropdownAdapter(getApplicationContext());
 		scaleAdapter = new DropdownAdapter(getApplicationContext());
 
-		toolbar.setTitle(R.string.title_settings);
+		toolbar.setTitle(R.string.menu_open_settings);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());

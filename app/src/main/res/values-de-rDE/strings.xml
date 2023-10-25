@@ -11,7 +11,6 @@
 	<string name="profile_image">Profilbild</string>
 	<string name="settings_image">Bilder laden</string>
 	<string name="settings_clear_data">Daten löschen</string>
-	<string name="title_settings">Einstellungen</string>
 	<string name="toolbar_userlist_repost">Status geteilt von</string>
 	<string name="settings_background">Hintergrund</string>
 	<string name="confirm_delete_status">Status löschen?</string>
@@ -112,7 +111,6 @@
 	<string name="edit_description_hint">Profilebeschreibung eingeben</string>
 	<string name="edit_hint_link">Link eingeben</string>
 	<string name="edit_location_hint">Standortnamen eingeben</string>
-	<string name="page_profile_editor">Profil bearbeiten</string>
 	<string name="error_no_card_app">Keine Karten App gefunden!</string>
 	<string name="error_no_media_app">Keine Galerie App gefunden!</string>
 	<string name="delete_list">Liste löschen</string>
@@ -140,7 +138,7 @@
 	<string name="status_spoiler_hint">Zum Anzeigen tippen</string>
 	<string name="login_info">4 Schritte zum Login</string>
 	<string name="userlist_enter_title">Titel eingeben</string>
-	<string name="userlist_create">erstellen</string>
+	<string name="userlist_create">Liste erstellen</string>
 	<string name="error_list_title_empty">Titel ist leer!</string>
 	<string name="info_list_updated">Liste wurde aktualisiert</string>
 	<string name="info_list_created">Liste wurde erstellt</string>
@@ -158,7 +156,6 @@
 	<string name="menu_open_filter">Filter verwalten</string>
 	<string name="menu_open_settings">Einstellungen</string>
 	<string name="menu_create_list">erstelle Nutzerliste</string>
-	<string name="toolbar_status_history">Bearbeitungsverlauf</string>
 	<string name="time_now">jetzt</string>
 	<string name="menu_follow_user">folgen</string>
 	<string name="menu_goto_lists">Nutzerlisten</string>
@@ -184,7 +181,6 @@
 	<string name="settings_enable_floating_button">Floating-Button aktivieren</string>
 	<string name="settings_look">Aussehen</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
-	<string name="account_page">Accounts</string>
 	<string name="toolbar_title_filter">Status-Filter</string>
 	<string name="status_translate_text">übersetzen</string>
 	<string name="field_verified">verifiziert:\u0020</string>
@@ -237,7 +233,6 @@
 	<string name="descr_remove_domain">entferne Domain von der Liste</string>
 	<string name="confirm_unknown_error">Unbekannter Fehler!</string>
 	<string name="error_invalid_media">Ungültige Mediendatei!</string>
-	<string name="menu_toolbar_excluded_users">Blocklisten</string>
 	<string name="info_status_location_copied">Standortkoordinaten kopiert</string>
 	<string name="settings_enable_indicators">zeige zusätzliche Status Informationen an</string>
 	<string name="login_key_enable">Token einfügen</string>
@@ -271,11 +266,12 @@
 	<string name="notification_dismiss">Benachrichtigung verwerfen</string>
 	<string name="dialog_poll_title">Umfrage erstellen</string>
 	<string name="dialog_poll_button_create">erstellen</string>
+	<string name="dialog_title_create_filter">Filter erstellen</string>
+	<string name="dialog_filter_title_name">Filtertitel</string>
 	<string name="dialog_poll_button_remove">entfernen</string>
 	<string name="dialog_poll_mc">Mehrfachauswahl</string>
 	<string name="dialog_poll_hide">Stimmen verstecken</string>
 	<string name="dialog_poll_option_edit_hint">%1$d. Option</string>
-	<string name="dialog_poll_duration_hint">Dauer: 1</string>
 	<string name="poll_option_edit_button">hinzufügen/entfernen</string>
 	<string name="status_add_poll">Umfrage hinzufügen</string>
 	<string name="status_pref">Statuseinstellungen</string>
@@ -312,7 +308,6 @@
 	<string name="dialog_report_title_user">Nutzer melden</string>
 	<string name="dialog_report_category_label">Meldegrund</string>
 	<string name="dialog_report_title_status">Status melden</string>
-	<string name="dialog_report_apply">melden</string>
 	<string name="dialog_meta_title">Medieninformationen</string>
 	<string name="dialog_meta_width">Breite</string>
 	<string name="dialog_meta_height">Höhe</string>
@@ -338,7 +333,6 @@
 	<string name="description_filter_public_timeline">Filter für öffentliche Timeline aktiviert</string>
 	<string name="description_filter_thread">Filter für Threads aktiviert</string>
 	<string name="description_filter_user_timeline">Filter für Nutzer-Timeline aktiviert</string>
-	<string name="dialog_filter_create">Filter erstellen</string>
 	<string name="dialog_filter_name_hint">Filternamen eingeben</string>
 	<string name="dialog_filter_update">Filter aktualisieren</string>
 	<string name="dialog_filter_apply">Filter anwenden für</string>
@@ -359,7 +353,6 @@
 	<string name="menu_schedule">geplante Posts</string>
 	<string name="descr_remove_schedule">geplanten Post von der Liste entfernen</string>
 	<string name="confirm_schedule_remove">geplanten Post verwerfen?</string>
-	<string name="toolbar_schedule_title">geplante Posts</string>
 	<string name="userlist_exclusive">Mitglieder aus den Home-Timeline filtern</string>
 	<string name="userlist_update_list">Nutzerliste bearbeiten</string>
 	<string name="confirm_accept_follow_request">Follow-Anfrage annehmen?</string>
@@ -367,4 +360,5 @@
 	<string name="description_show_timeline">öffentl. Timeline</string>
 	<string name="error_api_error">API Fehler</string>
 	<string name="menu_status_history">Bearbeitungsverlauf</string>
+	<string name="hint_duration">Dauer</string>
 </resources>

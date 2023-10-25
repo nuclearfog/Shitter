@@ -141,7 +141,6 @@
 	<string name="menu_status_copy_text">Texto</string>
 	<string name="menu_media_link">Enlace de medios</string>
 	<string name="menu_status_copy_link">Enlace de estado</string>
-	<string name="menu_toolbar_excluded_users">Lista de bloqueos</string>
 	<string name="dialog_link_image_preview">Enlazar vista previa de la imagen</string>
 	<string name="app_info_icons">Iconos SVG de:</string>
 	<string name="profile_image">Imagen de perfil</string>
@@ -150,7 +149,6 @@
 	<string name="login_key_enable_v2">Usar API v2</string>
 	<string name="login_verifier">Acceder</string>
 	<string name="popup_status_text_hint">Estadp</string>
-	<string name="title_settings">Configuración</string>
 	<string name="toolbar_userlist_repost">Estado re-publicado por</string>
 	<string name="settings_color_settings">Configuración de color</string>
 	<string name="settings_background">Fondo</string>
@@ -198,7 +196,6 @@
 	<string name="dialog_poll_mc">Opción múltiple</string>
 	<string name="dialog_poll_hide">Ocultar votos</string>
 	<string name="dialog_poll_option_edit_hint">Opción %1$d</string>
-	<string name="dialog_poll_duration_hint">Duración: 1</string>
 	<string name="confirm_discard">¿Descartar cambios?</string>
 	<string name="user_data">Datos del usuario</string>
 	<string name="follows_you">Te sigue</string>
@@ -215,7 +212,6 @@
 	<string name="edit_location_hint">Ingresar ubicación</string>
 	<string name="edit_hint_link">Ingresar enlace de sitio web</string>
 	<string name="edit_description_hint">Ingresar descripción del perfil</string>
-	<string name="page_profile_editor">Editar perfil</string>
 	<string name="confirm_delete_list">¿Borrar lista de usuario?</string>
 	<string name="confirm_unfollow_list">¿No seguir lista?</string>
 	<string name="trend_range">\u0020Publicaciones</string>
@@ -246,7 +242,6 @@
 	<string name="button_share">Compartir enlace</string>
 	<string name="settings_rt_icon_color">Re-publicar</string>
 	<string name="settings_follow_color">Icono de quienes sigues</string>
-	<string name="account_page">Cuentas</string>
 	<string name="status_translate_text">Traducir</string>
 	<string name="status_translate_source">Traducido por:\u0020</string>
 	<string name="status_translate_source_language">Idioma:\u0020</string>

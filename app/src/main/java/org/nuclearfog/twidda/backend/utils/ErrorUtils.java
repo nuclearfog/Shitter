@@ -107,7 +107,7 @@ public class ErrorUtils {
 					return context.getString(R.string.error_forbidden_api_access);
 
 				case ConnectionException.INVALID_DATA:
-					return  context.getString(R.string.error_api_error);
+					return context.getString(R.string.error_api_error);
 
 				case ConnectionException.INVALID_MEDIA:
 					return context.getString(R.string.error_invalid_media);

@@ -82,7 +82,7 @@ public class AccountActivity extends AppCompatActivity implements ActivityResult
 		fragmentTransaction.replace(R.id.page_fragment_container, AccountFragment.class, null);
 		fragmentTransaction.commit();
 
-		tool.setTitle(R.string.account_page);
+		tool.setTitle(R.string.menu_select_account);
 		setSupportActionBar(tool);
 
 		settings = GlobalSettings.get(this);

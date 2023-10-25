@@ -12,12 +12,26 @@
 		android:id="@+id/dialog_filter_title_dialog"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		android:text="@string/dialog_filter_create"
+		android:text="@string/dialog_title_create_filter"
 		android:lines="1"
 		android:textSize="@dimen/dialog_filter_textsize_title"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<TextView
+		android:id="@+id/dialog_filter_name_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:lines="1"
+		android:text="@string/dialog_filter_title_name"
+		android:textSize="@dimen/dialog_filter_textsize_title_sub"
+		android:layout_marginTop="@dimen/dialog_filter_margin_columns"
+		android:layout_marginStart="@dimen/dialog_filter_margin_items_layout"
+		android:layout_marginEnd="@dimen/dialog_filter_margin_items_layout"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_dialog"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<EditText
@@ -30,8 +44,9 @@
 		android:background="@android:color/transparent"
 		android:inputType="text"
 		android:importantForAutofill="no"
+		android:textSize="@dimen/dialog_filter_textsize_input"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_dialog"
+		app:layout_constraintTop_toBottomOf="@id/dialog_filter_name_title"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<TextView
@@ -41,7 +56,9 @@
 		android:text="@string/dialog_filter_apply"
 		android:lines="1"
 		android:textSize="@dimen/dialog_filter_textsize_title_sub"
-		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
+		android:layout_marginTop="@dimen/dialog_filter_margin_columns"
+		android:layout_marginStart="@dimen/dialog_filter_margin_items_layout"
+		android:layout_marginEnd="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_name"
 		app:layout_constraintEnd_toEndOf="parent" />
@@ -191,7 +208,9 @@
 		android:layout_height="wrap_content"
 		android:text="@string/dialog_filter_title_keywords"
 		android:textSize="@dimen/dialog_filter_textsize_title_sub"
-		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
+		android:layout_marginTop="@dimen/dialog_filter_margin_columns"
+		android:layout_marginStart="@dimen/dialog_filter_margin_items_layout"
+		android:layout_marginEnd="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_switch_thread"
 		app:layout_constraintEnd_toEndOf="parent" />
@@ -209,6 +228,7 @@
 		android:gravity="top"
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		android:inputType="textMultiLine"
+		android:textSize="@dimen/dialog_filter_textsize_input"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_title_keywords"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -219,10 +239,11 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:background="@android:color/transparent"
-		android:hint="@string/dialog_poll_duration_hint"
+		android:hint="@string/hint_duration"
 		android:inputType="numberDecimal"
 		android:maxLength="3"
 		android:autofillHints=""
+		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="2"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
@@ -232,6 +253,7 @@
 		android:id="@+id/dialog_filter_timeunit"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="3"
 		app:layout_constraintStart_toEndOf="@id/dialog_filter_time"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
@@ -246,7 +268,8 @@
 		android:layout_margin="@dimen/dialog_filter_margin_items_layout"
 		app:layout_constraintHorizontal_weight="2"
 		app:layout_constraintStart_toEndOf="@id/dialog_filter_timeunit"
-		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
+		app:layout_constraintTop_toTopOf="@id/dialog_filter_timeunit"
+		app:layout_constraintBottom_toBottomOf="@id/dialog_filter_timeunit"
 		app:layout_constraintEnd_toEndOf="parent"
 		style="@style/FeedbackButton" />
 

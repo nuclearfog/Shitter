@@ -175,7 +175,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				break;
 
 			case USERS_EXCLUDED:
-				toolbar.setTitle(R.string.menu_toolbar_excluded_users);
+				toolbar.setTitle(R.string.menu_excluded_users);
 				adapter.setType(UserAdapter.BLOCKS);
 				adapter.setPageCount(3);
 				viewPager.setAdapter(adapter);

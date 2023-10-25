@@ -40,7 +40,7 @@ public class ScheduleActivity extends AppCompatActivity implements OnClickListen
 		if (settings.floatingButtonEnabled()) {
 			floatingButton.setVisibility(View.VISIBLE);
 		}
-		toolbar.setTitle(R.string.toolbar_schedule_title);
+		toolbar.setTitle(R.string.menu_schedule);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 

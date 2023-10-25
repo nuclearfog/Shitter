@@ -98,7 +98,7 @@
 			android:inputType="numberDecimal"
 			android:maxLength="3"
 			android:autofillHints=""
-			android:hint="@string/dialog_poll_duration_hint"
+			android:hint="@string/hint_duration"
 			android:layout_marginEnd="@dimen/dialog_poll_layout_margins"
 			android:textSize="@dimen/dialog_poll_textsize_medium"
 			android:lines="1"

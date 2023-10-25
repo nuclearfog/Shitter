@@ -117,7 +117,7 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 			}
 			// create new filter
 			else {
-				title.setText(R.string.dialog_filter_create);
+				title.setText(R.string.dialog_title_create_filter);
 				txt_keywords.setText("");
 			}
 			sw_home.setCheckedImmediately(update.filterHomeSet());

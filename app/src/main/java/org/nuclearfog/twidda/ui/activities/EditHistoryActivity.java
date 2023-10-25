@@ -31,7 +31,7 @@ public class EditHistoryActivity extends AppCompatActivity {
 		fragmentTransaction.replace(R.id.page_fragment_container, EditHistoryFragment.class, getIntent().getExtras());
 		fragmentTransaction.commit();
 
-		toolbar.setTitle(R.string.toolbar_status_history);
+		toolbar.setTitle(R.string.menu_status_history);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 	}

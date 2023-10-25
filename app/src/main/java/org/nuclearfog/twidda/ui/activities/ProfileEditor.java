@@ -123,7 +123,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
 
-		toolbar.setTitle(R.string.page_profile_editor);
+		toolbar.setTitle(R.string.menu_edit_profile);
 		setSupportActionBar(toolbar);
 
 		if (!settings.toolbarOverlapEnabled()) {

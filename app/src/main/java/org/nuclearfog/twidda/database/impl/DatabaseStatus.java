@@ -66,7 +66,7 @@ public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable 
 		replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow(REPLYUSER));
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(REPOST_ID));
-		editedAt =  cursor.getLong(cursor.getColumnIndexOrThrow(EDITED_AT));
+		editedAt = cursor.getLong(cursor.getColumnIndexOrThrow(EDITED_AT));
 		String statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(URL));
 		String language = cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA));

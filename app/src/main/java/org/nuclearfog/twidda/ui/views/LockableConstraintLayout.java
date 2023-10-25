@@ -52,9 +52,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				yPos = ev.getAxisValue(MotionEvent.AXIS_Y);
 				break;
 
-			case MotionEvent.ACTION_POINTER_UP:
-			case MotionEvent.ACTION_CANCEL:
-			case MotionEvent.ACTION_UP:
+			default:
 				yLock = false;
 				break;
 		}
