@@ -90,7 +90,7 @@ public class DatabaseAdapter {
 	 */
 	private static final String TABLE_ACCOUNTS = "CREATE TABLE IF NOT EXISTS "
 			+ AccountTable.NAME + "("
-			+ AccountTable.ID + " INTEGER PRIMARY KEY,"
+			+ AccountTable.ID + " INTEGER,"
 			+ AccountTable.DATE + " INTEGER,"
 			+ AccountTable.ACCESS_TOKEN + " TEXT,"
 			+ AccountTable.TOKEN_SECRET + " TEXT,"

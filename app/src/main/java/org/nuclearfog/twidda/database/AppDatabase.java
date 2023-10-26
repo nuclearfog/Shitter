@@ -262,7 +262,7 @@ public class AppDatabase {
 	/**
 	 * selection for account entry
 	 */
-	private static final String ACCOUNT_SELECTION = AccountTable.ID + "=?";
+	private static final String ACCOUNT_SELECTION = AccountTable.ID + "=? AND " + AccountTable.HOSTNAME + "=?";
 
 	/**
 	 * selection for poll entry
@@ -512,6 +512,11 @@ public class AppDatabase {
 	 */
 	public void saveLogin(Account account) {
 		synchronized (LOCK) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			// delete login entry if exists
+			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
+			db.delete(AccountTable.NAME, ACCOUNT_SELECTION, accountArgs);
+			// insert/update login
 			ContentValues column = new ContentValues(9);
 			column.put(AccountTable.ID, account.getId());
 			column.put(AccountTable.DATE, account.getTimestamp());
@@ -522,7 +527,6 @@ public class AppDatabase {
 			column.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
 			column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 			column.put(AccountTable.BEARER, account.getBearerToken());
-			SQLiteDatabase db = adapter.getDbWrite();
 			db.insertWithOnConflict(AccountTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 			if (account.getUser() != null) {
 				saveUser(account.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
@@ -976,7 +980,7 @@ public class AppDatabase {
 	 */
 	public void removeLogin(Account account) {
 		synchronized (LOCK) {
-			String[] accountArgs = {Long.toString(account.getId())};
+			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
 			String[] pushArgs = {account.getId() + '@' + account.getHostname()};
 
 			SQLiteDatabase db = adapter.getDbWrite();
@@ -997,23 +1001,6 @@ public class AppDatabase {
 			String[] args = {Long.toString(id)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor c = db.query(StatusTable.NAME, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
-			boolean result = c.moveToFirst();
-			c.close();
-			return result;
-		}
-	}
-
-	/**
-	 * check if status exists in database
-	 *
-	 * @param id status ID
-	 * @return true if found
-	 */
-	public boolean containsLogin(long id) {
-		synchronized (LOCK) {
-			String[] args = {Long.toString(id)};
-			SQLiteDatabase db = adapter.getDbRead();
-			Cursor c = db.query(AccountTable.NAME, null, ACCOUNT_SELECTION, args, null, null, SINGLE_ITEM);
 			boolean result = c.moveToFirst();
 			c.close();
 			return result;

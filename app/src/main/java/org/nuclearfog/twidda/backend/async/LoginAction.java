@@ -47,9 +47,7 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 				case Param.MODE_REQUEST:
 					if (settings.isLoggedIn()) {
 						Account login = settings.getLogin();
-						if (!database.containsLogin(login.getId())) {
-							database.saveLogin(login);
-						}
+						database.saveLogin(login);
 					}
 					ConnectionResult result = connection.getAuthorisationLink(param.connection);
 					return new Result(Result.MODE_REQUEST, null, result, null);
