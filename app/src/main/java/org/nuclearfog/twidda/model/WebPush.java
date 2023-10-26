@@ -67,7 +67,7 @@ public interface WebPush extends Serializable {
 	/**
 	 * @return true if status notification (profile subscription) is enabled
 	 */
-	boolean alertStatusPostEnabled();
+	boolean alertNewStatusEnabled();
 
 	/**
 	 * @return true if 'status reposted' notification is enabled

@@ -135,8 +135,6 @@ public class ConfigAccount implements Account {
 		if (!(obj instanceof Account))
 			return false;
 		Account account = (Account) obj;
-		if (account.getUser() != null && getUser() != null)
-			return getUser().equals(account.getUser());
-		return false;
+		return account.getId() == getId() && account.getHostname().equals(getHostname());
 	}
 }

@@ -35,7 +35,7 @@ public class DatabaseAction extends AsyncExecutor<DatabaseAction.Param, Database
 					return new Result(Result.DELETE);
 
 				case Param.LOGOUT:
-					db.removeLogin(settings.getLogin().getId());
+					db.removeLogin(settings.getLogin());
 					return new Result(Result.LOGOUT);
 
 				default:

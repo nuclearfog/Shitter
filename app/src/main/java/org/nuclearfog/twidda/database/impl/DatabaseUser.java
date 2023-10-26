@@ -5,7 +5,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 import org.nuclearfog.twidda.model.Account;
@@ -60,9 +59,9 @@ public class DatabaseUser implements User, UserTable, UserRegisterTable {
 		statusCount = cursor.getInt(cursor.getColumnIndexOrThrow(STATUSES));
 		favorCount = cursor.getInt(cursor.getColumnIndexOrThrow(FAVORITS));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
-		isVerified = (register & AppDatabase.MASK_USER_VERIFIED) != 0;
-		isLocked = (register & AppDatabase.MASK_USER_PRIVATE) != 0;
-		defaultImage = (register & AppDatabase.MASK_USER_DEFAULT_IMAGE) != 0;
+		isVerified = (register & MASK_USER_VERIFIED) != 0;
+		isLocked = (register & MASK_USER_PRIVATE) != 0;
+		defaultImage = (register & MASK_USER_DEFAULT_IMAGE) != 0;
 
 		if (username != null)
 			this.username = username;

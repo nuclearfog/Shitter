@@ -9,6 +9,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.config.GlobalSettings;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.WebPush;
 
 /**
@@ -20,6 +21,7 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.Result> {
 
 	private Connection connection;
 	private GlobalSettings settings;
+	private AppDatabase database;
 
 	/**
 	 *
@@ -27,6 +29,7 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.Result> {
 	public PushUpdater(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 		settings = GlobalSettings.get(context);
+		database = new AppDatabase(context);
 	}
 
 
@@ -35,6 +38,7 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.Result> {
 		try {
 			WebPush webpush = connection.updatePush(param);
 			settings.setWebPush(webpush);
+			database.savePushSubscription(webpush);
 			return new Result(webpush, null);
 		} catch (ConnectionException e) {
 			return new Result(null, e);

@@ -4,27 +4,47 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
+import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.WebPush;
 
 /**
  * @author nuclearfog
  */
 public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAction.Result> {
 
-	private AppDatabase db;
+	private AppDatabase database;
+	private GlobalSettings settings;
 
 	/**
 	 *
 	 */
 	public AccountAction(Context context) {
-		db = new AppDatabase(context);
+		database = new AppDatabase(context);
+		settings = GlobalSettings.get(context);
 	}
 
 
 	@Override
 	protected Result doInBackground(@NonNull Param param) {
-		db.removeLogin(param.id);
-		return new Result(param.id);
+		switch (param.mode) {
+			case Param.SELECT:
+				WebPush webPush = database.getWebPush(param.account);
+				settings.setLogin(param.account, true);
+				if (webPush != null) {
+					settings.setPushEnabled(true);
+					settings.setWebPush(webPush);
+				} else {
+					settings.setPushEnabled(false);
+				}
+				return new Result(Result.SELECT, param.account);
+
+			case Param.REMOVE:
+				database.removeLogin(param.account);
+				return new Result(Result.REMOVE, param.account);
+		}
+		return null;
 	}
 
 	/**
@@ -32,10 +52,15 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 	 */
 	public static class Param {
 
-		final long id;
+		public static final int SELECT = 1;
+		public static final int REMOVE = 2;
 
-		public Param(long id) {
-			this.id = id;
+		final Account account;
+		final int mode;
+
+		public Param(int mode, Account account) {
+			this.mode = mode;
+			this.account = account;
 		}
 	}
 
@@ -44,10 +69,15 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 	 */
 	public static class Result {
 
-		public final long id;
+		public static final int SELECT = 10;
+		public static final int REMOVE = 20;
 
-		Result(long id) {
-			this.id = id;
+		public final Account account;
+		public final int mode;
+
+		Result(int mode, Account account) {
+			this.mode = mode;
+			this.account = account;
 		}
 	}
 }

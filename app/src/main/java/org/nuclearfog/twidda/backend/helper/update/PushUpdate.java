@@ -35,7 +35,7 @@ public class PushUpdate implements Serializable {
 			this.host = host;
 		}
 		notifyMention = webPush.alertMentionEnabled();
-		notifyStatus = webPush.alertStatusPostEnabled();
+		notifyStatus = webPush.alertNewStatusEnabled();
 		notifyFollowRequest = webPush.alertFollowRequestEnabled();
 		notifyFollow = webPush.alertFollowingEnabled();
 		notifyFavorite = webPush.alertFavoriteEnabled();

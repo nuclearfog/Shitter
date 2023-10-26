@@ -89,7 +89,7 @@ public class MastodonPush implements WebPush {
 
 
 	@Override
-	public boolean alertStatusPostEnabled() {
+	public boolean alertNewStatusEnabled() {
 		return newPostAlert;
 	}
 

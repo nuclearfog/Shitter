@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.notification;
 import android.content.Context;
 
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.unifiedpush.android.connector.RegistrationDialogContent;
 import org.unifiedpush.android.connector.UnifiedPush;
@@ -26,7 +27,9 @@ public class PushSubscription {
 			try {
 				ArrayList<String> features = new ArrayList<>(1);
 				features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
-				UnifiedPush.registerAppWithDialog(context, settings.getPushInstance(), new RegistrationDialogContent(), features, "");
+				// create unique push identifier for a single login
+				String instance = StringUtils.getMD5signature(settings.getLogin().getId() + "@" + settings.getLogin().getHostname());
+				UnifiedPush.registerAppWithDialog(context, instance, new RegistrationDialogContent(), features, "");
 			} catch (Exception exception) {
 				// thrown when ntfy-app was not found
 				if (BuildConfig.DEBUG) {

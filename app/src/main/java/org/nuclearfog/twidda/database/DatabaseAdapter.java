@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteException;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.model.Status;
 
 import java.io.File;
 
@@ -216,6 +217,20 @@ public class DatabaseAdapter {
 			+ InstanceTable.POLL_MAX_DURATION + " INTEGER);";
 
 	/**
+	 * Webpush table
+	 */
+	private static final String TABLE_WEBPUSH = "CREATE TABLE IF NOT EXISTS "
+			+ PushTable.NAME + "("
+			+ PushTable.USER_URL + " TEXT PRIMARY KEY,"
+			+ PushTable.HOST + " TEXT,"
+			+ PushTable.ID + " INTEGER,"
+			+ PushTable.PUB_KEY + " TEXT,"
+			+ PushTable.SEC_KEY + " TEXT,"
+			+ PushTable.SERVER_KEY + " TEXT,"
+			+ PushTable.AUTH_SECRET + " TEXT,"
+			+ PushTable.FLAGS + " INTEGER);";
+
+	/**
 	 * table index for status table
 	 */
 	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
@@ -355,6 +370,7 @@ public class DatabaseAdapter {
 		db.execSQL(TABLE_EMOJI);
 		db.execSQL(TABLE_POLL);
 		db.execSQL(TABLE_INSTANCES);
+		db.execSQL(TABLE_WEBPUSH);
 		// create index if not exist
 		db.execSQL(INDX_STATUS);
 		db.execSQL(INDX_STATUS_REG);
@@ -842,6 +858,71 @@ public class DatabaseAdapter {
 		 * ID of the repost of the current user (if exists)
 		 */
 		String REPOST_ID = "retweeterID";
+
+		/**
+		 * flag indicates that a status was favorited by the current user
+		 */
+		int MASK_STATUS_FAVORITED = 1;
+
+		/**
+		 * flag indicates that a status was reposted by the current user
+		 */
+		int MASK_STATUS_REPOSTED = 1 << 1;
+
+		/**
+		 * flag indicates that a status exists in the home timeline of the current user
+		 */
+		int MASK_STATUS_HOME_TIMELINE = 1 << 2;
+
+		/**
+		 * flag indicates that a status exists in the notification of the current user
+		 */
+		int MASK_STATUS_NOTIFICATION = 1 << 3;
+
+		/**
+		 * flag indicates that a status exists in an user timeline
+		 */
+		int MASK_STATUS_USER_TIMELINE = 1 << 4;
+
+		/**
+		 * flag indicates that a status exists in the reply of a status
+		 */
+		int MASK_STATUS_REPLY = 1 << 5;
+
+		/**
+		 * flag indicates that a status contains spoiler
+		 */
+		int MASK_STATUS_SPOILER = 1 << 7;
+
+		/**
+		 * flag indicates that a status contains sensitive media
+		 */
+		int MASK_STATUS_SENSITIVE = 1 << 8;
+
+		/**
+		 * flag indicates that a status was hidden by the current user
+		 */
+		int MASK_STATUS_HIDDEN = 1 << 9;
+
+		/**
+		 * flag indicated that a status is bookmarked by the current user
+		 */
+		int MASK_STATUS_BOOKMARKED = 1 << 10;
+
+		/**
+		 * status visibility flag {@link Status#VISIBLE_UNLISTED}
+		 */
+		int MASK_STATUS_VISIBILITY_UNLISTED = 1 << 11;
+
+		/**
+		 * status visibility flag {@link Status#VISIBLE_PRIVATE}
+		 */
+		int MASK_STATUS_VISIBILITY_PRIVATE = 2 << 11;
+
+		/**
+		 * status visibility flag {@link Status#VISIBLE_DIRECT}
+		 */
+		int MASK_STATUS_VISIBILITY_DIRECT = 3 << 11;
 	}
 
 	/**
@@ -867,6 +948,26 @@ public class DatabaseAdapter {
 		 * Register with status bits
 		 */
 		String REGISTER = "userRegister";
+
+		/**
+		 * flag indicates that an user is verified
+		 */
+		int MASK_USER_VERIFIED = 1;
+
+		/**
+		 * flag indicates that an user is locked/private
+		 */
+		int MASK_USER_PRIVATE = 1 << 1;
+
+		/**
+		 * flag indicates that the statuses of an user are excluded from timeline
+		 */
+		int MASK_USER_FILTERED = 1 << 3;
+
+		/**
+		 * flag indicates that the user has a default profile image
+		 */
+		int MASK_USER_DEFAULT_IMAGE = 1 << 4;
 	}
 
 	/**
@@ -1154,5 +1255,65 @@ public class DatabaseAdapter {
 		 * maximum status poll duration
 		 */
 		String POLL_MAX_DURATION = "duration_poll_max";
+	}
+
+	/**
+	 *
+	 */
+	public interface PushTable {
+
+		String NAME = "web_push";
+
+		/**
+		 * web push id (user_id@hostname.example) Primary Key
+		 */
+		String USER_URL = "user_url";
+
+		/**
+		 * ID of the push subscription
+		 */
+		String ID = "push_id";
+
+		/**
+		 *
+		 */
+		String HOST = "host";
+
+		/**
+		 *
+		 */
+		String SERVER_KEY = "server_key";
+
+		/**
+		 *
+		 */
+		String AUTH_SECRET = "auth_secret";
+
+		/**
+		 *
+		 */
+		String PUB_KEY = "public_key";
+
+		/**
+		 *
+		 */
+		String SEC_KEY = "private_key";
+
+		/**
+		 *
+		 */
+		String FLAGS = "flags";
+
+		int FLAG_POLICY_FOLLOWING = 1;
+		int FLAG_POLICY_FOLLOWER = 2;
+		int FLAG_POLICY_ALL = 3;
+		int FLAG_MENTION = 1 << 3;
+		int FLAG_STATUS = 1 << 4;
+		int FLAG_REPOST = 1 << 5;
+		int FLAG_FOLLOWING = 1 << 6;
+		int FLAG_REQUEST = 1 << 7;
+		int FLAG_FAVORITE = 1 << 8;
+		int FLAG_POLL = 1 << 9;
+		int FLAG_MODIFIED = 1 << 10;
 	}
 }

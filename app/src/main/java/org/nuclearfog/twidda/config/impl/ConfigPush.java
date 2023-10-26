@@ -33,7 +33,7 @@ public class ConfigPush implements WebPush {
 		favorits = webPush.alertFavoriteEnabled();
 		following = webPush.alertFollowingEnabled();
 		follow_request = webPush.alertFollowRequestEnabled();
-		status_post = webPush.alertStatusPostEnabled();
+		status_post = webPush.alertNewStatusEnabled();
 		status_change = webPush.alertStatusChangeEnabled();
 		poll_finished = webPush.alertPollEnabled();
 		policy = webPush.getPolicy();
@@ -105,7 +105,7 @@ public class ConfigPush implements WebPush {
 
 
 	@Override
-	public boolean alertStatusPostEnabled() {
+	public boolean alertNewStatusEnabled() {
 		return status_post;
 	}
 

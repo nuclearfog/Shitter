@@ -596,7 +596,7 @@ public class GlobalSettings {
 		edit.putBoolean(PUSH_ALERT_FAVORITE, webPush.alertFavoriteEnabled());
 		edit.putBoolean(PUSH_ALERT_FOLLOWING, webPush.alertFollowingEnabled());
 		edit.putBoolean(PUSH_ALERT_REQUEST_FOLLOW, webPush.alertFollowRequestEnabled());
-		edit.putBoolean(PUSH_ALERT_STATUS_POST, webPush.alertStatusPostEnabled());
+		edit.putBoolean(PUSH_ALERT_STATUS_POST, webPush.alertNewStatusEnabled());
 		edit.putBoolean(PUSH_ALERT_STATUS_EDIT, webPush.alertStatusChangeEnabled());
 		edit.putBoolean(PUSH_ALERT_POLL, webPush.alertPollEnabled());
 		edit.apply();

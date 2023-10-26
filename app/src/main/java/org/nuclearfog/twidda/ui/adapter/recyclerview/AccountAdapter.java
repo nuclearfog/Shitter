@@ -89,16 +89,13 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	/**
 	 * remove single item with specific ID
 	 *
-	 * @param id Id of the element to remove
+	 * @param account account to remove
 	 */
-	public void removeItem(long id) {
-		for (int i = accounts.size() - 1; i >= 0; i--) {
-			Account account = accounts.get(i);
-			if (account != null && account.getId() == id) {
-				accounts.remove(i);
-				notifyItemRemoved(i);
-				break;
-			}
+	public void removeItem(Account account) {
+		int idx = accounts.indexOf(account);
+		if (idx >= 0) {
+			accounts.remove(idx);
+			notifyItemRemoved(idx);
 		}
 	}
 

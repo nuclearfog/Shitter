@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.PushTable;
 import org.nuclearfog.twidda.database.impl.DatabaseAccount;
 import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
 import org.nuclearfog.twidda.database.impl.DatabaseHashtag;
@@ -30,6 +31,7 @@ import org.nuclearfog.twidda.database.impl.DatabaseLocation;
 import org.nuclearfog.twidda.database.impl.DatabaseMedia;
 import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabasePoll;
+import org.nuclearfog.twidda.database.impl.DatabasePush;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Account;
@@ -42,6 +44,7 @@ import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Accounts;
 import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
@@ -58,91 +61,6 @@ import java.util.List;
  * @author nuclearfog
  */
 public class AppDatabase {
-
-	/**
-	 * flag indicates that a status was favorited by the current user
-	 */
-	public static final int MASK_STATUS_FAVORITED = 1;
-
-	/**
-	 * flag indicates that a status was reposted by the current user
-	 */
-	public static final int MASK_STATUS_REPOSTED = 1 << 1;
-
-	/**
-	 * flag indicates that a status exists in the home timeline of the current user
-	 */
-	private static final int MASK_STATUS_HOME_TIMELINE = 1 << 2;
-
-	/**
-	 * flag indicates that a status exists in the notification of the current user
-	 */
-	private static final int MASK_STATUS_NOTIFICATION = 1 << 3;
-
-	/**
-	 * flag indicates that a status exists in an user timeline
-	 */
-	private static final int MASK_STATUS_USER_TIMELINE = 1 << 4;
-
-	/**
-	 * flag indicates that a status exists in the reply of a status
-	 */
-	private static final int MASK_STATUS_REPLY = 1 << 5;
-
-	/**
-	 * flag indicates that a status contains spoiler
-	 */
-	public static final int MASK_STATUS_SPOILER = 1 << 7;
-
-	/**
-	 * flag indicates that a status contains sensitive media
-	 */
-	public static final int MASK_STATUS_SENSITIVE = 1 << 8;
-
-	/**
-	 * flag indicates that a status was hidden by the current user
-	 */
-	public static final int MASK_STATUS_HIDDEN = 1 << 9;
-
-	/**
-	 * flag indicated that a status is bookmarked by the current user
-	 */
-	public static final int MASK_STATUS_BOOKMARKED = 1 << 10;
-
-	/**
-	 * status visibility flag {@link Status#VISIBLE_UNLISTED}
-	 */
-	public static final int MASK_STATUS_VISIBILITY_UNLISTED = 1 << 11;
-
-	/**
-	 * status visibility flag {@link Status#VISIBLE_PRIVATE}
-	 */
-	public static final int MASK_STATUS_VISIBILITY_PRIVATE = 2 << 11;
-
-	/**
-	 * status visibility flag {@link Status#VISIBLE_DIRECT}
-	 */
-	public static final int MASK_STATUS_VISIBILITY_DIRECT = 3 << 11;
-
-	/**
-	 * flag indicates that an user is verified
-	 */
-	public static final int MASK_USER_VERIFIED = 1;
-
-	/**
-	 * flag indicates that an user is locked/private
-	 */
-	public static final int MASK_USER_PRIVATE = 1 << 1;
-
-	/**
-	 * flag indicates that the statuses of an user are excluded from timeline
-	 */
-	private static final int MASK_USER_FILTERED = 1 << 3;
-
-	/**
-	 * flag indicates that the user has a default profile image
-	 */
-	public static final int MASK_USER_DEFAULT_IMAGE = 1 << 4;
 
 	/**
 	 * used if no ID is defined
@@ -178,8 +96,8 @@ public class AppDatabase {
 	 * SQL query to get home timeline status
 	 */
 	private static final String HOME_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + MASK_STATUS_HOME_TIMELINE + " IS NOT 0"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + MASK_USER_FILTERED + " IS 0"
+			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_HOME_TIMELINE + " IS NOT 0"
+			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + UserRegisterTable.MASK_USER_FILTERED + " IS 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " ORDER BY " + StatusTable.TIME + " DESC"
@@ -189,7 +107,7 @@ public class AppDatabase {
 	 * SQL query to get status of an user
 	 */
 	private static final String USER_STATUS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + MASK_STATUS_USER_TIMELINE + " IS NOT 0"
+			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_USER_TIMELINE + " IS NOT 0"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
 			+ " AND " + StatusTable.NAME + "." + StatusTable.USER + "=?"
@@ -243,9 +161,9 @@ public class AppDatabase {
 			+ " WHERE " + StatusTable.NAME + "." + StatusTable.REPLYSTATUS + "=?"
 			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
 			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + MASK_STATUS_REPLY + " IS NOT 0"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + MASK_STATUS_HIDDEN + " IS 0"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + MASK_USER_FILTERED + " IS 0"
+			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_REPLY + " IS NOT 0"
+			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_HIDDEN + " IS 0"
+			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + UserRegisterTable.MASK_USER_FILTERED + " IS 0"
 			+ " ORDER BY " + StatusTable.TIME + " DESC"
 			+ " LIMIT ?;";
 
@@ -352,6 +270,11 @@ public class AppDatabase {
 	private static final String POLL_SELECTION = PollTable.ID + "=?";
 
 	/**
+	 * selection for a single webpush item
+	 */
+	private static final String PUSH_SELECTION = PushTable.USER_URL + "=?";
+
+	/**
 	 * selection for instance entry
 	 */
 	private static final String INSTANCE_SELECTION = InstanceTable.DOMAIN + "=?";
@@ -409,7 +332,7 @@ public class AppDatabase {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
-					saveStatus(status, db, MASK_STATUS_HOME_TIMELINE);
+					saveStatus(status, db, StatusRegisterTable.MASK_STATUS_HOME_TIMELINE);
 				adapter.commit();
 			}
 		}
@@ -425,7 +348,7 @@ public class AppDatabase {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
-					saveStatus(status, db, MASK_STATUS_USER_TIMELINE);
+					saveStatus(status, db, StatusRegisterTable.MASK_STATUS_USER_TIMELINE);
 				adapter.commit();
 			}
 		}
@@ -487,7 +410,7 @@ public class AppDatabase {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
-					saveStatus(status, db, MASK_STATUS_REPLY);
+					saveStatus(status, db, StatusRegisterTable.MASK_STATUS_REPLY);
 				adapter.commit();
 			}
 		}
@@ -510,7 +433,7 @@ public class AppDatabase {
 					saveUser(notification.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
 					// add status
 					if (notification.getStatus() != null) {
-						saveStatus(notification.getStatus(), db, MASK_STATUS_NOTIFICATION);
+						saveStatus(notification.getStatus(), db, StatusRegisterTable.MASK_STATUS_NOTIFICATION);
 						column.put(NotificationTable.ITEM, notification.getStatus().getId());
 					}
 					db.insertWithOnConflict(NotificationTable.NAME, null, column, SQLiteDatabase.CONFLICT_REPLACE);
@@ -651,6 +574,53 @@ public class AppDatabase {
 			for (Emoji emoji : emojis) {
 				saveEmoji(emoji, db);
 			}
+			adapter.commit();
+		}
+	}
+
+	/**
+	 * save current user's webpush subscription
+	 *
+	 * @param push web push information
+	 */
+	public void savePushSubscription(WebPush push) {
+		synchronized (LOCK) {
+			ContentValues column = new ContentValues(7);
+			column.put(PushTable.ID, push.getId());
+			column.put(PushTable.PUB_KEY, push.getPublicKey());
+			column.put(PushTable.SEC_KEY, push.getServerKey());
+			column.put(PushTable.SERVER_KEY, push.getServerKey());
+			column.put(PushTable.HOST, push.getHost());
+			column.put(PushTable.AUTH_SECRET, push.getAuthSecret());
+
+			int flags = 0;
+			if (push.getPolicy() == WebPush.POLICY_ALL)
+				flags = PushTable.FLAG_POLICY_ALL;
+			else if (push.getPolicy() == WebPush.POLICY_FOLLOWING)
+				flags = PushTable.FLAG_POLICY_FOLLOWING;
+			else if (push.getPolicy() == WebPush.POLICY_FOLLOWER)
+				flags = PushTable.FLAG_POLICY_FOLLOWER;
+			if (push.alertMentionEnabled())
+				flags |= PushTable.FLAG_MENTION;
+			if (push.alertNewStatusEnabled())
+				flags |= PushTable.FLAG_STATUS;
+			if (push.alertRepostEnabled())
+				flags |= PushTable.FLAG_REPOST;
+			if (push.alertFollowingEnabled())
+				flags |= PushTable.FLAG_FOLLOWING;
+			if (push.alertFollowRequestEnabled())
+				flags |= PushTable.FLAG_REQUEST;
+			if (push.alertFavoriteEnabled())
+				flags |= PushTable.FLAG_FAVORITE;
+			if (push.alertPollEnabled())
+				flags |= PushTable.FLAG_POLL;
+			if (push.alertStatusChangeEnabled())
+				flags |= PushTable.FLAG_MODIFIED;
+			column.put(PushTable.FLAGS, flags);
+			column.put(PushTable.USER_URL, settings.getLogin().getId() + '@' + settings.getLogin().getHostname());
+
+			SQLiteDatabase db = adapter.getDbWrite();
+			db.insertWithOnConflict(PushTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 			adapter.commit();
 		}
 	}
@@ -909,9 +879,9 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			int flags = getStatusFlags(db, id);
 			if (hide) {
-				flags |= MASK_STATUS_HIDDEN;
+				flags |= StatusRegisterTable.MASK_STATUS_HIDDEN;
 			} else {
-				flags &= ~MASK_STATUS_HIDDEN;
+				flags &= ~StatusRegisterTable.MASK_STATUS_HIDDEN;
 			}
 			ContentValues column = new ContentValues(1);
 			column.put(StatusRegisterTable.REGISTER, flags);
@@ -968,7 +938,7 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// get status flags
 			int flags = getStatusFlags(db, status.getId());
-			flags &= ~MASK_STATUS_FAVORITED; // unset favorite flag
+			flags &= ~StatusRegisterTable.MASK_STATUS_FAVORITED; // unset favorite flag
 			// update database
 			saveStatusFlags(db, status, flags);
 			db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
@@ -991,7 +961,7 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// get status flags
 			int flags = getStatusFlags(db, status.getId());
-			flags &= ~MASK_STATUS_BOOKMARKED; // unset bookmark flag
+			flags &= ~StatusRegisterTable.MASK_STATUS_BOOKMARKED; // unset bookmark flag
 			// update database
 			saveStatusFlags(db, status, flags);
 			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT, delArgs);
@@ -1002,14 +972,16 @@ public class AppDatabase {
 	/**
 	 * remove login information from database
 	 *
-	 * @param id account ID to remove
+	 * @param account account to remove
 	 */
-	public void removeLogin(long id) {
+	public void removeLogin(Account account) {
 		synchronized (LOCK) {
-			String[] args = {Long.toString(id)};
+			String[] accountArgs = {Long.toString(account.getId())};
+			String[] pushArgs = {account.getId() + '@' + account.getHostname()};
 
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
+			db.delete(AccountTable.NAME, ACCOUNT_SELECTION, accountArgs);
+			db.delete(PushTable.NAME, PUSH_SELECTION, pushArgs);
 			adapter.commit();
 		}
 	}
@@ -1059,9 +1031,9 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			int flags = getUserFlags(db, id);
 			if (mute) {
-				flags |= MASK_USER_FILTERED;
+				flags |= UserRegisterTable.MASK_USER_FILTERED;
 			} else {
-				flags &= ~MASK_USER_FILTERED;
+				flags &= ~UserRegisterTable.MASK_USER_FILTERED;
 			}
 			saveUserFlags(db, id, flags);
 			adapter.commit();
@@ -1083,6 +1055,28 @@ public class AppDatabase {
 				do {
 					result.add(new DatabaseEmoji(c));
 				} while (c.moveToNext());
+			}
+			c.close();
+			return result;
+		}
+	}
+
+	/**
+	 * get wegb push subscription of an user
+	 *
+	 * @param account unique user url
+	 * @return web push associated with this account
+	 */
+	@Nullable
+	public WebPush getWebPush(Account account) {
+		synchronized (LOCK) {
+			WebPush result = null;
+			String[] args = {account.getId() + '@' + account.getHostname()};
+
+			SQLiteDatabase db = adapter.getDbRead();
+			Cursor c = db.query(PushTable.NAME, DatabasePush.COLUMNS, PUSH_SELECTION, args, null, null, null);
+			if (c.moveToFirst()) {
+				result = new DatabasePush(c);
 			}
 			c.close();
 			return result;
@@ -1343,19 +1337,19 @@ public class AppDatabase {
 	private void saveUser(User user, SQLiteDatabase db, int mode) {
 		int flags = getUserFlags(db, user.getId());
 		if (user.isVerified()) {
-			flags |= MASK_USER_VERIFIED;
+			flags |= UserRegisterTable.MASK_USER_VERIFIED;
 		} else {
-			flags &= ~MASK_USER_VERIFIED;
+			flags &= ~UserRegisterTable.MASK_USER_VERIFIED;
 		}
 		if (user.isProtected()) {
-			flags |= MASK_USER_PRIVATE;
+			flags |= UserRegisterTable.MASK_USER_PRIVATE;
 		} else {
-			flags &= ~MASK_USER_PRIVATE;
+			flags &= ~UserRegisterTable.MASK_USER_PRIVATE;
 		}
 		if (user.hasDefaultProfileImage()) {
-			flags |= MASK_USER_DEFAULT_IMAGE;
+			flags |= UserRegisterTable.MASK_USER_DEFAULT_IMAGE;
 		} else {
-			flags &= ~MASK_USER_DEFAULT_IMAGE;
+			flags &= ~UserRegisterTable.MASK_USER_DEFAULT_IMAGE;
 		}
 		ContentValues column = new ContentValues(14);
 		if (user.getEmojis().length > 0) {
@@ -1402,45 +1396,45 @@ public class AppDatabase {
 		}
 		flags |= getStatusFlags(db, status.getId());
 		if (status.isFavorited()) {
-			flags |= MASK_STATUS_FAVORITED;
+			flags |= StatusRegisterTable.MASK_STATUS_FAVORITED;
 		} else {
-			flags &= ~MASK_STATUS_FAVORITED;
+			flags &= ~StatusRegisterTable.MASK_STATUS_FAVORITED;
 		}
 		if (status.isReposted()) {
-			flags |= MASK_STATUS_REPOSTED;
+			flags |= StatusRegisterTable.MASK_STATUS_REPOSTED;
 		} else {
-			flags &= ~MASK_STATUS_REPOSTED;
+			flags &= ~StatusRegisterTable.MASK_STATUS_REPOSTED;
 		}
 		if (status.isSensitive()) {
-			flags |= MASK_STATUS_SENSITIVE;
+			flags |= StatusRegisterTable.MASK_STATUS_SENSITIVE;
 		} else {
-			flags &= ~MASK_STATUS_SENSITIVE;
+			flags &= ~StatusRegisterTable.MASK_STATUS_SENSITIVE;
 		}
 		if (status.isSpoiler()) {
-			flags |= MASK_STATUS_SPOILER;
+			flags |= StatusRegisterTable.MASK_STATUS_SPOILER;
 		} else {
-			flags &= ~MASK_STATUS_SPOILER;
+			flags &= ~StatusRegisterTable.MASK_STATUS_SPOILER;
 		}
 		if (status.isBookmarked()) {
-			flags |= MASK_STATUS_BOOKMARKED;
+			flags |= StatusRegisterTable.MASK_STATUS_BOOKMARKED;
 		} else {
-			flags &= ~MASK_STATUS_BOOKMARKED;
+			flags &= ~StatusRegisterTable.MASK_STATUS_BOOKMARKED;
 		}
 		switch (status.getVisibility()) {
 			case Status.VISIBLE_DIRECT:
-				flags |= MASK_STATUS_VISIBILITY_DIRECT;
+				flags |= StatusRegisterTable.MASK_STATUS_VISIBILITY_DIRECT;
 				break;
 
 			case Status.VISIBLE_UNLISTED:
-				flags |= MASK_STATUS_VISIBILITY_UNLISTED;
+				flags |= StatusRegisterTable.MASK_STATUS_VISIBILITY_UNLISTED;
 				break;
 
 			case Status.VISIBLE_PRIVATE:
-				flags |= MASK_STATUS_VISIBILITY_PRIVATE;
+				flags |= StatusRegisterTable.MASK_STATUS_VISIBILITY_PRIVATE;
 				break;
 
 			default:
-				flags &= ~MASK_STATUS_VISIBILITY_DIRECT;
+				flags &= ~StatusRegisterTable.MASK_STATUS_VISIBILITY_DIRECT;
 		}
 		ContentValues column = new ContentValues(22);
 		column.put(StatusTable.ID, status.getId());
