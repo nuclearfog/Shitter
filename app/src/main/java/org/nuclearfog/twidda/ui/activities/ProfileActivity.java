@@ -516,7 +516,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			// confirmed domain block
 			else if (type == ConfirmDialog.DOMAIN_BLOCK_ADD) {
 				String url = Uri.parse(user.getProfileUrl()).getHost();
-				DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_BLOCK, 0, DomainAction.Param.NO_CURSOR, url);
+				DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_BLOCK, url);
 				domainAction.execute(param, domainCallback);
 			}
 		}

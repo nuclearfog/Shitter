@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -147,15 +148,17 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 	@Override
 	public void onListClick(UserList listItem) {
-		Intent listIntent = new Intent(requireContext(), UserlistActivity.class);
-		listIntent.putExtra(UserlistActivity.KEY_DATA, listItem);
-		activityResultLauncher.launch(listIntent);
+		if (!isRefreshing()) {
+			Intent listIntent = new Intent(requireContext(), UserlistActivity.class);
+			listIntent.putExtra(UserlistActivity.KEY_DATA, listItem);
+			activityResultLauncher.launch(listIntent);
+		}
 	}
 
 
 	@Override
 	public boolean onPlaceholderClick(long cursor, int index) {
-		if (userlistLoader.isIdle()) {
+		if (!isRefreshing() && userlistLoader.isIdle()) {
 			load(cursor, index);
 			return true;
 		}
@@ -174,8 +177,9 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 				break;
 
 			case UserlistLoader.Result.ERROR:
-				if (getContext() != null) {
-					ErrorUtils.showErrorMessage(getContext(), result.exception);
+				Context context = getContext();
+				if (context != null) {
+					ErrorUtils.showErrorMessage(context, result.exception);
 				}
 				adapter.disableLoading();
 				break;
@@ -187,19 +191,16 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 	 * load content into the list
 	 */
 	private void load(long cursor, int index) {
-		UserlistLoader.Param param;
 		switch (type) {
 			case MODE_OWNERSHIP:
-				param = new UserlistLoader.Param(UserlistLoader.Param.OWNERSHIP, index, id, cursor);
+				UserlistLoader.Param param = new UserlistLoader.Param(UserlistLoader.Param.OWNERSHIP, index, id, cursor);
+				userlistLoader.execute(param, this);
 				break;
 
 			case MODE_MEMBERSHIP:
 				param = new UserlistLoader.Param(UserlistLoader.Param.MEMBERSHIP, index, id, cursor);
+				userlistLoader.execute(param, this);
 				break;
-
-			default:
-				return;
 		}
-		userlistLoader.execute(param, this);
 	}
 }

@@ -581,25 +581,38 @@ public class GlobalSettings {
 	/**
 	 * save web push configuration
 	 *
-	 * @param webPush web push information
+	 * @param webPush web push information or null to remove existing configuration
 	 */
-	public void setWebPush(WebPush webPush) {
-		Editor edit = settings.edit();
-		edit.putLong(PUSH_ID, webPush.getId());
-		edit.putString(PUSH_SERVER_KEY, webPush.getServerKey());
-		edit.putString(PUSH_SERVER_HOST, webPush.getHost());
-		edit.putString(PUSH_PUBLIC_KEY, webPush.getPublicKey());
-		edit.putString(PUSH_PRIVATE_KEY, webPush.getPrivateKey());
-		edit.putString(PUSH_AUTH_KEY, webPush.getAuthSecret());
-		edit.putBoolean(PUSH_ALERT_MENTION, webPush.alertMentionEnabled());
-		edit.putBoolean(PUSH_ALERT_REPOST, webPush.alertRepostEnabled());
-		edit.putBoolean(PUSH_ALERT_FAVORITE, webPush.alertFavoriteEnabled());
-		edit.putBoolean(PUSH_ALERT_FOLLOWING, webPush.alertFollowingEnabled());
-		edit.putBoolean(PUSH_ALERT_REQUEST_FOLLOW, webPush.alertFollowRequestEnabled());
-		edit.putBoolean(PUSH_ALERT_STATUS_POST, webPush.alertNewStatusEnabled());
-		edit.putBoolean(PUSH_ALERT_STATUS_EDIT, webPush.alertStatusChangeEnabled());
-		edit.putBoolean(PUSH_ALERT_POLL, webPush.alertPollEnabled());
-		edit.apply();
+	public void setWebPush(@Nullable WebPush webPush) {
+		if (webPush != null) {
+			this.webPush = new ConfigPush(webPush);
+			Editor edit = settings.edit();
+			edit.putLong(PUSH_ID, webPush.getId());
+			edit.putString(PUSH_SERVER_KEY, webPush.getServerKey());
+			edit.putString(PUSH_SERVER_HOST, webPush.getHost());
+			edit.putString(PUSH_PUBLIC_KEY, webPush.getPublicKey());
+			edit.putString(PUSH_PRIVATE_KEY, webPush.getPrivateKey());
+			edit.putString(PUSH_AUTH_KEY, webPush.getAuthSecret());
+			edit.putBoolean(PUSH_ALERT_MENTION, webPush.alertMentionEnabled());
+			edit.putBoolean(PUSH_ALERT_REPOST, webPush.alertRepostEnabled());
+			edit.putBoolean(PUSH_ALERT_FAVORITE, webPush.alertFavoriteEnabled());
+			edit.putBoolean(PUSH_ALERT_FOLLOWING, webPush.alertFollowingEnabled());
+			edit.putBoolean(PUSH_ALERT_REQUEST_FOLLOW, webPush.alertFollowRequestEnabled());
+			edit.putBoolean(PUSH_ALERT_STATUS_POST, webPush.alertNewStatusEnabled());
+			edit.putBoolean(PUSH_ALERT_STATUS_EDIT, webPush.alertStatusChangeEnabled());
+			edit.putBoolean(PUSH_ALERT_POLL, webPush.alertPollEnabled());
+			edit.apply();
+		} else {
+			this.webPush.clear();
+			Editor edit = settings.edit();
+			edit.remove(PUSH_ID);
+			edit.remove(PUSH_SERVER_KEY);
+			edit.remove(PUSH_SERVER_HOST);
+			edit.remove(PUSH_PUBLIC_KEY);
+			edit.remove(PUSH_PRIVATE_KEY);
+			edit.remove(PUSH_AUTH_KEY);
+			edit.apply();
+		}
 	}
 
 	/**
@@ -1028,15 +1041,7 @@ public class GlobalSettings {
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");
 		proxyPass = settings.getString(PROXY_PASS, "");
-		// login informations
-		initLogin();
-		initWebpush();
-	}
-
-	/**
-	 * initialize login information
-	 */
-	private void initLogin() {
+		// init login information
 		String oauthToken = settings.getString(OAUTH_TOKEN, "");
 		String oauthSecret = settings.getString(OAUTH_SECRET, "");
 		String consumerToken = settings.getString(CONSUMER_TOKEN, "");
@@ -1046,12 +1051,7 @@ public class GlobalSettings {
 		int apiId = settings.getInt(CURRENT_API, 0);
 		long userId = settings.getLong(CURRENT_ID, 0L);
 		login = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
-	}
-
-	/**
-	 *
-	 */
-	private void initWebpush() {
+		// init web push information
 		long pushID = settings.getLong(PUSH_ID, 0L);
 		String pushServerKey = settings.getString(PUSH_SERVER_KEY, "");
 		String pushServerHost = settings.getString(PUSH_SERVER_HOST, "");

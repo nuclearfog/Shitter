@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -81,13 +82,15 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 
 	@Override
 	public void onFilterClick(Filter filter) {
-		filterDialog.show(filter);
+		if (!isRefreshing()) {
+			filterDialog.show(filter);
+		}
 	}
 
 
 	@Override
 	public void onFilterRemove(Filter filter) {
-		if (!confirmDialog.isShowing()) {
+		if (!isRefreshing() && !confirmDialog.isShowing() && filterAction.isIdle()) {
 			selection = filter;
 			confirmDialog.show(ConfirmDialog.FILTER_REMOVE);
 		}
@@ -106,8 +109,9 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	@Override
 	public void onFilterUpdated(Filter filter) {
 		adapter.updateItem(filter);
-		if (getContext() != null) {
-			Toast.makeText(requireContext(), R.string.info_filter_updated, Toast.LENGTH_SHORT).show();
+		Context context = getContext();
+		if (context != null) {
+			Toast.makeText(context, R.string.info_filter_updated, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -117,8 +121,11 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	private void onFilterLoaded(StatusFilterLoader.Result result) {
 		if (result.filters != null) {
 			adapter.replaceItems(result.filters);
-		} else if (result.exception != null && getContext() != null) {
-			ErrorUtils.showErrorMessage(requireContext(), result.exception);
+		} else if (result.exception != null) {
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
 		setRefresh(false);
 	}
@@ -129,12 +136,14 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	private void onFilterRemoved(StatusFilterAction.Result result) {
 		if (result.mode == StatusFilterAction.Result.DELETE) {
 			adapter.removeItem(result.id);
-			if (getContext() != null) {
-				Toast.makeText(requireContext(), R.string.info_filter_removed, Toast.LENGTH_SHORT).show();
+			Context context = getContext();
+			if (context != null) {
+				Toast.makeText(context, R.string.info_filter_removed, Toast.LENGTH_SHORT).show();
 			}
 		} else if (result.mode == StatusFilterAction.Result.ERROR) {
-			if (getContext() != null) {
-				ErrorUtils.showErrorMessage(requireContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 		}
 	}

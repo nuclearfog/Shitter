@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -198,6 +199,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	@Override
 	public void onDestroy() {
 		userLoader.cancel();
+		userlistManager.cancel();
 		super.onDestroy();
 	}
 
@@ -243,7 +245,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 	@Override
 	public boolean onPlaceholderClick(long cursor, int index) {
-		if (userLoader.isIdle()) {
+		if (!isRefreshing() && userLoader.isIdle()) {
 			load(cursor, index);
 			return true;
 		}
@@ -253,7 +255,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 	@Override
 	public void onDelete(User user) {
-		if (!confirmDialog.isShowing()) {
+		if (userlistManager.isIdle() && !confirmDialog.isShowing()) {
 			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
 			this.selectedUser = user;
 		}
@@ -265,8 +267,9 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		if (result.users != null) {
 			adapter.addItems(result.users, result.index);
 		} else {
-			if (getContext() != null) {
-				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 			adapter.disableLoading();
 		}
@@ -278,7 +281,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	public void onConfirm(int type, boolean remember) {
 		// remove user from list
 		if (type == ConfirmDialog.LIST_REMOVE_USER) {
-			if (userlistManager.isIdle() && selectedUser != null) {
+			if (selectedUser != null) {
 				UserlistManager.Param param = new UserlistManager.Param(UserlistManager.Param.REMOVE, id, selectedUser.getScreenname());
 				userlistManager.execute(param, userlistUpdate);
 			}
@@ -290,9 +293,10 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	 */
 	private void updateUsers(UserlistManager.Result result) {
 		if (result.mode == UserlistManager.Result.DEL_USER) {
-			if (selectedUser != null) {
+			Context context = getContext();
+			if (selectedUser != null && context != null) {
 				String info = getString(R.string.info_user_removed, selectedUser.getScreenname());
-				Toast.makeText(requireContext(), info, Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
 				adapter.removeItem(selectedUser);
 			}
 		}

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -97,15 +98,17 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 	@Override
 	public void onScheduleClick(ScheduledStatus status, int type) {
-		if (type == OnScheduleClickListener.SELECT) {
-			if (!timepicker.isShowing() && scheduleAction.isIdle()) {
-				selection = status;
-				timepicker.show(status.getPublishTime());
-			}
-		} else if (type == OnScheduleClickListener.REMOVE) {
-			if (!confirm.isShowing() && scheduleAction.isIdle()) {
-				selection = status;
-				confirm.show(ConfirmDialog.SCHEDULE_REMOVE);
+		if (!isRefreshing()) {
+			if (type == OnScheduleClickListener.SELECT) {
+				if (!timepicker.isShowing() && scheduleAction.isIdle()) {
+					selection = status;
+					timepicker.show(status.getPublishTime());
+				}
+			} else if (type == OnScheduleClickListener.REMOVE) {
+				if (!confirm.isShowing() && scheduleAction.isIdle()) {
+					selection = status;
+					confirm.show(ConfirmDialog.SCHEDULE_REMOVE);
+				}
 			}
 		}
 	}
@@ -113,7 +116,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 	@Override
 	public boolean onPlaceholderClick(long min_id, long max_id, int position) {
-		if (scheduleLoader.isIdle()) {
+		if (!isRefreshing() && scheduleLoader.isIdle()) {
 			load(min_id, max_id, position);
 			return true;
 		}
@@ -151,7 +154,10 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 				adapter.addItems(result.statuses, result.index);
 			}
 		} else {
-			ErrorUtils.showErrorMessage(requireContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
 		setRefresh(false);
 	}
@@ -160,16 +166,19 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	 *
 	 */
 	private void onActionResult(ScheduleAction.Result result) {
-		if (result.mode == ScheduleAction.Result.REMOVE) {
-			adapter.removeItem(result.id);
-			Toast.makeText(requireContext(), R.string.info_schedule_removed, Toast.LENGTH_SHORT).show();
-		} else if (result.mode == ScheduleAction.Result.UPDATE) {
-			if (result.status != null) {
-				adapter.updateItem(result.status);
-				Toast.makeText(requireContext(), R.string.info_schedule_updated, Toast.LENGTH_SHORT).show();
+		Context context = getContext();
+		if (context != null) {
+			if (result.mode == ScheduleAction.Result.REMOVE) {
+				adapter.removeItem(result.id);
+				Toast.makeText(context, R.string.info_schedule_removed, Toast.LENGTH_SHORT).show();
+			} else if (result.mode == ScheduleAction.Result.UPDATE) {
+				if (result.status != null) {
+					adapter.updateItem(result.status);
+					Toast.makeText(context, R.string.info_schedule_updated, Toast.LENGTH_SHORT).show();
+				}
+			} else if (result.mode == ScheduleAction.Result.ERROR) {
+				ErrorUtils.showErrorMessage(context, result.exception);
 			}
-		} else if (result.mode == ScheduleAction.Result.ERROR) {
-			ErrorUtils.showErrorMessage(requireContext(), result.exception);
 		}
 	}
 

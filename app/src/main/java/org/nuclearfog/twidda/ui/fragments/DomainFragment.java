@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -10,8 +11,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.DomainAction;
-import org.nuclearfog.twidda.backend.async.DomainAction.Param;
-import org.nuclearfog.twidda.backend.async.DomainAction.Result;
+import org.nuclearfog.twidda.backend.async.DomainLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.DomainAdapter;
@@ -26,13 +26,18 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class DomainFragment extends ListFragment implements OnDomainClickListener, OnConfirmListener, AsyncCallback<Result> {
+public class DomainFragment extends ListFragment implements OnDomainClickListener, OnConfirmListener {
 
 	private static final String KEY_DATA = "domain-data";
 
 	private DomainAction domainAction;
+	private DomainLoader domainLoader;
+
 	private DomainAdapter adapter;
 	private ConfirmDialog dialog;
+
+	private AsyncCallback<DomainLoader.Result> domainLoad = this::onDomainLoaded;
+	private AsyncCallback<DomainAction.Result> domainResult = this::onDomainResult;
 
 	private String selectedDomain = "";
 
@@ -40,6 +45,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		domainAction = new DomainAction(requireContext());
+		domainLoader = new DomainLoader(requireContext());
 		dialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new DomainAdapter(this);
 		setAdapter(adapter);
@@ -51,7 +57,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 				return;
 			}
 		}
-		load(DomainAdapter.NO_INDEX, Param.NO_CURSOR);
+		load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
 		setRefresh(true);
 	}
 
@@ -66,28 +72,30 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	@Override
 	public void onDestroy() {
 		domainAction.cancel();
+		domainLoader.cancel();
 		super.onDestroy();
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(DomainAdapter.NO_INDEX, Param.NO_CURSOR);
+		load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
 	}
 
 
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		domainLoader = new DomainLoader(requireContext());
 		domainAction = new DomainAction(requireContext());
-		load(DomainAdapter.NO_INDEX, Param.NO_CURSOR);
+		load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
 		setRefresh(true);
 	}
 
 
 	@Override
 	public void onDomainRemove(String domain) {
-		if (!isRefreshing() && !dialog.isShowing()) {
+		if (!isRefreshing() && domainAction.isIdle() && !dialog.isShowing() && domainAction.isIdle()) {
 			dialog.show(ConfirmDialog.DOMAIN_BLOCK_REMOVE);
 			selectedDomain = domain;
 		}
@@ -96,7 +104,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 
 	@Override
 	public boolean onPlaceholderClick(int index, long cursor) {
-		if (!isRefreshing()) {
+		if (!isRefreshing() && domainLoader.isIdle()) {
 			load(index, cursor);
 			return true;
 		}
@@ -105,31 +113,10 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 
 
 	@Override
-	public void onResult(@NonNull Result result) {
-		setRefresh(false);
-		if (result.mode == Result.MODE_LOAD) {
-			if (result.domains != null) {
-				adapter.addItems(result.domains, result.index);
-			}
-		} else if (result.mode == Result.MODE_UNBLOCK) {
-			if (result.domain != null) {
-				adapter.removeItem(result.domain);
-				Toast.makeText(requireContext(), R.string.info_domain_removed, Toast.LENGTH_SHORT).show();
-			}
-		} else if (result.mode == Result.ERROR) {
-			if (getContext() != null) {
-				ErrorUtils.showErrorMessage(getContext(), result.exception);
-			}
-			adapter.disableLoading();
-		}
-	}
-
-
-	@Override
 	public void onConfirm(int type, boolean remember) {
 		if (type == ConfirmDialog.DOMAIN_BLOCK_REMOVE) {
-			Param param = new Param(Param.MODE_UNBLOCK, DomainAdapter.NO_INDEX, Param.NO_CURSOR, selectedDomain);
-			domainAction.execute(param, this);
+			DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_UNBLOCK, selectedDomain);
+			domainAction.execute(param, domainResult);
 		}
 	}
 
@@ -140,7 +127,41 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	 * @param cursor cursor used to page through results
 	 */
 	private void load(int index, long cursor) {
-		Param param = new Param(Param.MODE_LOAD, index, cursor, null);
-		domainAction.execute(param, this);
+		DomainLoader.Param param = new DomainLoader.Param(cursor, index);
+		domainLoader.execute(param, domainLoad);
+	}
+
+	/**
+	 *
+	 */
+	private void onDomainLoaded(DomainLoader.Result result) {
+		setRefresh(false);
+		if (result.domains != null) {
+			adapter.addItems(result.domains, result.index);
+		} else {
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	private void onDomainResult(DomainAction.Result result) {
+		if (result.mode == DomainAction.Result.MODE_UNBLOCK) {
+			Context context = getContext();
+			if (result.domain != null && context != null) {
+				adapter.removeItem(result.domain);
+				Toast.makeText(context, R.string.info_domain_removed, Toast.LENGTH_SHORT).show();
+			}
+		} else if (result.mode == DomainAction.Result.ERROR) {
+			adapter.disableLoading();
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -126,7 +127,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 					break;
 
 				case OnNotificationClickListener.NOTIFICATION_DISMISS:
-					if (!confirmDialog.isShowing()) {
+					if (!confirmDialog.isShowing() && notificationAction.isIdle()) {
 						confirmDialog.show(ConfirmDialog.NOTIFICATION_DISMISS);
 						select = notification;
 					}
@@ -151,7 +152,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	public boolean onPlaceholderClick(long sinceId, long maxId, int position) {
-		if (notificationLoader.isIdle()) {
+		if (!isRefreshing() && notificationLoader.isIdle()) {
 			load(sinceId, maxId, position);
 			return true;
 		}
@@ -203,8 +204,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (result.notifications != null) {
 			adapter.addItems(result.notifications, result.position);
 		} else {
-			if (getContext() != null) {
-				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 			adapter.disableLoading();
 		}
@@ -215,11 +217,14 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 * used by {@link FollowRequestAction} to accept a follow request
 	 */
 	private void onFollowRequestResult(FollowRequestAction.Result result) {
-		if (result.mode == FollowRequestAction.Result.ACCEPT) {
-			Toast.makeText(requireContext(), R.string.info_follow_request_accepted, Toast.LENGTH_SHORT).show();
-			adapter.removeItem(result.notification_id);
-		} else if (result.mode == FollowRequestAction.Result.ERROR) {
-			ErrorUtils.showErrorMessage(requireContext(), result.exception);
+		Context context = getContext();
+		if (context != null) {
+			if (result.mode == FollowRequestAction.Result.ACCEPT) {
+				Toast.makeText(context, R.string.info_follow_request_accepted, Toast.LENGTH_SHORT).show();
+				adapter.removeItem(result.notification_id);
+			} else if (result.mode == FollowRequestAction.Result.ERROR) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
 	}
 
@@ -230,8 +235,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (result.mode == NotificationAction.Result.DISMISS) {
 			adapter.removeItem(result.id);
 		} else if (result.mode == NotificationAction.Result.ERROR) {
-			if (getContext() != null) {
-				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 			if (result.exception != null && result.exception.getErrorCode() == ConnectionException.RESOURCE_NOT_FOUND) {
 				adapter.removeItem(result.id);

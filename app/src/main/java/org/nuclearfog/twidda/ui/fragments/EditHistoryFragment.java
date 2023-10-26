@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -74,7 +75,9 @@ public class EditHistoryFragment extends ListFragment implements AsyncCallback<E
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		historyLoader = new EditHistoryLoader(requireContext());
 		historyLoader.execute(id, this);
+		setRefresh(true);
 	}
 
 
@@ -83,7 +86,10 @@ public class EditHistoryFragment extends ListFragment implements AsyncCallback<E
 		if (result.history != null) {
 			adapter.setItems(result.history);
 		} else {
-			ErrorUtils.showErrorMessage(requireContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
 		setRefresh(false);
 	}

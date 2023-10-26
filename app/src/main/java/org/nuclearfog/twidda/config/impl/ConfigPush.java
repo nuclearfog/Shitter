@@ -166,4 +166,16 @@ public class ConfigPush implements WebPush {
 		WebPush push = (WebPush) obj;
 		return getId() == push.getId() && getHost().equals(push.getHost());
 	}
+
+	/**
+	 * clear user related information
+	 */
+	public void clear() {
+		id = 0L;
+		host = "";
+		serverKey = "";
+		publicKey = "";
+		privateKey = "";
+		authKey = "";
+	}
 }

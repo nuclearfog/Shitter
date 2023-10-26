@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -69,7 +71,12 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 
 	@Override
 	public void onLinkClick(String url) {
-		LinkUtils.openLink(requireActivity(), url);
+		if (!isRefreshing()) {
+			Activity activity = getActivity();
+			if (activity != null) {
+				LinkUtils.openLink(activity, url);
+			}
+		}
 	}
 
 
@@ -83,9 +90,9 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 	protected void onReset() {
 		// reload adapter items
 		adapter.clear();
+		setRefresh(true);
 		userLoader = new UserLoader(requireContext());
 		load();
-		setRefresh(true);
 	}
 
 
@@ -99,7 +106,10 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 				adapter.clear();
 			}
 		} else if (result.mode == UserLoader.Result.ERROR) {
-			ErrorUtils.showErrorMessage(requireContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
 		setRefresh(false);
 	}

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -84,6 +85,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 	private HashtagLoader hashtagLoader;
 	private HashtagAction hashtagAction;
+
 	private HashtagAdapter adapter;
 	private ConfirmDialog confirmDialog;
 
@@ -171,25 +173,27 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 	@Override
 	public void onHashtagClick(Hashtag hashtag, int action) {
-		if (action == OnHashtagClickListener.SELECT) {
-			if (!isRefreshing()) {
-				Intent intent = new Intent(requireContext(), SearchActivity.class);
-				String name = hashtag.getName();
-				if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\"")) {
-					name = "\"" + name + "\"";
-					intent.putExtra(SearchActivity.KEY_QUERY, name);
-				} else {
-					intent.putExtra(SearchActivity.KEY_DATA, hashtag);
+		if (!isRefreshing()) {
+			if (action == OnHashtagClickListener.SELECT) {
+				if (!isRefreshing()) {
+					Intent intent = new Intent(requireContext(), SearchActivity.class);
+					String name = hashtag.getName();
+					if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\"")) {
+						name = "\"" + name + "\"";
+						intent.putExtra(SearchActivity.KEY_QUERY, name);
+					} else {
+						intent.putExtra(SearchActivity.KEY_DATA, hashtag);
+					}
+					activityResultLauncher.launch(intent);
 				}
-				activityResultLauncher.launch(intent);
-			}
-		} else if (action == OnHashtagClickListener.REMOVE) {
-			if (!confirmDialog.isShowing()) {
-				selection = hashtag;
-				if (mode == MODE_FEATURE) {
-					confirmDialog.show(ConfirmDialog.UNFEATURE_HASHTAG);
-				} else if (mode == MODE_FOLLOW) {
-					confirmDialog.show(ConfirmDialog.UNFOLLOW_HASHTAG);
+			} else if (action == OnHashtagClickListener.REMOVE) {
+				if (hashtagAction.isIdle() && !confirmDialog.isShowing()) {
+					selection = hashtag;
+					if (mode == MODE_FEATURE) {
+						confirmDialog.show(ConfirmDialog.UNFEATURE_HASHTAG);
+					} else if (mode == MODE_FOLLOW) {
+						confirmDialog.show(ConfirmDialog.UNFOLLOW_HASHTAG);
+					}
 				}
 			}
 		}
@@ -198,7 +202,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 	@Override
 	public boolean onPlaceholderClick(long cursor, int index) {
-		if (hashtagLoader.isIdle()) {
+		if (!isRefreshing() && hashtagLoader.isIdle()) {
 			load(cursor, index);
 			return true;
 		}
@@ -223,14 +227,17 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	 * callback for {@link HashtagAction}
 	 */
 	private void onHashtagActionResult(@NonNull HashtagAction.Result result) {
-		if (result.mode == HashtagAction.Result.UNFEATURE) {
-			Toast.makeText(requireContext(), R.string.info_hashtag_unfeatured, Toast.LENGTH_SHORT).show();
-			adapter.removeItem(result.hashtag);
-		} else if (result.mode == HashtagAction.Result.UNFOLLOW) {
-			Toast.makeText(requireContext(), R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
-			adapter.removeItem(result.hashtag);
-		} else if (result.mode == HashtagAction.Result.ERROR) {
-			ErrorUtils.showErrorMessage(requireContext(), result.exception);
+		Context context = getContext();
+		if (context != null) {
+			if (result.mode == HashtagAction.Result.UNFEATURE) {
+				Toast.makeText(context, R.string.info_hashtag_unfeatured, Toast.LENGTH_SHORT).show();
+				adapter.removeItem(result.hashtag);
+			} else if (result.mode == HashtagAction.Result.UNFOLLOW) {
+				Toast.makeText(context, R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
+				adapter.removeItem(result.hashtag);
+			} else if (result.mode == HashtagAction.Result.ERROR) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
 	}
 
@@ -239,8 +246,9 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	 */
 	private void onHashtagLoaderResult(@NonNull HashtagLoader.Result result) {
 		if (result.mode == HashtagLoader.Result.ERROR) {
-			if (getContext() != null) {
-				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 			adapter.disableLoading();
 		} else {

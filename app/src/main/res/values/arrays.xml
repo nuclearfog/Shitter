@@ -84,9 +84,9 @@
 	</string-array>
 
 	<string-array name="push_policy">
-		<item>all notifications</item>
-		<item>notifications from following only</item>
-		<item>notifications from followers only</item>
+		<item>allow all notifications</item>
+		<item>allow notifications from following only</item>
+		<item>allow notifications from followers only</item>
 	</string-array>
 
 	<string-array name="visibility">

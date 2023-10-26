@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -209,7 +210,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	public boolean onPlaceholderClick(long minId, long maxId, int pos) {
-		if (statusLoader.isIdle()) {
+		if (!isRefreshing() && statusLoader.isIdle()) {
 			load(minId, maxId, pos);
 			return true;
 		}
@@ -226,8 +227,9 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				adapter.addItems(result.statuses, result.position);
 			}
 		} else {
-			if (getContext() != null) {
-				ErrorUtils.showErrorMessage(getContext(), result.exception);
+			Context context = getContext();
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 			adapter.disableLoading();
 		}

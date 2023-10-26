@@ -10,7 +10,6 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 import org.nuclearfog.twidda.backend.helper.ConnectionResult;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
-import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -66,14 +65,9 @@ public class LoginAction extends AsyncExecutor<LoginAction.Param, LoginAction.Re
 					database.saveLogin(account);
 					// save instance information
 					database.saveInstance(instance);
-					// transfer push configuration
-					if (settings.pushEnabled()) {
-						try {
-							connection.updatePush(new PushUpdate(settings.getWebPush()));
-						} catch (ConnectionException exception) {
-							settings.setPushEnabled(false);
-						}
-					}
+					// disable push for new login
+					settings.setPushEnabled(false);
+					settings.setWebPush(null);
 					return new Result(Result.MODE_LOGIN, account, null, null);
 
 				default:

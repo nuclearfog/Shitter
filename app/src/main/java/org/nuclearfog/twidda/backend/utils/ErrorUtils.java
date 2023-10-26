@@ -24,12 +24,10 @@ public class ErrorUtils {
 	 *
 	 * @param exception connection exception
 	 */
-	public static void showErrorMessage(Context context, @Nullable ConnectionException exception) {
-		if (context != null) {
-			String errorMessage = getErrorMessage(context, exception);
-			if (!errorMessage.isEmpty()) {
-				Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-			}
+	public static void showErrorMessage(@NonNull Context context, @Nullable ConnectionException exception) {
+		String errorMessage = getErrorMessage(context, exception);
+		if (!errorMessage.isEmpty()) {
+			Toast.makeText(context.getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
 		}
 	}
 

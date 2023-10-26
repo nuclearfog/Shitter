@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.ui.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +41,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	private AccountLoader accountLoader;
 	private AccountAction accountAction;
+
 	private GlobalSettings settings;
 	private AccountAdapter adapter;
 	private ConfirmDialog dialog;
@@ -81,6 +84,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onDestroy() {
 		accountLoader.cancel();
+		accountAction.cancel();
 		super.onDestroy();
 	}
 
@@ -93,10 +97,11 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	protected void onReset() {
+		setRefresh(true);
 		adapter.clear();
 		accountLoader = new AccountLoader(requireContext());
+		accountAction = new AccountAction(requireContext());
 		load();
-		setRefresh(true);
 	}
 
 
@@ -150,17 +155,24 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		if (result.mode == AccountAction.Result.REMOVE) {
 			adapter.removeItem(result.account);
 		} else if (result.mode == AccountAction.Result.SELECT) {
-			if (settings.pushEnabled()) {
-				PushSubscription.subscripe(requireContext());
-			}
-			if (result.account.getUser() != null) {
-				String message = getString(R.string.info_account_selected, result.account.getUser().getScreenname());
-				Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+			Context context = getContext();
+			if (context != null) {
+				if (settings.pushEnabled()) {
+					PushSubscription.subscripe(context);
+				}
+				if (result.account.getUser() != null) {
+					String message = getString(R.string.info_account_selected, result.account.getUser().getScreenname());
+					Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+				}
 			}
 			// set result to the parent activity
-			Intent intent = new Intent();
-			intent.putExtra(AccountActivity.RETURN_ACCOUNT, result.account);
-			requireActivity().setResult(AccountActivity.RETURN_ACCOUNT_CHANGED, intent);
+			Activity activity = getActivity();
+			if (activity != null) {
+				Intent intent = new Intent();
+				intent.putExtra(AccountActivity.RETURN_ACCOUNT, result.account);
+				activity.setResult(AccountActivity.RETURN_ACCOUNT_CHANGED, intent);
+				activity.finish();
+			}
 		}
 	}
 }
