@@ -268,18 +268,6 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public User showUser(String name) throws MastodonException {
-		List<String> params = new ArrayList<>();
-		params.add("acct=" + StringUtils.encode(name));
-		try {
-			return createUser(get(ENDPOINT_LOOKUP_USER, params));
-		} catch (IOException e) {
-			throw new MastodonException(e);
-		}
-	}
-
-
-	@Override
 	public Users searchUsers(String search, long page) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		params.add("q=" + StringUtils.encode(search));
@@ -1447,6 +1435,22 @@ public class Mastodon implements Connection {
 	}
 
 	/**
+	 * get user by screen name
+	 *
+	 * @param name screen name (@username)
+	 * @return user instance
+	 */
+	private User showUser(String name) throws MastodonException {
+		List<String> params = new ArrayList<>();
+		params.add("acct=" + StringUtils.encode(name));
+		try {
+			return createUser(get(ENDPOINT_LOOKUP_USER, params));
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+	/**
 	 * get information about the current user
 	 *
 	 * @param host   Mastodon hostname
@@ -1802,7 +1806,7 @@ public class Mastodon implements Connection {
 	}
 
 	/**
-	 * create get response with user bearer token
+	 * create get response with current bearer token
 	 *
 	 * @param endpoint endpoint to use
 	 * @param params   additional parameters
@@ -1830,7 +1834,7 @@ public class Mastodon implements Connection {
 	}
 
 	/**
-	 * create post response with user bearer token
+	 * create post response with current bearer token
 	 *
 	 * @param endpoint endpoint to use
 	 * @param params   additional parameters

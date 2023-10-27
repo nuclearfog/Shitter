@@ -79,14 +79,6 @@ public interface Connection {
 	User showUser(long id) throws ConnectionException;
 
 	/**
-	 * lookup user and return user information
-	 *
-	 * @param name screen name of the user
-	 * @return user information
-	 */
-	User showUser(String name) throws ConnectionException;
-
-	/**
 	 * search for users matching a search string
 	 *
 	 * @param search search string
