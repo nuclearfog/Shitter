@@ -83,7 +83,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1366,7 +1365,7 @@ public class Mastodon implements Connection {
 	public Translation getStatusTranslation(long id) throws ConnectionException {
 		try {
 			List<String> params = new ArrayList<>();
-			params.add("lang=" + Locale.getDefault().getLanguage()); // set system language as destiny for translation
+			// params.add("lang=" + Locale.getDefault().getLanguage()); // set system language as destiny for translation
 			Response response = post(ENDPOINT_STATUS + id + "/translate", params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {

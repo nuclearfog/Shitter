@@ -597,7 +597,8 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 					status_text.setText(spannableText);
 					translated = false;
 				} else if (translationLoader.isIdle()) {
-					translationLoader.execute(status.getId(), translationResult);
+					TranslationLoader.Param param = new TranslationLoader.Param(status.getId());
+					translationLoader.execute(param, translationResult);
 				}
 			}
 		}
@@ -1099,7 +1100,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			translate_text.append(result.translation.getOriginalLanguage());
 			translated = true;
 		} else {
-			Toast.makeText(getApplicationContext(), R.string.error_translating_status, Toast.LENGTH_SHORT).show();
+			ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 		}
 	}
 
