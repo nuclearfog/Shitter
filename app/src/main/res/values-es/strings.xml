@@ -98,7 +98,6 @@
 	<string name="error_forbidden_api_access">¡La API no soporta esta operación!</string>
 	<string name="error_adding_media">¡Ocurrió un error al agregar los medios!</string>
 	<string name="error_media_init">¡Error al preparar los archivos de medios para su carga!</string>
-	<string name="error_translating_status">No se pudo traducir el estado</string>
 	<string name="error_empty_text">¡El texto está vacío!</string>
 
 	<!-- menu icon strings -->

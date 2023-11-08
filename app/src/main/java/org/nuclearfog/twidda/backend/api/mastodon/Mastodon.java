@@ -643,10 +643,13 @@ public class Mastodon implements Connection {
 	public Statuses getStatusReplies(long id, long minId, long maxId) throws MastodonException {
 		Statuses statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
 		Statuses result = new Statuses();
+		// todo add option to toggle viewing whole thread
 		for (Status status : statusThreads) {
-			// Mastodon doesn't support min/max ID.
-			if (status.getRepliedStatusId() == id && (minId == 0L || status.getId() > minId) && (maxId == 0L || status.getId() < maxId)) {
+			if (status != null && (minId == 0L || status.getId() > minId) && (maxId == 0L || status.getId() < maxId)) {
 				result.add(status);
+				if (result.size() == settings.getListSize()) {
+					break;
+				}
 			}
 		}
 		return result;

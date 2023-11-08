@@ -126,7 +126,6 @@
 	<string name="error_api_error">API error</string>
 	<string name="error_adding_media">Error occurred while adding media!</string>
 	<string name="error_media_init">Error while preparing media files for upload!</string>
-	<string name="error_translating_status">Could not translate status</string>
 	<string name="error_empty_filter_title">Filter description must not be empty</string>
 	<string name="error_empty_filter_selection">It must be at least one filter enabled</string>
 	<string name="error_empty_text">Empty text!</string>
