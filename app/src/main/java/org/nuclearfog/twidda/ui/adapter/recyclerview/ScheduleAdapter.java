@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -13,14 +14,15 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.ScheduleHolder;
 
 /**
+ * Recyclerview adapter for a scheduled status list
+ *
  * @author nuclearfog
  */
 public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	private static final int NO_LOADING = -1;
-
 	private static final int MIN_COUNT = 2;
-
+	// view types
 	private static final int ITEM_GAP = 1;
 	private static final int ITEM_SCHEDULE = 2;
 
@@ -79,13 +81,24 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		if (type == SCHEDULE_CLICK) {
-			ScheduledStatus item = items.get(position);
-			if (item != null) {
-				listener.onScheduleClick(item, OnScheduleClickListener.SELECT);
+		ScheduledStatus item = items.get(position);
+		if (item != null) {
+			switch (type) {
+				case SCHEDULE_CLICK:
+					listener.onScheduleSelect(items.get(position));
+					break;
+
+				case SCHEDULE_REMOVE:
+					listener.onScheduleRemove(items.get(position));
+					break;
+
+				case STATUS_MEDIA:
+					Media[] media = item.getMedia();
+					if (extras[0] < media.length) {
+						listener.onMediaClick(media[extras[0]]);
+					}
+					break;
 			}
-		} else if (type == SCHEDULE_REMOVE) {
-			listener.onScheduleClick(items.get(position), OnScheduleClickListener.REMOVE);
 		}
 	}
 
@@ -228,15 +241,35 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	}
 
 	/**
-	 *
+	 * schedule item click listener
 	 */
 	public interface OnScheduleClickListener {
 
-		int SELECT = 1;
-		int REMOVE = 2;
+		/**
+		 * called when a schedule item was clicked
+		 */
+		void onScheduleSelect(ScheduledStatus status);
 
-		void onScheduleClick(ScheduledStatus status, int type);
+		/**
+		 * called when the status item remove button was clicked
+		 */
+		void onScheduleRemove(ScheduledStatus status);
 
+		/**
+		 * called when a media icon was clicked
+		 *
+		 * @param media selected media item
+		 */
+		void onMediaClick(Media media);
+
+		/**
+		 * called when a placeholder was clicked
+		 *
+		 * @param min_id   item id under the clicked placeholder
+		 * @param max_id   item id over the clicked placeholder
+		 * @param position position of the placeholder
+		 * @return true to start placeholder animation
+		 */
 		boolean onPlaceholderClick(long min_id, long max_id, int position);
 	}
 }

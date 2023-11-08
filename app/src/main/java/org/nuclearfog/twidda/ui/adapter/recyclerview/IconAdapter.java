@@ -23,7 +23,7 @@ import java.util.List;
 public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickListener {
 
 	@Nullable
-	private OnMediaClickListener listener;
+	private OnIconClickListener listener;
 
 	private List<Integer> items = new ArrayList<>();
 	private boolean invert;
@@ -31,7 +31,7 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	/**
 	 * @param invert true to invert item order
 	 */
-	public IconAdapter(@Nullable OnMediaClickListener listener, boolean invert) {
+	public IconAdapter(@Nullable OnIconClickListener listener, boolean invert) {
 		this.listener = listener;
 		this.invert = invert;
 	}
@@ -60,12 +60,20 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	public void onItemClick(int position, int type, int... extras) {
 		if (listener != null) {
 			Integer item = items.get(position);
-			if (item == IconHolder.TYPE_IMAGE || item == IconHolder.TYPE_GIF || item == IconHolder.TYPE_VIDEO || item == IconHolder.TYPE_AUDIO) {
-				if (invert) {
-					listener.onMediaClick(items.size() - position - 1);
-				} else {
-					listener.onMediaClick(position);
-				}
+			if (invert) {
+				position = items.size() - position - 1;
+			}
+			switch (item) {
+				case IconHolder.TYPE_IMAGE:
+				case IconHolder.TYPE_GIF:
+				case IconHolder.TYPE_VIDEO:
+				case IconHolder.TYPE_AUDIO:
+					listener.onIconClick(OnIconClickListener.MEDIA, position);
+					break;
+
+				case IconHolder.TYPE_POLL:
+					listener.onIconClick(OnIconClickListener.POLL, position);
+					break;
 			}
 		}
 	}
@@ -202,13 +210,19 @@ public class IconAdapter extends Adapter<IconHolder> implements OnHolderClickLis
 	}
 
 	/**
-	 * item click lsitener for media icons
+	 * item click listener
 	 */
-	public interface OnMediaClickListener {
+	public interface OnIconClickListener {
+
+		int MEDIA = 43;
+
+		int POLL = 44;
 
 		/**
-		 * called on media item click
+		 * called on item click
+		 *
+		 * @param index index of the item
 		 */
-		void onMediaClick(int index);
+		void onIconClick(int type, int index);
 	}
 }

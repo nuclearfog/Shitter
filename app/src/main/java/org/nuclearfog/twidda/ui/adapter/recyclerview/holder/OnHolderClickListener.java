@@ -19,6 +19,10 @@ public interface OnHolderClickListener {
 
 	int STATUS_LABEL = 5;
 
+	int STATUS_MEDIA = 6;
+
+	int STATUS_POLL = 7;
+
 	int ACCOUNT_SELECT = 12;
 
 	int ACCOUNT_REMOVE = 13;

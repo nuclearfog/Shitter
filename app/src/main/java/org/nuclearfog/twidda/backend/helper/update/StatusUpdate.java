@@ -39,7 +39,7 @@ public class StatusUpdate implements Serializable, Closeable {
 	private long scheduleTime = 0L;
 	private boolean sensitive = false;
 	private boolean spoiler = false;
-	private int visibility = Status.VISIBLE_PUBLIC;
+	private int visibility = Status.VISIBLE_DEFAULT;
 	private String languageCode = "";
 	private String text;
 

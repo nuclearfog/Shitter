@@ -1,6 +1,8 @@
 package org.nuclearfog.twidda.ui.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -13,10 +15,14 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.ScheduleAction;
 import org.nuclearfog.twidda.backend.async.ScheduleLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
+import org.nuclearfog.twidda.ui.activities.ImageViewer;
+import org.nuclearfog.twidda.ui.activities.VideoViewer;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.ScheduleAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.ScheduleAdapter.OnScheduleClickListener;
+import org.nuclearfog.twidda.ui.dialogs.AudioPlayerDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.TimePickerDialog;
@@ -36,6 +42,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	private ScheduleAction scheduleAction;
 	private ConfirmDialog confirm;
 	private TimePickerDialog timepicker;
+	private AudioPlayerDialog audioDialog;
 
 	@Nullable
 	private ScheduledStatus selection;
@@ -52,6 +59,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 		adapter = new ScheduleAdapter(this);
 		confirm = new ConfirmDialog(requireActivity(), this);
 		timepicker = new TimePickerDialog(requireActivity(), this);
+		audioDialog = new AudioPlayerDialog(requireActivity());
 
 		setAdapter(adapter);
 		if (savedInstanceState != null) {
@@ -73,9 +81,17 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 
 	@Override
+	public void onStop() {
+		audioDialog.dismiss();
+		super.onStop();
+	}
+
+
+	@Override
 	public void onDestroy() {
 		scheduleLoader.cancel();
 		scheduleAction.cancel();
+		audioDialog.close();
 		super.onDestroy();
 	}
 
@@ -97,18 +113,43 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 
 	@Override
-	public void onScheduleClick(ScheduledStatus status, int type) {
+	public void onScheduleSelect(ScheduledStatus status) {
+		if (!isRefreshing() && !timepicker.isShowing() && scheduleAction.isIdle()) {
+			selection = status;
+			timepicker.show(status.getPublishTime());
+		}
+	}
+
+
+	@Override
+	public void onScheduleRemove(ScheduledStatus status) {
+		if (!isRefreshing() && !confirm.isShowing() && scheduleAction.isIdle()) {
+			selection = status;
+			confirm.show(ConfirmDialog.SCHEDULE_REMOVE);
+		}
+	}
+
+
+	@Override
+	public void onMediaClick(Media media) {
 		if (!isRefreshing()) {
-			if (type == OnScheduleClickListener.SELECT) {
-				if (!timepicker.isShowing() && scheduleAction.isIdle()) {
-					selection = status;
-					timepicker.show(status.getPublishTime());
-				}
-			} else if (type == OnScheduleClickListener.REMOVE) {
-				if (!confirm.isShowing() && scheduleAction.isIdle()) {
-					selection = status;
-					confirm.show(ConfirmDialog.SCHEDULE_REMOVE);
-				}
+			switch (media.getMediaType()) {
+				case Media.PHOTO:
+					Intent intent = new Intent(requireActivity(), ImageViewer.class);
+					intent.putExtra(ImageViewer.KEY_IMAGE_DATA, media);
+					requireActivity().startActivity(intent);
+					break;
+
+				case Media.GIF:
+				case Media.VIDEO:
+					intent = new Intent(requireActivity(), VideoViewer.class);
+					intent.putExtra(VideoViewer.KEY_VIDEO_DATA, media);
+					requireActivity().startActivity(intent);
+					break;
+
+				case Media.AUDIO:
+					audioDialog.show(Uri.parse(media.getUrl()));
+					break;
 			}
 		}
 	}

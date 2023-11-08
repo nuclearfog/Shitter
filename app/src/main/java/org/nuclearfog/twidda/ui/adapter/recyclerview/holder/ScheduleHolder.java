@@ -20,13 +20,14 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter.OnIconClickListener;
 
 import java.text.SimpleDateFormat;
 
 /**
  * @author nuclearfog
  */
-public class ScheduleHolder extends ViewHolder implements OnClickListener {
+public class ScheduleHolder extends ViewHolder implements OnClickListener, OnIconClickListener {
 
 	private TextView time, text, visibility;
 	private RecyclerView iconList;
@@ -50,7 +51,7 @@ public class ScheduleHolder extends ViewHolder implements OnClickListener {
 		time = itemView.findViewById(R.id.item_schedule_time);
 		text = itemView.findViewById(R.id.item_schedule_text);
 
-		adapter = new IconAdapter(null, false);
+		adapter = new IconAdapter(this, false);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
 		iconList.setAdapter(adapter);
 		text.setMovementMethod(LinkAndScrollMovement.getInstance());
@@ -73,6 +74,19 @@ public class ScheduleHolder extends ViewHolder implements OnClickListener {
 				listener.onItemClick(position, OnHolderClickListener.SCHEDULE_CLICK);
 			} else if (v.getId() == R.id.item_schedule_delete_button) {
 				listener.onItemClick(position, OnHolderClickListener.SCHEDULE_REMOVE);
+			}
+		}
+	}
+
+
+	@Override
+	public void onIconClick(int type, int index) {
+		int position = getLayoutPosition();
+		if (position != RecyclerView.NO_POSITION) {
+			if (type == OnIconClickListener.MEDIA) {
+				listener.onItemClick(position, OnHolderClickListener.STATUS_MEDIA, index);
+			} else if (type == OnIconClickListener.POLL) {
+				listener.onItemClick(position, OnHolderClickListener.STATUS_POLL, index);
 			}
 		}
 	}

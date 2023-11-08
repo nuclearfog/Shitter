@@ -38,7 +38,7 @@ import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter.OnMediaClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter.OnIconClickListener;
 import org.nuclearfog.twidda.ui.dialogs.AudioPlayerDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
@@ -59,7 +59,7 @@ import java.io.Serializable;
  * @author nuclearfog
  */
 public class StatusEditor extends MediaActivity implements ActivityResultCallback<ActivityResult>, OnClickListener, OnProgressStopListener, OnConfirmListener,
-		OnMediaClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener {
+		OnIconClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener {
 
 	/**
 	 * return code used to send status information to calling activity
@@ -347,6 +347,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		// todo replace emoji tags with images
 	}
 
 
@@ -402,28 +403,28 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 
 	@Override
-	public void onMediaClick(int index) {
-		if (statusUpdate.getMediaStatuses().isEmpty())
-			return;
-		MediaStatus media = statusUpdate.getMediaStatuses().get(index);
-		switch (media.getMediaType()) {
-			case MediaStatus.PHOTO:
-			case MediaStatus.GIF:
-				Intent intent = new Intent(this, ImageViewer.class);
-				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, media);
-				activityResultLauncher.launch(intent);
-				break;
+	public void onIconClick(int type, int index) {
+		if (type == OnIconClickListener.MEDIA && index < statusUpdate.getMediaStatuses().size()) {
+			MediaStatus media = statusUpdate.getMediaStatuses().get(index);
+			switch (media.getMediaType()) {
+				case MediaStatus.PHOTO:
+				case MediaStatus.GIF:
+					Intent intent = new Intent(this, ImageViewer.class);
+					intent.putExtra(ImageViewer.KEY_IMAGE_DATA, media);
+					activityResultLauncher.launch(intent);
+					break;
 
-			case MediaStatus.VIDEO:
-				intent = new Intent(this, VideoViewer.class);
-				intent.putExtra(VideoViewer.KEY_VIDEO_DATA, media);
-				activityResultLauncher.launch(intent);
-				break;
+				case MediaStatus.VIDEO:
+					intent = new Intent(this, VideoViewer.class);
+					intent.putExtra(VideoViewer.KEY_VIDEO_DATA, media);
+					activityResultLauncher.launch(intent);
+					break;
 
-			case MediaStatus.AUDIO:
-				if (media.getPath() != null)
-					audioDialog.show(Uri.parse(media.getPath()));
-				break;
+				case MediaStatus.AUDIO:
+					if (media.getPath() != null && !audioDialog.isShowing())
+						audioDialog.show(Uri.parse(media.getPath()));
+					break;
+			}
 		}
 	}
 

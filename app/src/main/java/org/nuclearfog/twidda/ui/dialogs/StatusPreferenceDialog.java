@@ -39,6 +39,13 @@ import java.util.TreeMap;
  */
 public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeListener, OnItemSelectedListener, OnClickListener, TimePickerDialog.TimeSelectedCallback {
 
+	// index of the visibility spinner list (see R.array.visibility)
+	private static final int IDX_VISIBILITY_DEFAULT = 0;
+	private static final int IDX_VISIBILITY_PUBLIC = 1;
+	private static final int IDX_VISIBILITY_PRIVATE = 2;
+	private static final int IDX_VISIBILITY_DIRECT = 3;
+	private static final int IDX_VISIBILITY_UNLISTED = 4;
+
 	private Spinner visibilitySelector, languageSelector;
 	private SwitchButton sensitiveCheck, spoilerCheck;
 	private TextView scheduleText;
@@ -77,7 +84,7 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	 *
 	 */
 	private StatusPreferenceDialog(Activity activity) {
-		super(activity, R.style.DefaultDialog);
+		super(activity, R.style.StatusPrefDialog);
 		visibility_adapter = new DropdownAdapter(activity.getApplicationContext());
 		language_adapter = new DropdownAdapter(activity.getApplicationContext());
 		timePicker = new TimePickerDialog(activity, this);
@@ -131,23 +138,26 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 		}
 		sensitiveCheck.setOnCheckedChangeListener(this);
 		spoilerCheck.setOnCheckedChangeListener(this);
-		languageSelector.setOnItemSelectedListener(this);
-		visibilitySelector.setOnItemSelectedListener(this);
 		timePicker.setOnClickListener(this);
 	}
 
 
 	@Override
 	protected void onStart() {
+		// remove listener to prevent calling when selecting an item
+		languageSelector.setOnItemSelectedListener(null);
+		visibilitySelector.setOnItemSelectedListener(null);
 		if (statusUpdate != null) {
-			if (statusUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
-				visibilitySelector.setSelection(0, false);
+			if (statusUpdate.getVisibility() == Status.VISIBLE_DEFAULT) {
+				visibilitySelector.setSelection(IDX_VISIBILITY_DEFAULT, false);
+			} else if (statusUpdate.getVisibility() == Status.VISIBLE_PUBLIC) {
+				visibilitySelector.setSelection(IDX_VISIBILITY_PUBLIC, false);
 			} else if (statusUpdate.getVisibility() == Status.VISIBLE_PRIVATE) {
-				visibilitySelector.setSelection(1, false);
+				visibilitySelector.setSelection(IDX_VISIBILITY_PRIVATE, false);
 			} else if (statusUpdate.getVisibility() == Status.VISIBLE_DIRECT) {
-				visibilitySelector.setSelection(2, false);
+				visibilitySelector.setSelection(IDX_VISIBILITY_DIRECT, false);
 			} else if (statusUpdate.getVisibility() == Status.VISIBLE_UNLISTED) {
-				visibilitySelector.setSelection(3, false);
+				visibilitySelector.setSelection(IDX_VISIBILITY_UNLISTED, false);
 			}
 			sensitiveCheck.setCheckedImmediately(statusUpdate.isSensitive());
 			spoilerCheck.setCheckedImmediately(statusUpdate.isSpoiler());
@@ -159,14 +169,16 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 				}
 			}
 		} else if (userUpdate != null) {
-			if (userUpdate.getStatusVisibility() == Status.VISIBLE_PUBLIC) {
-				visibilitySelector.setSelection(0, false);
+			if (userUpdate.getStatusVisibility() == Status.VISIBLE_DEFAULT) {
+				visibilitySelector.setSelection(IDX_VISIBILITY_DEFAULT, false);
+			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_PUBLIC) {
+				visibilitySelector.setSelection(IDX_VISIBILITY_PUBLIC, false);
 			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_PRIVATE) {
-				visibilitySelector.setSelection(1, false);
+				visibilitySelector.setSelection(IDX_VISIBILITY_PRIVATE, false);
 			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_DIRECT) {
-				visibilitySelector.setSelection(2, false);
+				visibilitySelector.setSelection(IDX_VISIBILITY_DIRECT, false);
 			} else if (userUpdate.getStatusVisibility() == Status.VISIBLE_UNLISTED) {
-				visibilitySelector.setSelection(3, false);
+				visibilitySelector.setSelection(IDX_VISIBILITY_UNLISTED, false);
 			}
 			sensitiveCheck.setCheckedImmediately(userUpdate.isSensitive());
 			if (!userUpdate.getLanguageCode().isEmpty()) {
@@ -177,6 +189,9 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 				}
 			}
 		}
+		// set listener after selecting item
+		languageSelector.setOnItemSelectedListener(this);
+		visibilitySelector.setOnItemSelectedListener(this);
 		super.onStart();
 	}
 
@@ -226,33 +241,36 @@ public class StatusPreferenceDialog extends Dialog implements OnCheckedChangeLis
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		if (parent.getId() == R.id.dialog_status_visibility) {
+			int visibility;
+			switch (position) {
+				default:
+				case IDX_VISIBILITY_DEFAULT:
+					visibility = Status.VISIBLE_DEFAULT;
+					break;
+
+				case IDX_VISIBILITY_PUBLIC:
+					visibility = Status.VISIBLE_PUBLIC;
+					break;
+
+				case IDX_VISIBILITY_PRIVATE:
+					visibility = Status.VISIBLE_PRIVATE;
+					break;
+
+				case IDX_VISIBILITY_DIRECT:
+					visibility = Status.VISIBLE_DIRECT;
+					break;
+
+				case IDX_VISIBILITY_UNLISTED:
+					visibility = Status.VISIBLE_UNLISTED;
+					break;
+			}
 			if (statusUpdate != null) {
-				if (position == 0) {
-					statusUpdate.setVisibility(Status.VISIBLE_DEFAULT);
-				} else if (position == 1) {
-					statusUpdate.setVisibility(Status.VISIBLE_PUBLIC);
-				} else if (position == 2) {
-					statusUpdate.setVisibility(Status.VISIBLE_PRIVATE);
-				} else if (position == 3) {
-					statusUpdate.setVisibility(Status.VISIBLE_DIRECT);
-				} else if (position == 4) {
-					statusUpdate.setVisibility(Status.VISIBLE_UNLISTED);
-				}
+				statusUpdate.setVisibility(visibility);
 			} else if (userUpdate != null) {
-				if (position == 0) {
-					userUpdate.setStatusVisibility(Status.VISIBLE_DEFAULT);
-				} else if (position == 1) {
-					userUpdate.setStatusVisibility(Status.VISIBLE_PUBLIC);
-				} else if (position == 2) {
-					userUpdate.setStatusVisibility(Status.VISIBLE_PRIVATE);
-				} else if (position == 3) {
-					userUpdate.setStatusVisibility(Status.VISIBLE_DIRECT);
-				} else if (position == 4) {
-					userUpdate.setStatusVisibility(Status.VISIBLE_UNLISTED);
-				}
+				userUpdate.setStatusVisibility(visibility);
 			}
 		} else if (parent.getId() == R.id.dialog_status_language) {
-			if (position > 0) {
+			if (position > 0 && position < languageCodes.length) {
 				if (statusUpdate != null) {
 					statusUpdate.addLanguage(languageCodes[position]);
 				} else if (userUpdate != null) {
