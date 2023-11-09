@@ -643,7 +643,8 @@ public class Mastodon implements Connection {
 	public Statuses getStatusReplies(long id, long minId, long maxId) throws MastodonException {
 		Statuses statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
 		Statuses result = new Statuses();
-		for (int i = 0; i < settings.getListSize(); i++)
+		int limit = Math.min(statusThreads.size(), settings.getListSize());
+		for (int i = 0; i < limit; i++)
 			result.add(statusThreads.get(i));
 		result.setNextCursor(Statuses.NO_ID);
 		return result;
