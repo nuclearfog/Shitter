@@ -643,15 +643,9 @@ public class Mastodon implements Connection {
 	public Statuses getStatusReplies(long id, long minId, long maxId) throws MastodonException {
 		Statuses statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
 		Statuses result = new Statuses();
-		// fixme pagination broken
-		for (Status status : statusThreads) {
-			if (status != null && (minId == 0L || status.getId() > minId) && (maxId == 0L || status.getId() < maxId)) {
-				result.add(status);
-				if (result.size() == settings.getListSize()) {
-					break;
-				}
-			}
-		}
+		for (int i = 0; i < settings.getListSize(); i++)
+			result.add(statusThreads.get(i));
+		result.setNextCursor(Statuses.NO_ID);
 		return result;
 	}
 
