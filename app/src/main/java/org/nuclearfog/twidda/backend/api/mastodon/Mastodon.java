@@ -643,7 +643,7 @@ public class Mastodon implements Connection {
 	public Statuses getStatusReplies(long id, long minId, long maxId) throws MastodonException {
 		Statuses statusThreads = getStatuses(ENDPOINT_STATUS + id + "/context", new ArrayList<>(0), minId, maxId);
 		Statuses result = new Statuses();
-		// todo add option to toggle viewing whole thread
+		// fixme pagination broken
 		for (Status status : statusThreads) {
 			if (status != null && (minId == 0L || status.getId() > minId) && (maxId == 0L || status.getId() < maxId)) {
 				result.add(status);
@@ -1520,7 +1520,8 @@ public class Mastodon implements Connection {
 		params.add("limit=" + settings.getListSize());
 		try {
 			Statuses result = createStatuses(get(endpoint, params));
-			if (result.size() > 1)
+			// posts from reply endpoint should not be sorted
+			if (result.size() > 1 && !endpoint.endsWith("/context"))
 				Collections.sort(result);
 			return result;
 		} catch (IOException e) {

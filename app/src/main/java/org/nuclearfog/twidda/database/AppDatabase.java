@@ -713,7 +713,9 @@ public class AppDatabase {
 
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(REPLY_QUERY, args);
-			return getStatuses(cursor, db);
+			Statuses result = getStatuses(cursor, db);
+			result.setNextCursor(Statuses.NO_ID);
+			return result;
 		}
 	}
 
