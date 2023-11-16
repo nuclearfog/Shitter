@@ -31,7 +31,8 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.CredentialsAction;
+import org.nuclearfog.twidda.backend.async.CredentialsLoader;
+import org.nuclearfog.twidda.backend.async.CredentialsUpdater;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
@@ -56,7 +57,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, AsyncCallback<CredentialsAction.Result>, OnConfirmListener, TextWatcher, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, OnConfirmListener, TextWatcher, Callback {
 
 	/**
 	 * key to preload user data
@@ -69,7 +70,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	 */
 	public static final int RETURN_PROFILE_UPDATED = 0xF5C0E570;
 
-	private CredentialsAction credentialAction;
+	private CredentialsUpdater credentialUpdater;
+	private CredentialsLoader credentialsLoader;
 	private GlobalSettings settings;
 	private Picasso picasso;
 
@@ -88,6 +90,9 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	private Credentials credentials;
 	private UserUpdate userUpdate = new UserUpdate();
 	private boolean changed = false;
+
+	private AsyncCallback<CredentialsLoader.Result> credentialsLoaderCallback = this::onCredentialsLoaderResult;
+	private AsyncCallback<CredentialsUpdater.Result> credentialsUpdateCallback = this::onCredentialsUpdateResult;
 
 
 	@Override
@@ -119,7 +124,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 		prefDialog = new StatusPreferenceDialog(this, userUpdate);
 		progressDialog = new ProgressDialog(this, null);
 		confirmDialog = new ConfirmDialog(this, this);
-		credentialAction = new CredentialsAction(this);
+		credentialUpdater = new CredentialsUpdater(this);
+		credentialsLoader = new CredentialsLoader(this);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
 
@@ -167,8 +173,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	protected void onStart() {
 		super.onStart();
 		if (credentials == null) {
-			CredentialsAction.Param param = new CredentialsAction.Param(CredentialsAction.Param.LOAD, null);
-			credentialAction.execute(param, this);
+			credentialsLoader.execute(null, credentialsLoaderCallback);
 		}
 	}
 
@@ -176,7 +181,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	@Override
 	protected void onDestroy() {
 		progressDialog.dismiss();
-		credentialAction.cancel();
+		credentialUpdater.cancel();
+		credentialsLoader.cancel();
 		super.onDestroy();
 	}
 
@@ -283,25 +289,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 
 
 	@Override
-	public void onResult(@NonNull CredentialsAction.Result result) {
-		if (result.mode == CredentialsAction.Result.UPDATE) {
-			Intent data = new Intent();
-			data.putExtra(KEY_USER, result.user);
-			Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
-			setResult(RETURN_PROFILE_UPDATED, data);
-			finish();
-		} else if (result.mode == CredentialsAction.Result.LOAD) {
-			credentials = result.credentials;
-			setCredentials();
-		} else if (result.mode == CredentialsAction.Result.ERROR) {
-			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
-			progressDialog.dismiss();
-		}
-	}
-
-
-	@Override
 	public void onSuccess() {
 		// set toolbar background
 		if (settings.toolbarOverlapEnabled()) {
@@ -318,7 +305,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 	 * update user information
 	 */
 	private void updateUser() {
-		if (credentialAction.isIdle()) {
+		if (credentialUpdater.isIdle()) {
 			String username = this.username.getText().toString();
 			String userLoc = profileLocation.getText().toString();
 			String userBio = userDescription.getText().toString();
@@ -329,8 +316,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 				userUpdate.setProfile(username, userBio, userLoc);
 				userUpdate.setPrivacy(privacy.isChecked());
 				if (userUpdate.prepare(getContentResolver())) {
-					CredentialsAction.Param param = new CredentialsAction.Param(CredentialsAction.Param.UPDATE, userUpdate);
-					credentialAction.execute(param, this);
+					credentialUpdater.execute(userUpdate, credentialsUpdateCallback);
 					progressDialog.show();
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();
@@ -376,5 +362,36 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Asy
 			userUpdate.setStatusVisibility(credentials.getVisibility());
 			userUpdate.setContentSensitive(credentials.isSensitive());
 		}
+	}
+
+	/**
+	 *
+	 */
+	private void onCredentialsLoaderResult(CredentialsLoader.Result result) {
+		if (result.credentials != null) {
+			credentials = result.credentials;
+			setCredentials();
+		} else if (result.exception != null) {
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
+			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
+		}
+		progressDialog.dismiss();
+	}
+
+	/**
+	 *
+	 */
+	private void onCredentialsUpdateResult(CredentialsUpdater.Result result) {
+		if (result.user != null) {
+			Intent data = new Intent();
+			data.putExtra(KEY_USER, result.user);
+			Toast.makeText(getApplicationContext(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
+			setResult(RETURN_PROFILE_UPDATED, data);
+			finish();
+		} else {
+			String message = ErrorUtils.getErrorMessage(this, result.exception);
+			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
+		}
+		progressDialog.dismiss();
 	}
 }

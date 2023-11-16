@@ -229,8 +229,8 @@ public class Mastodon implements Connection {
 				Credentials credentials = getCredentials(hostname, bearer);
 				MastodonAccount account = new MastodonAccount(credentials, hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
-				//User user = showUser(credentials.getId());
-				//account.setUser(user); // todo add profile image and username to account
+				User user = showUser(credentials.getId());
+				account.setProfileImage(user.getProfileImageThumbnailUrl());
 				return account;
 			}
 			throw new MastodonException(response);

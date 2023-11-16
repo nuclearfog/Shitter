@@ -39,7 +39,7 @@ public class MastodonAccount implements Account {
 		id = credentials.getId();
 		timestamp = System.currentTimeMillis();
 		screenName = credentials.getUsername();
-		profileImage = ""; // todo implement this
+		profileImage = "";
 	}
 
 
@@ -122,5 +122,12 @@ public class MastodonAccount implements Account {
 			return false;
 		Account account = (Account) obj;
 		return account.getId() == getId() && account.getHostname().equals(getHostname());
+	}
+
+	/**
+	 *
+	 */
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 }

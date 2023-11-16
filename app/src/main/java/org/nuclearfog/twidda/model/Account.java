@@ -43,10 +43,6 @@ public interface Account extends Serializable {
 	 */
 	String getConsumerToken();
 
-	default User getUser() {
-		return null;
-	}
-
 	/**
 	 * @return API secret key associated with an account
 	 */

@@ -38,15 +38,12 @@ import com.squareup.picasso.Transformation;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.UserLoader;
-import org.nuclearfog.twidda.backend.async.UserLoader.Param;
-import org.nuclearfog.twidda.backend.async.UserLoader.Result;
+import org.nuclearfog.twidda.backend.async.CredentialsLoader;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.viewpager.HomeAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
@@ -63,7 +60,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * @author nuclearfog
  */
 public class MainActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, OnTabSelectedListener,
-		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<Result> {
+		OnQueryTextListener, OnNavigationItemSelectedListener, OnClickListener, AsyncCallback<CredentialsLoader.Result> {
 
 	/**
 	 * Bundle key used to select page
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private HomeAdapter adapter;
 	private GlobalSettings settings;
 	private Picasso picasso;
-	private UserLoader userLoader;
+	private CredentialsLoader credentialsLoader;
 	private Dialog loadingCircle;
 
 	private DrawerLayout drawerLayout;
@@ -130,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		followerCount = header.findViewById(R.id.navigation_profile_follower);
 		followingCount = header.findViewById(R.id.navigation_profile_following);
 
-		userLoader = new UserLoader(this);
+		credentialsLoader = new CredentialsLoader(this);
 		loadingCircle = new ProgressDialog(this, null);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
@@ -186,8 +183,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		}
 		// load user information
 		if (settings.isLoggedIn() && currentUser == null) {
-			Param param = new Param(Param.DATABASE, settings.getLogin().getId());
-			userLoader.execute(param, this);
+			credentialsLoader.execute(null, this);
 		}
 	}
 
@@ -247,25 +243,14 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			// login process successful, set user information
 			case LoginActivity.RETURN_LOGIN_SUCCESSFUL:
 				setCurrentUser(null); // remove old user content
-				if (data != null) {
-					Serializable serializable = data.getSerializableExtra(LoginActivity.RETURN_ACCOUNT);
-					if (serializable instanceof Account) {
-						setCurrentUser(((Account) serializable).getUser());
-					}
-				}
+				credentialsLoader.execute(null, this);
 				loginIntent = null;
 				break;
 
 			// new account selected
 			case AccountActivity.RETURN_ACCOUNT_CHANGED:
 				setCurrentUser(null); // remove old user content
-				if (data != null) {
-					Serializable serializedAccount = data.getSerializableExtra(AccountActivity.RETURN_ACCOUNT);
-					if (serializedAccount instanceof Account) {
-						Account account = (Account) serializedAccount;
-						setCurrentUser(account.getUser());
-					}
-				}
+				credentialsLoader.execute(null, this);
 				// reset tab pages
 				adapter = new HomeAdapter(this);
 				viewPager.setAdapter(adapter);
@@ -459,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onResult(@NonNull Result result) {
+	public void onResult(CredentialsLoader.Result result) {
 		setCurrentUser(result.user);
 	}
 

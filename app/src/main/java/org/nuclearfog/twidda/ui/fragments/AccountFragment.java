@@ -160,10 +160,8 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 				if (settings.pushEnabled()) {
 					PushSubscription.subscripe(context);
 				}
-				if (result.account.getUser() != null) {
-					String message = getString(R.string.info_account_selected, result.account.getUser().getScreenname());
-					Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-				}
+				String message = getString(R.string.info_account_selected, result.account.getScreenname());
+				Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 			}
 			// set result to the parent activity
 			Activity activity = getActivity();

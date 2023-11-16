@@ -42,7 +42,7 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 
 	private ImageView profile;
 	private ImageButton remove;
-	private TextView username, screenname, date;
+	private TextView screenname, date;
 	private Drawable placeholder;
 
 	private OnHolderClickListener listener;
@@ -58,7 +58,6 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_account_container);
-		username = itemView.findViewById(R.id.item_account_username);
 		screenname = itemView.findViewById(R.id.item_account_screenname);
 		date = itemView.findViewById(R.id.item_account_date);
 		remove = itemView.findViewById(R.id.item_account_remove);
@@ -92,24 +91,15 @@ public class AccountHolder extends ViewHolder implements OnClickListener {
 	 */
 	public void setContent(Account account) {
 		date.setText(StringUtils.formatCreationTime(itemView.getResources(), account.getTimestamp()));
-		User user = account.getUser();
-		if (user != null) {
-			// set profile information
-			username.setText(user.getUsername());
-			screenname.setText(user.getScreenname());
-			// set profile image
-			String profileImageUrl = user.getProfileImageThumbnailUrl();
-			if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
-				Transformation roundCorner = new RoundedCornersTransformation(2, 0);
-				picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().placeholder(placeholder).transform(roundCorner).error(R.drawable.no_image).into(profile);
-			} else {
-				profile.setImageDrawable(placeholder);
-			}
+		// set profile information
+		screenname.setText(account.getScreenname());
+		// set profile image
+		String profileImageUrl = account.getProfileImageUrl();
+		if (settings.imagesEnabled() && !profileImageUrl.isEmpty()) {
+			Transformation roundCorner = new RoundedCornersTransformation(2, 0);
+			picasso.load(profileImageUrl).resize(IMG_SIZE, IMG_SIZE).centerCrop().placeholder(placeholder).transform(roundCorner).error(R.drawable.no_image).into(profile);
 		} else {
-			profile.setImageResource(0);
-			username.setText(R.string.account_user_unnamed);
-			screenname.setText(R.string.account_user_id_prefix);
-			screenname.append(Long.toString(account.getId()));
+			profile.setImageDrawable(placeholder);
 		}
 		switch (account.getConfiguration()) {
 			case MASTODON:

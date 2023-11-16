@@ -528,7 +528,7 @@ public class AppDatabase {
 			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
 			db.delete(AccountTable.TABLE, ACCOUNT_SELECTION, accountArgs);
 			// insert/update login
-			ContentValues column = new ContentValues(9);
+			ContentValues column = new ContentValues(11);
 			column.put(AccountTable.ID, account.getId());
 			column.put(AccountTable.DATE, account.getTimestamp());
 			column.put(AccountTable.HOSTNAME, account.getHostname());
@@ -538,10 +538,28 @@ public class AppDatabase {
 			column.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
 			column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 			column.put(AccountTable.BEARER, account.getBearerToken());
+			column.put(AccountTable.IMAGE, account.getProfileImageUrl());
+			column.put(AccountTable.USERNAME, account.getScreenname());
 			db.insertWithOnConflict(AccountTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
-			if (account.getUser() != null) {
-				saveUser(account.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
-			}
+			adapter.commit();
+		}
+	}
+
+	/**
+	 * update existing login
+	 *
+	 * @param user user information to update
+	 */
+	public void updateCurrentLogin(User user) {
+		synchronized (adapter) {
+			SQLiteDatabase db = adapter.getDbWrite();
+			// delete login entry if exists
+			String[] accountArgs = {Long.toString(user.getId()), settings.getLogin().getHostname()};
+			// update login columns
+			ContentValues column = new ContentValues(2);
+			column.put(AccountTable.IMAGE, user.getProfileImageThumbnailUrl());
+			column.put(AccountTable.USERNAME, user.getScreenname());
+			db.update(AccountTable.TABLE, column, ACCOUNT_SELECTION, accountArgs);
 			adapter.commit();
 		}
 	}
@@ -788,11 +806,6 @@ public class AppDatabase {
 			if (cursor.moveToFirst()) {
 				do {
 					DatabaseAccount account = new DatabaseAccount(cursor);
-					DatabaseUser user = getUser(account.getId());
-					if (user != null) {
-						user.setAccountInformation(account);
-						//account.addUser(user);
-					}
 					result.add(account);
 				} while (cursor.moveToNext());
 			}
