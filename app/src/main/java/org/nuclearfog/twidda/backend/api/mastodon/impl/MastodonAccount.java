@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.User;
 
 /**
@@ -22,23 +23,23 @@ public class MastodonAccount implements Account {
 	private String hostname;
 	private String bearer;
 	private String client_id, client_secret;
-
-	private User user;
+	private String screenName, profileImage;
 
 	/**
-	 * @param id            user ID
+	 * @param credentials   account credentials
 	 * @param hostname      hostname of the Mastodon isntance
 	 * @param bearer        bearer token
 	 * @param client_id     app client ID
 	 * @param client_secret app client secret
 	 */
-	public MastodonAccount(long id, String hostname, String bearer, String client_id, String client_secret) {
-		this.id = id;
+	public MastodonAccount(Credentials credentials, String hostname, String bearer, String client_id, String client_secret) {
 		this.hostname = hostname;
 		this.bearer = bearer;
 		this.client_id = client_id;
 		this.client_secret = client_secret;
+		id = credentials.getId();
 		timestamp = System.currentTimeMillis();
+		screenName = credentials.getUsername();
 	}
 
 
@@ -49,15 +50,20 @@ public class MastodonAccount implements Account {
 
 
 	@Override
-	public long getTimestamp() {
-		return timestamp;
+	public String getScreenname() {
+		return screenName;
 	}
 
 
-	@Nullable
 	@Override
-	public User getUser() {
-		return user;
+	public String getProfileImageUrl() {
+		return profileImage;
+	}
+
+
+	@Override
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 
@@ -116,15 +122,5 @@ public class MastodonAccount implements Account {
 			return false;
 		Account account = (Account) obj;
 		return account.getId() == getId() && account.getHostname().equals(getHostname());
-	}
-
-
-	/**
-	 * set user information
-	 *
-	 * @param user user information associated with this account
-	 */
-	public void setUser(User user) {
-		this.user = user;
 	}
 }

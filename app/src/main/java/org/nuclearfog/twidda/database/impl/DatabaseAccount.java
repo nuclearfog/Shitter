@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.model.Account;
-import org.nuclearfog.twidda.model.User;
 
 /**
  * database implementation of account
@@ -22,7 +21,7 @@ public class DatabaseAccount implements Account, AccountTable {
 	/**
 	 * projection of the columns with fixed order
 	 */
-	public static final String[] COLUMNS = {ID, API, DATE, ACCESS_TOKEN, TOKEN_SECRET, CLIENT_ID, CLIENT_SECRET, BEARER, HOSTNAME};
+	public static final String[] COLUMNS = {ID, API, DATE, ACCESS_TOKEN, TOKEN_SECRET, CLIENT_ID, CLIENT_SECRET, BEARER, HOSTNAME, USERNAME, IMAGE};
 
 	private long userId;
 	private long loginDate;
@@ -33,7 +32,8 @@ public class DatabaseAccount implements Account, AccountTable {
 	private String consumerSecret = "";
 	private String bearerToken = "";
 	private String host = "";
-	private User user;
+	private String screenName = "";
+	private String profileImage = "";
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS}
@@ -48,6 +48,8 @@ public class DatabaseAccount implements Account, AccountTable {
 		String consumerSecret = cursor.getString(6);
 		String bearerToken = cursor.getString(7);
 		String host = cursor.getString(8);
+		String name = cursor.getString(9);
+		String image = cursor.getString(10);
 
 		if (accessToken != null)
 			this.accessToken = accessToken;
@@ -61,6 +63,10 @@ public class DatabaseAccount implements Account, AccountTable {
 			this.bearerToken = bearerToken;
 		if (host != null)
 			this.host = host;
+		if (image != null)
+			this.profileImage = image;
+		if (name != null)
+			this.screenName = name;
 	}
 
 
@@ -71,15 +77,20 @@ public class DatabaseAccount implements Account, AccountTable {
 
 
 	@Override
-	public long getTimestamp() {
-		return loginDate;
+	public String getScreenname() {
+		return screenName;
 	}
 
 
-	@Nullable
 	@Override
-	public User getUser() {
-		return user;
+	public String getProfileImageUrl() {
+		return profileImage;
+	}
+
+
+	@Override
+	public long getTimestamp() {
+		return loginDate;
 	}
 
 
@@ -134,7 +145,7 @@ public class DatabaseAccount implements Account, AccountTable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "hostname=\"" + getHostname() + "\" configuration=\"" + getConfiguration().getName() + "\" " + user;
+		return "hostname=\"" + getHostname() + "\" configuration=\"" + getConfiguration().getName() + "\" screen_name=\"" + getScreenname() + "\"";
 	}
 
 
@@ -144,14 +155,5 @@ public class DatabaseAccount implements Account, AccountTable {
 			return false;
 		Account account = (Account) obj;
 		return account.getId() == getId() && account.getHostname().equals(getHostname());
-	}
-
-	/**
-	 * attach user information
-	 *
-	 * @param user user associated with this account
-	 */
-	public void addUser(@Nullable User user) {
-		this.user = user;
 	}
 }

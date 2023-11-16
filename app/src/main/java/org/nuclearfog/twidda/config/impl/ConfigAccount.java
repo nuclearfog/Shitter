@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.model.Account;
-import org.nuclearfog.twidda.model.User;
 
 /**
  * {link Account} implementation used by app settings
@@ -70,10 +69,15 @@ public class ConfigAccount implements Account {
 	}
 
 
-	@Nullable
 	@Override
-	public User getUser() {
-		return null;
+	public String getScreenname() {
+		return "";
+	}
+
+
+	@Override
+	public String getProfileImageUrl() {
+		return "";
 	}
 
 

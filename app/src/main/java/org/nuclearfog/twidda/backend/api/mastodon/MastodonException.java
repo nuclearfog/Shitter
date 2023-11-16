@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -29,6 +30,7 @@ public class MastodonException extends ConnectionException {
 
 	private int errorCode = ERROR_NOT_DEFINED;
 	private String errorMessage = "";
+	private int timeToWait = 0;
 
 	/**
 	 *
@@ -91,6 +93,7 @@ public class MastodonException extends ConnectionException {
 				errorCode = SERVICE_UNAVAILABLE;
 				break;
 		}
+		timeToWait = (int) ((StringUtils.getIsoTime(response.header("X-RateLimit-Reset")) - System.currentTimeMillis()) / 1000L);
 	}
 
 	/**
@@ -110,7 +113,7 @@ public class MastodonException extends ConnectionException {
 
 	@Override
 	public int getTimeToWait() {
-		return 0; // not used
+		return timeToWait;
 	}
 
 

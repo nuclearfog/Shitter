@@ -5,7 +5,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class DatabaseUser implements User, UserTable, UserRegisterTable {
+public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 
 	private static final long serialVersionUID = 2367055336838212570L;
 

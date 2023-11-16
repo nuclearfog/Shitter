@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.model;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.config.Configuration;
 
 import java.io.Serializable;
@@ -31,15 +29,23 @@ public interface Account extends Serializable {
 	long getTimestamp();
 
 	/**
-	 * @return user information of the account
+	 * @return screen name of the account profile
 	 */
-	@Nullable
-	User getUser();
+	String getScreenname();
+
+	/**
+	 * @return profile image of the account profile
+	 */
+	String getProfileImageUrl();
 
 	/**
 	 * @return API key assosiated with an account
 	 */
 	String getConsumerToken();
+
+	default User getUser() {
+		return null;
+	}
 
 	/**
 	 * @return API secret key associated with an account

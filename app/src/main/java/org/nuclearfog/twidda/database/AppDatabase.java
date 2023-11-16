@@ -19,10 +19,11 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.PushTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.StatusPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.UserPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.ReplyTable;
 import org.nuclearfog.twidda.database.impl.DatabaseAccount;
 import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
 import org.nuclearfog.twidda.database.impl.DatabaseHashtag;
@@ -70,108 +71,110 @@ public class AppDatabase {
 	/**
 	 * query to create status table with user and register columns
 	 */
-	private static final String STATUS_SUBQUERY = StatusTable.NAME
-			+ " INNER JOIN " + UserTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.USER + "=" + UserTable.NAME + "." + UserTable.ID
-			+ " INNER JOIN " + UserRegisterTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.USER + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.USER
-			+ " INNER JOIN " + StatusRegisterTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + StatusRegisterTable.NAME + "." + StatusRegisterTable.STATUS;
+	private static final String STATUS_SUBQUERY = StatusTable.TABLE
+			+ " INNER JOIN " + UserTable.TABLE
+			+ " ON " + StatusTable.TABLE + "." + StatusTable.USER + "=" + UserTable.TABLE + "." + UserTable.ID
+			+ " INNER JOIN " + UserPropertiesTable.TABLE
+			+ " ON " + StatusTable.TABLE + "." + StatusTable.USER + "=" + UserPropertiesTable.TABLE + "." + UserPropertiesTable.USER
+			+ " INNER JOIN " + StatusPropertiesTable.TABLE
+			+ " ON " + StatusTable.TABLE + "." + StatusTable.ID + "=" + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.STATUS;
 
 	/**
 	 * subquery to get user information
 	 */
-	private static final String USER_SUBQUERY = UserTable.NAME
-			+ " INNER JOIN " + UserRegisterTable.NAME
-			+ " ON " + UserTable.NAME + "." + UserTable.ID + "=" + UserRegisterTable.NAME + "." + UserRegisterTable.USER;
+	private static final String USER_SUBQUERY = UserTable.TABLE
+			+ " INNER JOIN " + UserPropertiesTable.TABLE
+			+ " ON " + UserTable.TABLE + "." + UserTable.ID + "=" + UserPropertiesTable.TABLE + "." + UserPropertiesTable.USER;
 
 	/**
 	 * subquery used to get notification
 	 */
-	private static final String NOTIFICATION_SUBQUERY = NotificationTable.NAME
-			+ " INNER JOIN(" + USER_SUBQUERY + ")" + UserTable.NAME
-			+ " ON " + NotificationTable.NAME + "." + NotificationTable.USER + "=" + UserTable.NAME + "." + UserTable.ID;
+	private static final String NOTIFICATION_SUBQUERY = NotificationTable.TABLE
+			+ " INNER JOIN(" + USER_SUBQUERY + ")" + UserTable.TABLE
+			+ " ON " + NotificationTable.TABLE + "." + NotificationTable.SENDER + "=" + UserTable.TABLE + "." + UserTable.ID;
 
 	/**
 	 * SQL query to get home timeline status
 	 */
 	private static final String HOME_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_HOME_TIMELINE + " IS NOT 0"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + UserRegisterTable.MASK_USER_FILTERED + " IS 0"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_HOME_TIMELINE + " IS NOT 0"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.REGISTER + "&" + UserPropertiesTable.MASK_USER_FILTERED + " IS 0"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
+			+ " ORDER BY " + StatusTable.ID + " DESC"
 			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get status of an user
 	 */
 	private static final String USER_STATUS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " WHERE " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_USER_TIMELINE + " IS NOT 0"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " AND " + StatusTable.NAME + "." + StatusTable.USER + "=?"
-			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_USER_TIMELINE + " IS NOT 0"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
+			+ " AND " + StatusTable.TABLE + "." + StatusTable.USER + "=?"
+			+ " ORDER BY " + StatusTable.ID + " DESC"
 			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get status favored by an user
 	 */
 	private static final String USER_FAVORIT_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " INNER JOIN " + FavoriteTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + FavoriteTable.NAME + "." + FavoriteTable.STATUS
-			+ " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.OWNER + "=?"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " INNER JOIN " + FavoriteTable.TABLE
+			+ " ON " + StatusTable.TABLE + "." + StatusTable.ID + "=" + FavoriteTable.TABLE + "." + FavoriteTable.ID
+			+ " WHERE " + FavoriteTable.TABLE + "." + FavoriteTable.OWNER + "=?"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
+			+ " ORDER BY " + StatusTable.ID + " DESC"
 			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get status favored by an user
 	 */
 	private static final String USER_BOOKMARKS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " INNER JOIN " + BookmarkTable.NAME
-			+ " ON " + StatusTable.NAME + "." + StatusTable.ID + "=" + BookmarkTable.NAME + "." + BookmarkTable.STATUS
-			+ " WHERE " + BookmarkTable.NAME + "." + BookmarkTable.OWNER + "=?"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " ORDER BY " + StatusTable.TIME + " DESC"
+			+ " INNER JOIN " + BookmarkTable.TABLE
+			+ " ON " + StatusTable.TABLE + "." + StatusTable.ID + "=" + BookmarkTable.TABLE + "." + BookmarkTable.ID
+			+ " WHERE " + BookmarkTable.TABLE + "." + BookmarkTable.OWNER + "=?"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
+			+ " ORDER BY " + StatusTable.ID + " DESC"
 			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get a single status specified by an ID
 	 */
 	private static final String SINGLE_STATUS_QUERY = "SELECT * FROM " + STATUS_SUBQUERY
-			+ " WHERE " + StatusTable.NAME + "." + StatusTable.ID + "=?"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
+			+ " WHERE " + StatusTable.TABLE + "." + StatusTable.ID + "=?"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
 			+ " LIMIT 1;";
 
 	/**
 	 * query to get user information
 	 */
 	private static final String SINGLE_USER_QUERY = "SELECT * FROM " + USER_SUBQUERY
-			+ " WHERE " + UserTable.NAME + "." + UserTable.ID + "=?"
+			+ " WHERE " + UserTable.TABLE + "." + UserTable.ID + "=?"
 			+ " LIMIT 1;";
 
 	/**
 	 * SQL query to get replies of a status specified by a status ID
 	 */
-	private static final String REPLY_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " WHERE " + StatusTable.NAME + "." + StatusTable.REPLYSTATUS + "=?"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.OWNER + "=?"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_REPLY + " IS NOT 0"
-			+ " AND " + StatusRegisterTable.NAME + "." + StatusRegisterTable.REGISTER + "&" + StatusRegisterTable.MASK_STATUS_HIDDEN + " IS 0"
-			+ " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + UserRegisterTable.MASK_USER_FILTERED + " IS 0"
-			+ " ORDER BY " + StatusTable.TIME + " DESC"
+	private static final String REPLY_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY +
+			" INNER JOIN " + ReplyTable.TABLE
+			+ " ON " + ReplyTable.TABLE + "." + ReplyTable.ID + "=" + StatusTable.TABLE + "." + StatusTable.ID + ")"
+			+ " WHERE " + ReplyTable.TABLE + "." + ReplyTable.REPLY + "=?"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_REPLY + " IS NOT 0"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_HIDDEN + " IS 0"
+			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.REGISTER + "&" + UserPropertiesTable.MASK_USER_FILTERED + " IS 0"
+			+ " ORDER BY " + ReplyTable.TABLE + "." + ReplyTable.ORDER + " ASC"
 			+ " LIMIT ?;";
 
 	/**
 	 * SQL query to get notifications
 	 */
 	private static final String NOTIFICATION_QUERY = "SELECT * FROM " + NOTIFICATION_SUBQUERY
-			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.OWNER + "=?"
+			+ " WHERE " + NotificationTable.TABLE + "." + NotificationTable.RECEIVER + "=?"
 			+ " ORDER BY " + NotificationTable.TIME + " DESC"
 			+ " LIMIT ?;";
 
@@ -179,14 +182,14 @@ public class AppDatabase {
 	 * SQL Query to get a single notification
 	 */
 	private static final String SINGLE_NOTIFICATION_QUERY = "SELECT * FROM " + NOTIFICATION_SUBQUERY
-			+ " WHERE " + NotificationTable.NAME + "." + NotificationTable.ID + "=?"
+			+ " WHERE " + NotificationTable.TABLE + "." + NotificationTable.ID + "=?"
 			+ " LIMIT 1;";
 
 	/**
 	 * select status entries from favorite table matching status ID
 	 * this status can be favored by multiple users
 	 */
-	private static final String FAVORITE_SELECT_STATUS = FavoriteTable.STATUS + "=?";
+	private static final String FAVORITE_SELECT_STATUS = FavoriteTable.ID + "=?";
 
 	/**
 	 * select all statuses from favorite table favored by given user
@@ -197,7 +200,7 @@ public class AppDatabase {
 	 * select status entries from favorite table matching status ID
 	 * this status can be favored by multiple users
 	 */
-	private static final String BOOKMARK_SELECT_STATUS = BookmarkTable.STATUS + "=?";
+	private static final String BOOKMARK_SELECT_STATUS = BookmarkTable.ID + "=?";
 
 	/**
 	 * select all statuses from favorite table favored by given user
@@ -222,22 +225,22 @@ public class AppDatabase {
 	/**
 	 * select status from status table matching ID
 	 */
-	private static final String STATUS_SELECT = StatusTable.NAME + "." + StatusTable.ID + "=?";
+	private static final String STATUS_SELECT = StatusTable.TABLE + "." + StatusTable.ID + "=?";
 
 	/**
 	 * select notification from notification table using status ID
 	 */
-	private static final String NOTIFICATION_SELECT = NotificationTable.NAME + "." + NotificationTable.ID + "=?";
+	private static final String NOTIFICATION_SELECT = NotificationTable.TABLE + "." + NotificationTable.ID + "=?";
 
 	/**
 	 * select notification from notification table using status ID
 	 */
-	private static final String NOTIFICATION_STATUS_SELECT = NotificationTable.NAME + "." + NotificationTable.ITEM + "=?";
+	private static final String NOTIFICATION_STATUS_SELECT = NotificationTable.TABLE + "." + NotificationTable.ITEM + "=?";
 
 	/**
 	 * selection to get status flag register
 	 */
-	private static final String STATUS_REG_SELECT = StatusRegisterTable.STATUS + "=? AND " + StatusRegisterTable.OWNER + "=?";
+	private static final String STATUS_REG_SELECT = StatusPropertiesTable.STATUS + "=? AND " + StatusPropertiesTable.OWNER + "=?";
 
 	/**
 	 * selection to get a single media entry
@@ -257,7 +260,7 @@ public class AppDatabase {
 	/**
 	 * selection to get user flag register
 	 */
-	private static final String USER_REG_SELECT = UserRegisterTable.USER + "=? AND " + UserRegisterTable.OWNER + "=?";
+	private static final String USER_REG_SELECT = UserPropertiesTable.USER + "=? AND " + UserPropertiesTable.OWNER + "=?";
 
 	/**
 	 * selection for account entry
@@ -280,14 +283,19 @@ public class AppDatabase {
 	private static final String INSTANCE_SELECTION = InstanceTable.DOMAIN + "=?";
 
 	/**
+	 * selection for status replies
+	 */
+	private static final String REPLY_SELECT = ReplyTable.REPLY + "=?";
+
+	/**
 	 * column projection for user flag register
 	 */
-	private static final String[] USER_REG_COLUMN = {UserRegisterTable.REGISTER};
+	private static final String[] COLUMNS_REGISTER_USER = {UserPropertiesTable.REGISTER};
 
 	/**
 	 * column projection for status flag register
 	 */
-	private static final String[] STATUS_REG_COLUMN = {StatusRegisterTable.REGISTER};
+	private static final String[] COLUMNS_REGISTER_STATUS = {StatusPropertiesTable.REGISTER};
 
 	/**
 	 * default sort order for logins
@@ -298,11 +306,6 @@ public class AppDatabase {
 	 * limit for accessing a single row
 	 */
 	private static final String SINGLE_ITEM = "1";
-
-	/**
-	 * database lock
-	 */
-	private static final Object LOCK = new Object();
 
 	/**
 	 * limit of database entries
@@ -328,11 +331,11 @@ public class AppDatabase {
 	 * @param statuses status from home timeline
 	 */
 	public void saveHomeTimeline(Statuses statuses) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
-					saveStatus(status, db, StatusRegisterTable.MASK_STATUS_HOME_TIMELINE);
+					saveStatus(status, db, StatusPropertiesTable.MASK_STATUS_HOME_TIMELINE);
 				adapter.commit();
 			}
 		}
@@ -344,11 +347,11 @@ public class AppDatabase {
 	 * @param statuses user timeline
 	 */
 	public void saveUserTimeline(Statuses statuses) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
-					saveStatus(status, db, StatusRegisterTable.MASK_STATUS_USER_TIMELINE);
+					saveStatus(status, db, StatusPropertiesTable.MASK_STATUS_USER_TIMELINE);
 				adapter.commit();
 			}
 		}
@@ -361,11 +364,11 @@ public class AppDatabase {
 	 * @param ownerId  user ID
 	 */
 	public void saveFavoriteTimeline(Statuses statuses, long ownerId) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete old favorits
 			String[] delArgs = {Long.toString(ownerId)};
-			db.delete(FavoriteTable.NAME, FAVORITE_SELECT_OWNER, delArgs);
+			db.delete(FavoriteTable.TABLE, FAVORITE_SELECT_OWNER, delArgs);
 
 			if (!statuses.isEmpty()) {
 				for (Status status : statuses) {
@@ -384,11 +387,11 @@ public class AppDatabase {
 	 * @param ownerId  id of the owner
 	 */
 	public void saveBookmarkTimeline(Statuses statuses, long ownerId) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete old favorits
 			String[] delArgs = {Long.toString(ownerId)};
-			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_OWNER, delArgs);
+			db.delete(BookmarkTable.TABLE, BOOKMARK_SELECT_OWNER, delArgs);
 
 			if (!statuses.isEmpty()) {
 				for (Status status : statuses) {
@@ -403,14 +406,24 @@ public class AppDatabase {
 	/**
 	 * store replies of a status
 	 *
+	 * @param id       replied status ID
 	 * @param statuses status replies
 	 */
-	public void saveReplyTimeline(Statuses statuses) {
-		synchronized (LOCK) {
+	public void saveReplies(long id, Statuses statuses) {
+		synchronized (adapter.getLock()) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
-				for (Status status : statuses)
-					saveStatus(status, db, StatusRegisterTable.MASK_STATUS_REPLY);
+				// delete old entries
+				db.delete(ReplyTable.TABLE, REPLY_SELECT, new String[]{Long.toString(id)});
+				int i = 0;
+				for (Status status : statuses) {
+					ContentValues column = new ContentValues(3);
+					column.put(ReplyTable.REPLY, id);
+					column.put(ReplyTable.ID, status.getId());
+					column.put(ReplyTable.ORDER, i++);
+					db.insert(ReplyTable.TABLE, null, column);
+					saveStatus(status, db, StatusPropertiesTable.MASK_STATUS_REPLY);
+				}
 				adapter.commit();
 			}
 		}
@@ -420,23 +433,23 @@ public class AppDatabase {
 	 * save notifications to database
 	 */
 	public void saveNotifications(List<Notification> notifications) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			if (!notifications.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Notification notification : notifications) {
-					ContentValues column = new ContentValues();
+					ContentValues column = new ContentValues(6);
 					column.put(NotificationTable.ID, notification.getId());
 					column.put(NotificationTable.TIME, notification.getTimestamp());
 					column.put(NotificationTable.TYPE, notification.getType());
-					column.put(NotificationTable.OWNER, settings.getLogin().getId());
-					column.put(NotificationTable.USER, notification.getUser().getId());
+					column.put(NotificationTable.RECEIVER, settings.getLogin().getId());
+					column.put(NotificationTable.SENDER, notification.getUser().getId());
 					saveUser(notification.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
 					// add status
 					if (notification.getStatus() != null) {
-						saveStatus(notification.getStatus(), db, StatusRegisterTable.MASK_STATUS_NOTIFICATION);
+						saveStatus(notification.getStatus(), db, StatusPropertiesTable.MASK_STATUS_NOTIFICATION);
 						column.put(NotificationTable.ITEM, notification.getStatus().getId());
 					}
-					db.insertWithOnConflict(NotificationTable.NAME, null, column, SQLiteDatabase.CONFLICT_REPLACE);
+					db.insertWithOnConflict(NotificationTable.TABLE, null, column, SQLiteDatabase.CONFLICT_REPLACE);
 				}
 				adapter.commit();
 			}
@@ -449,18 +462,18 @@ public class AppDatabase {
 	 * @param hashtags List of Trends
 	 */
 	public void saveTrends(List<Hashtag> hashtags) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(HashtagTable.NAME, TREND_SELECT, args);
+			db.delete(HashtagTable.TABLE, TREND_SELECT, args);
 			for (Hashtag hashtag : hashtags) {
 				ContentValues column = new ContentValues(4);
 				column.put(HashtagTable.LOCATION, hashtag.getLocationId());
 				column.put(HashtagTable.VOL, hashtag.getPopularity());
-				column.put(HashtagTable.TREND, hashtag.getName());
+				column.put(HashtagTable.TAG_NAME, hashtag.getName());
 				column.put(HashtagTable.INDEX, hashtag.getRank());
 				column.put(HashtagTable.ID, hashtag.getId());
-				db.insert(HashtagTable.NAME, null, column);
+				db.insert(HashtagTable.TABLE, null, column);
 			}
 			adapter.commit();
 		}
@@ -470,7 +483,7 @@ public class AppDatabase {
 	 * Store user information
 	 */
 	public void saveUser(User user) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveUser(user, db, SQLiteDatabase.CONFLICT_REPLACE);
 			adapter.commit();
@@ -483,11 +496,9 @@ public class AppDatabase {
 	 * @param status status to update
 	 */
 	public void saveStatus(Status status) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveStatus(status, db, 0);
-			if (status.getEmbeddedStatus() != null)
-				saveStatus(status.getEmbeddedStatus(), db, 0);
 			adapter.commit();
 		}
 	}
@@ -498,7 +509,7 @@ public class AppDatabase {
 	 * @param instance instance information
 	 */
 	public void saveInstance(Instance instance) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveInstance(instance, db);
 			adapter.commit();
@@ -511,11 +522,11 @@ public class AppDatabase {
 	 * @param account login information
 	 */
 	public void saveLogin(Account account) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete login entry if exists
 			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
-			db.delete(AccountTable.NAME, ACCOUNT_SELECTION, accountArgs);
+			db.delete(AccountTable.TABLE, ACCOUNT_SELECTION, accountArgs);
 			// insert/update login
 			ContentValues column = new ContentValues(9);
 			column.put(AccountTable.ID, account.getId());
@@ -527,7 +538,7 @@ public class AppDatabase {
 			column.put(AccountTable.ACCESS_TOKEN, account.getOauthToken());
 			column.put(AccountTable.TOKEN_SECRET, account.getOauthSecret());
 			column.put(AccountTable.BEARER, account.getBearerToken());
-			db.insertWithOnConflict(AccountTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+			db.insertWithOnConflict(AccountTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 			if (account.getUser() != null) {
 				saveUser(account.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
 			}
@@ -541,7 +552,7 @@ public class AppDatabase {
 	 * @param status favorited status
 	 */
 	public void saveToFavorits(Status status) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			if (status.getEmbeddedStatus() != null)
 				status = status.getEmbeddedStatus();
 			SQLiteDatabase db = adapter.getDbWrite();
@@ -557,7 +568,7 @@ public class AppDatabase {
 	 * @param status favorited status
 	 */
 	public void saveToBookmarks(Status status) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			if (status.getEmbeddedStatus() != null)
 				status = status.getEmbeddedStatus();
 			SQLiteDatabase db = adapter.getDbWrite();
@@ -573,7 +584,7 @@ public class AppDatabase {
 	 * @param emojis list of emojis
 	 */
 	public void saveEmojis(List<Emoji> emojis) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			for (Emoji emoji : emojis) {
 				saveEmoji(emoji, db);
@@ -588,7 +599,7 @@ public class AppDatabase {
 	 * @param push web push information
 	 */
 	public void savePushSubscription(WebPush push) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			ContentValues column = new ContentValues(7);
 			column.put(PushTable.ID, push.getId());
 			column.put(PushTable.PUB_KEY, push.getPublicKey());
@@ -599,32 +610,32 @@ public class AppDatabase {
 
 			int flags = 0;
 			if (push.getPolicy() == WebPush.POLICY_ALL)
-				flags = PushTable.FLAG_POLICY_ALL;
+				flags = PushTable.MASK_POLICY_ALL;
 			else if (push.getPolicy() == WebPush.POLICY_FOLLOWING)
-				flags = PushTable.FLAG_POLICY_FOLLOWING;
+				flags = PushTable.MASK_POLICY_FOLLOWING;
 			else if (push.getPolicy() == WebPush.POLICY_FOLLOWER)
-				flags = PushTable.FLAG_POLICY_FOLLOWER;
+				flags = PushTable.MASK_POLICY_FOLLOWER;
 			if (push.alertMentionEnabled())
-				flags |= PushTable.FLAG_MENTION;
+				flags |= PushTable.MASK_MENTION;
 			if (push.alertNewStatusEnabled())
-				flags |= PushTable.FLAG_STATUS;
+				flags |= PushTable.MASK_STATUS;
 			if (push.alertRepostEnabled())
-				flags |= PushTable.FLAG_REPOST;
+				flags |= PushTable.MASK_REPOST;
 			if (push.alertFollowingEnabled())
-				flags |= PushTable.FLAG_FOLLOWING;
+				flags |= PushTable.MASK_FOLLOWING;
 			if (push.alertFollowRequestEnabled())
-				flags |= PushTable.FLAG_REQUEST;
+				flags |= PushTable.MASK_REQUEST;
 			if (push.alertFavoriteEnabled())
-				flags |= PushTable.FLAG_FAVORITE;
+				flags |= PushTable.MASK_FAVORITE;
 			if (push.alertPollEnabled())
-				flags |= PushTable.FLAG_POLL;
+				flags |= PushTable.MASK_POLL;
 			if (push.alertStatusChangeEnabled())
-				flags |= PushTable.FLAG_MODIFIED;
+				flags |= PushTable.MASK_MODIFIED;
 			column.put(PushTable.FLAGS, flags);
 			column.put(PushTable.USER_URL, settings.getLogin().getId() + '@' + settings.getLogin().getHostname());
 
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.insertWithOnConflict(PushTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+			db.insertWithOnConflict(PushTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 			adapter.commit();
 		}
 	}
@@ -635,7 +646,7 @@ public class AppDatabase {
 	 * @return home timeline
 	 */
 	public Statuses getHomeTimeline() {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -652,7 +663,7 @@ public class AppDatabase {
 	 * @return user timeline
 	 */
 	public Statuses getUserTimeline(long userID) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
 
@@ -669,7 +680,7 @@ public class AppDatabase {
 	 * @return favorite timeline
 	 */
 	public Statuses getUserFavorites(long ownerID) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -688,7 +699,7 @@ public class AppDatabase {
 	 * @return bookmark timeline
 	 */
 	public Statuses getUserBookmarks(long ownerID) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -707,7 +718,7 @@ public class AppDatabase {
 	 * @return status reply timeline
 	 */
 	public Statuses getReplies(long id) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -725,7 +736,7 @@ public class AppDatabase {
 	 * @return notification lsit
 	 */
 	public Notifications getNotifications() {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			Account login = settings.getLogin();
 			String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
 			SQLiteDatabase db = adapter.getDbRead();
@@ -748,10 +759,10 @@ public class AppDatabase {
 	 * @return list of trends
 	 */
 	public Hashtags getTrends() {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbRead();
-			Cursor cursor = db.query(HashtagTable.NAME, DatabaseHashtag.COLUMNS, TREND_SELECT, args, null, null, null);
+			Cursor cursor = db.query(HashtagTable.TABLE, DatabaseHashtag.COLUMNS, TREND_SELECT, args, null, null, null);
 			Hashtags hashtags = new Hashtags();
 			if (cursor.moveToFirst()) {
 				do {
@@ -770,17 +781,17 @@ public class AppDatabase {
 	 * @return list of all logins
 	 */
 	public Accounts getLogins() {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			Accounts result = new Accounts();
 			SQLiteDatabase db = adapter.getDbRead();
-			Cursor cursor = db.query(AccountTable.NAME, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
+			Cursor cursor = db.query(AccountTable.TABLE, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
 			if (cursor.moveToFirst()) {
 				do {
 					DatabaseAccount account = new DatabaseAccount(cursor);
 					DatabaseUser user = getUser(account.getId());
 					if (user != null) {
 						user.setAccountInformation(account);
-						account.addUser(user);
+						//account.addUser(user);
 					}
 					result.add(account);
 				} while (cursor.moveToNext());
@@ -797,11 +808,11 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Instance getInstance() {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbRead();
 			String[] args = {settings.getLogin().getHostname()};
 			Instance result = null;
-			Cursor cursor = db.query(InstanceTable.NAME, DatabaseInstance.COLUMNS, INSTANCE_SELECTION, args, null, null, null);
+			Cursor cursor = db.query(InstanceTable.TABLE, DatabaseInstance.COLUMNS, INSTANCE_SELECTION, args, null, null, null);
 			if (cursor.moveToFirst()) {
 				result = new DatabaseInstance(cursor);
 			}
@@ -818,7 +829,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Notification getNotification(long id) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(id)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(SINGLE_NOTIFICATION_QUERY, args);
@@ -838,7 +849,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public DatabaseUser getUser(long userId) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(userId)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
@@ -858,7 +869,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Status getStatus(long id) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(id), homeStr, homeStr};
 
@@ -879,19 +890,19 @@ public class AppDatabase {
 	 * @param hide true to hide this status
 	 */
 	public void hideStatus(long id, boolean hide) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 			SQLiteDatabase db = adapter.getDbWrite();
 			int flags = getStatusFlags(db, id);
 			if (hide) {
-				flags |= StatusRegisterTable.MASK_STATUS_HIDDEN;
+				flags |= StatusPropertiesTable.MASK_STATUS_HIDDEN;
 			} else {
-				flags &= ~StatusRegisterTable.MASK_STATUS_HIDDEN;
+				flags &= ~StatusPropertiesTable.MASK_STATUS_HIDDEN;
 			}
 			ContentValues column = new ContentValues(1);
-			column.put(StatusRegisterTable.REGISTER, flags);
-			db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
+			column.put(StatusPropertiesTable.REGISTER, flags);
+			db.update(StatusPropertiesTable.TABLE, column, STATUS_REG_SELECT, args);
 			adapter.commit();
 		}
 	}
@@ -902,14 +913,14 @@ public class AppDatabase {
 	 * @param id status ID
 	 */
 	public void removeStatus(long id) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(id)};
 
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(StatusTable.NAME, STATUS_SELECT, args);
-			db.delete(NotificationTable.NAME, NOTIFICATION_STATUS_SELECT, args);
-			db.delete(FavoriteTable.NAME, FAVORITE_SELECT_STATUS, args);
-			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT_STATUS, args);
+			db.delete(StatusTable.TABLE, STATUS_SELECT, args);
+			db.delete(NotificationTable.TABLE, NOTIFICATION_STATUS_SELECT, args);
+			db.delete(FavoriteTable.TABLE, FAVORITE_SELECT_STATUS, args);
+			db.delete(BookmarkTable.TABLE, BOOKMARK_SELECT_STATUS, args);
 			adapter.commit();
 		}
 	}
@@ -920,11 +931,11 @@ public class AppDatabase {
 	 * @param id status ID
 	 */
 	public void removeNotification(long id) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(id)};
 
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(NotificationTable.NAME, NOTIFICATION_SELECT, args);
+			db.delete(NotificationTable.TABLE, NOTIFICATION_SELECT, args);
 			adapter.commit();
 		}
 	}
@@ -935,7 +946,7 @@ public class AppDatabase {
 	 * @param status status to remove from the favorites
 	 */
 	public void removeFromFavorite(Status status) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 			if (status.getEmbeddedStatus() != null) {
@@ -944,10 +955,10 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// get status flags
 			int flags = getStatusFlags(db, status.getId());
-			flags &= ~StatusRegisterTable.MASK_STATUS_FAVORITED; // unset favorite flag
+			flags &= ~StatusPropertiesTable.MASK_STATUS_FAVORITED; // unset favorite flag
 			// update database
 			saveStatusFlags(db, status, flags);
-			db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
+			db.delete(FavoriteTable.TABLE, FAVORITE_SELECT, delArgs);
 			adapter.commit();
 		}
 	}
@@ -958,7 +969,7 @@ public class AppDatabase {
 	 * @param status status to remove from the bookmarks
 	 */
 	public void removeFromBookmarks(Status status) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 			if (status.getEmbeddedStatus() != null) {
@@ -967,10 +978,10 @@ public class AppDatabase {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// get status flags
 			int flags = getStatusFlags(db, status.getId());
-			flags &= ~StatusRegisterTable.MASK_STATUS_BOOKMARKED; // unset bookmark flag
+			flags &= ~StatusPropertiesTable.MASK_STATUS_BOOKMARKED; // unset bookmark flag
 			// update database
 			saveStatusFlags(db, status, flags);
-			db.delete(BookmarkTable.NAME, BOOKMARK_SELECT, delArgs);
+			db.delete(BookmarkTable.TABLE, BOOKMARK_SELECT, delArgs);
 			adapter.commit();
 		}
 	}
@@ -981,13 +992,13 @@ public class AppDatabase {
 	 * @param account account to remove
 	 */
 	public void removeLogin(Account account) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
 			String[] pushArgs = {account.getId() + '@' + account.getHostname()};
 
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(AccountTable.NAME, ACCOUNT_SELECTION, accountArgs);
-			db.delete(PushTable.NAME, PUSH_SELECTION, pushArgs);
+			db.delete(AccountTable.TABLE, ACCOUNT_SELECTION, accountArgs);
+			db.delete(PushTable.TABLE, PUSH_SELECTION, pushArgs);
 			adapter.commit();
 		}
 	}
@@ -999,10 +1010,10 @@ public class AppDatabase {
 	 * @return true if found
 	 */
 	public boolean containsStatus(long id) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			String[] args = {Long.toString(id)};
 			SQLiteDatabase db = adapter.getDbRead();
-			Cursor c = db.query(StatusTable.NAME, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
+			Cursor c = db.query(StatusTable.TABLE, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
 			boolean result = c.moveToFirst();
 			c.close();
 			return result;
@@ -1016,13 +1027,13 @@ public class AppDatabase {
 	 * @param mute true remove user notifications
 	 */
 	public void muteUser(long id, boolean mute) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			int flags = getUserFlags(db, id);
 			if (mute) {
-				flags |= UserRegisterTable.MASK_USER_FILTERED;
+				flags |= UserPropertiesTable.MASK_USER_FILTERED;
 			} else {
-				flags &= ~UserRegisterTable.MASK_USER_FILTERED;
+				flags &= ~UserPropertiesTable.MASK_USER_FILTERED;
 			}
 			saveUserFlags(db, id, flags);
 			adapter.commit();
@@ -1035,10 +1046,10 @@ public class AppDatabase {
 	 * @return list of emojis
 	 */
 	public List<Emoji> getEmojis() {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			ArrayList<Emoji> result = new ArrayList<>();
 			SQLiteDatabase db = adapter.getDbRead();
-			Cursor c = db.query(EmojiTable.NAME, null, null, null, null, null, null);
+			Cursor c = db.query(EmojiTable.TABLE, null, null, null, null, null, null);
 			if (c.moveToFirst()) {
 				result.ensureCapacity(c.getCount());
 				do {
@@ -1058,12 +1069,12 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public WebPush getWebPush(Account account) {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			WebPush result = null;
 			String[] args = {account.getId() + '@' + account.getHostname()};
 
 			SQLiteDatabase db = adapter.getDbRead();
-			Cursor c = db.query(PushTable.NAME, DatabasePush.COLUMNS, PUSH_SELECTION, args, null, null, null);
+			Cursor c = db.query(PushTable.TABLE, DatabasePush.COLUMNS, PUSH_SELECTION, args, null, null, null);
 			if (c.moveToFirst()) {
 				result = new DatabasePush(c);
 			}
@@ -1076,22 +1087,22 @@ public class AppDatabase {
 	 * remove database tables except account table
 	 */
 	public void resetDatabase() {
-		synchronized (LOCK) {
+		synchronized (adapter.getLock()) {
 			// save logins first
 			List<Account> logins = getLogins();
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(UserTable.NAME, null, null);
-			db.delete(StatusTable.NAME, null, null);
-			db.delete(FavoriteTable.NAME, null, null);
-			db.delete(BookmarkTable.NAME, null, null);
-			db.delete(HashtagTable.NAME, null, null);
-			db.delete(StatusRegisterTable.NAME, null, null);
-			db.delete(UserRegisterTable.NAME, null, null);
-			db.delete(NotificationTable.NAME, null, null);
-			db.delete(MediaTable.NAME, null, null);
-			db.delete(LocationTable.NAME, null, null);
-			db.delete(EmojiTable.NAME, null, null);
-			db.delete(PollTable.NAME, null, null);
+			db.delete(UserTable.TABLE, null, null);
+			db.delete(StatusTable.TABLE, null, null);
+			db.delete(FavoriteTable.TABLE, null, null);
+			db.delete(BookmarkTable.TABLE, null, null);
+			db.delete(HashtagTable.TABLE, null, null);
+			db.delete(StatusPropertiesTable.TABLE, null, null);
+			db.delete(UserPropertiesTable.TABLE, null, null);
+			db.delete(NotificationTable.TABLE, null, null);
+			db.delete(MediaTable.TABLE, null, null);
+			db.delete(LocationTable.TABLE, null, null);
+			db.delete(EmojiTable.TABLE, null, null);
+			db.delete(PollTable.TABLE, null, null);
 			// save user information from logins
 			for (Account login : logins) {
 				if (login.getUser() != null) {
@@ -1179,7 +1190,6 @@ public class AppDatabase {
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
-		Collections.sort(statuses);
 		return statuses;
 	}
 
@@ -1193,7 +1203,7 @@ public class AppDatabase {
 	@Nullable
 	private Media getMedia(SQLiteDatabase db, String key) {
 		String[] args = {key};
-		Cursor c = db.query(MediaTable.NAME, DatabaseMedia.PROJECTION, MEDIA_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(MediaTable.TABLE, DatabaseMedia.PROJECTION, MEDIA_SELECT, args, null, null, null, SINGLE_ITEM);
 		Media result = null;
 		if (c.moveToFirst())
 			result = new DatabaseMedia(c);
@@ -1211,7 +1221,7 @@ public class AppDatabase {
 	@Nullable
 	private Emoji getEmoji(SQLiteDatabase db, String key) {
 		String[] args = {key};
-		Cursor c = db.query(EmojiTable.NAME, DatabaseEmoji.PROJECTION, EMOJI_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(EmojiTable.TABLE, DatabaseEmoji.PROJECTION, EMOJI_SELECT, args, null, null, null, SINGLE_ITEM);
 		Emoji result = null;
 		if (c.moveToFirst())
 			result = new DatabaseEmoji(c);
@@ -1229,7 +1239,7 @@ public class AppDatabase {
 	@Nullable
 	private Location getLocation(SQLiteDatabase db, long id) {
 		String[] args = {Long.toString(id)};
-		Cursor c = db.query(LocationTable.NAME, DatabaseLocation.PROJECTION, LOCATION_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(LocationTable.TABLE, DatabaseLocation.PROJECTION, LOCATION_SELECT, args, null, null, null, SINGLE_ITEM);
 		Location result = null;
 		if (c.moveToFirst())
 			result = new DatabaseLocation(c);
@@ -1270,7 +1280,7 @@ public class AppDatabase {
 	private int getStatusFlags(SQLiteDatabase db, long id) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
-		Cursor c = db.query(StatusRegisterTable.NAME, STATUS_REG_COLUMN, STATUS_REG_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(StatusPropertiesTable.TABLE, COLUMNS_REGISTER_STATUS, STATUS_REG_SELECT, args, null, null, null, SINGLE_ITEM);
 		int result = 0;
 		if (c.moveToFirst())
 			result = c.getInt(0);
@@ -1288,7 +1298,7 @@ public class AppDatabase {
 	private int getUserFlags(SQLiteDatabase db, long id) {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
-		Cursor c = db.query(UserRegisterTable.NAME, USER_REG_COLUMN, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(UserPropertiesTable.TABLE, COLUMNS_REGISTER_USER, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
 		int result = 0;
 		if (c.moveToFirst())
 			result = c.getInt(0);
@@ -1307,7 +1317,7 @@ public class AppDatabase {
 	private Poll getPoll(SQLiteDatabase db, long id) {
 		String[] args = {Long.toString(id)};
 
-		Cursor c = db.query(PollTable.NAME, DatabasePoll.PROJECTION, POLL_SELECTION, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(PollTable.TABLE, DatabasePoll.PROJECTION, POLL_SELECTION, args, null, null, null, SINGLE_ITEM);
 		DatabasePoll result = null;
 		if (c.moveToFirst())
 			result = new DatabasePoll(c);
@@ -1326,19 +1336,19 @@ public class AppDatabase {
 	private void saveUser(User user, SQLiteDatabase db, int mode) {
 		int flags = getUserFlags(db, user.getId());
 		if (user.isVerified()) {
-			flags |= UserRegisterTable.MASK_USER_VERIFIED;
+			flags |= UserPropertiesTable.MASK_USER_VERIFIED;
 		} else {
-			flags &= ~UserRegisterTable.MASK_USER_VERIFIED;
+			flags &= ~UserPropertiesTable.MASK_USER_VERIFIED;
 		}
 		if (user.isProtected()) {
-			flags |= UserRegisterTable.MASK_USER_PRIVATE;
+			flags |= UserPropertiesTable.MASK_USER_PRIVATE;
 		} else {
-			flags &= ~UserRegisterTable.MASK_USER_PRIVATE;
+			flags &= ~UserPropertiesTable.MASK_USER_PRIVATE;
 		}
 		if (user.hasDefaultProfileImage()) {
-			flags |= UserRegisterTable.MASK_USER_DEFAULT_IMAGE;
+			flags |= UserPropertiesTable.MASK_USER_DEFAULT_IMAGE;
 		} else {
-			flags &= ~UserRegisterTable.MASK_USER_DEFAULT_IMAGE;
+			flags &= ~UserPropertiesTable.MASK_USER_DEFAULT_IMAGE;
 		}
 		ContentValues column = new ContentValues(14);
 		if (user.getEmojis().length > 0) {
@@ -1364,7 +1374,7 @@ public class AppDatabase {
 		column.put(UserTable.STATUSES, user.getStatusCount());
 		column.put(UserTable.FAVORITS, user.getFavoriteCount());
 
-		db.insertWithOnConflict(UserTable.NAME, "", column, mode);
+		db.insertWithOnConflict(UserTable.TABLE, "", column, mode);
 		saveUserFlags(db, user.getId(), flags);
 	}
 
@@ -1385,45 +1395,45 @@ public class AppDatabase {
 		}
 		flags |= getStatusFlags(db, status.getId());
 		if (status.isFavorited()) {
-			flags |= StatusRegisterTable.MASK_STATUS_FAVORITED;
+			flags |= StatusPropertiesTable.MASK_STATUS_FAVORITED;
 		} else {
-			flags &= ~StatusRegisterTable.MASK_STATUS_FAVORITED;
+			flags &= ~StatusPropertiesTable.MASK_STATUS_FAVORITED;
 		}
 		if (status.isReposted()) {
-			flags |= StatusRegisterTable.MASK_STATUS_REPOSTED;
+			flags |= StatusPropertiesTable.MASK_STATUS_REPOSTED;
 		} else {
-			flags &= ~StatusRegisterTable.MASK_STATUS_REPOSTED;
+			flags &= ~StatusPropertiesTable.MASK_STATUS_REPOSTED;
 		}
 		if (status.isSensitive()) {
-			flags |= StatusRegisterTable.MASK_STATUS_SENSITIVE;
+			flags |= StatusPropertiesTable.MASK_STATUS_SENSITIVE;
 		} else {
-			flags &= ~StatusRegisterTable.MASK_STATUS_SENSITIVE;
+			flags &= ~StatusPropertiesTable.MASK_STATUS_SENSITIVE;
 		}
 		if (status.isSpoiler()) {
-			flags |= StatusRegisterTable.MASK_STATUS_SPOILER;
+			flags |= StatusPropertiesTable.MASK_STATUS_SPOILER;
 		} else {
-			flags &= ~StatusRegisterTable.MASK_STATUS_SPOILER;
+			flags &= ~StatusPropertiesTable.MASK_STATUS_SPOILER;
 		}
 		if (status.isBookmarked()) {
-			flags |= StatusRegisterTable.MASK_STATUS_BOOKMARKED;
+			flags |= StatusPropertiesTable.MASK_STATUS_BOOKMARKED;
 		} else {
-			flags &= ~StatusRegisterTable.MASK_STATUS_BOOKMARKED;
+			flags &= ~StatusPropertiesTable.MASK_STATUS_BOOKMARKED;
 		}
 		switch (status.getVisibility()) {
 			case Status.VISIBLE_DIRECT:
-				flags |= StatusRegisterTable.MASK_STATUS_VISIBILITY_DIRECT;
+				flags |= StatusPropertiesTable.MASK_STATUS_VISIBILITY_DIRECT;
 				break;
 
 			case Status.VISIBLE_UNLISTED:
-				flags |= StatusRegisterTable.MASK_STATUS_VISIBILITY_UNLISTED;
+				flags |= StatusPropertiesTable.MASK_STATUS_VISIBILITY_UNLISTED;
 				break;
 
 			case Status.VISIBLE_PRIVATE:
-				flags |= StatusRegisterTable.MASK_STATUS_VISIBILITY_PRIVATE;
+				flags |= StatusPropertiesTable.MASK_STATUS_VISIBILITY_PRIVATE;
 				break;
 
 			default:
-				flags &= ~StatusRegisterTable.MASK_STATUS_VISIBILITY_DIRECT;
+				flags &= ~StatusPropertiesTable.MASK_STATUS_VISIBILITY_DIRECT;
 		}
 		ContentValues column = new ContentValues(22);
 		column.put(StatusTable.ID, status.getId());
@@ -1471,7 +1481,7 @@ public class AppDatabase {
 			savePoll(status.getPoll(), db);
 			column.put(StatusTable.POLL, status.getPoll().getId());
 		}
-		db.insertWithOnConflict(StatusTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+		db.insertWithOnConflict(StatusTable.TABLE, null, column, SQLiteDatabase.CONFLICT_REPLACE);
 		saveUser(user, db, SQLiteDatabase.CONFLICT_IGNORE);
 		saveStatusFlags(db, status, flags);
 	}
@@ -1489,7 +1499,7 @@ public class AppDatabase {
 			column.put(MediaTable.URL, media.getUrl());
 			column.put(MediaTable.PREVIEW, media.getPreviewUrl());
 			column.put(MediaTable.TYPE, media.getMediaType());
-			db.insertWithOnConflict(MediaTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
+			db.insertWithOnConflict(MediaTable.TABLE, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 	}
 
@@ -1518,7 +1528,7 @@ public class AppDatabase {
 		column.put(LocationTable.COORDINATES, location.getCoordinates());
 		column.put(LocationTable.COUNTRY, location.getCountry());
 		column.put(LocationTable.PLACE, location.getPlace());
-		db.insertWithOnConflict(LocationTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
+		db.insertWithOnConflict(LocationTable.TABLE, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	/**
@@ -1539,7 +1549,7 @@ public class AppDatabase {
 		column.put(PollTable.ID, poll.getId());
 		column.put(PollTable.EXPIRATION, poll.getEndTime());
 		column.put(PollTable.OPTIONS, buf.toString());
-		db.insertWithOnConflict(PollTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+		db.insertWithOnConflict(PollTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 
 	/**
@@ -1553,7 +1563,7 @@ public class AppDatabase {
 		column.put(EmojiTable.CODE, emoji.getCode());
 		column.put(EmojiTable.URL, emoji.getUrl());
 		column.put(EmojiTable.CATEGORY, emoji.getCategory());
-		db.insertWithOnConflict(EmojiTable.NAME, "", column, SQLiteDatabase.CONFLICT_IGNORE);
+		db.insertWithOnConflict(EmojiTable.TABLE, "", column, SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	/**
@@ -1567,15 +1577,15 @@ public class AppDatabase {
 		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 		ContentValues column = new ContentValues(4);
-		column.put(StatusRegisterTable.REGISTER, flags);
-		column.put(StatusRegisterTable.REPOST_ID, status.getRepostId());
-		column.put(StatusRegisterTable.STATUS, status.getId());
-		column.put(StatusRegisterTable.OWNER, settings.getLogin().getId());
+		column.put(StatusPropertiesTable.REGISTER, flags);
+		column.put(StatusPropertiesTable.REPOST_ID, status.getRepostId());
+		column.put(StatusPropertiesTable.STATUS, status.getId());
+		column.put(StatusPropertiesTable.OWNER, settings.getLogin().getId());
 
-		int count = db.update(StatusRegisterTable.NAME, column, STATUS_REG_SELECT, args);
+		int count = db.update(StatusPropertiesTable.TABLE, column, STATUS_REG_SELECT, args);
 		if (count == 0) {
 			// create new entry if there isn't one
-			db.insert(StatusRegisterTable.NAME, null, column);
+			db.insert(StatusPropertiesTable.TABLE, null, column);
 		}
 	}
 
@@ -1590,14 +1600,14 @@ public class AppDatabase {
 		String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 		ContentValues column = new ContentValues(3);
-		column.put(UserRegisterTable.USER, id);
-		column.put(UserRegisterTable.OWNER, settings.getLogin().getId());
-		column.put(UserRegisterTable.REGISTER, flags);
+		column.put(UserPropertiesTable.USER, id);
+		column.put(UserPropertiesTable.OWNER, settings.getLogin().getId());
+		column.put(UserPropertiesTable.REGISTER, flags);
 
-		int cnt = db.update(UserRegisterTable.NAME, column, USER_REG_SELECT, args);
+		int cnt = db.update(UserPropertiesTable.TABLE, column, USER_REG_SELECT, args);
 		if (cnt == 0) {
 			// create new entry if there isn't an entry
-			db.insert(UserRegisterTable.NAME, null, column);
+			db.insert(UserPropertiesTable.TABLE, null, column);
 		}
 	}
 
@@ -1610,9 +1620,9 @@ public class AppDatabase {
 	 */
 	private void saveFavorite(long statusId, long ownerId, SQLiteDatabase db) {
 		ContentValues column = new ContentValues(2);
-		column.put(FavoriteTable.STATUS, statusId);
+		column.put(FavoriteTable.ID, statusId);
 		column.put(FavoriteTable.OWNER, ownerId);
-		db.insertWithOnConflict(FavoriteTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+		db.insertWithOnConflict(FavoriteTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 
 	/**
@@ -1624,9 +1634,9 @@ public class AppDatabase {
 	 */
 	private void saveBookmark(long statusId, long ownerId, SQLiteDatabase db) {
 		ContentValues column = new ContentValues(2);
-		column.put(BookmarkTable.STATUS, statusId);
+		column.put(BookmarkTable.ID, statusId);
 		column.put(BookmarkTable.OWNER, ownerId);
-		db.insertWithOnConflict(BookmarkTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+		db.insertWithOnConflict(BookmarkTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 
 	/**
@@ -1668,6 +1678,6 @@ public class AppDatabase {
 		column.put(InstanceTable.AUDIO_SIZE, instance.getAudioSizeLimit());
 		column.put(InstanceTable.POLL_MIN_DURATION, instance.getMinPollDuration());
 		column.put(InstanceTable.POLL_MAX_DURATION, instance.getMaxPollDuration());
-		db.insertWithOnConflict(InstanceTable.NAME, "", column, SQLiteDatabase.CONFLICT_REPLACE);
+		db.insertWithOnConflict(InstanceTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 	}
 }

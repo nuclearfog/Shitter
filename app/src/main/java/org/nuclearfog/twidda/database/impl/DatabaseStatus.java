@@ -5,7 +5,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.database.DatabaseAdapter.StatusRegisterTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.StatusPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Card;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  *
  * @author nuclearfog
  */
-public class DatabaseStatus implements Status, StatusTable, StatusRegisterTable {
+public class DatabaseStatus implements Status, StatusTable, StatusPropertiesTable {
 
 	private static final long serialVersionUID = -5957556706939766801L;
 

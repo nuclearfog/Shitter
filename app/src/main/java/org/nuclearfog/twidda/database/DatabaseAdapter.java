@@ -21,7 +21,7 @@ public class DatabaseAdapter {
 	/**
 	 * database version
 	 */
-	private static final int DB_VERSION = 22;
+	private static final int DB_VERSION = 24;
 
 	/**
 	 * database file name
@@ -29,10 +29,15 @@ public class DatabaseAdapter {
 	private static final String DB_NAME = "database.db";
 
 	/**
+	 * database lock
+	 */
+	private static final Object LOCK = new Object();
+
+	/**
 	 * SQL query to create a table for user information
 	 */
 	private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS "
-			+ UserTable.NAME + "("
+			+ UserTable.TABLE + "("
 			+ UserTable.ID + " INTEGER PRIMARY KEY,"
 			+ UserTable.USERNAME + " TEXT,"
 			+ UserTable.SCREENNAME + " TEXT,"
@@ -52,9 +57,9 @@ public class DatabaseAdapter {
 	 * SQL query to create a table for status information
 	 */
 	private static final String TABLE_STATUS = "CREATE TABLE IF NOT EXISTS "
-			+ StatusTable.NAME + "("
+			+ StatusTable.TABLE + "("
 			+ StatusTable.ID + " INTEGER PRIMARY KEY,"
-			+ StatusTable.USER + " INTEGER,"
+			+ StatusTable.USER + " INTEGER NOT NULL,"
 			+ StatusTable.URL + " TEXT,"
 			+ StatusTable.EMBEDDED + " INTEGER,"
 			+ StatusTable.REPLYSTATUS + " INTEGER,"
@@ -72,26 +77,34 @@ public class DatabaseAdapter {
 			+ StatusTable.MENTIONS + " TEXT,"
 			+ StatusTable.LOCATION + " INTEGER,"
 			+ StatusTable.LANGUAGE + " TEXT,"
-			+ StatusTable.EDITED_AT + " INTEGER);";
+			+ StatusTable.EDITED_AT + " INTEGER,"
+			+ "FOREIGN KEY(" + StatusTable.USER + ")"
+			+ "REFERENCES " + UserTable.TABLE + "(" + UserTable.ID + "),"
+			+ "FOREIGN KEY(" + StatusTable.POLL + ")"
+			+ "REFERENCES " + PollTable.TABLE + "(" + PollTable.ID + "),"
+			+ "FOREIGN KEY(" + StatusTable.LOCATION + ")"
+			+ "REFERENCES " + LocationTable.TABLE + "(" + LocationTable.ID + "));";
 
 	/**
 	 * SQL query to create a table for trend information
 	 */
-	private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS "
-			+ HashtagTable.NAME + "("
+	private static final String TABLE_TAGS = "CREATE TABLE IF NOT EXISTS "
+			+ HashtagTable.TABLE + "("
 			+ HashtagTable.ID + " INTEGER,"
 			+ HashtagTable.LOCATION + " INTEGER,"
 			+ HashtagTable.INDEX + " INTEGER,"
 			+ HashtagTable.VOL + " INTEGER,"
-			+ HashtagTable.TREND + " TEXT);";
+			+ HashtagTable.TAG_NAME + " TEXT);";
 
 	/**
 	 * SQL query to create a table for user logins
 	 */
 	private static final String TABLE_ACCOUNTS = "CREATE TABLE IF NOT EXISTS "
-			+ AccountTable.NAME + "("
+			+ AccountTable.TABLE + "("
 			+ AccountTable.ID + " INTEGER,"
 			+ AccountTable.DATE + " INTEGER,"
+			+ AccountTable.USERNAME + " TEXT,"
+			+ AccountTable.IMAGE + " TEXT,"
 			+ AccountTable.ACCESS_TOKEN + " TEXT,"
 			+ AccountTable.TOKEN_SECRET + " TEXT,"
 			+ AccountTable.HOSTNAME + " TEXT,"
@@ -104,19 +117,21 @@ public class DatabaseAdapter {
 	 * SQL query to create table for notifications
 	 */
 	private static final String TABLE_NOTIFICATION = "CREATE TABLE IF NOT EXISTS "
-			+ NotificationTable.NAME + "("
+			+ NotificationTable.TABLE + "("
 			+ NotificationTable.ID + " INTEGER PRIMARY KEY,"
-			+ NotificationTable.OWNER + " INTEGER,"
-			+ NotificationTable.USER + " INTEGER,"
+			+ NotificationTable.SENDER + " INTEGER NOT NULL,"
+			+ NotificationTable.RECEIVER + " INTEGER,"
 			+ NotificationTable.TIME + " INTEGER,"
 			+ NotificationTable.TYPE + " INTEGER,"
-			+ NotificationTable.ITEM + " INTEGER);";
+			+ NotificationTable.ITEM + " INTEGER,"
+			+ "FOREIGN KEY(" + NotificationTable.SENDER + ")"
+			+ "REFERENCES " + UserTable.TABLE + "(" + UserTable.ID + "));";
 
 	/**
 	 * SQL query to create media table
 	 */
 	private static final String TABLE_MEDIA = "CREATE TABLE IF NOT EXISTS "
-			+ MediaTable.NAME + "("
+			+ MediaTable.TABLE + "("
 			+ MediaTable.KEY + " TEXT PRIMARY KEY,"
 			+ MediaTable.TYPE + " INTEGER,"
 			+ MediaTable.URL + " TEXT,"
@@ -127,8 +142,8 @@ public class DatabaseAdapter {
 	/**
 	 * SQL query to create location table
 	 */
-	private static final String TABLE_LOCATION = "CREATE TABLE  IF NOT EXISTS "
-			+ LocationTable.NAME + "("
+	private static final String TABLE_LOCATION = "CREATE TABLE IF NOT EXISTS "
+			+ LocationTable.TABLE + "("
 			+ LocationTable.ID + " INTEGER PRIMARY KEY,"
 			+ LocationTable.COUNTRY + " TEXT,"
 			+ LocationTable.COORDINATES + " TEXT,"
@@ -139,7 +154,7 @@ public class DatabaseAdapter {
 	 * SQL query to create the emoji table
 	 */
 	private static final String TABLE_EMOJI = "CREATE TABLE IF NOT EXISTS "
-			+ EmojiTable.NAME + "("
+			+ EmojiTable.TABLE + "("
 			+ EmojiTable.URL + " TEXT PRIMARY KEY,"
 			+ EmojiTable.CATEGORY + " TEXT,"
 			+ EmojiTable.CODE + " TEXT);";
@@ -148,52 +163,71 @@ public class DatabaseAdapter {
 	 * SQL query to create a poll table
 	 */
 	private static final String TABLE_POLL = "CREATE TABLE IF NOT EXISTS "
-			+ PollTable.NAME + "("
+			+ PollTable.TABLE + "("
 			+ PollTable.ID + " INTEGER PRIMARY KEY,"
-			+ PollTable.NAME + " TEXT,"
+			+ PollTable.TABLE + " TEXT,"
 			+ PollTable.EXPIRATION + " INTEGER,"
 			+ PollTable.OPTIONS + " TEXT);";
 
 	/**
 	 * table for status register
 	 */
-	private static final String TABLE_STATUS_REGISTER = "CREATE TABLE IF NOT EXISTS "
-			+ StatusRegisterTable.NAME + "("
-			+ StatusRegisterTable.OWNER + " INTEGER,"
-			+ StatusRegisterTable.STATUS + " INTEGER,"
-			+ StatusRegisterTable.REGISTER + " INTEGER,"
-			+ StatusRegisterTable.REPOST_ID + " INTEGER);";
+	private static final String TABLE_STATUS_PROPERTIES = "CREATE TABLE IF NOT EXISTS "
+			+ StatusPropertiesTable.TABLE + "("
+			+ StatusPropertiesTable.STATUS + " INTEGER NOT NULL,"
+			+ StatusPropertiesTable.OWNER + " INTEGER,"
+			+ StatusPropertiesTable.REGISTER + " INTEGER,"
+			+ StatusPropertiesTable.REPOST_ID + " INTEGER,"
+			+ "FOREIGN KEY(" + StatusPropertiesTable.STATUS + ")"
+			+ "REFERENCES " + StatusTable.TABLE + "(" + StatusTable.ID + "));";
 
 	/**
 	 * table for user register
 	 */
-	private static final String TABLE_USER_REGISTER = "CREATE TABLE IF NOT EXISTS "
-			+ UserRegisterTable.NAME + "("
-			+ UserRegisterTable.OWNER + " INTEGER,"
-			+ UserRegisterTable.USER + " INTEGER,"
-			+ UserRegisterTable.REGISTER + " INTEGER);";
+	private static final String TABLE_USER_PROPERTIES = "CREATE TABLE IF NOT EXISTS "
+			+ UserPropertiesTable.TABLE + "("
+			+ UserPropertiesTable.USER + " INTEGER NOT NULL,"
+			+ UserPropertiesTable.OWNER + " INTEGER,"
+			+ UserPropertiesTable.REGISTER + " INTEGER,"
+			+ "FOREIGN KEY(" + UserPropertiesTable.USER + ")"
+			+ "REFERENCES " + UserTable.TABLE + "(" + UserTable.ID + "));";
 
 	/**
 	 * SQL query to create a table for favorite list
 	 */
 	private static final String TABLE_FAVORITES = "CREATE TABLE IF NOT EXISTS "
-			+ FavoriteTable.NAME + "("
+			+ FavoriteTable.TABLE + "("
+			+ FavoriteTable.ID + " INTEGER NOT NULL,"
 			+ FavoriteTable.OWNER + " INTEGER,"
-			+ FavoriteTable.STATUS + " INTEGER);";
+			+ "FOREIGN KEY(" + FavoriteTable.ID + ")"
+			+ "REFERENCES " + StatusTable.TABLE + "(" + StatusTable.ID + "));";
 
 	/**
 	 * SQL query to create a table for favorite list
 	 */
 	private static final String TABLE_BOOKMARKS = "CREATE TABLE IF NOT EXISTS "
-			+ BookmarkTable.NAME + "("
+			+ BookmarkTable.TABLE + "("
+			+ BookmarkTable.ID + " INTEGER NOT NULL,"
 			+ BookmarkTable.OWNER + " INTEGER,"
-			+ BookmarkTable.STATUS + " INTEGER);";
+			+ "FOREIGN KEY(" + BookmarkTable.ID + ")"
+			+ "REFERENCES " + StatusTable.TABLE + "(" + StatusTable.ID + "));";
+
+	/**
+	 * SQL query to create a status reply table
+	 */
+	private static final String TABLE_REPLIES = "CREATE TABLE IF NOT EXISTS "
+			+ ReplyTable.TABLE + "("
+			+ ReplyTable.ID + " INTEGER NOT NULL,"
+			+ ReplyTable.REPLY + " INTEGER,"
+			+ ReplyTable.ORDER + " INTEGER,"
+			+ "FOREIGN KEY(" + ReplyTable.ID + ")"
+			+ "REFERENCES " + StatusTable.TABLE + "(" + StatusTable.ID + "));";
 
 	/**
 	 * SQL query to create instance table
 	 */
 	private static final String TABLE_INSTANCES = "CREATE TABLE IF NOT EXISTS "
-			+ InstanceTable.NAME + "("
+			+ InstanceTable.TABLE + "("
 			+ InstanceTable.DOMAIN + " TEXT PRIMARY KEY,"
 			+ InstanceTable.TIMESTAMP + " INTEGER,"
 			+ InstanceTable.TITLE + " TEXT,"
@@ -217,10 +251,10 @@ public class DatabaseAdapter {
 			+ InstanceTable.POLL_MAX_DURATION + " INTEGER);";
 
 	/**
-	 * Webpush table
+	 * SQL query to create a push table
 	 */
 	private static final String TABLE_WEBPUSH = "CREATE TABLE IF NOT EXISTS "
-			+ PushTable.NAME + "("
+			+ PushTable.TABLE + "("
 			+ PushTable.USER_URL + " TEXT PRIMARY KEY,"
 			+ PushTable.HOST + " TEXT,"
 			+ PushTable.ID + " INTEGER,"
@@ -233,105 +267,59 @@ public class DatabaseAdapter {
 	/**
 	 * table index for status table
 	 */
-	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_tweet"
-			+ " ON " + StatusTable.NAME + "(" + StatusTable.USER + ");";
+	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_status"
+			+ " ON " + StatusTable.TABLE + "(" + StatusTable.USER + ");";
 
 	/**
-	 * table index for status register
+	 * table index for status properties
 	 */
-	private static final String INDX_STATUS_REG = "CREATE INDEX IF NOT EXISTS idx_tweet_register"
-			+ " ON " + StatusRegisterTable.NAME + "(" + StatusRegisterTable.OWNER + "," + StatusRegisterTable.STATUS + ");";
+	private static final String INDX_STATUS_PROPERTIES = "CREATE INDEX IF NOT EXISTS idx_status_properties"
+			+ " ON " + StatusPropertiesTable.TABLE + "(" + StatusPropertiesTable.OWNER + "," + StatusPropertiesTable.STATUS + ");";
 
 	/**
-	 * table index for user register
+	 * table index for user properties
 	 */
-	private static final String INDX_USER_REG = "CREATE INDEX IF NOT EXISTS idx_user_register"
-			+ " ON " + UserRegisterTable.NAME + "(" + UserRegisterTable.OWNER + "," + UserRegisterTable.USER + ");";
+	private static final String INDX_USER_PROPERTIES = "CREATE INDEX IF NOT EXISTS idx_user_properties"
+			+ " ON " + UserPropertiesTable.TABLE + "(" + UserPropertiesTable.OWNER + "," + UserPropertiesTable.USER + ");";
 
 	/**
-	 * update account table to add social network hostname
+	 * table index for status favorits table
+	 * @since 3.5
 	 */
-	private static final String UPDATE_ACCOUNT_ADD_HOST = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.HOSTNAME + " TEXT;";
+	private static final String INDX_FAVORITE = "CREATE INDEX IF NOT EXISTS idx_favorits"
+			+ " ON " + FavoriteTable.TABLE + "(" + FavoriteTable.OWNER + "," + FavoriteTable.ID + ");";
 
 	/**
-	 * update account table to add API client ID
+	 * table index for status bookmarks table
+	 * @since 3.5
 	 */
-	private static final String UPDATE_ACCOUNT_ADD_CLIENT_ID = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_ID + " TEXT;";
+	private static final String INDX_BOOKMARK = "CREATE INDEX IF NOT EXISTS idx_bookmarks"
+			+ " ON " + BookmarkTable.TABLE + "(" + BookmarkTable.OWNER + "," + BookmarkTable.ID + ");";
 
 	/**
-	 * update account table to add API client secret
+	 * table index for status replies table
+	 * @since 3.5
 	 */
-	private static final String UPDATE_ACCOUNT_ADD_CLIENT_SEC = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.CLIENT_SECRET + " TEXT;";
-
-	/**
-	 * update account table to add API client secret
-	 */
-	private static final String UPDATE_ACCOUNT_ADD_API = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.API + " INTEGER;";
-
-	/**
-	 * update account table to add API client secret
-	 */
-	private static final String UPDATE_STATUS_ADD_REPLY_COUNT = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.REPLY + " INTEGER;";
-
-	/**
-	 * update account table to add API client secret
-	 */
-	private static final String UPDATE_ACCOUNT_ADD_BEARER = "ALTER TABLE " + AccountTable.NAME + " ADD " + AccountTable.BEARER + " TEXT;";
-
-	/**
-	 * update status table add location ID
-	 */
-	private static final String UPDATE_STATUS_ADD_LOCATION = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LOCATION + " INTEGER;";
-
-	/**
-	 * update status table add location ID
-	 */
-	private static final String UPDATE_STATUS_ADD_URL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.URL + " TEXT;";
-
-	/**
-	 * update status table add emoji keys
-	 */
-	private static final String UPDATE_STATUS_ADD_EMOJI = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.EMOJI + " TEXT;";
-
-	/**
-	 * update status table add emoji keys
-	 */
-	private static final String UPDATE_STATUS_ADD_STATUS_POLL = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.POLL + " INTEGER;";
-
-	/**
-	 * update status table add language string
-	 */
-	private static final String UPDATE_STATUS_ADD_LANGUAGE = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.LANGUAGE + " TEXT;";
-
-	/**
-	 * update user table add emoji key string
-	 */
-	private static final String UPDATE_USER_ADD_EMOJI = "ALTER TABLE " + UserTable.NAME + " ADD " + UserTable.EMOJI + " TEXT;";
-
-	/**
-	 * add mention column to status table
-	 */
-	private static final String UPDATE_STATUS_ADD_MENTIONS = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.MENTIONS + " TEXT;";
+	private static final String INDX_REPLIES = "CREATE INDEX IF NOT EXISTS idx_replies"
+			+ " ON " + ReplyTable.TABLE + "(" + ReplyTable.REPLY + "," + ReplyTable.ID + ");";
 
 	/**
 	 * add mediatable description
+	 * @since 3.4.5
 	 */
-	private static final String UPDATE_MEDIA_ADD_DESCRIPTION = "ALTER TABLE " + MediaTable.NAME + " ADD " + MediaTable.DESCRIPTION + " TEXT;";
+	private static final String UPDATE_MEDIA_ADD_DESCRIPTION = "ALTER TABLE " + MediaTable.TABLE + " ADD " + MediaTable.DESCRIPTION + " TEXT;";
 
 	/**
 	 * add mediatable description
+	 * @since 3.4.5
 	 */
-	private static final String UPDATE_MEDIA_ADD_BLUR_HASH = "ALTER TABLE " + MediaTable.NAME + " ADD " + MediaTable.BLUR + " TEXT;";
+	private static final String UPDATE_MEDIA_ADD_BLUR_HASH = "ALTER TABLE " + MediaTable.TABLE + " ADD " + MediaTable.BLUR + " TEXT;";
 
 	/**
 	 * add mediatable description
+	 * @since 3.4.5
 	 */
-	private static final String UPDATE_HASHTAG_ADD_ID = "ALTER TABLE " + HashtagTable.NAME + " ADD " + HashtagTable.ID + " INTEGER;";
-
-	/**
-	 * add status edit timestamp
-	 */
-	private static final String UPDATE_STATUS_ADD_EDIT_TIME = "ALTER TABLE " + StatusTable.NAME + " ADD " + StatusTable.EDITED_AT + " INTEGER;";
+	private static final String UPDATE_HASHTAG_ADD_ID = "ALTER TABLE " + HashtagTable.TABLE + " ADD " + HashtagTable.ID + " INTEGER;";
 
 	/**
 	 * singleton instance
@@ -352,102 +340,59 @@ public class DatabaseAdapter {
 	 *
 	 */
 	private DatabaseAdapter(Context context) {
-		// fetch database information
-		databasePath = context.getDatabasePath(DB_NAME);
-		db = context.openOrCreateDatabase(databasePath.toString(), Context.MODE_PRIVATE, null);
-		// create tables if not exist
-		db.execSQL(TABLE_USER);
-		db.execSQL(TABLE_STATUS);
-		db.execSQL(TABLE_FAVORITES);
-		db.execSQL(TABLE_BOOKMARKS);
-		db.execSQL(TABLE_TRENDS);
-		db.execSQL(TABLE_ACCOUNTS);
-		db.execSQL(TABLE_STATUS_REGISTER);
-		db.execSQL(TABLE_USER_REGISTER);
-		db.execSQL(TABLE_NOTIFICATION);
-		db.execSQL(TABLE_MEDIA);
-		db.execSQL(TABLE_LOCATION);
-		db.execSQL(TABLE_EMOJI);
-		db.execSQL(TABLE_POLL);
-		db.execSQL(TABLE_INSTANCES);
-		db.execSQL(TABLE_WEBPUSH);
-		// create index if not exist
-		db.execSQL(INDX_STATUS);
-		db.execSQL(INDX_STATUS_REG);
-		db.execSQL(INDX_USER_REG);
-		// set initial version
-		if (db.getVersion() == 0) {
-			db.setVersion(DB_VERSION);
-		}
-		// update table
-		else if (db.getVersion() != DB_VERSION) {
-			if (db.getVersion() < 6) {
-				db.execSQL(UPDATE_ACCOUNT_ADD_HOST);
-				db.execSQL(UPDATE_ACCOUNT_ADD_CLIENT_ID);
-				db.execSQL(UPDATE_ACCOUNT_ADD_CLIENT_SEC);
-				db.setVersion(6);
-			}
-			if (db.getVersion() < 7) {
-				db.execSQL(UPDATE_ACCOUNT_ADD_API);
-				db.setVersion(7);
-			}
-			if (db.getVersion() < 8) {
-				db.execSQL(UPDATE_STATUS_ADD_REPLY_COUNT);
-				db.setVersion(8);
-			}
-			if (db.getVersion() < 9) {
-				db.execSQL(UPDATE_ACCOUNT_ADD_BEARER);
-				db.setVersion(9);
-			}
-			if (db.getVersion() < 11) {
-				db.execSQL(UPDATE_STATUS_ADD_LOCATION);
-				db.setVersion(11);
-			}
-			if (db.getVersion() < 12) {
-				db.execSQL(UPDATE_STATUS_ADD_URL);
-				db.setVersion(12);
-			}
-			if (db.getVersion() < 13) {
-				db.execSQL(UPDATE_STATUS_ADD_EMOJI);
-				db.setVersion(13);
-			}
-			if (db.getVersion() < 14) {
-				db.execSQL(UPDATE_STATUS_ADD_STATUS_POLL);
-				db.setVersion(14);
-			}
-			if (db.getVersion() < 15) {
-				db.execSQL(UPDATE_STATUS_ADD_LANGUAGE);
-				db.setVersion(15);
-			}
-			if (db.getVersion() < 16) {
-				db.execSQL(UPDATE_USER_ADD_EMOJI);
-				db.setVersion(16);
-			}
-			if (db.getVersion() < 17) {
-				db.execSQL(UPDATE_STATUS_ADD_MENTIONS);
-				db.setVersion(17);
-			}
-			if (db.getVersion() < 18) {
-				db.execSQL(UPDATE_MEDIA_ADD_DESCRIPTION);
-				db.setVersion(18);
-			}
-			if (db.getVersion() < 19) {
-				db.execSQL(UPDATE_MEDIA_ADD_BLUR_HASH);
-				db.setVersion(19);
-			}
-			if (db.getVersion() < 20) {
-				db.delete(EmojiTable.NAME, null, null);
-				db.execSQL(TABLE_EMOJI);
-				db.setVersion(20);
-			}
-			if (db.getVersion() < 21) {
-				db.execSQL(UPDATE_HASHTAG_ADD_ID);
-				db.setVersion(21);
-			}
-			if (db.getVersion() < DB_VERSION) {
-				db.execSQL(UPDATE_STATUS_ADD_EDIT_TIME);
+		synchronized (LOCK) {
+			// fetch database information
+			databasePath = context.getDatabasePath(DB_NAME);
+			db = context.openOrCreateDatabase(databasePath.toString(), Context.MODE_PRIVATE, null);
+			// create tables if not exist
+			db.execSQL(TABLE_USER);
+			db.execSQL(TABLE_STATUS);
+			db.execSQL(TABLE_FAVORITES);
+			db.execSQL(TABLE_BOOKMARKS);
+			db.execSQL(TABLE_TAGS);
+			db.execSQL(TABLE_ACCOUNTS);
+			db.execSQL(TABLE_STATUS_PROPERTIES);
+			db.execSQL(TABLE_USER_PROPERTIES);
+			db.execSQL(TABLE_NOTIFICATION);
+			db.execSQL(TABLE_MEDIA);
+			db.execSQL(TABLE_LOCATION);
+			db.execSQL(TABLE_EMOJI);
+			db.execSQL(TABLE_POLL);
+			db.execSQL(TABLE_INSTANCES);
+			db.execSQL(TABLE_WEBPUSH);
+			db.execSQL(TABLE_REPLIES);
+			// set initial version
+			if (db.getVersion() == 0) {
 				db.setVersion(DB_VERSION);
 			}
+			// update table
+			else if (db.getVersion() != DB_VERSION) {
+				if (db.getVersion() < 18) {
+					db.execSQL(UPDATE_MEDIA_ADD_DESCRIPTION);
+					db.setVersion(18);
+				}
+				if (db.getVersion() < 19) {
+					db.execSQL(UPDATE_MEDIA_ADD_BLUR_HASH);
+					db.setVersion(19);
+				}
+				if (db.getVersion() < 21) {
+					db.execSQL(UPDATE_HASHTAG_ADD_ID);
+					db.setVersion(21);
+				}
+				if (db.getVersion() < DB_VERSION) {
+					// recreate table
+					db.delete(BookmarkTable.TABLE, null, null);
+					db.execSQL(TABLE_BOOKMARKS);
+					db.setVersion(DB_VERSION);
+				}
+			}
+			// create index if not exist
+			db.execSQL(INDX_STATUS);
+			db.execSQL(INDX_STATUS_PROPERTIES);
+			db.execSQL(INDX_USER_PROPERTIES);
+			db.execSQL(INDX_FAVORITE);
+			db.execSQL(INDX_BOOKMARK);
+			db.execSQL(INDX_REPLIES);
 		}
 	}
 
@@ -465,7 +410,8 @@ public class DatabaseAdapter {
 				// if database is corrupted, clear and create a new one
 				if (BuildConfig.DEBUG)
 					exception.printStackTrace();
-				SQLiteDatabase.deleteDatabase(instance.databasePath);
+				File databasePath = context.getDatabasePath(DB_NAME);
+				SQLiteDatabase.deleteDatabase(databasePath);
 				instance = new DatabaseAdapter(context.getApplicationContext());
 			}
 		}
@@ -503,6 +449,13 @@ public class DatabaseAdapter {
 	}
 
 	/**
+	 * get database lock
+	 */
+	Object getLock() {
+		return LOCK;
+	}
+
+	/**
 	 * table for user information
 	 */
 	public interface UserTable {
@@ -510,12 +463,12 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "user";
+		String TABLE = "users";
 
 		/**
 		 * ID of the user
 		 */
-		String ID = "userID";
+		String ID = "user_id";
 
 		/**
 		 * user name
@@ -525,62 +478,62 @@ public class DatabaseAdapter {
 		/**
 		 * screen name (starting with @)
 		 */
-		String SCREENNAME = "scrname";
+		String SCREENNAME = "screen_name";
 
 		/**
 		 * description (bio) of the user
 		 */
-		String DESCRIPTION = "bio";
+		String DESCRIPTION = "description";
 
 		/**
 		 * location attached to profile
 		 */
-		String LOCATION = "location";
+		String LOCATION = "user_location";
 
 		/**
 		 * link attached to profile
 		 */
-		String LINK = "link";
+		String LINK = "user_url";
 
 		/**
 		 * date of account creation
 		 */
-		String SINCE = "createdAt";
+		String SINCE = "user_created_at";
 
 		/**
 		 * link to the original profile image
 		 */
-		String IMAGE = "pbLink";
+		String IMAGE = "profile_image";
 
 		/**
 		 * link to the original banner image
 		 */
-		String BANNER = "banner";
+		String BANNER = "banner_image";
 
 		/**
 		 * following count
 		 */
-		String FRIENDS = "following";
+		String FRIENDS = "following_count";
 
 		/**
 		 * follower count
 		 */
-		String FOLLOWER = "follower";
+		String FOLLOWER = "follower_count";
 
 		/**
 		 * count of statuses posted by user
 		 */
-		String STATUSES = "tweetCount";
+		String STATUSES = "user_status_count";
 
 		/**
 		 * count of the statuses favored by the user
 		 */
-		String FAVORITS = "favorCount";
+		String FAVORITS = "user_favorite_count";
 
 		/**
 		 * emoji keys
 		 */
-		String EMOJI = "userEmoji";
+		String EMOJI = "user_emoji_keys";
 	}
 
 	/**
@@ -590,22 +543,22 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "tweet";
+		String TABLE = "statuses";
 
 		/**
-		 * ID of the status
+		 * ID of the status (Primary key)
 		 */
-		String ID = "tweetID";
+		String ID = "status_id";
 
 		/**
 		 * ID of the author
 		 */
-		String USER = "userID";
+		String USER = "author_id";
 
 		/**
 		 * status text
 		 */
-		String TEXT = "tweet";
+		String TEXT = "status_text";
 
 		/**
 		 * mentioned usernames
@@ -615,82 +568,82 @@ public class DatabaseAdapter {
 		/**
 		 * media keys
 		 */
-		String MEDIA = "media";
+		String MEDIA = "media_keys";
 
 		/**
 		 * emoji keys
 		 */
-		String EMOJI = "emoji";
+		String EMOJI = "emoji_keys";
 
 		/**
 		 * ID of a {@link org.nuclearfog.twidda.model.Poll}
 		 */
-		String POLL = "pollID";
+		String POLL = "poll_id";
 
 		/**
 		 * repost count
 		 */
-		String REPOST = "retweet";
+		String REPOST = "repost_count";
 
 		/**
 		 * favorite count
 		 */
-		String FAVORITE = "favorite";
+		String FAVORITE = "favorite_count";
 
 		/**
 		 * reply count
 		 */
-		String REPLY = "reply";
+		String REPLY = "reply_count";
 
 		/**
 		 * timestamp of the status
 		 */
-		String TIME = "time";
+		String TIME = "created_at";
 
 		/**
 		 * API source of the status
 		 */
-		String SOURCE = "source";
+		String SOURCE = "status_source";
 
 		/**
 		 * URL of the status
 		 */
-		String URL = "url";
+		String URL = "status_url";
 
 		/**
-		 * place name of the status
+		 * ID of a location attached to a status
 		 */
 		String LOCATION = "location_id";
 
 		/**
 		 * ID of the replied status
 		 */
-		String REPLYSTATUS = "replyID";
+		String REPLYSTATUS = "reply_status_id";
 
 		/**
 		 * ID of the replied user
 		 */
-		String REPLYUSER = "replyUserID";
+		String REPLYUSER = "reply_user_id";
 
 		/**
 		 * name of the replied user
 		 */
-		String REPLYNAME = "replyname";
+		String REPLYNAME = "reply_user_name";
 
 		/**
 		 * ID of the embedded (reposted) status
 		 */
-		String EMBEDDED = "retweetID";
+		String EMBEDDED = "embedded_status_id";
 
 		/**
 		 * language of the status
 		 */
-		String LANGUAGE = "lang";
+		String LANGUAGE = "status_language";
 
 		/**
 		 * timestamp of the last edit
 		 */
-		String EDITED_AT = "edited_at";
+		String EDITED_AT = "status_edited_at";
 	}
 
 	/**
@@ -700,17 +653,17 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "favorit";
+		String TABLE = "favorits";
 
 		/**
-		 * ID of the status
+		 * ID of the status referencing {@link StatusTable#ID}
 		 */
-		String STATUS = "tweetID";
+		String ID = "status_id";
 
 		/**
 		 * ID of the user of this favored status
 		 */
-		String OWNER = "ownerID";
+		String OWNER = "owner_id";
 	}
 
 	/**
@@ -720,17 +673,43 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "bookmarks";
+		String TABLE = "bookmarks";
 
 		/**
-		 * ID of the status
+		 * ID of the status referencing {@link StatusTable#ID}
 		 */
-		String STATUS = "tweetID";
+		String ID = "status_id";
 
 		/**
 		 * ID of the user of this bookmarks
 		 */
-		String OWNER = "ownerID";
+		String OWNER = "owner_id";
+	}
+
+	/**
+	 * status reply table
+	 */
+	public interface ReplyTable {
+
+		/**
+		 * table name
+		 */
+		String TABLE = "replies";
+
+		/**
+		 * id of the replied status
+		 */
+		String REPLY = "reply_id";
+
+		/**
+		 * ID of the reply referencing {@link StatusTable#ID}
+		 */
+		String ID = "status_id";
+
+		/**
+		 * position in the reply thread
+		 */
+		String ORDER = "status_index";
 	}
 
 	/**
@@ -740,32 +719,32 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "trend";
+		String TABLE = "tags";
 
 		/**
-		 * id of the hashtag
+		 * ID of the hashtag (may be 0)
 		 */
-		String ID = "id";
-
-		/**
-		 * Location ID
-		 */
-		String LOCATION = "woeID";
-
-		/**
-		 * rank of the hashtag
-		 */
-		String INDEX = "trendpos";
-
-		/**
-		 * popularity count
-		 */
-		String VOL = "vol";
+		String ID = "tag_id";
 
 		/**
 		 * hashtag name
 		 */
-		String TREND = "trendname";
+		String TAG_NAME = "tag_name";
+
+		/**
+		 * Location ID
+		 */
+		String LOCATION = "location_id";
+
+		/**
+		 * rank of the hashtag
+		 */
+		String INDEX = "tag_rank";
+
+		/**
+		 * popularity count
+		 */
+		String VOL = "activity";
 	}
 
 	/**
@@ -775,27 +754,37 @@ public class DatabaseAdapter {
 		/**
 		 * SQL table name
 		 */
-		String NAME = "login";
+		String TABLE = "accounts";
 
 		/**
 		 * social network host
 		 */
-		String HOSTNAME = "host";
+		String HOSTNAME = "hostname";
 
 		/**
 		 * used API
 		 */
-		String API = "api";
+		String API = "account_api";
 
 		/**
-		 * ID of the user
+		 * ID of the user referencing {@link UserTable#ID}
 		 */
-		String ID = "userID";
+		String ID = "user_id";
+
+		/**
+		 * name of the account profile
+		 */
+		String USERNAME = "screen_name";
+
+		/**
+		 * profile thumbnail url of the account profile
+		 */
+		String IMAGE = "profile_image_url";
 
 		/**
 		 * date of login
 		 */
-		String DATE = "date";
+		String DATE = "login_created_at";
 
 		/**
 		 * API ID
@@ -833,31 +822,31 @@ public class DatabaseAdapter {
 	 * to avoid conflicts between multi users,
 	 * every login has its own status registers
 	 */
-	public interface StatusRegisterTable {
+	public interface StatusPropertiesTable {
 		/**
 		 * SQL table name
 		 */
-		String NAME = "tweetFlags";
+		String TABLE = "status_properties";
 
 		/**
-		 * ID of the user this register references to
+		 * ID of the status this register referencing {@link StatusTable#ID}
 		 */
-		String STATUS = "tweetID";
+		String STATUS = "status_id";
 
 		/**
-		 * ID of the current user accessing the database
+		 * ID of the owner (user) of this register
 		 */
-		String OWNER = "ownerID";
+		String OWNER = "owner_id";
 
 		/**
 		 * Register with status bits
 		 */
-		String REGISTER = "tweetRegister";
+		String REGISTER = "status_flags";
 
 		/**
 		 * ID of the repost of the current user (if exists)
 		 */
-		String REPOST_ID = "retweeterID";
+		String REPOST_ID = "repost_id";
 
 		/**
 		 * flag indicates that a status was favorited by the current user
@@ -928,26 +917,26 @@ public class DatabaseAdapter {
 	/**
 	 * table for user register
 	 */
-	public interface UserRegisterTable {
+	public interface UserPropertiesTable {
 		/**
 		 * SQL table name
 		 */
-		String NAME = "userFlags";
+		String TABLE = "user_properties";
 
 		/**
-		 * ID of the user this register references to
+		 * ID of the user referencing {@link UserTable#ID}
 		 */
-		String USER = "userID";
+		String USER = "user_id";
 
 		/**
 		 * ID of the current user accessing the database
 		 */
-		String OWNER = "ownerID";
+		String OWNER = "owner_id";
 
 		/**
 		 * Register with status bits
 		 */
-		String REGISTER = "userRegister";
+		String REGISTER = "user_flags";
 
 		/**
 		 * flag indicates that an user is verified
@@ -978,32 +967,32 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "notification";
+		String TABLE = "notifications";
 
 		/**
-		 * ID of the notification
+		 * ID of the notification (primary key)
 		 */
-		String ID = "notificationID";
+		String ID = "notification_id";
 
 		/**
-		 * ID of the user owning the notification
+		 * user ID of the receiver (user ID)
 		 */
-		String OWNER = "ownerID";
+		String RECEIVER = "owner_id";
+
+		/**
+		 * user ID of the sender referencing {@link UserTable#ID}
+		 */
+		String SENDER = "user_id";
 
 		/**
 		 * creation time of the notification
 		 */
-		String TIME = "timestamp";
-
-		/**
-		 * ID of the notification sender (user ID)
-		 */
-		String USER = "userID";
+		String TIME = "received_at";
 
 		/**
 		 * universal ID (status ID, list ID...)
 		 */
-		String ITEM = "itemID";
+		String ITEM = "item_id";
 
 		/**
 		 * type of notification
@@ -1020,10 +1009,10 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "media";
+		String TABLE = "media";
 
 		/**
-		 * key to identify the media entry
+		 * key to identify the media entry (primary key)
 		 */
 		String KEY = "media_key";
 
@@ -1061,12 +1050,12 @@ public class DatabaseAdapter {
 		/**
 		 * Table name
 		 */
-		String NAME = "location";
+		String TABLE = "locations";
 
 		/**
-		 * location ID
+		 * location ID (primary key)
 		 */
-		String ID = "id";
+		String ID = "location_id";
 
 		/**
 		 * country name
@@ -1097,22 +1086,22 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "emoji";
+		String TABLE = "emojis";
+
+		/**
+		 * emoji image url (primary key)
+		 */
+		String URL = "image_url";
 
 		/**
 		 * emoji code
 		 */
-		String CODE = "code";
+		String CODE = "emoji_code";
 
 		/**
 		 * emoji category
 		 */
-		String CATEGORY = "category";
-
-		/**
-		 * emoji image url
-		 */
-		String URL = "url";
+		String CATEGORY = "emoji_category";
 	}
 
 	/**
@@ -1123,10 +1112,10 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "poll";
+		String TABLE = "polls";
 
 		/**
-		 * poll ID
+		 * poll ID (primary key)
 		 */
 		String ID = "poll_id";
 
@@ -1149,32 +1138,32 @@ public class DatabaseAdapter {
 		/**
 		 * table name
 		 */
-		String NAME = "instance";
+		String TABLE = "instances";
 
 		/**
-		 * domain name
+		 * domain name (primary key)
 		 */
-		String DOMAIN = "instance_domain";
+		String DOMAIN = "domain";
 
 		/**
 		 * timestamp of the last update
 		 */
-		String TIMESTAMP = "instance_timestamp";
+		String TIMESTAMP = "timestamp";
 
 		/**
 		 * title of the instance
 		 */
-		String TITLE = "instance_title";
+		String TITLE = "title";
 
 		/**
 		 * API verison
 		 */
-		String VERSION = "instance_version";
+		String VERSION = "version";
 
 		/**
 		 * instance description
 		 */
-		String DESCRIPTION = "instance_description";
+		String DESCRIPTION = "description";
 
 		/**
 		 * instance flags
@@ -1262,22 +1251,25 @@ public class DatabaseAdapter {
 	 */
 	public interface PushTable {
 
-		String NAME = "web_push";
+		/**
+		 * table name
+		 */
+		String TABLE = "web_push";
 
 		/**
-		 * web push id (user_id@hostname.example) Primary Key
+		 * web push id (user_id@hostname.example) (primary Key)
 		 */
 		String USER_URL = "user_url";
 
 		/**
-		 * ID of the push subscription
+		 * ID of the push subscription (not unique)
 		 */
 		String ID = "push_id";
 
 		/**
 		 *
 		 */
-		String HOST = "host";
+		String HOST = "push_host";
 
 		/**
 		 *
@@ -1302,18 +1294,61 @@ public class DatabaseAdapter {
 		/**
 		 *
 		 */
-		String FLAGS = "flags";
+		String FLAGS = "push_flags";
 
-		int FLAG_POLICY_FOLLOWING = 1;
-		int FLAG_POLICY_FOLLOWER = 2;
-		int FLAG_POLICY_ALL = 3;
-		int FLAG_MENTION = 1 << 3;
-		int FLAG_STATUS = 1 << 4;
-		int FLAG_REPOST = 1 << 5;
-		int FLAG_FOLLOWING = 1 << 6;
-		int FLAG_REQUEST = 1 << 7;
-		int FLAG_FAVORITE = 1 << 8;
-		int FLAG_POLL = 1 << 9;
-		int FLAG_MODIFIED = 1 << 10;
+		/**
+		 *
+		 */
+		int MASK_POLICY_FOLLOWING = 1;
+
+		/**
+		 *
+		 */
+		int MASK_POLICY_FOLLOWER = 2;
+
+		/**
+		 *
+		 */
+		int MASK_POLICY_ALL = 3;
+
+		/**
+		 *
+		 */
+		int MASK_MENTION = 1 << 3;
+
+		/**
+		 *
+		 */
+		int MASK_STATUS = 1 << 4;
+
+		/**
+		 *
+		 */
+		int MASK_REPOST = 1 << 5;
+
+		/**
+		 *
+		 */
+		int MASK_FOLLOWING = 1 << 6;
+
+		/**
+		 *
+		 */
+		int MASK_REQUEST = 1 << 7;
+
+		/**
+		 *
+		 */
+		int MASK_FAVORITE = 1 << 8;
+
+		/**
+		 *
+		 */
+		int MASK_POLL = 1 << 9;
+
+		/**
+		 *
+		 */
+		int MASK_MODIFIED = 1 << 10;
 	}
 }

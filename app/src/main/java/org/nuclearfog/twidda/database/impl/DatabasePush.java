@@ -56,23 +56,23 @@ public class DatabasePush implements WebPush, PushTable {
 		sec_key = cursor.getString(4);
 		auth_sec = cursor.getString(5);
 		int flags = cursor.getInt(6);
-		if ((flags & FLAG_POLICY_ALL) != 0) {
+		if ((flags & MASK_POLICY_ALL) != 0) {
 			policy = POLICY_ALL;
-		} else if ((flags & FLAG_POLICY_FOLLOWING) != 0) {
+		} else if ((flags & MASK_POLICY_FOLLOWING) != 0) {
 			policy = POLICY_FOLLOWING;
-		} else if ((flags & FLAG_POLICY_FOLLOWER) != 0) {
+		} else if ((flags & MASK_POLICY_FOLLOWER) != 0) {
 			policy = POLICY_FOLLOWER;
 		} else {
 			policy = POLICY_NONE;
 		}
-		alertMention = (flags & FLAG_MENTION) != 0;
-		alertPost = (flags & FLAG_STATUS) != 0;
-		alertRepost = (flags & FLAG_REPOST) != 0;
-		alertFollowing = (flags & FLAG_FOLLOWING) != 0;
-		alertRequest = (flags & FLAG_REQUEST) != 0;
-		alertFavorite = (flags & FLAG_FAVORITE) != 0;
-		alertPoll = (flags & FLAG_POLL) != 0;
-		alertChange = (flags & FLAG_MODIFIED) != 0;
+		alertMention = (flags & MASK_MENTION) != 0;
+		alertPost = (flags & MASK_STATUS) != 0;
+		alertRepost = (flags & MASK_REPOST) != 0;
+		alertFollowing = (flags & MASK_FOLLOWING) != 0;
+		alertRequest = (flags & MASK_REQUEST) != 0;
+		alertFavorite = (flags & MASK_FAVORITE) != 0;
+		alertPoll = (flags & MASK_POLL) != 0;
+		alertChange = (flags & MASK_MODIFIED) != 0;
 	}
 
 

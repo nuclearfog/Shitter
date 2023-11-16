@@ -108,13 +108,13 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 						if (statuses.isEmpty()) {
 							statuses = connection.getStatusReplies(param.id, 0L, 0L);
 							if (db.containsStatus(param.id)) {
-								db.saveReplyTimeline(statuses);
+								db.saveReplies(param.id, statuses);
 							}
 						}
 					} else {
 						statuses = connection.getStatusReplies(param.id, param.minId, param.maxId);
 						if (param.maxId == Param.NO_ID && db.containsStatus(param.id)) {
-							db.saveReplyTimeline(statuses);
+							db.saveReplies(param.id, statuses);
 						}
 					}
 					return new Result(statuses, param.pos, null);

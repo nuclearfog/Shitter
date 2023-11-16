@@ -227,10 +227,10 @@ public class Mastodon implements Connection {
 				JSONObject json = new JSONObject(body.string());
 				String bearer = json.getString("access_token");
 				Credentials credentials = getCredentials(hostname, bearer);
-				MastodonAccount account = new MastodonAccount(credentials.getId(), hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
+				MastodonAccount account = new MastodonAccount(credentials, hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
 				User user = showUser(credentials.getId());
-				account.setUser(user);
+				//account.setUser(user);
 				return account;
 			}
 			throw new MastodonException(response);

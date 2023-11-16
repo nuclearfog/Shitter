@@ -20,7 +20,7 @@ public class DatabaseHashtag implements Hashtag, HashtagTable {
 	/**
 	 * SQLite columns
 	 */
-	public static final String[] COLUMNS = {TREND, VOL, INDEX, LOCATION, ID};
+	public static final String[] COLUMNS = {TAG_NAME, VOL, INDEX, LOCATION, ID};
 
 	private String name = "";
 	private int popularity;
