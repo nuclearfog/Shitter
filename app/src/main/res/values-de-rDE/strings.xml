@@ -199,7 +199,7 @@
 	<string name="menu_hint_mute_user">\@name stummschalten</string>
 	<string name="menu_hint_block_user">\@name blockieren</string>
 	<string name="menu_exclude_user">Nutzer ausschließen</string>
-	<string name="menu_hashtag_add">Hashtag hinzufügen</string>
+	<string name="menu_add_tag">Hashtag hinzufügen</string>
 	<string name="menu_search_filter">Ergebnisse filtern</string>
 	<string name="menu_hint_block_domain">domain.namen eingeben</string>
 	<string name="menu_licenses">Lizenzen</string>
@@ -236,7 +236,7 @@
 	<string name="settings_enable_indicators">zeige zusätzliche Status Informationen an</string>
 	<string name="login_key_enable">Token einfügen</string>
 	<string name="login_key_enable_v2">API v2 nutzen</string>
-	<string name="info_hashtag_following">folge Hashtag..</string>
+	<string name="info_tag_following">folge Hashtag..</string>
 	<string name="info_open_mastodon_login">öffne Mastodon Loginseite</string>
 	<string name="info_login_to_mastodon">in Mastodon einloggen</string>
 	<string name="error_service_unavailable">Service zur Zeit nicht verfügbar!</string>
@@ -287,12 +287,12 @@
 	<string name="error_duration_time_low">Dauer der Umfrage ist zu kurz!</string>
 	<string name="error_duration_time_high">Dauer der Umfrage ist zu lang!</string>
 	<string name="error_poll_option_missing">Umfrageoption darf nicht leer sein!</string>
-	<string name="menu_hashtags">Hashtags</string>
-	<string name="menu_hashtag_follow">folge Hashtag</string>
-	<string name="menu_hashtag_unfollow">entfolge Hashtag</string>
-	<string name="info_hashtag_unfollowed">Hashtag entfolgt</string>
+	<string name="menu_tags">Hashtags</string>
+	<string name="menu_tag_follow">folge Hashtag</string>
+	<string name="menu_tag_unfollow">entfolge Hashtag</string>
+	<string name="info_tag_unfollowed">Hashtag entfolgt</string>
 	<string name="info_domain_removed">Domain von der Liste entfernt</string>
-	<string name="info_hashtag_followed">Hashtag gefolgt</string>
+	<string name="info_tag_followed">Hashtag gefolgt</string>
 	<string name="dialog_status_schedule_set">Veröffentlichung planen</string>
 	<string name="dialog_push_repost">bei Reposts</string>
 	<string name="dialog_push_favorite">bei Favorisierung</string>
@@ -345,8 +345,8 @@
 	<string name="error_empty_filter_title">Filterbezeichnung darf nicht leer sein</string>
 	<string name="error_empty_filter_selection">es muss mindestens ein Filter aktiviert sein</string>
 	<string name="dialog_description_title">Medienbeschreibung</string>
-	<string name="descr_remove_hashtag">Hashtag von der Liste entfernen</string>
-	<string name="confirm_hashtag_unfollow">Hashtag entfolgen?</string>
+	<string name="descr_remove_tag">Hashtag von der Liste entfernen</string>
+	<string name="confirm_tag_unfollow">Hashtag entfolgen?</string>
 	<string name="info_schedule_updated">geplanter Post aktualisiert</string>
 	<string name="info_schedule_removed">geplanter Post wurde entfernt</string>
 	<string name="menu_schedule">geplante Posts</string>

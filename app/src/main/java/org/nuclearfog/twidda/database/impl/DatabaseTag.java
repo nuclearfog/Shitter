@@ -5,15 +5,15 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.database.DatabaseAdapter.HashtagTable;
-import org.nuclearfog.twidda.model.Hashtag;
+import org.nuclearfog.twidda.database.DatabaseAdapter.TagTable;
+import org.nuclearfog.twidda.model.Tag;
 
 /**
- * database implementation of a hashtag
+ * database implementation of a {@link Tag}
  *
  * @author nuclearfog
  */
-public class DatabaseHashtag implements Hashtag, HashtagTable {
+public class DatabaseTag implements Tag, TagTable {
 
 	private static final long serialVersionUID = 1799880502954768985L;
 
@@ -31,7 +31,7 @@ public class DatabaseHashtag implements Hashtag, HashtagTable {
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
 	 */
-	public DatabaseHashtag(Cursor cursor) {
+	public DatabaseTag(Cursor cursor) {
 		String name = cursor.getString(0);
 		popularity = cursor.getInt(1);
 		rank = cursor.getInt(2);
@@ -81,10 +81,10 @@ public class DatabaseHashtag implements Hashtag, HashtagTable {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Hashtag))
+		if (!(obj instanceof Tag))
 			return false;
-		Hashtag hashtag = (Hashtag) obj;
-		return getName().equals(hashtag.getName()) && getLocationId() == hashtag.getLocationId();
+		Tag tag = (Tag) obj;
+		return getName().equals(tag.getName()) && getLocationId() == tag.getLocationId();
 	}
 
 

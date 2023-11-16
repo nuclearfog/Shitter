@@ -15,14 +15,14 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.HashtagAction;
-import org.nuclearfog.twidda.backend.async.HashtagLoader;
+import org.nuclearfog.twidda.backend.async.TagAction;
+import org.nuclearfog.twidda.backend.async.TagLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
-import org.nuclearfog.twidda.model.Hashtag;
-import org.nuclearfog.twidda.model.lists.Hashtags;
+import org.nuclearfog.twidda.model.Tag;
+import org.nuclearfog.twidda.model.lists.Tags;
 import org.nuclearfog.twidda.ui.activities.SearchActivity;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.HashtagAdapter;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.HashtagAdapter.OnHashtagClickListener;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.TagAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.TagAdapter.OnTagClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class HashtagFragment extends ListFragment implements OnHashtagClickListener, ActivityResultCallback<ActivityResult>, ConfirmDialog.OnConfirmListener {
+public class TagFragment extends ListFragment implements OnTagClickListener, ActivityResultCallback<ActivityResult>, ConfirmDialog.OnConfirmListener {
 
 	/**
 	 * setup fragment to show popular trends of an instance/location
@@ -40,23 +40,23 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	public static final int MODE_POPULAR = 0x32105718;
 
 	/**
-	 * setup fragment to show hashtags relating to search
+	 * setup fragment to show tags relating to search
 	 * requires {@link #KEY_SEARCH}
 	 */
 	public static final int MODE_SEARCH = 0x17210512;
 
 	/**
-	 * setup fragment to show hashtags followed by the current user
+	 * setup fragment to show tags followed by the current user
 	 */
 	public static final int MODE_FOLLOW = 0x50545981;
 
 	/**
-	 * setup fragment to view featured hashtags
+	 * setup fragment to view featured tags
 	 */
 	public static final int MODE_FEATURE = 0x16347583;
 
 	/**
-	 * setup fragment to view suggestions for hashtag features
+	 * setup fragment to view suggestions for tags features
 	 */
 	public static final int MODE_SUGGESTIONS = 0x4422755;
 
@@ -67,39 +67,39 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	public static final String KEY_MODE = "fragment_trend_mode";
 
 	/**
-	 * (optional) key to search for trends and hashtag matching a search string
+	 * (optional) key to search for trends and tags matching a search string
 	 * value type is String
 	 */
 	public static final String KEY_SEARCH = "fragment_trend_search";
 
 	/**
 	 * bundle key to add adapter items
-	 * value type is {@link Hashtags}
+	 * value type is {@link Tags}
 	 */
 	private static final String KEY_DATA = "fragment_trend_data";
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
-	private AsyncCallback<HashtagAction.Result> hashtagActionCallback = this::onHashtagActionResult;
-	private AsyncCallback<HashtagLoader.Result> hashtagLoaderCallback = this::onHashtagLoaderResult;
+	private AsyncCallback<TagAction.Result> tagActionCallback = this::onTagActionResult;
+	private AsyncCallback<TagLoader.Result> tagLoaderCallback = this::onTagLoaderResult;
 
-	private HashtagLoader hashtagLoader;
-	private HashtagAction hashtagAction;
+	private TagLoader tagLoader;
+	private TagAction tagAction;
 
-	private HashtagAdapter adapter;
+	private TagAdapter adapter;
 	private ConfirmDialog confirmDialog;
 
 	private int mode = 0;
 	private String search = "";
-	private Hashtag selection;
+	private Tag selection;
 
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		adapter = new HashtagAdapter(this);
-		hashtagLoader = new HashtagLoader(requireContext());
-		hashtagAction = new HashtagAction(requireContext());
+		adapter = new TagAdapter(this);
+		tagLoader = new TagLoader(requireContext());
+		tagAction = new TagAction(requireContext());
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		setAdapter(adapter);
 
@@ -113,13 +113,13 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 		}
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
-			if (data instanceof Hashtags) {
-				adapter.addItems((Hashtags) data, HashtagAdapter.CLEAR_LIST);
+			if (data instanceof Tags) {
+				adapter.addItems((Tags) data, TagAdapter.CLEAR_LIST);
 				return;
 			}
 		}
 		setRefresh(true);
-		load(HashtagLoader.Param.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
+		load(TagLoader.Param.NO_CURSOR, TagAdapter.CLEAR_LIST);
 	}
 
 
@@ -132,8 +132,8 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 	@Override
 	public void onDestroy() {
-		hashtagLoader.cancel();
-		hashtagAction.cancel();
+		tagLoader.cancel();
+		tagAction.cancel();
 		super.onDestroy();
 	}
 
@@ -141,16 +141,16 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	@Override
 	protected void onReset() {
 		adapter.clear();
-		hashtagLoader = new HashtagLoader(requireContext());
-		hashtagAction = new HashtagAction(requireContext());
-		load(HashtagLoader.Param.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
+		tagLoader = new TagLoader(requireContext());
+		tagAction = new TagAction(requireContext());
+		load(TagLoader.Param.NO_CURSOR, TagAdapter.CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(HashtagLoader.Param.NO_CURSOR, HashtagAdapter.CLEAR_LIST);
+		load(TagLoader.Param.NO_CURSOR, TagAdapter.CLEAR_LIST);
 	}
 
 
@@ -159,9 +159,9 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 		if (result.getResultCode() == SearchActivity.RETURN_TREND) {
 			if (result.getData() != null) {
 				Serializable data = result.getData().getSerializableExtra(SearchActivity.KEY_DATA);
-				if (data instanceof Hashtag) {
-					Hashtag update = (Hashtag) data;
-					// remove hashtag if unfollowed
+				if (data instanceof Tag) {
+					Tag update = (Tag) data;
+					// remove tag if unfollowed
 					if (mode == MODE_FOLLOW && !update.following()) {
 						adapter.removeItem(update);
 					}
@@ -172,27 +172,27 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 
 	@Override
-	public void onHashtagClick(Hashtag hashtag, int action) {
+	public void onTagClick(Tag tag, int action) {
 		if (!isRefreshing()) {
-			if (action == OnHashtagClickListener.SELECT) {
+			if (action == OnTagClickListener.SELECT) {
 				if (!isRefreshing()) {
 					Intent intent = new Intent(requireContext(), SearchActivity.class);
-					String name = hashtag.getName();
+					String name = tag.getName();
 					if (!name.startsWith("#") && !name.startsWith("\"") && !name.endsWith("\"")) {
 						name = "\"" + name + "\"";
 						intent.putExtra(SearchActivity.KEY_QUERY, name);
 					} else {
-						intent.putExtra(SearchActivity.KEY_DATA, hashtag);
+						intent.putExtra(SearchActivity.KEY_DATA, tag);
 					}
 					activityResultLauncher.launch(intent);
 				}
-			} else if (action == OnHashtagClickListener.REMOVE) {
-				if (hashtagAction.isIdle() && !confirmDialog.isShowing()) {
-					selection = hashtag;
+			} else if (action == OnTagClickListener.REMOVE) {
+				if (tagAction.isIdle() && !confirmDialog.isShowing()) {
+					selection = tag;
 					if (mode == MODE_FEATURE) {
-						confirmDialog.show(ConfirmDialog.UNFEATURE_HASHTAG);
+						confirmDialog.show(ConfirmDialog.UNFEATURE_TAG);
 					} else if (mode == MODE_FOLLOW) {
-						confirmDialog.show(ConfirmDialog.UNFOLLOW_HASHTAG);
+						confirmDialog.show(ConfirmDialog.UNFOLLOW_TAG);
 					}
 				}
 			}
@@ -202,7 +202,7 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 
 	@Override
 	public boolean onPlaceholderClick(long cursor, int index) {
-		if (!isRefreshing() && hashtagLoader.isIdle()) {
+		if (!isRefreshing() && tagLoader.isIdle()) {
 			load(cursor, index);
 			return true;
 		}
@@ -213,46 +213,46 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	@Override
 	public void onConfirm(int type, boolean remember) {
 		if (selection != null) {
-			if (type == ConfirmDialog.UNFOLLOW_HASHTAG) {
-				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.UNFOLLOW, selection.getName(), selection.getId());
-				hashtagAction.execute(param, hashtagActionCallback);
-			} else if (type == ConfirmDialog.UNFEATURE_HASHTAG) {
-				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.UNFEATURE, selection.getName(), selection.getId());
-				hashtagAction.execute(param, hashtagActionCallback);
+			if (type == ConfirmDialog.UNFOLLOW_TAG) {
+				TagAction.Param param = new TagAction.Param(TagAction.Param.UNFOLLOW, selection.getName(), selection.getId());
+				tagAction.execute(param, tagActionCallback);
+			} else if (type == ConfirmDialog.UNFEATURE_TAG) {
+				TagAction.Param param = new TagAction.Param(TagAction.Param.UNFEATURE, selection.getName(), selection.getId());
+				tagAction.execute(param, tagActionCallback);
 			}
 		}
 	}
 
 	/**
-	 * callback for {@link HashtagAction}
+	 * callback for {@link TagAction}
 	 */
-	private void onHashtagActionResult(@NonNull HashtagAction.Result result) {
+	private void onTagActionResult(@NonNull TagAction.Result result) {
 		Context context = getContext();
 		if (context != null) {
-			if (result.mode == HashtagAction.Result.UNFEATURE) {
-				Toast.makeText(context, R.string.info_hashtag_unfeatured, Toast.LENGTH_SHORT).show();
-				adapter.removeItem(result.hashtag);
-			} else if (result.mode == HashtagAction.Result.UNFOLLOW) {
-				Toast.makeText(context, R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
-				adapter.removeItem(result.hashtag);
-			} else if (result.mode == HashtagAction.Result.ERROR) {
+			if (result.mode == TagAction.Result.UNFEATURE) {
+				Toast.makeText(context, R.string.info_tag_unfeatured, Toast.LENGTH_SHORT).show();
+				adapter.removeItem(result.tag);
+			} else if (result.mode == TagAction.Result.UNFOLLOW) {
+				Toast.makeText(context, R.string.info_tag_unfollowed, Toast.LENGTH_SHORT).show();
+				adapter.removeItem(result.tag);
+			} else if (result.mode == TagAction.Result.ERROR) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 		}
 	}
 
 	/**
-	 * callback for {@link HashtagLoader}
+	 * callback for {@link TagLoader}
 	 */
-	private void onHashtagLoaderResult(@NonNull HashtagLoader.Result result) {
-		if (result.mode == HashtagLoader.Result.ERROR) {
+	private void onTagLoaderResult(@NonNull TagLoader.Result result) {
+		if (result.mode == TagLoader.Result.ERROR) {
 			Context context = getContext();
 			if (context != null) {
 				ErrorUtils.showErrorMessage(context, result.exception);
 			}
 			adapter.disableLoading();
 		} else {
-			adapter.addItems(result.hashtags, result.index);
+			adapter.addItems(result.tags, result.index);
 		}
 		setRefresh(false);
 	}
@@ -261,35 +261,35 @@ public class HashtagFragment extends ListFragment implements OnHashtagClickListe
 	 * load content into the list
 	 */
 	private void load(long cursor, int index) {
-		HashtagLoader.Param param;
+		TagLoader.Param param;
 		switch (mode) {
 			case MODE_POPULAR:
 				if (adapter.isEmpty()) {
-					param = new HashtagLoader.Param(HashtagLoader.Param.POPULAR_OFFLINE, index, search, cursor);
+					param = new TagLoader.Param(TagLoader.Param.POPULAR_OFFLINE, index, search, cursor);
 				} else {
-					param = new HashtagLoader.Param(HashtagLoader.Param.POPULAR_ONLINE, index, search, cursor);
+					param = new TagLoader.Param(TagLoader.Param.POPULAR_ONLINE, index, search, cursor);
 				}
-				hashtagLoader.execute(param, hashtagLoaderCallback);
+				tagLoader.execute(param, tagLoaderCallback);
 				break;
 
 			case MODE_FOLLOW:
-				param = new HashtagLoader.Param(HashtagLoader.Param.FOLLOWING, index, search, cursor);
-				hashtagLoader.execute(param, hashtagLoaderCallback);
+				param = new TagLoader.Param(TagLoader.Param.FOLLOWING, index, search, cursor);
+				tagLoader.execute(param, tagLoaderCallback);
 				break;
 
 			case MODE_FEATURE:
-				param = new HashtagLoader.Param(HashtagLoader.Param.FEATURING, index, search, cursor);
-				hashtagLoader.execute(param, hashtagLoaderCallback);
+				param = new TagLoader.Param(TagLoader.Param.FEATURING, index, search, cursor);
+				tagLoader.execute(param, tagLoaderCallback);
 				break;
 
 			case MODE_SEARCH:
-				param = new HashtagLoader.Param(HashtagLoader.Param.SEARCH, index, search, cursor);
-				hashtagLoader.execute(param, hashtagLoaderCallback);
+				param = new TagLoader.Param(TagLoader.Param.SEARCH, index, search, cursor);
+				tagLoader.execute(param, tagLoaderCallback);
 				break;
 
 			case MODE_SUGGESTIONS:
-				param = new HashtagLoader.Param(HashtagLoader.Param.SUGGESTIONS, index, search, cursor);
-				hashtagLoader.execute(param, hashtagLoaderCallback);
+				param = new TagLoader.Param(TagLoader.Param.SUGGESTIONS, index, search, cursor);
+				tagLoader.execute(param, tagLoaderCallback);
 				break;
 
 		}

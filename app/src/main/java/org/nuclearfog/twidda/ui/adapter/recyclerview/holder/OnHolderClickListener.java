@@ -47,9 +47,9 @@ public interface OnHolderClickListener {
 
 	int FILTER_REMOVE = 23;
 
-	int HASHTAG_CLICK = 24;
+	int TAG_CLICK = 24;
 
-	int HASHTAG_REMOVE = 25;
+	int TAG_REMOVE = 25;
 
 	int SCHEDULE_CLICK = 26;
 

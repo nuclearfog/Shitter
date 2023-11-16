@@ -18,8 +18,8 @@
 		android:title="@string/menu_goto_lists" />
 
 	<item
-		android:id="@+id/menu_navigator_hashtag"
-		android:title="@string/menu_hashtags" />
+		android:id="@+id/menu_navigator_tags"
+		android:title="@string/menu_tags" />
 
 	<item
 		android:id="@+id/menu_navigator_filter"

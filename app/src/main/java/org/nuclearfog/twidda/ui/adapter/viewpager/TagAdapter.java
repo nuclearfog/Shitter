@@ -7,19 +7,20 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
+import org.nuclearfog.twidda.ui.activities.TagActivity;
+import org.nuclearfog.twidda.ui.fragments.TagFragment;
 
 /**
- * Viewpager adapter of {@link org.nuclearfog.twidda.ui.activities.HashtagActivity}
+ * Viewpager adapter of {@link TagActivity}
  *
  * @author nuclearfog
  */
-public class HashtagAdapter extends ViewPagerAdapter {
+public class TagAdapter extends ViewPagerAdapter {
 
 	/**
 	 *
 	 */
-	public HashtagAdapter(FragmentActivity fragmentActivity) {
+	public TagAdapter(FragmentActivity fragmentActivity) {
 		super(fragmentActivity);
 		setPageCount(3);
 	}
@@ -28,23 +29,23 @@ public class HashtagAdapter extends ViewPagerAdapter {
 	@NonNull
 	@Override
 	public Fragment createFragment(int position) {
-		HashtagFragment fragment = new HashtagFragment();
+		TagFragment fragment = new TagFragment();
 		switch (position) {
 			case 0:
 				Bundle paramFollowedTags = new Bundle();
-				paramFollowedTags.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_FOLLOW);
+				paramFollowedTags.putInt(TagFragment.KEY_MODE, TagFragment.MODE_FOLLOW);
 				fragment.setArguments(paramFollowedTags);
 				break;
 
 			case 1:
 				Bundle paramFeaturedTags = new Bundle();
-				paramFeaturedTags.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_FEATURE);
+				paramFeaturedTags.putInt(TagFragment.KEY_MODE, TagFragment.MODE_FEATURE);
 				fragment.setArguments(paramFeaturedTags);
 				break;
 
 			case 2:
 				Bundle paramSuggestedTags = new Bundle();
-				paramSuggestedTags.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_SUGGESTIONS);
+				paramSuggestedTags.putInt(TagFragment.KEY_MODE, TagFragment.MODE_SUGGESTIONS);
 				fragment.setArguments(paramSuggestedTags);
 				break;
 		}

@@ -23,7 +23,7 @@ public class MastodonInstance implements Instance {
 	private String version;
 	private String[] mimeTypes;
 	private long timestamp;
-	private int maxHashtagFeature;
+	private int maxTagFeature;
 	private int maxCharacters;
 	private int maxImages;
 	private int maxImageSize;
@@ -51,7 +51,7 @@ public class MastodonInstance implements Instance {
 		domain = json.getString("domain");
 		description = json.getString("description");
 		version = json.getString("version");
-		maxHashtagFeature = accounts.getInt("max_featured_tags");
+		maxTagFeature = accounts.getInt("max_featured_tags");
 		maxCharacters = statuses.getInt("max_characters");
 		maxImages = statuses.getInt("max_media_attachments");
 		maxImageSize = media.getInt("image_size_limit");
@@ -103,8 +103,8 @@ public class MastodonInstance implements Instance {
 
 
 	@Override
-	public int getHashtagFollowLimit() {
-		return maxHashtagFeature;
+	public int getTagFollowLimit() {
+		return maxTagFeature;
 	}
 
 

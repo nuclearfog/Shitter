@@ -135,14 +135,14 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int CONTINUE_BROWSER = 627;
 
 	/**
-	 * show 'unfollow hashtag' dialog
+	 * show 'unfollow tag' dialog
 	 */
-	public static final int UNFOLLOW_HASHTAG = 628;
+	public static final int UNFOLLOW_TAG = 628;
 
 	/**
-	 * show 'unfeature hashtag' dialog
+	 * show 'unfeature tag' dialog
 	 */
-	public static final int UNFEATURE_HASHTAG = 629;
+	public static final int UNFEATURE_TAG = 629;
 
 	/**
 	 * show notification when removing a scheduled status
@@ -296,12 +296,12 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 				messageRes = R.string.confirm_proxy_bypass;
 				break;
 
-			case UNFOLLOW_HASHTAG:
-				messageRes = R.string.confirm_hashtag_unfollow;
+			case UNFOLLOW_TAG:
+				messageRes = R.string.confirm_tag_unfollow;
 				break;
 
-			case UNFEATURE_HASHTAG:
-				messageRes = R.string.confirm_hashtag_unfeature;
+			case UNFEATURE_TAG:
+				messageRes = R.string.confirm_tag_unfeature;
 				break;
 
 			case SCHEDULE_REMOVE:

@@ -51,9 +51,9 @@
 	<string name="info_missing_host">Por favor, ingresa el nombre de host correcto</string>
 	<string name="info_database_cleared">Se limpió la base de datos</string>
 	<string name="info_notification_dismiss">Se desechó la notificación</string>
-	<string name="info_hashtag_unfollowed">Dejaste de seguir el hashtag</string>
+	<string name="info_tag_unfollowed">Dejaste de seguir el hashtag</string>
 	<string name="info_domain_removed">Se eliminó el dominio de la lista</string>
-	<string name="info_hashtag_followed">Seguiste el hashtag</string>
+	<string name="info_tag_followed">Seguiste el hashtag</string>
 	<string name="info_domain_blocked">¡Se bloqueó el dominio!</string>
 	<string name="info_webpush_update">Se actualizó la configuración de push</string>
 	<string name="info_error">Error</string>
@@ -102,8 +102,8 @@
 
 	<!-- menu icon strings -->
 	<string name="menu_status">Escribir estado</string>
-	<string name="menu_hashtag_follow">Seguir hashtag</string>
-	<string name="menu_hashtag_unfollow">Dejar de seguir hashtag</string>
+	<string name="menu_tag_follow">Seguir hashtag</string>
+	<string name="menu_tag_unfollow">Dejar de seguir hashtag</string>
 	<string name="menu_open_home_profile">Abrir perfil</string>
 	<string name="menu_open_search">Buscar</string>
 	<string name="menu_open_settings">Configuración</string>

@@ -8,7 +8,7 @@
 		<item>@drawable/bell</item>
 	</integer-array>
 
-	<integer-array name="search_hashtag_tab_icons">
+	<integer-array name="search_tag_tab_icons">
 		<item>@drawable/search</item>
 		<item>@drawable/user</item>
 		<item>@drawable/hash</item>
@@ -67,7 +67,7 @@
 		<item>@drawable/following</item>
 	</integer-array>
 
-	<integer-array name="userlist_hashtag_icons">
+	<integer-array name="tabs_tag_icons">
 		<item>@drawable/hash</item>
 		<item>@drawable/hash</item>
 		<item>@drawable/hash</item>
@@ -111,7 +111,7 @@
 		<item>Other</item>
 	</string-array>
 
-	<string-array name="hashtag_labels">
+	<string-array name="tag_labels">
 		<item>followed</item>
 		<item>featured</item>
 		<item>suggested</item>

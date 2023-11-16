@@ -6,10 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.NotificationFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
+import org.nuclearfog.twidda.ui.fragments.TagFragment;
 
 /**
  * ViewPager fragment adapter for {@link org.nuclearfog.twidda.ui.activities.MainActivity}
@@ -41,9 +41,9 @@ public class HomeAdapter extends ViewPagerAdapter {
 				break;
 
 			case 1:
-				fragment = new HashtagFragment();
+				fragment = new TagFragment();
 				param = new Bundle();
-				param.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_POPULAR);
+				param.putInt(TagFragment.KEY_MODE, TagFragment.MODE_POPULAR);
 				fragment.setArguments(param);
 				break;
 

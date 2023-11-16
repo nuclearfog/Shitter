@@ -17,24 +17,24 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.HashtagAction;
+import org.nuclearfog.twidda.backend.async.TagAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.adapter.viewpager.HashtagAdapter;
+import org.nuclearfog.twidda.ui.adapter.viewpager.TagAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
 /**
- * Activity class used to show hashtag following/featuring
+ * Activity class used to show tag following/featuring
  *
  * @author nuclearfog
  */
-public class HashtagActivity extends AppCompatActivity implements OnQueryTextListener, OnTabSelectedListener, AsyncCallback<HashtagAction.Result> {
+public class TagActivity extends AppCompatActivity implements OnQueryTextListener, OnTabSelectedListener, AsyncCallback<TagAction.Result> {
 
 	private GlobalSettings settings;
-	private HashtagAction hashtagAction;
-	private HashtagAdapter adapter;
+	private TagAction tagAction;
+	private TagAdapter adapter;
 
 	private ViewPager2 viewPager;
 
@@ -48,14 +48,14 @@ public class HashtagActivity extends AppCompatActivity implements OnQueryTextLis
 		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
 		viewPager = findViewById(R.id.page_tab_view_pager);
 
-		hashtagAction = new HashtagAction(this);
+		tagAction = new TagAction(this);
 		settings = GlobalSettings.get(this);
-		adapter = new HashtagAdapter(this);
+		adapter = new TagAdapter(this);
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(3);
 
-		tabSelector.addTabIcons(R.array.userlist_hashtag_icons);
-		tabSelector.addTabLabels(R.array.hashtag_labels);
+		tabSelector.addTabIcons(R.array.tabs_tag_icons);
+		tabSelector.addTabLabels(R.array.tag_labels);
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
@@ -67,10 +67,10 @@ public class HashtagActivity extends AppCompatActivity implements OnQueryTextLis
 
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-		getMenuInflater().inflate(R.menu.hashtags, menu);
-		MenuItem search = menu.findItem(R.id.menu_hashtag_add);
+		getMenuInflater().inflate(R.menu.tags, menu);
+		MenuItem search = menu.findItem(R.id.menu_tag_add);
 		SearchView searchView = (SearchView) search.getActionView();
-		searchView.setQueryHint(getString(R.string.menu_hashtag_add));
+		searchView.setQueryHint(getString(R.string.menu_add_tag));
 		searchView.setOnQueryTextListener(this);
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);
 		AppStyles.setMenuIconColor(menu, settings.getIconColor());
@@ -80,7 +80,7 @@ public class HashtagActivity extends AppCompatActivity implements OnQueryTextLis
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem search = menu.findItem(R.id.menu_hashtag_add);
+		MenuItem search = menu.findItem(R.id.menu_tag_add);
 		search.collapseActionView();
 		search.setVisible(viewPager.getCurrentItem() != 2);
 		return true;
@@ -89,16 +89,16 @@ public class HashtagActivity extends AppCompatActivity implements OnQueryTextLis
 
 	@Override
 	public boolean onQueryTextSubmit(String query) {
-		if (hashtagAction.isIdle()) {
+		if (tagAction.isIdle()) {
 			if (viewPager.getCurrentItem() == 0) {
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_following, Toast.LENGTH_SHORT).show();
-				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FOLLOW, query);
-				hashtagAction.execute(param, this);
+				Toast.makeText(getApplicationContext(), R.string.info_tag_following, Toast.LENGTH_SHORT).show();
+				TagAction.Param param = new TagAction.Param(TagAction.Param.FOLLOW, query);
+				tagAction.execute(param, this);
 				return true;
 			} else if (viewPager.getCurrentItem() == 1) {
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_featuring, Toast.LENGTH_SHORT).show();
-				HashtagAction.Param param = new HashtagAction.Param(HashtagAction.Param.FEATURE, query);
-				hashtagAction.execute(param, this);
+				Toast.makeText(getApplicationContext(), R.string.info_tag_featuring, Toast.LENGTH_SHORT).show();
+				TagAction.Param param = new TagAction.Param(TagAction.Param.FEATURE, query);
+				tagAction.execute(param, this);
 				return true;
 			}
 		}
@@ -113,21 +113,21 @@ public class HashtagActivity extends AppCompatActivity implements OnQueryTextLis
 
 
 	@Override
-	public void onResult(@NonNull HashtagAction.Result result) {
+	public void onResult(@NonNull TagAction.Result result) {
 		switch (result.mode) {
-			case HashtagAction.Result.FEATURE:
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_featured, Toast.LENGTH_SHORT).show();
+			case TagAction.Result.FEATURE:
+				Toast.makeText(getApplicationContext(), R.string.info_tag_featured, Toast.LENGTH_SHORT).show();
 				adapter.notifySettingsChanged();
 				invalidateOptionsMenu();
 				break;
 
-			case HashtagAction.Result.FOLLOW:
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
+			case TagAction.Result.FOLLOW:
+				Toast.makeText(getApplicationContext(), R.string.info_tag_followed, Toast.LENGTH_SHORT).show();
 				adapter.notifySettingsChanged();
 				invalidateOptionsMenu();
 				break;
 
-			case HashtagAction.Result.ERROR:
+			case TagAction.Result.ERROR:
 				ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 				break;
 		}

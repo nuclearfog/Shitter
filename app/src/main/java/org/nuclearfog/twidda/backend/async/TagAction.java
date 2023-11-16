@@ -8,21 +8,21 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
-import org.nuclearfog.twidda.model.Hashtag;
+import org.nuclearfog.twidda.model.Tag;
 
 /**
- * Async loader for hashtag follow/unfollow action
+ * Async loader used to follow/feature tags
  *
  * @author nuclearfog
  */
-public class HashtagAction extends AsyncExecutor<HashtagAction.Param, HashtagAction.Result> {
+public class TagAction extends AsyncExecutor<TagAction.Param, TagAction.Result> {
 
 	private Connection connection;
 
 	/**
 	 *
 	 */
-	public HashtagAction(Context context) {
+	public TagAction(Context context) {
 		connection = ConnectionManager.getDefaultConnection(context);
 	}
 
@@ -32,23 +32,23 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.Param, HashtagAct
 		try {
 			switch (param.mode) {
 				case Param.LOAD:
-					Hashtag result = connection.showHashtag(param.name);
+					Tag result = connection.showTag(param.name);
 					return new Result(Result.LOAD, result, null);
 
 				case Param.FOLLOW:
-					result = connection.followHashtag(param.name);
+					result = connection.followTag(param.name);
 					return new Result(Result.FOLLOW, result, null);
 
 				case Param.UNFOLLOW:
-					result = connection.unfollowHashtag(param.name);
+					result = connection.unfollowTag(param.name);
 					return new Result(Result.UNFOLLOW, result, null);
 
 				case Param.FEATURE:
-					result = connection.featureHashtag(param.name);
+					result = connection.featureTag(param.name);
 					return new Result(Result.FEATURE, result, null);
 
 				case Param.UNFEATURE:
-					result = connection.unfeatureHashtag(param.id);
+					result = connection.unfeatureTag(param.id);
 					return new Result(Result.UNFEATURE, result, null);
 
 				default:
@@ -102,12 +102,12 @@ public class HashtagAction extends AsyncExecutor<HashtagAction.Param, HashtagAct
 		@Nullable
 		public final ConnectionException exception;
 		@Nullable
-		public final Hashtag hashtag;
+		public final Tag tag;
 		public final int mode;
 
-		Result(int mode, @Nullable Hashtag hashtag, @Nullable ConnectionException exception) {
+		Result(int mode, @Nullable Tag tag, @Nullable ConnectionException exception) {
 			this.exception = exception;
-			this.hashtag = hashtag;
+			this.tag = tag;
 			this.mode = mode;
 		}
 	}

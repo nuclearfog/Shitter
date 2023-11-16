@@ -6,58 +6,58 @@
 	style="@style/CardViewStyle">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
-		android:id="@+id/item_trend_container"
+		android:id="@+id/item_tag_container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:padding="@dimen/item_hashtag_layout_padding">
+		android:padding="@dimen/item_tag_layout_padding">
 
 		<TextView
-			android:id="@+id/item_trend_rank"
-			android:layout_width="@dimen/item_hashtag_textsize_trendindex_width"
+			android:id="@+id/item_tag_rank"
+			android:layout_width="@dimen/item_tag_textsize_trendindex_width"
 			android:layout_height="wrap_content"
 			android:gravity="center_vertical|end"
 			android:lines="1"
 			android:textAlignment="gravity"
-			android:textSize="@dimen/item_hashtag_textsize_trendindex"
+			android:textSize="@dimen/item_tag_textsize_trendindex"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/item_trend_name"
+			app:layout_constraintEnd_toStartOf="@id/item_tag_name"
 			app:layout_constrainedWidth="false" />
 
 		<TextView
-			android:id="@+id/item_trend_name"
+			android:id="@+id/item_tag_name"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/item_hashtag_layout_margin"
-			android:layout_marginEnd="@dimen/item_hashtag_layout_margin"
+			android:layout_marginStart="@dimen/item_tag_layout_margin"
+			android:layout_marginEnd="@dimen/item_tag_layout_margin"
 			android:lines="1"
-			android:textSize="@dimen/item_hashtag_textsize_trendname"
-			app:layout_constraintStart_toEndOf="@id/item_trend_rank"
+			android:textSize="@dimen/item_tag_textsize_trendname"
+			app:layout_constraintStart_toEndOf="@id/item_tag_rank"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@id/item_trend_vol"
-			app:layout_constraintEnd_toStartOf="@id/item_trend_delete_button"
+			app:layout_constraintBottom_toTopOf="@id/item_tag_vol"
+			app:layout_constraintEnd_toStartOf="@id/item_tag_delete_button"
 			app:layout_constrainedWidth="true" />
 
 		<TextView
-			android:id="@+id/item_trend_vol"
+			android:id="@+id/item_tag_vol"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/item_hashtag_layout_margin"
+			android:layout_marginStart="@dimen/item_tag_layout_margin"
 			android:lines="1"
-			android:textSize="@dimen/item_hashtag_textsize_trendvol"
-			app:layout_constraintStart_toEndOf="@id/item_trend_rank"
-			app:layout_constraintTop_toBottomOf="@id/item_trend_name"
+			android:textSize="@dimen/item_tag_textsize_trendvol"
+			app:layout_constraintStart_toEndOf="@id/item_tag_rank"
+			app:layout_constraintTop_toBottomOf="@id/item_tag_name"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constrainedWidth="false" />
 
 		<ImageButton
-			android:id="@+id/item_trend_delete_button"
-			android:layout_width="@dimen/item_hashtag_button_size"
-			android:layout_height="@dimen/item_hashtag_button_size"
+			android:id="@+id/item_tag_delete_button"
+			android:layout_width="@dimen/item_tag_button_size"
+			android:layout_height="@dimen/item_tag_button_size"
 			android:visibility="invisible"
-			android:padding="@dimen/item_hashtag_button_padding"
-			android:contentDescription="@string/descr_remove_hashtag"
+			android:padding="@dimen/item_tag_button_padding"
+			android:contentDescription="@string/descr_remove_tag"
 			android:scaleType="fitCenter"
 			android:src="@drawable/cross"
 			app:layout_constraintTop_toTopOf="parent"

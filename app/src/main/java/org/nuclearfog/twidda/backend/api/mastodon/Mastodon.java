@@ -19,7 +19,6 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonAccount;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonCredentials;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonEmoji;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonFilter;
-import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonHashtag;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonInstance;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonList;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonNotification;
@@ -28,6 +27,7 @@ import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonPush;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRelation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonRule;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonStatus;
+import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTag;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonTranslation;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.MastodonUser;
 import org.nuclearfog.twidda.backend.api.mastodon.impl.ScheduledMastodonStatus;
@@ -48,25 +48,25 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
-import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.Tag;
 import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
-import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.StatusEditHistory;
 import org.nuclearfog.twidda.model.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Tags;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
 
@@ -127,10 +127,10 @@ public class Mastodon implements Connection {
 	private static final String ENDPOINT_HOME_TIMELINE = "/api/v1/timelines/home";
 	private static final String ENDPOINT_LIST_TIMELINE = "/api/v1/timelines/list/";
 	private static final String ENDPOINT_SEARCH_TIMELINE = "/api/v2/search";
-	private static final String ENDPOINT_HASHTAG_TIMELINE = "/api/v1/timelines/tag/";
-	private static final String ENDPOINT_HASHTAG_FOLLOWING = "/api/v1/followed_tags";
-	private static final String ENDPOINT_HASHTAG_FEATURE = "/api/v1/featured_tags";
-	private static final String ENDPOINT_HASHTAG = "/api/v1/tags/";
+	private static final String ENDPOINT_TAG_TIMELINE = "/api/v1/timelines/tag/";
+	private static final String ENDPOINT_TAG_FOLLOWING = "/api/v1/followed_tags";
+	private static final String ENDPOINT_TAG_FEATURE = "/api/v1/featured_tags";
+	private static final String ENDPOINT_TAG = "/api/v1/tags/";
 	private static final String ENDPOINT_USER_TIMELINE = "/api/v1/accounts/";
 	private static final String ENDPOINT_USER_FAVORITS = "/api/v1/favourites";
 	private static final String ENDPOINT_TRENDS = "/api/v1/trends/tags";
@@ -229,8 +229,8 @@ public class Mastodon implements Connection {
 				Credentials credentials = getCredentials(hostname, bearer);
 				MastodonAccount account = new MastodonAccount(credentials, hostname, bearer, connection.getOauthConsumerToken(), connection.getOauthTokenSecret());
 				settings.setLogin(account, false);
-				User user = showUser(credentials.getId());
-				//account.setUser(user);
+				//User user = showUser(credentials.getId());
+				//account.setUser(user); // todo add profile image and username to account
 				return account;
 			}
 			throw new MastodonException(response);
@@ -463,7 +463,7 @@ public class Mastodon implements Connection {
 		else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_REMOTE))
 			params.add("remote=true");
 		if (search.matches("#\\S+")) {
-			return getStatuses(ENDPOINT_HASHTAG_TIMELINE + StringUtils.encode(search.substring(1)), params, minId, maxId);
+			return getStatuses(ENDPOINT_TAG_TIMELINE + StringUtils.encode(search.substring(1)), params, minId, maxId);
 		} else {
 			params.add("q=" + StringUtils.encode(search));
 			params.add("type=statuses");
@@ -504,54 +504,54 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Hashtags getHashtags() throws MastodonException {
-		Hashtags result = getHashtags(ENDPOINT_TRENDS, new ArrayList<>());
+	public Tags getTags() throws MastodonException {
+		Tags result = getTags(ENDPOINT_TRENDS, new ArrayList<>());
 		Collections.sort(result);
 		return result;
 	}
 
 
 	@Override
-	public Hashtags searchHashtags(String search) throws MastodonException {
+	public Tags searchTags(String search) throws MastodonException {
 		List<String> params = new ArrayList<>();
 		if (search.startsWith("#"))
 			params.add("q=" + StringUtils.encode(search.substring(1)));
 		else
 			params.add("q=" + StringUtils.encode(search));
 		params.add("type=hashtags");
-		Hashtags result = getHashtags(ENDPOINT_SEARCH_TIMELINE, params);
+		Tags result = getTags(ENDPOINT_SEARCH_TIMELINE, params);
 		Collections.sort(result);
 		return result;
 	}
 
 
 	@Override
-	public Hashtags showHashtagFollowing(long cursor) throws ConnectionException {
+	public Tags showTagFollowing(long cursor) throws ConnectionException {
 		List<String> params = new ArrayList<>();
 		if (cursor != 0L)
 			params.add("max_id=" + cursor);
-		return getHashtags(ENDPOINT_HASHTAG_FOLLOWING, params);
+		return getTags(ENDPOINT_TAG_FOLLOWING, params);
 	}
 
 
 	@Override
-	public Hashtags showHashtagFeaturing() throws ConnectionException {
-		return getHashtags(ENDPOINT_HASHTAG_FEATURE, new ArrayList<>());
+	public Tags showTagFeaturing() throws ConnectionException {
+		return getTags(ENDPOINT_TAG_FEATURE, new ArrayList<>());
 	}
 
 
 	@Override
-	public Hashtags showHashtagSuggestions() throws ConnectionException {
-		return getHashtags(ENDPOINT_HASHTAG_FEATURE + "/suggestions", new ArrayList<>());
+	public Tags showTagSuggestions() throws ConnectionException {
+		return getTags(ENDPOINT_TAG_FEATURE + "/suggestions", new ArrayList<>());
 	}
 
 
 	@Override
-	public Hashtag showHashtag(String name) throws ConnectionException {
+	public Tag showTag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			return createTag(get(ENDPOINT_HASHTAG + StringUtils.encode(name), new ArrayList<>()));
+			return createTag(get(ENDPOINT_TAG + StringUtils.encode(name), new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -559,11 +559,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Hashtag followHashtag(String name) throws ConnectionException {
+	public Tag followTag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			return createTag(post(ENDPOINT_HASHTAG + StringUtils.encode(name) + "/follow", new ArrayList<>()));
+			return createTag(post(ENDPOINT_TAG + StringUtils.encode(name) + "/follow", new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -571,11 +571,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Hashtag unfollowHashtag(String name) throws ConnectionException {
+	public Tag unfollowTag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
-			return createTag(post(ENDPOINT_HASHTAG + StringUtils.encode(name) + "/unfollow", new ArrayList<>()));
+			return createTag(post(ENDPOINT_TAG + StringUtils.encode(name) + "/unfollow", new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -583,13 +583,13 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Hashtag featureHashtag(String name) throws ConnectionException {
+	public Tag featureTag(String name) throws ConnectionException {
 		try {
 			if (name.startsWith("#"))
 				name = name.substring(1);
 			List<String> params = new ArrayList<>();
 			params.add("name=" + StringUtils.encode(name));
-			return createTag(post(ENDPOINT_HASHTAG_FEATURE, params));
+			return createTag(post(ENDPOINT_TAG_FEATURE, params));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -597,9 +597,9 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Hashtag unfeatureHashtag(long id) throws ConnectionException {
+	public Tag unfeatureTag(long id) throws ConnectionException {
 		try {
-			return createTag(delete(ENDPOINT_HASHTAG_FEATURE + "/" + id, new ArrayList<>()));
+			return createTag(delete(ENDPOINT_TAG_FEATURE + "/" + id, new ArrayList<>()));
 		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
@@ -1543,13 +1543,13 @@ public class Mastodon implements Connection {
 	}
 
 	/**
-	 * call Trend/Hashtag endpoint and create trend result
+	 * call tag endpoint and create trend result
 	 *
 	 * @param endpoint Endpoint to use
 	 * @param params   additional parameters
 	 * @return trend list
 	 */
-	private Hashtags getHashtags(String endpoint, List<String> params) throws MastodonException {
+	private Tags getTags(String endpoint, List<String> params) throws MastodonException {
 		try {
 			params.add("limit=" + settings.getListSize());
 			Response response = get(endpoint, params);
@@ -1563,9 +1563,9 @@ public class Mastodon implements Connection {
 					jsonArray = new JSONObject(jsonStr).getJSONArray("hashtags");
 				}
 				long[] cursors = getCursors(response);
-				Hashtags result = new Hashtags(cursors[0], cursors[1]);
+				Tags result = new Tags(cursors[0], cursors[1]);
 				for (int i = 0; i < jsonArray.length(); i++) {
-					MastodonHashtag item = new MastodonHashtag(jsonArray.getJSONObject(i));
+					MastodonTag item = new MastodonTag(jsonArray.getJSONObject(i));
 					item.setRank(i + 1);
 					result.add(item);
 				}
@@ -1772,12 +1772,12 @@ public class Mastodon implements Connection {
 	 * @param response response from a trend endpoint
 	 * @return trend information
 	 */
-	private Hashtag createTag(Response response) throws MastodonException {
+	private Tag createTag(Response response) throws MastodonException {
 		try {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				return new MastodonHashtag(json);
+				return new MastodonTag(json);
 			}
 			throw new MastodonException(response);
 		} catch (IOException | JSONException e) {

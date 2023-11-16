@@ -121,7 +121,7 @@
 			android:theme="@style/AppTheme" />
 
 		<activity
-			android:name=".ui.activities.HashtagActivity"
+			android:name=".ui.activities.TagActivity"
 			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 

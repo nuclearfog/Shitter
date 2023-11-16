@@ -22,8 +22,8 @@
 	<string name="info_user_removed">%1$s removed from list</string>
 	<string name="info_list_updated">Userlist updated</string>
 	<string name="info_list_created">Userlist created</string>
-	<string name="info_hashtag_featuring">featuring hashtag..</string>
-	<string name="info_hashtag_following">following hashtag..</string>
+	<string name="info_tag_featuring">featuring hashtag..</string>
+	<string name="info_tag_following">following hashtag..</string>
 	<string name="info_open_mastodon_login">redirecting to Mastodon login website. Please wait</string>
 	<string name="info_login_to_mastodon">login to Mastodon, please wait</string>
 	<string name="info_get_link">please open login page first to get the PIN</string>
@@ -76,10 +76,10 @@
 	<string name="info_filter_updated">Filter updated</string>
 	<string name="info_filter_removed">Filter removed</string>
 	<string name="info_user_reported">User reported</string>
-	<string name="info_hashtag_featured">Hashtag featured</string>
-	<string name="info_hashtag_followed">Hashtag followed</string>
-	<string name="info_hashtag_unfollowed">Hashtag unfollowed</string>
-	<string name="info_hashtag_unfeatured">Hashtag unfeatured</string>
+	<string name="info_tag_featured">Hashtag featured</string>
+	<string name="info_tag_followed">Hashtag followed</string>
+	<string name="info_tag_unfollowed">Hashtag unfollowed</string>
+	<string name="info_tag_unfeatured">Hashtag unfeatured</string>
 	<string name="info_status_reported">Post reported</string>
 	<string name="info_schedule_updated">scheduled post updated</string>
 	<string name="info_schedule_removed">scheduled post removed</string>
@@ -133,9 +133,9 @@
 	<!-- menu icon strings -->
 	<string name="menu_status">write status</string>
 	<string name="menu_schedule">scheduled posts</string>
-	<string name="menu_hashtags">Hashtags</string>
-	<string name="menu_hashtag_follow">follow hashtag</string>
-	<string name="menu_hashtag_unfollow">unfollow hashtag</string>
+	<string name="menu_tags">Hashtags</string>
+	<string name="menu_tag_follow">follow hashtag</string>
+	<string name="menu_tag_unfollow">unfollow hashtag</string>
 	<string name="menu_open_home_profile">open Profile</string>
 	<string name="menu_open_search">Search</string>
 	<string name="menu_open_filter">manage Filter</string>
@@ -166,7 +166,7 @@
 	<string name="menu_user_unblock">unblock</string>
 	<string name="menu_excluded_users">Blocklists</string>
 	<string name="menu_exclude_user">exclude user</string>
-	<string name="menu_hashtag_add">add hashtag</string>
+	<string name="menu_add_tag">add hashtag</string>
 	<string name="menu_search_filter">filter results</string>
 	<string name="menu_hint_mute_user">enter @name to mute</string>
 	<string name="menu_hint_block_user">enter @name to block</string>
@@ -292,7 +292,7 @@
 	<string name="userlist_update_list">edit userlist</string>
 	<string name="confirm_remove_user_from_list">remove user from list?</string>
 	<string name="descr_remove_user">remove user from list</string>
-	<string name="descr_remove_hashtag">remove hashtag from list</string>
+	<string name="descr_remove_tag">remove hashtag from list</string>
 	<string name="descr_remove_schedule">remove scheduled status from list</string>
 	<string name="descr_remove_domain">remove domain from list</string>
 	<string name="confirm_unknown_error">unknown error!</string>
@@ -309,8 +309,8 @@
 	<string name="confirm_remember">remember choice</string>
 	<string name="confirm_warning">Warning</string>
 	<string name="confirm_proxy_bypass">Opening an external link would bypass proxy connection. Proceed?</string>
-	<string name="confirm_hashtag_unfollow">unfollow hashtag?</string>
-	<string name="confirm_hashtag_unfeature">unfeature hashtag?</string>
+	<string name="confirm_tag_unfollow">unfollow hashtag?</string>
+	<string name="confirm_tag_unfeature">unfeature hashtag?</string>
 	<string name="confirm_schedule_remove">cancel scheduled post?</string>
 	<string name="confirm_accept_follow_request">accept follow request?</string>
 	<string name="confirm_remove_account">remove account from list?</string>

@@ -15,25 +15,25 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
-import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Relation;
 import org.nuclearfog.twidda.model.ScheduledStatus;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.Tag;
 import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
-import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.model.lists.ScheduledStatuses;
 import org.nuclearfog.twidda.model.lists.StatusEditHistory;
 import org.nuclearfog.twidda.model.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Tags;
 import org.nuclearfog.twidda.model.lists.UserLists;
 import org.nuclearfog.twidda.model.lists.Users;
 
@@ -285,77 +285,77 @@ public interface Connection {
 	StatusEditHistory getStatusEditHistory(long id) throws ConnectionException;
 
 	/**
-	 * get trending hashtags
+	 * get trending tags
 	 *
-	 * @return hashtag list
+	 * @return tag list
 	 */
-	Hashtags getHashtags() throws ConnectionException;
+	Tags getTags() throws ConnectionException;
 
 	/**
-	 * search hashtags matching search string
+	 * search tags matching search string
 	 *
-	 * @param search text to search hashtags
-	 * @return list of hashtags
+	 * @param search text to search tags
+	 * @return tag list
 	 */
-	Hashtags searchHashtags(String search) throws ConnectionException;
+	Tags searchTags(String search) throws ConnectionException;
 
 	/**
-	 * show hashtags the current user follows them
+	 * show tags the current user follows them
 	 *
 	 * @param cursor cursor to parse the results
-	 * @return hashtag list
+	 * @return tag list
 	 */
-	Hashtags showHashtagFollowing(long cursor) throws ConnectionException;
+	Tags showTagFollowing(long cursor) throws ConnectionException;
 
 	/**
-	 * show featured hashtags by current user
+	 * show featured tags by current user
 	 *
-	 * @return hashtag list
+	 * @return tag list
 	 */
-	Hashtags showHashtagFeaturing() throws ConnectionException;
+	Tags showTagFeaturing() throws ConnectionException;
 
 	/**
-	 * show suggestions to feature hashtags
+	 * show suggestions to feature tags
 	 *
-	 * @return hashtag list
+	 * @return tag list
 	 */
-	Hashtags showHashtagSuggestions() throws ConnectionException;
+	Tags showTagSuggestions() throws ConnectionException;
 
 	/**
-	 * show information of a single hashtag
+	 * show information of a single tag
 	 *
-	 * @param name hashtag name
-	 * @return hashtag information
+	 * @param name tag name
+	 * @return tag information
 	 */
-	Hashtag showHashtag(String name) throws ConnectionException;
+	Tag showTag(String name) throws ConnectionException;
 
 	/**
-	 * follow hashtag by name
+	 * follow tag by name
 	 *
-	 * @param name name of the hashtag
-	 * @return updated hashtag information
+	 * @param name tag name
+	 * @return updated tag information
 	 */
-	Hashtag followHashtag(String name) throws ConnectionException;
+	Tag followTag(String name) throws ConnectionException;
 
 	/**
-	 * unfollow hashtag by name
+	 * unfollow tag by name
 	 *
-	 * @param name name of the hashtag
-	 * @return updated hashtag information
+	 * @param name tag name
+	 * @return updated tag information
 	 */
-	Hashtag unfollowHashtag(String name) throws ConnectionException;
+	Tag unfollowTag(String name) throws ConnectionException;
 
 	/**
-	 * @param name name of the hashtag
-	 * @return updated hashtag information
+	 * @param name tag name
+	 * @return updated tag information
 	 */
-	Hashtag featureHashtag(String name) throws ConnectionException;
+	Tag featureTag(String name) throws ConnectionException;
 
 	/**
-	 * @param id of the featured hashtag
-	 * @return updated hashtag information
+	 * @param id of the featured tag
+	 * @return updated tag information
 	 */
-	Hashtag unfeatureHashtag(long id) throws ConnectionException;
+	Tag unfeatureTag(long id) throws ConnectionException;
 
 	/**
 	 * show current user's home timeline

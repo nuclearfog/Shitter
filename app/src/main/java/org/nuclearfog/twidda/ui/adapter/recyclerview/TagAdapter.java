@@ -6,19 +6,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.model.Hashtag;
-import org.nuclearfog.twidda.model.lists.Hashtags;
-import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.HashtagHolder;
+import org.nuclearfog.twidda.model.Tag;
+import org.nuclearfog.twidda.model.lists.Tags;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.PlaceHolder;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.TagHolder;
+import org.nuclearfog.twidda.ui.fragments.TagFragment;
 
 /**
  * custom {@link androidx.recyclerview.widget.RecyclerView} adapter implementation to show trends
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.ui.fragments.HashtagFragment
+ * @see TagFragment
  */
-public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
+public class TagAdapter extends Adapter<ViewHolder> implements OnHolderClickListener {
 
 	/**
 	 * "index" used to replace the whole list with new items
@@ -31,16 +32,16 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 
 	private static final int NO_LOADING = -1;
 
-	private OnHashtagClickListener itemClickListener;
+	private OnTagClickListener itemClickListener;
 
-	private Hashtags items = new Hashtags();
+	private Tags items = new Tags();
 	private int loadingIndex = NO_LOADING;
 	private boolean enableDelete = false;
 
 	/**
 	 * @param itemClickListener Listener for item click
 	 */
-	public HashtagAdapter(OnHashtagClickListener itemClickListener) {
+	public TagAdapter(OnTagClickListener itemClickListener) {
 		this.itemClickListener = itemClickListener;
 	}
 
@@ -63,7 +64,7 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == TYPE_TREND) {
-			return new HashtagHolder(parent, this, enableDelete);
+			return new TagHolder(parent, this, enableDelete);
 		} else {
 			return new PlaceHolder(parent, this, false);
 		}
@@ -72,11 +73,11 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
-		if (vh instanceof HashtagHolder) {
-			HashtagHolder holder = (HashtagHolder) vh;
-			Hashtag hashtag = items.get(index);
-			if (hashtag != null) {
-				holder.setContent(hashtag, index);
+		if (vh instanceof TagHolder) {
+			TagHolder holder = (TagHolder) vh;
+			Tag tag = items.get(index);
+			if (tag != null) {
+				holder.setContent(tag, index);
 			}
 		} else if (vh instanceof PlaceHolder) {
 			PlaceHolder placeHolder = (PlaceHolder) vh;
@@ -87,10 +88,10 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		if (type == HASHTAG_CLICK) {
-			itemClickListener.onHashtagClick(items.get(position), OnHashtagClickListener.SELECT);
-		} else if (type == HASHTAG_REMOVE) {
-			itemClickListener.onHashtagClick(items.get(position), OnHashtagClickListener.REMOVE);
+		if (type == TAG_CLICK) {
+			itemClickListener.onTagClick(items.get(position), OnTagClickListener.SELECT);
+		} else if (type == TAG_REMOVE) {
+			itemClickListener.onTagClick(items.get(position), OnTagClickListener.REMOVE);
 		}
 	}
 
@@ -109,8 +110,8 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	 *
 	 * @return a copy of the items
 	 */
-	public Hashtags getItems() {
-		return new Hashtags(items);
+	public Tags getItems() {
+		return new Tags(items);
 	}
 
 	/**
@@ -118,7 +119,7 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	 *
 	 * @param newItems array of trend items
 	 */
-	public void addItems(Hashtags newItems, int index) {
+	public void addItems(Tags newItems, int index) {
 		disableLoading();
 		if (index < 0) {
 			this.items.replaceAll(newItems);
@@ -143,10 +144,10 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	/**
 	 * remove item from adapter
 	 *
-	 * @param hashtag item to remove
+	 * @param tag item to remove
 	 */
-	public void removeItem(Hashtag hashtag) {
-		int index = items.indexOf(hashtag);
+	public void removeItem(Tag tag) {
+		int index = items.indexOf(tag);
 		if (index >= 0) {
 			items.remove(index);
 			notifyItemRemoved(index);
@@ -189,9 +190,9 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	}
 
 	/**
-	 * Listener for hashtag list
+	 * Listener for tag items
 	 */
-	public interface OnHashtagClickListener {
+	public interface OnTagClickListener {
 
 		int SELECT = 1;
 
@@ -200,10 +201,10 @@ public class HashtagAdapter extends Adapter<ViewHolder> implements OnHolderClick
 		/**
 		 * called when a trend item is clicked
 		 *
-		 * @param hashtag trend name
-		 * @param action  action to take {@link #SELECT,#REMOVE}
+		 * @param tag    tag name
+		 * @param action action to take {@link #SELECT,#REMOVE}
 		 */
-		void onHashtagClick(Hashtag hashtag, int action);
+		void onTagClick(Tag tag, int action);
 
 		/**
 		 *

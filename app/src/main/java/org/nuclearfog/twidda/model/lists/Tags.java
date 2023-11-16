@@ -3,16 +3,16 @@ package org.nuclearfog.twidda.model.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.model.Hashtag;
+import org.nuclearfog.twidda.model.Tag;
 
 import java.util.LinkedList;
 
 /**
- * Hashtag list implementation with addtitional paging cursors
+ * Custom {@link Tag} list with addtitional paging cursors
  *
  * @author nuclearfog
  */
-public class Hashtags extends LinkedList<Hashtag> {
+public class Tags extends LinkedList<Tag> {
 
 	private static final long serialVersionUID = 7646437787602696292L;
 
@@ -21,7 +21,7 @@ public class Hashtags extends LinkedList<Hashtag> {
 	/**
 	 *
 	 */
-	public Hashtags() {
+	public Tags() {
 		this(0L, 0L);
 	}
 
@@ -29,19 +29,19 @@ public class Hashtags extends LinkedList<Hashtag> {
 	 * @param prevCursor minimum ID of an item
 	 * @param nextCursor maximum ID of an item
 	 */
-	public Hashtags(long prevCursor, long nextCursor) {
+	public Tags(long prevCursor, long nextCursor) {
 		super();
 		this.nextCursor = nextCursor;
 		this.prevCursor = prevCursor;
 	}
 
 	/**
-	 * @param hashtags trend list to clone
+	 * @param tags tag list to clone
 	 */
-	public Hashtags(Hashtags hashtags) {
-		super(hashtags);
-		prevCursor = hashtags.prevCursor;
-		nextCursor = hashtags.nextCursor;
+	public Tags(Tags tags) {
+		super(tags);
+		prevCursor = tags.prevCursor;
+		nextCursor = tags.nextCursor;
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class Hashtags extends LinkedList<Hashtag> {
 	 */
 	@Nullable
 	@Override
-	public Hashtag get(int index) {
+	public Tag get(int index) {
 		return super.get(index);
 	}
 
@@ -70,31 +70,31 @@ public class Hashtags extends LinkedList<Hashtag> {
 	/**
 	 * add a sublist at specific position
 	 *
-	 * @param hashtags sublist to add
-	 * @param index    index where to insert the sublist
+	 * @param tags  sublist to add
+	 * @param index index where to insert the sublist
 	 */
-	public void addAll(int index, Hashtags hashtags) {
+	public void addAll(int index, Tags tags) {
 		if (isEmpty()) {
-			prevCursor = hashtags.getPreviousCursor();
-			nextCursor = hashtags.getNextCursor();
+			prevCursor = tags.getPreviousCursor();
+			nextCursor = tags.getNextCursor();
 		} else if (index == 0) {
-			prevCursor = hashtags.getPreviousCursor();
+			prevCursor = tags.getPreviousCursor();
 		} else if (index == size() - 1) {
-			nextCursor = hashtags.getNextCursor();
+			nextCursor = tags.getNextCursor();
 		}
-		super.addAll(index, hashtags);
+		super.addAll(index, tags);
 	}
 
 	/**
 	 * replace all items with new ones
 	 *
-	 * @param hashtags new items to insert
+	 * @param tags new items to insert
 	 */
-	public void replaceAll(Hashtags hashtags) {
+	public void replaceAll(Tags tags) {
 		clear();
-		addAll(hashtags);
-		prevCursor = hashtags.getPreviousCursor();
-		nextCursor = hashtags.getNextCursor();
+		addAll(tags);
+		prevCursor = tags.getPreviousCursor();
+		nextCursor = tags.getNextCursor();
 	}
 
 
@@ -102,7 +102,7 @@ public class Hashtags extends LinkedList<Hashtag> {
 	@NonNull
 	public String toString() {
 		int itemCount = 0;
-		for (Hashtag item : this) {
+		for (Tag item : this) {
 			if (item != null) {
 				itemCount++;
 			}

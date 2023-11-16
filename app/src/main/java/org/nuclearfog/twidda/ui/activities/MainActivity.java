@@ -395,9 +395,9 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 				return true;
 			}
 		}
-		// open hashtag activity
-		else if (item.getItemId() == R.id.menu_navigator_hashtag) {
-			Intent intent = new Intent(this, HashtagActivity.class);
+		// open tag activity
+		else if (item.getItemId() == R.id.menu_navigator_tags) {
+			Intent intent = new Intent(this, TagActivity.class);
 			startActivity(intent);
 			drawerLayout.close();
 			return true;

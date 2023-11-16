@@ -29,11 +29,6 @@ public class DatabaseAdapter {
 	private static final String DB_NAME = "database.db";
 
 	/**
-	 * database lock
-	 */
-	private static final Object LOCK = new Object();
-
-	/**
 	 * SQL query to create a table for user information
 	 */
 	private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS "
@@ -89,12 +84,12 @@ public class DatabaseAdapter {
 	 * SQL query to create a table for trend information
 	 */
 	private static final String TABLE_TAGS = "CREATE TABLE IF NOT EXISTS "
-			+ HashtagTable.TABLE + "("
-			+ HashtagTable.ID + " INTEGER,"
-			+ HashtagTable.LOCATION + " INTEGER,"
-			+ HashtagTable.INDEX + " INTEGER,"
-			+ HashtagTable.VOL + " INTEGER,"
-			+ HashtagTable.TAG_NAME + " TEXT);";
+			+ TagTable.TABLE + "("
+			+ TagTable.ID + " INTEGER,"
+			+ TagTable.LOCATION + " INTEGER,"
+			+ TagTable.INDEX + " INTEGER,"
+			+ TagTable.VOL + " INTEGER,"
+			+ TagTable.TAG_NAME + " TEXT);";
 
 	/**
 	 * SQL query to create a table for user logins
@@ -245,7 +240,7 @@ public class DatabaseAdapter {
 			+ InstanceTable.AUDIO_SIZE + " INTEGER,"
 			+ InstanceTable.STATUS_MAX_CHAR + " INTEGER,"
 			+ InstanceTable.OPTION_MAX_CHAR + " INTEGER,"
-			+ InstanceTable.HASHTAG_LIMIT + " INTEGER,"
+			+ InstanceTable.TAG_LIMIT + " INTEGER,"
 			+ InstanceTable.OPTIONS_LIMIT + " INTEGER,"
 			+ InstanceTable.POLL_MIN_DURATION + " INTEGER,"
 			+ InstanceTable.POLL_MAX_DURATION + " INTEGER);";
@@ -264,62 +259,75 @@ public class DatabaseAdapter {
 			+ PushTable.AUTH_SECRET + " TEXT,"
 			+ PushTable.FLAGS + " INTEGER);";
 
+	private static final String IDX_STATUS_NAME = "idx_status";
+	private static final String IDX_STATUS_PROPERTIES_NAME = "idx_status_properties";
+	private static final String IDX_USER_PROPERTIES_NAME = "idx_user_properties";
+	private static final String IDX_FAVORITS_NAME = "idx_favorits";
+	private static final String IDX_BOOKMARKS_NAME = "idx_bookmarks";
+	private static final String IDX_REPLIES_NAME = "idx_replies";
+
 	/**
 	 * table index for status table
 	 */
-	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS idx_status"
+	private static final String INDX_STATUS = "CREATE INDEX IF NOT EXISTS " + IDX_STATUS_NAME
 			+ " ON " + StatusTable.TABLE + "(" + StatusTable.USER + ");";
 
 	/**
 	 * table index for status properties
 	 */
-	private static final String INDX_STATUS_PROPERTIES = "CREATE INDEX IF NOT EXISTS idx_status_properties"
+	private static final String INDX_STATUS_PROPERTIES = "CREATE INDEX IF NOT EXISTS " + IDX_STATUS_PROPERTIES_NAME
 			+ " ON " + StatusPropertiesTable.TABLE + "(" + StatusPropertiesTable.OWNER + "," + StatusPropertiesTable.STATUS + ");";
 
 	/**
 	 * table index for user properties
 	 */
-	private static final String INDX_USER_PROPERTIES = "CREATE INDEX IF NOT EXISTS idx_user_properties"
+	private static final String INDX_USER_PROPERTIES = "CREATE INDEX IF NOT EXISTS " + IDX_USER_PROPERTIES_NAME
 			+ " ON " + UserPropertiesTable.TABLE + "(" + UserPropertiesTable.OWNER + "," + UserPropertiesTable.USER + ");";
 
 	/**
 	 * table index for status favorits table
+	 *
 	 * @since 3.5
 	 */
-	private static final String INDX_FAVORITE = "CREATE INDEX IF NOT EXISTS idx_favorits"
+	private static final String INDX_FAVORITE = "CREATE INDEX IF NOT EXISTS " + IDX_FAVORITS_NAME
 			+ " ON " + FavoriteTable.TABLE + "(" + FavoriteTable.OWNER + "," + FavoriteTable.ID + ");";
 
 	/**
 	 * table index for status bookmarks table
+	 *
 	 * @since 3.5
 	 */
-	private static final String INDX_BOOKMARK = "CREATE INDEX IF NOT EXISTS idx_bookmarks"
+	private static final String INDX_BOOKMARK = "CREATE INDEX IF NOT EXISTS " + IDX_BOOKMARKS_NAME
 			+ " ON " + BookmarkTable.TABLE + "(" + BookmarkTable.OWNER + "," + BookmarkTable.ID + ");";
 
 	/**
 	 * table index for status replies table
+	 *
 	 * @since 3.5
 	 */
-	private static final String INDX_REPLIES = "CREATE INDEX IF NOT EXISTS idx_replies"
+	private static final String INDX_REPLIES = "CREATE INDEX IF NOT EXISTS " + IDX_REPLIES_NAME
 			+ " ON " + ReplyTable.TABLE + "(" + ReplyTable.REPLY + "," + ReplyTable.ID + ");";
 
 	/**
 	 * add mediatable description
+	 *
 	 * @since 3.4.5
 	 */
 	private static final String UPDATE_MEDIA_ADD_DESCRIPTION = "ALTER TABLE " + MediaTable.TABLE + " ADD " + MediaTable.DESCRIPTION + " TEXT;";
 
 	/**
 	 * add mediatable description
+	 *
 	 * @since 3.4.5
 	 */
 	private static final String UPDATE_MEDIA_ADD_BLUR_HASH = "ALTER TABLE " + MediaTable.TABLE + " ADD " + MediaTable.BLUR + " TEXT;";
 
 	/**
 	 * add mediatable description
+	 *
 	 * @since 3.4.5
 	 */
-	private static final String UPDATE_HASHTAG_ADD_ID = "ALTER TABLE " + HashtagTable.TABLE + " ADD " + HashtagTable.ID + " INTEGER;";
+	private static final String UPDATE_TAG_ADD_ID = "ALTER TABLE " + TagTable.TABLE + " ADD " + TagTable.ID + " INTEGER;";
 
 	/**
 	 * singleton instance
@@ -340,59 +348,11 @@ public class DatabaseAdapter {
 	 *
 	 */
 	private DatabaseAdapter(Context context) {
-		synchronized (LOCK) {
+		databasePath = context.getDatabasePath(DB_NAME);
+		synchronized (this) {
 			// fetch database information
-			databasePath = context.getDatabasePath(DB_NAME);
 			db = context.openOrCreateDatabase(databasePath.toString(), Context.MODE_PRIVATE, null);
-			// create tables if not exist
-			db.execSQL(TABLE_USER);
-			db.execSQL(TABLE_STATUS);
-			db.execSQL(TABLE_FAVORITES);
-			db.execSQL(TABLE_BOOKMARKS);
-			db.execSQL(TABLE_TAGS);
-			db.execSQL(TABLE_ACCOUNTS);
-			db.execSQL(TABLE_STATUS_PROPERTIES);
-			db.execSQL(TABLE_USER_PROPERTIES);
-			db.execSQL(TABLE_NOTIFICATION);
-			db.execSQL(TABLE_MEDIA);
-			db.execSQL(TABLE_LOCATION);
-			db.execSQL(TABLE_EMOJI);
-			db.execSQL(TABLE_POLL);
-			db.execSQL(TABLE_INSTANCES);
-			db.execSQL(TABLE_WEBPUSH);
-			db.execSQL(TABLE_REPLIES);
-			// set initial version
-			if (db.getVersion() == 0) {
-				db.setVersion(DB_VERSION);
-			}
-			// update table
-			else if (db.getVersion() != DB_VERSION) {
-				if (db.getVersion() < 18) {
-					db.execSQL(UPDATE_MEDIA_ADD_DESCRIPTION);
-					db.setVersion(18);
-				}
-				if (db.getVersion() < 19) {
-					db.execSQL(UPDATE_MEDIA_ADD_BLUR_HASH);
-					db.setVersion(19);
-				}
-				if (db.getVersion() < 21) {
-					db.execSQL(UPDATE_HASHTAG_ADD_ID);
-					db.setVersion(21);
-				}
-				if (db.getVersion() < DB_VERSION) {
-					// recreate table
-					db.delete(BookmarkTable.TABLE, null, null);
-					db.execSQL(TABLE_BOOKMARKS);
-					db.setVersion(DB_VERSION);
-				}
-			}
-			// create index if not exist
-			db.execSQL(INDX_STATUS);
-			db.execSQL(INDX_STATUS_PROPERTIES);
-			db.execSQL(INDX_USER_PROPERTIES);
-			db.execSQL(INDX_FAVORITE);
-			db.execSQL(INDX_BOOKMARK);
-			db.execSQL(INDX_REPLIES);
+			initTables();
 		}
 	}
 
@@ -449,10 +409,87 @@ public class DatabaseAdapter {
 	}
 
 	/**
-	 * get database lock
+	 * delete database tables and create new
 	 */
-	Object getLock() {
-		return LOCK;
+	void resetDatabase() {
+		db.execSQL("DROP TABLE IF EXISTS " + UserTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + StatusTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + FavoriteTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + BookmarkTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + TagTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + AccountTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + StatusPropertiesTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + UserPropertiesTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + NotificationTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + MediaTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + LocationTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + EmojiTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + PollTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + InstanceTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + PushTable.TABLE);
+		db.execSQL("DROP TABLE IF EXISTS " + ReplyTable.TABLE);
+		db.execSQL("DROP INDEX IF EXISTS " + IDX_STATUS_NAME);
+		db.execSQL("DROP INDEX IF EXISTS " + IDX_STATUS_PROPERTIES_NAME);
+		db.execSQL("DROP INDEX IF EXISTS " + IDX_USER_PROPERTIES_NAME);
+		db.execSQL("DROP INDEX IF EXISTS " + IDX_FAVORITS_NAME);
+		db.execSQL("DROP INDEX IF EXISTS " + IDX_BOOKMARKS_NAME);
+		db.execSQL("DROP INDEX IF EXISTS " + IDX_REPLIES_NAME);
+		initTables();
+	}
+
+	/**
+	 * initialize database tables and indexes
+	 */
+	private void initTables() {
+		// create tables if not exist
+		db.execSQL(TABLE_USER);
+		db.execSQL(TABLE_STATUS);
+		db.execSQL(TABLE_FAVORITES);
+		db.execSQL(TABLE_BOOKMARKS);
+		db.execSQL(TABLE_TAGS);
+		db.execSQL(TABLE_ACCOUNTS);
+		db.execSQL(TABLE_STATUS_PROPERTIES);
+		db.execSQL(TABLE_USER_PROPERTIES);
+		db.execSQL(TABLE_NOTIFICATION);
+		db.execSQL(TABLE_MEDIA);
+		db.execSQL(TABLE_LOCATION);
+		db.execSQL(TABLE_EMOJI);
+		db.execSQL(TABLE_POLL);
+		db.execSQL(TABLE_INSTANCES);
+		db.execSQL(TABLE_WEBPUSH);
+		db.execSQL(TABLE_REPLIES);
+		// set initial version
+		if (db.getVersion() == 0) {
+			db.setVersion(DB_VERSION);
+		}
+		// update table
+		else if (db.getVersion() != DB_VERSION) {
+			if (db.getVersion() < 18) {
+				db.execSQL(UPDATE_MEDIA_ADD_DESCRIPTION);
+				db.setVersion(18);
+			}
+			if (db.getVersion() < 19) {
+				db.execSQL(UPDATE_MEDIA_ADD_BLUR_HASH);
+				db.setVersion(19);
+			}
+			if (db.getVersion() < 21) {
+				db.execSQL(UPDATE_TAG_ADD_ID);
+				db.setVersion(21);
+			}
+			if (db.getVersion() < DB_VERSION) {
+				// recreate table
+				db.delete(BookmarkTable.TABLE, null, null);
+				db.execSQL(TABLE_BOOKMARKS);
+				db.setVersion(DB_VERSION);
+			}
+		}
+		// create index if not exist
+		db.execSQL(INDX_STATUS);
+		db.execSQL(INDX_STATUS_PROPERTIES);
+		db.execSQL(INDX_USER_PROPERTIES);
+		db.execSQL(INDX_FAVORITE);
+		db.execSQL(INDX_BOOKMARK);
+		db.execSQL(INDX_REPLIES);
 	}
 
 	/**
@@ -713,21 +750,21 @@ public class DatabaseAdapter {
 	}
 
 	/**
-	 * table for trends and trending hashtags
+	 * table for trends and trending tags
 	 */
-	public interface HashtagTable {
+	public interface TagTable {
 		/**
 		 * table name
 		 */
 		String TABLE = "tags";
 
 		/**
-		 * ID of the hashtag (may be 0)
+		 * ID of the tag (may be 0)
 		 */
 		String ID = "tag_id";
 
 		/**
-		 * hashtag name
+		 * tag name
 		 */
 		String TAG_NAME = "tag_name";
 
@@ -737,7 +774,7 @@ public class DatabaseAdapter {
 		String LOCATION = "location_id";
 
 		/**
-		 * rank of the hashtag
+		 * rank of the tag
 		 */
 		String INDEX = "tag_rank";
 
@@ -1171,9 +1208,9 @@ public class DatabaseAdapter {
 		String FLAGS = "instance_flags";
 
 		/**
-		 * hashtag follow limit
+		 * tag follow limit
 		 */
-		String HASHTAG_LIMIT = "limit_follow_tag";
+		String TAG_LIMIT = "limit_follow_tag";
 
 		/**
 		 * max allowed status length

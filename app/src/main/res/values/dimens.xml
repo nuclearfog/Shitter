@@ -92,15 +92,15 @@
 	<dimen name="item_status_indicator_padding">6sp</dimen>
 	<dimen name="item_status_indicator_size">26sp</dimen>
 
-	<!--dimens of item_hashtag.xml-->
-	<dimen name="item_hashtag_layout_padding">5dp</dimen>
-	<dimen name="item_hashtag_layout_margin">5dp</dimen>
-	<dimen name="item_hashtag_button_size">20sp</dimen>
-	<dimen name="item_hashtag_button_padding">1dp</dimen>
-	<dimen name="item_hashtag_textsize_trendindex">20sp</dimen>
-	<dimen name="item_hashtag_textsize_trendname">20sp</dimen>
-	<dimen name="item_hashtag_textsize_trendvol">14sp</dimen>
-	<dimen name="item_hashtag_textsize_trendindex_width">40sp</dimen>
+	<!--dimens of item_tag.xml-->
+	<dimen name="item_tag_layout_padding">5dp</dimen>
+	<dimen name="item_tag_layout_margin">5dp</dimen>
+	<dimen name="item_tag_button_size">20sp</dimen>
+	<dimen name="item_tag_button_padding">1dp</dimen>
+	<dimen name="item_tag_textsize_trendindex">20sp</dimen>
+	<dimen name="item_tag_textsize_trendname">20sp</dimen>
+	<dimen name="item_tag_textsize_trendvol">14sp</dimen>
+	<dimen name="item_tag_textsize_trendindex_width">40sp</dimen>
 
 	<!--dimens of item_user.xml-->
 	<dimen name="item_user_image_size">56sp</dimen>

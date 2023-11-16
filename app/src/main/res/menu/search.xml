@@ -16,8 +16,8 @@
 		app:showAsAction="ifRoom" />
 
 	<item
-		android:id="@+id/search_hashtag"
-		android:title="@string/menu_hashtag_follow"
+		android:id="@+id/search_tag"
+		android:title="@string/menu_tag_follow"
 		app:showAsAction="never"
 		android:visible="false" />
 

@@ -22,13 +22,13 @@ import androidx.viewpager2.widget.ViewPager2;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
-import org.nuclearfog.twidda.backend.async.HashtagAction;
-import org.nuclearfog.twidda.backend.async.HashtagAction.Param;
-import org.nuclearfog.twidda.backend.async.HashtagAction.Result;
+import org.nuclearfog.twidda.backend.async.TagAction;
+import org.nuclearfog.twidda.backend.async.TagAction.Param;
+import org.nuclearfog.twidda.backend.async.TagAction.Result;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.model.Hashtag;
+import org.nuclearfog.twidda.model.Tag;
 import org.nuclearfog.twidda.ui.adapter.viewpager.SearchAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
@@ -50,7 +50,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	/**
 	 * key to add trend information to search for
-	 * value type is {@link Hashtag}
+	 * value type is {@link Tag}
 	 */
 	public static final String KEY_DATA = "trend_data";
 
@@ -58,7 +58,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	public static final int SEARCH_STR_MAX_LEN = 128;
 
-	private HashtagAction hashtagAction;
+	private TagAction tagAction;
 
 	private SearchAdapter adapter;
 	private GlobalSettings settings;
@@ -67,7 +67,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	private String search = "";
 	@Nullable
-	private Hashtag hashtag;
+	private Tag tag;
 
 
 	@Override
@@ -85,21 +85,20 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		View floatingButton = findViewById(R.id.page_tab_view_post_button);
 		toolbar = findViewById(R.id.page_tab_view_toolbar);
 		viewPager = findViewById(R.id.page_tab_view_pager);
-
 		settings = GlobalSettings.get(this);
-		hashtagAction = new HashtagAction(this);
+		tagAction = new TagAction(this);
 		adapter = new SearchAdapter(this);
 
 		String query = getIntent().getStringExtra(KEY_QUERY);
 		Serializable data = getIntent().getSerializableExtra(KEY_DATA);
-		if (data instanceof Hashtag) {
-			hashtag = (Hashtag) data;
-			search = hashtag.getName();
+		if (data instanceof Tag) {
+			tag = (Tag) data;
+			search = tag.getName();
 		} else if (query != null) {
 			search = query;
 			if (search.matches("^#\\S+") && !search.matches("^#\\d+")) {
 				Param param = new Param(Param.LOAD, search);
-				hashtagAction.execute(param, this);
+				tagAction.execute(param, this);
 			}
 		}
 		if (settings.floatingButtonEnabled()) {
@@ -110,7 +109,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		setSupportActionBar(toolbar);
 		viewPager.setOffscreenPageLimit(3);
 		viewPager.setAdapter(adapter);
-		tabSelector.addTabIcons(R.array.search_hashtag_tab_icons);
+		tabSelector.addTabIcons(R.array.search_tag_tab_icons);
 		AppStyles.setTheme(root);
 
 		tabSelector.addOnTabSelectedListener(this);
@@ -123,9 +122,9 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		if (viewPager.getCurrentItem() > 0) {
 			viewPager.setCurrentItem(0);
 		} else {
-			if (hashtag != null) {
+			if (tag != null) {
 				Intent intent = new Intent();
-				intent.putExtra(KEY_DATA, hashtag);
+				intent.putExtra(KEY_DATA, tag);
 				setResult(RETURN_TREND, intent);
 			}
 			super.onBackPressed();
@@ -135,7 +134,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	protected void onDestroy() {
-		hashtagAction.cancel();
+		tagAction.cancel();
 		super.onDestroy();
 	}
 
@@ -143,17 +142,17 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu menu) {
 		getMenuInflater().inflate(R.menu.search, menu);
-		MenuItem searchItem = menu.findItem(R.id.new_search);
-		MenuItem searchFilter = menu.findItem(R.id.search_filter);
-		MenuItem menuHashtag = menu.findItem(R.id.search_hashtag);
-		SearchView searchView = (SearchView) searchItem.getActionView();
+		MenuItem search_item = menu.findItem(R.id.new_search);
+		MenuItem filter_item = menu.findItem(R.id.search_filter);
+		MenuItem tag_item = menu.findItem(R.id.search_tag);
+		SearchView searchView = (SearchView) search_item.getActionView();
 
 		boolean enableSearchFilter = settings.getLogin().getConfiguration().filterEnabled();
-		searchFilter.setVisible(enableSearchFilter);
-		searchFilter.setChecked(settings.filterResults() & enableSearchFilter);
+		filter_item.setVisible(enableSearchFilter);
+		filter_item.setChecked(settings.filterResults() & enableSearchFilter);
 		searchView.setQueryHint(search);
-		if (hashtag != null && hashtag.getName().startsWith("#")) {
-			menuHashtag.setVisible(true);
+		if (tag != null && tag.getName().startsWith("#")) {
+			tag_item.setVisible(true);
 		}
 		// set theme
 		AppStyles.setTheme(searchView, Color.TRANSPARENT);
@@ -167,13 +166,13 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem menuHashtag = menu.findItem(R.id.search_hashtag);
+		MenuItem tag_item = menu.findItem(R.id.search_tag);
 		// set menu option depending on trend follow status
-		if (hashtag != null) {
-			if (hashtag.following()) {
-				menuHashtag.setTitle(R.string.menu_hashtag_unfollow);
+		if (tag != null) {
+			if (tag.following()) {
+				tag_item.setTitle(R.string.menu_tag_unfollow);
 			} else {
-				menuHashtag.setTitle(R.string.menu_hashtag_follow);
+				tag_item.setTitle(R.string.menu_tag_follow);
 			}
 		}
 		return super.onPrepareOptionsMenu(menu);
@@ -203,15 +202,15 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 			item.setChecked(enable);
 			return true;
 		}
-		// follow/unfollow hashtag
-		else if (item.getItemId() == R.id.search_hashtag) {
-			if (hashtag != null && hashtagAction.isIdle()) {
+		// follow/unfollow tag
+		else if (item.getItemId() == R.id.search_tag) {
+			if (tag != null && tagAction.isIdle()) {
 				Param param;
-				if (hashtag.following())
-					param = new Param(Param.UNFOLLOW, hashtag.getName());
+				if (tag.following())
+					param = new Param(Param.UNFOLLOW, tag.getName());
 				else
-					param = new Param(Param.FOLLOW, hashtag.getName());
-				hashtagAction.execute(param, this);
+					param = new Param(Param.FOLLOW, tag.getName());
+				tagAction.execute(param, this);
 			}
 		}
 		return super.onOptionsItemSelected(item);
@@ -258,17 +257,17 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onResult(@NonNull Result result) {
-		if (result.hashtag != null) {
-			this.hashtag = result.hashtag;
+		if (result.tag != null) {
+			this.tag = result.tag;
 			invalidateMenu();
 		}
 		switch (result.mode) {
 			case Result.FOLLOW:
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_followed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_tag_followed, Toast.LENGTH_SHORT).show();
 				break;
 
 			case Result.UNFOLLOW:
-				Toast.makeText(getApplicationContext(), R.string.info_hashtag_unfollowed, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.info_tag_unfollowed, Toast.LENGTH_SHORT).show();
 				break;
 
 			case Result.ERROR:

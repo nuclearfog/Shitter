@@ -45,11 +45,11 @@ public interface Instance extends Serializable {
 	long getTimestamp();
 
 	/**
-	 * get limit of hashtag following
+	 * get limit of tag following
 	 *
 	 * @return max number of featured tags
 	 */
-	int getHashtagFollowLimit();
+	int getTagFollowLimit();
 
 	/**
 	 * get limit of characters supported in a status

@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Credentials;
-import org.nuclearfog.twidda.model.User;
 
 /**
  * implementation of a mastodon account
@@ -40,6 +39,7 @@ public class MastodonAccount implements Account {
 		id = credentials.getId();
 		timestamp = System.currentTimeMillis();
 		screenName = credentials.getUsername();
+		profileImage = ""; // todo implement this
 	}
 
 

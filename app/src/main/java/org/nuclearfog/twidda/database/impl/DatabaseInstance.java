@@ -29,7 +29,7 @@ public class DatabaseInstance implements Instance, InstanceTable {
 	/**
 	 * SQL projection of the columns
 	 */
-	public static final String[] COLUMNS = {DOMAIN, TIMESTAMP, TITLE, VERSION, DESCRIPTION, FLAGS, HASHTAG_LIMIT, STATUS_MAX_CHAR,
+	public static final String[] COLUMNS = {DOMAIN, TIMESTAMP, TITLE, VERSION, DESCRIPTION, FLAGS, TAG_LIMIT, STATUS_MAX_CHAR,
 			IMAGE_LIMIT, VIDEO_LIMIT, GIF_LIMIT, AUDIO_LIMIT, OPTIONS_LIMIT, OPTION_MAX_CHAR, MIME_TYPES, IMAGE_SIZE,
 			VIDEO_SIZE, GIF_SIZE, AUDIO_SIZE, POLL_MIN_DURATION, POLL_MAX_DURATION};
 
@@ -39,7 +39,7 @@ public class DatabaseInstance implements Instance, InstanceTable {
 	private String description;
 	private String[] mimeTypes;
 	private long timestamp;
-	private int hashtagLimit;
+	private int tagLimit;
 	private int statusMaxLength;
 	private int imageLimit;
 	private int videoLimit;
@@ -65,7 +65,7 @@ public class DatabaseInstance implements Instance, InstanceTable {
 		version = cursor.getString(3);
 		description = cursor.getString(4);
 		int flags = cursor.getInt(5);
-		hashtagLimit = cursor.getInt(6);
+		tagLimit = cursor.getInt(6);
 		statusMaxLength = cursor.getInt(7);
 		imageLimit = cursor.getInt(8);
 		videoLimit = cursor.getInt(9);
@@ -121,8 +121,8 @@ public class DatabaseInstance implements Instance, InstanceTable {
 
 
 	@Override
-	public int getHashtagFollowLimit() {
-		return hashtagLimit;
+	public int getTagFollowLimit() {
+		return tagLimit;
 	}
 
 

@@ -12,21 +12,20 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.EmojiTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.HashtagTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.InstanceTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.LocationTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.MediaTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.NotificationTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.PollTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.PushTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.ReplyTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.StatusTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.TagTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserPropertiesTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
-import org.nuclearfog.twidda.database.DatabaseAdapter.ReplyTable;
 import org.nuclearfog.twidda.database.impl.DatabaseAccount;
 import org.nuclearfog.twidda.database.impl.DatabaseEmoji;
-import org.nuclearfog.twidda.database.impl.DatabaseHashtag;
 import org.nuclearfog.twidda.database.impl.DatabaseInstance;
 import org.nuclearfog.twidda.database.impl.DatabaseLocation;
 import org.nuclearfog.twidda.database.impl.DatabaseMedia;
@@ -34,22 +33,23 @@ import org.nuclearfog.twidda.database.impl.DatabaseNotification;
 import org.nuclearfog.twidda.database.impl.DatabasePoll;
 import org.nuclearfog.twidda.database.impl.DatabasePush;
 import org.nuclearfog.twidda.database.impl.DatabaseStatus;
+import org.nuclearfog.twidda.database.impl.DatabaseTag;
 import org.nuclearfog.twidda.database.impl.DatabaseUser;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Emoji;
-import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
 import org.nuclearfog.twidda.model.Status;
+import org.nuclearfog.twidda.model.Tag;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.WebPush;
 import org.nuclearfog.twidda.model.lists.Accounts;
-import org.nuclearfog.twidda.model.lists.Hashtags;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.model.lists.Statuses;
+import org.nuclearfog.twidda.model.lists.Tags;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -220,7 +220,7 @@ public class AppDatabase {
 	/**
 	 * select trends from trend table with given world ID
 	 */
-	private static final String TREND_SELECT = HashtagTable.LOCATION + "=?";
+	private static final String TREND_SELECT = TagTable.LOCATION + "=?";
 
 	/**
 	 * select status from status table matching ID
@@ -315,7 +315,7 @@ public class AppDatabase {
 	/**
 	 * adapter for the database backend
 	 */
-	private DatabaseAdapter adapter;
+	private final DatabaseAdapter adapter;
 
 	/**
 	 * @param context activity context
@@ -331,7 +331,7 @@ public class AppDatabase {
 	 * @param statuses status from home timeline
 	 */
 	public void saveHomeTimeline(Statuses statuses) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
@@ -347,7 +347,7 @@ public class AppDatabase {
 	 * @param statuses user timeline
 	 */
 	public void saveUserTimeline(Statuses statuses) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Status status : statuses)
@@ -364,7 +364,7 @@ public class AppDatabase {
 	 * @param ownerId  user ID
 	 */
 	public void saveFavoriteTimeline(Statuses statuses, long ownerId) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete old favorits
 			String[] delArgs = {Long.toString(ownerId)};
@@ -387,7 +387,7 @@ public class AppDatabase {
 	 * @param ownerId  id of the owner
 	 */
 	public void saveBookmarkTimeline(Statuses statuses, long ownerId) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete old favorits
 			String[] delArgs = {Long.toString(ownerId)};
@@ -410,7 +410,7 @@ public class AppDatabase {
 	 * @param statuses status replies
 	 */
 	public void saveReplies(long id, Statuses statuses) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			if (!statuses.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				// delete old entries
@@ -433,7 +433,7 @@ public class AppDatabase {
 	 * save notifications to database
 	 */
 	public void saveNotifications(List<Notification> notifications) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			if (!notifications.isEmpty()) {
 				SQLiteDatabase db = adapter.getDbWrite();
 				for (Notification notification : notifications) {
@@ -457,23 +457,23 @@ public class AppDatabase {
 	}
 
 	/**
-	 * store location specific trends
+	 * save a list of tags
 	 *
-	 * @param hashtags List of Trends
+	 * @param tags List of tags
 	 */
-	public void saveTrends(List<Hashtag> hashtags) {
-		synchronized (adapter.getLock()) {
+	public void saveTrends(List<Tag> tags) {
+		synchronized (adapter) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(HashtagTable.TABLE, TREND_SELECT, args);
-			for (Hashtag hashtag : hashtags) {
+			db.delete(TagTable.TABLE, TREND_SELECT, args);
+			for (Tag tag : tags) {
 				ContentValues column = new ContentValues(4);
-				column.put(HashtagTable.LOCATION, hashtag.getLocationId());
-				column.put(HashtagTable.VOL, hashtag.getPopularity());
-				column.put(HashtagTable.TAG_NAME, hashtag.getName());
-				column.put(HashtagTable.INDEX, hashtag.getRank());
-				column.put(HashtagTable.ID, hashtag.getId());
-				db.insert(HashtagTable.TABLE, null, column);
+				column.put(TagTable.LOCATION, tag.getLocationId());
+				column.put(TagTable.VOL, tag.getPopularity());
+				column.put(TagTable.TAG_NAME, tag.getName());
+				column.put(TagTable.INDEX, tag.getRank());
+				column.put(TagTable.ID, tag.getId());
+				db.insert(TagTable.TABLE, null, column);
 			}
 			adapter.commit();
 		}
@@ -483,7 +483,7 @@ public class AppDatabase {
 	 * Store user information
 	 */
 	public void saveUser(User user) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveUser(user, db, SQLiteDatabase.CONFLICT_REPLACE);
 			adapter.commit();
@@ -496,7 +496,7 @@ public class AppDatabase {
 	 * @param status status to update
 	 */
 	public void saveStatus(Status status) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveStatus(status, db, 0);
 			adapter.commit();
@@ -509,7 +509,7 @@ public class AppDatabase {
 	 * @param instance instance information
 	 */
 	public void saveInstance(Instance instance) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			saveInstance(instance, db);
 			adapter.commit();
@@ -522,7 +522,7 @@ public class AppDatabase {
 	 * @param account login information
 	 */
 	public void saveLogin(Account account) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			// delete login entry if exists
 			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
@@ -552,7 +552,7 @@ public class AppDatabase {
 	 * @param status favorited status
 	 */
 	public void saveToFavorits(Status status) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			if (status.getEmbeddedStatus() != null)
 				status = status.getEmbeddedStatus();
 			SQLiteDatabase db = adapter.getDbWrite();
@@ -568,7 +568,7 @@ public class AppDatabase {
 	 * @param status favorited status
 	 */
 	public void saveToBookmarks(Status status) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			if (status.getEmbeddedStatus() != null)
 				status = status.getEmbeddedStatus();
 			SQLiteDatabase db = adapter.getDbWrite();
@@ -584,7 +584,7 @@ public class AppDatabase {
 	 * @param emojis list of emojis
 	 */
 	public void saveEmojis(List<Emoji> emojis) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			for (Emoji emoji : emojis) {
 				saveEmoji(emoji, db);
@@ -599,7 +599,7 @@ public class AppDatabase {
 	 * @param push web push information
 	 */
 	public void savePushSubscription(WebPush push) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			ContentValues column = new ContentValues(7);
 			column.put(PushTable.ID, push.getId());
 			column.put(PushTable.PUB_KEY, push.getPublicKey());
@@ -646,7 +646,7 @@ public class AppDatabase {
 	 * @return home timeline
 	 */
 	public Statuses getHomeTimeline() {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -663,7 +663,7 @@ public class AppDatabase {
 	 * @return user timeline
 	 */
 	public Statuses getUserTimeline(long userID) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(settings.getListSize())};
 
@@ -680,7 +680,7 @@ public class AppDatabase {
 	 * @return favorite timeline
 	 */
 	public Statuses getUserFavorites(long ownerID) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -699,7 +699,7 @@ public class AppDatabase {
 	 * @return bookmark timeline
 	 */
 	public Statuses getUserBookmarks(long ownerID) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -718,7 +718,7 @@ public class AppDatabase {
 	 * @return status reply timeline
 	 */
 	public Statuses getReplies(long id) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(id), homeStr, homeStr, Integer.toString(settings.getListSize())};
 
@@ -736,7 +736,7 @@ public class AppDatabase {
 	 * @return notification lsit
 	 */
 	public Notifications getNotifications() {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			Account login = settings.getLogin();
 			String[] args = {Long.toString(login.getId()), Integer.toString(settings.getListSize())};
 			SQLiteDatabase db = adapter.getDbRead();
@@ -758,20 +758,20 @@ public class AppDatabase {
 	 *
 	 * @return list of trends
 	 */
-	public Hashtags getTrends() {
-		synchronized (adapter.getLock()) {
+	public Tags getTrends() {
+		synchronized (adapter) {
 			String[] args = {Long.toString(settings.getTrendLocation().getId())};
 			SQLiteDatabase db = adapter.getDbRead();
-			Cursor cursor = db.query(HashtagTable.TABLE, DatabaseHashtag.COLUMNS, TREND_SELECT, args, null, null, null);
-			Hashtags hashtags = new Hashtags();
+			Cursor cursor = db.query(TagTable.TABLE, DatabaseTag.COLUMNS, TREND_SELECT, args, null, null, null);
+			Tags tags = new Tags();
 			if (cursor.moveToFirst()) {
 				do {
-					hashtags.add(new DatabaseHashtag(cursor));
+					tags.add(new DatabaseTag(cursor));
 				} while (cursor.moveToNext());
 			}
 			cursor.close();
-			Collections.sort(hashtags);
-			return hashtags;
+			Collections.sort(tags);
+			return tags;
 		}
 	}
 
@@ -781,7 +781,7 @@ public class AppDatabase {
 	 * @return list of all logins
 	 */
 	public Accounts getLogins() {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			Accounts result = new Accounts();
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.query(AccountTable.TABLE, DatabaseAccount.COLUMNS, null, null, null, null, SORT_BY_CREATION);
@@ -808,7 +808,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Instance getInstance() {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbRead();
 			String[] args = {settings.getLogin().getHostname()};
 			Instance result = null;
@@ -829,7 +829,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Notification getNotification(long id) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] args = {Long.toString(id)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(SINGLE_NOTIFICATION_QUERY, args);
@@ -849,7 +849,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public DatabaseUser getUser(long userId) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] args = {Long.toString(userId)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor cursor = db.rawQuery(SINGLE_USER_QUERY, args);
@@ -869,7 +869,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public Status getStatus(long id) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String homeStr = Long.toString(settings.getLogin().getId());
 			String[] args = {Long.toString(id), homeStr, homeStr};
 
@@ -890,7 +890,7 @@ public class AppDatabase {
 	 * @param hide true to hide this status
 	 */
 	public void hideStatus(long id, boolean hide) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] args = {Long.toString(id), Long.toString(settings.getLogin().getId())};
 
 			SQLiteDatabase db = adapter.getDbWrite();
@@ -913,14 +913,16 @@ public class AppDatabase {
 	 * @param id status ID
 	 */
 	public void removeStatus(long id) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] args = {Long.toString(id)};
 
 			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(StatusTable.TABLE, STATUS_SELECT, args);
+			// remove constrained table entries first
 			db.delete(NotificationTable.TABLE, NOTIFICATION_STATUS_SELECT, args);
 			db.delete(FavoriteTable.TABLE, FAVORITE_SELECT_STATUS, args);
 			db.delete(BookmarkTable.TABLE, BOOKMARK_SELECT_STATUS, args);
+			// remove status from main table
+			db.delete(StatusTable.TABLE, STATUS_SELECT, args);
 			adapter.commit();
 		}
 	}
@@ -931,7 +933,7 @@ public class AppDatabase {
 	 * @param id status ID
 	 */
 	public void removeNotification(long id) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] args = {Long.toString(id)};
 
 			SQLiteDatabase db = adapter.getDbWrite();
@@ -946,7 +948,7 @@ public class AppDatabase {
 	 * @param status status to remove from the favorites
 	 */
 	public void removeFromFavorite(Status status) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 			if (status.getEmbeddedStatus() != null) {
@@ -958,6 +960,7 @@ public class AppDatabase {
 			flags &= ~StatusPropertiesTable.MASK_STATUS_FAVORITED; // unset favorite flag
 			// update database
 			saveStatusFlags(db, status, flags);
+			// delete status entry from favorite table
 			db.delete(FavoriteTable.TABLE, FAVORITE_SELECT, delArgs);
 			adapter.commit();
 		}
@@ -969,7 +972,7 @@ public class AppDatabase {
 	 * @param status status to remove from the bookmarks
 	 */
 	public void removeFromBookmarks(Status status) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] delArgs = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 			if (status.getEmbeddedStatus() != null) {
@@ -981,6 +984,7 @@ public class AppDatabase {
 			flags &= ~StatusPropertiesTable.MASK_STATUS_BOOKMARKED; // unset bookmark flag
 			// update database
 			saveStatusFlags(db, status, flags);
+			// remove status entry from bookmark table
 			db.delete(BookmarkTable.TABLE, BOOKMARK_SELECT, delArgs);
 			adapter.commit();
 		}
@@ -992,7 +996,7 @@ public class AppDatabase {
 	 * @param account account to remove
 	 */
 	public void removeLogin(Account account) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
 			String[] pushArgs = {account.getId() + '@' + account.getHostname()};
 
@@ -1010,7 +1014,7 @@ public class AppDatabase {
 	 * @return true if found
 	 */
 	public boolean containsStatus(long id) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			String[] args = {Long.toString(id)};
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor c = db.query(StatusTable.TABLE, null, STATUS_SELECT, args, null, null, SINGLE_ITEM);
@@ -1027,7 +1031,7 @@ public class AppDatabase {
 	 * @param mute true remove user notifications
 	 */
 	public void muteUser(long id, boolean mute) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
 			int flags = getUserFlags(db, id);
 			if (mute) {
@@ -1046,7 +1050,7 @@ public class AppDatabase {
 	 * @return list of emojis
 	 */
 	public List<Emoji> getEmojis() {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			ArrayList<Emoji> result = new ArrayList<>();
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor c = db.query(EmojiTable.TABLE, null, null, null, null, null, null);
@@ -1069,7 +1073,7 @@ public class AppDatabase {
 	 */
 	@Nullable
 	public WebPush getWebPush(Account account) {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			WebPush result = null;
 			String[] args = {account.getId() + '@' + account.getHostname()};
 
@@ -1087,29 +1091,15 @@ public class AppDatabase {
 	 * remove database tables except account table
 	 */
 	public void resetDatabase() {
-		synchronized (adapter.getLock()) {
+		synchronized (adapter) {
 			// save logins first
 			List<Account> logins = getLogins();
-			SQLiteDatabase db = adapter.getDbWrite();
-			db.delete(UserTable.TABLE, null, null);
-			db.delete(StatusTable.TABLE, null, null);
-			db.delete(FavoriteTable.TABLE, null, null);
-			db.delete(BookmarkTable.TABLE, null, null);
-			db.delete(HashtagTable.TABLE, null, null);
-			db.delete(StatusPropertiesTable.TABLE, null, null);
-			db.delete(UserPropertiesTable.TABLE, null, null);
-			db.delete(NotificationTable.TABLE, null, null);
-			db.delete(MediaTable.TABLE, null, null);
-			db.delete(LocationTable.TABLE, null, null);
-			db.delete(EmojiTable.TABLE, null, null);
-			db.delete(PollTable.TABLE, null, null);
-			// save user information from logins
+			// reset database
+			adapter.resetDatabase();
+			// restore saved logins
 			for (Account login : logins) {
-				if (login.getUser() != null) {
-					saveUser(login.getUser(), db, SQLiteDatabase.CONFLICT_IGNORE);
-				}
+				saveLogin(login);
 			}
-			adapter.commit();
 		}
 	}
 
@@ -1663,7 +1653,7 @@ public class AppDatabase {
 		column.put(InstanceTable.VERSION, instance.getVersion());
 		column.put(InstanceTable.DESCRIPTION, instance.getDescription());
 		column.put(InstanceTable.FLAGS, flags);
-		column.put(InstanceTable.HASHTAG_LIMIT, instance.getHashtagFollowLimit());
+		column.put(InstanceTable.TAG_LIMIT, instance.getTagFollowLimit());
 		column.put(InstanceTable.STATUS_MAX_CHAR, instance.getStatusCharacterLimit());
 		column.put(InstanceTable.IMAGE_LIMIT, instance.getImageLimit());
 		column.put(InstanceTable.VIDEO_LIMIT, instance.getVideoLimit());

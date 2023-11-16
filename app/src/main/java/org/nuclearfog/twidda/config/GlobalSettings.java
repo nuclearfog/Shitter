@@ -72,17 +72,17 @@ public class GlobalSettings {
 	private static final String BACKGROUND_COLOR = "background_color";
 	private static final String HIGHLIGHT_COLOR = "highlight_color";
 	private static final String FONT_COLOR = "font_color";
-	private static final String POPUP_COLOR = "tweet_color";
+	private static final String POPUP_COLOR = "dialog_color";
 	private static final String CARD_COLOR = "card_color";
 	private static final String ICON_COLOR = "icon_color";
-	private static final String RT_COLOR = "retweet_color";
-	private static final String FV_COLOR = "favorite_color";
+	private static final String REPOST_COLOR = "repost_color";
+	private static final String FAVORITE_COLOR = "favorite_color";
 	private static final String FOLLOW_COLOR = "following_color";
 	private static final String INDEX_FONT = "index_font";
 	private static final String INDEX_SCALE = "index_scale";
 	private static final String LIST_SIZE = "preload";
 	private static final String IMAGE_LOAD = "image_load";
-	private static final String STATUS_ICONS = "tweet_indicator";
+	private static final String STATUS_ICONS = "status_indicator";
 	private static final String PROFILE_OVERLAP = "profile_toolbar_overlap";
 	private static final String PROXY_SET = "proxy_enabled";
 	private static final String AUTH_SET = "proxy_auth_set";
@@ -348,7 +348,7 @@ public class GlobalSettings {
 		favorite_color = color;
 
 		Editor edit = settings.edit();
-		edit.putInt(FV_COLOR, color);
+		edit.putInt(FAVORITE_COLOR, color);
 		edit.apply();
 	}
 
@@ -370,7 +370,7 @@ public class GlobalSettings {
 		repost_color = color;
 
 		Editor edit = settings.edit();
-		edit.putInt(RT_COLOR, color);
+		edit.putInt(REPOST_COLOR, color);
 		edit.apply();
 	}
 
@@ -1017,8 +1017,8 @@ public class GlobalSettings {
 		popup_color = settings.getInt(POPUP_COLOR, DEFAULT_POPUP_COLOR);
 		card_color = settings.getInt(CARD_COLOR, DEFAULT_CARD_COLOR);
 		icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
-		repost_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
-		favorite_color = settings.getInt(FV_COLOR, DEFAULT_FV_ICON_COLOR);
+		repost_color = settings.getInt(REPOST_COLOR, DEFAULT_RT_ICON_COLOR);
+		favorite_color = settings.getInt(FAVORITE_COLOR, DEFAULT_FV_ICON_COLOR);
 		follow_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
 		indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
 		indexScale = settings.getInt(INDEX_SCALE, DEFAULT_SCALE_INDEX);

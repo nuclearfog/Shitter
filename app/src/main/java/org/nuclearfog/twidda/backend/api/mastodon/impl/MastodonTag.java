@@ -5,15 +5,15 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.nuclearfog.twidda.model.Hashtag;
 import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Tag;
 
 /**
- * Hashtag implementation used by Mastodon API
+ * Mastodon {@link Tag} implementation
  *
  * @author nuclearfog
  */
-public class MastodonHashtag implements Hashtag {
+public class MastodonTag implements Tag {
 
 	private static final long serialVersionUID = 4328931229081239280L;
 
@@ -26,7 +26,7 @@ public class MastodonHashtag implements Hashtag {
 	/**
 	 * @param json trend json object
 	 */
-	public MastodonHashtag(JSONObject json) {
+	public MastodonTag(JSONObject json) {
 		JSONArray history = json.optJSONArray("history");
 		String idStr = json.optString("id", "0");
 		name = '#' + json.optString("name", "");
@@ -92,10 +92,10 @@ public class MastodonHashtag implements Hashtag {
 
 	@Override
 	public boolean equals(@Nullable Object obj) {
-		if (!(obj instanceof Hashtag))
+		if (!(obj instanceof Tag))
 			return false;
-		Hashtag hashtag = (Hashtag) obj;
-		return getName().equals(hashtag.getName()) && getLocationId() == hashtag.getLocationId();
+		Tag tag = (Tag) obj;
+		return getName().equals(tag.getName()) && getLocationId() == tag.getLocationId();
 	}
 
 

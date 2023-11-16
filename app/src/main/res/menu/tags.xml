@@ -3,8 +3,8 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<item
-		android:id="@+id/menu_hashtag_add"
-		android:title="@string/menu_hashtag_add"
+		android:id="@+id/menu_tag_add"
+		android:title="@string/menu_add_tag"
 		android:icon="@drawable/plus"
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 		app:showAsAction="ifRoom|collapseActionView" />

@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import org.nuclearfog.twidda.ui.fragments.HashtagFragment;
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 import org.nuclearfog.twidda.ui.fragments.StatusFragment;
+import org.nuclearfog.twidda.ui.fragments.TagFragment;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
 
 /**
@@ -52,10 +52,10 @@ public class SearchAdapter extends ViewPagerAdapter {
 				break;
 
 			case 2:
-				fragment = new HashtagFragment();
+				fragment = new TagFragment();
 				param = new Bundle();
-				param.putInt(HashtagFragment.KEY_MODE, HashtagFragment.MODE_SEARCH);
-				param.putString(HashtagFragment.KEY_SEARCH, search);
+				param.putInt(TagFragment.KEY_MODE, TagFragment.MODE_SEARCH);
+				param.putString(TagFragment.KEY_SEARCH, search);
 				fragment.setArguments(param);
 				break;
 		}
