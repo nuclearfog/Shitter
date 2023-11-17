@@ -41,12 +41,12 @@ public class DatabaseStatus implements Status, StatusTable, StatusPropertiesTabl
 	private Media[] medias = {};
 	private Emoji[] emojis = {};
 	private Card[] cards = {};
-	private String replyName = "";
-	private String text = "";
-	private String source = "";
-	private String userMentions = "";
-	private String statusUrl = "";
-	private String language = "";
+	private String replyName;
+	private String text;
+	private String source;
+	private String userMentions;
+	private String statusUrl;
+	private String language;
 
 	/**
 	 * @param cursor  database cursor
@@ -66,14 +66,14 @@ public class DatabaseStatus implements Status, StatusTable, StatusPropertiesTabl
 		embeddedId = cursor.getLong(cursor.getColumnIndexOrThrow(EMBEDDED));
 		myRepostId = cursor.getLong(cursor.getColumnIndexOrThrow(REPOST_ID));
 		editedAt = cursor.getLong(cursor.getColumnIndexOrThrow(EDITED_AT));
-		String statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(URL));
-		String language = cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE));
+		statusUrl = cursor.getString(cursor.getColumnIndexOrThrow(URL));
+		language = cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE));
+		source = cursor.getString(cursor.getColumnIndexOrThrow(SOURCE));
+		text = cursor.getString(cursor.getColumnIndexOrThrow(TEXT));
+		replyName = cursor.getString(cursor.getColumnIndexOrThrow(REPLYNAME));
+		userMentions = cursor.getString(cursor.getColumnIndexOrThrow(MENTIONS));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA));
 		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(EMOJI));
-		String source = cursor.getString(cursor.getColumnIndexOrThrow(SOURCE));
-		String text = cursor.getString(cursor.getColumnIndexOrThrow(TEXT));
-		String replyName = cursor.getString(cursor.getColumnIndexOrThrow(REPLYNAME));
-		String userMentions = cursor.getString(cursor.getColumnIndexOrThrow(MENTIONS));
 		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
 
 		favorited = (register & MASK_STATUS_FAVORITED) != 0;
@@ -91,22 +91,12 @@ public class DatabaseStatus implements Status, StatusTable, StatusPropertiesTabl
 			visibility = VISIBLE_UNLISTED;
 		else
 			visibility = VISIBLE_PUBLIC;
-		if (mediaKeys != null && !mediaKeys.isEmpty())
+		if (mediaKeys != null && !mediaKeys.isEmpty()) {
 			this.mediaKeys = KEY_SEPARATOR.split(mediaKeys);
-		if (emojiKeys != null && !emojiKeys.isEmpty())
+		}
+		if (emojiKeys != null && !emojiKeys.isEmpty()) {
 			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
-		if (statusUrl != null)
-			this.statusUrl = statusUrl;
-		if (language != null)
-			this.language = language;
-		if (replyName != null)
-			this.replyName = replyName;
-		if (source != null)
-			this.source = source;
-		if (text != null)
-			this.text = text;
-		if (userMentions != null)
-			this.userMentions = userMentions;
+		}
 	}
 
 

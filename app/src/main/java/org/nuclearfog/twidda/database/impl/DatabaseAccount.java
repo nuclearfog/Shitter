@@ -26,14 +26,14 @@ public class DatabaseAccount implements Account, AccountTable {
 	private long userId;
 	private long loginDate;
 	private int apiType;
-	private String accessToken = "";
-	private String tokenSecret = "";
-	private String consumerToken = "";
-	private String consumerSecret = "";
-	private String bearerToken = "";
-	private String host = "";
-	private String screenName = "";
-	private String profileImage = "";
+	private String accessToken;
+	private String tokenSecret;
+	private String consumerToken;
+	private String consumerSecret;
+	private String bearerToken;
+	private String hostname;
+	private String screenName;
+	private String profileImage;
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS}
@@ -42,31 +42,14 @@ public class DatabaseAccount implements Account, AccountTable {
 		userId = cursor.getLong(0);
 		apiType = cursor.getInt(1);
 		loginDate = cursor.getLong(2);
-		String accessToken = cursor.getString(3);
-		String tokenSecret = cursor.getString(4);
-		String consumerToken = cursor.getString(5);
-		String consumerSecret = cursor.getString(6);
-		String bearerToken = cursor.getString(7);
-		String host = cursor.getString(8);
-		String name = cursor.getString(9);
-		String image = cursor.getString(10);
-
-		if (accessToken != null)
-			this.accessToken = accessToken;
-		if (tokenSecret != null)
-			this.tokenSecret = tokenSecret;
-		if (consumerToken != null)
-			this.consumerToken = consumerToken;
-		if (consumerSecret != null)
-			this.consumerSecret = consumerSecret;
-		if (bearerToken != null)
-			this.bearerToken = bearerToken;
-		if (host != null)
-			this.host = host;
-		if (image != null)
-			this.profileImage = image;
-		if (name != null)
-			this.screenName = name;
+		accessToken = cursor.getString(3);
+		tokenSecret = cursor.getString(4);
+		consumerToken = cursor.getString(5);
+		consumerSecret = cursor.getString(6);
+		bearerToken = cursor.getString(7);
+		hostname = cursor.getString(8);
+		screenName = cursor.getString(9);
+		profileImage = cursor.getString(10);
 	}
 
 
@@ -126,7 +109,7 @@ public class DatabaseAccount implements Account, AccountTable {
 
 	@Override
 	public String getHostname() {
-		return host;
+		return hostname;
 	}
 
 

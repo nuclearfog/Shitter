@@ -117,7 +117,6 @@
 	<dimen name="item_user_textsize_notification">12sp</dimen>
 
 	<!--dimens of item_account.xml-->
-	<dimen name="login_name_textsize_big">14sp</dimen>
 	<dimen name="login_name_textsize">12sp</dimen>
 	<dimen name="login_date_textsize">11sp</dimen>
 	<dimen name="login_card_padding">8dp</dimen>

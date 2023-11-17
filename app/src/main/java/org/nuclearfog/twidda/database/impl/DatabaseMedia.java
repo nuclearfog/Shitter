@@ -20,36 +20,25 @@ public class DatabaseMedia implements Media, MediaTable {
 	/**
 	 *
 	 */
-	public static final String[] PROJECTION = {KEY, URL, PREVIEW, TYPE, DESCRIPTION, BLUR};
+	public static final String[] COLUMNS = {KEY, URL, PREVIEW, TYPE, DESCRIPTION, BLUR};
 
 	private int mediaType;
-	private String key = "";
-	private String url = "";
-	private String preview = "";
-	private String description = "";
-	private String blurHash = "";
-
+	private String key;
+	private String url;
+	private String preview;
+	private String description;
+	private String blurHash;
 
 	/**
-	 * @param cursor database cursor containing media table
+	 * @param cursor database cursor containing this {@link #COLUMNS}
 	 */
 	public DatabaseMedia(Cursor cursor) {
-		String key = cursor.getString(0);
-		String url = cursor.getString(1);
-		String preview = cursor.getString(2);
-		String description = cursor.getString(3);
-		String blurHash = cursor.getString(4);
+		key = cursor.getString(0);
+		url = cursor.getString(1);
+		preview = cursor.getString(2);
+		description = cursor.getString(3);
+		blurHash = cursor.getString(4);
 		mediaType = cursor.getInt(3);
-		if (key != null)
-			this.key = key;
-		if (url != null)
-			this.url = url;
-		if (preview != null)
-			this.preview = preview;
-		if (description != null)
-			this.description = description;
-		if (blurHash != null)
-			this.blurHash = blurHash;
 	}
 
 

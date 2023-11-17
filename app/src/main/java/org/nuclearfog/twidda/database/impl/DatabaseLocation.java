@@ -23,26 +23,18 @@ public class DatabaseLocation implements Location, LocationTable {
 	public static final String[] PROJECTION = {ID, PLACE, COUNTRY, FULLNAME, COORDINATES};
 
 	private long id;
-	private String name = "";
-	private String coordinates = "";
-	private String country = "";
-	private String place = "";
+	private String name;
+	private String coordinates;
+	private String country;
+	private String place;
 
 
 	public DatabaseLocation(Cursor cursor) {
 		id = cursor.getLong(0);
-		String place = cursor.getString(1);
-		String country = cursor.getString(2);
-		String name = cursor.getString(3);
-		String coordinates = cursor.getString(4);
-		if (name != null)
-			this.name = name;
-		if (coordinates != null)
-			this.coordinates = coordinates;
-		if (country != null)
-			this.country = country;
-		if (place != null)
-			this.place = place;
+		place = cursor.getString(1);
+		country = cursor.getString(2);
+		name = cursor.getString(3);
+		coordinates = cursor.getString(4);
 	}
 
 

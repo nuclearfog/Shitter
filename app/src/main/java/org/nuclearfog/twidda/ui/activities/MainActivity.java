@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 
 	@Override
-	public void onResult(CredentialsLoader.Result result) {
+	public void onResult(@NonNull CredentialsLoader.Result result) {
 		setCurrentUser(result.user);
 	}
 

@@ -369,7 +369,7 @@ public class AppDatabase {
 			// delete old favorits
 			String[] delArgs = {Long.toString(ownerId)};
 			db.delete(FavoriteTable.TABLE, FAVORITE_SELECT_OWNER, delArgs);
-
+			// add new favorits
 			if (!statuses.isEmpty()) {
 				for (Status status : statuses) {
 					saveStatus(status, db, 0);
@@ -389,10 +389,10 @@ public class AppDatabase {
 	public void saveBookmarkTimeline(Statuses statuses, long ownerId) {
 		synchronized (adapter) {
 			SQLiteDatabase db = adapter.getDbWrite();
-			// delete old favorits
+			// delete old bookmarks
 			String[] delArgs = {Long.toString(ownerId)};
 			db.delete(BookmarkTable.TABLE, BOOKMARK_SELECT_OWNER, delArgs);
-
+			// add new bookmarks
 			if (!statuses.isEmpty()) {
 				for (Status status : statuses) {
 					saveStatus(status, db, 0);
@@ -1206,7 +1206,7 @@ public class AppDatabase {
 	@Nullable
 	private Media getMedia(SQLiteDatabase db, String key) {
 		String[] args = {key};
-		Cursor c = db.query(MediaTable.TABLE, DatabaseMedia.PROJECTION, MEDIA_SELECT, args, null, null, null, SINGLE_ITEM);
+		Cursor c = db.query(MediaTable.TABLE, DatabaseMedia.COLUMNS, MEDIA_SELECT, args, null, null, null, SINGLE_ITEM);
 		Media result = null;
 		if (c.moveToFirst())
 			result = new DatabaseMedia(c);

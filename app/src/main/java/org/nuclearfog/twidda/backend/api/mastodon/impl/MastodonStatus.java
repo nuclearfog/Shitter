@@ -377,9 +377,6 @@ public class MastodonStatus implements Status {
 		if (embeddedStatus instanceof MastodonStatus) {
 			((MastodonStatus) embeddedStatus).setRepost(reposted);
 		}
-		if (!reposted && reblogCount > 0) {
-			reblogCount--;
-		}
 	}
 
 	/**
@@ -389,9 +386,6 @@ public class MastodonStatus implements Status {
 		this.favorited = favorited;
 		if (embeddedStatus instanceof MastodonStatus) {
 			((MastodonStatus) embeddedStatus).setFavorite(favorited);
-		}
-		if (!favorited && favoriteCount > 0) {
-			favoriteCount--;
 		}
 	}
 

@@ -13,7 +13,6 @@
 	<string name="login_sec_opt" translatable="false">2.</string>
 	<string name="login_trd_opt" translatable="false">3.</string>
 	<string name="login_4th_opt" translatable="false">4.</string>
-	<string name="account_user_id_prefix" translatable="false">User ID:</string>
 
 	<!-- toast messages to inform user -->
 	<string name="info_list_removed">Userlist removed</string>
@@ -315,7 +314,6 @@
 	<string name="confirm_accept_follow_request">accept follow request?</string>
 	<string name="confirm_remove_account">remove account from list?</string>
 	<string name="confirm_remove_filter">delete filter?</string>
-	<string name="account_user_unnamed">\'unnamed\'</string>
 	<string name="toolbar_status_favoriter">User favoriting this status</string>
 	<string name="toolbar_status_liker">User liking this status</string>
 	<string name="time_now">now</string>

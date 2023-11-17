@@ -194,7 +194,6 @@
 	<string name="settings_follow_color">Follow Icon</string>
 	<string name="settings_enable_toolbar_overlap">Kompakte Profilansicht</string>
 	<string name="confirm_remove_filter">Filter löschen?</string>
-	<string name="account_user_unnamed">\'unbenannt\'</string>
 	<string name="menu_excluded_users">Blocklisten</string>
 	<string name="menu_hint_mute_user">\@name stummschalten</string>
 	<string name="menu_hint_block_user">\@name blockieren</string>

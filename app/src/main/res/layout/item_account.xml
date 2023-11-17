@@ -22,18 +22,6 @@
 			app:layout_constraintBottom_toBottomOf="parent" />
 
 		<TextView
-			android:id="@+id/item_account_username"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:lines="1"
-			android:textSize="@dimen/login_name_textsize_big"
-			android:layout_marginStart="@dimen/login_layout_margin"
-			android:layout_marginEnd="@dimen/login_layout_margin"
-			app:layout_constraintStart_toEndOf="@id/item_account_profile"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/item_account_remove" />
-
-		<TextView
 			android:id="@+id/item_account_screenname"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
@@ -42,7 +30,7 @@
 			android:layout_marginStart="@dimen/login_layout_margin"
 			android:layout_marginEnd="@dimen/login_layout_margin"
 			app:layout_constraintStart_toEndOf="@id/item_account_profile"
-			app:layout_constraintTop_toBottomOf="@id/item_account_username"
+			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintBottom_toTopOf="@id/item_account_date"
 			app:layout_constraintEnd_toStartOf="@id/item_account_remove" />
 
@@ -52,10 +40,10 @@
 			android:layout_height="wrap_content"
 			android:textSize="@dimen/login_date_textsize"
 			android:layout_marginStart="@dimen/login_layout_margin"
+			android:layout_marginTop="@dimen/login_layout_margin"
 			android:layout_marginEnd="@dimen/login_layout_margin"
 			app:layout_constraintStart_toEndOf="@id/item_account_profile"
 			app:layout_constraintTop_toBottomOf="@id/item_account_screenname"
-			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@id/item_account_remove" />
 
 		<ImageButton

@@ -245,7 +245,6 @@
 	<string name="status_translate_source">Traducido por:\u0020</string>
 	<string name="status_translate_source_language">Idioma:\u0020</string>
 	<string name="confirm_remove_account">¿Eliminar cuenta de la lista?</string>
-	<string name="account_user_unnamed">\'sinnombre\'</string>
 	<string name="toolbar_status_favoriter">Usuario marcando como favorito este estado</string>
 	<string name="toolbar_status_liker">Usuario le está gustando este estado</string>
 	<string name="time_now">Ahora</string>

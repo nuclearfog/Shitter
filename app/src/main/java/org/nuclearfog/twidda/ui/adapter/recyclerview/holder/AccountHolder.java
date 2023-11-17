@@ -24,7 +24,6 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
-import org.nuclearfog.twidda.model.User;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 

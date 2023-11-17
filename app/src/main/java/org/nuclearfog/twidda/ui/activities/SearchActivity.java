@@ -23,8 +23,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TagAction;
-import org.nuclearfog.twidda.backend.async.TagAction.Param;
-import org.nuclearfog.twidda.backend.async.TagAction.Result;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -40,7 +38,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class SearchActivity extends AppCompatActivity implements OnClickListener, OnTabSelectedListener, OnQueryTextListener, AsyncCallback<Result> {
+public class SearchActivity extends AppCompatActivity implements OnClickListener, OnTabSelectedListener, OnQueryTextListener, AsyncCallback<TagAction.Result> {
 
 	/**
 	 * Key for the search query, required
@@ -97,7 +95,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		} else if (query != null) {
 			search = query;
 			if (search.matches("^#\\S+") && !search.matches("^#\\d+")) {
-				Param param = new Param(Param.LOAD, search);
+				TagAction.Param param = new TagAction.Param(TagAction.Param.LOAD, search);
 				tagAction.execute(param, this);
 			}
 		}
@@ -205,11 +203,11 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		// follow/unfollow tag
 		else if (item.getItemId() == R.id.search_tag) {
 			if (tag != null && tagAction.isIdle()) {
-				Param param;
+				TagAction.Param param;
 				if (tag.following())
-					param = new Param(Param.UNFOLLOW, tag.getName());
+					param = new TagAction.Param(TagAction.Param.UNFOLLOW, tag.getName());
 				else
-					param = new Param(Param.FOLLOW, tag.getName());
+					param = new TagAction.Param(TagAction.Param.FOLLOW, tag.getName());
 				tagAction.execute(param, this);
 			}
 		}
@@ -256,21 +254,21 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 
 
 	@Override
-	public void onResult(@NonNull Result result) {
+	public void onResult(@NonNull TagAction.Result result) {
 		if (result.tag != null) {
 			this.tag = result.tag;
 			invalidateMenu();
 		}
 		switch (result.mode) {
-			case Result.FOLLOW:
+			case TagAction.Result.FOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_tag_followed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case Result.UNFOLLOW:
+			case TagAction.Result.UNFOLLOW:
 				Toast.makeText(getApplicationContext(), R.string.info_tag_unfollowed, Toast.LENGTH_SHORT).show();
 				break;
 
-			case Result.ERROR:
+			case TagAction.Result.ERROR:
 				if (result.exception == null || result.exception.getErrorCode() != ConnectionException.HTTP_FORBIDDEN)
 					ErrorUtils.showErrorMessage(this, result.exception);
 				break;

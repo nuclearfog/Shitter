@@ -89,20 +89,20 @@ public class DatabaseAdapter {
 			+ TagTable.LOCATION + " INTEGER,"
 			+ TagTable.INDEX + " INTEGER,"
 			+ TagTable.VOL + " INTEGER,"
-			+ TagTable.TAG_NAME + " TEXT);";
+			+ TagTable.TAG_NAME + " TEXT NOT NULL);";
 
 	/**
 	 * SQL query to create a table for user logins
 	 */
 	private static final String TABLE_ACCOUNTS = "CREATE TABLE IF NOT EXISTS "
 			+ AccountTable.TABLE + "("
-			+ AccountTable.ID + " INTEGER,"
+			+ AccountTable.ID + " INTEGER NOT NULL,"
 			+ AccountTable.DATE + " INTEGER,"
 			+ AccountTable.USERNAME + " TEXT,"
 			+ AccountTable.IMAGE + " TEXT,"
 			+ AccountTable.ACCESS_TOKEN + " TEXT,"
 			+ AccountTable.TOKEN_SECRET + " TEXT,"
-			+ AccountTable.HOSTNAME + " TEXT,"
+			+ AccountTable.HOSTNAME + " TEXT NOT NULL,"
 			+ AccountTable.API + " INTEGER,"
 			+ AccountTable.CLIENT_ID + " TEXT,"
 			+ AccountTable.CLIENT_SECRET + " TEXT,"
