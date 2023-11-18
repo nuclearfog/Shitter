@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.helper.update;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.model.Poll;
+import org.nuclearfog.twidda.model.PollOption;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ public class PollUpdate implements Serializable {
 	 *
 	 */
 	public PollUpdate() {
-
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class PollUpdate implements Serializable {
 		if (System.currentTimeMillis() < poll.getEndTime()) {
 			duration = (int) (poll.getEndTime() - System.currentTimeMillis());
 		}
-		for (Poll.Option option : poll.getOptions()) {
+		for (PollOption option : poll.getOptions()) {
 			options.add(option.getTitle());
 		}
 	}
@@ -108,6 +108,6 @@ public class PollUpdate implements Serializable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "valid=" + duration + " multiple=" + multipleChoice + "options=" + options.size();
+		return "valid=" + getDuration() + " multiple=" + multipleChoiceEnabled() + "options=" + getOptions().size();
 	}
 }

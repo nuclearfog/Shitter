@@ -29,9 +29,9 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 	private boolean isCurrentUser, isVerified, isLocked, defaultImage;
 	private String username = "";
 	private String screen_name = "";
-	private String bio = "";
+	private String description = "";
 	private String location = "";
-	private String link = "";
+	private String profileUrl = "";
 	private String profileImageSmall = "";
 	private String profileImageOrig = "";
 	private String profileBannerSmall = "";
@@ -48,8 +48,8 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 		String username = cursor.getString(cursor.getColumnIndexOrThrow(USERNAME));
 		String screen_name = cursor.getString(cursor.getColumnIndexOrThrow(SCREENNAME));
 		String profileImageOrig = cursor.getString(cursor.getColumnIndexOrThrow(IMAGE));
-		String bio = cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION));
-		String link = cursor.getString(cursor.getColumnIndexOrThrow(LINK));
+		String description = cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION));
+		String profileUrl = cursor.getString(cursor.getColumnIndexOrThrow(LINK));
 		String location = cursor.getString(cursor.getColumnIndexOrThrow(LOCATION));
 		String profileBannerOrig = cursor.getString(cursor.getColumnIndexOrThrow(BANNER));
 		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(EMOJI));
@@ -63,22 +63,22 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 		isLocked = (register & MASK_USER_PRIVATE) != 0;
 		defaultImage = (register & MASK_USER_DEFAULT_IMAGE) != 0;
 
+		if (emojiKeys != null && !emojiKeys.isEmpty())
+			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
 		if (username != null)
 			this.username = username;
 		if (screen_name != null)
 			this.screen_name = screen_name;
-		if (bio != null)
-			this.bio = bio;
-		if (link != null)
-			this.link = link;
-		if (location != null)
-			this.location = location;
 		if (profileImageOrig != null)
 			this.profileImageOrig = profileImageOrig;
+		if (description != null)
+			this.description = description;
+		if (profileUrl != null)
+			this.profileUrl = profileUrl;
+		if (location != null)
+			this.location = location;
 		if (profileBannerOrig != null)
 			this.profileBannerOrig = profileBannerOrig;
-		if (emojiKeys != null && !emojiKeys.isEmpty())
-			this.emojiKeys = KEY_SEPARATOR.split(emojiKeys);
 		setAccountInformation(account);
 	}
 
@@ -139,7 +139,7 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 
 	@Override
 	public String getDescription() {
-		return bio;
+		return description;
 	}
 
 
@@ -151,7 +151,7 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 
 	@Override
 	public String getProfileUrl() {
-		return link;
+		return profileUrl;
 	}
 
 
@@ -243,7 +243,6 @@ public class DatabaseUser implements User, UserTable, UserPropertiesTable {
 	 * setup account configuration
 	 */
 	public void setAccountInformation(Account account) {
-		isCurrentUser = true;
 		isCurrentUser = account.getId() == id;
 		switch (account.getConfiguration()) {
 			case MASTODON:

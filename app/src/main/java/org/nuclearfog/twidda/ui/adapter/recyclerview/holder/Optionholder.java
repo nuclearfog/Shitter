@@ -24,7 +24,7 @@ import org.nuclearfog.twidda.backend.utils.EmojiUtils;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
-import org.nuclearfog.twidda.model.Poll.Option;
+import org.nuclearfog.twidda.model.PollOption;
 
 /**
  * This holder if for a single poll option
@@ -96,7 +96,7 @@ public class Optionholder extends ViewHolder implements OnClickListener, AsyncCa
 	 * @param selected   true if option is selected
 	 * @param totalCount total vote count
 	 */
-	public void setContent(Option option, Emoji[] emojis, boolean selected, int totalCount) {
+	public void setContent(PollOption option, Emoji[] emojis, boolean selected, int totalCount) {
 		voteProgress.setMax(Math.max(totalCount, 1));
 		AppStyles.setDrawableColor(checkIcon, settings.getIconColor());
 		voteProgress.setProgress(option.getVotes());

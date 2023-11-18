@@ -22,7 +22,7 @@ public class DatabaseTag implements Tag, TagTable {
 	 */
 	public static final String[] COLUMNS = {TAG_NAME, VOL, INDEX, LOCATION, ID};
 
-	private String name;
+	private String name = "";
 	private int popularity;
 	private int rank;
 	private long id;
@@ -32,11 +32,13 @@ public class DatabaseTag implements Tag, TagTable {
 	 * @param cursor database cursor using this {@link #COLUMNS} projection
 	 */
 	public DatabaseTag(Cursor cursor) {
-		name = cursor.getString(0);
+		String name = cursor.getString(0);
 		popularity = cursor.getInt(1);
 		rank = cursor.getInt(2);
 		locationId = cursor.getLong(3);
 		id = cursor.getLong(4);
+		if (name != null)
+			this.name = name;
 	}
 
 
@@ -88,6 +90,6 @@ public class DatabaseTag implements Tag, TagTable {
 	@NonNull
 	@Override
 	public String toString() {
-		return "name=\"" + getName() + "\" rank=" + rank;
+		return "name=\"" + getName() + "\" rank=" + getRank();
 	}
 }

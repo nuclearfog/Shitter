@@ -42,31 +42,10 @@ public interface Poll extends Serializable {
 	/**
 	 * @return array of vote options
 	 */
-	Option[] getOptions();
+	PollOption[] getOptions();
 
 	/**
 	 * @return emojis used in option titles
 	 */
 	Emoji[] getEmojis();
-
-	/**
-	 * represents a vote option
-	 */
-	interface Option extends Serializable {
-
-		/**
-		 * @return title of the option
-		 */
-		String getTitle();
-
-		/**
-		 * @return vote count of the option
-		 */
-		int getVotes();
-
-		/**
-		 * @return true if option is selected
-		 */
-		boolean isSelected();
-	}
 }

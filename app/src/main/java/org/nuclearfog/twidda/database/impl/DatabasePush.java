@@ -31,11 +31,11 @@ public class DatabasePush implements WebPush, PushTable {
 
 	private long id;
 	private int policy;
-	private String host;
-	private String server_key;
-	private String pub_key;
-	private String sec_key;
-	private String auth_sec;
+	private String host = "";
+	private String server_key = "";
+	private String pub_key = "";
+	private String sec_key = "";
+	private String auth_sec = "";
 	private boolean alertMention;
 	private boolean alertPost;
 	private boolean alertRepost;
@@ -50,12 +50,21 @@ public class DatabasePush implements WebPush, PushTable {
 	 */
 	public DatabasePush(Cursor cursor) {
 		id = cursor.getLong(0);
-		host = cursor.getString(1);
-		server_key = cursor.getString(2);
-		pub_key = cursor.getString(3);
-		sec_key = cursor.getString(4);
-		auth_sec = cursor.getString(5);
+		String host = cursor.getString(1);
+		String server_key = cursor.getString(2);
+		String pub_key = cursor.getString(3);
+		String sec_key = cursor.getString(4);
+		String auth_sec = cursor.getString(5);
 		int flags = cursor.getInt(6);
+
+		alertMention = (flags & MASK_MENTION) != 0;
+		alertPost = (flags & MASK_STATUS) != 0;
+		alertRepost = (flags & MASK_REPOST) != 0;
+		alertFollowing = (flags & MASK_FOLLOWING) != 0;
+		alertRequest = (flags & MASK_REQUEST) != 0;
+		alertFavorite = (flags & MASK_FAVORITE) != 0;
+		alertPoll = (flags & MASK_POLL) != 0;
+		alertChange = (flags & MASK_MODIFIED) != 0;
 		if ((flags & MASK_POLICY_ALL) != 0) {
 			policy = POLICY_ALL;
 		} else if ((flags & MASK_POLICY_FOLLOWING) != 0) {
@@ -65,14 +74,16 @@ public class DatabasePush implements WebPush, PushTable {
 		} else {
 			policy = POLICY_NONE;
 		}
-		alertMention = (flags & MASK_MENTION) != 0;
-		alertPost = (flags & MASK_STATUS) != 0;
-		alertRepost = (flags & MASK_REPOST) != 0;
-		alertFollowing = (flags & MASK_FOLLOWING) != 0;
-		alertRequest = (flags & MASK_REQUEST) != 0;
-		alertFavorite = (flags & MASK_FAVORITE) != 0;
-		alertPoll = (flags & MASK_POLL) != 0;
-		alertChange = (flags & MASK_MODIFIED) != 0;
+		if (host != null)
+			this.host = host;
+		if (server_key != null)
+			this.server_key = server_key;
+		if (pub_key != null)
+			this.pub_key = pub_key;
+		if (sec_key != null)
+			this.sec_key = sec_key;
+		if (auth_sec != null)
+			this.auth_sec = auth_sec;
 	}
 
 

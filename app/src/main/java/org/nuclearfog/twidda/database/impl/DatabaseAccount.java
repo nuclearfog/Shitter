@@ -26,14 +26,14 @@ public class DatabaseAccount implements Account, AccountTable {
 	private long userId;
 	private long loginDate;
 	private int apiType;
-	private String accessToken;
-	private String tokenSecret;
-	private String consumerToken;
-	private String consumerSecret;
-	private String bearerToken;
-	private String hostname;
-	private String screenName;
-	private String profileImage;
+	private String accessToken = "";
+	private String tokenSecret = "";
+	private String consumerToken = "";
+	private String consumerSecret = "";
+	private String bearerToken = "";
+	private String hostname = "";
+	private String screenName = "";
+	private String profileImage = "";
 
 	/**
 	 * @param cursor database cursor using this {@link #COLUMNS}
@@ -42,14 +42,31 @@ public class DatabaseAccount implements Account, AccountTable {
 		userId = cursor.getLong(0);
 		apiType = cursor.getInt(1);
 		loginDate = cursor.getLong(2);
-		accessToken = cursor.getString(3);
-		tokenSecret = cursor.getString(4);
-		consumerToken = cursor.getString(5);
-		consumerSecret = cursor.getString(6);
-		bearerToken = cursor.getString(7);
-		hostname = cursor.getString(8);
-		screenName = cursor.getString(9);
-		profileImage = cursor.getString(10);
+		String accessToken = cursor.getString(3);
+		String tokenSecret = cursor.getString(4);
+		String consumerToken = cursor.getString(5);
+		String consumerSecret = cursor.getString(6);
+		String bearerToken = cursor.getString(7);
+		String hostname = cursor.getString(8);
+		String screenName = cursor.getString(9);
+		String profileImage = cursor.getString(10);
+
+		if (accessToken != null)
+			this.accessToken = accessToken;
+		if (tokenSecret != null)
+			this.tokenSecret = tokenSecret;
+		if (consumerToken != null)
+			this.consumerToken = consumerToken;
+		if (consumerSecret != null)
+			this.consumerSecret = consumerSecret;
+		if (bearerToken != null)
+			this.bearerToken = bearerToken;
+		if (hostname != null)
+			this.hostname = hostname;
+		if (screenName != null)
+			this.screenName = screenName;
+		if (profileImage != null)
+			this.profileImage = profileImage;
 	}
 
 
@@ -116,11 +133,9 @@ public class DatabaseAccount implements Account, AccountTable {
 	@Override
 	public Configuration getConfiguration() {
 		switch (apiType) {
+			default:
 			case API_MASTODON:
 				return Configuration.MASTODON;
-
-			default:
-				throw new RuntimeException("wrong API type: " + apiType);
 		}
 	}
 

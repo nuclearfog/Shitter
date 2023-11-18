@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,6 +8,7 @@ import org.json.JSONObject;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Poll;
+import org.nuclearfog.twidda.model.PollOption;
 
 /**
  * Poll implementation for Mastodon
@@ -25,7 +25,7 @@ public class MastodonPoll implements Poll {
 	private boolean voted;
 	private boolean multipleChoice;
 	private int voteCount;
-	private MastodonOption[] options;
+	private MastodonPollOption[] options;
 	private Emoji[] emojis = {};
 
 	/**
@@ -43,13 +43,13 @@ public class MastodonPoll implements Poll {
 		if (!json.isNull("voters_count")) {
 			voteCount = json.getInt("voters_count");
 		}
-		options = new MastodonOption[optionArray.length()];
+		options = new MastodonPollOption[optionArray.length()];
 		for (int i = 0; i < optionArray.length(); i++) {
 			JSONObject option = optionArray.optJSONObject(i);
 			if (option != null) {
-				options[i] = new MastodonOption(option);
+				options[i] = new MastodonPollOption(option);
 			} else {
-				options[i] = new MastodonOption(optionArray.optString(i, "-"));
+				options[i] = new MastodonPollOption(optionArray.optString(i, "-"));
 			}
 		}
 		if (voteArray != null) {
@@ -111,7 +111,7 @@ public class MastodonPoll implements Poll {
 
 
 	@Override
-	public Option[] getOptions() {
+	public PollOption[] getOptions() {
 		return options;
 	}
 
@@ -134,75 +134,10 @@ public class MastodonPoll implements Poll {
 		StringBuilder optionsBuf = new StringBuilder();
 		if (getOptions().length > 0) {
 			optionsBuf.append(" options=(");
-			for (Option option : getOptions())
+			for (PollOption option : getOptions())
 				optionsBuf.append(option).append(',');
 			optionsBuf.deleteCharAt(optionsBuf.length() - 1).append(')');
 		}
 		return "id=" + getId() + " expired=" + getEndTime() + optionsBuf;
-	}
-
-	/**
-	 * Mastodon poll option implementation
-	 */
-	private static class MastodonOption implements Option {
-
-		private static final long serialVersionUID = 4625032116285945452L;
-
-		private String title;
-		private int voteCount;
-		private boolean selected = false;
-
-		/**
-		 * @param json mastodon poll option json
-		 */
-		private MastodonOption(JSONObject json) {
-			voteCount = json.optInt("votes_count", 0);
-			title = json.optString("title", "-");
-		}
-
-		/**
-		 * @param title poll option title string
-		 */
-		private MastodonOption(String title) {
-			this.title = title;
-		}
-
-
-		@Override
-		public String getTitle() {
-			return title;
-		}
-
-
-		@Override
-		public int getVotes() {
-			return voteCount;
-		}
-
-
-		@Override
-		public boolean isSelected() {
-			return selected;
-		}
-
-
-		@NonNull
-		@Override
-		public String toString() {
-			return "title=\"" + getTitle() + "\" votes=" + getVotes() + " selected=" + isSelected();
-		}
-
-
-		@Override
-		public boolean equals(@Nullable Object obj) {
-			return obj instanceof Option && ((Option) obj).getTitle().equals(getTitle());
-		}
-
-		/**
-		 * mark this option as selected
-		 */
-		private void setSelected() {
-			selected = true;
-		}
 	}
 }

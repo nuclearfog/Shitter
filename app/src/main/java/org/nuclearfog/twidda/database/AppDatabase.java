@@ -42,6 +42,7 @@ import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.Poll;
+import org.nuclearfog.twidda.model.PollOption;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.Tag;
 import org.nuclearfog.twidda.model.User;
@@ -421,7 +422,7 @@ public class AppDatabase {
 					column.put(ReplyTable.REPLY, id);
 					column.put(ReplyTable.ID, status.getId());
 					column.put(ReplyTable.ORDER, i++);
-					db.insert(ReplyTable.TABLE, null, column);
+					db.insert(ReplyTable.TABLE, "", column);
 					saveStatus(status, db, StatusPropertiesTable.MASK_STATUS_REPLY);
 				}
 				adapter.commit();
@@ -449,7 +450,7 @@ public class AppDatabase {
 						saveStatus(notification.getStatus(), db, StatusPropertiesTable.MASK_STATUS_NOTIFICATION);
 						column.put(NotificationTable.ITEM, notification.getStatus().getId());
 					}
-					db.insertWithOnConflict(NotificationTable.TABLE, null, column, SQLiteDatabase.CONFLICT_REPLACE);
+					db.insertWithOnConflict(NotificationTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 				}
 				adapter.commit();
 			}
@@ -473,7 +474,7 @@ public class AppDatabase {
 				column.put(TagTable.TAG_NAME, tag.getName());
 				column.put(TagTable.INDEX, tag.getRank());
 				column.put(TagTable.ID, tag.getId());
-				db.insert(TagTable.TABLE, null, column);
+				db.insert(TagTable.TABLE, "", column);
 			}
 			adapter.commit();
 		}
@@ -1484,7 +1485,7 @@ public class AppDatabase {
 			savePoll(status.getPoll(), db);
 			column.put(StatusTable.POLL, status.getPoll().getId());
 		}
-		db.insertWithOnConflict(StatusTable.TABLE, null, column, SQLiteDatabase.CONFLICT_REPLACE);
+		db.insertWithOnConflict(StatusTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
 		saveUser(user, db, SQLiteDatabase.CONFLICT_IGNORE);
 		saveStatusFlags(db, status, flags);
 	}
@@ -1543,7 +1544,7 @@ public class AppDatabase {
 	private void savePoll(Poll poll, SQLiteDatabase db) {
 		ContentValues column = new ContentValues(4);
 		StringBuilder buf = new StringBuilder();
-		for (Poll.Option option : poll.getOptions()) {
+		for (PollOption option : poll.getOptions()) {
 			buf.append(option.getTitle()).append(';');
 		}
 		if (buf.length() > 0) {
@@ -1588,7 +1589,7 @@ public class AppDatabase {
 		int count = db.update(StatusPropertiesTable.TABLE, column, STATUS_REG_SELECT, args);
 		if (count == 0) {
 			// create new entry if there isn't one
-			db.insert(StatusPropertiesTable.TABLE, null, column);
+			db.insert(StatusPropertiesTable.TABLE, "", column);
 		}
 	}
 
@@ -1610,7 +1611,7 @@ public class AppDatabase {
 		int cnt = db.update(UserPropertiesTable.TABLE, column, USER_REG_SELECT, args);
 		if (cnt == 0) {
 			// create new entry if there isn't an entry
-			db.insert(UserPropertiesTable.TABLE, null, column);
+			db.insert(UserPropertiesTable.TABLE, "", column);
 		}
 	}
 

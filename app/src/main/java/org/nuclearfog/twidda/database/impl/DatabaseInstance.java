@@ -29,15 +29,15 @@ public class DatabaseInstance implements Instance, InstanceTable {
 	/**
 	 * SQL projection of the columns
 	 */
-	public static final String[] COLUMNS = {DOMAIN, TIMESTAMP, TITLE, VERSION, DESCRIPTION, FLAGS, TAG_LIMIT, STATUS_MAX_CHAR,
+	public static final String[] COLUMNS = {TIMESTAMP, DOMAIN, TITLE, VERSION, DESCRIPTION, FLAGS, TAG_LIMIT, STATUS_MAX_CHAR,
 			IMAGE_LIMIT, VIDEO_LIMIT, GIF_LIMIT, AUDIO_LIMIT, OPTIONS_LIMIT, OPTION_MAX_CHAR, MIME_TYPES, IMAGE_SIZE,
 			VIDEO_SIZE, GIF_SIZE, AUDIO_SIZE, POLL_MIN_DURATION, POLL_MAX_DURATION};
 
-	private String title;
-	private String domain;
-	private String version;
-	private String description;
-	private String[] mimeTypes;
+	private String title = "";
+	private String domain = "";
+	private String version = "";
+	private String description = "";
+	private String[] mimeTypes = {};
 	private long timestamp;
 	private int tagLimit;
 	private int statusMaxLength;
@@ -59,11 +59,11 @@ public class DatabaseInstance implements Instance, InstanceTable {
 	 * @param cursor table rows with this {@link #COLUMNS}
 	 */
 	public DatabaseInstance(Cursor cursor) {
-		domain = cursor.getString(0);
-		timestamp = cursor.getLong(1);
-		title = cursor.getString(2);
-		version = cursor.getString(3);
-		description = cursor.getString(4);
+		timestamp = cursor.getLong(0);
+		String domain = cursor.getString(1);
+		String title = cursor.getString(2);
+		String version = cursor.getString(3);
+		String description = cursor.getString(4);
 		int flags = cursor.getInt(5);
 		tagLimit = cursor.getInt(6);
 		statusMaxLength = cursor.getInt(7);
@@ -81,11 +81,16 @@ public class DatabaseInstance implements Instance, InstanceTable {
 		pollMinDuration = cursor.getInt(19);
 		pollMaxDuration = cursor.getInt(20);
 
-		if (!mimeTypeStr.trim().isEmpty()) {
+		if (mimeTypeStr != null && !mimeTypeStr.trim().isEmpty())
 			mimeTypes = KEY_SEPARATOR.split(mimeTypeStr);
-		} else {
-			mimeTypes = new String[0];
-		}
+		if (domain != null)
+			this.domain = domain;
+		if (title != null)
+			this.title = title;
+		if (version != null)
+			this.version = version;
+		if (description != null)
+			this.description = description;
 		translationSupported = (flags & MASK_TRANSLATION) != 0;
 	}
 
