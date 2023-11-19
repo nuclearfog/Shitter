@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+	<!--TODO needs to be translated-->
+
+	<plurals name="seconds_ago">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> second ago</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> seconds ago</item>
+	</plurals>
+
+	<plurals name="minutes_ago">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> minute ago</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> minutes ago</item>
+	</plurals>
+
+	<plurals name="hours_ago">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> hour ago</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> hours ago</item>
+	</plurals>
+
+	<plurals name="days_ago">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> day ago</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> days ago</item>
+	</plurals>
+
+	<plurals name="weeks_ago">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> week ago</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> weeks ago</item>
+	</plurals>
+
+	<plurals name="seconds_remain">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> second remains</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> seconds remain</item>
+	</plurals>
+
+	<plurals name="minutes_remain">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> minute remains</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> minutes remain</item>
+	</plurals>
+
+	<plurals name="hours_remain">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> hour remains</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> hours remain</item>
+	</plurals>
+
+	<plurals name="days_remain">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> day remains</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> days remain</item>
+	</plurals>
+
+	<plurals name="weeks_remain">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> week remains</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> weeks remain</item>
+	</plurals>
+
+	<plurals name="poll_votes">
+		<item quantity="one"><xliff:g id="count">%d</xliff:g> Vote</item>
+		<item quantity="other"><xliff:g id="count">%d</xliff:g> Votes</item>
+	</plurals>
+
+</resources>

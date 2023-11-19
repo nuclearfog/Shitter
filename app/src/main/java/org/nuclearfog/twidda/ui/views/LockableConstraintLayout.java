@@ -44,13 +44,14 @@ public class LockableConstraintLayout extends ConstraintLayout {
 				if (deltaY < 0.0f && callback != null) {
 					yLock = callback.aquireVerticalScrollLock();
 				}
-				// fall through
+				yPos = ev.getAxisValue(MotionEvent.AXIS_Y);
+				break;
 
 			case MotionEvent.ACTION_POINTER_DOWN:
 			case MotionEvent.ACTION_DOWN:
 				// note the current coordinates touch event
 				yPos = ev.getAxisValue(MotionEvent.AXIS_Y);
-				break;
+				// fall through
 
 			default:
 				yLock = false;
