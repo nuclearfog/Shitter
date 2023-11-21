@@ -12,8 +12,6 @@ import android.widget.RemoteViews.RemoteView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
-import static android.view.MotionEvent.*;
-
 import org.nuclearfog.twidda.R;
 
 /**
@@ -76,18 +74,17 @@ public class ZoomView extends AppCompatImageView {
 		if (getScaleType() != ScaleType.MATRIX)
 			setScaleType(ScaleType.MATRIX);
 		if (event.getPointerCount() == 1) {
-
-			switch (event.getAction()) {
-				case ACTION_UP:
+			switch (event.getActionMasked()) {
+				case MotionEvent.ACTION_UP:
 					pos.set(event.getX(), event.getY());
 					moveLock = false;
 					break;
 
-				case ACTION_DOWN:
+				case MotionEvent.ACTION_DOWN:
 					pos.set(event.getX(), event.getY());
 					break;
 
-				case ACTION_MOVE:
+				case MotionEvent.ACTION_MOVE:
 					if (moveLock || !enableMove)
 						return super.performClick();
 					float posX = event.getX() - pos.x;
@@ -101,15 +98,15 @@ public class ZoomView extends AppCompatImageView {
 		} else if (event.getPointerCount() == 2) {
 			float distX, distY, scale;
 			switch (event.getActionMasked()) {
-				case ACTION_POINTER_UP:
-				case ACTION_POINTER_DOWN:
+				case MotionEvent.ACTION_POINTER_UP:
+				case MotionEvent.ACTION_POINTER_DOWN:
 					distX = event.getX(0) - event.getX(1);
 					distY = event.getY(0) - event.getY(1);
 					dist.set(distX, distY);                     // Distance vector
 					moveLock = true;
 					break;
 
-				case ACTION_MOVE:
+				case MotionEvent.ACTION_MOVE:
 					distX = event.getX(0) - event.getX(1);
 					distY = event.getY(0) - event.getY(1);
 					PointF current = new PointF(distX, distY);
@@ -167,7 +164,8 @@ public class ZoomView extends AppCompatImageView {
 	 */
 	private void apply(Matrix m) {
 		Drawable d = getDrawable();
-		if (d == null) return;
+		if (d == null)
+			return;
 
 		float[] val = new float[9];
 		m.getValues(val);

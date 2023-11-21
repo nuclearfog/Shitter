@@ -9,6 +9,8 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 /**
+ * {@link ScrollingMovementMethod} implementation fixing TextView scrolling issues
+ *
  * @author nuclearfog
  */
 public class LinkAndScrollMovement extends ScrollingMovementMethod {
@@ -29,6 +31,7 @@ public class LinkAndScrollMovement extends ScrollingMovementMethod {
 	private int yScroll = 0;
 
 	/**
+	 *
 	 */
 	private LinkAndScrollMovement() {
 		super();
@@ -36,7 +39,7 @@ public class LinkAndScrollMovement extends ScrollingMovementMethod {
 
 	@Override
 	public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
-		switch(event.getAction()) {
+		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				lockParentScrolling(widget, true);
 				xScroll = widget.getScrollX();
@@ -69,26 +72,26 @@ public class LinkAndScrollMovement extends ScrollingMovementMethod {
 	}
 
 	/**
-	 * lock parent view scrolling
-	 *
-	 * @param widget interacting TextView
-	 * @param lock true if parent views scrolling should be locked
-	 */
-	private void lockParentScrolling(TextView widget, boolean lock) {
-		ViewParent parent = widget.getParent();
-		int lineCount = widget.getLineCount();
-		int maxLines = widget.getMaxLines();
-		if ( parent != null && maxLines > 0 && lineCount > maxLines ) {
-			parent.requestDisallowInterceptTouchEvent(lock);
-		}
-	}
-
-	/**
 	 * Get singleton instance of the movement method
 	 *
 	 * @return LinkAndScrollingMovementMethod object
 	 */
 	public static LinkAndScrollMovement getInstance() {
 		return instance;
+	}
+
+	/**
+	 * lock parent view scrolling
+	 *
+	 * @param widget interacting TextView
+	 * @param lock   true if parent views scrolling should be locked
+	 */
+	private void lockParentScrolling(TextView widget, boolean lock) {
+		ViewParent parent = widget.getParent();
+		int lineCount = widget.getLineCount();
+		int maxLines = widget.getMaxLines();
+		if (parent != null && maxLines > 0 && lineCount > maxLines) {
+			parent.requestDisallowInterceptTouchEvent(lock);
+		}
 	}
 }
