@@ -30,7 +30,7 @@ import org.nuclearfog.twidda.ui.dialogs.DescriptionDialog.DescriptionCallback;
 import org.nuclearfog.twidda.ui.dialogs.MetaDialog;
 import org.nuclearfog.twidda.ui.views.AnimatedImageView;
 import org.nuclearfog.twidda.ui.views.DescriptionView;
-import org.nuclearfog.zoomview.ZoomView;
+import org.nuclearfog.twidda.ui.views.ZoomView;
 
 import java.io.File;
 import java.io.Serializable;

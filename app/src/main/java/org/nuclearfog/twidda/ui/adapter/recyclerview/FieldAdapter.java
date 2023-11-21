@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
-import org.nuclearfog.tag.Tagger.OnTagClickListener;
+import org.nuclearfog.twidda.backend.utils.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.model.lists.Fields;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.FieldHolder;
 

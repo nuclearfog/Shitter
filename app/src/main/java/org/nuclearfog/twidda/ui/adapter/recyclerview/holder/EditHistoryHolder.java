@@ -20,15 +20,15 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
-import org.nuclearfog.tag.Tagger;
-import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
+import org.nuclearfog.twidda.backend.utils.LinkAndScrollMovement;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
+import org.nuclearfog.twidda.backend.utils.Tagger;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.EditedStatus;
 import org.nuclearfog.twidda.model.User;

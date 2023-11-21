@@ -10,11 +10,11 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.tag.Tagger;
-import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
+import org.nuclearfog.twidda.backend.utils.Tagger;
+import org.nuclearfog.twidda.backend.utils.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User.Field;
 

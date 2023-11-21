@@ -9,4 +9,10 @@
 		<attr name="viewpager" format="reference" />
 	</declare-styleable>
 
+	<declare-styleable name="ZoomView">
+		<attr name="max_zoom_in" format="float" />
+		<attr name="max_zoom_out" format="float" />
+		<attr name="enable_move" format="boolean" />
+	</declare-styleable>
+
 </resources>
