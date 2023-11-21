@@ -15,7 +15,7 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
 
-	<org.nuclearfog.zoomview.ZoomView
+	<org.nuclearfog.twidda.ui.views.ZoomView
 		android:id="@+id/page_image_viewer"
 		android:layout_width="0dp"
 		android:layout_height="0dp"

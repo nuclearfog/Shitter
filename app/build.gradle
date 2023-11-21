@@ -61,7 +61,7 @@ dependencies {
 	//noinspection GradleDependency
 	implementation 'com.squareup.picasso:picasso:2.8'
 	implementation 'com.github.QuadFlask:colorpicker:0.0.15'
-	implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
+	implementation 'com.kyleduo.switchbutton:library:2.1.0'
 	implementation 'com.github.UnifiedPush:android-connector:2.1.1'
 	implementation 'com.google.android.material:material:1.9.0'
 	implementation 'jp.wasabeef:picasso-transformations:2.4.0'

@@ -72,12 +72,6 @@ public class ZoomView extends AppCompatImageView {
 
 
 	@Override
-	public boolean performClick() {
-		return super.performClick();
-	}
-
-
-	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (getScaleType() != ScaleType.MATRIX)
 			setScaleType(ScaleType.MATRIX);
