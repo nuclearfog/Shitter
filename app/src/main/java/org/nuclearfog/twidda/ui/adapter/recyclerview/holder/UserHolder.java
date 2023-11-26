@@ -50,7 +50,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	private static final int IMG_SIZE = 150;
 
 	private TextView username, screenname, followingCount, followerCount, label;
-	private ImageView profileImg, verifyIcon, lockedIcon;
+	private ImageView profileImg, verifyIcon, lockedIcon, labelIcon;
 	private ImageButton delete;
 	private View notificationDismiss;
 	private Drawable placeholder;
@@ -66,7 +66,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	/**
 	 * @param enableRemoveButton true to enable remove button
 	 */
-	public UserHolder(ViewGroup parent, OnHolderClickListener listener, boolean enableRemoveButton) {
+	public UserHolder(ViewGroup parent, OnHolderClickListener listener, boolean isNotification, boolean enableRemoveButton) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false));
 		settings = GlobalSettings.get(parent.getContext());
 		picasso = PicassoBuilder.get(parent.getContext());
@@ -76,6 +76,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_user_container);
 		label = itemView.findViewById(R.id.item_user_label);
+		labelIcon = itemView.findViewById(R.id.item_user_label_icon);
 		notificationDismiss = itemView.findViewById(R.id.item_user_notification_dismiss);
 		username = itemView.findViewById(R.id.item_user_username);
 		screenname = itemView.findViewById(R.id.item_user_screenname);
@@ -93,6 +94,13 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 			delete.setVisibility(View.VISIBLE);
 		} else {
 			delete.setVisibility(View.GONE);
+		}
+		if (isNotification) {
+			label.setVisibility(View.VISIBLE);
+			labelIcon.setVisibility(View.VISIBLE);
+			if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
+				notificationDismiss.setVisibility(View.VISIBLE);
+			}
 		}
 		itemView.setOnClickListener(this);
 		notificationDismiss.setOnClickListener(this);
@@ -188,11 +196,7 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 				iconRes = R.drawable.follower_request;
 				break;
 		}
-		if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
-			notificationDismiss.setVisibility(View.VISIBLE);
-		}
-		label.setVisibility(View.VISIBLE);
-		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
+		labelIcon.setImageResource(iconRes);
 		label.setText(text);
 	}
 }

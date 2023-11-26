@@ -53,7 +53,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private static final int IMG_SIZE = 150;
 
-	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus;
+	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus, labelIcon;
 	private TextView username, screenname, statusText, repost, favorite, reply, reposter, created, replyname, label;
 	private View dismissButton;
 	private RecyclerView iconList;
@@ -73,7 +73,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	/**
 	 *
 	 */
-	public StatusHolder(ViewGroup parent, OnHolderClickListener listener) {
+	public StatusHolder(ViewGroup parent, OnHolderClickListener listener, boolean isNotification) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status, parent, false));
 		settings = GlobalSettings.get(parent.getContext());
 		picasso = PicassoBuilder.get(parent.getContext());
@@ -101,6 +101,7 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 		reposter = itemView.findViewById(R.id.item_status_reposter_name);
 		created = itemView.findViewById(R.id.item_status_created_at);
 		replyname = itemView.findViewById(R.id.item_status_reply_name);
+		labelIcon = itemView.findViewById(R.id.item_status_label_icon);
 
 		placeholder = new ColorDrawable(EMPTY_COLOR);
 		iconList.setLayoutManager(new LinearLayoutManager(parent.getContext(), RecyclerView.HORIZONTAL, false));
@@ -111,6 +112,13 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			favoriteIcon.setImageResource(R.drawable.like);
 		} else {
 			favoriteIcon.setImageResource(R.drawable.favorite);
+		}
+		if (isNotification) {
+			label.setVisibility(View.VISIBLE);
+			labelIcon.setVisibility(View.VISIBLE);
+			if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
+				dismissButton.setVisibility(View.VISIBLE);
+			}
 		}
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		cardLayout.setCardBackgroundColor(settings.getCardColor());
@@ -288,12 +296,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 				iconRes = R.drawable.poll;
 				break;
 		}
-		label.setVisibility(View.VISIBLE);
 		label.setText(text);
-		label.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
-		if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
-			dismissButton.setVisibility(View.VISIBLE);
-		}
+		labelIcon.setImageResource(iconRes);
 		AppStyles.setDrawableColor(label, settings.getIconColor());
 	}
 

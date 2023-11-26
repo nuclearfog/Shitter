@@ -35,6 +35,7 @@
 	<string name="info_filter_removed">Filter gelöscht</string>
 	<string name="info_user_reported">Nutzer gemeldet</string>
 	<string name="info_status_reported">Status gemeldet</string>
+	<string name="info_report_submit">Meldung wird eingereicht</string>
 	<string name="info_error">Fehler!</string>
 	<string name="menu_status_edit">bearbeiten</string>
 	<string name="menu_status_delete">löschen</string>

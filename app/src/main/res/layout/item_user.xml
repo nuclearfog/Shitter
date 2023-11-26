@@ -12,16 +12,28 @@
 		android:layout_height="match_parent"
 		android:padding="@dimen/item_user_layout_padding">
 
+		<ImageView
+			android:id="@+id/item_user_label_icon"
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:visibility="gone"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@id/item_user_label"
+			app:layout_constraintBottom_toBottomOf="@id/item_user_label"
+			app:layout_constraintDimensionRatio="1.0"
+			tools:ignore="ContentDescription" />
+
 		<TextView
 			android:id="@+id/item_user_label"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:lines="1"
-			android:drawablePadding="@dimen/item_user_drawable_margin"
 			android:textSize="@dimen/item_user_textsize_notification"
+			android:layout_marginStart="@dimen/item_user_drawable_margin"
 			android:layout_marginBottom="@dimen/item_user_image_margin"
+			android:layout_marginEnd="@dimen/item_user_drawable_margin"
 			android:visibility="gone"
-			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintStart_toEndOf="@id/item_user_label_icon"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintBottom_toTopOf="@id/item_user_notification_barrier"
 			app:layout_constraintEnd_toStartOf="@id/item_user_notification_dismiss" />
@@ -36,7 +48,6 @@
 			android:scaleType="fitCenter"
 			android:contentDescription="@string/notification_dismiss"
 			app:layout_constraintDimensionRatio="1"
-			app:layout_constraintStart_toEndOf="@id/item_user_label"
 			app:layout_constraintTop_toTopOf="@id/item_user_label"
 			app:layout_constraintBottom_toBottomOf="@id/item_user_label"
 			app:layout_constraintEnd_toEndOf="parent"

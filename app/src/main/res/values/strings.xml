@@ -82,6 +82,7 @@
 	<string name="info_status_reported">Post reported</string>
 	<string name="info_schedule_updated">scheduled post updated</string>
 	<string name="info_schedule_removed">scheduled post removed</string>
+	<string name="info_report_submit">submitting report</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->

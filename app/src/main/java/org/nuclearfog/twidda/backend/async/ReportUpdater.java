@@ -32,9 +32,9 @@ public class ReportUpdater extends AsyncExecutor<ReportUpdate, ReportUpdater.Res
 	protected Result doInBackground(@NonNull ReportUpdate param) {
 		try {
 			connection.createReport(param);
-			return new Result(true, null);
+			return new Result(null);
 		} catch (ConnectionException exception) {
-			return new Result(false, exception);
+			return new Result(exception);
 		}
 	}
 
@@ -43,13 +43,11 @@ public class ReportUpdater extends AsyncExecutor<ReportUpdate, ReportUpdater.Res
 	 */
 	public static class Result {
 
-		public final boolean reported;
 		@Nullable
 		public final ConnectionException exception;
 
-		Result(boolean reported, @Nullable ConnectionException exception) {
+		Result(@Nullable ConnectionException exception) {
 			this.exception = exception;
-			this.reported = reported;
 		}
 	}
 }

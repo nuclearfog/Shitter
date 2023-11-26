@@ -145,6 +145,7 @@ public class ReportDialog extends Dialog implements OnClickListener {
 				update.setComment(editDescription.getText().toString());
 				update.setForward(switchForward.isChecked());
 				reportUpdater.execute(update, reportResult);
+				Toast.makeText(getContext(), R.string.info_report_submit, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -169,15 +170,16 @@ public class ReportDialog extends Dialog implements OnClickListener {
 	}
 
 	/**
-	 * callback for {@link ReportUpdater}
+	 * callback used by {@link ReportUpdater}
 	 */
 	private void onReportResult(@NonNull ReportUpdater.Result result) {
-		if (result.reported) {
+		if (result.exception == null) {
 			if (update != null && update.getStatusIds().length > 0) {
 				Toast.makeText(getContext(), R.string.info_status_reported, Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getContext(), R.string.info_user_reported, Toast.LENGTH_SHORT).show();
 			}
+			dismiss();
 		} else {
 			ErrorUtils.showErrorMessage(getContext(), result.exception);
 		}

@@ -26,6 +26,7 @@ import org.nuclearfog.twidda.model.Translation;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.model.WebPush;
+import org.nuclearfog.twidda.model.lists.Announcements;
 import org.nuclearfog.twidda.model.lists.Domains;
 import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.model.lists.Notifications;
@@ -69,6 +70,13 @@ public interface Connection {
 	 * @return instance information
 	 */
 	Instance getInformation() throws ConnectionException;
+
+	/**
+	 * get instance announcements
+	 *
+	 * @return a list of {@link org.nuclearfog.twidda.model.Announcement}
+	 */
+	Announcements getAnnouncements() throws ConnectionException;
 
 	/**
 	 * lookup user and return user information

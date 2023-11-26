@@ -72,7 +72,7 @@ public class UserAdapter extends Adapter<ViewHolder> implements OnHolderClickLis
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == ITEM_USER) {
-			return new UserHolder(parent, this, enableDelete);
+			return new UserHolder(parent, this, false, enableDelete);
 		} else {
 			return new PlaceHolder(parent, this, false);
 		}

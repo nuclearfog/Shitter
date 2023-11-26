@@ -78,7 +78,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == VIEW_STATUS) {
-			return new StatusHolder(parent, this);
+			return new StatusHolder(parent, this, false);
 		} else {
 			return new PlaceHolder(parent, this, false);
 		}
