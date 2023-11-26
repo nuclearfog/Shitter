@@ -157,6 +157,10 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public void onItemClick(int position, int type, int... extras) {
 		Notification item = notifications.get(position);
 		switch (type) {
+			case OnHolderClickListener.NOTIFICATION_USER_CLICK:
+				listener.onNotificationClick(item, OnNotificationClickListener.NOTIFICATION_VIEW_USER);
+				break;
+
 			case OnHolderClickListener.USER_CLICK:
 			case OnHolderClickListener.STATUS_LABEL:
 				if (item != null && item.getUser() != null) {
@@ -166,7 +170,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 
 			case OnHolderClickListener.STATUS_CLICK:
 				if (item != null) {
-					listener.onNotificationClick(item, OnNotificationClickListener.NOTIFICATION_VIEW);
+					listener.onNotificationClick(item, OnNotificationClickListener.NOTIFICATION_VIEW_STATUS);
 				}
 				break;
 
@@ -293,25 +297,30 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public interface OnNotificationClickListener {
 
 		/**
-		 * used when a notification was clicked
+		 * used when a status notification was clicked
 		 */
-		int NOTIFICATION_VIEW = 1;
+		int NOTIFICATION_VIEW_STATUS = 1;
+
+		/**
+		 * used when an user notification was clicked
+		 */
+		int NOTIFICATION_VIEW_USER = 2;
 
 		/**
 		 * used when the notification dismiss button was clicked
 		 */
-		int NOTIFICATION_DISMISS = 2;
+		int NOTIFICATION_DISMISS = 3;
 
 		/**
 		 * used when the user of a notification was clicked
 		 */
-		int NOTIFICATION_USER = 3;
+		int NOTIFICATION_USER = 4;
 
 		/**
 		 * called on notification click
 		 *
 		 * @param notification clicked notification
-		 * @param action       action {@link #NOTIFICATION_VIEW ,#DISMISS}
+		 * @param action       action {@link #NOTIFICATION_VIEW_STATUS ,#DISMISS}
 		 */
 		void onNotificationClick(Notification notification, int action);
 

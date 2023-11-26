@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,8 +50,6 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 
 	private TextView username, screenname, followingCount, followerCount, label;
 	private ImageView profileImg, verifyIcon, lockedIcon, labelIcon;
-	private ImageButton delete;
-	private View notificationDismiss;
 	private Drawable placeholder;
 
 	private GlobalSettings settings;
@@ -71,13 +68,12 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		settings = GlobalSettings.get(parent.getContext());
 		picasso = PicassoBuilder.get(parent.getContext());
 		emojiLoader = new TextEmojiLoader(parent.getContext());
-		this.listener = listener;
-
 		CardView background = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_user_container);
+		View dismiss = itemView.findViewById(R.id.item_user_notification_dismiss);
+		View delete = itemView.findViewById(R.id.item_user_delete_button);
 		label = itemView.findViewById(R.id.item_user_label);
 		labelIcon = itemView.findViewById(R.id.item_user_label_icon);
-		notificationDismiss = itemView.findViewById(R.id.item_user_notification_dismiss);
 		username = itemView.findViewById(R.id.item_user_username);
 		screenname = itemView.findViewById(R.id.item_user_screenname);
 		followingCount = itemView.findViewById(R.id.item_user_following_count);
@@ -85,8 +81,8 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 		profileImg = itemView.findViewById(R.id.item_user_profile);
 		verifyIcon = itemView.findViewById(R.id.item_user_verified);
 		lockedIcon = itemView.findViewById(R.id.item_user_private);
-		delete = itemView.findViewById(R.id.item_user_delete_button);
 		placeholder = new ColorDrawable(EMPTY_COLOR);
+		this.listener = listener;
 
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		background.setCardBackgroundColor(settings.getCardColor());
@@ -99,12 +95,13 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 			label.setVisibility(View.VISIBLE);
 			labelIcon.setVisibility(View.VISIBLE);
 			if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
-				notificationDismiss.setVisibility(View.VISIBLE);
+				dismiss.setVisibility(View.VISIBLE);
 			}
 		}
-		itemView.setOnClickListener(this);
-		notificationDismiss.setOnClickListener(this);
+		dismiss.setOnClickListener(this);
 		delete.setOnClickListener(this);
+		label.setOnClickListener(this);
+		container.setOnClickListener(this);
 	}
 
 
@@ -112,12 +109,14 @@ public class UserHolder extends ViewHolder implements OnClickListener, AsyncCall
 	public void onClick(View v) {
 		int position = getLayoutPosition();
 		if (position != RecyclerView.NO_POSITION) {
-			if (v == itemView) {
+			if (v.getId() == R.id.item_user_container) {
 				listener.onItemClick(position, OnHolderClickListener.USER_CLICK);
-			} else if (v == delete) {
+			} else if (v.getId() == R.id.item_user_delete_button) {
 				listener.onItemClick(position, OnHolderClickListener.USER_REMOVE);
-			} else if (v == notificationDismiss) {
+			} else if (v.getId() == R.id.item_user_notification_dismiss) {
 				listener.onItemClick(position, OnHolderClickListener.NOTIFICATION_DISMISS);
+			} else if (v.getId() == R.id.item_user_label) {
+				listener.onItemClick(position, OnHolderClickListener.NOTIFICATION_USER_CLICK);
 			}
 		}
 	}

@@ -334,6 +334,7 @@
 	<dimen name="item_announcement_textsize_content">14sp</dimen>
 	<dimen name="item_announcement_textsize_time">12sp</dimen>
 	<dimen name="item_announcement_icon_size">14sp</dimen>
+	<dimen name="item_announcement_icon_margin">5dp</dimen>
 
 	<!--dimens of page_instance.xml-->
 	<dimen name="page_instance_toolbar_height">@dimen/toolbar_height</dimen>

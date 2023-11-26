@@ -50,6 +50,7 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener {
 		emojiLoader = new TextEmojiLoader(parent.getContext());
 		CardView card = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_announcement_container);
+		View dismiss = itemView.findViewById(R.id.item_announcement_dismiss);
 		time = itemView.findViewById(R.id.item_announcement_timestamp);
 		content = itemView.findViewById(R.id.item_announcement_content);
 		iconSize = parent.getResources().getDimensionPixelSize(R.dimen.item_announcement_icon_size);
@@ -58,6 +59,7 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener {
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 
 		container.setOnClickListener(this);
+		dismiss.setOnClickListener(this);
 		this.listener = listener;
 	}
 
@@ -68,6 +70,8 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener {
 		if (position != RecyclerView.NO_POSITION) {
 			if (v.getId() == R.id.item_announcement_container) {
 				listener.onItemClick(position, OnHolderClickListener.ANNOUNCEMENT_CLICK);
+			} else if (v.getId() == R.id.item_announcement_dismiss) {
+				listener.onItemClick(position, OnHolderClickListener.ANNOUNCEMENT_DISMISS);
 			}
 		}
 	}

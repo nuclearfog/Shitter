@@ -120,7 +120,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onNotificationClick(Notification notification, int action) {
 		if (!isRefreshing()) {
 			switch (action) {
-				case OnNotificationClickListener.NOTIFICATION_VIEW:
+				case OnNotificationClickListener.NOTIFICATION_VIEW_STATUS:
 					Intent intent = new Intent(requireContext(), StatusActivity.class);
 					intent.putExtra(StatusActivity.KEY_DATA, notification);
 					activityResultLauncher.launch(intent);
@@ -139,11 +139,14 @@ public class NotificationFragment extends ListFragment implements OnNotification
 							confirmDialog.show(ConfirmDialog.FOLLOW_REQUEST);
 							select = notification;
 						}
-					} else {
-						intent = new Intent(requireContext(), ProfileActivity.class);
-						intent.putExtra(ProfileActivity.KEY_USER, notification.getUser());
-						startActivity(intent);
+						break;
 					}
+					// fall through
+
+				case OnNotificationClickListener.NOTIFICATION_VIEW_USER:
+					intent = new Intent(requireContext(), ProfileActivity.class);
+					intent.putExtra(ProfileActivity.KEY_USER, notification.getUser());
+					startActivity(intent);
 					break;
 			}
 		}

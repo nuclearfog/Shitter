@@ -55,7 +55,6 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 	private ImageView profile, repostUserIcon, verifiedIcon, lockedIcon, repostIcon, favoriteIcon, replyStatus, labelIcon;
 	private TextView username, screenname, statusText, repost, favorite, reply, reposter, created, replyname, label;
-	private View dismissButton;
 	private RecyclerView iconList;
 	private Drawable placeholder;
 
@@ -82,8 +81,8 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 
 		CardView cardLayout = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_status_container);
+		View dismiss = itemView.findViewById(R.id.item_status_notification_dismiss);
 		label = itemView.findViewById(R.id.item_status_label);
-		dismissButton = itemView.findViewById(R.id.item_status_notification_dismiss);
 		profile = itemView.findViewById(R.id.item_status_profile_image);
 		verifiedIcon = itemView.findViewById(R.id.item_status_verified_icon);
 		lockedIcon = itemView.findViewById(R.id.item_status_locked_icon);
@@ -117,15 +116,15 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 			label.setVisibility(View.VISIBLE);
 			labelIcon.setVisibility(View.VISIBLE);
 			if (settings.getLogin().getConfiguration().notificationDismissEnabled()) {
-				dismissButton.setVisibility(View.VISIBLE);
+				dismiss.setVisibility(View.VISIBLE);
 			}
 		}
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 		cardLayout.setCardBackgroundColor(settings.getCardColor());
 
 		label.setOnClickListener(this);
-		itemView.setOnClickListener(this);
-		dismissButton.setOnClickListener(this);
+		container.setOnClickListener(this);
+		dismiss.setOnClickListener(this);
 	}
 
 
@@ -133,11 +132,11 @@ public class StatusHolder extends ViewHolder implements OnClickListener {
 	public void onClick(View v) {
 		int position = getLayoutPosition();
 		if (position != RecyclerView.NO_POSITION) {
-			if (v == itemView) {
+			if (v.getId() == R.id.item_status_container) {
 				listener.onItemClick(position, OnHolderClickListener.STATUS_CLICK);
-			} else if (v == label) {
+			} else if (v.getId() == R.id.item_status_label) {
 				listener.onItemClick(position, OnHolderClickListener.STATUS_LABEL);
-			} else if (v == dismissButton) {
+			} else if (v.getId() == R.id.item_status_notification_dismiss) {
 				listener.onItemClick(position, OnHolderClickListener.NOTIFICATION_DISMISS);
 			}
 		}

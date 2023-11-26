@@ -92,6 +92,12 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 		// todo implement this
 	}
 
+
+	@Override
+	public void onAnnouncementDismiss(Announcement announcement) {
+		// todo implement this
+	}
+
 	/**
 	 *
 	 */

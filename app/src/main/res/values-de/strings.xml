@@ -114,6 +114,7 @@
 	<string name="edit_location_hint">Standortnamen eingeben</string>
 	<string name="error_no_card_app">Keine Karten App gefunden!</string>
 	<string name="error_no_media_app">Keine Galerie App gefunden!</string>
+	<string name="description_instance_banner">Instanz Bannerbild</string>
 	<string name="delete_list">Liste löschen</string>
 	<string name="confirm_delete_list">Liste löschen?</string>
 	<string name="confirm_unfollow_list">Liste entfolgen?</string>
@@ -180,6 +181,7 @@
 	<string name="button_share">Link teilen</string>
 	<string name="settings_enable_floating_button">Floating-Button aktivieren</string>
 	<string name="settings_look">Aussehen</string>
+	<string name="menu_instance_info">Instanzinformation</string>
 	<string name="dialog_link_image_preview">Linkvorschau Bild</string>
 	<string name="toolbar_title_filter">Status-Filter</string>
 	<string name="status_translate_text">übersetzen</string>
@@ -361,4 +363,5 @@
 	<string name="menu_status_history">Bearbeitungsverlauf</string>
 	<string name="hint_duration">Dauer</string>
 	<string name="instance_announcement_label">Ankündigungen</string>
+	<string name="announcement_dismiss">Instanz-Ankündigung loschen</string>
 </resources>

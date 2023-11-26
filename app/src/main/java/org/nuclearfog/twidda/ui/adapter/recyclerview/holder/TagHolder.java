@@ -51,7 +51,7 @@ public class TagHolder extends ViewHolder implements OnClickListener {
 		} else {
 			btnRemove.setVisibility(View.GONE);
 		}
-		itemView.setOnClickListener(this);
+		container.setOnClickListener(this);
 		btnRemove.setOnClickListener(this);
 	}
 
@@ -63,7 +63,7 @@ public class TagHolder extends ViewHolder implements OnClickListener {
 			if (position != RecyclerView.NO_POSITION) {
 				listener.onItemClick(position, OnHolderClickListener.TAG_REMOVE);
 			}
-		} else if (v == itemView) {
+		} else if (v.getId() == R.id.item_tag_container) {
 			if (position != RecyclerView.NO_POSITION) {
 				listener.onItemClick(position, OnHolderClickListener.TAG_CLICK);
 			}

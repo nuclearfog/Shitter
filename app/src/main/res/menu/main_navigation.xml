@@ -35,5 +35,5 @@
 
 	<item
 		android:id="@+id/menu_navigator_instance"
-		android:title="@string/menu_instance" />
+		android:title="@string/menu_instance_info" />
 </menu>

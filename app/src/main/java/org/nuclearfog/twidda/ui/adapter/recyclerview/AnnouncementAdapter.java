@@ -49,7 +49,11 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		listener.onAnnouncementClick(items.get(position));
+		if (type == ANNOUNCEMENT_DISMISS) {
+			listener.onAnnouncementDismiss(items.get(position));
+		} else if (type == ANNOUNCEMENT_CLICK) {
+			listener.onAnnouncementClick(items.get(position));
+		}
 	}
 
 
@@ -95,8 +99,17 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 	public interface OnAnnouncementClickListener {
 
 		/**
+		 * called when announcement was selected
+		 *
 		 * @param announcement clicked item
 		 */
 		void onAnnouncementClick(Announcement announcement);
+
+		/**
+		 * called to dismiss announcement
+		 *
+		 * @param announcement clicked item
+		 */
+		void onAnnouncementDismiss(Announcement announcement);
 	}
 }

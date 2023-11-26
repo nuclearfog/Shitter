@@ -23,6 +23,8 @@ public interface OnHolderClickListener {
 
 	int STATUS_POLL = 7;
 
+	int NOTIFICATION_USER_CLICK = 8;
+
 	int ACCOUNT_SELECT = 12;
 
 	int ACCOUNT_REMOVE = 13;
@@ -56,6 +58,8 @@ public interface OnHolderClickListener {
 	int SCHEDULE_REMOVE = 27;
 
 	int ANNOUNCEMENT_CLICK = 28;
+
+	int ANNOUNCEMENT_DISMISS = 29;
 
 	/**
 	 * called when an item was clicked
