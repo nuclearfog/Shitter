@@ -132,6 +132,7 @@
 
 	<!-- menu icon strings -->
 	<string name="menu_status">write status</string>
+	<string name="menu_instance">Instance information</string>
 	<string name="menu_schedule">scheduled posts</string>
 	<string name="menu_tags">Hashtags</string>
 	<string name="menu_tag_follow">follow hashtag</string>
@@ -179,6 +180,7 @@
 	<string name="menu_status_copy_link">Status link</string>
 	<string name="menu_media_add_description">add description</string>
 	<string name="menu_media_show_meta">show metadata</string>
+	<string name="menu_instance_info">Instance information</string>
 	<string name="dialog_link_image_preview">Link preview image</string>
 	<string name="app_info_icons">svg icons from:</string>
 	<string name="profile_image">Profile image</string>
@@ -260,6 +262,7 @@
 	<string name="edit_location_hint">enter location</string>
 	<string name="edit_hint_link">enter website link</string>
 	<string name="edit_description_hint">enter profile description</string>
+	<string name="description_instance_banner">Instance banner image</string>
 	<string name="delete_list">delete userlist</string>
 	<string name="confirm_delete_list">delete userlist?</string>
 	<string name="confirm_unfollow_list">unfollow list?</string>
@@ -383,4 +386,5 @@
 	<string name="dialog_filter_title_keywords">Words to exclude</string>
 	<string name="dialog_filter_edit_hint_exclude">word anotherword\n\"whole word\"</string>
 	<string name="hint_duration">Duration</string>
+	<string name="instance_announcement_label">Announcements</string>
 </resources>

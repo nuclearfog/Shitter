@@ -327,7 +327,23 @@
 	<dimen name="item_filter_layout_margin">5dp</dimen>
 	<dimen name="item_filter_button_size">20sp</dimen>
 
-	<!--dimens of dialog_push-->
+	<!--dimens of item_announcement.xml-->
+	<dimen name="item_announcement_list_reaction_height">26dp</dimen>
+	<dimen name="item_announcement_card_padding">8dp</dimen>
+	<dimen name="item_announcement_view_margin">5dp</dimen>
+	<dimen name="item_announcement_textsize_content">14sp</dimen>
+	<dimen name="item_announcement_textsize_time">12sp</dimen>
+	<dimen name="item_announcement_icon_size">14sp</dimen>
+
+	<!--dimens of page_instance.xml-->
+	<dimen name="page_instance_toolbar_height">@dimen/toolbar_height</dimen>
+	<dimen name="page_instance_textsize_label_announcement">16sp</dimen>
+	<dimen name="page_instance_textsize_title">22sp</dimen>
+	<dimen name="page_instance_textsize_description">14sp</dimen>
+	<dimen name="page_instance_margin_views">5dp</dimen>
+	<dimen name="page_instance_padding_description">5dp</dimen>
+
+	<!--dimens of dialog_push.xml-->
 	<dimen name="dialog_push_title_textsize">20sp</dimen>
 	<dimen name="dialog_push_label_textsize">11sp</dimen>
 	<dimen name="dialog_push_button_height">26sp</dimen>

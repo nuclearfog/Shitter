@@ -55,6 +55,8 @@ public interface OnHolderClickListener {
 
 	int SCHEDULE_REMOVE = 27;
 
+	int ANNOUNCEMENT_CLICK = 28;
+
 	/**
 	 * called when an item was clicked
 	 *

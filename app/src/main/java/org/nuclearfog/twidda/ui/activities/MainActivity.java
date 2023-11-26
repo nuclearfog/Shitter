@@ -394,6 +394,11 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 			drawerLayout.close();
 			return true;
 		}
+		// open instance information
+		else if (item.getItemId() == R.id.menu_navigator_instance) {
+			Intent intent = new Intent(this, InstanceActivity.class);
+			startActivity(intent);
+		}
 		return false;
 	}
 

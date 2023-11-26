@@ -38,6 +38,26 @@ public interface Instance extends Serializable {
 	String getDescription();
 
 	/**
+	 * get image url used for banner
+	 */
+	String getBannerImageUrl();
+
+	/**
+	 * get email address of the contact
+	 */
+	String getMail();
+
+	/**
+	 * get supported languages
+	 */
+	String[] getLanguages();
+
+	/**
+	 * get monthly active user count
+	 */
+	int getActiveUsers();
+
+	/**
 	 * get time of the last update
 	 *
 	 * @return timestamp

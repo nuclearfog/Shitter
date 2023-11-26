@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.async;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.api.Connection;
 import org.nuclearfog.twidda.backend.api.ConnectionException;
@@ -15,7 +16,7 @@ import org.nuclearfog.twidda.model.Instance;
  *
  * @author nuclearfog
  */
-public class InstanceLoader extends AsyncExecutor<Void, Instance> {
+public class InstanceLoader extends AsyncExecutor<InstanceLoader.Param, InstanceLoader.Result> {
 
 	/**
 	 * time difference to update instance information
@@ -36,17 +37,54 @@ public class InstanceLoader extends AsyncExecutor<Void, Instance> {
 
 
 	@Override
-	protected Instance doInBackground(@NonNull Void param) {
-		Instance instance = null;
+	protected Result doInBackground(@NonNull Param param) {
 		try {
-			instance = db.getInstance();
-			if (instance == null || (System.currentTimeMillis() - instance.getTimestamp()) >= MAX_TIME_DIFF) {
-				instance = connection.getInformation();
-				db.saveInstance(instance);
+			Instance instance;
+			switch (param.mode) {
+				case Param.OFFLINE:
+					instance = db.getInstance();
+					if (instance != null && instance.getTimestamp() <= MAX_TIME_DIFF)
+						return new Result(instance, null);
+
+				case Param.ONLINE:
+					instance = connection.getInformation();
+					db.saveInstance(instance);
+					return new Result(instance, null);
 			}
 		} catch (ConnectionException exception) {
-			// return database connection
+			return new Result(null, exception);
 		}
-		return instance;
+		return null;
+	}
+
+	/**
+	 *
+	 */
+	public static class Param {
+
+		public static final int OFFLINE = 1;
+		public static final int ONLINE = 2;
+
+		final int mode;
+
+		public Param(int mode) {
+			this.mode = mode;
+		}
+	}
+
+	/**
+	 *
+	 */
+	public static class Result {
+
+		@Nullable
+		public final Instance instance;
+		@Nullable
+		public final ConnectionException exception;
+
+		public Result(@Nullable Instance instance, @Nullable ConnectionException exception) {
+			this.instance = instance;
+			this.exception = exception;
+		}
 	}
 }

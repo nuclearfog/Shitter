@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/page_instance_root"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/page_instance_toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/page_instance_toolbar_height" />
+
+	<org.nuclearfog.twidda.ui.views.CollapseLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		app:header="@id/page_instance_header"
+		app:body="@id/page_instance_body">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/page_instance_header"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+				
+				<ImageView
+					android:id="@+id/page_instance_banner"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:scaleType="centerCrop"
+					android:contentDescription="@string/description_instance_banner"
+					app:layout_constraintDimensionRatio="2"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+				<TextView
+					android:id="@+id/page_instance_description"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:maxLines="6"
+					android:textSize="@dimen/page_instance_textsize_description"
+					android:padding="@dimen/page_instance_padding_description"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintBottom_toBottomOf="@id/page_instance_banner"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<org.nuclearfog.twidda.ui.views.LockableConstraintLayout
+				android:id="@+id/page_instance_body"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<TextView
+					android:id="@+id/page_instance_announcement_header"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="@string/instance_announcement_label"
+					android:gravity="center"
+					android:lines="1"
+					android:textSize="@dimen/page_instance_textsize_label_announcement"
+					android:layout_margin="@dimen/page_instance_margin_views"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintBottom_toTopOf="@id/page_instance_list_fragment"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+				<androidx.fragment.app.FragmentContainerView
+					android:id="@+id/page_instance_list_fragment"
+					android:layout_width="match_parent"
+					android:layout_height="0dp"
+					android:layout_weight="1"
+					android:name="org.nuclearfog.twidda.ui.fragments.AnnouncementFragment"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toBottomOf="@id/page_instance_announcement_header"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</org.nuclearfog.twidda.ui.views.LockableConstraintLayout>
+
+		</LinearLayout>
+
+	</org.nuclearfog.twidda.ui.views.CollapseLayout>
+
+</LinearLayout>

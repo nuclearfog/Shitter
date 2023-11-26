@@ -21,7 +21,10 @@ public class MastodonInstance implements Instance {
 	private String domain;
 	private String description;
 	private String version;
+	private String bannerImage;
+	private String mail;
 	private String[] mimeTypes;
+	private String[] languages = {};
 	private long timestamp;
 	private int maxTagFeature;
 	private int maxCharacters;
@@ -32,6 +35,7 @@ public class MastodonInstance implements Instance {
 	private int maxOptionTitleLength;
 	private int minPollDuration;
 	private int maxPollDuration;
+	private int activeUsers;
 	private boolean translationSupported;
 
 	/**
@@ -45,6 +49,10 @@ public class MastodonInstance implements Instance {
 		JSONObject polls = configuration.getJSONObject("polls");
 		JSONObject translations = configuration.getJSONObject("translation");
 		JSONArray mediaTypes = media.getJSONArray("supported_mime_types");
+		JSONArray language = json.getJSONArray("languages");
+		JSONObject thumbnail = json.optJSONObject( "thumbnail");
+		JSONObject contact = json.optJSONObject("contact");
+		JSONObject usage = json.optJSONObject("usage");
 
 		timestamp = System.currentTimeMillis();
 		title = json.getString("title");
@@ -66,8 +74,21 @@ public class MastodonInstance implements Instance {
 		for (int i = 0; i < mimeTypes.length; i++) {
 			mimeTypes[i] = mediaTypes.getString(i);
 		}
+		languages = new String[language.length()];
+		for (int i = 0; i < languages.length; i++) {
+			languages[i] = language.getString(i);
+		}
 		if (!domain.startsWith("http")) {
 			domain = "https://" + domain;
+		}
+		if (thumbnail != null) {
+			bannerImage = thumbnail.optString("url", "");
+		}
+		if (contact != null) {
+			mail = contact.optString("email", "");
+		}
+		if (usage != null && usage.has("users")) {
+			activeUsers = usage.getJSONObject("users").optInt("active_month");
 		}
 	}
 
@@ -93,6 +114,30 @@ public class MastodonInstance implements Instance {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+
+	@Override
+	public String getBannerImageUrl() {
+		return bannerImage;
+	}
+
+
+	@Override
+	public String getMail() {
+		return mail;
+	}
+
+
+	@Override
+	public String[] getLanguages() {
+		return languages;
+	}
+
+
+	@Override
+	public int getActiveUsers() {
+		return activeUsers;
 	}
 
 

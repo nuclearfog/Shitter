@@ -114,6 +114,30 @@ public class DatabaseInstance implements Instance, InstanceTable {
 
 
 	@Override
+	public String getBannerImageUrl() {
+		return "";
+	}
+
+
+	@Override
+	public String getMail() {
+		return "";
+	}
+
+
+	@Override
+	public String[] getLanguages() {
+		return new String[0];
+	}
+
+
+	@Override
+	public int getActiveUsers() {
+		return 0;
+	}
+
+
+	@Override
 	public String getDescription() {
 		return description;
 	}

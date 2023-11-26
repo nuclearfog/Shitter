@@ -34,7 +34,6 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
-import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter;
@@ -86,7 +85,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<StatusUpdater.Result> statusUpdateResult = this::onStatusUpdated;
-	private AsyncCallback<Instance> instanceResult = this::onInstanceResult;
+	private AsyncCallback<InstanceLoader.Result> instanceResult = this::onInstanceResult;
 
 	private View mediaBtn;
 	private View locationBtn;
@@ -204,7 +203,8 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	protected void onResume() {
 		super.onResume();
 		if (statusUpdate.getInstance() == null) {
-			instanceLoader.execute(null, instanceResult);
+			InstanceLoader.Param param = new InstanceLoader.Param(InstanceLoader.Param.OFFLINE);
+			instanceLoader.execute(param, instanceResult);
 		}
 		if (settings.getLogin().getConfiguration().locationSupported()) {
 			if (isLocating()) {
@@ -506,9 +506,11 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	/**
 	 * set instance information such as upload limits
 	 */
-	private void onInstanceResult(Instance instance) {
-		statusUpdate.setInstanceInformation(instance);
-		pollDialog.setInstance(instance);
+	private void onInstanceResult(InstanceLoader.Result result) {
+		if (result.instance != null) {
+			statusUpdate.setInstanceInformation(result.instance);
+			pollDialog.setInstance(result.instance);
+		}
 	}
 
 	/**

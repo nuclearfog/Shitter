@@ -32,4 +32,8 @@
 	<item
 		android:id="@+id/menu_navigator_status"
 		android:title="@string/menu_status" />
+
+	<item
+		android:id="@+id/menu_navigator_instance"
+		android:title="@string/menu_instance" />
 </menu>
