@@ -79,6 +79,13 @@ public interface Connection {
 	Announcements getAnnouncements() throws ConnectionException;
 
 	/**
+	 * dismiss an instance announcement (mark as read)
+	 *
+	 * @param id ID of the announcement
+	 */
+	void dismissAnnouncement(long id) throws ConnectionException;
+
+	/**
 	 * lookup user and return user information
 	 *
 	 * @param id ID of the user

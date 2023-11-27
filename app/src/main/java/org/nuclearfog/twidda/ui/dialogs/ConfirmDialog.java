@@ -154,6 +154,11 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int FOLLOW_REQUEST = 631;
 
+	/**
+	 *  show 'dismiss announcement' dialog
+	 */
+	public static final int ANNOUNCEMENT_DISMISS = 632;
+
 
 	private TextView title, message, remember_label;
 	private Button confirm, cancel;
@@ -310,6 +315,10 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 
 			case FOLLOW_REQUEST:
 				messageRes = R.string.confirm_accept_follow_request;
+				break;
+
+			case ANNOUNCEMENT_DISMISS:
+				messageRes = R.string.confirm_dismiss_announcement;
 				break;
 		}
 		// setup title

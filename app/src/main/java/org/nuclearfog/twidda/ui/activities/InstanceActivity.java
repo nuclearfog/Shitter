@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.squareup.picasso.Picasso;
 
@@ -28,6 +29,8 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.LinkAndScrollMovement;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Instance;
+import org.nuclearfog.twidda.ui.fragments.ListFragment;
+import org.nuclearfog.twidda.ui.fragments.ListFragment.ItemViewModel;
 
 /**
  * Activity used to show information and announcements of an instance
@@ -59,6 +62,7 @@ public class InstanceActivity extends AppCompatActivity implements OnClickListen
 	private GlobalSettings settings;
 	private InstanceLoader instanceLoader;
 	private Picasso picasso;
+	private ItemViewModel viewModel;
 
 	@Nullable
 	private Instance instance;
@@ -78,10 +82,12 @@ public class InstanceActivity extends AppCompatActivity implements OnClickListen
 		instanceLoader = new InstanceLoader(getApplicationContext());
 		picasso = PicassoBuilder.get(this);
 		placeholder = new ColorDrawable(IMAGE_PLACEHOLDER_COLOR);
+		viewModel = new ViewModelProvider(this).get(ItemViewModel.class);
 
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
+		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 		description.setMovementMethod(LinkAndScrollMovement.getInstance());
 		description.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
 
@@ -120,10 +126,24 @@ public class InstanceActivity extends AppCompatActivity implements OnClickListen
 
 
 	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.findItem(R.id.menu_instance_show_all_announcements).setChecked(settings.showAllAnnouncements());
+		return true;
+	}
+
+
+	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_instance_info) {
 			// todo implement instance information dialog
 			return true;
+		}
+		//
+		else if (item.getItemId() == R.id.menu_instance_show_all_announcements) {
+			boolean isChecked = !item.isChecked();
+			settings.setShowAllAnnouncements(isChecked);
+			item.setChecked(isChecked);
+			viewModel.notify(ListFragment.NOTIFY_CHANGED);
 		}
 		return super.onOptionsItemSelected(item);
 	}

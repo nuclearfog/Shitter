@@ -87,6 +87,20 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 	}
 
 	/**
+	 * remove single item matching ID
+	 *
+	 * @param id ID of the item to remove
+	 */
+	public void removeItem(long id) {
+		for (int i = items.size() - 1; i >= 0; i--) {
+			if (items.get(i).getId() == id) {
+				items.remove(i);
+				notifyItemRemoved(i);
+			}
+		}
+	}
+
+	/**
 	 * @return true if adapter contains no items
 	 */
 	public boolean isEmpty() {

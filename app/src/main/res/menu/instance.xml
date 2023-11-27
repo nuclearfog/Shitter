@@ -6,6 +6,12 @@
 		android:id="@+id/menu_instance_info"
 		android:title="@string/menu_instance_info"
 		android:icon="@drawable/info"
-		app:showAsAction="always" />
+		app:showAsAction="ifRoom" />
+
+	<item
+		android:id="@+id/menu_instance_show_all_announcements"
+		android:title="@string/menu_instance_show_all"
+		android:checkable="true"
+		app:showAsAction="never"/>
 
 </menu>

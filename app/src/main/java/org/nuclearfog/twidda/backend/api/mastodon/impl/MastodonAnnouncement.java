@@ -18,6 +18,7 @@ public class MastodonAnnouncement implements Announcement {
 	private long id;
 	private String message;
 	private long time;
+	private boolean dismissed;
 	private Emoji[] emojis = {};
 	private Reaction[] reactions = {};
 
@@ -29,6 +30,7 @@ public class MastodonAnnouncement implements Announcement {
 		JSONArray reactionArray = json.optJSONArray("reactions");
 		String idStr = json.getString("id");
 		String timeStr = json.getString("published_at");
+		dismissed = json.optBoolean("read", false);
 		message = StringUtils.extractText(json.getString("content"));
 		time = StringUtils.getIsoTime(timeStr);
 		if (emojiArray != null && emojiArray.length() > 0) {
@@ -68,6 +70,12 @@ public class MastodonAnnouncement implements Announcement {
 	@Override
 	public long getTimestamp() {
 		return time;
+	}
+
+
+	@Override
+	public boolean isDismissed() {
+		return dismissed;
 	}
 
 

@@ -124,6 +124,7 @@ public class GlobalSettings {
 	private static final String PUSH_ALERT_POLL = "push_poll_finished";
 	private static final String PUSH_ALERT_STATUS_POST = "push_status_subscr";
 	private static final String PUSH_ALERT_STATUS_EDIT = "push_status_edit";
+	private static final String ANNOUNCEMENTS_SHOW_ALL = "show_all_announcements";
 
 	// file name of the preferences
 	private static final String APP_SETTINGS = "settings";
@@ -162,6 +163,7 @@ public class GlobalSettings {
 	private boolean enableLike;
 	private boolean hideSensitive;
 	private boolean floatingEnabled;
+	private boolean showAllAnnouncements;
 	private int background_color;
 	private int font_color;
 	private int highlight_color;
@@ -769,6 +771,28 @@ public class GlobalSettings {
 	}
 
 	/**
+	 * show all instance announcements
+	 *
+	 * @return true to show all instance announcements
+	 */
+	public boolean showAllAnnouncements() {
+		return showAllAnnouncements;
+	}
+
+	/**
+	 * show all instance announcements
+	 *
+	 * @param enable true to show all instance announcements
+	 */
+	public void setShowAllAnnouncements(boolean enable) {
+		this.showAllAnnouncements = enable;
+
+		Editor edit = settings.edit();
+		edit.putBoolean(ANNOUNCEMENTS_SHOW_ALL, enable);
+		edit.apply();
+	}
+
+	/**
 	 * set proxy address
 	 *
 	 * @param proxyHost address of proxy
@@ -1037,6 +1061,7 @@ public class GlobalSettings {
 		proxyWarning = settings.getBoolean(PROXY_WARNING, true);
 		pushInstance = settings.getString(PUSH_INSTANCE, ConstantsKt.INSTANCE_DEFAULT);
 		publicTimeline = settings.getString(PUBLIC_TIMELINE, TIMELINE_COMBINED);
+		showAllAnnouncements = settings.getBoolean(ANNOUNCEMENTS_SHOW_ALL, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");

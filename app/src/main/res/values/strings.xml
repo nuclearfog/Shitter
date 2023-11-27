@@ -83,6 +83,7 @@
 	<string name="info_schedule_updated">scheduled post updated</string>
 	<string name="info_schedule_removed">scheduled post removed</string>
 	<string name="info_report_submit">submitting report</string>
+	<string name="info_announcement_dismissed">announcement dismissed</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->
@@ -172,6 +173,7 @@
 	<string name="menu_hint_block_user">enter @name to block</string>
 	<string name="menu_hint_block_domain">enter domain.name</string>
 	<string name="menu_select_account">Accounts</string>
+	<string name="menu_instance_show_all">show dismissed announcements</string>
 	<string name="menu_add_account">add account</string>
 	<string name="menu_status_copy_text">Text</string>
 	<string name="menu_media_link">Media link</string>
@@ -316,6 +318,7 @@
 	<string name="confirm_tag_unfeature">unfeature hashtag?</string>
 	<string name="confirm_schedule_remove">cancel scheduled post?</string>
 	<string name="confirm_accept_follow_request">accept follow request?</string>
+	<string name="confirm_dismiss_announcement">dismiss announcement?</string>
 	<string name="confirm_remove_account">remove account from list?</string>
 	<string name="confirm_remove_filter">delete filter?</string>
 	<string name="toolbar_status_favoriter">User favoriting this status</string>

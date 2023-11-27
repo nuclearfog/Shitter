@@ -46,6 +46,7 @@ import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.Announcement;
 import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Filter;
@@ -264,18 +265,34 @@ public class Mastodon implements Connection {
 		try {
 			Announcements result = new Announcements();
 			List<String> params = new ArrayList<>();
-			params.add("with_dismissed=true");
+			params.add("with_dismissed=" + settings.showAllAnnouncements());
 			Response response = get(ENDPOINT_ANNOUNCEMENTS, params);
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONArray array = new JSONArray(body.string());
 				for (int i = 0 ; i < array.length() ; i++) {
 					JSONObject json = array.getJSONObject(i);
-					result.add(new MastodonAnnouncement(json));
+					Announcement item = new MastodonAnnouncement(json);
+					if (settings.showAllAnnouncements() || !item.isDismissed()) {
+						result.add(item);
+					}
 				}
 			}
 			return result;
 		} catch (JSONException | IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public void dismissAnnouncement(long id) throws MastodonException {
+		try {
+			Response response = post(ENDPOINT_ANNOUNCEMENTS + "/" + id + "/dismiss");
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
 			throw new MastodonException(e);
 		}
 	}

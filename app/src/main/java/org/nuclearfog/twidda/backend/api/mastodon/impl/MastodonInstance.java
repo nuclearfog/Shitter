@@ -24,7 +24,7 @@ public class MastodonInstance implements Instance {
 	private String bannerImage;
 	private String mail;
 	private String[] mimeTypes;
-	private String[] languages = {};
+	private String[] languages;
 	private long timestamp;
 	private int maxTagFeature;
 	private int maxCharacters;

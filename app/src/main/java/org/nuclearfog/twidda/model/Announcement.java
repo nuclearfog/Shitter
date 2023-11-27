@@ -25,6 +25,11 @@ public interface Announcement extends Serializable {
 	long getTimestamp();
 
 	/**
+	 * @return true if announcement was dismissed by the current user
+	 */
+	boolean isDismissed();
+
+	/**
 	 * @return emojis used in message text
 	 */
 	Emoji[] getEmojis();

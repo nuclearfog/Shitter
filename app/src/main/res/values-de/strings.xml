@@ -34,8 +34,10 @@
 	<string name="info_filter_updated">Filter aktualisiert</string>
 	<string name="info_filter_removed">Filter gelöscht</string>
 	<string name="info_user_reported">Nutzer gemeldet</string>
+	<string name="info_tag_unfeatured">Hashtag-Feature wurde entfernt</string>
 	<string name="info_status_reported">Status gemeldet</string>
 	<string name="info_report_submit">Meldung wird eingereicht</string>
+	<string name="info_announcement_dismissed">Benachrichtigung wurde versteckt</string>
 	<string name="info_error">Fehler!</string>
 	<string name="menu_status_edit">bearbeiten</string>
 	<string name="menu_status_delete">löschen</string>
@@ -191,6 +193,7 @@
 	<string name="confirm_proxy_bypass">Das Öffnen des Links umgeht die eingestellte Proxy-Verbindung. Fortsetzen?</string>
 	<string name="confirm_remove_account">Account aus der Liste entfernen?</string>
 	<string name="menu_select_account">Accounts</string>
+	<string name="menu_instance_show_all">zeige alle Benachrichtigungen</string>
 	<string name="menu_add_account">Account hinzufügen</string>
 	<string name="settings_rt_icon_color">Repost</string>
 	<string name="login_app_name_label">Benutzerdefinierter App-Name</string>
@@ -238,6 +241,7 @@
 	<string name="settings_enable_indicators">zeige zusätzliche Status Informationen an</string>
 	<string name="login_key_enable">Token einfügen</string>
 	<string name="login_key_enable_v2">API v2 nutzen</string>
+	<string name="info_tag_featuring">füge Hashtag-Feature hinzu..</string>
 	<string name="info_tag_following">folge Hashtag..</string>
 	<string name="info_open_mastodon_login">öffne Mastodon Loginseite</string>
 	<string name="info_login_to_mastodon">in Mastodon einloggen</string>
@@ -294,6 +298,7 @@
 	<string name="menu_tag_unfollow">entfolge Hashtag</string>
 	<string name="info_tag_unfollowed">Hashtag entfolgt</string>
 	<string name="info_domain_removed">Domain von der Liste entfernt</string>
+	<string name="info_tag_featured">Hashtag-Feature wurde hinzugefügt</string>
 	<string name="info_tag_followed">Hashtag gefolgt</string>
 	<string name="dialog_status_schedule_set">Veröffentlichung planen</string>
 	<string name="dialog_push_repost">bei Reposts</string>
@@ -353,6 +358,7 @@
 	<string name="info_schedule_removed">geplanter Post wurde entfernt</string>
 	<string name="menu_schedule">geplante Posts</string>
 	<string name="descr_remove_schedule">geplanten Post von der Liste entfernen</string>
+	<string name="confirm_tag_unfeature">entferne Hashtag-Feature</string>
 	<string name="confirm_schedule_remove">geplanten Post verwerfen?</string>
 	<string name="userlist_exclusive">Mitglieder aus den Home-Timeline filtern</string>
 	<string name="userlist_update_list">Nutzerliste bearbeiten</string>
@@ -364,4 +370,5 @@
 	<string name="hint_duration">Dauer</string>
 	<string name="instance_announcement_label">Ankündigungen</string>
 	<string name="announcement_dismiss">Instanz-Ankündigung loschen</string>
+	<string name="confirm_dismiss_announcement">verstecke Instanz-Benachrichtigung</string>
 </resources>

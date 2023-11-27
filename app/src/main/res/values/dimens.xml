@@ -339,7 +339,6 @@
 	<!--dimens of page_instance.xml-->
 	<dimen name="page_instance_toolbar_height">@dimen/toolbar_height</dimen>
 	<dimen name="page_instance_textsize_label_announcement">16sp</dimen>
-	<dimen name="page_instance_textsize_title">22sp</dimen>
 	<dimen name="page_instance_textsize_description">14sp</dimen>
 	<dimen name="page_instance_margin_views">5dp</dimen>
 	<dimen name="page_instance_padding_description">5dp</dimen>
