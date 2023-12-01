@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.backend.async.AnnouncementLoader;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Announcement;
+import org.nuclearfog.twidda.model.Reaction;
 import org.nuclearfog.twidda.model.lists.Announcements;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.AnnouncementAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.AnnouncementAdapter.OnAnnouncementClickListener;
@@ -121,6 +122,12 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 			confirmDialog.show(ConfirmDialog.ANNOUNCEMENT_DISMISS);
 			selectedId = announcement.getId();
 		}
+	}
+
+
+	@Override
+	public void onReactionClick(Reaction reaction) {
+		// todo implement this
 	}
 
 	/**

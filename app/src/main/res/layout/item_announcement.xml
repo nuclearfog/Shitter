@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	style="@style/CardView">
@@ -39,7 +39,7 @@
 
 		<TextView
 			android:id="@+id/item_announcement_content"
-			android:layout_width="match_parent"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:maxLines="15"
 			android:textSize="@dimen/item_announcement_textsize_content"
@@ -50,8 +50,8 @@
 
 		<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/item_announcement_list_reactions"
-			android:layout_width="match_parent"
-			android:layout_height="@dimen/item_announcement_list_reaction_height"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/item_announcement_content"
 			app:layout_constraintEnd_toEndOf="parent" />

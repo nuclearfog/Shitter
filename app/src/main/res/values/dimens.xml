@@ -391,6 +391,11 @@
 	<!--dimens of item_media_field.xml-->
 	<dimen name="dialog_media_field_layout_margin">5dp</dimen>
 
+	<!--dimens of item_reaction.xml-->
+	<dimen name="item_reaction_size_icon">20dp</dimen>
+	<dimen name="item_reaction_size_text">14sp</dimen>
+	<dimen name="item_reaction_margin_layout">5dp</dimen>
+
 	<!--dimens of navigation_header-xml-->
 	<dimen name="navigation_header_layout_padding">10dp</dimen>
 	<dimen name="navigation_header_layout_margin">8dp</dimen>

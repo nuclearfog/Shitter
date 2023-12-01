@@ -329,6 +329,7 @@
 	<string name="status_media_preview_button">Video preview button</string>
 	<string name="poll_finished">Vote finished</string>
 	<string name="description_poll_vote_icon">voted</string>
+	<string name="description_announcement_reaction">reaction of an announcement</string>
 	<string name="description_attachment_icon">Status/Message attachment</string>
 	<string name="notification_status_poll">vote finished</string>
 	<string name="login_network_selector_label">select network</string>

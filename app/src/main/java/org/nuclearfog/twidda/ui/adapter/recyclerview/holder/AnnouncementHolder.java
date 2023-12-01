@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -22,19 +23,22 @@ import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.backend.utils.Tagger;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Announcement;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.ReactionAdapter;
+import org.nuclearfog.twidda.ui.adapter.recyclerview.ReactionAdapter.OnReactionSelected;
 
 /**
  * Viewholder for {@link org.nuclearfog.twidda.ui.adapter.recyclerview.AnnouncementAdapter}
  *
  * @author nuclearfog
  */
-public class AnnouncementHolder extends ViewHolder implements OnClickListener {
+public class AnnouncementHolder extends ViewHolder implements OnClickListener, OnReactionSelected {
 
 	private TextView time, content;
 
 	private OnHolderClickListener listener;
 	private GlobalSettings settings;
 	private TextEmojiLoader emojiLoader;
+	private ReactionAdapter adapter;
 
 	private AsyncExecutor.AsyncCallback<TextEmojiLoader.Result> textResult = this::setTextEmojis;
 	private int iconSize;
@@ -48,13 +52,17 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_announcement, parent, false));
 		settings = GlobalSettings.get(parent.getContext());
 		emojiLoader = new TextEmojiLoader(parent.getContext());
+		adapter = new ReactionAdapter(this);
 		CardView card = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_announcement_container);
 		View dismiss = itemView.findViewById(R.id.item_announcement_dismiss);
+		RecyclerView reactionList = itemView.findViewById(R.id.item_announcement_list_reactions);
 		time = itemView.findViewById(R.id.item_announcement_timestamp);
 		content = itemView.findViewById(R.id.item_announcement_content);
 		iconSize = parent.getResources().getDimensionPixelSize(R.dimen.item_announcement_icon_size);
 
+		reactionList.setLayoutManager(new LinearLayoutManager(parent.getContext(), LinearLayoutManager.HORIZONTAL, false));
+		reactionList.setAdapter(adapter);
 		card.setCardBackgroundColor(settings.getCardColor());
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 
@@ -76,6 +84,15 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener {
 		}
 	}
 
+
+	@Override
+	public void onReactionClick(int index) {
+		int position = getLayoutPosition();
+		if (position != RecyclerView.NO_POSITION) {
+			listener.onItemClick(position, OnHolderClickListener.ANNOUNCEMENT_REACTION, index);
+		}
+	}
+
 	/**
 	 *
 	 */
@@ -88,6 +105,7 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener {
 		}
 		content.setText(textSpan);
 		time.setText(StringUtils.formatCreationTime(time.getResources(), announcement.getTimestamp()));
+		adapter.setItems(announcement.getReactions());
 	}
 
 	/**

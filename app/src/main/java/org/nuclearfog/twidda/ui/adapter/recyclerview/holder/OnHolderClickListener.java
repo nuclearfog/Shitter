@@ -61,6 +61,8 @@ public interface OnHolderClickListener {
 
 	int ANNOUNCEMENT_DISMISS = 29;
 
+	int ANNOUNCEMENT_REACTION = 30;
+
 	/**
 	 * called when an item was clicked
 	 *

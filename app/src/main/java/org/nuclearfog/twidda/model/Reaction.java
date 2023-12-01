@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Reaction extends Serializable {
+public interface Reaction extends Serializable, Comparable<Reaction> {
 
 	/**
 	 * @return title, emoji unicode or custom emoji shortcode of the reaction
@@ -28,4 +28,10 @@ public interface Reaction extends Serializable {
 	 * @return true if selected by current user
 	 */
 	boolean isSelected();
+
+
+	@Override
+	default int compareTo(Reaction reaction) {
+		return Integer.compare(reaction.getCount(), getCount());
+	}
 }

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import org.nuclearfog.twidda.model.Announcement;
+import org.nuclearfog.twidda.model.Reaction;
 import org.nuclearfog.twidda.model.lists.Announcements;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.AnnouncementHolder;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -49,10 +50,20 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		if (type == ANNOUNCEMENT_DISMISS) {
-			listener.onAnnouncementDismiss(items.get(position));
-		} else if (type == ANNOUNCEMENT_CLICK) {
-			listener.onAnnouncementClick(items.get(position));
+
+		switch(type) {
+			case ANNOUNCEMENT_DISMISS:
+				listener.onAnnouncementDismiss(items.get(position));
+				break;
+
+			case ANNOUNCEMENT_CLICK:
+				listener.onAnnouncementClick(items.get(position));
+				break;
+
+			case ANNOUNCEMENT_REACTION:
+				int reactionIndex = extras[0];
+				listener.onReactionClick(items.get(position).getReactions()[reactionIndex]);
+				break;
 		}
 	}
 
@@ -125,5 +136,12 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 		 * @param announcement clicked item
 		 */
 		void onAnnouncementDismiss(Announcement announcement);
+
+		/**
+		 * called to select reaction
+		 *
+		 * @param reaction selected reaction
+		 */
+		void onReactionClick(Reaction reaction);
 	}
 }
