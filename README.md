@@ -30,7 +30,7 @@
 - <a href="https://github.com/square/okhttp">okhttp</a>
 - <a href="https://github.com/square/picasso">picasso</a>
 - <a href="https://github.com/wasabeef/picasso-transformations">picasso Transformations</a>
-- <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
+- <a href="https://github.com/duanhong169/ColorPicker">ColorPicker</a>
 - <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
