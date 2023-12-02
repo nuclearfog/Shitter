@@ -4,8 +4,6 @@ import static android.Manifest.permission.POST_NOTIFICATIONS;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,15 +25,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorChangedListener;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
@@ -46,6 +40,8 @@ import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.notification.PushSubscription;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
+import org.nuclearfog.twidda.ui.dialogs.ColorPickerDialog;
+import org.nuclearfog.twidda.ui.dialogs.ColorPickerDialog.OnColorSelectedListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.InfoDialog;
@@ -59,8 +55,8 @@ import java.util.regex.Matcher;
  *
  * @author nuclearfog
  */
-public class SettingsActivity extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
-		OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener {
+public class SettingsActivity extends AppCompatActivity implements OnClickListener, OnSeekBarChangeListener,
+		OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorSelectedListener {
 
 	/**
 	 * return code to recognize {@link MainActivity} that the current account was removed from login
@@ -96,7 +92,8 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	private DropdownAdapter fontAdapter, scaleAdapter;
 
-	private Dialog color_dialog_selector, appInfo, license, pushDialog;
+	private Dialog appInfo, license, pushDialog;
+	private ColorPickerDialog colorPickerDialog;
 	private ConfirmDialog confirmDialog;
 
 	private View enable_auth_label;
@@ -105,10 +102,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private TextView list_size;
 	private ViewGroup root;
 	private Button[] colorButtons = new Button[COLOR_COUNT];
-
-	@IntRange(from = 0, to = COLOR_COUNT - 1)
-	private int mode = 0;
-	private int color = 0;
 
 	private AsyncCallback<DatabaseAction.Result> databaseResult = this::onDatabaseResult;
 
@@ -165,6 +158,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		license = new LicenseDialog(this);
 		pushDialog = new WebPushDialog(this);
 		databaseAction = new DatabaseAction(this);
+		colorPickerDialog = new ColorPickerDialog(this, this);
 		fontAdapter = new DropdownAdapter(getApplicationContext());
 		scaleAdapter = new DropdownAdapter(getApplicationContext());
 
@@ -210,6 +204,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			proxy_user.setVisibility(View.GONE);
 			proxy_pass.setVisibility(View.GONE);
 		}
+
 		if (settings.likeEnabled()) {
 			colorButtons[COLOR_FAVORITE].setText(R.string.settings_color_like);
 		} else {
@@ -345,129 +340,47 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		else if (v.getId() == R.id.page_settings_button_logout) {
 			confirmDialog.show(ConfirmDialog.APP_LOG_OUT);
 		}
-		// set background color
-		else if (v.getId() == R.id.page_settings_color_background) {
-			mode = COLOR_BACKGROUND;
-			color = settings.getBackgroundColor();
-			showColorPicker(color, false);
-		}
-		// set font color
-		else if (v.getId() == R.id.page_settings_color_text) {
-			mode = COLOR_TEXT;
-			color = settings.getTextColor();
-			showColorPicker(color, false);
-		}
-		// set popup color
-		else if (v.getId() == R.id.page_settings_color_window) {
-			mode = COLOR_WINDOW;
-			color = settings.getPopupColor();
-			showColorPicker(color, false);
-		}
-		// set highlight color
-		else if (v.getId() == R.id.page_settings_highlight_color) {
-			mode = COLOR_HIGHLIGHT;
-			color = settings.getHighlightColor();
-			showColorPicker(color, false);
-		}
-		// set card color
-		else if (v.getId() == R.id.page_settings_color_card) {
-			mode = COLOR_CARD;
-			color = settings.getCardColor();
-			showColorPicker(color, true);
-		}
-		// set icon color
-		else if (v.getId() == R.id.page_settings_color_icon) {
-			mode = COLOR_ICON;
-			color = settings.getIconColor();
-			showColorPicker(color, false);
-		}
-		// set repost icon color
-		else if (v.getId() == R.id.page_settings_color_repost) {
-			mode = COLOR_REPOST;
-			color = settings.getRepostIconColor();
-			showColorPicker(color, false);
-		}
-		// set favorite icon color
-		else if (v.getId() == R.id.page_settings_color_favorite) {
-			mode = COLOR_FAVORITE;
-			color = settings.getFavoriteIconColor();
-			showColorPicker(color, false);
-		}
-		// set follow icon color
-		else if (v.getId() == R.id.page_settings_color_follow) {
-			mode = COLOR_FOLLOWING;
-			color = settings.getFollowIconColor();
-			showColorPicker(color, false);
-		}
 		// show push configuration dialog
 		else if (v.getId() == R.id.page_settings_enable_push_label) {
 			if (enablePush.isChecked()) {
 				pushDialog.show();
 			}
 		}
-	}
-
-
-	@Override
-	public void onDismiss(DialogInterface d) {
-		if (d == color_dialog_selector) {
-			switch (mode) {
-				case COLOR_BACKGROUND:
-					settings.setBackgroundColor(color);
-					fontAdapter.notifyDataSetChanged();
-					scaleAdapter.notifyDataSetChanged();
-					AppStyles.setTheme(root);
-					setButtonColors();
-					break;
-
-				case COLOR_TEXT:
-					settings.setTextColor(color);
-					fontAdapter.notifyDataSetChanged();
-					scaleAdapter.notifyDataSetChanged();
-					AppStyles.setTheme(root);
-					setButtonColors();
-					break;
-
-				case COLOR_WINDOW:
-					settings.setPopupColor(color);
-					AppStyles.setColorButton(colorButtons[COLOR_WINDOW], color);
-					break;
-
-				case COLOR_HIGHLIGHT:
-					settings.setHighlightColor(color);
-					AppStyles.setColorButton(colorButtons[COLOR_HIGHLIGHT], color);
-					break;
-
-				case COLOR_CARD:
-					settings.setCardColor(color);
-					fontAdapter.notifyDataSetChanged();
-					scaleAdapter.notifyDataSetChanged();
-					AppStyles.setTheme(root);
-					setButtonColors();
-					break;
-
-				case COLOR_ICON:
-					settings.setIconColor(color);
-					invalidateOptionsMenu();
-					AppStyles.setTheme(root);
-					setButtonColors();
-					break;
-
-				case COLOR_REPOST:
-					settings.setRepostIconColor(color);
-					AppStyles.setColorButton(colorButtons[COLOR_REPOST], color);
-					break;
-
-				case COLOR_FAVORITE:
-					settings.setFavoriteIconColor(color);
-					AppStyles.setColorButton(colorButtons[COLOR_FAVORITE], color);
-					break;
-
-				case COLOR_FOLLOWING:
-					settings.setFollowIconColor(color);
-					AppStyles.setColorButton(colorButtons[COLOR_FOLLOWING], color);
-					break;
-			}
+		// set background color
+		else if (v.getId() == R.id.page_settings_color_background) {
+			colorPickerDialog.show(settings.getBackgroundColor(), COLOR_BACKGROUND, false);
+		}
+		// set font color
+		else if (v.getId() == R.id.page_settings_color_text) {
+			colorPickerDialog.show(settings.getTextColor(), COLOR_TEXT, false);
+		}
+		// set popup color
+		else if (v.getId() == R.id.page_settings_color_window) {
+			colorPickerDialog.show(settings.getPopupColor(), COLOR_WINDOW, false);
+		}
+		// set highlight color
+		else if (v.getId() == R.id.page_settings_highlight_color) {
+			colorPickerDialog.show(settings.getHighlightColor(), COLOR_HIGHLIGHT, false);
+		}
+		// set card color
+		else if (v.getId() == R.id.page_settings_color_card) {
+			colorPickerDialog.show(settings.getCardColor(), COLOR_CARD, true);
+		}
+		// set icon color
+		else if (v.getId() == R.id.page_settings_color_icon) {
+			colorPickerDialog.show(settings.getIconColor(), COLOR_ICON, false);
+		}
+		// set repost icon color
+		else if (v.getId() == R.id.page_settings_color_repost) {
+			colorPickerDialog.show(settings.getRepostIconColor(), COLOR_REPOST, false);
+		}
+		// set favorite icon color
+		else if (v.getId() == R.id.page_settings_color_favorite) {
+			colorPickerDialog.show(settings.getFavoriteIconColor(), COLOR_FAVORITE, false);
+		}
+		// set follow icon color
+		else if (v.getId() == R.id.page_settings_color_follow) {
+			colorPickerDialog.show(settings.getFollowIconColor(), COLOR_FOLLOWING, false);
 		}
 	}
 
@@ -575,8 +488,64 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 
 	@Override
-	public void onColorChanged(int i) {
-		color = i;
+	public void onColorSelected(int type, int color) {
+		switch (type) {
+			case COLOR_BACKGROUND:
+				settings.setBackgroundColor(color);
+				fontAdapter.notifyDataSetChanged();
+				scaleAdapter.notifyDataSetChanged();
+				AppStyles.setTheme(root);
+				setButtonColors();
+				break;
+
+			case COLOR_TEXT:
+				settings.setTextColor(color);
+				fontAdapter.notifyDataSetChanged();
+				scaleAdapter.notifyDataSetChanged();
+				AppStyles.setTheme(root);
+				setButtonColors();
+				break;
+
+			case COLOR_WINDOW:
+				settings.setPopupColor(color);
+				AppStyles.setColorButton(colorButtons[COLOR_WINDOW], color);
+				break;
+
+			case COLOR_HIGHLIGHT:
+				settings.setHighlightColor(color);
+				AppStyles.setColorButton(colorButtons[COLOR_HIGHLIGHT], color);
+				break;
+
+			case COLOR_CARD:
+				settings.setCardColor(color);
+				fontAdapter.notifyDataSetChanged();
+				scaleAdapter.notifyDataSetChanged();
+				AppStyles.setTheme(root);
+				setButtonColors();
+				break;
+
+			case COLOR_ICON:
+				settings.setIconColor(color);
+				invalidateOptionsMenu();
+				AppStyles.setTheme(root);
+				setButtonColors();
+				break;
+
+			case COLOR_REPOST:
+				settings.setRepostIconColor(color);
+				AppStyles.setColorButton(colorButtons[COLOR_REPOST], color);
+				break;
+
+			case COLOR_FAVORITE:
+				settings.setFavoriteIconColor(color);
+				AppStyles.setColorButton(colorButtons[COLOR_FAVORITE], color);
+				break;
+
+			case COLOR_FOLLOWING:
+				settings.setFollowIconColor(color);
+				AppStyles.setColorButton(colorButtons[COLOR_FOLLOWING], color);
+				break;
+		}
 	}
 
 
@@ -615,23 +584,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 				Toast.makeText(getApplicationContext(), R.string.error_database_cleared, Toast.LENGTH_SHORT).show();
 				break;
 
-		}
-	}
-
-	/**
-	 * show color picker dialog with preselected color
-	 *
-	 * @param preColor    preselected color
-	 * @param enableAlpha true to enable alpha slider
-	 */
-	private void showColorPicker(int preColor, boolean enableAlpha) {
-		if (color_dialog_selector == null || !color_dialog_selector.isShowing()) {
-			color_dialog_selector = ColorPickerDialogBuilder.with(this)
-					.showAlphaSlider(enableAlpha).initialColor(preColor)
-					.wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
-					.setOnColorChangedListener(this).density(15).build();
-			color_dialog_selector.setOnDismissListener(this);
-			color_dialog_selector.show();
 		}
 	}
 

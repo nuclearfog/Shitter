@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/dialog_colorpicker_root"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<top.defaults.colorpicker.ColorPickerView
+		android:id="@+id/dialog_colorpicker_selector"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:layout_margin="@dimen/dialog_colorpicker_margin_layout" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/dialog_colorpicker_margin_layout"
+			android:text="@string/hash"
+			android:lines="1"
+			android:textSize="@dimen/dialog_colorpicker_textsize_textview" />
+
+		<EditText
+			android:id="@+id/dialog_colorpicker_hex"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:background="@android:color/transparent"
+			android:layout_marginEnd="@dimen/dialog_colorpicker_margin_layout"
+			android:layout_weight="1"
+			android:maxLength="8"
+			android:lines="1"
+			android:hint="@string/hash_hint"
+			android:digits="0123456789ABCDEFabcdef"
+			android:textSize="@dimen/dialog_colorpicker_textsize_textview"
+			android:inputType="textNoSuggestions"
+			android:importantForAutofill="no"/>
+
+		<Button
+			android:id="@+id/dialog_colorpicker_cancel"
+			android:layout_width="wrap_content"
+			android:layout_height="@dimen/dialog_colorpicker_height_button"
+			android:layout_margin="@dimen/dialog_colorpicker_margin_layout"
+			android:lines="1"
+			android:text="@android:string/cancel"
+			android:textSize="@dimen/dialog_colorpicker_textsize_button"
+			style="@style/FeedbackButton" />
+
+		<Button
+			android:id="@+id/dialog_colorpicker_ok"
+			android:layout_width="wrap_content"
+			android:layout_height="@dimen/dialog_colorpicker_height_button"
+			android:layout_margin="@dimen/dialog_colorpicker_margin_layout"
+			android:lines="1"
+			android:text="@android:string/ok"
+			android:textSize="@dimen/dialog_colorpicker_textsize_button"
+			style="@style/FeedbackButton" />
+
+	</LinearLayout>
+
+</LinearLayout>

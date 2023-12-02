@@ -13,6 +13,8 @@
 	<string name="login_sec_opt" translatable="false">2.</string>
 	<string name="login_trd_opt" translatable="false">3.</string>
 	<string name="login_4th_opt" translatable="false">4.</string>
+	<string name="hash" translatable="false">#</string>
+	<string name="hash_hint" translatable="false">#FFFFFFFF</string>
 
 	<!-- toast messages to inform user -->
 	<string name="info_list_removed">Userlist removed</string>

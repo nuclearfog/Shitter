@@ -328,7 +328,6 @@
 	<dimen name="item_filter_button_size">20sp</dimen>
 
 	<!--dimens of item_announcement.xml-->
-	<dimen name="item_announcement_list_reaction_height">26dp</dimen>
 	<dimen name="item_announcement_card_padding">8dp</dimen>
 	<dimen name="item_announcement_view_margin">5dp</dimen>
 	<dimen name="item_announcement_textsize_content">14sp</dimen>
@@ -370,6 +369,12 @@
 	<dimen name="dialog_report_margin_items_layout">4dp</dimen>
 	<dimen name="dialog_report_button_padding">5dp</dimen>
 	<dimen name="dialog_report_button_height">24sp</dimen>
+
+	<!--dimens of dialog_colorpicker.xml-->
+	<dimen name="dialog_colorpicker_margin_layout">5dp</dimen>
+	<dimen name="dialog_colorpicker_textsize_button">14sp</dimen>
+	<dimen name="dialog_colorpicker_textsize_textview">16sp</dimen>
+	<dimen name="dialog_colorpicker_height_button">24sp</dimen>
 
 	<!--dimens of dialog_description.xml-->
 	<dimen name="dialog_description_textsize_title">22sp</dimen>

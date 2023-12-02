@@ -10,8 +10,6 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListene
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.ReactionHolder;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
