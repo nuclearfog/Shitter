@@ -50,8 +50,7 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-
-		switch(type) {
+		switch (type) {
 			case ANNOUNCEMENT_DISMISS:
 				listener.onAnnouncementDismiss(items.get(position));
 				break;

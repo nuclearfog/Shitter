@@ -10,6 +10,8 @@ import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.WebPush;
 
 /**
+ * Async class used to select or remove a login
+ *
  * @author nuclearfog
  */
 public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAction.Result> {

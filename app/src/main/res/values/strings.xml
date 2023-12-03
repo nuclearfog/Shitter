@@ -392,5 +392,4 @@
 	<string name="dialog_filter_title_keywords">Words to exclude</string>
 	<string name="dialog_filter_edit_hint_exclude">word anotherword\n\"whole word\"</string>
 	<string name="hint_duration">Duration</string>
-	<string name="instance_announcement_label">Announcements</string>
 </resources>

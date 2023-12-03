@@ -64,6 +64,7 @@ dependencies {
 	implementation 'com.github.duanhong169:checkerboarddrawable:1.0.2'
 	implementation 'com.kyleduo.switchbutton:library:2.1.0'
 	implementation 'com.github.UnifiedPush:android-connector:2.1.1'
+	//noinspection GradleDependency
 	implementation 'com.google.android.material:material:1.9.0'
 	implementation 'jp.wasabeef:picasso-transformations:2.4.0'
 	implementation 'net.danlew:android.joda:2.12.5'

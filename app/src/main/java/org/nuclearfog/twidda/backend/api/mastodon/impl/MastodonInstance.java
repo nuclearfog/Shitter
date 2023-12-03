@@ -50,7 +50,7 @@ public class MastodonInstance implements Instance {
 		JSONObject translations = configuration.getJSONObject("translation");
 		JSONArray mediaTypes = media.getJSONArray("supported_mime_types");
 		JSONArray language = json.getJSONArray("languages");
-		JSONObject thumbnail = json.optJSONObject( "thumbnail");
+		JSONObject thumbnail = json.optJSONObject("thumbnail");
 		JSONObject contact = json.optJSONObject("contact");
 		JSONObject usage = json.optJSONObject("usage");
 

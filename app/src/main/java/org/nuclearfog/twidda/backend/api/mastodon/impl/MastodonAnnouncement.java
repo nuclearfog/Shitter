@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.api.mastodon.impl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,5 +91,21 @@ public class MastodonAnnouncement implements Announcement {
 	@Override
 	public Reaction[] getReactions() {
 		return reactions;
+	}
+
+
+	@Override
+	public boolean equals(@Nullable Object obj) {
+		if (!(obj instanceof Announcement))
+			return false;
+		Announcement announcement = (Announcement) obj;
+		return announcement.getId() == id && announcement.getTimestamp() == getTimestamp();
+	}
+
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "id=" + getId() + " dismissed=" + isDismissed() + " message=\"" + getMessage() + "\"";
 	}
 }

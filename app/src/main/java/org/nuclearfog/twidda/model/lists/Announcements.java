@@ -16,7 +16,8 @@ public class Announcements extends LinkedList<Announcement> {
 	/**
 	 *
 	 */
-	public Announcements() {}
+	public Announcements() {
+	}
 
 	/**
 	 *

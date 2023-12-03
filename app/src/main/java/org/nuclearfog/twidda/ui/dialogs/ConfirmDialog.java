@@ -155,7 +155,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	public static final int FOLLOW_REQUEST = 631;
 
 	/**
-	 *  show 'dismiss announcement' dialog
+	 * show 'dismiss announcement' dialog
 	 */
 	public static final int ANNOUNCEMENT_DISMISS = 632;
 

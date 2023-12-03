@@ -12,6 +12,6 @@
 		android:id="@+id/menu_instance_show_all_announcements"
 		android:title="@string/menu_instance_show_all"
 		android:checkable="true"
-		app:showAsAction="never"/>
+		app:showAsAction="never" />
 
 </menu>

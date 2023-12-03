@@ -368,7 +368,7 @@
 	<string name="error_api_error">API Fehler</string>
 	<string name="menu_status_history">Bearbeitungsverlauf</string>
 	<string name="hint_duration">Dauer</string>
-	<string name="instance_announcement_label">Ankündigungen</string>
 	<string name="announcement_dismiss">Instanz-Ankündigung loschen</string>
 	<string name="confirm_dismiss_announcement">verstecke Instanz-Benachrichtigung</string>
+	<string name="description_announcement_reaction">Reaktionen einer Ankündigung</string>
 </resources>

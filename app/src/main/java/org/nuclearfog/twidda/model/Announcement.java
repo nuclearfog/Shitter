@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public interface Announcement extends Serializable {
+public interface Announcement extends Serializable, Comparable<Announcement> {
 
 	/**
 	 * @return ID of the announcement
@@ -38,4 +38,13 @@ public interface Announcement extends Serializable {
 	 * @return user reactions of the announcement
 	 */
 	Reaction[] getReactions();
+
+	/**
+	 *
+	 */
+	default int compareTo(Announcement announcement) {
+		if (announcement.getTimestamp() != getTimestamp())
+			return Long.compare(announcement.getTimestamp(), getTimestamp());
+		return Long.compare(announcement.getId(), getId());
+	}
 }

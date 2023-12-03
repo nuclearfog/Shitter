@@ -27,7 +27,7 @@
 				android:id="@+id/page_instance_header"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
-				
+
 				<ImageView
 					android:id="@+id/page_instance_banner"
 					android:layout_width="0dp"
@@ -57,20 +57,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 
-				<TextView
-					android:id="@+id/page_instance_announcement_header"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:text="@string/instance_announcement_label"
-					android:gravity="center"
-					android:lines="1"
-					android:textSize="@dimen/page_instance_textsize_label_announcement"
-					android:layout_margin="@dimen/page_instance_margin_views"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toTopOf="parent"
-					app:layout_constraintBottom_toTopOf="@id/page_instance_list_fragment"
-					app:layout_constraintEnd_toEndOf="parent" />
-
 				<androidx.fragment.app.FragmentContainerView
 					android:id="@+id/page_instance_list_fragment"
 					android:layout_width="match_parent"
@@ -78,7 +64,7 @@
 					android:layout_weight="1"
 					android:name="org.nuclearfog.twidda.ui.fragments.AnnouncementFragment"
 					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toBottomOf="@id/page_instance_announcement_header"
+					app:layout_constraintTop_toTopOf="parent"
 					app:layout_constraintBottom_toBottomOf="parent"
 					app:layout_constraintEnd_toEndOf="parent" />
 

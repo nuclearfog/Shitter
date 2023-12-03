@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.backend.api.ConnectionException;
 import org.nuclearfog.twidda.backend.api.ConnectionManager;
 
 /**
- * asyncloader to modify instance announcements
+ * Async loader to remove instance announcements
  *
  * @author nuclearfog
  */

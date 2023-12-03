@@ -16,12 +16,12 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:gravity="center_vertical">
+		android:gravity="center_vertical"
+		android:layout_margin="@dimen/dialog_colorpicker_margin_layout">
 
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/dialog_colorpicker_margin_layout"
 			android:text="@string/hash"
 			android:lines="1"
 			android:textSize="@dimen/dialog_colorpicker_textsize_textview" />
@@ -39,13 +39,13 @@
 			android:digits="0123456789ABCDEFabcdef"
 			android:textSize="@dimen/dialog_colorpicker_textsize_textview"
 			android:inputType="textNoSuggestions"
-			android:importantForAutofill="no"/>
+			android:importantForAutofill="no" />
 
 		<Button
 			android:id="@+id/dialog_colorpicker_cancel"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/dialog_colorpicker_height_button"
-			android:layout_margin="@dimen/dialog_colorpicker_margin_layout"
+			android:layout_marginEnd="@dimen/dialog_colorpicker_margin_layout"
 			android:lines="1"
 			android:text="@android:string/cancel"
 			android:textSize="@dimen/dialog_colorpicker_textsize_button"
@@ -55,7 +55,6 @@
 			android:id="@+id/dialog_colorpicker_ok"
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/dialog_colorpicker_height_button"
-			android:layout_margin="@dimen/dialog_colorpicker_margin_layout"
 			android:lines="1"
 			android:text="@android:string/ok"
 			android:textSize="@dimen/dialog_colorpicker_textsize_button"

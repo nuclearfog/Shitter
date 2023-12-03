@@ -34,6 +34,7 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.ReactionAdapter.OnReactionS
 public class AnnouncementHolder extends ViewHolder implements OnClickListener, OnReactionSelected {
 
 	private TextView time, content;
+	private View dismissButton;
 
 	private OnHolderClickListener listener;
 	private GlobalSettings settings;
@@ -55,7 +56,7 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener, O
 		adapter = new ReactionAdapter(this);
 		CardView card = (CardView) itemView;
 		ViewGroup container = itemView.findViewById(R.id.item_announcement_container);
-		View dismiss = itemView.findViewById(R.id.item_announcement_dismiss);
+		dismissButton = itemView.findViewById(R.id.item_announcement_dismiss);
 		RecyclerView reactionList = itemView.findViewById(R.id.item_announcement_list_reactions);
 		time = itemView.findViewById(R.id.item_announcement_timestamp);
 		content = itemView.findViewById(R.id.item_announcement_content);
@@ -67,7 +68,7 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener, O
 		AppStyles.setTheme(container, Color.TRANSPARENT);
 
 		container.setOnClickListener(this);
-		dismiss.setOnClickListener(this);
+		dismissButton.setOnClickListener(this);
 		this.listener = listener;
 	}
 
@@ -94,7 +95,7 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener, O
 	}
 
 	/**
-	 *
+	 * set holder content
 	 */
 	public void setContent(Announcement announcement) {
 		Spannable textSpan = Tagger.makeTextWithLinks(announcement.getMessage(), settings.getHighlightColor());
@@ -102,6 +103,11 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener, O
 			TextEmojiLoader.Param param = new TextEmojiLoader.Param(tagId, announcement.getEmojis(), textSpan, iconSize);
 			emojiLoader.execute(param, textResult);
 			textSpan = EmojiUtils.removeTags(textSpan);
+		}
+		if (announcement.isDismissed()) {
+			dismissButton.setVisibility(View.GONE);
+		} else {
+			dismissButton.setVisibility(View.VISIBLE);
 		}
 		content.setText(textSpan);
 		time.setText(StringUtils.formatCreationTime(time.getResources(), announcement.getTimestamp()));

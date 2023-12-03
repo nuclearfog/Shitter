@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.model.lists.Accounts;
 
 /**
- * backend loader to get login information of local accounts
+ * Async loader to get saved login informations
  *
  * @author nuclearfog
  */
