@@ -18,6 +18,7 @@ public class LockableConstraintLayout extends ConstraintLayout {
 	private LockCallback callback;
 	private boolean yLock = false;
 	private float yPos = 0.0f;
+	private float xPos = 0.0f;
 
 	/**
 	 * @inheritDoc
@@ -40,21 +41,26 @@ public class LockableConstraintLayout extends ConstraintLayout {
 			case MotionEvent.ACTION_SCROLL:
 			case MotionEvent.ACTION_MOVE:
 				float deltaY = ev.getAxisValue(MotionEvent.AXIS_Y) - yPos;
-				// detect swipe up, then aquire scroll lock
-				if (deltaY < 0.0f && callback != null) {
+				float deltaX = ev.getAxisValue(MotionEvent.AXIS_X) - xPos;
+				// lock vertical scroll if left/right swipe was detected
+				if (Math.abs(deltaX) > Math.abs(deltaY))
+					requestDisallowInterceptTouchEvent(true);
+				// aquire vertical scroll lock
+				else if (deltaY < 0.0f && callback != null)
 					yLock = callback.aquireVerticalScrollLock();
-				}
 				yPos = ev.getAxisValue(MotionEvent.AXIS_Y);
 				break;
 
 			case MotionEvent.ACTION_POINTER_DOWN:
 			case MotionEvent.ACTION_DOWN:
 				// note the current coordinates touch event
+				xPos = ev.getAxisValue(MotionEvent.AXIS_X);
 				yPos = ev.getAxisValue(MotionEvent.AXIS_Y);
 				// fall through
 
 			default:
 				yLock = false;
+				requestDisallowInterceptTouchEvent(false);
 				break;
 		}
 		return yLock;
