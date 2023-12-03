@@ -30,11 +30,13 @@ public class ColorPickerDialog extends Dialog implements OnClickListener, ColorO
 
 	/**
 	 * bundle key to save/restore color value
+	 * value type is Integer
 	 */
 	private static final String KEY_COLOR = "color";
 
 	/**
 	 * bundle key to save/restore color type
+	 * value type is Integer
 	 */
 	private static final String KEY_TYPE = "mode";
 

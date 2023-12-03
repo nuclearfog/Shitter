@@ -18,7 +18,7 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 
 	private OnLinkClickListener listener;
 
-	private Fields fields = new Fields();
+	private Fields items = new Fields();
 
 	/**
 	 *
@@ -37,13 +37,13 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 
 	@Override
 	public void onBindViewHolder(@NonNull FieldHolder holder, int position) {
-		holder.setContent(fields.get(position));
+		holder.setContent(items.get(position));
 	}
 
 
 	@Override
 	public int getItemCount() {
-		return fields.size();
+		return items.size();
 	}
 
 
@@ -62,9 +62,9 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	 *
 	 * @param fields items to insert
 	 */
-	public void replaceItems(Fields fields) {
-		this.fields.clear();
-		this.fields.addAll(fields);
+	public void setItems(Fields fields) {
+		this.items.clear();
+		this.items.addAll(fields);
 		notifyDataSetChanged();
 	}
 
@@ -72,8 +72,15 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	 * clear all items
 	 */
 	public void clear() {
-		fields.clear();
+		items.clear();
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	/**
@@ -82,7 +89,7 @@ public class FieldAdapter extends Adapter<FieldHolder> implements OnTagClickList
 	 * @return Field list
 	 */
 	public Fields getItems() {
-		return new Fields(fields);
+		return new Fields(items);
 	}
 
 	/**

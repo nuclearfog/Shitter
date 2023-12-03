@@ -72,10 +72,15 @@ public class ReactionAdapter extends Adapter<ReactionHolder> implements OnHolder
 	}
 
 	/**
-	 *
+	 * callback for reaction select
 	 */
 	public interface OnReactionSelected {
 
+		/**
+		 * called when a reaction item was clicked
+		 *
+		 * @param index position of the reaction item
+		 */
 		void onReactionClick(int index);
 	}
 }

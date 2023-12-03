@@ -86,6 +86,8 @@
 	<string name="info_schedule_removed">scheduled post removed</string>
 	<string name="info_report_submit">submitting report</string>
 	<string name="info_announcement_dismissed">announcement dismissed</string>
+	<string name="info_reaction_added">added reaction to announcement</string>
+	<string name="info_reaction_removed">removed reaction to announcement</string>
 	<string name="info_error">Error</string>
 
 	<!-- toast messages for error information -->

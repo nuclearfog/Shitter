@@ -86,6 +86,22 @@ public interface Connection {
 	void dismissAnnouncement(long id) throws ConnectionException;
 
 	/**
+	 * add reaction to announcement
+	 *
+	 * @param id   ID of the announcement
+	 * @param code emoji code or unicode of an emoji
+	 */
+	void addReaction(long id, String code) throws ConnectionException;
+
+	/**
+	 * remove reaction to announcement
+	 *
+	 * @param id   ID of the announcement
+	 * @param code emoji code or unicode of an emoji
+	 */
+	void removeReaction(long id, String code) throws ConnectionException;
+
+	/**
 	 * lookup user and return user information
 	 *
 	 * @param id ID of the user

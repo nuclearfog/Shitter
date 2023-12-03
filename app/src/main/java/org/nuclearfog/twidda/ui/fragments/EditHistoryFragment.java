@@ -21,8 +21,16 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.EditHistoryAdapter;
  */
 public class EditHistoryFragment extends ListFragment implements AsyncCallback<EditHistoryLoader.Result> {
 
+	/**
+	 * bundle key for the status ID to show the history
+	 * value type is Long
+	 */
 	public static final String KEY_ID = "status-id";
 
+	/**
+	 * bundle key to save adapter items
+	 * value type is {@link StatusEditHistory}
+	 */
 	private static final String KEY_DATA = "history-save";
 
 	private EditHistoryLoader historyLoader;
@@ -45,9 +53,6 @@ public class EditHistoryFragment extends ListFragment implements AsyncCallback<E
 			if (data instanceof StatusEditHistory) {
 				adapter.setItems((StatusEditHistory) data);
 			}
-		} else {
-			historyLoader.execute(id, this);
-			setRefresh(true);
 		}
 	}
 
@@ -56,6 +61,16 @@ public class EditHistoryFragment extends ListFragment implements AsyncCallback<E
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_DATA, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			historyLoader.execute(id, this);
+			setRefresh(true);
+		}
 	}
 
 

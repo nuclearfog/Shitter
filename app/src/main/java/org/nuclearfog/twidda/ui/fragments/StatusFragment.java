@@ -138,12 +138,9 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Statuses) {
-				adapter.replaceItems((Statuses) data);
-				return;
+				adapter.setItems((Statuses) data);
 			}
 		}
-		load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, StatusAdapter.CLEAR_LIST);
-		setRefresh(true);
 	}
 
 
@@ -151,6 +148,16 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, StatusAdapter.CLEAR_LIST);
+			setRefresh(true);
+		}
 	}
 
 
@@ -222,7 +229,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onResult(@NonNull StatusLoader.Result result) {
 		if (result.statuses != null) {
 			if (result.position == StatusLoader.Result.CLEAR) {
-				adapter.replaceItems(result.statuses);
+				adapter.setItems(result.statuses);
 			} else {
 				adapter.addItems(result.statuses, result.position);
 			}

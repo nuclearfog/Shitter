@@ -78,7 +78,7 @@ public class EmojiAdapter extends Adapter<EmojiHolder> implements OnHolderClickL
 	 *
 	 * @param emojis emoji items
 	 */
-	public void replaceItems(List<Emoji> emojis) {
+	public void setItems(List<Emoji> emojis) {
 		items.clear();
 		String groupname = "";
 		for (Emoji emoji : emojis) {

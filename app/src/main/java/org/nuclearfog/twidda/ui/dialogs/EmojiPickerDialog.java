@@ -84,7 +84,7 @@ public class EmojiPickerDialog extends BottomSheetDialog implements AsyncCallbac
 	@Override
 	public void onResult(@NonNull List<Emoji> emojis) {
 		if (!emojis.isEmpty()) {
-			adapter.replaceItems(emojis);
+			adapter.setItems(emojis);
 		}
 	}
 

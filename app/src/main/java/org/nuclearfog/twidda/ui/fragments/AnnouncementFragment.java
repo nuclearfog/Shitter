@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AnnouncementAction;
 import org.nuclearfog.twidda.backend.async.AnnouncementLoader;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
+import org.nuclearfog.twidda.backend.async.ReactionUpdater;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Announcement;
 import org.nuclearfog.twidda.model.Reaction;
@@ -36,10 +37,12 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	private AnnouncementAdapter adapter;
 	private AnnouncementLoader announcementLoader;
 	private AnnouncementAction announcementAction;
+	private ReactionUpdater reactionUpdater;
 	private ConfirmDialog confirmDialog;
 
 	private AsyncCallback<AnnouncementLoader.Result> announcementloader = this::onAnnouncementLoaded;
 	private AsyncCallback<AnnouncementAction.Result> announcementResult = this::onAnnouncementResult;
+	private AsyncCallback<ReactionUpdater.Result> reactionUpdateResult = this::onReactionResult;
 
 	private long selectedId;
 
@@ -49,6 +52,7 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 		adapter = new AnnouncementAdapter(this);
 		announcementLoader = new AnnouncementLoader(requireContext());
 		announcementAction = new AnnouncementAction(requireContext());
+		reactionUpdater = new ReactionUpdater(requireContext());
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		setAdapter(adapter);
 
@@ -82,6 +86,7 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	public void onDestroy() {
 		announcementLoader.cancel();
 		announcementAction.cancel();
+		reactionUpdater.cancel();
 		super.onDestroy();
 	}
 
@@ -95,6 +100,8 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		announcementAction = new AnnouncementAction(requireContext());
+		reactionUpdater = new ReactionUpdater(requireContext());
 		announcementLoader = new AnnouncementLoader(requireContext());
 		announcementLoader.execute(null, announcementloader);
 		setRefresh(true);
@@ -111,14 +118,8 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 
 
 	@Override
-	public void onAnnouncementClick(Announcement announcement) {
-		// todo implement this
-	}
-
-
-	@Override
 	public void onAnnouncementDismiss(Announcement announcement) {
-		if (!confirmDialog.isShowing() && announcementAction.isIdle() && announcementLoader.isIdle()) {
+		if (!confirmDialog.isShowing() && announcementAction.isIdle() && announcementLoader.isIdle() && reactionUpdater.isIdle()) {
 			confirmDialog.show(ConfirmDialog.ANNOUNCEMENT_DISMISS);
 			selectedId = announcement.getId();
 		}
@@ -126,8 +127,14 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 
 
 	@Override
-	public void onReactionClick(Reaction reaction) {
-		// todo implement this
+	public void onReactionClick(Announcement announcement, Reaction reaction) {
+		if (reaction.isSelected()) {
+			ReactionUpdater.Param param = new ReactionUpdater.Param(ReactionUpdater.Param.REMOVE, announcement.getId(), reaction.getName());
+			reactionUpdater.execute(param, reactionUpdateResult);
+		} else {
+			ReactionUpdater.Param param = new ReactionUpdater.Param(ReactionUpdater.Param.ADD, announcement.getId(), reaction.getName());
+			reactionUpdater.execute(param, reactionUpdateResult);
+		}
 	}
 
 	/**
@@ -150,17 +157,40 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	 */
 	private void onAnnouncementResult(AnnouncementAction.Result result) {
 		Context context = getContext();
-		if (context != null) {
-			switch (result.mode) {
-				case AnnouncementAction.Result.MODE_DISMISS:
+		switch (result.mode) {
+			case AnnouncementAction.Result.MODE_DISMISS:
+				if (context != null)
 					Toast.makeText(context, R.string.info_announcement_dismissed, Toast.LENGTH_SHORT).show();
-					adapter.removeItem(selectedId);
-					break;
+				adapter.removeItem(selectedId);
+				break;
 
-				case AnnouncementAction.Result.MODE_ERROR:
+			case AnnouncementAction.Result.MODE_ERROR:
+				if (context != null)
 					ErrorUtils.showErrorMessage(context, result.exception);
-					break;
-			}
+				break;
+		}
+	}
+
+	/**
+	 *
+	 */
+	private void onReactionResult(ReactionUpdater.Result result) {
+		Context context = getContext();
+		switch (result.mode) {
+			case ReactionUpdater.Result.ADD:
+				if (context != null)
+					Toast.makeText(context, R.string.info_reaction_added, Toast.LENGTH_SHORT).show();
+				break;
+
+			case ReactionUpdater.Result.REMOVE:
+				if (context != null)
+					Toast.makeText(context, R.string.info_reaction_removed, Toast.LENGTH_SHORT).show();
+				break;
+
+			case ReactionUpdater.Result.ERROR:
+				if (context != null)
+					ErrorUtils.showErrorMessage(context, result.exception);
+				break;
 		}
 	}
 }

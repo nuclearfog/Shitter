@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 
 /**
- * dialog window with app information and resource links
+ * dialog used to show app information and resource links
  *
  * @author nuclearfog
  */

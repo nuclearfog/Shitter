@@ -69,10 +69,19 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 	 *
 	 * @param items new items to insert
 	 */
-	public void replaceItems(Filters items) {
+	public void setItems(Filters items) {
 		this.items.clear();
 		this.items.addAll(items);
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * get all adapter items
+	 *
+	 * @return list of adapter items
+	 */
+	public Filters getItems() {
+		return new Filters(items);
 	}
 
 	/**
@@ -109,6 +118,13 @@ public class FilterAdapter extends Adapter<FilterHolder> implements OnHolderClic
 	public void clear() {
 		items.clear();
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	/**

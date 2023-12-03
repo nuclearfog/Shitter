@@ -106,15 +106,6 @@ public class TagAdapter extends Adapter<ViewHolder> implements OnHolderClickList
 	}
 
 	/**
-	 * get adapter items
-	 *
-	 * @return a copy of the items
-	 */
-	public Tags getItems() {
-		return new Tags(items);
-	}
-
-	/**
 	 * replace data from list
 	 *
 	 * @param newItems array of trend items
@@ -139,6 +130,26 @@ public class TagAdapter extends Adapter<ViewHolder> implements OnHolderClickList
 				notifyItemRangeInserted(index, newItems.size());
 			}
 		}
+	}
+
+	/**
+	 * replace old items
+	 */
+	public void setItems(Tags newItems) {
+		items.replaceAll(newItems);
+		if (items.getNextCursor() != 0L) {
+			items.add(null);
+		}
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * get adapter items
+	 *
+	 * @return a copy of the items
+	 */
+	public Tags getItems() {
+		return new Tags(items);
 	}
 
 	/**

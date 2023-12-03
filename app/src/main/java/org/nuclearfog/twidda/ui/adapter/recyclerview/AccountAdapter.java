@@ -20,7 +20,7 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 
 	private OnAccountClickListener listener;
 
-	private Accounts accounts = new Accounts();
+	private Accounts items = new Accounts();
 
 	/**
 	 * @param listener item click listener
@@ -39,20 +39,20 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 
 	@Override
 	public void onBindViewHolder(@NonNull AccountHolder holder, int position) {
-		Account account = accounts.get(position);
+		Account account = items.get(position);
 		holder.setContent(account);
 	}
 
 
 	@Override
 	public int getItemCount() {
-		return accounts.size();
+		return items.size();
 	}
 
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		Account account = accounts.get(position);
+		Account account = items.get(position);
 		if (type == OnHolderClickListener.ACCOUNT_SELECT) {
 			listener.onAccountClick(account);
 		} else if (type == OnHolderClickListener.ACCOUNT_REMOVE) {
@@ -72,7 +72,7 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	 * @return list of adapter items
 	 */
 	public Accounts getItems() {
-		return new Accounts(accounts);
+		return new Accounts(items);
 	}
 
 	/**
@@ -80,9 +80,9 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	 *
 	 * @param newAccounts list with login items
 	 */
-	public void replaceItems(Accounts newAccounts) {
-		accounts.clear();
-		accounts.addAll(newAccounts);
+	public void setItems(Accounts newAccounts) {
+		items.clear();
+		items.addAll(newAccounts);
 		notifyDataSetChanged();
 	}
 
@@ -92,9 +92,9 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	 * @param account account to remove
 	 */
 	public void removeItem(Account account) {
-		int idx = accounts.indexOf(account);
+		int idx = items.indexOf(account);
 		if (idx >= 0) {
-			accounts.remove(idx);
+			items.remove(idx);
 			notifyItemRemoved(idx);
 		}
 	}
@@ -103,8 +103,15 @@ public class AccountAdapter extends Adapter<AccountHolder> implements OnHolderCl
 	 * clear adapter data
 	 */
 	public void clear() {
-		accounts.clear();
+		items.clear();
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	/**

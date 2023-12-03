@@ -114,12 +114,9 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
 			if (data instanceof Tags) {
-				adapter.addItems((Tags) data, TagAdapter.CLEAR_LIST);
-				return;
+				adapter.setItems((Tags) data);
 			}
 		}
-		setRefresh(true);
-		load(TagLoader.Param.NO_CURSOR, TagAdapter.CLEAR_LIST);
 	}
 
 
@@ -127,6 +124,16 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_DATA, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			setRefresh(true);
+			load(TagLoader.Param.NO_CURSOR, TagAdapter.CLEAR_LIST);
+		}
 	}
 
 

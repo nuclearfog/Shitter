@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.adapter.recyclerview.holder;
 
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,10 +19,13 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Reaction;
 
 /**
+ * Viewholder used by {@link org.nuclearfog.twidda.ui.adapter.recyclerview.ReactionAdapter}
+ *
  * @author nuclearfog
  */
 public class ReactionHolder extends ViewHolder implements OnClickListener {
 
+	private View root;
 	private ImageView icon;
 	private TextView description;
 
@@ -29,17 +33,21 @@ public class ReactionHolder extends ViewHolder implements OnClickListener {
 	private GlobalSettings settings;
 	private Picasso picasso;
 
+	/**
+	 *
+	 */
 	public ReactionHolder(ViewGroup parent, OnHolderClickListener listener) {
 		super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_reaction, parent, false));
 		icon = itemView.findViewById(R.id.item_reaction_icon);
 		description = itemView.findViewById(R.id.item_reaction_text);
+		root = itemView.findViewById(R.id.item_reaction_root);
 		picasso = PicassoBuilder.get(parent.getContext());
 		settings = GlobalSettings.get(parent.getContext());
 		this.listener = listener;
 
 		description.setTextColor(settings.getTextColor());
 
-		itemView.setOnClickListener(this);
+		root.setOnClickListener(this);
 	}
 
 
@@ -65,6 +73,11 @@ public class ReactionHolder extends ViewHolder implements OnClickListener {
 			icon.setVisibility(View.GONE);
 			icon.setImageResource(0);
 			description.setText(reaction.getName() + " ");
+		}
+		if (reaction.isSelected()) {
+			root.getBackground().setColorFilter(settings.getHighlightColor() & 0xC0FFFFFF, PorterDuff.Mode.SRC_IN);
+		} else {
+			root.getBackground().clearColorFilter();
 		}
 		description.append(Integer.toString(reaction.getCount()));
 	}

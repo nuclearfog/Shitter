@@ -65,12 +65,9 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Accounts) {
-				adapter.replaceItems((Accounts) data);
-				return;
+				adapter.setItems((Accounts) data);
 			}
 		}
-		load();
-		setRefresh(true);
 	}
 
 
@@ -78,6 +75,16 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			load();
+			setRefresh(true);
+		}
 	}
 
 
@@ -144,7 +151,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	 *
 	 */
 	private void onLoaderResult(AccountLoader.Result result) {
-		adapter.replaceItems(result.accounts);
+		adapter.setItems(result.accounts);
 		setRefresh(false);
 	}
 

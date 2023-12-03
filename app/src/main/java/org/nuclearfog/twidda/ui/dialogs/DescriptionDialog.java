@@ -8,23 +8,25 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.config.GlobalSettings;
 
-
+/**
+ * Dialog used to add a description to a media object
+ *
+ * @author nuclearfog
+ */
 public class DescriptionDialog extends Dialog implements OnClickListener {
-
-	private static final String KEY_SAVE = " description-save";
 
 	private DescriptionCallback callback;
 	private GlobalSettings settings;
 
 	private EditText descriptionEdit;
 
-
+	/**
+	 *
+	 */
 	public DescriptionDialog(Activity activity, DescriptionCallback callback) {
 		super(activity, R.style.DefaultDialog);
 		settings = GlobalSettings.get(activity);
@@ -42,24 +44,6 @@ public class DescriptionDialog extends Dialog implements OnClickListener {
 		AppStyles.setTheme(root, settings.getPopupColor());
 
 		applyButton.setOnClickListener(this);
-	}
-
-
-	@NonNull
-	@Override
-	public Bundle onSaveInstanceState() {
-		String description = descriptionEdit.getText().toString();
-		Bundle bundle = super.onSaveInstanceState();
-		bundle.putString(KEY_SAVE, description);
-		return bundle;
-	}
-
-
-	@Override
-	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		String description = savedInstanceState.getString(KEY_SAVE, "");
-		descriptionEdit.setText(description);
-		super.onRestoreInstanceState(savedInstanceState);
 	}
 
 
@@ -88,9 +72,14 @@ public class DescriptionDialog extends Dialog implements OnClickListener {
 		}
 	}
 
-
+	/**
+	 * callback interface used to send result back to activity
+	 */
 	public interface DescriptionCallback {
 
+		/**
+		 * called if a new description is set
+		 */
 		void onDescriptionSet(String description);
 	}
 }

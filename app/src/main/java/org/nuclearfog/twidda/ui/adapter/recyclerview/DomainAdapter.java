@@ -92,7 +92,7 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 *
 	 * @param domains new items
 	 */
-	public void replaceItems(Domains domains) {
+	public void setItems(Domains domains) {
 		disableLoading();
 		items.replaceAll(domains);
 		if (items.getNextCursor() != 0L && items.peekLast() != null) {
@@ -158,6 +158,13 @@ public class DomainAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	public void clear() {
 		items.clear();
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	/**

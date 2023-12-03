@@ -180,12 +180,9 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Users) {
-				adapter.replaceItems((Users) data);
-				return;
+				adapter.setItems((Users) data);
 			}
 		}
-		setRefresh(true);
-		load(UsersLoader.Param.NO_CURSOR, UserAdapter.CLEAR_LIST);
 	}
 
 
@@ -193,6 +190,16 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			setRefresh(true);
+			load(UsersLoader.Param.NO_CURSOR, UserAdapter.CLEAR_LIST);
+		}
 	}
 
 

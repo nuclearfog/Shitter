@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.backend.async.StatusFilterAction;
 import org.nuclearfog.twidda.backend.async.StatusFilterLoader;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.model.Filter;
+import org.nuclearfog.twidda.model.lists.Filters;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.FilterAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.FilterAdapter.OnFilterClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
@@ -21,12 +22,20 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.FilterDialog;
 import org.nuclearfog.twidda.ui.dialogs.FilterDialog.FilterDialogCallback;
 
+import java.io.Serializable;
+
 /**
  * status filterlist fragment
  *
  * @author nuclearfog
  */
 public class FilterFragment extends ListFragment implements OnFilterClickListener, OnConfirmListener, FilterDialogCallback {
+
+	/**
+	 * Bundle key used to save adapter items
+	 * value type is {@link Filters}
+	 */
+	private static final String KEY_SAVE = "filter-save";
 
 	private AsyncCallback<StatusFilterLoader.Result> filterLoadCallback = this::onFilterLoaded;
 	private AsyncCallback<StatusFilterAction.Result> filterRemoveCallback = this::onFilterRemoved;
@@ -51,8 +60,29 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 		adapter = new FilterAdapter(this);
 		setAdapter(adapter);
 
-		filterLoader.execute(null, filterLoadCallback);
-		setRefresh(true);
+		if (savedInstanceState != null) {
+			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			if (data instanceof Filters) {
+				adapter.setItems((Filters) data);
+			}
+		}
+	}
+
+
+	@Override
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_SAVE, adapter.getItems());
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			filterLoader.execute(null, filterLoadCallback);
+			setRefresh(true);
+		}
 	}
 
 
@@ -120,7 +150,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	 */
 	private void onFilterLoaded(StatusFilterLoader.Result result) {
 		if (result.filters != null) {
-			adapter.replaceItems(result.filters);
+			adapter.setItems(result.filters);
 		} else if (result.exception != null) {
 			Context context = getContext();
 			if (context != null) {

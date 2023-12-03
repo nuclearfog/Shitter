@@ -55,13 +55,10 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 				listener.onAnnouncementDismiss(items.get(position));
 				break;
 
-			case ANNOUNCEMENT_CLICK:
-				listener.onAnnouncementClick(items.get(position));
-				break;
-
 			case ANNOUNCEMENT_REACTION:
 				int reactionIndex = extras[0];
-				listener.onReactionClick(items.get(position).getReactions()[reactionIndex]);
+				Announcement announcement = items.get(position);
+				listener.onReactionClick(announcement, announcement.getReactions()[reactionIndex]);
 				break;
 		}
 	}
@@ -123,13 +120,6 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 	public interface OnAnnouncementClickListener {
 
 		/**
-		 * called when announcement was selected
-		 *
-		 * @param announcement clicked item
-		 */
-		void onAnnouncementClick(Announcement announcement);
-
-		/**
 		 * called to dismiss announcement
 		 *
 		 * @param announcement clicked item
@@ -141,6 +131,6 @@ public class AnnouncementAdapter extends Adapter<AnnouncementHolder> implements 
 		 *
 		 * @param reaction selected reaction
 		 */
-		void onReactionClick(Reaction reaction);
+		void onReactionClick(Announcement anncouncement, Reaction reaction);
 	}
 }

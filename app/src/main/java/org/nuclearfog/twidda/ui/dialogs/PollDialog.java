@@ -91,7 +91,7 @@ public class PollDialog extends Dialog implements OnClickListener {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		optionAdapter.replaceItems(poll.getOptions());
+		optionAdapter.setItems(poll.getOptions());
 		multiple_choice.setCheckedImmediately(poll.multipleChoiceEnabled());
 		hide_votes.setCheckedImmediately(poll.hideTotalVotes());
 		if (poll.getDuration() >= 86400) {

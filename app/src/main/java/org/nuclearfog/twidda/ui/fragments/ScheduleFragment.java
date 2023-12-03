@@ -68,8 +68,6 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 				adapter.setItems((ScheduledStatuses) data);
 			}
 		}
-		load(0L, 0L, CLEAR_LIST);
-		setRefresh(true);
 	}
 
 
@@ -77,6 +75,16 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			load(0L, 0L, CLEAR_LIST);
+			setRefresh(true);
+		}
 	}
 
 

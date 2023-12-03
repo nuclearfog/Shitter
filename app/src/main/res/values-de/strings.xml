@@ -371,4 +371,6 @@
 	<string name="announcement_dismiss">Instanz-Ankündigung loschen</string>
 	<string name="confirm_dismiss_announcement">verstecke Instanz-Benachrichtigung</string>
 	<string name="description_announcement_reaction">Reaktionen einer Ankündigung</string>
+	<string name="info_reaction_added">Reaktion zu Ankündigung hinzugefügt</string>
+	<string name="info_reaction_removed">Reaktion von Ankündigung entfernt</string>
 </resources>

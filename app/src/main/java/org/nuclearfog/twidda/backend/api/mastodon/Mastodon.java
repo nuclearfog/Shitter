@@ -299,6 +299,32 @@ public class Mastodon implements Connection {
 
 
 	@Override
+	public void addReaction(long id, String code) throws ConnectionException {
+		try {
+			Response response = put(ENDPOINT_ANNOUNCEMENTS + "/" + id + "/reactions/" + StringUtils.encode(code));
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
+	public void removeReaction(long id, String code) throws ConnectionException {
+		try {
+			Response response = delete(ENDPOINT_ANNOUNCEMENTS + "/" + id + "/reactions/" + StringUtils.encode(code));
+			if (response.code() != 200) {
+				throw new MastodonException(response);
+			}
+		} catch (IOException e) {
+			throw new MastodonException(e);
+		}
+	}
+
+
+	@Override
 	public User showUser(long id) throws MastodonException {
 		try {
 			return createUser(get(ENDPOINT_GET_USER + id));
@@ -1984,6 +2010,16 @@ public class Mastodon implements Connection {
 			request.addHeader("Authorization", "Bearer " + bearer);
 		}
 		return client.newCall(request.build()).execute();
+	}
+
+	/**
+	 * create a PUT response
+	 *
+	 * @param endpoint endpoint url
+	 * @return PUT response
+	 */
+	private Response put(String endpoint) throws IOException {
+		return put(endpoint, new ArrayList<>());
 	}
 
 	/**

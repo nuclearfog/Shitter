@@ -140,19 +140,6 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	/**
 	 *
 	 */
-	public void setItems(ScheduledStatuses newItems) {
-		items.clear();
-		items.addAll(newItems);
-		if (newItems.size() > MIN_COUNT) {
-			items.add(null);
-		}
-		notifyDataSetChanged();
-	}
-
-
-	/**
-	 *
-	 */
 	public void addItems(ScheduledStatuses newItems, int index) {
 		disableLoading();
 		if (newItems.size() > MIN_COUNT) {
@@ -170,6 +157,25 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 			items.addAll(index, newItems);
 			notifyItemRangeInserted(index, newItems.size());
 		}
+	}
+
+	/**
+	 *
+	 */
+	public void setItems(ScheduledStatuses newItems) {
+		items.clear();
+		items.addAll(newItems);
+		if (newItems.size() > MIN_COUNT) {
+			items.add(null);
+		}
+		notifyDataSetChanged();
+	}
+
+	/**
+	 *
+	 */
+	public ScheduledStatuses getItems() {
+		return new ScheduledStatuses(items);
 	}
 
 	/**
@@ -213,10 +219,10 @@ public class ScheduleAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	}
 
 	/**
-	 *
+	 * @return true if adapter doesn't contain any items
 	 */
-	public ScheduledStatuses getItems() {
-		return new ScheduledStatuses(items);
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	/**

@@ -53,12 +53,9 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
 			if (data instanceof Domains) {
-				adapter.replaceItems((Domains) data);
-				return;
+				adapter.setItems((Domains) data);
 			}
 		}
-		load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
-		setRefresh(true);
 	}
 
 
@@ -66,6 +63,16 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_DATA, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			load(DomainAdapter.NO_INDEX, DomainLoader.Param.NO_CURSOR);
+			setRefresh(true);
+		}
 	}
 
 

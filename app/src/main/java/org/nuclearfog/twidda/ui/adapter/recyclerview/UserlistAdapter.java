@@ -46,7 +46,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 	private ListClickListener listener;
 
-	private UserLists userlists = new UserLists();
+	private UserLists items = new UserLists();
 	private int loadingIndex = NO_LOADING;
 
 	/**
@@ -59,13 +59,13 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 	@Override
 	public int getItemCount() {
-		return userlists.size();
+		return items.size();
 	}
 
 
 	@Override
 	public int getItemViewType(int position) {
-		if (userlists.get(position) == null)
+		if (items.get(position) == null)
 			return ITEM_PLACEHOLDER;
 		return ITEM_LIST;
 	}
@@ -86,7 +86,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
 		if (holder instanceof UserlistHolder) {
 			UserlistHolder vh = (UserlistHolder) holder;
-			UserList item = userlists.get(index);
+			UserList item = items.get(index);
 			if (item != null) {
 				vh.setContent(item);
 			}
@@ -99,7 +99,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 	@Override
 	public void onItemClick(int position, int type, int... extras) {
-		UserList item = userlists.get(position);
+		UserList item = items.get(position);
 		if (item != null && type == OnHolderClickListener.LIST_CLICK) {
 			listener.onListClick(item);
 		}
@@ -108,19 +108,10 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 
 	@Override
 	public boolean onPlaceholderClick(int index) {
-		boolean actionPerformed = listener.onPlaceholderClick(userlists.getNextCursor(), index);
+		boolean actionPerformed = listener.onPlaceholderClick(items.getNextCursor(), index);
 		if (actionPerformed)
 			loadingIndex = index;
 		return actionPerformed;
-	}
-
-	/**
-	 * get all adapter items
-	 *
-	 * @return adapter items
-	 */
-	public UserLists getItems() {
-		return new UserLists(userlists);
 	}
 
 	/**
@@ -132,19 +123,19 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	public void addItems(UserLists newUserlists, int index) {
 		disableLoading();
 		if (index < 0) {
-			userlists.replaceAll(newUserlists);
-			if (userlists.getNextCursor() != 0L) {
+			items.replaceAll(newUserlists);
+			if (items.getNextCursor() != 0L) {
 				// Add placeholder
-				userlists.add(null);
+				items.add(null);
 			}
 			notifyDataSetChanged();
 		} else {
-			userlists.addAll(index, newUserlists);
-			if (userlists.getNextCursor() != 0L && userlists.peekLast() != null) {
-				userlists.add(null);
+			items.addAll(index, newUserlists);
+			if (items.getNextCursor() != 0L && items.peekLast() != null) {
+				items.add(null);
 				notifyItemRangeInserted(index, newUserlists.size() + 1);
-			} else if (userlists.getNextCursor() == 0L && userlists.peekLast() == null) {
-				userlists.pollLast();
+			} else if (items.getNextCursor() == 0L && items.peekLast() == null) {
+				items.pollLast();
 				notifyItemRangeInserted(index, newUserlists.size() - 1);
 			} else {
 				notifyItemRangeInserted(index, newUserlists.size());
@@ -157,13 +148,22 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 *
 	 * @param newUserlists new items to replace old items
 	 */
-	public void replaceItems(UserLists newUserlists) {
-		userlists.replaceAll(newUserlists);
-		if (userlists.getNextCursor() != 0L && userlists.peekLast() != null) {
+	public void setItems(UserLists newUserlists) {
+		items.replaceAll(newUserlists);
+		if (items.getNextCursor() != 0L && items.peekLast() != null) {
 			// Add placeholder
-			userlists.add(null);
+			items.add(null);
 		}
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * get all adapter items
+	 *
+	 * @return adapter items
+	 */
+	public UserLists getItems() {
+		return new UserLists(items);
 	}
 
 	/**
@@ -172,9 +172,9 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 * @param list updated list
 	 */
 	public void updateItem(UserList list) {
-		int index = userlists.indexOf(list);
+		int index = items.indexOf(list);
 		if (index >= 0) {
-			userlists.set(index, list);
+			items.set(index, list);
 			notifyItemChanged(index);
 		}
 	}
@@ -185,7 +185,7 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 * @param itemId user list id to remove
 	 */
 	public void removeItem(long itemId) {
-		int index = userlists.removeItem(itemId);
+		int index = items.removeItem(itemId);
 		if (index >= 0) {
 			notifyItemRemoved(index);
 		}
@@ -195,8 +195,15 @@ public class UserlistAdapter extends Adapter<ViewHolder> implements OnHolderClic
 	 * clear adapter data
 	 */
 	public void clear() {
-		userlists.clear();
+		items.clear();
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	/**

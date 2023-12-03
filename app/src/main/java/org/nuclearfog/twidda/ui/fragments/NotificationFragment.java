@@ -74,12 +74,9 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
 			if (data instanceof Notifications) {
-				adapter.replaceItems((Notifications) data);
-				return;
+				adapter.setItems((Notifications) data);
 			}
 		}
-		load(0L, 0L, 0);
-		setRefresh(true);
 	}
 
 
@@ -87,6 +84,16 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_DATA, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			load(0L, 0L, 0);
+			setRefresh(true);
+		}
 	}
 
 

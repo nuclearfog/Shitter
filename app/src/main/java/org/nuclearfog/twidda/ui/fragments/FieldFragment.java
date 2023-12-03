@@ -37,6 +37,7 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 		super.onViewCreated(view, savedInstanceState);
 		userLoader = new UserLoader(requireContext());
 		adapter = new FieldAdapter(this);
+		setAdapter(adapter);
 
 		Bundle param = getArguments();
 		if (param != null) {
@@ -45,20 +46,26 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 		if (savedInstanceState != null) {
 			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Fields) {
-				adapter.replaceItems((Fields) data);
+				adapter.setItems((Fields) data);
 			}
 		}
-		setAdapter(adapter);
-		load();
-		setRefresh(true);
 	}
 
 
 	@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
-		Fields items = adapter.getItems();
-		outState.putSerializable(KEY_SAVE, items);
+		outState.putSerializable(KEY_SAVE, adapter.getItems());
 		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (adapter.isEmpty()) {
+			load();
+			setRefresh(true);
+		}
 	}
 
 
@@ -101,7 +108,7 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 		if (result.mode == UserLoader.Result.ONLINE) {
 			if (result.user != null) {
 				Fields fields = new Fields(result.user.getFields());
-				adapter.replaceItems(fields);
+				adapter.setItems(fields);
 			} else {
 				adapter.clear();
 			}

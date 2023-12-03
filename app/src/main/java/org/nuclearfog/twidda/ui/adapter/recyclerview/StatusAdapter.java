@@ -138,15 +138,6 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	}
 
 	/**
-	 * get adapter items
-	 *
-	 * @return item array
-	 */
-	public Statuses getItems() {
-		return new Statuses(items);
-	}
-
-	/**
 	 * Insert data at specific index of the list
 	 *
 	 * @param newItems list of statuses to insert
@@ -172,16 +163,25 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	}
 
 	/**
-	 * Replace all items in the list
+	 * Replace all items of the adapter
 	 *
 	 * @param newItems list of statuses to add
 	 */
-	public void replaceItems(@NonNull Statuses newItems) {
+	public void setItems(@NonNull Statuses newItems) {
 		items.replaceAll(newItems);
 		if (items.size() > MIN_COUNT && items.getNextCursor() != Statuses.NO_ID && items.peekLast() != null)
 			items.add(null);
 		loadingIndex = NO_LOADING;
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * get adapter items
+	 *
+	 * @return item array
+	 */
+	public Statuses getItems() {
+		return new Statuses(items);
 	}
 
 	/**
@@ -237,6 +237,13 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 			}
 		}
 		return 0L;
+	}
+
+	/**
+	 * @return true if adapter contains no items
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 
 	/**

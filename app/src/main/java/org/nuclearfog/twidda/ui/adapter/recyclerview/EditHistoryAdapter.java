@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.ui.adapter.recyclerview;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import org.nuclearfog.twidda.model.lists.StatusEditHistory;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.EditHistoryHolder;
@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.EditHistoryHolder;
  *
  * @author nuclearfog
  */
-public class EditHistoryAdapter extends RecyclerView.Adapter<EditHistoryHolder> {
+public class EditHistoryAdapter extends Adapter<EditHistoryHolder> {
 
 	private StatusEditHistory items = new StatusEditHistory();
 
@@ -37,7 +37,7 @@ public class EditHistoryAdapter extends RecyclerView.Adapter<EditHistoryHolder> 
 	}
 
 	/**
-	 *
+	 * replace all items of adapter
 	 */
 	public void setItems(StatusEditHistory items) {
 		this.items.clear();
@@ -46,17 +46,24 @@ public class EditHistoryAdapter extends RecyclerView.Adapter<EditHistoryHolder> 
 	}
 
 	/**
-	 *
+	 * get all items from adapter
 	 */
 	public StatusEditHistory getItems() {
 		return new StatusEditHistory(items);
 	}
 
 	/**
-	 *
+	 * remove all items from adapter
 	 */
 	public void clear() {
 		items.clear();
 		notifyDataSetChanged();
+	}
+
+	/**
+	 * @return true if adapter doesn't contain any items
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
 	}
 }

@@ -117,7 +117,7 @@ public class EditOptionsAdapter extends Adapter<EditOptionsHolder> implements On
 	 *
 	 * @param newOptions list of option name strings
 	 */
-	public void replaceItems(List<String> newOptions) {
+	public void setItems(List<String> newOptions) {
 		options.clear();
 		options.addAll(newOptions);
 		for (int i = options.size(); i < MIN_OPTIONS; i++) {
