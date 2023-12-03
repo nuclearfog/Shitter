@@ -40,6 +40,7 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 				} else {
 					settings.setPushEnabled(false);
 				}
+				database.resetDatabase();
 				return new Result(Result.SELECT, param.account);
 
 			case Param.REMOVE:

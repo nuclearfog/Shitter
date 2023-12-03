@@ -1102,19 +1102,40 @@ public class AppDatabase {
 	}
 
 	/**
-	 * remove database tables except account table
+	 * reset database tables
+	 * re-create database tables and keep all login and web push subscriptions
 	 */
 	public void resetDatabase() {
 		synchronized (adapter) {
 			// save logins first
 			List<Account> logins = getLogins();
+			List<WebPush> webPushs = getWebPushs();
 			// reset database
 			adapter.resetDatabase();
 			// restore saved logins
 			for (Account login : logins) {
 				saveLogin(login);
 			}
+			// restore web push subscription
+			for (WebPush webPush : webPushs) {
+				savePushSubscription(webPush);
+			}
 		}
+	}
+
+	/**
+	 * get all web push subscriptions
+	 */
+	private List<WebPush> getWebPushs() {
+		List<WebPush> result = new LinkedList<>();
+
+		SQLiteDatabase db = adapter.getDbRead();
+		Cursor c = db.query(PushTable.TABLE, DatabasePush.COLUMNS, null, null, null, null, null);
+		if (c.moveToFirst()) {
+			result.add(new DatabasePush(c));
+		}
+		c.close();
+		return result;
 	}
 
 	/**
