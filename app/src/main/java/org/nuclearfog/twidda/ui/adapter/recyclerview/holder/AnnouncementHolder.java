@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.async.AsyncExecutor;
+import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TextEmojiLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.ReactionAdapter.OnReactionS
  *
  * @author nuclearfog
  */
-public class AnnouncementHolder extends ViewHolder implements OnClickListener, OnReactionSelected {
+public class AnnouncementHolder extends ViewHolder implements OnClickListener, OnReactionSelected, AsyncCallback<TextEmojiLoader.Result> {
 
 	private TextView time, content;
 	private View dismissButton;
@@ -40,8 +40,6 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener, O
 	private GlobalSettings settings;
 	private TextEmojiLoader emojiLoader;
 	private ReactionAdapter adapter;
-
-	private AsyncExecutor.AsyncCallback<TextEmojiLoader.Result> textResult = this::setTextEmojis;
 	private int iconSize;
 
 	private long tagId = 0L;
@@ -94,14 +92,23 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener, O
 		}
 	}
 
+
+	@Override
+	public void onResult(@NonNull TextEmojiLoader.Result result) {
+		if (result.id == tagId && result.images != null) {
+			Spannable spannable = EmojiUtils.addEmojis(content.getContext(), result.spannable, result.images);
+			content.setText(spannable);
+		}
+	}
+
 	/**
 	 * set holder content
 	 */
 	public void setContent(Announcement announcement) {
 		Spannable textSpan = Tagger.makeTextWithLinks(announcement.getMessage(), settings.getHighlightColor());
-		if (announcement.getEmojis().length == 0 && settings.imagesEnabled()) {
+		if (announcement.getEmojis().length > 0 && settings.imagesEnabled()) {
 			TextEmojiLoader.Param param = new TextEmojiLoader.Param(tagId, announcement.getEmojis(), textSpan, iconSize);
-			emojiLoader.execute(param, textResult);
+			emojiLoader.execute(param, this);
 			textSpan = EmojiUtils.removeTags(textSpan);
 		}
 		if (announcement.isDismissed()) {
@@ -111,16 +118,6 @@ public class AnnouncementHolder extends ViewHolder implements OnClickListener, O
 		}
 		content.setText(textSpan);
 		time.setText(StringUtils.formatCreationTime(time.getResources(), announcement.getTimestamp()));
-		adapter.setItems(announcement.getReactions());
-	}
-
-	/**
-	 *
-	 */
-	private void setTextEmojis(@NonNull TextEmojiLoader.Result result) {
-		if (result.id == tagId && result.images != null) {
-			Spannable spannable = EmojiUtils.addEmojis(content.getContext(), result.spannable, result.images);
-			content.setText(spannable);
-		}
+		adapter.setItems(announcement.getReactions(), announcement.getEmojis());
 	}
 }

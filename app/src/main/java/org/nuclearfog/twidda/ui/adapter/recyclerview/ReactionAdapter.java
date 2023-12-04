@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import org.nuclearfog.twidda.model.Emoji;
 import org.nuclearfog.twidda.model.Reaction;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.ReactionHolder;
@@ -14,12 +15,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * RecyclerView adapter used by {@link org.nuclearfog.twidda.ui.adapter.recyclerview.holder.AnnouncementHolder}
+ *
  * @author nuclearfog
  */
 public class ReactionAdapter extends Adapter<ReactionHolder> implements OnHolderClickListener {
 
 	private OnReactionSelected listener;
 	private List<Reaction> items = new LinkedList<>();
+	private Emoji[] emojis = {};
 
 	/**
 	 *
@@ -38,7 +42,7 @@ public class ReactionAdapter extends Adapter<ReactionHolder> implements OnHolder
 
 	@Override
 	public void onBindViewHolder(@NonNull ReactionHolder holder, int position) {
-		holder.setContent(items.get(position));
+		holder.setContent(items.get(position), emojis);
 	}
 
 
@@ -64,10 +68,11 @@ public class ReactionAdapter extends Adapter<ReactionHolder> implements OnHolder
 	/**
 	 * add adapter items
 	 */
-	public void setItems(Reaction[] reactions) {
+	public void setItems(Reaction[] reactions, Emoji[] emojis) {
 		items.clear();
 		Arrays.sort(reactions);
 		items.addAll(Arrays.asList(reactions));
+		this.emojis = Arrays.copyOf(emojis, emojis.length);
 		notifyDataSetChanged();
 	}
 

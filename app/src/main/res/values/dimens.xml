@@ -25,7 +25,6 @@
 	<dimen name="settings_spinner_margin">10dp</dimen>
 	<dimen name="settings_layout_margin">5dp</dimen>
 	<dimen name="settings_seek_number_width">30sp</dimen>
-	<dimen name="settings_scroll_padding">@dimen/fragment_list_layout_padding</dimen>
 
 	<!--dimens of page_status.xml-->
 	<dimen name="page_status_toolbar_height">@dimen/toolbar_height</dimen>
@@ -188,9 +187,6 @@
 
 	<!--dimens of dialog_license.xml-->
 	<dimen name="license_textsize">8sp</dimen>
-
-	<!--dimens of fragment_list.xml-->
-	<dimen name="fragment_list_layout_padding">3dp</dimen>
 
 	<!--dimens of dialog_confirm.xml-->
 	<dimen name="confirm_button_margin">10dp</dimen>
@@ -395,7 +391,7 @@
 	<dimen name="dialog_media_field_layout_margin">5dp</dimen>
 
 	<!--dimens of item_reaction.xml-->
-	<dimen name="item_reaction_size_icon">20dp</dimen>
+	<dimen name="item_reaction_size_icon">14sp</dimen>
 	<dimen name="item_reaction_size_text">14sp</dimen>
 	<dimen name="item_reaction_margin_layout">5dp</dimen>
 
