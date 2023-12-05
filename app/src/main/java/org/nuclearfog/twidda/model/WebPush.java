@@ -40,6 +40,11 @@ public interface WebPush extends Serializable {
 	String getHost();
 
 	/**
+	 * @return an intern hash value to communicate with external app
+	 */
+	String getInstance();
+
+	/**
 	 * @return unique server key set from {@link org.nuclearfog.twidda.backend.api.Connection}
 	 */
 	String getServerKey();

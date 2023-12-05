@@ -26,6 +26,7 @@ public class DatabasePush implements WebPush, PushTable {
 			PUB_KEY,
 			SEC_KEY,
 			AUTH_SECRET,
+			INSTANCE,
 			FLAGS
 	};
 
@@ -36,6 +37,7 @@ public class DatabasePush implements WebPush, PushTable {
 	private String pub_key = "";
 	private String sec_key = "";
 	private String auth_sec = "";
+	private String instance = "";
 	private boolean alertMention;
 	private boolean alertPost;
 	private boolean alertRepost;
@@ -55,7 +57,8 @@ public class DatabasePush implements WebPush, PushTable {
 		String pub_key = cursor.getString(3);
 		String sec_key = cursor.getString(4);
 		String auth_sec = cursor.getString(5);
-		int flags = cursor.getInt(6);
+		String instance = cursor.getString(6);
+		int flags = cursor.getInt(7);
 
 		alertMention = (flags & MASK_MENTION) != 0;
 		alertPost = (flags & MASK_STATUS) != 0;
@@ -84,6 +87,8 @@ public class DatabasePush implements WebPush, PushTable {
 			this.sec_key = sec_key;
 		if (auth_sec != null)
 			this.auth_sec = auth_sec;
+		if (instance != null)
+			this.instance = instance;
 	}
 
 
@@ -96,6 +101,12 @@ public class DatabasePush implements WebPush, PushTable {
 	@Override
 	public String getHost() {
 		return host;
+	}
+
+
+	@Override
+	public String getInstance() {
+		return instance;
 	}
 
 

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 import org.nuclearfog.twidda.database.DatabaseAdapter.BookmarkTable;
@@ -276,7 +277,7 @@ public class AppDatabase {
 	/**
 	 * selection for a single webpush item
 	 */
-	private static final String PUSH_SELECTION = PushTable.USER_URL + "=?";
+	private static final String PUSH_SELECTION = PushTable.INSTANCE + " LIKE ?";
 
 	/**
 	 * selection for instance entry
@@ -617,14 +618,15 @@ public class AppDatabase {
 	 *
 	 * @param push web push information
 	 */
-	public void savePushSubscription(WebPush push) {
+	public void saveWebPush(WebPush push) {
 		synchronized (adapter) {
-			ContentValues column = new ContentValues(7);
+			ContentValues column = new ContentValues();
 			column.put(PushTable.ID, push.getId());
+			column.put(PushTable.HOST, push.getHost());
+			column.put(PushTable.INSTANCE, push.getInstance());
 			column.put(PushTable.PUB_KEY, push.getPublicKey());
 			column.put(PushTable.SEC_KEY, push.getServerKey());
 			column.put(PushTable.SERVER_KEY, push.getServerKey());
-			column.put(PushTable.HOST, push.getHost());
 			column.put(PushTable.AUTH_SECRET, push.getAuthSecret());
 
 			int flags = 0;
@@ -651,7 +653,6 @@ public class AppDatabase {
 			if (push.alertStatusChangeEnabled())
 				flags |= PushTable.MASK_MODIFIED;
 			column.put(PushTable.FLAGS, flags);
-			column.put(PushTable.USER_URL, settings.getLogin().getId() + '@' + settings.getLogin().getHostname());
 
 			SQLiteDatabase db = adapter.getDbWrite();
 			db.insertWithOnConflict(PushTable.TABLE, "", column, SQLiteDatabase.CONFLICT_REPLACE);
@@ -1012,7 +1013,7 @@ public class AppDatabase {
 	public void removeLogin(Account account) {
 		synchronized (adapter) {
 			String[] accountArgs = {Long.toString(account.getId()), account.getHostname()};
-			String[] pushArgs = {account.getId() + '@' + account.getHostname()};
+			String[] pushArgs = {StringUtils.getPushInstanceHash(account)};
 
 			SQLiteDatabase db = adapter.getDbWrite();
 			db.delete(AccountTable.TABLE, ACCOUNT_SELECTION, accountArgs);
@@ -1089,7 +1090,7 @@ public class AppDatabase {
 	public WebPush getWebPush(Account account) {
 		synchronized (adapter) {
 			WebPush result = null;
-			String[] args = {account.getId() + '@' + account.getHostname()};
+			String[] args = {StringUtils.getPushInstanceHash(account)};
 
 			SQLiteDatabase db = adapter.getDbRead();
 			Cursor c = db.query(PushTable.TABLE, DatabasePush.COLUMNS, PUSH_SELECTION, args, null, null, null);
@@ -1118,13 +1119,15 @@ public class AppDatabase {
 			}
 			// restore web push subscription
 			for (WebPush webPush : webPushs) {
-				savePushSubscription(webPush);
+				saveWebPush(webPush);
 			}
 		}
 	}
 
 	/**
 	 * get all web push subscriptions
+	 *
+	 * @return a list of all known webpush subscriptions
 	 */
 	private List<WebPush> getWebPushs() {
 		List<WebPush> result = new LinkedList<>();
@@ -1132,7 +1135,9 @@ public class AppDatabase {
 		SQLiteDatabase db = adapter.getDbRead();
 		Cursor c = db.query(PushTable.TABLE, DatabasePush.COLUMNS, null, null, null, null, null);
 		if (c.moveToFirst()) {
-			result.add(new DatabasePush(c));
+			do {
+				result.add(new DatabasePush(c));
+			} while(c.moveToNext());
 		}
 		c.close();
 		return result;

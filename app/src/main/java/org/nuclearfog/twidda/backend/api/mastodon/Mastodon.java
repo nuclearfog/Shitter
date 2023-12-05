@@ -1373,7 +1373,7 @@ public class Mastodon implements Connection {
 			ResponseBody body = response.body();
 			if (response.code() == 200 && body != null) {
 				JSONObject json = new JSONObject(body.string());
-				MastodonPush result = new MastodonPush(json);
+				MastodonPush result = new MastodonPush(json, settings.getLogin());
 				result.setKeys(pushPublicKey, pushPrivateKey);
 				result.setAuthSecret(randomString);
 				result.setPolicy(pushUpdate.getPolicy());

@@ -14,6 +14,7 @@ public class ConfigPush implements WebPush {
 
 	private long id;
 	private String host;
+	private String instance;
 	private String serverKey, publicKey, privateKey, authKey;
 	private boolean mentions, reposts, favorits, following, follow_request, status_post, status_change, poll_finished;
 	private int policy;
@@ -24,6 +25,7 @@ public class ConfigPush implements WebPush {
 	public ConfigPush(WebPush webPush) {
 		id = webPush.getId();
 		host = webPush.getHost();
+		instance = webPush.getInstance();
 		serverKey = webPush.getServerKey();
 		publicKey = webPush.getPublicKey();
 		privateKey = webPush.getPrivateKey();
@@ -42,10 +44,11 @@ public class ConfigPush implements WebPush {
 	/**
 	 *
 	 */
-	public ConfigPush(long id, String host, String serverKey, String publicKey, String privateKey, String authKey, int policy, boolean mentions, boolean reposts,
-	                  boolean favorits, boolean following, boolean follow_request, boolean status_post, boolean status_change, boolean poll_finished) {
+	public ConfigPush(long id, String host, String instance, String serverKey, String publicKey, String privateKey, String authKey, int policy, boolean mentions,
+	                  boolean reposts, boolean favorits, boolean following, boolean follow_request, boolean status_post, boolean status_change, boolean poll_finished) {
 		this.id = id;
 		this.host = host;
+		this.instance = instance;
 		this.policy = policy;
 		this.serverKey = serverKey;
 		this.privateKey = privateKey;
@@ -71,6 +74,12 @@ public class ConfigPush implements WebPush {
 	@Override
 	public String getHost() {
 		return host;
+	}
+
+
+	@Override
+	public String getInstance() {
+		return instance;
 	}
 
 

@@ -250,7 +250,7 @@ public class DatabaseAdapter {
 	 */
 	private static final String TABLE_WEBPUSH = "CREATE TABLE IF NOT EXISTS "
 			+ PushTable.TABLE + "("
-			+ PushTable.USER_URL + " TEXT PRIMARY KEY,"
+			+ PushTable.INSTANCE + " TEXT PRIMARY KEY,"
 			+ PushTable.HOST + " TEXT,"
 			+ PushTable.ID + " INTEGER,"
 			+ PushTable.PUB_KEY + " TEXT,"
@@ -1294,9 +1294,9 @@ public class DatabaseAdapter {
 		String TABLE = "web_push";
 
 		/**
-		 * web push id (user_id@hostname.example) (primary Key)
+		 * web push id (hash vaule of user_id@hostname.example) (primary Key)
 		 */
-		String USER_URL = "user_url";
+		String INSTANCE = "user_url";
 
 		/**
 		 * ID of the push subscription (not unique)

@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.model.Account;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -189,6 +190,15 @@ public class StringUtils {
 				return text.substring(0, 200);
 			return text;
 		}
+	}
+
+	/**
+	 * create hash value used for push instances
+	 *
+	 * @return md5 hash
+	 */
+	public static String getPushInstanceHash(Account account) {
+		return getMD5signature(account.getId() + "@" + account.getHostname());
 	}
 
 	/**

@@ -28,7 +28,7 @@ public class PushSubscription {
 				ArrayList<String> features = new ArrayList<>(1);
 				features.add(UnifiedPush.FEATURE_BYTES_MESSAGE);
 				// create unique push identifier for a single login
-				String instance = StringUtils.getMD5signature(settings.getLogin().getId() + "@" + settings.getLogin().getHostname());
+				String instance = StringUtils.getPushInstanceHash(settings.getLogin());
 				UnifiedPush.registerAppWithDialog(context, instance, new RegistrationDialogContent(), features, "");
 			} catch (Exception exception) {
 				// thrown when ntfy-app was not found

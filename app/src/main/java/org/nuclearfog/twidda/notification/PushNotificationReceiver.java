@@ -25,7 +25,7 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 	public void onMessage(@NonNull Context context, @NonNull byte[] message, @NonNull String instance) {
 		GlobalSettings settings = GlobalSettings.get(context);
 		// check if received push notification is intended for the current login
-		if (settings.isLoggedIn() && settings.pushEnabled() && settings.getLogin().getConfiguration().isWebpushSupported() && settings.getPushInstance().equals(instance)) {
+		if (settings.isLoggedIn() && settings.pushEnabled() && settings.getLogin().getConfiguration().isWebpushSupported() && settings.getWebPush().getInstance().equals(instance)) {
 			NotificationLoader loader = new NotificationLoader(context);
 			NotificationLoader.Param param = new NotificationLoader.Param(NotificationLoader.Param.LOAD_UNREAD, 0, 0L, 0L);
 			notificationManager = new PushNotification(context);
@@ -37,7 +37,6 @@ public class PushNotificationReceiver extends MessagingReceiver implements Async
 	@Override
 	public void onNewEndpoint(@NonNull Context context, @NonNull String endpoint, @NonNull String instance) {
 		GlobalSettings settings = GlobalSettings.get(context);
-		settings.setPushInstance(instance);
 		PushUpdate update = new PushUpdate(settings.getWebPush(), endpoint);
 		PushUpdater pushUpdater = new PushUpdater(context);
 		pushUpdater.execute(update, null);

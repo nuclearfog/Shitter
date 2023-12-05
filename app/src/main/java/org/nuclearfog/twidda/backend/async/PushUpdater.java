@@ -38,7 +38,7 @@ public class PushUpdater extends AsyncExecutor<PushUpdate, PushUpdater.Result> {
 		try {
 			WebPush webpush = connection.updatePush(param);
 			settings.setWebPush(webpush);
-			database.savePushSubscription(webpush);
+			database.saveWebPush(webpush);
 			return new Result(webpush, null);
 		} catch (ConnectionException e) {
 			return new Result(null, e);

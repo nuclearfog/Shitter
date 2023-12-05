@@ -32,6 +32,7 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 	protected Result doInBackground(@NonNull Param param) {
 		switch (param.mode) {
 			case Param.SELECT:
+				database.resetDatabase();
 				WebPush webPush = database.getWebPush(param.account);
 				settings.setLogin(param.account, true);
 				if (webPush != null) {
@@ -39,8 +40,8 @@ public class AccountAction extends AsyncExecutor<AccountAction.Param, AccountAct
 					settings.setWebPush(webPush);
 				} else {
 					settings.setPushEnabled(false);
+					settings.setWebPush(null);
 				}
-				database.resetDatabase();
 				return new Result(Result.SELECT, param.account);
 
 			case Param.REMOVE:

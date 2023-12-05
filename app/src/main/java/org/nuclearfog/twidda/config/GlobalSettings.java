@@ -10,13 +10,13 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.impl.ConfigAccount;
 import org.nuclearfog.twidda.config.impl.ConfigLocation;
 import org.nuclearfog.twidda.config.impl.ConfigPush;
 import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.model.WebPush;
-import org.unifiedpush.android.connector.ConstantsKt;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -149,7 +149,6 @@ public class GlobalSettings {
 	private ConfigAccount login;
 	private String proxyHost, proxyPort;
 	private String proxyUser, proxyPass;
-	private String pushInstance;
 	private String publicTimeline;
 	private boolean loadImage;
 	private boolean loggedIn;
@@ -603,6 +602,7 @@ public class GlobalSettings {
 			edit.putBoolean(PUSH_ALERT_STATUS_POST, webPush.alertNewStatusEnabled());
 			edit.putBoolean(PUSH_ALERT_STATUS_EDIT, webPush.alertStatusChangeEnabled());
 			edit.putBoolean(PUSH_ALERT_POLL, webPush.alertPollEnabled());
+			edit.putString(PUSH_INSTANCE, StringUtils.getPushInstanceHash(login));
 			edit.apply();
 		} else {
 			this.webPush.clear();
@@ -613,32 +613,10 @@ public class GlobalSettings {
 			edit.remove(PUSH_PUBLIC_KEY);
 			edit.remove(PUSH_PRIVATE_KEY);
 			edit.remove(PUSH_AUTH_KEY);
+			edit.remove(PUSH_INSTANCE);
 			edit.apply();
 		}
 	}
-
-	/**
-	 * get push instance url
-	 *
-	 * @return instance url
-	 */
-	public String getPushInstance() {
-		return pushInstance;
-	}
-
-	/**
-	 * save push instance url
-	 *
-	 * @param pushInstance instance url
-	 */
-	public void setPushInstance(String pushInstance) {
-		this.pushInstance = pushInstance;
-
-		Editor edit = settings.edit();
-		edit.putString(PUSH_INSTANCE, pushInstance);
-		edit.apply();
-	}
-
 
 	/**
 	 * get max list size to load online/offline
@@ -1059,7 +1037,6 @@ public class GlobalSettings {
 		hideSensitive = settings.getBoolean(HIDE_SENSITIVE, true);
 		floatingEnabled = settings.getBoolean(FLOATING_BUTTON, true);
 		proxyWarning = settings.getBoolean(PROXY_WARNING, true);
-		pushInstance = settings.getString(PUSH_INSTANCE, ConstantsKt.INSTANCE_DEFAULT);
 		publicTimeline = settings.getString(PUBLIC_TIMELINE, TIMELINE_COMBINED);
 		showAllAnnouncements = settings.getBoolean(ANNOUNCEMENTS_SHOW_ALL, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
@@ -1078,6 +1055,7 @@ public class GlobalSettings {
 		login = new ConfigAccount(userId, oauthToken, oauthSecret, consumerToken, consumerSecret, bearerToken, hostname, apiId);
 		// init web push information
 		long pushID = settings.getLong(PUSH_ID, 0L);
+		String pushInstance = settings.getString(PUSH_INSTANCE, "");
 		String pushServerKey = settings.getString(PUSH_SERVER_KEY, "");
 		String pushServerHost = settings.getString(PUSH_SERVER_HOST, "");
 		String pushPublicKey = settings.getString(PUSH_PUBLIC_KEY, "");
@@ -1092,7 +1070,7 @@ public class GlobalSettings {
 		boolean status_change = settings.getBoolean(PUSH_ALERT_STATUS_EDIT, false);
 		boolean poll_finished = settings.getBoolean(PUSH_ALERT_POLL, false);
 		int policy = settings.getInt(PUSH_POLICY, WebPush.POLICY_ALL);
-		webPush = new ConfigPush(pushID, pushServerHost, pushServerKey, pushPublicKey, pushPrivateKey, pushAuthKey, policy,
+		webPush = new ConfigPush(pushID, pushServerHost, pushInstance, pushServerKey, pushPublicKey, pushPrivateKey, pushAuthKey, policy,
 				mentions, reposts, favorits, following, follow_request, status_post, status_change, poll_finished);
 	}
 

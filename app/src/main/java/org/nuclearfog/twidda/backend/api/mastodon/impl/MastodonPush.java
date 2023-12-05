@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.nuclearfog.twidda.backend.utils.StringUtils;
+import org.nuclearfog.twidda.model.Account;
 import org.nuclearfog.twidda.model.WebPush;
 
 /**
@@ -18,14 +20,16 @@ public class MastodonPush implements WebPush {
 
 	private long id;
 	private String host;
+	private String instance;
 	private String serverKey, publicKey, privateKey, authSec;
 	private boolean mentionAlert, favoriteAlert, repostAlert, newPostAlert, newFollowerAlert, followRequestAlert, pollEndAlert, statusChangeAlert;
 	private int policy;
 
 	/**
-	 * @param json web push json object
+	 * @param json    web push json object
+	 * @param account current user information
 	 */
-	public MastodonPush(JSONObject json) throws JSONException {
+	public MastodonPush(JSONObject json, Account account) throws JSONException {
 		JSONObject alerts = json.getJSONObject("alerts");
 		String id = json.getString("id");
 		host = json.getString("endpoint");
@@ -38,6 +42,7 @@ public class MastodonPush implements WebPush {
 		followRequestAlert = alerts.optBoolean("follow_request", false);
 		pollEndAlert = alerts.optBoolean("poll", false);
 		statusChangeAlert = alerts.optBoolean("update", false);
+		instance = StringUtils.getPushInstanceHash(account);
 		try {
 			this.id = Long.parseLong(id);
 		} catch (NumberFormatException e) {
@@ -55,6 +60,12 @@ public class MastodonPush implements WebPush {
 	@Override
 	public String getHost() {
 		return host;
+	}
+
+
+	@Override
+	public String getInstance() {
+		return instance;
 	}
 
 
