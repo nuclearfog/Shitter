@@ -27,6 +27,14 @@ public class Notifications extends LinkedList<Notification> {
 		super(notifications);
 	}
 
+	/**
+	 * replace all items
+	 */
+	public void replaceAll(Notifications notifications) {
+		super.clear();
+		super.addAll(notifications);
+	}
+
 
 	@NonNull
 	@Override

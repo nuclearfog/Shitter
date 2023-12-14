@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay;
 import org.nuclearfog.twidda.backend.utils.RefreshDelay.RefreshCallback;
@@ -51,6 +52,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	private RecyclerView list;
 	private SwipeRefreshLayout reload;
 
+	private LinearLayoutManager layoutManager;
 	private ItemViewModel viewModel;
 	protected GlobalSettings settings;
 
@@ -60,19 +62,19 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 	@Override
 	public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
-		list = new RecyclerView(inflater.getContext());
-		reload = new SwipeRefreshLayout(inflater.getContext());
-		reload.addView(list);
+		View root = inflater.inflate(R.layout.fragment_list, parent, false);
+		list = root.findViewById(R.id.fragment_list);
+		reload = root.findViewById(R.id.fragment_refresh);
 		settings = GlobalSettings.get(requireContext());
-
-		list.setLayoutManager(new LinearLayoutManager(requireContext()));
-		AppStyles.setSwipeRefreshColor(reload, settings);
-
+		layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
 		viewModel = new ViewModelProvider(requireActivity()).get(ItemViewModel.class);
+
+		list.setLayoutManager(layoutManager);
+		AppStyles.setSwipeRefreshColor(reload, settings);
 		viewModel.getSelectedItem().observe(getViewLifecycleOwner(), this);
 
 		reload.setOnRefreshListener(this);
-		return reload;
+		return root;
 	}
 
 
@@ -110,7 +112,13 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 				break;
 
 			case NOTIFY_SCROLL_TOP:
-				list.smoothScrollToPosition(0);
+				if (layoutManager.getItemCount() > 0) {
+					if (settings.chronologicalTimelineEnabled()) {
+						list.smoothScrollToPosition(layoutManager.getItemCount() - 1);
+					} else {
+						list.smoothScrollToPosition(0);
+					}
+				}
 				break;
 		}
 	}
@@ -146,8 +154,10 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * set list adapter
 	 *
 	 * @param adapter adapter for the list
+	 * @param reverse true to reverse the list
 	 */
-	protected void setAdapter(Adapter<? extends ViewHolder> adapter) {
+	protected void setAdapter(Adapter<? extends ViewHolder> adapter, boolean reverse) {
+		layoutManager.setReverseLayout(reverse);
 		list.setAdapter(adapter);
 	}
 

@@ -125,6 +125,7 @@ public class GlobalSettings {
 	private static final String PUSH_ALERT_STATUS_POST = "push_status_subscr";
 	private static final String PUSH_ALERT_STATUS_EDIT = "push_status_edit";
 	private static final String ANNOUNCEMENTS_SHOW_ALL = "show_all_announcements";
+	private static final String CHRONOLOGICAL_TIMELINE = "reverse_timeline";
 
 	// file name of the preferences
 	private static final String APP_SETTINGS = "settings";
@@ -163,6 +164,7 @@ public class GlobalSettings {
 	private boolean hideSensitive;
 	private boolean floatingEnabled;
 	private boolean showAllAnnouncements;
+	private boolean chrologicalTimeline;
 	private int background_color;
 	private int font_color;
 	private int highlight_color;
@@ -771,6 +773,24 @@ public class GlobalSettings {
 	}
 
 	/**
+	 * @return true to enable chronological timeline, false to use reversed-chronological order
+	 */
+	public boolean chronologicalTimelineEnabled() {
+		return chrologicalTimeline;
+	}
+
+	/**
+	 * @param enable true to enable chronological timeline, false to use reversed-chronological order
+	 */
+	public void enableChronologicalTimeline(boolean enable) {
+		this.chrologicalTimeline = enable;
+
+		Editor edit = settings.edit();
+		edit.putBoolean(CHRONOLOGICAL_TIMELINE, enable);
+		edit.apply();
+	}
+
+	/**
 	 * set proxy address
 	 *
 	 * @param proxyHost address of proxy
@@ -1039,6 +1059,7 @@ public class GlobalSettings {
 		proxyWarning = settings.getBoolean(PROXY_WARNING, true);
 		publicTimeline = settings.getString(PUBLIC_TIMELINE, TIMELINE_COMBINED);
 		showAllAnnouncements = settings.getBoolean(ANNOUNCEMENTS_SHOW_ALL, false);
+		chrologicalTimeline = settings.getBoolean(CHRONOLOGICAL_TIMELINE, true);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");

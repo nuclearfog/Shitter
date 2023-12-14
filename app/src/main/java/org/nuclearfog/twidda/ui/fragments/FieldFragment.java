@@ -37,7 +37,7 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 		super.onViewCreated(view, savedInstanceState);
 		userLoader = new UserLoader(requireContext());
 		adapter = new FieldAdapter(this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		Bundle param = getArguments();
 		if (param != null) {

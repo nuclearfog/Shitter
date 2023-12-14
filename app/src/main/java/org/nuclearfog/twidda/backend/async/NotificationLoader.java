@@ -75,6 +75,7 @@ public class NotificationLoader extends AsyncExecutor<NotificationLoader.Param, 
 	 */
 	public static class Param {
 
+		public static final long NO_ID = 0L;
 		public static final int LOAD_ALL = 1;
 		public static final int LOAD_UNREAD = 2;
 

@@ -124,9 +124,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		SwitchButton toggleImg = findViewById(R.id.page_settings_enable_images);
 		SwitchButton toolbarOverlap = findViewById(R.id.page_settings_toolbar_collapse);
 		SwitchButton enableLike = findViewById(R.id.page_settings_enable_like);
-		SwitchButton hideSensitive = findViewById(R.id.page_Settings_sensitive_enable);
-		SwitchButton enableStatusIcons = findViewById(R.id.page_Settings_enable_status_indicators);
+		SwitchButton hideSensitive = findViewById(R.id.page_settings_sensitive_enable);
+		SwitchButton enableStatusIcons = findViewById(R.id.page_settings_enable_status_indicators);
 		SwitchButton enableFloatingButton = findViewById(R.id.page_settings_enable_floating_button);
+		SwitchButton chronologicalTimeline = findViewById(R.id.page_settings_chronological_timeline_sw);
 		SeekBar listSizeSelector = findViewById(R.id.page_settings_list_seek);
 		Spinner fontSelector = findViewById(R.id.page_settings_font_selector);
 		Spinner scaleSelector = findViewById(R.id.page_settings_textscale_selector);
@@ -223,6 +224,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		hideSensitive.setCheckedImmediately(settings.hideSensitiveEnabled());
 		enableStatusIcons.setCheckedImmediately(settings.statusIndicatorsEnabled());
 		enableFloatingButton.setCheckedImmediately(settings.floatingButtonEnabled());
+		chronologicalTimeline.setChecked(settings.chronologicalTimelineEnabled());
 		enablePush.setCheckedImmediately(settings.pushEnabled());
 		enable_proxy.setCheckedImmediately(settings.isProxyEnabled());
 		enable_auth.setCheckedImmediately(settings.isProxyAuthSet());
@@ -241,6 +243,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		toggleImg.setOnCheckedChangeListener(this);
 		enablePush.setOnCheckedChangeListener(this);
 		enableLike.setOnCheckedChangeListener(this);
+		chronologicalTimeline.setOnCheckedChangeListener(this);
 		enableStatusIcons.setOnCheckedChangeListener(this);
 		hideSensitive.setOnCheckedChangeListener(this);
 		enableFloatingButton.setOnCheckedChangeListener(this);
@@ -405,7 +408,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			}
 		}
 		// enable status indicators
-		else if (c.getId() == R.id.page_Settings_enable_status_indicators) {
+		else if (c.getId() == R.id.page_settings_enable_status_indicators) {
 			settings.enableStatusIndicators(checked);
 		}
 		// enable floating button
@@ -452,8 +455,12 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 			}
 		}
 		// hide sensitive content
-		else if (c.getId() == R.id.page_Settings_sensitive_enable) {
+		else if (c.getId() == R.id.page_settings_sensitive_enable) {
 			settings.hideSensitive(checked);
+		}
+		// use chronological ordered timeline
+		else if (c.getId() == R.id.page_settings_chronological_timeline_sw) {
+			settings.enableChronologicalTimeline(checked);
 		}
 	}
 

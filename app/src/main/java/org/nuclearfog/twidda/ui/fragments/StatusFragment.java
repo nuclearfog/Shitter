@@ -111,6 +111,10 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	 */
 	public static final int MODE_BOOKMARK = 0x7F493A4C;
 
+	/**
+	 * replace all items from list
+	 */
+	private static final int CLEAR_LIST = -1;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 
@@ -126,8 +130,8 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		statusLoader = new StatusLoader(requireContext());
-		adapter = new StatusAdapter(this);
-		setAdapter(adapter);
+		adapter = new StatusAdapter(requireContext(), this);
+		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 
 		Bundle param = getArguments();
 		if (param != null) {
@@ -155,7 +159,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onStart() {
 		super.onStart();
 		if (adapter.isEmpty()) {
-			load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, StatusAdapter.CLEAR_LIST);
+			load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, CLEAR_LIST);
 			setRefresh(true);
 		}
 	}
@@ -193,15 +197,20 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 		statusLoader = new StatusLoader(requireContext());
-		load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, StatusAdapter.CLEAR_LIST);
+		load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, CLEAR_LIST);
 		setRefresh(true);
 	}
 
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopItemId(), StatusLoader.Param.NO_ID, 0);
+		if (settings.chronologicalTimelineEnabled()) {
+			load(StatusLoader.Param.NO_ID, adapter.getTopItemId(), adapter.getItemCount() - 1);
+		} else {
+			load(adapter.getTopItemId(), StatusLoader.Param.NO_ID, 0);
+		}
 	}
 
 
@@ -266,10 +275,10 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 				break;
 
 			case MODE_REPLY:
-				if (index == StatusAdapter.CLEAR_LIST)
-					request = new StatusLoader.Param(StatusLoader.Param.REPLIES_LOCAL, id, sinceId, maxId, StatusAdapter.CLEAR_LIST, search);
+				if (index == CLEAR_LIST)
+					request = new StatusLoader.Param(StatusLoader.Param.REPLIES_LOCAL, id, sinceId, maxId, CLEAR_LIST, search);
 				else
-					request = new StatusLoader.Param(StatusLoader.Param.REPLIES, id, sinceId, maxId, StatusAdapter.CLEAR_LIST, search);
+					request = new StatusLoader.Param(StatusLoader.Param.REPLIES, id, sinceId, maxId, CLEAR_LIST, search);
 				break;
 
 			case MODE_SEARCH:

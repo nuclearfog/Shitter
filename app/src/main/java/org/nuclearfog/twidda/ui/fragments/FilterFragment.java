@@ -58,7 +58,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		filterDialog = new FilterDialog(requireActivity(), this);
 		adapter = new FilterAdapter(this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);

@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.ui.adapter.recyclerview;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -40,23 +42,18 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	private static final int MIN_COUNT = 2;
 
-	/**
-	 * replace all items from list
-	 */
-	public static final int CLEAR_LIST = -1;
-
 	private StatusSelectListener listener;
+	private GlobalSettings settings;
 
-	private Statuses items;
-	private int loadingIndex;
+	private Statuses items = new Statuses();
+	private int loadingIndex = NO_LOADING;
 
 	/**
 	 * @param itemClickListener listener for item click
 	 */
-	public StatusAdapter(StatusSelectListener itemClickListener) {
-		loadingIndex = NO_LOADING;
-		items = new Statuses();
+	public StatusAdapter(Context context, StatusSelectListener itemClickListener) {
 		this.listener = itemClickListener;
+		settings = GlobalSettings.get(context);
 	}
 
 
@@ -118,8 +115,8 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 				maxId = status.getId();
 			}
 		}
-		boolean success = listener.onPlaceholderClick(minId, maxId, index);
-		if (success) {
+		boolean enableLoading = listener.onPlaceholderClick(minId, maxId, index);
+		if (enableLoading) {
 			loadingIndex = index;
 			return true;
 		}
@@ -145,20 +142,32 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public void addItems(@NonNull Statuses newItems, int index) {
 		disableLoading();
-		if (newItems.size() > MIN_COUNT) {
-			if (items.isEmpty() || items.get(index) != null) {
-				// Add placeholder
-				items.add(index, null);
-				notifyItemInserted(index);
+		if (settings.chronologicalTimelineEnabled()) {
+			if (!newItems.isEmpty()) {
+				if (index + 1 == items.size()) {
+					items.addAll(newItems);
+					notifyItemRangeInserted(items.size(), newItems.size());
+				} else {
+					items.addAll(index, newItems);
+					notifyItemRangeInserted(index, newItems.size());
+				}
 			}
-		} else if (!items.isEmpty() && items.get(index) == null) {
-			// remove placeholder
-			items.remove(index);
-			notifyItemRemoved(index);
-		}
-		if (!newItems.isEmpty()) {
-			items.addAll(index, newItems);
-			notifyItemRangeInserted(index, newItems.size());
+		} else {
+			if (newItems.size() > MIN_COUNT) {
+				if (items.isEmpty() || items.get(index) != null) {
+					// Add placeholder
+					items.add(index, null);
+					notifyItemInserted(index);
+				}
+			} else if (!items.isEmpty() && items.get(index) == null) {
+				// remove placeholder
+				items.remove(index);
+				notifyItemRemoved(index);
+			}
+			if (!newItems.isEmpty()) {
+				items.addAll(index, newItems);
+				notifyItemRangeInserted(index, newItems.size());
+			}
 		}
 	}
 
@@ -169,8 +178,13 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public void setItems(@NonNull Statuses newItems) {
 		items.replaceAll(newItems);
-		if (items.size() > MIN_COUNT && items.getNextCursor() != Statuses.NO_ID && items.peekLast() != null)
-			items.add(null);
+		if ((settings.chronologicalTimelineEnabled() || items.size() > MIN_COUNT) && items.getNextCursor() != Statuses.NO_ID) {
+			if (settings.chronologicalTimelineEnabled() && items.peekFirst() != null) {
+				items.add(0, null);
+			} else if (items.peekLast() != null) {
+				items.add(null);
+			}
+		}
 		loadingIndex = NO_LOADING;
 		notifyDataSetChanged();
 	}
@@ -230,12 +244,14 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 * @return status ID
 	 */
 	public long getTopItemId() {
-		if (!items.isEmpty() && items.get(0) != null) {
-			Status status = items.get(0);
-			if (status != null) {
-				return status.getId();
-			}
+		Status status;
+		if (settings.chronologicalTimelineEnabled()) {
+			status = items.peekLast();
+		} else {
+			status = items.peekFirst();
 		}
+		if (status != null)
+			return status.getId();
 		return 0L;
 	}
 

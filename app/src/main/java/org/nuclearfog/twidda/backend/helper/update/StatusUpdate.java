@@ -87,10 +87,8 @@ public class StatusUpdate implements Serializable, Closeable {
 		if (status.getLocation() != null) {
 			location = new LocationUpdate(status.getLocation());
 		}
-		if (status.getMedia().length > 0) {
-			for (Media media : status.getMedia()) {
-				mediaStatuses.add(new MediaStatus(media));
-			}
+		for (Media media : status.getMedia()) {
+			mediaStatuses.add(new MediaStatus(media));
 		}
 		// fixme currently not possible to mix online and offline media files
 		attachmentLimitReached = true;

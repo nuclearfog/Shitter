@@ -77,7 +77,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 		super.onViewCreated(view, savedInstanceState);
 		userlistLoader = new UserlistLoader(requireContext());
 		adapter = new UserlistAdapter(this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		Bundle param = getArguments();
 		if (param != null) {

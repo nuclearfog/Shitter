@@ -69,7 +69,7 @@ public class PollUpdate implements Serializable {
 	}
 
 	/**
-	 * @return an array of vote options
+	 * @return an list of vote options
 	 */
 	public List<String> getOptions() {
 		return options;

@@ -44,6 +44,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	 */
 	private static final String KEY_DATA = "notification-data";
 
+	private static final long NO_ID = -1L;
 
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<NotificationAction.Result> notificationActionCallback = this::onDismiss;
@@ -68,8 +69,8 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
 		followAction = new FollowRequestAction(requireContext());
-		adapter = new NotificationAdapter(this);
-		setAdapter(adapter);
+		adapter = new NotificationAdapter(requireContext(), this);
+		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
@@ -91,7 +92,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	public void onStart() {
 		super.onStart();
 		if (adapter.isEmpty()) {
-			load(0L, 0L, 0);
+			load(NotificationLoader.Param.NO_ID, NotificationLoader.Param.NO_ID, 0);
 			setRefresh(true);
 		}
 	}
@@ -108,17 +109,22 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	protected void onReload() {
-		load(adapter.getTopItemId(), 0L, 0);
+		if (settings.chronologicalTimelineEnabled()) {
+			load(NO_ID, adapter.getTopItemId(), adapter.getItemCount());
+		} else {
+			load(adapter.getTopItemId(), NO_ID, 0);
+		}
 	}
 
 
 	@Override
 	protected void onReset() {
 		adapter.clear();
+		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
 		followAction = new FollowRequestAction(requireContext());
-		load(0L, 0L, 0);
+		load(NO_ID, NO_ID, 0);
 		setRefresh(true);
 	}
 

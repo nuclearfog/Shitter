@@ -253,7 +253,7 @@
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/page_Settings_enable_status_indicators"
+						android:id="@+id/page_settings_enable_status_indicators"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_margin="@dimen/settings_layout_margin"
@@ -268,30 +268,50 @@
 						android:text="@string/settings_enable_indicators"
 						android:textSize="@dimen/settings_textsize_small"
 						android:layout_margin="@dimen/settings_layout_margin"
-						app:layout_constraintStart_toEndOf="@id/page_Settings_enable_status_indicators"
-						app:layout_constraintTop_toTopOf="@id/page_Settings_enable_status_indicators"
-						app:layout_constraintBottom_toBottomOf="@id/page_Settings_enable_status_indicators"
+						app:layout_constraintStart_toEndOf="@id/page_settings_enable_status_indicators"
+						app:layout_constraintTop_toTopOf="@id/page_settings_enable_status_indicators"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_enable_status_indicators"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<com.kyleduo.switchbutton.SwitchButton
-						android:id="@+id/page_Settings_sensitive_enable"
+						android:id="@+id/page_settings_sensitive_enable"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toStartOf="parent"
-						app:layout_constraintTop_toBottomOf="@id/page_Settings_enable_status_indicators" />
+						app:layout_constraintTop_toBottomOf="@id/page_settings_enable_status_indicators" />
 
 					<TextView
-						android:id="@+id/page_Settings_sensitive_enable_label"
+						android:id="@+id/page_settings_sensitive_enable_label"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
 						android:lines="1"
 						android:text="@string/settings_hide_sensitive"
 						android:textSize="@dimen/settings_textsize_small"
 						android:layout_margin="@dimen/settings_layout_margin"
-						app:layout_constraintStart_toEndOf="@id/page_Settings_sensitive_enable"
-						app:layout_constraintTop_toTopOf="@id/page_Settings_sensitive_enable"
-						app:layout_constraintBottom_toBottomOf="@id/page_Settings_sensitive_enable"
+						app:layout_constraintStart_toEndOf="@id/page_settings_sensitive_enable"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_sensitive_enable"
+						app:layout_constraintEnd_toEndOf="parent" />
+
+					<com.kyleduo.switchbutton.SwitchButton
+						android:id="@+id/page_settings_chronological_timeline_sw"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_sensitive_enable" />
+
+					<TextView
+						android:id="@+id/page_settings_chronological_timeline_label"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:lines="1"
+						android:text="@string/settings_chronogical_timeline_label"
+						android:textSize="@dimen/settings_textsize_small"
+						android:layout_margin="@dimen/settings_layout_margin"
+						app:layout_constraintStart_toEndOf="@id/page_settings_chronological_timeline_sw"
+						app:layout_constraintTop_toTopOf="@id/page_settings_chronological_timeline_sw"
+						app:layout_constraintBottom_toBottomOf="@id/page_settings_chronological_timeline_sw"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<TextView
@@ -313,7 +333,7 @@
 						android:layout_marginStart="@dimen/settings_switch_margin"
 						android:layout_margin="@dimen/settings_layout_margin"
 						app:layout_constraintStart_toEndOf="@id/page_settings_public_timeline_label"
-						app:layout_constraintTop_toBottomOf="@id/page_Settings_sensitive_enable"
+						app:layout_constraintTop_toBottomOf="@id/page_settings_chronological_timeline_sw"
 						app:layout_constraintEnd_toEndOf="parent" />
 
 					<ImageView
@@ -324,7 +344,7 @@
 						app:layout_constraintDimensionRatio="1.0"
 						app:layout_constraintTop_toTopOf="@id/page_settings_font_selector"
 						app:layout_constraintBottom_toBottomOf="@id/page_settings_font_selector"
-						app:layout_constraintEnd_toEndOf="@id/page_Settings_sensitive_enable"
+						app:layout_constraintEnd_toEndOf="@id/page_settings_sensitive_enable"
 						tools:ignore="ContentDescription" />
 
 					<Spinner

@@ -167,7 +167,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		userlistManager = new UserlistManager(requireContext());
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new UserAdapter(this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		Bundle param = getArguments();
 		if (param != null) {

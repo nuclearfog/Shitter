@@ -60,7 +60,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		accountLoader = new AccountLoader(requireContext());
 		accountAction = new AccountAction(requireContext());
 		adapter = new AccountAdapter(this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);

@@ -61,7 +61,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 		timepicker = new TimePickerDialog(requireActivity(), this);
 		audioDialog = new AudioPlayerDialog(requireActivity());
 
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 		if (savedInstanceState != null) {
 			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof ScheduledStatuses) {

@@ -54,7 +54,7 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 		announcementAction = new AnnouncementAction(requireContext());
 		reactionUpdater = new ReactionUpdater(requireContext());
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
 			Object data_announcement = savedInstanceState.getSerializable(KEY_SAVE);

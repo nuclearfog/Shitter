@@ -669,7 +669,7 @@ public interface Connection {
 	/**
 	 * get all custom emojis used by the network
 	 *
-	 * @return array of emojis
+	 * @return list of emojis
 	 */
 	List<Emoji> getEmojis() throws ConnectionException;
 

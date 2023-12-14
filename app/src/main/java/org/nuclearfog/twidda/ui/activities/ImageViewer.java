@@ -286,7 +286,7 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 	private void clearCache() {
 		try {
 			File[] files = cacheFolder.listFiles();
-			if (files != null && files.length > 0) {
+			if (files != null) {
 				for (File file : files) {
 					file.delete();
 				}

@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.ui.adapter.recyclerview;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -43,6 +45,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	private static final int TYPE_USER = 2;
 
 	private OnNotificationClickListener listener;
+	private GlobalSettings settings;
 
 	private Notifications items = new Notifications();
 	private int loadingIndex = NO_LOADING;
@@ -50,8 +53,9 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	/**
 	 *
 	 */
-	public NotificationAdapter(OnNotificationClickListener listener) {
+	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
 		this.listener = listener;
+		settings = GlobalSettings.get(context);
 	}
 
 
@@ -190,20 +194,32 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 */
 	public void addItems(Notifications newItems, int index) {
 		disableLoading();
-		if (newItems.size() > MIN_COUNT) {
-			if (items.isEmpty() || items.get(index) != null) {
-				// Add placeholder
-				items.add(index, null);
-				notifyItemInserted(index);
+		if (settings.chronologicalTimelineEnabled()) {
+			if (!newItems.isEmpty()) {
+				if (index + 1 == items.size()) {
+					items.addAll(newItems);
+					notifyItemRangeInserted(items.size(), newItems.size());
+				} else {
+					items.addAll(index, newItems);
+					notifyItemRangeInserted(index, newItems.size());
+				}
 			}
-		} else if (!items.isEmpty() && items.get(index) == null) {
-			// remove placeholder
-			items.remove(index);
-			notifyItemRemoved(index);
-		}
-		if (!newItems.isEmpty()) {
-			items.addAll(index, newItems);
-			notifyItemRangeInserted(index, newItems.size());
+		} else {
+			if (newItems.size() > MIN_COUNT) {
+				if (items.isEmpty() || items.get(index) != null) {
+					// Add placeholder
+					items.add(index, null);
+					notifyItemInserted(index);
+				}
+			} else if (!items.isEmpty() && items.get(index) == null) {
+				// remove placeholder
+				items.remove(index);
+				notifyItemRemoved(index);
+			}
+			if (!newItems.isEmpty()) {
+				items.addAll(index, newItems);
+				notifyItemRangeInserted(index, newItems.size());
+			}
 		}
 	}
 
@@ -215,8 +231,12 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public void setItems(Notifications newItems) {
 		items.clear();
 		items.addAll(newItems);
-		if (newItems.size() > MIN_COUNT) {
-			items.add(null);
+		if ((settings.chronologicalTimelineEnabled() || items.size() > MIN_COUNT)) {
+			if (settings.chronologicalTimelineEnabled() && items.peekFirst() != null) {
+				items.add(0, null);
+			} else if (items.peekLast() != null) {
+				items.add(null);
+			}
 		}
 		loadingIndex = NO_LOADING;
 		notifyDataSetChanged();
@@ -225,7 +245,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	/**
 	 * get adapter items
 	 *
-	 * @return array of notification items
+	 * @return list of notification items
 	 */
 	public Notifications getItems() {
 		return new Notifications(items);
@@ -276,14 +296,19 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	}
 
 	/**
-	 * get ID of the first notification item
+	 * get Id of the first status
 	 *
-	 * @return notification ID
+	 * @return status ID
 	 */
 	public long getTopItemId() {
-		if (!items.isEmpty() && items.get(0) != null) {
-			return items.get(0).getId();
+		Notification notification;
+		if (settings.chronologicalTimelineEnabled()) {
+			notification = items.peekLast();
+		} else {
+			notification = items.peekFirst();
 		}
+		if (notification != null)
+			return notification.getId();
 		return 0L;
 	}
 

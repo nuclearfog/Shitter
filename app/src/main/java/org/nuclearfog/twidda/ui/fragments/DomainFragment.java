@@ -48,7 +48,7 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 		domainLoader = new DomainLoader(requireContext());
 		dialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new DomainAdapter(this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
 			Serializable data = savedInstanceState.getSerializable(KEY_DATA);

@@ -43,7 +43,7 @@ public class EditHistoryFragment extends ListFragment implements AsyncCallback<E
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		historyLoader = new EditHistoryLoader(requireContext());
 		adapter = new EditHistoryAdapter();
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		if (getArguments() != null) {
 			id = getArguments().getLong(KEY_ID);

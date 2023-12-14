@@ -101,7 +101,7 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 		tagLoader = new TagLoader(requireContext());
 		tagAction = new TagAction(requireContext());
 		confirmDialog = new ConfirmDialog(requireActivity(), this);
-		setAdapter(adapter);
+		setAdapter(adapter, false);
 
 		Bundle args = getArguments();
 		if (args != null) {
