@@ -1059,7 +1059,7 @@ public class GlobalSettings {
 		proxyWarning = settings.getBoolean(PROXY_WARNING, true);
 		publicTimeline = settings.getString(PUBLIC_TIMELINE, TIMELINE_COMBINED);
 		showAllAnnouncements = settings.getBoolean(ANNOUNCEMENTS_SHOW_ALL, false);
-		chrologicalTimeline = settings.getBoolean(CHRONOLOGICAL_TIMELINE, true);
+		chrologicalTimeline = settings.getBoolean(CHRONOLOGICAL_TIMELINE, false);
 		proxyHost = settings.getString(PROXY_ADDR, "");
 		proxyPort = settings.getString(PROXY_PORT, "");
 		proxyUser = settings.getString(PROXY_USER, "");

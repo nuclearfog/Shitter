@@ -158,6 +158,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 */
 	protected void setAdapter(Adapter<? extends ViewHolder> adapter, boolean reverse) {
 		layoutManager.setReverseLayout(reverse);
+		layoutManager.setStackFromEnd(reverse);
 		list.setAdapter(adapter);
 	}
 
