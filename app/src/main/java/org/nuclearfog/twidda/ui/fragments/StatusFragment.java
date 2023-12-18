@@ -130,7 +130,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		statusLoader = new StatusLoader(requireContext());
-		adapter = new StatusAdapter(requireContext(), this);
+		adapter = new StatusAdapter(this, settings.chronologicalTimelineEnabled());
 		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 
 		Bundle param = getArguments();
@@ -196,7 +196,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	protected void onReset() {
-		adapter.clear();
+		adapter = new StatusAdapter(this, settings.chronologicalTimelineEnabled());
 		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 		statusLoader = new StatusLoader(requireContext());
 		load(StatusLoader.Param.NO_ID, StatusLoader.Param.NO_ID, CLEAR_LIST);

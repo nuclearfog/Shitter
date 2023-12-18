@@ -1,13 +1,11 @@
 package org.nuclearfog.twidda.ui.adapter.recyclerview;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Notification;
 import org.nuclearfog.twidda.model.lists.Notifications;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -45,17 +43,17 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	private static final int TYPE_USER = 2;
 
 	private OnNotificationClickListener listener;
-	private GlobalSettings settings;
 
+	private boolean chronological;
 	private Notifications items = new Notifications();
 	private int loadingIndex = NO_LOADING;
 
 	/**
 	 *
 	 */
-	public NotificationAdapter(Context context, OnNotificationClickListener listener) {
+	public NotificationAdapter(OnNotificationClickListener listener, boolean chronological) {
 		this.listener = listener;
-		settings = GlobalSettings.get(context);
+		this.chronological = chronological;
 	}
 
 
@@ -194,7 +192,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 */
 	public void addItems(Notifications newItems, int index) {
 		disableLoading();
-		if (settings.chronologicalTimelineEnabled()) {
+		if (chronological) {
 			if (!newItems.isEmpty()) {
 				if (index + 1 == items.size()) {
 					items.addAll(newItems);
@@ -203,6 +201,15 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 					items.addAll(index, newItems);
 					notifyItemRangeInserted(index, newItems.size());
 				}
+				if (items.peekFirst() != null) {
+					// Add new placeholder to bottom
+					items.addFirst(null);
+					notifyItemInserted(0);
+				}
+			} else if (index > 0 && index < items.size() && items.get(index) == null) {
+				// remove placeholder
+				items.remove(index);
+				notifyItemRemoved(index);
 			}
 		} else {
 			if (newItems.size() > MIN_COUNT) {
@@ -231,8 +238,8 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	public void setItems(Notifications newItems) {
 		items.clear();
 		items.addAll(newItems);
-		if ((settings.chronologicalTimelineEnabled() || items.size() > MIN_COUNT)) {
-			if (settings.chronologicalTimelineEnabled() && items.peekFirst() != null) {
+		if ((chronological || items.size() > MIN_COUNT)) {
+			if (chronological && items.peekFirst() != null) {
 				items.add(0, null);
 			} else if (items.peekLast() != null) {
 				items.add(null);
@@ -302,7 +309,7 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	 */
 	public long getTopItemId() {
 		Notification notification;
-		if (settings.chronologicalTimelineEnabled()) {
+		if (chronological) {
 			notification = items.peekLast();
 		} else {
 			notification = items.peekFirst();

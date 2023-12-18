@@ -69,7 +69,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
 		followAction = new FollowRequestAction(requireContext());
-		adapter = new NotificationAdapter(requireContext(), this);
+		adapter = new NotificationAdapter(this, settings.chronologicalTimelineEnabled());
 		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 
 		if (savedInstanceState != null) {
@@ -119,7 +119,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	protected void onReset() {
-		adapter.clear();
+		adapter = new NotificationAdapter(this, settings.chronologicalTimelineEnabled());
 		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());

@@ -1,13 +1,11 @@
 package org.nuclearfog.twidda.ui.adapter.recyclerview;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.model.lists.Statuses;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.holder.OnHolderClickListener;
@@ -43,17 +41,17 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	private static final int MIN_COUNT = 2;
 
 	private StatusSelectListener listener;
-	private GlobalSettings settings;
 
 	private Statuses items = new Statuses();
 	private int loadingIndex = NO_LOADING;
+	private boolean chronological;
 
 	/**
 	 * @param itemClickListener listener for item click
 	 */
-	public StatusAdapter(Context context, StatusSelectListener itemClickListener) {
+	public StatusAdapter(StatusSelectListener itemClickListener, boolean chronological) {
 		this.listener = itemClickListener;
-		settings = GlobalSettings.get(context);
+		this.chronological = chronological;
 	}
 
 
@@ -142,7 +140,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public void addItems(@NonNull Statuses newItems, int index) {
 		disableLoading();
-		if (settings.chronologicalTimelineEnabled()) {
+		if (chronological) {
 			if (!newItems.isEmpty()) {
 				if (index + 1 == items.size()) {
 					items.addAll(newItems);
@@ -151,6 +149,15 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 					items.addAll(index, newItems);
 					notifyItemRangeInserted(index, newItems.size());
 				}
+				if (items.peekFirst() != null) {
+					// Add new placeholder to bottom
+					items.addFirst(null);
+					notifyItemInserted(0);
+				}
+			} else if (index > 0 && index < items.size() && items.get(index) == null) {
+				// remove placeholder
+				items.remove(index);
+				notifyItemRemoved(index);
 			}
 		} else {
 			if (newItems.size() > MIN_COUNT) {
@@ -178,8 +185,8 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public void setItems(@NonNull Statuses newItems) {
 		items.replaceAll(newItems);
-		if ((settings.chronologicalTimelineEnabled() || items.size() > MIN_COUNT) && items.getNextCursor() != Statuses.NO_ID) {
-			if (settings.chronologicalTimelineEnabled() && items.peekFirst() != null) {
+		if ((chronological || items.size() > MIN_COUNT) && items.getNextCursor() != Statuses.NO_ID) {
+			if (chronological && items.peekFirst() != null) {
 				items.add(0, null);
 			} else if (items.peekLast() != null) {
 				items.add(null);
@@ -245,7 +252,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	 */
 	public long getTopItemId() {
 		Status status;
-		if (settings.chronologicalTimelineEnabled()) {
+		if (chronological) {
 			status = items.peekLast();
 		} else {
 			status = items.peekFirst();
