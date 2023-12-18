@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="settings_text">Schrift</string>
+	<string name="settings_chronogical_timeline_label">verwende chronologische Timeline</string>
 	<string name="highlight">Hervorhebung</string>
 	<string name="settings_list_size">Listengröße</string>
 	<string name="confirm_retry_button">wiederholen</string>

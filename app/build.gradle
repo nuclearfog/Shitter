@@ -30,6 +30,10 @@ android {
 		}
 	}
 
+	buildFeatures {
+		buildConfig true
+	}
+
 	packagingOptions {
 		exclude '/META-INF/CHANGES'
 		exclude '/META-INF/DEPENDENCIES'
@@ -57,7 +61,7 @@ dependencies {
 	implementation 'androidx.media3:media3-datasource-okhttp:1.2.0'
 	implementation 'androidx.viewpager2:viewpager2:1.0.0'
 	//noinspection GradleDependency
-	implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 	//noinspection GradleDependency
 	implementation 'com.squareup.picasso:picasso:2.8'
 	implementation 'com.github.duanhong169:colorpicker:1.1.6'
@@ -68,5 +72,5 @@ dependencies {
 	implementation 'com.google.android.material:material:1.9.0'
 	implementation 'jp.wasabeef:picasso-transformations:2.4.0'
 	implementation 'net.danlew:android.joda:2.12.5'
-	implementation 'org.jsoup:jsoup:1.16.1'
+	implementation 'org.jsoup:jsoup:1.17.1'
 }
