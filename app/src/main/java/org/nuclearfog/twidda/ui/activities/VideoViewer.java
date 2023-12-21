@@ -51,9 +51,6 @@ import org.nuclearfog.twidda.ui.views.DescriptionView;
 
 import java.io.Serializable;
 
-import okhttp3.Call;
-
-
 /**
  * video player activity to show local and online videos/animations
  *
@@ -126,7 +123,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		if (serializedData instanceof Media) {
 			this.media = (Media) serializedData;
 			MediaItem mediaItem = MediaItem.fromUri(media.getUrl());
-			DataSource.Factory dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
+			DataSource.Factory dataSourceFactory = new OkHttpDataSource.Factory(ConnectionBuilder.create(this, CACHE_SIZE));
 			if (media.getMediaType() != Media.VIDEO) {
 				playerView.setUseController(false);
 				player.setRepeatMode(Player.REPEAT_MODE_ONE);
@@ -144,7 +141,7 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 				DataSource.Factory dataSourceFactory;
 				MediaItem mediaItem = MediaItem.fromUri(mediaStatus.getPath());
 				if (mediaStatus.getPath().startsWith("http")) {
-					dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(this, CACHE_SIZE));
+					dataSourceFactory = new OkHttpDataSource.Factory(ConnectionBuilder.create(this, CACHE_SIZE));
 				} else {
 					dataSourceFactory = new DataSource.Factory() {
 						@NonNull

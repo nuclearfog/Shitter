@@ -93,7 +93,11 @@ public class MastodonException extends ConnectionException {
 				errorCode = SERVICE_UNAVAILABLE;
 				break;
 		}
-		timeToWait = (int) ((StringUtils.getIsoTime(response.header("X-RateLimit-Reset")) - System.currentTimeMillis()) / 1000L);
+
+		String ratelimitReset = response.header("X-RateLimit-Reset");
+		if (ratelimitReset != null && !ratelimitReset.trim().isEmpty()) {
+			timeToWait = (int) ((StringUtils.getIsoTime(ratelimitReset) - System.currentTimeMillis()) / 1000L);
+		}
 	}
 
 	/**

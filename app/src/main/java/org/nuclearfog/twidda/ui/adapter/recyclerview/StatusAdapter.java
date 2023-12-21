@@ -144,7 +144,7 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 			if (!newItems.isEmpty()) {
 				if (index + 1 == items.size()) {
 					items.addAll(newItems);
-					notifyItemRangeInserted(items.size(), newItems.size());
+					notifyItemRangeInserted(index + 1, newItems.size());
 				} else {
 					items.addAll(index, newItems);
 					notifyItemRangeInserted(index, newItems.size());

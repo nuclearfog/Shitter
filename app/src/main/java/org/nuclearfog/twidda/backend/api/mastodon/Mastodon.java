@@ -545,7 +545,10 @@ public class Mastodon implements Connection {
 			params.add("local=true");
 		else if (settings.getPublicTimeline().equals(GlobalSettings.TIMELINE_REMOTE))
 			params.add("remote=true");
-		return getStatuses(ENDPOINT_PUBLIC_TIMELINE, minId, maxId, params);
+		Statuses result = getStatuses(ENDPOINT_PUBLIC_TIMELINE, minId, maxId, params);
+		// some posts seems to be unsorted
+		Collections.sort(result);
+		return result;
 	}
 
 

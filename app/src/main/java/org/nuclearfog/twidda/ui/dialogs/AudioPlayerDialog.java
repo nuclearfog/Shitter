@@ -36,8 +36,6 @@ import org.nuclearfog.twidda.backend.utils.LinkUtils;
 
 import java.io.Closeable;
 
-import okhttp3.Call;
-
 /**
  * Dialog with audio player and controls
  *
@@ -85,7 +83,7 @@ public class AudioPlayerDialog extends Dialog implements OnClickListener, Render
 			// initialize online source
 			if (data.getScheme().startsWith("http")) {
 				// configure with okhttp connection of the app
-				dataSourceFactory = new OkHttpDataSource.Factory((Call.Factory) ConnectionBuilder.create(getContext()));
+				dataSourceFactory = new OkHttpDataSource.Factory(ConnectionBuilder.create(getContext()));
 				mediaLink.setVisibility(View.VISIBLE);
 			}
 			// initialize local source
