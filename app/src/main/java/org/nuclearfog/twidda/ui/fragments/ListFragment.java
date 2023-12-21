@@ -113,7 +113,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 			case NOTIFY_SCROLL_TOP:
 				if (layoutManager.getItemCount() > 0) {
-					if (settings.chronologicalTimelineEnabled()) {
+					if (layoutManager.getReverseLayout()) {
 						list.smoothScrollToPosition(layoutManager.getItemCount() - 1);
 					} else {
 						list.smoothScrollToPosition(0);
