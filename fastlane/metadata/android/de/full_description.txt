@@ -1,11 +1,9 @@
 <p><br><b>Features:</b></p>
 <ul>
-    <li>Zugriff auf Posts, Nutzer und Trends</li>
-    <li>umgekehrt chronologisch aufgebaute Timelines</li>
-    <li>anpassbares Aussehen</li>
-    <li>Unterstützt Multi-Account</li>
-    <li>ünterstützt Push-Benachrichtigungen</li>
-    <li>integrierte Vorschau für Medien, Links und Umfragen</li>
-    <li>Emoji-Unterstützung</li>
-    <li>keine Werbung, kein App-Tracking, integrierte Proxy-Unterstützung</li>
+    <li>Einfacher Zugriff auf Posts, Nutzerprofile, Listen und Hashtags</li>
+    <li>Echte Timelines (chronologisch/umgekehrt-chronologisch)</li>
+    <li>Anpassbares Aussehen (Schrift & Farben)</li>
+    <li>Unterstützt Push-Benachrichtigungen (unifiedpush)</li>
+    <li>Unterstützt mehrere Accounts unterschiedlicher Instanzen</li>
+    <li>Unterstützt Zugriff über Proxy</li>
 </ul>

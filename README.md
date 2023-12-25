@@ -8,19 +8,15 @@
 
 ## Features
 
-- access to statuses, users, lists and trends
-- real timelines (reverse chronological order)
-- customizable theme
-- media, link and poll viewer
-- status filter
-- emoji picker
+- access to posts, users, lists and trending hashtags
+- real timelines (chronological/reverse chronological order)
+- customizable theme (colors and fonts)
+- push notification support (unifiedpush)
 - multi account support
-- push notification support
 - Proxy support
 
 
 ## Download
-
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/org.nuclearfog.twidda)
 

@@ -1,1 +1,1 @@
-A lightweight Mastodon client focused on privacy and low data consumption
+Lightweight Mastodon client

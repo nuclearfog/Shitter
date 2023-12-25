@@ -1,11 +1,9 @@
 <p><br><b>Features:</b></p>
 <ul>
-    <li>access to statuses, users and trends</li>
-    <li>real timelines (reverse chronological order)</li>
-    <li>push notification support</li>
-    <li>customizable theme</li>
-    <li>media, link and poll viewer</li>
+    <li>access to posts, users, lists and trending hashtags</li>
+    <li>real timelines (chronological/reverse chronological order)</li>
+    <li>customizable theme (colors and fonts)</li>
+    <li>push notification support (unifiedpush)</li>
     <li>multi account support</li>
-    <li>emoji selector</li>
-    <li>no ads, no app tracking, proxy support</li>
+    <li>Proxy support</li>
 </ul>
