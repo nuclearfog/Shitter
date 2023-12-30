@@ -56,7 +56,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	private ItemViewModel viewModel;
 	protected GlobalSettings settings;
 
-	private boolean enableSwipe = true;
 	private boolean isRefreshing = false;
 
 
@@ -129,15 +128,13 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * @param enable true to enable swipe view delayed, false to stop immediately
 	 */
 	protected void setRefresh(boolean enable) {
-		if (enableSwipe) {
-			isRefreshing = enable;
-			if (enable) {
-				reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
-				reload.setEnabled(false);
-			} else {
-				reload.setRefreshing(false);
-				reload.setEnabled(true);
-			}
+		isRefreshing = enable;
+		if (enable) {
+			reload.postDelayed(new RefreshDelay(this), REFRESH_DELAY_MS);
+			reload.setEnabled(false);
+		} else {
+			reload.setRefreshing(false);
+			reload.setEnabled(true);
 		}
 	}
 
@@ -147,7 +144,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 	 * @return true if swipe view is active
 	 */
 	protected boolean isRefreshing() {
-		return enableSwipe && (isRefreshing || reload.isRefreshing());
+		return isRefreshing || reload.isRefreshing();
 	}
 
 	/**
@@ -160,6 +157,13 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		layoutManager.setReverseLayout(reverse);
 		layoutManager.setStackFromEnd(reverse);
 		list.setAdapter(adapter);
+	}
+
+	/**
+	 * @return true if list is reversed (first item is on the bottom)
+	 */
+	protected boolean isReversed() {
+		return layoutManager.getReverseLayout();
 	}
 
 	/**

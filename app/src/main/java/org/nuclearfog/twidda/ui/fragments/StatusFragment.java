@@ -206,7 +206,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 	@Override
 	protected void onReload() {
-		if (settings.chronologicalTimelineEnabled()) {
+		if (isReversed()) {
 			load(StatusLoader.Param.NO_ID, adapter.getTopItemId(), adapter.getItemCount() - 1);
 		} else {
 			load(adapter.getTopItemId(), StatusLoader.Param.NO_ID, 0);

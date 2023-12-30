@@ -109,7 +109,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 
 	@Override
 	protected void onReload() {
-		if (settings.chronologicalTimelineEnabled()) {
+		if (isReversed()) {
 			load(NO_ID, adapter.getTopItemId(), adapter.getItemCount());
 		} else {
 			load(adapter.getTopItemId(), NO_ID, 0);
