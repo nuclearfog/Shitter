@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -127,6 +128,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			}
 		}
 		viewPager.setOffscreenPageLimit(3);
+		tabSelector.setLargeIndicator(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
 

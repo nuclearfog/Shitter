@@ -129,10 +129,12 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private TextView user_location, user_createdAt, user_website, description, follow_back, username, screenName;
 	private ImageView profileImage, bannerImage, toolbarBackground;
 	private Button following, follower;
-	private LockableConstraintLayout body;
+
 	private ViewPager2 viewPager;
 	private TabSelector tabSelector;
 	private Toolbar toolbar;
+	@Nullable
+	private LockableConstraintLayout body;
 
 	@Nullable
 	private Relation relation;
@@ -153,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		ViewGroup root = findViewById(R.id.page_profile_root);
 		View floatingButton = findViewById(R.id.page_profile_post_button);
 		ConstraintLayout header = findViewById(R.id.page_profile_header);
-		body = findViewById(R.id.page_profile_body);
+		ConstraintLayout body = findViewById(R.id.page_profile_body);
 		toolbar = findViewById(R.id.profile_toolbar);
 		description = findViewById(R.id.bio);
 		following = findViewById(R.id.following);
@@ -180,6 +182,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		settings = GlobalSettings.get(this);
 		adapter = new ProfileAdapter(this);
 
+		if (body instanceof LockableConstraintLayout) {
+			this.body = (LockableConstraintLayout) body;
+		}
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
 			constraints.clone(header);
@@ -527,7 +532,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	public void onTabSelected() {
 		adapter.scrollToTop();
 		// remove lock when changing page
-		body.lock(false);
+		if (body != null) {
+			body.lock(false);
+		}
 	}
 
 

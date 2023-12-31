@@ -275,6 +275,8 @@ public class AppStyles {
 						image = crop.transform(image);
 					}
 					int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
+					if (Resources.getSystem().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+						widthPixels /= 2;
 					int blurRadius = Math.max(Math.round((image.getWidth() * 20.0f) / widthPixels), 10);
 					float toolbarRatio = background.getResources().getDimension(R.dimen.profile_toolbar_height) / widthPixels;
 					// do final transformations (crop first image to toolbar background size, then blur)

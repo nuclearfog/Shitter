@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
+	tools:context=".ui.activities.ImageViewer">
+
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/page_image_toolbar"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/toolbar_height_landscape"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<org.nuclearfog.twidda.ui.views.ZoomView
+		android:id="@+id/page_image_viewer"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:scaleType="fitCenter"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:enable_move="true"
+		app:max_zoom_in="10.0"
+		app:max_zoom_out="0.5" />
+
+	<org.nuclearfog.twidda.ui.views.AnimatedImageView
+		android:id="@+id/page_image_gif"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<ProgressBar
+		android:id="@+id/page_image_progress"
+		android:layout_width="@dimen/mediapage_circle_size"
+		android:layout_height="@dimen/mediapage_circle_size"
+		android:layout_marginTop="@dimen/mediapage_preview_margin"
+		android:visibility="invisible"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent" />
+
+	<org.nuclearfog.twidda.ui.views.DescriptionView
+		android:id="@+id/page_image_description"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="invisible"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_image_toolbar"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.2"
+		app:layout_constraintVertical_bias="0.9" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

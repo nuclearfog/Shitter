@@ -247,6 +247,7 @@
 		app:layout_constraintHorizontal_weight="2"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/dialog_filter_keywords"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/dialog_filter_timeunit" />
 
 	<Spinner

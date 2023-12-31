@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/page_status_root"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
+	android:orientation="horizontal"
+	tools:context=".ui.activities.StatusActivity">
+
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/page_status_toolbar"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/toolbar_height_landscape"
+		app:layout_constraintEnd_toStartOf="@id/page_status_reply_fragment"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/page_status_scroll"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toTopOf="@id/page_status_reply"
+		app:layout_constraintEnd_toStartOf="@id/page_status_reply_fragment"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/page_status_toolbar">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:id="@+id/page_status_header"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<ImageView
+				android:id="@+id/page_status_profile"
+				android:layout_width="@dimen/page_status_profile"
+				android:layout_height="@dimen/page_status_profile"
+				android:layout_marginStart="@dimen/page_status_profileimage_margin"
+				android:layout_marginTop="@dimen/page_status_profileimage_margin"
+				android:contentDescription="@string/profile_image"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
+
+			<TextView
+				android:id="@+id/page_status_username"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				app:layout_constraintBottom_toTopOf="@id/page_status_screenname"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/page_status_profile"
+				app:layout_constraintTop_toTopOf="@id/page_status_profile"
+				app:layout_constraintVertical_chainStyle="packed" />
+
+			<TextView
+				android:id="@+id/page_status_screenname"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				app:layout_constraintBottom_toTopOf="@id/page_status_date"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/page_status_profile"
+				app:layout_constraintTop_toBottomOf="@id/page_status_username"
+				app:layout_constraintVertical_chainStyle="packed" />
+
+			<TextView
+				android:id="@+id/page_status_date"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:lines="1"
+				android:textSize="@dimen/page_status_textsize_small"
+				app:layout_constraintBottom_toBottomOf="@id/page_status_profile"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/page_status_profile"
+				app:layout_constraintTop_toBottomOf="@id/page_status_screenname"
+				app:layout_constraintVertical_chainStyle="packed" />
+
+			<androidx.constraintlayout.widget.Barrier
+				android:id="@+id/page_status_profile_barrier"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:barrierDirection="bottom"
+				app:constraint_referenced_ids="page_status_profile, page_status_date" />
+
+			<Button
+				android:id="@+id/page_status_reply_reference"
+				style="@style/FeedbackButton"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/page_status_button_height"
+				android:layout_margin="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				android:minWidth="0dp"
+				android:paddingLeft="@dimen/page_status_button_padding"
+				android:paddingRight="@dimen/page_status_button_padding"
+				android:textSize="@dimen/page_status_textsize_small"
+				android:visibility="invisible"
+				app:layout_constraintEnd_toStartOf="@id/page_status_reposter_reference"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintHorizontal_chainStyle="packed"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/page_status_profile_barrier" />
+
+			<Button
+				android:id="@+id/page_status_reposter_reference"
+				style="@style/FeedbackButton"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/page_status_button_height"
+				android:layout_margin="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				android:minWidth="0dp"
+				android:paddingLeft="@dimen/page_status_button_padding"
+				android:paddingRight="@dimen/page_status_button_padding"
+				android:textSize="@dimen/page_status_textsize_small"
+				android:visibility="invisible"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_chainStyle="packed"
+				app:layout_constraintStart_toEndOf="@id/page_status_reply_reference"
+				app:layout_constraintTop_toBottomOf="@id/page_status_profile_barrier" />
+
+			<androidx.constraintlayout.widget.Barrier
+				android:id="@+id/page_status_text_barrier"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:barrierDirection="bottom"
+				app:constraint_referenced_ids="page_status_reposter_reference, page_status_reply_reference" />
+
+			<TextView
+				android:id="@+id/page_status_text"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginTop="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:linksClickable="true"
+				android:textSize="@dimen/page_status_textsize"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/page_status_text_barrier" />
+
+			<TextView
+				android:id="@+id/page_status_text_sensitive_hint"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:lines="1"
+				android:text="@string/status_spoiler_hint"
+				android:textSize="@dimen/page_status_textsize"
+				android:visibility="invisible"
+				app:layout_constraintBottom_toBottomOf="@id/page_status_text"
+				app:layout_constraintEnd_toEndOf="@id/page_status_text"
+				app:layout_constraintStart_toStartOf="@id/page_status_text"
+				app:layout_constraintTop_toTopOf="@id/page_status_text" />
+
+			<TextView
+				android:id="@+id/page_status_text_translate"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:lines="1"
+				android:text="@string/status_translate_text"
+				android:visibility="gone"
+				app:layout_constraintStart_toStartOf="@id/page_status_text"
+				app:layout_constraintTop_toBottomOf="@id/page_status_text" />
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/page_status_cards"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/page_status_card_height"
+				android:padding="@dimen/page_status_cards_list_padding"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/page_status_text_translate" />
+
+			<TextView
+				android:id="@+id/page_status_visibility"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				android:textSize="@dimen/page_status_textsize_small"
+				android:visibility="invisible"
+				app:layout_constraintEnd_toStartOf="@id/page_status_edited"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/page_status_cards" />
+
+			<TextView
+				android:id="@+id/page_status_edited"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				android:text="@string/status_edited"
+				android:textSize="@dimen/page_status_textsize_small"
+				android:visibility="invisible"
+				app:layout_constraintEnd_toStartOf="@id/page_status_sensitive"
+				app:layout_constraintStart_toEndOf="@id/page_status_visibility"
+				app:layout_constraintTop_toBottomOf="@id/page_status_cards" />
+
+			<TextView
+				android:id="@+id/page_status_sensitive"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				android:text="@string/status_sensitive_media"
+				android:textSize="@dimen/page_status_textsize_small"
+				android:visibility="invisible"
+				app:layout_constraintEnd_toStartOf="@id/page_status_spoiler"
+				app:layout_constraintHorizontal_chainStyle="packed"
+				app:layout_constraintStart_toEndOf="@id/page_status_edited"
+				app:layout_constraintTop_toBottomOf="@id/page_status_cards" />
+
+			<TextView
+				android:id="@+id/page_status_spoiler"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				android:text="@string/status_contains_spoiler"
+				android:textSize="@dimen/page_status_textsize_small"
+				android:visibility="invisible"
+				app:layout_constraintStart_toEndOf="@id/page_status_sensitive"
+				app:layout_constraintTop_toBottomOf="@id/page_status_cards" />
+
+			<androidx.constraintlayout.widget.Barrier
+				android:id="@+id/page_status_location_barrier"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:barrierDirection="bottom"
+				app:constraint_referenced_ids="page_status_visibility,page_status_edited,page_status_sensitive,page_status_spoiler" />
+
+			<TextView
+				android:id="@+id/page_status_location_name"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginTop="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:drawablePadding="@dimen/page_status_padding_drawable"
+				android:lines="1"
+				android:textSize="@dimen/page_status_textsize_locale"
+				android:visibility="invisible"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintHorizontal_chainStyle="packed"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/page_status_location_barrier" />
+
+			<TextView
+				android:id="@+id/page_status_api"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="@dimen/page_status_textview_margin"
+				android:layout_marginTop="@dimen/page_status_textview_margin"
+				android:layout_marginEnd="@dimen/page_status_textview_margin"
+				android:lines="1"
+				android:linksClickable="false"
+				android:textSize="@dimen/page_status_textsize_small"
+				android:visibility="invisible"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@id/page_status_location_name" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+	<Button
+		android:id="@+id/page_status_reply"
+		style="@style/FeedbackButton"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/page_status_button_height"
+		android:layout_margin="@dimen/page_status_button_margin"
+		android:drawablePadding="@dimen/page_status_padding_drawable"
+		android:lines="1"
+		android:paddingLeft="@dimen/page_status_button_padding"
+		android:paddingRight="@dimen/page_status_button_padding"
+		android:visibility="invisible"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/page_status_repost"
+		app:layout_constraintStart_toStartOf="parent" />
+
+	<Button
+		android:id="@+id/page_status_repost"
+		style="@style/FeedbackButton"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/page_status_button_height"
+		android:layout_margin="@dimen/page_status_button_margin"
+		android:drawablePadding="@dimen/page_status_padding_drawable"
+		android:lines="1"
+		android:paddingLeft="@dimen/page_status_button_padding"
+		android:paddingRight="@dimen/page_status_button_padding"
+		android:visibility="invisible"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/page_status_favorite"
+		app:layout_constraintStart_toEndOf="@id/page_status_reply" />
+
+	<Button
+		android:id="@+id/page_status_favorite"
+		style="@style/FeedbackButton"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/page_status_button_height"
+		android:layout_margin="@dimen/page_status_button_margin"
+		android:drawablePadding="@dimen/page_status_padding_drawable"
+		android:lines="1"
+		android:paddingLeft="@dimen/page_status_button_padding"
+		android:paddingRight="@dimen/page_status_button_padding"
+		android:visibility="invisible"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@id/page_status_reply_fragment"
+		app:layout_constraintStart_toEndOf="@id/page_status_repost" />
+
+	<androidx.fragment.app.FragmentContainerView
+		android:id="@+id/page_status_reply_fragment"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/page_status_toolbar"
+		app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +75,7 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
+		tabSelector.setLargeIndicator(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 		toolbar.setTitle(R.string.list_appbar);
 		setSupportActionBar(toolbar);
 		AppStyles.setOverflowIcon(toolbar, settings.getIconColor());

@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.ui.activities;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -133,8 +134,16 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		picasso = PicassoBuilder.get(this);
 
 		viewPager.setOffscreenPageLimit(4);
-		if (navigationView.getLayoutParams() != null) {
-			navigationView.getLayoutParams().width = Math.round(getResources().getDisplayMetrics().widthPixels / 2.0f);
+		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			tabSelector.setLargeIndicator(true);
+			if (navigationView.getLayoutParams() != null) {
+				navigationView.getLayoutParams().width = Math.round(getResources().getDisplayMetrics().widthPixels / 3.0f);
+			}
+		} else {
+			tabSelector.setLargeIndicator(false);
+			if (navigationView.getLayoutParams() != null) {
+				navigationView.getLayoutParams().width = Math.round(getResources().getDisplayMetrics().widthPixels / 2.0f);
+			}
 		}
 		toolbar.setTitle("");
 		toolbar.setNavigationIcon(R.drawable.menu);

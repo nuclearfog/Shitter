@@ -12,7 +12,7 @@
 	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/page_status_toolbar"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/page_status_toolbar_height" />
+		android:layout_height="@dimen/toolbar_height" />
 
 	<org.nuclearfog.twidda.ui.views.CollapseLayout
 		android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.ui.activities;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,6 +55,7 @@ public class TagActivity extends AppCompatActivity implements OnQueryTextListene
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(3);
 
+		tabSelector.setLargeIndicator(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 		tabSelector.addTabIcons(R.array.tabs_tag_icons);
 		tabSelector.addTabLabels(R.array.tag_labels);
 

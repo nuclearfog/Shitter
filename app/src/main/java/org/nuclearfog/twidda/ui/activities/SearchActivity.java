@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -102,6 +103,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		if (settings.floatingButtonEnabled()) {
 			floatingButton.setVisibility(View.VISIBLE);
 		}
+		tabSelector.setLargeIndicator(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 		adapter.setSearch(search);
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
@@ -143,9 +145,11 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		MenuItem search_item = menu.findItem(R.id.new_search);
 		MenuItem filter_item = menu.findItem(R.id.search_filter);
 		MenuItem tag_item = menu.findItem(R.id.search_tag);
+		MenuItem post_item = menu.findItem(R.id.search_status);
 		SearchView searchView = (SearchView) search_item.getActionView();
 
 		boolean enableSearchFilter = settings.getLogin().getConfiguration().filterEnabled();
+		post_item.setVisible(!settings.floatingButtonEnabled());
 		filter_item.setVisible(enableSearchFilter);
 		filter_item.setChecked(settings.filterResults() & enableSearchFilter);
 		searchView.setQueryHint(search);

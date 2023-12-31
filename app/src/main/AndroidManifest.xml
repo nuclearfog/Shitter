@@ -33,7 +33,6 @@
 
 		<activity
 			android:name=".ui.activities.MainActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme"
 			android:exported="true">
 
@@ -46,38 +45,31 @@
 
 		<activity
 			android:name=".ui.activities.SearchActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.ProfileActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.StatusEditor"
-			android:screenOrientation="portrait"
 			android:theme="@style/TransparencyDim"
 			android:windowSoftInputMode="stateHidden" />
 
 		<activity
 			android:name=".ui.activities.SettingsActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.StatusActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.LoginActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.MediaActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
@@ -87,58 +79,47 @@
 
 		<activity
 			android:name=".ui.activities.ImageViewer"
-			android:screenOrientation="portrait"
 			android:theme="@style/Transparency" />
 
 		<activity
 			android:name=".ui.activities.ProfileEditor"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme"
 			android:windowSoftInputMode="stateHidden" />
 
 		<activity
 			android:name=".ui.activities.UserlistsActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.UserlistActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.AccountActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.UsersActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.FilterActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.TagActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.ScheduleActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.EditHistoryActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<activity
 			android:name=".ui.activities.InstanceActivity"
-			android:screenOrientation="portrait"
 			android:theme="@style/AppTheme" />
 
 		<receiver

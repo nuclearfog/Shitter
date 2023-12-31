@@ -47,6 +47,8 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	private int oldPosition;
 	private int tabCount;
 
+	private boolean largeIndicator = false;
+
 	/**
 	 * @inheritDoc
 	 */
@@ -121,7 +123,7 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 		} else {
 			setHorizontalGravity(Gravity.START);
 		}
-		indicatorParams.width = getMeasuredWidth() / Math.max(tabCount, 2);
+		setIndicatorWidth();
 		indicator.setLayoutParams(indicatorParams);
 		indicator.setBackgroundColor(settings.getHighlightColor());
 		indicator.requestLayout();
@@ -204,6 +206,13 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	}
 
 	/**
+	 * enable/ddisable large indicator
+	 */
+	public void setLargeIndicator(boolean largeIndicator) {
+		this.largeIndicator = largeIndicator;
+	}
+
+	/**
 	 * add listener to call when a tab is selected
 	 */
 	public void addOnTabSelectedListener(OnTabSelectedListener listener) {
@@ -229,8 +238,8 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 	 */
 	private void setPosition(float positionOffset) {
 		if (viewPager != null && viewPager.getAdapter() != null && tabCount > 0) {
-			indicatorParams.width = getMeasuredWidth() / Math.max(tabCount, 2);
-			indicatorParams.setMarginStart((int) (getMeasuredWidth() * positionOffset / tabCount));
+			setIndicatorWidth();
+			indicatorParams.setMarginStart(Math.round(getMeasuredWidth() * positionOffset / tabCount));
 			indicator.setLayoutParams(indicatorParams);
 		}
 	}
@@ -244,6 +253,17 @@ public class TabSelector extends LinearLayout implements OnClickListener, OnGlob
 				listener.onTabSelected();
 			}
 			oldPosition = page;
+		}
+	}
+
+	/**
+	 * set indicator width
+	 */
+	private void setIndicatorWidth() {
+		if (largeIndicator) {
+			indicatorParams.width = Math.round(getMeasuredWidth() / (float) Math.max(tabCount, 2) * 2.0f);
+		} else {
+			indicatorParams.width = Math.round(getMeasuredWidth() / (float) Math.max(tabCount, 2));
 		}
 	}
 

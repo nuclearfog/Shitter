@@ -10,7 +10,7 @@
 	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/page_video_toolbar"
 		android:layout_width="match_parent"
-		android:layout_height="@dimen/page_status_toolbar_height"
+		android:layout_height="@dimen/toolbar_height"
 		android:visibility="gone" />
 
 	<androidx.media3.ui.PlayerView

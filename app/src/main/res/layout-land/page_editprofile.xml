@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/page_edit"
+	android:fitsSystemWindows="true"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_marginBottom="@dimen/editprofile_layout_margin"
+	tools:context=".ui.activities.ProfileEditor">
+
+	<ImageView
+		android:id="@+id/profile_edit_banner"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:contentDescription="@string/profile_banner"
+		android:scaleType="centerCrop"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintDimensionRatio="3.0"
+		app:layout_constraintWidth_percent="0.5"/>
+
+	<Button
+		android:id="@+id/profile_edit_add_banner"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/editprofile_button_height"
+		android:visibility="invisible"
+		android:paddingLeft="@dimen/editprofile_button_padding"
+		android:paddingRight="@dimen/editprofile_button_padding"
+		android:text="@string/editprofile_add_banner"
+		app:layout_constraintStart_toStartOf="@id/profile_edit_banner"
+		app:layout_constraintTop_toBottomOf="@id/profile_edit_toolbar_background"
+		app:layout_constraintBottom_toBottomOf="@id/profile_edit_banner"
+		app:layout_constraintEnd_toEndOf="@id/profile_edit_banner"
+		style="@style/FeedbackButton" />
+
+	<ImageView
+		android:id="@+id/profile_edit_change_banner"
+		android:layout_width="@dimen/editprofile_add_btn_size"
+		android:layout_height="@dimen/editprofile_add_btn_size"
+		android:contentDescription="@string/descr_add_profile_image"
+		android:src="@drawable/add"
+		app:layout_constraintStart_toStartOf="@id/profile_edit_add_banner"
+		app:layout_constraintTop_toTopOf="@id/profile_edit_add_banner"
+		app:layout_constraintBottom_toBottomOf="@id/profile_edit_add_banner"
+		app:layout_constraintEnd_toEndOf="@id/profile_edit_add_banner" />
+
+	<ImageView
+		android:id="@+id/profile_edit_toolbar_background"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		app:layout_constraintStart_toStartOf="@id/edit_profile_toolbar"
+		app:layout_constraintTop_toTopOf="@id/edit_profile_toolbar"
+		app:layout_constraintBottom_toBottomOf="@id/edit_profile_toolbar"
+		app:layout_constraintEnd_toEndOf="@id/edit_profile_toolbar"
+		tools:ignore="ContentDescription" />
+
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/edit_profile_toolbar"
+		android:layout_width="0dp"
+		android:layout_height="@dimen/editprofile_toolbar_height"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintEnd_toEndOf="@id/profile_edit_banner" />
+
+	<ImageView
+		android:id="@+id/edit_profile_image"
+		android:layout_width="@dimen/editprofile_image"
+		android:layout_height="@dimen/editprofile_image"
+		android:layout_marginStart="@dimen/editprofile_profile_image_left_margin"
+		android:contentDescription="@string/image_preview"
+		android:scaleType="centerCrop"
+		app:layout_constraintStart_toStartOf="@id/profile_edit_banner"
+		app:layout_constraintTop_toBottomOf="@id/profile_edit_banner"
+		app:layout_constraintBottom_toBottomOf="@id/profile_edit_banner" />
+
+	<ImageView
+		android:layout_width="@dimen/editprofile_add_btn_size"
+		android:layout_height="@dimen/editprofile_add_btn_size"
+		android:contentDescription="@string/descr_add_profile_image"
+		android:src="@drawable/add"
+		app:layout_constraintStart_toStartOf="@id/edit_profile_image"
+		app:layout_constraintTop_toTopOf="@id/edit_profile_image"
+		app:layout_constraintBottom_toBottomOf="@id/edit_profile_image"
+		app:layout_constraintEnd_toEndOf="@id/edit_profile_image" />
+
+	<ScrollView
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:layout_marginTop="@dimen/editprofile_scrollview_margin"
+		android:scrollbars="none"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/edit_profile_image"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent">
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/editprofile_layout_padding"
+			android:layout_marginEnd="@dimen/editprofile_layout_padding">
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/editprofile_edittext_padding"
+				android:text="@string/username" />
+
+			<EditText
+				android:id="@+id/profile_edit_change_name"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/enter_username"
+				android:importantForAutofill="no"
+				android:inputType="textNoSuggestions"
+				android:maxLength="@integer/editprofile_username_max_length"
+				android:lines="1"
+				style="@style/TextInput" />
+
+			<TextView
+				android:id="@+id/profile_edit_change_location_label"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/editprofile_edittext_padding"
+				android:text="@string/profile_location" />
+
+			<EditText
+				android:id="@+id/profile_edit_change_location"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/edit_location_hint"
+				android:importantForAutofill="no"
+				android:inputType="text"
+				android:lines="1"
+				style="@style/TextInput" />
+
+			<TextView
+				android:id="@+id/profile_edit_change_url_label"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/editprofile_edittext_padding"
+				android:text="@string/profile_link" />
+
+			<EditText
+				android:id="@+id/profile_edit_change_url"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/edit_hint_link"
+				android:importantForAutofill="no"
+				android:inputType="textUri"
+				android:lines="1"
+				style="@style/TextInput" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/editprofile_edittext_padding"
+				android:text="@string/profile_bio" />
+
+			<EditText
+				android:id="@+id/profile_edit_change_description"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="top"
+				android:hint="@string/edit_description_hint"
+				android:importantForAutofill="no"
+				android:inputType="textMultiLine"
+				android:minHeight="@dimen/editprofile_bio_min_height"
+				style="@style/TextInput" />
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/editprofile_edittext_padding"
+				android:text="@string/profile_other" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical">
+
+				<com.kyleduo.switchbutton.SwitchButton
+					android:id="@+id/profile_edit_privacy"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="@dimen/editprofile_button_margin" />
+
+				<TextView
+					android:id="@+id/profile_edit_privacy_label"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/profile_privacy"
+					android:lines="1" />
+
+			</LinearLayout>
+
+			<Button
+				android:id="@+id/profile_edit_status_pref"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/editprofile_button_height"
+				android:paddingLeft="@dimen/editprofile_button_padding"
+				android:paddingRight="@dimen/editprofile_button_padding"
+				android:layout_margin="@dimen/editprofile_button_margin"
+				android:text="@string/profile_status_pref"
+				style="@style/FeedbackButton" />
+
+		</LinearLayout>
+
+	</ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

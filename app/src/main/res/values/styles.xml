@@ -20,6 +20,7 @@
 
 	<style name="DefaultDialog" parent="Theme.AppCompat.Dialog">
 		<item name="android:windowMinWidthMinor">90%</item>
+		<item name="android:windowMinWidthMajor">60%</item>
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowCloseOnTouchOutside">false</item>
 		<item name="android:backgroundDimEnabled">true</item>
@@ -27,6 +28,7 @@
 
 	<style name="MetaDialog" parent="DefaultDialog">
 		<item name="android:windowMinWidthMinor">60%</item>
+		<item name="android:windowMinWidthMajor">40%</item>
 	</style>
 
 	<style name="StatusPrefDialog" parent="DefaultDialog">

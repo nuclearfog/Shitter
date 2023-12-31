@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.BlurMaskFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -908,10 +909,14 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		if ((status.getCards().length > 0 || status.getMedia().length > 0) || status.getPoll() != null) {
 			card_list.setVisibility(View.VISIBLE);
 			adapter.replaceAll(status, settings.hideSensitiveEnabled());
-			status_text.setMaxLines(5);
+			if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+				status_text.setMaxLines(5);
+			}
 		} else {
 			card_list.setVisibility(View.GONE);
-			status_text.setMaxLines(10);
+			if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+				status_text.setMaxLines(10);
+			}
 		}
 	}
 
