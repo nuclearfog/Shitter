@@ -238,14 +238,6 @@ public class StatusAdapter extends Adapter<ViewHolder> implements OnHolderClickL
 	}
 
 	/**
-	 * clear all data from adapter
-	 */
-	public void clear() {
-		items.clear();
-		notifyDataSetChanged();
-	}
-
-	/**
 	 * get Id of the first status
 	 *
 	 * @return status ID

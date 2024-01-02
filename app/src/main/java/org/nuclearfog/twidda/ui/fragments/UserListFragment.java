@@ -21,8 +21,6 @@ import org.nuclearfog.twidda.ui.activities.UserlistActivity;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.UserlistAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.UserlistAdapter.ListClickListener;
 
-import java.io.Serializable;
-
 /**
  * Fragment class to show userlists
  *
@@ -85,7 +83,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 			type = param.getInt(KEY_MODE);
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof UserLists) {
 				adapter.setItems((UserLists) data);
 			}

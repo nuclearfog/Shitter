@@ -29,8 +29,6 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.NotificationAdapter.OnNotif
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
-import java.io.Serializable;
-
 /**
  * fragment to show notifications
  *
@@ -73,7 +71,7 @@ public class NotificationFragment extends ListFragment implements OnNotification
 		setAdapter(adapter, settings.chronologicalTimelineEnabled());
 
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
+			Object data = savedInstanceState.getSerializable(KEY_DATA);
 			if (data instanceof Notifications) {
 				adapter.setItems((Notifications) data);
 			}

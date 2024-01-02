@@ -26,8 +26,6 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.UserAdapter.UserClickListen
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
-import java.io.Serializable;
-
 /**
  * fragment class to show a list of users
  *
@@ -178,7 +176,7 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 			adapter.enableDeleteButton(delUser);
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Users) {
 				adapter.setItems((Users) data);
 			}

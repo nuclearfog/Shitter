@@ -21,8 +21,6 @@ import org.nuclearfog.twidda.ui.activities.StatusActivity;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.StatusAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.StatusAdapter.StatusSelectListener;
 
-import java.io.Serializable;
-
 /**
  * fragment class to show a status list
  *
@@ -140,7 +138,7 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 			search = param.getString(KEY_SEARCH, "");
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Statuses) {
 				adapter.setItems((Statuses) data);
 			}

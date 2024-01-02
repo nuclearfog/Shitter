@@ -24,8 +24,6 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.AccountAdapter.OnAccountCli
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
-import java.io.Serializable;
-
 /**
  * fragment class to show registered accounts
  *
@@ -63,7 +61,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Accounts) {
 				adapter.setItems((Accounts) data);
 			}

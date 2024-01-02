@@ -288,14 +288,6 @@ public class NotificationAdapter extends Adapter<ViewHolder> implements OnHolder
 	}
 
 	/**
-	 * clear adapter data
-	 */
-	public void clear() {
-		items.clear();
-		notifyDataSetChanged();
-	}
-
-	/**
 	 * @return true if adapter is empty
 	 */
 	public boolean isEmpty() {

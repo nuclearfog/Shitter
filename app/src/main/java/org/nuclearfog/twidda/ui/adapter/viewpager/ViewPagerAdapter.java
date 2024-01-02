@@ -7,19 +7,19 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import org.nuclearfog.twidda.ui.fragments.ListFragment;
 
-import java.util.Random;
-
 /**
+ * Adapter class for all {@link androidx.viewpager2.widget.ViewPager2} adapters
+ *
  * @author nuclearfog
  */
 public abstract class ViewPagerAdapter extends FragmentStateAdapter {
 
-	private static final Random RAND = new Random();
-
+	/**
+	 * used to communicate with fragments
+	 */
 	private ListFragment.ItemViewModel viewModel;
 
 	private int count = 0;
-	private long[] ids = {};
 
 	/**
 	 *
@@ -35,23 +35,6 @@ public abstract class ViewPagerAdapter extends FragmentStateAdapter {
 		return count;
 	}
 
-
-	@Override
-	public long getItemId(int position) {
-		return ids[position];
-	}
-
-
-	@Override
-	public boolean containsItem(long itemId) {
-		for (long id : ids) {
-			if (id == itemId) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * set page count
 	 *
@@ -59,11 +42,6 @@ public abstract class ViewPagerAdapter extends FragmentStateAdapter {
 	 */
 	public void setPageCount(@IntRange(from = 1) int count) {
 		this.count = count;
-		// create fragment session IDs
-		ids = new long[count];
-		for (int i = 0; i < ids.length; i++) {
-			ids[i] = RAND.nextLong();
-		}
 	}
 
 	/**

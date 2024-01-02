@@ -25,8 +25,6 @@ import org.nuclearfog.twidda.ui.adapter.recyclerview.TagAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.TagAdapter.OnTagClickListener;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 
-import java.io.Serializable;
-
 /**
  * Fragment class to show a list of trends
  *
@@ -112,7 +110,7 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 			adapter.enableDelete();
 		}
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_DATA);
+			Object data = savedInstanceState.getSerializable(KEY_DATA);
 			if (data instanceof Tags) {
 				adapter.setItems((Tags) data);
 			}
@@ -165,7 +163,7 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 	public void onActivityResult(ActivityResult result) {
 		if (result.getResultCode() == SearchActivity.RETURN_TREND) {
 			if (result.getData() != null) {
-				Serializable data = result.getData().getSerializableExtra(SearchActivity.KEY_DATA);
+				Object data = result.getData().getSerializableExtra(SearchActivity.KEY_DATA);
 				if (data instanceof Tag) {
 					Tag update = (Tag) data;
 					// remove tag if unfollowed

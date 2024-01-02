@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor;
 import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.LinkAndScrollMovement;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Instance;
@@ -179,6 +180,8 @@ public class InstanceActivity extends AppCompatActivity implements OnClickListen
 			} else {
 				banner.setImageDrawable(placeholder);
 			}
+		} else {
+			ErrorUtils.showErrorMessage(getApplicationContext(), result.exception);
 		}
 	}
 }

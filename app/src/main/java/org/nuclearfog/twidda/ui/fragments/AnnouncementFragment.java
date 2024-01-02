@@ -57,9 +57,9 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
-			Object data_announcement = savedInstanceState.getSerializable(KEY_SAVE);
-			if (data_announcement instanceof Announcements) {
-				adapter.setItems((Announcements) data_announcement);
+			Object data = savedInstanceState.getSerializable(KEY_SAVE);
+			if (data instanceof Announcements) {
+				adapter.setItems((Announcements) data);
 			}
 		}
 	}

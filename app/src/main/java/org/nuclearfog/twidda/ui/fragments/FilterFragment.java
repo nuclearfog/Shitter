@@ -22,8 +22,6 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.FilterDialog;
 import org.nuclearfog.twidda.ui.dialogs.FilterDialog.FilterDialogCallback;
 
-import java.io.Serializable;
-
 /**
  * status filterlist fragment
  *
@@ -61,7 +59,7 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
-			Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
+			Object data = savedInstanceState.getSerializable(KEY_SAVE);
 			if (data instanceof Filters) {
 				adapter.setItems((Filters) data);
 			}
