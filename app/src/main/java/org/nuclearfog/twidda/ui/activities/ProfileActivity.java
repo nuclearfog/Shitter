@@ -156,21 +156,21 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		View floatingButton = findViewById(R.id.page_profile_post_button);
 		ConstraintLayout header = findViewById(R.id.page_profile_header);
 		ConstraintLayout body = findViewById(R.id.page_profile_body);
-		toolbar = findViewById(R.id.profile_toolbar);
-		description = findViewById(R.id.bio);
-		following = findViewById(R.id.following);
-		follower = findViewById(R.id.follower);
-		user_website = findViewById(R.id.links);
-		profileImage = findViewById(R.id.profile_img);
-		bannerImage = findViewById(R.id.profile_banner);
-		toolbarBackground = findViewById(R.id.profile_toolbar_background);
-		username = findViewById(R.id.profile_username);
-		screenName = findViewById(R.id.profile_screenname);
-		user_location = findViewById(R.id.location);
-		user_createdAt = findViewById(R.id.profile_date);
-		follow_back = findViewById(R.id.follow_back);
-		tabSelector = findViewById(R.id.profile_tab);
-		viewPager = findViewById(R.id.profile_pager);
+		toolbar = findViewById(R.id.page_profile_toolbar);
+		description = findViewById(R.id.page_profile_description);
+		following = findViewById(R.id.page_profile_following);
+		follower = findViewById(R.id.page_profile_follower);
+		user_website = findViewById(R.id.page_profile_links);
+		profileImage = findViewById(R.id.page_profile_image);
+		bannerImage = findViewById(R.id.page_profile_banner);
+		toolbarBackground = findViewById(R.id.page_profile_toolbar_background);
+		username = findViewById(R.id.page_profile_username);
+		screenName = findViewById(R.id.page_profile_screenname);
+		user_location = findViewById(R.id.page_profile_location);
+		user_createdAt = findViewById(R.id.page_profile_date);
+		follow_back = findViewById(R.id.page_profile_followback);
+		tabSelector = findViewById(R.id.page_profile_tab);
+		viewPager = findViewById(R.id.page_profile_pager);
 
 		relationLoader = new RelationLoader(this);
 		domainAction = new DomainAction(this);
@@ -188,7 +188,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		if (!settings.toolbarOverlapEnabled()) {
 			ConstraintSet constraints = new ConstraintSet();
 			constraints.clone(header);
-			constraints.connect(R.id.profile_banner, ConstraintSet.TOP, R.id.profile_toolbar, ConstraintSet.BOTTOM);
+			constraints.connect(R.id.page_profile_banner, ConstraintSet.TOP, R.id.page_profile_toolbar, ConstraintSet.BOTTOM);
 			constraints.applyTo(header);
 		}
 		if (!settings.floatingButtonEnabled()) {
@@ -452,27 +452,27 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		if (user == null)
 			return;
 		// open following page
-		if (v.getId() == R.id.following) {
+		if (v.getId() == R.id.page_profile_following) {
 			Intent intent = new Intent(this, UsersActivity.class);
 			intent.putExtra(UsersActivity.KEY_ID, user.getId());
 			intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_FOLLOWING);
 			startActivity(intent);
 		}
 		// open follower page
-		else if (v.getId() == R.id.follower) {
+		else if (v.getId() == R.id.page_profile_follower) {
 			Intent intent = new Intent(this, UsersActivity.class);
 			intent.putExtra(UsersActivity.KEY_ID, user.getId());
 			intent.putExtra(UsersActivity.KEY_MODE, UsersActivity.USERS_FOLLOWER);
 			startActivity(intent);
 		}
 		// open link added to profile
-		else if (v.getId() == R.id.links) {
+		else if (v.getId() == R.id.page_profile_links) {
 			if (!user.getProfileUrl().isEmpty()) {
 				LinkUtils.openLink(this, user.getProfileUrl());
 			}
 		}
 		// open profile image
-		else if (v.getId() == R.id.profile_img) {
+		else if (v.getId() == R.id.page_profile_image) {
 			if (!user.getOriginalProfileImageUrl().isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
 				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, user.getOriginalProfileImageUrl());
@@ -480,7 +480,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 			}
 		}
 		// open banner image
-		else if (v.getId() == R.id.profile_banner) {
+		else if (v.getId() == R.id.page_profile_banner) {
 			if (!user.getOriginalBannerImageUrl().isEmpty()) {
 				Intent intent = new Intent(this, ImageViewer.class);
 				intent.putExtra(ImageViewer.KEY_IMAGE_DATA, user.getOriginalBannerImageUrl());

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
@@ -25,6 +26,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.viewpager.UserAdapter;
+import org.nuclearfog.twidda.ui.fragments.UserFragment;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -111,9 +113,12 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		setContentView(R.layout.page_tab_view);
 		ViewGroup root = findViewById(R.id.page_tab_view_root);
 		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
+		View fragmentContainer = findViewById(R.id.page_tab_view_fragment_container);
 		tabSelector = findViewById(R.id.page_tab_view_tabs);
 		viewPager = findViewById(R.id.page_tab_view_pager);
 
+		FragmentTransaction fragmentTransaction;
+		Bundle param = new Bundle();
 		filterLoader = new UserFilterAction(this);
 		settings = GlobalSettings.get(this);
 		adapter = new UserAdapter(this);
@@ -127,51 +132,67 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 			case USERS_FOLLOWING:
 				toolbar.setTitle(R.string.userlist_following);
 				adapter.setType(UserAdapter.FOLLOWING);
-				if (settings.getLogin().getId() == id)
+				if (settings.getLogin().getId() == id) {
 					adapter.setPageCount(2);
-				else
-					adapter.setPageCount(1);
-				viewPager.setAdapter(adapter);
-				if (adapter.getItemCount() > 1) {
 					tabSelector.addTabIcons(R.array.user_following);
-					tabSelector.addOnTabSelectedListener(this);
+					viewPager.setAdapter(adapter);
 				} else {
+					viewPager.setVisibility(View.GONE);
 					tabSelector.setVisibility(View.GONE);
+					fragmentContainer.setVisibility(View.VISIBLE);
+
+					param.putLong(UserFragment.KEY_ID, id);
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWING);
+					fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+					fragmentTransaction.commit();
 				}
 				break;
 
 			case USERS_FOLLOWER:
 				toolbar.setTitle(R.string.userlist_follower);
 				adapter.setType(UserAdapter.FOLLOWER);
-				if (settings.getLogin().getId() == id && settings.getLogin().getConfiguration().isOutgoingFollowRequestSupported())
+				if (settings.getLogin().getId() == id && settings.getLogin().getConfiguration().isOutgoingFollowRequestSupported()) {
 					adapter.setPageCount(2);
-				else
-					adapter.setPageCount(1);
-				viewPager.setAdapter(adapter);
-				tabSelector.setVisibility(View.GONE);
-				if (adapter.getItemCount() > 1) {
 					tabSelector.addTabIcons(R.array.user_follower);
-					tabSelector.addOnTabSelectedListener(this);
+					viewPager.setAdapter(adapter);
 				} else {
+					viewPager.setVisibility(View.GONE);
 					tabSelector.setVisibility(View.GONE);
+					fragmentContainer.setVisibility(View.VISIBLE);
+
+					param.putLong(UserFragment.KEY_ID, id);
+					param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FOLLOWER);
+					fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+					fragmentTransaction.commit();
 				}
 				break;
 
 			case USERS_REPOST:
-				toolbar.setTitle(R.string.toolbar_userlist_repost);
-				adapter.setType(UserAdapter.REPOSTER);
-				adapter.setPageCount(1);
-				viewPager.setAdapter(adapter);
+				viewPager.setVisibility(View.GONE);
 				tabSelector.setVisibility(View.GONE);
+				fragmentContainer.setVisibility(View.VISIBLE);
+
+				toolbar.setTitle(R.string.toolbar_userlist_repost);
+				param.putLong(UserFragment.KEY_ID, id);
+				param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_REPOSTER);
+				fragmentTransaction = getSupportFragmentManager().beginTransaction();
+				fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+				fragmentTransaction.commit();
 				break;
 
 			case USERS_FAVORIT:
-				int title = settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter;
-				toolbar.setTitle(title);
-				adapter.setType(UserAdapter.FAVORITER);
-				adapter.setPageCount(1);
-				viewPager.setAdapter(adapter);
+				viewPager.setVisibility(View.GONE);
 				tabSelector.setVisibility(View.GONE);
+				fragmentContainer.setVisibility(View.VISIBLE);
+
+				toolbar.setTitle(settings.likeEnabled() ? R.string.toolbar_status_liker : R.string.toolbar_status_favoriter);
+				param.putLong(UserFragment.KEY_ID, id);
+				param.putInt(UserFragment.KEY_MODE, UserFragment.MODE_FAVORITER);
+				fragmentTransaction = getSupportFragmentManager().beginTransaction();
+				fragmentTransaction.replace(R.id.page_tab_view_fragment_container, UserFragment.class, param);
+				fragmentTransaction.commit();
 				break;
 
 			case USERS_EXCLUDED:
@@ -180,15 +201,12 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 				adapter.setPageCount(3);
 				viewPager.setAdapter(adapter);
 				tabSelector.addTabIcons(R.array.user_domain_exclude);
-				tabSelector.addOnTabSelectedListener(this);
 				break;
-
-			default:
-				finish();
-				return;
 		}
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);
+
+		tabSelector.addOnTabSelectedListener(this);
 	}
 
 

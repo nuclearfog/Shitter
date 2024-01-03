@@ -59,7 +59,6 @@
 	<dimen name="profile_icon_size">14sp</dimen>
 	<dimen name="profile_tabselector_height">52sp</dimen>
 	<integer name="profile_text_bio_lines">6</integer>
-	<integer name="profile_text_bio_lines_landscape">12</integer>
 
 	<!--dimens of page_editprofile.xml-->
 	<dimen name="editprofile_layout_margin">5dp</dimen>
