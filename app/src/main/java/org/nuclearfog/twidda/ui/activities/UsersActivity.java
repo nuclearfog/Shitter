@@ -95,7 +95,6 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 	private UserFilterAction filterLoader;
 	private UserAdapter adapter;
 
-	private TabSelector tabSelector;
 	private ViewPager2 viewPager;
 
 	private int mode;
@@ -114,7 +113,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		ViewGroup root = findViewById(R.id.page_tab_view_root);
 		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
 		View fragmentContainer = findViewById(R.id.page_tab_view_fragment_container);
-		tabSelector = findViewById(R.id.page_tab_view_tabs);
+		TabSelector tabSelector = findViewById(R.id.page_tab_view_tabs);
 		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		FragmentTransaction fragmentTransaction;
@@ -212,7 +211,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public void onBackPressed() {
-		if (tabSelector.getVisibility() == View.VISIBLE && viewPager.getCurrentItem() > 0) {
+		if (viewPager.getVisibility() == View.VISIBLE && viewPager.getCurrentItem() > 0) {
 			viewPager.setCurrentItem(0);
 		} else {
 			super.onBackPressed();
@@ -262,29 +261,29 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 
 	@Override
 	public boolean onQueryTextSubmit(String query) {
-		if (!filterLoader.isIdle())
-			return false;
-		if (viewPager.getCurrentItem() == 0) {
-			if (USERNAME_PATTERN.matcher(query).matches()) {
-				UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.MUTE_USER, query);
-				filterLoader.execute(param, this);
-				return true;
+		if (filterLoader.isIdle()) {
+			if (viewPager.getCurrentItem() == 0) {
+				if (USERNAME_PATTERN.matcher(query).matches()) {
+					UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.MUTE_USER, query);
+					filterLoader.execute(param, this);
+					return true;
+				}
+				Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
+			} else if (viewPager.getCurrentItem() == 1) {
+				if (USERNAME_PATTERN.matcher(query).matches()) {
+					UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.BLOCK_USER, query);
+					filterLoader.execute(param, this);
+					return true;
+				}
+				Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
+			} else if (viewPager.getCurrentItem() == 2) {
+				if (Patterns.WEB_URL.matcher(query).matches()) {
+					UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.BLOCK_DOMAIN, Uri.parse(query).getHost());
+					filterLoader.execute(param, this);
+					return true;
+				}
+				Toast.makeText(getApplicationContext(), R.string.error_domain_format, Toast.LENGTH_SHORT).show();
 			}
-			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
-		} else if (viewPager.getCurrentItem() == 1) {
-			if (USERNAME_PATTERN.matcher(query).matches()) {
-				UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.BLOCK_USER, query);
-				filterLoader.execute(param, this);
-				return true;
-			}
-			Toast.makeText(getApplicationContext(), R.string.error_username_format, Toast.LENGTH_SHORT).show();
-		} else if (viewPager.getCurrentItem() == 2) {
-			if (Patterns.WEB_URL.matcher(query).matches()) {
-				UserFilterAction.Param param = new UserFilterAction.Param(UserFilterAction.Param.BLOCK_DOMAIN, Uri.parse(query).getHost());
-				filterLoader.execute(param, this);
-				return true;
-			}
-			Toast.makeText(getApplicationContext(), R.string.error_domain_format, Toast.LENGTH_SHORT).show();
 		}
 		return false;
 	}

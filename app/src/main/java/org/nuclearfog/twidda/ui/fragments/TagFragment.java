@@ -106,14 +106,14 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 			search = args.getString(KEY_SEARCH, "");
 			mode = args.getInt(KEY_MODE, 0);
 		}
-		if (mode == MODE_FOLLOW || mode == MODE_FEATURE) {
-			adapter.enableDelete();
-		}
 		if (savedInstanceState != null) {
 			Object data = savedInstanceState.getSerializable(KEY_DATA);
 			if (data instanceof Tags) {
 				adapter.setItems((Tags) data);
 			}
+		}
+		if (mode == MODE_FOLLOW || mode == MODE_FEATURE) {
+			adapter.enableDelete();
 		}
 	}
 

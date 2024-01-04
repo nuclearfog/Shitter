@@ -18,7 +18,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintDimensionRatio="3.0"
-		app:layout_constraintWidth_percent="0.5"/>
+		app:layout_constraintWidth_percent="0.5" />
 
 	<Button
 		android:id="@+id/profile_edit_add_banner"
