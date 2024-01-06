@@ -682,9 +682,11 @@ public class Mastodon implements Connection {
 
 
 	@Override
-	public Statuses getUserTimeline(long id, long minId, long maxId) throws MastodonException {
+	public Statuses getUserTimeline(long id, long minId, long maxId, boolean withReplies) throws MastodonException {
 		String endpoint = ENDPOINT_USER_TIMELINE + id + "/statuses";
-		return getStatuses(endpoint, minId, maxId);
+		List<String> param = new ArrayList<>();
+		param.add("exclude_replies=" + !withReplies);
+		return getStatuses(endpoint, minId, maxId, param);
 	}
 
 
@@ -728,49 +730,49 @@ public class Mastodon implements Connection {
 
 	@Override
 	public Status favoriteStatus(long id) throws MastodonException {
-		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/favourite");
-		status.setFavorite(true);
-		return status;
+		return postStatus(ENDPOINT_STATUS + id + "/favourite").setFavorite(true);
 	}
 
 
 	@Override
 	public Status unfavoriteStatus(long id) throws MastodonException {
-		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unfavourite");
-		status.setFavorite(false);
-		return status;
+		return postStatus(ENDPOINT_STATUS + id + "/unfavourite").setFavorite(false);
 	}
 
 
 	@Override
 	public Status repostStatus(long id) throws MastodonException {
-		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/reblog");
-		status.setRepost(true);
-		return status;
+		return postStatus(ENDPOINT_STATUS + id + "/reblog").setRepost(true);
 	}
 
 
 	@Override
 	public Status removeRepost(long id) throws MastodonException {
-		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unreblog");
-		status.setRepost(false);
-		return status;
+		return postStatus(ENDPOINT_STATUS + id + "/unreblog").setRepost(false);
 	}
 
 
 	@Override
 	public Status bookmarkStatus(long id) throws ConnectionException {
-		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/bookmark");
-		status.setBookmark(true);
-		return status;
+		return postStatus(ENDPOINT_STATUS + id + "/bookmark").setBookmark(true);
 	}
 
 
 	@Override
 	public Status removeBookmark(long id) throws ConnectionException {
-		MastodonStatus status = postStatus(ENDPOINT_STATUS + id + "/unbookmark");
-		status.setBookmark(false);
-		return status;
+		return postStatus(ENDPOINT_STATUS + id + "/unbookmark").setBookmark(false);
+	}
+
+
+	@Override
+	public Status pinStatus(long id) throws ConnectionException {
+		return postStatus(ENDPOINT_STATUS + id + "/pin").setPined(true);
+	}
+
+
+	@Override
+	public Status unpinStatus(long id) throws ConnectionException {
+		return postStatus(ENDPOINT_STATUS + id + "/unpin").setPined(false);
 	}
 
 

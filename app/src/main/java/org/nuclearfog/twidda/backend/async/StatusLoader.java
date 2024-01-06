@@ -52,14 +52,16 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 					return new Result(statuses, param.pos, null);
 
 				case Param.USER:
+				case Param.USER_ALL:
+					boolean withReplies = param.type == Param.USER_ALL;
 					if (param.minId == Param.NO_ID && param.maxId == Param.NO_ID) {
 						statuses = db.getUserTimeline(param.id);
 						if (statuses.isEmpty()) {
-							statuses = connection.getUserTimeline(param.id, 0L, 0L);
+							statuses = connection.getUserTimeline(param.id, 0L, 0L, withReplies);
 							db.saveUserTimeline(statuses);
 						}
 					} else {
-						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId);
+						statuses = connection.getUserTimeline(param.id, param.minId, param.maxId, withReplies);
 						if (param.maxId == Param.NO_ID) {
 							db.saveUserTimeline(statuses);
 						}
@@ -148,13 +150,14 @@ public class StatusLoader extends AsyncExecutor<StatusLoader.Param, StatusLoader
 
 		public static final int HOME = 1;
 		public static final int USER = 2;
-		public static final int FAVORIT = 3;
-		public static final int REPLIES = 4;
-		public static final int REPLIES_LOCAL = 5;
-		public static final int SEARCH = 6;
-		public static final int USERLIST = 7;
-		public static final int PUBLIC = 8;
-		public static final int BOOKMARKS = 9;
+		public static final int USER_ALL = 3;
+		public static final int FAVORIT = 4;
+		public static final int REPLIES = 5;
+		public static final int REPLIES_LOCAL = 6;
+		public static final int SEARCH = 7;
+		public static final int USERLIST = 8;
+		public static final int PUBLIC = 9;
+		public static final int BOOKMARKS = 10;
 
 		final String search;
 		final int type, pos;

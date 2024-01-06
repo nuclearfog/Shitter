@@ -59,7 +59,6 @@ import org.nuclearfog.twidda.ui.views.LockableConstraintLayout;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -212,26 +211,27 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
 
-		viewPager.setOffscreenPageLimit(3);
-
-		// get parameters
-		if (savedInstanceState == null) {
-			savedInstanceState = getIntent().getExtras();
-		}
-		if (savedInstanceState == null) {
-			return;
-		}
-		long userId = savedInstanceState.getLong(KEY_ID, 0L);
-		Serializable serializedUser = savedInstanceState.getSerializable(KEY_USER);
-		Serializable serializedRelation = savedInstanceState.getSerializable(KEY_RELATION);
-		// get relation data
-		if (serializedRelation instanceof Relation) {
-			relation = (Relation) serializedRelation;
-		}
-		// get user data
-		if (serializedUser instanceof User) {
-			user = (User) serializedUser;
-			userId = user.getId();
+		long userId = 0L;
+		if (savedInstanceState != null) {
+			Object userData = savedInstanceState.getSerializable(KEY_USER);
+			Object relationData = savedInstanceState.getSerializable(KEY_RELATION);
+			// get relation data
+			if (relationData instanceof Relation) {
+				relation = (Relation) relationData;
+			}
+			// get user data
+			if (userData instanceof User) {
+				user = (User) userData;
+				userId = user.getId();
+			}
+		} else {
+			Object userData = getIntent().getSerializableExtra(KEY_USER);
+			if (userData instanceof User) {
+				user = (User) userData;
+				userId = user.getId();
+			} else {
+				userId = getIntent().getLongExtra(KEY_ID, 0L);
+			}
 		}
 		// setup pager fragments
 		adapter.setId(userId);
@@ -251,10 +251,13 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		}
 		if (userId != settings.getLogin().getId()) {
 			tabSelector.addTabIcons(R.array.profile_tab_icons);
+			viewPager.setOffscreenPageLimit(3);
 		} else if (settings.likeEnabled()) {
 			tabSelector.addTabIcons(R.array.profile_tab_icons_like);
+			viewPager.setOffscreenPageLimit(5);
 		} else {
 			tabSelector.addTabIcons(R.array.profile_tab_icons_favorite);
+			viewPager.setOffscreenPageLimit(5);
 		}
 		tabSelector.addOnTabSelectedListener(this);
 		following.setOnClickListener(this);
@@ -279,6 +282,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		relationLoader.cancel();
 		userLoader.cancel();
 		emojiLoader.cancel();
+		domainAction.cancel();
 		super.onDestroy();
 	}
 

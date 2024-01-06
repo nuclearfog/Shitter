@@ -99,7 +99,7 @@ public class AppDatabase {
 	 * SQL query to get home timeline status
 	 */
 	private static final String HOME_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_HOME_TIMELINE + " IS NOT 0"
+			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.FLAGS + "&" + StatusPropertiesTable.MASK_STATUS_HOME_TIMELINE + " IS NOT 0"
 			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.REGISTER + "&" + UserPropertiesTable.MASK_USER_FILTERED + " IS 0"
 			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
 			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
@@ -110,7 +110,7 @@ public class AppDatabase {
 	 * SQL query to get status of an user
 	 */
 	private static final String USER_STATUS_QUERY = "SELECT * FROM(" + STATUS_SUBQUERY + ")"
-			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_USER_TIMELINE + " IS NOT 0"
+			+ " WHERE " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.FLAGS + "&" + StatusPropertiesTable.MASK_STATUS_USER_TIMELINE + " IS NOT 0"
 			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
 			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
 			+ " AND " + StatusTable.TABLE + "." + StatusTable.USER + "=?"
@@ -166,8 +166,8 @@ public class AppDatabase {
 			+ " WHERE " + ReplyTable.TABLE + "." + ReplyTable.REPLY + "=?"
 			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.OWNER + "=?"
 			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.OWNER + "=?"
-			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_REPLY + " IS NOT 0"
-			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.REGISTER + "&" + StatusPropertiesTable.MASK_STATUS_HIDDEN + " IS 0"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.FLAGS + "&" + StatusPropertiesTable.MASK_STATUS_REPLY + " IS NOT 0"
+			+ " AND " + StatusPropertiesTable.TABLE + "." + StatusPropertiesTable.FLAGS + "&" + StatusPropertiesTable.MASK_STATUS_HIDDEN + " IS 0"
 			+ " AND " + UserPropertiesTable.TABLE + "." + UserPropertiesTable.REGISTER + "&" + UserPropertiesTable.MASK_USER_FILTERED + " IS 0"
 			+ " ORDER BY " + ReplyTable.TABLE + "." + ReplyTable.ORDER + " ASC"
 			+ " LIMIT ?;";
@@ -297,7 +297,7 @@ public class AppDatabase {
 	/**
 	 * column projection for status flag register
 	 */
-	private static final String[] COLUMNS_REGISTER_STATUS = {StatusPropertiesTable.REGISTER};
+	private static final String[] COLUMNS_REGISTER_STATUS = {StatusPropertiesTable.FLAGS};
 
 	/**
 	 * default sort order for logins
@@ -916,7 +916,7 @@ public class AppDatabase {
 				flags &= ~StatusPropertiesTable.MASK_STATUS_HIDDEN;
 			}
 			ContentValues column = new ContentValues(1);
-			column.put(StatusPropertiesTable.REGISTER, flags);
+			column.put(StatusPropertiesTable.FLAGS, flags);
 			db.update(StatusPropertiesTable.TABLE, column, STATUS_REG_SELECT, args);
 			adapter.commit();
 		}
@@ -1449,6 +1449,11 @@ public class AppDatabase {
 		} else {
 			flags &= ~StatusPropertiesTable.MASK_STATUS_BOOKMARKED;
 		}
+		if (status.isPinned()) {
+			flags |= StatusPropertiesTable.MASK_STATUS_PINNED;
+		} else {
+			flags &= ~StatusPropertiesTable.MASK_STATUS_PINNED;
+		}
 		switch (status.getVisibility()) {
 			case Status.VISIBLE_DIRECT:
 				flags |= StatusPropertiesTable.MASK_STATUS_VISIBILITY_DIRECT;
@@ -1607,7 +1612,7 @@ public class AppDatabase {
 		String[] args = {Long.toString(status.getId()), Long.toString(settings.getLogin().getId())};
 
 		ContentValues column = new ContentValues(4);
-		column.put(StatusPropertiesTable.REGISTER, flags);
+		column.put(StatusPropertiesTable.FLAGS, flags);
 		column.put(StatusPropertiesTable.REPOST_ID, status.getRepostId());
 		column.put(StatusPropertiesTable.STATUS, status.getId());
 		column.put(StatusPropertiesTable.OWNER, settings.getLogin().getId());

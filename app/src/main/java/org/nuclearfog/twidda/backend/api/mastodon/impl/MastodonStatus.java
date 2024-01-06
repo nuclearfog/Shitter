@@ -42,6 +42,7 @@ public class MastodonStatus implements Status {
 	private boolean sensitive;
 	private boolean spoiler;
 	private boolean muted;
+	private boolean isPinned;
 
 	private String text;
 	private String mentions = "";
@@ -86,6 +87,7 @@ public class MastodonStatus implements Status {
 		sensitive = json.optBoolean("sensitive", false);
 		spoiler = json.optBoolean("spoiler_text", false);
 		bookmarked = json.optBoolean("bookmarked", false);
+		isPinned = json.optBoolean("pinned", false);
 		text = StringUtils.extractText(json.optString("content", ""));
 
 		if (!editedAtStr.isEmpty() && !editedAtStr.equals("null"))
@@ -316,6 +318,12 @@ public class MastodonStatus implements Status {
 
 
 	@Override
+	public boolean isPinned() {
+		return isPinned;
+	}
+
+
+	@Override
 	public boolean isHidden() {
 		return muted;
 	}
@@ -372,30 +380,44 @@ public class MastodonStatus implements Status {
 	/**
 	 * set repost status
 	 */
-	public void setRepost(boolean reposted) {
+	public MastodonStatus setRepost(boolean reposted) {
 		this.reposted = reposted;
 		if (embeddedStatus instanceof MastodonStatus) {
 			((MastodonStatus) embeddedStatus).setRepost(reposted);
 		}
+		return this;
 	}
 
 	/**
 	 * set favorite status
 	 */
-	public void setFavorite(boolean favorited) {
+	public MastodonStatus setFavorite(boolean favorited) {
 		this.favorited = favorited;
 		if (embeddedStatus instanceof MastodonStatus) {
 			((MastodonStatus) embeddedStatus).setFavorite(favorited);
 		}
+		return this;
 	}
 
 	/**
 	 * set bookmark status
 	 */
-	public void setBookmark(boolean bookmarked) {
+	public MastodonStatus setBookmark(boolean bookmarked) {
 		this.bookmarked = bookmarked;
 		if (embeddedStatus instanceof MastodonStatus) {
 			((MastodonStatus) embeddedStatus).setBookmark(bookmarked);
 		}
+		return this;
+	}
+
+	/**
+	 * set status pinned
+	 */
+	public MastodonStatus setPined(boolean pinned) {
+		this.isPinned = pinned;
+		if (embeddedStatus instanceof MastodonStatus) {
+			((MastodonStatus) embeddedStatus).setPined(pinned);
+		}
+		return this;
 	}
 }

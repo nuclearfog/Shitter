@@ -35,10 +35,10 @@ public class ProfileAdapter extends ViewPagerAdapter {
 	@Override
 	public Fragment createFragment(int position) {
 		ListFragment fragment;
+		Bundle param = new Bundle();
 		switch (position) {
 			default:
 			case 0:
-				Bundle param = new Bundle();
 				param.putLong(StatusFragment.KEY_ID, userId);
 				param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_USER);
 				fragment = new StatusFragment();
@@ -46,6 +46,13 @@ public class ProfileAdapter extends ViewPagerAdapter {
 				break;
 
 			case 1:
+				param.putLong(StatusFragment.KEY_ID, userId);
+				param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_USER_ALL);
+				fragment = new StatusFragment();
+				fragment.setArguments(param);
+				break;
+
+			case 2:
 				if (getItemCount() == 2) {
 					param = new Bundle();
 					param.putLong(FieldFragment.KEY_ID, userId);
@@ -60,16 +67,14 @@ public class ProfileAdapter extends ViewPagerAdapter {
 				}
 				break;
 
-			case 2:
-				param = new Bundle();
+			case 3:
 				param.putLong(StatusFragment.KEY_ID, userId);
 				param.putInt(StatusFragment.KEY_MODE, StatusFragment.MODE_BOOKMARK);
 				fragment = new StatusFragment();
 				fragment.setArguments(param);
 				break;
 
-			case 3:
-				param = new Bundle();
+			case 4:
 				param.putLong(FieldFragment.KEY_ID, userId);
 				fragment = new FieldFragment();
 				fragment.setArguments(param);
@@ -86,9 +91,9 @@ public class ProfileAdapter extends ViewPagerAdapter {
 	public void setId(long userId) {
 		this.userId = userId;
 		if (settings.getLogin().getId() == userId) {
-			setPageCount(4);
+			setPageCount(5);
 		} else {
-			setPageCount(2);
+			setPageCount(3);
 		}
 	}
 }

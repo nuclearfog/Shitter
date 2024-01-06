@@ -31,7 +31,7 @@ public class DatabaseStatus implements Status, StatusTable, StatusPropertiesTabl
 
 	private long id, time, embeddedId, replyID, replyUserId, myRepostId, locationId, pollId, editedAt;
 	private int repostCount, favoriteCount, replyCount, visibility;
-	private boolean reposted, favorited, bookmarked, sensitive, spoiler, isHidden;
+	private boolean reposted, favorited, bookmarked, sensitive, spoiler, isHidden, isPinned;
 	private Status embedded;
 	private Poll poll;
 	private User author;
@@ -74,20 +74,20 @@ public class DatabaseStatus implements Status, StatusTable, StatusPropertiesTabl
 		String userMentions = cursor.getString(cursor.getColumnIndexOrThrow(MENTIONS));
 		String mediaKeys = cursor.getString(cursor.getColumnIndexOrThrow(MEDIA));
 		String emojiKeys = cursor.getString(cursor.getColumnIndexOrThrow(EMOJI));
-		int register = cursor.getInt(cursor.getColumnIndexOrThrow(REGISTER));
+		int flags = cursor.getInt(cursor.getColumnIndexOrThrow(FLAGS));
 
-		favorited = (register & MASK_STATUS_FAVORITED) != 0;
-		reposted = (register & MASK_STATUS_REPOSTED) != 0;
-		sensitive = (register & MASK_STATUS_SENSITIVE) != 0;
-		isHidden = (register & MASK_STATUS_HIDDEN) != 0;
-		bookmarked = (register & MASK_STATUS_BOOKMARKED) != 0;
-		spoiler = (register & MASK_STATUS_SPOILER) != 0;
-
-		if ((register & MASK_STATUS_VISIBILITY_DIRECT) != 0)
+		favorited = (flags & MASK_STATUS_FAVORITED) != 0;
+		reposted = (flags & MASK_STATUS_REPOSTED) != 0;
+		sensitive = (flags & MASK_STATUS_SENSITIVE) != 0;
+		isHidden = (flags & MASK_STATUS_HIDDEN) != 0;
+		bookmarked = (flags & MASK_STATUS_BOOKMARKED) != 0;
+		spoiler = (flags & MASK_STATUS_SPOILER) != 0;
+		isPinned = (flags & MASK_STATUS_PINNED) != 0;
+		if ((flags & MASK_STATUS_VISIBILITY_DIRECT) != 0)
 			visibility = VISIBLE_DIRECT;
-		else if ((register & MASK_STATUS_VISIBILITY_PRIVATE) != 0)
+		else if ((flags & MASK_STATUS_VISIBILITY_PRIVATE) != 0)
 			visibility = VISIBLE_PRIVATE;
-		else if ((register & MASK_STATUS_VISIBILITY_UNLISTED) != 0)
+		else if ((flags & MASK_STATUS_VISIBILITY_UNLISTED) != 0)
 			visibility = VISIBLE_UNLISTED;
 		else
 			visibility = VISIBLE_PUBLIC;
@@ -254,6 +254,12 @@ public class DatabaseStatus implements Status, StatusTable, StatusPropertiesTabl
 	@Override
 	public boolean isBookmarked() {
 		return bookmarked;
+	}
+
+
+	@Override
+	public boolean isPinned() {
+		return isPinned;
 	}
 
 

@@ -40,6 +40,8 @@
 	<string name="info_status_unbookmarked">Status removed from bookmarks</string>
 	<string name="info_reply_hidden">Reply is hidden</string>
 	<string name="info_reply_unhidden">Reply is visible</string>
+	<string name="info_status_pinned">Status pinned to profile</string>
+	<string name="info_status_unpinned">Status unpinned from profile</string>
 	<string name="info_user_muted">User muted</string>
 	<string name="info_user_unmuted">User unmuted</string>
 	<string name="info_image_saved">Image saved</string>
@@ -154,6 +156,8 @@
 	<string name="menu_block_domain">block domain</string>
 	<string name="menu_bookmark_add">bookmark</string>
 	<string name="menu_bookmark_remove">remove bookmark</string>
+	<string name="menu_status_pin">pin to profile</string>
+	<string name="menu_status_unpin">unpin from profile</string>
 	<string name="menu_unmute_user">unmute</string>
 	<string name="menu_status_edit">edit</string>
 	<string name="menu_status_history">history</string>

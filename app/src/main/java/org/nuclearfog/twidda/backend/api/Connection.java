@@ -400,12 +400,13 @@ public interface Connection {
 	/**
 	 * show the timeline of an user
 	 *
-	 * @param id    ID of the user
-	 * @param minId get statuses with ID above the min ID
-	 * @param maxId get statuses with ID under the max ID
+	 * @param id          ID of the user
+	 * @param minId       get statuses with ID above the min ID
+	 * @param maxId       get statuses with ID under the max ID
+	 * @param withReplies true to include user replies
 	 * @return list of statuses
 	 */
-	Statuses getUserTimeline(long id, long minId, long maxId) throws ConnectionException;
+	Statuses getUserTimeline(long id, long minId, long maxId, boolean withReplies) throws ConnectionException;
 
 	/**
 	 * show the favorite timeline of an user
@@ -501,6 +502,22 @@ public interface Connection {
 	 * @return updated status
 	 */
 	Status removeBookmark(long id) throws ConnectionException;
+
+	/**
+	 * pin status to profile
+	 *
+	 * @param id ID of the status
+	 * @return updated status
+	 */
+	Status pinStatus(long id) throws ConnectionException;
+
+	/**
+	 * remove pinned status from profile
+	 *
+	 * @param id ID of the status
+	 * @return updated status
+	 */
+	Status unpinStatus(long id) throws ConnectionException;
 
 	/**
 	 * mute a status from conversation

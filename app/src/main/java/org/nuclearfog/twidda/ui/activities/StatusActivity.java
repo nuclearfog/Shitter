@@ -373,20 +373,21 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		MenuItem optHide = m.findItem(R.id.menu_status_hide);
 		MenuItem optCopy = m.findItem(R.id.menu_status_copy);
 		MenuItem optReport = m.findItem(R.id.menu_status_report);
+		MenuItem optPin = m.findItem(R.id.menu_status_pin);
 		MenuItem menuBookmark = m.findItem(R.id.menu_status_bookmark);
 		MenuItem editStatus = m.findItem(R.id.menu_status_edit);
 		MenuItem editHistory = m.findItem(R.id.menu_status_history);
 		SubMenu copyMenu = optCopy.getSubMenu();
-
 		// set status options
 		if (status != null) {
 			Status currentStatus = status;
 			if (currentStatus.getEmbeddedStatus() != null) {
 				currentStatus = currentStatus.getEmbeddedStatus();
 			}
-			// enable/disable status reply hide
-			long currentUserId = settings.getLogin().getId();
-			if (currentStatus.getRepliedUserId() == currentUserId && currentStatus.getAuthor().getId() != currentUserId) {
+			if (currentStatus.getAuthor().getId() == settings.getLogin().getId()) {
+				optPin.setTitle(status.isPinned() ? R.string.menu_status_unpin : R.string.menu_status_pin);
+				optPin.setVisible(true);
+			} else if (currentStatus.getRepliedUserId() == settings.getLogin().getId()) {
 				optHide.setTitle(hidden ? R.string.menu_status_hide : R.string.menu_status_unhide);
 				optHide.setVisible(true);
 			}
@@ -429,25 +430,34 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			Status status = this.status;
 			if (status.getEmbeddedStatus() != null)
 				status = status.getEmbeddedStatus();
-			// Delete status option
-			if (item.getItemId() == R.id.menu_status_delete) {
-				confirmDialog.show(ConfirmDialog.DELETE_STATUS);
-				return true;
-			}
 			// add/remove bookmark
-			else if (item.getItemId() == R.id.menu_status_bookmark) {
-				Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
-				int mode = status.isBookmarked() ? StatusAction.Param.UNBOOKMARK : StatusAction.Param.BOOKMARK;
-				StatusAction.Param param = new StatusAction.Param(mode, status.getId());
-				statusLoader.execute(param, statusCallback);
+			if (item.getItemId() == R.id.menu_status_bookmark) {
+				if (statusLoader.isIdle()) {
+					Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+					int mode = status.isBookmarked() ? StatusAction.Param.UNBOOKMARK : StatusAction.Param.BOOKMARK;
+					StatusAction.Param param = new StatusAction.Param(mode, status.getId());
+					statusLoader.execute(param, statusCallback);
+				}
 				return true;
 			}
 			// hide status
 			else if (item.getItemId() == R.id.menu_status_hide) {
-				int mode = hidden ? StatusAction.Param.UNHIDE : StatusAction.Param.HIDE;
-				StatusAction.Param param = new StatusAction.Param(mode, status.getId());
-				statusLoader.execute(param, statusCallback);
+				if (statusLoader.isIdle()) {
+					Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+					int mode = hidden ? StatusAction.Param.UNHIDE : StatusAction.Param.HIDE;
+					StatusAction.Param param = new StatusAction.Param(mode, status.getId());
+					statusLoader.execute(param, statusCallback);
+				}
 				return true;
+			}
+			// pin/unpin status
+			else if (item.getItemId() == R.id.menu_status_pin) {
+				if (statusLoader.isIdle()) {
+					Toast.makeText(getApplicationContext(), R.string.info_loading, Toast.LENGTH_SHORT).show();
+					int mode = status.isPinned() ? StatusAction.Param.UNPIN : StatusAction.Param.PIN;
+					StatusAction.Param param = new StatusAction.Param(mode, status.getId());
+					statusLoader.execute(param, statusCallback);
+				}
 			}
 			// get status link
 			else if (item.getItemId() == R.id.menu_status_browser) {
@@ -505,6 +515,11 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				Intent intent = new Intent(this, EditHistoryActivity.class);
 				intent.putExtra(EditHistoryActivity.KEY_ID, status.getId());
 				startActivity(intent);
+				return true;
+			}
+			// Delete status option
+			else if (item.getItemId() == R.id.menu_status_delete) {
+				confirmDialog.show(ConfirmDialog.DELETE_STATUS);
 				return true;
 			}
 		}
@@ -979,14 +994,20 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 
 			case StatusAction.Result.HIDE:
 				hidden = true;
-				invalidateOptionsMenu();
 				Toast.makeText(getApplicationContext(), R.string.info_reply_hidden, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.Result.UNHIDE:
 				hidden = false;
-				invalidateOptionsMenu();
 				Toast.makeText(getApplicationContext(), R.string.info_reply_unhidden, Toast.LENGTH_SHORT).show();
+				break;
+
+			case StatusAction.Result.PIN:
+				Toast.makeText(getApplicationContext(), R.string.info_status_pinned, Toast.LENGTH_SHORT).show();
+				break;
+
+			case StatusAction.Result.UNPIN:
+				Toast.makeText(getApplicationContext(), R.string.info_status_unpinned, Toast.LENGTH_SHORT).show();
 				break;
 
 			case StatusAction.Result.DELETE:

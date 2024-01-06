@@ -61,11 +61,18 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 	public static final int MODE_HOME = 0xE7028B60;
 
 	/**
-	 * setup list for status timeline of a specific user
+	 * setup timeline to show user posts without replies
 	 *
 	 * @see #KEY_MODE
 	 */
 	public static final int MODE_USER = 0x4DBEF6CD;
+
+	/**
+	 * setup timeline to show all user posts
+	 *
+	 * @see #KEY_MODE
+	 */
+	public static final int MODE_USER_ALL = 0xfb825f97;
 
 	/**
 	 * setup list for favorite timeline of a specific user
@@ -266,6 +273,10 @@ public class StatusFragment extends ListFragment implements StatusSelectListener
 
 			case MODE_USER:
 				request = new StatusLoader.Param(StatusLoader.Param.USER, id, sinceId, maxId, index, search);
+				break;
+
+			case MODE_USER_ALL:
+				request = new StatusLoader.Param(StatusLoader.Param.USER_ALL, id, sinceId, maxId, index, search);
 				break;
 
 			case MODE_FAVORIT:

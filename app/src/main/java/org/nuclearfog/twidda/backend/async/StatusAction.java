@@ -98,6 +98,16 @@ public class StatusAction extends AsyncExecutor<StatusAction.Param, StatusAction
 					db.hideStatus(param.id, false);
 					return new Result(Result.UNHIDE, null);
 
+				case Param.PIN:
+					status = connection.pinStatus(param.id);
+					db.saveStatus(status);
+					return new Result(Result.PIN, status);
+
+				case Param.UNPIN:
+					status = connection.unpinStatus(param.id);
+					db.saveStatus(status);
+					return new Result(Result.UNPIN, status);
+
 				default:
 					return null;
 			}
@@ -125,7 +135,9 @@ public class StatusAction extends AsyncExecutor<StatusAction.Param, StatusAction
 		public static final int UNHIDE = 8;
 		public static final int BOOKMARK = 9;
 		public static final int UNBOOKMARK = 10;
-		public static final int DELETE = 11;
+		public static final int PIN = 11;
+		public static final int UNPIN = 12;
+		public static final int DELETE = 13;
 
 		final int mode;
 		final long id;
@@ -152,7 +164,9 @@ public class StatusAction extends AsyncExecutor<StatusAction.Param, StatusAction
 		public static final int UNHIDE = 19;
 		public static final int BOOKMARK = 20;
 		public static final int UNBOOKMARK = 21;
-		public static final int DELETE = 22;
+		public static final int PIN = 22;
+		public static final int UNPIN = 23;
+		public static final int DELETE = 24;
 
 		public final int mode;
 		@Nullable

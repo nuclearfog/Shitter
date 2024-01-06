@@ -374,4 +374,8 @@
 	<string name="description_announcement_reaction">Reaktionen einer Ankündigung</string>
 	<string name="info_reaction_added">Reaktion zu Ankündigung hinzugefügt</string>
 	<string name="info_reaction_removed">Reaktion von Ankündigung entfernt</string>
+	<string name="info_status_pinned">Status wurde am Profil angeheftet</string>
+	<string name="info_status_unpinned">Status wurde vom Profil abgeheftet</string>
+	<string name="menu_status_pin">an Profil anheften</string>
+	<string name="menu_status_unpin">vom Profil abheften</string>
 </resources>

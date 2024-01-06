@@ -171,7 +171,7 @@ public class DatabaseAdapter {
 			+ StatusPropertiesTable.TABLE + "("
 			+ StatusPropertiesTable.STATUS + " INTEGER NOT NULL,"
 			+ StatusPropertiesTable.OWNER + " INTEGER,"
-			+ StatusPropertiesTable.REGISTER + " INTEGER,"
+			+ StatusPropertiesTable.FLAGS + " INTEGER,"
 			+ StatusPropertiesTable.REPOST_ID + " INTEGER,"
 			+ "FOREIGN KEY(" + StatusPropertiesTable.STATUS + ")"
 			+ "REFERENCES " + StatusTable.TABLE + "(" + StatusTable.ID + "));";
@@ -878,7 +878,7 @@ public class DatabaseAdapter {
 		/**
 		 * Register with status bits
 		 */
-		String REGISTER = "status_flags";
+		String FLAGS = "status_flags";
 
 		/**
 		 * ID of the repost of the current user (if exists)
@@ -949,6 +949,11 @@ public class DatabaseAdapter {
 		 * status visibility flag {@link Status#VISIBLE_DIRECT}
 		 */
 		int MASK_STATUS_VISIBILITY_DIRECT = 3 << 11;
+
+		/**
+		 * status is pinned to profile
+		 */
+		int MASK_STATUS_PINNED = 1 << 13;
 	}
 
 	/**

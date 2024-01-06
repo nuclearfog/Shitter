@@ -148,6 +148,11 @@ public interface Status extends Serializable, Comparable<Status> {
 	boolean isBookmarked();
 
 	/**
+	 * @return true if status is pinned to profile
+	 */
+	boolean isPinned();
+
+	/**
 	 * @return true if status is hidden by current user
 	 */
 	boolean isHidden();
