@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.UserFilterAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.backend.utils.LandscapePageTransformer;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.viewpager.UserAdapter;
 import org.nuclearfog.twidda.ui.fragments.UserFragment;
@@ -122,6 +123,7 @@ public class UsersActivity extends AppCompatActivity implements OnTabSelectedLis
 		settings = GlobalSettings.get(this);
 		adapter = new UserAdapter(this);
 		viewPager.setOffscreenPageLimit(3);
+		viewPager.setPageTransformer(new LandscapePageTransformer());
 
 		mode = getIntent().getIntExtra(KEY_MODE, 0);
 		long id = getIntent().getLongExtra(KEY_ID, 0L);

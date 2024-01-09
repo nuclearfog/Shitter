@@ -26,6 +26,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TagAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.backend.utils.LandscapePageTransformer;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Tag;
 import org.nuclearfog.twidda.ui.adapter.viewpager.SearchAdapter;
@@ -107,6 +108,7 @@ public class SearchActivity extends AppCompatActivity implements OnClickListener
 		adapter.setSearch(search);
 		toolbar.setTitle("");
 		setSupportActionBar(toolbar);
+		viewPager.setPageTransformer(new LandscapePageTransformer());
 		viewPager.setOffscreenPageLimit(3);
 		viewPager.setAdapter(adapter);
 		tabSelector.addTabIcons(R.array.search_tag_tab_icons);

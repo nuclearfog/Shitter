@@ -16,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.LandscapePageTransformer;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.adapter.viewpager.UserListsAdapter;
@@ -75,6 +76,7 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
+		viewPager.setPageTransformer(new LandscapePageTransformer());
 		tabSelector.setLargeIndicator(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 		toolbar.setTitle(R.string.list_appbar);
 		setSupportActionBar(toolbar);

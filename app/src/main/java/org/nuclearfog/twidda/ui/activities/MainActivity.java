@@ -43,6 +43,7 @@ import org.nuclearfog.twidda.backend.async.CredentialsLoader;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.EmojiUtils;
+import org.nuclearfog.twidda.backend.utils.LandscapePageTransformer;
 import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		picasso = PicassoBuilder.get(this);
 
 		viewPager.setOffscreenPageLimit(4);
+		viewPager.setPageTransformer(new LandscapePageTransformer());
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 			tabSelector.setLargeIndicator(true);
 			if (navigationView.getLayoutParams() != null) {

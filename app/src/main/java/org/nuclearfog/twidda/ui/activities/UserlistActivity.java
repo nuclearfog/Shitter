@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.backend.async.UserlistAction;
 import org.nuclearfog.twidda.backend.async.UserlistManager;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.backend.utils.LandscapePageTransformer;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.adapter.viewpager.UserlistAdapter;
@@ -128,6 +129,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			}
 		}
 		viewPager.setOffscreenPageLimit(3);
+		viewPager.setPageTransformer(new LandscapePageTransformer());
 		tabSelector.setLargeIndicator(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 		setSupportActionBar(toolbar);
 		AppStyles.setTheme(root);

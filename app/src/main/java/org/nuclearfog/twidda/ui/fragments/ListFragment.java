@@ -1,18 +1,13 @@
 package org.nuclearfog.twidda.ui.fragments;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -77,20 +72,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 		AppStyles.setSwipeRefreshColor(reload, settings);
 		viewModel.getSelectedItem().observe(getViewLifecycleOwner(), this);
 
-		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			root.post(new Runnable() {
-				@Override
-				public void run() {
-					ViewParent parent = root.getParent();
-					Context context = getContext();
-					if (parent instanceof FrameLayout && !(parent instanceof FragmentContainerView) && context != null) {
-						FrameLayout container = (FrameLayout) parent;
-						container.getLayoutParams().width = context.getResources().getDisplayMetrics().widthPixels / 2 + 1;
-						container.requestLayout();
-					}
-				}
-			});
-		}
 		reload.setOnRefreshListener(this);
 		return root;
 	}

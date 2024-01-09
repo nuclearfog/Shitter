@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.TagAction;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
+import org.nuclearfog.twidda.backend.utils.LandscapePageTransformer;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.viewpager.TagAdapter;
 import org.nuclearfog.twidda.ui.views.TabSelector;
@@ -54,6 +55,7 @@ public class TagActivity extends AppCompatActivity implements OnQueryTextListene
 		adapter = new TagAdapter(this);
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(3);
+		viewPager.setPageTransformer(new LandscapePageTransformer());
 
 		tabSelector.setLargeIndicator(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 		tabSelector.addTabIcons(R.array.tabs_tag_icons);
