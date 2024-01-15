@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.utils;
 
+import android.content.res.Configuration;
 import android.view.View;
 import android.view.ViewParent;
 
@@ -20,7 +21,7 @@ public class LandscapePageTransformer implements PageTransformer {
 		ViewParent parent = page.getParent().getParent();
 		if (parent instanceof ViewPager2) {
 			ViewPager2 viewPager = (ViewPager2) parent;
-			if (viewPager.getOrientation() == ViewPager2.ORIENTATION_HORIZONTAL) {
+			if (viewPager.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 				page.getLayoutParams().width = viewPager.getMeasuredWidth() / 2 + 1;
 			}
 		}

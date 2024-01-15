@@ -76,14 +76,15 @@ public class MediaHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set view content
 	 *
-	 * @param media media content
+	 * @param media       media content
+	 * @param blurPreview true to blur the preview image
 	 */
-	public void setContent(Media media, boolean blurImage) {
+	public void setContent(Media media, boolean blurPreview) {
 		// skip if same media is already set
 		if (!media.equals(this.media)) {
 			Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
 			if (settings.imagesEnabled() && media.getMediaType() != Media.AUDIO && media.getMediaType() != Media.UNDEFINED && !media.getPreviewUrl().trim().isEmpty()) {
-				if (blurImage) {
+				if (blurPreview) {
 					// use integrated blur generator
 					if (media.getBlurHash().isEmpty()) {
 						BlurTransformation blurTransformation = new BlurTransformation(previewImage.getContext(), 30);

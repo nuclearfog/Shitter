@@ -46,7 +46,7 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 	private OnCardClickListener listener;
 
 	private List<Object> items = new ArrayList<>();
-	private boolean blurMedia = false;
+	private boolean blurPreview = false;
 
 	/**
 	 *
@@ -79,11 +79,11 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 		if (holder instanceof MediaHolder && item instanceof Media) {
 			MediaHolder mediaHolder = ((MediaHolder) holder);
 			Media media = (Media) item;
-			mediaHolder.setContent(media, blurMedia);
+			mediaHolder.setContent(media, blurPreview);
 		} else if (holder instanceof CardHolder && item instanceof Card) {
 			CardHolder cardHolder = (CardHolder) holder;
 			Card card = (Card) item;
-			cardHolder.setContent(card);
+			cardHolder.setContent(card, blurPreview);
 		} else if (holder instanceof PollHolder && item instanceof Poll) {
 			PollHolder pollHolder = (PollHolder) holder;
 			Poll poll = (Poll) item;
@@ -165,7 +165,7 @@ public class PreviewAdapter extends Adapter<ViewHolder> implements OnHolderClick
 			items.addAll(Arrays.asList(status.getMedia()));
 		if (status.getCards().length > 0)
 			items.addAll(Arrays.asList(status.getCards()));
-		blurMedia = enableBlur & status.isSensitive();
+		blurPreview = enableBlur & status.isSensitive();
 		notifyDataSetChanged();
 	}
 

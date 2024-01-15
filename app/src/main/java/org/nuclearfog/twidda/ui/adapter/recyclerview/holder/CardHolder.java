@@ -96,22 +96,31 @@ public class CardHolder extends ViewHolder implements OnClickListener {
 	/**
 	 * set view content
 	 *
-	 * @param card card content
+	 * @param card        card content
+	 * @param blurPreview true to blur the preview image
 	 */
-	public void setContent(Card card) {
+	public void setContent(Card card, boolean blurPreview) {
 		if (!card.equals(this.card)) {
 			SpannableStringBuilder urlDescription = new SpannableStringBuilder();
 			Drawable placeholder = new ColorDrawable(EMPTY_COLOR);
 			// set url preview image
 			if (settings.imagesEnabled() && !card.getImageUrl().isEmpty()) {
-				RequestCreator picassoBuilder = picasso.load(card.getImageUrl());
-				if (!card.getBlurHash().isEmpty()) {
-					Bitmap blur = BlurHashDecoder.decode(card.getBlurHash());
-					picassoBuilder.placeholder(new BitmapDrawable(preview.getResources(), blur));
+				if (blurPreview) {
+					if (!card.getBlurHash().isEmpty()) {
+						Bitmap blur = BlurHashDecoder.decode(card.getBlurHash());
+						preview.setImageBitmap(blur);
+					} else {
+						preview.setImageDrawable(placeholder);
+					}
 				} else {
-					picassoBuilder.placeholder(placeholder);
+					RequestCreator picassoBuilder = picasso.load(card.getImageUrl()).networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE);
+					if (!card.getBlurHash().isEmpty()) {
+						Bitmap blur = BlurHashDecoder.decode(card.getBlurHash());
+						picassoBuilder.placeholder(new BitmapDrawable(preview.getResources(), blur)).into(preview);
+					} else {
+						picassoBuilder.placeholder(placeholder).into(preview);
+					}
 				}
-				picassoBuilder.networkPolicy(NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE).into(preview);
 			} else {
 				preview.setImageDrawable(placeholder);
 			}

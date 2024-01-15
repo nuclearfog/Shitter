@@ -1,5 +1,4 @@
 plugins {
-	id 'org.jetbrains.kotlin.android' version '1.8.10' // FIX: duplicate classes error
 	id 'com.android.application'
 }
 
