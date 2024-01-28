@@ -127,19 +127,18 @@ public class ConnectionUpdate implements Serializable {
 	@NonNull
 	@Override
 	public String toString() {
-		String result = "";
+		StringBuilder buf = new StringBuilder();
 		if (apiConfig != null) {
-			switch (apiConfig) {
-				case MASTODON:
-					result = "network=\"Mastodon\"";
-					break;
+			if (apiConfig == Configuration.MASTODON) {
+				buf.append("network=\"Mastodon\"");
 			}
 		} else {
-			result = "network=\"none\"";
+			buf.append("network=\"none\"");
 		}
-		if (useHost()) {
-			result += " hostname=\"" + hostname + "\"";
-		}
-		return result;
+		if (useHost())
+			buf.append(" hostname=\"").append(hostname).append("\"");
+		if (!getAppName().isEmpty())
+			buf.append(" app_name=\"").append(getAppName()).append("\"");
+		return buf.toString();
 	}
 }

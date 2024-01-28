@@ -54,7 +54,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	private FollowRequestAction followAction;
 
 	private NotificationAdapter adapter;
-	private ConfirmDialog confirmDialog;
 
 	@Nullable
 	private Notification select;
@@ -63,7 +62,6 @@ public class NotificationFragment extends ListFragment implements OnNotification
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		notificationLoader = new NotificationLoader(requireContext());
 		notificationAction = new NotificationAction(requireContext());
 		followAction = new FollowRequestAction(requireContext());
@@ -138,16 +136,16 @@ public class NotificationFragment extends ListFragment implements OnNotification
 					break;
 
 				case OnNotificationClickListener.NOTIFICATION_DISMISS:
-					if (!confirmDialog.isShowing() && notificationAction.isIdle()) {
-						confirmDialog.show(ConfirmDialog.NOTIFICATION_DISMISS);
-						select = notification;
+					if (notificationAction.isIdle()) {
+						if (ConfirmDialog.show(this, ConfirmDialog.NOTIFICATION_DISMISS, null)) {
+							select = notification;
+						}
 					}
 					break;
 
 				case OnNotificationClickListener.NOTIFICATION_USER:
 					if (notification.getType() == Notification.TYPE_REQUEST) {
-						if (!confirmDialog.isShowing()) {
-							confirmDialog.show(ConfirmDialog.FOLLOW_REQUEST);
+						if (ConfirmDialog.show(this, ConfirmDialog.FOLLOW_REQUEST, null)) {
 							select = notification;
 						}
 						break;

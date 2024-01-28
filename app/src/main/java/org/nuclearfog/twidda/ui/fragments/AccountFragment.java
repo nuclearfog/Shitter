@@ -42,7 +42,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	private GlobalSettings settings;
 	private AccountAdapter adapter;
-	private ConfirmDialog dialog;
 	@Nullable
 	private Account selection;
 
@@ -53,7 +52,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		dialog = new ConfirmDialog(requireActivity(), this);
 		settings = GlobalSettings.get(requireContext());
 		accountLoader = new AccountLoader(requireContext());
 		accountAction = new AccountAction(requireContext());
@@ -121,9 +119,10 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 	@Override
 	public void onAccountRemove(Account account) {
-		if (!dialog.isShowing() && accountLoader.isIdle() && accountAction.isIdle()) {
-			selection = account;
-			dialog.show(ConfirmDialog.REMOVE_ACCOUNT);
+		if (accountLoader.isIdle() && accountAction.isIdle() && isAdded()) {
+			if (ConfirmDialog.show(this, ConfirmDialog.REMOVE_ACCOUNT, null)) {
+				selection = account;
+			}
 		}
 	}
 

@@ -97,10 +97,8 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	private InstanceLoader instanceLoader;
 
 	private GlobalSettings settings;
-	private ConfirmDialog confirmDialog;
 	private ProgressDialog loadingCircle;
 	private PollDialog pollDialog;
-	private AudioPlayerDialog audioDialog;
 	private EmojiPickerDialog emojiPicker;
 	private StatusPreferenceDialog preferenceDialog;
 	private IconAdapter adapter;
@@ -134,10 +132,8 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		statusUpdater = new StatusUpdater(this);
 		settings = GlobalSettings.get(this);
 		loadingCircle = new ProgressDialog(this, this);
-		confirmDialog = new ConfirmDialog(this, this);
 		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
 		pollDialog = new PollDialog(this, this);
-		audioDialog = new AudioPlayerDialog(this);
 		emojiPicker = new EmojiPickerDialog(this, this);
 		adapter = new IconAdapter(this, true);
 
@@ -219,13 +215,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 
 	@Override
-	protected void onStop() {
-		audioDialog.dismiss();
-		super.onStop();
-	}
-
-
-	@Override
 	protected void onSaveInstanceState(@NonNull Bundle outState) {
 		outState.putSerializable(KEY_STATUS_DATA, statusUpdate);
 		super.onSaveInstanceState(outState);
@@ -237,7 +226,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		if (statusUpdate.isEmpty()) {
 			super.onBackPressed();
 		} else {
-			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_LEAVE);
+			ConfirmDialog.show(this, ConfirmDialog.STATUS_EDITOR_LEAVE, null);
 		}
 	}
 
@@ -247,7 +236,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		loadingCircle.dismiss();
 		statusUpdater.cancel();
 		instanceLoader.cancel();
-		audioDialog.close();
 		super.onDestroy();
 	}
 
@@ -421,8 +409,9 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 					break;
 
 				case MediaStatus.AUDIO:
-					if (media.getPath() != null && !audioDialog.isShowing())
-						audioDialog.show(Uri.parse(media.getPath()));
+					if (media.getPath() != null) {
+						AudioPlayerDialog.show(this, Uri.parse(media.getPath()));
+					}
 					break;
 			}
 		}
@@ -490,7 +479,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	private void onStatusUpdated(@NonNull StatusUpdater.Result result) {
 		if (result.exception != null) {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			confirmDialog.show(ConfirmDialog.STATUS_EDITOR_ERROR, message);
+			ConfirmDialog.show(this, ConfirmDialog.STATUS_EDITOR_ERROR, message);
 			loadingCircle.dismiss();
 		} else {
 			if (result.status != null) {

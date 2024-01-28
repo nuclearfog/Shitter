@@ -80,9 +80,6 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 	private Toolbar toolbar;
 	private PlayerView playerView;
 
-	private DescriptionDialog descriptionDialog;
-	private MetaDialog metaDialog;
-
 	private ExoPlayer player;
 	@Nullable
 	private MediaStatus mediaStatus;
@@ -103,8 +100,6 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 		playerView = findViewById(R.id.page_video_player);
 		toolbar = findViewById(R.id.page_video_toolbar);
 		descriptionView = findViewById(R.id.page_video_description);
-		descriptionDialog = new DescriptionDialog(this, this);
-		metaDialog = new MetaDialog(this);
 		player = new ExoPlayer.Builder(this, this).build();
 
 		toolbar.setTitle("");
@@ -251,10 +246,10 @@ public class VideoViewer extends AppCompatActivity implements Player.Listener, D
 			}
 		} else if (item.getItemId() == R.id.menu_video_show_meta) {
 			if (media != null && media.getMeta() != null) {
-				metaDialog.show(media.getMeta());
+				MetaDialog.show(this, media.getMeta());
 			}
 		} else if (item.getItemId() == R.id.menu_video_add_description) {
-			descriptionDialog.show();
+			DescriptionDialog.show(this);
 		}
 		return super.onOptionsItemSelected(item);
 	}

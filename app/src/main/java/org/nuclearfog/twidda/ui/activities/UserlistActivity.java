@@ -84,7 +84,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 
 	private GlobalSettings settings;
 
-	private ConfirmDialog confirmDialog;
 	private UserlistDialog userlistDialog;
 
 	private ViewPager2 viewPager;
@@ -110,7 +109,6 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 		viewPager = findViewById(R.id.page_tab_view_pager);
 
 		settings = GlobalSettings.get(this);
-		confirmDialog = new ConfirmDialog(this, this);
 		userlistDialog = new UserlistDialog(this, this);
 		listLoaderAsync = new UserlistAction(this);
 		listManagerAsync = new UserlistManager(this);
@@ -186,7 +184,7 @@ public class UserlistActivity extends AppCompatActivity implements OnTabSelected
 			}
 			// delete user list
 			else if (item.getItemId() == R.id.menu_delete_list) {
-				confirmDialog.show(ConfirmDialog.LIST_DELETE);
+				ConfirmDialog.show(this, ConfirmDialog.LIST_DELETE, null);
 				return true;
 			}
 			// theme expanded search view

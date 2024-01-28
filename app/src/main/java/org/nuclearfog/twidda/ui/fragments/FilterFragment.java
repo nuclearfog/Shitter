@@ -42,7 +42,6 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 	private StatusFilterLoader filterLoader;
 	private StatusFilterAction filterAction;
 
-	private ConfirmDialog confirmDialog;
 	private FilterDialog filterDialog;
 
 	private Filter selection;
@@ -53,7 +52,6 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 		super.onViewCreated(view, savedInstanceState);
 		filterLoader = new StatusFilterLoader(requireContext());
 		filterAction = new StatusFilterAction(requireContext());
-		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		filterDialog = new FilterDialog(requireActivity(), this);
 		adapter = new FilterAdapter(this);
 		setAdapter(adapter, false);
@@ -118,9 +116,10 @@ public class FilterFragment extends ListFragment implements OnFilterClickListene
 
 	@Override
 	public void onFilterRemove(Filter filter) {
-		if (!isRefreshing() && !confirmDialog.isShowing() && filterAction.isIdle()) {
-			selection = filter;
-			confirmDialog.show(ConfirmDialog.FILTER_REMOVE);
+		if (!isRefreshing() && filterAction.isIdle()) {
+			if (ConfirmDialog.show(this, ConfirmDialog.FILTER_REMOVE, null)) {
+				selection = filter;
+			}
 		}
 	}
 

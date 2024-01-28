@@ -85,7 +85,6 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 	private TagAction tagAction;
 
 	private TagAdapter adapter;
-	private ConfirmDialog confirmDialog;
 
 	private int mode = 0;
 	private String search = "";
@@ -98,7 +97,6 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 		adapter = new TagAdapter(this);
 		tagLoader = new TagLoader(requireContext());
 		tagAction = new TagAction(requireContext());
-		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		setAdapter(adapter, false);
 
 		Bundle args = getArguments();
@@ -192,12 +190,15 @@ public class TagFragment extends ListFragment implements OnTagClickListener, Act
 					activityResultLauncher.launch(intent);
 				}
 			} else if (action == OnTagClickListener.REMOVE) {
-				if (tagAction.isIdle() && !confirmDialog.isShowing()) {
-					selection = tag;
+				if (tagAction.isIdle()) {
+					boolean created = false;
 					if (mode == MODE_FEATURE) {
-						confirmDialog.show(ConfirmDialog.UNFEATURE_TAG);
+						created = ConfirmDialog.show(this, ConfirmDialog.UNFEATURE_TAG, null);
 					} else if (mode == MODE_FOLLOW) {
-						confirmDialog.show(ConfirmDialog.UNFOLLOW_TAG);
+						created = ConfirmDialog.show(this, ConfirmDialog.UNFOLLOW_TAG, null);
+					}
+					if (created) {
+						selection = tag;
 					}
 				}
 			}

@@ -1,8 +1,7 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -10,7 +9,12 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -22,7 +26,7 @@ import org.nuclearfog.twidda.config.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class ConfirmDialog extends Dialog implements OnClickListener {
+public class ConfirmDialog extends DialogFragment implements OnClickListener {
 
 	/**
 	 * setup a proxy error dialog
@@ -159,13 +163,21 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	 */
 	public static final int ANNOUNCEMENT_DISMISS = 632;
 
+	/**
+	 * bundle key used to set/restore dialog type
+	 * value type is integer
+	 */
+	private static final String KEY_TYPE = "dialog-type";
+
+	/**
+	 * bundle key used to set/restore dialog message
+	 * value type is String
+	 */
+	private static final String KEY_MESSAGE = "dialog-message";
 
 	private TextView title, message, remember_label;
 	private Button confirm, cancel;
 	private CompoundButton remember;
-
-	private OnConfirmListener listener;
-	private GlobalSettings settings;
 
 	private int type = 0;
 	private String messageStr = "";
@@ -173,35 +185,114 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 	/**
 	 *
 	 */
-	public ConfirmDialog(Activity activity, OnConfirmListener listener) {
-		super(activity, R.style.ConfirmDialog);
-		settings = GlobalSettings.get(activity);
-		this.listener = listener;
+	public ConfirmDialog() {
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_confirm);
-		ViewGroup root = findViewById(R.id.confirm_rootview);
-		confirm = findViewById(R.id.confirm_yes);
-		cancel = findViewById(R.id.confirm_no);
-		title = findViewById(R.id.confirm_title);
-		message = findViewById(R.id.confirm_message);
-		remember = findViewById(R.id.confirm_remember);
-		remember_label = findViewById(R.id.confirm_remember_label);
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.dialog_confirm, container, false);
+		confirm = view.findViewById(R.id.confirm_yes);
+		cancel = view.findViewById(R.id.confirm_no);
+		title = view.findViewById(R.id.confirm_title);
+		message = view.findViewById(R.id.confirm_message);
+		remember = view.findViewById(R.id.confirm_remember);
+		remember_label = view.findViewById(R.id.confirm_remember_label);
+		GlobalSettings settings = GlobalSettings.get(requireContext());
 
-		AppStyles.setTheme(root, settings.getPopupColor());
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
+		if (savedInstanceState != null) {
+			type = savedInstanceState.getInt(KEY_TYPE);
+			messageStr = savedInstanceState.getString(KEY_MESSAGE, "");
+			setText();
+		}
+
+		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
 
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
+		return view;
 	}
 
 
 	@Override
-	protected void onStart() {
-		super.onStart();
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putInt(KEY_TYPE, type);
+		outState.putString(KEY_MESSAGE, messageStr);
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		if (v.getId() == R.id.confirm_yes) {
+			Object tag = v.getTag();
+			if (tag instanceof Integer) {
+				int type = (int) tag;
+				// get parent activity or fragment inplementing OnConfirmListener and return result
+				if (getParentFragment() instanceof OnConfirmListener) {
+					((OnConfirmListener) getParentFragment()).onConfirm(type, remember.isChecked());
+				} else if (getActivity() instanceof OnConfirmListener) {
+					((OnConfirmListener) getActivity()).onConfirm(type, remember.isChecked());
+				}
+			}
+			dismiss();
+		} else if (v.getId() == R.id.confirm_no) {
+			dismiss();
+		}
+	}
+
+	/**
+	 * show dialog
+	 *
+	 * @param fragment fragment from which to show the dialog
+	 * @param type     type of dialog
+	 * @param message  additional message
+	 * @return true if dialog was created successfully, false if a dialog already exists
+	 */
+	public static boolean show(Fragment fragment, int type, @Nullable String message) {
+		if (fragment.isAdded())
+			return show(fragment.getChildFragmentManager(), type, message);
+		return false;
+	}
+
+	/**
+	 * show dialog
+	 *
+	 * @param activity activity from which to show the dialog
+	 * @param type     type of dialog
+	 * @param message  additional message
+	 * @return true if dialog was created successfully, false if a dialog already exists
+	 */
+	public static boolean show(FragmentActivity activity, int type, @Nullable String message) {
+		return show(activity.getSupportFragmentManager(), type, message);
+	}
+
+	/**
+	 *
+	 */
+	private static boolean show(FragmentManager fm, int type, @Nullable String message) {
+		String tag = type + ":" + message;
+		Bundle args = new Bundle();
+		args.putInt(KEY_TYPE, type);
+		if (message != null)
+			args.putString(KEY_MESSAGE, message);
+		Fragment dialogFragment = fm.findFragmentByTag(tag);
+		if (dialogFragment == null) {
+			ConfirmDialog dialog = new ConfirmDialog();
+			dialog.setArguments(args);
+			dialog.show(fm, tag);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 */
+	private void setText() {
 		confirm.setTag(type);
 		// default visibility values
 		int titleVis = View.GONE;
@@ -336,58 +427,6 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
 			message.setText(messageStr);
 		} else {
 			message.setText(messageRes);
-		}
-	}
-
-
-	@Override
-	public void show() {
-		// using show(int) and show(int, String) instead
-	}
-
-
-	@Override
-	public void dismiss() {
-		if (isShowing()) {
-			super.dismiss();
-		}
-	}
-
-	/**
-	 * creates an alert dialog
-	 *
-	 * @param type Type of dialog to show
-	 */
-	public void show(int type) {
-		show(type, null);
-	}
-
-	/**
-	 * creates an alert dialog
-	 *
-	 * @param type       Type of dialog to show
-	 * @param messageStr override default message text
-	 */
-	public void show(int type, @Nullable String messageStr) {
-		if (!isShowing()) {
-			this.type = type;
-			this.messageStr = messageStr;
-			super.show();
-		}
-	}
-
-
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == R.id.confirm_yes) {
-			Object tag = v.getTag();
-			if (tag instanceof Integer) {
-				int type = (int) tag;
-				listener.onConfirm(type, remember.isChecked());
-			}
-			dismiss();
-		} else if (v.getId() == R.id.confirm_no) {
-			dismiss();
 		}
 	}
 

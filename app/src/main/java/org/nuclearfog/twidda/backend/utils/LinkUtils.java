@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.config.GlobalSettings;
-import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 
 /**
  * This class provides methods to open different links, depending on app settings
@@ -22,33 +20,6 @@ public class LinkUtils {
 	 *
 	 */
 	private LinkUtils() {
-	}
-
-	/**
-	 * Open a link, regarding it's content
-	 *
-	 * @param activity activity used to open link
-	 * @param url      url to open
-	 */
-	public static void openLink(final Activity activity, String url) {
-		final GlobalSettings settings = GlobalSettings.get(activity);
-		if (!url.contains("://")) { // check if link contains any scheme like 'http://'
-			url = "https://" + url;
-		}
-		final Uri link = Uri.parse(url);
-		// warn when trying to open a link externally with proxy enabled
-		if (settings.isProxyEnabled() && settings.isProxyWarningEnabled()) {
-			ConfirmDialog dialog = new ConfirmDialog(activity, new ConfirmDialog.OnConfirmListener() {
-				@Override
-				public void onConfirm(int type, boolean remember) {
-					settings.setProxyWarning(!remember);
-					redirectToBrowser(activity, link);
-				}
-			});
-			dialog.show(ConfirmDialog.CONTINUE_BROWSER);
-		} else {
-			redirectToBrowser(activity, link);
-		}
 	}
 
 	/**
@@ -85,9 +56,12 @@ public class LinkUtils {
 	/**
 	 * open url with an external browser
 	 *
-	 * @param link url to open
+	 * @param url url to open
 	 */
-	private static void redirectToBrowser(Activity activity, Uri link) {
+	public static void redirectToBrowser(Activity activity, String url) {
+		if (!url.contains("://")) // check if link contains any scheme like 'http://'
+			url = "https://" + url;
+		Uri link = Uri.parse(url);
 		// open link in a browser
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		intent.setData(link);

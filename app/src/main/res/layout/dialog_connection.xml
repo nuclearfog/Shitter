@@ -9,88 +9,6 @@
 	tools:ignore="UseSwitchCompatOrMaterialXml"
 	tools:context=".ui.dialogs.ConnectionDialog">
 
-	<com.kyleduo.switchbutton.SwitchButton
-		android:id="@+id/dialog_connection_custom_api"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_custom_api_label" />
-
-	<TextView
-		android:id="@+id/dialog_connection_custom_api_label"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:text="@string/login_key_enable"
-		android:lines="1"
-		android:layout_weight="1"
-		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		android:textSize="@dimen/dialog_connection_textsize_label"
-		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_api"
-		app:layout_constraintTop_toTopOf="@id/dialog_connection_custom_api"
-		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_custom_api"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_use_v2" />
-
-	<com.kyleduo.switchbutton.SwitchButton
-		android:id="@+id/dialog_connection_use_v2"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		android:visibility="invisible"
-		app:layout_constraintStart_toEndOf="@id/dialog_connection_custom_api_label"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_use_v2_label" />
-
-	<TextView
-		android:id="@+id/dialog_connection_use_v2_label"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:text="@string/login_key_enable_v2"
-		android:lines="1"
-		android:layout_weight="1"
-		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		android:visibility="invisible"
-		android:textSize="@dimen/dialog_connection_textsize_label"
-		app:layout_constraintStart_toEndOf="@id/dialog_connection_use_v2"
-		app:layout_constraintTop_toTopOf="@id/dialog_connection_use_v2"
-		app:layout_constraintBottom_toBottomOf="@id/dialog_connection_use_v2"
-		app:layout_constraintEnd_toEndOf="parent" />
-
-	<EditText
-		android:id="@+id/dialog_connection_api1"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:background="@android:color/transparent"
-		android:hint="@string/settings_key1_hint"
-		android:lines="1"
-		android:layout_weight="1"
-		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		android:visibility="invisible"
-		android:inputType="textPassword"
-		android:importantForAutofill="no"
-		android:textSize="@dimen/dialog_connection_textsize_input"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
-		app:layout_constraintEnd_toStartOf="@id/dialog_connection_api2" />
-
-	<EditText
-		android:id="@+id/dialog_connection_api2"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:background="@android:color/transparent"
-		android:hint="@string/settings_key2_hint"
-		android:lines="1"
-		android:layout_weight="1"
-		android:layout_margin="@dimen/dialog_connection_layout_margin"
-		android:visibility="invisible"
-		android:inputType="textPassword"
-		android:importantForAutofill="no"
-		android:textSize="@dimen/dialog_connection_textsize_input"
-		app:layout_constraintStart_toEndOf="@id/dialog_connection_api1"
-		app:layout_constraintTop_toBottomOf="@id/dialog_connection_custom_api"
-		app:layout_constraintEnd_toEndOf="parent" />
-
 	<TextView
 		android:id="@+id/dialog_connection_hostname_label"
 		android:layout_width="0dp"
@@ -100,7 +18,7 @@
 		android:layout_margin="@dimen/dialog_connection_layout_margin"
 		android:textSize="@dimen/dialog_connection_textsize_label"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/dialog_connection_api1"
+		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<EditText

@@ -32,7 +32,6 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	private DomainLoader domainLoader;
 
 	private DomainAdapter adapter;
-	private ConfirmDialog dialog;
 
 	private AsyncCallback<DomainLoader.Result> domainLoad = this::onDomainLoaded;
 	private AsyncCallback<DomainAction.Result> domainResult = this::onDomainResult;
@@ -44,7 +43,6 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		domainAction = new DomainAction(requireContext());
 		domainLoader = new DomainLoader(requireContext());
-		dialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new DomainAdapter(this);
 		setAdapter(adapter, false);
 
@@ -100,9 +98,10 @@ public class DomainFragment extends ListFragment implements OnDomainClickListene
 
 	@Override
 	public void onDomainRemove(String domain) {
-		if (!isRefreshing() && domainAction.isIdle() && !dialog.isShowing() && domainAction.isIdle()) {
-			dialog.show(ConfirmDialog.DOMAIN_BLOCK_REMOVE);
-			selectedDomain = domain;
+		if (!isRefreshing() && domainAction.isIdle()) {
+			if (ConfirmDialog.show(this, ConfirmDialog.DOMAIN_BLOCK_REMOVE, null)) {
+				selectedDomain = domain;
+			}
 		}
 	}
 

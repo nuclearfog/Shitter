@@ -15,13 +15,15 @@ import org.nuclearfog.twidda.backend.utils.LinkUtils;
 import org.nuclearfog.twidda.model.lists.Fields;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.FieldAdapter;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.FieldAdapter.OnLinkClickListener;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
+import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 
 /**
  * User field list fragment
  *
  * @author nuclearfog
  */
-public class FieldFragment extends ListFragment implements OnLinkClickListener, AsyncCallback<UserLoader.Result> {
+public class FieldFragment extends ListFragment implements OnLinkClickListener, OnConfirmListener, AsyncCallback<UserLoader.Result> {
 
 	public static final String KEY_ID = "user-id";
 
@@ -31,6 +33,7 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 	private FieldAdapter adapter;
 
 	private long id;
+	private String urlToRedirect;
 
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -79,9 +82,8 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 	@Override
 	public void onLinkClick(String url) {
 		if (!isRefreshing()) {
-			Activity activity = getActivity();
-			if (activity != null) {
-				LinkUtils.openLink(activity, url);
+			if (ConfirmDialog.show(this, ConfirmDialog.CONTINUE_BROWSER, null)) {
+				urlToRedirect = url;
 			}
 		}
 	}
@@ -100,6 +102,17 @@ public class FieldFragment extends ListFragment implements OnLinkClickListener, 
 		setRefresh(true);
 		userLoader = new UserLoader(requireContext());
 		load();
+	}
+
+
+	@Override
+	public void onConfirm(int type, boolean remember) {
+		if (type == ConfirmDialog.CONTINUE_BROWSER) {
+			Activity parent = getActivity();
+			if (parent != null) {
+				LinkUtils.redirectToBrowser(parent, urlToRedirect);
+			}
+		}
 	}
 
 

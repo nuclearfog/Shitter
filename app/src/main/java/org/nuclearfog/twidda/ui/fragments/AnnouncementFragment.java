@@ -38,7 +38,6 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 	private AnnouncementLoader announcementLoader;
 	private AnnouncementAction announcementAction;
 	private ReactionUpdater reactionUpdater;
-	private ConfirmDialog confirmDialog;
 
 	private AsyncCallback<AnnouncementLoader.Result> announcementloader = this::onAnnouncementLoaded;
 	private AsyncCallback<AnnouncementAction.Result> announcementResult = this::onAnnouncementResult;
@@ -53,7 +52,6 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 		announcementLoader = new AnnouncementLoader(requireContext());
 		announcementAction = new AnnouncementAction(requireContext());
 		reactionUpdater = new ReactionUpdater(requireContext());
-		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
@@ -119,9 +117,10 @@ public class AnnouncementFragment extends ListFragment implements OnAnnouncement
 
 	@Override
 	public void onAnnouncementDismiss(Announcement announcement) {
-		if (!confirmDialog.isShowing() && announcementAction.isIdle() && announcementLoader.isIdle() && reactionUpdater.isIdle()) {
-			confirmDialog.show(ConfirmDialog.ANNOUNCEMENT_DISMISS);
-			selectedId = announcement.getId();
+		if (announcementAction.isIdle() && announcementLoader.isIdle() && reactionUpdater.isIdle() && isAdded()) {
+			if (ConfirmDialog.show(this, ConfirmDialog.ANNOUNCEMENT_DISMISS, null)) {
+				selectedId = announcement.getId();
+			}
 		}
 	}
 

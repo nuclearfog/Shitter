@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.LandscapePageTransformer;
 import org.nuclearfog.twidda.config.GlobalSettings;
@@ -37,6 +38,7 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 	 * value type is Long
 	 */
 	public static final String KEY_ID = "userlist-owner-id";
+	private static final String KEY_USERLIST_SAVE = "userlist-save";
 
 	private ViewPager2 viewPager;
 
@@ -52,8 +54,8 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 
 
 	@Override
-	protected void onCreate(@Nullable Bundle b) {
-		super.onCreate(b);
+	protected void onCreate(@Nullable Bundle savedInstance) {
+		super.onCreate(savedInstance);
 		setContentView(R.layout.page_tab_view);
 		ViewGroup root = findViewById(R.id.page_tab_view_root);
 		Toolbar toolbar = findViewById(R.id.page_tab_view_toolbar);
@@ -73,7 +75,12 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 			tabSelector.addTabIcons(R.array.userlist_tab_ownership_icons);
 			adapter.setPageCount(1);
 		}
-
+		if (savedInstance != null) {
+			Object data = savedInstance.getSerializable(KEY_USERLIST_SAVE);
+			if (data instanceof UserListUpdate) {
+				userlistDialog.show((UserListUpdate) data);
+			}
+		}
 		viewPager.setAdapter(adapter);
 		viewPager.setOffscreenPageLimit(2);
 		viewPager.setPageTransformer(new LandscapePageTransformer());
@@ -98,6 +105,15 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 
 
 	@Override
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
+		if (userlistDialog.isShowing()) {
+			outState.putSerializable(KEY_USERLIST_SAVE, userlistDialog.getContent());
+		}
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
 	public boolean onCreateOptionsMenu(@NonNull Menu m) {
 		getMenuInflater().inflate(R.menu.lists, m);
 		AppStyles.setMenuIconColor(m, settings.getIconColor());
@@ -110,7 +126,7 @@ public class UserlistsActivity extends AppCompatActivity implements UserlistUpda
 		// open list editor
 		if (item.getItemId() == R.id.list_create) {
 			if (!userlistDialog.isShowing()) {
-				userlistDialog.show(null);
+				userlistDialog.show();
 			}
 			return true;
 		}

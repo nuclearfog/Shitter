@@ -40,9 +40,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	private ScheduleAdapter adapter;
 	private ScheduleLoader scheduleLoader;
 	private ScheduleAction scheduleAction;
-	private ConfirmDialog confirm;
 	private TimePickerDialog timepicker;
-	private AudioPlayerDialog audioDialog;
 
 	@Nullable
 	private ScheduledStatus selection;
@@ -57,9 +55,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 		scheduleLoader = new ScheduleLoader(requireContext());
 		scheduleAction = new ScheduleAction(requireContext());
 		adapter = new ScheduleAdapter(this);
-		confirm = new ConfirmDialog(requireActivity(), this);
 		timepicker = new TimePickerDialog(requireActivity(), this);
-		audioDialog = new AudioPlayerDialog(requireActivity());
 		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
@@ -90,7 +86,6 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 	@Override
 	public void onStop() {
-		audioDialog.dismiss();
 		super.onStop();
 	}
 
@@ -99,7 +94,6 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	public void onDestroy() {
 		scheduleLoader.cancel();
 		scheduleAction.cancel();
-		audioDialog.close();
 		super.onDestroy();
 	}
 
@@ -131,9 +125,10 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 	@Override
 	public void onScheduleRemove(ScheduledStatus status) {
-		if (!isRefreshing() && !confirm.isShowing() && scheduleAction.isIdle()) {
-			selection = status;
-			confirm.show(ConfirmDialog.SCHEDULE_REMOVE);
+		if (!isRefreshing() && scheduleAction.isIdle()) {
+			if (ConfirmDialog.show(this, ConfirmDialog.SCHEDULE_REMOVE, null)) {
+				selection = status;
+			}
 		}
 	}
 
@@ -156,7 +151,7 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 					break;
 
 				case Media.AUDIO:
-					audioDialog.show(Uri.parse(media.getUrl()));
+					AudioPlayerDialog.show(this, Uri.parse(media.getUrl()));
 					break;
 			}
 		}

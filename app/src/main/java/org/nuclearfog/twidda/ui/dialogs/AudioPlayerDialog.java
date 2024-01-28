@@ -1,17 +1,21 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.media3.common.MediaItem;
 import androidx.media3.datasource.ContentDataSource;
 import androidx.media3.datasource.DataSource;
@@ -34,81 +38,109 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.ConnectionBuilder;
 import org.nuclearfog.twidda.backend.utils.LinkUtils;
 
-import java.io.Closeable;
-
 /**
  * Dialog with audio player and controls
  *
  * @author nuclearfog
  */
 @SuppressLint("UnsafeOptInUsageError")
-public class AudioPlayerDialog extends Dialog implements OnClickListener, RenderersFactory, Closeable {
+public class AudioPlayerDialog extends DialogFragment implements OnClickListener {
+
+	/**
+	 * Bundle key used to set/restore audio uri
+	 * value type is {@link Uri}
+	 */
+	private static final String KEY_URI = "audio-uri";
+
+	/**
+	 * Bundle key used to restore last audio position
+	 * value type is long
+	 */
+	private static final String KEY_POS = "audio-pos";
 
 	private PlayerControlView controls;
 	private TextView mediaLink;
 
 	private ExoPlayer player;
 
-	@Nullable
 	private Uri data;
 
 	/**
-	 *
+	 * required empty constructor
 	 */
-	public AudioPlayerDialog(Activity activity) {
-		super(activity, R.style.AudioDialog);
-		player = new ExoPlayer.Builder(activity.getApplicationContext(), this).build();
+	public AudioPlayerDialog() {
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_audio_player);
-		mediaLink = findViewById(R.id.dialog_audio_player_share);
-		controls = findViewById(R.id.dialog_audio_player_controls);
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		setStyle(STYLE_NO_TITLE, R.style.AudioDialog);
+		View root = inflater.inflate(R.layout.dialog_audio_player, container, false);
+		mediaLink = root.findViewById(R.id.dialog_audio_player_share);
+		controls = root.findViewById(R.id.dialog_audio_player_controls);
 
-		controls.setPlayer(player);
 		mediaLink.setOnClickListener(this);
+		return root;
 	}
 
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		// prevent re-initializing after resuming
-		if (data != null) {
-			DataSource.Factory dataSourceFactory;
-			MediaItem mediaItem = MediaItem.fromUri(data);
-			// initialize online source
-			if (data.getScheme().startsWith("http")) {
-				// configure with okhttp connection of the app
-				dataSourceFactory = new OkHttpDataSource.Factory(ConnectionBuilder.create(getContext()));
-				mediaLink.setVisibility(View.VISIBLE);
-			}
-			// initialize local source
-			else {
-				mediaLink.setVisibility(View.GONE);
-				dataSourceFactory = new DataSource.Factory() {
-					@NonNull
-					@Override
-					public DataSource createDataSource() {
-						return new ContentDataSource(getContext());
-					}
-				};
-			}
-			MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(mediaItem);
-			player.setMediaSource(mediaSource);
-			player.prepare();
-			player.setPlayWhenReady(true);
-			// reset data source
-			data = null;
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		long lastPos = 0L;
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
+		if (savedInstanceState != null) {
+			data = savedInstanceState.getParcelable(KEY_URI);
+			lastPos = savedInstanceState.getLong(KEY_POS, 0L);
 		}
+		DataSource.Factory dataSourceFactory;
+		// initialize online source
+		if (data.getScheme().startsWith("http")) {
+			// configure with okhttp connection of the app
+			dataSourceFactory = new OkHttpDataSource.Factory(ConnectionBuilder.create(getContext()));
+			mediaLink.setVisibility(View.VISIBLE);
+		}
+		// initialize local source
+		else {
+			mediaLink.setVisibility(View.GONE);
+			dataSourceFactory = new DataSource.Factory() {
+				@NonNull
+				@Override
+				public DataSource createDataSource() {
+					return new ContentDataSource(requireContext());
+				}
+			};
+		}
+		MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(MediaItem.fromUri(data));
+		player = new ExoPlayer.Builder(requireContext(), new RenderersFactory() {
+			@NonNull
+			@Override
+			public Renderer[] createRenderers(@NonNull Handler eventHandler, @NonNull VideoRendererEventListener videoRendererEventListener,
+			                                  @NonNull AudioRendererEventListener audioRendererEventListener, @NonNull TextOutput textRendererOutput,
+			                                  @NonNull MetadataOutput metadataRendererOutput) {
+				return new Renderer[] { new MediaCodecAudioRenderer(requireContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)};
+			}
+		}).build();
+		player.setMediaSource(mediaSource);
+		player.setPlayWhenReady(true);
+		player.seekTo(lastPos);
+		player.prepare();
+		controls.setPlayer(player);
 	}
 
 
 	@Override
-	protected void onStop() {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putParcelable(KEY_URI, data);
+		outState.putLong(KEY_POS, player.getCurrentPosition());
+		super.onSaveInstanceState(outState);
+	}
+
+
+	@Override
+	public void onStop() {
 		super.onStop();
 		if (player.isPlaying()) {
 			player.pause();
@@ -117,58 +149,58 @@ public class AudioPlayerDialog extends Dialog implements OnClickListener, Render
 
 
 	@Override
-	public void show() {
-		// use show(Uri) instead
-	}
-
-
-	@Override
-	public void dismiss() {
-		if (player.isPlaying()) {
+	public void onDestroyView() {
+		// remove player to prevent memory leak
+		if (controls != null) {
 			player.stop();
+			player.release();
+			controls.setPlayer(null);
 		}
-		if (isShowing()) {
-			super.dismiss();
-		}
+		super.onDestroyView();
 	}
 
 
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_audio_player_share) {
-			LinkUtils.openMediaLink(getContext(), data);
+			LinkUtils.openMediaLink(v.getContext(), data);
 		}
-	}
-
-	@Override
-	public void close() {
-		// remove player to prevent memory leak
-		if (controls != null) {
-			player.release();
-			controls.setPlayer(null);
-		}
-	}
-
-
-	@NonNull
-	@Override
-	public Renderer[] createRenderers(@NonNull Handler eventHandler, @NonNull VideoRendererEventListener videoRendererEventListener,
-	                                  @NonNull AudioRendererEventListener audioRendererEventListener, @NonNull TextOutput textRendererOutput,
-	                                  @NonNull MetadataOutput metadataRendererOutput) {
-		return new Renderer[]{
-				new MediaCodecAudioRenderer(getContext(), MediaCodecSelector.DEFAULT, eventHandler, audioRendererEventListener)
-		};
 	}
 
 	/**
-	 * show dialog and play audio
+	 * show audioplayer dialog
 	 *
-	 * @param data uri to the audio file
+	 * @param fragment parent fragment
+	 * @param data path/url to the audio file
 	 */
-	public void show(Uri data) {
-		if (!isShowing()) {
-			this.data = data;
-			super.show();
+	public static void show(Fragment fragment, Uri data) {
+		if (fragment.isAdded()) {
+			show(fragment.getChildFragmentManager(), data);
+		}
+	}
+
+	/**
+	 * show audioplayer dialog
+	 *
+	 * @param activity parent activity
+	 * @param data path/url to the audio file
+	 */
+	public static void show(FragmentActivity activity, Uri data) {
+		show(activity.getSupportFragmentManager(), data);
+	}
+
+	/**
+	 *
+	 */
+	private static void show(FragmentManager activity, Uri data) {
+		String tag = data.toString();
+		Bundle args = new Bundle();
+		args.putParcelable(KEY_URI, data);
+		Fragment dialogFragment = activity.findFragmentByTag(tag);
+		if (dialogFragment == null) {
+			AudioPlayerDialog dialog = new AudioPlayerDialog();
+			dialog.setArguments(args);
+			dialog.show(activity, tag);
 		}
 	}
 }

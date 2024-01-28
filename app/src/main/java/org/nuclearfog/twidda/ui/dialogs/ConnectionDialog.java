@@ -1,19 +1,19 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import com.kyleduo.switchbutton.SwitchButton;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.update.ConnectionUpdate;
@@ -24,155 +24,112 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
  *
  * @author nuclearfog
  */
-public class ConnectionDialog extends Dialog implements OnCheckedChangeListener, OnClickListener {
-
-	private SwitchButton enableApi, enableV2;
-	private TextView apiLabel, v2Label, appNameLabel, hostLabel;
-	private EditText host, api1, api2, appName;
-
-	private ConnectionUpdate connection;
+public class ConnectionDialog extends DialogFragment implements OnClickListener {
 
 	/**
 	 *
 	 */
-	public ConnectionDialog(Activity activity) {
-		super(activity, R.style.ConfirmDialog);
+	private static final String TAG = "ConnectionDialog";
+
+	/**
+	 * bundle key used to set/restore connection configuration
+	 * value type is {@link ConnectionUpdate}
+	 */
+	private static final String KEY_CONNECTION = "dialog-connection";
+
+
+	private EditText host, appName;
+
+	private ConnectionUpdate connection = new ConnectionUpdate();
+
+	/**
+	 *
+	 */
+	public ConnectionDialog() {
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_connection);
-		ViewGroup root = findViewById(R.id.dialog_connection_root);
-		Button confirm = findViewById(R.id.dialog_connection_confirm);
-		Button discard = findViewById(R.id.dialog_connection_discard);
-		enableApi = findViewById(R.id.dialog_connection_custom_api);
-		enableV2 = findViewById(R.id.dialog_connection_use_v2);
-		apiLabel = findViewById(R.id.dialog_connection_custom_api_label);
-		v2Label = findViewById(R.id.dialog_connection_use_v2_label);
-		appNameLabel = findViewById(R.id.dialog_connection_app_name_label);
-		hostLabel = findViewById(R.id.dialog_connection_hostname_label);
-		host = findViewById(R.id.dialog_connection_hostname);
-		api1 = findViewById(R.id.dialog_connection_api1);
-		api2 = findViewById(R.id.dialog_connection_api2);
-		appName = findViewById(R.id.dialog_connection_app_name);
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		setStyle(STYLE_NO_TITLE, R.style.ConfirmDialog);
+		View view = inflater.inflate(R.layout.dialog_connection, container, false);
+		Button confirm = view.findViewById(R.id.dialog_connection_confirm);
+		Button discard = view.findViewById(R.id.dialog_connection_discard);
+		host = view.findViewById(R.id.dialog_connection_hostname);
+		appName = view.findViewById(R.id.dialog_connection_app_name);
 
-		AppStyles.setTheme(root);
+		AppStyles.setTheme((ViewGroup) view);
 
-		enableApi.setOnCheckedChangeListener(this);
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
+		if (savedInstanceState != null) {
+			Object data = savedInstanceState.getSerializable(KEY_CONNECTION);
+			if (data instanceof ConnectionUpdate)
+				connection = (ConnectionUpdate) data;
+		}
 		confirm.setOnClickListener(this);
 		discard.setOnClickListener(this);
+		return view;
 	}
 
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		if (connection != null) {
-			switch (connection.getApiType()) {
-				default:
-				case MASTODON:
-					// setup Mastodon configuration views
-					if (connection.useHost()) {
-						host.setText(connection.getHostname());
-					} else {
-						host.setText("");
-					}
-					// enable Mastodon configuration views
-					host.setVisibility(View.VISIBLE);
-					appNameLabel.setVisibility(View.VISIBLE);
-					appName.setVisibility(View.VISIBLE);
-					hostLabel.setVisibility(View.VISIBLE);
-					// todo remove these views
-					enableApi.setVisibility(View.GONE);
-					apiLabel.setVisibility(View.GONE);
-					enableV2.setVisibility(View.GONE);
-					v2Label.setVisibility(View.GONE);
-					api1.setVisibility(View.GONE);
-					api2.setVisibility(View.GONE);
-					break;
-			}
-		}
-		// reset all error messages
-		if (api1.getError() != null) {
-			api1.setError(null);
-		}
-		if (api2.getError() != null) {
-			api2.setError(null);
-		}
-		if (host.getError() != null) {
-			host.setError(null);
-		}
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putSerializable(KEY_CONNECTION, connection);
+		super.onSaveInstanceState(outState);
 	}
 
 
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_connection_confirm) {
-			switch (connection.getApiType()) {
-				default:
-				case MASTODON:
-					String appNameStr = appName.getText().toString();
-					String hostText = host.getText().toString();
-					if (hostText.trim().isEmpty() || Patterns.WEB_URL.matcher(hostText).matches()) {
-						connection.setHostname(hostText);
-						dismiss();
-					} else {
-						host.setError(getContext().getString(R.string.info_missing_host));
-					}
-					if (!appNameStr.trim().isEmpty()) {
-						connection.setAppName(appNameStr);
-					} else {
-						connection.setAppName("");
-					}
-					break;
+			String appNameStr = appName.getText().toString();
+			String hostText = host.getText().toString();
+			if (!appNameStr.trim().isEmpty()) {
+				connection.setAppName(appNameStr);
+			} else {
+				connection.setAppName("");
+			}
+			if (hostText.trim().isEmpty() || Patterns.WEB_URL.matcher(hostText).matches()) {
+				connection.setHostname(hostText);
+				if (getActivity() instanceof OnConnectionSetListener) {
+					((OnConnectionSetListener) getActivity()).onConnecionSet(connection);
+				}
+				dismiss();
+			} else {
+				host.setError(v.getContext().getString(R.string.info_missing_host));
 			}
 		} else if (v.getId() == R.id.dialog_connection_discard) {
 			dismiss();
 		}
 	}
 
-
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if (buttonView.getId() == R.id.dialog_connection_custom_api) {
-			if (isChecked) {
-				enableV2.setVisibility(View.VISIBLE);
-				v2Label.setVisibility(View.VISIBLE);
-				api1.setVisibility(View.VISIBLE);
-				api2.setVisibility(View.VISIBLE);
-			} else {
-				enableV2.setCheckedImmediately(false);
-				enableV2.setVisibility(View.INVISIBLE);
-				v2Label.setVisibility(View.INVISIBLE);
-				api1.setVisibility(View.INVISIBLE);
-				api2.setVisibility(View.INVISIBLE);
-			}
-		}
-	}
-
-
-	@Override
-	public void show() {
-		// using show(ConnectionConfig) instead
-	}
-
-
-	@Override
-	public void dismiss() {
-		if (isShowing()) {
-			super.dismiss();
+	/**
+	 * show connection settings dialog
+	 *
+	 * @param activity         activity from which to show this dialog
+	 * @param connectionUpdate connection configturation to update
+	 */
+	public static void show(FragmentActivity activity, ConnectionUpdate connectionUpdate) {
+		Bundle args = new Bundle();
+		args.putSerializable(KEY_CONNECTION, connectionUpdate);
+		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+		if (dialogFragment == null) {
+			ConnectionDialog dialog = new ConnectionDialog();
+			dialog.setArguments(args);
+			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
 	}
 
 	/**
-	 *
+	 * Callback listener used to set the conneciton configuration
 	 */
-	public void show(ConnectionUpdate connection) {
-		if (!isShowing()) {
-			this.connection = connection;
-			super.show();
-		}
+	public interface OnConnectionSetListener {
+
+		/**
+		 * called to set the connection configuration
+		 */
+		void onConnecionSet(ConnectionUpdate connectionUpdate);
 	}
 }

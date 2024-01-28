@@ -117,7 +117,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private ProfileAdapter adapter;
 	private GlobalSettings settings;
 	private Picasso picasso;
-	private ConfirmDialog confirmDialog;
 	private ReportDialog reportDialog;
 
 	private DomainAction domainAction;
@@ -139,6 +138,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private Relation relation;
 	@Nullable
 	private User user;
+	private String urlToRedirect;
 
 
 	@Override
@@ -175,7 +175,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
-		confirmDialog = new ConfirmDialog(this, this);
 		reportDialog = new ReportDialog(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
@@ -366,7 +365,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 						relationLoader.execute(param, relationCallback);
 					}
 				} else {
-					confirmDialog.show(ConfirmDialog.PROFILE_UNFOLLOW);
+					ConfirmDialog.show(this, ConfirmDialog.PROFILE_UNFOLLOW, null);
 				}
 			}
 			return true;
@@ -380,7 +379,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 						relationLoader.execute(param, relationCallback);
 					}
 				} else {
-					confirmDialog.show(ConfirmDialog.PROFILE_MUTE);
+					ConfirmDialog.show(this, ConfirmDialog.PROFILE_MUTE, null);
 				}
 			}
 			return true;
@@ -394,7 +393,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 						relationLoader.execute(param, relationCallback);
 					}
 				} else {
-					confirmDialog.show(ConfirmDialog.PROFILE_BLOCK);
+					ConfirmDialog.show(this, ConfirmDialog.PROFILE_BLOCK, null);
 				}
 			}
 			return true;
@@ -411,7 +410,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		// block user domain
 		else if (item.getItemId() == R.id.profile_block_domain) {
 			if (user != null) {
-				confirmDialog.show(ConfirmDialog.DOMAIN_BLOCK_ADD);
+				ConfirmDialog.show(this, ConfirmDialog.DOMAIN_BLOCK_ADD, null);
 			}
 		}
 		// report user
@@ -447,7 +446,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 
 	@Override
 	public void onLinkClick(String tag) {
-		LinkUtils.openLink(this, tag);
+		if (ConfirmDialog.show(this, ConfirmDialog.CONTINUE_BROWSER, null)) {
+			urlToRedirect = tag;
+		}
 	}
 
 
@@ -472,7 +473,9 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		// open link added to profile
 		else if (v.getId() == R.id.page_profile_links) {
 			if (!user.getProfileUrl().isEmpty()) {
-				LinkUtils.openLink(this, user.getProfileUrl());
+				if (ConfirmDialog.show(this, ConfirmDialog.CONTINUE_BROWSER, null)) {
+					urlToRedirect = user.getProfileUrl();
+				}
 			}
 		}
 		// open profile image
@@ -527,6 +530,11 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 				String url = Uri.parse(user.getProfileUrl()).getHost();
 				DomainAction.Param param = new DomainAction.Param(DomainAction.Param.MODE_BLOCK, url);
 				domainAction.execute(param, domainCallback);
+			}
+			// confirmed redirect to browser
+			else if (type == ConfirmDialog.CONTINUE_BROWSER) {
+				settings.setProxyWarning(!remember);
+				LinkUtils.redirectToBrowser(this, urlToRedirect);
 			}
 		}
 	}

@@ -37,6 +37,7 @@ import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog;
+import org.nuclearfog.twidda.ui.dialogs.ConnectionDialog.OnConnectionSetListener;
 
 import java.io.Serializable;
 
@@ -46,7 +47,8 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class LoginActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, AsyncCallback<LoginAction.Result>, OnClickListener, OnItemSelectedListener {
+public class LoginActivity extends AppCompatActivity implements ActivityResultCallback<ActivityResult>, AsyncCallback<LoginAction.Result>,
+		OnClickListener, OnItemSelectedListener, OnConnectionSetListener {
 
 	/**
 	 * return code to notify if a login process was successful
@@ -85,7 +87,6 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 
 	private LoginAction loginAsync;
 	private GlobalSettings settings;
-	private ConnectionDialog connectionDialog;
 	private DropdownAdapter adapter;
 
 	private EditText pinInput;
@@ -121,7 +122,6 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		AppStyles.setTheme(root);
 
 		adapter = new DropdownAdapter(this);
-		connectionDialog = new ConnectionDialog(this);
 		loginAsync = new LoginAction(this);
 
 		adapter.setItems(R.array.networks);
@@ -132,8 +132,6 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 				connection = (ConnectionUpdate) data;
 			}
 		}
-
-		connection.setApiType(settings.getLogin().getConfiguration());
 		switch (settings.getLogin().getConfiguration()) {
 			default:
 			case MASTODON:
@@ -254,13 +252,17 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 		}
 		// open API settings dialog
 		else if (v.getId() == R.id.login_network_settings) {
-			if (!connectionDialog.isShowing()) {
-				if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
-					connectionDialog.show(connection);
-				}
-				reset();
+			if (hostSelector.getSelectedItemPosition() == IDX_MASTODON) {
+				ConnectionDialog.show(this, connection);
 			}
+			reset();
 		}
+	}
+
+
+	@Override
+	public void onConnecionSet(ConnectionUpdate connectionUpdate) {
+		this.connection = connectionUpdate;
 	}
 
 
@@ -307,7 +309,7 @@ public class LoginActivity extends AppCompatActivity implements ActivityResultCa
 	 * open login page
 	 */
 	private void connect(String loginLink) {
-		LinkUtils.openLink(this, loginLink);
+		LinkUtils.redirectToBrowser(this, loginLink);
 	}
 
 	/**

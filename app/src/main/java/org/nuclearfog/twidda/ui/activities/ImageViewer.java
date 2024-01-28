@@ -63,9 +63,6 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 	private ProgressBar loadingCircle;
 	private DescriptionView descriptionView;
 
-	private DescriptionDialog descriptionDialog;
-	private MetaDialog metaDialog;
-
 	@Nullable
 	private Uri cacheUri;
 	@Nullable
@@ -100,8 +97,6 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 		setSupportActionBar(toolbar);
 
 		imageAsync = new ImageDownloader(this);
-		descriptionDialog = new DescriptionDialog(this, this);
-		metaDialog = new MetaDialog(this);
 
 		cacheFolder = new File(getExternalCacheDir(), ImageViewer.CACHE_FOLDER);
 		cacheFolder.mkdirs();
@@ -225,11 +220,11 @@ public class ImageViewer extends MediaActivity implements AsyncCallback<ImageDow
 				return true;
 			}
 		} else if (item.getItemId() == R.id.menu_image_add_description) {
-			descriptionDialog.show();
+			DescriptionDialog.show(this);
 			return true;
 		} else if (item.getItemId() == R.id.menu_image_show_meta) {
 			if (meta != null) {
-				metaDialog.show(meta);
+				MetaDialog.show(this, meta);
 			}
 			return true;
 		}

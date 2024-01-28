@@ -93,8 +93,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	private DropdownAdapter fontAdapter, scaleAdapter;
 
 	private Dialog appInfo, license, pushDialog;
-	private ColorPickerDialog colorPickerDialog;
-	private ConfirmDialog confirmDialog;
 
 	private View enable_auth_label;
 	private EditText proxy_address, proxy_port, proxy_user, proxy_pass;
@@ -154,12 +152,10 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 		settings = GlobalSettings.get(this);
 		Configuration configuration = settings.getLogin().getConfiguration();
-		confirmDialog = new ConfirmDialog(this, this);
 		appInfo = new InfoDialog(this);
 		license = new LicenseDialog(this);
 		pushDialog = new WebPushDialog(this);
 		databaseAction = new DatabaseAction(this);
-		colorPickerDialog = new ColorPickerDialog(this, this);
 		fontAdapter = new DropdownAdapter(getApplicationContext());
 		scaleAdapter = new DropdownAdapter(getApplicationContext());
 
@@ -270,7 +266,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (saveConnectionSettings()) {
 			super.onBackPressed();
 		} else {
-			confirmDialog.show(ConfirmDialog.WRONG_PROXY);
+			ConfirmDialog.show(this, ConfirmDialog.WRONG_PROXY, null);
 		}
 	}
 
@@ -337,11 +333,11 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	public void onClick(View v) {
 		// delete database
 		if (v.getId() == R.id.page_settings_button_delete_data) {
-			confirmDialog.show(ConfirmDialog.DELETE_APP_DATA);
+			ConfirmDialog.show(this, ConfirmDialog.DELETE_APP_DATA, null);
 		}
 		// logout
 		else if (v.getId() == R.id.page_settings_button_logout) {
-			confirmDialog.show(ConfirmDialog.APP_LOG_OUT);
+			ConfirmDialog.show(this, ConfirmDialog.APP_LOG_OUT, null);
 		}
 		// show push configuration dialog
 		else if (v.getId() == R.id.page_settings_enable_push_label) {
@@ -351,39 +347,48 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		}
 		// set background color
 		else if (v.getId() == R.id.page_settings_color_background) {
-			colorPickerDialog.show(settings.getBackgroundColor(), COLOR_BACKGROUND, false);
+			int color = settings.getBackgroundColor();
+			ColorPickerDialog.show(this, color, COLOR_BACKGROUND, false);
 		}
 		// set font color
 		else if (v.getId() == R.id.page_settings_color_text) {
-			colorPickerDialog.show(settings.getTextColor(), COLOR_TEXT, false);
+			int color = settings.getTextColor();
+			ColorPickerDialog.show(this, color, COLOR_TEXT, false);
 		}
 		// set popup color
 		else if (v.getId() == R.id.page_settings_color_window) {
-			colorPickerDialog.show(settings.getPopupColor(), COLOR_WINDOW, false);
+			int color = settings.getPopupColor();
+			ColorPickerDialog.show(this, color, COLOR_WINDOW, false);
 		}
 		// set highlight color
 		else if (v.getId() == R.id.page_settings_highlight_color) {
-			colorPickerDialog.show(settings.getHighlightColor(), COLOR_HIGHLIGHT, false);
+			int color = settings.getHighlightColor();
+			ColorPickerDialog.show(this, color, COLOR_HIGHLIGHT, false);
 		}
 		// set card color
 		else if (v.getId() == R.id.page_settings_color_card) {
-			colorPickerDialog.show(settings.getCardColor(), COLOR_CARD, true);
+			int color = settings.getCardColor();
+			ColorPickerDialog.show(this, color, COLOR_CARD, true);
 		}
 		// set icon color
 		else if (v.getId() == R.id.page_settings_color_icon) {
-			colorPickerDialog.show(settings.getIconColor(), COLOR_ICON, false);
+			int color = settings.getIconColor();
+			ColorPickerDialog.show(this, color, COLOR_ICON, false);
 		}
 		// set repost icon color
 		else if (v.getId() == R.id.page_settings_color_repost) {
-			colorPickerDialog.show(settings.getRepostIconColor(), COLOR_REPOST, false);
+			int color = settings.getRepostIconColor();
+			ColorPickerDialog.show(this, color, COLOR_REPOST, false);
 		}
 		// set favorite icon color
 		else if (v.getId() == R.id.page_settings_color_favorite) {
-			colorPickerDialog.show(settings.getFavoriteIconColor(), COLOR_FAVORITE, false);
+			int color = settings.getFavoriteIconColor();
+			ColorPickerDialog.show(this, color, COLOR_FAVORITE, false);
 		}
 		// set follow icon color
 		else if (v.getId() == R.id.page_settings_color_follow) {
-			colorPickerDialog.show(settings.getFollowIconColor(), COLOR_FOLLOWING, false);
+			int color = settings.getFollowIconColor();
+			ColorPickerDialog.show(this, color, COLOR_FOLLOWING, false);
 		}
 	}
 

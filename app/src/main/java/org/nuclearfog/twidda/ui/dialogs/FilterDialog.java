@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.kyleduo.switchbutton.SwitchButton;
 
@@ -29,16 +28,12 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Filter;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 
-import java.io.Serializable;
-
 /**
  * Filter create dialog
  *
  * @author nuclearfog
  */
 public class FilterDialog extends Dialog implements OnClickListener, OnCheckedChangeListener, AsyncCallback<StatusFilterAction.Result> {
-
-	private static final String KEY_SAVE = "filterupdate-save";
 
 	private SwitchButton sw_home, sw_notification, sw_public, sw_user, sw_thread, sw_hide;
 	private EditText txt_title, txt_keywords, txt_duration;
@@ -143,28 +138,9 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	}
 
 
-	@NonNull
-	@Override
-	public Bundle onSaveInstanceState() {
-		Bundle bundle = super.onSaveInstanceState();
-		bundle.putSerializable(KEY_SAVE, update);
-		return bundle;
-	}
-
-
-	@Override
-	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
-		if (data instanceof FilterUpdate) {
-			update = (FilterUpdate) data;
-		}
-		super.onRestoreInstanceState(savedInstanceState);
-	}
-
-
 	@Override
 	public void show() {
-		// using show(filter) instead
+		update = new FilterUpdate();
 	}
 
 
@@ -248,16 +224,44 @@ public class FilterDialog extends Dialog implements OnClickListener, OnCheckedCh
 	 *
 	 * @param filter configuration of an existing filter to update
 	 */
-	public void show(@Nullable Filter filter) {
+	public void show(@NonNull Filter filter) {
 		if (!isShowing()) {
-			if (filter != null) {
-				update = new FilterUpdate(filter);
-			} else {
-				update = new FilterUpdate();
-			}
+			update = new FilterUpdate(filter);
 			super.show();
 		}
 	}
+
+	/**
+	 *
+	 */
+	public void show(@NonNull FilterUpdate update) {
+		if (!isShowing()) {
+			this.update = update;
+			super.show();
+		}
+	}
+
+	/**
+	 *
+	 */
+	public FilterUpdate getContent() {
+		update.setTitle(txt_title.getText().toString());
+		int duration = 0;
+		String durationStr = txt_duration.getText().toString();
+		if (durationStr.matches("\\d{1,3}"))
+			duration = Integer.parseInt(durationStr);
+		if (timeunit.getSelectedItemPosition() == 0)
+			duration *= 60;
+		else if (timeunit.getSelectedItemPosition() == 1)
+			duration *= 3600;
+		else if (timeunit.getSelectedItemPosition() == 2)
+			duration *= 86400;
+		update.setExpirationTime(duration);
+		if (txt_keywords.length() > 0)
+			update.setKeywords(txt_keywords.getText().toString().split("\n"));
+		return update;
+	}
+
 
 	/**
 	 * callback used to update filter

@@ -3,18 +3,22 @@ package org.nuclearfog.twidda.ui.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
@@ -26,16 +30,12 @@ import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 
-import java.io.Serializable;
-
 /**
  * dialog used to create or update an userlist
  *
  * @author nuclearfog
  */
-public class UserlistDialog extends Dialog implements OnClickListener, AsyncCallback<UserlistUpdater.Result> {
-
-	private static final String KEY_SAVE = "userlist_save";
+public class UserlistDialog extends Dialog implements OnClickListener, OnItemSelectedListener, OnCheckedChangeListener, TextWatcher, AsyncCallback<UserlistUpdater.Result> {
 
 	private TextView title_dialog;
 	private EditText title_input;
@@ -79,25 +79,9 @@ public class UserlistDialog extends Dialog implements OnClickListener, AsyncCall
 
 		apply.setOnClickListener(this);
 		button_cancel.setOnClickListener(this);
-	}
-
-
-	@NonNull
-	@Override
-	public Bundle onSaveInstanceState() {
-		Bundle bundle = super.onSaveInstanceState();
-		bundle.putSerializable(KEY_SAVE, update);
-		return bundle;
-	}
-
-
-	@Override
-	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
-		if (data instanceof UserListUpdate) {
-			update = (UserListUpdate) data;
-		}
-		super.onRestoreInstanceState(savedInstanceState);
+		policy.setOnItemSelectedListener(this);
+		exclusive.setOnCheckedChangeListener(this);
+		title_input.addTextChangedListener(this);
 	}
 
 
@@ -107,15 +91,6 @@ public class UserlistDialog extends Dialog implements OnClickListener, AsyncCall
 			if (title_input.length() == 0) {
 				Toast.makeText(getContext(), R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
 			} else if (listUpdater.isIdle()) {
-				update.setTitle(title_input.getText().toString());
-				if (policy.getSelectedItemPosition() == 0) {
-					update.setPolicy(UserList.NONE);
-				} else if (policy.getSelectedItemPosition() == 1) {
-					update.setPolicy(UserList.FOLLOWED);
-				} else if (policy.getSelectedItemPosition() == 2) {
-					update.setPolicy(UserList.LIST);
-				}
-				update.setExclusive(exclusive.isChecked());
 				listUpdater.execute(update, this);
 			}
 		} else if (v.getId() == R.id.dialog_userlist_cancel) {
@@ -126,7 +101,54 @@ public class UserlistDialog extends Dialog implements OnClickListener, AsyncCall
 
 	@Override
 	public void show() {
-		// use show(Userlist) instead
+		super.show();
+		title_dialog.setText(R.string.userlist_create_new_list);
+		apply.setText(R.string.userlist_create);
+		title_input.setText("");
+		policy.setSelection(0);
+	}
+
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (buttonView.getId() == R.id.dialog_userlist_exclusive) {
+			update.setExclusive(isChecked);
+		}
+	}
+
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (parent.getId() == R.id.dialog_userlist_replies_selector) {
+			if (position == 0) {
+				update.setPolicy(UserList.NONE);
+			} else if (position == 1) {
+				update.setPolicy(UserList.FOLLOWED);
+			} else if (position == 2) {
+				update.setPolicy(UserList.LIST);
+			}
+		}
+	}
+
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+	}
+
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	}
+
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		update.setTitle(s.toString());
 	}
 
 
@@ -150,26 +172,43 @@ public class UserlistDialog extends Dialog implements OnClickListener, AsyncCall
 	 *
 	 * @param userlist existing userlist information or null to create a new list
 	 */
-	public void show(@Nullable UserList userlist) {
+	public void show(@NonNull UserList userlist) {
 		super.show();
-		if (userlist != null) {
-			title_dialog.setText(R.string.userlist_update_list);
-			apply.setText(R.string.userlist_update);
-			title_input.setText(userlist.getTitle());
-			update.setId(userlist.getId());
-			if (userlist.getReplyPolicy() == UserList.NONE) {
-				policy.setSelection(0);
-			} else if (userlist.getReplyPolicy() == UserList.FOLLOWED) {
-				policy.setSelection(1);
-			} else if (userlist.getReplyPolicy() == UserList.LIST) {
-				policy.setSelection(2);
-			}
-		} else {
-			title_dialog.setText(R.string.userlist_create_new_list);
-			apply.setText(R.string.userlist_create);
-			title_input.setText("");
+		title_dialog.setText(R.string.userlist_update_list);
+		apply.setText(R.string.userlist_update);
+		title_input.setText(userlist.getTitle());
+		update.setId(userlist.getId());
+		if (userlist.getReplyPolicy() == UserList.NONE) {
 			policy.setSelection(0);
+		} else if (userlist.getReplyPolicy() == UserList.FOLLOWED) {
+			policy.setSelection(1);
+		} else if (userlist.getReplyPolicy() == UserList.LIST) {
+			policy.setSelection(2);
 		}
+	}
+
+	/**
+	 * set userlist information
+	 */
+	public void show(@NonNull UserListUpdate update) {
+		super.show();
+		this.update = update;
+		if (update.getPolicy() == UserList.NONE) {
+			policy.setSelection(0);
+		} else if (update.getPolicy() == UserList.FOLLOWED) {
+			policy.setSelection(1);
+		} else if (update.getPolicy() == UserList.LIST) {
+			policy.setSelection(2);
+		}
+		title_input.setText(update.getTitle());
+		exclusive.setChecked(update.isExclusive());
+	}
+
+	/**
+	 *
+	 */
+	public UserListUpdate getContent() {
+		return update;
 	}
 
 	/**

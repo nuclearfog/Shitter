@@ -160,8 +160,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private PreviewAdapter adapter;
-	private ConfirmDialog confirmDialog;
-	private AudioPlayerDialog audioDialog;
 	private ReportDialog reportDialog;
 
 	private TextView status_source, created_at, status_text, screen_name, username, edited;
@@ -217,8 +215,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		notificationLoader = new NotificationAction(this);
 		translationLoader = new TranslationLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
-		confirmDialog = new ConfirmDialog(this, this);
-		audioDialog = new AudioPlayerDialog(this);
 		reportDialog = new ReportDialog(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
@@ -354,7 +350,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		notificationLoader.cancel();
 		translationLoader.cancel();
 		emojiLoader.cancel();
-		audioDialog.close();
 		super.onDestroy();
 	}
 
@@ -462,7 +457,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			// get status link
 			else if (item.getItemId() == R.id.menu_status_browser) {
 				if (!status.getUrl().isEmpty()) {
-					LinkUtils.openLink(this, status.getUrl());
+					//LinkUtils.openLink(this, status.getUrl());
 				}
 				return true;
 			}
@@ -519,7 +514,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// Delete status option
 			else if (item.getItemId() == R.id.menu_status_delete) {
-				confirmDialog.show(ConfirmDialog.DELETE_STATUS);
+				ConfirmDialog.show(this, ConfirmDialog.DELETE_STATUS, null);
 				return true;
 			}
 		}
@@ -688,7 +683,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	@Override
 	public void onCardClick(Card card, int type) {
 		if (type == OnCardClickListener.TYPE_LINK) {
-			LinkUtils.openLink(this, card.getUrl());
+			//LinkUtils.openLink(this, card.getUrl());
 		} else if (type == OnCardClickListener.TYPE_IMAGE) {
 			String imageUrl = card.getImageUrl();
 			if (!imageUrl.isEmpty()) {
@@ -711,7 +706,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 				break;
 
 			case Media.AUDIO:
-				audioDialog.show(uri);
+				AudioPlayerDialog.show(this, uri);
 				break;
 
 			case Media.GIF:
@@ -743,7 +738,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	public void onLinkClick(String tag) {
 		// proceed click when there is no text blur
 		if (status_text.getPaint().getMaskFilter() == null) {
-			LinkUtils.openLink(this, tag);
+			//LinkUtils.openLink(this, tag);
 		}
 	}
 

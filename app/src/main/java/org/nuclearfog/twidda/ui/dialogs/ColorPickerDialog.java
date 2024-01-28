@@ -1,17 +1,21 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -26,13 +30,24 @@ import top.defaults.colorpicker.ColorPickerView;
  *
  * @author nuclearfog
  */
-public class ColorPickerDialog extends Dialog implements OnClickListener, ColorObserver, TextWatcher {
+public class ColorPickerDialog extends DialogFragment implements OnClickListener, ColorObserver, TextWatcher {
+
+	/**
+	 *
+	 */
+	private static final String TAG = "ColorPickerDialog";
 
 	/**
 	 * bundle key to save/restore color value
 	 * value type is Integer
 	 */
 	private static final String KEY_COLOR = "color";
+
+	/**
+	 * bundle key to save/restore alpha state
+	 * value type is boolean
+	 */
+	private static final String KEY_ALPHA = "alpha";
 
 	/**
 	 * bundle key to save/restore color type
@@ -47,80 +62,72 @@ public class ColorPickerDialog extends Dialog implements OnClickListener, ColorO
 
 	private ColorPickerView colorPickerView;
 	private EditText hexCode;
-	private ViewGroup root;
 
-	private OnColorSelectedListener listener;
+	private boolean enableAlpha;
 	private int type;
 
 	/**
-	 * @param listener callback listener to set color
+	 *
 	 */
-	public ColorPickerDialog(Activity activity, OnColorSelectedListener listener) {
-		super(activity, R.style.DefaultDialog);
-		this.listener = listener;
+	public ColorPickerDialog() {
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_colorpicker);
-		colorPickerView = findViewById(R.id.dialog_colorpicker_selector);
-		root = findViewById(R.id.dialog_colorpicker_root);
-		hexCode = findViewById(R.id.dialog_colorpicker_hex);
-		View confirm = findViewById(R.id.dialog_colorpicker_ok);
-		View cancel = findViewById(R.id.dialog_colorpicker_cancel);
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
+		View root = inflater.inflate(R.layout.dialog_colorpicker, container, false);
+		colorPickerView = root.findViewById(R.id.dialog_colorpicker_selector);
+		root = root.findViewById(R.id.dialog_colorpicker_root);
+		hexCode = root.findViewById(R.id.dialog_colorpicker_hex);
+		View confirm = root.findViewById(R.id.dialog_colorpicker_ok);
+		View cancel = root.findViewById(R.id.dialog_colorpicker_cancel);
+
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
+		if (savedInstanceState != null) {
+			int color = savedInstanceState.getInt(KEY_COLOR);
+			enableAlpha = savedInstanceState.getBoolean(KEY_ALPHA);
+			type = savedInstanceState.getInt(KEY_TYPE);
+			colorPickerView.setInitialColor(color);
+			hexCode.setText(String.format("%08X", color));
+			colorPickerView.setEnabledAlpha(enableAlpha);
+		}
+		AppStyles.setTheme((ViewGroup) root);
+		hexCode.setTypeface(Typeface.MONOSPACE);
 
 		hexCode.addTextChangedListener(this);
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
-	}
-
-
-	@Override
-	protected void onStart() {
-		super.onStart();
 		colorPickerView.subscribe(this);
+		return root;
 	}
 
 
 	@Override
-	protected void onStop() {
-		super.onStop();
-		colorPickerView.unsubscribe(this);
-	}
-
-
-	@NonNull
-	@Override
-	public Bundle onSaveInstanceState() {
-		Bundle bundle = super.onSaveInstanceState();
+	public void onSaveInstanceState(Bundle outState) {
 		int color = colorPickerView.getColor();
-		bundle.putInt(KEY_COLOR, color);
-		bundle.putInt(KEY_TYPE, type);
-		return bundle;
+		outState.putInt(KEY_COLOR, color);
+		outState.putInt(KEY_TYPE, type);
+		outState.putBoolean(KEY_ALPHA, enableAlpha);
+		super.onSaveInstanceState(outState);
 	}
 
 
 	@Override
-	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		int color = savedInstanceState.getInt(KEY_COLOR);
-		type = savedInstanceState.getInt(KEY_TYPE);
-		colorPickerView.setInitialColor(color);
-	}
-
-
-	@Override
-	public void show() {
-		// using show(int, int) instead
+	public void onDestroyView() {
+		colorPickerView.unsubscribe(this);
+		super.onDestroyView();
 	}
 
 
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_colorpicker_ok) {
-			listener.onColorSelected(type, colorPickerView.getColor());
+			Activity activity = getActivity();
+			if (activity instanceof OnColorSelectedListener)
+				((OnColorSelectedListener) activity).onColorSelected(type, colorPickerView.getColor());
 			dismiss();
 		} else if (v.getId() == R.id.dialog_colorpicker_cancel) {
 			dismiss();
@@ -133,23 +140,6 @@ public class ColorPickerDialog extends Dialog implements OnClickListener, ColorO
 		// only handle user input
 		if (fromUser) {
 			hexCode.setText(String.format("%08X", color));
-		}
-	}
-
-	/**
-	 * @param color       start color
-	 * @param type        color type
-	 * @param enableAlpha true to enable alpha slider
-	 */
-	public void show(int color, int type, boolean enableAlpha) {
-		if (!isShowing()) {
-			super.show();
-			this.type = type;
-			colorPickerView.setInitialColor(color);
-			colorPickerView.setEnabledAlpha(enableAlpha);
-			hexCode.setText(String.format("%08X", color));
-			AppStyles.setTheme(root);
-			hexCode.setTypeface(Typeface.MONOSPACE);
 		}
 	}
 
@@ -172,6 +162,27 @@ public class ColorPickerDialog extends Dialog implements OnClickListener, ColorO
 			if (HEX_PATTERN.matcher(hex).matches()) {
 				colorPickerView.setInitialColor(Integer.parseUnsignedInt(hex, 16));
 			}
+		}
+	}
+
+	/**
+	 * set color picker values and show dialog
+	 *
+	 * @param activity     parent activity
+	 * @param color        predefined color
+	 * @param type         type of color
+	 * @param enableAlpha  true to enable alpha slider
+	 */
+	public static void show(FragmentActivity activity, int color, int type, boolean enableAlpha) {
+		Bundle args = new Bundle();
+		args.putInt(KEY_COLOR, color);
+		args.putInt(KEY_TYPE, type);
+		args.putBoolean(KEY_ALPHA, enableAlpha);
+		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+		if (dialogFragment == null) {
+			ColorPickerDialog dialog = new ColorPickerDialog();
+			dialog.setArguments(args);
+			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
 	}
 

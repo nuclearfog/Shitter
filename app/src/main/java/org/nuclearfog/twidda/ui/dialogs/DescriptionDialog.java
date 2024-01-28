@@ -1,12 +1,17 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -17,49 +22,52 @@ import org.nuclearfog.twidda.config.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class DescriptionDialog extends Dialog implements OnClickListener {
+public class DescriptionDialog extends DialogFragment implements OnClickListener {
 
-	private DescriptionCallback callback;
-	private GlobalSettings settings;
+	/**
+	 *
+	 */
+	private static final String TAG = "DescriptionDialog";
+
+	/**
+	 * bundle key used to restore description
+	 * value type is String
+	 */
+	private static final String KEY_DESCR ="description_dave";
 
 	private EditText descriptionEdit;
 
 	/**
 	 *
 	 */
-	public DescriptionDialog(Activity activity, DescriptionCallback callback) {
-		super(activity, R.style.DefaultDialog);
-		settings = GlobalSettings.get(activity);
-		this.callback = callback;
+	public DescriptionDialog() {
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_description);
-		ViewGroup root = findViewById(R.id.dialog_description_root);
-		View applyButton = findViewById(R.id.dialog_description_apply);
-		descriptionEdit = findViewById(R.id.dialog_description_input);
-		AppStyles.setTheme(root, settings.getPopupColor());
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
+		View view = inflater.inflate(R.layout.dialog_description, container, false);
+		View applyButton = view.findViewById(R.id.dialog_description_apply);
+		descriptionEdit = view.findViewById(R.id.dialog_description_input);
+		GlobalSettings settings = GlobalSettings.get(requireContext());
+
+		if (savedInstanceState != null) {
+			String description = savedInstanceState.getString(KEY_DESCR, "");
+			descriptionEdit.setText(description);
+		}
+		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
 
 		applyButton.setOnClickListener(this);
+		return view;
 	}
 
 
 	@Override
-	public void show() {
-		if (!isShowing()) {
-			super.show();
-		}
-	}
-
-
-	@Override
-	public void dismiss() {
-		if (isShowing()) {
-			super.dismiss();
-		}
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		outState.putString(KEY_DESCR, descriptionEdit.getText().toString());
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -67,8 +75,23 @@ public class DescriptionDialog extends Dialog implements OnClickListener {
 	public void onClick(View v) {
 		if (v.getId() == R.id.dialog_description_apply) {
 			String description = descriptionEdit.getText().toString();
-			callback.onDescriptionSet(description);
+			if (getActivity() instanceof DescriptionCallback) {
+				((DescriptionCallback) getActivity()).onDescriptionSet(description);
+			}
 			dismiss();
+		}
+	}
+
+	/**
+	 * show description dialog
+	 *
+	 * @param activity activity from which to show the dialog
+	 */
+	public static void show(FragmentActivity activity) {
+		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+		if (dialogFragment == null) {
+			DescriptionDialog dialog = new DescriptionDialog();
+			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
 	}
 

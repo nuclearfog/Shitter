@@ -147,7 +147,6 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 	private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this);
 	private AsyncCallback<UserlistManager.Result> userlistUpdate = this::updateUsers;
 
-	private ConfirmDialog confirmDialog;
 	private UsersLoader userLoader;
 	private UserlistManager userlistManager;
 	private UserAdapter adapter;
@@ -163,7 +162,6 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 		super.onViewCreated(view, savedInstanceState);
 		userLoader = new UsersLoader(requireContext());
 		userlistManager = new UserlistManager(requireContext());
-		confirmDialog = new ConfirmDialog(requireActivity(), this);
 		adapter = new UserAdapter(this);
 		setAdapter(adapter, false);
 
@@ -260,9 +258,10 @@ public class UserFragment extends ListFragment implements UserClickListener, OnC
 
 	@Override
 	public void onDelete(User user) {
-		if (userlistManager.isIdle() && !confirmDialog.isShowing()) {
-			confirmDialog.show(ConfirmDialog.LIST_REMOVE_USER);
-			this.selectedUser = user;
+		if (userlistManager.isIdle()) {
+			if (ConfirmDialog.show(this, ConfirmDialog.LIST_REMOVE_USER, null)) {
+				this.selectedUser = user;
+			}
 		}
 	}
 

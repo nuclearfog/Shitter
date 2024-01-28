@@ -68,7 +68,7 @@ public class FilterActivity extends AppCompatActivity implements FilterDialogCal
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.menu_filter_create) {
-			filterDialog.show(null);
+			filterDialog.show();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

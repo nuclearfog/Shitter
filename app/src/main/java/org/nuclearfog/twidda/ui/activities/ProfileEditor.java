@@ -77,7 +77,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 
 	private ProgressDialog progressDialog;
 	private StatusPreferenceDialog prefDialog;
-	private ConfirmDialog confirmDialog;
 
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
 	private EditText username, profileUrl, profileLocation, userDescription;
@@ -123,7 +122,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 
 		prefDialog = new StatusPreferenceDialog(this, userUpdate);
 		progressDialog = new ProgressDialog(this, null);
-		confirmDialog = new ConfirmDialog(this, this);
 		credentialUpdater = new CredentialsUpdater(this);
 		credentialsLoader = new CredentialsLoader(this);
 		settings = GlobalSettings.get(this);
@@ -190,7 +188,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	@Override
 	public void onBackPressed() {
 		if (changed) {
-			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_LEAVE);
+			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_LEAVE, null);
 		} else {
 			super.onBackPressed();
 		}
@@ -373,7 +371,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			setCredentials();
 		} else if (result.exception != null) {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
+			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		}
 		progressDialog.dismiss();
 	}
@@ -390,7 +388,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			finish();
 		} else {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
-			confirmDialog.show(ConfirmDialog.PROFILE_EDITOR_ERROR, message);
+			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		}
 		progressDialog.dismiss();
 	}
