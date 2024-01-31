@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.ui.activities;
 
 import static android.Manifest.permission.POST_NOTIFICATIONS;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -92,8 +91,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 	private DropdownAdapter fontAdapter, scaleAdapter;
 
-	private Dialog appInfo, license, pushDialog;
-
 	private View enable_auth_label;
 	private EditText proxy_address, proxy_port, proxy_user, proxy_pass;
 	private SwitchButton enable_proxy, enable_auth, enablePush;
@@ -152,9 +149,6 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 
 		settings = GlobalSettings.get(this);
 		Configuration configuration = settings.getLogin().getConfiguration();
-		appInfo = new InfoDialog(this);
-		license = new LicenseDialog(this);
-		pushDialog = new WebPushDialog(this);
 		databaseAction = new DatabaseAction(this);
 		fontAdapter = new DropdownAdapter(getApplicationContext());
 		scaleAdapter = new DropdownAdapter(getApplicationContext());
@@ -289,9 +283,9 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == R.id.settings_info) {
-			appInfo.show();
+			InfoDialog.show(this);
 		} else if (item.getItemId() == R.id.settings_licenses) {
-			license.show();
+			LicenseDialog.show(this);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -303,7 +297,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		if (requestCode == REQUEST_PERMISSION_NOTIFICATION) {
 			if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				PushSubscription.subscripe(getApplicationContext());
-				pushDialog.show();
+				WebPushDialog.show(this);
 			} else {
 				enablePush.setChecked(false);
 			}
@@ -342,7 +336,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 		// show push configuration dialog
 		else if (v.getId() == R.id.page_settings_enable_push_label) {
 			if (enablePush.isChecked()) {
-				pushDialog.show();
+				WebPushDialog.show(this);
 			}
 		}
 		// set background color
@@ -427,7 +421,7 @@ public class SettingsActivity extends AppCompatActivity implements OnClickListen
 					requestPermissions(new String[]{POST_NOTIFICATIONS}, REQUEST_PERMISSION_NOTIFICATION);
 				} else {
 					PushSubscription.subscripe(getApplicationContext());
-					pushDialog.show();
+					WebPushDialog.show(this);
 				}
 			} else {
 				PushSubscription.unsubscripe(this);

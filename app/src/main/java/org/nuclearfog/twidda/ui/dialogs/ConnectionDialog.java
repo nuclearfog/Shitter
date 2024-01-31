@@ -46,13 +46,13 @@ public class ConnectionDialog extends DialogFragment implements OnClickListener 
 	 *
 	 */
 	public ConnectionDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 	}
 
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		setStyle(STYLE_NO_TITLE, R.style.ConfirmDialog);
 		View view = inflater.inflate(R.layout.dialog_connection, container, false);
 		Button confirm = view.findViewById(R.id.dialog_connection_confirm);
 		Button discard = view.findViewById(R.id.dialog_connection_discard);
@@ -112,11 +112,11 @@ public class ConnectionDialog extends DialogFragment implements OnClickListener 
 	 * @param connectionUpdate connection configturation to update
 	 */
 	public static void show(FragmentActivity activity, ConnectionUpdate connectionUpdate) {
-		Bundle args = new Bundle();
-		args.putSerializable(KEY_CONNECTION, connectionUpdate);
 		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
 		if (dialogFragment == null) {
 			ConnectionDialog dialog = new ConnectionDialog();
+			Bundle args = new Bundle();
+			args.putSerializable(KEY_CONNECTION, connectionUpdate);
 			dialog.setArguments(args);
 			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}

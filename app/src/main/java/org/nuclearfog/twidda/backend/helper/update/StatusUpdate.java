@@ -36,12 +36,8 @@ public class StatusUpdate implements Serializable, Closeable {
 	// main attributes
 	private long statusId = 0L;
 	private long replyId = 0L;
-	private long scheduleTime = 0L;
-	private boolean sensitive = false;
-	private boolean spoiler = false;
-	private int visibility = Status.VISIBLE_DEFAULT;
-	private String languageCode = "";
 	private String text;
+	private StatusPreferenceUpdate statusPreferences = new StatusPreferenceUpdate();
 
 	// attachment attributes
 	private List<MediaStatus> mediaStatuses = new ArrayList<>(5);
@@ -77,10 +73,10 @@ public class StatusUpdate implements Serializable, Closeable {
 		statusId = status.getId();
 		replyId = status.getRepliedStatusId();
 		text = status.getText();
-		sensitive = status.isSensitive();
-		spoiler = status.isSpoiler();
-		visibility = status.getVisibility();
-		languageCode = status.getLanguage();
+		statusPreferences.setSensitive(status.isSensitive());
+		statusPreferences.setSpoiler(status.isSpoiler());
+		statusPreferences.setVisibility(status.getVisibility());
+		statusPreferences.setLanguage(status.getLanguage());
 		if (status.getPoll() != null) {
 			poll = new PollUpdate(status.getPoll());
 		}
@@ -110,15 +106,6 @@ public class StatusUpdate implements Serializable, Closeable {
 	 */
 	public void addText(String text) {
 		this.text = text;
-	}
-
-	/**
-	 * add status language
-	 *
-	 * @param languageCode ISO 639 language code or empty string to remove language
-	 */
-	public void addLanguage(@NonNull String languageCode) {
-		this.languageCode = languageCode;
 	}
 
 	/**
@@ -199,35 +186,10 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 * set time to schedule the post
 	 *
-	 * @param scheduleTime future time
 	 */
-	public void setScheduleTime(long scheduleTime) {
-		this.scheduleTime = scheduleTime;
-	}
-
-	/**
-	 * set status visibility
-	 *
-	 * @param visibility visibility states {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DIRECT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
-	 */
-	public void setVisibility(int visibility) {
-		this.visibility = visibility;
-	}
-
-	/**
-	 * set spoiler flag
-	 */
-	public void setSpoiler(boolean spoiler) {
-		this.spoiler = spoiler;
-	}
-
-	/**
-	 * set sensitive flag
-	 */
-	public void setSensitive(boolean sensitive) {
-		this.sensitive = sensitive;
+	public void setStatusPreferences(StatusPreferenceUpdate statusPreferences) {
+		this.statusPreferences = statusPreferences;
 	}
 
 	/**
@@ -269,13 +231,10 @@ public class StatusUpdate implements Serializable, Closeable {
 	}
 
 	/**
-	 * get status language
 	 *
-	 * @return ISO 639 language code
 	 */
-	@NonNull
-	public String getLanguageCode() {
-		return languageCode;
+	public StatusPreferenceUpdate getStatusPreferences() {
+		return statusPreferences;
 	}
 
 	/**
@@ -330,36 +289,6 @@ public class StatusUpdate implements Serializable, Closeable {
 			keys[i] = mediaStatuses.get(i).getKey();
 		}
 		return keys;
-	}
-
-	/**
-	 * @return true if status content is sensitive
-	 */
-	public boolean isSensitive() {
-		return sensitive;
-	}
-
-	/**
-	 * @return true if status contains spoiler
-	 */
-	public boolean isSpoiler() {
-		return spoiler;
-	}
-
-	/**
-	 * @return datetime to post the status
-	 */
-	public long getScheduleTime() {
-		return scheduleTime;
-	}
-
-	/**
-	 * get visibility states
-	 *
-	 * @return visibility of the status {@link Status#VISIBLE_PUBLIC,Status#VISIBLE_DIRECT,Status#VISIBLE_PRIVATE,Status#VISIBLE_UNLISTED}
-	 */
-	public int getVisibility() {
-		return visibility;
 	}
 
 	/**

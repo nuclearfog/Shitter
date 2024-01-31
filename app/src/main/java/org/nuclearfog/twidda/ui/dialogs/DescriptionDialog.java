@@ -33,7 +33,7 @@ public class DescriptionDialog extends DialogFragment implements OnClickListener
 	 * bundle key used to restore description
 	 * value type is String
 	 */
-	private static final String KEY_DESCR ="description_dave";
+	private static final String KEY_DESCR ="description_save";
 
 	private EditText descriptionEdit;
 
@@ -41,13 +41,13 @@ public class DescriptionDialog extends DialogFragment implements OnClickListener
 	 *
 	 */
 	public DescriptionDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 	}
 
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 		View view = inflater.inflate(R.layout.dialog_description, container, false);
 		View applyButton = view.findViewById(R.id.dialog_description_apply);
 		descriptionEdit = view.findViewById(R.id.dialog_description_input);

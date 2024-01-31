@@ -29,6 +29,13 @@ public class MetaDialog extends DialogFragment {
 
 	private Meta meta;
 
+	/**
+	 *
+	 */
+	public MetaDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
+	}
+
 
 	@Nullable
 	@Override

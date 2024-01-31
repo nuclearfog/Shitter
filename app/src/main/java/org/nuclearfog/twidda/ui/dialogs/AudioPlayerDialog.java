@@ -66,16 +66,16 @@ public class AudioPlayerDialog extends DialogFragment implements OnClickListener
 	private Uri data;
 
 	/**
-	 * required empty constructor
+	 *
 	 */
 	public AudioPlayerDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.AudioDialog);
 	}
 
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		setStyle(STYLE_NO_TITLE, R.style.AudioDialog);
 		View root = inflater.inflate(R.layout.dialog_audio_player, container, false);
 		mediaLink = root.findViewById(R.id.dialog_audio_player_share);
 		controls = root.findViewById(R.id.dialog_audio_player_controls);
@@ -192,15 +192,15 @@ public class AudioPlayerDialog extends DialogFragment implements OnClickListener
 	/**
 	 *
 	 */
-	private static void show(FragmentManager activity, Uri data) {
+	private static void show(FragmentManager fm, Uri data) {
 		String tag = data.toString();
-		Bundle args = new Bundle();
-		args.putParcelable(KEY_URI, data);
-		Fragment dialogFragment = activity.findFragmentByTag(tag);
+		Fragment dialogFragment = fm.findFragmentByTag(tag);
 		if (dialogFragment == null) {
 			AudioPlayerDialog dialog = new AudioPlayerDialog();
+			Bundle args = new Bundle();
+			args.putParcelable(KEY_URI, data);
 			dialog.setArguments(args);
-			dialog.show(activity, tag);
+			dialog.show(fm, tag);
 		}
 	}
 }

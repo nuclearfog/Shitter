@@ -34,12 +34,12 @@ import org.nuclearfog.twidda.backend.async.AsyncExecutor.AsyncCallback;
 import org.nuclearfog.twidda.backend.async.CredentialsLoader;
 import org.nuclearfog.twidda.backend.async.CredentialsUpdater;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
+import org.nuclearfog.twidda.backend.helper.update.StatusPreferenceUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
 import org.nuclearfog.twidda.backend.image.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.backend.utils.ToolbarUpdater;
-import org.nuclearfog.twidda.config.Configuration;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Credentials;
 import org.nuclearfog.twidda.model.User;
@@ -47,6 +47,7 @@ import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog;
 import org.nuclearfog.twidda.ui.dialogs.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
+import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog.PreferenceSetCallback;
 
 import java.io.FileNotFoundException;
 
@@ -57,7 +58,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, OnConfirmListener, TextWatcher, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, OnConfirmListener, TextWatcher, PreferenceSetCallback, Callback {
 
 	/**
 	 * key to preload user data
@@ -75,16 +76,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	private GlobalSettings settings;
 	private Picasso picasso;
 
-	private ProgressDialog progressDialog;
-	private StatusPreferenceDialog prefDialog;
-
 	private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
-	private EditText username, profileUrl, profileLocation, userDescription;
+	private EditText username, profileLocation, userDescription;
 	private Button addBannerBtn;
 	private CompoundButton privacy;
 
-	@Nullable
-	private User user;
 	@Nullable
 	private Credentials credentials;
 	private UserUpdate userUpdate = new UserUpdate();
@@ -109,19 +105,17 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		View profileLocationLabel = findViewById(R.id.profile_edit_change_location_label);
 		View profileUrlLabel = findViewById(R.id.profile_edit_change_url_label);
 		View statusPrefBtn = findViewById(R.id.profile_edit_status_pref);
+		EditText profileUrl = findViewById(R.id.profile_edit_change_url);
 		profile_image = findViewById(R.id.edit_profile_image);
 		profile_banner = findViewById(R.id.profile_edit_banner);
 		addBannerBtn = findViewById(R.id.profile_edit_add_banner);
 		changeBannerBtn = findViewById(R.id.profile_edit_change_banner);
 		toolbar_background = findViewById(R.id.profile_edit_toolbar_background);
 		username = findViewById(R.id.profile_edit_change_name);
-		profileUrl = findViewById(R.id.profile_edit_change_url);
 		profileLocation = findViewById(R.id.profile_edit_change_location);
 		userDescription = findViewById(R.id.profile_edit_change_description);
 		privacy = findViewById(R.id.profile_edit_privacy);
 
-		prefDialog = new StatusPreferenceDialog(this, userUpdate);
-		progressDialog = new ProgressDialog(this, null);
 		credentialUpdater = new CredentialsUpdater(this);
 		credentialsLoader = new CredentialsLoader(this);
 		settings = GlobalSettings.get(this);
@@ -137,13 +131,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			constraints.connect(R.id.profile_edit_add_banner, ConstraintSet.TOP, R.id.profile_edit_banner, ConstraintSet.TOP);
 			constraints.applyTo(root);
 		}
-
-		Configuration config = settings.getLogin().getConfiguration();
-		if (!config.profileUrlEnabled()) {
+		if (!settings.getLogin().getConfiguration().profileUrlEnabled()) {
 			profileUrl.setVisibility(View.GONE);
 			profileUrlLabel.setVisibility(View.GONE);
 		}
-		if (!config.profileLocationEnabled()) {
+		if (!settings.getLogin().getConfiguration().profileLocationEnabled()) {
 			profileLocation.setVisibility(View.GONE);
 			profileLocationLabel.setVisibility(View.GONE);
 		}
@@ -151,10 +143,31 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		profile_banner.setDrawingCacheEnabled(true);
 		AppStyles.setTheme(root);
 
-		Object data = getIntent().getSerializableExtra(KEY_USER);
-		if (data instanceof User) {
-			user = (User) data;
-			setUser();
+		if (savedInstanceState == null)
+			savedInstanceState = getIntent().getExtras();
+		if (savedInstanceState != null) {
+			Object data = savedInstanceState.getSerializable(KEY_USER);
+			if (data instanceof User) {
+				User user = (User) data;
+				String profileImageUrl = user.getProfileImageThumbnailUrl();
+				String bannerImageUrl = user.getBannerImageThumbnailUrl();
+				if (!profileImageUrl.isEmpty()) {
+					Transformation roundCorner = new RoundedCornersTransformation(5, 0);
+					picasso.load(profileImageUrl).transform(roundCorner).into(profile_image);
+				}
+				if (!bannerImageUrl.isEmpty()) {
+					picasso.load(bannerImageUrl).into(profile_banner, this);
+					addBannerBtn.setVisibility(View.INVISIBLE);
+					changeBannerBtn.setVisibility(View.VISIBLE);
+				} else {
+					addBannerBtn.setVisibility(View.VISIBLE);
+					changeBannerBtn.setVisibility(View.INVISIBLE);
+				}
+				username.setText(user.getUsername());
+				profileUrl.setText(user.getProfileUrl());
+				profileLocation.setText(user.getLocation());
+				userDescription.setText(user.getDescription());
+			}
 		}
 		username.addTextChangedListener(this);
 		profileUrl.addTextChangedListener(this);
@@ -178,7 +191,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 
 	@Override
 	protected void onDestroy() {
-		progressDialog.dismiss();
 		credentialUpdater.cancel();
 		credentialsLoader.cancel();
 		super.onDestroy();
@@ -252,7 +264,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 		}
 		//
 		else if (v.getId() == R.id.profile_edit_status_pref) {
-			prefDialog.show();
+			if (userUpdate.getStatusPreference() != null) {
+				StatusPreferenceDialog.show(this, userUpdate.getStatusPreference(), false);
+			} else {
+				StatusPreferenceDialog.show(this, new StatusPreferenceUpdate(), false);
+			}
 		}
 	}
 
@@ -287,6 +303,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 
 
 	@Override
+	public void onPreferenceSet(StatusPreferenceUpdate update) {
+		userUpdate.setStatusPreference(update);
+	}
+
+
+	@Override
 	public void onSuccess() {
 		// set toolbar background
 		if (settings.toolbarOverlapEnabled()) {
@@ -315,37 +337,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 				userUpdate.setPrivacy(privacy.isChecked());
 				if (userUpdate.prepare(getContentResolver())) {
 					credentialUpdater.execute(userUpdate, credentialsUpdateCallback);
-					progressDialog.show();
+					ProgressDialog.show(this, false);
 				} else {
 					Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();
 				}
 			}
-		}
-	}
-
-	/**
-	 * Set current user's information
-	 */
-	private void setUser() {
-		if (user != null) {
-			String profileImageUrl = user.getProfileImageThumbnailUrl();
-			String bannerImageUrl = user.getBannerImageThumbnailUrl();
-			if (!profileImageUrl.isEmpty()) {
-				Transformation roundCorner = new RoundedCornersTransformation(5, 0);
-				picasso.load(profileImageUrl).transform(roundCorner).into(profile_image);
-			}
-			if (!bannerImageUrl.isEmpty()) {
-				picasso.load(bannerImageUrl).into(profile_banner, this);
-				addBannerBtn.setVisibility(View.INVISIBLE);
-				changeBannerBtn.setVisibility(View.VISIBLE);
-			} else {
-				addBannerBtn.setVisibility(View.VISIBLE);
-				changeBannerBtn.setVisibility(View.INVISIBLE);
-			}
-			username.setText(user.getUsername());
-			profileUrl.setText(user.getProfileUrl());
-			profileLocation.setText(user.getLocation());
-			userDescription.setText(user.getDescription());
 		}
 	}
 
@@ -355,10 +351,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 	private void setCredentials() {
 		if (credentials != null) {
 			privacy.setChecked(credentials.isLocked());
-			userUpdate.setPrivacy(credentials.isLocked());
-			userUpdate.setLanguageCode(credentials.getLanguage());
-			userUpdate.setStatusVisibility(credentials.getVisibility());
-			userUpdate.setContentSensitive(credentials.isSensitive());
+			userUpdate.updateWithCredentials(credentials);
 		}
 	}
 
@@ -373,7 +366,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		}
-		progressDialog.dismiss();
+		ProgressDialog.dismiss(this);
 	}
 
 	/**
@@ -390,6 +383,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnC
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			ConfirmDialog.show(this, ConfirmDialog.PROFILE_EDITOR_ERROR, message);
 		}
-		progressDialog.dismiss();
+		ProgressDialog.dismiss(this);
 	}
 }

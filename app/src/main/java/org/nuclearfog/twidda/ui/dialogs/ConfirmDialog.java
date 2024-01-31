@@ -186,6 +186,7 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 	 *
 	 */
 	public ConfirmDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.ConfirmDialog);
 	}
 
 
@@ -275,13 +276,13 @@ public class ConfirmDialog extends DialogFragment implements OnClickListener {
 	 */
 	private static boolean show(FragmentManager fm, int type, @Nullable String message) {
 		String tag = type + ":" + message;
-		Bundle args = new Bundle();
-		args.putInt(KEY_TYPE, type);
-		if (message != null)
-			args.putString(KEY_MESSAGE, message);
 		Fragment dialogFragment = fm.findFragmentByTag(tag);
 		if (dialogFragment == null) {
 			ConfirmDialog dialog = new ConfirmDialog();
+			Bundle args = new Bundle();
+			args.putInt(KEY_TYPE, type);
+			if (message != null)
+				args.putString(KEY_MESSAGE, message);
 			dialog.setArguments(args);
 			dialog.show(fm, tag);
 			return true;

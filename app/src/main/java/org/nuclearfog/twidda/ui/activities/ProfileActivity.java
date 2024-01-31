@@ -117,7 +117,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 	private ProfileAdapter adapter;
 	private GlobalSettings settings;
 	private Picasso picasso;
-	private ReportDialog reportDialog;
 
 	private DomainAction domainAction;
 	private RelationLoader relationLoader;
@@ -175,7 +174,6 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		domainAction = new DomainAction(this);
 		userLoader = new UserLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
-		reportDialog = new ReportDialog(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
 		adapter = new ProfileAdapter(this);
@@ -416,7 +414,7 @@ public class ProfileActivity extends AppCompatActivity implements OnClickListene
 		// report user
 		else if (item.getItemId() == R.id.profile_report) {
 			if (user != null) {
-				reportDialog.show(user.getId());
+				ReportDialog.show(this, user.getId());
 			}
 		}
 		return super.onOptionsItemSelected(item);

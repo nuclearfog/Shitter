@@ -1,15 +1,21 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import org.joda.time.DateTime;
 import org.nuclearfog.twidda.R;
@@ -25,53 +31,66 @@ import java.util.GregorianCalendar;
  *
  * @author nuclearfog
  */
-public class TimePickerDialog extends Dialog implements OnClickListener {
+public class TimePickerDialog extends DialogFragment implements OnClickListener {
+
+	private static final String TAG = "TimePickerDialog";
+
+	private static final String KEY_TIME = "picker_time";
 
 	private TimePicker timePicker;
 	private DatePicker datePicker;
 
-	private TimeSelectedCallback callback;
 
 	/**
-	 * @param callback callback used to set selected date
+	 *
 	 */
-	public TimePickerDialog(Activity activity, TimeSelectedCallback callback) {
-		super(activity, R.style.DefaultDialog);
-		this.callback = callback;
+	public TimePickerDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_timepicker);
-		datePicker = findViewById(R.id.dialog_timepicker_date);
-		timePicker = findViewById(R.id.dialog_timepicker_time);
-		ViewGroup root = findViewById(R.id.dialog_timepicker_root);
-		Button confirm = findViewById(R.id.dialog_timepicker_confirm);
-		Button cancel = findViewById(R.id.dialog_timepicker_remove);
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.dialog_timepicker, container, false);
+		datePicker = view.findViewById(R.id.dialog_timepicker_date);
+		timePicker = view.findViewById(R.id.dialog_timepicker_time);
+		Button confirm = view.findViewById(R.id.dialog_timepicker_confirm);
+		Button cancel = view.findViewById(R.id.dialog_timepicker_remove);
 
-		GlobalSettings settings = GlobalSettings.get(getContext());
-		AppStyles.setTheme(root, settings.getPopupColor());
+		GlobalSettings settings = GlobalSettings.get(requireContext());
+		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
 		timePicker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
 		datePicker.setFirstDayOfWeek(Calendar.getInstance().getFirstDayOfWeek());
 
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
+		if (savedInstanceState != null) {
+			long time = savedInstanceState.getLong(KEY_TIME);
+			DateTime selectedTime;
+			if (time != 0L) {
+				selectedTime = new DateTime(time);
+			} else {
+				selectedTime = new DateTime();
+			}
+			datePicker.updateDate(selectedTime.getYear(), selectedTime.getMonthOfYear() - 1, selectedTime.getDayOfMonth());
+			timePicker.setCurrentHour(selectedTime.getHourOfDay());
+			timePicker.setCurrentMinute(selectedTime.getMinuteOfHour());
+		}
+
 		confirm.setOnClickListener(this);
 		cancel.setOnClickListener(this);
+		return view;
 	}
 
 
 	@Override
-	public void show() {
-		// using show(long) instead
-	}
-
-
-	@Override
-	public void dismiss() {
-		super.dismiss();
-		datePicker.setVisibility(View.VISIBLE);
-		timePicker.setVisibility(View.INVISIBLE);
+	public void onSaveInstanceState(@NonNull Bundle outState) {
+		GregorianCalendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(),
+				datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+		Date selectedDate = calendar.getTime();
+		outState.putLong(KEY_TIME, selectedDate.getTime());
+		super.onSaveInstanceState(outState);
 	}
 
 
@@ -85,14 +104,16 @@ public class TimePickerDialog extends Dialog implements OnClickListener {
 				GregorianCalendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(),
 						datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
 				Date selectedDate = calendar.getTime();
-				callback.onTimeSelected(selectedDate.getTime());
-				if (isShowing())
-					dismiss();
+				if (getParentFragment() instanceof TimeSelectedCallback) {
+					((TimeSelectedCallback)getParentFragment()).onTimeSelected(selectedDate.getTime());
+				}
+				dismiss();
 			}
 		} else if (v.getId() == R.id.dialog_timepicker_remove) {
-			callback.onTimeSelected(0L);
-			if (isShowing())
-				dismiss();
+			if (getParentFragment() instanceof TimeSelectedCallback) {
+				((TimeSelectedCallback)getParentFragment()).onTimeSelected(0L);
+			}
+			dismiss();
 		}
 	}
 
@@ -101,18 +122,30 @@ public class TimePickerDialog extends Dialog implements OnClickListener {
 	 *
 	 * @param time selected time or '0' to select the current time
 	 */
-	public void show(long time) {
-		if (!isShowing()) {
-			super.show();
-			DateTime selectedTime;
-			if (time != 0L) {
-				selectedTime = new DateTime(time);
-			} else {
-				selectedTime = new DateTime();
-			}
-			datePicker.updateDate(selectedTime.getYear(), selectedTime.getMonthOfYear() - 1, selectedTime.getDayOfMonth());
-			timePicker.setCurrentHour(selectedTime.getHourOfDay());
-			timePicker.setCurrentMinute(selectedTime.getMinuteOfHour());
+	public static void show(Fragment fragment, long time) {
+		if (fragment.isAdded()) {
+			show(fragment.getChildFragmentManager(), time);
+		}
+	}
+
+	/**
+	 * show timepicker with default value
+	 *
+	 * @param time selected time or '0' to select the current time
+	 */
+	public static void show(FragmentActivity activity, long time) {
+		show(activity.getSupportFragmentManager(), time);
+	}
+
+
+	private static void show(FragmentManager fm, long time) {
+		Fragment dialogFragment = fm.findFragmentByTag(TAG);
+		if (dialogFragment == null) {
+			TimePickerDialog dialog = new TimePickerDialog();
+			Bundle param = new Bundle();
+			param.putLong(KEY_TIME, time);
+			dialog.setArguments(param);
+			dialog.show(fm, TAG);
 		}
 	}
 

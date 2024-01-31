@@ -40,7 +40,6 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 	private ScheduleAdapter adapter;
 	private ScheduleLoader scheduleLoader;
 	private ScheduleAction scheduleAction;
-	private TimePickerDialog timepicker;
 
 	@Nullable
 	private ScheduledStatus selection;
@@ -55,7 +54,6 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 		scheduleLoader = new ScheduleLoader(requireContext());
 		scheduleAction = new ScheduleAction(requireContext());
 		adapter = new ScheduleAdapter(this);
-		timepicker = new TimePickerDialog(requireActivity(), this);
 		setAdapter(adapter, false);
 
 		if (savedInstanceState != null) {
@@ -116,9 +114,9 @@ public class ScheduleFragment extends ListFragment implements OnScheduleClickLis
 
 	@Override
 	public void onScheduleSelect(ScheduledStatus status) {
-		if (!isRefreshing() && !timepicker.isShowing() && scheduleAction.isIdle()) {
+		if (!isRefreshing() && scheduleAction.isIdle()) {
 			selection = status;
-			timepicker.show(status.getPublishTime());
+			TimePickerDialog.show(this, status.getPublishTime());
 		}
 	}
 

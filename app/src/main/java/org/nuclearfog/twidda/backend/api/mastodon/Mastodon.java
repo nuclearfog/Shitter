@@ -39,6 +39,7 @@ import org.nuclearfog.twidda.backend.helper.update.FilterUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
 import org.nuclearfog.twidda.backend.helper.update.PushUpdate;
 import org.nuclearfog.twidda.backend.helper.update.ReportUpdate;
+import org.nuclearfog.twidda.backend.helper.update.StatusPreferenceUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserListUpdate;
 import org.nuclearfog.twidda.backend.helper.update.UserUpdate;
@@ -807,26 +808,27 @@ public class Mastodon implements Connection {
 		List<String> params = new ArrayList<>();
 		// add identifier to prevent duplicate posts
 		params.add("Idempotency-Key=" + System.currentTimeMillis() / 5000L);
-		if (update.isSensitive())
+		StatusPreferenceUpdate statusPreferences = update.getStatusPreferences();
+		if (statusPreferences.isSensitive())
 			params.add("sensitive=true");
-		if (update.isSpoiler())
+		if (statusPreferences.isSpoiler())
 			params.add("spoiler_text=true");
 		if (update.getText() != null)
 			params.add("status=" + StringUtils.encode(update.getText()));
-		if (!update.getLanguageCode().isEmpty())
-			params.add("language=" + update.getLanguageCode());
+		if (!statusPreferences.getLanguage().isEmpty())
+			params.add("language=" + statusPreferences.getLanguage());
 		if (update.getReplyId() != 0L)
 			params.add("in_reply_to_id=" + update.getReplyId());
-		if (update.getVisibility() == Status.VISIBLE_DIRECT)
+		if (statusPreferences.getVisibility() == Status.VISIBLE_DIRECT)
 			params.add("visibility=direct");
-		else if (update.getVisibility() == Status.VISIBLE_PRIVATE)
+		else if (statusPreferences.getVisibility() == Status.VISIBLE_PRIVATE)
 			params.add("visibility=private");
-		else if (update.getVisibility() == Status.VISIBLE_UNLISTED)
+		else if (statusPreferences.getVisibility() == Status.VISIBLE_UNLISTED)
 			params.add("visibility=unlisted");
-		else if (update.getVisibility() == Status.VISIBLE_PUBLIC)
+		else if (statusPreferences.getVisibility() == Status.VISIBLE_PUBLIC)
 			params.add("visibility=public");
-		if (update.getScheduleTime() != 0L) {
-			String dateFormat = ISODateTimeFormat.dateTimeNoMillis().print(update.getScheduleTime());
+		if (statusPreferences.getScheduleTime() != 0L) {
+			String dateFormat = ISODateTimeFormat.dateTimeNoMillis().print(statusPreferences.getScheduleTime());
 			params.add("scheduled_at=" + StringUtils.encode(dateFormat));
 		}
 		// add media IDs of previously uploaded media files (status create first)
@@ -864,7 +866,7 @@ public class Mastodon implements Connection {
 			else
 				response = post(ENDPOINT_STATUS, params);
 			if (response.code() == 200) {
-				if (update.getScheduleTime() == 0L)
+				if (statusPreferences.getScheduleTime() == 0L)
 					return createStatus(response);
 				return null; // when scheduling, ScheduledStatus will be returned from API instead, which is not compatible to Status
 			}
@@ -1270,7 +1272,6 @@ public class Mastodon implements Connection {
 		params.add("display_name=" + StringUtils.encode(update.getName()));
 		params.add("note=" + StringUtils.encode(update.getDescription()));
 		params.add("locked=" + update.privacyEnabled());
-		params.add("source[sensitive]=" + update.isSensitive());
 		if (update.getProfileImageMedia() != null) {
 			streams.add(update.getProfileImageMedia().getStream());
 			keys.add("avatar");
@@ -1279,17 +1280,21 @@ public class Mastodon implements Connection {
 			streams.add(update.getBannerImageMedia().getStream());
 			keys.add("header");
 		}
-		if (!update.getLanguageCode().isEmpty()) {
-			params.add("source[language]=" + update.getLanguageCode());
-		}
-		if (update.getStatusVisibility() == Status.VISIBLE_PUBLIC) {
-			params.add("source[privacy]=public");
-		} else if (update.getStatusVisibility() == Status.VISIBLE_PRIVATE) {
-			params.add("source[privacy]=private");
-		} else if (update.getStatusVisibility() == Status.VISIBLE_UNLISTED) {
-			params.add("source[privacy]=unlisted");
-		} else if (update.getStatusVisibility() == Status.VISIBLE_DIRECT) {
-			params.add("source[privacy]=direct");
+		StatusPreferenceUpdate statusPref = update.getStatusPreference();
+		if (statusPref != null) {
+			params.add("source[sensitive]=" + statusPref.isSensitive());
+			if (!statusPref.getLanguage().isEmpty()) {
+				params.add("source[language]=" + statusPref.getLanguage());
+			}
+			if (statusPref.getVisibility() == Status.VISIBLE_PUBLIC) {
+				params.add("source[privacy]=public");
+			} else if (statusPref.getVisibility() == Status.VISIBLE_PRIVATE) {
+				params.add("source[privacy]=private");
+			} else if (statusPref.getVisibility() == Status.VISIBLE_UNLISTED) {
+				params.add("source[privacy]=unlisted");
+			} else if (statusPref.getVisibility() == Status.VISIBLE_DIRECT) {
+				params.add("source[privacy]=direct");
+			}
 		}
 		try {
 			Response response = patch(ENDPOINT_UPDATE_CREDENTIALS, params, streams, keys);

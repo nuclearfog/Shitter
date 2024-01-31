@@ -29,11 +29,13 @@ import org.nuclearfog.twidda.backend.async.InstanceLoader;
 import org.nuclearfog.twidda.backend.async.StatusUpdater;
 import org.nuclearfog.twidda.backend.helper.MediaStatus;
 import org.nuclearfog.twidda.backend.helper.update.PollUpdate;
+import org.nuclearfog.twidda.backend.helper.update.StatusPreferenceUpdate;
 import org.nuclearfog.twidda.backend.helper.update.StatusUpdate;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.Emoji;
+import org.nuclearfog.twidda.model.Instance;
 import org.nuclearfog.twidda.model.Media;
 import org.nuclearfog.twidda.model.Status;
 import org.nuclearfog.twidda.ui.adapter.recyclerview.IconAdapter;
@@ -48,6 +50,7 @@ import org.nuclearfog.twidda.ui.dialogs.PollDialog.PollUpdateCallback;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.dialogs.ProgressDialog.OnProgressStopListener;
 import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog;
+import org.nuclearfog.twidda.ui.dialogs.StatusPreferenceDialog.PreferenceSetCallback;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -58,7 +61,7 @@ import java.io.Serializable;
  * @author nuclearfog
  */
 public class StatusEditor extends MediaActivity implements ActivityResultCallback<ActivityResult>, OnClickListener, OnProgressStopListener, OnConfirmListener,
-		OnIconClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener {
+		OnIconClickListener, TextWatcher, PollUpdateCallback, OnEmojiSelectListener, PreferenceSetCallback {
 
 	/**
 	 * return code used to send status information to calling activity
@@ -97,13 +100,12 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	private InstanceLoader instanceLoader;
 
 	private GlobalSettings settings;
-	private ProgressDialog loadingCircle;
-	private PollDialog pollDialog;
 	private EmojiPickerDialog emojiPicker;
-	private StatusPreferenceDialog preferenceDialog;
 	private IconAdapter adapter;
 
 	private StatusUpdate statusUpdate = new StatusUpdate();
+	@Nullable
+	private Instance instance;
 
 
 	@Override
@@ -131,9 +133,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		instanceLoader = new InstanceLoader(this);
 		statusUpdater = new StatusUpdater(this);
 		settings = GlobalSettings.get(this);
-		loadingCircle = new ProgressDialog(this, this);
-		preferenceDialog = new StatusPreferenceDialog(this, statusUpdate);
-		pollDialog = new PollDialog(this, this);
 		emojiPicker = new EmojiPickerDialog(this, this);
 		adapter = new IconAdapter(this, true);
 
@@ -176,7 +175,8 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 				mediaBtn.setVisibility(View.GONE);
 			} else {
 				statusUpdate.addReplyStatusId(status.getId());
-				statusUpdate.setVisibility(status.getVisibility());
+				statusUpdate.getStatusPreferences().setVisibility(status.getVisibility());
+				statusUpdate.getStatusPreferences().setLanguage(status.getLanguage());
 				statusUpdate.addText(status.getUserMentions());
 				statusText.append(status.getUserMentions());
 			}
@@ -233,7 +233,6 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 	@Override
 	protected void onDestroy() {
-		loadingCircle.dismiss();
 		statusUpdater.cancel();
 		instanceLoader.cancel();
 		super.onDestroy();
@@ -287,11 +286,11 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		}
 		// show poll dialog
 		else if (v.getId() == R.id.popup_status_add_poll) {
-			pollDialog.show(statusUpdate.getPoll());
+			PollDialog.show(this, statusUpdate.getPoll(), instance);
 		}
 		// open status preference
 		else if (v.getId() == R.id.popup_status_pref) {
-			preferenceDialog.show();
+			StatusPreferenceDialog.show(this, statusUpdate.getStatusPreferences(), true);
 		}
 		// Add media to the status
 		else if (v.getId() == R.id.popup_status_add_media) {
@@ -391,6 +390,12 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 
 
 	@Override
+	public void onPreferenceSet(StatusPreferenceUpdate update) {
+		statusUpdate.setStatusPreferences(update);
+	}
+
+
+	@Override
 	public void onIconClick(int type, int index) {
 		if (type == OnIconClickListener.MEDIA && index < statusUpdate.getMediaStatuses().size()) {
 			MediaStatus media = statusUpdate.getMediaStatuses().get(index);
@@ -480,7 +485,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 		if (result.exception != null) {
 			String message = ErrorUtils.getErrorMessage(this, result.exception);
 			ConfirmDialog.show(this, ConfirmDialog.STATUS_EDITOR_ERROR, message);
-			loadingCircle.dismiss();
+			ProgressDialog.dismiss(this);
 		} else {
 			if (result.status != null) {
 				Intent intent = new Intent();
@@ -497,8 +502,8 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 	 */
 	private void onInstanceResult(InstanceLoader.Result result) {
 		if (result.instance != null) {
+			this.instance = result.instance;
 			statusUpdate.setInstanceInformation(result.instance);
-			pollDialog.setInstance(result.instance);
 		}
 	}
 
@@ -511,7 +516,7 @@ public class StatusEditor extends MediaActivity implements ActivityResultCallbac
 			// send status
 			statusUpdater.execute(statusUpdate, statusUpdateResult);
 			// show progress dialog
-			loadingCircle.show();
+			ProgressDialog.show(this, true);
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.error_media_init, Toast.LENGTH_SHORT).show();
 		}

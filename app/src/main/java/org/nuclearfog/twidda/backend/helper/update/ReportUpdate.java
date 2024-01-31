@@ -19,7 +19,7 @@ public class ReportUpdate implements Serializable {
 	public static final int CATEGORY_VIOLATION = 12;
 
 	private long userId;
-	private long[] statusIds = {};
+	private long[] statusIds;
 	private long[] ruleIds = {};
 	private String comment = "";
 	private int category = CATEGORY_OTHER;
@@ -28,8 +28,9 @@ public class ReportUpdate implements Serializable {
 	/**
 	 * @param userId user ID to report
 	 */
-	public ReportUpdate(long userId) {
+	public ReportUpdate(long userId, long[] statusIds) {
 		this.userId = userId;
+		this.statusIds = Arrays.copyOf(statusIds, statusIds.length);
 	}
 
 	/**
@@ -39,15 +40,6 @@ public class ReportUpdate implements Serializable {
 	 */
 	public long getUserId() {
 		return userId;
-	}
-
-	/**
-	 * set status ID's related to user ID
-	 *
-	 * @param statusIds array of status IDs
-	 */
-	public void setStatusIds(long[] statusIds) {
-		this.statusIds = Arrays.copyOf(statusIds, statusIds.length);
 	}
 
 	/**

@@ -70,13 +70,13 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 	 *
 	 */
 	public ColorPickerDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 	}
 
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 		View root = inflater.inflate(R.layout.dialog_colorpicker, container, false);
 		colorPickerView = root.findViewById(R.id.dialog_colorpicker_selector);
 		root = root.findViewById(R.id.dialog_colorpicker_root);
@@ -174,13 +174,13 @@ public class ColorPickerDialog extends DialogFragment implements OnClickListener
 	 * @param enableAlpha  true to enable alpha slider
 	 */
 	public static void show(FragmentActivity activity, int color, int type, boolean enableAlpha) {
-		Bundle args = new Bundle();
-		args.putInt(KEY_COLOR, color);
-		args.putInt(KEY_TYPE, type);
-		args.putBoolean(KEY_ALPHA, enableAlpha);
 		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
 		if (dialogFragment == null) {
 			ColorPickerDialog dialog = new ColorPickerDialog();
+			Bundle args = new Bundle();
+			args.putInt(KEY_COLOR, color);
+			args.putInt(KEY_TYPE, type);
+			args.putBoolean(KEY_ALPHA, enableAlpha);
 			dialog.setArguments(args);
 			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}

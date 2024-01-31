@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.ui.dialogs;
 
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -13,6 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.kyleduo.switchbutton.SwitchButton;
 
@@ -28,16 +32,23 @@ import org.nuclearfog.twidda.model.lists.Rules;
 import org.nuclearfog.twidda.ui.adapter.listview.DropdownAdapter;
 import org.nuclearfog.twidda.ui.adapter.listview.RuleAdapter;
 
-import java.io.Serializable;
-
 /**
  * User/Status report dialog
  *
  * @author nuclearfog
  */
-public class ReportDialog extends Dialog implements OnClickListener {
+public class ReportDialog extends DialogFragment implements OnClickListener {
 
-	private static final String KEY_SAVE = "reportupdate-data";
+	/**
+	 *
+	 */
+	private static final String TAG = "ReportDialog";
+
+	/**
+	 * Bundle key to set/restore report update
+	 * value type is {@link ReportUpdate}
+	 */
+	private static final String KEY_REPORT = "reportupdate-data";
 
 	private AsyncCallback<ReportUpdater.Result> reportResult = this::onReportResult;
 	private AsyncCallback<Rules> rulesResult = this::onRulesLoaded;
@@ -48,7 +59,6 @@ public class ReportDialog extends Dialog implements OnClickListener {
 	private ReportUpdater reportUpdater;
 	private GlobalSettings settings;
 
-	private TextView textTitle;
 	private SwitchButton switchForward;
 	private EditText editDescription;
 	private Spinner reportCategory;
@@ -58,38 +68,53 @@ public class ReportDialog extends Dialog implements OnClickListener {
 	/**
 	 *
 	 */
-	public ReportDialog(Activity activity) {
-		super(activity, R.style.DefaultDialog);
-		selectorAdapter = new DropdownAdapter(activity.getApplicationContext());
-		reportUpdater = new ReportUpdater(activity.getApplicationContext());
-		ruleLoader = new RuleLoader(activity.getApplicationContext());
-		ruleAdapter = new RuleAdapter(activity.getApplicationContext());
-		settings = GlobalSettings.get(getContext());
-		selectorAdapter.setItems(R.array.reports);
+	public ReportDialog() {
+		setStyle(STYLE_NO_TITLE, R.style.DefaultDialog);
 	}
 
 
+	@Nullable
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_report);
-		ViewGroup rootView = findViewById(R.id.dialog_report_root);
-		View reportButton = findViewById(R.id.dialog_report_apply);
-		ListView ruleSelector = findViewById(R.id.dialog_report_rule_selector);
-		reportCategory = findViewById(R.id.dialog_report_category);
-		textTitle = findViewById(R.id.dialog_report_title);
-		switchForward = findViewById(R.id.dialog_report_switch_forward);
-		editDescription = findViewById(R.id.dialog_report_description);
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.dialog_report, container, false);
+		View reportButton = view.findViewById(R.id.dialog_report_apply);
+		ListView ruleSelector = view.findViewById(R.id.dialog_report_rule_selector);
+		TextView textTitle = view.findViewById(R.id.dialog_report_title);
+		reportCategory = view.findViewById(R.id.dialog_report_category);
+		switchForward = view.findViewById(R.id.dialog_report_switch_forward);
+		editDescription = view.findViewById(R.id.dialog_report_description);
 
-		AppStyles.setTheme(rootView, settings.getPopupColor());
+		AppStyles.setTheme((ViewGroup) view, settings.getPopupColor());
 		reportCategory.setAdapter(selectorAdapter);
 		ruleSelector.setAdapter(ruleAdapter);
 		reportButton.setOnClickListener(this);
+
+		selectorAdapter = new DropdownAdapter(requireContext());
+		reportUpdater = new ReportUpdater(requireContext());
+		ruleLoader = new RuleLoader(requireContext());
+		ruleAdapter = new RuleAdapter(requireContext());
+		settings = GlobalSettings.get(requireContext());
+		selectorAdapter.setItems(R.array.reports);
+
+		if (savedInstanceState == null)
+			savedInstanceState = getArguments();
+		if (savedInstanceState != null) {
+			Object data = savedInstanceState.getSerializable(KEY_REPORT);
+			if (data instanceof ReportUpdate) {
+				update = (ReportUpdate) data;
+				if (update.getStatusIds().length > 0) {
+					textTitle.setText(R.string.dialog_report_title_status);
+				} else {
+					textTitle.setText(R.string.dialog_report_title_user);
+				}
+			}
+		}
+		return view;
 	}
 
 
 	@Override
-	protected void onStart() {
+	public void onStart() {
 		super.onStart();
 		if (ruleAdapter.isEmpty() && ruleLoader.isIdle()) {
 			ruleLoader.execute(null, rulesResult);
@@ -97,36 +122,17 @@ public class ReportDialog extends Dialog implements OnClickListener {
 	}
 
 
-	@NonNull
 	@Override
-	public Bundle onSaveInstanceState() {
-		Bundle bundle = super.onSaveInstanceState();
-		bundle.putSerializable(KEY_SAVE, update);
-		return bundle;
+	public void onDestroyView() {
+		ruleLoader.cancel();
+		super.onDestroyView();
 	}
 
 
 	@Override
-	public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-		Serializable data = savedInstanceState.getSerializable(KEY_SAVE);
-		if (data instanceof ReportUpdate) {
-			update = (ReportUpdate) data;
-		}
-		super.onRestoreInstanceState(savedInstanceState);
-	}
-
-
-	@Override
-	public void show() {
-		// using show(long, long) instead
-	}
-
-
-	@Override
-	public void dismiss() {
-		if (isShowing()) {
-			super.dismiss();
-		}
+	public void onSaveInstanceState(@NonNull Bundle outstate) {
+		outstate.putSerializable(KEY_REPORT, update);
+		super.onSaveInstanceState(outstate);
 	}
 
 
@@ -156,16 +162,15 @@ public class ReportDialog extends Dialog implements OnClickListener {
 	 * @param userId   Id of the user to report to instance
 	 * @param statusId additional status IDs
 	 */
-	public void show(long userId, long... statusId) {
-		if (!isShowing()) {
-			super.show();
-			update = new ReportUpdate(userId);
-			if (statusId.length > 0) {
-				update.setStatusIds(statusId);
-				textTitle.setText(R.string.dialog_report_title_status);
-			} else {
-				textTitle.setText(R.string.dialog_report_title_user);
-			}
+	public static void show(FragmentActivity activity, long userId, long... statusId) {
+		Fragment dialogFragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+		if (dialogFragment == null) {
+			ReportUpdate update = new ReportUpdate(userId, statusId);
+			ReportDialog dialog = new ReportDialog();
+			Bundle param = new Bundle();
+			param.putSerializable(KEY_REPORT, update);
+			dialog.setArguments(param);
+			dialog.show(activity.getSupportFragmentManager(), TAG);
 		}
 	}
 
@@ -173,15 +178,20 @@ public class ReportDialog extends Dialog implements OnClickListener {
 	 * callback used by {@link ReportUpdater}
 	 */
 	private void onReportResult(@NonNull ReportUpdater.Result result) {
+		Context context = getContext();
 		if (result.exception == null) {
-			if (update != null && update.getStatusIds().length > 0) {
-				Toast.makeText(getContext(), R.string.info_status_reported, Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(getContext(), R.string.info_user_reported, Toast.LENGTH_SHORT).show();
+			if (context != null) {
+				if (update != null && update.getStatusIds().length > 0) {
+					Toast.makeText(context, R.string.info_status_reported, Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(context, R.string.info_user_reported, Toast.LENGTH_SHORT).show();
+				}
 			}
 			dismiss();
 		} else {
-			ErrorUtils.showErrorMessage(getContext(), result.exception);
+			if (context != null) {
+				ErrorUtils.showErrorMessage(context, result.exception);
+			}
 		}
 	}
 

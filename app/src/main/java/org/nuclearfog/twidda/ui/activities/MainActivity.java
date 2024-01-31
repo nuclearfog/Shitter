@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.ui.activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -48,7 +47,6 @@ import org.nuclearfog.twidda.backend.utils.StringUtils;
 import org.nuclearfog.twidda.config.GlobalSettings;
 import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.ui.adapter.viewpager.HomeAdapter;
-import org.nuclearfog.twidda.ui.dialogs.ProgressDialog;
 import org.nuclearfog.twidda.ui.views.TabSelector;
 import org.nuclearfog.twidda.ui.views.TabSelector.OnTabSelectedListener;
 
@@ -90,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private CredentialsLoader credentialsLoader;
-	private Dialog loadingCircle;
 
 	private DrawerLayout drawerLayout;
 	private NavigationView navigationView;
@@ -130,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 		followingCount = header.findViewById(R.id.navigation_profile_following);
 
 		credentialsLoader = new CredentialsLoader(this);
-		loadingCircle = new ProgressDialog(this, null);
 		settings = GlobalSettings.get(this);
 		picasso = PicassoBuilder.get(this);
 
@@ -234,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements ActivityResultCal
 
 	@Override
 	protected void onDestroy() {
-		loadingCircle.dismiss();
 		super.onDestroy();
 	}
 

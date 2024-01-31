@@ -160,7 +160,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 	private GlobalSettings settings;
 	private Picasso picasso;
 	private PreviewAdapter adapter;
-	private ReportDialog reportDialog;
 
 	private TextView status_source, created_at, status_text, screen_name, username, edited;
 	private TextView location_name, sensitive, visibility, spoiler, spoiler_hint, translate_text;
@@ -215,7 +214,6 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 		notificationLoader = new NotificationAction(this);
 		translationLoader = new TranslationLoader(this);
 		emojiLoader = new TextEmojiLoader(this);
-		reportDialog = new ReportDialog(this);
 		picasso = PicassoBuilder.get(this);
 		settings = GlobalSettings.get(this);
 		adapter = new PreviewAdapter(this);
@@ -502,7 +500,7 @@ public class StatusActivity extends AppCompatActivity implements OnClickListener
 			}
 			// report status
 			else if (item.getItemId() == R.id.menu_status_report) {
-				reportDialog.show(status.getAuthor().getId(), status.getId());
+				ReportDialog.show(this, status.getAuthor().getId(), status.getId());
 				return true;
 			}
 			// get edit history
